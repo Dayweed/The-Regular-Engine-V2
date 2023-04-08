@@ -238,3 +238,6 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Files that only appear when pushing from Mac
+.DS_Store
