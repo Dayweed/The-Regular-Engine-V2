@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33214.272
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{1CFA1E63-1618-41A3-8520-281315C5ECAA}"
 EndProject
@@ -10,6 +10,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheRegularEngine", "TheRegularEngine\TheRegularEngine.vcxproj", "{6477FD7A-2CD0-446D-B703-14DC536C5003}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheRegularEditor", "TheRegularEditor\TheRegularEditor.vcxproj", "{F12FB49A-BBD0-41B6-9544-79954E7CF6DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6477FD7A-2CD0-446D-B703-14DC536C5003} = {6477FD7A-2CD0-446D-B703-14DC536C5003}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "Dependencies\ImGui\ImGui.vcxproj", "{0E6DAB6A-8A42-4E87-A02B-9370337E9860}"
 EndProject
