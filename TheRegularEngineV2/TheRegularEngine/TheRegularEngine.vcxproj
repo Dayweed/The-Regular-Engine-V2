@@ -78,15 +78,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\Mono\lib\Debug;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)Executable\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)Executable\$(Configuration)</IntDir>
+    <LibraryPath>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\Mono\lib\Debug;$(SolutionDir)Dependencies\Assimp\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Executable\TheRegularEngine\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Executable\TheRegularEngine\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\Mono\lib\Release;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)Executable\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)Executable\$(Configuration)</IntDir>
+    <OutDir>$(SolutionDir)Executable\TheRegularEngine\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Executable\TheRegularEngine\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -130,7 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\ImGui;$(SolutionDir)Dependencies\PhysX\include;$(SolutionDir)Dependencies\Rapidjson\include;$(SolutionDir)Dependencies\GLM\;$(SolutionDir)Dependencies\Mono\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\ImGui;$(SolutionDir)Dependencies\PhysX\include;$(SolutionDir)Dependencies\Rapidjson\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\GLM\;$(SolutionDir)Dependencies\Mono\include;$(SolutionDir)Dependencies\Freetype\include;$(SolutionDir)Dependencies\spdlog;$(SolutionDir)Dependencies\Assimp\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -140,10 +140,10 @@
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;fmodL_vc.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;ImGui.lib;Math.lib;libmono-static-sgen.lib;assimp-vc143-mt.lib;freetype.lib;assimp-vc143-mt.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\ImGui\$(Configuration);$(SolutionDir)Dependencies\FMOD\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\ImGui\$(Configuration);$(SolutionDir)Dependencies\FMOD\lib;$(SolutionDir)Dependencies\Mono\lib\$(Configuration);$(SolutionDir)Dependencies\Assimp\lib;$(SolutionDir)Dependencies\Freetype\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +157,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\ImGui;$(SolutionDir)Dependencies\PhysX\include;$(SolutionDir)Dependencies\Rapidjson\include;$(SolutionDir)Dependencies\GLM\;$(SolutionDir)Dependencies\Mono\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\ImGui;$(SolutionDir)Dependencies\PhysX\include;$(SolutionDir)Dependencies\Rapidjson\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\GLM\;$(SolutionDir)Dependencies\Mono\include;$(SolutionDir)Dependencies\Freetype\include;$(SolutionDir)Dependencies\Assimp\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -168,10 +168,10 @@
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;fmod_vc.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;ImGui.lib;Math.lib;libmono-static-sgen.lib;assimp-vc143-mt.lib;freetype.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\ImGui\$(Configuration);$(SolutionDir)Dependencies\FMOD\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\ImGui\$(Configuration);$(SolutionDir)Dependencies\FMOD\lib;$(SolutionDir)Dependencies\Mono\lib\$(Configuration);$(SolutionDir)Dependencies\Assimp\lib;$(SolutionDir)Dependencies\Freetype\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

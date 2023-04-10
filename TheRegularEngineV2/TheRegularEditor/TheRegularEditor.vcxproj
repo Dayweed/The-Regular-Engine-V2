@@ -81,15 +81,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)Executable\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)Executable\$(Configuration)</IntDir>
-    <LibraryPath>$(SolutionDir)Executable\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Executable\TheRegularEditor\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Executable\TheRegularEditor\$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)Executable\TheRegularEngine\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)Executable\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)Executable\$(Configuration)</IntDir>
-    <LibraryPath>$(SolutionDir)Executable\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Executable\TheRegularEditor\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Executable\TheRegularEditor\$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)Executable\TheRegularEngine\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)TheRegularEngine;$(SolutionDir)Dependencies\ImGui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)TheRegularEngine;$(SolutionDir)Dependencies\ImGui;$(SolutionDir)Dependencies\GLM\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>

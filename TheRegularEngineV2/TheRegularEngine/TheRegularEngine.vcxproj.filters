@@ -13,14 +13,14 @@
     <ClInclude Include="Core\Engine.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="TREIncludes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="EntryPoint.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Window.h">
       <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TREIncludes.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
