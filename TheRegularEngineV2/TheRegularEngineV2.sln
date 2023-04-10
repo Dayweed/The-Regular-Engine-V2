@@ -8,6 +8,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Dependencies\Math\Math.vcxproj", "{9DB26099-D986-4593-B138-676FDF0929EB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheRegularEngine", "TheRegularEngine\TheRegularEngine.vcxproj", "{6477FD7A-2CD0-446D-B703-14DC536C5003}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E6DAB6A-8A42-4E87-A02B-9370337E9860} = {0E6DAB6A-8A42-4E87-A02B-9370337E9860}
+		{9DB26099-D986-4593-B138-676FDF0929EB} = {9DB26099-D986-4593-B138-676FDF0929EB}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheRegularEditor", "TheRegularEditor\TheRegularEditor.vcxproj", "{F12FB49A-BBD0-41B6-9544-79954E7CF6DF}"
 	ProjectSection(ProjectDependencies) = postProject
