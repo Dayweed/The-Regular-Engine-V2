@@ -1,0 +1,29 @@
+#pragma once
+/****************************************************************************
+*																			*	
+*																			*
+*							Pre-Compiled Header								*
+*					Should only include things from STL						*
+*																			*
+*																			*
+*																			*
+*****************************************************************************/
+
+
+//Data Structures
+#include <array>
+#include <bitset>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+//Utilities
+#include <algorithm>
+#include <functional>
+#include <filesystem>
+#include <iterator>
+#include <memory>
