@@ -100,6 +100,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Engine.h" />
+    <ClInclude Include="Core\Macros.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="TREIncludes.h" />

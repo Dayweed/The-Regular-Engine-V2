@@ -23,6 +23,7 @@
 
 //Utilities
 #include <algorithm>
+#include <cassert>
 #include <functional>
 #include <filesystem>
 #include <iterator>
