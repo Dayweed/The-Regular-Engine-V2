@@ -10,6 +10,21 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Imgui\imconfig.h" />
+    <ClInclude Include="include\Imgui\imgui.h" />
+    <ClInclude Include="include\Imgui\imgui_internal.h" />
+    <ClInclude Include="include\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\Imgui\imstb_textedit.h" />
+    <ClInclude Include="include\Imgui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\Imgui\imgui.cpp" />
+    <ClCompile Include="include\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\Imgui\imgui_widgets.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C0FF640D-2C14-8DBE-F595-301E616989EF}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
@@ -87,21 +102,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="imconfig.h" />
-    <ClInclude Include="imgui.h" />
-    <ClInclude Include="imgui_internal.h" />
-    <ClInclude Include="imstb_rectpack.h" />
-    <ClInclude Include="imstb_textedit.h" />
-    <ClInclude Include="imstb_truetype.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="imgui_demo.cpp" />
-    <ClCompile Include="imgui_draw.cpp" />
-    <ClCompile Include="imgui_tables.cpp" />
-    <ClCompile Include="imgui_widgets.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -45,13 +45,14 @@ project "TheRegularEngine"
 	includedirs
 	{
 		"%{prj.name}",
-
+		
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		"%{IncludeDir.Freetype}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuiBackEnd}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
@@ -134,6 +135,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuiBackEnd}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
