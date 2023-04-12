@@ -6,12 +6,15 @@ project "ImGui"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin/" .. outputdir .. "/%{prj.name}")
 
+    includedirs
+    {
+        "include/Imgui"
+    }
+
 	files
 	{
-		"%{prj.name}/include/Imgui/**.h",
-		"%{prj.name}/include/Imgui/**.cpp",
-		"%{prj.name}/backends/**.h",
-		"%{prj.name}/backends/**.cpp",
+		"include/Imgui/**.h",
+		"include/Imgui/**.cpp",
 	}
 
 	filter "system:windows"

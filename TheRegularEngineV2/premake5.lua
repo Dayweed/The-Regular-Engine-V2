@@ -63,17 +63,18 @@ project "TheRegularEngine"
 
 	defines
 	{
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"_CRT_SECURE_NO_WARNINGS",
 	}
 
 	links
 	{ 
+		"ImGui",
 		"%{Library.Assimp}",
 		"%{Library.Freetype}",
 		"%{Library.GLFW}",
 		"%{Library.Mono}",
 		"%{Library.Vulkan}",
-		"ImGui"
 	}
 
 	filter "configurations:Debug"
@@ -114,7 +115,8 @@ project "TheRegularEditor"
 
 	defines 
 	{
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"_CRT_SECURE_NO_WARNINGS",
 	}
 
 	files 
