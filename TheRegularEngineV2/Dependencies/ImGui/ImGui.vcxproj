@@ -10,21 +10,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\Imgui\imconfig.h" />
-    <ClInclude Include="include\Imgui\imgui.h" />
-    <ClInclude Include="include\Imgui\imgui_internal.h" />
-    <ClInclude Include="include\Imgui\imstb_rectpack.h" />
-    <ClInclude Include="include\Imgui\imstb_textedit.h" />
-    <ClInclude Include="include\Imgui\imstb_truetype.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="include\Imgui\imgui.cpp" />
-    <ClCompile Include="include\Imgui\imgui_demo.cpp" />
-    <ClCompile Include="include\Imgui\imgui_draw.cpp" />
-    <ClCompile Include="include\Imgui\imgui_tables.cpp" />
-    <ClCompile Include="include\Imgui\imgui_widgets.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C0FF640D-2C14-8DBE-F595-301E616989EF}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>

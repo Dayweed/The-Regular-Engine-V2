@@ -8,8 +8,10 @@ project "ImGui"
 
 	files
 	{
-		"include/Imgui/**.h,
-		"include/Imgui/**.cpp,
+		"%{prj.name}/include/Imgui/**.h",
+		"%{prj.name}/include/Imgui/**.cpp",
+		"%{prj.name}/backends/**.h",
+		"%{prj.name}/backends/**.cpp",
 	}
 
 	filter "system:windows"
