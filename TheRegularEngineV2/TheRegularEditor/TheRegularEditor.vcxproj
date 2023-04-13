@@ -73,7 +73,8 @@
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST "$(SolutionDir)\Dependencies\Assimp\lib\assimp-vc143-mt.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\Assimp\lib\assimp-vc143-mt.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\Assimp\lib\assimp-vc143-mt.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul)
-IF EXIST "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul)</Command>
+IF EXIST "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul)
+IF EXIST "$(SolutionDir)\Dependencies\Mono\bin\Debug\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\Mono\bin\Debug\mono-2.0-sgen.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\Mono\bin\Debug\mono-2.0-sgen.dll" "..\Executable\Debug\TheRegularEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -99,7 +100,8 @@ IF EXIST "$(SolutionDir)\Dependencies\FMOD\lib\fmodL.dll"\ (xcopy /Q /E /Y /I "$
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST "$(SolutionDir)\Dependencies\Assimp\lib\assimp-vc143-mt.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\Assimp\lib\assimp-vc143-mt.dll" "..\Executable\Release\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\Assimp\lib\assimp-vc143-mt.dll" "..\Executable\Release\TheRegularEditor" &gt; nul)
-IF EXIST "$(SolutionDir)\Dependencies\FMOD\lib\fmod.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmod.dll" "..\Executable\Release\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmod.dll" "..\Executable\Release\TheRegularEditor" &gt; nul)</Command>
+IF EXIST "$(SolutionDir)\Dependencies\FMOD\lib\fmod.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmod.dll" "..\Executable\Release\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\FMOD\lib\fmod.dll" "..\Executable\Release\TheRegularEditor" &gt; nul)
+IF EXIST "$(SolutionDir)\Dependencies\Mono\bin\Release\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Dependencies\Mono\bin\Release\mono-2.0-sgen.dll" "..\Executable\Release\TheRegularEditor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Dependencies\Mono\bin\Release\mono-2.0-sgen.dll" "..\Executable\Release\TheRegularEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

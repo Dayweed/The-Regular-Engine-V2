@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Engine.h"
+#include "Scripting/ScriptEngine.h"
 
 namespace TRE
 {
@@ -9,6 +10,7 @@ namespace TRE
 	{
 		s_Instance = this;
 		m_Window = std::make_unique<Window>();
+		ScriptEngine::InitMono();
 	}
 
 	Engine::~Engine()

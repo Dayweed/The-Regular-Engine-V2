@@ -32,7 +32,7 @@ Library["FMOD_Debug"] = "%{LibraryDir.FMOD}/fmodL_vc.lib"
 Library["FMOD_Release"] = "%{LibraryDir.FMOD}/fmod_vc.lib"
 Library["Freetype"] = "%{LibraryDir.Freetype}/freetype.lib"
 Library["GLFW"] = "%{LibraryDir.GLFW}/glfw3.lib"
-Library["Mono"] = "%{LibraryDir.Mono}/libmono-static-sgen.lib"
+Library["Mono"] = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
 -- Library["PhysX"] = "%{LibraryDir.PhysX}/"
 Library["Vulkan"] = "%{LibraryDir.Vulkan}/vulkan-1.lib"
 
@@ -40,3 +40,4 @@ Binaries = {}
 Binaries["Assimp"] = "%{wks.location}/Dependencies/Assimp/lib/assimp-vc143-mt.dll"
 Binaries["FMOD_Debug"] = "%{wks.location}/Dependencies/FMOD/lib/fmodL.dll"
 Binaries["FMOD_Release"] = "%{wks.location}/Dependencies/FMOD/lib/fmod.dll"
+Binaries["Mono"] = "%{wks.location}/Dependencies/Mono/bin"

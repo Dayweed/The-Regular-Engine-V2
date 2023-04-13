@@ -172,6 +172,7 @@ project "TheRegularEditor"
 		{
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -187,8 +188,32 @@ project "TheRegularEditor"
 			"%{Library.FMOD_Release}"
 		}
 
-		postbuildcommands 
+		postbuildcommands
 		{
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
 		}
+
+project "TRE-ScriptCore"
+	location "TRE-ScriptCore"
+	kind "SharedLib"
+	language "C#"
+	dotnetframework "4.7.2"
+
+	targetdir ("TheRegularEditor/resources/Scripts")
+	objdir ("TheRegularEditor/resources/Scripts")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs",
+	}
+
+	filter "configurations:Debug"
+		optimize "Off"
+		symbols "Default"
+
+	filter "configurations:Release"
+		optimize "On"
+		symbols "Default"
+
