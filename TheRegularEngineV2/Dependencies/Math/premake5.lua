@@ -10,6 +10,8 @@ project "Math"
 	files
 	{
 		"include/**.h",
+		"include/**.hpp",
+		"src/**.c",
 		"src/**.cpp",
 	}
 

@@ -1,18 +1,20 @@
 #pragma once
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {
-	class GLFWWindow;
-
 	class Window
 	{
 		public:
 			Window();
 			~Window();
 
-			GLFWWindow* GetWindowHandle();
+			void PollEvents();
+
+			GLFWwindow* GetWindowHandle();
+			int ShouldWindowClose();
 
 		private:
-			GLFWWindow* m_WindowHandle;
+			GLFWwindow* m_WindowHandle = nullptr;
 	};
 }

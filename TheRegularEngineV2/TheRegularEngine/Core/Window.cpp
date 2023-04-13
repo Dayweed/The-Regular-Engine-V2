@@ -1,23 +1,38 @@
 #include "pch.h"
 #include "Window.h"
-#include "GLFW/glfw3.h"
 
 namespace TRE
 {
 	Window::Window()
 	{
-		if (int Err = glfwInit(); Err)
+		if (!glfwInit())
 		{
 			//Assert
 		}
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); //Default is opengl so we set to no since we going V
+
+		m_WindowHandle = glfwCreateWindow(1000, 600, "zhui guang zhe", nullptr, nullptr);
+
 	}
 
 	Window::~Window()
 	{
-		
+		glfwDestroyWindow(m_WindowHandle);
+		glfwTerminate();
 	}
 
-	GLFWWindow* Window::GetWindowHandle()
+	void Window::PollEvents()
+	{
+		glfwPollEvents();
+	}
+
+	int Window::ShouldWindowClose()
+	{
+		return glfwWindowShouldClose(m_WindowHandle);
+	}
+
+	GLFWwindow* Window::GetWindowHandle()
 	{
 		return m_WindowHandle;
 	}

@@ -27,6 +27,7 @@ project "TheRegularEngine"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
+	warnings "Extra"
 
 	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
 	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
@@ -80,6 +81,12 @@ project "TheRegularEngine"
 	filter "configurations:Debug"
 		symbols "On"
 
+		defines
+		{
+			"DEBUG",
+			"_DEBUG",
+		}
+
 		links
 		{
 			"%{Library.FMOD_Debug}"
@@ -104,6 +111,7 @@ project "TheRegularEditor"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
+	warnings "Extra"
 	
 	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
 	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
@@ -148,6 +156,12 @@ project "TheRegularEditor"
 
 	filter "configurations:Debug"
 		symbols "on"
+
+		defines
+		{
+			"DEBUG",
+			"_DEBUG",
+		}
 
 		links
 		{

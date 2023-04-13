@@ -3,9 +3,12 @@
 
 namespace TRE
 {
+	Engine* Engine::s_Instance = nullptr;
+
 	Engine::Engine()
 	{
-		
+		s_Instance = this;
+		m_Window = std::make_unique<Window>();
 	}
 
 	Engine::~Engine()
@@ -15,9 +18,9 @@ namespace TRE
 
 	void Engine::Update()
 	{
-		while (1)
+		while (!m_Window->ShouldWindowClose())
 		{
-			
+			m_Window->PollEvents();
 		}
 	}
 

@@ -1,15 +1,21 @@
 #include "TREIncludes.h"
 #include "EntryPoint.h"
 
-class EditorApplication : public TRE::Engine
+namespace TRE
 {
+	class EditorApplication : public TRE::Engine
+	{
 	public:
-		EditorApplication() : Engine() {}
+		EditorApplication() : Engine() 
+		{
+
+		}
 
 	private:
-};
+	};
 
-TRE::Engine* TRE::CreateApp()
-{
-	return new EditorApplication();
+	TRE::Engine* TRE::CreateApp()
+	{
+		return new EditorApplication();
+	}
 }

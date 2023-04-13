@@ -1,4 +1,6 @@
 #pragma once
+#include "pch.h"
+#include "Window.h"
 
 namespace TRE
 {
@@ -7,6 +9,7 @@ namespace TRE
 		public:
 			Engine();
 			virtual ~Engine();
+
 			Engine(Engine&) = delete;
 			void operator=(const Engine&) = delete;
 
@@ -16,6 +19,9 @@ namespace TRE
 		protected:
 
 		private:
+			std::unique_ptr<Window> m_Window;
+			
+			
 			static Engine* s_Instance;
 	};
 
