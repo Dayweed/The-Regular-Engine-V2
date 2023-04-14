@@ -19,7 +19,7 @@ Executable/
 /x64/
 /x86/
 bld/
-[Bb]in/
+#[Bb]in/
 [Oo]bj/
 
 # Visual Studio files and folder
@@ -36,7 +36,7 @@ bld/
 #wwwroot/
 
 # ignore bin and obj files (Debug and Release)
-**/bin/*
+#**/bin/*
 **/obj/*
 
 # MSTest test Results
