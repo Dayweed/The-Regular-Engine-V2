@@ -51,10 +51,16 @@ namespace physx
 	class PxDefaultErrorCallback : public PxErrorCallback
 	{
 	public:
-				PxDefaultErrorCallback();
-		virtual	~PxDefaultErrorCallback();
+				PxDefaultErrorCallback(){};
+		virtual	~PxDefaultErrorCallback(){};
 
-		virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) PX_OVERRIDE;
+		virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) PX_OVERRIDE
+		{
+			printf("code was	: |%d|\n", code);
+			printf("message was	: |%s|\n", message);
+			printf("from file	: |%s|\n", file);
+			printf("at line		: |%d|\n", line);
+		};
 	};
 
 #if !PX_DOXYGEN

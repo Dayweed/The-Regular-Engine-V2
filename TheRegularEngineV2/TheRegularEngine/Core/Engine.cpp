@@ -5,7 +5,7 @@
 #define HAHA_PHYSX_TEST 1
 #if HAHA_PHYSX_TEST
 #include "PhysX/PxPhysicsAPI.h"
-#define HAHA_PHYSX_PVD 0
+#define HAHA_PHYSX_PVD 1
 #endif
 
 #if HAHA_PHYSX_TEST
@@ -60,12 +60,12 @@ void HAHAPhysxInit()
 	gScene = gPhysics->createScene(sceneDesc);
 
 #if HAHA_PHYSX_PVD
-	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 	if (pvdClient)
 	{
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 #endif
 
@@ -96,10 +96,9 @@ namespace TRE
 		m_Window = std::make_unique<Window>();
 		ScriptEngine::InitMono();
 
-
-		#if HAHA_PHYSX_TEST
+#if HAHA_PHYSX_TEST
 		HAHAPhysxInit();
-		#endif
+#endif
 	}
 
 	Engine::~Engine()
@@ -112,10 +111,10 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
-			
-			#if HAHA_PHYSX_TEST
+
+#if HAHA_PHYSX_TEST
 			HAHAPhysxUpdate();
-			#endif
+#endif
 		}
 	}
 
