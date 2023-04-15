@@ -75,6 +75,9 @@ project "TheRegularEngine"
 		"%{Library.Freetype}",
 		"%{Library.GLFW}",
 		"%{Library.Mono}",
+		"%{Library.PhysX_64}",
+		"%{Library.PhysX_Foundation}",
+		"%{Library.PhysX_Extension}",
 		"%{Library.Vulkan}",
 	}
 
@@ -154,6 +157,12 @@ project "TheRegularEditor"
 		"%{IncludeDir.spdlog}",
 	}
 
+	postbuildcommands
+	{
+		'{COPY} "%{Binaries.PhysX_64}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
+	}
+
 	filter "configurations:Debug"
 		symbols "on"
 
@@ -168,7 +177,7 @@ project "TheRegularEditor"
 			"%{Library.FMOD_Debug}"
 		}
 
-		postbuildcommands 
+		postbuildcommands
 		{
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',

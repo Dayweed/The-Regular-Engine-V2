@@ -33,7 +33,9 @@ Library["FMOD_Release"] = "%{LibraryDir.FMOD}/fmod_vc.lib"
 Library["Freetype"] = "%{LibraryDir.Freetype}/freetype.lib"
 Library["GLFW"] = "%{LibraryDir.GLFW}/glfw3.lib"
 Library["Mono"] = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
--- Library["PhysX"] = "%{LibraryDir.PhysX}/"
+Library["PhysX_64"] = "%{LibraryDir.PhysX}/PhysX_64.lib"
+Library["PhysX_Foundation"] = "%{LibraryDir.PhysX}/PhysXFoundation_64.lib"
+Library["PhysX_Extension"] = "%{LibraryDir.PhysX}/PhysXExtensions_static_64.lib"
 Library["Vulkan"] = "%{LibraryDir.Vulkan}/vulkan-1.lib"
 
 Binaries = {}
@@ -41,3 +43,5 @@ Binaries["Assimp"] = "%{wks.location}/Dependencies/Assimp/lib/assimp-vc143-mt.dl
 Binaries["FMOD_Debug"] = "%{wks.location}/Dependencies/FMOD/lib/fmodL.dll"
 Binaries["FMOD_Release"] = "%{wks.location}/Dependencies/FMOD/lib/fmod.dll"
 Binaries["Mono"] = "%{wks.location}/Dependencies/Mono/bin"
+Binaries["PhysX_64"] = "%{LibraryDir.PhysX}/PhysX_64.dll"
+Binaries["PhysX_Foundation"] = "%{LibraryDir.PhysX}/PhysXFoundation_64.dll"
