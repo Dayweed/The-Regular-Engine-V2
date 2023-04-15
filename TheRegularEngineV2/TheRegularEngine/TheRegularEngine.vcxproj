@@ -70,7 +70,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Debug\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Debug\PhysX_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXExtensions_static_64.lib;C:\VulkanSDK\1.3.243.0\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Debug\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Debug\PhysX_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.243.0\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -95,7 +95,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Release\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Release\PhysX_64.lib;..\Dependencies\PhysX\lib\Release\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Release\PhysXExtensions_static_64.lib;C:\VulkanSDK\1.3.243.0\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Release\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Release\PhysX_64.lib;..\Dependencies\PhysX\lib\Release\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Release\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Release\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.243.0\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

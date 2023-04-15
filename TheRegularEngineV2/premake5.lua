@@ -78,6 +78,13 @@ project "TheRegularEngine"
 		"%{Library.PhysX_64}",
 		"%{Library.PhysX_Foundation}",
 		"%{Library.PhysX_Extension}",
+		"%{Library.PhysX_Character}",
+		"%{Library.PhysX_Common}",
+		"%{Library.PhysX_Cooking}",
+		"%{Library.PhysX_Pvd}",
+		"%{Library.PhysX_TaskStatic}",
+		"%{Library.PhysX_VehicleStatic}",
+		"%{Library.PhysX_Vehicle2}",
 		"%{Library.Vulkan}",
 	}
 
@@ -161,6 +168,9 @@ project "TheRegularEditor"
 	{
 		'{COPY} "%{Binaries.PhysX_64}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Common}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Cooking}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
 	}
 
 	filter "configurations:Debug"
