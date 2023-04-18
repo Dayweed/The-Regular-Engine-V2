@@ -19,13 +19,17 @@ physx::PxMaterial* gMaterial = nullptr;
 physx::PxPvd* gPvd = nullptr;
 physx::PxReal 					stackZ = 10.0f;
 
+//This function creates a stack of boxes
 void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent)
 {
+	//Create the shape of the box
 	physx::PxShape* shape = gPhysics->createShape(physx::PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
+	//Create the boxes stacked 
 	for (physx::PxU32 i = 0; i < size; i++)
 	{
 		for (physx::PxU32 j = 0; j < size - i; j++)
 		{
+			//PxTransform is the position represented in a vector multiplied by its halfExtents
 			physx::PxTransform localTm(physx::PxVec3(physx::PxReal(j * 2) - physx::PxReal(size - i), physx::PxReal(i * 2 + 1), 0) * halfExtent);
 			physx::PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
 			body->attachShape(*shape);
@@ -33,11 +37,13 @@ void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal h
 			gScene->addActor(*body);
 		}
 	}
+	//Release shape
 	shape->release();
 }
 
 void HAHAPhysxInit()
 {
+	//Create foundation is similar to initializing the scene
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	printf("%d\n", PX_PHYSICS_VERSION);
 	printf("%d\n", PX_PHYSICS_VERSION_MAJOR);
@@ -45,6 +51,7 @@ void HAHAPhysxInit()
 	printf("%d\n", PX_PHYSICS_VERSION_BUGFIX);
 
 #if HAHA_PHYSX_PVD
+	//PVD is like a debugger for the physics (leave off for submission)
 	gPvd = PxCreatePvd(*gFoundation);
 	physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 	gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
@@ -53,9 +60,11 @@ void HAHAPhysxInit()
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
 
 	physx::PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = physx::PxVec3(0.0f, 9.81f, 0.0f);
 	gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
+	//A cpu thread for the scene
 	sceneDesc.cpuDispatcher = gDispatcher;
+	//A thread that will do collision management
 	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
 	gScene = gPhysics->createScene(sceneDesc);
 
@@ -68,12 +77,12 @@ void HAHAPhysxInit()
 		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 #endif
-
+	//Create material gives the object a static, dynamic and restitution.
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
+	//Static object creation
 	physx::PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, physx::PxPlane(0, 1, 0, 0), *gMaterial);
 	gScene->addActor(*groundPlane);
-
+	//Create 5 stacks of boxes
 	for (physx::PxU32 i = 0; i < 5; i++)
 		createStack(physx::PxTransform(physx::PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
 }
