@@ -15,6 +15,7 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TheRegularEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -100,17 +101,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Engine.h" />
+    <ClInclude Include="Core\Layer.h" />
+    <ClInclude Include="Core\LayerSystem.h" />
     <ClInclude Include="Core\Macros.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="EntryPoint.h" />
+    <ClInclude Include="Physics\PhysicsSystem.h" />
     <ClInclude Include="Scripting\ScriptEngine.h" />
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Engine.cpp" />
+    <ClCompile Include="Core\LayerSystem.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Editor\ImguiBuildBackend.cpp" />
+    <ClCompile Include="Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Scripting\ScriptEngine.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

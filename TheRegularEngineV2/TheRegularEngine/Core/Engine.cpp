@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Engine.h"
+#include "LayerSystem.h"
 #include "Scripting/ScriptEngine.h"
+#include "Physics/PhysicsSystem.h"
 
-#define HAHA_PHYSX_TEST 1
+#define HAHA_PHYSX_TEST 0
 #if HAHA_PHYSX_TEST
 #include "PhysX/PxPhysicsAPI.h"
 #define HAHA_PHYSX_PVD 1
@@ -103,7 +105,10 @@ namespace TRE
 	{
 		s_Instance = this;
 		m_Window = std::make_unique<Window>();
-		ScriptEngine::InitMono();
+		m_LayerSystems = LayerSystem::GetInstance();
+
+		AddSystem(new PhysicsSystem);
+		//ScriptEngine::InitMono();
 
 #if HAHA_PHYSX_TEST
 		HAHAPhysxInit();
@@ -112,7 +117,7 @@ namespace TRE
 
 	Engine::~Engine()
 	{
-
+		
 	}
 
 	void Engine::Update()
@@ -120,15 +125,23 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
+			
+			#if HAHA_PHYSX_TEST
+						HAHAPhysxUpdate();
+			#endif
 
-#if HAHA_PHYSX_TEST
-			HAHAPhysxUpdate();
-#endif
+			m_LayerSystems->UpdateSystems();
 		}
 	}
 
 	void Engine::Shutdown()
 	{
+		m_LayerSystems->ShutdownSystems();
+		LayerSystem::ShutDownLayerSystem();
+	}
 
+	void Engine::AddSystem(Layer* system)
+	{
+		m_LayerSystems->AddSystem(system);
 	}
 }

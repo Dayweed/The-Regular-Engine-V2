@@ -15,6 +15,7 @@ int main()
 
 	TRE::Engine* App = TRE::CreateApp();
 	App->Update();
+	App->Shutdown();
 	delete App;
 
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
