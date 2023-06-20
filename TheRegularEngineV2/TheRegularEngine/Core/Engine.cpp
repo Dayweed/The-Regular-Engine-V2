@@ -3,6 +3,7 @@
 #include "LayerSystem.h"
 #include "Scripting/ScriptEngine.h"
 #include "Physics/PhysicsSystem.h"
+#include "entt.hpp"
 
 #define HAHA_PHYSX_TEST 0
 #if HAHA_PHYSX_TEST

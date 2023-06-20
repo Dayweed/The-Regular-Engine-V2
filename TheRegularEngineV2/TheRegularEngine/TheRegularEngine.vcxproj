@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Engine.h" />
+    <ClInclude Include="Core\entt.hpp" />
     <ClInclude Include="Core\Layer.h" />
     <ClInclude Include="Core\LayerSystem.h" />
     <ClInclude Include="Core\Macros.h" />
