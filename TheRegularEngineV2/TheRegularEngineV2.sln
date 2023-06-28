@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "Dependencies\ImGui
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Dependencies\Math\Math.vcxproj", "{AFF4887C-9B2B-8A0D-4418-7010302E060F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshOptimizer", "Dependencies\MeshOptimizer\MeshOptimizer.vcxproj", "{35B4FA56-A174-768D-6AAF-BF0AD62EBB69}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRE-ScriptCore", "TRE-ScriptCore\TRE-ScriptCore.csproj", "{7BF3E9BD-67C1-DDC3-5055-4EEA3CC2B928}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheRegularEngine", "TheRegularEngine\TheRegularEngine.vcxproj", "{4E8A024C-3A83-219E-63B5-06234F0D01AA}"
@@ -31,6 +33,10 @@ Global
 		{AFF4887C-9B2B-8A0D-4418-7010302E060F}.Debug|Mixed Platforms.Build.0 = Debug|x64
 		{AFF4887C-9B2B-8A0D-4418-7010302E060F}.Release|Mixed Platforms.ActiveCfg = Release|x64
 		{AFF4887C-9B2B-8A0D-4418-7010302E060F}.Release|Mixed Platforms.Build.0 = Release|x64
+		{35B4FA56-A174-768D-6AAF-BF0AD62EBB69}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{35B4FA56-A174-768D-6AAF-BF0AD62EBB69}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{35B4FA56-A174-768D-6AAF-BF0AD62EBB69}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{35B4FA56-A174-768D-6AAF-BF0AD62EBB69}.Release|Mixed Platforms.Build.0 = Release|x64
 		{7BF3E9BD-67C1-DDC3-5055-4EEA3CC2B928}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{7BF3E9BD-67C1-DDC3-5055-4EEA3CC2B928}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{7BF3E9BD-67C1-DDC3-5055-4EEA3CC2B928}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -46,5 +52,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C0FF640D-2C14-8DBE-F595-301E616989EF} = {53E47842-3FC8-3998-A828-34EB942B241A}
 		{AFF4887C-9B2B-8A0D-4418-7010302E060F} = {53E47842-3FC8-3998-A828-34EB942B241A}
+		{35B4FA56-A174-768D-6AAF-BF0AD62EBB69} = {53E47842-3FC8-3998-A828-34EB942B241A}
 	EndGlobalSection
 EndGlobal

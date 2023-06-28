@@ -19,6 +19,7 @@ outputdir = "%{cfg.buildcfg}"
 group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
+include "Dependencies/MeshOptimizer"
 group ""
 
 project "TheRegularEngine"
@@ -55,6 +56,7 @@ project "TheRegularEngine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
 		"%{IncludeDir.Math}",
+		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
@@ -157,6 +159,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
 		"%{IncludeDir.Math}",
+		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
