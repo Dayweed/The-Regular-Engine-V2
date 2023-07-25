@@ -1,7 +1,7 @@
 project "MeshOptimizer"
 	kind "StaticLib"
 	language "C++"
-    staticruntime "On"
+    staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin/" .. outputdir .. "/%{prj.name}")

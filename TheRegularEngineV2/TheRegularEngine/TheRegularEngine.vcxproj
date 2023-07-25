@@ -102,7 +102,6 @@
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\Layer.h" />
     <ClInclude Include="Core\LayerSystem.h" />
-    <ClInclude Include="Core\Macros.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Core\entt.hpp" />
     <ClInclude Include="Editor\ImGuizmo.h" />
@@ -127,6 +126,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Dependencies\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Dependencies\MeshOptimizer\MeshOptimizer.vcxproj">
+      <Project>{35B4FA56-A174-768D-6AAF-BF0AD62EBB69}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

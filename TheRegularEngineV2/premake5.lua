@@ -73,6 +73,7 @@ project "TheRegularEngine"
 	links
 	{ 
 		"ImGui",
+		"MeshOptimizer",
 		"%{Library.Assimp}",
 		"%{Library.Freetype}",
 		"%{Library.GLFW}",
