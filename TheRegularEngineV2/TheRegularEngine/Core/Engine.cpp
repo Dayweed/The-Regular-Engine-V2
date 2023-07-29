@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "Engine.h"
-#include "LayerSystem.h"
-#include "Scripting/ScriptEngine.h"
 #include "Physics/PhysicsSystem.h"
-#include "entt.hpp"
 
 namespace TRE
 {
@@ -13,10 +10,8 @@ namespace TRE
 	{
 		s_Instance = this;
 		m_Window = std::make_unique<Window>();
-		m_LayerSystems = LayerSystem::GetInstance();
-
-		AddSystem(new PhysicsSystem);
-		//ScriptEngine::InitMono();
+		m_SystemsManager = std::make_unique<SystemManager>();
+		RegisterSystems<PhysicsSystem>();
 	}
 
 	Engine::~Engine()
@@ -30,18 +25,13 @@ namespace TRE
 		{
 			m_Window->PollEvents();
 
-			m_LayerSystems->UpdateSystems();
+			m_SystemsManager->UpdateSystem();
+			m_SystemsManager->RenderImgui();
 		}
 	}
 
 	void Engine::Shutdown()
 	{
-		m_LayerSystems->ShutdownSystems();
-		LayerSystem::ShutDownLayerSystem();
-	}
-
-	void Engine::AddSystem(Layer* system)
-	{
-		m_LayerSystems->AddSystem(system);
+		m_SystemsManager->ShutdownSystem();
 	}
 }

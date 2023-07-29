@@ -1,15 +1,16 @@
 #pragma once
-#include "Core/Layer.h"
+#include "Core/System.h"
 
 namespace TRE
 {
-	class PhysicsSystem : public Layer
+	class PhysicsSystem : public System
 	{
 		public:
 			PhysicsSystem();
 			~PhysicsSystem();
 
 			void Update() override;
+			void RenderImgui() override;
 			void Shutdown() override;
 
 		private:

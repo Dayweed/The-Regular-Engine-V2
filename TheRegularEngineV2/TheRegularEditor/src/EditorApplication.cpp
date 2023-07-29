@@ -1,6 +1,6 @@
+#include "EditorLayer.h"
 #include "TREIncludes.h"
 #include "EntryPoint.h"
-#include "EditorLayer.h"
 
 namespace TRE
 {
@@ -9,7 +9,7 @@ namespace TRE
 		public:
 			EditorApplication() : Engine()
 			{
-				AddSystem(new EditorLayer);
+				RegisterSystems<EditorLayer>();
 			}
 
 		private:

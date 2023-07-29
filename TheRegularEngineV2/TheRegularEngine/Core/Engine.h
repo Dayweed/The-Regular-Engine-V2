@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Window.h"
-#include "LayerSystem.h"
+#include "SystemManager.h"
 
 namespace TRE
 {
@@ -16,16 +16,20 @@ namespace TRE
 			void Update();
 			virtual void Shutdown();
 
-			void AddSystem(Layer* system);
+			template <typename T>
+			void RegisterSystems()
+			{
+				m_SystemsManager->RegisterSystem<T>();
+			}
 
 		protected:
 			Engine();
 
 		private:
 			std::unique_ptr<Window> m_Window;
-			LayerSystem* m_LayerSystems;
+			std::unique_ptr<SystemManager> m_SystemsManager;
 			static Engine* s_Instance;
 	};
 
-	Engine* CreateApp(); //Implemented by applications projects
+	Engine* CreateApp(); //Implemented by applications projects, used to seperate applications with engine
 }

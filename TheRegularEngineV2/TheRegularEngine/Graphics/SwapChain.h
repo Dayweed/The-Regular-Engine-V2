@@ -1,0 +1,24 @@
+#pragma once
+#include "LogicalDevice.h"
+
+//Forward declaration to prevent include header just for this
+struct GLFWwindow;
+
+namespace TRE
+{
+	class SwapChain
+	{
+		public:
+			SwapChain() = default;
+			void Initialize(VkInstance Instance, const std::shared_ptr<LogicalDevice>& LogicalDevice);
+			void InitializeWindowSurface(GLFWwindow* Handle);
+		
+		private:
+			VkInstance m_Instance = nullptr;
+			std::shared_ptr<LogicalDevice> m_LogicalDevice;
+		
+		private:
+			VkSwapchainKHR m_SwapChain = nullptr;
+			VkSurfaceKHR m_WindowSurface;
+	};
+}

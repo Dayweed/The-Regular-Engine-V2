@@ -4,7 +4,7 @@ namespace TRE
 {
 	EditorLayer::EditorLayer()
 	{
-		std::cout << "Editor Init" << std::endl;
+		std::cout << "Editor Init" << std::endl; //Replace with Logging
 	}
 	
 	EditorLayer::~EditorLayer()
@@ -17,8 +17,13 @@ namespace TRE
 
 	}
 
+	void EditorLayer::RenderImgui()
+	{
+
+	}
+
 	void EditorLayer::Shutdown()
 	{
-		std::cout << "Editor Shutdown" << std::endl;
+		std::cout << "Editor Shutdown" << std::endl; //Replace with Logging
 	}
 }

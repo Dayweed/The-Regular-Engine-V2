@@ -14,6 +14,11 @@ namespace TRE
 
 		m_WindowHandle = glfwCreateWindow(1000, 600, "zhui guang zhe", nullptr, nullptr);
 
+		m_RenderContext = std::make_unique<RendererContext>();
+		m_RenderContext->Initialize();
+
+		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetLogicalDevice());
+		m_SwapChain.InitializeWindowSurface(m_WindowHandle);
 	}
 
 	Window::~Window()

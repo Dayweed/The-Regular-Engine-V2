@@ -15,7 +15,11 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
-		//std::cout << "Physics System Update" << std::endl;
+	}
+
+	void PhysicsSystem::RenderImgui()
+	{
+
 	}
 	
 	void PhysicsSystem::Shutdown()
