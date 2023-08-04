@@ -1,2 +1,3 @@
 C:\Users\jerel\Desktop\GAM300\TheRegularEngineV2\Dependencies\MeshOptimizer\bin\Debug\MeshOptimizer\MeshOptimizer.lib
 C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\Dependencies\MeshOptimizer\bin\Debug\MeshOptimizer\MeshOptimizer.lib
+C:\Users\Isaiah Lim\Documents\GitHub\GAM300\TheRegularEngineV2\Dependencies\MeshOptimizer\bin\Debug\MeshOptimizer\MeshOptimizer.lib
