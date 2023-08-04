@@ -99,6 +99,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\ECS.h" />
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\System.h" />
     <ClInclude Include="Core\SystemManager.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\ECS.cpp" />
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Editor\ImGuizmo.cpp" />

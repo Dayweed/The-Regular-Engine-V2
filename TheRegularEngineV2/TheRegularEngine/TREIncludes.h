@@ -4,6 +4,7 @@
 //-----------------CORE-----------------//
 #include "Core/Engine.h"
 #include "Core/System.h"
+#include "Core/ECS.h"
 
 //-----------------Physics-----------------//
 
