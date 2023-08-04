@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "ECS.h"
 #include "Engine.h"
 #include "Physics/PhysicsSystem.h"
 
@@ -21,10 +22,11 @@ namespace TRE
 
 	void Engine::Update()
 	{
+		_ecs_manager->TESTRUN();
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
-
+			_ecs_manager->UpdateAll();
 			m_SystemsManager->UpdateSystem();
 			m_SystemsManager->RenderImgui();
 		}
