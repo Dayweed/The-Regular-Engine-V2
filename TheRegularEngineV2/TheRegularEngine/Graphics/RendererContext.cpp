@@ -17,6 +17,21 @@ namespace TRE
 																					  void* pUserData)
 	{
 		(void)pUserData;
+
+		std::string Message;
+		if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		{
+			Message += "[Vulkan Debug Warning] ";
+			Message += pCallbackData->pMessage;
+			std::cout << Message << std::endl;
+		}
+		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			Message += "[Vulkan Debug Error] ";
+			Message += pCallbackData->pMessage;
+			std::cout << Message << std::endl;
+		}
+
 		return VK_FALSE;
 	}
 

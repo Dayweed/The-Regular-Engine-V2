@@ -4,3 +4,9 @@ C:\Users\jerel\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scri
 C:\Users\jerel\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Debug\TRE-ScriptCore.pdb
 C:\Users\jerel\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\TRE-ScriptCore.dll
 C:\Users\jerel\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\TRE-ScriptCore.pdb
+C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Debug\TRE-ScriptCore.csproj.AssemblyReference.cache
+C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Debug\TRE-ScriptCore.csproj.CoreCompileInputs.cache
+C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Debug\TRE-ScriptCore.dll
+C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Debug\TRE-ScriptCore.pdb
+C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\TRE-ScriptCore.dll
+C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\TRE-ScriptCore.pdb
