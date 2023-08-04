@@ -60,8 +60,62 @@ namespace TRE
 		FindImageFormatAndColorSpace();
 	}
 
-	void SwapChain::FindImageFormatAndColorSpace()
+	void SwapChain::CreateSwapChain(uint32_t* width, uint32_t* height)
 	{
 
+	}
+
+	void SwapChain::DeleteSwapChain()
+	{
+		if (m_WindowSurface)
+			vkDestroySurfaceKHR(m_Instance, m_WindowSurface, nullptr);
+
+		if (m_SwapChain)
+			vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, nullptr);
+	}
+
+	void SwapChain::FindImageFormatAndColorSpace()
+	{
+		auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
+		uint32_t FormatCount;
+		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
+		{
+			std::cout << "Surface Format bad result at " << __FILE__ << " and line " << __LINE__ << std::endl;
+			assert(FormatCount > 0);
+		}
+
+		std::vector<VkSurfaceFormatKHR> SurfaceFormats(FormatCount);
+		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
+		{
+			std::cout << "Unable to get Surface Format at " << __FILE__ << " and line " << __LINE__ << std::endl;
+		}
+
+		if (FormatCount == 1)
+		{
+			if (SurfaceFormats[0].format == VK_FORMAT_UNDEFINED)
+			{
+				m_SwapChainSettings.m_ColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+				m_SwapChainSettings.m_SurfaceFormat = VK_FORMAT_R8G8B8A8_UNORM;
+			}
+		}
+		else
+		{
+			bool FormatFound = false;
+			for (const auto& Format : SurfaceFormats)
+			{
+				if (Format.format == VK_FORMAT_R8G8B8A8_UNORM)
+				{
+					m_SwapChainSettings.m_ColorSpace = Format.colorSpace;
+					m_SwapChainSettings.m_SurfaceFormat = VK_FORMAT_R8G8B8A8_UNORM;
+					FormatFound = true;
+				}
+			}
+			
+			if (!FormatFound)
+			{
+				m_SwapChainSettings.m_ColorSpace = SurfaceFormats[0].colorSpace;
+				m_SwapChainSettings.m_SurfaceFormat = SurfaceFormats[0].format;
+			}
+		}
 	}
 }

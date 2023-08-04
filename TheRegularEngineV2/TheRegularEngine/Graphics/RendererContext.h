@@ -14,6 +14,9 @@ namespace TRE
 	class RendererContext
 	{
 		public:
+			RendererContext() = default;
+			~RendererContext();
+
 			void Initialize();
 			bool CheckAPIVersion(uint32_t supportedversion);
 			void LoadDebugExtensions(VkInstance instance);
@@ -26,7 +29,6 @@ namespace TRE
 			static VkInstance m_instance;
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 			std::shared_ptr<LogicalDevice> m_LogicalDevice;
-			VkPipelineCache m_PipelineCache = nullptr;
 			VkDebugUtilsMessengerEXT m_DebugUtilsMessenger = VK_NULL_HANDLE;
 	};
 }

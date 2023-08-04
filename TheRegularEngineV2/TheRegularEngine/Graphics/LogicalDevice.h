@@ -8,10 +8,10 @@ namespace TRE
 		public:
 			LogicalDevice(const std::shared_ptr<PhysicalDevice>& physicaldevice, VkPhysicalDeviceFeatures Features);
 			~LogicalDevice();
+			void Destroy();
 
 			VkDevice GetLogicalDevice() const;
 			const std::shared_ptr<PhysicalDevice>& GetPhysicalDevice() const;
-
 
 		private:
 			VkDevice m_LogicalDevice = nullptr;

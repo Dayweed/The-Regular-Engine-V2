@@ -37,6 +37,12 @@ namespace TRE
 
 	}
 
+	void LogicalDevice::Destroy()
+	{
+		vkDeviceWaitIdle(m_LogicalDevice);
+		vkDestroyDevice(m_LogicalDevice, nullptr);
+	}
+
 	VkDevice LogicalDevice::GetLogicalDevice() const
 	{
 		return m_LogicalDevice;

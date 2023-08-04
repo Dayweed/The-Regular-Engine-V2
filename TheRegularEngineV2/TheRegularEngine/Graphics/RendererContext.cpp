@@ -108,7 +108,7 @@ namespace TRE
 		if (VkResult Result = vkCreateInstance(&instanceinfo, nullptr, &m_instance); Result != VK_SUCCESS)
 		{
 			std::cout << "Failed to create vulkan instance " << std::endl;
-			//Add assert
+			assert(Result != VK_SUCCESS);
 		}
 
 		LoadDebugExtensions(m_instance);
@@ -117,7 +117,6 @@ namespace TRE
 		{
 			auto CreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkCreateDebugUtilsMessengerEXT");
 			assert(CreateDebugUtilsMessengerEXT);
-			//Add Assert 
 
 			VkDebugUtilsMessengerCreateInfoEXT DebugMessengerCreateInfo{};
 			DebugMessengerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -142,14 +141,14 @@ namespace TRE
 		Features.pipelineStatisticsQuery = true;
 
 		m_LogicalDevice = std::make_shared<LogicalDevice>(m_PhysicalDevice, Features);
+	}
 
-		VkPipelineCacheCreateInfo PipelineCacheCreateInfo{};
-		PipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-		if (VkResult Result = vkCreatePipelineCache(m_LogicalDevice->GetLogicalDevice(), &PipelineCacheCreateInfo, nullptr, &m_PipelineCache); Result != VK_SUCCESS)
-		{
-			std::cout << "Failed to create PipelineCache" << std::endl;
-			//Add assert
-		}
+	RendererContext::~RendererContext()
+	{
+		auto FP_vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
+		FP_vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
+		vkDestroyInstance(m_instance, nullptr);
+		m_instance = nullptr;
 	}
 
 	bool RendererContext::CheckAPIVersion(uint32_t supportedversion)

@@ -11,7 +11,9 @@ namespace TRE
 		public:
 			SwapChain() = default;
 			void Initialize(VkInstance Instance, const std::shared_ptr<LogicalDevice>& LogicalDevice, GLFWwindow* Handle);
+			void CreateSwapChain(uint32_t* width, uint32_t* height);
 			void FindImageFormatAndColorSpace();
+			void DeleteSwapChain();
 
 		private:
 			VkInstance m_Instance = nullptr;
@@ -19,8 +21,14 @@ namespace TRE
 		
 		private:
 			VkSwapchainKHR m_SwapChain = nullptr;
-			VkSurfaceKHR m_WindowSurface;
+			
+			struct
+			{
+				VkColorSpaceKHR m_ColorSpace;
+				VkFormat m_SurfaceFormat;
+			} m_SwapChainSettings;
 
+			VkSurfaceKHR m_WindowSurface;
 			int m_Width;
 			int m_Height;
 

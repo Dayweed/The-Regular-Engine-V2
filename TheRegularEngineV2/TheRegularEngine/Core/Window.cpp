@@ -18,11 +18,13 @@ namespace TRE
 		m_RenderContext->Initialize();
 
 		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetLogicalDevice(), m_WindowHandle);
+		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height);
 	}
 
 	Window::~Window()
 	{
-		glfwDestroyWindow(m_WindowHandle);
+		m_SwapChain.DeleteSwapChain();
+		m_RenderContext->GetLogicalDevice()->Destroy();
 		glfwTerminate();
 	}
 

@@ -9,8 +9,8 @@ namespace TRE
 	struct WindowConfig
 	{
 		std::string Title = "TRE";
-		int width = 1600;
-		int height = 900;
+		uint32_t width = 1600;
+		uint32_t height = 900;
 		bool Vsync = true;
 	};
 
