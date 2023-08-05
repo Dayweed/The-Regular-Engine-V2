@@ -26,7 +26,6 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
-			_ecs_manager->UpdateAll();
 			m_SystemsManager->UpdateSystem();
 			m_SystemsManager->RenderImgui();
 		}

@@ -60,6 +60,9 @@
     <ClInclude Include="Core\ECS.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\ComponentLists.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Engine.cpp">

@@ -99,6 +99,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\ComponentLists.h" />
     <ClInclude Include="Core\ECS.h" />
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\System.h" />

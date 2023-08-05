@@ -14,24 +14,6 @@ namespace TRE
 		return registry;
 	}
 
-	void ECSManager::UpdateAll()
-	{
-		auto view = registry.view<Position>();
-
-		for (auto obj : view)
-		{
-			auto& pos = view.get<Position>(obj);
-		}
-
-		auto updview = registry.view<TESTUpdate>();
-
-		for (auto obj : updview)
-		{
-			auto& upd = updview.get<TESTUpdate>(obj);
-			upd.Update();
-		}
-	}
-
 	void ECSManager::DestroyAll()
 	{
 		registry.clear();
@@ -39,16 +21,23 @@ namespace TRE
 
 	GO ECSManager::CreateGO()
 	{
-		GO obj{ std::make_unique<GameObject>() };
+		GO obj{ std::make_shared<GameObject>() };
 		obj->entity = registry.create();
+		GOList.emplace_back(obj);
 		return obj;
 	}
 
 	void ECSManager::DestroyGO(GO& object)
 	{
+		// Remove from GOList
+		auto it = std::find_if(GOList.begin(), GOList.end(), [&](GO& go) { return go.get() == object.get(); });
+		if (it != GOList.end())
+		{
+			GOList.erase(it);
+		}
 		// Release all components and entity itself
 		registry.destroy(object->entity);
 		// Free unique ptr from the object
-		object.release();
+		object.reset();
 	}
 }

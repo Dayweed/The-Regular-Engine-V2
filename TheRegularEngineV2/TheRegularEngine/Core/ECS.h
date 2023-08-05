@@ -2,16 +2,13 @@
 #include "pch.h"
 #include "entt.hpp"
 #include "System.h"
+#include <typeindex>
 
 namespace TRE
 {
-	struct TESTUpdate
+	struct RANDOCOMP
 	{
 		int j;
-		void Update()
-		{
-			std::cout << "UPDATE-";
-		}
 	};
 
 	struct Position
@@ -36,7 +33,7 @@ namespace TRE
 		entt::entity entity;
 	};
 
-	typedef std::unique_ptr<GameObject> GO;
+	typedef std::shared_ptr<GameObject> GO;
 
 	// ECS Manager (Entity Manager) THERE CAN ONLY BE ONE! >:o
 	//==================================================
@@ -47,9 +44,6 @@ namespace TRE
 
 		entt::registry& GetRegistry();
 
-		// Runtime Functions
-		void UpdateAll();
-
 		// Shutdown Functions
 		void DestroyAll();
 
@@ -57,16 +51,38 @@ namespace TRE
 		GO CreateGO();
 		void DestroyGO(GO& object);
 
+		template <typename Comp, typename... Others>
+		std::vector<GO> GetGO();
+
 		// TODELETE
 		void TESTRUN()
 		{
+			std::cout << "\nTEST RUNNING ECS\n====================================\n";
+
 			GO test = CreateGO();
 			test->AddComponent<Position>().x = 19;
-			std::cout << test->GetComponent<Position>().x << std::endl;
+			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Position>().x << std::endl;
 			DestroyGO(test);
+			std::cout << "Destroyed earlier GO...\n";
+			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Position>().x << std::endl; // Will call assert in GetComponent!
 
+			std::cout << "Creating GOs with 1 GO with only RANDOCOMP and 2 GO with Position and RANDOCOMP...\n";
 			GO test2 = CreateGO();
-			test2->AddComponent<TESTUpdate>();
+			test2->AddComponent<RANDOCOMP>();
+
+			GO allobj = CreateGO();
+			allobj->AddComponent<Position>();
+			allobj->AddComponent<RANDOCOMP>();
+
+			GO allobj2 = CreateGO();
+			allobj2->AddComponent<Position>();
+			allobj2->AddComponent<RANDOCOMP>();
+
+			std::cout << "Total GO with Position: " << GetGO<Position>().size() << "\n";
+			std::cout << "Total GO with RANDOCOMP: " << GetGO<RANDOCOMP>().size() << "\n";
+			std::cout << "Total GO with Position and RANDOCOMP: " << GetGO<Position, RANDOCOMP>().size() << "\n";
+
+			std::cout << "====================================\n\n";
 		}
 
 	private:
@@ -78,9 +94,33 @@ namespace TRE
 
 		// EnTT stuff
 		entt::registry registry;
+
+		// Component Types
+		std::map<size_t, void*> componentTypes;
+
+		std::vector<GO> GOList;
 	};
 	static ECSManager* _ecs_manager{ &ECSManager::Instance() };
 
+
+	template <typename Comp, typename... Others>
+	std::vector<GO> ECSManager::GetGO()
+	{
+		std::vector<GO> objects{};
+		auto view = registry.view<Comp>();
+
+		// Get all GO owning the entities
+		for (entt::entity obj : view)
+		{
+			auto it = std::find_if(GOList.begin(), GOList.end(), [&](GO& go) { return go->entity == obj; });
+			if (it != GOList.end())
+			{
+				objects.emplace_back(*it);
+			}
+		}
+
+		return objects;
+	}
 
 	template <typename T>
 	T& GameObject::AddComponent()
@@ -91,6 +131,9 @@ namespace TRE
 	template <typename T>
 	T& GameObject::GetComponent()
 	{
+		// Ensure cannot get a component from a freed object and entity
+		assert(&entity != nullptr);
+
 		return _ecs_manager->GetRegistry().get<T>(entity);
 	}
 }
