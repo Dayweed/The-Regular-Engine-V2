@@ -106,10 +106,12 @@
     <ClInclude Include="Core\entt.hpp" />
     <ClInclude Include="Editor\ImGuizmo.h" />
     <ClInclude Include="EntryPoint.h" />
-    <ClInclude Include="Graphics\LogicalDevice.h" />
+    <ClInclude Include="Graphics\Device.h" />
     <ClInclude Include="Graphics\PhysicalDevice.h" />
+    <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\RendererContext.h" />
     <ClInclude Include="Graphics\SwapChain.h" />
+    <ClInclude Include="Graphics\VulkanImgui.h" />
     <ClInclude Include="Physics\PhysicsSystem.h" />
     <ClInclude Include="Scripting\ScriptEngine.h" />
     <ClInclude Include="TREIncludes.h" />
@@ -120,10 +122,12 @@
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Editor\ImGuizmo.cpp" />
     <ClCompile Include="Editor\ImguiBuildBackend.cpp" />
-    <ClCompile Include="Graphics\LogicalDevice.cpp" />
+    <ClCompile Include="Graphics\Device.cpp" />
     <ClCompile Include="Graphics\PhysicalDevice.cpp" />
+    <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\RendererContext.cpp" />
     <ClCompile Include="Graphics\SwapChain.cpp" />
+    <ClCompile Include="Graphics\VulkanImgui.cpp" />
     <ClCompile Include="Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Scripting\ScriptEngine.cpp" />
     <ClCompile Include="pch.cpp">

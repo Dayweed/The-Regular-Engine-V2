@@ -1,20 +1,34 @@
 #include "pch.h"
-#include "RendererContext.h"
+#include "TREIncludes.h"
 #include "GLFW/glfw3.h"
 
 namespace TRE
 {
 	#define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
-	PFN_vkSetDebugUtilsObjectNameEXT FP_DebugUtilsObjectNameEXT;
-	PFN_vkCmdBeginDebugUtilsLabelEXT FP_CmdBeginDebugUtilsLabelEXT;
-	PFN_vkCmdEndDebugUtilsLabelEXT FP_CmdEndDebugUtilsUtilsEXT;
-	PFN_vkCmdInsertDebugUtilsLabelEXT FP_CmdInsertDebugUtilsLabelEXT;
 	VkInstance RendererContext::m_instance = nullptr;
 
-	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
-																					  const VkDebugUtilsMessageTypeFlagsEXT messageType, 
-																					  const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, 
-																					  void* pUserData)
+	VkInstance RendererContext::GetVKInstance()
+	{
+		return m_instance;
+	}
+
+	std::shared_ptr<RendererContext> RendererContext::Get()
+	{
+		return Engine::GetInstance().GetWindow()->GetRenderContext();
+	}
+
+	std::shared_ptr<Device> RendererContext::GetDevice()
+	{
+		return Get()->GetDeviceInternally();
+	}
+
+	std::shared_ptr<Device> RendererContext::GetDeviceInternally()
+	{
+		return m_Device;
+	}
+
+	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+	const VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 	{
 		(void)pUserData;
 
@@ -35,10 +49,23 @@ namespace TRE
 		return VK_FALSE;
 	}
 
+	RendererContext::RendererContext()
+	{
+
+	}
+
+	RendererContext::~RendererContext()
+	{
+		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
+		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
+		m_Device->Destroy();
+		vkDestroyInstance(m_instance, nullptr);
+		m_instance = nullptr;
+	}
+
 	void RendererContext::Initialize()
 	{
-		std::cout << "Initializing Renderer" << std::endl;
-
+		std::cout << "Initializing Renderer Context" << std::endl;
 		if (int Supported = glfwVulkanSupported(); !Supported)
 		{
 			std::cout << "GLFW doesn't support vulkan" << std::endl;
@@ -55,12 +82,13 @@ namespace TRE
 		Appinfo.apiVersion = VK_API_VERSION_1_3;
 		Appinfo.pEngineName = "The Reglar Engine";
 		Appinfo.pApplicationName = "The Reglar Engine";
-		Appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		Appinfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		
-		std::vector<const char*> Extentions = { VK_KHR_SURFACE_EXTENSION_NAME,
-												VK_KHR_WIN32_EXTENSION_NAME, //Can be removed if not needed later
-												VK_EXT_DEBUG_UTILS_EXTENSION_NAME }; //Can be used in release if needed with minimal performance hit
+
+		std::vector<const char*> Extentions =
+		{ 
+			VK_KHR_SURFACE_EXTENSION_NAME,
+			VK_KHR_WIN32_EXTENSION_NAME, //Can be removed if not needed later
+			VK_EXT_DEBUG_UTILS_EXTENSION_NAME //Can be used in release if needed with minimal performance hit
+		};
 
 		if (EnableValidationLayer)
 		{
@@ -68,11 +96,11 @@ namespace TRE
 			Extentions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 		}
 
-		VkInstanceCreateInfo instanceinfo{};
-		instanceinfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-		instanceinfo.enabledExtensionCount = Extentions.size();
-		instanceinfo.ppEnabledExtensionNames = Extentions.data();
-		instanceinfo.pApplicationInfo = &Appinfo;
+		VkInstanceCreateInfo InstanceCreateInfo{};
+		InstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+		InstanceCreateInfo.pApplicationInfo = &Appinfo;
+		InstanceCreateInfo.enabledExtensionCount = Extentions.size();
+		InstanceCreateInfo.ppEnabledExtensionNames = Extentions.data();
 
 		if (EnableValidationLayer)
 		{
@@ -81,7 +109,7 @@ namespace TRE
 			vkEnumerateInstanceLayerProperties(&Layercount, nullptr);
 			std::vector<VkLayerProperties> LayerProp(Layercount);
 			vkEnumerateInstanceLayerProperties(&Layercount, LayerProp.data());
-			
+
 			std::cout << "Vulkan instance layers:" << std::endl;
 			bool ContainLayer = false;
 			for (const VkLayerProperties& layer : LayerProp)
@@ -96,8 +124,8 @@ namespace TRE
 
 			if (ContainLayer)
 			{
-				instanceinfo.enabledLayerCount = 1;
-				instanceinfo.ppEnabledLayerNames = &ValidationLayer;
+				InstanceCreateInfo.enabledLayerCount = 1;
+				InstanceCreateInfo.ppEnabledLayerNames = &ValidationLayer;
 			}
 			else
 			{
@@ -105,13 +133,11 @@ namespace TRE
 			}
 		}
 
-		if (VkResult Result = vkCreateInstance(&instanceinfo, nullptr, &m_instance); Result != VK_SUCCESS)
+		if (VkResult Result = vkCreateInstance(&InstanceCreateInfo, nullptr, &m_instance); Result != VK_SUCCESS)
 		{
 			std::cout << "Failed to create vulkan instance " << std::endl;
 			assert(Result != VK_SUCCESS);
 		}
-
-		LoadDebugExtensions(m_instance);
 
 		if (EnableValidationLayer)
 		{
@@ -127,29 +153,23 @@ namespace TRE
 			if (VkResult Result = CreateDebugUtilsMessengerEXT(m_instance, &DebugMessengerCreateInfo, nullptr, &m_DebugUtilsMessenger); Result != VK_SUCCESS)
 			{
 				std::cout << "Failed to create debug utils messenger" << std::endl;
-				//add assert
+				assert(Result == VK_SUCCESS);
 			}
 		}
 
 		m_PhysicalDevice = std::make_shared<PhysicalDevice>();
 
-		VkPhysicalDeviceFeatures Features{};
-		Features.samplerAnisotropy = true;
-		Features.wideLines = true;
-		Features.fillModeNonSolid = true;
-		Features.independentBlend = true;
-		Features.pipelineStatisticsQuery = true;
+		VkPhysicalDeviceFeatures PhysicalDeviceFeatures{};
+		PhysicalDeviceFeatures.samplerAnisotropy = true;
+		PhysicalDeviceFeatures.wideLines = true;
+		PhysicalDeviceFeatures.fillModeNonSolid = true;
+		PhysicalDeviceFeatures.independentBlend = true;
+		PhysicalDeviceFeatures.pipelineStatisticsQuery = true;
 
-		m_LogicalDevice = std::make_shared<LogicalDevice>(m_PhysicalDevice, Features);
+		m_Device = std::make_shared<Device>(m_PhysicalDevice, PhysicalDeviceFeatures);
 	}
 
-	RendererContext::~RendererContext()
-	{
-		auto FP_vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
-		FP_vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
-		vkDestroyInstance(m_instance, nullptr);
-		m_instance = nullptr;
-	}
+
 
 	bool RendererContext::CheckAPIVersion(uint32_t supportedversion)
 	{
@@ -165,39 +185,5 @@ namespace TRE
 		}
 
 		return true;
-	}
-
-	void RendererContext::LoadDebugExtensions(VkInstance instance)
-	{
-		FP_DebugUtilsObjectNameEXT = (PFN_vkSetDebugUtilsObjectNameEXT)(vkGetInstanceProcAddr(instance, "vkSetDebugUtilsObjectNameEXT"));
-		if (FP_DebugUtilsObjectNameEXT == nullptr)
-			FP_DebugUtilsObjectNameEXT = [](VkDevice device, const VkDebugUtilsObjectNameInfoEXT* pNameInfo) { return VK_SUCCESS; };
-
-		FP_CmdBeginDebugUtilsLabelEXT = (PFN_vkCmdBeginDebugUtilsLabelEXT)(vkGetInstanceProcAddr(instance, "vkCmdBeginDebugUtilsLabelEXT"));
-		if (FP_CmdBeginDebugUtilsLabelEXT == nullptr)
-			FP_CmdBeginDebugUtilsLabelEXT = [](VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT* pLabelInfo) {};
-
-		FP_CmdEndDebugUtilsUtilsEXT = (PFN_vkCmdEndDebugUtilsLabelEXT)(vkGetInstanceProcAddr(instance, "vkCmdEndDebugUtilsLabelEXT"));
-		if (FP_CmdEndDebugUtilsUtilsEXT == nullptr)
-			FP_CmdEndDebugUtilsUtilsEXT = [](VkCommandBuffer commandBuffer) {};
-
-		FP_CmdInsertDebugUtilsLabelEXT = (PFN_vkCmdInsertDebugUtilsLabelEXT)(vkGetInstanceProcAddr(instance, "vkCmdInsertDebugUtilsLabelEXT"));
-		if (FP_CmdInsertDebugUtilsLabelEXT == nullptr)
-			FP_CmdInsertDebugUtilsLabelEXT = [](VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT* pLabelInfo) {};
-	}
-
-	VkInstance RendererContext::GetVKInstance()
-	{
-		return m_instance;
-	}
-
-	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDevice()
-	{
-		return m_PhysicalDevice;
-	}
-
-	std::shared_ptr<LogicalDevice> RendererContext::GetLogicalDevice()
-	{
-		return m_LogicalDevice;
 	}
 }

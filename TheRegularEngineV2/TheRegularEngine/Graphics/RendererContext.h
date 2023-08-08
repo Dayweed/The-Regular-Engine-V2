@@ -1,7 +1,7 @@
 #pragma once
 #include "vulkan/vulkan.h"
-#include "LogicalDevice.h"
 #include "PhysicalDevice.h"
+#include "Device.h"
 
 namespace TRE
 {
@@ -14,21 +14,21 @@ namespace TRE
 	class RendererContext
 	{
 		public:
-			RendererContext() = default;
+			RendererContext();
 			~RendererContext();
 
 			void Initialize();
 			bool CheckAPIVersion(uint32_t supportedversion);
-			void LoadDebugExtensions(VkInstance instance);
 
 			static VkInstance GetVKInstance();
-			std::shared_ptr<PhysicalDevice> GetPhysicalDevice();
-			std::shared_ptr<LogicalDevice> GetLogicalDevice();
+			static std::shared_ptr<RendererContext> Get();
+			static std::shared_ptr<Device> GetDevice();
+			std::shared_ptr<Device> GetDeviceInternally();
 
 		private:
 			static VkInstance m_instance;
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
-			std::shared_ptr<LogicalDevice> m_LogicalDevice;
-			VkDebugUtilsMessengerEXT m_DebugUtilsMessenger = VK_NULL_HANDLE;
+			std::shared_ptr<Device> m_Device;
+			VkDebugUtilsMessengerEXT m_DebugUtilsMessenger;
 	};
 }

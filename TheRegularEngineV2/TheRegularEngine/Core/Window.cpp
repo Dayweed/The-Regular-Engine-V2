@@ -14,18 +14,22 @@ namespace TRE
 
 		m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
 
-		m_RenderContext = std::make_unique<RendererContext>();
+		m_RenderContext = std::make_shared<RendererContext>();
 		m_RenderContext->Initialize();
 
-		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetLogicalDevice(), m_WindowHandle);
-		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height);
+		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetDeviceInternally(), m_WindowHandle);
+		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
 	}
 
 	Window::~Window()
 	{
-		m_SwapChain.DeleteSwapChain();
-		m_RenderContext->GetLogicalDevice()->Destroy();
+		m_SwapChain.DestroySwapChain();
 		glfwTerminate();
+	}
+
+	void Window::SwapBuffers()
+	{
+		m_SwapChain.Present();
 	}
 
 	void Window::PollEvents()
@@ -46,5 +50,15 @@ namespace TRE
 	const WindowConfig& Window::GetWindowConfig() const
 	{
 		return m_Config;
+	}
+
+	std::shared_ptr<RendererContext> Window::GetRenderContext()
+	{
+		return m_RenderContext;
+	}
+
+	SwapChain Window::GetSwapChain()
+	{
+		return m_SwapChain;
 	}
 }

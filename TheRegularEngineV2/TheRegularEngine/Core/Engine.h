@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Window.h"
 #include "SystemManager.h"
+#include "Graphics/VulkanImgui.h"
 
 namespace TRE
 {
@@ -22,12 +23,16 @@ namespace TRE
 				m_SystemsManager->RegisterSystem<T>();
 			}
 
+			std::shared_ptr<Window> GetWindow();
+			static Engine& GetInstance();
+
 		protected:
 			Engine();
 
 		private:
-			std::unique_ptr<Window> m_Window;
+			std::shared_ptr<Window> m_Window;
 			std::unique_ptr<SystemManager> m_SystemsManager;
+			std::shared_ptr<VulkanEditor> m_VulkanEditor;
 			static Engine* s_Instance;
 	};
 
