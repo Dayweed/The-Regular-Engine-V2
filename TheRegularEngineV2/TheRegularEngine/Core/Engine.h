@@ -6,6 +6,12 @@
 
 namespace TRE
 {
+	struct EngineInfo
+	{
+		WindowConfig WindowConfigurations;
+		bool EnableEditor = false;
+	};
+
 	class Engine
 	{
 		public:
@@ -27,12 +33,15 @@ namespace TRE
 			static Engine& GetInstance();
 
 		protected:
-			Engine();
+			Engine(const EngineInfo& EngineInfo = EngineInfo());
 
 		private:
 			std::shared_ptr<Window> m_Window;
 			std::unique_ptr<SystemManager> m_SystemsManager;
 			std::shared_ptr<VulkanEditor> m_VulkanEditor;
+
+			EngineInfo m_EngineInfo;
+
 			static Engine* s_Instance;
 	};
 

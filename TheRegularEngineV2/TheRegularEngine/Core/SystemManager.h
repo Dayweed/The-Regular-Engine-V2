@@ -56,6 +56,8 @@ namespace TRE
 				}
 
 				//Can add assert here to tell user they getting a non registered system
+				assert(false);
+
 				return nullptr;
 			}
 

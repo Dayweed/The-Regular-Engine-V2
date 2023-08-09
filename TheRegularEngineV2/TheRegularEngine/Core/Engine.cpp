@@ -16,12 +16,16 @@ namespace TRE
 		return *s_Instance;
 	}
 
-	Engine::Engine()
+	Engine::Engine(const EngineInfo& EngineInfo)
 	{
 		s_Instance = this;
-		m_Window = std::make_shared<Window>(WindowConfig());
+		m_EngineInfo = EngineInfo;
+		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 		m_SystemsManager = std::make_unique<SystemManager>();
-		m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
+		
+		if (m_EngineInfo.EnableEditor)
+			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
+
 		RegisterSystems<PhysicsSystem>();
 	}
 
@@ -34,12 +38,20 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
-
-			m_SystemsManager->UpdateSystem();
-			m_SystemsManager->RenderImgui();
-
+			
 			m_Window->GetSwapChain().BeginFrame();
-			m_VulkanEditor->Update();
+			
+			if (m_EngineInfo.EnableEditor)
+			{
+				m_VulkanEditor->BeginFrame();
+				m_SystemsManager->UpdateSystem();
+				m_SystemsManager->RenderImgui();
+				m_VulkanEditor->EndFrame();
+			}
+			else
+			{
+				m_SystemsManager->UpdateSystem();
+			}
 
 			m_Window->SwapBuffers();
 		}

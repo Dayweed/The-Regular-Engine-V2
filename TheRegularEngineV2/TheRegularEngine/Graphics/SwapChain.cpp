@@ -252,6 +252,8 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
+		m_SwapChainImages.resize(m_ImageCount);
+
 		for (int x = 0; x < m_ImageCount; x++)
 		{
 			VkImageViewCreateInfo ImageViewCreateInfo{};
@@ -352,6 +354,8 @@ namespace TRE
 		ColorAttachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
 		ColorAttachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; //Clear to black before rendering
 		ColorAttachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE; //Store so can retrieve and present on surface
+		ColorAttachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		ColorAttachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		ColorAttachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; //Doesn't matter if not preserve since we clear it before rendering
 		ColorAttachmentDesc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR; //Using this to present hence present
 
@@ -514,6 +518,8 @@ namespace TRE
 		}
 
 		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % 3; //3 frames in flight
+		m_CurrentImageIndex = (m_CurrentImageIndex + 1) % 3; //3 frames in flight
+
 		if (auto Result = vkWaitForFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX); Result != VK_SUCCESS)
 		{
 			std::cout << "Failed to wait for fence" << std::endl;
@@ -524,6 +530,7 @@ namespace TRE
 	uint32_t SwapChain::AccuireNextImage()
 	{
 		uint32_t Index;
+
 		if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, UINT64_MAX, m_Semaphores.PresentComplete, nullptr, &Index); Result != VK_SUCCESS)
 		{
 			std::cout << "Unable to get next image" << std::endl;

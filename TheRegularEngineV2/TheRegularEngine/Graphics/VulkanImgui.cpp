@@ -34,8 +34,7 @@ namespace TRE
 		DescriptorPoolCreateInfo.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
 		DescriptorPoolCreateInfo.poolSizeCount = std::size(pool_sizes);
 		DescriptorPoolCreateInfo.pPoolSizes = pool_sizes;
-
-		VkDescriptorPool m_DescriptorPool;
+		
 		if (auto Result = vkCreateDescriptorPool(LogicalDevice->GetLogicalDevice(), &DescriptorPoolCreateInfo, nullptr, &m_DescriptorPool); Result != VK_SUCCESS)
 		{
 			std::cout << "Unable to create descriptor pool for imgui" << std::endl;
@@ -71,14 +70,15 @@ namespace TRE
 		}
 	}
 
-	void VulkanEditor::Update()
+	void VulkanEditor::BeginFrame()
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+	}
 
-		ImGui::ShowDemoWindow();
-
+	void VulkanEditor::EndFrame()
+	{
 		ImGui::Render();
 
 		SwapChain swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
@@ -111,7 +111,7 @@ namespace TRE
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = width;
 		renderPassBeginInfo.renderArea.extent.height = height;
-		renderPassBeginInfo.clearValueCount = 2; // Color + depth
+		renderPassBeginInfo.clearValueCount = 2;
 		renderPassBeginInfo.pClearValues = clearValues;
 		renderPassBeginInfo.framebuffer = swapChain.GetCurrentFrameBuffer();
 
@@ -161,7 +161,7 @@ namespace TRE
 		vkCmdEndRenderPass(drawCommandBuffer);
 		vkEndCommandBuffer(drawCommandBuffer);
 
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			ImGui::UpdatePlatformWindows();
@@ -171,6 +171,10 @@ namespace TRE
 
 	VulkanEditor::~VulkanEditor()
 	{
-
+		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
+		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
+		ImGui_ImplVulkan_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 }
