@@ -23,7 +23,7 @@ namespace TRE
 	void Engine::RegisterECS()
 	{
 		_component_manager->RegisterComponent<Properties>("Properties");
-		_component_manager->RegisterComponent<Position>("Position");
+		_component_manager->RegisterComponent<Transform>("Transform");
 	}
 
 	void Engine::Update()

@@ -3,12 +3,6 @@
 
 namespace TRE
 {
-	// Creating a based class Component to associate what classes/structs are a component
-	// Otherwise as of now it would be empty
-	class Component
-	{
-	};
-
 	class ComponentManager
 	{
 		friend class ECSManager;

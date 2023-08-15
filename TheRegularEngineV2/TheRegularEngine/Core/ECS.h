@@ -7,20 +7,28 @@
 
 namespace TRE
 {
-	class Properties : Component
+	class Properties
 	{
 	public:
 		std::string m_Name;
 		bool m_Active;
 	};
 
-	class Position : Component
+	class Transform
 	{
 	public:
-		float x;
-		float y;
-		float z;
+		float m_PosX;
+		float m_PosY;
+		float m_PosZ;
+
+		float m_ScaleX;
+		float m_ScaleY;
+		float m_ScaleZ;
 	};
+
+
+	class GameObject;
+	typedef std::shared_ptr<GameObject> GO;
 
 	class GameObject : public std::enable_shared_from_this<GameObject>
 	{
@@ -37,10 +45,10 @@ namespace TRE
 	private:
 		friend class ECSManager;
 
-		entt::entity entity;
-	};
+		GO m_Parent;
 
-	typedef std::shared_ptr<GameObject> GO;
+		entt::entity m_Entity;
+	};
 
 	// ECS Manager (Entity Manager) THERE CAN ONLY BE ONE! >:o
 	//==================================================
@@ -71,33 +79,33 @@ namespace TRE
 			std::cout << "\nTEST RUNNING ECS\n====================================\n";
 
 			GO test = CreateGO();
-			test->AddComponent<Position>().x = 19;
-			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Position>().x << std::endl;
-			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<RANDOCOMP>().j << std::endl; // Will call assert in GetComponent!
+			test->AddComponent<Transform>().m_PosX = 19;
+			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_PosX << std::endl;
+			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Properties>().j << std::endl; // Will call assert in GetComponent!
 			DestroyGO(test);
 			std::cout << "Destroyed earlier GO...\n";
-			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Position>().x << std::endl; // Will call assert in GetComponent!
+			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Transform>().x << std::endl; // Will call assert in GetComponent!
 
-			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Position and Properties...\n";
+			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Transform and Properties...\n";
 			GO test2 = CreateGO();
 
 			GO allobj = CreateGO();
-			allobj->AddComponent<Position>();
+			allobj->AddComponent<Transform>();
 
 			GO allobj2 = CreateGO();
-			allobj2->AddComponent<Position>();
+			allobj2->AddComponent<Transform>();
 
-			std::cout << "Total GO with Position: " << GetGO<Position>().size() << "\n";
+			std::cout << "Total GO with Transform: " << GetGO<Transform>().size() << "\n";
 			std::cout << "Total GO with RANDOCOMP: " << GetGO<Properties>().size() << "\n";
-			std::cout << "Total GO with Position and RANDOCOMP: " << GetGO<Position, Properties>().size() << "\n";
+			std::cout << "Total GO with Transform and RANDOCOMP: " << GetGO<Transform, Properties>().size() << "\n";
 
 			std::cout << "Testing cloning GO...\n";
 			std::cout << "- Setting Original GO value to 123...\n";
 			GO oriobj = CreateGO();
-			oriobj->AddComponent<Position>().x = 123;
+			oriobj->AddComponent<Transform>().m_PosX = 123;
 			std::cout << "- Cloning Original GO\n";
 			GO cloneobj = CloneGO(oriobj);
-			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Position>().x << "\n";
+			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_PosX << "\n";
 
 			std::cout << "\nIterating All Available Component in ComponentManager\n";
 			for (auto comp : _component_manager->m_Components)
@@ -142,7 +150,7 @@ namespace TRE
 		// Get all GO owning the entities
 		for (entt::entity obj : view)
 		{
-			auto it = std::find_if(GOList.begin(), GOList.end(), [&](GO& go) { return go->entity == obj; });
+			auto it = std::find_if(GOList.begin(), GOList.end(), [&](GO& go) { return go->m_Entity == obj; });
 			if (it != GOList.end())
 			{
 				objects.emplace_back(*it);
@@ -162,7 +170,7 @@ namespace TRE
 	bool GameObject::HasComponent()
 	{
 		assert(_component_manager->HasComponent<T>());
-		return _ecs_manager->GOHasComponent<T>(entity);
+		return _ecs_manager->GOHasComponent<T>(m_Entity);
 	}
 
 	template <typename T>
@@ -174,16 +182,16 @@ namespace TRE
 		{
 			return GetComponent<T>();
 		}
-		return _ecs_manager->GetRegistry().emplace<T>(entity);
+		return _ecs_manager->GetRegistry().emplace<T>(m_Entity);
 	}
 
 	template <typename T>
 	T& GameObject::GetComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
-		assert(&entity != nullptr);
+		assert(&m_Entity != nullptr);
 		assert(_component_manager->HasComponent<T>());
 
-		return _ecs_manager->GetRegistry().get<T>(entity);
+		return _ecs_manager->GetRegistry().get<T>(m_Entity);
 	}
 }
