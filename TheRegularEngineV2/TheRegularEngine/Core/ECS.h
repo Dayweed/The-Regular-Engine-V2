@@ -50,6 +50,7 @@ namespace TRE
 		// Entity Controller
 		GO CreateGO();
 		void DestroyGO(GO& object);
+		GO CloneGO(GO& object);
 
 		template <typename Comp, typename... Others>
 		std::vector<GO> GetGO();
@@ -81,6 +82,13 @@ namespace TRE
 			std::cout << "Total GO with Position: " << GetGO<Position>().size() << "\n";
 			std::cout << "Total GO with RANDOCOMP: " << GetGO<RANDOCOMP>().size() << "\n";
 			std::cout << "Total GO with Position and RANDOCOMP: " << GetGO<Position, RANDOCOMP>().size() << "\n";
+
+			std::cout << "Testing cloning GO...\n";
+			std::cout << "- Setting Original GO value to 123...\n";
+			test2->GetComponent<RANDOCOMP>().j = 123;
+			std::cout << "- Cloning Original GO\n";
+			GO cloneobj = CloneGO(test2);
+			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<RANDOCOMP>().j << "\n";
 
 			std::cout << "====================================\n\n";
 		}
