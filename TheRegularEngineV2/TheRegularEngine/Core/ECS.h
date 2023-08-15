@@ -43,6 +43,9 @@ namespace TRE
 		template <typename T>
 		T& GetComponent();
 
+		template <typename T>
+		void RemoveComponent();
+
 		void SetParent(GO parent);
 		GO GetParent();
 		void RemoveParent();
@@ -92,11 +95,13 @@ namespace TRE
 			GO test = CreateGO();
 			test->AddComponent<Transform>().m_PosX = 19;
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_PosX << std::endl;
-			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Properties>().j << std::endl; // Will call assert in GetComponent!
+			std::cout << "Removing Editted Component...\n";
+			test->RemoveComponent<Transform>();
+			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_PosX << std::endl; // Will call assert in GetComponent!
 			std::cout << "Default Parent: " << test->GetParent() << "\n";
 			DestroyGO(test);
 			std::cout << "Destroyed earlier GO...\n";
-			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Transform>().x << std::endl; // Will call assert in GetComponent!
+			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Transform>().m_PosX << std::endl; // Will call assert in GetComponent!
 
 			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Transform and Properties...\n";
 			GO test2 = CreateGO("test2");
@@ -253,5 +258,16 @@ namespace TRE
 		assert(_component_manager->HasComponent<T>());
 
 		return _ecs_manager->GetRegistry().get<T>(m_Entity);
+	}
+
+	template <typename T>
+	void GameObject::RemoveComponent()
+	{
+		// Ensure cannot get a component from a freed object and entity
+		assert(this != nullptr);
+		assert(&m_Entity != nullptr);
+		assert(_component_manager->HasComponent<T>());
+
+		_ecs_manager->GetRegistry().remove<T>(m_Entity);
 	}
 }
