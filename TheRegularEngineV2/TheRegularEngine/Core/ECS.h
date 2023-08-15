@@ -11,7 +11,7 @@ namespace TRE
 	{
 	public:
 		std::string m_Name;
-		bool active;
+		bool m_Active;
 	};
 
 	class Position : Component
@@ -104,6 +104,13 @@ namespace TRE
 			{
 				std::cout << "- " << comp.second << "\n";
 			}
+
+			std::cout << "\nTesting iterating through All GO with Properties\n";
+			for (auto go : GetGO<Properties>())
+			{
+				go->GetComponent<Properties>().m_Active = true;
+			}
+			std::cout << "- Testing Complete\n";
 
 			std::cout << "====================================\n\n";
 		}
