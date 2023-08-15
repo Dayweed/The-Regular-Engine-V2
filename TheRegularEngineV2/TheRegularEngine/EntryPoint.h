@@ -14,6 +14,7 @@ int main()
 	#endif
 
 	TRE::Engine* App = TRE::CreateApp();
+	App->RegisterECS();
 	App->Update();
 	App->Shutdown();
 	delete App;

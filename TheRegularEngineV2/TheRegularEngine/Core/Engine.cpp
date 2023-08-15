@@ -20,6 +20,12 @@ namespace TRE
 		
 	}
 
+	void Engine::RegisterECS()
+	{
+		_component_manager->RegisterComponent<Properties>("Properties");
+		_component_manager->RegisterComponent<Position>("Position");
+	}
+
 	void Engine::Update()
 	{
 		_ecs_manager->TESTRUN();

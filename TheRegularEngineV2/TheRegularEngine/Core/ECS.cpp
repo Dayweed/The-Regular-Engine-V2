@@ -24,6 +24,7 @@ namespace TRE
 		GO obj{ std::make_shared<GameObject>() };
 		obj->entity = registry.create();
 		GOList.emplace_back(obj);
+		obj->AddComponent<Properties>();
 		return obj;
 	}
 
@@ -49,7 +50,7 @@ namespace TRE
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{
-			std::cout << "A Component Type\n";
+			std::cout << "A Component Type " << curr.first << "\n";
 			if (auto& storage = curr.second; storage.contains(object->entity))
 			{
 				std::cout << "	Storage of entities with mentioned component\n";

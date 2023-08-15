@@ -13,6 +13,7 @@ namespace TRE
 			Engine(Engine&) = delete;
 			void operator=(const Engine&) = delete;
 
+			void RegisterECS();
 			void Update();
 			virtual void Shutdown();
 

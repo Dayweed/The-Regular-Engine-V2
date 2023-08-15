@@ -2,25 +2,32 @@
 #include "pch.h"
 #include "entt.hpp"
 #include "System.h"
+#include "ComponentManager.h"
 #include <typeindex>
 
 namespace TRE
 {
-	struct RANDOCOMP
+	class Properties : Component
 	{
-		int j;
+	public:
+		std::string m_Name;
+		bool active;
 	};
 
-	struct Position
+	class Position : Component
 	{
+	public:
 		float x;
 		float y;
 		float z;
 	};
 
-	class GameObject
+	class GameObject : public std::enable_shared_from_this<GameObject>
 	{
 	public:
+		template <typename T>
+		bool HasComponent();
+
 		template <typename T>
 		T& AddComponent();
 
@@ -52,6 +59,9 @@ namespace TRE
 		void DestroyGO(GO& object);
 		GO CloneGO(GO& object);
 
+		template <typename T>
+		bool GOHasComponent(entt::entity entity);
+
 		template <typename Comp, typename... Others>
 		std::vector<GO> GetGO();
 
@@ -63,32 +73,37 @@ namespace TRE
 			GO test = CreateGO();
 			test->AddComponent<Position>().x = 19;
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Position>().x << std::endl;
+			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<RANDOCOMP>().j << std::endl; // Will call assert in GetComponent!
 			DestroyGO(test);
 			std::cout << "Destroyed earlier GO...\n";
 			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Position>().x << std::endl; // Will call assert in GetComponent!
 
-			std::cout << "Creating GOs with 1 GO with only RANDOCOMP and 2 GO with Position and RANDOCOMP...\n";
+			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Position and Properties...\n";
 			GO test2 = CreateGO();
-			test2->AddComponent<RANDOCOMP>();
 
 			GO allobj = CreateGO();
 			allobj->AddComponent<Position>();
-			allobj->AddComponent<RANDOCOMP>();
 
 			GO allobj2 = CreateGO();
 			allobj2->AddComponent<Position>();
-			allobj2->AddComponent<RANDOCOMP>();
 
 			std::cout << "Total GO with Position: " << GetGO<Position>().size() << "\n";
-			std::cout << "Total GO with RANDOCOMP: " << GetGO<RANDOCOMP>().size() << "\n";
-			std::cout << "Total GO with Position and RANDOCOMP: " << GetGO<Position, RANDOCOMP>().size() << "\n";
+			std::cout << "Total GO with RANDOCOMP: " << GetGO<Properties>().size() << "\n";
+			std::cout << "Total GO with Position and RANDOCOMP: " << GetGO<Position, Properties>().size() << "\n";
 
 			std::cout << "Testing cloning GO...\n";
 			std::cout << "- Setting Original GO value to 123...\n";
-			test2->GetComponent<RANDOCOMP>().j = 123;
+			GO oriobj = CreateGO();
+			oriobj->AddComponent<Position>().x = 123;
 			std::cout << "- Cloning Original GO\n";
-			GO cloneobj = CloneGO(test2);
-			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<RANDOCOMP>().j << "\n";
+			GO cloneobj = CloneGO(oriobj);
+			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Position>().x << "\n";
+
+			std::cout << "\nIterating All Available Component in ComponentManager\n";
+			for (auto comp : _component_manager->m_Components)
+			{
+				std::cout << "- " << comp.second << "\n";
+			}
 
 			std::cout << "====================================\n\n";
 		}
@@ -131,8 +146,27 @@ namespace TRE
 	}
 
 	template <typename T>
+	bool ECSManager::GOHasComponent(entt::entity entity)
+	{
+		return registry.any_of<T>(entity);
+	}
+
+	template <typename T>
+	bool GameObject::HasComponent()
+	{
+		assert(_component_manager->HasComponent<T>());
+		return _ecs_manager->GOHasComponent<T>(entity);
+	}
+
+	template <typename T>
 	T& GameObject::AddComponent()
 	{
+		assert(_component_manager->HasComponent<T>());
+
+		if (HasComponent<T>())
+		{
+			return GetComponent<T>();
+		}
 		return _ecs_manager->GetRegistry().emplace<T>(entity);
 	}
 
@@ -141,6 +175,7 @@ namespace TRE
 	{
 		// Ensure cannot get a component from a freed object and entity
 		assert(&entity != nullptr);
+		assert(_component_manager->HasComponent<T>());
 
 		return _ecs_manager->GetRegistry().get<T>(entity);
 	}
