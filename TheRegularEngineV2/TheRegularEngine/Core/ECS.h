@@ -26,7 +26,6 @@ namespace TRE
 		float m_ScaleZ;
 	};
 
-
 	class GameObject;
 	typedef std::shared_ptr<GameObject> GO;
 
@@ -41,11 +40,21 @@ namespace TRE
 
 		template <typename T>
 		T& GetComponent();
+
+		void SetParent(GO parent);
+		GO GetParent();
+		void RemoveParent();
+
+		void AddChild(GO child);
+		std::vector<GO> GetChildren();
+		void AbandonChild(GO child);
+		void AbandonChildren();
 		
 	private:
 		friend class ECSManager;
 
 		GO m_Parent;
+		std::vector<GO> m_Children;
 
 		entt::entity m_Entity;
 	};
@@ -63,12 +72,12 @@ namespace TRE
 		void DestroyAll();
 
 		// Entity Controller
-		GO CreateGO();
+		GO CreateGO(std::string name = "GameObject");
 		void DestroyGO(GO& object);
-		GO CloneGO(GO& object);
+		GO CloneGO(GO& object, std::string name = "Cloned_GameObject");
 
 		template <typename T>
-		bool GOHasComponent(entt::entity entity);
+		bool GOHasComponent(GO object);
 
 		template <typename Comp, typename... Others>
 		std::vector<GO> GetGO();
@@ -82,17 +91,18 @@ namespace TRE
 			test->AddComponent<Transform>().m_PosX = 19;
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_PosX << std::endl;
 			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Properties>().j << std::endl; // Will call assert in GetComponent!
+			std::cout << "Default Parent: " << test->GetParent() << "\n";
 			DestroyGO(test);
 			std::cout << "Destroyed earlier GO...\n";
 			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Transform>().x << std::endl; // Will call assert in GetComponent!
 
 			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Transform and Properties...\n";
-			GO test2 = CreateGO();
+			GO test2 = CreateGO("test2");
 
-			GO allobj = CreateGO();
+			GO allobj = CreateGO("allobj");
 			allobj->AddComponent<Transform>();
 
-			GO allobj2 = CreateGO();
+			GO allobj2 = CreateGO("allobj2");
 			allobj2->AddComponent<Transform>();
 
 			std::cout << "Total GO with Transform: " << GetGO<Transform>().size() << "\n";
@@ -101,10 +111,13 @@ namespace TRE
 
 			std::cout << "Testing cloning GO...\n";
 			std::cout << "- Setting Original GO value to 123...\n";
-			GO oriobj = CreateGO();
+			GO oriobj = CreateGO("oriobj");
 			oriobj->AddComponent<Transform>().m_PosX = 123;
 			std::cout << "- Cloning Original GO\n";
 			GO cloneobj = CloneGO(oriobj);
+			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_PosX << "\n";
+			std::cout << "- Setting Original GO value to 0...\n";
+			oriobj->GetComponent<Transform>().m_PosX = 0;
 			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_PosX << "\n";
 
 			std::cout << "\nIterating All Available Component in ComponentManager\n";
@@ -118,6 +131,50 @@ namespace TRE
 			{
 				go->GetComponent<Properties>().m_Active = true;
 			}
+			std::cout << "- Testing Complete\n";
+
+			std::cout << "\nTesting setting, getting and removing parent\n";
+			GO parentGO = CreateGO();
+			GO childGO = CreateGO();
+			std::cout << "- Default childGO parent: " << childGO->GetParent() << "\n";
+			std::cout << "- childGO address: " << childGO << "\n";
+			std::cout << "- parentGO address: " << parentGO << "\n";
+			std::cout << "- Setting parentGO as childGO parent...\n";
+			childGO->SetParent(parentGO);
+			std::cout << "- New childGO parent: " << childGO->GetParent() << "\n";
+			std::cout << "- childGO children size: " << childGO->GetChildren().size() << "\n";
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- Removing childGO parent...\n";
+			childGO->RemoveParent();
+			std::cout << "- Removed childGO parent: " << childGO->GetParent() << "\n";
+			std::cout << "- childGO children size: " << childGO->GetChildren().size() << "\n";
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- Setting childGO as childGO parent...\n";
+			childGO->SetParent(childGO);
+			std::cout << "- New childGO parent (Ideally it would set parent as a nullptr): " << childGO->GetParent() << "\n";
+			std::cout << "- childGO children size: " << childGO->GetChildren().size() << "\n";
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "\n- Adding 5 GOs to parentGO as children...\n";
+			parentGO->AddChild(test2);
+			parentGO->AddChild(allobj);
+			parentGO->AddChild(allobj2);
+			parentGO->AddChild(cloneobj);
+			parentGO->AddChild(oriobj);
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- 1 GO removing parentGO...\n";
+			test2->RemoveParent();
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- parentGO abandoning 1 children...\n";
+			parentGO->AbandonChild(allobj);
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- 1 GO Setting another parent...\n";
+			allobj2->SetParent(childGO);
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- parentGO abandoning all remaining children...\n";
+			parentGO->AbandonChildren();
+			std::cout << "- parentGO children size: " << parentGO->GetChildren().size() << "\n";
+			std::cout << "- Attempting to remove a non child in parentGO...\n";
+			parentGO->AbandonChild(test2);
 			std::cout << "- Testing Complete\n";
 
 			std::cout << "====================================\n\n";
@@ -161,16 +218,16 @@ namespace TRE
 	}
 
 	template <typename T>
-	bool ECSManager::GOHasComponent(entt::entity entity)
+	bool ECSManager::GOHasComponent(GO object)
 	{
-		return registry.any_of<T>(entity);
+		return registry.any_of<T>(object->m_Entity);
 	}
 
 	template <typename T>
 	bool GameObject::HasComponent()
 	{
 		assert(_component_manager->HasComponent<T>());
-		return _ecs_manager->GOHasComponent<T>(m_Entity);
+		return _ecs_manager->GOHasComponent<T>(shared_from_this());
 	}
 
 	template <typename T>
@@ -189,6 +246,7 @@ namespace TRE
 	T& GameObject::GetComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
+		assert(this != nullptr);
 		assert(&m_Entity != nullptr);
 		assert(_component_manager->HasComponent<T>());
 
