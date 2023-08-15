@@ -11,8 +11,6 @@ namespace TRE
 	{
 		s_Instance = this;
 		m_Window = std::make_unique<Window>();
-		m_SystemsManager = std::make_unique<SystemManager>();
-		RegisterSystems<PhysicsSystem>();
 	}
 
 	Engine::~Engine()
@@ -22,8 +20,12 @@ namespace TRE
 
 	void Engine::RegisterECS()
 	{
+		// Register Component
 		_component_manager->RegisterComponent<Properties>("Properties");
 		_component_manager->RegisterComponent<Transform>("Transform");
+
+		// Register System
+		_system_manager->RegisterSystem<PhysicsSystem>();
 	}
 
 	void Engine::Update()
@@ -32,14 +34,14 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
-			m_SystemsManager->UpdateSystem();
-			m_SystemsManager->RenderImgui();
+			_system_manager->UpdateSystem();
+			_system_manager->RenderImgui();
 		}
 	}
 
 	void Engine::Shutdown()
 	{
-		m_SystemsManager->ShutdownSystem();
+		_system_manager->ShutdownSystem();
 		_ecs_manager->DestroyAll();
 	}
 }

@@ -9,7 +9,7 @@ namespace TRE
 		public:
 			EditorApplication() : Engine()
 			{
-				RegisterSystems<EditorLayer>();
+				_system_manager->RegisterSystem<EditorLayer>();
 			}
 
 		private:

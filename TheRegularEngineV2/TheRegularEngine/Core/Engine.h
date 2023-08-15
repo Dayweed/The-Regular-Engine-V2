@@ -17,18 +17,11 @@ namespace TRE
 			void Update();
 			virtual void Shutdown();
 
-			template <typename T>
-			void RegisterSystems()
-			{
-				m_SystemsManager->RegisterSystem<T>();
-			}
-
 		protected:
 			Engine();
 
 		private:
 			std::unique_ptr<Window> m_Window;
-			std::unique_ptr<SystemManager> m_SystemsManager;
 			static Engine* s_Instance;
 	};
 

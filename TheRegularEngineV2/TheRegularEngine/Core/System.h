@@ -1,5 +1,4 @@
 #pragma once
-
 namespace TRE
 {
 	class System
@@ -12,5 +11,4 @@ namespace TRE
 			virtual void RenderImgui() {};
 			virtual void Shutdown() {};
 	};
-
 }

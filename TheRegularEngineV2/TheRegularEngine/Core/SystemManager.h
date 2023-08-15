@@ -7,10 +7,11 @@ namespace TRE
 	class SystemManager
 	{
 		public:
-			SystemManager() = default;
-			~SystemManager() = default;
-			SystemManager(SystemManager&) = delete;
-			void operator=(const SystemManager&) = delete;
+			static SystemManager& Instance()
+			{
+				static SystemManager instance;
+				return instance;
+			}
 
 			template <typename T>
 			std::shared_ptr<T> RegisterSystem()
@@ -21,6 +22,7 @@ namespace TRE
 
 				std::shared_ptr<T> system = std::make_shared<T>();
 				m_Systems.insert({ hashcode, std::move(system) });
+				//m_Systems.emplace(std::piecewise_construct, std::forward_as_tuple(hashcode), std::forward_as_tuple());
 				return system;
 			}
 
@@ -84,6 +86,13 @@ namespace TRE
 			}
 		
 		private:
+			// Delete possible copy ctor and assignment to ensure singleton
+			SystemManager() {};
+			SystemManager(SystemManager const&) = delete;
+			void operator=(SystemManager const&) = delete;
+			void* operator new(size_t) = delete;
+
 			std::map<size_t, std::shared_ptr<System>> m_Systems;
 	};
+	static SystemManager* _system_manager{ &SystemManager::Instance() };
 }
