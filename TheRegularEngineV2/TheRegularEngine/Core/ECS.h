@@ -32,6 +32,8 @@ namespace TRE
 	class GameObject : public std::enable_shared_from_this<GameObject>
 	{
 	public:
+		GO GetThis();
+
 		template <typename T>
 		bool HasComponent();
 
@@ -193,7 +195,7 @@ namespace TRE
 		// Component Types
 		std::map<size_t, void*> componentTypes;
 
-		std::vector<GO> GOList;
+		std::vector<GO> m_GOList;
 	};
 	static ECSManager* _ecs_manager{ &ECSManager::Instance() };
 
@@ -207,8 +209,8 @@ namespace TRE
 		// Get all GO owning the entities
 		for (entt::entity obj : view)
 		{
-			auto it = std::find_if(GOList.begin(), GOList.end(), [&](GO& go) { return go->m_Entity == obj; });
-			if (it != GOList.end())
+			auto it = std::find_if(m_GOList.begin(), m_GOList.end(), [&](GO& go) { return go->m_Entity == obj; });
+			if (it != m_GOList.end())
 			{
 				objects.emplace_back(*it);
 			}

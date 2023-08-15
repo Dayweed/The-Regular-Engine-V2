@@ -16,6 +16,10 @@ namespace TRE
 
 	void ECSManager::DestroyAll()
 	{
+		for (GO obj : m_GOList)
+		{
+			obj->AbandonChildren();
+		}
 		registry.clear();
 	}
 
@@ -23,19 +27,20 @@ namespace TRE
 	{
 		GO obj{ std::make_shared<GameObject>() };
 		obj->m_Entity = registry.create();
-		GOList.emplace_back(obj);
+		m_GOList.emplace_back(obj);
 		obj->AddComponent<Properties>().m_Name = name;
 		return obj;
 	}
 
 	void ECSManager::DestroyGO(GO& object)
 	{
-		// Remove from GOList
-		auto it = std::find_if(GOList.begin(), GOList.end(), [&](GO& go) { return go.get() == object.get(); });
-		if (it != GOList.end())
+		// Remove from m_GOList
+		auto it = std::find_if(m_GOList.begin(), m_GOList.end(), [&](GO& go) { return go.get() == object.get(); });
+		if (it != m_GOList.end())
 		{
-			GOList.erase(it);
+			m_GOList.erase(it);
 		}
+		object->AbandonChildren();
 		// Release all components and entity itself
 		registry.destroy(object->m_Entity);
 		// Free unique ptr from the object
@@ -46,7 +51,7 @@ namespace TRE
 	{
 		GO obj{ std::make_shared<GameObject>() };
 		obj->m_Entity = registry.create();
-		GOList.emplace_back(obj);
+		m_GOList.emplace_back(obj);
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{
@@ -65,19 +70,24 @@ namespace TRE
 		return obj;
 	}
 
+	GO GameObject::GetThis()
+	{
+		return shared_from_this();
+	}
+
 	void GameObject::SetParent(GO parent)
 	{
 		// Tell existing parent to abandon this
 		if (m_Parent)
 		{
-			m_Parent->AbandonChild(shared_from_this());
+			m_Parent->AbandonChild(GetThis());
 		}
 		// Ensure self can't be parent or parent is one of its children
 		m_Parent = (parent.get() != this && std::find(m_Children.begin(), m_Children.end(), parent) == m_Children.end()) ? parent : nullptr;
 		// Add this as parent child
-		if (m_Parent && std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this()) == m_Parent->m_Children.end())
+		if (m_Parent && std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), GetThis()) == m_Parent->m_Children.end())
 		{
-			m_Parent->m_Children.emplace_back(shared_from_this());
+			m_Parent->m_Children.emplace_back(GetThis());
 		}
 	}
 
@@ -101,7 +111,7 @@ namespace TRE
 
 	void GameObject::AddChild(GO child)
 	{
-		child->SetParent(shared_from_this());
+		child->SetParent(GetThis());
 	}
 
 	std::vector<GO> GameObject::GetChildren()

@@ -40,5 +40,6 @@ namespace TRE
 	void Engine::Shutdown()
 	{
 		m_SystemsManager->ShutdownSystem();
+		_ecs_manager->DestroyAll();
 	}
 }
