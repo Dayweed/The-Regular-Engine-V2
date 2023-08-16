@@ -51,7 +51,7 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Graphics\VulkanImgui.h">
+    <ClInclude Include="Graphics\VulkanEditor.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Renderer.h">
@@ -61,6 +61,9 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Device.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shader.h">
       <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -90,7 +93,7 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Graphics\VulkanImgui.cpp">
+    <ClCompile Include="Graphics\VulkanEditor.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Renderer.cpp">
@@ -100,6 +103,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Device.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shader.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>

@@ -27,11 +27,23 @@ namespace TRE
 		return m_Device;
 	}
 
+	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDeviceInternally()
+	{
+		return m_PhysicalDevice;
+	}
+
+	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDevice()
+	{
+		return Get()->GetPhysicalDeviceInternally();
+	}
+
 	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-	const VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+																			const VkDebugUtilsMessageTypeFlagsEXT messageType, 
+																			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 	{
 		(void)pUserData;
-
+		(void)messageType;
+		
 		std::string Message;
 		if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 		{
@@ -74,6 +86,7 @@ namespace TRE
 
 		if (bool Supported = CheckAPIVersion(VK_API_VERSION_1_3); !Supported)
 		{
+			std::cout << "Vulkan API version not supported" << std::endl;
 			assert(Supported); //Change to proper assert
 		}
 
@@ -99,9 +112,9 @@ namespace TRE
 		VkInstanceCreateInfo InstanceCreateInfo{};
 		InstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		InstanceCreateInfo.pApplicationInfo = &Appinfo;
-		InstanceCreateInfo.enabledExtensionCount = Extentions.size();
+		InstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(Extentions.size());
 		InstanceCreateInfo.ppEnabledExtensionNames = Extentions.data();
-
+		
 		if (EnableValidationLayer)
 		{
 			const char* ValidationLayer = "VK_LAYER_KHRONOS_validation"; //Help to debug
@@ -136,7 +149,7 @@ namespace TRE
 		if (VkResult Result = vkCreateInstance(&InstanceCreateInfo, nullptr, &m_instance); Result != VK_SUCCESS)
 		{
 			std::cout << "Failed to create vulkan instance " << std::endl;
-			assert(Result != VK_SUCCESS);
+			assert(Result == VK_SUCCESS);
 		}
 
 		if (EnableValidationLayer)
@@ -168,8 +181,6 @@ namespace TRE
 
 		m_Device = std::make_shared<Device>(m_PhysicalDevice, PhysicalDeviceFeatures);
 	}
-
-
 
 	bool RendererContext::CheckAPIVersion(uint32_t supportedversion)
 	{

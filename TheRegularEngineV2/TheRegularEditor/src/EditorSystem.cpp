@@ -1,5 +1,6 @@
 #include "EditorSystem.h"
 #include "Imgui/imgui.h"
+#include "imgui_impl_vulkan.h"
 
 namespace TRE
 {
@@ -15,14 +16,13 @@ namespace TRE
 
 	void EditorSystem::Update()
 	{
-		ImGui::Begin("Test Window");
+		ImGui::Begin("Viewport");
+
+		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
+		ImGui::Image(VulkanEditor::GetFinalImage(), ViewportSize, ImVec2(0, 1), ImVec2(1, 0));
+
 		ImGui::End();
 		ImGui::ShowDemoWindow();
-	}
-
-	void EditorSystem::RenderImgui()
-	{
-
 	}
 
 	void EditorSystem::Shutdown()

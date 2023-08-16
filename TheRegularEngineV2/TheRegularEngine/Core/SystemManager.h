@@ -69,14 +69,6 @@ namespace TRE
 				}
 			}
 
-			void RenderImgui()
-			{
-				for (auto& system : m_Systems)
-				{
-					system.second->RenderImgui();
-				}
-			}
-
 			void ShutdownSystem()
 			{
 				for (auto& system : m_Systems)

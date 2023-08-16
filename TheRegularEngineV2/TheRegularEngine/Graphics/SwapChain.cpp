@@ -4,6 +4,11 @@
 
 namespace TRE
 {
+	SwapChain::SwapChainSettings SwapChain::GetSwapChainSettings()
+	{
+		return m_SwapChainSettings;
+	}
+
 	uint32_t SwapChain::GetImageCount()
 	{
 		return m_ImageCount;
@@ -31,9 +36,19 @@ namespace TRE
 		return m_CommandBuffers[m_CurrentBufferIndex].CommandBuffer;
 	}
 
+	std::vector<SwapChain::SwapChainImage> SwapChain::GetCurrentSwapChainImage()
+	{
+		return m_SwapChainImages;
+	}
+
 	uint32_t SwapChain::GetCurrentBufferIndex()
 	{
 		return m_CurrentBufferIndex;
+	}
+
+	uint32_t SwapChain::GetCurrentImageIndex()
+	{
+		return m_CurrentImageIndex;
 	}
 
 	VkFormat SwapChain::GetColorFormat()
@@ -51,6 +66,11 @@ namespace TRE
 		return m_RenderPass;
 	}
 
+	VkExtent2D SwapChain::GetSwapChainExtent()
+	{
+		return m_Extent;
+	}
+
 	void SwapChain::Initialize(VkInstance Instance, const std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle)
 	{
 		m_Instance = Instance;
@@ -66,7 +86,7 @@ namespace TRE
 		vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, QueueProperties.data());
 
 		std::vector<VkBool32> SupportsPresent(NumberofQueues);
-		for (int x = 0; x < NumberofQueues; x++)
+		for (uint32_t x = 0; x < NumberofQueues; x++)
 		{
 			vkGetPhysicalDeviceSurfaceSupportKHR(PhysicalDevice, x, m_WindowSurface, &SupportsPresent[x]);
 		}
@@ -74,7 +94,7 @@ namespace TRE
 		uint32_t PresentQueueIndex = UINT32_MAX;
 		uint32_t GraphicsQueueIndex = UINT32_MAX;
 
-		for (int x = 0; x < NumberofQueues; x++)
+		for (uint32_t x = 0; x < NumberofQueues; x++)
 		{
 			if ((QueueProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
 			{
@@ -93,7 +113,7 @@ namespace TRE
 		//In case present is not found
 		if (PresentQueueIndex == UINT32_MAX)
 		{
-			for (int x = 0; x < NumberofQueues; x++)
+			for (uint32_t x = 0; x < NumberofQueues; x++)
 			{
 				if (SupportsPresent[x] == VK_TRUE)
 				{
@@ -142,6 +162,7 @@ namespace TRE
 
 		m_Width = *width;
 		m_Height = *height;
+		m_Extent = SwapChainExtent;
 
 		VkPresentModeKHR SwapChainPresentMode = VK_PRESENT_MODE_FIFO_KHR; //Guaranteed to have and used if vsync is on
 		if (!Vsync)
@@ -254,7 +275,7 @@ namespace TRE
 
 		m_SwapChainImages.resize(m_ImageCount);
 
-		for (int x = 0; x < m_ImageCount; x++)
+		for (uint32_t x = 0; x < m_ImageCount; x++)
 		{
 			VkImageViewCreateInfo ImageViewCreateInfo{};
 			ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -463,6 +484,9 @@ namespace TRE
 
 	void SwapChain::BeginFrame()
 	{
+		vkWaitForFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX);
+		vkResetFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex]);
+
 		m_CurrentImageIndex = AccuireNextImage();
 		if (auto result = vkResetCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandBuffers[m_CurrentBufferIndex].CommandPool, 0); result != VK_SUCCESS)
 		{
@@ -517,8 +541,8 @@ namespace TRE
 			}
 		}
 
-		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % 3; //3 frames in flight
-		m_CurrentImageIndex = (m_CurrentImageIndex + 1) % 3; //3 frames in flight
+		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT;
+		m_CurrentImageIndex = (m_CurrentImageIndex + 1) % MAX_FRAMES_IN_FLIGHT;
 
 		if (auto Result = vkWaitForFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX); Result != VK_SUCCESS)
 		{

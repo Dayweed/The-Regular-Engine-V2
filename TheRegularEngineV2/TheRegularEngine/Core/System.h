@@ -9,7 +9,6 @@ namespace TRE
 			virtual ~System() = default;
 
 			virtual void Update() = 0;
-			virtual void RenderImgui() = 0;
 			virtual void Shutdown() = 0;
 	};
 

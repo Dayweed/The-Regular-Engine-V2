@@ -6,9 +6,23 @@ struct GLFWwindow;
 
 namespace TRE
 {
+	#define MAX_FRAMES_IN_FLIGHT 3
+
 	class SwapChain
 	{
 		public:
+			struct SwapChainSettings
+			{
+				VkColorSpaceKHR m_ColorSpace;
+				VkFormat m_SurfaceFormat;
+			};
+
+			struct SwapChainImage
+			{
+				VkImage Image = nullptr;
+				VkImageView ImageView = nullptr;
+			};
+
 			SwapChain() = default;
 			void Initialize(VkInstance Instance, const std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
@@ -30,6 +44,10 @@ namespace TRE
 			uint32_t GetCurrentBufferIndex();
 			VkFormat GetColorFormat();
 			VkSemaphore GetRenderComplete();
+			VkExtent2D GetSwapChainExtent();
+			SwapChainSettings GetSwapChainSettings();
+			std::vector<SwapChainImage> GetCurrentSwapChainImage();
+			uint32_t GetCurrentImageIndex();
 
 		private:
 			VkInstance m_Instance = nullptr;
@@ -38,20 +56,12 @@ namespace TRE
 		private:
 			VkSwapchainKHR m_SwapChain = nullptr;
 			VkSurfaceKHR m_WindowSurface;
-			struct
-			{
-				VkColorSpaceKHR m_ColorSpace;
-				VkFormat m_SurfaceFormat;
-			} m_SwapChainSettings;
+			SwapChainSettings m_SwapChainSettings;
 
 			uint32_t m_Width;
 			uint32_t m_Height;
-			
-			struct SwapChainImage
-			{
-				VkImage Image = nullptr;
-				VkImageView ImageView = nullptr;
-			};
+			VkExtent2D m_Extent;
+
 			std::vector<SwapChainImage> m_SwapChainImages;
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;

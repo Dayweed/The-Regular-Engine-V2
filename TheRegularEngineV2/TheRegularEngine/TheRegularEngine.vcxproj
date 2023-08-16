@@ -71,6 +71,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Debug\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Debug\PhysX_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.250.1\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -110,8 +111,9 @@
     <ClInclude Include="Graphics\PhysicalDevice.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\RendererContext.h" />
+    <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\SwapChain.h" />
-    <ClInclude Include="Graphics\VulkanImgui.h" />
+    <ClInclude Include="Graphics\VulkanEditor.h" />
     <ClInclude Include="Physics\PhysicsSystem.h" />
     <ClInclude Include="Scripting\ScriptEngine.h" />
     <ClInclude Include="TREIncludes.h" />
@@ -126,8 +128,9 @@
     <ClCompile Include="Graphics\PhysicalDevice.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\RendererContext.cpp" />
+    <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Graphics\SwapChain.cpp" />
-    <ClCompile Include="Graphics\VulkanImgui.cpp" />
+    <ClCompile Include="Graphics\VulkanEditor.cpp" />
     <ClCompile Include="Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Scripting\ScriptEngine.cpp" />
     <ClCompile Include="pch.cpp">

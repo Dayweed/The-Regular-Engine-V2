@@ -11,6 +11,6 @@
 //-----------------Graphics-----------------//
 #include "Graphics/RendererContext.h"
 #include "Graphics/SwapChain.h"
-#include "Graphics/VulkanImgui.h"
+#include "Graphics/VulkanEditor.h"
 
 //-----------------Scripting-----------------//

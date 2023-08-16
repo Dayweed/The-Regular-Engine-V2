@@ -8,7 +8,7 @@ namespace TRE
 {
 	struct WindowConfig
 	{
-		std::string Title = "TRE";
+		std::string Title = "The Regular Engine";
 		uint32_t width = 1600;
 		uint32_t height = 900;
 		bool Vsync = true;

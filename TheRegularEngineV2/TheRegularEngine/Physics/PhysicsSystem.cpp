@@ -15,10 +15,6 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
-	}
-
-	void PhysicsSystem::RenderImgui()
-	{
 
 	}
 	

@@ -14,6 +14,16 @@ namespace TRE
 		return m_QueueFamilies;
 	}
 
+	VkPhysicalDeviceProperties PhysicalDevice::GetPhysicalDeviceProperties()
+	{
+		return m_Properties;
+	}
+
+	VkPhysicalDeviceMemoryProperties PhysicalDevice::GetPhysicalDeviceMemoryProperties()
+	{
+		return m_MemoryProperties;
+	}
+
 	PhysicalDevice::PhysicalDevice()
 	{
 		auto VulkanInstance = RendererContext::GetVKInstance();

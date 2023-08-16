@@ -17,11 +17,15 @@ namespace TRE
 			PhysicalDevice();
 			~PhysicalDevice();
 
-			bool IsExtensionSupported(const std::string& Extension);
 			QueueFamilyIndices GetQueueFamilies();
 			QueueFamilyIndices GetQueueFamilies(int flags);
 			VkFormat GetDepthFormat();
 			VkPhysicalDevice GetPhysicalDevice() const;
+			VkPhysicalDeviceProperties GetPhysicalDeviceProperties();
+			VkPhysicalDeviceMemoryProperties GetPhysicalDeviceMemoryProperties();
+
+		private:
+			bool IsExtensionSupported(const std::string& Extension);
 
 		private:
 			VkPhysicalDevice m_PhysicalDevice;
@@ -29,12 +33,12 @@ namespace TRE
 			VkPhysicalDeviceFeatures m_Features;
 			VkPhysicalDeviceMemoryProperties m_MemoryProperties;
 
-			VkFormat m_DepthFormat;
-
 			QueueFamilyIndices m_QueueFamilies;
 			std::vector <VkQueueFamilyProperties> m_QueueFamilyProperties;
-			std::unordered_set<std::string> m_SupportedExtensions;
 			std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
+			
+			std::unordered_set<std::string> m_SupportedExtensions;
+			VkFormat m_DepthFormat;
 
 			friend class Device;
 	};

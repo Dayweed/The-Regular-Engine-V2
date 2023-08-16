@@ -18,12 +18,17 @@ namespace TRE
 			~RendererContext();
 
 			void Initialize();
-			bool CheckAPIVersion(uint32_t supportedversion);
+
+			std::shared_ptr<PhysicalDevice> GetPhysicalDeviceInternally();
+			std::shared_ptr<Device> GetDeviceInternally();
 
 			static VkInstance GetVKInstance();
 			static std::shared_ptr<RendererContext> Get();
 			static std::shared_ptr<Device> GetDevice();
-			std::shared_ptr<Device> GetDeviceInternally();
+			static std::shared_ptr<PhysicalDevice> GetPhysicalDevice();
+
+		private:
+			bool CheckAPIVersion(uint32_t supportedversion);
 
 		private:
 			static VkInstance m_instance;

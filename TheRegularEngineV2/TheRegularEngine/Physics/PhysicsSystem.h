@@ -10,7 +10,6 @@ namespace TRE
 			~PhysicsSystem();
 
 			void Update() override;
-			void RenderImgui() override;
 			void Shutdown() override;
 
 		private:

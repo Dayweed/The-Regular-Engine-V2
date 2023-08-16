@@ -31,6 +31,7 @@
 #include <memory>
 #include <type_traits>
 #include <iostream>
+#include <fstream>
 
 //Libaries
 #include "vulkan/vulkan.h"

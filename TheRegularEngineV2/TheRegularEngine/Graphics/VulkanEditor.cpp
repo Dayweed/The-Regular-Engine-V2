@@ -6,9 +6,17 @@
 
 namespace TRE
 {
-	std::vector<VkCommandBuffer> VulkanEditor::s_ImGuiCommandBuffers;
+	VkDescriptorSet VulkanEditor::GetFinalImage()
+	{
+		return Engine::GetInstance().GetVulkanImgui()->GetFinalImageInternal();
+	}
 
-	VulkanEditor::VulkanEditor(std::shared_ptr<Device> LogicalDevice)
+	VkDescriptorSet VulkanEditor::GetFinalImageInternal()
+	{
+		return m_DescriptorSets[0];
+	}
+
+	VulkanEditor::VulkanEditor(const std::shared_ptr<Device>& LogicalDevice)
 	{
 		m_LogicalDevice = LogicalDevice;
 
@@ -32,13 +40,36 @@ namespace TRE
 		DescriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		DescriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 		DescriptorPoolCreateInfo.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
-		DescriptorPoolCreateInfo.poolSizeCount = std::size(pool_sizes);
+		DescriptorPoolCreateInfo.poolSizeCount = static_cast<uint32_t>(std::size(pool_sizes));
 		DescriptorPoolCreateInfo.pPoolSizes = pool_sizes;
 		
-		if (auto Result = vkCreateDescriptorPool(LogicalDevice->GetLogicalDevice(), &DescriptorPoolCreateInfo, nullptr, &m_DescriptorPool); Result != VK_SUCCESS)
+		if (auto Result = vkCreateDescriptorPool(RendererContext::GetDevice()->GetLogicalDevice(), &DescriptorPoolCreateInfo, nullptr, &m_DescriptorPool); Result != VK_SUCCESS)
 		{
 			std::cout << "Unable to create descriptor pool for imgui" << std::endl;
 			assert(Result == VK_SUCCESS);
+		}
+
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.anisotropyEnable = VK_FALSE;
+		samplerInfo.maxAnisotropy = 1.0f;
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = 0.0f;
+
+		if (vkCreateSampler(m_LogicalDevice->GetLogicalDevice(), &samplerInfo, nullptr, &m_TextureSampler) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create texture sampler!");
 		}
 
 		ImGui::CreateContext();
@@ -63,10 +94,20 @@ namespace TRE
 		vkDeviceWaitIdle(LogicalDevice->GetLogicalDevice());
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 
-		s_ImGuiCommandBuffers.resize(3);
-		for (int x = 0; x < 3; x++)
+		m_ImGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+		for (int x = 0; x < MAX_FRAMES_IN_FLIGHT; x++)
 		{
-			s_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
+			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
+		}
+
+		auto ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		
+		m_DescriptorSets.resize(1);
+		auto Images = Engine::GetInstance().GetRenderer()->GetImageView();
+		
+		for (uint32_t x = 0; x < m_DescriptorSets.size(); x++)
+		{
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_TextureSampler, Images, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -75,6 +116,7 @@ namespace TRE
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		
 	}
 
 	void VulkanEditor::EndFrame()
@@ -127,7 +169,7 @@ namespace TRE
 		cmdBufInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 		cmdBufInfo.pInheritanceInfo = &inheritanceInfo;
 
-		if (auto Result = vkBeginCommandBuffer(s_ImGuiCommandBuffers[commandBufferIndex], &cmdBufInfo); Result != VK_SUCCESS)
+		if (auto Result = vkBeginCommandBuffer(m_ImGuiCommandBuffers[commandBufferIndex], &cmdBufInfo); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS);
 		}
@@ -139,22 +181,22 @@ namespace TRE
 		viewport.width = (float)width;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(s_ImGuiCommandBuffers[commandBufferIndex], 0, 1, &viewport);
+		vkCmdSetViewport(m_ImGuiCommandBuffers[commandBufferIndex], 0, 1, &viewport);
 
 		VkRect2D scissor = {};
 		scissor.extent.width = width;
 		scissor.extent.height = height;
 		scissor.offset.x = 0;
 		scissor.offset.y = 0;
-		vkCmdSetScissor(s_ImGuiCommandBuffers[commandBufferIndex], 0, 1, &scissor);
+		vkCmdSetScissor(m_ImGuiCommandBuffers[commandBufferIndex], 0, 1, &scissor);
 
 		ImDrawData* main_draw_data = ImGui::GetDrawData();
-		ImGui_ImplVulkan_RenderDrawData(main_draw_data, s_ImGuiCommandBuffers[commandBufferIndex]);
+		ImGui_ImplVulkan_RenderDrawData(main_draw_data, m_ImGuiCommandBuffers[commandBufferIndex]);
 
-		vkEndCommandBuffer(s_ImGuiCommandBuffers[commandBufferIndex]);
+		vkEndCommandBuffer(m_ImGuiCommandBuffers[commandBufferIndex]);
 
 		std::vector<VkCommandBuffer> commandBuffers;
-		commandBuffers.push_back(s_ImGuiCommandBuffers[commandBufferIndex]);
+		commandBuffers.push_back(m_ImGuiCommandBuffers[commandBufferIndex]);
 
 		vkCmdExecuteCommands(drawCommandBuffer, uint32_t(commandBuffers.size()), commandBuffers.data());
 
@@ -172,6 +214,7 @@ namespace TRE
 	VulkanEditor::~VulkanEditor()
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
+		vkDestroySampler(m_LogicalDevice->GetLogicalDevice(), m_TextureSampler, nullptr);
 		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
