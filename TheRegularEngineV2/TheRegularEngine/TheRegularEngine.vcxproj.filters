@@ -18,6 +18,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\ComponentManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ECS.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Engine.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -57,17 +63,11 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Core\ECS.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\ComponentLists.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\ComponentManager.h">
-      <Filter>Core</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\ECS.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Engine.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -99,8 +99,5 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Core\ECS.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
