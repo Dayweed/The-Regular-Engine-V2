@@ -13,6 +13,6 @@ namespace TRE
 			void RenderImgui() override;
 			void Shutdown() override;
 
-		private:
+		private: // test comment
 	};
 }
