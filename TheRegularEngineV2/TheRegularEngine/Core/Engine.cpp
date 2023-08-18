@@ -55,16 +55,16 @@ namespace TRE
 			m_Window->GetSwapChain().BeginFrame();
 			m_Renderer->BeginFrame();
 
-			//if (m_EngineInfo.EnableEditor)
-			//{
-			//	m_VulkanEditor->BeginFrame();
-			//	m_SystemsManager->UpdateSystem();
-			//	m_VulkanEditor->EndFrame();
-			//}
-			//else
-			//{
-			//	m_SystemsManager->UpdateSystem();
-			//}
+			if (m_EngineInfo.EnableEditor)
+			{
+				m_VulkanEditor->BeginFrame();
+				m_SystemsManager->UpdateSystem();
+				m_VulkanEditor->EndFrame();
+			}
+			else
+			{
+				m_SystemsManager->UpdateSystem();
+			}
 
 			m_Window->SwapBuffers();
 		}

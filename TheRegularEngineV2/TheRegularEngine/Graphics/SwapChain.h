@@ -39,6 +39,7 @@ namespace TRE
 			uint32_t GetImageCount();
 			uint32_t GetWidth();
 			uint32_t GetHeight();
+			uint32_t GetQueueIndex();
 			VkFramebuffer GetCurrentFrameBuffer();
 			VkCommandBuffer GetCurrentCommandBuffer();
 			uint32_t GetCurrentBufferIndex();

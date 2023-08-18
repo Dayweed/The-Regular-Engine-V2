@@ -19,7 +19,7 @@ namespace TRE
 		ImGui::Begin("Viewport");
 
 		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
-		ImGui::Image(VulkanEditor::GetFinalImage(), ViewportSize, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), ViewportSize, ImVec2(0, 1), ImVec2(1, 0));
 
 		ImGui::End();
 		ImGui::ShowDemoWindow();

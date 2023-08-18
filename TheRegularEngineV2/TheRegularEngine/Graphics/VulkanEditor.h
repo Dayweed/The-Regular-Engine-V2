@@ -14,16 +14,14 @@ namespace TRE
 			void BeginFrame();
 			void EndFrame();
 
-			VkDescriptorSet GetFinalImageInternal();
-			static VkDescriptorSet GetFinalImage();
+			VkDescriptorSet GetDset();
 
 		private:
 			std::shared_ptr<Device> m_LogicalDevice;
 			std::vector<VkCommandBuffer> m_ImGuiCommandBuffers;
-
-			VkDescriptorSetLayout m_DescriptorSetLayout;
 			VkDescriptorPool m_DescriptorPool;
 			std::vector<VkDescriptorSet> m_DescriptorSets;
-			VkSampler m_TextureSampler;
+
+			friend class EditorSystem;
 	};
 }

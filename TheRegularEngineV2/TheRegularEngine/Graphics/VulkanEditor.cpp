@@ -6,14 +6,9 @@
 
 namespace TRE
 {
-	VkDescriptorSet VulkanEditor::GetFinalImage()
+	VkDescriptorSet VulkanEditor::GetDset()
 	{
-		return Engine::GetInstance().GetVulkanImgui()->GetFinalImageInternal();
-	}
-
-	VkDescriptorSet VulkanEditor::GetFinalImageInternal()
-	{
-		return m_DescriptorSets[0];
+		return m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()];
 	}
 
 	VulkanEditor::VulkanEditor(const std::shared_ptr<Device>& LogicalDevice)
@@ -49,29 +44,6 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.anisotropyEnable = VK_FALSE;
-		samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-		samplerInfo.unnormalizedCoordinates = VK_FALSE;
-		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.mipLodBias = 0.0f;
-		samplerInfo.minLod = 0.0f;
-		samplerInfo.maxLod = 0.0f;
-
-		if (vkCreateSampler(m_LogicalDevice->GetLogicalDevice(), &samplerInfo, nullptr, &m_TextureSampler) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create texture sampler!");
-		}
-
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
 
@@ -99,15 +71,12 @@ namespace TRE
 		{
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}
-
-		auto ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 		
-		m_DescriptorSets.resize(1);
-		auto Images = Engine::GetInstance().GetRenderer()->GetImageView();
-		
-		for (uint32_t x = 0; x < m_DescriptorSets.size(); x++)
+		auto Renderer = Engine::GetInstance().GetRenderer();
+		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetImageView().size());
+		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_TextureSampler, Images, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetImageView()[x], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -214,7 +183,6 @@ namespace TRE
 	VulkanEditor::~VulkanEditor()
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
-		vkDestroySampler(m_LogicalDevice->GetLogicalDevice(), m_TextureSampler, nullptr);
 		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();

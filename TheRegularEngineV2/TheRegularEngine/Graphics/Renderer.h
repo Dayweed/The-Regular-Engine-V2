@@ -20,25 +20,29 @@ namespace TRE
 
 			uint32_t FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags);
 
-			VkImageView GetImageView();
+			std::vector<VkImageView>& GetImageView();
+			VkSampler GetSampler();
 
 		private:
 			std::shared_ptr<Device> m_Device;
-			VkPipeline m_GraphicsPipeline;
 			VkPipelineLayout m_PipelineLayout;
 
-			VkRenderPass m_Renderpass;
-			VkFramebuffer m_FrameBuffer;
 			VkSampler m_Sampler;
 
-			VkImage m_Image;
-			VkImageView m_ImageView;
-			VkDeviceMemory m_Memory;
+			std::vector<VkImage> m_Images;
+			std::vector<VkImageView> m_ImageView;
+			std::vector<VkDeviceMemory> m_Memory;
+
+			VkRenderPass m_Renderpass;
+			VkPipeline m_GraphicsPipeline;
+			VkCommandPool m_CommandPool;
+			std::vector<VkFramebuffer> m_FrameBuffer;
+			std::vector<VkCommandBuffer> m_Commandbuffers;
 
 			VkDescriptorImageInfo DescriptorInfo;
-			VkDescriptorSet m_DescriptorSet;
+
 			VkDescriptorSetLayout m_DescriptorLayout;
 
-			friend class VulkanEditor;
+			VkDescriptorPool m_DescriptorPool;
 	};
 }
