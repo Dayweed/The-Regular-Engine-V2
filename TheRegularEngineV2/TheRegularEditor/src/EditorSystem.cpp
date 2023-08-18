@@ -16,7 +16,9 @@ namespace TRE
 
 	void EditorSystem::Update()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
+		ImGui::PopStyleVar();
 
 		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), ViewportSize);

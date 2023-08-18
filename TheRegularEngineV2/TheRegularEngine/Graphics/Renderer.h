@@ -9,11 +9,10 @@ namespace TRE
 		public:
 			Renderer(const std::shared_ptr<Device>& Device);
 			~Renderer();
+
 			void Initialize();
 			void Shutdown();
-
 			void BeginFrame();
-			void DrawFrame();
 
 			std::vector<char> readFile(const std::string& filename);
 			VkShaderModule CreateShader(std::vector<char>& code);

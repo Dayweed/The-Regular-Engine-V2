@@ -21,7 +21,5 @@ namespace TRE
 			std::vector<VkCommandBuffer> m_ImGuiCommandBuffers;
 			VkDescriptorPool m_DescriptorPool;
 			std::vector<VkDescriptorSet> m_DescriptorSets;
-
-			friend class EditorSystem;
 	};
 }

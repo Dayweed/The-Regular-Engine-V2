@@ -155,14 +155,6 @@ namespace TRE
         dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
         dependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 
-        //VkSubpassDependency dependencies{};
-        //dependencies.srcSubpass = VK_SUBPASS_EXTERNAL;
-        //dependencies.dstSubpass = 0;
-        //dependencies.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        //dependencies.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        //dependencies.srcAccessMask = 0;
-        //dependencies.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
         VkRenderPassCreateInfo renderPassInfo = {};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
         renderPassInfo.attachmentCount = 1;
@@ -375,55 +367,6 @@ namespace TRE
         DPoolCreateInfo.maxSets = SwapChain.GetImageCount();
 
         vkCreateDescriptorPool(m_Device->GetLogicalDevice(), &DPoolCreateInfo, nullptr, &m_DescriptorPool);
-
-        //std::vector<VkDescriptorSetLayout> layout(SwapChain.GetImageCount(), m_DescriptorLayout);
-        //VkDescriptorSetAllocateInfo AllocInfo{};
-        //AllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        //AllocInfo.descriptorPool = m_DescriptorPool;
-        //AllocInfo.descriptorSetCount = static_cast<uint32_t>(SwapChain.GetImageCount());
-        //AllocInfo.pSetLayouts = layout.data();
-        //m_DescriptorSets.resize(SwapChain.GetImageCount());
-
-        //if (auto Result = vkAllocateDescriptorSets(m_Device->GetLogicalDevice(), &AllocInfo, m_DescriptorSets.data()); Result != VK_SUCCESS)
-        //{
-        //    std::cout << "Unable to allocate descriptor sets" << std::endl;
-        //    assert(Result == VK_SUCCESS);
-        //}
-
-
-
-//        for (int x = 0; x < SwapChain.GetImageCount(); x++)
-//        {
-//            //VkDescriptorBufferInfo bufferInfo{};
-//            //bufferInfo.buffer = m_UniformBuffers[i];
-//            //bufferInfo.offset = 0;
-//            //bufferInfo.range = sizeof(UniformBufferObject);
-//
-//            VkDescriptorImageInfo imageInfo{};
-//            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//            imageInfo.imageView = m_ImageView[x];
-//            imageInfo.sampler = m_Sampler;
-//
-////            std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
-//
-//            //descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-//            //descriptorWrites[0].dstSet = m_DescriptorSets[i];
-//            //descriptorWrites[0].dstBinding = 0;
-//            //descriptorWrites[0].dstArrayElement = 0;
-//            //descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-//            //descriptorWrites[0].descriptorCount = 1;
-//            //descriptorWrites[0].pBufferInfo = &bufferInfo;
-//            VkWriteDescriptorSet descriptorWrites{};
-//            descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-//            descriptorWrites.dstSet = m_DescriptorSets[x];
-//            descriptorWrites.dstBinding = 0;
-//            descriptorWrites.dstArrayElement = 0;
-//            descriptorWrites.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-//            descriptorWrites.descriptorCount = 1;
-//            descriptorWrites.pImageInfo = &imageInfo;
-//
-//            vkUpdateDescriptorSets(m_Device->GetLogicalDevice(), 1, &descriptorWrites, 0, nullptr);
-//        }
     }
 
     void Renderer::Shutdown()
