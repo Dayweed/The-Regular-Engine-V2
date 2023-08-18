@@ -461,15 +461,15 @@ namespace TRE
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = 512.f;
-        viewport.height = 512.f;
+        viewport.width = Engine::GetInstance().GetWindow()->GetSwapChain().GetWidth();
+        viewport.height = Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight();
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
         VkRect2D scissor{};
         scissor.offset = { 0, 0 };
-        scissor.extent = { 512, 512 };
+        scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
         //vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()], 0, NULL);
