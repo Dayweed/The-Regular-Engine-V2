@@ -58,7 +58,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>GLM_FORCE_DEPTH_ZERO_TO_ONE;_CRT_SECURE_NO_WARNINGS;DEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\TheRegularEngine;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.243.0\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\TheRegularEngine;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.250.1\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -87,7 +87,7 @@ IF EXIST "$(SolutionDir)\Dependencies\Mono\bin\Debug\mono-2.0-sgen.dll"\ (xcopy 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>GLM_FORCE_DEPTH_ZERO_TO_ONE;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\TheRegularEngine;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.243.0\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\TheRegularEngine;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.250.1\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
