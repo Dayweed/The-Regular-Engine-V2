@@ -23,7 +23,7 @@ namespace TRE
 
         std::streampos end = stream.tellg();
         stream.seekg(0, std::ios::beg);
-        uint32_t size = end - stream.tellg();
+        uint32_t size = static_cast<uint32_t>(end - stream.tellg());
 
         if (size == 0)
         {
@@ -51,6 +51,7 @@ namespace TRE
         if (status != MONO_IMAGE_OK)
         {
             const char* errorMessage = mono_image_strerror(status);
+            (void)errorMessage;
             // Log some error message using the errorMessage data
             return nullptr;
         }

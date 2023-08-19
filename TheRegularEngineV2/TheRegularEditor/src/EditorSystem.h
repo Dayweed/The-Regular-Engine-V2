@@ -3,17 +3,16 @@
 
 namespace TRE
 {
-	class EditorLayer : public System
+	class EditorSystem : public System
 	{
 		public:
-			EditorLayer();
-			~EditorLayer();
+			EditorSystem();
+			~EditorSystem();
 
 			void Update() override;
-			void RenderImgui() override;
 			void Shutdown() override;
 
 		private:
-
+			
 	};
 }

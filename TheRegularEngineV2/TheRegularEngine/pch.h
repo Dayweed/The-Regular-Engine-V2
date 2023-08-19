@@ -19,6 +19,7 @@
 #include <stack>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 //Utilities
@@ -30,6 +31,8 @@
 #include <memory>
 #include <type_traits>
 #include <iostream>
+#include <fstream>
 
 //Libaries
 #include "vulkan/vulkan.h"
+#include "glm/glm.hpp"

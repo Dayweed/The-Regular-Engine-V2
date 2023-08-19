@@ -8,9 +8,9 @@ namespace TRE
 {
 	struct WindowConfig
 	{
-		std::string Title = "TRE";
-		int width = 1600;
-		int height = 900;
+		std::string Title = "The Regular Engine";
+		uint32_t width = 1600;
+		uint32_t height = 900;
 		bool Vsync = true;
 	};
 
@@ -25,15 +25,19 @@ namespace TRE
 			Window& operator=(const Window&) = delete;
 
 			void PollEvents();
+			int ShouldWindowClose();
+			void SwapBuffers();
 
 			GLFWwindow* GetWindowHandle() const;
 			const WindowConfig& GetWindowConfig() const;
-			int ShouldWindowClose();
+			std::shared_ptr<RendererContext> GetRenderContext();
+			SwapChain GetSwapChain();
 
 		private:
 			GLFWwindow* m_WindowHandle = nullptr;
 			WindowConfig m_Config;
-			std::unique_ptr<RendererContext> m_RenderContext;
+
+			std::shared_ptr<RendererContext> m_RenderContext;
 			SwapChain m_SwapChain;
 	};
 }

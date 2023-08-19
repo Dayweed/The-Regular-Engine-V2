@@ -58,6 +58,8 @@ namespace TRE
 				}
 
 				//Can add assert here to tell user they getting a non registered system
+				assert(false);
+
 				return nullptr;
 			}
 
@@ -66,14 +68,6 @@ namespace TRE
 				for (auto& system : m_Systems)
 				{
 					system.second->Update();
-				}
-			}
-
-			void RenderImgui()
-			{
-				for (auto& system : m_Systems)
-				{
-					system.second->RenderImgui();
 				}
 			}
 

@@ -43,16 +43,31 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="EntryPoint.h" />
-    <ClInclude Include="Graphics\LogicalDevice.h">
+    <ClInclude Include="Graphics\Buffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Device.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\PhysicalDevice.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\RenderObject.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\RendererContext.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Shader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\SwapChain.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanEditor.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Physics\PhysicsSystem.h">
@@ -80,16 +95,31 @@
     <ClCompile Include="Editor\ImguiBuildBackend.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\LogicalDevice.cpp">
+    <ClCompile Include="Graphics\Buffer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Device.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\PhysicalDevice.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\RenderObject.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\RendererContext.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Shader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\SwapChain.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanEditor.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
