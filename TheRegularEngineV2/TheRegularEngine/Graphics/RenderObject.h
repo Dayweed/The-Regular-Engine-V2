@@ -4,6 +4,8 @@
 #include "pch.h"
 #include "Buffer.h"
 
+#include <functional>
+
 namespace TRE
 {
 	class RenderObject
@@ -11,8 +13,8 @@ namespace TRE
 	public:
 		struct Vertex
 		{
-			glm::vec4 m_Position{};
-			glm::vec4 m_Color{};
+			glm::vec3 m_Position{};
+			glm::vec3 m_Color{};
 			glm::vec3 m_Normal{};
 			glm::vec2 m_UV{};
 
@@ -30,7 +32,7 @@ namespace TRE
 			std::vector<Vertex> m_Vertices{};
 			std::vector<std::uint32_t> m_Indices{};
 
-			//void LoadModel(const std::string& filePath);
+			void LoadRenderObject(const std::string& filePath);
 		};
 
 		RenderObject(const Builder& builder);
@@ -39,7 +41,7 @@ namespace TRE
 		RenderObject(RenderObject&) = delete;
 		void operator=(const RenderObject&) = delete;
 
-		//static std::unique_ptr<RenderObject> CreateModelFromFile(const std::string& filePath);
+		static std::unique_ptr<RenderObject> CreateFromFile(const std::string& filePath);
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 	private:

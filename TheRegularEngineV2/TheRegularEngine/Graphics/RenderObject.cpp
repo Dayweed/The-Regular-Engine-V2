@@ -2,6 +2,35 @@
 #include "RenderObject.h"
 #include "RendererContext.h"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tinyobjloader/tiny_obj_loader.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/hash.hpp"
+
+namespace
+{
+	template<typename T, typename... Rest>
+	void HashCombine(std::size_t& seed, const T& v, Rest&... rest)
+	{
+		seed ^= std::hash<T>{}(v)+0x9e3779b9 + (seed << 6) + (seed >> 2);
+		(HashCombine(seed, rest), ...);
+	}
+}
+
+namespace std
+{
+	template <>
+	struct hash<TRE::RenderObject::Vertex>
+	{
+		size_t operator()(TRE::RenderObject::Vertex const& vertex) const
+		{
+			size_t seed = 0;
+			HashCombine(seed, vertex.m_Position, vertex.m_Color, vertex.m_Normal, vertex.m_UV);
+			return seed;
+		}
+	};
+}
+
 namespace TRE
 {
 	void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) 
@@ -32,14 +61,13 @@ namespace TRE
 
 	}
 
-	/*std::unique_ptr<RenderObject> RenderObject::CreateModelFromFile(const std::string& filePath)
+	std::unique_ptr<RenderObject> RenderObject::CreateFromFile(const std::string& filePath)
 	{
 		Builder builder{};
-		builder.LoadModel(_FilePath);
+		builder.LoadRenderObject(filePath);
 
-		std::cout << "Vertex count: " << builder.vertices.size() << "\n";
-		return std::make_unique<Model>(_Device, builder);
-	}*/
+		return std::make_unique<RenderObject>(builder);
+	}
 
 	void RenderObject::Bind(VkCommandBuffer commandBuffer)
 	{
@@ -126,20 +154,20 @@ namespace TRE
 		return attributeDescriptions;
 	}
 
-	/*void RenderObject::Builder::LoadModel(const std::string& _FilePath)
+	void RenderObject::Builder::LoadRenderObject(const std::string& filePath)
 	{
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, error;
 
-		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &error, _FilePath.c_str()))
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &error, filePath.c_str()))
 		{
 			throw std::runtime_error(warn + error);
 		}
 
-		vertices.clear();
-		indices.clear();
+		m_Vertices.clear();
+		m_Indices.clear();
 
 		std::unordered_map<Vertex, std::uint32_t> uniqueVertices{};
 		for (const auto& shape : shapes)
@@ -150,29 +178,29 @@ namespace TRE
 
 				if (index.vertex_index >= 0)
 				{
-					vertex.position = { attrib.vertices[3 * index.vertex_index + 0],attrib.vertices[3 * index.vertex_index + 1], attrib.vertices[3 * index.vertex_index + 2] };
+					vertex.m_Position = { attrib.vertices[3 * index.vertex_index + 0],attrib.vertices[3 * index.vertex_index + 1], attrib.vertices[3 * index.vertex_index + 2] };
 
-					vertex.color = { attrib.colors[3 * index.vertex_index + 0],attrib.colors[3 * index.vertex_index + 1], attrib.colors[3 * index.vertex_index + 2] };
+					vertex.m_Color = { attrib.colors[3 * index.vertex_index + 0],attrib.colors[3 * index.vertex_index + 1], attrib.colors[3 * index.vertex_index + 2] };
 
 				}
 
 				if (index.normal_index >= 0)
 				{
-					vertex.normal = { attrib.normals[3 * index.normal_index + 0], attrib.normals[3 * index.normal_index + 1], attrib.normals[3 * index.normal_index + 2] };
+					vertex.m_Normal = { attrib.normals[3 * index.normal_index + 0], attrib.normals[3 * index.normal_index + 1], attrib.normals[3 * index.normal_index + 2] };
 				}
 
 				if (index.texcoord_index >= 0)
 				{
-					vertex.uv = { attrib.texcoords[2 * index.texcoord_index + 0], attrib.texcoords[2 * index.texcoord_index + 1] };
+					vertex.m_UV = { attrib.texcoords[2 * index.texcoord_index + 0], attrib.texcoords[2 * index.texcoord_index + 1] };
 				}
 
 				if (uniqueVertices.count(vertex) == 0)
 				{
-					uniqueVertices[vertex] = static_cast<std::uint32_t>(vertices.size());
-					vertices.push_back(vertex);
+					uniqueVertices[vertex] = static_cast<std::uint32_t>(m_Vertices.size());
+					m_Vertices.push_back(vertex);
 				}
-				indices.push_back(uniqueVertices[vertex]);
+				m_Indices.push_back(uniqueVertices[vertex]);
 			}
 		}
-	}*/
+	}
 }

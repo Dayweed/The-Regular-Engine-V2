@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/Device.h"
 #include "Graphics/VulkanEditor.h"
+#include "RenderObject.h"
 
 namespace TRE
 {
@@ -43,5 +44,7 @@ namespace TRE
 			VkDescriptorSetLayout m_DescriptorLayout;
 
 			VkDescriptorPool m_DescriptorPool;
+
+			std::vector<std::shared_ptr<RenderObject>> m_RenderObjects;
 	};
 }

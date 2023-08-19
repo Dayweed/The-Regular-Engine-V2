@@ -250,10 +250,20 @@ namespace TRE
 
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
+        //TO DELETE
+        std::shared_ptr<RenderObject> model = RenderObject::CreateFromFile("../Assets/flat_vase.obj");
+        m_RenderObjects.push_back(std::move(model));
+
+        //Vertex input
+        auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
+        auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
+
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescription.size());
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+        vertexInputInfo.pVertexBindingDescriptions = bindingDescription.data();
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -347,7 +357,8 @@ namespace TRE
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(m_Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(m_Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
 
@@ -417,7 +428,14 @@ namespace TRE
 
         //vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()], 0, NULL);
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
-        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+        
+        for (auto& RO : m_RenderObjects)
+        {
+            RO->Bind(commandBuffer);
+            RO->Draw(commandBuffer);
+		}
+        
+        //vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
