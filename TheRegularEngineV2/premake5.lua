@@ -47,7 +47,6 @@ project "TheRegularEngine"
 	includedirs
 	{
 		"%{prj.name}",
-		
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		"%{IncludeDir.Freetype}",
@@ -62,6 +61,7 @@ project "TheRegularEngine"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.tinyobj}"
 	}
 
 	defines

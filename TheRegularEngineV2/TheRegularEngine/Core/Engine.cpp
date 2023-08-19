@@ -32,7 +32,7 @@ namespace TRE
 		s_Instance = this;
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
-		m_SystemsManager = std::make_unique<SystemManager>();
+		//m_SystemsManager = std::make_unique<SystemManager>();
 		
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDevice());
 		m_Renderer->Initialize();
@@ -40,7 +40,7 @@ namespace TRE
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
-		RegisterSystems<PhysicsSystem>();
+		//RegisterSystems<PhysicsSystem>();
 	}
 
 	Engine::~Engine()
@@ -70,12 +70,12 @@ namespace TRE
 			if (m_EngineInfo.EnableEditor)
 			{
 				m_VulkanEditor->BeginFrame();
-				m_SystemsManager->UpdateSystem();
+				_system_manager->UpdateSystem();
 				m_VulkanEditor->EndFrame();
 			}
 			else
 			{
-				m_SystemsManager->UpdateSystem();
+				_system_manager->UpdateSystem();
 			}
 
 			m_Window->SwapBuffers();
