@@ -137,23 +137,13 @@ namespace TRE
         subpassDescription.pColorAttachments = &colorReference;
         subpassDescription.pDepthStencilAttachment = nullptr;
 
-        std::vector<VkSubpassDependency> dependencies(2);
-
-        dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
-        dependencies[0].dstSubpass = 0;
-        dependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-        dependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        dependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        dependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        dependencies[0].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-
-        dependencies[1].srcSubpass = 0;
-        dependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
-        dependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        dependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-        dependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        dependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+        VkSubpassDependency dependencies{};
+        dependencies.srcSubpass = VK_SUBPASS_EXTERNAL;
+        dependencies.dstSubpass = 0;
+        dependencies.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        dependencies.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        dependencies.srcAccessMask = 0;
+        dependencies.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
         VkRenderPassCreateInfo renderPassInfo = {};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -161,8 +151,8 @@ namespace TRE
         renderPassInfo.pAttachments = &attchmentDescriptions;
         renderPassInfo.subpassCount = 1;
         renderPassInfo.pSubpasses = &subpassDescription;
-        renderPassInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());
-        renderPassInfo.pDependencies = dependencies.data();
+        renderPassInfo.dependencyCount = 1;
+        renderPassInfo.pDependencies = &dependencies;
 
         vkCreateRenderPass(m_Device->GetLogicalDevice(), &renderPassInfo, nullptr, &m_Renderpass);
 
@@ -191,6 +181,8 @@ namespace TRE
 
     Renderer::~Renderer()
     {
+        vkDeviceWaitIdle(m_Device->GetLogicalDevice());
+
         for (int x = 0; x < m_Images.size(); x++)
         {
             vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
@@ -198,6 +190,11 @@ namespace TRE
             vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
             vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
         }
+
+        vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool, nullptr);
+        vkDestroyDescriptorPool(m_Device->GetLogicalDevice(), m_DescriptorPool, nullptr);
+        vkDestroyDescriptorSetLayout(m_Device->GetLogicalDevice(), m_DescriptorLayout, nullptr);
+        vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
         vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
         vkDestroyPipeline(m_Device->GetLogicalDevice(), m_GraphicsPipeline, nullptr);
         vkDestroyPipelineLayout(m_Device->GetLogicalDevice(), m_PipelineLayout, nullptr);

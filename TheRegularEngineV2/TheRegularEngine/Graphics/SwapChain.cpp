@@ -382,7 +382,7 @@ namespace TRE
 		ColorAttachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE; //Store so can retrieve and present on surface
 		ColorAttachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		ColorAttachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		ColorAttachmentDesc.initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; //Doesn't matter if not preserve since we clear it before rendering
+		ColorAttachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; //Doesn't matter if not preserve since we clear it before rendering
 		ColorAttachmentDesc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR; //Using this to present hence present
 
 		VkAttachmentReference ColorReference{};
