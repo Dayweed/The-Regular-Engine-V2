@@ -11,6 +11,8 @@ namespace TRE
 			VulkanEditor(const std::shared_ptr<Device>& LogicalDevice);
 			~VulkanEditor();
 
+			void SetUpImgui();
+
 			void BeginFrame();
 			void EndFrame();
 

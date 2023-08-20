@@ -44,7 +44,8 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		ImGui::CreateContext();
+		SetUpImgui();
+		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
 
 		ImGui_ImplVulkan_InitInfo ImguiVulkanInitInfo{};
@@ -80,12 +81,22 @@ namespace TRE
 		}
 	}
 
+	void VulkanEditor::SetUpImgui()
+	{
+		ImGui::CreateContext();
+		ImGui::StyleColorsDark();
+
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		IO.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	}
+
 	void VulkanEditor::BeginFrame()
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		
 	}
 
 	void VulkanEditor::EndFrame()

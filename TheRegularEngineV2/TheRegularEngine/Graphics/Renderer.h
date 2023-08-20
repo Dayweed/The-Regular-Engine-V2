@@ -48,9 +48,5 @@ namespace TRE
 			VkDescriptorImageInfo DescriptorInfo;
 
 			VkDescriptorSetLayout m_DescriptorLayout;
-
-			VkDescriptorPool m_DescriptorPool;
-
-			//std::vector<std::shared_ptr<RenderObject>> m_RenderObjects;
 	};
 }

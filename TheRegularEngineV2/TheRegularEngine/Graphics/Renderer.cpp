@@ -195,7 +195,6 @@ namespace TRE
 		}
 
 		vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool, nullptr);
-		vkDestroyDescriptorPool(m_Device->GetLogicalDevice(), m_DescriptorPool, nullptr);
 		vkDestroyDescriptorSetLayout(m_Device->GetLogicalDevice(), m_DescriptorLayout, nullptr);
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 		vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
@@ -225,9 +224,9 @@ namespace TRE
 		layoutInfo.bindingCount = 1;
 		layoutInfo.pBindings = bindings;
 
-		if (vkCreateDescriptorSetLayout(m_Device->GetLogicalDevice(), &layoutInfo, nullptr, &m_DescriptorLayout) != VK_SUCCESS)
+		if (auto Result = vkCreateDescriptorSetLayout(m_Device->GetLogicalDevice(), &layoutInfo, nullptr, &m_DescriptorLayout); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create descriptor set layout!");
+			assert(Result == VK_SUCCESS);
 		}
 
 		auto vertShaderCode = readFile("Resources/Shaders/vert.spv");
@@ -367,20 +366,6 @@ namespace TRE
 
 		vkDestroyShaderModule(m_Device->GetLogicalDevice(), fragShaderModule, nullptr);
 		vkDestroyShaderModule(m_Device->GetLogicalDevice(), vertShaderModule, nullptr);
-
-		std::vector<VkDescriptorPoolSize> PoolSizes =
-		{
-			VkDescriptorPoolSize { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 6 },
-			VkDescriptorPoolSize { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 8 }
-		};
-
-		VkDescriptorPoolCreateInfo DPoolCreateInfo{};
-		DPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		DPoolCreateInfo.poolSizeCount = PoolSizes.size();
-		DPoolCreateInfo.pPoolSizes = PoolSizes.data();
-		DPoolCreateInfo.maxSets = SwapChain.GetImageCount();
-
-		vkCreateDescriptorPool(m_Device->GetLogicalDevice(), &DPoolCreateInfo, nullptr, &m_DescriptorPool);
 	}
 
 	void Renderer::Shutdown()
@@ -391,20 +376,17 @@ namespace TRE
 	void Renderer::BeginFrame()
 	{
 		VkCommandBuffer commandBuffer = m_Device->AllocateCommandBuffer(false);
-		//VkCommandBuffer commandBuffer = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentCommandBuffer();
-
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-			throw std::runtime_error("failed to begin recording command buffer!");
+		if (auto Result = vkBeginCommandBuffer(commandBuffer, &beginInfo); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS);
 		}
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		//renderPassInfo.renderPass = Engine::GetInstance().GetWindow()->GetSwapChain().GetRenderPass();
 		renderPassInfo.renderPass = m_Renderpass;
-		//renderPassInfo.framebuffer = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentFrameBuffer();
 		renderPassInfo.framebuffer = m_FrameBuffer[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
@@ -449,9 +431,9 @@ namespace TRE
 
 		vkCmdEndRenderPass(commandBuffer);
 
-		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+		if (auto Result = vkEndCommandBuffer(commandBuffer); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to record command buffer!");
+			assert(Result == VK_SUCCESS);
 		}
 
 		VkPipelineStageFlags PipelineStageFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
