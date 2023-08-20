@@ -41,8 +41,9 @@ namespace TRE
 
 			VkRenderPass m_Renderpass;
 			VkPipeline m_GraphicsPipeline;
-			VkCommandPool m_CommandPool;
 			std::vector<VkFramebuffer> m_FrameBuffer;
+
+			std::vector<VkCommandPool> m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
 
 			VkDescriptorImageInfo DescriptorInfo;

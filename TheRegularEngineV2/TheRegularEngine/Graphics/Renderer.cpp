@@ -177,9 +177,30 @@ namespace TRE
 		CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		CmdPoolCreateInfo.queueFamilyIndex = SwapChain.GetQueueIndex();
 		CmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool);
 
+		VkCommandBufferAllocateInfo CommandBufferAllocateInfo{};
+		CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		CommandBufferAllocateInfo.commandBufferCount = 1;
+		CommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
+		m_Commandbuffers.resize(ImageCount);
+		m_CommandPool.resize(ImageCount);
+
+		for (int x = 0; x < ImageCount; x++)
+		{
+			if (VkResult Result = vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool[x]); Result != VK_SUCCESS)
+			{
+				std::cout << "Unable to create a command pool" << std::endl;
+				assert(Result == VK_SUCCESS);
+			}
+
+			CommandBufferAllocateInfo.commandPool = m_CommandPool[x];
+			if (VkResult Result = vkAllocateCommandBuffers(m_Device->GetLogicalDevice(), &CommandBufferAllocateInfo, &m_Commandbuffers[x]); Result != VK_SUCCESS)
+			{
+				std::cout << "Unable to create a command buffer" << std::endl;
+				assert(Result == VK_SUCCESS);
+			}
+		}
 	}
 
 	Renderer::~Renderer()
@@ -192,9 +213,9 @@ namespace TRE
 			vkDestroyImage(m_Device->GetLogicalDevice(), m_Images[x], nullptr);
 			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
+			vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool[x], nullptr);
 		}
 
-		vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool, nullptr);
 		vkDestroyDescriptorSetLayout(m_Device->GetLogicalDevice(), m_DescriptorLayout, nullptr);
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 		vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
@@ -375,11 +396,11 @@ namespace TRE
 
 	void Renderer::BeginFrame()
 	{
-		VkCommandBuffer commandBuffer = m_Device->AllocateCommandBuffer(false);
+		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentBufferIndex();
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		if (auto Result = vkBeginCommandBuffer(commandBuffer, &beginInfo); Result != VK_SUCCESS)
+		if (auto Result = vkBeginCommandBuffer(m_Commandbuffers[Index], &beginInfo); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS);
 		}
@@ -395,7 +416,7 @@ namespace TRE
 		renderPassInfo.clearValueCount = 1;
 		renderPassInfo.pClearValues = &clearColor;
 
-		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBeginRenderPass(m_Commandbuffers[Index], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -404,15 +425,15 @@ namespace TRE
 		viewport.height = Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight();
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+		vkCmdSetViewport(m_Commandbuffers[Index], 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
 		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
-		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
 		//vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()], 0, NULL);
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 		
 		//VERY INEFFICIENT
 		for (const auto& go_mr : _ecs_manager->GetGO<MeshRenderer>())
@@ -422,16 +443,16 @@ namespace TRE
 			Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 			pc.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 
-			vkCmdPushConstants(commandBuffer, m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdPushConstants(m_Commandbuffers[Index], m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
-			mr.m_RenderObject->Bind(commandBuffer);
-			mr.m_RenderObject->Draw(commandBuffer);
+			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
+			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 
-		vkCmdEndRenderPass(commandBuffer);
+		vkCmdEndRenderPass(m_Commandbuffers[Index]);
 
-		if (auto Result = vkEndCommandBuffer(commandBuffer); Result != VK_SUCCESS)
+		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS);
 		}
@@ -441,7 +462,7 @@ namespace TRE
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		SubmitInfo.pWaitDstStageMask = &PipelineStageFlags;
 		SubmitInfo.commandBufferCount = 1;
-		SubmitInfo.pCommandBuffers = &commandBuffer;
+		SubmitInfo.pCommandBuffers = &m_Commandbuffers[Index];
 
 		if (auto Result = vkQueueSubmit(m_Device->GetGraphicsQ(), 1, &SubmitInfo, 0); Result != VK_SUCCESS)
 		{
@@ -458,9 +479,9 @@ namespace TRE
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 		VkShaderModule shaderModule;
-		if (vkCreateShaderModule(RendererContext::GetDevice()->GetLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
+		if (auto Result = vkCreateShaderModule(RendererContext::GetDevice()->GetLogicalDevice(), &createInfo, nullptr, &shaderModule); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create shader module!");
+			assert(Result == VK_SUCCESS);
 		}
 
 		return shaderModule;
