@@ -398,6 +398,7 @@ namespace TRE
 		assert(this != nullptr);
 		assert(&m_Entity != nullptr);
 		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		assert(HasComponent<T>());
 
 		return _ecs_manager->GetRegistry().get<T>(m_Entity);
 	}
