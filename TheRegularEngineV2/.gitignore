@@ -3,6 +3,7 @@
 
 # Custom Ignore
 Executable/
+TheRegularEditor/resources/Scripts
 
 # User-specific files
 *.suo

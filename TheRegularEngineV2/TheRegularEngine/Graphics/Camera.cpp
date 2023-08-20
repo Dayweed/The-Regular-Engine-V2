@@ -261,7 +261,7 @@ namespace TRE
 			assert(camera.m_AspectRatio < std::numeric_limits<float>::max());
 			assert(camera.m_Far > camera.m_Near);
 			camera.m_ProjectionMatrix = glm::mat4(1.f);
-			const float tanHalfFov = glm::tan(camera.m_Fov / 2.f);
+			const float tanHalfFov = glm::tan(glm::radians(camera.m_Fov) / 2.f);
 			camera.m_ProjectionMatrix[0][0] = 1.f / (tanHalfFov * camera.m_AspectRatio);
 			camera.m_ProjectionMatrix[1][1] = 1.f / tanHalfFov;
 			camera.m_ProjectionMatrix[2][2] = camera.m_Far / (camera.m_Far - camera.m_Near);
