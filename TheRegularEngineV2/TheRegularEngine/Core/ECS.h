@@ -45,11 +45,6 @@ namespace TRE
 		{
 			std::cout << "Transform: Destroy  have been summoned\n";
 		}
-
-		Transform& SetPosX(Transform& c)
-		{
-			c.m_PosX = 2;
-		}
 	};
 
 	class GameObject;
@@ -58,17 +53,81 @@ namespace TRE
 	class GameObject : public std::enable_shared_from_this<GameObject>
 	{
 	public:
+		/* !
+		@function	GetThis
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Returns this in the form of a shared_ptr (GO)
+					Note! Not using GameObject, but using the shared_ptr variant.
+					This should replace the variable this
+		*//*__________________________________________________________________________*/
 		GO GetThis();
 
+		/* !
+		@function	HasComponent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Checks if this GO has a specific component
+
+		Example:
+
+		if (goVar->HasComponent<ComponentStruct>())
+		{
+			// Use Properties Component
+		}
+		*//*__________________________________________________________________________*/
 		template <typename T>
 		bool HasComponent();
 
+		/* !
+		@function	AddComponent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Adds the component into the GO
+					If it already exist, can be used an alternative GetComponent
+
+		[Warning]	If the typename is not registered in _component_manager, it will
+					cause an assert
+
+		Example:
+		goVar->AddComponent<ComponentStruct>();
+
+		goVar->AddComponent<ComponentStruct>().Var = 0;
+		*//*__________________________________________________________________________*/
 		template <typename T>
 		T& AddComponent();
 
+		/* !
+		@function	GetComponent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Get the component from the GO
+
+		[Warning]	If the typename is not registered in _component_manager,
+					or the GO is deleted or the GO does not have the component,
+					it will	cause an assert
+
+		Example:
+		if 
+		*//*__________________________________________________________________________*/
 		template <typename T>
 		T& GetComponent();
 
+		/* !
+		@function	RemoveComponent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Remove the component from the GO
+
+		[Warning]	If the typename is not registered in _component_manager, it will
+					cause an assert
+
+		Example:
+		if (goVar->HasComponent<ComponentStruct>())
+		{
+			goVar->GetComponent<ComponentStruct>().Val = 0;
+		}
+		*//*__________________________________________________________________________*/
 		template <typename T>
 		void RemoveComponent();
 
