@@ -50,7 +50,7 @@ namespace TRE
 
 		std::cout << "Unable to find memory type" << std::endl;
 		assert(false);
-		return -1;
+		return 0;
 	}
 
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
