@@ -99,6 +99,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Audio\AudioSystem.h" />
     <ClInclude Include="Core\ComponentManager.h" />
     <ClInclude Include="Core\ECS.h" />
     <ClInclude Include="Core\Engine.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Audio\AudioSystem.cpp" />
     <ClCompile Include="Core\ECS.cpp" />
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\SceneManager.cpp" />
