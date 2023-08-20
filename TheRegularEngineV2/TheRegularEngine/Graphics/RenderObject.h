@@ -1,6 +1,5 @@
 #pragma once
 #define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE //Forces depth values to be [0,1] instead of openGL [-1,1]
 #include "pch.h"
 #include "Buffer.h"
 
