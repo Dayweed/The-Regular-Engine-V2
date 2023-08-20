@@ -77,6 +77,14 @@ namespace TRE
 			}
 		}
 
+		void OnDestroyGO()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->OnDestroyGO();
+			}
+		}
+
 		void ShutdownSystem()
 		{
 			for (auto& system : m_Systems)

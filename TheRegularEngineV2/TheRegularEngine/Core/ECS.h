@@ -7,6 +7,12 @@
 
 namespace TRE
 {
+	// DO NOT USE THIS UNLESS YOU WANT THE GO TO BE DELETED!
+	class Removal
+	{
+		bool fake; //This value is to ensure it can compile and be registered
+	};
+
 	class Properties
 	{
 	public:
@@ -73,6 +79,9 @@ namespace TRE
 
 		entt::registry& GetRegistry();
 
+		// Engine Loop
+		void DestroyRemovalGO();
+
 		// Shutdown Functions
 		void DestroyAll();
 
@@ -92,7 +101,7 @@ namespace TRE
 		{
 			std::cout << "\nTEST RUNNING ECS\n====================================\n";
 
-			GO test = CreateGO();
+			GO test = CreateGO("Test 1");
 			test->AddComponent<Transform>().m_PosX = 19;
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_PosX << std::endl;
 			std::cout << "Removing Editted Component...\n";
@@ -209,7 +218,7 @@ namespace TRE
 	std::vector<GO> ECSManager::GetGO()
 	{
 		std::vector<GO> objects{};
-		auto view = registry.view<Comp>();
+		auto view = registry.view<Comp, Others...>();
 
 		// Get all GO owning the entities
 		for (entt::entity obj : view)
@@ -233,14 +242,14 @@ namespace TRE
 	template <typename T>
 	bool GameObject::HasComponent()
 	{
-		assert(_component_manager->HasComponent<T>());
+		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
 		return _ecs_manager->GOHasComponent<T>(shared_from_this());
 	}
 
 	template <typename T>
 	T& GameObject::AddComponent()
 	{
-		assert(_component_manager->HasComponent<T>());
+		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
 
 		if (HasComponent<T>())
 		{
@@ -255,7 +264,7 @@ namespace TRE
 		// Ensure cannot get a component from a freed object and entity
 		assert(this != nullptr);
 		assert(&m_Entity != nullptr);
-		assert(_component_manager->HasComponent<T>());
+		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
 
 		return _ecs_manager->GetRegistry().get<T>(m_Entity);
 	}
@@ -266,7 +275,7 @@ namespace TRE
 		// Ensure cannot get a component from a freed object and entity
 		assert(this != nullptr);
 		assert(&m_Entity != nullptr);
-		assert(_component_manager->HasComponent<T>());
+		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
 
 		_ecs_manager->GetRegistry().remove<T>(m_Entity);
 	}

@@ -65,7 +65,8 @@ namespace TRE
 	void Engine::RegisterECS()
 	{
 		// Register Component
-		_component_manager->RegisterComponent<Properties>("Properties");
+		_component_manager->RegisterComponent<Removal>("Removal", true);
+		_component_manager->RegisterComponent<Properties>("Properties", true);
 		_component_manager->RegisterComponent<Transform>("Transform");
 		_component_manager->RegisterComponent<MeshRenderer>("Mesh Renderer");
 
@@ -77,6 +78,9 @@ namespace TRE
 
 	void Engine::Update()
 	{
+		// To remove eventually
+		_ecs_manager->TESTRUN();
+
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
@@ -92,12 +96,15 @@ namespace TRE
 			if (m_EngineInfo.EnableEditor)
 			{
 				m_VulkanEditor->BeginFrame();
-				_system_manager->UpdateSystem();
-				m_VulkanEditor->EndFrame();
 			}
-			else
+
+			_system_manager->UpdateSystem();
+			_system_manager->OnDestroyGO();
+			_ecs_manager->DestroyRemovalGO();
+
+			if (m_EngineInfo.EnableEditor)
 			{
-				_system_manager->UpdateSystem();
+				m_VulkanEditor->EndFrame();
 			}
 
 			m_Window->SwapBuffers();

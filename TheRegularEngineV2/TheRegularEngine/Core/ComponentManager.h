@@ -15,13 +15,17 @@ namespace TRE
 		}
 
 		template <typename T>
-		void RegisterComponent(std::string name)
+		void RegisterComponent(std::string name, bool hidden = false)
 		{
 			auto hashcode = typeid(T).hash_code();
 
 			assert(m_Components.find(hashcode) == m_Components.end()); //Make sure don't double register
+			assert(m_HiddenComponents.find(hashcode) == m_HiddenComponents.end()); //Make sure don't double register
 
-			m_Components.emplace(std::piecewise_construct, std::forward_as_tuple(hashcode), std::forward_as_tuple(name));
+			if (hidden)
+				m_HiddenComponents.emplace(std::piecewise_construct, std::forward_as_tuple(hashcode), std::forward_as_tuple(name));
+			else
+				m_Components.emplace(std::piecewise_construct, std::forward_as_tuple(hashcode), std::forward_as_tuple(name));
 			// m_Components.insert({ hashcode, name });	// This works too
 		}
 
@@ -40,6 +44,13 @@ namespace TRE
 		{
 			auto hashcode = typeid(T).hash_code();
 			return m_Components.find(hashcode) != m_Components.end();
+		}
+
+		template <typename T>
+		bool HasHiddenComponent()
+		{
+			auto hashcode = typeid(T).hash_code();
+			return m_HiddenComponents.find(hashcode) != m_HiddenComponents.end();
 		}
 
 		template <typename T>
@@ -63,6 +74,7 @@ namespace TRE
 		void* operator new(size_t) = delete;
 
 		std::map<size_t, std::string> m_Components;
+		std::map<size_t, std::string> m_HiddenComponents; // This is not to be exposed in Imgui
 	};
 	static ComponentManager* _component_manager{ &ComponentManager::Instance() };
 }

@@ -9,6 +9,7 @@ namespace TRE
 
 			virtual void RenderImgui() {};
 			virtual void Update() = 0;
+			virtual void OnDestroyGO() {};
 			virtual void Shutdown() = 0;
 	};
 }

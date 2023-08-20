@@ -14,6 +14,24 @@ namespace TRE
 		return registry;
 	}
 
+	void ECSManager::DestroyRemovalGO()
+	{
+		for (GO& object : GetGO<Removal>())
+		{
+			// Remove from m_GOList
+			auto it = std::find_if(m_GOList.begin(), m_GOList.end(), [&](GO& go) { return go.get() == object.get(); });
+			if (it != m_GOList.end())
+			{
+				m_GOList.erase(it);
+			}
+			object->AbandonChildren();
+			// Release all components and entity itself
+			registry.destroy(object->m_Entity);
+			// Free unique ptr from the object
+			object.reset();
+		}
+	}
+
 	void ECSManager::DestroyAll()
 	{
 		for (GO obj : m_GOList)
@@ -34,17 +52,8 @@ namespace TRE
 
 	void ECSManager::DestroyGO(GO& object)
 	{
-		// Remove from m_GOList
-		auto it = std::find_if(m_GOList.begin(), m_GOList.end(), [&](GO& go) { return go.get() == object.get(); });
-		if (it != m_GOList.end())
-		{
-			m_GOList.erase(it);
-		}
-		object->AbandonChildren();
-		// Release all components and entity itself
-		registry.destroy(object->m_Entity);
-		// Free unique ptr from the object
-		object.reset();
+		object->AddComponent<Removal>();
+		return;
 	}
 
 	GO ECSManager::CloneGO(GO& object, std::string name)

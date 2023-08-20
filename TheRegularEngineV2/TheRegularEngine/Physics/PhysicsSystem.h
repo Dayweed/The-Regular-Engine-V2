@@ -18,6 +18,7 @@ namespace TRE
 		bool TESTInit();
 		void Update() override;
 		void RenderImgui() override;
+		void OnDestroyGO() override;
 		void Shutdown() override;
 
 	private:

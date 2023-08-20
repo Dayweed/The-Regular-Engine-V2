@@ -95,6 +95,16 @@ namespace TRE
 
 	}
 
+	void PhysicsSystem::OnDestroyGO()
+	{
+		/*std::cout << "Destroy GOs that have transform is to be removed\n";
+		for (GO obj : _ecs_manager->GetGO<Transform, Removal>())
+		{
+			std::cout << "Found object " << obj->GetComponent<Properties>().m_Name << "\n";
+		}
+		std::cout << "================\n";*/
+	}
+
 	void PhysicsSystem::Shutdown()
 	{
 		std::cout << "Physics System Shutdown\n";
