@@ -251,7 +251,7 @@ namespace TRE
 			std::cout << "-- If size is same, it did not update\n";
 
 			std::cout << "\n- Testing if changing variables using patch in entt would affect\n";
-			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = newVal; });
+			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = 5; });
 			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
 			std::cout << "-- If size is same, it did not update\n";
 
@@ -260,9 +260,11 @@ namespace TRE
 			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
 			std::cout << "-- If size is same, it did not dup\n";
 
-			std::cout << "\n-Clearing observers size...\n";
+			std::cout << "\n- Clearing observers size... (REMEMBER TO DISCONNECT FROM REGISTRY OR IT WILL CRASH ON SHUTDOWN!)\n";
 			existingObserver.clear();
 			updatedObserver.clear();
+			existingObserver.disconnect();
+			updatedObserver.disconnect();
 			std::cout << "- Testing complete!\n";
 
 			std::cout << "====================================\n\n";

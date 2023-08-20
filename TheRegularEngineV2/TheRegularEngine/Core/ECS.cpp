@@ -37,8 +37,9 @@ namespace TRE
 		for (GO obj : m_GOList)
 		{
 			obj->AbandonChildren();
+			DestroyGO(obj);
 		}
-		registry.clear();
+		DestroyRemovalGO();
 	}
 
 	GO ECSManager::CreateGO(std::string name)
