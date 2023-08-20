@@ -82,12 +82,12 @@ namespace TRE
 		m_Scene->fetchResults(true);
 #endif
 
-		std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
+		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
 		for (GO obj : _ecs_manager->GetGO<Transform>())
 		{
 			std::cout << obj->GetComponent<Transform>().m_PosX << "|";
 		}
-		std::cout << "\n-------------------------------------------------------------------\n";
+		std::cout << "\n-------------------------------------------------------------------\n";*/
 	}
 
 	void PhysicsSystem::RenderImgui()

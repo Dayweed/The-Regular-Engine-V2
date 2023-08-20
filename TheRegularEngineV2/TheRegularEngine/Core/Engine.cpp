@@ -59,7 +59,6 @@ namespace TRE
 
 	void Engine::Update()
 	{
-		_ecs_manager->TESTRUN();
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
