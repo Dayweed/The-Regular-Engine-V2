@@ -9,8 +9,8 @@ namespace TRE
 	class Camera
 	{
 	public:
-		glm::vec3 m_Position{};
-		glm::vec3 m_Rotation{};
+		glm::vec3 m_Position{ 0.f, 0.f, 0.f };
+		glm::vec3 m_Rotation{ 0.f, 0.f, 0.f };
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
 		glm::vec2 m_ViewportSize{ 1920.f, 1080.f };
@@ -22,7 +22,7 @@ namespace TRE
 		float m_Bottom{ -1.f };
 		float m_Top{ 1.f };
 		float m_AspectRatio{ 16.f / 9.f };
-		bool m_IsPerspective{ false };
+		bool m_IsPerspective{ true };
 		bool m_IsMainCamera{ false };
 		bool m_IsDirty{ false };
 	};

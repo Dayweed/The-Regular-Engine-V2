@@ -436,9 +436,11 @@ namespace TRE
 		for (const auto& go_mr : _ecs_manager->GetGO<MeshRenderer>())
 		{
 			PushConstant pc{};
-			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
 			Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-			pc.m_ViewProj = mainCamera.m_ViewMatrix * mainCamera.m_ProjectionMatrix;
+			pc.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
+
+			vkCmdPushConstants(commandBuffer, m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			mr.m_RenderObject->Bind(commandBuffer);

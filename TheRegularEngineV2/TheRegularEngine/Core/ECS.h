@@ -3,6 +3,7 @@
 #include "entt.hpp"
 #include "System.h"
 #include "ComponentManager.h"
+#include "Transform.h"
 #include <typeindex>
 
 namespace TRE
@@ -18,33 +19,6 @@ namespace TRE
 	public:
 		std::string m_Name;
 		bool m_Active;
-	};
-
-	class Transform
-	{
-	public:
-		float m_PosX;
-		float m_PosY;
-		float m_PosZ;
-
-		float m_ScaleX;
-		float m_ScaleY;
-		float m_ScaleZ;
-
-		static void Init()
-		{
-			std::cout << "Transform: Init have been summoned\n";
-		}
-
-		static void UpdateValues()
-		{
-			std::cout << "Transform: UpdateValues have been summoned\n";
-		}
-
-		static void Destroy()
-		{
-			std::cout << "Transform: Destroy  have been summoned\n";
-		}
 	};
 
 	class GameObject;
@@ -181,8 +155,8 @@ namespace TRE
 			std::cout << "\nTEST RUNNING ECS\n====================================\n";
 
 			GO test = CreateGO("Test 1");
-			test->AddComponent<Transform>().m_PosX = 19;
-			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_PosX << std::endl;
+			test->AddComponent<Transform>().m_Position.x = 19;
+			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_Position.x << std::endl;
 			std::cout << "Removing Editted Component...\n";
 			test->RemoveComponent<Transform>();
 			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_PosX << std::endl; // Will call assert in GetComponent!
@@ -207,13 +181,13 @@ namespace TRE
 			std::cout << "Testing cloning GO...\n";
 			std::cout << "- Setting Original GO value to 123...\n";
 			GO oriobj = CreateGO("oriobj");
-			oriobj->AddComponent<Transform>().m_PosX = 123;
+			oriobj->AddComponent<Transform>().m_Position.x = 123;
 			std::cout << "- Cloning Original GO\n";
 			GO cloneobj = CloneGO(oriobj);
-			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_PosX << "\n";
+			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_Position.x << "\n";
 			std::cout << "- Setting Original GO value to 0...\n";
-			oriobj->GetComponent<Transform>().m_PosX = 0;
-			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_PosX << "\n";
+			oriobj->GetComponent<Transform>().m_Position.x = 0;
+			std::cout << "- Cloned GO value is " << cloneobj->GetComponent<Transform>().m_Position.x << "\n";
 
 			std::cout << "\nIterating All Available Component in ComponentManager\n";
 			for (auto comp : _component_manager->m_Components)
@@ -281,14 +255,14 @@ namespace TRE
 			std::cout << "\nTesting Listening to Adding Component, should call Init\n";
 			listenerGO->AddComponent<Transform>();
 			std::cout << "\nTesting Listening to Changing Component Values, should call Update\n";
-			listenerGO->GetComponent<Transform>().m_PosX = 5; // This wont work
-			listenerGO->GetComponent<Transform>().m_PosY = 85; // This wont work
-			std::cout << "Original Value: " << listenerGO->GetComponent<Transform>().m_PosX << ", " << listenerGO->GetComponent<Transform>().m_PosY << "\n";
+			listenerGO->GetComponent<Transform>().m_Position.x = 5; // This wont work
+			listenerGO->GetComponent<Transform>().m_Position.y = 85; // This wont work
+			std::cout << "Original Value: " << listenerGO->GetComponent<Transform>().m_Position.x << ", " << listenerGO->GetComponent<Transform>().m_Position.y << "\n";
 			// replaces the component in-place
 			int newVal = 69;
-			GetRegistry().patch<Transform>(listenerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = newVal; });
+			GetRegistry().patch<Transform>(listenerGO->m_Entity, [&](Transform& pos) { pos.m_Position.x = newVal; });
 			//GetRegistry().patch<Transform>(listenerGO->m_Entity, &Transform::SetPosX);
-			std::cout << "New Value: " << listenerGO->GetComponent<Transform>().m_PosX << ", " << listenerGO->GetComponent<Transform>().m_PosY << "\n";
+			std::cout << "New Value: " << listenerGO->GetComponent<Transform>().m_Position.x << ", " << listenerGO->GetComponent<Transform>().m_Position.y << "\n";
 			std::cout << "\nTesting Listening to Destroying Values, should call Destroy\n";
 			listenerGO->RemoveComponent<Transform>();
 			std::cout << "- Testing complete!\n";
@@ -305,17 +279,17 @@ namespace TRE
 			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
 
 			std::cout << "\n- Testing if changing variables manually would affect\n";
-			observerGO->GetComponent<Transform>().m_PosX = 5;
+			observerGO->GetComponent<Transform>().m_Position.x = 5;
 			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
 			std::cout << "-- If size is same, it did not update\n";
 
 			std::cout << "\n- Testing if changing variables using patch in entt would affect\n";
-			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = 5; });
+			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_Position.x = 5; });
 			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
 			std::cout << "-- If size is same, it did not update\n";
 
 			std::cout << "\n- Testing if changing variables using patch in entt on the same GO would cause dups\n";
-			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = 0; });
+			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_Position.x = 0; });
 			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
 			std::cout << "-- If size is same, it did not dup\n";
 

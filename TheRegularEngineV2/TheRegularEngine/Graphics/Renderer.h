@@ -8,7 +8,7 @@ namespace TRE
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
-		glm::mat4 m_ViewProj; //World to view to projection
+		glm::mat4 m_ProjView; //World to view to projection
 	};
 
 	class Renderer
