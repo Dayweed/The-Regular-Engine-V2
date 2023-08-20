@@ -30,6 +30,26 @@ namespace TRE
 		float m_ScaleX;
 		float m_ScaleY;
 		float m_ScaleZ;
+
+		static void Init()
+		{
+			std::cout << "Transform: Init have been summoned\n";
+		}
+
+		static void UpdateValues()
+		{
+			std::cout << "Transform: UpdateValues have been summoned\n";
+		}
+
+		static void Destroy()
+		{
+			std::cout << "Transform: Destroy  have been summoned\n";
+		}
+
+		Transform& SetPosX(Transform& c)
+		{
+			c.m_PosX = 2;
+		}
 	};
 
 	class GameObject;
@@ -192,6 +212,58 @@ namespace TRE
 			std::cout << "- Attempting to remove a non child in parentGO...\n";
 			parentGO->AbandonChild(test2);
 			std::cout << "- Testing Complete\n";
+
+			std::cout << "\nTesting Listener\n";
+			registry.on_construct<Transform>().connect<&Transform::Init>();
+			registry.on_update<Transform>().connect<&Transform::UpdateValues>();
+			registry.on_destroy<Transform>().connect<&Transform::Destroy>();
+
+			GO listenerGO = CreateGO("listenerGO");
+			std::cout << "\nTesting Listening to Adding Component, should call Init\n";
+			listenerGO->AddComponent<Transform>();
+			std::cout << "\nTesting Listening to Changing Component Values, should call Update\n";
+			listenerGO->GetComponent<Transform>().m_PosX = 5; // This wont work
+			listenerGO->GetComponent<Transform>().m_PosY = 85; // This wont work
+			std::cout << "Original Value: " << listenerGO->GetComponent<Transform>().m_PosX << ", " << listenerGO->GetComponent<Transform>().m_PosY << "\n";
+			// replaces the component in-place
+			int newVal = 69;
+			GetRegistry().patch<Transform>(listenerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = newVal; });
+			//GetRegistry().patch<Transform>(listenerGO->m_Entity, &Transform::SetPosX);
+			std::cout << "New Value: " << listenerGO->GetComponent<Transform>().m_PosX << ", " << listenerGO->GetComponent<Transform>().m_PosY << "\n";
+			std::cout << "\nTesting Listening to Destroying Values, should call Destroy\n";
+			listenerGO->RemoveComponent<Transform>();
+			std::cout << "- Testing complete!\n";
+
+			std::cout << "\nTesting observer noticing if any Transform change\n";
+			entt::observer existingObserver{ registry, entt::collector.group<Transform>() };
+			entt::observer updatedObserver{ registry, entt::collector.update<Transform>() };
+			std::cout << "- Adding GO for observer to observe...\n";
+			GO observerGO = CreateGO("ObserverGO");
+			observerGO->AddComponent<Transform>();
+
+			std::cout << "Existing Transform Observer Size: " << existingObserver.size() << "\n";
+
+			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
+
+			std::cout << "\n- Testing if changing variables manually would affect\n";
+			observerGO->GetComponent<Transform>().m_PosX = 5;
+			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
+			std::cout << "-- If size is same, it did not update\n";
+
+			std::cout << "\n- Testing if changing variables using patch in entt would affect\n";
+			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = newVal; });
+			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
+			std::cout << "-- If size is same, it did not update\n";
+
+			std::cout << "\n- Testing if changing variables using patch in entt on the same GO would cause dups\n";
+			GetRegistry().patch<Transform>(observerGO->m_Entity, [&](Transform& pos) { pos.m_PosX = 0; });
+			std::cout << "Updated Transform Observer Size: " << updatedObserver.size() << "\n";
+			std::cout << "-- If size is same, it did not dup\n";
+
+			std::cout << "\n-Clearing observers size...\n";
+			existingObserver.clear();
+			updatedObserver.clear();
+			std::cout << "- Testing complete!\n";
 
 			std::cout << "====================================\n\n";
 		}
