@@ -13,13 +13,11 @@ namespace TRE
 
 	void AudioSystem::Initialize()
 	{
-
 		FMOD::System_Create(&m_System);
 		m_System->init(MAX_CHANNELS, FMOD_INIT_NORMAL, nullptr);
 
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
-
 	}
 
 	void AudioSystem::Shutdown()
@@ -56,7 +54,8 @@ namespace TRE
 
 	void AudioSystem::Play(AudioData* file)
 	{
-		m_System->playSound(m_Sound, file->m_ChannelGroup, false, &m_Channel);
+		file->m_Pause = false;
+		m_System->playSound(m_Sound, file->m_ChannelGroup, file->m_Pause, &m_Channel);
 	}
 
 	void AudioSystem::TogglePause(AudioData* file)
