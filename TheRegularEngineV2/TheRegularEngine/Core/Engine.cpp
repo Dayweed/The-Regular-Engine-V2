@@ -6,6 +6,7 @@
 //TO DELETE
 #pragma region TO DELETE TEST
 #include "Graphics/MeshRenderer.h"
+#include "Graphics/Camera.h"
 namespace TRE
 {
 	void DemoScene()
@@ -16,6 +17,14 @@ namespace TRE
 		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/flat_vase.obj");
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
+		//test->GetComponent<MeshRenderer>().SetRenderObject(vase);
+
+		GO test2 = _ecs_manager->CreateGO();
+		test2->AddComponent<Properties>().m_Name = "Test2";
+		test2->AddComponent<Transform>().m_PosX = 0.0f;
+		test2->AddComponent<Camera>();
+
+		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(test2, true);
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -69,9 +78,11 @@ namespace TRE
 		_component_manager->RegisterComponent<Properties>("Properties", true);
 		_component_manager->RegisterComponent<Transform>("Transform");
 		_component_manager->RegisterComponent<MeshRenderer>("Mesh Renderer");
+		_component_manager->RegisterComponent<Camera>("Camera");
 
 		// Register System
 		_system_manager->RegisterSystem<PhysicsSystem>();
+		_system_manager->RegisterSystem<CameraSystem>();
 
 		DemoScene();
 	}

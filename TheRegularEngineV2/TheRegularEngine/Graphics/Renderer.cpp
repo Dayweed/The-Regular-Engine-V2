@@ -4,6 +4,7 @@
 #include "RendererContext.h"
 #include "MeshRenderer.h"
 #include "imgui_impl_vulkan.h"
+#include "Camera.h"
 
 namespace TRE
 {
@@ -326,13 +327,20 @@ namespace TRE
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
+		VkPushConstantRange pushConstantRange{};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; //Push constant can be accessed from both vertex and fragment shaders
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(PushConstant);
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorLayout; //change
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
-		if (vkCreatePipelineLayout(m_Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS) {
+		if (vkCreatePipelineLayout(m_Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS) 
+		{
 			throw std::runtime_error("failed to create pipeline layout!");
 		}
 
@@ -425,10 +433,16 @@ namespace TRE
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 		
 		//VERY INEFFICIENT
-		for (const auto& go : _ecs_manager->GetGO<MeshRenderer>())
+		for (const auto& go_mr : _ecs_manager->GetGO<MeshRenderer>())
 		{
-			(go.get())->GetComponent<MeshRenderer>().m_RenderObject->Bind(commandBuffer);
-			(go.get())->GetComponent<MeshRenderer>().m_RenderObject->Draw(commandBuffer);
+			PushConstant pc{};
+			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+			pc.m_ViewProj = mainCamera.m_ViewMatrix * mainCamera.m_ProjectionMatrix;
+
+			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			mr.m_RenderObject->Bind(commandBuffer);
+			mr.m_RenderObject->Draw(commandBuffer);
 		}
 
 		vkCmdEndRenderPass(commandBuffer);

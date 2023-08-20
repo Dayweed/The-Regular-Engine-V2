@@ -12,9 +12,9 @@ namespace TRE
 	{
 		std::cout << "dtor\n";
 	}
-	
-	void MeshRenderer::SetRenderObject(std::shared_ptr<RenderObject> renderObject)
+	*/
+	void MeshRenderer::SetRenderObject(const std::shared_ptr<RenderObject>& renderObject)
 	{
 		m_RenderObject = renderObject;
-	}*/
+	}
 }

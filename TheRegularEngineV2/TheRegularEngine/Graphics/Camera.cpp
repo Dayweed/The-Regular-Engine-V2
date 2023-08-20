@@ -1,0 +1,285 @@
+#include "pch.h"
+#include "Camera.h"
+
+namespace TRE
+{
+	void CameraSystem::Update()
+	{
+		for (GO& go : _ecs_manager->GetGO<Camera>())
+		{
+			Camera& camera = go.get()->GetComponent<Camera>();
+			if (camera.m_IsDirty)
+			{
+				UpdateViewMatrix(camera);
+				UpdateProjectionMatrix(camera);
+				camera.m_IsDirty = false;
+				m_IsDirty = true;	//To update descriptor set then reset back after
+			}
+		}
+	}
+
+	void CameraSystem::RenderImgui()
+	{
+
+	}
+
+	void CameraSystem::Shutdown()
+	{
+
+	}
+
+	void CameraSystem::SetPosition(GO& go, const glm::vec3& position)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Position = position;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetRotation(GO& go, const glm::vec3& rotation)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Rotation = rotation;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetViewportSize(GO& go, const glm::vec2& viewportSize)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_ViewportSize = viewportSize;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetFov(GO& go, const float fov)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Fov = fov;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetNear(GO& go, const float near)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Near = near;
+		camera.m_IsDirty = true;
+	}
+	
+	void CameraSystem::SetFar(GO& go, const float far)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Far = far;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetLeft(GO& go, const float left)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Left = left;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetRight(GO& go, const float right)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Right = right;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetBottom(GO& go, const float bottom)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Bottom = bottom;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetTop(GO& go, const float top)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Top = top;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetAspectRatio(GO& go, const float aspectRatio)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_AspectRatio= aspectRatio;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetIsPerspective(GO& go, const bool isPerspective)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_IsPerspective= isPerspective;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetIsMainCamera(GO& go, const bool isMainCamera)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_IsMainCamera = isMainCamera;
+		camera.m_IsDirty = true;
+	}
+
+	const glm::vec3& CameraSystem::GetPosition(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Position;
+	}
+
+	const glm::vec3& CameraSystem::GetRotation(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Rotation;
+	}
+
+	const glm::mat4& CameraSystem::GetViewMatrix(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_ViewMatrix;
+	}
+
+	const glm::mat4& CameraSystem::GetProjectionMatrix(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_ProjectionMatrix;
+	}
+
+	const glm::vec2& CameraSystem::GetViewportSize(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_ViewportSize;
+	}
+
+	const float CameraSystem::GetFov(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Fov;
+	}
+
+	const float CameraSystem::GetNear(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Near;
+	}
+
+	const float CameraSystem::GetFar(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Far;
+	}
+
+	const float CameraSystem::GetLeft(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Left;
+	}
+
+	const float CameraSystem::GetRight(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Right;
+	}
+
+	const float CameraSystem::GetBottom(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Bottom;
+	}
+
+	const float CameraSystem::GetTop(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Top;
+	}
+
+	const float CameraSystem::GetAspectRatio(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_AspectRatio;
+	}
+
+	const bool CameraSystem::IsPerspective(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_IsPerspective;
+	}
+
+	const bool CameraSystem::IsMainCamera(const GO& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_IsMainCamera;
+	}
+
+	GO CameraSystem::GetMainCamera() const
+	{
+		//Can only have one main camera
+		GO mainCamera;
+		int count = 0;
+		for (GO& go : _ecs_manager->GetGO<Camera>())
+		{
+			Camera& camera = go.get()->GetComponent<Camera>();
+			if (camera.m_IsMainCamera)
+			{
+				++count;
+				mainCamera = go;
+			}
+		}
+
+		assert(count == 1 && "There can only be one main camera");
+		return mainCamera;
+	}
+
+
+	void CameraSystem::SetIsDirty(const bool isDirty)
+	{
+		m_IsDirty = isDirty;
+	}
+
+	const bool CameraSystem::GetIsDirty() const
+	{
+		return m_IsDirty;
+	}
+
+	void CameraSystem::UpdateViewMatrix(Camera& camera)
+	{
+		const glm::vec3 rotation = camera.m_Rotation;
+		const float c3 = glm::cos(rotation.z);
+		const float s3 = glm::sin(rotation.z);
+		const float c2 = glm::cos(rotation.x);
+		const float s2 = glm::sin(rotation.x);
+		const float c1 = glm::cos(rotation.y);
+		const float s1 = glm::sin(rotation.y);
+		const glm::vec3 u{ (c1 * c3 + s1 * s2 * s3), (c2 * s3), (c1 * s2 * s3 - c3 * s1) };
+		const glm::vec3 v{ (c3 * s1 * s2 - c1 * s3), (c2 * c3), (c1 * c3 * s2 + s1 * s3) };
+		const glm::vec3 w{ (c2 * s1), (-s2), (c1 * c2) };
+		camera.m_ViewMatrix = glm::mat4{ 1.f };
+		camera.m_ViewMatrix[0][0] = u.x;
+		camera.m_ViewMatrix[1][0] = u.y;
+		camera.m_ViewMatrix[2][0] = u.z;
+		camera.m_ViewMatrix[0][1] = v.x;
+		camera.m_ViewMatrix[1][1] = v.y;
+		camera.m_ViewMatrix[2][1] = v.z;
+		camera.m_ViewMatrix[0][2] = w.x;
+		camera.m_ViewMatrix[1][2] = w.y;
+		camera.m_ViewMatrix[2][2] = w.z;
+		camera.m_ViewMatrix[3][0] = -glm::dot(u, camera.m_Position);
+		camera.m_ViewMatrix[3][1] = -glm::dot(v, camera.m_Position);
+		camera.m_ViewMatrix[3][2] = -glm::dot(w, camera.m_Position);
+	}
+
+	void CameraSystem::UpdateProjectionMatrix(Camera& camera)
+	{
+		if (camera.m_IsPerspective)
+		{
+			assert(camera.m_Fov > 0.f);
+			assert(camera.m_Fov < std::numeric_limits<float>::max());
+			assert(camera.m_AspectRatio > 0.f);
+			assert(camera.m_AspectRatio < std::numeric_limits<float>::max());
+			assert(camera.m_Far > camera.m_Near);
+			camera.m_ProjectionMatrix = glm::mat4(1.f);
+			const float tanHalfFov = glm::tan(camera.m_Fov / 2.f);
+			camera.m_ProjectionMatrix[0][0] = 1.f / (tanHalfFov * camera.m_AspectRatio);
+			camera.m_ProjectionMatrix[1][1] = 1.f / tanHalfFov;
+			camera.m_ProjectionMatrix[2][2] = camera.m_Far / (camera.m_Far - camera.m_Near);
+			camera.m_ProjectionMatrix[2][3] = 1.f;
+			camera.m_ProjectionMatrix[3][2] = -(camera.m_Far * camera.m_Near) / (camera.m_Far - camera.m_Near);
+		}
+		else
+		{
+			assert(camera.m_Right > camera.m_Left);
+			assert(camera.m_Top > camera.m_Bottom);
+			assert(camera.m_Far > camera.m_Near);
+			camera.m_ProjectionMatrix = glm::mat4(1.f);
+			camera.m_ProjectionMatrix[0][0] = 2.f / (camera.m_Right - camera.m_Left);
+			camera.m_ProjectionMatrix[1][1] = 2.f / (camera.m_Top - camera.m_Bottom);
+			camera.m_ProjectionMatrix[2][2] = 1.f / (camera.m_Far - camera.m_Near);
+			camera.m_ProjectionMatrix[3][0] = -(camera.m_Right + camera.m_Left) / (camera.m_Right - camera.m_Left);
+			camera.m_ProjectionMatrix[3][1] = -(camera.m_Top + camera.m_Bottom) / (camera.m_Top - camera.m_Bottom);
+			camera.m_ProjectionMatrix[3][2] = -camera.m_Near / (camera.m_Far - camera.m_Near);
+		}
+	}
+}
