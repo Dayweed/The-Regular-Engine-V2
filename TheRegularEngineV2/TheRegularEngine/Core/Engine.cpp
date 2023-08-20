@@ -3,6 +3,23 @@
 #include "Engine.h"
 #include "Physics/PhysicsSystem.h"
 
+//TO DELETE
+#pragma region TO DELETE TEST
+#include "Graphics/MeshRenderer.h"
+namespace TRE
+{
+	void DemoScene()
+	{
+		GO test = _ecs_manager->CreateGO();
+		test->AddComponent<Properties>().m_Name = "Test";
+		test->AddComponent<Transform>().m_PosX = 400.0f;
+		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/flat_vase.obj");
+		test->AddComponent<MeshRenderer>();
+		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
+	}
+}
+#pragma endregion TO DELETE TEST
+
 namespace TRE
 {
 	Engine* Engine::s_Instance = nullptr;
@@ -39,8 +56,6 @@ namespace TRE
 
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
-
-		//RegisterSystems<PhysicsSystem>();
 	}
 
 	Engine::~Engine()
@@ -52,9 +67,12 @@ namespace TRE
 		// Register Component
 		_component_manager->RegisterComponent<Properties>("Properties");
 		_component_manager->RegisterComponent<Transform>("Transform");
+		_component_manager->RegisterComponent<MeshRenderer>("Mesh Renderer");
 
 		// Register System
 		_system_manager->RegisterSystem<PhysicsSystem>();
+
+		DemoScene();
 	}
 
 	void Engine::Update()
@@ -62,7 +80,12 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose())
 		{
 			m_Window->PollEvents();
-			
+
+			//Update
+
+
+
+			//Draw
 			m_Window->GetSwapChain().BeginFrame();
 			m_Renderer->BeginFrame();
 

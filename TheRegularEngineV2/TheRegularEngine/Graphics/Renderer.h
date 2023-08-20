@@ -45,6 +45,6 @@ namespace TRE
 
 			VkDescriptorPool m_DescriptorPool;
 
-			std::vector<std::shared_ptr<RenderObject>> m_RenderObjects;
+			//std::vector<std::shared_ptr<RenderObject>> m_RenderObjects;
 	};
 }
