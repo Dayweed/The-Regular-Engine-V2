@@ -23,14 +23,18 @@ namespace TRE
 		//Create foundation is similar to initializing the scene
 		m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
 
+		// doesn't pass in name parameter when allocating stuff on its own now
+		// one less thing passed in, the better I guess.
+		m_Foundation->setReportAllocationNames(false);
+
 		printf("PhysX Version: %d.%d.%d\n",
 			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
 
 #if HAHA_PHYSX_PVD
 		//PVD is like a debugger for the physics (leave off for submission)
 		m_Pvd = PxCreatePvd(*m_Foundation);
-		physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-		m_Pvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
+		m_Transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+		m_Pvd->connect(*m_Transport, physx::PxPvdInstrumentationFlag::eALL);
 #endif
 
 		m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, physx::PxTolerancesScale(), true, m_Pvd);
@@ -47,12 +51,15 @@ namespace TRE
 		m_Scene = m_Physics->createScene(sceneDesc);
 
 #if HAHA_PHYSX_PVD
-		physx::PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient();
-		if (pvdClient)
+		if (physx::PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
 		{
 			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+		}
+		else
+		{
+			printf("oh no, no flags for my pvd :(\n");
 		}
 #endif
 
@@ -60,12 +67,12 @@ namespace TRE
 		m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
 
 		//Static object creation
-		physx::PxRigidStatic* groundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0), *m_Material);
-		m_Scene->addActor(*groundPlane);
+		m_GroundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0), *m_Material);
+		m_Scene->addActor(*m_GroundPlane);
 
 		//Create 5 stacks of boxes
 		for (physx::PxU32 i = 0; i < 5; i++)
-			createStack(physx::PxTransform(physx::PxVec3(0, 0, m_stackZ -= 10.0f)), 10, 2.0f);
+			CreateStack(physx::PxTransform(physx::PxVec3(0, 0, m_stackZ -= 10.0f)), 10, 2.0f);
 #endif
 		return m_IsInitialized = true;
 	}
@@ -108,11 +115,25 @@ namespace TRE
 	void PhysicsSystem::Shutdown()
 	{
 		std::cout << "Physics System Shutdown\n";
+#if HAHA_PHYSX_TEST
+		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
+		// WAIT I FOUND OUT.
+		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
+
+		PX_RELEASE(m_GroundPlane);
+		PX_RELEASE(m_Material);
+		PX_RELEASE(m_Scene);
+		PX_RELEASE(m_Dispatcher);
+		PX_RELEASE(m_Physics);
+		PX_RELEASE(m_Transport);
+		PX_RELEASE(m_Pvd);
+		PX_RELEASE(m_Foundation);
+#endif
 	}
 
 #if HAHA_PHYSX_TEST
 	//This function creates a stack of boxes
-	void PhysicsSystem::createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent)
+	void PhysicsSystem::CreateStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent)
 	{
 		//Create the shape of the box
 		// physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(halfExtent, halfExtent, halfExtent), *m_Material);
