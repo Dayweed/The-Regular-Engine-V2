@@ -17,6 +17,7 @@ IncludeDir["PhysX"] = "%{wks.location}/Dependencies/PhysX/include"
 IncludeDir["VULKANSDK"] = "%{VULKAN_SDK}/Include"
 IncludeDir["Rapidjson"] = "%{wks.location}/Dependencies/Rapidjson/include"
 IncludeDir["spdlog"] = "%{wks.location}/Dependencies/spdlog"
+IncludeDir["tinyobjloader"] = "%{wks.location}/Dependencies/tinyobjloader"
 
 LibraryDir = {}
 LibraryDir["Assimp"] = "%{wks.location}/Dependencies/assimp/lib"
