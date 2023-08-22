@@ -411,6 +411,7 @@ namespace TRE
 		assert(&m_Entity != nullptr);
 		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
 
-		_ecs_manager->GetRegistry().remove<T>(m_Entity);
+		if (HasComponent<T>())
+			_ecs_manager->GetRegistry().remove<T>(m_Entity);
 	}
 }
