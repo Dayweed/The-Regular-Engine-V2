@@ -21,10 +21,12 @@ namespace TRE
 
 		GO test2 = _ecs_manager->CreateGO();
 		test2->AddComponent<Properties>().m_Name = "Test2";
-		test2->AddComponent<Transform>().m_Position;
+		// test2->AddComponent<Transform>().m_Position;
 		test2->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(test2, true);
+
+		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -73,14 +75,15 @@ namespace TRE
 
 	void Engine::RegisterECS()
 	{
-		// Register Component
+		// Register Components
 		_component_manager->RegisterComponent<Removal>("Removal", true);
 		_component_manager->RegisterComponent<Properties>("Properties", true);
 		_component_manager->RegisterComponent<Transform>("Transform");
 		_component_manager->RegisterComponent<MeshRenderer>("Mesh Renderer");
 		_component_manager->RegisterComponent<Camera>("Camera");
+		_component_manager->RegisterComponent<SphereCollider>("SphereCollider");
 
-		// Register System
+		// Register Systems
 		_system_manager->RegisterSystem<PhysicsSystem>();
 		_system_manager->RegisterSystem<CameraSystem>();
 

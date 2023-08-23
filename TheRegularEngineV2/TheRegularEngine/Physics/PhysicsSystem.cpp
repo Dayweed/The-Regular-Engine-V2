@@ -6,22 +6,12 @@ namespace TRE
 {
 	PhysicsSystem::PhysicsSystem()
 	{
-		std::cout << "Physics System Constructed\n";
-	}
+		printf("Physics System Constructor called\n");
+		printf("Initializing Physics/PhysX systems...\n");
 
-	PhysicsSystem::~PhysicsSystem()
-	{
-		std::cout << "Physics System Destroyed\n";
-	}
-
-	bool PhysicsSystem::TESTInit()
-	{
-		std::cout << "Physics System TESTInit\n";
-
-
-#if HAHA_PHYSX_TEST
 		//Create foundation is similar to initializing the scene
 		m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
+		assert(m_Foundation);
 
 		// doesn't pass in name parameter when allocating stuff on its own now
 		// one less thing passed in, the better I guess.
@@ -30,27 +20,41 @@ namespace TRE
 		printf("PhysX Version: %d.%d.%d\n",
 			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
 
-#if HAHA_PHYSX_PVD
+#if USE_PHYSX_PVD
 		//PVD is like a debugger for the physics (leave off for submission)
 		m_Pvd = PxCreatePvd(*m_Foundation);
+		assert(m_Pvd);
+
 		m_Transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+		assert(m_Transport);
+
 		m_Pvd->connect(*m_Transport, physx::PxPvdInstrumentationFlag::eALL);
+		/* ^ this line gives the following PhysX error when PVD is enabled AND connected... for some reason... :(
+		code was		: |32|
+		message was		: |Failed to load PhysXGpu_64.dll!|
+		from file		: |C:\Users\jerel\Downloads\PhysX-release-104.2\PhysX-release-104.2\physx\source\physx\src\gpu\PxPhysXGpuModuleLoader.cpp|
+		at line			: |148|
+		*/
 #endif
 
-		m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, physx::PxTolerancesScale(), true, m_Pvd);
+		// set trackOutstandingAllocations to `true` for tracking memory allocations
+		m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, physx::PxTolerancesScale(), false, m_Pvd);
+		assert(m_Physics);
 
 		physx::PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
 		sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
-		m_Dispatcher = physx::PxDefaultCpuDispatcherCreate(2);
 
 		//A cpu thread for the scene
+		m_Dispatcher = physx::PxDefaultCpuDispatcherCreate(2);
+		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;
 
 		//A thread that will do collision management
 		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
 		m_Scene = m_Physics->createScene(sceneDesc);
+		assert(m_Scene);
 
-#if HAHA_PHYSX_PVD
+#if USE_PHYSX_PVD
 		if (physx::PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
 		{
 			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
@@ -70,25 +74,49 @@ namespace TRE
 		m_GroundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0), *m_Material);
 		m_Scene->addActor(*m_GroundPlane);
 
-		//Create 5 stacks of boxes
-		for (physx::PxU32 i = 0; i < 5; i++)
-			CreateStack(physx::PxTransform(physx::PxVec3(0, 0, m_stackZ -= 10.0f)), 10, 2.0f);
-#endif
-		return m_IsInitialized = true;
+		printf("Physics/PhysX systems initialization complete! :D\n");
+	}
+
+	PhysicsSystem::~PhysicsSystem()
+	{
+		printf("Physics System Destructor called\n");
+	}
+
+	bool PhysicsSystem::TESTUpdate()
+	{
+		physx::PxReal stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
+		physx::PxU32 stackSize = 3, numOfStacks = 1;
+
+		for (physx::PxU32 i = 0; i < numOfStacks; i++)
+			CreateStack(physx::PxTransform({ 0, 0, stackInitialZ -= stackSeparation }), stackSize, shapeHalfExtent);
+
+		return m_IsReadyForUpdate = true;
 	}
 
 	void PhysicsSystem::Update()
 	{
-		//if (!m_IsInitialized) TESTInit();
+		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
-		m_IsInitialized || TESTInit();
+		m_IsReadyForUpdate || TESTUpdate();
 
-#if HAHA_PHYSX_TEST
+		// deletes a SphereCollider every second, if found
+		static std::time_t start_timer = std::time(nullptr);
+		auto const result = std::time(nullptr) - start_timer;
+		if (result >= 1)
+		{
+			auto vec = _ecs_manager->GetGO<SphereCollider>();
+			if (!vec.empty())
+				DestructSphereCollider(vec.front());
+			std::time(&start_timer);
+		}
+
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
-#endif
+	}
 
+	void OLDSTUFF_Update()
+	{
 		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
 		for (GO obj : _ecs_manager->GetGO<Transform>())
 		{
@@ -97,12 +125,7 @@ namespace TRE
 		std::cout << "\n-------------------------------------------------------------------\n";*/
 	}
 
-	void PhysicsSystem::RenderImgui()
-	{
-
-	}
-
-	void PhysicsSystem::OnDestroyGO()
+	void OLDSTUFF_OnDestroyGO()
 	{
 		/*std::cout << "Destroy GOs that have transform is to be removed\n";
 		for (GO obj : _ecs_manager->GetGO<Transform, Removal>())
@@ -114,8 +137,7 @@ namespace TRE
 
 	void PhysicsSystem::Shutdown()
 	{
-		std::cout << "Physics System Shutdown\n";
-#if HAHA_PHYSX_TEST
+		printf("Physics System Shutdown\n");
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
@@ -127,32 +149,68 @@ namespace TRE
 		PX_RELEASE(m_Physics);
 		PX_RELEASE(m_Transport);
 		PX_RELEASE(m_Pvd);
+		/* ^ this line gives the following PhysX error when PVD is enabled AND connected... for some reason... :(
+		code was		: |32|
+		message was		: |Failed to load PhysXGpu_64.dll!|
+		from file		: |C:\Users\jerel\Downloads\PhysX-release-104.2\PhysX-release-104.2\physx\source\physx\src\gpu\PxPhysXGpuModuleLoader.cpp|
+		at line			: |148|
+		*/
 		PX_RELEASE(m_Foundation);
-#endif
 	}
 
-#if HAHA_PHYSX_TEST
-	//This function creates a stack of boxes
-	void PhysicsSystem::CreateStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent)
+	void PhysicsSystem::ConstructSphereCollider(GO& go, const physx::PxVec3& pos, const physx::PxF32 radius) const
 	{
-		//Create the shape of the box
-		// physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(halfExtent, halfExtent, halfExtent), *m_Material);
-		physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(halfExtent), *m_Material);
-		//Create the boxes stacked 
+		auto& sphereCollider = go->AddComponent<SphereCollider>();
+		// add component if missing, otherwise get existing component
+
+		sphereCollider.m_Radius = radius;
+
+		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
+		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(pos));
+
+		// fill the 'container' with a shape, that being a sphere
+		physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(radius), *m_Material, true);
+		body->attachShape(*shape);
+
+		physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+
+		m_Scene->addActor(*body);
+		sphereCollider.m_RigidActor = body;
+
+		shape->release();
+
+		/*
+		Obtaining the shape of an actor (e.g physx::PxGeometryType::Enum::eSPHERE)
+		
+		const int nbShapes = sphereCollider.m_RigidActor->getNbShapes();
+		physx::PxShape** buffer = new physx::PxShape * [nbShapes + 1];
+		const int actualNbShapes = sphereCollider.m_RigidActor->getShapes(buffer, nbShapes + 1);
+
+		for (int i = 0; i < actualNbShapes; ++i)
+			printf("%d\n", buffer[i]->getGeometry().getType());
+		*/
+	}
+
+	void PhysicsSystem::DestructSphereCollider(GO& go) const
+	{
+		go->GetComponent<SphereCollider>().m_RigidActor->release();
+		go->RemoveComponent<SphereCollider>();
+	}
+
+	//This function creates a stack of shapes
+	void PhysicsSystem::CreateStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent) const
+	{
 		for (physx::PxU32 i = 0; i < size; i++)
 		{
 			for (physx::PxU32 j = 0; j < size - i; j++)
 			{
-				//PxTransform is the position represented in a vector multiplied by its halfExtents
-				physx::PxTransform localTm(physx::PxVec3(physx::PxReal(j * 2) - physx::PxReal(size - i), physx::PxReal(i * 2 + 1), 0) * halfExtent);
-				physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(t.transform(localTm));
-				body->attachShape(*shape);
-				physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-				m_Scene->addActor(*body);
+				auto go = _ecs_manager->CreateGO();
+				ConstructSphereCollider(go,
+					t.transform(physx::PxVec3(
+						physx::PxReal(j * 2) - physx::PxReal(size - i),
+						physx::PxReal(i * 2 + 1), 0) * halfExtent),
+					halfExtent);
 			}
 		}
-		//Release shape
-		shape->release();
 	}
-#endif
 }
