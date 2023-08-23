@@ -103,7 +103,6 @@ namespace TRE
 			colorImageView.subresourceRange.layerCount = 1;
 			colorImageView.image = m_Images[x];
 			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
-
 		}
 		
 		// Create sampler to sample from the attachment in the fragment shader
@@ -200,6 +199,118 @@ namespace TRE
 				std::cout << "Unable to create a command buffer" << std::endl;
 				assert(Result == VK_SUCCESS);
 			}
+		}
+	}
+
+	void Renderer::Resize()
+	{
+		vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
+		for (int x = 0; x < m_FrameBuffer.size(); x++)
+		{
+			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
+			vkDestroyImage(m_Device->GetLogicalDevice(), m_Images[x], nullptr);
+			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
+			vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
+		}
+
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		m_Images.resize(ImageCount);
+		m_ImageView.resize(ImageCount);
+		m_Memory.resize(ImageCount);
+		m_FrameBuffer.resize(ImageCount);
+
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		for (int x = 0; x < m_Images.size(); x++)
+		{
+			// Color attachment
+			VkImageCreateInfo image{};
+			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			image.imageType = VK_IMAGE_TYPE_2D;
+			image.format = VK_FORMAT_R8G8B8A8_UNORM;
+			image.extent.width = SwapChain.GetWidth();
+			image.extent.height = SwapChain.GetHeight();
+			image.extent.depth = 1;
+			image.mipLevels = 1;
+			image.arrayLayers = 1;
+			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			image.samples = VK_SAMPLE_COUNT_1_BIT;
+			image.tiling = VK_IMAGE_TILING_OPTIMAL;
+			image.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // We will sample directly from the color attachment
+			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_Images[x]);
+
+			VkMemoryRequirements memReqs;
+			VkMemoryAllocateInfo memAlloc{};
+			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Images[x], &memReqs);
+			memAlloc.allocationSize = memReqs.size;
+			memAlloc.memoryTypeIndex = FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_Memory[x]);
+			vkBindImageMemory(m_Device->GetLogicalDevice(), m_Images[x], m_Memory[x], 0);
+
+			VkImageViewCreateInfo colorImageView{};
+			colorImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			colorImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			colorImageView.format = VK_FORMAT_R8G8B8A8_UNORM;
+			colorImageView.subresourceRange = {};
+			colorImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			colorImageView.subresourceRange.baseMipLevel = 0;
+			colorImageView.subresourceRange.levelCount = 1;
+			colorImageView.subresourceRange.baseArrayLayer = 0;
+			colorImageView.subresourceRange.layerCount = 1;
+			colorImageView.image = m_Images[x];
+			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
+		}
+
+		VkAttachmentDescription attchmentDescriptions{};
+		attchmentDescriptions.format = VK_FORMAT_R8G8B8A8_UNORM;
+		attchmentDescriptions.samples = VK_SAMPLE_COUNT_1_BIT;
+		attchmentDescriptions.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attchmentDescriptions.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		attchmentDescriptions.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attchmentDescriptions.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attchmentDescriptions.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		attchmentDescriptions.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+		VkAttachmentReference colorReference = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+
+		VkSubpassDescription subpassDescription{};
+		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpassDescription.colorAttachmentCount = 1;
+		subpassDescription.pColorAttachments = &colorReference;
+		subpassDescription.pDepthStencilAttachment = nullptr;
+
+		VkSubpassDependency dependencies{};
+		dependencies.srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependencies.dstSubpass = 0;
+		dependencies.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependencies.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependencies.srcAccessMask = 0;
+		dependencies.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+		VkRenderPassCreateInfo renderPassInfo = {};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassInfo.attachmentCount = 1;
+		renderPassInfo.pAttachments = &attchmentDescriptions;
+		renderPassInfo.subpassCount = 1;
+		renderPassInfo.pSubpasses = &subpassDescription;
+		renderPassInfo.dependencyCount = 1;
+		renderPassInfo.pDependencies = &dependencies;
+
+		vkCreateRenderPass(m_Device->GetLogicalDevice(), &renderPassInfo, nullptr, &m_Renderpass);
+
+		for (int x = 0; x < m_FrameBuffer.size(); x++)
+		{
+			VkFramebufferCreateInfo fbufCreateInfo{};
+			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			fbufCreateInfo.renderPass = m_Renderpass;
+			fbufCreateInfo.attachmentCount = 1;
+			fbufCreateInfo.pAttachments = &m_ImageView[x];
+			fbufCreateInfo.width = SwapChain.GetWidth();
+			fbufCreateInfo.height = SwapChain.GetHeight();
+			fbufCreateInfo.layers = 1;
+
+			vkCreateFramebuffer(m_Device->GetLogicalDevice(), &fbufCreateInfo, nullptr, &m_FrameBuffer[x]);
 		}
 	}
 

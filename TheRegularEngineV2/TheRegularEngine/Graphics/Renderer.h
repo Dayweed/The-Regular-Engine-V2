@@ -18,6 +18,7 @@ namespace TRE
 			~Renderer();
 
 			void Initialize();
+			void Resize();
 			void Shutdown();
 			void BeginFrame();
 

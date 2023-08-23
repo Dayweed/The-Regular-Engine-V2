@@ -539,6 +539,8 @@ namespace TRE
 			if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
 			{
 				Resize(m_Width, m_Height);
+				Engine::GetInstance().GetRenderer()->Resize();
+				Engine::GetInstance().GetVulkanImgui()->Resize();
 			}
 			else
 			{
