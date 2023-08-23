@@ -15,6 +15,7 @@ namespace TRE
 
 			void BeginFrame();
 			void EndFrame();
+			void Resize();
 
 			VkDescriptorSet GetDset();
 
