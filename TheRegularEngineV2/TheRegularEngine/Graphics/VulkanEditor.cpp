@@ -191,6 +191,17 @@ namespace TRE
 		}
 	}
 
+	void VulkanEditor::Resize()
+	{
+		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, m_DescriptorSets.size(), m_DescriptorSets.data());
+		auto Renderer = Engine::GetInstance().GetRenderer();
+		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetImageView().size());
+		for (int x = 0; x < m_DescriptorSets.size(); x++)
+		{
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetImageView()[x], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		}
+	}
+
 	VulkanEditor::~VulkanEditor()
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
