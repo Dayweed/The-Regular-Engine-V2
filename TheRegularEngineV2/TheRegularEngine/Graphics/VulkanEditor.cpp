@@ -193,7 +193,7 @@ namespace TRE
 
 	void VulkanEditor::Resize()
 	{
-		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, m_DescriptorSets.size(), m_DescriptorSets.data());
+		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_DescriptorSets.size()), m_DescriptorSets.data());
 		auto Renderer = Engine::GetInstance().GetRenderer();
 		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetImageView().size());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)

@@ -5,6 +5,7 @@
 #include "MeshRenderer.h"
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
+#include "Descriptor.h"
 
 namespace TRE
 {
@@ -200,6 +201,12 @@ namespace TRE
 				assert(Result == VK_SUCCESS);
 			}
 		}
+
+		m_DescriptorPool = DescriptorPool::Builder()
+			.SetMaxSets(10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10)
+			.Build();
 	}
 
 	void Renderer::Resize()
@@ -398,8 +405,8 @@ namespace TRE
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
-		viewport.width = SwapChain.GetWidth();
-		viewport.height = SwapChain.GetHeight();
+		viewport.width = static_cast<float>(SwapChain.GetWidth());
+		viewport.height = static_cast<float>(SwapChain.GetHeight());
 		viewport.minDepth = 0.f;
 		viewport.maxDepth = 1.f;
 
@@ -449,7 +456,8 @@ namespace TRE
 		colorBlending.blendConstants[1] = 0.0f;
 		colorBlending.blendConstants[2] = 0.0f;
 		colorBlending.blendConstants[3] = 0.0f;
-		std::vector<VkDynamicState> dynamicStates = {
+		std::vector<VkDynamicState> dynamicStates = 
+		{
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_SCISSOR
 		};
@@ -458,6 +466,32 @@ namespace TRE
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
+		//Create descriptor set layout
+		const uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		std::vector<std::unique_ptr<Buffer>> UBOBuffers(imageCount);
+		for (int i = 0; i < UBOBuffers.size(); i++)
+		{
+			UBOBuffers[i] = std::make_unique<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			UBOBuffers[i]->Map();
+		}
+
+		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
+			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+			.Build());
+
+		std::vector<VkDescriptorSet> globalDescriptorsSets(imageCount);
+		for (int i = 0; i < globalDescriptorsSets.size(); ++i)
+		{
+			auto bufferInfo = UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
+
+			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
+				.WriteBuffer(0, &bufferInfo)
+				.Build(globalDescriptorsSets[i]);
+		}
+
+		std::vector<VkDescriptorSetLayout> layouts(imageCount, m_DescriptorSetLayouts[0]->GetDescriptorSetLayout());
+
+		//Create pipeline layout
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; //Push constant can be accessed from both vertex and fragment shaders
 		pushConstantRange.offset = 0;
@@ -498,6 +532,9 @@ namespace TRE
 
 		vkDestroyShaderModule(m_Device->GetLogicalDevice(), fragShaderModule, nullptr);
 		vkDestroyShaderModule(m_Device->GetLogicalDevice(), vertShaderModule, nullptr);
+
+		
+
 	}
 
 	void Renderer::Shutdown()
@@ -532,8 +569,8 @@ namespace TRE
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = Engine::GetInstance().GetWindow()->GetSwapChain().GetWidth();
-		viewport.height = Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight();
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain().GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_Commandbuffers[Index], 0, 1, &viewport);

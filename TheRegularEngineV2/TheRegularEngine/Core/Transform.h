@@ -11,7 +11,7 @@ namespace TRE
 		glm::vec3 m_Rotation{ 0.f,0.f,0.f };
 		glm::vec3 m_Scale{ 1.f,1.f,1.f };
 
-		const glm::mat4& GetModelMatrix() const;
+		const glm::mat4 GetModelMatrix() const;
 
 		static void Init()
 		{
