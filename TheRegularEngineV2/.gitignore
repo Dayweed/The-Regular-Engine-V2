@@ -250,6 +250,3 @@ _Pvt_Extensions
 
 # Files that only appear when pushing from Mac
 .DS_Store
-
-#git rm -r --cached TheRegularEngineV2/Dependencies/ImGui/bin/Debug/ImGui
-#git rm -r --cached TheRegularEngineV2/Dependencies/MeshOptimizer/bin/Debug/MeshOptimizer
