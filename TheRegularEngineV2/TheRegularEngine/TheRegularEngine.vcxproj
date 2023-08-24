@@ -57,7 +57,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>GLM_FORCE_DEPTH_ZERO_TO_ONE;_CRT_SECURE_NO_WARNINGS;DEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.250.1\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;..\Dependencies\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.243.0\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;..\Dependencies\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -70,7 +70,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Debug\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Debug\PhysX_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.250.1\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Debug\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Debug\PhysX_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Debug\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.243.0\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -79,7 +79,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>GLM_FORCE_DEPTH_ZERO_TO_ONE;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.250.1\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;..\Dependencies\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\Dependencies\Assimp\include;..\Dependencies\FMOD\include;..\Dependencies\Freetype\include;..\Dependencies\GLFW\include;..\Dependencies\GLM\include;..\Dependencies\ImGui\include;..\Dependencies\ImGui\backends;..\Dependencies\Math\include;..\Dependencies\MeshOptimizer\src;..\Dependencies\Mono\include;..\Dependencies\PhysX\include;C:\VulkanSDK\1.3.243.0\Include;..\Dependencies\Rapidjson\include;..\Dependencies\spdlog;..\Dependencies\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -95,7 +95,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Release\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Release\PhysX_64.lib;..\Dependencies\PhysX\lib\Release\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Release\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Release\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.250.1\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Dependencies\assimp\lib\assimp-vc143-mt.lib;..\Dependencies\Freetype\lib\freetype.lib;..\Dependencies\GLFW\lib-vc2022\glfw3.lib;..\Dependencies\Mono\lib\Release\mono-2.0-sgen.lib;..\Dependencies\PhysX\lib\Release\PhysX_64.lib;..\Dependencies\PhysX\lib\Release\PhysXFoundation_64.lib;..\Dependencies\PhysX\lib\Release\PhysXExtensions_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCharacterKinematic_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCommon_64.lib;..\Dependencies\PhysX\lib\Release\PhysXCooking_64.lib;..\Dependencies\PhysX\lib\Release\PhysXPvdSDK_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXTask_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXVehicle_static_64.lib;..\Dependencies\PhysX\lib\Release\PhysXVehicle2_static_64.lib;C:\VulkanSDK\1.3.243.0\Lib\vulkan-1.lib;..\Dependencies\FMOD\lib\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -112,6 +112,7 @@
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="Graphics\Buffer.h" />
     <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\Descriptor.h" />
     <ClInclude Include="Graphics\Device.h" />
     <ClInclude Include="Graphics\MeshRenderer.h" />
     <ClInclude Include="Graphics\PhysicalDevice.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="Editor\ImguiBuildBackend.cpp" />
     <ClCompile Include="Graphics\Buffer.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\Descriptor.cpp" />
     <ClCompile Include="Graphics\Device.cpp" />
     <ClCompile Include="Graphics\MeshRenderer.cpp" />
     <ClCompile Include="Graphics\PhysicalDevice.cpp" />

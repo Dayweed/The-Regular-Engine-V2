@@ -535,7 +535,7 @@ namespace TRE
 
 		if (auto Result = vkQueuePresentKHR(m_LogicalDevice->GetGraphicsQ(), &PresentInfo); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to present" << std::endl;
+			std::cout << "Resized" << std::endl;
 			if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
 			{
 				Resize(m_Width, m_Height);

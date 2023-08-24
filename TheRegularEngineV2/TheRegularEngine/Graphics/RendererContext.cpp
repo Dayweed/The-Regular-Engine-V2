@@ -99,7 +99,7 @@ namespace TRE
 		std::vector<const char*> Extentions =
 		{ 
 			VK_KHR_SURFACE_EXTENSION_NAME,
-			VK_KHR_WIN32_EXTENSION_NAME, //Can be removed if not needed later
+			VK_KHR_WIN32_EXTENSION_NAME,	  //Can be removed if not needed later
 			VK_EXT_DEBUG_UTILS_EXTENSION_NAME //Can be used in release if needed with minimal performance hit
 		};
 
