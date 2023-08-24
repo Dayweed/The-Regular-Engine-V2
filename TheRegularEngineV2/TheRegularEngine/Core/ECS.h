@@ -9,6 +9,7 @@
 namespace TRE
 {
 	// DO NOT USE THIS UNLESS YOU WANT THE GO TO BE DELETED!
+	// Get this component in GetGO to get GO that are going to be deleted in this loop
 	class Removal
 	{
 		bool fake; //This value is to ensure it can compile and be registered
@@ -17,8 +18,8 @@ namespace TRE
 	class Properties
 	{
 	public:
-		std::string m_Name;
-		bool m_Active;
+		std::string m_Name; // To get the name
+		bool m_Active;		// To check if it is active
 	};
 
 	class GameObject;
@@ -45,6 +46,7 @@ namespace TRE
 
 		Example:
 
+		GO goVar = _ecs_manager->CreateGO("goVar");
 		if (goVar->HasComponent<ComponentStruct>())
 		{
 			// Use Properties Component
@@ -64,6 +66,8 @@ namespace TRE
 					cause an assert
 
 		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
 		goVar->AddComponent<ComponentStruct>();
 
 		goVar->AddComponent<ComponentStruct>().Var = 0;
@@ -97,6 +101,8 @@ namespace TRE
 					cause an assert
 
 		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
 		if (goVar->HasComponent<ComponentStruct>())
 		{
 			goVar->GetComponent<ComponentStruct>().Val = 0;
@@ -105,13 +111,127 @@ namespace TRE
 		template <typename T>
 		void RemoveComponent();
 
+		/* !
+		@function	SetParent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		GO parent // GO for the new parent
+
+		@brief		Abandons the previous parent if it exist
+					Set the parent of the GO
+					Automatically add this GO to the parent's children list
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goParentVar = _ecs_manager->CreateGO("goParentVar");
+		goVar->SetParent(goParentVar);
+		*//*__________________________________________________________________________*/
 		void SetParent(GO parent);
+
+		/* !
+		@function	GetParent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Returns the parent of the GO
+					Returns nullptr if it doesn't exist
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goParentVar = _ecs_manager->CreateGO("goParentVar");
+		goVar->SetParent(goParentVar);
+
+		GO AccessGOVarParent = goVar->GetParent();
+		*//*__________________________________________________________________________*/
 		GO GetParent();
+
+		/* !
+		@function	RemoveParent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Remove the parent of the GO
+					Automatically Abandons this GO from the parent's children list
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goParentVar = _ecs_manager->CreateGO("goParentVar");
+		goVar->SetParent(goParentVar);
+
+		goVar->RemoveParent();
+		*//*__________________________________________________________________________*/
 		void RemoveParent();
 
+		/* !
+		@function	AddChild
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		GO child // GO for the child
+
+		@brief		Add a child to this GO children list
+					Automatically set this GO as the parent of the child
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goChildVar = _ecs_manager->CreateGO("goChildVar");
+
+		goVar->AddChild(goChildVar);
+		*//*__________________________________________________________________________*/
 		void AddChild(GO child);
+
+		/* !
+		@function	GetChildren
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Returns the children of the GO
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goParentVar = _ecs_manager->CreateGO("goParentVar");
+		goVar->SetParent(goParentVar);
+
+		std::vector<GO> goParentVarChildren = goParentVar->GetChildren();
+		*//*__________________________________________________________________________*/
 		std::vector<GO> GetChildren();
+
+		/* !
+		@function	AbandonChild
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		GO child // GO for the child
+
+		@brief		Remove child from children list
+					Automatically remove parent from the child GO
+					Ignores command if child's parent is not this GO
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goParentVar = _ecs_manager->CreateGO("goParentVar");
+		goVar->SetParent(goParentVar);
+
+		goParentVar->AbandonChild(goVar);
+		*//*__________________________________________________________________________*/
 		void AbandonChild(GO child);
+
+		/* !
+		@function	AbandonChildren
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Remove all children from children list
+					Automatically remove parent from each child GO
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO goParentVar = _ecs_manager->CreateGO("goParentVar");
+		goVar->SetParent(goParentVar);
+
+		goParentVar->AbandonChildren();
+		*//*__________________________________________________________________________*/
 		void AbandonChildren();
 		
 	private:
@@ -128,24 +248,187 @@ namespace TRE
 	class ECSManager
 	{
 	public:
+		/* !
+		@function	Instance
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Holds the singleton for the ECSManager
+					This shouldn't be used, use _ecs_manager instead
+		*//*__________________________________________________________________________*/
 		static ECSManager& Instance();
 
+		/* !
+		@function	GetRegistry
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Returns entt registry in the _ecs_manager singleton
+					This should ideally be used for _ecs_manager only
+
+		Example:
+		_ecs_manager->GetRegistry();
+		*//*__________________________________________________________________________*/
 		entt::registry& GetRegistry();
 
 		// Engine Loop
+		/* !
+		@function	DestroyRemovalGO
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Remove all GO that has the component Removal
+					This is only run under Engine.cpp at the end of the frame
+
+		Example:
+		_ecs_manager->DestroyRemovalGO();
+		*//*__________________________________________________________________________*/
 		void DestroyRemovalGO();
 
 		// Shutdown Functions
+		/* !
+		@function	DestroyAll
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Destroys all the GOs
+
+		Example:
+		_ecs_manager->DestroyAll();
+		*//*__________________________________________________________________________*/
 		void DestroyAll();
 
 		// Entity Controller
+		/* !
+		@function	CreateGO
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		std::string name	// Default name is "GameObject", can be renamed
+										// name is found in Properties::m_Name
+
+		@brief		Create a new GO
+					Automatically adds the Properties Component
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+
+		std::cout << goVar->HasComponent<Properties>() << std::endl;
+		std::cout << goVar->GetComponent<Properties>().m_Name << std::endl;
+		// Output
+		// true
+		// goVar
+		*//*__________________________________________________________________________*/
 		GO CreateGO(std::string name = "GameObject");
+
+		/* !
+		@function	DestroyGO
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		GO& object			// GO to be destroyed
+
+		@brief		Create a new GO
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+
+		std::cout << goVar << std::endl; // Address of goVar
+
+		_ecs_manager->DestroyGO(goVar);
+		*//*__________________________________________________________________________*/
 		void DestroyGO(GO& object);
+
+		/* !
+		@function	CloneGO
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		GO& object			// GO to clone from
+					std::string name	// Name for the cloned GO
+
+		@brief		Create a new GO from an existing GO
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		GO clonGoVar = _ecs_manager->CloneGO(goVar, "ClonedGOName");
+		*//*__________________________________________________________________________*/
 		GO CloneGO(GO& object, std::string name = "Cloned_GameObject");
 
+		/* !
+		@function	GOHasComponent
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@params		GO& object			// GO to check from
+
+		@brief		Check if the GO have a component
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("goVar");
+		goVar->AddComponent<Transform>();
+
+		std::cout << _ecs_manager->GOHasComponent<Transform>(goVar) << std::endl;
+		std::cout << _ecs_manager->GOHasComponent<HUMAN>(goVar) << std::endl;
+
+		// Output
+		// true
+		// false
+		*//*__________________________________________________________________________*/
 		template <typename T>
 		bool GOHasComponent(GO object);
 
+		/* !
+		@function	GetGO
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Returns a vector of GO with the components listed
+
+		Example:
+
+		GO goVar = _ecs_manager->CreateGO("Object1");
+		goVar->AddComponent<Transform>();
+		goVar->AddComponent<Component>();
+
+		GO goVar2 = _ecs_manager->CreateGO("Object2");
+
+		GO goVar3 = _ecs_manager->CreateGO("Object3");
+		goVar3->AddComponent<Component>();
+		_ecs_manager->DestroyGO(goVar3);
+
+		std::cout << "GO with Properties Size: " << _ecs_manager->GetGO<Properties>().size() << std::endl;
+		for (GO& obj : _ecs_manager->GetGO<Properties>())
+			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
+
+		std::cout << "GO with Transform Size: " << _ecs_manager->GetGO<Transform>().size() << std::endl;
+		for (GO& obj : _ecs_manager->GetGO<Transform>())
+			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
+
+		std::cout << "GO with Component Size: " << _ecs_manager->GetGO<Component>().size() << std::endl;
+		for (GO& obj : _ecs_manager->GetGO<Component>())
+			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
+
+		std::cout << "GO with Removal Size: " << _ecs_manager->GetGO<Removal>().size() << std::endl;
+		for (GO& obj : _ecs_manager->GetGO<Removal>())
+			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
+
+		std::cout << "GO with Transform and Component Size: " << _ecs_manager->GetGO<Transform, Component>().size() << std::endl;
+		for (GO& obj : _ecs_manager->GetGO<Transform, Component>())
+			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
+
+		// Output
+		// GO with Properties Size: 3
+		// - Object1
+		// - Object2
+		// - Object3
+		// GO with Transform Size: 3
+		// - Object1
+		// - Object2
+		// - Object3
+		// GO with Component Size: 2
+		// - Object1
+		// - Object3
+		// GO with Removal Size: 1
+		// - Object3
+		// GO with Transform and Component and Removal Size: 1
+		// - Object3
+		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
 		std::vector<GO> GetGO();
 
@@ -169,14 +452,11 @@ namespace TRE
 			GO test2 = CreateGO("test2");
 
 			GO allobj = CreateGO("allobj");
-			allobj->AddComponent<Transform>();
-
 			GO allobj2 = CreateGO("allobj2");
-			allobj2->AddComponent<Transform>();
 
 			std::cout << "Total GO with Transform: " << GetGO<Transform>().size() << "\n";
-			std::cout << "Total GO with RANDOCOMP: " << GetGO<Properties>().size() << "\n";
-			std::cout << "Total GO with Transform and RANDOCOMP: " << GetGO<Transform, Properties>().size() << "\n";
+			std::cout << "Total GO with Properties: " << GetGO<Properties>().size() << "\n";
+			std::cout << "Total GO with Transform and Properties: " << GetGO<Transform, Properties>().size() << "\n";
 
 			std::cout << "Testing cloning GO...\n";
 			std::cout << "- Setting Original GO value to 123...\n";
@@ -265,6 +545,12 @@ namespace TRE
 			std::cout << "New Value: " << listenerGO->GetComponent<Transform>().m_Position.x << ", " << listenerGO->GetComponent<Transform>().m_Position.y << "\n";
 			std::cout << "\nTesting Listening to Destroying Values, should call Destroy\n";
 			listenerGO->RemoveComponent<Transform>();
+
+			std::cout << "\nDisconnecting Listeners...\n";
+			registry.on_construct<Transform>().disconnect<&Transform::Init>();
+			registry.on_update<Transform>().disconnect<&Transform::UpdateValues>();
+			registry.on_destroy<Transform>().disconnect<&Transform::Destroy>();
+
 			std::cout << "- Testing complete!\n";
 
 			std::cout << "\nTesting observer noticing if any Transform change\n";
@@ -299,6 +585,10 @@ namespace TRE
 			existingObserver.disconnect();
 			updatedObserver.disconnect();
 			std::cout << "- Testing complete!\n";
+
+			std::cout << "\nDestroying all " << GetGO<Properties>().size() << "  test objects...\n";
+			DestroyAll();
+			std::cout << "- Remaining: " << GetGO<Properties>().size() << " | Successfully cleared: " << (GetGO<Properties>().empty() ? "true" : "false") << "\n";
 
 			std::cout << "====================================\n\n";
 		}
@@ -385,6 +675,7 @@ namespace TRE
 		assert(&m_Entity != nullptr);
 		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
 
-		_ecs_manager->GetRegistry().remove<T>(m_Entity);
+		if (HasComponent<T>())
+			_ecs_manager->GetRegistry().remove<T>(m_Entity);
 	}
 }

@@ -5,6 +5,7 @@
 #include "MeshRenderer.h"
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
+#include "Descriptor.h"
 
 namespace TRE
 {
@@ -56,56 +57,16 @@ namespace TRE
 
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
-		m_Images.resize(ImageCount);
-		m_ImageView.resize(ImageCount);
-		m_Memory.resize(ImageCount);
-		m_FrameBuffer.resize(ImageCount);
-
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		for (int x = 0; x < m_Images.size(); x++)
-		{
-			// Color attachment
-			VkImageCreateInfo image{};
-			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-			image.imageType = VK_IMAGE_TYPE_2D;
-			image.format = VK_FORMAT_R8G8B8A8_UNORM;
-			image.extent.width = SwapChain.GetWidth();
-			image.extent.height = SwapChain.GetHeight();
-			image.extent.depth = 1;
-			image.mipLevels = 1;
-			image.arrayLayers = 1;
-			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			image.samples = VK_SAMPLE_COUNT_1_BIT;
-			image.tiling = VK_IMAGE_TILING_OPTIMAL;
-			image.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // We will sample directly from the color attachment
-			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_Images[x]);
+		RenderPassInfo RenderPassCreateInfo{};
+		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RenderPassCreateInfo.ImageFormat = SwapChain.GetColorFormat();
+		m_Renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+		Create();
 
-			VkMemoryRequirements memReqs;
-			VkMemoryAllocateInfo memAlloc{};
-			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Images[x], &memReqs);
-			memAlloc.allocationSize = memReqs.size;
-			memAlloc.memoryTypeIndex = FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_Memory[x]);
-			vkBindImageMemory(m_Device->GetLogicalDevice(), m_Images[x], m_Memory[x], 0);
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 
-			VkImageViewCreateInfo colorImageView{};
-			colorImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			colorImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			colorImageView.format = VK_FORMAT_R8G8B8A8_UNORM;
-			colorImageView.subresourceRange = {};
-			colorImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			colorImageView.subresourceRange.baseMipLevel = 0;
-			colorImageView.subresourceRange.levelCount = 1;
-			colorImageView.subresourceRange.baseArrayLayer = 0;
-			colorImageView.subresourceRange.layerCount = 1;
-			colorImageView.image = m_Images[x];
-			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
-
-		}
-		
 		// Create sampler to sample from the attachment in the fragment shader
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -120,57 +81,10 @@ namespace TRE
 		samplerInfo.minLod = 0.0f;
 		samplerInfo.maxLod = 1.0f;
 		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-		vkCreateSampler(m_Device->GetLogicalDevice(), &samplerInfo, nullptr, &m_Sampler);
-
-		VkAttachmentDescription attchmentDescriptions{};
-		attchmentDescriptions.format = VK_FORMAT_R8G8B8A8_UNORM;
-		attchmentDescriptions.samples = VK_SAMPLE_COUNT_1_BIT;
-		attchmentDescriptions.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attchmentDescriptions.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		attchmentDescriptions.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		attchmentDescriptions.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attchmentDescriptions.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attchmentDescriptions.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-		VkAttachmentReference colorReference = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
-
-		VkSubpassDescription subpassDescription{};
-		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpassDescription.colorAttachmentCount = 1;
-		subpassDescription.pColorAttachments = &colorReference;
-		subpassDescription.pDepthStencilAttachment = nullptr;
-
-		VkSubpassDependency dependencies{};
-		dependencies.srcSubpass = VK_SUBPASS_EXTERNAL;
-		dependencies.dstSubpass = 0;
-		dependencies.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependencies.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependencies.srcAccessMask = 0;
-		dependencies.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-		VkRenderPassCreateInfo renderPassInfo = {};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = 1;
-		renderPassInfo.pAttachments = &attchmentDescriptions;
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpassDescription;
-		renderPassInfo.dependencyCount = 1;
-		renderPassInfo.pDependencies = &dependencies;
-
-		vkCreateRenderPass(m_Device->GetLogicalDevice(), &renderPassInfo, nullptr, &m_Renderpass);
-
-		for (int x = 0; x < m_FrameBuffer.size(); x++)
+		
+		if (auto Result = vkCreateSampler(m_Device->GetLogicalDevice(), &samplerInfo, nullptr, &m_Sampler); Result != VK_SUCCESS)
 		{
-			VkFramebufferCreateInfo fbufCreateInfo{};
-			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			fbufCreateInfo.renderPass = m_Renderpass;
-			fbufCreateInfo.attachmentCount = 1;
-			fbufCreateInfo.pAttachments = &m_ImageView[x];
-			fbufCreateInfo.width = SwapChain.GetWidth();
-			fbufCreateInfo.height = SwapChain.GetHeight();
-			fbufCreateInfo.layers = 1;
-
-			vkCreateFramebuffer(m_Device->GetLogicalDevice(), &fbufCreateInfo, nullptr, &m_FrameBuffer[x]);
+			assert(Result == VK_SUCCESS);
 		}
 
 		VkCommandPoolCreateInfo CmdPoolCreateInfo{};
@@ -201,6 +115,94 @@ namespace TRE
 				assert(Result == VK_SUCCESS);
 			}
 		}
+
+		m_DescriptorPool = DescriptorPool::Builder()
+			.SetMaxSets(10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10)
+			.Build();
+	}
+
+	void Renderer::Create()
+	{
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		m_Images.resize(ImageCount);
+		m_ImageView.resize(ImageCount);
+		m_Memory.resize(ImageCount);
+		m_FrameBuffer.resize(ImageCount);
+
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		for (int x = 0; x < m_Images.size(); x++)
+		{
+			// Color attachment
+			VkImageCreateInfo image{};
+			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			image.imageType = VK_IMAGE_TYPE_2D;
+			image.format = SwapChain.GetColorFormat();
+			image.extent.width = SwapChain.GetWidth();
+			image.extent.height = SwapChain.GetHeight();
+			image.extent.depth = 1;
+			image.mipLevels = 1;
+			image.arrayLayers = 1;
+			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			image.samples = VK_SAMPLE_COUNT_1_BIT;
+			image.tiling = VK_IMAGE_TILING_OPTIMAL;
+			image.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // We will sample directly from the color attachment
+			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_Images[x]);
+			
+			VkMemoryRequirements memReqs;
+			VkMemoryAllocateInfo memAlloc{};
+			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Images[x], &memReqs);
+			memAlloc.allocationSize = memReqs.size;
+			memAlloc.memoryTypeIndex = FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_Memory[x]);
+			vkBindImageMemory(m_Device->GetLogicalDevice(), m_Images[x], m_Memory[x], 0);
+
+			VkImageViewCreateInfo colorImageView{};
+			colorImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			colorImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			colorImageView.format = SwapChain.GetColorFormat();
+			colorImageView.subresourceRange = {};
+			colorImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			colorImageView.subresourceRange.baseMipLevel = 0;
+			colorImageView.subresourceRange.levelCount = 1;
+			colorImageView.subresourceRange.baseArrayLayer = 0;
+			colorImageView.subresourceRange.layerCount = 1;
+			colorImageView.image = m_Images[x];
+			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
+		}
+
+		for (int x = 0; x < m_FrameBuffer.size(); x++)
+		{
+			VkFramebufferCreateInfo fbufCreateInfo{};
+			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			fbufCreateInfo.renderPass = m_Renderpass->GetHandle();
+			fbufCreateInfo.attachmentCount = 1;
+			fbufCreateInfo.pAttachments = &m_ImageView[x];
+			fbufCreateInfo.width = SwapChain.GetWidth();
+			fbufCreateInfo.height = SwapChain.GetHeight();
+			fbufCreateInfo.layers = 1;
+
+			if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &fbufCreateInfo, nullptr, &m_FrameBuffer[x]); Result != VK_SUCCESS)
+			{
+				assert(Result == VK_SUCCESS);
+			}
+		}
+	}
+
+	void Renderer::Resize()
+	{
+		for (int x = 0; x < m_FrameBuffer.size(); x++)
+		{
+			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
+			vkDestroyImage(m_Device->GetLogicalDevice(), m_Images[x], nullptr);
+			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
+			vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
+		}
+
+		Create();
 	}
 
 	Renderer::~Renderer()
@@ -218,7 +220,6 @@ namespace TRE
 
 		vkDestroyDescriptorSetLayout(m_Device->GetLogicalDevice(), m_DescriptorLayout, nullptr);
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
-		vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
 		vkDestroyPipeline(m_Device->GetLogicalDevice(), m_GraphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(m_Device->GetLogicalDevice(), m_PipelineLayout, nullptr);
 	}
@@ -287,8 +288,8 @@ namespace TRE
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
-		viewport.width = SwapChain.GetWidth();
-		viewport.height = SwapChain.GetHeight();
+		viewport.width = static_cast<float>(SwapChain.GetWidth());
+		viewport.height = static_cast<float>(SwapChain.GetHeight());
 		viewport.minDepth = 0.f;
 		viewport.maxDepth = 1.f;
 
@@ -338,7 +339,8 @@ namespace TRE
 		colorBlending.blendConstants[1] = 0.0f;
 		colorBlending.blendConstants[2] = 0.0f;
 		colorBlending.blendConstants[3] = 0.0f;
-		std::vector<VkDynamicState> dynamicStates = {
+		std::vector<VkDynamicState> dynamicStates = 
+		{
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_SCISSOR
 		};
@@ -347,6 +349,32 @@ namespace TRE
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
+		//Create descriptor set layout
+		const uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		std::vector<std::unique_ptr<Buffer>> UBOBuffers(imageCount);
+		for (int i = 0; i < UBOBuffers.size(); i++)
+		{
+			UBOBuffers[i] = std::make_unique<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			UBOBuffers[i]->Map();
+		}
+
+		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
+			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+			.Build());
+
+		std::vector<VkDescriptorSet> globalDescriptorsSets(imageCount);
+		for (int i = 0; i < globalDescriptorsSets.size(); ++i)
+		{
+			auto bufferInfo = UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
+
+			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
+				.WriteBuffer(0, &bufferInfo)
+				.Build(globalDescriptorsSets[i]);
+		}
+
+		std::vector<VkDescriptorSetLayout> layouts(imageCount, m_DescriptorSetLayouts[0]->GetDescriptorSetLayout());
+
+		//Create pipeline layout
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; //Push constant can be accessed from both vertex and fragment shaders
 		pushConstantRange.offset = 0;
@@ -376,7 +404,7 @@ namespace TRE
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = m_PipelineLayout;
-		pipelineInfo.renderPass = m_Renderpass;
+		pipelineInfo.renderPass = m_Renderpass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -405,24 +433,13 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_Renderpass;
-		renderPassInfo.framebuffer = m_FrameBuffer[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()];
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
-
-		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
-
-		vkCmdBeginRenderPass(m_Commandbuffers[Index], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[Index]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = Engine::GetInstance().GetWindow()->GetSwapChain().GetWidth();
-		viewport.height = Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight();
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain().GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_Commandbuffers[Index], 0, 1, &viewport);
@@ -450,7 +467,7 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 
-		vkCmdEndRenderPass(m_Commandbuffers[Index]);
+		m_Renderpass->EndRenderPass(m_Commandbuffers[Index]);
 
 		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
 		{

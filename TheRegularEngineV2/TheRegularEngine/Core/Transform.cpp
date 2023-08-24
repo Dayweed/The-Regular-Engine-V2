@@ -3,7 +3,7 @@
 
 namespace TRE
 {
-	const glm::mat4& Transform::GetModelMatrix() const
+	const glm::mat4 Transform::GetModelMatrix() const
 	{
 		const float c3 = glm::cos(m_Rotation.z);
 		const float s3 = glm::sin(m_Rotation.z);

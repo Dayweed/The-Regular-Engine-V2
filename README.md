@@ -1,7 +1,7 @@
 # GAM300
 
 Required things to have installed:
-- Vulkan (https://vulkan.lunarg.com/sdk/home#windows)
+- Vulkan SDK version 1.3.250.1 (https://vulkan.lunarg.com/sdk/home#windows)
 
 Steps to do when pull:
 1) Run "GenerateProject.bat".
