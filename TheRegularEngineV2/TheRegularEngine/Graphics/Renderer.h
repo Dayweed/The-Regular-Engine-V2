@@ -3,6 +3,7 @@
 #include "Graphics/VulkanEditor.h"
 #include "RenderObject.h"
 #include "Descriptor.h"
+#include "RenderPass.h"
 
 namespace TRE
 {
@@ -49,7 +50,7 @@ namespace TRE
 			std::vector<VkImageView> m_ImageView;
 			std::vector<VkDeviceMemory> m_Memory;
 
-			VkRenderPass m_Renderpass;
+			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
