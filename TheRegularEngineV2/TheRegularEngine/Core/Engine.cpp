@@ -89,6 +89,7 @@ namespace TRE
 		_component_manager->RegisterComponent<MeshRenderer>("Mesh Renderer");
 		_component_manager->RegisterComponent<Camera>("Camera");
 		_component_manager->RegisterComponent<SphereCollider>("SphereCollider");
+		_component_manager->RegisterComponent<BoxCollider>("BoxCollider");
 
 		// Register Systems
 		_system_manager->RegisterSystem<PhysicsSystem>();
