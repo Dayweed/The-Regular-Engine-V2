@@ -2,6 +2,8 @@
 #include "TREIncludes.h"
 #include "PhysicsSystem.h"
 
+#include "Easing.h"
+
 namespace TRE
 {
 	PhysicsSystem::PhysicsSystem()
@@ -142,6 +144,8 @@ namespace TRE
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
+
+		printf("Math::Easing::Linear: %lf\n", Math::Easing::Linear(2, 4, 0.5));
 
 		PX_RELEASE(m_GroundPlane);
 		PX_RELEASE(m_Material);
