@@ -14,9 +14,15 @@ layout(push_constant) uniform Push
 	mat4 m_ProjView; // Projection * View
 } push;
 
+layout(set = 0, binding = 0) uniform UBO
+{
+	mat4 m_ProjView;
+	vec3 m_DirectionToLight;
+}ubo;
+
 void main() 
 {
-    gl_Position = push.m_ProjView * push.m_Model * vec4(inPosition, 1.f);
+    gl_Position = ubo.m_ProjView * push.m_Model * vec4(inPosition, 1.f);
     outColor = inColor;
     outTexCoord = inTexCoord;
 }

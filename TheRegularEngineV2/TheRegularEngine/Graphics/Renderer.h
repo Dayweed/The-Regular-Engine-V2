@@ -15,8 +15,8 @@ namespace TRE
 
 	struct UBO
 	{
-		alignas(16) glm::mat4 projectionView{ 1.f };
-		alignas(16) glm::vec4 lightDirection = glm::vec4(glm::normalize(glm::vec3(1.f, -3.f, -1.f)), 1.f);
+		alignas(16) glm::mat4 m_ProjView{ 1.f };
+		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.f, -3.f, -1.f)), 1.f);
 	};
 
 	class Renderer
@@ -57,10 +57,11 @@ namespace TRE
 			std::vector<VkCommandPool> m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
 
-			VkDescriptorSetLayout m_DescriptorLayout;
-
 			std::unique_ptr<DescriptorPool> m_DescriptorPool;
 			std::vector<std::unique_ptr<DescriptorSetLayout>> m_DescriptorSetLayouts;
 			std::vector<VkDescriptorSet> m_DescriptorSets;
+
+			std::vector<std::unique_ptr<Buffer>> m_UBOBuffers{};
+
 	};
 }
