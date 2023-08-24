@@ -68,7 +68,7 @@ namespace TRE
 
 	VkRenderPass SwapChain::GetRenderPass()
 	{
-		return m_RenderPass;
+		return m_Renderpass->GetHandle();
 	}
 
 	VkExtent2D SwapChain::GetSwapChainExtent()
@@ -375,52 +375,10 @@ namespace TRE
 		}
 
 		//RenderPass
-		VkAttachmentDescription ColorAttachmentDesc{};
-		ColorAttachmentDesc.format = m_SwapChainSettings.m_SurfaceFormat;
-		ColorAttachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
-		ColorAttachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; //Clear to black before rendering
-		ColorAttachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE; //Store so can retrieve and present on surface
-		ColorAttachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		ColorAttachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		ColorAttachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; //Doesn't matter if not preserve since we clear it before rendering
-		ColorAttachmentDesc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR; //Using this to present hence present
-
-		VkAttachmentReference ColorReference{};
-		ColorReference.attachment = 0;
-		ColorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-		VkSubpassDescription SubpassDescription{};
-		SubpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		SubpassDescription.colorAttachmentCount = 1;
-		SubpassDescription.pColorAttachments = &ColorReference;
-		SubpassDescription.inputAttachmentCount = 0;
-		SubpassDescription.pInputAttachments = nullptr;
-		SubpassDescription.preserveAttachmentCount = 0;
-		SubpassDescription.pPreserveAttachments = nullptr;
-		SubpassDescription.pResolveAttachments = nullptr;
-
-		VkSubpassDependency SubpassDependency{};
-		SubpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-		SubpassDependency.dstSubpass = 0;
-		SubpassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		SubpassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		SubpassDependency.srcAccessMask = 0;
-		SubpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-		VkRenderPassCreateInfo RenderPassCreateInfo{};
-		RenderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		RenderPassCreateInfo.attachmentCount = 1;
-		RenderPassCreateInfo.pAttachments = &ColorAttachmentDesc;
-		RenderPassCreateInfo.subpassCount = 1;
-		RenderPassCreateInfo.pSubpasses = &SubpassDescription;
-		RenderPassCreateInfo.dependencyCount = 1;
-		RenderPassCreateInfo.pDependencies = &SubpassDependency;
-		
-		if (VkResult Result = vkCreateRenderPass(m_LogicalDevice->GetLogicalDevice(), &RenderPassCreateInfo, nullptr, &m_RenderPass); Result != VK_SUCCESS)
-		{
-			std::cout << "Unable to create renderpass" << std::endl;
-			assert(Result == VK_SUCCESS);
-		}
+		RenderPassInfo RenderPassCreateInfo{};
+		RenderPassCreateInfo.ImageFormat = m_SwapChainSettings.m_SurfaceFormat;
+		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, RenderPassCreateInfo);
 
 		//FrameBuffers
 		for (auto& framebuffer : m_FrameBuffers)
@@ -430,7 +388,7 @@ namespace TRE
 
 		VkFramebufferCreateInfo FrameBufferCreateInfo{};
 		FrameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		FrameBufferCreateInfo.renderPass = m_RenderPass;
+		FrameBufferCreateInfo.renderPass = m_Renderpass->GetHandle();
 		FrameBufferCreateInfo.attachmentCount = 1;
 		FrameBufferCreateInfo.width = m_Width;
 		FrameBufferCreateInfo.height = m_Height;
@@ -466,9 +424,6 @@ namespace TRE
 
 		for (auto& CommandBuffer : m_CommandBuffers)
 			vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), CommandBuffer.CommandPool, nullptr);
-
-		if (m_RenderPass)
-			vkDestroyRenderPass(m_LogicalDevice->GetLogicalDevice(), m_RenderPass, nullptr);
 
 		for (auto& framebuffer : m_FrameBuffers)
 		{
@@ -599,14 +554,14 @@ namespace TRE
 		if ((FormatCount == 1) && (SurfaceFormats[0].format == VK_FORMAT_UNDEFINED))
 		{
 			m_SwapChainSettings.m_ColorSpace = SurfaceFormats[0].colorSpace;
-			m_SwapChainSettings.m_SurfaceFormat = VK_FORMAT_R8G8B8A8_UNORM;
+			m_SwapChainSettings.m_SurfaceFormat = VK_FORMAT_B8G8R8A8_UNORM;
 		}
 		else
 		{
 			bool FormatFound = false;
 			for (const auto& Format : SurfaceFormats)
 			{
-				if (Format.format == VK_FORMAT_R8G8B8A8_UNORM)
+				if (Format.format == VK_FORMAT_B8G8R8A8_UNORM)
 				{
 					m_SwapChainSettings.m_ColorSpace = Format.colorSpace;
 					m_SwapChainSettings.m_SurfaceFormat = Format.format;

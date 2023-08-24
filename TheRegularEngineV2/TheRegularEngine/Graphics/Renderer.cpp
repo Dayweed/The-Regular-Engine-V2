@@ -57,9 +57,15 @@ namespace TRE
 
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		Create();
-		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		RenderPassInfo RenderPassCreateInfo{};
+		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RenderPassCreateInfo.ImageFormat = SwapChain.GetColorFormat();
+		m_Renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+		Create();
+
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 
 		// Create sampler to sample from the attachment in the fragment shader
 		VkSamplerCreateInfo samplerInfo{};
@@ -133,7 +139,7 @@ namespace TRE
 			VkImageCreateInfo image{};
 			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 			image.imageType = VK_IMAGE_TYPE_2D;
-			image.format = VK_FORMAT_R8G8B8A8_UNORM;
+			image.format = SwapChain.GetColorFormat();
 			image.extent.width = SwapChain.GetWidth();
 			image.extent.height = SwapChain.GetHeight();
 			image.extent.depth = 1;
@@ -144,7 +150,7 @@ namespace TRE
 			image.tiling = VK_IMAGE_TILING_OPTIMAL;
 			image.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // We will sample directly from the color attachment
 			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_Images[x]);
-
+			
 			VkMemoryRequirements memReqs;
 			VkMemoryAllocateInfo memAlloc{};
 			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -157,7 +163,7 @@ namespace TRE
 			VkImageViewCreateInfo colorImageView{};
 			colorImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			colorImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			colorImageView.format = VK_FORMAT_R8G8B8A8_UNORM;
+			colorImageView.format = SwapChain.GetColorFormat();
 			colorImageView.subresourceRange = {};
 			colorImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			colorImageView.subresourceRange.baseMipLevel = 0;
@@ -168,51 +174,11 @@ namespace TRE
 			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
 		}
 
-		VkAttachmentDescription attchmentDescriptions{};
-		attchmentDescriptions.format = VK_FORMAT_R8G8B8A8_UNORM;
-		attchmentDescriptions.samples = VK_SAMPLE_COUNT_1_BIT;
-		attchmentDescriptions.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attchmentDescriptions.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		attchmentDescriptions.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		attchmentDescriptions.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attchmentDescriptions.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attchmentDescriptions.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-		VkAttachmentReference colorReference = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
-
-		VkSubpassDescription subpassDescription{};
-		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpassDescription.colorAttachmentCount = 1;
-		subpassDescription.pColorAttachments = &colorReference;
-		subpassDescription.pDepthStencilAttachment = nullptr;
-
-		VkSubpassDependency dependencies{};
-		dependencies.srcSubpass = VK_SUBPASS_EXTERNAL;
-		dependencies.dstSubpass = 0;
-		dependencies.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependencies.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependencies.srcAccessMask = 0;
-		dependencies.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-		VkRenderPassCreateInfo renderPassInfo = {};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = 1;
-		renderPassInfo.pAttachments = &attchmentDescriptions;
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpassDescription;
-		renderPassInfo.dependencyCount = 1;
-		renderPassInfo.pDependencies = &dependencies;
-
-		if (auto Result = vkCreateRenderPass(m_Device->GetLogicalDevice(), &renderPassInfo, nullptr, &m_Renderpass); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
-
 		for (int x = 0; x < m_FrameBuffer.size(); x++)
 		{
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			fbufCreateInfo.renderPass = m_Renderpass;
+			fbufCreateInfo.renderPass = m_Renderpass->GetHandle();
 			fbufCreateInfo.attachmentCount = 1;
 			fbufCreateInfo.pAttachments = &m_ImageView[x];
 			fbufCreateInfo.width = SwapChain.GetWidth();
@@ -235,7 +201,6 @@ namespace TRE
 			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
 			vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
 		}
-		vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
 
 		Create();
 	}
@@ -255,7 +220,6 @@ namespace TRE
 
 		vkDestroyDescriptorSetLayout(m_Device->GetLogicalDevice(), m_DescriptorLayout, nullptr);
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
-		vkDestroyRenderPass(m_Device->GetLogicalDevice(), m_Renderpass, nullptr);
 		vkDestroyPipeline(m_Device->GetLogicalDevice(), m_GraphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(m_Device->GetLogicalDevice(), m_PipelineLayout, nullptr);
 	}
@@ -440,7 +404,7 @@ namespace TRE
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = m_PipelineLayout;
-		pipelineInfo.renderPass = m_Renderpass;
+		pipelineInfo.renderPass = m_Renderpass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -469,18 +433,7 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_Renderpass;
-		renderPassInfo.framebuffer = m_FrameBuffer[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()];
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
-
-		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
-
-		vkCmdBeginRenderPass(m_Commandbuffers[Index], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[Index]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -514,7 +467,7 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 
-		vkCmdEndRenderPass(m_Commandbuffers[Index]);
+		m_Renderpass->EndRenderPass(m_Commandbuffers[Index]);
 
 		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
 		{

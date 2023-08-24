@@ -1,5 +1,7 @@
 #pragma once
+#include "pch.h"
 #include "Device.h"
+#include "RenderPass.h"
 
 //Forward declaration to prevent include header just for this
 struct GLFWwindow;
@@ -81,9 +83,8 @@ namespace TRE
 			} m_Semaphores;
 
 			std::vector<VkFence> m_WaitFences;
-			VkRenderPass m_Renderpass;
+			std::shared_ptr<RenderPass> m_Renderpass;
 
-			VkRenderPass m_RenderPass;
 			uint32_t m_CurrentBufferIndex = 0;
 			uint32_t m_CurrentImageIndex = 0;
 
