@@ -27,6 +27,7 @@ LibraryDir["GLFW"] = "%{wks.location}/Dependencies/GLFW/lib-vc2022"
 LibraryDir["Mono"] = "%{wks.location}/Dependencies/Mono/lib/%{cfg.buildcfg}"
 LibraryDir["PhysX"] = "%{wks.location}/Dependencies/PhysX/lib/%{cfg.buildcfg}"
 LibraryDir["Vulkan"] = "%{VULKAN_SDK}/Lib"
+LibraryDir["Math"] = "%{wks.location}/Dependencies/Math/bin"
 
 Library = {}
 Library["Assimp"] = "%{LibraryDir.Assimp}/assimp-vc143-mt.lib"
@@ -46,6 +47,7 @@ Library["PhysX_TaskStatic"] = "%{LibraryDir.PhysX}/PhysXTask_static_64.lib"
 Library["PhysX_VehicleStatic"] = "%{LibraryDir.PhysX}/PhysXVehicle_static_64.lib"
 Library["PhysX_Vehicle2"] = "%{LibraryDir.PhysX}/PhysXVehicle2_static_64.lib"
 Library["Vulkan"] = "%{LibraryDir.Vulkan}/vulkan-1.lib"
+Library["Math"] = "%{LibraryDir.Math}/Math.lib"
 
 Binaries = {}
 Binaries["Assimp"] = "%{wks.location}/Dependencies/Assimp/lib/assimp-vc143-mt.dll"

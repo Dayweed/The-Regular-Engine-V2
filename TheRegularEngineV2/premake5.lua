@@ -89,6 +89,7 @@ project "TheRegularEngine"
 		"%{Library.PhysX_VehicleStatic}",
 		"%{Library.PhysX_Vehicle2}",
 		"%{Library.Vulkan}",
+		"%{Library.Math}",
 	}
 
 	filter "configurations:Debug"
