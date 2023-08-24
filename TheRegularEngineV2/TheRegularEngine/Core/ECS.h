@@ -387,8 +387,6 @@ namespace TRE
 		goVar->AddComponent<Component>();
 
 		GO goVar2 = _ecs_manager->CreateGO("Object2");
-		goVar2->AddComponent<Transform>();
-		goVar2->AddComponent<Component>();
 
 		GO goVar3 = _ecs_manager->CreateGO("Object3");
 		goVar3->AddComponent<Component>();
@@ -419,18 +417,17 @@ namespace TRE
 		// - Object1
 		// - Object2
 		// - Object3
-		// GO with Transform Size: 2
+		// GO with Transform Size: 3
 		// - Object1
 		// - Object2
-		// GO with Component Size: 3
+		// - Object3
+		// GO with Component Size: 2
 		// - Object1
-		// - Object2
 		// - Object3
 		// GO with Removal Size: 1
 		// - Object3
-		// GO with Transform and Component Size: 2
-		// - Object1
-		// - Object2
+		// GO with Transform and Component and Removal Size: 1
+		// - Object3
 		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
 		std::vector<GO> GetGO();
@@ -455,14 +452,11 @@ namespace TRE
 			GO test2 = CreateGO("test2");
 
 			GO allobj = CreateGO("allobj");
-			allobj->AddComponent<Transform>();
-
 			GO allobj2 = CreateGO("allobj2");
-			allobj2->AddComponent<Transform>();
 
 			std::cout << "Total GO with Transform: " << GetGO<Transform>().size() << "\n";
-			std::cout << "Total GO with RANDOCOMP: " << GetGO<Properties>().size() << "\n";
-			std::cout << "Total GO with Transform and RANDOCOMP: " << GetGO<Transform, Properties>().size() << "\n";
+			std::cout << "Total GO with Properties: " << GetGO<Properties>().size() << "\n";
+			std::cout << "Total GO with Transform and Properties: " << GetGO<Transform, Properties>().size() << "\n";
 
 			std::cout << "Testing cloning GO...\n";
 			std::cout << "- Setting Original GO value to 123...\n";
@@ -551,6 +545,12 @@ namespace TRE
 			std::cout << "New Value: " << listenerGO->GetComponent<Transform>().m_Position.x << ", " << listenerGO->GetComponent<Transform>().m_Position.y << "\n";
 			std::cout << "\nTesting Listening to Destroying Values, should call Destroy\n";
 			listenerGO->RemoveComponent<Transform>();
+
+			std::cout << "\nDisconnecting Listeners...\n";
+			registry.on_construct<Transform>().disconnect<&Transform::Init>();
+			registry.on_update<Transform>().disconnect<&Transform::UpdateValues>();
+			registry.on_destroy<Transform>().disconnect<&Transform::Destroy>();
+
 			std::cout << "- Testing complete!\n";
 
 			std::cout << "\nTesting observer noticing if any Transform change\n";
