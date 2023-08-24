@@ -84,11 +84,12 @@ namespace TRE
 
 	bool PhysicsSystem::TESTUpdate()
 	{
-		physx::PxReal stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
-		physx::PxU32 stackSize = 3, numOfStacks = 1;
+		const float stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
+		const unsigned stackSize = 3, numOfStacks = 1;
 
+		printf("creating physics test objects/entities...\n");
 		for (physx::PxU32 i = 0; i < numOfStacks; i++)
-			CreateStack(physx::PxTransform({ 0, 0, stackInitialZ -= stackSeparation }), stackSize, shapeHalfExtent);
+			CreateStack(physx::PxTransform({ 0, 0, stackInitialZ - (stackSeparation * i) }), stackSize, shapeHalfExtent);
 
 		return m_IsReadyForUpdate = true;
 	}
@@ -158,15 +159,16 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	void PhysicsSystem::ConstructSphereCollider(GO& go, const physx::PxVec3& pos, const physx::PxF32 radius) const
+	void PhysicsSystem::ConstructSphereCollider(GO& go, const float radius, const physx::PxVec3& offset) const
 	{
 		auto& sphereCollider = go->AddComponent<SphereCollider>();
 		// add component if missing, otherwise get existing component
 
-		sphereCollider.m_Radius = radius;
+		const auto objPos = go->GetComponent<Transform>().m_Position;
+		const auto colliderPos = physx::PxVec3(objPos.x, objPos.y, objPos.z) + offset;
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
-		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(pos));
+		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(colliderPos));
 
 		// fill the 'container' with a shape, that being a sphere
 		physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(radius), *m_Material, true);
@@ -176,6 +178,7 @@ namespace TRE
 
 		m_Scene->addActor(*body);
 		sphereCollider.m_RigidActor = body;
+		sphereCollider.m_Radius = radius;
 
 		shape->release();
 
@@ -198,18 +201,17 @@ namespace TRE
 	}
 
 	//This function creates a stack of shapes
-	void PhysicsSystem::CreateStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent) const
+	void PhysicsSystem::CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const
 	{
-		for (physx::PxU32 i = 0; i < size; i++)
+		for (unsigned i = 0; i < size; i++)
 		{
-			for (physx::PxU32 j = 0; j < size - i; j++)
+			for (unsigned j = 0; j < size - i; j++)
 			{
-				auto go = _ecs_manager->CreateGO();
-				ConstructSphereCollider(go,
-					t.transform(physx::PxVec3(
-						physx::PxReal(j * 2) - physx::PxReal(size - i),
-						physx::PxReal(i * 2 + 1), 0) * halfExtent),
-					halfExtent);
+				GO go = _ecs_manager->CreateGO();
+				const physx::PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
+				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
+				go->AddComponent<Transform>().m_Position = glm::vec3(newPos.x, newPos.y, newPos.z);
+				ConstructSphereCollider(go, halfExtent);
 			}
 		}
 	}

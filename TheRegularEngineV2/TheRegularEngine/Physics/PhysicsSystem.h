@@ -29,11 +29,26 @@ namespace TRE
 		// void OnDestroyGO() override;
 		void Shutdown() override;
 
-		void ConstructSphereCollider(GO& go, const physx::PxVec3& pos = physx::PxVec3(physx::PxZero), const physx::PxF32 radius = 1.0f) const;
+		/*!
+		\brief	Creates a SphereCollider component for the given entity.
+		\author	Prashanth S. Sharma p.sharma@digipen.edu
+
+		\param	[in,out] go		The `GO&` representing the entity to create the component for.
+		\param	[in]	 radius	The `float` representing the collider's radius.
+		\param	[in]	 offset	The offset from the entity's position, if applicable.
+		*/
+		void ConstructSphereCollider(GO& go, const float radius = 1.0f, const physx::PxVec3& offset = physx::PxVec3(physx::PxZero)) const;
+
+		/*!
+		\brief	Destroys an entity's SphereCollider component.
+		\author	Prashanth S. Sharma p.sharma@digipen.edu
+
+		\param	[in,out] go		The `GO&` representing the entity containing the collider to destroy.
+		*/
 		void DestructSphereCollider(GO& go) const;
 
-		//This function creates a stack of boxes
-		void CreateStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent) const;
+		//This test function creates a stack of shapes
+		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
 
 	private:
 
@@ -45,6 +60,7 @@ namespace TRE
 
 		physx::PxDefaultAllocator		m_Allocator;
 		physx::PxDefaultErrorCallback	m_ErrorCallback;
+
 		physx::PxFoundation*			m_Foundation = nullptr;
 		physx::PxPvd*					m_Pvd = nullptr;
 		physx::PxPvdTransport*			m_Transport = nullptr;
