@@ -93,14 +93,14 @@ namespace TRE
 		// Register Systems
 		_system_manager->RegisterSystem<PhysicsSystem>();
 		_system_manager->RegisterSystem<CameraSystem>();
-
-		DemoScene();
 	}
 
 	void Engine::Update()
 	{
 		// To remove eventually
 		_ecs_manager->TESTRUN();
+
+		DemoScene();
 
 		while (!m_Window->ShouldWindowClose())
 		{

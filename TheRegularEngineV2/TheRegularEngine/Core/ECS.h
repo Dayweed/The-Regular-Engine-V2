@@ -586,6 +586,10 @@ namespace TRE
 			updatedObserver.disconnect();
 			std::cout << "- Testing complete!\n";
 
+			std::cout << "\nDestroying all " << GetGO<Properties>().size() << "  test objects...\n";
+			DestroyAll();
+			std::cout << "- Remaining: " << GetGO<Properties>().size() << " | Successfully cleared: " << (GetGO<Properties>().empty() ? "true" : "false") << "\n";
+
 			std::cout << "====================================\n\n";
 		}
 
