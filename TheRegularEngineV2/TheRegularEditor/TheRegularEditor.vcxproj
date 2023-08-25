@@ -116,10 +116,12 @@ IF EXIST "$(SolutionDir)\Dependencies\Mono\bin\Release\mono-2.0-sgen.dll"\ (xcop
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorSystem.h" />
+    <ClInclude Include="src\PanelManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorApplication.cpp" />
     <ClCompile Include="src\EditorSystem.cpp" />
+    <ClCompile Include="src\PanelManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TheRegularEngine\TheRegularEngine.vcxproj">

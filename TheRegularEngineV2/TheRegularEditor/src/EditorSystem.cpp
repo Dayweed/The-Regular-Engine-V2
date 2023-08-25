@@ -1,12 +1,16 @@
 #include "EditorSystem.h"
 #include "Imgui/imgui.h"
 #include "imgui_impl_vulkan.h"
+#include "PanelManager.h"
 
 namespace TRE
 {
 	EditorSystem::EditorSystem()
 	{
 		std::cout << "Editor Init" << std::endl; //Replace with Logging
+
+		//Panel ContentBrowser;
+		//ContentBrowser.CreatePanel("ContentBrowser");
 	}
 	
 	EditorSystem::~EditorSystem()
@@ -30,5 +34,22 @@ namespace TRE
 	void EditorSystem::Shutdown()
 	{
 		std::cout << "Editor Shutdown" << std::endl; //Replace with Logging
+	}
+
+	Panel::Panel()
+	{
+	}
+
+	Panel::~Panel()
+	{
+
+	}
+
+	void Panel::CreatePanel(std::string Panel_Name)
+	{
+		Panel NewPanel;
+		NewPanel.PanelName = Panel_Name;
+		
+		PanelManager::Instance().InsertPanel(Panel_Name, NewPanel);
 	}
 }
