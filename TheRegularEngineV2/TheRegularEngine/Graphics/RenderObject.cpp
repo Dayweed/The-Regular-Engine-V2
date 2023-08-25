@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RenderObject.h"
 #include "RendererContext.h"
+#include "Core/Engine.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
@@ -58,7 +59,7 @@ namespace TRE
 
 	RenderObject::~RenderObject()
 	{
-
+		vkDeviceWaitIdle(RendererContext::GetDevice()->GetLogicalDevice());
 	}
 
 	std::unique_ptr<RenderObject> RenderObject::CreateFromFile(const std::string& filePath)

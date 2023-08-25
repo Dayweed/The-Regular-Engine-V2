@@ -44,7 +44,8 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		ImGui::CreateContext();
+		SetUpImgui();
+		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
 
 		ImGui_ImplVulkan_InitInfo ImguiVulkanInitInfo{};
@@ -80,12 +81,22 @@ namespace TRE
 		}
 	}
 
+	void VulkanEditor::SetUpImgui()
+	{
+		ImGui::CreateContext();
+		ImGui::StyleColorsDark();
+
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		IO.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	}
+
 	void VulkanEditor::BeginFrame()
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		
 	}
 
 	void VulkanEditor::EndFrame()
@@ -177,6 +188,17 @@ namespace TRE
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
+		}
+	}
+
+	void VulkanEditor::Resize()
+	{
+		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_DescriptorSets.size()), m_DescriptorSets.data());
+		auto Renderer = Engine::GetInstance().GetRenderer();
+		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetImageView().size());
+		for (int x = 0; x < m_DescriptorSets.size(); x++)
+		{
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetImageView()[x], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
