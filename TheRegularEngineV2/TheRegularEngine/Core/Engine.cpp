@@ -13,8 +13,9 @@ namespace TRE
 	{
 		GO test = _ecs_manager->CreateGO();
 		test->AddComponent<Properties>().m_Name = "Test";
-		test->AddComponent<Transform>().m_Position.z = 20.f;
+		test->AddComponent<Transform>().m_Position.z = 10.f;
 		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
+		test->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 5.f);
 		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/flat_vase.obj");
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
@@ -24,13 +25,14 @@ namespace TRE
 		test2->AddComponent<Transform>().m_Position.x = 20.f;
 		test2->GetComponent<Transform>().m_Position.z = 70.f;
 		test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
+		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
 		test2->AddComponent<MeshRenderer>();
 		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 		
 		GO cam = _ecs_manager->CreateGO();
 		cam->AddComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Transform>().m_Position;
-		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, -5.0f);
+		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
