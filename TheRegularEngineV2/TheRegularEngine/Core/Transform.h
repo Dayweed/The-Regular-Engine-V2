@@ -12,6 +12,7 @@ namespace TRE
 		glm::vec3 m_Scale{ 1.f,1.f,1.f };
 
 		const glm::mat4 GetModelMatrix() const;
+		const glm::mat3 GetNormalMatrix() const;
 
 		static void Init()
 		{

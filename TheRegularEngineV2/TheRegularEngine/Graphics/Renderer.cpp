@@ -414,7 +414,7 @@ namespace TRE
 		UBO ubo{};
 		Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_UBOBuffers[Index]->WriteToBuffer(&ubo, sizeof(UBO));
+		m_UBOBuffers[Index]->WriteToBuffer(&ubo);
 		m_UBOBuffers[Index]->Flush();
 
 		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[Index]);
@@ -441,6 +441,7 @@ namespace TRE
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			pc.m_LightNormal = go_mr->GetComponent<Transform>().GetNormalMatrix();
 			vkCmdPushConstants(m_Commandbuffers[Index], m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
