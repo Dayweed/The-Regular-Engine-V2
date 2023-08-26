@@ -218,7 +218,6 @@ namespace TRE
 			vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool[x], nullptr);
 		}
 
-		vkDestroyDescriptorSetLayout(m_Device->GetLogicalDevice(), m_DescriptorLayout, nullptr);
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 		vkDestroyPipeline(m_Device->GetLogicalDevice(), m_GraphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(m_Device->GetLogicalDevice(), m_PipelineLayout, nullptr);
@@ -227,29 +226,6 @@ namespace TRE
 	void Renderer::Initialize()
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-
-		VkDescriptorSetLayoutBinding uboLayoutBinding{};
-		uboLayoutBinding.binding = 0;
-		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		uboLayoutBinding.descriptorCount = 1;
-		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		samplerLayoutBinding.binding = 0;
-		samplerLayoutBinding.descriptorCount = 1;
-		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		
-		VkDescriptorSetLayoutBinding bindings[1] = { samplerLayoutBinding };
-		VkDescriptorSetLayoutCreateInfo layoutInfo{};
-		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		layoutInfo.bindingCount = 1;
-		layoutInfo.pBindings = bindings;
-
-		if (auto Result = vkCreateDescriptorSetLayout(m_Device->GetLogicalDevice(), &layoutInfo, nullptr, &m_DescriptorLayout); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
 
 		auto vertShaderCode = readFile("Resources/Shaders/vert.spv");
 		auto fragShaderCode = readFile("Resources/Shaders/frag.spv");
@@ -313,11 +289,18 @@ namespace TRE
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
+		rasterizer.depthBiasConstantFactor = 0.f;
+		rasterizer.depthBiasClamp = 0.f;
+		rasterizer.depthBiasSlopeFactor = 0.f;
 
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		multisampling.sampleShadingEnable = VK_FALSE;
 		multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		multisampling.minSampleShading = 0.f;
+		multisampling.pSampleMask = nullptr;
+		multisampling.alphaToCoverageEnable = VK_FALSE;
+		multisampling.alphaToOneEnable = VK_FALSE;
 
 		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -351,28 +334,28 @@ namespace TRE
 
 		//Create descriptor set layout
 		const uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
-		std::vector<std::unique_ptr<Buffer>> UBOBuffers(imageCount);
-		for (int i = 0; i < UBOBuffers.size(); i++)
+		m_UBOBuffers.resize(imageCount);
+		for (int i = 0; i < m_UBOBuffers.size(); i++)
 		{
-			UBOBuffers[i] = std::make_unique<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-			UBOBuffers[i]->Map();
+			m_UBOBuffers[i] = std::make_unique<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			m_UBOBuffers[i]->Map();
 		}
 
 		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
 			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
 			.Build());
 
-		std::vector<VkDescriptorSet> globalDescriptorsSets(imageCount);
-		for (int i = 0; i < globalDescriptorsSets.size(); ++i)
+		m_DescriptorSets.resize(imageCount);
+		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
-			auto bufferInfo = UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
+			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
 
 			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
 				.WriteBuffer(0, &bufferInfo)
-				.Build(globalDescriptorsSets[i]);
+				.Build(m_DescriptorSets[i]);
 		}
 
-		std::vector<VkDescriptorSetLayout> layouts(imageCount, m_DescriptorSetLayouts[0]->GetDescriptorSetLayout());
+		std::vector<VkDescriptorSetLayout> layouts{ m_DescriptorSetLayouts[0]->GetDescriptorSetLayout() };
 
 		//Create pipeline layout
 		VkPushConstantRange pushConstantRange{};
@@ -382,8 +365,8 @@ namespace TRE
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 1;
-		pipelineLayoutInfo.pSetLayouts = &m_DescriptorLayout; //change
+		pipelineLayoutInfo.setLayoutCount = layouts.size();
+		pipelineLayoutInfo.pSetLayouts = layouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -433,6 +416,14 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
+		//Descriptor set
+		//UBO
+		UBO ubo{};
+		Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
+		m_UBOBuffers[Index]->WriteToBuffer(&ubo);
+		m_UBOBuffers[Index]->Flush();
+
 		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[Index]);
 
 		VkViewport viewport{};
@@ -449,17 +440,15 @@ namespace TRE
 		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
 		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
-		//vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()], 0, NULL);
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
-		
+		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, m_DescriptorSets.data(), 0, NULL);
+
 		//VERY INEFFICIENT
 		for (const auto& go_mr : _ecs_manager->GetGO<MeshRenderer>())
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-			pc.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-
+			pc.m_LightNormal = go_mr->GetComponent<Transform>().GetNormalMatrix();
 			vkCmdPushConstants(m_Commandbuffers[Index], m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
