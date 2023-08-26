@@ -105,6 +105,7 @@ namespace TRE
 
 		if (EnableValidationLayer)
 		{
+			Extentions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 			Extentions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 			Extentions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 		}
@@ -115,33 +116,44 @@ namespace TRE
 		InstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(Extentions.size());
 		InstanceCreateInfo.ppEnabledExtensionNames = Extentions.data();
 		
+		std::vector<const char*> ValidationLayer;
+
 		if (EnableValidationLayer)
 		{
-			const char* ValidationLayer = "VK_LAYER_KHRONOS_validation"; //Help to debug
+			ValidationLayer.push_back("VK_LAYER_KHRONOS_validation");
+			ValidationLayer.push_back("VK_LAYER_RENDERDOC_Capture");
+
 			uint32_t Layercount;
 			vkEnumerateInstanceLayerProperties(&Layercount, nullptr);
 			std::vector<VkLayerProperties> LayerProp(Layercount);
 			vkEnumerateInstanceLayerProperties(&Layercount, LayerProp.data());
 
 			std::cout << "Vulkan instance layers:" << std::endl;
-			bool ContainLayer = false;
-			for (const VkLayerProperties& layer : LayerProp)
+
+			bool ContainLayer = true;
+			for (const char* layerName : ValidationLayer)
 			{
-				std::cout << layer.layerName << std::endl;
-				if (strcmp(layer.layerName, ValidationLayer) == 0)
+				ContainLayer = false;
+
+				for (const auto& layerProperties : LayerProp)
 				{
-					ContainLayer = true;
-					break;
+					if (strcmp(layerName, layerProperties.layerName) == 0)
+					{
+						ContainLayer = true;
+						break;
+					}
 				}
 			}
 
-			if (ContainLayer)
+			if(ContainLayer)
 			{
-				InstanceCreateInfo.enabledLayerCount = 1;
-				InstanceCreateInfo.ppEnabledLayerNames = &ValidationLayer;
+				std::cout << ValidationLayer.size() << " Validation Layer(s) found" << std::endl;
+				InstanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayer.size());
+				InstanceCreateInfo.ppEnabledLayerNames = ValidationLayer.data();
 			}
 			else
 			{
+				InstanceCreateInfo.enabledLayerCount = 0;
 				std::cout << " Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled" << std::endl; //Replace with logging
 			}
 		}

@@ -8,10 +8,10 @@ layout(location = 0) out vec4 outColor;
 layout(push_constant) uniform Push
 {
 	mat4 m_Model; // Model
-	mat4 m_ProjView; // Projection * View
+	mat4 m_NormalMat; //Normal mat for light
 } push;
 
 void main() 
 {
-    outColor = vec4(inColor, 1.0);
+    outColor = vec4(inColor.rgb, 1.0);
 }

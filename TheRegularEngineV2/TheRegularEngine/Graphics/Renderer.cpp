@@ -289,11 +289,18 @@ namespace TRE
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
+		rasterizer.depthBiasConstantFactor = 0.f;
+		rasterizer.depthBiasClamp = 0.f;
+		rasterizer.depthBiasSlopeFactor = 0.f;
 
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		multisampling.sampleShadingEnable = VK_FALSE;
 		multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		multisampling.minSampleShading = 0.f;
+		multisampling.pSampleMask = nullptr;
+		multisampling.alphaToCoverageEnable = VK_FALSE;
+		multisampling.alphaToOneEnable = VK_FALSE;
 
 		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -414,7 +421,7 @@ namespace TRE
 		UBO ubo{};
 		Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_UBOBuffers[Index]->WriteToBuffer(&ubo, sizeof(UBO));
+		m_UBOBuffers[Index]->WriteToBuffer(&ubo);
 		m_UBOBuffers[Index]->Flush();
 
 		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[Index]);
@@ -441,6 +448,7 @@ namespace TRE
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			pc.m_LightNormal = go_mr->GetComponent<Transform>().GetNormalMatrix();
 			vkCmdPushConstants(m_Commandbuffers[Index], m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();

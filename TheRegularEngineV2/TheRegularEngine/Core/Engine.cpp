@@ -13,8 +13,9 @@ namespace TRE
 	{
 		GO test = _ecs_manager->CreateGO();
 		test->AddComponent<Properties>().m_Name = "Test";
-		test->AddComponent<Transform>().m_Position.z = 50.f;
+		test->AddComponent<Transform>().m_Position.z = 10.f;
 		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
+		test->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 5.f);
 		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/flat_vase.obj");
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
@@ -24,6 +25,7 @@ namespace TRE
 		test2->AddComponent<Transform>().m_Position.x = 20.f;
 		test2->GetComponent<Transform>().m_Position.z = 70.f;
 		test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
+		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
 		test2->AddComponent<MeshRenderer>();
 		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 		
