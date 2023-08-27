@@ -105,8 +105,8 @@ namespace TRE
 
 		SwapChain swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		VkClearValue clearValues[2];
-		clearValues[0].color = { {0.1f, 0.1f,0.1f, 1.0f} };
+		std::array<VkClearValue, 2> clearValues{};
+		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		uint32_t width = swapChain.GetWidth();
@@ -133,8 +133,8 @@ namespace TRE
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = width;
 		renderPassBeginInfo.renderArea.extent.height = height;
-		renderPassBeginInfo.clearValueCount = 2;
-		renderPassBeginInfo.pClearValues = clearValues;
+		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassBeginInfo.pClearValues = clearValues.data();
 		renderPassBeginInfo.framebuffer = swapChain.GetCurrentFrameBuffer();
 
 		vkCmdBeginRenderPass(drawCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);

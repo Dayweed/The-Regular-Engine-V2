@@ -38,23 +38,6 @@ namespace TRE
 		return buffer;
 	}
 
-	uint32_t Renderer::FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags)
-	{
-		VkPhysicalDeviceMemoryProperties MemoryProperties = RendererContext::GetPhysicalDevice()->GetPhysicalDeviceMemoryProperties();
-
-		for (uint32_t x = 0; x < MemoryProperties.memoryTypeCount; x++)
-		{
-			if ((memorytypebits & (1 << x)) && (MemoryProperties.memoryTypes[x].propertyFlags & MemoryPropertyFlags) == MemoryPropertyFlags)
-			{
-				return x;
-			}
-		}
-
-		std::cout << "Unable to find memory type" << std::endl;
-		assert(false);
-		return 0;
-	}
-
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
@@ -62,6 +45,8 @@ namespace TRE
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RenderPassCreateInfo.ImageFormat = SwapChain.GetColorFormat();
+		RenderPassCreateInfo.DepthImageFormat = SwapChain.GetDepthFormat();
+		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		m_Renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
 		Create();
 
@@ -100,7 +85,7 @@ namespace TRE
 		m_Commandbuffers.resize(ImageCount);
 		m_CommandPool.resize(ImageCount);
 
-		for (int x = 0; x < ImageCount; x++)
+		for (uint32_t x = 0; x < ImageCount; x++)
 		{
 			if (VkResult Result = vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool[x]); Result != VK_SUCCESS)
 			{
@@ -129,6 +114,9 @@ namespace TRE
 		m_Images.resize(ImageCount);
 		m_ImageView.resize(ImageCount);
 		m_Memory.resize(ImageCount);
+		m_DepthImages.resize(ImageCount);
+		m_DepthImageView.resize(ImageCount);
+		m_DepthMemory.resize(ImageCount);
 		m_FrameBuffer.resize(ImageCount);
 
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
@@ -156,7 +144,7 @@ namespace TRE
 			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Images[x], &memReqs);
 			memAlloc.allocationSize = memReqs.size;
-			memAlloc.memoryTypeIndex = FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			memAlloc.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_Memory[x]);
 			vkBindImageMemory(m_Device->GetLogicalDevice(), m_Images[x], m_Memory[x], 0);
 
@@ -174,13 +162,56 @@ namespace TRE
 			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
 		}
 
+		// Depth attachment
+		for (int x = 0; x < m_DepthImages.size(); x++)
+		{
+			VkImageCreateInfo image{};
+			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			image.imageType = VK_IMAGE_TYPE_2D;
+			image.format = VK_FORMAT_D32_SFLOAT;
+			image.extent.width = SwapChain.GetWidth();
+			image.extent.height = SwapChain.GetHeight();
+			image.extent.depth = 1;
+			image.mipLevels = 1;
+			image.arrayLayers = 1;
+			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			image.samples = VK_SAMPLE_COUNT_1_BIT;
+			image.tiling = VK_IMAGE_TILING_OPTIMAL;
+			image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_DepthImages[x]);
+
+			VkMemoryRequirements memReqs;
+			VkMemoryAllocateInfo memAlloc{};
+			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_DepthImages[x], &memReqs);
+			memAlloc.allocationSize = memReqs.size;
+			memAlloc.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_DepthMemory[x]);
+			vkBindImageMemory(m_Device->GetLogicalDevice(), m_DepthImages[x], m_DepthMemory[x], 0);
+
+			VkImageViewCreateInfo depthStencilView{};
+			depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			depthStencilView.format = VK_FORMAT_D32_SFLOAT;
+			depthStencilView.flags = 0;
+			depthStencilView.subresourceRange = {};
+			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+			depthStencilView.subresourceRange.baseMipLevel = 0;
+			depthStencilView.subresourceRange.levelCount = 1;
+			depthStencilView.subresourceRange.baseArrayLayer = 0;
+			depthStencilView.subresourceRange.layerCount = 1;
+			depthStencilView.image = m_DepthImages[x];
+			vkCreateImageView(m_Device->GetLogicalDevice(), &depthStencilView, nullptr, &m_DepthImageView[x]);
+		}
+
 		for (int x = 0; x < m_FrameBuffer.size(); x++)
 		{
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			fbufCreateInfo.renderPass = m_Renderpass->GetHandle();
-			fbufCreateInfo.attachmentCount = 1;
-			fbufCreateInfo.pAttachments = &m_ImageView[x];
+			std::array<VkImageView, 2> attachments = { m_ImageView[x], m_DepthImageView[x] };
+			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+			fbufCreateInfo.pAttachments = attachments.data();
 			fbufCreateInfo.width = SwapChain.GetWidth();
 			fbufCreateInfo.height = SwapChain.GetHeight();
 			fbufCreateInfo.layers = 1;
@@ -200,6 +231,9 @@ namespace TRE
 			vkDestroyImage(m_Device->GetLogicalDevice(), m_Images[x], nullptr);
 			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
 			vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
+			vkDestroyImage(m_Device->GetLogicalDevice(), m_DepthImages[x], nullptr);
+			vkDestroyImageView(m_Device->GetLogicalDevice(), m_DepthImageView[x], nullptr);
+			vkFreeMemory(m_Device->GetLogicalDevice(), m_DepthMemory[x], nullptr);
 		}
 
 		Create();
@@ -216,6 +250,9 @@ namespace TRE
 			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
 			vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool[x], nullptr);
+			vkDestroyImage(m_Device->GetLogicalDevice(), m_DepthImages[x], nullptr);
+			vkDestroyImageView(m_Device->GetLogicalDevice(), m_DepthImageView[x], nullptr);
+			vkFreeMemory(m_Device->GetLogicalDevice(), m_DepthMemory[x], nullptr);
 		}
 
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
@@ -332,6 +369,18 @@ namespace TRE
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
+		VkPipelineDepthStencilStateCreateInfo depthStencil{};
+		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+		depthStencil.depthTestEnable = VK_TRUE;
+		depthStencil.depthWriteEnable = VK_TRUE;
+		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+		depthStencil.depthBoundsTestEnable = VK_FALSE;
+		depthStencil.stencilTestEnable = VK_FALSE;
+		depthStencil.minDepthBounds = 0.f;
+		depthStencil.maxDepthBounds = 1.f;
+		depthStencil.front = {};
+		depthStencil.back = {};
+
 		//Create descriptor set layout
 		const uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 		m_UBOBuffers.resize(imageCount);
@@ -365,7 +414,7 @@ namespace TRE
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = layouts.size();
+		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
 		pipelineLayoutInfo.pSetLayouts = layouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
@@ -386,6 +435,7 @@ namespace TRE
 		pipelineInfo.pMultisampleState = &multisampling;
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
+		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_PipelineLayout;
 		pipelineInfo.renderPass = m_Renderpass->GetHandle();
 		pipelineInfo.subpass = 0;

@@ -8,7 +8,8 @@ namespace TRE
 	{
 		VkFormat ImageFormat;
 		VkImageLayout FinalLayout;
-		bool CreateDepth = false;
+		VkFormat DepthImageFormat;
+		VkImageLayout DepthFinalLayout;
 	};
 
 	class RenderPass
