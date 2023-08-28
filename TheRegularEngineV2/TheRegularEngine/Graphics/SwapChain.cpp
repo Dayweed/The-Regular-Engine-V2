@@ -483,6 +483,12 @@ namespace TRE
 			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
 
+		for(auto& image : m_DepthImages)
+			vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
+
+		for (auto& memory : m_DepthMemory)
+			vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
+
 		for (auto& CommandBuffer : m_CommandBuffers)
 			vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), CommandBuffer.CommandPool, nullptr);
 
