@@ -6,6 +6,7 @@
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
 #include "Descriptor.h"
+#include "Image.h"
 
 namespace TRE
 {
@@ -165,10 +166,13 @@ namespace TRE
 		// Depth attachment
 		for (int x = 0; x < m_DepthImages.size(); x++)
 		{
+			/*Image depthImage(SwapChain.GetWidth(), SwapChain.GetHeight(), VK_FORMAT_D32_SFLOAT, 
+				VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);
+			m_DepthImages[x] = std::move(depthImage);*/
 			VkImageCreateInfo image{};
 			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 			image.imageType = VK_IMAGE_TYPE_2D;
-			image.format = VK_FORMAT_D32_SFLOAT;
+			image.format = SwapChain.GetDepthFormat();
 			image.extent.width = SwapChain.GetWidth();
 			image.extent.height = SwapChain.GetHeight();
 			image.extent.depth = 1;
@@ -192,10 +196,10 @@ namespace TRE
 			VkImageViewCreateInfo depthStencilView{};
 			depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			depthStencilView.format = VK_FORMAT_D32_SFLOAT;
+			depthStencilView.format = SwapChain.GetDepthFormat();
 			depthStencilView.flags = 0;
 			depthStencilView.subresourceRange = {};
-			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 			depthStencilView.subresourceRange.baseMipLevel = 0;
 			depthStencilView.subresourceRange.levelCount = 1;
 			depthStencilView.subresourceRange.baseArrayLayer = 0;

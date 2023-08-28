@@ -4,6 +4,7 @@
 #include "RenderObject.h"
 #include "Descriptor.h"
 #include "RenderPass.h"
+#include "Image.h"
 
 namespace TRE
 {
@@ -51,6 +52,7 @@ namespace TRE
 			std::vector<VkImage> m_DepthImages;
 			std::vector<VkImageView> m_DepthImageView;
 			std::vector<VkDeviceMemory> m_DepthMemory;
+			//std::vector<Image> m_DepthImages;
 
 			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;
