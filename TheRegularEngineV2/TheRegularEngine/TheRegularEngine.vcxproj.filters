@@ -64,6 +64,9 @@
     <ClInclude Include="Graphics\FrameBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Image.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\MeshRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -99,6 +102,9 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Graphics\Pipeline.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\ECS.cpp">
@@ -137,6 +143,9 @@
     <ClCompile Include="Graphics\FrameBuffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Image.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\MeshRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -171,5 +180,8 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Graphics\Pipeline.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

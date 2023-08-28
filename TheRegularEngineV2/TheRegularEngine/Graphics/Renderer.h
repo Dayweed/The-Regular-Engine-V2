@@ -5,6 +5,7 @@
 #include "Descriptor.h"
 #include "RenderPass.h"
 #include "Image.h"
+#include "Pipeline.h"
 
 namespace TRE
 {
@@ -54,16 +55,12 @@ namespace TRE
 
 			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;
+
+			std::unique_ptr<Pipeline> m_Pipeline;
+
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
 			std::vector<VkCommandPool> m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
-
-			std::unique_ptr<DescriptorPool> m_DescriptorPool;
-			std::vector<std::unique_ptr<DescriptorSetLayout>> m_DescriptorSetLayouts;
-			std::vector<VkDescriptorSet> m_DescriptorSets;
-
-			std::vector<std::unique_ptr<Buffer>> m_UBOBuffers{};
-
 	};
 }
