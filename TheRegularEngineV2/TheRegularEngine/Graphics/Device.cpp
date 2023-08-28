@@ -23,6 +23,23 @@ namespace TRE
 		return m_ComputeQ;
 	}
 
+	uint32_t Device::FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags)
+	{
+		VkPhysicalDeviceMemoryProperties MemoryProperties = m_PhysicalDevice->GetPhysicalDeviceMemoryProperties();
+
+		for (uint32_t x = 0; x < MemoryProperties.memoryTypeCount; x++)
+		{
+			if ((memorytypebits & (1 << x)) && (MemoryProperties.memoryTypes[x].propertyFlags & MemoryPropertyFlags) == MemoryPropertyFlags)
+			{
+				return x;
+			}
+		}
+
+		std::cout << "Unable to find memory type" << std::endl;
+		assert(false);
+		return 0;
+	}
+
 	Device::Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features)
 	{
 		m_PhysicalDevice = physicalDevice;

@@ -39,8 +39,6 @@ namespace TRE
 			VkSampler GetSampler();
 
 		private:
-			uint32_t FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags);
-		private:
 			std::shared_ptr<Device> m_Device;
 			VkPipelineLayout m_PipelineLayout;
 
@@ -49,6 +47,10 @@ namespace TRE
 			std::vector<VkImage> m_Images;
 			std::vector<VkImageView> m_ImageView;
 			std::vector<VkDeviceMemory> m_Memory;
+
+			std::vector<VkImage> m_DepthImages;
+			std::vector<VkImageView> m_DepthImageView;
+			std::vector<VkDeviceMemory> m_DepthMemory;
 
 			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;

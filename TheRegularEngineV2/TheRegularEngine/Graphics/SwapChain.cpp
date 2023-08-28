@@ -61,6 +61,11 @@ namespace TRE
 		return m_SwapChainSettings.m_SurfaceFormat;
 	}
 
+	VkFormat SwapChain::GetDepthFormat()
+	{
+		return m_SwapChainSettings.m_DepthFormat;
+	}
+
 	VkSemaphore SwapChain::GetRenderComplete()
 	{
 		return m_Semaphores.RenderComplete;
@@ -134,6 +139,8 @@ namespace TRE
 		m_QueueIndex = GraphicsQueueIndex;
 
 		FindImageFormatAndColorSpace();
+
+		m_SwapChainSettings.m_DepthFormat = m_LogicalDevice->GetPhysicalDevice()->GetDepthFormat();
 	}
 
 	void SwapChain::CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync)
@@ -260,6 +267,7 @@ namespace TRE
 		for (auto& image : m_SwapChainImages)
 		{
 			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
+			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
 		m_SwapChainImages.clear();
 
@@ -271,6 +279,8 @@ namespace TRE
 
 		m_SwapChainImages.resize(m_ImageCount);
 		m_VulkanImages.resize(m_ImageCount);
+		m_DepthImages.resize(m_ImageCount);
+		m_DepthMemory.resize(m_ImageCount);
 		
 		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &m_ImageCount, m_VulkanImages.data()); Result != VK_SUCCESS)
 		{
@@ -307,6 +317,53 @@ namespace TRE
 				std::cout << "Unable to create image view for swap chain" << std::endl;
 				assert(Result == VK_SUCCESS);
 			}
+		}
+
+		//Depth Image
+		for (uint32_t x = 0; x < ImageCount; ++x)
+		{
+			VkImageCreateInfo image{};
+			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			image.imageType = VK_IMAGE_TYPE_2D;
+			image.format = m_SwapChainSettings.m_DepthFormat;
+			image.extent.width = m_Extent.width;
+			image.extent.height = m_Extent.height;
+			image.extent.depth = 1;
+			image.mipLevels = 1;
+			image.arrayLayers = 1;
+			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			image.samples = VK_SAMPLE_COUNT_1_BIT;
+			image.tiling = VK_IMAGE_TILING_OPTIMAL;
+			image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+			if (VkResult Result = vkCreateImage(m_LogicalDevice->GetLogicalDevice(), &image, nullptr, &m_DepthImages[x]); Result != VK_SUCCESS)
+			{
+				std::cout << "Unable to create depth image for swap chain" << std::endl;
+				assert(Result == VK_SUCCESS);
+			}
+			m_SwapChainImages[x].DepthImage = m_DepthImages[x];
+
+			VkMemoryRequirements memReqs;
+			VkMemoryAllocateInfo memAlloc{};
+			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			vkGetImageMemoryRequirements(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], &memReqs);
+			memAlloc.allocationSize = memReqs.size;
+			memAlloc.memoryTypeIndex = m_LogicalDevice->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			vkAllocateMemory(m_LogicalDevice->GetLogicalDevice(), &memAlloc, nullptr, &m_DepthMemory[x]);
+			vkBindImageMemory(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], m_DepthMemory[x], 0);
+
+			VkImageViewCreateInfo depthStencilView{};
+			depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			depthStencilView.format = m_SwapChainSettings.m_DepthFormat;
+			depthStencilView.flags = 0;
+			depthStencilView.subresourceRange = {};
+			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+			depthStencilView.subresourceRange.baseMipLevel = 0;
+			depthStencilView.subresourceRange.levelCount = 1;
+			depthStencilView.subresourceRange.baseArrayLayer = 0;
+			depthStencilView.subresourceRange.layerCount = 1;
+			depthStencilView.image = m_DepthImages[x];
+			vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &depthStencilView, nullptr, &m_SwapChainImages[x].DepthImageView);
 		}
 
 		//Command Buffers
@@ -378,6 +435,8 @@ namespace TRE
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.ImageFormat = m_SwapChainSettings.m_SurfaceFormat;
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		RenderPassCreateInfo.DepthImageFormat = m_SwapChainSettings.m_DepthFormat;
+		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, RenderPassCreateInfo);
 
 		//FrameBuffers
@@ -389,7 +448,7 @@ namespace TRE
 		VkFramebufferCreateInfo FrameBufferCreateInfo{};
 		FrameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		FrameBufferCreateInfo.renderPass = m_Renderpass->GetHandle();
-		FrameBufferCreateInfo.attachmentCount = 1;
+		FrameBufferCreateInfo.attachmentCount = 2;
 		FrameBufferCreateInfo.width = m_Width;
 		FrameBufferCreateInfo.height = m_Height;
 		FrameBufferCreateInfo.layers = 1;
@@ -398,7 +457,8 @@ namespace TRE
 
 		for (int x = 0; x < m_FrameBuffers.size(); x++)
 		{
-			FrameBufferCreateInfo.pAttachments = &m_SwapChainImages[x].ImageView;
+			std::array<VkImageView, 2> Attachments = { m_SwapChainImages[x].ImageView, m_SwapChainImages[x].DepthImageView };
+			FrameBufferCreateInfo.pAttachments = Attachments.data();
 			if (auto Result = vkCreateFramebuffer(m_LogicalDevice->GetLogicalDevice(), &FrameBufferCreateInfo, nullptr, &m_FrameBuffers[x]); Result != VK_SUCCESS)
 			{
 				std::cout << "Unable to create framebuffer" << std::endl;
@@ -420,6 +480,7 @@ namespace TRE
 		for (auto& image : m_SwapChainImages)
 		{
 			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
+			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
 
 		for (auto& CommandBuffer : m_CommandBuffers)

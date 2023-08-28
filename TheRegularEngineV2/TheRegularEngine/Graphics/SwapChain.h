@@ -17,12 +17,15 @@ namespace TRE
 			{
 				VkColorSpaceKHR m_ColorSpace;
 				VkFormat m_SurfaceFormat;
+				VkFormat m_DepthFormat;
 			};
 
 			struct SwapChainImage
 			{
 				VkImage Image = nullptr;
 				VkImageView ImageView = nullptr;
+				VkImage DepthImage = nullptr;
+				VkImageView DepthImageView = nullptr;
 			};
 
 			SwapChain() = default;
@@ -46,6 +49,7 @@ namespace TRE
 			VkCommandBuffer GetCurrentCommandBuffer();
 			uint32_t GetCurrentBufferIndex();
 			VkFormat GetColorFormat();
+			VkFormat GetDepthFormat();
 			VkSemaphore GetRenderComplete();
 			VkExtent2D GetSwapChainExtent();
 			SwapChainSettings GetSwapChainSettings();
@@ -68,6 +72,9 @@ namespace TRE
 			std::vector<SwapChainImage> m_SwapChainImages;
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;
+
+			std::vector<VkImage> m_DepthImages;
+			std::vector<VkDeviceMemory> m_DepthMemory;
 
 			struct SwapChainCommandBuffer
 			{
