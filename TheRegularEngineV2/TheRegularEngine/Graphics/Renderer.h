@@ -45,10 +45,6 @@ namespace TRE
 			VkPipelineLayout m_PipelineLayout;
 
 			VkSampler m_Sampler;
-
-			//std::vector<VkImage> m_Images;
-			//std::vector<VkImageView> m_ImageView;
-			//std::vector<VkDeviceMemory> m_Memory;
 			
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;

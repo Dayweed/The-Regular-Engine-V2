@@ -149,8 +149,8 @@ namespace TRE
 			vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool[x], nullptr);
 		}
 
-		m_DepthImages.clear();
 		m_ColorImages.clear();
+		m_DepthImages.clear();
 
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 	}
