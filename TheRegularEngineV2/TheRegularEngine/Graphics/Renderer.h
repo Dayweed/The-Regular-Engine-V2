@@ -36,7 +36,7 @@ namespace TRE
 			VkShaderModule CreateShader(std::vector<char>& code);
 
 
-			std::vector<VkImageView>& GetImageView();
+			std::vector<std::unique_ptr<Image>>& GetColorImages();
 			VkSampler GetSampler();
 
 		private:
@@ -45,14 +45,12 @@ namespace TRE
 
 			VkSampler m_Sampler;
 
-			std::vector<VkImage> m_Images;
-			std::vector<VkImageView> m_ImageView;
-			std::vector<VkDeviceMemory> m_Memory;
-
-			std::vector<VkImage> m_DepthImages;
-			std::vector<VkImageView> m_DepthImageView;
-			std::vector<VkDeviceMemory> m_DepthMemory;
-			//std::vector<Image> m_DepthImages;
+			//std::vector<VkImage> m_Images;
+			//std::vector<VkImageView> m_ImageView;
+			//std::vector<VkDeviceMemory> m_Memory;
+			
+			std::vector<std::unique_ptr<Image>> m_ColorImages;
+			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
 			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;

@@ -11,15 +11,12 @@ namespace TRE
 		Image(const VkImageCreateInfo imageInfo, const VkImageViewCreateInfo imageViewInfo);
 		~Image();
 
-		Image(const Image&) = delete;
-		Image& operator=(const Image&) = delete;
-
 		VkImage GetImage() const { return m_Image; }
 		VkImageView GetImageView() const { return m_ImageView; }
 		VkDeviceMemory GetMemory() const { return m_ImageMemory; }
 	private:
-		VkImage m_Image = nullptr;
-		VkImageView m_ImageView = nullptr;
-		VkDeviceMemory m_ImageMemory = nullptr;
+		VkImage m_Image = VK_NULL_HANDLE;
+		VkImageView m_ImageView = VK_NULL_HANDLE;
+		VkDeviceMemory m_ImageMemory = VK_NULL_HANDLE;
 	};
 }

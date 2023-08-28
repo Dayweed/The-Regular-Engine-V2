@@ -6,13 +6,12 @@
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
 #include "Descriptor.h"
-#include "Image.h"
 
 namespace TRE
 {
-	std::vector<VkImageView>& Renderer::GetImageView()
+	std::vector<std::unique_ptr<Image>>& Renderer::GetColorImages()
 	{
-		return m_ImageView;
+		return m_ColorImages;
 	}
 
 	VkSampler Renderer::GetSampler()
@@ -112,100 +111,60 @@ namespace TRE
 	void Renderer::Create()
 	{
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
-		m_Images.resize(ImageCount);
-		m_ImageView.resize(ImageCount);
-		m_Memory.resize(ImageCount);
+		m_ColorImages.resize(ImageCount);
 		m_DepthImages.resize(ImageCount);
-		m_DepthImageView.resize(ImageCount);
-		m_DepthMemory.resize(ImageCount);
 		m_FrameBuffer.resize(ImageCount);
 
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		for (int x = 0; x < m_Images.size(); x++)
+		// Color attachment
+		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			// Color attachment
-			VkImageCreateInfo image{};
-			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-			image.imageType = VK_IMAGE_TYPE_2D;
-			image.format = SwapChain.GetColorFormat();
-			image.extent.width = SwapChain.GetWidth();
-			image.extent.height = SwapChain.GetHeight();
-			image.extent.depth = 1;
-			image.mipLevels = 1;
-			image.arrayLayers = 1;
-			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			image.samples = VK_SAMPLE_COUNT_1_BIT;
-			image.tiling = VK_IMAGE_TILING_OPTIMAL;
-			image.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // We will sample directly from the color attachment
-			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_Images[x]);
-			
-			VkMemoryRequirements memReqs;
-			VkMemoryAllocateInfo memAlloc{};
-			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Images[x], &memReqs);
-			memAlloc.allocationSize = memReqs.size;
-			memAlloc.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_Memory[x]);
-			vkBindImageMemory(m_Device->GetLogicalDevice(), m_Images[x], m_Memory[x], 0);
+			m_ColorImages[x] = std::make_unique<Image>(SwapChain.GetWidth(), SwapChain.GetHeight(), SwapChain.GetColorFormat(), 
+				VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+			//VkImageCreateInfo image{};
+			//image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			//image.imageType = VK_IMAGE_TYPE_2D;
+			//image.format = SwapChain.GetColorFormat();
+			//image.extent.width = SwapChain.GetWidth();
+			//image.extent.height = SwapChain.GetHeight();
+			//image.extent.depth = 1;
+			//image.mipLevels = 1;
+			//image.arrayLayers = 1;
+			//image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			//image.samples = VK_SAMPLE_COUNT_1_BIT;
+			//image.tiling = VK_IMAGE_TILING_OPTIMAL;
+			//image.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // We will sample directly from the color attachment
+			//vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_Images[x]);
+			//
+			//VkMemoryRequirements memReqs;
+			//VkMemoryAllocateInfo memAlloc{};
+			//memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			//vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Images[x], &memReqs);
+			//memAlloc.allocationSize = memReqs.size;
+			//memAlloc.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			//vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_Memory[x]);
+			//vkBindImageMemory(m_Device->GetLogicalDevice(), m_Images[x], m_Memory[x], 0);
 
-			VkImageViewCreateInfo colorImageView{};
-			colorImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			colorImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			colorImageView.format = SwapChain.GetColorFormat();
-			colorImageView.subresourceRange = {};
-			colorImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			colorImageView.subresourceRange.baseMipLevel = 0;
-			colorImageView.subresourceRange.levelCount = 1;
-			colorImageView.subresourceRange.baseArrayLayer = 0;
-			colorImageView.subresourceRange.layerCount = 1;
-			colorImageView.image = m_Images[x];
-			vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
+			//VkImageViewCreateInfo colorImageView{};
+			//colorImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			//colorImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			//colorImageView.format = SwapChain.GetColorFormat();
+			//colorImageView.subresourceRange = {};
+			//colorImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			//colorImageView.subresourceRange.baseMipLevel = 0;
+			//colorImageView.subresourceRange.levelCount = 1;
+			//colorImageView.subresourceRange.baseArrayLayer = 0;
+			//colorImageView.subresourceRange.layerCount = 1;
+			//colorImageView.image = m_Images[x];
+			//vkCreateImageView(m_Device->GetLogicalDevice(), &colorImageView, nullptr, &m_ImageView[x]);
 		}
 
 		// Depth attachment
 		for (int x = 0; x < m_DepthImages.size(); x++)
 		{
-			/*Image depthImage(SwapChain.GetWidth(), SwapChain.GetHeight(), VK_FORMAT_D32_SFLOAT, 
-				VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);
-			m_DepthImages[x] = std::move(depthImage);*/
-			VkImageCreateInfo image{};
-			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-			image.imageType = VK_IMAGE_TYPE_2D;
-			image.format = SwapChain.GetDepthFormat();
-			image.extent.width = SwapChain.GetWidth();
-			image.extent.height = SwapChain.GetHeight();
-			image.extent.depth = 1;
-			image.mipLevels = 1;
-			image.arrayLayers = 1;
-			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			image.samples = VK_SAMPLE_COUNT_1_BIT;
-			image.tiling = VK_IMAGE_TILING_OPTIMAL;
-			image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-			vkCreateImage(m_Device->GetLogicalDevice(), &image, nullptr, &m_DepthImages[x]);
-
-			VkMemoryRequirements memReqs;
-			VkMemoryAllocateInfo memAlloc{};
-			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-			vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_DepthImages[x], &memReqs);
-			memAlloc.allocationSize = memReqs.size;
-			memAlloc.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-			vkAllocateMemory(m_Device->GetLogicalDevice(), &memAlloc, nullptr, &m_DepthMemory[x]);
-			vkBindImageMemory(m_Device->GetLogicalDevice(), m_DepthImages[x], m_DepthMemory[x], 0);
-
-			VkImageViewCreateInfo depthStencilView{};
-			depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			depthStencilView.format = SwapChain.GetDepthFormat();
-			depthStencilView.flags = 0;
-			depthStencilView.subresourceRange = {};
-			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-			depthStencilView.subresourceRange.baseMipLevel = 0;
-			depthStencilView.subresourceRange.levelCount = 1;
-			depthStencilView.subresourceRange.baseArrayLayer = 0;
-			depthStencilView.subresourceRange.layerCount = 1;
-			depthStencilView.image = m_DepthImages[x];
-			vkCreateImageView(m_Device->GetLogicalDevice(), &depthStencilView, nullptr, &m_DepthImageView[x]);
+			m_DepthImages[x] = std::make_unique<Image>(SwapChain.GetWidth(), SwapChain.GetHeight(), SwapChain.GetDepthFormat(),
+								VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
 
 		for (int x = 0; x < m_FrameBuffer.size(); x++)
@@ -213,7 +172,7 @@ namespace TRE
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			fbufCreateInfo.renderPass = m_Renderpass->GetHandle();
-			std::array<VkImageView, 2> attachments = { m_ImageView[x], m_DepthImageView[x] };
+			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView()};
 			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			fbufCreateInfo.pAttachments = attachments.data();
 			fbufCreateInfo.width = SwapChain.GetWidth();
@@ -232,13 +191,10 @@ namespace TRE
 		for (int x = 0; x < m_FrameBuffer.size(); x++)
 		{
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
-			vkDestroyImage(m_Device->GetLogicalDevice(), m_Images[x], nullptr);
-			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
-			vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
-			vkDestroyImage(m_Device->GetLogicalDevice(), m_DepthImages[x], nullptr);
-			vkDestroyImageView(m_Device->GetLogicalDevice(), m_DepthImageView[x], nullptr);
-			vkFreeMemory(m_Device->GetLogicalDevice(), m_DepthMemory[x], nullptr);
 		}
+
+		m_ColorImages.clear();
+		m_DepthImages.clear();
 
 		Create();
 	}
@@ -247,17 +203,14 @@ namespace TRE
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 
-		for (int x = 0; x < m_Images.size(); x++)
+		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			vkFreeMemory(m_Device->GetLogicalDevice(), m_Memory[x], nullptr);
-			vkDestroyImage(m_Device->GetLogicalDevice(), m_Images[x], nullptr);
-			vkDestroyImageView(m_Device->GetLogicalDevice(), m_ImageView[x], nullptr);
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
 			vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool[x], nullptr);
-			vkDestroyImage(m_Device->GetLogicalDevice(), m_DepthImages[x], nullptr);
-			vkDestroyImageView(m_Device->GetLogicalDevice(), m_DepthImageView[x], nullptr);
-			vkFreeMemory(m_Device->GetLogicalDevice(), m_DepthMemory[x], nullptr);
 		}
+
+		m_DepthImages.clear();
+		m_ColorImages.clear();
 
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 		vkDestroyPipeline(m_Device->GetLogicalDevice(), m_GraphicsPipeline, nullptr);
