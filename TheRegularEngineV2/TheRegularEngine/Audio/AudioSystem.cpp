@@ -74,6 +74,7 @@ namespace TRE
 
 	void AudioSystem::Play(GO& go, bool play)
 	{
+		(void)play;
 		Audio& audio = go.get()->GetComponent<Audio>();
 		if (audio.m_IsPlaying = true)
 		{

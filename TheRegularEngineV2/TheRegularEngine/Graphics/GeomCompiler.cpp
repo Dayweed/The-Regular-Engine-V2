@@ -42,7 +42,7 @@ namespace TRE
 			for (auto i = 0u, end = Node.mNumMeshes; i < end; ++i)
 			{
 				aiMesh* pMesh = m_Scene->mMeshes[Node.mMeshes[i]];
-
+				(void)pMesh;
 				m_References[Node.mMeshes[i]].Nodes.push_back(&Node);
 			}
 

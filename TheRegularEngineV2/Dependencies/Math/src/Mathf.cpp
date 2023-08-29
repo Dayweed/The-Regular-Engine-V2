@@ -76,7 +76,7 @@ namespace Mathf
 	float Round(float f) { return round(f); }
 	int RoundToInt(float f) { return static_cast<int>(round(f)); }
 
-	float Sign(float f) { return f >= 0 ? 1 : -1; }
+	float Sign(float f) { return f >= 0 ? 1.0f : -1.0f; }
 
 	float SmoothStep(float from, float to, float t)
 	{
