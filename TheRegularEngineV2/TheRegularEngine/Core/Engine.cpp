@@ -2,6 +2,7 @@
 #include "ECS.h"
 #include "Engine.h"
 #include "Physics/PhysicsSystem.h"
+#include "Audio/AudioSystem.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
@@ -34,8 +35,14 @@ namespace TRE
 		cam->AddComponent<Transform>().m_Position;
 		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 
+		GO audio = _ecs_manager->CreateGO();
+		audio->AddComponent<Audio>();
+		audio->GetComponent<Audio>().m_IsPlaying = true;
+
 		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
+		_system_manager->GetSystem<AudioSystem>()->LoadFile(audio);
+		_system_manager->GetSystem<AudioSystem>()->Play(audio, true);
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -92,10 +99,12 @@ namespace TRE
 		_component_manager->RegisterComponent<Camera>("Camera");
 		_component_manager->RegisterComponent<SphereCollider>("SphereCollider");
 		_component_manager->RegisterComponent<BoxCollider>("BoxCollider");
+		_component_manager->RegisterComponent<Audio>("Audio");
 
 		// Register Systems
 		_system_manager->RegisterSystem<PhysicsSystem>();
 		_system_manager->RegisterSystem<CameraSystem>();
+		_system_manager->RegisterSystem<AudioSystem>();
 	}
 
 	void Engine::Update()
