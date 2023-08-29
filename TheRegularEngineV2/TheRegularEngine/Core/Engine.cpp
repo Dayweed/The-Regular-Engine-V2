@@ -9,6 +9,7 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Texture.h"
+#include "Graphics/GeomCompiler.h"
 namespace TRE
 {
 	void DemoScene()
@@ -22,26 +23,29 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
 
-		//GO test2 = _ecs_manager->CreateGO();
-		//test2->AddComponent<Properties>().m_Name = "Test2";
-		//test2->AddComponent<Transform>().m_Position.x = 20.f;
-		//test2->GetComponent<Transform>().m_Position.z = 70.f;
-		//test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
-		//test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
-		//test2->AddComponent<MeshRenderer>();
-		//test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
+		GO test2 = _ecs_manager->CreateGO();
+		test2->AddComponent<Properties>().m_Name = "Test2";
+		test2->AddComponent<Transform>().m_Position.x = 2.f;
+		test2->GetComponent<Transform>().m_Position.z = 50.f;
+		test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
+		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
+		test2->AddComponent<MeshRenderer>();
+		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 		
 		GO cam = _ecs_manager->CreateGO();
 		cam->AddComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Transform>().m_Position;
 		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 		cam->GetComponent<Camera>().m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+		cam->GetComponent<Camera>().m_Fov = 30.0f;
 
 		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
 		/*GO audio = _ecs_manager->CreateGO();
 		audio->AddComponent<Audio>();
 		audio->GetComponent<Audio>().m_IsPlaying = true;*/
+
+		_geom_compiler->Compile("../Assets/smooth_vase.obj");
 
 		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
