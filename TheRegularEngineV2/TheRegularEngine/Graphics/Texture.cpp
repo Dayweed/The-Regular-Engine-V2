@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "Buffer.h"
 #include "RendererContext.h"
+#include "TREIncludes.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -107,12 +108,12 @@ namespace TRE
 		{
 			assert(result == VK_SUCCESS && "Failed to create texture sampler");
 		}
-		std::cout << "CTOR\n";
+		TRE_CORE_INFO("CTOR");
 	}
 
 	Texture::~Texture()
 	{
-		std::cout << "DTOR\n";
+		TRE_CORE_INFO("DTOR");
 		auto device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDestroySampler(device, m_Sampler, nullptr);
 		vkDestroyImageView(device, m_ImageView, nullptr);

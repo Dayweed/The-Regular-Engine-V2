@@ -5,6 +5,7 @@
 #include "MeshRenderer.h"
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -69,14 +70,14 @@ namespace TRE
 		{
 			if (VkResult Result = vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool[x]); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create a command pool" << std::endl;
+				TRE_CORE_ERROR("Unable to create a command pool");
 				assert(Result == VK_SUCCESS);
 			}
 
 			CommandBufferAllocateInfo.commandPool = m_CommandPool[x];
 			if (VkResult Result = vkAllocateCommandBuffers(m_Device->GetLogicalDevice(), &CommandBufferAllocateInfo, &m_Commandbuffers[x]); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create a command buffer" << std::endl;
+				TRE_CORE_ERROR("Unable to create a command buffer");
 				assert(Result == VK_SUCCESS);
 			}
 		}
@@ -232,7 +233,7 @@ namespace TRE
 
 		if (auto Result = vkQueueSubmit(m_Device->GetGraphicsQ(), 1, &SubmitInfo, 0); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to queue submit" << std::endl;
+			TRE_CORE_ERROR("Unable to queue submit");
 			assert(Result == VK_SUCCESS);
 		}
 	}

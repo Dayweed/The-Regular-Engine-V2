@@ -50,13 +50,13 @@ namespace TRE
 		{
 			Message += "[Vulkan Debug Warning] ";
 			Message += pCallbackData->pMessage;
-			std::cout << Message << std::endl;
+			TRE_CORE_INFO(Message);
 		}
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 		{
 			Message += "[Vulkan Debug Error] ";
 			Message += pCallbackData->pMessage;
-			std::cout << Message << std::endl;
+			TRE_CORE_INFO(Message);
 		}
 
 		return VK_FALSE;
@@ -81,13 +81,13 @@ namespace TRE
 		TRE_CORE_INFO("Initializing Renderer Context");
 		if (int Supported = glfwVulkanSupported(); !Supported)
 		{
-			std::cout << "GLFW doesn't support vulkan" << std::endl;
+			TRE_CORE_INFO("GLFW doesn't support vulkan");
 			assert(Supported); //Change to proper assert
 		}
 
 		if (bool Supported = CheckAPIVersion(VK_API_VERSION_1_3); !Supported)
 		{
-			std::cout << "Vulkan API version not supported" << std::endl;
+			TRE_CORE_INFO("Vulkan API version not supported");
 			assert(Supported); //Change to proper assert
 		}
 
@@ -129,7 +129,7 @@ namespace TRE
 			std::vector<VkLayerProperties> LayerProp(Layercount);
 			vkEnumerateInstanceLayerProperties(&Layercount, LayerProp.data());
 
-			std::cout << "Vulkan instance layers:" << std::endl;
+			TRE_CORE_INFO("Vulkan instance layers:");
 
 			bool ContainLayer = true;
 			for (const char* layerName : ValidationLayer)
@@ -148,20 +148,20 @@ namespace TRE
 
 			if(ContainLayer)
 			{
-				std::cout << ValidationLayer.size() << " Validation Layer(s) found" << std::endl;
+				TRE_CORE_INFO("{0} Validation Layer(s) found", ValidationLayer.size());
 				InstanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayer.size());
 				InstanceCreateInfo.ppEnabledLayerNames = ValidationLayer.data();
 			}
 			else
 			{
 				InstanceCreateInfo.enabledLayerCount = 0;
-				std::cout << " Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled" << std::endl; //Replace with logging
+				TRE_CORE_INFO(" Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled");
 			}
 		}
 
 		if (VkResult Result = vkCreateInstance(&InstanceCreateInfo, nullptr, &m_instance); Result != VK_SUCCESS)
 		{
-			std::cout << "Failed to create vulkan instance " << std::endl;
+			TRE_CORE_INFO("Failed to create vulkan instance ");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -178,7 +178,7 @@ namespace TRE
 
 			if (VkResult Result = CreateDebugUtilsMessengerEXT(m_instance, &DebugMessengerCreateInfo, nullptr, &m_DebugUtilsMessenger); Result != VK_SUCCESS)
 			{
-				std::cout << "Failed to create debug utils messenger" << std::endl;
+				TRE_CORE_INFO("Failed to create debug utils messenger");
 				assert(Result == VK_SUCCESS);
 			}
 		}
@@ -202,9 +202,9 @@ namespace TRE
 
 		if (CurrentVersion < supportedversion)
 		{
-			std::cout << "Vulkan driver not supported" << std::endl;
-			std::cout << " You have: " << VK_API_VERSION_MAJOR(CurrentVersion) << "." << VK_API_VERSION_MINOR(CurrentVersion) << "." << VK_API_VERSION_PATCH(CurrentVersion);
-			std::cout << " You need: " << VK_API_VERSION_MAJOR(supportedversion) << "." << VK_API_VERSION_MINOR(supportedversion) << "." << VK_API_VERSION_PATCH(supportedversion);
+			TRE_CORE_INFO("Vulkan driver not supported");
+			TRE_CORE_INFO("You have: {0}.{1}.{2}", VK_API_VERSION_MAJOR(CurrentVersion), VK_API_VERSION_MINOR(CurrentVersion), VK_API_VERSION_PATCH(CurrentVersion));
+			TRE_CORE_INFO("You need: {0}.{1}.{2}", VK_API_VERSION_MAJOR(supportedversion), VK_API_VERSION_MINOR(supportedversion), VK_API_VERSION_PATCH(supportedversion));
 			return false;
 		}
 
