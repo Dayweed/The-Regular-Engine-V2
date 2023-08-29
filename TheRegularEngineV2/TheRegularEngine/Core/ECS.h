@@ -243,6 +243,42 @@ namespace TRE
 		entt::entity m_Entity;
 	};
 
+	class ECSOutputArchive
+	{
+	public:
+		void operator()(entt::entity ent)
+		{
+			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "|";
+		}
+		void operator()(std::underlying_type_t<entt::entity> u)
+		{
+			std::cout << u << ";";
+		}
+		template <typename T>
+		void operator()(const T& t)
+		{
+			std::cout << "&";
+		}
+	};
+
+	class ECSInputArchive
+	{
+	public:
+		void operator()(entt::entity& ent)
+		{
+			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "\\";
+		}
+		void operator()(std::underlying_type_t<entt::entity>& u)
+		{
+			std::cout << u << ":";
+		}
+		template <typename T>
+		void operator()(const T&)
+		{
+			std::cout << "/";
+		}
+	};
+
 	// ECS Manager (Entity Manager) THERE CAN ONLY BE ONE! >:o
 	//==================================================
 	class ECSManager
@@ -585,6 +621,23 @@ namespace TRE
 			existingObserver.disconnect();
 			updatedObserver.disconnect();
 			std::cout << "- Testing complete!\n";
+
+			std::cout << "\nTrying out snapshot for archiving entities\n";
+			std::cout << "- Total Objects: " << GetGO<Properties>().size() << "...\n";
+
+			std::cout << "- Archiving to Output: " << GetGO<Properties>().size() << "...\n";
+			ECSOutputArchive str{};
+			entt::snapshot snapshot{ GetRegistry() };
+			snapshot.entities(str);
+			//snapshot.component<>(str);
+
+			std::cout << "\n- Destroy All...\n";
+			DestroyAll();
+			std::cout << "- Current: " << GetGO<Properties>().size() << "...\n";
+			/*ECSInputArchive instr{};
+			entt::snapshot_loader snapshotLoader{ GetRegistry() };
+			snapshotLoader.entities(instr);*/
+			//snapshotLoader.component<>(str);
 
 			std::cout << "\nDestroying all " << GetGO<Properties>().size() << "  test objects...\n";
 			DestroyAll();
