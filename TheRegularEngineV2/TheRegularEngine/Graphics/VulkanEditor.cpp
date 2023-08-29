@@ -40,7 +40,7 @@ namespace TRE
 		
 		if (auto Result = vkCreateDescriptorPool(RendererContext::GetDevice()->GetLogicalDevice(), &DescriptorPoolCreateInfo, nullptr, &m_DescriptorPool); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create descriptor pool for imgui" << std::endl;
+			TRE_CORE_WARN("Unable to create descriptor pool for imgui");
 			assert(Result == VK_SUCCESS);
 		}
 
