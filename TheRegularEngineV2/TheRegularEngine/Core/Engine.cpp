@@ -105,7 +105,7 @@ namespace TRE
 	void Engine::Update()
 	{
 		// To remove eventually
-		_ecs_manager->TESTRUN();
+		//_ecs_manager->TESTRUN();
 
 		DemoScene();
 
