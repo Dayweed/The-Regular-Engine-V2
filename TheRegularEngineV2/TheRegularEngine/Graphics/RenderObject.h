@@ -1,5 +1,4 @@
 #pragma once
-#define GLM_FORCE_RADIANS
 #include "pch.h"
 #include "Buffer.h"
 

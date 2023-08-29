@@ -6,6 +6,7 @@
 #include "Core/System.h"
 #include "Core/ECS.h"
 #include "Core/SceneManager.h"
+#include "Core/Logger.h"
 
 //-----------------Physics-----------------//
 

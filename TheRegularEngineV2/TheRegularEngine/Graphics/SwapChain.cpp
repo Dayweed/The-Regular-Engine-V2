@@ -61,6 +61,11 @@ namespace TRE
 		return m_SwapChainSettings.m_SurfaceFormat;
 	}
 
+	VkFormat SwapChain::GetDepthFormat()
+	{
+		return m_SwapChainSettings.m_DepthFormat;
+	}
+
 	VkSemaphore SwapChain::GetRenderComplete()
 	{
 		return m_Semaphores.RenderComplete;
@@ -134,6 +139,8 @@ namespace TRE
 		m_QueueIndex = GraphicsQueueIndex;
 
 		FindImageFormatAndColorSpace();
+
+		m_SwapChainSettings.m_DepthFormat = m_LogicalDevice->GetPhysicalDevice()->GetDepthFormat();
 	}
 
 	void SwapChain::CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync)
@@ -143,7 +150,7 @@ namespace TRE
 
 		VkSurfaceCapabilitiesKHR SurfaceCapabilities;
 		if (VkResult Result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(PhysicalDevice, m_WindowSurface, &SurfaceCapabilities); Result != VK_SUCCESS)
-			std::cout << "Unable to get surface capabilities" << std::endl;
+			TRE_CORE_CRITICAL("Unable to get surface capabilities");
 
 		uint32_t NumberofPresentMode;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(PhysicalDevice, m_WindowSurface, &NumberofPresentMode, nullptr);
@@ -203,7 +210,7 @@ namespace TRE
 		VkCompositeAlphaFlagBitsKHR compositeAlphaFlag = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 		if ((SurfaceCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) == 0)
 		{
-			std::cout << "Default Composite Alpha Flag not available" << std::endl;
+			TRE_CORE_INFO("Default Composite Alpha Flag not available");
 			std::vector<VkCompositeAlphaFlagBitsKHR> AllFlags
 			{
 				VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
@@ -250,7 +257,7 @@ namespace TRE
 
 		if (VkResult Result = vkCreateSwapchainKHR(m_LogicalDevice->GetLogicalDevice(), &SwapChainCreateInfo, nullptr, &m_SwapChain); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create swap chain" << std::endl;
+			TRE_CORE_CRITICAL("Unable to create swap chain");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -260,21 +267,24 @@ namespace TRE
 		for (auto& image : m_SwapChainImages)
 		{
 			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
+			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
 		m_SwapChainImages.clear();
 
 		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &m_ImageCount, nullptr); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to get number of swapchain images" << std::endl;
+			TRE_CORE_WARN("Unable to get number of swapchain images");
 			assert(Result == VK_SUCCESS);
 		}
 
 		m_SwapChainImages.resize(m_ImageCount);
 		m_VulkanImages.resize(m_ImageCount);
+		m_DepthImages.resize(m_ImageCount);
+		m_DepthMemory.resize(m_ImageCount);
 		
 		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &m_ImageCount, m_VulkanImages.data()); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to get swapchain images" << std::endl;
+			TRE_CORE_WARN("Unable to get swapchain images");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -304,9 +314,56 @@ namespace TRE
 
 			if (VkResult Result = vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &ImageViewCreateInfo, nullptr, &m_SwapChainImages[x].ImageView); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create image view for swap chain" << std::endl;
+				TRE_CORE_WARN("Unable to create image view for swap chain");
 				assert(Result == VK_SUCCESS);
 			}
+		}
+
+		//Depth Image
+		for (uint32_t x = 0; x < ImageCount; ++x)
+		{
+			VkImageCreateInfo image{};
+			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+			image.imageType = VK_IMAGE_TYPE_2D;
+			image.format = m_SwapChainSettings.m_DepthFormat;
+			image.extent.width = m_Extent.width;
+			image.extent.height = m_Extent.height;
+			image.extent.depth = 1;
+			image.mipLevels = 1;
+			image.arrayLayers = 1;
+			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			image.samples = VK_SAMPLE_COUNT_1_BIT;
+			image.tiling = VK_IMAGE_TILING_OPTIMAL;
+			image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+			if (VkResult Result = vkCreateImage(m_LogicalDevice->GetLogicalDevice(), &image, nullptr, &m_DepthImages[x]); Result != VK_SUCCESS)
+			{
+				TRE_CORE_WARN("Unable to create depth image for swap chain");
+				assert(Result == VK_SUCCESS);
+			}
+			m_SwapChainImages[x].DepthImage = m_DepthImages[x];
+
+			VkMemoryRequirements memReqs;
+			VkMemoryAllocateInfo memAlloc{};
+			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			vkGetImageMemoryRequirements(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], &memReqs);
+			memAlloc.allocationSize = memReqs.size;
+			memAlloc.memoryTypeIndex = m_LogicalDevice->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			vkAllocateMemory(m_LogicalDevice->GetLogicalDevice(), &memAlloc, nullptr, &m_DepthMemory[x]);
+			vkBindImageMemory(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], m_DepthMemory[x], 0);
+
+			VkImageViewCreateInfo depthStencilView{};
+			depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			depthStencilView.format = m_SwapChainSettings.m_DepthFormat;
+			depthStencilView.flags = 0;
+			depthStencilView.subresourceRange = {};
+			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+			depthStencilView.subresourceRange.baseMipLevel = 0;
+			depthStencilView.subresourceRange.levelCount = 1;
+			depthStencilView.subresourceRange.baseArrayLayer = 0;
+			depthStencilView.subresourceRange.layerCount = 1;
+			depthStencilView.image = m_DepthImages[x];
+			vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &depthStencilView, nullptr, &m_SwapChainImages[x].DepthImageView);
 		}
 
 		//Command Buffers
@@ -328,14 +385,14 @@ namespace TRE
 		{
 			if (VkResult Result = vkCreateCommandPool(m_LogicalDevice->GetLogicalDevice(), &CommandPoolCreateInfo, nullptr, &Command.CommandPool); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create a command pool" << std::endl;
+				TRE_CORE_WARN("Unable to create a command pool");
 				assert(Result == VK_SUCCESS);
 			}
 
 			CommandBufferAllocateInfo.commandPool = Command.CommandPool;
 			if (VkResult Result = vkAllocateCommandBuffers(m_LogicalDevice->GetLogicalDevice(), &CommandBufferAllocateInfo, &Command.CommandBuffer); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create a command buffer" << std::endl;
+				TRE_CORE_WARN("Unable to create a command buffer");
 				assert(Result == VK_SUCCESS);
 			}
 		}
@@ -347,12 +404,12 @@ namespace TRE
 			SemaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 			if (auto Result = vkCreateSemaphore(m_LogicalDevice->GetLogicalDevice(), &SemaphoreCreateInfo, nullptr, &m_Semaphores.RenderComplete); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create semaphore" << std::endl;
+				TRE_CORE_WARN("Unable to create semaphore");
 				assert(Result == VK_SUCCESS);
 			}
 			if (auto Result = vkCreateSemaphore(m_LogicalDevice->GetLogicalDevice(), &SemaphoreCreateInfo, nullptr, &m_Semaphores.PresentComplete); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create semaphore" << std::endl;
+				TRE_CORE_WARN("Unable to create semaphore");
 				assert(Result == VK_SUCCESS);
 			}
 		}
@@ -368,7 +425,7 @@ namespace TRE
 			{
 				if (auto Result = vkCreateFence(m_LogicalDevice->GetLogicalDevice(), &FenceCreateInfo, nullptr, &Fence); Result != VK_SUCCESS)
 				{
-					std::cout << "Unable to create fence" << std::endl;
+					TRE_CORE_WARN("Unable to create fence");
 					assert(Result == VK_SUCCESS);
 				}
 			}
@@ -378,6 +435,8 @@ namespace TRE
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.ImageFormat = m_SwapChainSettings.m_SurfaceFormat;
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		RenderPassCreateInfo.DepthImageFormat = m_SwapChainSettings.m_DepthFormat;
+		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, RenderPassCreateInfo);
 
 		//FrameBuffers
@@ -389,7 +448,7 @@ namespace TRE
 		VkFramebufferCreateInfo FrameBufferCreateInfo{};
 		FrameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		FrameBufferCreateInfo.renderPass = m_Renderpass->GetHandle();
-		FrameBufferCreateInfo.attachmentCount = 1;
+		FrameBufferCreateInfo.attachmentCount = 2;
 		FrameBufferCreateInfo.width = m_Width;
 		FrameBufferCreateInfo.height = m_Height;
 		FrameBufferCreateInfo.layers = 1;
@@ -398,10 +457,11 @@ namespace TRE
 
 		for (int x = 0; x < m_FrameBuffers.size(); x++)
 		{
-			FrameBufferCreateInfo.pAttachments = &m_SwapChainImages[x].ImageView;
+			std::array<VkImageView, 2> Attachments = { m_SwapChainImages[x].ImageView, m_SwapChainImages[x].DepthImageView };
+			FrameBufferCreateInfo.pAttachments = Attachments.data();
 			if (auto Result = vkCreateFramebuffer(m_LogicalDevice->GetLogicalDevice(), &FrameBufferCreateInfo, nullptr, &m_FrameBuffers[x]); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to create framebuffer" << std::endl;
+				TRE_CORE_WARN("Unable to create framebuffer");
 				assert(Result == VK_SUCCESS);
 			}
 		}
@@ -420,7 +480,14 @@ namespace TRE
 		for (auto& image : m_SwapChainImages)
 		{
 			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
+			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
+
+		for(auto& image : m_DepthImages)
+			vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
+
+		for (auto& memory : m_DepthMemory)
+			vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
 
 		for (auto& CommandBuffer : m_CommandBuffers)
 			vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), CommandBuffer.CommandPool, nullptr);
@@ -450,7 +517,7 @@ namespace TRE
 		m_CurrentImageIndex = AccuireNextImage();
 		if (auto result = vkResetCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandBuffers[m_CurrentBufferIndex].CommandPool, 0); result != VK_SUCCESS)
 		{
-			std::cout << "Unable to reset pool" << std::endl;
+			TRE_CORE_WARN("Unable to reset pool");
 			assert(result == VK_SUCCESS);
 		}
 	}
@@ -470,13 +537,13 @@ namespace TRE
 
 		if (auto Result = vkResetFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to reset fences" << std::endl;
+			TRE_CORE_WARN("Unable to reset fences");
 			assert(Result == VK_SUCCESS);
 		}
 
 		if (auto Result = vkQueueSubmit(m_LogicalDevice->GetGraphicsQ(), 1, &SubmitInfo, m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to queue submit" << std::endl;
+			TRE_CORE_WARN("Unable to queue submit");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -490,7 +557,7 @@ namespace TRE
 
 		if (auto Result = vkQueuePresentKHR(m_LogicalDevice->GetGraphicsQ(), &PresentInfo); Result != VK_SUCCESS)
 		{
-			std::cout << "Resized" << std::endl;
+			TRE_CORE_INFO("Resized");
 			if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
 			{
 				Resize(m_Width, m_Height);
@@ -508,7 +575,7 @@ namespace TRE
 
 		if (auto Result = vkWaitForFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX); Result != VK_SUCCESS)
 		{
-			std::cout << "Failed to wait for fence" << std::endl;
+			TRE_CORE_WARN("Failed to wait for fence");
 			assert(Result == VK_SUCCESS);
 		}
 	}
@@ -519,7 +586,7 @@ namespace TRE
 
 		if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, UINT64_MAX, m_Semaphores.PresentComplete, nullptr, &Index); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to get next image" << std::endl;
+			TRE_CORE_WARN("Unable to get next image");
 			assert(Result == VK_SUCCESS);
 		}
 		return Index;
@@ -528,6 +595,10 @@ namespace TRE
 	void SwapChain::Resize(uint32_t width, uint32_t height)
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
+		for (auto& image : m_DepthImages)
+			vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
+		for (auto& memory : m_DepthMemory)
+			vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
 		CreateSwapChain(&width, &height, true); //Change later
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
 	}
@@ -538,7 +609,7 @@ namespace TRE
 		uint32_t FormatCount;
 		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
 		{
-			std::cout << "Surface Format bad result at " << __FILE__ << " and line " << __LINE__ << std::endl;
+			TRE_CORE_WARN("Surface Format bad result at {0} and line {1}", __FILE__, __LINE__);
 			assert(Result == VK_SUCCESS);
 		}
 		
@@ -547,7 +618,7 @@ namespace TRE
 		std::vector<VkSurfaceFormatKHR> SurfaceFormats(FormatCount);
 		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, SurfaceFormats.data()); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to get Surface Format at " << __FILE__ << " and line " << __LINE__ << std::endl;
+			TRE_CORE_WARN("Unable to get Surface Format at {0} and line {1}", __FILE__, __LINE__);
 			assert(Result == VK_SUCCESS);
 		}
 
