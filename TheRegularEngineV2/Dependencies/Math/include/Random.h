@@ -24,6 +24,7 @@ struct Random
 	// quaternion?? Rotation();
 
 	static vec2_type InsideUnitCircle();
+	static vec2_type OnUnitCircle();
 	static vec3_type InsideUnitSphere();
 	static vec3_type OnUnitSphere();
 

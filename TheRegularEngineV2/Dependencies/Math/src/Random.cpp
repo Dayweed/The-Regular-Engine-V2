@@ -48,14 +48,21 @@ float Random::Value01() { return RangeFloat(0, 1); }
 Random::vec2_type Random::InsideUnitCircle()
 {
 	const float radius = Value01();
+	const vec2_type pt = OnUnitCircle();
+	return { pt.x * radius, pt.y * radius };
+	// return OnUnitCircle() * Value01();
+}
+
+Random::vec2_type Random::OnUnitCircle()
+{
 	const float radians = RangeFloat(0, 2 * PI);
-	return { radius * cosf(radians), radius * sinf(radians) };
+	return { cosf(radians), sinf(radians) };
 }
 
 Random::vec3_type Random::InsideUnitSphere()
 {
 	const float radius = Value01();
-	const vec3_type pt{ OnUnitSphere() };
+	const vec3_type pt = OnUnitSphere();
 	return { pt.x * radius, pt.y * radius, pt.z * radius };
 	// return OnUnitSphere() * Value01();
 }
