@@ -27,6 +27,9 @@
     <ClInclude Include="Core\Engine.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\SceneManager.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -73,6 +76,9 @@
     <ClInclude Include="Graphics\PhysicalDevice.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Pipeline.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\RenderObject.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -91,6 +97,9 @@
     <ClInclude Include="Graphics\SwapChain.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\VulkanEditor.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -102,15 +111,15 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Graphics\Pipeline.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\ECS.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Engine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\SceneManager.cpp">
@@ -152,6 +161,9 @@
     <ClCompile Include="Graphics\PhysicalDevice.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Pipeline.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\RenderObject.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -170,6 +182,9 @@
     <ClCompile Include="Graphics\SwapChain.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\VulkanEditor.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -180,8 +195,5 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Graphics\Pipeline.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

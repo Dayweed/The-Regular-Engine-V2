@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "GLFW/glfw3.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -77,7 +78,7 @@ namespace TRE
 
 	void RendererContext::Initialize()
 	{
-		std::cout << "Initializing Renderer Context" << std::endl;
+		TRE_CORE_INFO("Initializing Renderer Context");
 		if (int Supported = glfwVulkanSupported(); !Supported)
 		{
 			std::cout << "GLFW doesn't support vulkan" << std::endl;
