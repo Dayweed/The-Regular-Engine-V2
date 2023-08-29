@@ -101,10 +101,10 @@ namespace TRE
 			std::cout << "FMOD ERROR: " << result << " " << function << std::endl;
 			return 1;
 		}
-		else
+		/*else
 		{
 			std::cout << "FMOD : " << function << " Success" << std::endl;
-		}
+		}*/
 		return 0;
 	}
 

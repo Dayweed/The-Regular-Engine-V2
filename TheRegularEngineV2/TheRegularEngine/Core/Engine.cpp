@@ -39,14 +39,14 @@ namespace TRE
 
 		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
-		GO audio = _ecs_manager->CreateGO();
+		/*GO audio = _ecs_manager->CreateGO();
 		audio->AddComponent<Audio>();
-		audio->GetComponent<Audio>().m_IsPlaying = true;
+		audio->GetComponent<Audio>().m_IsPlaying = true;*/
 
 		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
-		_system_manager->GetSystem<AudioSystem>()->LoadFile(audio);
-		_system_manager->GetSystem<AudioSystem>()->Play(audio, true);
+		//_system_manager->GetSystem<AudioSystem>()->LoadFile(audio);
+		//_system_manager->GetSystem<AudioSystem>()->Play(audio, true);
 	}
 }
 #pragma endregion TO DELETE TEST
