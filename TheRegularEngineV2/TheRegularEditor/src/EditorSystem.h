@@ -15,4 +15,16 @@ namespace TRE
 		private:
 			
 	};
+
+	class Panel
+	{
+		public:
+			Panel();
+			~Panel();
+
+			void CreatePanel(std::string Panel_Name);
+
+		private:
+			std::string PanelName;
+	};
 }

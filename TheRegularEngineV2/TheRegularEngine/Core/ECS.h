@@ -539,8 +539,8 @@ namespace TRE
 			listenerGO->GetComponent<Transform>().m_Position.y = 85; // This wont work
 			std::cout << "Original Value: " << listenerGO->GetComponent<Transform>().m_Position.x << ", " << listenerGO->GetComponent<Transform>().m_Position.y << "\n";
 			// replaces the component in-place
-			int newVal = 69;
-			GetRegistry().patch<Transform>(listenerGO->m_Entity, [&](Transform& pos) { pos.m_Position.x = newVal; });
+			//int newVal = 69;
+			//GetRegistry().patch<Transform>(listenerGO->m_Entity, [&](Transform& pos) { pos.m_Position.x = newVal; });
 			//GetRegistry().patch<Transform>(listenerGO->m_Entity, &Transform::SetPosX);
 			std::cout << "New Value: " << listenerGO->GetComponent<Transform>().m_Position.x << ", " << listenerGO->GetComponent<Transform>().m_Position.y << "\n";
 			std::cout << "\nTesting Listening to Destroying Values, should call Destroy\n";

@@ -19,6 +19,8 @@ namespace TRE
 			VkQueue GetGraphicsQ();
 			VkQueue GetComputeQ();
 
+			uint32_t FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags);
+
 		private:
 			VkDevice m_LogicalDevice;
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;

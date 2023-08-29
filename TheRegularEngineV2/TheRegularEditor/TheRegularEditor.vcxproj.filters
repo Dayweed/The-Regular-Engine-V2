@@ -17,9 +17,15 @@
     <ClCompile Include="src\EditorSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PanelManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PanelManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

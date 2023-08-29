@@ -1,12 +1,25 @@
 #include "EditorSystem.h"
 #include "Imgui/imgui.h"
 #include "imgui_impl_vulkan.h"
+#include "PanelManager.h"
 
 namespace TRE
 {
 	EditorSystem::EditorSystem()
 	{
 		std::cout << "Editor Init" << std::endl; //Replace with Logging
+
+		Panel Viewport;
+		Viewport.CreatePanel("Viewport");
+		
+		Panel ContentBrowser;
+		ContentBrowser.CreatePanel("ContentBrowser");
+		
+		Panel Hierarchy;
+		Hierarchy.CreatePanel("Hierarchy");
+
+		Panel Inspector;
+		Inspector.CreatePanel("Inspector");
 	}
 	
 	EditorSystem::~EditorSystem()
@@ -62,12 +75,18 @@ namespace TRE
 
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("ContentBrowser");
+		ImGui::Begin("Hierarchy");
+		ImGui::Begin("Inspector");
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();
 
 		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), ViewportSize);
 
+		ImGui::End();
+		ImGui::End();
+		ImGui::End();
 		ImGui::End();
 		ImGui::ShowDemoWindow();
 
@@ -77,5 +96,22 @@ namespace TRE
 	void EditorSystem::Shutdown()
 	{
 		std::cout << "Editor Shutdown" << std::endl; //Replace with Logging
+	}
+
+	Panel::Panel()
+	{
+	}
+
+	Panel::~Panel()
+	{
+
+	}
+
+	void Panel::CreatePanel(std::string Panel_Name)
+	{
+		Panel NewPanel;
+		NewPanel.PanelName = Panel_Name;
+		
+		PanelManager::Instance().InsertPanel(Panel_Name, NewPanel);
 	}
 }
