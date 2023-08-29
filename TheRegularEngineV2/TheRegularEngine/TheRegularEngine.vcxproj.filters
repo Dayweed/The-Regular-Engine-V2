@@ -111,6 +111,8 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="EventSystem\EventHandler\EventHandler.h" />
+    <ClInclude Include="EventSystem\Events\EventBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\ECS.cpp">
