@@ -36,7 +36,7 @@ namespace TRE
 		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 		cam->GetComponent<Camera>().m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-		_texture_manager->LoadTexture("../Assets/Test.png", "Test");
+		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
 		_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
@@ -141,8 +141,6 @@ namespace TRE
 
 	void Engine::Shutdown()
 	{
-		//Some graphics class should call this, temporary
-		_texture_manager->Shutdown();
 		_system_manager->ShutdownSystem();
 		_ecs_manager->DestroyAll();
 	}

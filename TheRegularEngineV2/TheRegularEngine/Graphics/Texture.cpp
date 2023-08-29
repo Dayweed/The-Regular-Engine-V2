@@ -225,6 +225,11 @@ namespace TRE
 		m_Textures[name] = std::make_shared<Texture>(texWidth, texHeight, reinterpret_cast<void*>(pixels), imageFormat, imageFilter);
 	}
 
+	std::shared_ptr<Texture> TextureManager::GetTexture(const std::string& name)
+	{
+		return m_Textures[name];
+	}
+
 	void TextureManager::Shutdown()
 	{	
 		m_Textures.clear();

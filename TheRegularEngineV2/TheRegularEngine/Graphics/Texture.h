@@ -38,6 +38,8 @@ namespace TRE
 		}
 
 		void LoadTexture(const std::string& path, const std::string& name, const VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB, const VkFilter imageFilter = VK_FILTER_NEAREST);
+		std::shared_ptr<Texture> GetTexture(const std::string& name);
+		
 		void Shutdown();
 	
 	private:

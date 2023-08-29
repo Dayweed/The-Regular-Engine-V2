@@ -595,6 +595,10 @@ namespace TRE
 	void SwapChain::Resize(uint32_t width, uint32_t height)
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
+		for (auto& image : m_DepthImages)
+			vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
+		for (auto& memory : m_DepthMemory)
+			vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
 		CreateSwapChain(&width, &height, true); //Change later
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
 	}
