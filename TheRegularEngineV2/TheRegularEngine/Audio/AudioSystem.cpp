@@ -11,8 +11,7 @@ namespace TRE
 
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
-
-		printf("initializing audio\n");
+		
 	}
 
 	AudioSystem::~AudioSystem()
