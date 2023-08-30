@@ -1,10 +1,14 @@
 #pragma once
+#ifndef ECS_H
+#define ECS_H
+
 #include "pch.h"
 #include "entt.hpp"
 #include "System.h"
 #include "ComponentManager.h"
 #include "Transform.h"
 #include <typeindex>
+//#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -478,11 +482,11 @@ namespace TRE
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_Position.x << std::endl;
 			std::cout << "Removing Editted Component...\n";
 			test->RemoveComponent<Transform>();
-			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_PosX << std::endl; // Will call assert in GetComponent!
+			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_Scale.x << std::endl; // Will call assert in GetComponent!
 			std::cout << "Default Parent: " << test->GetParent() << "\n";
 			DestroyGO(test);
 			std::cout << "Destroyed earlier GO...\n";
-			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Transform>().m_PosX << std::endl; // Will call assert in GetComponent!
+			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Properties>().m_Name << std::endl; // Will not call assert in GetComponent until next loop!
 
 			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Transform and Properties...\n";
 			GO test2 = CreateGO("test2");
@@ -692,17 +696,32 @@ namespace TRE
 	template <typename T>
 	bool GameObject::HasComponent()
 	{
-		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		}
 		return _ecs_manager->GOHasComponent<T>(shared_from_this());
 	}
 
 	template <typename T>
 	T& GameObject::AddComponent()
 	{
-		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		}
 
 		if (HasComponent<T>())
 		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is already in " + GetComponent<Properties>().m_Name + "...");
 			return GetComponent<T>();
 		}
 		return _ecs_manager->GetRegistry().emplace<T>(m_Entity);
@@ -712,10 +731,29 @@ namespace TRE
 	T& GameObject::GetComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
-		assert(this != nullptr);
-		assert(&m_Entity != nullptr);
-		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
-		assert(HasComponent<T>());
+		if (this == nullptr || &m_Entity == nullptr)
+		{
+			std::string funcName{ __FUNCTION__ };
+			//TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
+			assert(this != nullptr);
+			assert(&m_Entity != nullptr);
+		}
+
+		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		}
+
+		if (!HasComponent<T>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			//TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " does not have the component " + compName);
+			assert(HasComponent<T>());
+		}
 
 		return _ecs_manager->GetRegistry().get<T>(m_Entity);
 	}
@@ -724,11 +762,25 @@ namespace TRE
 	void GameObject::RemoveComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
-		assert(this != nullptr);
-		assert(&m_Entity != nullptr);
-		assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		if (this == nullptr || &m_Entity == nullptr)
+		{
+			std::string funcName{ __FUNCTION__ };
+			//TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
+			assert(this != nullptr);
+			assert(&m_Entity != nullptr);
+		}
+
+		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+		}
 
 		if (HasComponent<T>())
 			_ecs_manager->GetRegistry().remove<T>(m_Entity);
 	}
 }
+
+#endif // !ECS_H
