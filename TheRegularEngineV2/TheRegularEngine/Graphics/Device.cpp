@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Device.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -35,7 +36,7 @@ namespace TRE
 			}
 		}
 
-		std::cout << "Unable to find memory type" << std::endl;
+		TRE_CORE_ERROR("Unable to find memory type");
 		assert(false);
 		return 0;
 	}
@@ -57,7 +58,7 @@ namespace TRE
 
 		if (auto Result = vkCreateDevice(m_PhysicalDevice->m_PhysicalDevice, &DeviceCreateInfo, nullptr, &m_LogicalDevice); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create Logical Device" << std::endl;
+			TRE_CORE_CRITICAL("Unable to create Logical Device");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -68,14 +69,14 @@ namespace TRE
 
 		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_CommandPool); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create command pool for graphics" << std::endl;
+			TRE_CORE_CRITICAL("Unable to create command pool for graphics");
 			assert(Result == VK_SUCCESS);
 		}
 
 		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Compute;
 		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_ComputeCommandPool); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create command pool for compute" << std::endl;
+			TRE_CORE_CRITICAL("Unable to create command pool for compute");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -108,7 +109,7 @@ namespace TRE
 
 		if (auto Result = vkAllocateCommandBuffers(m_LogicalDevice, &AllocateInfo, &CommandBuffer); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to allocate command buffer" << std::endl;
+			TRE_CORE_CRITICAL("Unable to allocate command buffer");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -118,7 +119,7 @@ namespace TRE
 			BeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 			if (auto Result = vkBeginCommandBuffer(CommandBuffer, &BeginInfo); Result != VK_SUCCESS)
 			{
-				std::cout << "Unable to begin command buffer" << std::endl;
+				TRE_CORE_ERROR("Unable to begin command buffer");
 				assert(Result == VK_SUCCESS);
 			}
 		}
@@ -132,7 +133,7 @@ namespace TRE
 
 		if (auto Result = vkEndCommandBuffer(CommandBuffer); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to end command buffer" << std::endl;
+			TRE_CORE_ERROR("Unable to end command buffer");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -146,19 +147,19 @@ namespace TRE
 		FenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		if (auto Result = vkCreateFence(m_LogicalDevice, &FenceCreateInfo, nullptr, &Fence); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create fence" << std::endl;
+			TRE_CORE_ERROR("Unable to create fence");
 			assert(Result == VK_SUCCESS);
 		}
 
 		if (auto Result = vkQueueSubmit(m_GraphicsQ, 1, &SubmitInfo, Fence); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to queue submit" << std::endl;
+			TRE_CORE_ERROR("Unable to queue submit");
 			assert(Result == VK_SUCCESS);
 		}
 
 		if (auto Result = vkWaitForFences(m_LogicalDevice, 1, &Fence, VK_TRUE, UINT64_MAX); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to wait for fence" << std::endl;
+			TRE_CORE_ERROR("Unable to wait for fence");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -178,7 +179,7 @@ namespace TRE
 
 		if (auto Result = vkAllocateCommandBuffers(m_LogicalDevice, &cmdBufAllocateInfo, &cmdBuffer); Result != VK_SUCCESS)
 		{
-			std::cout << "unable to allocate secondary buffer" << std::endl;
+			TRE_CORE_ERROR("unable to allocate secondary buffer");
 			assert(Result == VK_SUCCESS);
 		}
 		return cmdBuffer;

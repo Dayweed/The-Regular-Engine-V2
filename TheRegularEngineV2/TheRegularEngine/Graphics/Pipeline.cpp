@@ -4,6 +4,7 @@
 #include "RenderObject.h"
 #include "Core/Engine.h"
 #include "Descriptor.h"
+#include "Texture.h"
 
 namespace TRE
 {
@@ -155,7 +156,7 @@ namespace TRE
 			.Build();
 
 		//Create descriptor set layout
-		const uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 		m_UBOBuffers.resize(imageCount);
 		for (int i = 0; i < m_UBOBuffers.size(); i++)
 		{
@@ -165,19 +166,30 @@ namespace TRE
 
 		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
 			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+			.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 			.Build());
 
-		m_DescriptorSets.resize(imageCount);
+		//TO DELETE
+		_texture_manager->LoadTexture("../Assets/Test.png", "Test");
+
+		int descriptorCount = imageCount;
+		m_DescriptorSets.resize(descriptorCount);
 		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
 			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
+			VkDescriptorImageInfo imageInfo = _texture_manager->GetTexture("Test")->GetDescriptorImageInfo();
 
 			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
 				.WriteBuffer(0, &bufferInfo)
+				.WriteImage(1, &imageInfo)
 				.Build(m_DescriptorSets[i]);
 		}
 
-		std::vector<VkDescriptorSetLayout> layouts{ m_DescriptorSetLayouts[0]->GetDescriptorSetLayout() };
+		std::vector<VkDescriptorSetLayout> layouts{};
+		for (auto& x : m_DescriptorSetLayouts)
+		{
+			layouts.push_back(x->GetDescriptorSetLayout());
+		}
 
 		//Create pipeline layout
 		VkPushConstantRange pushConstantRange{};
@@ -225,6 +237,7 @@ namespace TRE
 
 	Pipeline::~Pipeline()
 	{
+		_texture_manager->Shutdown();
 		auto Device = RendererContext::GetDevice();
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);

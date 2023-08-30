@@ -8,10 +8,10 @@
 #define PI_2 static_cast<float>(M_PI_2)
 #define PIx2 static_cast<float>(M_PI + M_PI)
 
-namespace Math::Easing // nested namespace definitions! :D
+namespace Mathf::Easing // nested namespace definitions! :D
 {
 	/* !
-	@function  Linear
+	@function  EaseLinear
 
 	@params	start_ : the start value of the interpolation
 	@params	end_ : the end value of the interpolation
@@ -21,7 +21,7 @@ namespace Math::Easing // nested namespace definitions! :D
 			linearly.
 
 	*//*__________________________________________________________________________*/
-	float Linear(float start_, float end_, float value_)
+	float EaseLinear(float start_, float end_, float value_)
 	{
 		return (1.f - value_) * start_ + value_ * end_;
 	}

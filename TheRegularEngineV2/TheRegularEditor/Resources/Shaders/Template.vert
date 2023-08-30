@@ -6,7 +6,7 @@ layout(location = 2) in vec3 inNormal;
 layout(location = 3) in vec2 inTexCoord;
 
 layout(location = 0) out vec3 outColor;
-//layout(location = 1) out vec2 outTexCoord;
+layout(location = 1) out vec2 outTexCoord;
 
 layout(push_constant) uniform Push
 {
@@ -30,5 +30,5 @@ void main()
 	float lightIntensity = AMBIENT_INTENSITY + max(dot(normalWorldSpace, ubo.m_DirectionToLight), 0);
 
     outColor = lightIntensity * inColor;
-    //outTexCoord = inTexCoord;
+    outTexCoord = inTexCoord;
 }

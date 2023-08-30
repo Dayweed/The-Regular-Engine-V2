@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Engine.h"
+#include "Core/Logger.h"
 
 /* Replaces _CRTDBG_MAP_ALLOC											*/
 /* This will actually make sure to sure to show where the leak is at	*/
@@ -18,6 +19,8 @@ int main()
 	#if defined(DEBUG) | defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
+
+	TRE::Log::Init();
 
 	TRE::Engine* App = TRE::CreateApp();
 	App->RegisterECS();
