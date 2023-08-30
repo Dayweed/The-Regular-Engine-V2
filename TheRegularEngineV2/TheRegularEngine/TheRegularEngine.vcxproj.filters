@@ -7,8 +7,20 @@
     <Filter Include="Editor">
       <UniqueIdentifier>{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EventSystem">
+      <UniqueIdentifier>{CCE875DF-389E-EED4-C192-E8AB2D47E5D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventHandler">
+      <UniqueIdentifier>{FB41E081-E766-2F02-10B2-1492FC352E20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\Events">
+      <UniqueIdentifier>{3037AC02-1C1B-6D58-857B-67AB717E57DA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{1653CE33-0220-293F-2B39-17E717655ECD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InputHandler">
+      <UniqueIdentifier>{7392D63B-5FF5-65E0-087B-9E96F4BC3163}</UniqueIdentifier>
     </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
@@ -52,6 +64,15 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="EntryPoint.h" />
+    <ClInclude Include="EventSystem\EventHandler\EventHandler.h">
+      <Filter>EventSystem\EventHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem\Events\EventBase.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem\Events\InputEvent.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -103,6 +124,12 @@
     <ClInclude Include="Graphics\VulkanEditor.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="InputHandler\InputHandler.h">
+      <Filter>InputHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler\KeyButton.h">
+      <Filter>InputHandler</Filter>
+    </ClInclude>
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -111,8 +138,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="EventSystem\EventHandler\EventHandler.h" />
-    <ClInclude Include="EventSystem\Events\EventBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\ECS.cpp">
@@ -189,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="Graphics\VulkanEditor.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler\InputHandler.cpp">
+      <Filter>InputHandler</Filter>
     </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Physics</Filter>

@@ -1,4 +1,3 @@
-
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 #include "pch.h"
@@ -40,7 +39,7 @@ namespace TRE
 		//Calls the response function
 		void call(Event& event) override
 		{
-			(_instance->*_memberFunction)(static_cast<EventType & (event));
+			(_instance->*_memberFunction)(static_cast<EventType&>(event));
 		}
 	};
 
@@ -62,7 +61,7 @@ namespace TRE
 		void publish(EventType&& event)
 		{
 			//Get the handler based on type index / type id of the event
-			const auto& delegates = _subscriber[typeid(EventType)];
+			const auto& delegates = _subscribers[typeid(EventType)];
 			for (auto& handler : delegates)
 				if (handler != nullptr) handler->exec(event);
 		}
