@@ -17,6 +17,11 @@ namespace TRE
 		}
 
 		void Compile(const std::string& filename);
+		void Serialize(const std::string& returnPath = "");
+		void Deserialize(const std::string& geomPath);
+
+		std::unique_ptr<Geom> GetGeom() { return std::move(m_Geom); }
+		std::unique_ptr<Geom> GetLoadedGeom() { return std::move(m_LoadedGeom); }
 	private:
 		struct Refs
 		{
@@ -42,9 +47,23 @@ namespace TRE
 			std::string MeshName;
 			std::string Name;
 
-			std::vector <FullVertex> Vertices;
+			std::vector<FullVertex> Vertices;
 			std::vector<std::uint32_t> Indices;
 			std::uint32_t MaterialIndex;
+		};
+
+		struct CompressedMeshPart
+		{
+			std::string MeshName;
+			std::string Name;
+
+			std::vector<Geom::Position> Position;
+			std::vector<Geom::Extra> Extra;
+			std::vector<std::uint32_t> Indices;
+			std::uint32_t MaterialIndex;
+
+			glm::vec3 PosCompressionOffset;
+			glm::vec2 UVCompressionOffset;
 		};
 	private:
 		bool SanityCheck();
@@ -53,10 +72,17 @@ namespace TRE
 		bool ImportGeometryValidateMesh(const aiMesh& AssimpMesh, int& iTexture, int& iColor);
 		void MergeData(std::vector<InputMeshPart>& inputMesh);
 		void Optimize(std::vector<InputMeshPart>& inputMesh);
+		std::vector<CompressedMeshPart> Quantize(const std::vector<InputMeshPart>& inputMesh);
+		std::unique_ptr<TempGeom> CreateSkinGeom(const std::vector<CompressedMeshPart>&& compressedMesh);
+		void CastToGeom(std::unique_ptr<TempGeom> tempGeom);
 
 	private:
 		const aiScene*		m_Scene;
 		std::vector<Refs>	m_References;
+		std::unique_ptr<Geom> m_Geom;
+		std::string m_filePath;
+
+		std::unique_ptr<Geom> m_LoadedGeom;
 	private:
 		GeomCompiler() {};
 		GeomCompiler(GeomCompiler const&) = delete;

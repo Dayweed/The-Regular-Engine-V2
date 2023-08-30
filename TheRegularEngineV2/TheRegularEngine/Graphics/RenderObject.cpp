@@ -70,6 +70,29 @@ namespace TRE
 		return std::make_unique<RenderObject>(builder);
 	}
 
+	std::unique_ptr<RenderObject> RenderObject::CreateFromGeom(std::unique_ptr<Geom> geom)
+	{
+		Builder builder{};
+		builder.m_Vertices.clear();
+		builder.m_Indices.clear();
+		builder.m_Vertices.resize(geom->nPosition);
+		builder.m_Indices.resize(geom->nIndices);
+		for (uint32_t i = 0; i < geom->nPosition; ++i)
+		{
+			builder.m_Vertices[i].m_Position = geom->pPosition[i].Position;
+			builder.m_Vertices[i].m_Color = geom->pExtra[i].Color;
+			builder.m_Vertices[i].m_Normal = geom->pExtra[i].Normal;
+			builder.m_Vertices[i].m_UV = geom->pExtra[i].UV;
+		}
+
+		for (uint32_t i = 0; i < geom->nIndices; ++i)
+		{
+			builder.m_Indices[i] = geom->pIndices[i];
+		}
+
+		return std::make_unique<RenderObject>(builder);
+	}
+
 	void RenderObject::Bind(VkCommandBuffer commandBuffer)
 	{
 		VkBuffer vertexBuffers[] = { m_VertexBuffer->GetBuffer() };

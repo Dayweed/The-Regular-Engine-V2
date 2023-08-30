@@ -3,11 +3,14 @@
 #include "GeomCompiler.h"
 #include "meshoptimizer.h"
 
+#include <span>
+#include <filesystem>
+
 namespace TRE
 {
 	void GeomCompiler::Compile(const std::string& filename)
 	{
-		TRE_CORE_INFO("Importing mesh from: {0}", filename);
+		TRE_CORE_INFO("Compiling mesh from: {0}", filename);
 		Assimp::Importer importer;
 
 		uint32_t flag = aiProcess_Triangulate                // Make sure we get triangles rather than nvert polygons
@@ -20,6 +23,7 @@ namespace TRE
 			| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
 			;
 
+		m_filePath = filename;
 		m_Scene = importer.ReadFile(filename, flag);
 
 		assert(m_Scene != nullptr && "Error loading model");
@@ -31,6 +35,81 @@ namespace TRE
 		}
 
 		ImportData();
+	}
+
+	void GeomCompiler::Serialize(const std::string& returnPath)
+	{
+		std::string_view path = returnPath.empty() ? m_filePath : returnPath;
+		std::string_view name = path;
+		name.remove_prefix(name.find_last_of('/') + 1);
+		name.remove_suffix(name.size() - name.find_last_of('.'));
+
+		TRE_CORE_INFO("Serializing mesh to: {0}", path);
+
+		std::ofstream file(path, std::ios::binary);
+
+		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
+		//file.write(reinterpret_cast<const char*>(&m_Geom->pSubMesh), sizeof(Geom::SubMesh) * m_Geom->nSubMeshes);
+		file.write(reinterpret_cast<const char*>(&m_Geom->nPosition), sizeof(std::uint32_t));
+		file.write(reinterpret_cast<const char*>(&m_Geom->pPosition), sizeof(Geom::Position) * m_Geom->nPosition);
+		file.write(reinterpret_cast<const char*>(&m_Geom->nExtras), sizeof(std::uint32_t));
+		file.write(reinterpret_cast<const char*>(&m_Geom->pExtra), sizeof(Geom::Extra) * m_Geom->nExtras);
+		file.write(reinterpret_cast<const char*>(&m_Geom->nIndices), sizeof(std::uint32_t));
+		file.write(reinterpret_cast<const char*>(&m_Geom->pIndices), sizeof(std::uint32_t) * m_Geom->nIndices);
+		
+		file.close();
+	}
+
+	void GeomCompiler::Deserialize(const std::string& geomPath)
+	{
+		TRE_CORE_INFO("Deserializing geom from: {0}", geomPath);
+		std::filesystem::path path = geomPath;
+		if (std::filesystem::exists(geomPath))
+		{
+			std::ifstream file(geomPath, std::ios::binary);
+			if (file.is_open())
+			{
+				file.seekg(0, std::ios::end);
+				std::size_t size = file.tellg();
+				file.seekg(0, std::ios::beg);
+
+				char* buffer = new char[size];
+				file.read(buffer, size);
+				file.close();
+				
+				std::size_t offset = 0;
+				auto geom = std::make_unique<Geom>();
+				//geom->pMesh = reinterpret_cast<Geom::Mesh*>(buffer);
+				//geom->pSubMesh = reinterpret_cast<Geom::SubMesh*>(buffer + sizeof(Geom::Mesh) * geom->nMeshes);
+				geom->nPosition = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+				offset += sizeof(std::uint32_t);
+				geom->pPosition = new Geom::Position[geom->nPosition];
+				memcpy(geom->pPosition, buffer + offset, sizeof(Geom::Position) * geom->nPosition);
+				offset += sizeof(Geom::Position) * geom->nPosition;
+				geom->nExtras = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+				geom->pExtra = new Geom::Extra[geom->nExtras];
+				offset += sizeof(std::uint32_t);
+				memcpy(geom->pExtra, buffer + offset, sizeof(Geom::Extra) * geom->nExtras);
+				offset += sizeof(Geom::Extra) * geom->nExtras;
+				geom->nIndices = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+				geom->pIndices = new std::uint32_t[geom->nIndices];
+				offset += sizeof(std::uint32_t);
+				memcpy(geom->pIndices, buffer + offset, sizeof(std::uint32_t) * geom->nIndices);
+				offset += sizeof(std::uint32_t) * geom->nIndices;
+				
+				delete[] buffer;
+
+				m_LoadedGeom = std::move(geom);
+			}
+			else
+			{
+				TRE_CORE_ERROR("Failed to open file: {0}", geomPath);
+			}
+		}
+		else
+		{
+			TRE_CORE_ERROR("File does not exist: {0}", geomPath);
+		}
 	}
 
 	bool GeomCompiler::SanityCheck()
@@ -94,6 +173,10 @@ namespace TRE
 		MergeData(MyNodes);
 
 		Optimize(MyNodes);
+
+		auto skinGeom = CreateSkinGeom(Quantize(MyNodes));
+
+		CastToGeom(std::move(skinGeom));
 	}
 
 	void GeomCompiler::ImportStaticMesh(std::vector<InputMeshPart>& inputMesh)
@@ -302,7 +385,7 @@ namespace TRE
 		//
 		// Remove Mesh parts with zero vertices
 		//
-		for (auto i = 0u; i < inputMesh.size(); ++i)
+		for (auto i = 0; i < inputMesh.size(); ++i)
 		{
 			if (inputMesh[i].Vertices.size() == 0 || inputMesh[i].Indices.size() == 0)
 			{
@@ -314,7 +397,7 @@ namespace TRE
 		//
 		// Merge any mesh part based on Mesh and iMaterial...
 		//
-		for (auto i = 0u; i < inputMesh.size(); ++i)
+		for (auto i = 0; i < inputMesh.size(); ++i)
 		{
 			for (auto j = i + 1; j < inputMesh.size(); ++j)
 			{
@@ -342,7 +425,6 @@ namespace TRE
 
 	void GeomCompiler::Optimize(std::vector<InputMeshPart>& inputMesh)
 	{
-		TRE_CORE_INFO("Optimizing mesh...");
 		//Vertex and index optimization
 		std::vector<InputMeshPart> optimizedMeshParts;
 		for (auto& meshPart : inputMesh)
@@ -375,5 +457,185 @@ namespace TRE
 		}
 
 		inputMesh = std::move(optimizedMeshParts);
+	}
+
+	std::vector<GeomCompiler::CompressedMeshPart> GeomCompiler::Quantize(const std::vector<InputMeshPart>& inputMesh)
+	{
+		//Not gonna quantize for now
+		std::vector<CompressedMeshPart> compressedMeshParts;
+		compressedMeshParts.resize(inputMesh.size());
+
+		for (auto i = 0; i < inputMesh.size(); ++i)
+		{
+			compressedMeshParts[i].MaterialIndex = inputMesh[i].MaterialIndex;
+			compressedMeshParts[i].MeshName = inputMesh[i].MeshName;
+			compressedMeshParts[i].Position.resize(inputMesh[i].Vertices.size());
+			compressedMeshParts[i].Extra.resize(inputMesh[i].Vertices.size());
+			compressedMeshParts[i].Indices = inputMesh[i].Indices;
+			for (auto j = 0; j < inputMesh[i].Vertices.size(); ++j)
+			{
+				compressedMeshParts[i].Position[j].Position = inputMesh[i].Vertices[j].Position;
+				compressedMeshParts[i].Extra[j].Normal = inputMesh[i].Vertices[j].fNormal;
+				compressedMeshParts[i].Extra[j].UV = inputMesh[i].Vertices[j].UV;
+				compressedMeshParts[i].Extra[j].Color = inputMesh[i].Vertices[j].fColor;
+			}
+		}
+
+		return compressedMeshParts;
+	}
+
+	std::unique_ptr<TempGeom> GeomCompiler::CreateSkinGeom(const std::vector<CompressedMeshPart>&& compressedMesh)
+	{
+		// Create the final mesh
+		std::unique_ptr<TempGeom> skinGeom = std::make_unique<TempGeom>();
+		for (auto& E : compressedMesh)
+		{
+			int iFinalMesh = -1;
+			for (auto i = 0; i < skinGeom->Meshes.size(); ++i)
+			{
+				if (skinGeom->Meshes[i].Name == E.MeshName)
+				{
+					iFinalMesh = i;
+					break;
+				}
+			}
+
+			if (iFinalMesh == -1)
+			{
+				iFinalMesh = static_cast<int>(skinGeom->Meshes.size());
+				skinGeom->Meshes.emplace_back();
+				skinGeom->Meshes.back().Name = E.MeshName;
+			}
+
+
+			auto& FinalMesh = skinGeom->Meshes[iFinalMesh];
+			auto& SubMesh = FinalMesh.Submeshes.emplace_back();
+
+			SubMesh.Position = E.Position;
+			SubMesh.Extra = E.Extra;
+			SubMesh.Indices = E.Indices;
+			SubMesh.MaterialIndex = E.MaterialIndex;
+			SubMesh.PosCompressionOffset = E.PosCompressionOffset;
+			SubMesh.UVCompressionOffset = E.UVCompressionOffset;
+		}
+
+		return std::move(skinGeom);
+	}
+
+	void GeomCompiler::CastToGeom(std::unique_ptr<TempGeom> tempGeom)
+	{
+		//Get total sizes
+		std::size_t totalMeshes = tempGeom->Meshes.size();
+		std::size_t totalSubMeshes = 0;
+		std::size_t totalVertices = 0;
+		std::size_t totalExtras = 0;
+		std::size_t totalIndices = 0;
+
+		for (auto& _mesh : tempGeom->Meshes)
+		{
+			totalSubMeshes += _mesh.Submeshes.size();
+			for (auto& _submesh : _mesh.Submeshes)
+			{
+				totalVertices += _submesh.Position.size();
+				totalExtras += _submesh.Extra.size();
+				totalIndices += _submesh.Indices.size();
+			}
+		}
+
+		//Allocate memory
+		auto uMesh = std::make_unique<Geom::Mesh[]>(totalMeshes);
+		auto uSubMesh = std::make_unique<Geom::SubMesh[]>(totalSubMeshes);
+		auto uPos = std::make_unique<Geom::Position[]>(totalVertices);
+		auto uExtras = std::make_unique<Geom::Extra[]>(totalExtras);
+		auto uIndices = std::make_unique<std::uint32_t[]>(totalIndices);
+
+		auto Mesh = std::span{ uMesh.get(), static_cast<std::size_t>(totalMeshes) };
+		auto SubMesh = std::span{ uSubMesh.get(), static_cast<std::size_t>(totalSubMeshes) };
+		auto Pos = std::span{ uPos.get(), static_cast<std::size_t>(totalVertices) };
+		auto Extras = std::span{ uExtras.get(), static_cast<std::size_t>(totalExtras) };
+		auto Indices = std::span{ uIndices.get(), static_cast<std::size_t>(totalIndices) };
+
+		m_Geom = std::make_unique<Geom>();
+
+		//Start copying data in
+		m_Geom->nMeshes = (std::uint32_t)totalMeshes;
+		m_Geom->nSubMeshes = (std::uint32_t)totalSubMeshes;
+		m_Geom->nPosition = (std::uint32_t)totalVertices;
+		m_Geom->nExtras = (std::uint32_t)totalExtras;
+		m_Geom->nIndices = (std::uint32_t)totalIndices;
+		m_Geom->PosCompressionScale = tempGeom->PosCompressionScale;
+		m_Geom->UVCompressionScale = tempGeom->UVCompressionScale;
+
+		std::size_t iVertex = 0, iIndices = 0, iExtra = 0;
+		for (std::size_t i = 0; i < totalMeshes; ++i)
+		{
+			//Copy name of mesh in
+			strcpy_s(Mesh[i].Name.data(), Mesh[i].Name.size(), tempGeom->Meshes[i].Name.c_str());
+
+			//Submesh data
+			for (std::size_t j = 0; j < totalSubMeshes; ++j)
+			{
+				SubMesh[j].m_nFaces = (std::uint32_t)tempGeom->Meshes[i].Submeshes[j].Indices.size() / 3;
+				SubMesh[j].m_iIndices = (std::uint32_t)iIndices;
+				SubMesh[j].m_iVertices = (std::uint32_t)iVertex;
+				SubMesh[j].m_iMaterial = (std::uint16_t)tempGeom->Meshes[i].Submeshes[j].MaterialIndex;
+				SubMesh[j].m_PosCompressionOffset = tempGeom->Meshes[i].Submeshes[j].PosCompressionOffset;
+				SubMesh[j].m_UVCompressionOffset = tempGeom->Meshes[i].Submeshes[j].UVCompressionOffset;
+
+				std::size_t vertSize = tempGeom->Meshes[i].Submeshes[j].Position.size();
+				std::size_t extraSize = tempGeom->Meshes[i].Submeshes[j].Extra.size();
+				std::size_t indexSize = tempGeom->Meshes[i].Submeshes[j].Indices.size();
+
+				const auto& submesh = tempGeom->Meshes[i].Submeshes[j];
+
+				//Position
+				{
+					for (const auto& _pos : submesh.Position)
+					{
+						auto& pos = Pos[iVertex++];
+
+						/*pos.m_QPosition_X = _pos.m_QPosition_X;
+						pos.m_QPosition_Y = _pos.m_QPosition_Y;
+						pos.m_QPosition_Z = _pos.m_QPosition_Z;
+						pos.m_QPosition_QNormalX = _pos.m_QPosition_QNormalX;*/
+
+						pos = _pos;
+					}
+				}
+
+				//Extras
+				{
+					for (const auto& _extra : submesh.Extra)
+					{
+						auto& extra = Extras[iExtra++];
+
+						/*extra.m_Packed = _extra.m_Packed;
+						extra.m_U = _extra.m_U;
+						extra.m_V = _extra.m_V;*/
+
+						extra = _extra;
+					}
+				}
+
+				//Indices
+				{
+					for (const auto& _indices : submesh.Indices)
+					{
+						auto& indice = Indices[iIndices++];
+
+						indice = _indices;
+					}
+				}
+
+				SubMesh[j].m_nVertices = (std::uint32_t)vertSize;
+				SubMesh[j].m_nIndices = (std::uint32_t)indexSize;
+			}
+		}
+
+		m_Geom->pMesh = uMesh.release();
+		m_Geom->pSubMesh = uSubMesh.release();
+		m_Geom->pPosition = uPos.release();
+		m_Geom->pExtra = uExtras.release();
+		m_Geom->pIndices = uIndices.release();
 	}
 }
