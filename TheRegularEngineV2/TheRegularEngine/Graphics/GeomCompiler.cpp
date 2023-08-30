@@ -20,7 +20,7 @@ namespace TRE
 			| aiProcess_CalcTangentSpace           // calculate tangents and bitangents if possible (definetly you will meed UVs)
 			| aiProcess_RemoveRedundantMaterials   // remove redundant materials
 			| aiProcess_FindInvalidData            // detect invalid model data, such as invalid normal vectors
-			| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
+			//| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
 			;
 
 		m_filePath = filename;

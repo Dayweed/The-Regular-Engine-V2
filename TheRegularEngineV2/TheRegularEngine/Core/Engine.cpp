@@ -17,7 +17,7 @@ namespace TRE
 	{
 		_geom_compiler->Compile("../Assets/smooth_vase.obj");
 		_geom_compiler->Serialize("../Assets/smooth_vase.geom");
-		_geom_compiler->Deserialize("../Assets/smooth_vase.geom");
+		//_geom_compiler->Deserialize("../Assets/smooth_vase.geom");
 
 		GO test = _ecs_manager->CreateGO();
 		test->AddComponent<Properties>().m_Name = "Test";
