@@ -3,6 +3,7 @@
 
 # Custom Ignore
 Executable/
+TheRegularEditor/resources/Scripts
 
 # User-specific files
 *.suo
@@ -19,7 +20,7 @@ Executable/
 /x64/
 /x86/
 bld/
-#[Bb]in/
+[Bb]in/
 [Oo]bj/
 
 # Visual Studio files and folder
@@ -61,7 +62,6 @@ artifacts/
 *_i.h
 *.ilk
 *.meta
-*.obj
 *.pch
 *.pdb
 *.pgc

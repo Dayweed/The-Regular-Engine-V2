@@ -1,7 +1,14 @@
 #pragma once
 #include "Core/Engine.h"
+#include "Core/Logger.h"
 
-#define _CRTDBG_MAP_ALLOC
+/* Replaces _CRTDBG_MAP_ALLOC											*/
+/* This will actually make sure to sure to show where the leak is at	*/
+#ifdef _DEBUG
+#define DEBUG_MEMLEAK new( _CLIENT_BLOCK, __FILE__, __LINE__)
+#define new DEBUG_MEMLEAK
+#endif
+
 #include <crtdbg.h>
 #include <stdlib.h>
 
@@ -13,11 +20,11 @@ int main()
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
 
+	TRE::Log::Init();
+
 	TRE::Engine* App = TRE::CreateApp();
+	App->RegisterECS();
 	App->Update();
 	App->Shutdown();
 	delete App;
-
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-	_CrtDumpMemoryLeaks();
 }

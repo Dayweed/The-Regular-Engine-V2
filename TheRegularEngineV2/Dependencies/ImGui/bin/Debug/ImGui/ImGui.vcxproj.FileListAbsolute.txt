@@ -1,1 +1,0 @@
-C:\Users\jerel\Desktop\GAM300\TheRegularEngineV2\Dependencies\ImGui\bin\Debug\ImGui\ImGui.lib

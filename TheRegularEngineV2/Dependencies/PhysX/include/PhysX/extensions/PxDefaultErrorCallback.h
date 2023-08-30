@@ -56,10 +56,14 @@ namespace physx
 
 		virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) PX_OVERRIDE
 		{
-			printf("code was	: |%d|\n", code);
-			printf("message was	: |%s|\n", message);
-			printf("from file	: |%s|\n", file);
-			printf("at line		: |%d|\n", line);
+			printf("=======================================\n");
+			printf("INCOMING PHYSX ERROR:\n");
+			printf("Error code was		: |%d|\n", code);
+			printf("Error message was	: |%s|\n", message);
+			// trust, this makes the indentation look good when printed out
+			printf("From file		: |%s|\n", file);
+			printf("At line			: |%d|\n", line);
+			printf("=======================================\n");
 		};
 	};
 

@@ -1,15 +1,15 @@
+#include "EditorSystem.h"
 #include "TREIncludes.h"
 #include "EntryPoint.h"
-#include "EditorLayer.h"
 
 namespace TRE
 {
 	class EditorApplication : public TRE::Engine
 	{
 		public:
-			EditorApplication() : Engine()
+			EditorApplication(const EngineInfo& EngineInfo) : Engine(EngineInfo)
 			{
-				AddSystem(new EditorLayer);
+				RegisterSystems<EditorSystem>();
 			}
 
 		private:
@@ -17,6 +17,8 @@ namespace TRE
 
 	TRE::Engine* TRE::CreateApp()
 	{
-		return new EditorApplication();
+		EngineInfo Info;
+		Info.EnableEditor = true;
+		return new EditorApplication(Info);
 	}
 }
