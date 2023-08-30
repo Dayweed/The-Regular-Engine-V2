@@ -154,7 +154,7 @@ namespace TRE
 			_profiler->EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
-			_profiler->PrintTimers();
+			//_profiler->PrintTimers();
 		}
 	}
 
