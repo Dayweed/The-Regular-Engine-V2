@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ECS.h"
 #include "Engine.h"
+#include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
 #include "Audio/AudioSystem.h"
 
@@ -126,29 +127,34 @@ namespace TRE
 		{
 			m_Window->PollEvents();
 
-			//Update
-
-
-
-			//Draw
 			m_Window->GetSwapChain().BeginFrame();
-			m_Renderer->BeginFrame();
 
+			//Update
 			if (m_EngineInfo.EnableEditor)
 			{
 				m_VulkanEditor->BeginFrame();
 			}
 
+			_profiler->StartTimer("Update");
 			_system_manager->UpdateSystem();
 			_system_manager->OnDestroyGO();
 			_ecs_manager->DestroyRemovalGO();
+			_profiler->EndTimer("Update");
 
 			if (m_EngineInfo.EnableEditor)
 			{
 				m_VulkanEditor->EndFrame();
 			}
 
+			//Draw
+			_profiler->StartTimer("Draw");
+			m_Renderer->BeginFrame();
+
 			m_Window->SwapBuffers();
+			_profiler->EndTimer("Draw");
+
+			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
+			_profiler->PrintTimers();
 		}
 	}
 

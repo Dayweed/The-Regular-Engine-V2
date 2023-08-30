@@ -1,7 +1,4 @@
 #pragma once
-#ifndef ECS_H
-#define ECS_H
-
 #include "pch.h"
 #include "entt.hpp"
 #include "System.h"
@@ -782,5 +779,3 @@ namespace TRE
 			_ecs_manager->GetRegistry().remove<T>(m_Entity);
 	}
 }
-
-#endif // !ECS_H
