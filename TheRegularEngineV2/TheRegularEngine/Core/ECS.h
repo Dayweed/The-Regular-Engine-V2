@@ -13,6 +13,7 @@ namespace TRE
 	// Get this component in GetGO to get GO that are going to be deleted in this loop
 	class Removal
 	{
+		//static constexpr auto in_place_delete = false;
 		bool fake; //This value is to ensure it can compile and be registered
 	};
 
