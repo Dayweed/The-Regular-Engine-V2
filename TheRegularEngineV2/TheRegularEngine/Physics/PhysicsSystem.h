@@ -23,7 +23,7 @@ namespace TRE
 		glm::vec3 m_HalfExtents = glm::vec3(1);
 	};
 
-	class PhysicsSystem : public System
+	class PhysicsSystem : public ECSSystem
 	{
 	public:
 		PhysicsSystem();
@@ -32,7 +32,7 @@ namespace TRE
 		bool TESTUpdate();
 		void Update() override;
 		// void RenderImgui() override;
-		// void OnDestroyGO() override;
+		void OnDestroyGO() override;
 		void Shutdown() override;
 
 		/*!

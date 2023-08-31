@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <iostream>
 #include <fstream>
+#include <typeindex>
 
 //Libaries
 #include "vulkan/vulkan.h"

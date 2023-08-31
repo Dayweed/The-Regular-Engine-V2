@@ -18,7 +18,7 @@ namespace TRE
 		}
 	}
 
-	void CameraSystem::RenderImgui()
+	void CameraSystem::OnDestroyGO()
 	{
 
 	}

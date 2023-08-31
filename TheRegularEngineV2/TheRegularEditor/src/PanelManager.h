@@ -1,6 +1,7 @@
 #pragma once
 #include "TREIncludes.h"
 #include "EditorSystem.h"
+#include "Panel.h"
 
 namespace TRE
 {
@@ -15,16 +16,15 @@ namespace TRE
 			~PanelManager();
 
 			template <typename T>
-			void InsertPanel(std::string PanelName, T data)
+			void InsertPanel(std::string PanelName)
 			{
-				std::shared_ptr<Panel> ptr1 = std::make_shared<Panel>(data);
+				std::shared_ptr<Panel> ptr1 = std::make_shared<T>();
 				StorePanels.insert({ PanelName, ptr1 });
 			}
 
+			void Init();
 			void RemovePanel(std::string PanelName);
-
 			bool DoesPanelExist(std::string PanelName);
-
 			std::unordered_map<std::string, std::shared_ptr<Panel>>& GetPanels();
 
 		private:

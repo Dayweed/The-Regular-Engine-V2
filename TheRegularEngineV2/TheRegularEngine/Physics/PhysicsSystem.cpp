@@ -130,6 +130,11 @@ namespace TRE
 		UpdateTransform.operator() < SphereCollider > ();
 	}
 
+	void PhysicsSystem::OnDestroyGO()
+	{
+
+	}
+
 	void OLDSTUFF_Update()
 	{
 		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";

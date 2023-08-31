@@ -7,9 +7,19 @@ namespace TRE
 			System() = default;
 			virtual ~System() = default;
 
-			virtual void RenderImgui() {};
+			virtual void RenderImgui() = 0;
 			virtual void Update() = 0;
-			virtual void OnDestroyGO() {};
+			virtual void Shutdown() = 0;
+	};
+
+	class ECSSystem
+	{
+		public:
+			ECSSystem() = default;
+			virtual ~ECSSystem() = default;
+
+			virtual void Update() = 0;
+			virtual void OnDestroyGO() = 0;
 			virtual void Shutdown() = 0;
 	};
 }
