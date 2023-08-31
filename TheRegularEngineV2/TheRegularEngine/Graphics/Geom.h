@@ -34,9 +34,9 @@ namespace TRE
 
 		struct Mesh
 		{
-			std::array<char, 64>	Name = { "testing" };				//Name of mesh
+			std::array<char, 64>	Name ;			//Name of mesh
 			//std::uint16_t			nSubMeshes;		//Total number of submeshes in mesh
-			//std::uint16_t			iSubMesh;			//Index of submesh
+			//std::uint16_t			iSubMesh;		//Index of submesh
 			//std::uint16_t			nLODs{ 1 };		//Total number of LODs in mesh
 			//std::uint16_t			iLOD{ 1 };		//Index of LOD of mesh
 		};
@@ -53,19 +53,19 @@ namespace TRE
 			glm::vec2				m_UVCompressionOffset;
 		};
 
-		Mesh* pMesh;
-		SubMesh* pSubMesh;
-		Position* pPosition;
-		Extra* pExtra;
-		std::uint32_t* pIndices;
+		Mesh*						pMesh;
+		SubMesh*					pSubMesh;
+		Position*					pPosition;
+		Extra*						pExtra;
+		std::uint32_t*				pIndices;
 
-		std::uint32_t nMeshes;
-		std::uint32_t nSubMeshes;
-		std::uint32_t nPosition;
-		std::uint32_t nExtras;
-		std::uint32_t nIndices;
-		glm::vec3 PosCompressionScale;
-		glm::vec2 UVCompressionScale;
+		std::uint32_t				nMeshes;
+		std::uint32_t				nSubMeshes;
+		std::uint32_t				nPosition;
+		std::uint32_t				nExtras;
+		std::uint32_t				nIndices;
+		glm::vec3					PosCompressionScale;
+		glm::vec2					UVCompressionScale;
 
 		~Geom()
 		{
@@ -75,6 +75,9 @@ namespace TRE
 			delete[] pExtra;
 			delete[] pIndices;
 		}
+
+		static void Serialize(const std::unique_ptr<Geom> geom, const std::string& filePath);
+		static std::unique_ptr<Geom> Deserialize(const std::string& filePath);
 	};
 
 	struct TempGeom
