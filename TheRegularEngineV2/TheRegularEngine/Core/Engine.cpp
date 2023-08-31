@@ -10,14 +10,12 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Texture.h"
-#include "Graphics/GeomCompiler.h"
+#include "AssetManagement/GeomManager.h"
 namespace TRE
 {
 	void DemoScene()
 	{
-		_geom_compiler->Compile("../Assets/smooth_vase.obj");
-		Geom::Serialize(_geom_compiler->GetGeom(), "../Assets/smooth_vase.geom");
-		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
+		auto geom = GeomManager::Instance().Deserialize("../Assets/smooth_vase.geom");
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->AddComponent<Properties>().m_Name = "Test";
@@ -90,7 +88,6 @@ namespace TRE
 		s_Instance = this;
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
-		//m_SystemsManager = std::make_unique<SystemManager>();
 		
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDevice());
 		m_Renderer->Initialize();
