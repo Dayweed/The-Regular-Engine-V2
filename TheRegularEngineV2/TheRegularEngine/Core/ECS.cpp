@@ -20,11 +20,7 @@ namespace TRE
 		for (Entity& object : GetEntities<Removal>())
 		{
 			// Remove from m_EntityList
-			auto it = std::find_if(m_EntityList.begin(), m_EntityList.end(), [&](Entity& go) { return go.get() == object.get(); });
-			if (it != m_EntityList.end())
-			{
-				m_EntityList.erase(it);
-			}
+			m_EntityList.erase(m_EntityList.find(static_cast<Entity_ID>(object->m_Entity)));
 			object->AbandonChildren();
 			// Release all components and entity itself
 			registry.destroy(object->m_Entity);
@@ -35,10 +31,10 @@ namespace TRE
 
 	void ECSManager::DestroyAll()
 	{
-		for (Entity obj : m_EntityList)
+		for (auto& pair : m_EntityList)
 		{
-			obj->AbandonChildren();
-			MarkForDeletion(obj);
+			pair.second->AbandonChildren();
+			MarkForDeletion(pair.second);
 		}
 		DeleteRemovalEntities();
 	}
@@ -47,7 +43,7 @@ namespace TRE
 	{
 		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
-		m_EntityList.emplace_back(obj);
+		m_EntityList.emplace(static_cast<uint32_t>(obj->m_Entity), obj);
 		obj->AddComponent<Properties>().m_Name = name;
 		obj->AddComponent<Transform>();
 		return obj;
@@ -63,7 +59,7 @@ namespace TRE
 	{
 		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
-		m_EntityList.emplace_back(obj);
+		m_EntityList.emplace(static_cast<uint32_t>(obj->m_Entity), obj);
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{

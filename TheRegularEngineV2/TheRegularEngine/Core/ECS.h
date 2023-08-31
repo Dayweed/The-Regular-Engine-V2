@@ -27,7 +27,7 @@ namespace TRE
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
 
-	
+	typedef std::uint32_t Entity_ID;
 
 	class Ent : public std::enable_shared_from_this<Ent>
 	{
@@ -490,9 +490,9 @@ namespace TRE
 			std::cout << "-------\n";
 
 			std::cout << "\n\nEntities IDs\n";
-			for (Entity& go : m_EntityList)
+			for (auto& pair : m_EntityList)
 			{
-				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+				std::cout << "> " << static_cast<std::uint32_t>(pair.second->m_Entity) << "\n";
 			}
 			std::cout << "-- Storage --\n";
 			for (auto&& id : GetRegistry().storage().begin()->second)
@@ -523,9 +523,9 @@ namespace TRE
 			std::cout << "-------\n";
 
 			std::cout << "\n\nEntities IDs\n";
-			for (Entity& go : m_EntityList)
+			for (auto& pair : m_EntityList)
 			{
-				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+				std::cout << "> " << static_cast<std::uint32_t>(pair.second->m_Entity) << "\n";
 			}
 			std::cout << "-- Storage --\n";
 			for (auto&& id : GetRegistry().storage().begin()->second)
@@ -692,9 +692,9 @@ namespace TRE
 			//snapshot.component<>(str);
 
 			std::cout << "\n\nEntities IDs\n";
-			for (Entity& go : m_EntityList)
+			for (auto& pair : m_EntityList)
 			{
-				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+				std::cout << "> " << static_cast<std::uint32_t>(pair.second->m_Entity) << "\n";
 			}
 			std::cout << "-- Storage --\n";
 			for (auto&& id : GetRegistry().storage().begin()->second)
@@ -713,9 +713,9 @@ namespace TRE
 			std::cout << "-------\n";
 
 			std::cout << "\n\nEntities IDs\n";
-			for (Entity& go : m_EntityList)
+			for (auto& pair : m_EntityList)
 			{
-				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+				std::cout << "> " << static_cast<std::uint32_t>(pair.second->m_Entity) << "\n";
 			}
 			std::cout << "-- Storage --\n";
 			for (auto&& id : GetRegistry().storage().begin()->second)
@@ -748,7 +748,7 @@ namespace TRE
 		// Component Types
 		std::map<size_t, void*> componentTypes;
 
-		std::vector<Entity> m_EntityList;
+		std::unordered_map<Entity_ID, Entity> m_EntityList;
 	};
 	static ECSManager* _ecs_manager{ &ECSManager::Instance() };
 
@@ -762,10 +762,9 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			auto it = std::find_if(m_EntityList.begin(), m_EntityList.end(), [&](Entity& go) { return go->m_Entity == obj; });
-			if (it != m_EntityList.end())
+			if (m_EntityList.find(static_cast<Entity_ID>(obj)) != m_EntityList.end())
 			{
-				objects.emplace_back(*it);
+				objects.emplace_back(m_EntityList[static_cast<Entity_ID>(obj)]);
 			}
 		}
 
