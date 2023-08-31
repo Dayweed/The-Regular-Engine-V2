@@ -57,7 +57,7 @@ namespace TRE
 
 	//}
 
-	void AudioSystem::LoadFile(GO& go) //(GO& go, filepath)
+	void AudioSystem::LoadFile(Entity& go) //(Entity& go, filepath)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 
@@ -77,7 +77,7 @@ namespace TRE
 		ErrorCheck(m_System->createChannelGroup(channelname.c_str(), &child), "createChannelGroup()");
 	}
 
-	void AudioSystem::Play(GO& go, bool play)
+	void AudioSystem::Play(Entity& go, bool play)
 	{
 		(void)play;
 		Audio& audio = go.get()->GetComponent<Audio>();
@@ -87,14 +87,14 @@ namespace TRE
 		}
 	}
 
-	void AudioSystem::TogglePause(GO& go)
+	void AudioSystem::TogglePause(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_Pause = !audio.m_Pause;
 		ErrorCheck(audio.m_ChannelGroup->setPaused(&audio.m_Pause), "TogglePause()");
 	}
 
-	void AudioSystem::StopAudio(GO& go)
+	void AudioSystem::StopAudio(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		ErrorCheck(audio.m_ChannelGroup->stop(), "StopAudio()");
@@ -113,57 +113,57 @@ namespace TRE
 		return 0;
 	}
 
-	void AudioSystem::SetVolume(GO& go, const float volume)
+	void AudioSystem::SetVolume(Entity& go, const float volume)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_Volume = volume;
 	}
 
-	void AudioSystem::SetPitch(GO& go, const float pitch)
+	void AudioSystem::SetPitch(Entity& go, const float pitch)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_Pitch = pitch;
 	}
 
-	void AudioSystem::SetPause(GO& go, const bool pause)
+	void AudioSystem::SetPause(Entity& go, const bool pause)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_Pause = pause;
 	}
 
-	void AudioSystem::SetLoop(GO& go, const bool loop)
+	void AudioSystem::SetLoop(Entity& go, const bool loop)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_Loop = loop;
 	}
 
-	void AudioSystem::SetChannelGroup(GO& go, FMOD::ChannelGroup* channelgroup)
+	void AudioSystem::SetChannelGroup(Entity& go, FMOD::ChannelGroup* channelgroup)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_ChannelGroup = channelgroup;
 	}
 
-	float AudioSystem::GetVolume(GO& go)
+	float AudioSystem::GetVolume(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_Volume;
 	}
 
-	float AudioSystem::GetPitch(GO& go)
+	float AudioSystem::GetPitch(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_Pause;
 	}
 
-	bool AudioSystem::GetPause(GO& go)
+	bool AudioSystem::GetPause(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_Pause;
 	}
 
-	bool AudioSystem::GetLoop(GO& go)
+	bool AudioSystem::GetLoop(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_Loop;
 	}
 
-	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(GO& go)
+	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_ChannelGroup;
 	}

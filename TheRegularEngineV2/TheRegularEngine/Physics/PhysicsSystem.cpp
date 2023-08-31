@@ -108,7 +108,7 @@ namespace TRE
 		auto const result = std::time(nullptr) - start_timer;
 		if (result >= 1)
 		{
-			auto vec = _ecs_manager->GetGO<SphereCollider>();
+			auto vec = _ecs_manager->GetEntities<SphereCollider>();
 			if (!vec.empty())
 				DestructSphereCollider(vec.front());
 			std::time(&start_timer);
@@ -126,7 +126,7 @@ namespace TRE
 	void OLDSTUFF_Update()
 	{
 		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
-		for (GO obj : _ecs_manager->GetGO<Transform>())
+		for (Entity obj : _ecs_manager->GetEntities<Transform>())
 		{
 			std::cout << obj->GetComponent<Transform>().m_PosX << "|";
 		}
@@ -136,7 +136,7 @@ namespace TRE
 	void OLDSTUFF_OnDestroyGO()
 	{
 		/*std::cout << "Destroy GOs that have transform is to be removed\n";
-		for (GO obj : _ecs_manager->GetGO<Transform, Removal>())
+		for (Entity obj : _ecs_manager->GetEntities<Transform, Removal>())
 		{
 			std::cout << "Found object " << obj->GetComponent<Properties>().m_Name << "\n";
 		}
@@ -166,7 +166,7 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	void PhysicsSystem::ConstructSphereCollider(const GO& go, const float radius, const glm::vec3& offset) const
+	void PhysicsSystem::ConstructSphereCollider(const Entity& go, const float radius, const glm::vec3& offset) const
 	{
 		auto& sphereCollider = go->AddComponent<SphereCollider>();
 		// add component if missing, otherwise get existing component
@@ -201,13 +201,13 @@ namespace TRE
 		*/
 	}
 
-	void PhysicsSystem::DestructSphereCollider(const GO& go) const
+	void PhysicsSystem::DestructSphereCollider(const Entity& go) const
 	{
 		go->GetComponent<SphereCollider>().m_RigidActor->release();
 		go->RemoveComponent<SphereCollider>();
 	}
 
-	void PhysicsSystem::ConstructBoxCollider(const GO& go, const glm::vec3& halfExtents, const glm::vec3& offset) const
+	void PhysicsSystem::ConstructBoxCollider(const Entity& go, const glm::vec3& halfExtents, const glm::vec3& offset) const
 	{
 		auto& boxCollider = go->AddComponent<BoxCollider>();
 		// add component if missing, otherwise get existing component
@@ -231,7 +231,7 @@ namespace TRE
 		shape->release();
 	}
 
-	void PhysicsSystem::DestructBoxCollider(const GO& go) const
+	void PhysicsSystem::DestructBoxCollider(const Entity& go) const
 	{
 		go->GetComponent<BoxCollider>().m_RigidActor->release();
 		go->RemoveComponent<BoxCollider>();
@@ -244,7 +244,7 @@ namespace TRE
 		{
 			for (unsigned j = 0; j < size - i; j++)
 			{
-				GO go = _ecs_manager->CreateGO();
+				Entity go = _ecs_manager->CreateEntity();
 				const physx::PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
 				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
 				go->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(newPos);

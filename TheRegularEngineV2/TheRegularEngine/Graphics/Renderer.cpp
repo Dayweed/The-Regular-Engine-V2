@@ -205,7 +205,7 @@ namespace TRE
 		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, m_Pipeline->GetDescriptorSets().data(), 0, NULL);
 
 		//VERY INEFFICIENT
-		for (const auto& go_mr : _ecs_manager->GetGO<MeshRenderer>())
+		for (const auto& go_mr : _ecs_manager->GetEntities<MeshRenderer>())
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
