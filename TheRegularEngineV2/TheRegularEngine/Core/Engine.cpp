@@ -16,8 +16,8 @@ namespace TRE
 	void DemoScene()
 	{
 		_geom_compiler->Compile("../Assets/smooth_vase.obj");
-		_geom_compiler->Serialize("../Assets/smooth_vase.geom");
-		//_geom_compiler->Deserialize("../Assets/smooth_vase.geom");
+		Geom::Serialize(_geom_compiler->GetGeom(), "../Assets/smooth_vase.geom");
+		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
 
 		GO test = _ecs_manager->CreateGO();
 		test->AddComponent<Properties>().m_Name = "Test";
@@ -25,7 +25,7 @@ namespace TRE
 		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
 		test->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
 		//std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/smooth_vase.obj");
-		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(_geom_compiler->GetGeom());
+		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
 

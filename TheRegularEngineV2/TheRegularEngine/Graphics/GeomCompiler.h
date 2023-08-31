@@ -21,7 +21,6 @@ namespace TRE
 		void Deserialize(const std::string& geomPath);
 
 		std::unique_ptr<Geom> GetGeom() { return std::move(m_Geom); }
-		std::unique_ptr<Geom> GetLoadedGeom() { return std::move(m_LoadedGeom); }
 	private:
 		struct Refs
 		{
@@ -81,8 +80,6 @@ namespace TRE
 		std::vector<Refs>	m_References;
 		std::unique_ptr<Geom> m_Geom;
 		std::string m_filePath;
-
-		std::unique_ptr<Geom> m_LoadedGeom;
 	private:
 		GeomCompiler() {};
 		GeomCompiler(GeomCompiler const&) = delete;

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Window.h"
 #include "Core/Logger.h"
+#include "InputHandler/InputHandler.h"
 
 namespace TRE
 {
@@ -21,6 +22,12 @@ namespace TRE
 		
 		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetDeviceInternally(), m_WindowHandle);
 		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
+
+		glfwSetKeyCallback(GetWindowHandle(), InputHandler::key_cb);
+		glfwSetMouseButtonCallback(GetWindowHandle(), InputHandler::mousebutton_cb);
+		glfwSetCursorPosCallback(GetWindowHandle(), InputHandler::mousepos_cb);
+		glfwSetScrollCallback(GetWindowHandle(), InputHandler::mousescroll_cb);
+		glfwSetCursorEnterCallback(GetWindowHandle(), InputHandler::mousefocus_cb);
 	}
 
 	Window::~Window()
