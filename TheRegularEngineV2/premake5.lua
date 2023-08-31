@@ -63,7 +63,7 @@ project "TheRegularEngine"
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.tinyobj}",
-		"%{IncludeDir.stbi}"
+		"%{IncludeDir.stbi}",
 	}
 
 	defines
@@ -169,7 +169,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
-		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.spdlog}"
 	}
 
 	postbuildcommands
