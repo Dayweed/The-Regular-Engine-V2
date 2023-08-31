@@ -15,19 +15,15 @@ namespace TRE
 		switch (action)
 		{
 			case GLFW_PRESS:
-			{
-				//if (GLFW_KEY_ESCAPE == key)
-				//	glfwSetWindowShouldClose(win_ptr, GLFW_TRUE);
+				if (GLFW_KEY_ESCAPE == key)
+				{}
 				event.publish(InputEvent {key, action});
 				break;
-			}
 			case GLFW_REPEAT:
 				break;
 			case GLFW_RELEASE:
-			{
 				event.publish(InputEvent {key, action});
 				break;
-			}
 			default:
 				break;
 		}
