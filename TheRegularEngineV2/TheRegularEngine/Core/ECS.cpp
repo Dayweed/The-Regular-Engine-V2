@@ -15,15 +15,15 @@ namespace TRE
 		return registry;
 	}
 
-	void ECSManager::DestroyRemovalGO()
+	void ECSManager::DeleteRemovalEntities()
 	{
-		for (GO& object : GetGO<Removal>())
+		for (Entity& object : GetEntities<Removal>())
 		{
-			// Remove from m_GOList
-			auto it = std::find_if(m_GOList.begin(), m_GOList.end(), [&](GO& go) { return go.get() == object.get(); });
-			if (it != m_GOList.end())
+			// Remove from m_EntityList
+			auto it = std::find_if(m_EntityList.begin(), m_EntityList.end(), [&](Entity& go) { return go.get() == object.get(); });
+			if (it != m_EntityList.end())
 			{
-				m_GOList.erase(it);
+				m_EntityList.erase(it);
 			}
 			object->AbandonChildren();
 			// Release all components and entity itself
@@ -35,35 +35,35 @@ namespace TRE
 
 	void ECSManager::DestroyAll()
 	{
-		for (GO obj : m_GOList)
+		for (Entity obj : m_EntityList)
 		{
 			obj->AbandonChildren();
-			DestroyGO(obj);
+			MarkForDeletion(obj);
 		}
-		DestroyRemovalGO();
+		DeleteRemovalEntities();
 	}
 
-	GO ECSManager::CreateGO(std::string name)
+	Entity ECSManager::CreateEntity(std::string name)
 	{
-		GO obj{ std::make_shared<GameObject>() };
+		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
-		m_GOList.emplace_back(obj);
+		m_EntityList.emplace_back(obj);
 		obj->AddComponent<Properties>().m_Name = name;
 		obj->AddComponent<Transform>();
 		return obj;
 	}
 
-	void ECSManager::DestroyGO(GO& object)
+	void ECSManager::MarkForDeletion(Entity& object)
 	{
 		object->AddComponent<Removal>();
 		return;
 	}
 
-	GO ECSManager::CloneGO(GO& object, std::string name)
+	Entity ECSManager::CloneEntity(Entity& object, std::string name)
 	{
-		GO obj{ std::make_shared<GameObject>() };
+		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
-		m_GOList.emplace_back(obj);
+		m_EntityList.emplace_back(obj);
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{
@@ -82,12 +82,12 @@ namespace TRE
 		return obj;
 	}
 
-	GO GameObject::GetThis()
+	Entity Ent::GetThis()
 	{
 		return shared_from_this();
 	}
 
-	void GameObject::SetParent(GO parent)
+	void Ent::SetParent(Entity parent)
 	{
 		// Tell existing parent to abandon this
 		if (m_Parent)
@@ -103,12 +103,12 @@ namespace TRE
 		}
 	}
 
-	GO GameObject::GetParent()
+	Entity Ent::GetParent()
 	{
 		return m_Parent;
 	}
 
-	void GameObject::RemoveParent()
+	void Ent::RemoveParent()
 	{
 		if (m_Parent)
 		{
@@ -121,17 +121,17 @@ namespace TRE
 		m_Parent = nullptr;
 	}
 
-	void GameObject::AddChild(GO child)
+	void Ent::AddChild(Entity child)
 	{
 		child->SetParent(GetThis());
 	}
 
-	std::vector<GO> GameObject::GetChildren()
+	std::vector<Entity> Ent::GetChildren()
 	{
 		return m_Children;
 	}
 
-	void GameObject::AbandonChild(GO child)
+	void Ent::AbandonChild(Entity child)
 	{
 		if (child->GetParent().get() == this)
 		{
@@ -144,7 +144,7 @@ namespace TRE
 		}
 	}
 
-	void GameObject::AbandonChildren()
+	void Ent::AbandonChildren()
 	{
 		for (int i{ static_cast<int>(m_Children.size()) - 1 }; i >= 0; --i)
 		{

@@ -35,25 +35,25 @@ namespace TRE
 		void Shutdown() override;
 
 		//void SetAudioData(Audio* file);
-		void LoadFile(GO& go);
+		void LoadFile(Entity& go);
 		void CreateChildChannelGroup(FMOD::ChannelGroup* child, std::string name);
-		void Play(GO& go, bool play);
-		void TogglePause(GO& go);
-		void StopAudio(GO& go);
+		void Play(Entity& go, bool play);
+		void TogglePause(Entity& go);
+		void StopAudio(Entity& go);
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
 
-		void SetVolume(GO& go, const float volume);
-		void SetPitch(GO& go, const float pitch);
-		void SetPause(GO& go, const bool pause);
-		void SetLoop(GO& go, const bool loop);
-		void SetChannelGroup(GO& go, FMOD::ChannelGroup* channelgroup);
+		void SetVolume(Entity& go, const float volume);
+		void SetPitch(Entity& go, const float pitch);
+		void SetPause(Entity& go, const bool pause);
+		void SetLoop(Entity& go, const bool loop);
+		void SetChannelGroup(Entity& go, FMOD::ChannelGroup* channelgroup);
 
-		float GetVolume(GO& go);
-		float GetPitch(GO& go);
-		bool GetPause(GO& go);
-		bool GetLoop(GO& go);
-		FMOD::ChannelGroup* GetChannelGroup(GO& go);
+		float GetVolume(Entity& go);
+		float GetPitch(Entity& go);
+		bool GetPause(Entity& go);
+		bool GetLoop(Entity& go);
+		FMOD::ChannelGroup* GetChannelGroup(Entity& go);
 
 
 	private:

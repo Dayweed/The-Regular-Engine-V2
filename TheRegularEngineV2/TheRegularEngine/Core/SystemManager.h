@@ -162,7 +162,7 @@ namespace TRE
 			}
 		}
 
-		void OnDestroyGO()
+		void OnDestroyEntities()
 		{
 			for (auto& system : m_Systems)
 			{
