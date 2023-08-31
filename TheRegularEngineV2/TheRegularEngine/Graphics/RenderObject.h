@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Buffer.h"
+#include "Geom.h"
 
 #include <functional>
 
@@ -40,6 +41,7 @@ namespace TRE
 		void operator=(const RenderObject&) = delete;
 
 		static std::unique_ptr<RenderObject> CreateFromFile(const std::string& filePath);
+		static std::unique_ptr<RenderObject> CreateFromGeom(std::unique_ptr<Geom> geom);
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 	private:

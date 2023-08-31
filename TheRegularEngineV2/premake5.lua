@@ -20,6 +20,7 @@ group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
 include "Dependencies/MeshOptimizer"
+include "Compilers/GeomCompiler"
 group ""
 
 project "TheRegularEngine"

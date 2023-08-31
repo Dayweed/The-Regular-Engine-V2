@@ -15,12 +15,17 @@ namespace TRE
 {
 	void DemoScene()
 	{
+		_geom_compiler->Compile("../Assets/smooth_vase.obj");
+		_geom_compiler->Serialize("../Assets/smooth_vase.geom");
+		//_geom_compiler->Deserialize("../Assets/smooth_vase.geom");
+
 		GO test = _ecs_manager->CreateGO();
 		test->AddComponent<Properties>().m_Name = "Test";
 		test->AddComponent<Transform>().m_Position.z = 25.f;
 		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
 		test->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
-		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/smooth_vase.obj");
+		//std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/smooth_vase.obj");
+		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(_geom_compiler->GetGeom());
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
 
@@ -46,7 +51,7 @@ namespace TRE
 		audio->AddComponent<Audio>();
 		audio->GetComponent<Audio>().m_IsPlaying = true;*/
 
-		_geom_compiler->Compile("../Assets/smooth_vase.obj");
+
 
 		_ecs_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
@@ -135,6 +140,7 @@ namespace TRE
 			_ecs_system_manager->OnDestroyGO();
 			_ecs_manager->DestroyRemovalGO();
 			_profiler->EndTimer("Update");
+			m_Renderer->BeginFrame();
 
 			// Imgui Update
 			if (m_EngineInfo.EnableEditor)
@@ -148,7 +154,6 @@ namespace TRE
 
 			//Draw
 			_profiler->StartTimer("Draw");
-			m_Renderer->BeginFrame();
 
 			m_Window->SwapBuffers();
 			_profiler->EndTimer("Draw");
