@@ -19,6 +19,11 @@ namespace TRE
 
 	}
 
+	void EditorSystem::RenderImgui()
+	{
+
+	}
+
 	void EditorSystem::Update()
 	{
 		static bool OpenDockSpace = true;

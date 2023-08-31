@@ -27,12 +27,12 @@ namespace TRE
 		bool m_IsDirty{ false };
 	};
 	
-	class CameraSystem : public System
+	class CameraSystem : public ECSSystem
 	{
 	public:
 
 		void Update() override;
-		void RenderImgui() override;
+		void OnDestroyGO() override;
 		void Shutdown() override;
 
 		void SetPosition(GO& go, const glm::vec3& position);

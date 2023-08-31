@@ -24,13 +24,14 @@ namespace TRE
 		bool m_IsPlaying{ false };
 	};
 
-	class AudioSystem : public System
+	class AudioSystem : public ECSSystem
 	{
 	public:
 		AudioSystem();
 		~AudioSystem() override;
 
 		void Update() override;
+		void OnDestroyGO() override;
 		void Shutdown() override;
 
 		//void SetAudioData(Audio* file);

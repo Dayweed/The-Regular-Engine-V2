@@ -118,6 +118,11 @@ namespace TRE
 		m_Scene->fetchResults(true);
 	}
 
+	void PhysicsSystem::OnDestroyGO()
+	{
+
+	}
+
 	void OLDSTUFF_Update()
 	{
 		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
