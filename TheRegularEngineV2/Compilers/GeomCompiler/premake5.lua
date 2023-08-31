@@ -12,7 +12,8 @@ project "GeomCompiler"
 
 	includedirs
     {
-        "include"
+        "include",
+		"%{IncludeDir.glm}"
     }
 
 	files
