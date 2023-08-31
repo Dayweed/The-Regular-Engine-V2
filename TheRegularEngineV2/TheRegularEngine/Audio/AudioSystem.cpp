@@ -25,6 +25,11 @@ namespace TRE
 
 	}
 
+	void AudioSystem::OnDestroyGO()
+	{
+
+	}
+
 	void AudioSystem::Shutdown()
 	{
 		ErrorCheck(m_System->release(), "System->Release()");

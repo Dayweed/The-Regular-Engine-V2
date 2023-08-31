@@ -474,16 +474,62 @@ namespace TRE
 		{
 			std::cout << "\nTEST RUNNING ECS\n====================================\n";
 
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
+
 			GO test = CreateGO("Test 1");
+
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
+
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
+
 			test->AddComponent<Transform>().m_Position.x = 19;
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_Position.x << std::endl;
 			std::cout << "Removing Editted Component...\n";
 			test->RemoveComponent<Transform>();
+
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
+
 			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_Scale.x << std::endl; // Will call assert in GetComponent!
 			std::cout << "Default Parent: " << test->GetParent() << "\n";
 			DestroyGO(test);
 			std::cout << "Destroyed earlier GO...\n";
 			//std::cout << "Attempting to call a deleted/destroyed GO: " << test->GetComponent<Properties>().m_Name << std::endl; // Will not call assert in GetComponent until next loop!
+
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
+
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
 
 			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Transform and Properties...\n";
 			GO test2 = CreateGO("test2");
@@ -518,6 +564,11 @@ namespace TRE
 				go->GetComponent<Properties>().m_Active = true;
 			}
 			std::cout << "- Testing Complete\n";
+
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
 
 			std::cout << "\nTesting setting, getting and removing parent\n";
 			GO parentGO = CreateGO();
@@ -562,6 +613,11 @@ namespace TRE
 			std::cout << "- Attempting to remove a non child in parentGO...\n";
 			parentGO->AbandonChild(test2);
 			std::cout << "- Testing Complete\n";
+
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
 
 			std::cout << "\nTesting Listener\n";
 			registry.on_construct<Transform>().connect<&Transform::Init>();
@@ -632,9 +688,38 @@ namespace TRE
 			snapshot.entities(str);
 			//snapshot.component<>(str);
 
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
+
 			std::cout << "\n- Destroy All...\n";
 			DestroyAll();
 			std::cout << "- Current: " << GetGO<Properties>().size() << "...\n";
+
+			std::cout << "Sizes: " << m_GOList.size() << "\n";
+			for (auto&& storage : GetRegistry().storage())
+				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
+			std::cout << "-------\n";
+
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
 			/*ECSInputArchive instr{};
 			entt::snapshot_loader snapshotLoader{ GetRegistry() };
 			snapshotLoader.entities(instr);*/
