@@ -180,7 +180,7 @@ namespace TRE
 		//Descriptor set
 		//UBO
 		UBO ubo{};
-		Camera& mainCamera = _system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		Camera& mainCamera = _ecs_system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
 		m_Pipeline->GetUBOBuffers()[Index]->Flush();
