@@ -94,5 +94,7 @@ namespace TRE
 		physx::PxMaterial*				m_Material = nullptr;
 
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // REMEMBER TO RELEASE SHAPES, DAMN IT.
+
+		// physx::PxVec3 ToEulerAngles(physx::PxQuat q);
 	};
 }

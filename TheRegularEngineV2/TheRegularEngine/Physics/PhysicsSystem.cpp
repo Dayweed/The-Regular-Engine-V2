@@ -103,19 +103,31 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
-		// deletes a SphereCollider every second, if found
-		static std::time_t start_timer = std::time(nullptr);
-		auto const result = std::time(nullptr) - start_timer;
-		if (result >= 1)
-		{
-			auto vec = _ecs_manager->GetGO<SphereCollider>();
-			if (!vec.empty())
-				DestructSphereCollider(vec.front());
-			std::time(&start_timer);
-		}
-
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
+
+		auto UpdateTransform = []<typename Collider>
+		{
+			for (GO& entity : _ecs_manager->GetGO<Collider>())
+			{
+				entity->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
+				// entity->GetComponent<Transform>().m_Rotation =
+				//		PxVec3ToGLMVec3(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().q.getImaginaryPart());
+				// entity->GetComponent<Transform>().m_Rotation =
+				//		PxVec3ToGLMVec3(ToEulerAngles(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().q)) / 3.141592654f * 180.0f;
+				// ^ I hope this is right XO
+
+				//printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
+				//glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
+				//glm::vec3 rot = entity->GetComponent<Transform>().m_Rotation;
+				//printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
+				//printf("rot: %f %f %f\n", rot.x, rot.y, rot.z);
+			}
+		};
+
+		// because I can't do UpdateTransform< Type >() :(
+		UpdateTransform.operator() < BoxCollider > ();
+		UpdateTransform.operator() < SphereCollider > ();
 	}
 
 	void OLDSTUFF_Update()
@@ -248,4 +260,27 @@ namespace TRE
 			}
 		}
 	}
+
+	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
+	//physx::PxVec3 PhysicsSystem::ToEulerAngles(physx::PxQuat q)
+	//{
+	//	physx::PxVec3 angles;
+
+	//	// roll (x-axis rotation)
+	//	float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+	//	float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+	//	angles.x = std::atan2(sinr_cosp, cosr_cosp);
+
+	//	// pitch (y-axis rotation)
+	//	float sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+	//	float cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+	//	angles.y = 2 * std::atan2(sinp, cosp) - 3.141592653f / 2;
+
+	//	// yaw (z-axis rotation)
+	//	float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+	//	float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	//	angles.z = std::atan2(siny_cosp, cosy_cosp);
+
+	//	return angles;
+	//}
 }
