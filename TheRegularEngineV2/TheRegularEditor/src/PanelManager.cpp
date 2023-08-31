@@ -18,7 +18,6 @@ namespace TRE
 		StorePanels.clear();
 	}
 
-	//update (viewport and panels; nothing to do with rendering)
 	//render (show panel)
 	//shutdown (delete memory)
 	void PanelManager::Init()
@@ -29,6 +28,15 @@ namespace TRE
 		InsertPanel<InspectorPanel>("Inspector");
 		InsertPanel<ContentBrowserPanel>("Content Browser");
 		InsertPanel<ConsolePanel>("Console");
+	}
+
+	//(viewport and panels; nothing to do with rendering)
+	void PanelManager::Update()
+	{
+		for (auto x : StorePanels)
+		{
+			x.second->Update();
+		}
 	}
 
 	void PanelManager::RemovePanel(std::string PanelName)

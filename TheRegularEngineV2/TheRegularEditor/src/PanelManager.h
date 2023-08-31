@@ -1,6 +1,5 @@
 #pragma once
 #include "TREIncludes.h"
-#include "EditorSystem.h"
 #include "Panel.h"
 
 namespace TRE
@@ -8,11 +7,12 @@ namespace TRE
 	class PanelManager
 	{
 		public:
-			static PanelManager& Instance()
-			{
-				static PanelManager instance;
-				return instance;
-			}
+			//static PanelManager& Instance()
+			//{
+			//	static PanelManager instance;
+			//	return instance;
+			//}
+			PanelManager();
 			~PanelManager();
 
 			template <typename T>
@@ -23,15 +23,15 @@ namespace TRE
 			}
 
 			void Init();
+			void Update();
 			void RemovePanel(std::string PanelName);
 			bool DoesPanelExist(std::string PanelName);
 			std::unordered_map<std::string, std::shared_ptr<Panel>>& GetPanels();
 
 		private:
-			PanelManager();
-			PanelManager(PanelManager const&) = delete;
-			void operator=(PanelManager const&) = delete;
-			void* operator new(size_t) = delete;
+			//PanelManager(PanelManager const&) = delete;
+			//void operator=(PanelManager const&) = delete;
+			//void* operator new(size_t) = delete;
 
 			std::unordered_map<std::string, std::shared_ptr<Panel>> StorePanels;
 	};
