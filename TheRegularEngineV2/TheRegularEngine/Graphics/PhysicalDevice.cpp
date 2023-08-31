@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PhysicalDevice.h"
 #include "RendererContext.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -32,14 +33,14 @@ namespace TRE
 		vkEnumeratePhysicalDevices(VulkanInstance, &GPUcount, nullptr);
 		if (GPUcount == 0)
 		{
-			std::cout << "No GPU suitable to support vulkan" << std::endl;
+			TRE_CORE_CRITICAL("No GPU suitable to support vulkan");
 			assert(false);
 		}
 
 		std::vector<VkPhysicalDevice> PhysicalDevices(GPUcount);
 		if (auto Result = vkEnumeratePhysicalDevices(VulkanInstance, &GPUcount, PhysicalDevices.data()); Result != VK_SUCCESS)
 		{
-			std::cout << "Cannot get GPUs" << std::endl;
+			TRE_CORE_CRITICAL("Cannot get GPUs");
 			assert(Result == VK_SUCCESS);
 		}
 
@@ -58,7 +59,7 @@ namespace TRE
 
 		if (m_PhysicalDevice == nullptr) //Worst case scenario
 		{
-			std::cout << "No discrete GPU found, using integrated" << std::endl;
+			TRE_CORE_WARN("No discrete GPU found, using integrated");
 			m_PhysicalDevice = PhysicalDevices.back();
 			assert(m_PhysicalDevice);
 		}
@@ -73,15 +74,13 @@ namespace TRE
 			std::vector<VkExtensionProperties> Extensions(ExtensionsCount);
 			if (vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, Extensions.data()) == VK_SUCCESS)
 			{
-				std::cout << std::endl;
-				std::cout << "Supported Extensions from this GPU: " << std::endl;
+				TRE_CORE_INFO("Supported Extensions from this GPU: ");
 				for (const auto& Ext : Extensions)
 				{
 					m_SupportedExtensions.emplace(Ext.extensionName);
-					std::cout << Ext.extensionName << std::endl;
+					TRE_CORE_INFO(Ext.extensionName);
 				}
 			}
-			std::cout << std::endl;
 		}
 
 		uint32_t QueueFamilyCount;

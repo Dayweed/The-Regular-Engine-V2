@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Window.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -7,7 +8,7 @@ namespace TRE
 	{
 		if (int Error = glfwInit(); !Error)
 		{
-			std::cout << "GLFW unable to initialise" << std::endl;
+			TRE_CORE_CRITICAL("GLFW unable to initialise");
 			assert(Error == GLFW_TRUE);
 		}
 

@@ -1,8 +1,8 @@
 #pragma once
 
-namespace Math::Easing
+namespace Mathf::Easing
 {
-	float Linear(float start, float end, float value);
+	float EaseLinear(float start, float end, float value);
 
 	float EaseInQuad(float start, float end, float value);
 
@@ -64,4 +64,3 @@ namespace Math::Easing
 
 	float EaseInOutElastic(float start, float end, float value);
 }
-

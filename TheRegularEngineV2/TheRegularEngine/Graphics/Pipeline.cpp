@@ -156,7 +156,7 @@ namespace TRE
 			.Build();
 
 		//Create descriptor set layout
-		const uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
 		m_UBOBuffers.resize(imageCount);
 		for (int i = 0; i < m_UBOBuffers.size(); i++)
 		{
@@ -172,7 +172,8 @@ namespace TRE
 		//TO DELETE
 		_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
-		m_DescriptorSets.resize(imageCount);
+		int descriptorCount = imageCount;
+		m_DescriptorSets.resize(descriptorCount);
 		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
 			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);

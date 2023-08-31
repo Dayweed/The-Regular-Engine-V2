@@ -9,8 +9,8 @@ namespace TRE
 {
 	PhysicsSystem::PhysicsSystem()
 	{
-		printf("Physics System Constructor called\n");
-		printf("Initializing Physics/PhysX systems...\n");
+		TRE_CORE_INFO("Physics System Constructor called");
+		TRE_CORE_INFO("Initializing Physics/PhysX systems...");
 
 		//Create foundation is similar to initializing the scene
 		m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
@@ -20,7 +20,7 @@ namespace TRE
 		// one less thing passed in, the better I guess.
 		m_Foundation->setReportAllocationNames(false);
 
-		printf("PhysX Version: %d.%d.%d\n",
+		TRE_CORE_INFO("PhysX Version: {0}.{1}.{2}",
 			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
 
 #if USE_PHYSX_PVD
@@ -77,12 +77,12 @@ namespace TRE
 		m_GroundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0), *m_Material);
 		m_Scene->addActor(*m_GroundPlane);
 
-		printf("Physics/PhysX systems initialization complete! :D\n");
+		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
 
 	PhysicsSystem::~PhysicsSystem()
 	{
-		printf("Physics System Destructor called\n");
+		
 	}
 
 	bool PhysicsSystem::TESTUpdate()
@@ -140,7 +140,7 @@ namespace TRE
 
 	void PhysicsSystem::Shutdown()
 	{
-		printf("Physics System Shutdown\n");
+		TRE_CORE_INFO("Physics System Shutdown");
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
