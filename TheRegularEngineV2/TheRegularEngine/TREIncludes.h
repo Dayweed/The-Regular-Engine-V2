@@ -1,5 +1,11 @@
 #pragma once
 
+//-----------------MATH-----------------//
+#include "Mathf.h"
+#include "Easing.h"
+#include "Random.h"
+#include "Vector2.h"
+#include "Vector2Int.h"
 
 //-----------------CORE-----------------//
 #include "Core/Engine.h"
