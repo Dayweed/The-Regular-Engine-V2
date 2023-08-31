@@ -10,9 +10,7 @@ namespace TRE
 	{
 		int _key, _state;
 		InputEvent(const int& key, const int& state) : _key(key), _state(state)
-		{
-            std::cout << "does this work?\n";
-		}
+		{}
 	};
 
 	struct TypingEvent : Event

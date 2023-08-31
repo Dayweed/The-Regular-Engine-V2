@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Core/Logger.h"
 #include "InputHandler.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "../EventSystem/Events/InputEvent.h"
@@ -15,8 +16,11 @@ namespace TRE
 		switch (action)
 		{
 			case GLFW_PRESS:
+			{
+				TRE_CORE_INFO("Key pressed: {0}", key);
 				event.publish(InputEvent {key, action});
 				break;
+			}
 			case GLFW_REPEAT:
 				break;
 			case GLFW_RELEASE:
