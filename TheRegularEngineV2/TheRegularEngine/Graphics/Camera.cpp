@@ -55,20 +55,23 @@ namespace TRE
 		camera.m_Fov = fov;
 		camera.m_IsDirty = true;
 	}
-
+#undef near
 	void CameraSystem::SetNear(Entity& go, const float near)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Near = near;
 		camera.m_IsDirty = true;
 	}
-	
+#define near
+
+#undef far
 	void CameraSystem::SetFar(Entity& go, const float far)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Far = far;
 		camera.m_IsDirty = true;
 	}
+#define far
 
 	void CameraSystem::SetLeft(Entity& go, const float left)
 	{

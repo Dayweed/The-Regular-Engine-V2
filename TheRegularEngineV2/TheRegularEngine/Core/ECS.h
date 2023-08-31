@@ -5,7 +5,7 @@
 #include "ComponentManager.h"
 #include "Transform.h"
 #include <typeindex>
-//#include "Core/Logger.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -26,6 +26,8 @@ namespace TRE
 
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
+
+	
 
 	class Ent : public std::enable_shared_from_this<Ent>
 	{
