@@ -39,37 +39,37 @@ namespace TRE
 		\brief	Creates a SphereCollider component for the given entity.
 		\author	Prashanth S. Sharma p.sharma@digipen.edu
 
-		\param	[in,out] go		The `const GO&` representing the entity to create the component for.
+		\param	[in,out] go		The `const Entity&` representing the entity to create the component for.
 		\param	[in]	 radius	The `const float` representing the collider's radius.
 		\param	[in]	 offset	The offset from the entity's position, if applicable.
 		*/
-		void ConstructSphereCollider(const GO& go, const float radius = 1.0f, const glm::vec3& offset = glm::vec3(0)) const;
+		void ConstructSphereCollider(const Entity& go, const float radius = 1.0f, const glm::vec3& offset = glm::vec3(0)) const;
 
 		/*!
 		\brief	Destroys an entity's SphereCollider component.
 		\author	Prashanth S. Sharma p.sharma@digipen.edu
 
-		\param	[in,out] go		The `const GO&` representing the entity containing the collider to destroy.
+		\param	[in,out] go		The `const Entity&` representing the entity containing the collider to destroy.
 		*/
-		void DestructSphereCollider(const GO& go) const;
+		void DestructSphereCollider(const Entity& go) const;
 
 		/*!
 		\brief	Creates a BoxCollider component for the given entity.
 		\author	Prashanth S. Sharma p.sharma@digipen.edu
 
-		\param	[in,out] go				The `const GO&` representing the entity to create the component for.
+		\param	[in,out] go				The `const Entity&` representing the entity to create the component for.
 		\param	[in]	 halfExtents	The `const glm::vec3&` representing the collider's half extents in all axes.
 		\param	[in]	 offset			The offset from the entity's position, if applicable.
 		*/
-		void ConstructBoxCollider(const GO& go, const glm::vec3& halfExtents = glm::vec3(0.5f), const glm::vec3& offset = glm::vec3(0)) const;
+		void ConstructBoxCollider(const Entity& go, const glm::vec3& halfExtents = glm::vec3(0.5f), const glm::vec3& offset = glm::vec3(0)) const;
 
 		/*!
 		\brief	Destroys an entity's BoxCollider component.
 		\author	Prashanth S. Sharma p.sharma@digipen.edu
 
-		\param	[in,out] go		The `const GO&` representing the entity containing the collider to destroy.
+		\param	[in,out] go		The `const Entity&` representing the entity containing the collider to destroy.
 		*/
-		void DestructBoxCollider(const GO& go) const;
+		void DestructBoxCollider(const Entity& go) const;
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;

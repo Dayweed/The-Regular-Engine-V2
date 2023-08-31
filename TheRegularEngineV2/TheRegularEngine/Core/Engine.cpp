@@ -19,7 +19,7 @@ namespace TRE
 		Geom::Serialize(_geom_compiler->GetGeom(), "../Assets/smooth_vase.geom");
 		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
 
-		GO test = _ecs_manager->CreateGO();
+		Entity test = _ecs_manager->CreateEntity();
 		test->AddComponent<Properties>().m_Name = "Test";
 		test->AddComponent<Transform>().m_Position.z = 25.f;
 		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
@@ -29,7 +29,7 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
 
-		GO test2 = _ecs_manager->CreateGO();
+		Entity test2 = _ecs_manager->CreateEntity();
 		test2->AddComponent<Properties>().m_Name = "Test2";
 		test2->AddComponent<Transform>().m_Position.x = 2.f;
 		test2->GetComponent<Transform>().m_Position.z = 50.f;
@@ -38,7 +38,7 @@ namespace TRE
 		test2->AddComponent<MeshRenderer>();
 		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 		
-		GO cam = _ecs_manager->CreateGO();
+		Entity cam = _ecs_manager->CreateEntity();
 		cam->AddComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Transform>().m_Position;
 		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -47,7 +47,7 @@ namespace TRE
 
 		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
-		/*GO audio = _ecs_manager->CreateGO();
+		/*Entity audio = _ecs_manager->CreateEntity();
 		audio->AddComponent<Audio>();
 		audio->GetComponent<Audio>().m_IsPlaying = true;*/
 
@@ -137,8 +137,8 @@ namespace TRE
 			//Update
 			_profiler->StartTimer("Update");
 			_ecs_system_manager->UpdateSystem();
-			_ecs_system_manager->OnDestroyGO();
-			_ecs_manager->DestroyRemovalGO();
+			_ecs_system_manager->OnDestroyEntities();
+			_ecs_manager->DeleteRemovalEntities();
 			_profiler->EndTimer("Update");
 			m_Renderer->BeginFrame();
 
@@ -159,7 +159,7 @@ namespace TRE
 			_profiler->EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
-			_profiler->PrintTimers();
+			//_profiler->PrintTimers();
 		}
 	}
 
