@@ -1,16 +1,14 @@
-#include "pch.h"
-#include "Core/Logger.h"
 #include "GeomCompiler.h"
 #include "meshoptimizer.h"
-
 #include <span>
 #include <filesystem>
+#include <functional>
+#include <fstream>
 
 namespace TRE
 {
 	void GeomCompiler::Compile(const std::string& filename)
 	{
-		TRE_CORE_INFO("Compiling mesh from: {0}", filename);
 		Assimp::Importer importer;
 
 		uint32_t flag = aiProcess_Triangulate                // Make sure we get triangles rather than nvert polygons
@@ -30,84 +28,32 @@ namespace TRE
 
 		if (SanityCheck())
 		{
-			TRE_CORE_ERROR("Sanity check failed");
+			//TRE_CORE_ERROR("Sanity check failed");
 			return;
 		}
 
 		ImportData();
 	}
 
-	void GeomCompiler::Serialize(const std::string& returnPath)
+	void GeomCompiler::Serialize(const std::string& filePath)
 	{
-		std::string_view path = returnPath.empty() ? m_filePath : returnPath;
+		std::string_view path = filePath;
 		std::string_view name = path;
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
-
-		TRE_CORE_INFO("Serializing mesh to: {0}", path);
 
 		std::ofstream file(path, std::ios::binary);
 
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pSubMesh), sizeof(Geom::SubMesh) * m_Geom->nSubMeshes);
 		file.write(reinterpret_cast<const char*>(&m_Geom->nPosition), sizeof(std::uint32_t));
-		file.write(reinterpret_cast<const char*>(&m_Geom->pPosition), sizeof(Geom::Position) * m_Geom->nPosition);
+		file.write(reinterpret_cast<const char*>(m_Geom->pPosition), sizeof(Geom::Position) * m_Geom->nPosition);
 		file.write(reinterpret_cast<const char*>(&m_Geom->nExtras), sizeof(std::uint32_t));
-		file.write(reinterpret_cast<const char*>(&m_Geom->pExtra), sizeof(Geom::Extra) * m_Geom->nExtras);
+		file.write(reinterpret_cast<const char*>(m_Geom->pExtra), sizeof(Geom::Extra) * m_Geom->nExtras);
 		file.write(reinterpret_cast<const char*>(&m_Geom->nIndices), sizeof(std::uint32_t));
-		file.write(reinterpret_cast<const char*>(&m_Geom->pIndices), sizeof(std::uint32_t) * m_Geom->nIndices);
-		
+		file.write(reinterpret_cast<const char*>(m_Geom->pIndices), sizeof(std::uint32_t) * m_Geom->nIndices);
+
 		file.close();
-	}
-
-	void GeomCompiler::Deserialize(const std::string& geomPath)
-	{
-		TRE_CORE_INFO("Deserializing geom from: {0}", geomPath);
-		std::filesystem::path path = geomPath;
-		if (std::filesystem::exists(geomPath))
-		{
-			std::ifstream file(geomPath, std::ios::binary);
-			if (file.is_open())
-			{
-				file.seekg(0, std::ios::end);
-				std::size_t size = file.tellg();
-				file.seekg(0, std::ios::beg);
-
-				char* buffer = new char[size];
-				file.read(buffer, size);
-				file.close();
-				
-				std::size_t offset = 0;
-				auto geom = std::make_unique<Geom>();
-				//geom->pMesh = reinterpret_cast<Geom::Mesh*>(buffer);
-				//geom->pSubMesh = reinterpret_cast<Geom::SubMesh*>(buffer + sizeof(Geom::Mesh) * geom->nMeshes);
-				geom->nPosition = *reinterpret_cast<std::uint32_t*>(buffer + offset);
-				offset += sizeof(std::uint32_t);
-				geom->pPosition = new Geom::Position[geom->nPosition];
-				memcpy(geom->pPosition, buffer + offset, sizeof(Geom::Position) * geom->nPosition);
-				offset += sizeof(Geom::Position) * geom->nPosition;
-				geom->nExtras = *reinterpret_cast<std::uint32_t*>(buffer + offset);
-				geom->pExtra = new Geom::Extra[geom->nExtras];
-				offset += sizeof(std::uint32_t);
-				memcpy(geom->pExtra, buffer + offset, sizeof(Geom::Extra) * geom->nExtras);
-				offset += sizeof(Geom::Extra) * geom->nExtras;
-				geom->nIndices = *reinterpret_cast<std::uint32_t*>(buffer + offset);
-				geom->pIndices = new std::uint32_t[geom->nIndices];
-				offset += sizeof(std::uint32_t);
-				memcpy(geom->pIndices, buffer + offset, sizeof(std::uint32_t) * geom->nIndices);
-				offset += sizeof(std::uint32_t) * geom->nIndices;
-				
-				delete[] buffer;
-			}
-			else
-			{
-				TRE_CORE_ERROR("Failed to open file: {0}", geomPath);
-			}
-		}
-		else
-		{
-			TRE_CORE_ERROR("File does not exist: {0}", geomPath);
-		}
 	}
 
 	bool GeomCompiler::SanityCheck()
@@ -138,7 +84,7 @@ namespace TRE
 
 			if (Refs.size() == 0)
 			{
-				TRE_CORE_WARN("Mesh with no reference in scene");
+				//TRE_CORE_WARN("Mesh with no reference in scene");
 				return true;
 			}
 
@@ -146,7 +92,7 @@ namespace TRE
 			{
 				if (Refs.size() > 1)
 				{
-					TRE_CORE_WARN("Found a skin mesh with multiple references in scene, Unsupported");
+					//TRE_CORE_WARN("Found a skin mesh with multiple references in scene, Unsupported");
 					return true;
 				}
 			}
@@ -154,7 +100,7 @@ namespace TRE
 			{
 				if (Refs.size() > 1)
 				{
-					TRE_CORE_INFO("Mesh with multiple references in scene, Duplicate");
+					//TRE_CORE_INFO("Mesh with multiple references in scene, Duplicate");
 				}
 			}
 		}
@@ -328,36 +274,36 @@ namespace TRE
 	{
 		if (AssimpMesh.HasPositions() == false)
 		{
-			TRE_CORE_INFO("Removing mesh ({0}) without position", AssimpMesh.mName.C_Str());
+			//TRE_CORE_INFO("Removing mesh ({0}) without position", AssimpMesh.mName.C_Str());
 			return true;
 		}
 
 		if (AssimpMesh.HasFaces() == false)
 		{
-			TRE_CORE_INFO("Removing mesh ({0}) without position", AssimpMesh.mName.C_Str());
+			//TRE_CORE_INFO("Removing mesh ({0}) without position", AssimpMesh.mName.C_Str());
 			return true;
 		}
 
 		if (AssimpMesh.HasNormals() == false)
 		{
-			TRE_CORE_INFO("Removing mesh ({0}) without normals", AssimpMesh.mName.C_Str());
+			//TRE_CORE_INFO("Removing mesh ({0}) without normals", AssimpMesh.mName.C_Str());
 			return true;
 		}
 
 		if (AssimpMesh.HasTangentsAndBitangents() == false)
 		{
-			TRE_CORE_INFO("Creating tangents and bitangents for mesh ({0})", AssimpMesh.mName.C_Str());
+			//TRE_CORE_INFO("Creating tangents and bitangents for mesh ({0})", AssimpMesh.mName.C_Str());
 		}
 
 		if (AssimpMesh.GetNumUVChannels() != 1)
 		{
 			if (AssimpMesh.GetNumUVChannels() == 0)
 			{
-				TRE_CORE_INFO("No UVs found for mesh ({0})", AssimpMesh.mName.C_Str());
+				//TRE_CORE_INFO("No UVs found for mesh ({0})", AssimpMesh.mName.C_Str());
 			}
 			else
 			{
-				TRE_CORE_INFO("Too many UV channels found for mesh ({0})", AssimpMesh.mName.C_Str());
+				//TRE_CORE_INFO("Too many UV channels found for mesh ({0})", AssimpMesh.mName.C_Str());
 			}
 		}
 

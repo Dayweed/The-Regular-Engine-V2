@@ -5,22 +5,31 @@ project "GeomCompiler"
 	staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-	targetdir ("bin")
+	targetdir ("bin/%{prj.name}")
 	-- ! makes .obj files appear in the same folder
 	-- regardless of build configuration
-	objdir ("!bin/obj")
+	objdir ("bin/%{prj.name}")
 
 	includedirs
     {
-        "include"
+        "include",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.Assimp}",
+		"%{IncludeDir.MeshOptimizer}"
     }
 
 	files
 	{
-		"include/**.h",
-		"include/**.hpp",
-		"src/**.c",
-		"src/**.cpp",
+		"include/**.h", 
+		"src/**.c", 
+		"include/**.hpp", 
+		"src/**.cpp"
+	}
+
+	links
+	{
+		"MeshOptimizer",
+		"%{Library.Assimp}",
 	}
 
 	filter "configurations:Debug"

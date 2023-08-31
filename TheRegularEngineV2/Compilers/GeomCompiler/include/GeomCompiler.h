@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "Geom.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -17,8 +16,7 @@ namespace TRE
 		}
 
 		void Compile(const std::string& filename);
-		void Serialize(const std::string& returnPath = "");
-		void Deserialize(const std::string& geomPath);
+		void Serialize(const std::string& filePath);
 
 		std::unique_ptr<Geom> GetGeom() { return std::move(m_Geom); }
 	private:
