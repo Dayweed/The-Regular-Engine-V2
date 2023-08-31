@@ -94,7 +94,6 @@ namespace TRE
 
 		std::map<size_t, std::shared_ptr<System>> m_Systems;
 	};
-	static EditorSystemManager* _editor_system_manager{ &EditorSystemManager::Instance() };
 
 
 	class ECSSystemManager
@@ -187,5 +186,4 @@ namespace TRE
 
 		std::map<size_t, std::shared_ptr<ECSSystem>> m_Systems;
 	};
-	static ECSSystemManager* _ecs_system_manager{ &ECSSystemManager::Instance() };
 }

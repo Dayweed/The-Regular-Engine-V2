@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "Geom.h"
+#include "GeomManager.h"
 
 namespace TRE
 {
-	void Geom::Serialize(const std::unique_ptr<Geom> geom, const std::string& filePath)
+	void GeomManager::Serialize(const std::unique_ptr<Geom> geom, const std::string& filePath)
 	{
 		std::string_view path = filePath;
 		std::string_view name = path;
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
 
-		std::cout <<"serializing mesh... " << name << std::endl;
+		std::cout << "serializing mesh... " << name << std::endl;
 
 		std::ofstream file(path, std::ios::binary);
 
@@ -26,7 +26,7 @@ namespace TRE
 		file.close();
 	}
 
-	std::unique_ptr<Geom> Geom::Deserialize(const std::string& filePath)
+	std::unique_ptr<Geom> GeomManager::Deserialize(const std::string& filePath)
 	{
 		auto geom = std::make_unique<Geom>();
 
