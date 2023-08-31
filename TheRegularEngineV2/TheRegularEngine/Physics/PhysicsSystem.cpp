@@ -133,23 +133,12 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
-		// deletes a SphereCollider every second, if found
-		static std::time_t start_timer = std::time(nullptr);
-		auto const result = std::time(nullptr) - start_timer;
-		if (result >= 1)
-		{
-			auto vec = _ecs_manager->GetEntities<SphereCollider>();
-			if (!vec.empty())
-				DestructSphereCollider(vec.front());
-			std::time(&start_timer);
-		}
-
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
 
 		auto UpdateTransform = []<typename Collider>
 		{
-			for (GO& entity : _ecs_manager->GetGO<Collider>())
+			for (Entity& entity : _ecs_manager->GetEntities<Collider>())
 			{
 				entity->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
 
