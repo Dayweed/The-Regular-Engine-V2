@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
@@ -30,6 +33,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio\AudioSystem.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
     <ClInclude Include="Core\ComponentManager.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -40,6 +46,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\SceneManager.h">
@@ -70,6 +79,9 @@
     <ClInclude Include="EventSystem\Events\EventBase.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
+    <ClInclude Include="EventSystem\Events\ExampleEvent.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
     <ClInclude Include="EventSystem\Events\InputEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
@@ -86,6 +98,12 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\FrameBuffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Geom.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GeomCompiler.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Image.h">
@@ -140,6 +158,9 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Audio\AudioSystem.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
     <ClCompile Include="Core\ECS.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -147,6 +168,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\SceneManager.cpp">
@@ -177,6 +201,12 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\FrameBuffer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Geom.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GeomCompiler.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Image.cpp">

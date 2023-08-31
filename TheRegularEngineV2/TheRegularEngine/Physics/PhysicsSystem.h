@@ -27,7 +27,7 @@ namespace TRE
 	{
 	public:
 		PhysicsSystem();
-		~PhysicsSystem() override;
+		// ~PhysicsSystem() override;
 
 		bool TESTUpdate();
 		void Update() override;
@@ -76,10 +76,6 @@ namespace TRE
 
 	private:
 
-		// Systems aren't meant to have variables, Components are.
-		// But for variables that all components should be able to access,
-		// being in a System is alright.
-
 		bool m_IsReadyForUpdate = false;
 
 		physx::PxDefaultAllocator		m_Allocator;
@@ -94,7 +90,5 @@ namespace TRE
 		physx::PxMaterial*				m_Material = nullptr;
 
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // REMEMBER TO RELEASE SHAPES, DAMN IT.
-
-		// physx::PxVec3 ToEulerAngles(physx::PxQuat q);
 	};
 }
