@@ -75,5 +75,4 @@ namespace TRE
 		unsigned long long delay{ 1 };
 		std::chrono::steady_clock::time_point start_delay{};
 	};
-	static Profiler* _profiler{ &Profiler::Instance() };
 }

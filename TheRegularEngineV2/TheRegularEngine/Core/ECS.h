@@ -50,7 +50,7 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		if (goVar->HasComponent<ComponentStruct>())
 		{
 			// Use Properties Component
@@ -71,7 +71,7 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		goVar->AddComponent<ComponentStruct>();
 
 		goVar->AddComponent<ComponentStruct>().Var = 0;
@@ -106,7 +106,7 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		if (goVar->HasComponent<ComponentStruct>())
 		{
 			goVar->GetComponent<ComponentStruct>().Val = 0;
@@ -127,8 +127,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goParentVar = _ecs_manager->CreateEntity("goParentVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
 		*//*__________________________________________________________________________*/
 		void SetParent(Entity parent);
@@ -142,8 +142,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goParentVar = _ecs_manager->CreateEntity("goParentVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
 
 		Entity AccessEntityVarParent = goVar->GetParent();
@@ -159,8 +159,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goParentVar = _ecs_manager->CreateEntity("goParentVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
 
 		goVar->RemoveParent();
@@ -178,8 +178,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goChildVar = _ecs_manager->CreateEntity("goChildVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goChildVar = ECSManager::Instance().CreateEntity("goChildVar");
 
 		goVar->AddChild(goChildVar);
 		*//*__________________________________________________________________________*/
@@ -193,8 +193,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goParentVar = _ecs_manager->CreateEntity("goParentVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
 
 		std::vector<Entity> goParentVarChildren = goParentVar->GetChildren();
@@ -213,8 +213,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goParentVar = _ecs_manager->CreateEntity("goParentVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
 
 		goParentVar->AbandonChild(goVar);
@@ -230,8 +230,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity goParentVar = _ecs_manager->CreateEntity("goParentVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
 
 		goParentVar->AbandonChildren();
@@ -293,7 +293,7 @@ namespace TRE
 		@author		Isaiah Lim lim.i@digipen.edu
 
 		@brief		Holds the singleton for the ECSManager
-					This shouldn't be used, use _ecs_manager instead
+					This shouldn't be used, use ECSManager::Instance() instead
 		*//*__________________________________________________________________________*/
 		static ECSManager& Instance();
 
@@ -301,11 +301,11 @@ namespace TRE
 		@function	GetRegistry
 		@author		Isaiah Lim lim.i@digipen.edu
 
-		@brief		Returns entt registry in the _ecs_manager singleton
-					This should ideally be used for _ecs_manager only
+		@brief		Returns entt registry in the ECSManager::Instance() singleton
+					This should ideally be used for ECSManager::Instance() only
 
 		Example:
-		_ecs_manager->GetRegistry();
+		ECSManager::Instance().GetRegistry();
 		*//*__________________________________________________________________________*/
 		entt::registry& GetRegistry();
 
@@ -318,7 +318,7 @@ namespace TRE
 					This is only run under Engine.cpp at the end of the frame
 
 		Example:
-		_ecs_manager->DestroyRemovalEntity();
+		ECSManager::Instance().DestroyRemovalEntity();
 		*//*__________________________________________________________________________*/
 		void DeleteRemovalEntities();
 
@@ -330,7 +330,7 @@ namespace TRE
 		@brief		Destroys all the Entitys
 
 		Example:
-		_ecs_manager->DestroyAll();
+		ECSManager::Instance().DestroyAll();
 		*//*__________________________________________________________________________*/
 		void DestroyAll();
 
@@ -347,7 +347,7 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 
 		std::cout << goVar->HasComponent<Properties>() << std::endl;
 		std::cout << goVar->GetComponent<Properties>().m_Name << std::endl;
@@ -367,11 +367,11 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 
 		std::cout << goVar << std::endl; // Address of goVar
 
-		_ecs_manager->MarkForDeletion(goVar);
+		ECSManager::Instance().MarkForDeletion(goVar);
 		*//*__________________________________________________________________________*/
 		void MarkForDeletion(Entity& object);
 
@@ -386,8 +386,8 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
-		Entity clonGoVar = _ecs_manager->CloneEntity(goVar, "ClonedEntityName");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		Entity clonGoVar = ECSManager::Instance().CloneEntity(goVar, "ClonedEntityName");
 		*//*__________________________________________________________________________*/
 		Entity CloneEntity(Entity& object, std::string name = "Cloned_GameObject");
 
@@ -401,11 +401,11 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("goVar");
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		goVar->AddComponent<Transform>();
 
-		std::cout << _ecs_manager->EntityHasComponent<Transform>(goVar) << std::endl;
-		std::cout << _ecs_manager->EntityHasComponent<HUMAN>(goVar) << std::endl;
+		std::cout << ECSManager::Instance().EntityHasComponent<Transform>(goVar) << std::endl;
+		std::cout << ECSManager::Instance().EntityHasComponent<HUMAN>(goVar) << std::endl;
 
 		// Output
 		// true
@@ -422,34 +422,34 @@ namespace TRE
 
 		Example:
 
-		Entity goVar = _ecs_manager->CreateEntity("Object1");
+		Entity goVar = ECSManager::Instance().CreateEntity("Object1");
 		goVar->AddComponent<Transform>();
 		goVar->AddComponent<Component>();
 
-		Entity goVar2 = _ecs_manager->CreateEntity("Object2");
+		Entity goVar2 = ECSManager::Instance().CreateEntity("Object2");
 
-		Entity goVar3 = _ecs_manager->CreateEntity("Object3");
+		Entity goVar3 = ECSManager::Instance().CreateEntity("Object3");
 		goVar3->AddComponent<Component>();
-		_ecs_manager->DestroyEntity(goVar3);
+		ECSManager::Instance().DestroyEntity(goVar3);
 
-		std::cout << "Entity with Properties Size: " << _ecs_manager->GetEntities<Properties>().size() << std::endl;
-		for (Entity& obj : _ecs_manager->GetEntities<Properties>())
+		std::cout << "Entity with Properties Size: " << ECSManager::Instance().GetEntities<Properties>().size() << std::endl;
+		for (Entity& obj : ECSManager::Instance().GetEntities<Properties>())
 			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
 
-		std::cout << "Entity with Transform Size: " << _ecs_manager->GetEntities<Transform>().size() << std::endl;
-		for (Entity& obj : _ecs_manager->GetEntities<Transform>())
+		std::cout << "Entity with Transform Size: " << ECSManager::Instance().GetEntities<Transform>().size() << std::endl;
+		for (Entity& obj : ECSManager::Instance().GetEntities<Transform>())
 			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
 
-		std::cout << "Entity with Component Size: " << _ecs_manager->GetEntities<Component>().size() << std::endl;
-		for (Entity& obj : _ecs_manager->GetEntities<Component>())
+		std::cout << "Entity with Component Size: " << ECSManager::Instance().GetEntities<Component>().size() << std::endl;
+		for (Entity& obj : ECSManager::Instance().GetEntities<Component>())
 			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
 
-		std::cout << "Entity with Removal Size: " << _ecs_manager->GetEntities<Removal>().size() << std::endl;
-		for (Entity& obj : _ecs_manager->GetEntities<Removal>())
+		std::cout << "Entity with Removal Size: " << ECSManager::Instance().GetEntities<Removal>().size() << std::endl;
+		for (Entity& obj : ECSManager::Instance().GetEntities<Removal>())
 			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
 
-		std::cout << "Entity with Transform and Component Size: " << _ecs_manager->GetEntities<Transform, Component>().size() << std::endl;
-		for (Entity& obj : _ecs_manager->GetEntities<Transform, Component>())
+		std::cout << "Entity with Transform and Component Size: " << ECSManager::Instance().GetEntities<Transform, Component>().size() << std::endl;
+		for (Entity& obj : ECSManager::Instance().GetEntities<Transform, Component>())
 			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
 
 		// Output
@@ -556,7 +556,7 @@ namespace TRE
 			std::cout << "- Cloned Entity value is " << cloneobj->GetComponent<Transform>().m_Position.x << "\n";
 
 			std::cout << "\nIterating All Available Component in ComponentManager\n";
-			for (auto comp : _component_manager->m_Components)
+			for (auto comp : ComponentManager::Instance().m_Components)
 			{
 				std::cout << "- " << comp.second << "\n";
 			}
@@ -750,7 +750,6 @@ namespace TRE
 
 		std::unordered_map<Entity_ID, Entity> m_EntityList;
 	};
-	static ECSManager* _ecs_manager{ &ECSManager::Instance() };
 
 
 	template <typename Comp, typename... Others>
@@ -780,25 +779,25 @@ namespace TRE
 	template <typename T>
 	bool Ent::HasComponent()
 	{
-		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		if (!ComponentManager::Instance().HasComponent<T>() && !ComponentManager::Instance().HasHiddenComponent<T>())
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
 			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
-			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
-		return _ecs_manager->EntityHasComponent<T>(shared_from_this());
+		return ECSManager::Instance().EntityHasComponent<T>(shared_from_this());
 	}
 
 	template <typename T>
 	T& Ent::AddComponent()
 	{
-		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		if (!ComponentManager::Instance().HasComponent<T>() && !ComponentManager::Instance().HasHiddenComponent<T>())
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
 			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
-			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 
 		if (HasComponent<T>())
@@ -808,7 +807,7 @@ namespace TRE
 			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is already in " + GetComponent<Properties>().m_Name + "...");
 			return GetComponent<T>();
 		}
-		return _ecs_manager->GetRegistry().emplace<T>(m_Entity);
+		return ECSManager::Instance().GetRegistry().emplace<T>(m_Entity);
 	}
 
 	template <typename T>
@@ -823,12 +822,12 @@ namespace TRE
 			assert(&m_Entity != nullptr);
 		}
 
-		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		if (!ComponentManager::Instance().HasComponent<T>() && !ComponentManager::Instance().HasHiddenComponent<T>())
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
 			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
-			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 
 		if (!HasComponent<T>())
@@ -839,7 +838,7 @@ namespace TRE
 			assert(HasComponent<T>());
 		}
 
-		return _ecs_manager->GetRegistry().get<T>(m_Entity);
+		return ECSManager::Instance().GetRegistry().get<T>(m_Entity);
 	}
 
 	template <typename T>
@@ -854,15 +853,15 @@ namespace TRE
 			assert(&m_Entity != nullptr);
 		}
 
-		if (!_component_manager->HasComponent<T>() && !_component_manager->HasHiddenComponent<T>())
+		if (!ComponentManager::Instance().HasComponent<T>() && !ComponentManager::Instance().HasHiddenComponent<T>())
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
 			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
-			assert(_component_manager->HasComponent<T>() || _component_manager->HasHiddenComponent<T>());
+			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 
 		if (HasComponent<T>())
-			_ecs_manager->GetRegistry().remove<T>(m_Entity);
+			ECSManager::Instance().GetRegistry().remove<T>(m_Entity);
 	}
 }
