@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ECS.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -66,12 +67,12 @@ namespace TRE
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{
-			std::cout << "A Component Type " << curr.first << "\n";
+			TRE_CORE_INFO("A Component Type {0}", curr.first);
 			if (auto& storage = curr.second; storage.contains(object->m_Entity))
 			{
-				std::cout << "	Storage of entities with mentioned component\n";
-				std::cout << "	Size of Storage: " << storage.size() << "\n";
-				std::cout << "	Cloning Component...\n";
+				TRE_CORE_INFO("Storage of entities with mentioned component");
+				TRE_CORE_INFO("Size of Storage: {0}", storage.size());
+				TRE_CORE_INFO("Cloning Component...");
 				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
 			}
 		}

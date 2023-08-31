@@ -61,7 +61,8 @@ project "TheRegularEngine"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.tinyobj}"
+		"%{IncludeDir.tinyobj}",
+		"%{IncludeDir.stbi}"
 	}
 
 	defines
