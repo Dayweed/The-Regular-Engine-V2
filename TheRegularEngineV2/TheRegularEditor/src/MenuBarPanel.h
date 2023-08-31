@@ -1,18 +1,18 @@
 #pragma once
 #include "TREIncludes.h"
+#include "Panel.h"
 
 namespace TRE
 {
-	class EditorSystem : public System
+	class MenuBarPanel : public Panel
 	{
 		public:
-			EditorSystem();
-			~EditorSystem();
-
+			MenuBarPanel();
+			~MenuBarPanel();
+			void Init() override;
 			void Update() override;
 			void Shutdown() override;
 
 		private:
-			
 	};
 }
