@@ -1,15 +1,15 @@
 #pragma once
 #include "TREIncludes.h"
+#include "Panel.h"
 
 namespace TRE
 {
-	class EditorSystem : public System
+	class ViewportPanel : public Panel
 	{
 		public:
-			EditorSystem();
-			~EditorSystem();
-
-			void RenderImgui() override;
+			ViewportPanel();
+			~ViewportPanel();
+			void Init() override;
 			void Update() override;
 			void Shutdown() override;
 

@@ -98,8 +98,6 @@ namespace TRE
 				offset += sizeof(std::uint32_t) * geom->nIndices;
 				
 				delete[] buffer;
-
-				m_LoadedGeom = std::move(geom);
 			}
 			else
 			{

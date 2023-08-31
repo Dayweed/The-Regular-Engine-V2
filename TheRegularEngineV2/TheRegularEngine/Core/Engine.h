@@ -28,7 +28,7 @@ namespace TRE
 			template <typename T>
 			void RegisterSystems()
 			{
-				_system_manager->RegisterSystem<T>();
+				_editor_system_manager->RegisterSystem<T>();
 			}
 
 			const std::shared_ptr<Window>& GetWindow();
