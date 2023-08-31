@@ -486,6 +486,18 @@ namespace TRE
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 			std::cout << "-------\n";
 
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
+
 			test->AddComponent<Transform>().m_Position.x = 19;
 			std::cout << "Creating GO, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_Position.x << std::endl;
 			std::cout << "Removing Editted Component...\n";
@@ -506,6 +518,18 @@ namespace TRE
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 			std::cout << "-------\n";
+
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
 
 			std::cout << "Creating GOs with 1 GO with only Properties and 2 GO with Transform and Properties...\n";
 			GO test2 = CreateGO("test2");
@@ -664,6 +688,18 @@ namespace TRE
 			snapshot.entities(str);
 			//snapshot.component<>(str);
 
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
+
 			std::cout << "\n- Destroy All...\n";
 			DestroyAll();
 			std::cout << "- Current: " << GetGO<Properties>().size() << "...\n";
@@ -672,6 +708,18 @@ namespace TRE
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 			std::cout << "-------\n";
+
+			std::cout << "\n\nEntities IDs\n";
+			for (GO& go : m_GOList)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(go->m_Entity) << "\n";
+			}
+			std::cout << "-- Storage --\n";
+			for (auto&& id : GetRegistry().storage().begin()->second)
+			{
+				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
+			}
+			std::cout << "++++++++++++\n";
 			/*ECSInputArchive instr{};
 			entt::snapshot_loader snapshotLoader{ GetRegistry() };
 			snapshotLoader.entities(instr);*/
