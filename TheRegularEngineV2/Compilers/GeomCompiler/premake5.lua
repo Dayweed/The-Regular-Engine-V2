@@ -13,7 +13,6 @@ project "GeomCompiler"
 	includedirs
     {
         "include",
-		"%{IncludeDir}"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.MeshOptimizer}"
