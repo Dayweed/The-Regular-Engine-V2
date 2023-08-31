@@ -15,8 +15,6 @@ namespace TRE
 		switch (action)
 		{
 			case GLFW_PRESS:
-				if (GLFW_KEY_ESCAPE == key)
-				{}
 				event.publish(InputEvent {key, action});
 				break;
 			case GLFW_REPEAT:
