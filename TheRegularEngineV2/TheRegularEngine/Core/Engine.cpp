@@ -137,23 +137,23 @@ namespace TRE
 			//Update
 			if (m_EngineInfo.EnableEditor)
 			{
-				m_VulkanEditor->BeginFrame();
+				//m_VulkanEditor->BeginFrame();
 			}
 
 			_profiler->StartTimer("Update");
-			_system_manager->UpdateSystem();
-			_system_manager->OnDestroyGO();
+			//_system_manager->UpdateSystem();
+			//_system_manager->OnDestroyGO();
 			_ecs_manager->DestroyRemovalGO();
 			_profiler->EndTimer("Update");
 
 			if (m_EngineInfo.EnableEditor)
 			{
-				m_VulkanEditor->EndFrame();
+				//m_VulkanEditor->EndFrame();
 			}
 
 			//Draw
 			_profiler->StartTimer("Draw");
-			m_Renderer->BeginFrame();
+			//m_Renderer->BeginFrame();
 
 			m_Window->SwapBuffers();
 			_profiler->EndTimer("Draw");
