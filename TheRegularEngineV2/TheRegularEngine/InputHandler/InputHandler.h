@@ -8,8 +8,9 @@ namespace TRE
     *\brief 	Contains static functions for glfw's callback functions.
     *
     *******************************************************************************/
-    struct InputHandler
+    class InputHandler
     {
+        public:
         /*!*****************************************************************************
         *\brief     Response function for keyboard callbacks.
         *
@@ -20,6 +21,9 @@ namespace TRE
         *\param 	mod         key mods. (Shift/Capslock/Ctrl..)
         *******************************************************************************/
         static void key_cb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod);
+        static bool isKeyPressed(GLFWwindow* win_ptr, int key);
+        static bool isKeyReleased(GLFWwindow* win_ptr, int key);
+        static bool isKeyHeld(GLFWwindow* win_ptr, int key);
         /*!*****************************************************************************
         *\brief 	Response function for mouse button callbacks.
         *
@@ -52,6 +56,14 @@ namespace TRE
         *\param 	entered     new window focus state.
         *******************************************************************************/
         static void mousefocus_cb(GLFWwindow* win_ptr, int entered);
+
+        private:
+            static bool m_KeysHeld[512];
+            static bool m_KeysPressed[512];
+            static bool m_KeysReleased[512];
+            bool m_MouseButtonsHeld[32];
+            bool m_MouseButtonsPressed[32];
+            bool m_MouseButtonsReleased[32];
     };
 }
 
