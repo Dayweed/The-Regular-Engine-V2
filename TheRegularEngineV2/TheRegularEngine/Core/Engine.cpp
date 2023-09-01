@@ -10,12 +10,12 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Texture.h"
-#include "AssetManagement/GeomManager.h"
+#include "Geom.h"
 namespace TRE
 {
 	void DemoScene()
 	{
-		auto geom = GeomManager::Instance().Deserialize("../Assets/smooth_vase.geom");
+		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->AddComponent<Properties>().m_Name = "Test";
