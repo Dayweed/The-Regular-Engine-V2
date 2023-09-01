@@ -2,13 +2,16 @@
 
 struct Vector2
 {
-	//Constructors, Destructor
-	Vector2(float _x = 0.f, float _y = 0.f);
-	Vector2(const Vector2& temp);
+	//Constructors
+	Vector2(float _x = 0.0f, float _y = 0.0f);
 	// Vector2(const Vector3& temp);
+	// Vector2(const Vector2& temp) = default;
+	// Vector2(Vector2&& temp) = default;
+
+	// Vector2& operator=(const Vector2& rhs) = default;
+	// Vector2& operator=(Vector2&& rhs) = default;
 
 	//Arithmetic operators
-	Vector2& operator=(const Vector2& rhs);
 	Vector2& operator+=(const Vector2& rhs);
 	Vector2& operator-=(const Vector2& rhs);
 	Vector2& operator*=(const float rhs);
@@ -22,6 +25,9 @@ struct Vector2
 	bool operator==(const Vector2& rhs) const;
 	bool operator!=(const Vector2& rhs) const;
 
+	float operator*(const Vector2& vec) const; //Dot product
+	float operator^(const Vector2& vec) const; //Cross product / 'Determinant'
+
 	// Conversion Operators
 	// operator glm::vec2();
 	// operator physx::PxVec2();
@@ -32,6 +38,7 @@ struct Vector2
 
 	//Length
 	float Length() const;
+	bool IsZero() const;
 
 	//Normalize
 	Vector2 Norm() const;
@@ -50,7 +57,7 @@ struct Vector2
 
 	static float Distance(const Vector2& ptHead, const Vector2& ptTail);
 
-	static float Angle(const Vector2& from, const Vector2& to);
+	static float Angle(const Vector2& from, const Vector2& to); // in degrees
 
 	static Vector2 ClampMagnitude(const Vector2& vector, float maxLength);
 
@@ -78,14 +85,10 @@ struct Vector2
 
 	// Vector2.SmoothDamp
 
-	float x, y;
+	float x, y{};
 };
 
 using vec2 = Vector2;
 
 //Non member functions
-float operator*(const Vector2& vec0, const Vector2& vec1); //Dot product
-
-float operator^(const Vector2& vec0, const Vector2& vec1); //Cross product
-
 Vector2 operator*(const float lhs, const Vector2& rhs);

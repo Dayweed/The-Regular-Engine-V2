@@ -5,11 +5,14 @@ struct Vector2Int
 {
 	//Constructors, Destructor
 	Vector2Int(int _x = 0, int _y = 0);
-	Vector2Int(const Vector2Int& temp);
 	// Vector2Int(const Vector3Int& temp);
+	// Vector2Int(const Vector2Int& temp) = default;
+	// Vector2Int(Vector2Int&& temp) = default;
+
+	// Vector2Int& operator=(const Vector2Int& rhs) = default;
+	// Vector2Int& operator=(Vector2Int&& rhs) = default;
 
 	//Arithmetic operators
-	Vector2Int& operator=(const Vector2Int& rhs);
 	Vector2Int& operator+=(const Vector2Int& rhs);
 	Vector2Int& operator-=(const Vector2Int& rhs);
 	Vector2Int& operator*=(const int rhs);
@@ -23,6 +26,9 @@ struct Vector2Int
 	bool operator==(const Vector2Int& rhs) const;
 	bool operator!=(const Vector2Int& rhs) const;
 
+	int operator*(const Vector2Int& vec) const; //Dot product
+	int operator^(const Vector2Int& vec) const; //Cross product / 'Determinant'
+
 	// Conversion Operators
 	// operator glm::vec2();
 	// operator physx::PxVec2();
@@ -33,12 +39,7 @@ struct Vector2Int
 
 	//Length
 	float Length() const;
-
-	//Normalize
-	Vector2Int Norm() const;
-	void Normalize();
-
-	// https://docs.unity3d.com/ScriptReference/Vector2Int.html
+	bool IsZero() const;
 
 	// Convenience Functions
 	static Vector2Int Zero();
@@ -73,8 +74,4 @@ struct Vector2Int
 using vec2i = Vector2Int;
 
 //Non member functions
-int operator*(const Vector2Int& vec0, const Vector2Int& vec1); //Dot product
-
-int operator^(const Vector2Int& vec0, const Vector2Int& vec1); //Cross product
-
 Vector2Int operator*(const int lhs, const Vector2Int& rhs);

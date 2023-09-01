@@ -2,20 +2,20 @@
 #include <cmath>
 #include "Mathf.h"
 
+#define EPSILON (0.00001f)
+
 Vector2::Vector2(float _x, float _y) : x{ _x }, y{ _y } {}
 
-Vector2::Vector2(const Vector2& temp)
-{
-	x = temp.x;
-	y = temp.y;
-}
+// Vector2::Vector2(const Vector2& temp) : x {temp.x}, y{temp.y} {}
 
-Vector2& Vector2::operator=(const Vector2& rhs)
-{
-	Vector2 tmp(rhs);
-	Swap(tmp, *this);
-	return *this;
-}
+// Vector2::Vector2(Vector2&& temp) : x{ temp.x }, y{ temp.y } {}
+
+//Vector2& Vector2::operator=(const Vector2& rhs)
+//{
+//	Vector2 tmp(rhs);
+//	Swap(tmp, *this);
+//	return *this;
+//}
 
 Vector2& Vector2::operator+=(const Vector2& rhs)
 {
@@ -67,12 +67,23 @@ Vector2 Vector2::operator/(const float rhs) const
 
 bool Vector2::operator==(const Vector2& rhs) const
 {
-	return (x == rhs.x && y == rhs.y);
+	return fabs(x - rhs.x) < EPSILON &&
+		fabs(y - rhs.y) < EPSILON;
 }
 
 bool Vector2::operator!=(const Vector2& rhs) const
 {
 	return !(*this == rhs);
+}
+
+float Vector2::operator*(const Vector2& vec) const
+{
+	return x * vec.x + y * vec.y;
+}
+
+float Vector2::operator^(const Vector2& vec) const
+{
+	return x * vec.y - y * vec.x;
 }
 
 Vector2 Vector2::operator-() const
@@ -85,14 +96,19 @@ float Vector2::Length() const
 	return sqrtf(x * x + y * y);
 }
 
+bool Vector2::IsZero() const
+{
+	return *this == Zero();
+}
+
 Vector2 Vector2::Norm() const
 {
-	return *this / Length();
+	return IsZero() ? *this : *this / Length();
 }
 
 void Vector2::Normalize()
 {
-	*this /= Length();
+	*this /= IsZero() ? 1 : Length();
 }
 
 Vector2 Vector2::Zero()
@@ -123,16 +139,6 @@ Vector2 Vector2::Right()
 Vector2 Vector2::One()
 {
 	return { 1, 1 };
-}
-
-float operator*(const Vector2& vec0, const Vector2& vec1)
-{
-	return vec0.x * vec1.x + vec0.y * vec1.y;
-}
-
-float operator^(const Vector2& vec0, const Vector2& vec1)
-{
-	return vec0.x * vec1.y - vec0.y * vec1.x;
 }
 
 void Vector2::Swap(Vector2& lhs, Vector2& rhs)

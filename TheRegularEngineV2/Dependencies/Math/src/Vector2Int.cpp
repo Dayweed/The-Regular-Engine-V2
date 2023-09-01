@@ -1,21 +1,16 @@
 #include "Vector2Int.h"
 #include <cmath>
-#include "Mathf.h"
 
 Vector2Int::Vector2Int(int _x, int _y) : x{ _x }, y{ _y } {}
 
-Vector2Int::Vector2Int(const Vector2Int& temp)
-{
-	x = temp.x;
-	y = temp.y;
-}
+// Vector2Int::Vector2Int(const Vector2Int& temp) : x{ temp.x }, y{ temp.y } {}
 
-Vector2Int& Vector2Int::operator=(const Vector2Int& rhs)
-{
-	Vector2Int tmp(rhs);
-	Swap(tmp, *this);
-	return *this;
-}
+//Vector2Int& Vector2Int::operator=(const Vector2Int& rhs)
+//{
+//	Vector2Int tmp(rhs);
+//	Swap(tmp, *this);
+//	return *this;
+//}
 
 Vector2Int& Vector2Int::operator+=(const Vector2Int& rhs)
 {
@@ -75,6 +70,16 @@ bool Vector2Int::operator!=(const Vector2Int& rhs) const
 	return !(*this == rhs);
 }
 
+int Vector2Int::operator*(const Vector2Int& vec) const
+{
+	return x * vec.x + y * vec.y;
+}
+
+int Vector2Int::operator^(const Vector2Int& vec) const
+{
+	return x * vec.y - y * vec.x;
+}
+
 Vector2Int Vector2Int::operator-() const
 {
 	return { -x, -y };
@@ -85,14 +90,9 @@ float Vector2Int::Length() const
 	return sqrtf(static_cast<float>(x * x + y * y));
 }
 
-Vector2Int Vector2Int::Norm() const
+bool Vector2Int::IsZero() const
 {
-	return *this / Length();
-}
-
-void Vector2Int::Normalize()
-{
-	*this /= Length();
+	return *this == Zero();
 }
 
 Vector2Int Vector2Int::Zero()
@@ -123,16 +123,6 @@ Vector2Int Vector2Int::Right()
 Vector2Int Vector2Int::One()
 {
 	return { 1, 1 };
-}
-
-int operator*(const Vector2Int& vec0, const Vector2Int& vec1)
-{
-	return vec0.x * vec1.x + vec0.y * vec1.y;
-}
-
-int operator^(const Vector2Int& vec0, const Vector2Int& vec1)
-{
-	return vec0.x * vec1.y - vec0.y * vec1.x;
 }
 
 void Vector2Int::Swap(Vector2Int& lhs, Vector2Int& rhs)
