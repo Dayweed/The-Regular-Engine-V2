@@ -5,7 +5,7 @@ namespace TRE
 {
 	void CameraSystem::Update()
 	{
-		for (GO& go : _ecs_manager->GetGO<Camera>())
+		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
 			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsDirty)
@@ -28,178 +28,181 @@ namespace TRE
 
 	}
 
-	void CameraSystem::SetPosition(GO& go, const glm::vec3& position)
+	void CameraSystem::SetPosition(Entity& go, const glm::vec3& position)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Position = position;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetRotation(GO& go, const glm::vec3& rotation)
+	void CameraSystem::SetRotation(Entity& go, const glm::vec3& rotation)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Rotation = rotation;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetViewportSize(GO& go, const glm::vec2& viewportSize)
+	void CameraSystem::SetViewportSize(Entity& go, const glm::vec2& viewportSize)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_ViewportSize = viewportSize;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetFov(GO& go, const float fov)
+	void CameraSystem::SetFov(Entity& go, const float fov)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Fov = fov;
 		camera.m_IsDirty = true;
 	}
-
-	void CameraSystem::SetNear(GO& go, const float near)
+#undef near
+	void CameraSystem::SetNear(Entity& go, const float near)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Near = near;
 		camera.m_IsDirty = true;
 	}
-	
-	void CameraSystem::SetFar(GO& go, const float far)
+#define near
+
+#undef far
+	void CameraSystem::SetFar(Entity& go, const float far)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Far = far;
 		camera.m_IsDirty = true;
 	}
+#define far
 
-	void CameraSystem::SetLeft(GO& go, const float left)
+	void CameraSystem::SetLeft(Entity& go, const float left)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Left = left;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetRight(GO& go, const float right)
+	void CameraSystem::SetRight(Entity& go, const float right)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Right = right;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetBottom(GO& go, const float bottom)
+	void CameraSystem::SetBottom(Entity& go, const float bottom)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Bottom = bottom;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetTop(GO& go, const float top)
+	void CameraSystem::SetTop(Entity& go, const float top)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Top = top;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetAspectRatio(GO& go, const float aspectRatio)
+	void CameraSystem::SetAspectRatio(Entity& go, const float aspectRatio)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_AspectRatio= aspectRatio;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetIsPerspective(GO& go, const bool isPerspective)
+	void CameraSystem::SetIsPerspective(Entity& go, const bool isPerspective)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_IsPerspective= isPerspective;
 		camera.m_IsDirty = true;
 	}
 
-	void CameraSystem::SetIsMainCamera(GO& go, const bool isMainCamera)
+	void CameraSystem::SetIsMainCamera(Entity& go, const bool isMainCamera)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_IsMainCamera = isMainCamera;
 		camera.m_IsDirty = true;
 	}
 
-	const glm::vec3& CameraSystem::GetPosition(const GO& go) const
+	const glm::vec3& CameraSystem::GetPosition(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Position;
 	}
 
-	const glm::vec3& CameraSystem::GetRotation(const GO& go) const
+	const glm::vec3& CameraSystem::GetRotation(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Rotation;
 	}
 
-	const glm::mat4& CameraSystem::GetViewMatrix(const GO& go) const
+	const glm::mat4& CameraSystem::GetViewMatrix(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_ViewMatrix;
 	}
 
-	const glm::mat4& CameraSystem::GetProjectionMatrix(const GO& go) const
+	const glm::mat4& CameraSystem::GetProjectionMatrix(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_ProjectionMatrix;
 	}
 
-	const glm::vec2& CameraSystem::GetViewportSize(const GO& go) const
+	const glm::vec2& CameraSystem::GetViewportSize(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_ViewportSize;
 	}
 
-	const float CameraSystem::GetFov(const GO& go) const
+	const float CameraSystem::GetFov(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Fov;
 	}
 
-	const float CameraSystem::GetNear(const GO& go) const
+	const float CameraSystem::GetNear(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Near;
 	}
 
-	const float CameraSystem::GetFar(const GO& go) const
+	const float CameraSystem::GetFar(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Far;
 	}
 
-	const float CameraSystem::GetLeft(const GO& go) const
+	const float CameraSystem::GetLeft(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Left;
 	}
 
-	const float CameraSystem::GetRight(const GO& go) const
+	const float CameraSystem::GetRight(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Right;
 	}
 
-	const float CameraSystem::GetBottom(const GO& go) const
+	const float CameraSystem::GetBottom(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Bottom;
 	}
 
-	const float CameraSystem::GetTop(const GO& go) const
+	const float CameraSystem::GetTop(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_Top;
 	}
 
-	const float CameraSystem::GetAspectRatio(const GO& go) const
+	const float CameraSystem::GetAspectRatio(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_AspectRatio;
 	}
 
-	const bool CameraSystem::IsPerspective(const GO& go) const
+	const bool CameraSystem::IsPerspective(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_IsPerspective;
 	}
 
-	const bool CameraSystem::IsMainCamera(const GO& go) const
+	const bool CameraSystem::IsMainCamera(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_IsMainCamera;
 	}
 
-	GO CameraSystem::GetMainCamera() const
+	Entity CameraSystem::GetMainCamera() const
 	{
 		//Can only have one main camera
-		GO mainCamera;
+		Entity mainCamera;
 		int count = 0;
-		for (GO& go : _ecs_manager->GetGO<Camera>())
+		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
 			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsMainCamera)

@@ -1,5 +1,10 @@
 #pragma once
-#include "pch.h"
+#include <array>
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
+#include "glm/glm.hpp"
 
 namespace TRE
 {
@@ -75,9 +80,6 @@ namespace TRE
 			delete[] pExtra;
 			delete[] pIndices;
 		}
-
-		static void Serialize(const std::unique_ptr<Geom> geom, const std::string& filePath);
-		static std::unique_ptr<Geom> Deserialize(const std::string& filePath);
 	};
 
 	struct TempGeom

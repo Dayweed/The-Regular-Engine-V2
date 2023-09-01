@@ -19,6 +19,7 @@ IncludeDir["Rapidjson"] = "%{wks.location}/Dependencies/Rapidjson/include"
 IncludeDir["spdlog"] = "%{wks.location}/Dependencies/spdlog"
 IncludeDir["tinyobj"] = "%{wks.location}/Dependencies/tinyobjloader"
 IncludeDir["stbi"] = "%{wks.location}/Dependencies/stbi_image"
+IncludeDir["Geom"] = "%{wks.location}/Compilers/GeomCompiler/include"
 
 LibraryDir = {}
 LibraryDir["Assimp"] = "%{wks.location}/Dependencies/assimp/lib"

@@ -76,5 +76,4 @@ namespace TRE
 		std::map<size_t, std::string> m_Components;
 		std::map<size_t, std::string> m_HiddenComponents; // This is not to be exposed in Imgui
 	};
-	static ComponentManager* _component_manager{ &ComponentManager::Instance() };
 }
