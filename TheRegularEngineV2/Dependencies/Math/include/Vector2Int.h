@@ -3,14 +3,17 @@
 
 struct Vector2Int
 {
-	//Constructors, Destructor
-	Vector2Int(int _x = 0, int _y = 0);
+	// Constructors & Destructor
+	Vector2Int() = default;
+	Vector2Int(const int scalar);
+	Vector2Int(const int _x, const int _y);
+	Vector2Int(const Vector2Int& temp) = default;
+	Vector2Int(Vector2Int&& temp) = default;
 	// Vector2Int(const Vector3Int& temp);
-	// Vector2Int(const Vector2Int& temp) = default;
-	// Vector2Int(Vector2Int&& temp) = default;
+	~Vector2Int() = default;
 
-	// Vector2Int& operator=(const Vector2Int& rhs) = default;
-	// Vector2Int& operator=(Vector2Int&& rhs) = default;
+	Vector2Int& operator=(const Vector2Int& rhs) = default;
+	Vector2Int& operator=(Vector2Int&& rhs) = default;
 
 	//Arithmetic operators
 	Vector2Int& operator+=(const Vector2Int& rhs);
@@ -30,8 +33,7 @@ struct Vector2Int
 	int operator^(const Vector2Int& vec) const; //Cross product / 'Determinant'
 
 	// Conversion Operators
-	// operator glm::vec2();
-	// operator physx::PxVec2();
+	operator glm::vec2() const;
 	// operator Vector3Int();
 
 	//Unary operators
@@ -68,10 +70,11 @@ struct Vector2Int
 
 	static Vector2Int FloorToInt(const Vector2& v);
 
-	int x, y;
+	int x{}, y{};
 };
 
-using vec2i = Vector2Int;
+using Vec2i = Vector2Int;
 
 //Non member functions
 Vector2Int operator*(const int lhs, const Vector2Int& rhs);
+Vector2 operator/(const int lhs, const Vector2Int& rhs);

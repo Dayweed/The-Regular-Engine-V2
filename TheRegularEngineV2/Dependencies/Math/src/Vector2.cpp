@@ -4,18 +4,9 @@
 
 #define EPSILON (0.00001f)
 
-Vector2::Vector2(float _x, float _y) : x{ _x }, y{ _y } {}
+Vector2::Vector2(const float scalar) : x{ scalar }, y{ scalar } {}
 
-// Vector2::Vector2(const Vector2& temp) : x {temp.x}, y{temp.y} {}
-
-// Vector2::Vector2(Vector2&& temp) : x{ temp.x }, y{ temp.y } {}
-
-//Vector2& Vector2::operator=(const Vector2& rhs)
-//{
-//	Vector2 tmp(rhs);
-//	Swap(tmp, *this);
-//	return *this;
-//}
+Vector2::Vector2(const float _x, const float _y) : x{ _x }, y{ _y } {}
 
 Vector2& Vector2::operator+=(const Vector2& rhs)
 {
@@ -86,6 +77,11 @@ float Vector2::operator^(const Vector2& vec) const
 	return x * vec.y - y * vec.x;
 }
 
+Vector2::operator glm::vec2() const
+{
+	return { x, y };
+}
+
 Vector2 Vector2::operator-() const
 {
 	return { -x, -y };
@@ -146,11 +142,6 @@ void Vector2::Swap(Vector2& lhs, Vector2& rhs)
 	Vector2 temp(lhs);
 	lhs = rhs;
 	rhs = temp;
-}
-
-Vector2 operator*(const float lhs, const Vector2& rhs)
-{
-	return { lhs * rhs.x , lhs * rhs.y };
 }
 
 float Vector2::Distance(const Vector2& ptHead, const Vector2& ptTail)
@@ -215,4 +206,14 @@ Vector2 Vector2::Scale(const Vector2& a, const Vector2& b)
 void Vector2::Scale(const Vector2& scale)
 {
 	x *= scale.x; y *= scale.y;
+}
+
+Vector2 operator*(const float lhs, const Vector2& rhs)
+{
+	return { lhs * rhs.x , lhs * rhs.y };
+}
+
+Vector2 operator/(const float lhs, const Vector2& rhs)
+{
+	return { lhs / rhs.x , lhs / rhs.y };
 }

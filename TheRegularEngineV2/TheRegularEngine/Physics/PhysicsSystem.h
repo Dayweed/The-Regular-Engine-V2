@@ -43,7 +43,7 @@ namespace TRE
 		\param	[in]	 radius	The `const float` representing the collider's radius.
 		\param	[in]	 offset	The offset from the entity's position, if applicable.
 		*/
-		void ConstructSphereCollider(const Entity& go, const float radius = 1.0f, const glm::vec3& offset = glm::vec3(0)) const;
+		void ConstructSphereCollider(const Entity& go, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
 
 		/*!
 		\brief	Destroys an entity's SphereCollider component.
@@ -58,10 +58,10 @@ namespace TRE
 		\author	Prashanth S. Sharma p.sharma@digipen.edu
 
 		\param	[in,out] go				The `const Entity&` representing the entity to create the component for.
-		\param	[in]	 halfExtents	The `const glm::vec3&` representing the collider's half extents in all axes.
+		\param	[in]	 halfExtents	The `const Vector3&` representing the collider's half extents in all axes.
 		\param	[in]	 offset			The offset from the entity's position, if applicable.
 		*/
-		void ConstructBoxCollider(const Entity& go, const glm::vec3& halfExtents = glm::vec3(0.5f), const glm::vec3& offset = glm::vec3(0)) const;
+		void ConstructBoxCollider(const Entity& go, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
 
 		/*!
 		\brief	Destroys an entity's BoxCollider component.

@@ -3,13 +3,16 @@
 
 struct Vector3Int
 {
-	//Constructors, Destructor
-	Vector3Int(int _x = 0, int _y = 0, int _z = 0);
-	// Vector3Int(const Vector3Int& temp) = default;
-	// Vector3Int(Vector3Int&& temp) = default;
+	// Constructors & Destructor
+	Vector3Int() = default;
+	Vector3Int(const int scalar);
+	Vector3Int(const int _x, const int _y, const int _z);
+	Vector3Int(const Vector3Int& temp) = default;
+	Vector3Int(Vector3Int&& temp) = default;
+	~Vector3Int() = default;
 
-	// Vector3Int& operator=(const Vector3Int& rhs) = default;
-	// Vector3Int& operator=(Vector3Int&& rhs) = default;
+	Vector3Int& operator=(const Vector3Int& rhs) = default;
+	Vector3Int& operator=(Vector3Int&& rhs) = default;
 
 	//Arithmetic operators
 	Vector3Int& operator+=(const Vector3Int& rhs);
@@ -29,8 +32,7 @@ struct Vector3Int
 	Vector3Int operator^(const Vector3Int& vec) const; //Cross product
 
 	// Conversion Operators
-	// operator glm::vec2();
-	// operator physx::PxVec2();
+	operator glm::vec3() const;
 	// operator Vector3Int();
 
 	//Unary operators
@@ -67,10 +69,11 @@ struct Vector3Int
 
 	static Vector3Int FloorToInt(const Vector3& v);
 
-	int x, y, z;
+	int x{}, y{}, z{};
 };
 
-using vec3i = Vector3Int;
+using Vec3i = Vector3Int;
 
 //Non member functions
 Vector3Int operator*(const int lhs, const Vector3Int& rhs);
+Vector3 operator/(const int lhs, const Vector3Int& rhs);

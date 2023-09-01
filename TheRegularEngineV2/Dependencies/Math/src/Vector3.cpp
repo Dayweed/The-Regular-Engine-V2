@@ -4,16 +4,9 @@
 
 #define EPSILON (0.00001f)
 
-Vector3::Vector3(float _x, float _y, float _z) : x{ _x }, y{ _y }, z{ _z } {}
+Vector3::Vector3(float scalar) : x{ scalar }, y{ scalar }, z{ scalar } {}
 
-// Vector3::Vector3(const Vector3& temp) : x{ temp.x }, y{ temp.y }, z{ temp.z } {}
-	
-//Vector3& Vector3::operator=(const Vector3& rhs)
-//{
-//	Vector3 tmp(rhs);
-//	Swap(tmp, *this);
-//	return *this;
-//}
+Vector3::Vector3(float _x, float _y, float _z) : x{ _x }, y{ _y }, z{ _z } {}
 
 Vector3& Vector3::operator+=(const Vector3& rhs)
 {
@@ -90,6 +83,11 @@ Vector3 Vector3::operator^(const Vector3& vec) const
 		z * vec.x - x * vec.z, x * vec.y - y * vec.x };
 }
 
+Vector3::operator glm::vec3() const
+{
+	return { x, y, z };
+}
+
 Vector3 Vector3::operator-() const
 {
 	return { -x, -y, -z };
@@ -160,11 +158,6 @@ void Vector3::Swap(Vector3& lhs, Vector3& rhs)
 	Vector3 temp(lhs);
 	lhs = rhs;
 	rhs = temp;
-}
-
-Vector3 operator*(const float lhs, const Vector3& rhs)
-{
-	return { lhs * rhs.x , lhs * rhs.y, lhs * rhs.z };
 }
 
 float Vector3::Distance(const Vector3& ptHead, const Vector3& ptTail)
@@ -248,6 +241,16 @@ Vector3 Vector3::Slerp(const Vector3& a, const Vector3& b, float t)
 Vector3 Vector3::SlerpUnclamped(const Vector3& a, const Vector3& b, float t)
 {
 	const float rad = Mathf::DegToRad(Angle(a, b));
-	const vec3 unitVec = 1 / sinf(rad) * (sinf((1 - t) * rad) * a.Norm() + sinf(t * rad) * b.Norm());
+	const Vector3 unitVec = 1 / sinf(rad) * (sinf((1 - t) * rad) * a.Norm() + sinf(t * rad) * b.Norm());
 	return unitVec.Norm() * Mathf::LerpUnclamped(a.Length(), b.Length(), t);
+}
+
+Vector3 operator*(const float lhs, const Vector3& rhs)
+{
+	return { lhs * rhs.x , lhs * rhs.y, lhs * rhs.z };
+}
+
+Vector3 operator/(const float lhs, const Vector3& rhs)
+{
+	return { lhs / rhs.x , lhs / rhs.y, lhs / rhs.z };
 }

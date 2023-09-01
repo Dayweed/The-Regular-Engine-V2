@@ -1,16 +1,9 @@
 #include "Vector3Int.h"
 #include <cmath>
 
-Vector3Int::Vector3Int(int _x, int _y, int _z) : x{ _x }, y{ _y }, z{ _z } {}
+Vector3Int::Vector3Int(const int scalar) : x{ scalar }, y{ scalar }, z{ scalar } {}
 
-// Vector3Int::Vector3Int(const Vector3Int& temp) : x{ temp.x }, y{ temp.y }, z{ temp.z } {}
-
-//Vector3Int& Vector3Int::operator=(const Vector3Int& rhs)
-//{
-//	Vector3Int tmp(rhs);
-//	Swap(tmp, *this);
-//	return *this;
-//}
+Vector3Int::Vector3Int(const int _x, const int _y, const int _z) : x{ _x }, y{ _y }, z{ _z } {}
 
 Vector3Int& Vector3Int::operator+=(const Vector3Int& rhs)
 {
@@ -85,6 +78,11 @@ Vector3Int Vector3Int::operator^(const Vector3Int& vec) const
 		z * vec.x - x * vec.z, x * vec.y - y * vec.x };
 }
 
+Vector3Int::operator glm::vec3() const
+{
+	return { x, y, z };
+}
+
 Vector3Int Vector3Int::operator-() const
 {
 	return { -x, -y, -z };
@@ -147,11 +145,6 @@ void Vector3Int::Swap(Vector3Int& lhs, Vector3Int& rhs)
 	rhs = temp;
 }
 
-Vector3Int operator*(const int lhs, const Vector3Int& rhs)
-{
-	return { lhs * rhs.x , lhs * rhs.y, lhs * rhs.z };
-}
-
 float Vector3Int::Distance(const Vector3Int& ptHead, const Vector3Int& ptTail)
 {
 	return (ptHead - ptTail).Length();
@@ -188,4 +181,14 @@ Vector3Int Vector3Int::CeilToInt(const Vector3& v)
 Vector3Int Vector3Int::FloorToInt(const Vector3& v)
 {
 	return { static_cast<int>(v.x), static_cast<int>(v.y), static_cast<int>(v.z) };
+}
+
+Vector3Int operator*(const int lhs, const Vector3Int& rhs)
+{
+	return { lhs * rhs.x , lhs * rhs.y, lhs * rhs.z };
+}
+
+Vector3 operator/(const int lhs, const Vector3Int& rhs)
+{
+	return { static_cast<float>(lhs) / rhs.x, static_cast<float>(lhs) / rhs.y, static_cast<float>(lhs) / rhs.z };
 }

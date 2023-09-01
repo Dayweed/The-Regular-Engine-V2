@@ -1,16 +1,9 @@
 #include "Vector2Int.h"
 #include <cmath>
 
-Vector2Int::Vector2Int(int _x, int _y) : x{ _x }, y{ _y } {}
+Vector2Int::Vector2Int(const int scalar) : x{ scalar }, y{ scalar } {}
 
-// Vector2Int::Vector2Int(const Vector2Int& temp) : x{ temp.x }, y{ temp.y } {}
-
-//Vector2Int& Vector2Int::operator=(const Vector2Int& rhs)
-//{
-//	Vector2Int tmp(rhs);
-//	Swap(tmp, *this);
-//	return *this;
-//}
+Vector2Int::Vector2Int(const int _x, const int _y) : x{ _x }, y{ _y } {}
 
 Vector2Int& Vector2Int::operator+=(const Vector2Int& rhs)
 {
@@ -80,6 +73,11 @@ int Vector2Int::operator^(const Vector2Int& vec) const
 	return x * vec.y - y * vec.x;
 }
 
+Vector2Int::operator glm::vec2() const
+{
+	return { x, y };
+}
+
 Vector2Int Vector2Int::operator-() const
 {
 	return { -x, -y };
@@ -132,11 +130,6 @@ void Vector2Int::Swap(Vector2Int& lhs, Vector2Int& rhs)
 	rhs = temp;
 }
 
-Vector2Int operator*(const int lhs, const Vector2Int& rhs)
-{
-	return { lhs * rhs.x , lhs * rhs.y };
-}
-
 float Vector2Int::Distance(const Vector2Int& ptHead, const Vector2Int& ptTail)
 {
 	return (ptHead - ptTail).Length();
@@ -175,4 +168,14 @@ Vector2Int Vector2Int::CeilToInt(const Vector2& v)
 Vector2Int Vector2Int::FloorToInt(const Vector2& v)
 {
 	return { static_cast<int>(v.x), static_cast<int>(v.y) };
+}
+
+Vector2Int operator*(const int lhs, const Vector2Int& rhs)
+{
+	return { lhs * rhs.x , lhs * rhs.y };
+}
+
+Vector2 operator/(const int lhs, const Vector2Int& rhs)
+{
+	return { static_cast<float>(lhs) / rhs.x, static_cast<float>(lhs) / rhs.y };
 }

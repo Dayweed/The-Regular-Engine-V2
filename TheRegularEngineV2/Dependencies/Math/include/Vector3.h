@@ -1,15 +1,19 @@
 #pragma once
+#include "../../GLM/include/glm/glm.hpp" // for glm::vec
 
 struct Vector3
 {
-	//Constructors, Destructor
-	Vector3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f);
+	// Constructors & Destructor
+	Vector3() = default;
+	Vector3(const float scalar);
+	Vector3(const float _x, const float _y, const float _z);
+	Vector3(const Vector3& temp) = default;
+	Vector3(Vector3&& temp) = default;
 	// Vector3(const Vector4& temp);
-	// Vector3(const Vector3& temp) = default;
-	// Vector3(Vector3&& temp) = default;
+	~Vector3() = default;
 
-	// Vector3& operator=(const Vector3& rhs) = default;
-	// Vector3& operator=(Vector3&& rhs) = default;
+	Vector3& operator=(const Vector3& rhs) = default;
+	Vector3& operator=(Vector3&& rhs) = default;
 
 	//Arithmetic operators
 	Vector3& operator+=(const Vector3& rhs);
@@ -29,8 +33,7 @@ struct Vector3
 	Vector3 operator^(const Vector3& vec) const; //Cross product
 
 	// Conversion Operators
-	// operator glm::vec2();
-	// operator physx::PxVec2();
+	operator glm::vec3() const;
 	// operator Vector3();
 
 	//Unary operators
@@ -99,10 +102,11 @@ struct Vector3
 
 	static Vector3 SlerpUnclamped(const Vector3& a, const Vector3& b, float t);
 
-	float x, y, z;
+	float x{}, y{}, z{};
 };
 
-using vec3 = Vector3;
+using Vec3 = Vector3;
 
 //Non member functions
 Vector3 operator*(const float lhs, const Vector3& rhs);
+Vector3 operator/(const float lhs, const Vector3& rhs);

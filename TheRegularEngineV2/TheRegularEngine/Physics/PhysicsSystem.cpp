@@ -207,7 +207,7 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	void PhysicsSystem::ConstructSphereCollider(const Entity& go, const float radius, const glm::vec3& offset) const
+	void PhysicsSystem::ConstructSphereCollider(const Entity& go, const float radius, const Vector3& offset) const
 	{
 		auto& sphereCollider = go->AddComponent<SphereCollider>();
 		// add component if missing, otherwise get existing component
@@ -248,7 +248,7 @@ namespace TRE
 		go->RemoveComponent<SphereCollider>();
 	}
 
-	void PhysicsSystem::ConstructBoxCollider(const Entity& go, const glm::vec3& halfExtents, const glm::vec3& offset) const
+	void PhysicsSystem::ConstructBoxCollider(const Entity& go, const Vector3& halfExtents, const Vector3& offset) const
 	{
 		auto& boxCollider = go->AddComponent<BoxCollider>();
 		// add component if missing, otherwise get existing component
@@ -290,7 +290,7 @@ namespace TRE
 				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
 				go->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(newPos);
 				// ConstructSphereCollider(go, halfExtent);
-				ConstructBoxCollider(go, glm::vec3{ halfExtent });
+				ConstructBoxCollider(go, Vector3{ halfExtent });
 			}
 		}
 	}

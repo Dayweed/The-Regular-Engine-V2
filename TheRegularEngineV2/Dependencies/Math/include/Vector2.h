@@ -1,15 +1,19 @@
 #pragma once
+#include "../../GLM/include/glm/glm.hpp" // for glm::vec
 
 struct Vector2
 {
-	//Constructors
-	Vector2(float _x = 0.0f, float _y = 0.0f);
+	// Constructors & Destructor
+	Vector2() = default;
+	Vector2(const float scalar);
+	Vector2(const float _x, const float _y);
+	Vector2(const Vector2& temp) = default;
+	Vector2(Vector2&& temp) = default;
 	// Vector2(const Vector3& temp);
-	// Vector2(const Vector2& temp) = default;
-	// Vector2(Vector2&& temp) = default;
+	~Vector2() = default;
 
-	// Vector2& operator=(const Vector2& rhs) = default;
-	// Vector2& operator=(Vector2&& rhs) = default;
+	Vector2& operator=(const Vector2& rhs) = default;
+	Vector2& operator=(Vector2&& rhs) = default;
 
 	//Arithmetic operators
 	Vector2& operator+=(const Vector2& rhs);
@@ -29,8 +33,7 @@ struct Vector2
 	float operator^(const Vector2& vec) const; //Cross product / 'Determinant'
 
 	// Conversion Operators
-	// operator glm::vec2();
-	// operator physx::PxVec2();
+	operator glm::vec2() const;
 	// operator Vector3();
 
 	//Unary operators
@@ -85,10 +88,11 @@ struct Vector2
 
 	// Vector2.SmoothDamp
 
-	float x, y{};
+	float x{}, y{};
 };
 
-using vec2 = Vector2;
+using Vec2 = Vector2;
 
 //Non member functions
 Vector2 operator*(const float lhs, const Vector2& rhs);
+Vector2 operator/(const float lhs, const Vector2& rhs);
