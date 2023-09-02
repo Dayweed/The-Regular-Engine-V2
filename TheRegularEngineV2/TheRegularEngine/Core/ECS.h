@@ -3,6 +3,7 @@
 #include "entt.hpp"
 #include "System.h"
 #include "ComponentManager.h"
+#include "MemoryManager.h"
 #include "Transform.h"
 #include <typeindex>
 #include "Core/Logger.h"
@@ -240,6 +241,7 @@ namespace TRE
 		
 	private:
 		friend class ECSManager;
+		friend class MemoryManager;
 
 		Entity m_Parent;
 		std::vector<Entity> m_Children;
@@ -471,6 +473,14 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
 		std::vector<Entity> GetEntities();
+
+		/* !
+		@function	GetAllEntities
+		@author		Isaiah Lim lim.i@digipen.edu
+
+		@brief		Returns a vector of all Entities
+		*//*__________________________________________________________________________*/
+		std::vector<Entity> GetAllEntities();
 
 		// TODELETE
 		void TESTRUN()
@@ -736,6 +746,8 @@ namespace TRE
 		}
 
 	private:
+		friend class MemoryManager;
+
 		// Delete possible copy ctor and assignment to ensure singleton
 		ECSManager() {};
 		ECSManager(ECSManager const&) = delete;
@@ -757,6 +769,7 @@ namespace TRE
 	{
 		std::vector<Entity> objects{};
 		auto view = registry.view<Comp, Others...>();
+		objects.reserve(m_EntityList.size());
 
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)

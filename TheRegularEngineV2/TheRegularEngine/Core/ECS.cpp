@@ -78,6 +78,21 @@ namespace TRE
 		return obj;
 	}
 
+
+	std::vector<Entity> ECSManager::GetAllEntities()
+	{
+		std::vector<Entity> objects{};
+		objects.reserve(m_EntityList.size());
+
+		// Get all Entity owning the entities
+		for (auto obj : m_EntityList)
+		{
+			objects.emplace_back(obj.second);
+		}
+
+		return objects;
+	}
+
 	Entity Ent::GetThis()
 	{
 		return shared_from_this();
