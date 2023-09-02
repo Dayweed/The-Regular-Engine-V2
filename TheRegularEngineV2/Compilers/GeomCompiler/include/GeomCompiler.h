@@ -112,6 +112,4 @@ namespace TRE
 		void operator=(GeomCompiler const&) = delete;
 		void* operator new(size_t) = delete;
 	};
-	static GeomCompiler* _geom_compiler{ &GeomCompiler::Instance() };
-
 }

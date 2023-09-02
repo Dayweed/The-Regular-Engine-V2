@@ -127,7 +127,11 @@ namespace TRE
 
 		m_filePath = filename;
 		m_Scene = importer.ReadFile(filename, flag);
-
+		if (m_Scene == nullptr)
+		{
+			std::cout << "Error loading model: " << filename << std::endl;
+			return;
+		}
 		//assert(m_Scene != nullptr && "Error loading model");
 
 		if (SanityCheck())

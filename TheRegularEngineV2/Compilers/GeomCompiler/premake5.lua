@@ -5,10 +5,10 @@ project "GeomCompiler"
 	staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-	targetdir ("bin/%{prj.name}")
+	targetdir ("../")
 	-- ! makes .obj files appear in the same folder
 	-- regardless of build configuration
-	objdir ("bin/%{prj.name}")
+	objdir ("!bin/obj")
 
 	includedirs
     {
@@ -36,8 +36,17 @@ project "GeomCompiler"
 
 	filter "configurations:Debug"
 		runtime "Debug"
-		symbols "on"
+		symbols "On"
+		postbuildcommands
+		{
+			'{COPY} "%{Binaries.Assimp}" "../"',
+		}
 
 	filter "configurations:Release"
 		runtime "Release"
-		optimize "on"
+		optimize "On"
+		symbols "Off"
+		postbuildcommands
+		{
+			'{COPY} "%{Binaries.Assimp}" "../"',
+		}

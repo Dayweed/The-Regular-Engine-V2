@@ -9,10 +9,10 @@ int main(int argc, char** argv)
 	TRE::GeomDescriptorFile descriptorFile;
 	//descriptorFile.GenerateDescriptorFile("../../Assets/smooth_vase.obj");
 
-	// ./GeomCompiler.exe "descriptor path" "output path"
-	if (argc != 3)
+	// ./GeomCompiler.exe "descriptor path"
+	if (argc != 2)
 	{
-		std::cout << "Usage: ./GeomCompiler.exe descriptor_path output_path" << std::endl;
+		std::cout << "Usage: ./GeomCompiler.exe descriptor_path" << std::endl;
 		return 0;
 	}
 	if(std::filesystem::exists(argv[1]) == false)
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 	descriptorFile.ReadDescriptorFile(argv[1]);
-	TRE::_geom_compiler->Compile(descriptorFile.GetAssetPath());
-	TRE::Geom::Serialize(descriptorFile.GetGeomPath(), TRE::_geom_compiler->GetGeom());
+	TRE::GeomCompiler::Instance().Compile(descriptorFile.GetAssetPath());
+	TRE::Geom::Serialize(descriptorFile.GetGeomPath(), TRE::GeomCompiler::Instance().GetGeom());
 	return 0;
 }

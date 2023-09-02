@@ -81,6 +81,7 @@ namespace TRE
 			delete[] pIndices;
 		}
 
+		static void RunCompiler(std::string descPath);
 		static void Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom);
 		static std::unique_ptr<Geom> Deserialize(const std::string& filePath);
 	};
