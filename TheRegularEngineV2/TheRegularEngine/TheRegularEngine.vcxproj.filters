@@ -154,9 +154,11 @@
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
-    <ClInclude Include="Serialization.h" />
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Serialization.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -255,7 +257,9 @@
     <ClCompile Include="Scripting\ScriptEngine.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
-    <ClCompile Include="Serialization.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Serialization.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
