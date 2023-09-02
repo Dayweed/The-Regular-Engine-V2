@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "Core/Logger.h"
 #include "InputHandler.h"
-#include "EventSystem/EventHandler/EventHandler.h"
 #include "../EventSystem/Events/InputEvent.h"
-
+#include "EventSystem/EventHandler/EventHandler.h"
+#define DEBUG 1
 namespace TRE
 {
 	void InputHandler::key_cb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
@@ -13,22 +13,8 @@ namespace TRE
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 
-		switch (action)
-		{
-			case GLFW_PRESS:
-			{
-				TRE_CORE_INFO("Key pressed: {0}", key);
-				event.publish(InputEvent {key, action});
-				break;
-			}
-			case GLFW_REPEAT:
-				break;
-			case GLFW_RELEASE:
-				event.publish(InputEvent {key, action});
-				break;
-			default:
-				break;
-		}
+		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
+			event.publish(InputEvent {key, action});
 	}
 
 	void InputHandler::mousebutton_cb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -36,6 +22,7 @@ namespace TRE
 		(void)win_ptr;
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
+
 		switch(action)
 		{
 			case GLFW_PRESS:

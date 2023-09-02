@@ -8,8 +8,9 @@ namespace TRE
     *\brief 	Contains static functions for glfw's callback functions.
     *
     *******************************************************************************/
-    struct InputHandler
+    class InputHandler
     {
+        public:
         /*!*****************************************************************************
         *\brief     Response function for keyboard callbacks.
         *
@@ -52,6 +53,14 @@ namespace TRE
         *\param 	entered     new window focus state.
         *******************************************************************************/
         static void mousefocus_cb(GLFWwindow* win_ptr, int entered);
+
+        private:
+            bool m_KeysHeld[512];
+            bool m_KeysPressed[512];
+            bool m_KeysReleased[512];
+            bool m_MouseButtonsHeld[32];
+            bool m_MouseButtonsPressed[32];
+            bool m_MouseButtonsReleased[32];
     };
 }
 

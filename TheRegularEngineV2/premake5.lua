@@ -20,6 +20,7 @@ group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
 include "Dependencies/MeshOptimizer"
+include "Compilers/CompilerLib"
 include "Compilers/GeomCompiler"
 group ""
 
@@ -64,7 +65,7 @@ project "TheRegularEngine"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.tinyobj}",
 		"%{IncludeDir.stbi}",
-		"%{IncludeDir.Geom}",
+		"%{IncludeDir.Compiler}",
 	}
 
 	defines
@@ -94,6 +95,7 @@ project "TheRegularEngine"
 		"%{Library.PhysX_Vehicle2}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
+		"%{Library.Compiler}",	
 	}
 
 	filter "configurations:Debug"
@@ -171,7 +173,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.Geom}",
+		"%{IncludeDir.Compiler}",
 	}
 
 	postbuildcommands
