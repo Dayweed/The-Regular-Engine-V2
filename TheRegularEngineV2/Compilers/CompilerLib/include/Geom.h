@@ -80,6 +80,9 @@ namespace TRE
 			delete[] pExtra;
 			delete[] pIndices;
 		}
+
+		static void Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom);
+		static std::unique_ptr<Geom> Deserialize(const std::string& filePath);
 	};
 
 	struct TempGeom

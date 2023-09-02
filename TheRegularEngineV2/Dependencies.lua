@@ -19,7 +19,7 @@ IncludeDir["Rapidjson"] = "%{wks.location}/Dependencies/Rapidjson/include"
 IncludeDir["spdlog"] = "%{wks.location}/Dependencies/spdlog"
 IncludeDir["tinyobj"] = "%{wks.location}/Dependencies/tinyobjloader"
 IncludeDir["stbi"] = "%{wks.location}/Dependencies/stbi_image"
-IncludeDir["Geom"] = "%{wks.location}/Compilers/GeomCompiler/include"
+IncludeDir["Compiler"] = "%{wks.location}/Compilers/CompilerLib/include"
 
 LibraryDir = {}
 LibraryDir["Assimp"] = "%{wks.location}/Dependencies/assimp/lib"
@@ -30,6 +30,7 @@ LibraryDir["Mono"] = "%{wks.location}/Dependencies/Mono/lib/%{cfg.buildcfg}"
 LibraryDir["PhysX"] = "%{wks.location}/Dependencies/PhysX/lib/%{cfg.buildcfg}"
 LibraryDir["Vulkan"] = "%{VULKAN_SDK}/Lib"
 LibraryDir["Math"] = "%{wks.location}/Dependencies/Math/bin"
+LibraryDir["Compiler"] = "%{wks.location}/Compilers/CompilerLib/bin"
 
 Library = {}
 Library["Assimp"] = "%{LibraryDir.Assimp}/assimp-vc143-mt.lib"
@@ -50,6 +51,7 @@ Library["PhysX_VehicleStatic"] = "%{LibraryDir.PhysX}/PhysXVehicle_static_64.lib
 Library["PhysX_Vehicle2"] = "%{LibraryDir.PhysX}/PhysXVehicle2_static_64.lib"
 Library["Vulkan"] = "%{LibraryDir.Vulkan}/vulkan-1.lib"
 Library["Math"] = "%{LibraryDir.Math}/Math.lib"
+Library["Compiler"] = "%{LibraryDir.Compiler}/CompilerLib.lib"
 
 Binaries = {}
 Binaries["Assimp"] = "%{wks.location}/Dependencies/Assimp/lib/assimp-vc143-mt.dll"

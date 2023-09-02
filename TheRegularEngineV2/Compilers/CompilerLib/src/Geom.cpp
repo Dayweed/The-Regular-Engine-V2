@@ -1,9 +1,11 @@
-#include "pch.h"
-#include "GeomManager.h"
+#include "Geom.h"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 
 namespace TRE
 {
-	void GeomManager::Serialize(const std::unique_ptr<Geom> geom, const std::string& filePath)
+	void Geom::Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom)
 	{
 		std::string_view path = filePath;
 		std::string_view name = path;
@@ -26,7 +28,7 @@ namespace TRE
 		file.close();
 	}
 
-	std::unique_ptr<Geom> GeomManager::Deserialize(const std::string& filePath)
+	std::unique_ptr<Geom> Geom::Deserialize(const std::string& filePath)
 	{
 		auto geom = std::make_unique<Geom>();
 
