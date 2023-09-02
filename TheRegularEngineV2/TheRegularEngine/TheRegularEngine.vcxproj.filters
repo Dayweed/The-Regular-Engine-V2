@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="AssetManagement">
+      <UniqueIdentifier>{C2ACEC12-2E38-5AD7-3749-DDCBA353B6D7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
@@ -30,6 +36,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManagement\GeomManager.h">
+      <Filter>AssetManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\AudioSystem.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
     <ClInclude Include="Core\ComponentManager.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -40,6 +52,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\SceneManager.h">
@@ -68,6 +83,9 @@
       <Filter>EventSystem\EventHandler</Filter>
     </ClInclude>
     <ClInclude Include="EventSystem\Events\EventBase.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem\Events\ExampleEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
     <ClInclude Include="EventSystem\Events\InputEvent.h">
@@ -138,12 +156,14 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="AssetManagement\GeomManager.h" />
-    <ClInclude Include="Audio\AudioSystem.h" />
-    <ClInclude Include="Core\Profiler.h" />
-    <ClInclude Include="EventSystem\Events\ExampleEvent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManagement\GeomManager.cpp">
+      <Filter>AssetManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\AudioSystem.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
     <ClCompile Include="Core\ECS.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -151,6 +171,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\SceneManager.cpp">
@@ -229,8 +252,5 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="AssetManagement\GeomManager.cpp" />
-    <ClCompile Include="Audio\AudioSystem.cpp" />
-    <ClCompile Include="Core\Profiler.cpp" />
   </ItemGroup>
 </Project>
