@@ -1,11 +1,12 @@
 #include "InspectorPanel.h"
 #include "Imgui/imgui.h"
+#include "TREIncludes.h"
 
 namespace TRE
 {
 	InspectorPanel::InspectorPanel()
 	{
-
+		
 	}
 
 	InspectorPanel::~InspectorPanel()
@@ -21,6 +22,20 @@ namespace TRE
 	void InspectorPanel::Update()
 	{
 		ImGui::Begin("Inspector");
+
+		//std::cout << "size of vector: " << ECSManager::Instance().GetEntities<Properties>().size() << "\n";
+		//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
+		//{
+		//	std::cout << "whats the name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
+		//	
+		//	ECSManager::Instance().GetEntities<Properties>()[i]->HasComponent<Transform>();
+		//	ECSManager::Instance().GetEntities<Properties>()[i]->HasComponent<MeshRenderer>();
+		//	ECSManager::Instance().GetEntities<Properties>()[i]->HasComponent<Camera>();
+		//	ECSManager::Instance().GetEntities<Properties>()[i]->HasComponent<SphereCollider>();
+		//	ECSManager::Instance().GetEntities<Properties>()[i]->HasComponent<BoxCollider>();
+		//	ECSManager::Instance().GetEntities<Properties>()[i]->HasComponent<Audio>();
+		//}
+		//create entity
 
 		//object shows up in viewport == true; object does not show up in viewport == false
 		static bool check = true;
