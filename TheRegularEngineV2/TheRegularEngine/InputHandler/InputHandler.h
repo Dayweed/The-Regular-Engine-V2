@@ -21,9 +21,6 @@ namespace TRE
         *\param 	mod         key mods. (Shift/Capslock/Ctrl..)
         *******************************************************************************/
         static void key_cb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod);
-        static bool isKeyPressed(GLFWwindow* win_ptr, int key);
-        static bool isKeyReleased(GLFWwindow* win_ptr, int key);
-        static bool isKeyHeld(GLFWwindow* win_ptr, int key);
         /*!*****************************************************************************
         *\brief 	Response function for mouse button callbacks.
         *
@@ -58,9 +55,9 @@ namespace TRE
         static void mousefocus_cb(GLFWwindow* win_ptr, int entered);
 
         private:
-            static bool m_KeysHeld[512];
-            static bool m_KeysPressed[512];
-            static bool m_KeysReleased[512];
+            bool m_KeysHeld[512];
+            bool m_KeysPressed[512];
+            bool m_KeysReleased[512];
             bool m_MouseButtonsHeld[32];
             bool m_MouseButtonsPressed[32];
             bool m_MouseButtonsReleased[32];
