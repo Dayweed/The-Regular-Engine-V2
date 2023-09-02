@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdarg>
 
 #pragma region OldSerializerIncludes
 #include <unordered_map>
@@ -31,6 +32,8 @@ struct Pair_Hash
 
 namespace TRE
 {
+	void testerFunction();
+
 	class ValueFactory
 	{
 	public:
@@ -38,12 +41,14 @@ namespace TRE
 		ValueFactory(rapidjson::GenericValue<rapidjson::UTF8<>> value); // Copy Current values of a value
 		~ValueFactory();
 
+		void LoadDocument(std::string filename);
+
 		// Get the value
 		rapidjson::GenericValue<rapidjson::UTF8<>> GetValue();
 
+		// This section is for Building a brand new member 
 		// Adding a object as a new member to the value
 		void insertMember(std::string key, rapidjson::GenericValue<rapidjson::UTF8<>> value);
-		
 		/* !
 		@function  insertValue
 		@author    Tan Wee Yi  ( weeyi.t@digipen.edu )
@@ -52,11 +57,29 @@ namespace TRE
 
 		*//*__________________________________________________________________________*/
 		template<typename T>
-		void insertValue(std::string key, T value);
-		
+		void insertValue(std::string key, T value);		
+
+		// Update Values
+		rapidjson::GenericValue<rapidjson::UTF8<>> GetMember(std::string key);
+
+		template <typename T>
+		void updateValue (T value , std::string ...);
+
+		 enum Types
+		 {
+			FLOAT,
+			INT,
+			STRING,
+			UNSIGNED,
+			GUID
+		 };
+
+		 Types getType(std::string keys, std::string ...);
+
 		
 	private:
 		rapidjson::GenericValue<rapidjson::UTF8<>> m_Value;
+        rapidjson::GenericDocument<rapidjson::UTF8<>> m_Document;
 	};
 
 	
@@ -64,6 +87,7 @@ namespace TRE
 	{
 	public:
 		Serializer();
+		Serializer(rapidjson::GenericDocument<rapidjson::UTF8<>>);
 		~Serializer();
 		
 		bool ReadFromFile(std::string filepath);
