@@ -1,16 +1,18 @@
-#include "pch.h"
 #include "Geom.h"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 
 namespace TRE
 {
-	void Geom::Serialize(const std::unique_ptr<Geom> geom, const std::string& filePath)
+	void Geom::Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom)
 	{
 		std::string_view path = filePath;
 		std::string_view name = path;
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
 
-		std::cout <<"serializing mesh... " << name << std::endl;
+		std::cout << "serializing mesh... " << name << std::endl;
 
 		std::ofstream file(path, std::ios::binary);
 

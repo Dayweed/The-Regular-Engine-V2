@@ -10,16 +10,14 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Texture.h"
-#include "Graphics/GeomCompiler.h"
+#include "Geom.h"
 namespace TRE
 {
 	void DemoScene()
 	{
-		_geom_compiler->Compile("../Assets/smooth_vase.obj");
-		Geom::Serialize(_geom_compiler->GetGeom(), "../Assets/smooth_vase.geom");
 		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
 
-		GO test = _ecs_manager->CreateGO();
+		Entity test = ECSManager::Instance().CreateEntity();
 		test->AddComponent<Properties>().m_Name = "Test";
 		test->AddComponent<Transform>().m_Position.z = 25.f;
 		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
@@ -29,7 +27,7 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
 
-		GO test2 = _ecs_manager->CreateGO();
+		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->AddComponent<Properties>().m_Name = "Test2";
 		test2->AddComponent<Transform>().m_Position.x = 2.f;
 		test2->GetComponent<Transform>().m_Position.z = 50.f;
@@ -38,7 +36,7 @@ namespace TRE
 		test2->AddComponent<MeshRenderer>();
 		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 		
-		GO cam = _ecs_manager->CreateGO();
+		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->AddComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Transform>().m_Position;
 		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -47,13 +45,13 @@ namespace TRE
 
 		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
-		/*GO audio = _ecs_manager->CreateGO();
+		/*Entity audio = ECSManager::Instance().CreateEntity();
 		audio->AddComponent<Audio>();
 		audio->GetComponent<Audio>().m_IsPlaying = true;*/
 
 
 
-		_ecs_system_manager->GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//_system_manager->GetSystem<AudioSystem>()->LoadFile(audio);
 		//_system_manager->GetSystem<AudioSystem>()->Play(audio, true);
@@ -90,7 +88,6 @@ namespace TRE
 		s_Instance = this;
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
-		//m_SystemsManager = std::make_unique<SystemManager>();
 		
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDevice());
 		m_Renderer->Initialize();
@@ -106,25 +103,25 @@ namespace TRE
 	void Engine::RegisterECS()
 	{
 		// Register Components
-		_component_manager->RegisterComponent<Removal>("Removal", true);
-		_component_manager->RegisterComponent<Properties>("Properties", true);
-		_component_manager->RegisterComponent<Transform>("Transform");
-		_component_manager->RegisterComponent<MeshRenderer>("Mesh Renderer");
-		_component_manager->RegisterComponent<Camera>("Camera");
-		_component_manager->RegisterComponent<SphereCollider>("SphereCollider");
-		_component_manager->RegisterComponent<BoxCollider>("BoxCollider");
-		_component_manager->RegisterComponent<Audio>("Audio");
+		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
+		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
+		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
+		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");
+		ComponentManager::Instance().RegisterComponent<Camera>("Camera");
+		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
+		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
+		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
 
 		// Register Systems
-		_ecs_system_manager->RegisterSystem<PhysicsSystem>();
-		_ecs_system_manager->RegisterSystem<CameraSystem>();
-		_ecs_system_manager->RegisterSystem<AudioSystem>();
+		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
+		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
+		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 	}
 
 	void Engine::Update()
 	{
 		// To remove eventually
-		//_ecs_manager->TESTRUN();
+		//ECSManager::Instance().TESTRUN();
 
 		DemoScene();
 
@@ -135,38 +132,38 @@ namespace TRE
 			m_Window->GetSwapChain().BeginFrame();
 
 			//Update
-			_profiler->StartTimer("Update");
-			_ecs_system_manager->UpdateSystem();
-			_ecs_system_manager->OnDestroyGO();
-			_ecs_manager->DestroyRemovalGO();
-			_profiler->EndTimer("Update");
+			Profiler::Instance().StartTimer("Update");
+			ECSSystemManager::Instance().UpdateSystem();
+			ECSSystemManager::Instance().OnDestroyEntities();
+			ECSManager::Instance().DeleteRemovalEntities();
+			Profiler::Instance().EndTimer("Update");
 			m_Renderer->BeginFrame();
 
 			// Imgui Update
 			if (m_EngineInfo.EnableEditor)
 			{
-				_profiler->StartTimer("Imgui");
+				Profiler::Instance().StartTimer("Imgui");
 				m_VulkanEditor->BeginFrame();
-				_editor_system_manager->UpdateSystem();
+				EditorSystemManager::Instance().UpdateSystem();
 				m_VulkanEditor->EndFrame();
-				_profiler->EndTimer("Imgui");
+				Profiler::Instance().EndTimer("Imgui");
 			}
 
 			//Draw
-			_profiler->StartTimer("Draw");
+			Profiler::Instance().StartTimer("Draw");
 
 			m_Window->SwapBuffers();
-			_profiler->EndTimer("Draw");
+			Profiler::Instance().EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
-			_profiler->PrintTimers();
+			//Profiler::Instance().PrintTimers();
 		}
 	}
 
 	void Engine::Shutdown()
 	{
-		_ecs_manager->DestroyAll();
-		_ecs_system_manager->ShutdownSystem();
-		_editor_system_manager->ShutdownSystem();
+		ECSManager::Instance().DestroyAll();
+		ECSSystemManager::Instance().ShutdownSystem();
+		EditorSystemManager::Instance().ShutdownSystem();
 	}
 }

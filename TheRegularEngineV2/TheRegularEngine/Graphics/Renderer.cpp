@@ -180,7 +180,7 @@ namespace TRE
 		//Descriptor set
 		//UBO
 		UBO ubo{};
-		Camera& mainCamera = _ecs_system_manager->GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
 		m_Pipeline->GetUBOBuffers()[Index]->Flush();
@@ -205,7 +205,7 @@ namespace TRE
 		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, m_Pipeline->GetDescriptorSets().data(), 0, NULL);
 
 		//VERY INEFFICIENT
-		for (const auto& go_mr : _ecs_manager->GetGO<MeshRenderer>())
+		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
