@@ -15,6 +15,8 @@
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
 #include "pch.h"
+#include "ECS.h"
+#include <map>
 
 namespace TRE
 {
@@ -26,6 +28,9 @@ namespace TRE
 		static MemoryManager& Instance();
 
 		// ECS Manager
+		Entity GetUndeployedEntity();
+		void ReleaseDeployedEntity(Entity_ID id);
+
 		bool AllocateEntitySize(size_t size_);
 		bool DeleteEntities();
 		void ResetToConfig();
@@ -42,8 +47,10 @@ namespace TRE
 		void* operator new(size_t) = delete;
 
 		// Size set in config
-		size_t m_ConfigSize{};
+		size_t m_ConfigSize{ 100 };
 
-
+		std::unordered_map<Entity_ID, Entity>	m_AllEntityList;
+		std::set<Entity_ID>						m_DeployedEntityList;
+		std::set<Entity_ID>						m_UndeployedEntityList;
 	};
 }

@@ -3,7 +3,6 @@
 #include "entt.hpp"
 #include "System.h"
 #include "ComponentManager.h"
-#include "MemoryManager.h"
 #include "Transform.h"
 #include <typeindex>
 #include "Core/Logger.h"
@@ -16,6 +15,10 @@ namespace TRE
 	{
 		//static constexpr auto in_place_delete = false;
 		bool fake; //This value is to ensure it can compile and be registered
+	};
+	class Undeployed
+	{
+		bool fake;
 	};
 
 	class Properties
@@ -252,10 +255,7 @@ namespace TRE
 	class ECSOutputArchive
 	{
 	public:
-		void operator()(entt::entity ent)
-		{
-			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "|";
-		}
+		void operator()(entt::entity ent);
 		void operator()(std::underlying_type_t<entt::entity> u)
 		{
 			std::cout << u << ";";
@@ -487,14 +487,14 @@ namespace TRE
 		{
 			std::cout << "\nTEST RUNNING ECS\n====================================\n";
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
-			std::cout << "-------\n";
+			std::cout << "-------\n";*/
 
 			Entity test = CreateEntity("Test 1");
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 			std::cout << "-------\n";
@@ -509,17 +509,17 @@ namespace TRE
 			{
 				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
 			}
-			std::cout << "++++++++++++\n";
+			std::cout << "++++++++++++\n";*/
 
 			test->AddComponent<Transform>().m_Position.x = 19;
 			std::cout << "Creating Entity, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_Position.x << std::endl;
 			std::cout << "Removing Editted Component...\n";
 			test->RemoveComponent<Transform>();
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
-			std::cout << "-------\n";
+			std::cout << "-------\n";*/
 
 			//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_Scale.x << std::endl; // Will call assert in GetComponent!
 			std::cout << "Default Parent: " << test->GetParent() << "\n";
@@ -527,7 +527,7 @@ namespace TRE
 			std::cout << "Destroyed earlier Entity...\n";
 			//std::cout << "Attempting to call a deleted/destroyed Entity: " << test->GetComponent<Properties>().m_Name << std::endl; // Will not call assert in GetComponent until next loop!
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 			std::cout << "-------\n";
@@ -542,7 +542,7 @@ namespace TRE
 			{
 				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
 			}
-			std::cout << "++++++++++++\n";
+			std::cout << "++++++++++++\n";*/
 
 			std::cout << "Creating Entitys with 1 Entity with only Properties and 2 Entity with Transform and Properties...\n";
 			Entity test2 = CreateEntity("test2");
@@ -578,10 +578,10 @@ namespace TRE
 			}
 			std::cout << "- Testing Complete\n";
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
-			std::cout << "-------\n";
+			std::cout << "-------\n";*/
 
 			std::cout << "\nTesting setting, getting and removing parent\n";
 			Entity parentEntity = CreateEntity();
@@ -627,10 +627,10 @@ namespace TRE
 			parentEntity->AbandonChild(test2);
 			std::cout << "- Testing Complete\n";
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
-			std::cout << "-------\n";
+			std::cout << "-------\n";*/
 
 			std::cout << "\nTesting Listener\n";
 			registry.on_construct<Transform>().connect<&Transform::Init>();
@@ -697,8 +697,26 @@ namespace TRE
 
 			std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
 			ECSOutputArchive str{};
+			entt::exclude_t<Undeployed> u;
+			const auto view = registry.view<Undeployed>();
+			int i{};
+			for (auto& obj : view)
+			{
+				++i;
+			}
+			std::cout << ">>>> " << i << "\n";
+			// Destroys all undeployed entities
+			registry.destroy(view.begin(), view.end());
+			i = 0;
+			for (auto& obj : registry.view<Undeployed>())
+			{
+				++i;
+			}
+			std::cout << ">>>> " << i << "\n";
+
 			entt::snapshot snapshot{ GetRegistry() };
-			snapshot.entities(str);
+			// Serialize all entities and components
+			snapshot.entities(str).component<>(str);
 			//snapshot.component<>(str);
 
 			std::cout << "\n\nEntities IDs\n";
@@ -717,7 +735,7 @@ namespace TRE
 			DestroyAll();
 			std::cout << "- Current: " << GetEntities<Properties>().size() << "...\n";
 
-			std::cout << "Sizes: " << m_EntityList.size() << "\n";
+			/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 			for (auto&& storage : GetRegistry().storage())
 				std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 			std::cout << "-------\n";
@@ -732,7 +750,7 @@ namespace TRE
 			{
 				std::cout << "> " << static_cast<std::uint32_t>(id) << "\n";
 			}
-			std::cout << "++++++++++++\n";
+			std::cout << "++++++++++++\n";*/
 			/*ECSInputArchive instr{};
 			entt::snapshot_loader snapshotLoader{ GetRegistry() };
 			snapshotLoader.entities(instr);*/
@@ -796,7 +814,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
 			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 		return ECSManager::Instance().EntityHasComponent<T>(shared_from_this());
@@ -809,7 +827,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
 			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 
@@ -817,7 +835,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is already in " + GetComponent<Properties>().m_Name + "...");
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is already in " + GetComponent<Properties>().m_Name + "...");
 			return GetComponent<T>();
 		}
 		return ECSManager::Instance().GetRegistry().emplace<T>(m_Entity);
@@ -830,7 +848,7 @@ namespace TRE
 		if (this == nullptr || &m_Entity == nullptr)
 		{
 			std::string funcName{ __FUNCTION__ };
-			//TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
+			TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
 			assert(this != nullptr);
 			assert(&m_Entity != nullptr);
 		}
@@ -839,7 +857,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
 			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 
@@ -847,7 +865,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			//TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " does not have the component " + compName);
+			TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " does not have the component " + compName);
 			assert(HasComponent<T>());
 		}
 
@@ -861,7 +879,7 @@ namespace TRE
 		if (this == nullptr || &m_Entity == nullptr)
 		{
 			std::string funcName{ __FUNCTION__ };
-			//TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
+			TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
 			assert(this != nullptr);
 			assert(&m_Entity != nullptr);
 		}
@@ -870,7 +888,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			//TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is not included in _component_manager");
 			assert(ComponentManager::Instance().HasComponent<T>() || ComponentManager::Instance().HasHiddenComponent<T>());
 		}
 

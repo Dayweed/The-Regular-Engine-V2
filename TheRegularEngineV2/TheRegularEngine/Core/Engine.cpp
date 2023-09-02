@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ECS.h"
+#include "MemoryManager.h"
 #include "Engine.h"
 #include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
@@ -103,6 +104,7 @@ namespace TRE
 	void Engine::RegisterECS()
 	{
 		// Register Components
+		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
 		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
 		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
 		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
@@ -116,12 +118,15 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
+
+		// Allocate Default Size for Memory Manager
+		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
 	}
 
 	void Engine::Update()
 	{
 		// To remove eventually
-		//ECSManager::Instance().TESTRUN();
+		ECSManager::Instance().TESTRUN();
 
 		DemoScene();
 

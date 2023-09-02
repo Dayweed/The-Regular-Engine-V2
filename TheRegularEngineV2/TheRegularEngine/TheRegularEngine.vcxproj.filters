@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="AssetManagement">
-      <UniqueIdentifier>{C2ACEC12-2E38-5AD7-3749-DDCBA353B6D7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Audio">
       <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
     </Filter>
@@ -36,12 +33,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AssetManagement\GeomManager.h">
-      <Filter>AssetManagement</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio\AudioSystem.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
     <ClInclude Include="Audio\AudioSystem.h">
       <Filter>Audio</Filter>
     </ClInclude>
@@ -55,6 +46,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\MemoryManager.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Profiler.h">
@@ -109,12 +103,6 @@
     <ClInclude Include="Graphics\FrameBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Geom.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\GeomCompiler.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Image.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -167,12 +155,6 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssetManagement\GeomManager.cpp">
-      <Filter>AssetManagement</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio\AudioSystem.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
@@ -183,6 +165,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MemoryManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
@@ -216,12 +201,6 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\FrameBuffer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Geom.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\GeomCompiler.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Image.cpp">

@@ -13,7 +13,6 @@
 
 #include "pch.h"
 #include "MemoryManager.h"
-#include "ECS.h"
 
 namespace TRE
 {
@@ -32,8 +31,36 @@ namespace TRE
 		return instance;
 	}
 
+	Entity MemoryManager::GetUndeployedEntity()
+	{
+		// Allocate additional space if there is no undeployed
+		if (m_UndeployedEntityList.empty())
+		{
+			AllocateEntitySize(m_AllEntityList.size());
+		}
+
+		// Get an Entity_ID from Undeployed and assign it to Deployed, returns the Entity
+		Entity_ID id{ *m_UndeployedEntityList.begin() };
+		m_UndeployedEntityList.erase(id);
+		m_DeployedEntityList.emplace(id);
+		m_AllEntityList[id]->RemoveComponent<Undeployed>();
+		return m_AllEntityList[id];
+	}
+
+	void MemoryManager::ReleaseDeployedEntity(Entity_ID id)
+	{
+		// Remove id from Deployed and put id back to undeployed
+		m_DeployedEntityList.erase(id);
+		m_UndeployedEntityList.emplace(id);
+		ECSManager::Instance().GetRegistry().release(m_AllEntityList[id]->m_Entity);
+		// Readd Basic Components
+		m_AllEntityList[id]->AddComponent<Properties>().m_Name = "AllocatedEntity";
+		m_AllEntityList[id]->AddComponent<Transform>();
+		m_AllEntityList[id]->AddComponent<Undeployed>();
+	}
+
 	/* !
-	@function	AllocateObjectSize
+	@function	AllocateEntitySize
 	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
 
 	@params		size_t size_ [Adds new amount of size_ into objects]
@@ -41,16 +68,22 @@ namespace TRE
 	@brief		Adds the additional amount of objects into objects
 
 	*//*__________________________________________________________________________*/
-	bool MemoryManager::AllocateEntitySize(size_t size_)
+	bool MemoryManager::AllocateEntitySize(size_t size)
 	{
-		// Resets and create objects based on size_
-		for (size_t i{}; i < size_; ++i)
+		// Reserve size for objects and registry in ECSManager
+		m_AllEntityList.reserve(m_AllEntityList.size() + size);
+		ECSManager::Instance().GetRegistry().reserve(ECSManager::Instance().GetRegistry().size() + size);
+
+		// Resets and create objects based on size
+		for (size_t i{}; i < size; ++i)
 		{
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
-			ECSManager::Instance().m_EntityList.emplace(static_cast<uint32_t>(obj->m_Entity), obj);
+			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+			m_UndeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
 			obj->AddComponent<Properties>().m_Name = "AllocatedEntity";
 			obj->AddComponent<Transform>();
+			obj->AddComponent<Undeployed>();
 		}
 
 		// Successful Allocation
@@ -58,34 +91,29 @@ namespace TRE
 	}
 
 	/* !
-	@function	DeleteObjects
+	@function	DeleteEntities
 	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
 
 	@params
 
-	@brief		Deletes all objects in objects
+	@brief		Deletes all entities in m_AllEntityList
 
 	*//*__________________________________________________________________________*/
 	bool MemoryManager::DeleteEntities()
 	{
-		for (auto& object : ECSManager::Instance().m_EntityList)
+		for (auto& object : m_AllEntityList)
 		{
 			// Remove from m_EntityList
 			object.second->AbandonChildren();
 			// Release all components and entity itself
-			ECSManager::Instance().registry.destroy(object.second->m_Entity);
+			ECSManager::Instance().GetRegistry().destroy(object.second->m_Entity);
 			// Free unique ptr from the object
 			object.second.reset();
 		}
 
-		/*for (auto& object : ECSManager::Instance().m_EntityList)
-		{
-			delete object;
-			object = NULL;
-		}
-		_ecs_manager->objects.clear();
-		_ecs_manager->undeployed_objects.clear();
-		_ecs_manager->deployed_objects.clear();*/
+		m_AllEntityList.clear();
+		m_DeployedEntityList.clear();
+		m_UndeployedEntityList.clear();
 
 		// Successful deletion
 		return true;
@@ -97,7 +125,7 @@ namespace TRE
 
 	@params
 
-	@brief		Deletes all undeployed objects and components, leaving only
+	@brief		Deletes all undeployed objects, leaving only
 				x amount of objects/components (Deployed or Undeployed) available
 				based on the config_obj & config_comp
 
@@ -107,26 +135,31 @@ namespace TRE
 	*//*__________________________________________________________________________*/
 	void MemoryManager::ResetToConfig()
 	{
-		//for (int i{ static_cast<int>(_ecs_manager->objects.size()) - 1 }; i >= 0; --i)
-		//{
-		//	// Delete if objects is undeployed and there are more existing objects than the config_obj
-		//	if (!_ecs_manager->objects[i]->GetDeployed() && _ecs_manager->objects.size() > config_obj)
-		//	{
-		//		// Remove from undeployed_objects
-		//		if (std::find(_ecs_manager->undeployed_objects.begin(), _ecs_manager->undeployed_objects.end(), _ecs_manager->objects[i]) != _ecs_manager->undeployed_objects.end())
-		//		{
-		//			_ecs_manager->undeployed_objects.erase(std::find(_ecs_manager->undeployed_objects.begin(), _ecs_manager->undeployed_objects.end(), _ecs_manager->objects[i]));
-		//		}
-		//		// Remove from deployed_objects
-		//		if (std::find(_ecs_manager->deployed_objects.begin(), _ecs_manager->deployed_objects.end(), _ecs_manager->objects[i]) != _ecs_manager->deployed_objects.end())
-		//		{
-		//			_ecs_manager->deployed_objects.erase(std::find(_ecs_manager->deployed_objects.begin(), _ecs_manager->deployed_objects.end(), _ecs_manager->objects[i]));
-		//			std::cout << "MemoryManager::ResetToConfig(): (Object) This should NEVER happen\n";
-		//		}
-		//		delete _ecs_manager->objects[i];
-		//		_ecs_manager->objects.erase(_ecs_manager->objects.begin() + i);
-		//	}
-		//}
+		// Auto clear all the Undeployed Entities if m_ConfigSize exceeds deployed size
+		if (m_ConfigSize <= m_DeployedEntityList.size())
+		{
+			for (Entity_ID id : m_UndeployedEntityList)
+			{
+				ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
+				// Free unique ptr from the object
+				m_AllEntityList[id].reset();
+				m_AllEntityList.erase(id);
+			}
+			m_UndeployedEntityList.clear();
+		}
+
+		size_t remainingSize{ m_ConfigSize - m_DeployedEntityList.size() };
+
+		for (size_t i{}; i < remainingSize; ++i)
+		{
+			Entity_ID id{ *m_UndeployedEntityList.rbegin()};
+			ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
+			// Free unique ptr from the object
+			m_AllEntityList[id].reset();
+			m_AllEntityList.erase(id);
+			// Remove from undeployed
+			m_UndeployedEntityList.erase(id);
+		}
 	}
 
 	void MemoryManager::SetConfigSize(size_t configSize)

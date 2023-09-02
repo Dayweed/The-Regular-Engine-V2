@@ -43,7 +43,7 @@ namespace TRE
 	{
 		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
-		m_EntityList.emplace(static_cast<uint32_t>(obj->m_Entity), obj);
+		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 		obj->AddComponent<Properties>().m_Name = name;
 		obj->AddComponent<Transform>();
 		return obj;
@@ -59,7 +59,7 @@ namespace TRE
 	{
 		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
-		m_EntityList.emplace(static_cast<uint32_t>(obj->m_Entity), obj);
+		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{
@@ -162,5 +162,11 @@ namespace TRE
 			AbandonChild(m_Children[i]);
 		}
 		m_Children.clear();
+	}
+
+	void ECSOutputArchive::operator()(entt::entity ent)
+	{
+		if (ECSManager::Instance().GetRegistry().valid(ent))
+			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "|";
 	}
 }
