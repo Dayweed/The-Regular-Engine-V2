@@ -105,7 +105,6 @@ namespace TRE
 			std::vector<Submesh> Submeshes;
 		};
 
-
 		std::string Name;
 		std::vector<Mesh> Meshes;
 		glm::vec3 PosCompressionScale;
