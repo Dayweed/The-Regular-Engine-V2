@@ -1,22 +1,19 @@
-project "GeomCompiler"
-	kind "ConsoleApp"
+project "CompilerLib"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-	targetdir ("bin/%{prj.name}")
+	targetdir ("bin")
 	-- ! makes .obj files appear in the same folder
 	-- regardless of build configuration
-	objdir ("bin/%{prj.name}")
+	objdir ("!bin/obj")
 
 	includedirs
     {
         "include",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.Assimp}",
-		"%{IncludeDir.MeshOptimizer}",
-		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.glm}"
     }
 
 	files
@@ -29,9 +26,6 @@ project "GeomCompiler"
 
 	links
 	{
-		"MeshOptimizer",
-		"%{Library.Assimp}",
-		"%{Library.Compiler}",
 	}
 
 	filter "configurations:Debug"

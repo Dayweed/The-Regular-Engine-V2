@@ -7,6 +7,6 @@ int main()
 {
 	std::cout << "Hello World!\n";
 	TRE::_geom_compiler->Compile("../../Assets/smooth_vase.obj");
-	TRE::_geom_compiler->Serialize("../../Assets/smooth_vase.geom");
+	TRE::Geom::Serialize("../../Assets/smooth_vase.geom", TRE::_geom_compiler->GetGeom());
 	return 0;
 }
