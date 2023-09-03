@@ -160,19 +160,38 @@ namespace TRE
 			}
 			m_UndeployedEntityList.clear();
 		}
-
-		size_t remainingSize{ m_ConfigSize - m_DeployedEntityList.size() };
-
-		for (size_t i{}; i < remainingSize; ++i)
+		else
 		{
-			Entity_ID id{ *m_UndeployedEntityList.rbegin()};
+			size_t remainingSize{ m_ConfigSize - m_DeployedEntityList.size() };
+
+			for (size_t i{}; i < remainingSize; ++i)
+			{
+				Entity_ID id{ *m_UndeployedEntityList.rbegin() };
+				ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
+				// Free unique ptr from the object
+				m_AllEntityList[id].reset();
+				m_AllEntityList.erase(id);
+				// Remove from undeployed
+				m_UndeployedEntityList.erase(id);
+			}
+		}
+
+		AllocateEntitySize(m_ConfigSize);
+	}
+
+
+	void MemoryManager::ClearUndeployed()
+	{
+		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
+		for (Entity_ID id : m_UndeployedEntityList)
+		{
 			ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
 			// Free unique ptr from the object
 			m_AllEntityList[id].reset();
 			m_AllEntityList.erase(id);
-			// Remove from undeployed
-			m_UndeployedEntityList.erase(id);
 		}
+		m_UndeployedEntityList.clear();
+		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
 	}
 
 	void MemoryManager::SetConfigSize(size_t configSize)

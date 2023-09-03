@@ -34,6 +34,7 @@ namespace TRE
 		bool AllocateEntitySize(size_t size_);
 		bool DeleteEntities();
 		void ResetToConfig();
+		void ClearUndeployed();
 
 		// Set and Get
 		void SetConfigSize(size_t config_obj_);
