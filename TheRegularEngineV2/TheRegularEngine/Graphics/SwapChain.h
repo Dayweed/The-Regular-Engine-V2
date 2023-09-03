@@ -3,20 +3,14 @@
 #include "Device.h"
 #include "RenderPass.h"
 #include "RendererContext.h"
-//#include "Core/Window.h"
+#include "PhysicalDevice.h"
+
 //Forward declaration to prevent include header just for this
 struct GLFWwindow;
 
 namespace TRE
 {
 	#define MAX_FRAMES_IN_FLIGHT 3
-	struct QueueFamilies
-	{
-		int32_t Graphics = -1;
-		int32_t Present = -1;
-
-		bool IsComplete() { return ((Graphics != -1) && (Present != -1)); }
-	};
 
 	class SwapChain
 	{
@@ -37,15 +31,13 @@ namespace TRE
 			};
 
 			SwapChain();
-			void Initialize(VkDevice LogicalDevice, GLFWwindow* Handle, VkQueue GraphicsQ, VkPhysicalDevice PD);
+			void Initialize(VkDevice LogicalDevice, GLFWwindow* Handle, VkQueue GraphicsQ, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
 			void DestroySwapChain();
 			
 			void BeginFrame();
 			void Present();
-			uint32_t AccuireNextImage();
-			void Resize(uint32_t width, uint32_t height);
 
 		public:
 			VkRenderPass GetRenderPass();
@@ -81,8 +73,7 @@ namespace TRE
 			VkPresentModeKHR ChooseSwapChainPresentMode(const std::vector<VkPresentModeKHR>& AvailableModes);
 			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities);
 			
-
-			VkPhysicalDevice m_PhysicalDevice;
+			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 			GLFWwindow* m_Handle;
 			VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
 			VkSwapchainKHR m_SwapChainee = VK_NULL_HANDLE;

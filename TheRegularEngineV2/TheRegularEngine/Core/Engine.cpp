@@ -145,7 +145,7 @@ namespace TRE
 			{
 				//m_VulkanEditor->EndFrame();
 			}
-
+			m_Window->BeginFrame();
 			m_Window->SwapBuffers();
 
 			m_Window->PollEvents();

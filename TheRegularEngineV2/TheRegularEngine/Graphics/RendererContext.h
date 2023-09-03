@@ -12,12 +12,7 @@ namespace TRE
 		static const bool EnableValidationLayer = false;
 	#endif
 
-	struct SwapChainDetails
-	{
-		VkSurfaceCapabilitiesKHR Capabilities{};
-		std::vector<VkSurfaceFormatKHR> Formats;
-		std::vector<VkPresentModeKHR> PresentModes;
-	};
+
 
 	class RendererContext
 	{

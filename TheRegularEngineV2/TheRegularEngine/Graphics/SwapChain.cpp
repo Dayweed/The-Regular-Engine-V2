@@ -84,7 +84,7 @@ namespace TRE
 
 	}
 
-	void SwapChain::Initialize(VkDevice LogicalDevice, GLFWwindow* Handle, VkQueue GraphicsQ, VkPhysicalDevice PD)
+	void SwapChain::Initialize(VkDevice LogicalDevice, GLFWwindow* Handle, VkQueue GraphicsQ, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface)
 	{
 		//auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
 
@@ -142,6 +142,7 @@ namespace TRE
 		m_GraphicsQueue = GraphicsQ;
 		m_Handle = Handle;
 		m_PhysicalDevice = PD;
+		m_WindowSurface = Surface;
 
 		CreateSwapChain();
 		CreateImageViews();
@@ -507,126 +508,8 @@ namespace TRE
 
 	void SwapChain::BeginFrame()
 	{
-		//vkWaitForFences(m_LogicalDevice, 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX);
-
-		////m_CurrentImageIndex = AccuireNextImage();
-
-		//if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice, m_SwapChain, UINT64_MAX, m_Semaphores[m_CurrentBufferIndex].PresentComplete, VK_NULL_HANDLE, &m_CurrentImageIndex); Result == VK_ERROR_OUT_OF_DATE_KHR)
-		//{
-		//	//Resize(m_Width, m_Height);
-		//	return;
-		//}
-		//else if (Result != VK_SUCCESS && Result != VK_SUBOPTIMAL_KHR)
-		//{
-		//	TRE_CORE_WARN("Unable to get next image");
-		//	assert(Result == VK_SUCCESS);
-		//}
-
-		//assert(m_CurrentImageIndex >= 0);
-		//assert(m_CurrentImageIndex < 3);
-		//if (m_CurrentImageIndex == (-1))
-		//	return;
-
-		//if (auto Result = vkResetFences(m_LogicalDevice, 1, &m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
-		//{
-		//	TRE_CORE_WARN("Unable to reset fences");
-		//	assert(Result == VK_SUCCESS);
-		//}
-
-		//if (auto result = vkResetCommandBuffer(m_CommandBuffers[m_CurrentBufferIndex], 0); result != VK_SUCCESS)
-		//{
-		//	TRE_CORE_WARN("Unable to reset buffer");
-		//	assert(result == VK_SUCCESS);
-		//}
-
-		//VkCommandBufferBeginInfo Info{};
-		//Info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		//vkBeginCommandBuffer(m_CommandBuffers[m_CurrentBufferIndex], &Info);
-		////m_Renderpass->BeginRenderPass(m_CommandBuffers[m_CurrentBufferIndex], m_FrameBuffers[m_CurrentImageIndex]);
-		//VkRenderPassBeginInfo RenderPassInfo{};
-		//RenderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		//RenderPassInfo.framebuffer = m_FrameBuffers[m_CurrentImageIndex];
-		//RenderPassInfo.renderPass = m_Renderpass;
-		//RenderPassInfo.renderArea.offset = { 0, 0 };
-		//RenderPassInfo.renderArea.extent = m_Extent;
-
-		//std::array<VkClearValue, 2> ClearColor{}; //Order of these should be same as order of attachments!!
-		//ClearColor[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
-		//ClearColor[1].depthStencil = { 1.0f, 0 };
-
-		//RenderPassInfo.clearValueCount = static_cast<uint32_t>(ClearColor.size());
-		//RenderPassInfo.pClearValues = ClearColor.data();
-
-		//vkCmdBeginRenderPass(m_CommandBuffers[m_CurrentBufferIndex], &RenderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		//VkViewport viewport = {};
-		//viewport.x = 0.0f;
-		//viewport.y = 0.0f;
-		//viewport.height = m_Height;
-		//viewport.width = m_Width;
-		//viewport.minDepth = 0.0f;
-		//viewport.maxDepth = 1.0f;
-		//vkCmdSetViewport(m_CommandBuffers[m_CurrentBufferIndex], 0, 1, &viewport);
-
-		//VkRect2D scissor {};
-		//scissor.offset.x = 0;
-		//scissor.offset.y = 0;
-		//vkCmdSetScissor(m_CommandBuffers[m_CurrentBufferIndex], 0, 1, &scissor);
-
-		////m_Renderpass->EndRenderPass(m_CommandBuffers[m_CurrentBufferIndex]);
-		//vkCmdEndRenderPass(m_CommandBuffers[m_CurrentBufferIndex]);
-		//vkEndCommandBuffer(m_CommandBuffers[m_CurrentBufferIndex]);
-	}
-
-	void SwapChain::Present()
-	{
-		//VkPipelineStageFlags PipelineStageFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		//VkSubmitInfo SubmitInfo{};
-		//SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		//SubmitInfo.pWaitDstStageMask = &PipelineStageFlags;
-		//SubmitInfo.waitSemaphoreCount = 1;
-		//SubmitInfo.pWaitSemaphores = &m_Semaphores[m_CurrentBufferIndex].PresentComplete;
-		//SubmitInfo.signalSemaphoreCount = 1;
-		//SubmitInfo.pSignalSemaphores = &m_Semaphores[m_CurrentBufferIndex].RenderComplete;
-		//SubmitInfo.commandBufferCount = 1;
-		//SubmitInfo.pCommandBuffers = &m_CommandBuffers[m_CurrentBufferIndex];
-
-		////if (auto Result = vkQueueSubmit(m_LogicalDevice->GetGraphicsQ(), 1, &SubmitInfo, m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
-		////{
-		////	TRE_CORE_WARN("Unable to queue submit");
-		////	assert(Result == VK_SUCCESS);
-		////}
-
-		//VkPresentInfoKHR PresentInfo{};
-		//PresentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-		//PresentInfo.swapchainCount = 1;
-		//PresentInfo.pSwapchains = &m_SwapChain;
-		//PresentInfo.pImageIndices = &m_CurrentImageIndex;
-		//PresentInfo.pWaitSemaphores = &m_Semaphores[m_CurrentBufferIndex].RenderComplete;
-		//PresentInfo.waitSemaphoreCount = 1;
-
-		////if (auto Result = vkQueuePresentKHR(m_LogicalDevice->GetGraphicsQ(), &PresentInfo); Result != VK_SUCCESS)
-		////{
-		////	if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR || Engine::GetInstance().GetWindow()->GetWindowConfig().resize)
-		////	{
-		////		TRE_CORE_INFO("Resized");
-		////		Engine::GetInstance().GetWindow()->GetWindowConfig().resize = false;
-		////		//Resize(m_Width, m_Height);
-		////	}
-		////	else
-		////	{
-		////		assert(Result == VK_SUCCESS);
-		////	}
-		////}
-
-
-		//m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT;
-
-		//-------------------TBR
-		uint32_t ImageIndex; //Used to pick framebuffer
-
 		vkWaitForFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentFrame], VK_TRUE, UINT64_MAX); //Wait for previous frame to finish //uin64_max disable timeout
-		VkResult Result = vkAcquireNextImageKHR(m_LogicalDevice, m_SwapChainee, UINT64_MAX, m_ImageAvailable[m_CurrentFrame], VK_NULL_HANDLE, &ImageIndex);
+		VkResult Result = vkAcquireNextImageKHR(m_LogicalDevice, m_SwapChainee, UINT64_MAX, m_ImageAvailable[m_CurrentFrame], VK_NULL_HANDLE, &m_CurrentImageIndex);
 		if (Result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			TRE_CORE_INFO("No Acquire");
@@ -637,8 +520,11 @@ namespace TRE
 		vkResetFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentFrame]);
 
 		vkResetCommandBuffer(m_Commandbuffer[m_CurrentFrame], 0);
+	}
 
-		RecordCommandBuffer(m_Commandbuffer[m_CurrentFrame], ImageIndex);
+	void SwapChain::Present()
+	{
+		RecordCommandBuffer(m_Commandbuffer[m_CurrentFrame], m_CurrentImageIndex);
 
 		VkSubmitInfo SubmitInfo{};
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -668,10 +554,10 @@ namespace TRE
 		VkSwapchainKHR SwapChains[] = { m_SwapChainee };
 		PresentInfo.swapchainCount = 1;
 		PresentInfo.pSwapchains = SwapChains;
-		PresentInfo.pImageIndices = &ImageIndex;
+		PresentInfo.pImageIndices = &m_CurrentImageIndex;
 		PresentInfo.pResults = nullptr; //Only if using more than 1 swapchain
 
-		Result = vkQueuePresentKHR(m_GraphicsQueue, &PresentInfo);
+		auto Result = vkQueuePresentKHR(m_GraphicsQueue, &PresentInfo);
 
 		if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
 		{
@@ -680,50 +566,6 @@ namespace TRE
 		}
 
 		m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame
-	}
-
-	uint32_t SwapChain::AccuireNextImage()
-	{
-		uint32_t Index;
-
-		if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice, m_SwapChainee, UINT64_MAX, m_Semaphores[m_CurrentBufferIndex].PresentComplete, VK_NULL_HANDLE, &Index); Result == VK_ERROR_OUT_OF_DATE_KHR)
-		{
-			Resize(m_Width, m_Height);
-			return -1;
-		}
-		else if (Result != VK_SUCCESS && Result != VK_SUBOPTIMAL_KHR)
-		{
-			TRE_CORE_WARN("Unable to get next image");
-			assert(Result == VK_SUCCESS);
-		}
-		return Index;
-	}
-
-	void SwapChain::Resize(uint32_t width, uint32_t height)
-	{
-		int wid = 0, hei = 0;
-		glfwGetFramebufferSize(Engine::GetInstance().GetWindow()->GetWindowHandle(), &wid, &hei);
-		m_Width = wid;
-		m_Height = hei;
-		while (wid == 0 || hei == 0)
-		{
-			glfwGetFramebufferSize(Engine::GetInstance().GetWindow()->GetWindowHandle(), &wid, &hei);
-			glfwWaitEvents();
-		}
-
-		vkDeviceWaitIdle(m_LogicalDevice);
-
-
-		vkDestroySwapchainKHR(m_LogicalDevice, m_SwapChain, nullptr);
-		//for (auto& image : m_DepthImages)
-		//	vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
-		//for (auto& memory : m_DepthMemory)
-		//vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
-		CreateSwapChain(&width, &height, true); //Change later
-
-		vkDeviceWaitIdle(m_LogicalDevice);
-		//Engine::GetInstance().GetRenderer()->Resize();
-		//Engine::GetInstance().GetVulkanImgui()->Resize();
 	}
 
 	void SwapChain::FindImageFormatAndColorSpace()
@@ -776,7 +618,7 @@ namespace TRE
 	{
 		VkSwapchainKHR OldSwapChain = m_SwapChainee;
 
-		SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice);
+		SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice->GetPhysicalDevice());
 		VkSurfaceFormatKHR surfaceformat = ChooseSwapChainFormat(Details.Formats);
 		VkPresentModeKHR PresentMode = ChooseSwapChainPresentMode(Details.PresentModes);
 		VkExtent2D Extent = ChooseSwapExtent(Details.Capabilities);
@@ -891,7 +733,7 @@ namespace TRE
 
 	void SwapChain::CreateCommandPool()
 	{
-		QueueFamilies Queuefam = FindQueueFamilies(m_PhysicalDevice);
+		QueueFamilies Queuefam = FindQueueFamilies(m_PhysicalDevice->GetPhysicalDevice());
 
 		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
 		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;

@@ -25,9 +25,139 @@ namespace TRE
 	{
 		return m_MemoryProperties;
 	}
-
-	PhysicalDevice::PhysicalDevice()
+	
+	QueueFamilies PhysicalDevice::FindQueueFamilies(VkPhysicalDevice dev)
 	{
+		QueueFamilies MyQueues;
+
+		uint32_t Queuecount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, nullptr); //Get number of queue by passing nullptr
+
+		std::vector<VkQueueFamilyProperties> QueueFamilies(Queuecount);
+		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, QueueFamilies.data()); //Get the actual queues properties by passing data
+
+		int i = 0;
+		for (const auto& queuefamily : QueueFamilies)
+		{
+			if (queuefamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			{
+				MyQueues.Graphics = i;
+			}
+
+			VkBool32 PresentSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, m_Surface, &PresentSupport);
+
+			if (PresentSupport)
+			{
+				MyQueues.Present = i;
+			}
+
+			if (MyQueues.IsComplete())
+			{
+				break;
+			}
+			i++;
+		}
+		return MyQueues;
+	}
+
+	SwapChainDetails PhysicalDevice::QuerySwapChainSupprt(VkPhysicalDevice device)
+	{
+		SwapChainDetails Details;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Surface, &Details.Capabilities);
+
+		uint32_t FormatCount;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &FormatCount, nullptr);
+
+		if (FormatCount != 0)
+		{
+			Details.Formats.resize(FormatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &FormatCount, Details.Formats.data());
+		}
+
+		uint32_t PresentCount;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &PresentCount, nullptr);
+
+		if (PresentCount != 0)
+		{
+			Details.PresentModes.resize(PresentCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &PresentCount, Details.PresentModes.data());
+		}
+
+		return Details;
+	}
+
+	bool PhysicalDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+	{
+		uint32_t ExtensionCount;
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, nullptr); //Get the count
+
+		std::vector<VkExtensionProperties> AvailableExtensions(ExtensionCount);
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, AvailableExtensions.data()); //Get the properties
+
+		std::set<std::string> RequiredExtension(m_DeviceExtensions.begin(), m_DeviceExtensions.end());
+
+		for (const auto& extension : AvailableExtensions)
+		{
+			RequiredExtension.erase(extension.extensionName);
+		}
+
+		return RequiredExtension.empty();
+	}
+
+	bool PhysicalDevice::IsPhysicalDeviceSuitable(VkPhysicalDevice pd)
+	{
+		QueueFamilies queues = FindQueueFamilies(pd);
+		bool ExtensionSupported = CheckDeviceExtensionSupport(pd);
+
+		bool SwapChainSupported = false;
+		if (ExtensionSupported)
+		{
+			SwapChainDetails Details = QuerySwapChainSupprt(pd);
+			SwapChainSupported = !Details.Formats.empty() && !Details.PresentModes.empty();
+		}
+
+		VkPhysicalDeviceFeatures supportedFeatures;
+		vkGetPhysicalDeviceFeatures(pd, &supportedFeatures);
+
+		return queues.IsComplete() && ExtensionSupported && SwapChainSupported && supportedFeatures.samplerAnisotropy;
+	}
+
+	uint32_t PhysicalDevice::GetPhysicalDeviceCount()
+	{
+		uint32_t PhysicalDeviceCount = 0;
+		vkEnumeratePhysicalDevices(RendererContext::GetVKInstance(), &PhysicalDeviceCount, nullptr);
+		if (PhysicalDeviceCount == 0)
+		{
+			assert(false);
+		}
+		return PhysicalDeviceCount;
+	}
+
+	PhysicalDevice::PhysicalDevice(VkSurfaceKHR Surface) : m_Surface(Surface)
+	{
+		uint32_t PhysicalDeviceCount = GetPhysicalDeviceCount();
+		std::vector<VkPhysicalDevice> PhysicalDevice(PhysicalDeviceCount);
+		vkEnumeratePhysicalDevices(RendererContext::GetVKInstance(), &PhysicalDeviceCount, PhysicalDevice.data());
+
+		std::cout << "Available GPUs:\n";
+		for (const auto& device : PhysicalDevice)
+		{
+			VkPhysicalDeviceProperties DeviceProp;
+			vkGetPhysicalDeviceProperties(device, &DeviceProp);
+			std::cout << DeviceProp.deviceName << std::endl;
+		}
+		for (const auto& device : PhysicalDevice)
+		{
+			if (IsPhysicalDeviceSuitable(device))
+			{
+				m_PhysicalDevice = device;
+				break;
+			}
+		}
+
+		assert(m_PhysicalDevice != VK_NULL_HANDLE);
+
 		//auto VulkanInstance = RendererContext::GetVKInstance();
 
 		//uint32_t GPUcount;

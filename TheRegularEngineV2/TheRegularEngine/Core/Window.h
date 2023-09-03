@@ -3,6 +3,7 @@
 #include "GLFW/glfw3.h"
 #include "Graphics/RendererContext.h"
 #include "Graphics/SwapChain.h"
+#include "Graphics/PhysicalDevice.h"
 
 namespace TRE
 {
@@ -27,38 +28,34 @@ namespace TRE
 
 			void PollEvents();
 			int ShouldWindowClose();
+			void BeginFrame();
 			void SwapBuffers();
 
 			GLFWwindow* GetWindowHandle() const;
 			WindowConfig& GetWindowConfig();
 			std::shared_ptr<RendererContext> GetRenderContext();
 			std::shared_ptr<SwapChain> GetSwapChain();
-			VkSurfaceKHR GetSurface() { return m_Surface; }
+			VkSurfaceKHR GetSurface() { return m_WindowSurface; }
 			VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
 			VkDevice GetDevice() { return m_LogicalDevice; }
-			VkPhysicalDevice GetPhysicalDevice() { return m_PhysicalDevice; }
 
 			//TBR
 			const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-			VkPhysicalDevice m_PhysicalDevice; //Auto destroyed when instance is destroyed
 			VkDevice m_LogicalDevice;
 			VkQueue m_GraphicsQueue;
 			VkQueue m_PresentQueue;
 			const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-			void PhysicalDeviceSetup();
-			uint32_t GetPhysicalDeviceCount();
-			bool IsPhysicalDeviceSuitable(VkPhysicalDevice pd);
 			void CreateLogicalDevice();
-			bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+			
 
+			std::shared_ptr<PhysicalDevice> m_PhysicalDevice; //Auto destroyed when instance is destroyed
 
 		private:
 			GLFWwindow* m_WindowHandle = nullptr;
 			WindowConfig m_Config;
-
+			VkSurfaceKHR m_WindowSurface;
 			std::shared_ptr<RendererContext> m_RenderContext;
 			std::shared_ptr<SwapChain> m_SwapChain;
-			VkSurfaceKHR m_Surface;
 
 			static bool FrameBufferResized;
 	};
