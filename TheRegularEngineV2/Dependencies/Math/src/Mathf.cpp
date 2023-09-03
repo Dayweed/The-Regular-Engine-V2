@@ -16,6 +16,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 // with the define, M_PI and other math constants are now defined
+#include <cfloat> // for FLT_EPSILON...apparently?? because v143 needs this??
 
 namespace Mathf
 {
