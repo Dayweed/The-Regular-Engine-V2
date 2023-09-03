@@ -1,7 +1,6 @@
 #include "EditorSystem.h"
 #include "Imgui/imgui.h"
 #include "imgui_impl_vulkan.h"
-#include "PanelManager.h"
 #include "TREIncludes.h"
 
 namespace TRE
@@ -11,7 +10,8 @@ namespace TRE
 		TRE_INFO("Editor Init");
 
 		std::cout << "Editor Init" << std::endl; //Replace with Logging
-		PanelManager::Instance().Init();
+		m_PanelManager = std::make_unique<PanelManager>();
+		m_PanelManager->Init();
 	}
 	
 	EditorSystem::~EditorSystem()
@@ -70,10 +70,7 @@ namespace TRE
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		for (auto x : PanelManager::Instance().GetPanels())
-		{
-			x.second->Update();
-		}
+		m_PanelManager->Update();
 
 		ImGui::ShowDemoWindow();
 		ImGui::End(); //Dockspace

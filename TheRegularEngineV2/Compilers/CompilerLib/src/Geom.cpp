@@ -2,9 +2,48 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <direct.h>
 
 namespace TRE
 {
+	void Geom::RunCompiler(std::string descPath)
+	{
+		const char* geomExe = "..\\Compilers\\GeomCompiler.exe";
+		if (std::filesystem::exists(geomExe) == false)
+		{
+			std::cout << "Error: GeomCompiler.exe does not exist" << std::endl;
+			return;
+		}
+
+		char currentDir[FILENAME_MAX];
+		if (_getcwd(currentDir, sizeof(currentDir)))
+		{
+			std::string exePath = currentDir;
+			exePath += "\\";
+			exePath += geomExe;
+
+			std::replace(descPath.begin(), descPath.end(), '/', '\\');
+			std::string newDescPath = currentDir;
+			newDescPath += "\\";
+			newDescPath += descPath;
+
+			char command[256];
+			snprintf(command, sizeof(command), "\"%s %s\"", exePath.c_str(), newDescPath.c_str());
+
+			int result = system(command);
+			if (result != 0)
+			{
+				std::cout << "Error: GeomCompiler.exe failed to run. Code: " << result << std::endl;
+				return;
+			}
+		}
+		else
+		{
+			std::cout << "Error: could not get current directory" << std::endl;
+			return;
+		}
+	}
+
 	void Geom::Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom)
 	{
 		std::string_view path = filePath;

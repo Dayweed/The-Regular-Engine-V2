@@ -16,6 +16,8 @@ namespace TRE
 {
 	void DemoScene()
 	{
+		Geom::RunCompiler("../Assets/smooth_vase.desc");
+		
 		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
 
 		Entity test = ECSManager::Instance().CreateEntity();
