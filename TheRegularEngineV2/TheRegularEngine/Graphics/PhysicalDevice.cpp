@@ -2,6 +2,7 @@
 #include "PhysicalDevice.h"
 #include "RendererContext.h"
 #include "Core/Logger.h"
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {
@@ -10,7 +11,7 @@ namespace TRE
 		return m_PhysicalDevice;
 	}
 
-	PhysicalDevice::QueueFamilyIndices PhysicalDevice::GetQueueFamilies()
+	QueueFamilyIndices PhysicalDevice::GetQueueFamilies()
 	{
 		return m_QueueFamilies;
 	}
@@ -27,111 +28,111 @@ namespace TRE
 
 	PhysicalDevice::PhysicalDevice()
 	{
-		auto VulkanInstance = RendererContext::GetVKInstance();
+		//auto VulkanInstance = RendererContext::GetVKInstance();
 
-		uint32_t GPUcount;
-		vkEnumeratePhysicalDevices(VulkanInstance, &GPUcount, nullptr);
-		if (GPUcount == 0)
-		{
-			TRE_CORE_CRITICAL("No GPU suitable to support vulkan");
-			assert(false);
-		}
+		//uint32_t GPUcount;
+		//vkEnumeratePhysicalDevices(VulkanInstance, &GPUcount, nullptr);
+		//if (GPUcount == 0)
+		//{
+		//	TRE_CORE_CRITICAL("No GPU suitable to support vulkan");
+		//	assert(false);
+		//}
 
-		std::vector<VkPhysicalDevice> PhysicalDevices(GPUcount);
-		if (auto Result = vkEnumeratePhysicalDevices(VulkanInstance, &GPUcount, PhysicalDevices.data()); Result != VK_SUCCESS)
-		{
-			TRE_CORE_CRITICAL("Cannot get GPUs");
-			assert(Result == VK_SUCCESS);
-		}
+		//std::vector<VkPhysicalDevice> PhysicalDevices(GPUcount);
+		//if (auto Result = vkEnumeratePhysicalDevices(VulkanInstance, &GPUcount, PhysicalDevices.data()); Result != VK_SUCCESS)
+		//{
+		//	TRE_CORE_CRITICAL("Cannot get GPUs");
+		//	assert(Result == VK_SUCCESS);
+		//}
 
-		//Choose GPU that is discrete and ignore integrated ones.
-		//Note that this does not account for computers with more than 1 discrete GPU.
-		//It will just choose the first one that was iterated.
-		for (VkPhysicalDevice PhysicalDevice : PhysicalDevices) //Pointer no const ref
-		{
-			vkGetPhysicalDeviceProperties(PhysicalDevice, &m_Properties);
-			if (m_Properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-			{
-				m_PhysicalDevice = PhysicalDevice;
-				break;
-			}
-		}
+		////Choose GPU that is discrete and ignore integrated ones.
+		////Note that this does not account for computers with more than 1 discrete GPU.
+		////It will just choose the first one that was iterated.
+		//for (VkPhysicalDevice PhysicalDevice : PhysicalDevices) //Pointer no const ref
+		//{
+		//	vkGetPhysicalDeviceProperties(PhysicalDevice, &m_Properties);
+		//	if (m_Properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+		//	{
+		//		m_PhysicalDevice = PhysicalDevice;
+		//		break;
+		//	}
+		//}
 
-		if (m_PhysicalDevice == nullptr) //Worst case scenario
-		{
-			TRE_CORE_WARN("No discrete GPU found, using integrated");
-			m_PhysicalDevice = PhysicalDevices.back();
-			assert(m_PhysicalDevice);
-		}
+		//if (m_PhysicalDevice == nullptr) //Worst case scenario
+		//{
+		//	TRE_CORE_WARN("No discrete GPU found, using integrated");
+		//	m_PhysicalDevice = PhysicalDevices.back();
+		//	assert(m_PhysicalDevice);
+		//}
 
-		vkGetPhysicalDeviceFeatures(m_PhysicalDevice, &m_Features);
-		vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &m_MemoryProperties);
+		//vkGetPhysicalDeviceFeatures(m_PhysicalDevice, &m_Features);
+		//vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &m_MemoryProperties);
 
-		uint32_t ExtensionsCount;
-		vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, nullptr);
-		if (ExtensionsCount > 0)
-		{
-			std::vector<VkExtensionProperties> Extensions(ExtensionsCount);
-			if (vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, Extensions.data()) == VK_SUCCESS)
-			{
-				TRE_CORE_INFO("Supported Extensions from this GPU: ");
-				for (const auto& Ext : Extensions)
-				{
-					m_SupportedExtensions.emplace(Ext.extensionName);
-					TRE_CORE_INFO(Ext.extensionName);
-				}
-			}
-		}
+		//uint32_t ExtensionsCount;
+		//vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, nullptr);
+		//if (ExtensionsCount > 0)
+		//{
+		//	std::vector<VkExtensionProperties> Extensions(ExtensionsCount);
+		//	if (vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, Extensions.data()) == VK_SUCCESS)
+		//	{
+		//		TRE_CORE_INFO("Supported Extensions from this GPU: ");
+		//		for (const auto& Ext : Extensions)
+		//		{
+		//			m_SupportedExtensions.emplace(Ext.extensionName);
+		//			TRE_CORE_INFO(Ext.extensionName);
+		//		}
+		//	}
+		//}
 
-		uint32_t QueueFamilyCount;
-		vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, nullptr);
-		assert(QueueFamilyCount > 0);
+		//uint32_t QueueFamilyCount;
+		//vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, nullptr);
+		//assert(QueueFamilyCount > 0);
 
-		m_QueueFamilyProperties.resize(QueueFamilyCount);
-		vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, m_QueueFamilyProperties.data());
+		//m_QueueFamilyProperties.resize(QueueFamilyCount);
+		//vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, m_QueueFamilyProperties.data());
 
-		static const float DefaultQueuePriority = 0.f;
-		int RequestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
-		m_QueueFamilies = GetQueueFamilies(RequestedQueueTypes);
+		//static const float DefaultQueuePriority = 0.f;
+		//int RequestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
+		//m_QueueFamilies = GetQueueFamilies(RequestedQueueTypes);
 
-		if (RequestedQueueTypes & VK_QUEUE_GRAPHICS_BIT)
-		{
-			VkDeviceQueueCreateInfo QueueCreateInfo{};
-			QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Graphics;
-			QueueCreateInfo.queueCount = 1;
-			QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
-			m_QueueCreateInfos.push_back(QueueCreateInfo);
-		}
+		//if (RequestedQueueTypes & VK_QUEUE_GRAPHICS_BIT)
+		//{
+		//	VkDeviceQueueCreateInfo QueueCreateInfo{};
+		//	QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		//	QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Graphics;
+		//	QueueCreateInfo.queueCount = 1;
+		//	QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
+		//	m_QueueCreateInfos.push_back(QueueCreateInfo);
+		//}
 
-		if (RequestedQueueTypes & VK_QUEUE_COMPUTE_BIT)
-		{
-			if (m_QueueFamilies.Compute != m_QueueFamilies.Graphics) //If same no need create twice
-			{
-				VkDeviceQueueCreateInfo QueueCreateInfo{};
-				QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-				QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Compute;
-				QueueCreateInfo.queueCount = 1;
-				QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
-				m_QueueCreateInfos.push_back(QueueCreateInfo);
-			}
-		}
+		//if (RequestedQueueTypes & VK_QUEUE_COMPUTE_BIT)
+		//{
+		//	if (m_QueueFamilies.Compute != m_QueueFamilies.Graphics) //If same no need create twice
+		//	{
+		//		VkDeviceQueueCreateInfo QueueCreateInfo{};
+		//		QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		//		QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Compute;
+		//		QueueCreateInfo.queueCount = 1;
+		//		QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
+		//		m_QueueCreateInfos.push_back(QueueCreateInfo);
+		//	}
+		//}
 
-		if (RequestedQueueTypes & VK_QUEUE_TRANSFER_BIT)
-		{
-			if ((m_QueueFamilies.Compute != m_QueueFamilies.Transfer) && (m_QueueFamilies.Graphics != m_QueueFamilies.Transfer)) //If same no need create twice
-			{
-				VkDeviceQueueCreateInfo QueueCreateInfo{};
-				QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-				QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Transfer;
-				QueueCreateInfo.queueCount = 1;
-				QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
-				m_QueueCreateInfos.push_back(QueueCreateInfo);
-			}
-		}
+		//if (RequestedQueueTypes & VK_QUEUE_TRANSFER_BIT)
+		//{
+		//	if ((m_QueueFamilies.Compute != m_QueueFamilies.Transfer) && (m_QueueFamilies.Graphics != m_QueueFamilies.Transfer)) //If same no need create twice
+		//	{
+		//		VkDeviceQueueCreateInfo QueueCreateInfo{};
+		//		QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		//		QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Transfer;
+		//		QueueCreateInfo.queueCount = 1;
+		//		QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
+		//		m_QueueCreateInfos.push_back(QueueCreateInfo);
+		//	}
+		//}
 
-		m_DepthFormat = GetDepthFormat();
-		assert(m_DepthFormat);
+		//m_DepthFormat = GetDepthFormat();
+		//assert(m_DepthFormat);
 	}
 
 	PhysicalDevice::~PhysicalDevice()
@@ -139,7 +140,7 @@ namespace TRE
 
 	}
 
-	PhysicalDevice::QueueFamilyIndices PhysicalDevice::GetQueueFamilies(int flags)
+	QueueFamilyIndices PhysicalDevice::GetQueueFamilies(int flags)
 	{
 		QueueFamilyIndices NewFamily;
 
@@ -178,11 +179,11 @@ namespace TRE
 					NewFamily.Compute = x;
 			}
 
-			if ((flags & VK_QUEUE_TRANSFER_BIT) && NewFamily.Transfer == -1)
+		/*	if ((flags & VK_QUEUE_TRANSFER_BIT) && NewFamily.Transfer == -1)
 			{
 				if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_TRANSFER_BIT)
 					NewFamily.Transfer = x;
-			}
+			}*/
 
 			if (flags & VK_QUEUE_GRAPHICS_BIT)
 			{

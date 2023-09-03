@@ -169,6 +169,7 @@ namespace TRE
 	void Renderer::BeginFrame()
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentBufferIndex();
+		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex();
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -185,7 +186,7 @@ namespace TRE
 		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
 		m_Pipeline->GetUBOBuffers()[Index]->Flush();
 
-		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[Index]);
+		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;

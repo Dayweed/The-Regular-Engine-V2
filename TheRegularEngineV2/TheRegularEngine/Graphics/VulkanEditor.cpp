@@ -48,6 +48,8 @@ namespace TRE
 		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
 
+		auto ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+
 		ImGui_ImplVulkan_InitInfo ImguiVulkanInitInfo{};
 		ImguiVulkanInitInfo.Instance = RendererContext::GetVKInstance();
 		ImguiVulkanInitInfo.PhysicalDevice = LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
@@ -56,7 +58,7 @@ namespace TRE
 		ImguiVulkanInitInfo.Queue = m_LogicalDevice->GetGraphicsQ();
 		ImguiVulkanInitInfo.DescriptorPool = m_DescriptorPool;
 		ImguiVulkanInitInfo.MinImageCount = 2;
-		ImguiVulkanInitInfo.ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		ImguiVulkanInitInfo.ImageCount = ImageCount;
 		ImguiVulkanInitInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
 		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain().GetRenderPass());
@@ -67,8 +69,8 @@ namespace TRE
 		vkDeviceWaitIdle(LogicalDevice->GetLogicalDevice());
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 
-		m_ImGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-		for (int x = 0; x < MAX_FRAMES_IN_FLIGHT; x++)
+		m_ImGuiCommandBuffers.resize(ImageCount);
+		for (int x = 0; x < ImageCount; x++)
 		{
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}

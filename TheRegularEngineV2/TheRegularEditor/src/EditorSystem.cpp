@@ -10,17 +10,17 @@ namespace TRE
 	{
 		TRE_INFO("Editor Init");
 
-		Panel Viewport;
-		Viewport.CreatePanel("Viewport");
-		
-		Panel ContentBrowser;
-		ContentBrowser.CreatePanel("ContentBrowser");
-		
-		Panel Hierarchy;
-		Hierarchy.CreatePanel("Hierarchy");
-
-		Panel Inspector;
-		Inspector.CreatePanel("Inspector");
+		//Panel Viewport;
+		//Viewport.CreatePanel("Viewport");
+		//
+		//Panel ContentBrowser;
+		//ContentBrowser.CreatePanel("ContentBrowser");
+		//
+		//Panel Hierarchy;
+		//Hierarchy.CreatePanel("Hierarchy");
+		//
+		//Panel Inspector;
+		//Inspector.CreatePanel("Inspector");
 	}
 	
 	EditorSystem::~EditorSystem()

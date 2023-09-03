@@ -1,5 +1,5 @@
 #pragma once
-
+#define GLFW_INCLUDE_VULKAN
 #include "GLFW/glfw3.h"
 #include "Graphics/RendererContext.h"
 #include "Graphics/SwapChain.h"
@@ -12,6 +12,7 @@ namespace TRE
 		uint32_t width = 1600;
 		uint32_t height = 900;
 		bool Vsync = true;
+		bool resize = false;
 	};
 
 	class Window
@@ -29,7 +30,7 @@ namespace TRE
 			void SwapBuffers();
 
 			GLFWwindow* GetWindowHandle() const;
-			const WindowConfig& GetWindowConfig() const;
+			WindowConfig& GetWindowConfig();
 			std::shared_ptr<RendererContext> GetRenderContext();
 			SwapChain GetSwapChain();
 
@@ -39,5 +40,7 @@ namespace TRE
 
 			std::shared_ptr<RendererContext> m_RenderContext;
 			SwapChain m_SwapChain;
+
+			static bool FrameBufferResized;
 	};
 }

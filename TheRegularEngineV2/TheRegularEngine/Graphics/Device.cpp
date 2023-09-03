@@ -44,44 +44,44 @@ namespace TRE
 	Device::Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features)
 	{
 		m_PhysicalDevice = physicalDevice;
-		std::vector<const char*> DeviceLevelExtensions;
-		assert(m_PhysicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME)); //cannot dun have else cannot present on screen
-		DeviceLevelExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+		//std::vector<const char*> DeviceLevelExtensions;
+		////assert(m_PhysicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME)); //cannot dun have else cannot present on screen
+		//DeviceLevelExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
-		VkDeviceCreateInfo DeviceCreateInfo = {};
-		DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		DeviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(physicalDevice->m_QueueCreateInfos.size());
-		DeviceCreateInfo.pQueueCreateInfos = physicalDevice->m_QueueCreateInfos.data();
-		DeviceCreateInfo.pEnabledFeatures = &Features;
-		DeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(DeviceLevelExtensions.size());
-		DeviceCreateInfo.ppEnabledExtensionNames = DeviceLevelExtensions.data();
+		//VkDeviceCreateInfo DeviceCreateInfo = {};
+		//DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		//DeviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(physicalDevice->m_QueueCreateInfos.size());
+		//DeviceCreateInfo.pQueueCreateInfos = physicalDevice->m_QueueCreateInfos.data();
+		//DeviceCreateInfo.pEnabledFeatures = &Features;
+		//DeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(DeviceLevelExtensions.size());
+		//DeviceCreateInfo.ppEnabledExtensionNames = DeviceLevelExtensions.data();
 
-		if (auto Result = vkCreateDevice(m_PhysicalDevice->m_PhysicalDevice, &DeviceCreateInfo, nullptr, &m_LogicalDevice); Result != VK_SUCCESS)
-		{
-			TRE_CORE_CRITICAL("Unable to create Logical Device");
-			assert(Result == VK_SUCCESS);
-		}
+		//if (auto Result = vkCreateDevice(m_PhysicalDevice->m_PhysicalDevice, &DeviceCreateInfo, nullptr, &m_LogicalDevice); Result != VK_SUCCESS)
+		//{
+		//	TRE_CORE_CRITICAL("Unable to create Logical Device");
+		//	assert(Result == VK_SUCCESS);
+		//}
 
-		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
-		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Graphics;
-		CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		//VkCommandPoolCreateInfo CommandPoolCreateInfo{};
+		//CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		//CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Graphics;
+		//CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_CommandPool); Result != VK_SUCCESS)
-		{
-			TRE_CORE_CRITICAL("Unable to create command pool for graphics");
-			assert(Result == VK_SUCCESS);
-		}
+		//if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_CommandPool); Result != VK_SUCCESS)
+		//{
+		//	TRE_CORE_CRITICAL("Unable to create command pool for graphics");
+		//	assert(Result == VK_SUCCESS);
+		//}
 
-		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Compute;
-		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_ComputeCommandPool); Result != VK_SUCCESS)
-		{
-			TRE_CORE_CRITICAL("Unable to create command pool for compute");
-			assert(Result == VK_SUCCESS);
-		}
+		//CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Compute;
+		//if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_ComputeCommandPool); Result != VK_SUCCESS)
+		//{
+		//	TRE_CORE_CRITICAL("Unable to create command pool for compute");
+		//	assert(Result == VK_SUCCESS);
+		//}
 
-		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilies.Graphics, 0, &m_GraphicsQ);
-		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilies.Compute, 0, &m_ComputeQ);
+		//vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_Family.Graphics, 0, &m_GraphicsQ);
+		//vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_Family.Compute, 0, &m_ComputeQ);
 	}
 
 	Device::~Device()

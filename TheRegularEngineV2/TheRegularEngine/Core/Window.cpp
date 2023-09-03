@@ -4,6 +4,8 @@
 
 namespace TRE
 {
+	bool Window::FrameBufferResized = false;
+
 	Window::Window(const WindowConfig& config) : m_Config(config)
 	{
 		if (int Error = glfwInit(); !Error)
@@ -16,16 +18,33 @@ namespace TRE
 
 		m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
 
-		m_RenderContext = std::make_shared<RendererContext>();
-		m_RenderContext->Initialize();
-		
-		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetDeviceInternally(), m_WindowHandle);
-		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
+		//m_RenderContext = std::make_shared<RendererContext>();
+		//m_RenderContext->CreateVulkanInstance(m_WindowHandle);
+		//m_RenderContext->SetupDebugMessage();
+		//m_RenderContext->CreateWindowSurface(m_WindowHandle);
+		//m_RenderContext->PhysicalDeviceSetup();
+		//m_RenderContext->CreateLogicalDevice();
+		//
+		//m_SwapChain.Initialize(m_RenderContext);
+		//m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
+
+		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
+
+		glfwSetFramebufferSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height)
+		{
+			auto& data = *((WindowConfig*)glfwGetWindowUserPointer(window));
+			if (data.width != width || data.height != height)
+				data.resize = true;
+			data.width = width;
+			data.height = height;
+
+			FrameBufferResized = true;
+		});
 	}
 
 	Window::~Window()
 	{
-		m_SwapChain.DestroySwapChain();
+		//m_SwapChain.DestroySwapChain();
 		glfwTerminate();
 	}
 
@@ -49,7 +68,7 @@ namespace TRE
 		return m_WindowHandle;
 	}
 
-	const WindowConfig& Window::GetWindowConfig() const
+	WindowConfig& Window::GetWindowConfig()
 	{
 		return m_Config;
 	}

@@ -1,18 +1,18 @@
 #pragma once
 #include "pch.h"
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {
+	struct QueueFamilyIndices
+	{
+		int32_t Graphics = -1;
+		int32_t Compute = -1;
+		//int32_t Transfer = -1;
+	};
+
 	class PhysicalDevice
 	{
-		public:
-			struct QueueFamilyIndices
-			{
-				int32_t Graphics = -1;
-				int32_t Compute = -1;
-				int32_t Transfer = -1;
-			};
-
 		public:
 			PhysicalDevice();
 			~PhysicalDevice();

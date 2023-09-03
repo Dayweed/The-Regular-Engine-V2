@@ -38,12 +38,7 @@ namespace TRE
 	VkCommandBuffer SwapChain::GetCurrentCommandBuffer()
 	{
 		assert(m_CurrentBufferIndex < m_CommandBuffers.size()); //Cannot go out of bound
-		return m_CommandBuffers[m_CurrentBufferIndex].CommandBuffer;
-	}
-
-	std::vector<SwapChain::SwapChainImage> SwapChain::GetCurrentSwapChainImage()
-	{
-		return m_SwapChainImages;
+		return m_CommandBuffers[m_CurrentBufferIndex];
 	}
 
 	uint32_t SwapChain::GetCurrentBufferIndex()
@@ -68,12 +63,13 @@ namespace TRE
 
 	VkSemaphore SwapChain::GetRenderComplete()
 	{
-		return m_Semaphores.RenderComplete;
+		return m_Semaphores[m_CurrentBufferIndex].RenderComplete;
 	}
 
 	VkRenderPass SwapChain::GetRenderPass()
 	{
-		return m_Renderpass->GetHandle();
+		//return m_Renderpass->GetHandle();
+		return m_Renderpass;
 	}
 
 	VkExtent2D SwapChain::GetSwapChainExtent()
@@ -81,71 +77,70 @@ namespace TRE
 		return m_Extent;
 	}
 
-	void SwapChain::Initialize(VkInstance Instance, const std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle)
+	void SwapChain::Initialize(VkInstance Instance, const std::shared_ptr<Device>& LogicalDevice, VkSurfaceKHR Handle)
 	{
-		m_Instance = Instance;
-		m_LogicalDevice = LogicalDevice;
-		auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
-		glfwCreateWindowSurface(m_Instance, Handle, nullptr, &m_WindowSurface);
+		//m_Instance = Instance;
+		//m_LogicalDevice = LogicalDevice;
+		//auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
+		////glfwCreateWindowSurface(m_Instance, Handle, nullptr, &m_WindowSurface);
+		m_WindowSurface = Handle;
 
-		uint32_t NumberofQueues; 
-		vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, nullptr);
-		assert(NumberofQueues > 0);
+		//uint32_t NumberofQueues; 
+		//vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, nullptr);
+		//assert(NumberofQueues > 0);
 
-		std::vector<VkQueueFamilyProperties> QueueProperties(NumberofQueues);
-		vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, QueueProperties.data());
+		//std::vector<VkQueueFamilyProperties> QueueProperties(NumberofQueues);
+		//vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, QueueProperties.data());
 
-		std::vector<VkBool32> SupportsPresent(NumberofQueues);
-		for (uint32_t x = 0; x < NumberofQueues; x++)
-		{
-			vkGetPhysicalDeviceSurfaceSupportKHR(PhysicalDevice, x, m_WindowSurface, &SupportsPresent[x]);
-		}
+		//std::vector<VkBool32> SupportsPresent(NumberofQueues);
+		//for (uint32_t x = 0; x < NumberofQueues; x++)
+		//{
+		//	vkGetPhysicalDeviceSurfaceSupportKHR(PhysicalDevice, x, m_WindowSurface, &SupportsPresent[x]);
+		//}
 
-		uint32_t PresentQueueIndex = UINT32_MAX;
-		uint32_t GraphicsQueueIndex = UINT32_MAX;
+		//uint32_t PresentQueueIndex = UINT32_MAX;
+		//uint32_t GraphicsQueueIndex = UINT32_MAX;
 
-		for (uint32_t x = 0; x < NumberofQueues; x++)
-		{
-			if ((QueueProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
-			{
-				if (GraphicsQueueIndex == UINT32_MAX)
-					GraphicsQueueIndex = x;
+		//for (uint32_t x = 0; x < NumberofQueues; x++)
+		//{
+		//	if ((QueueProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
+		//	{
+		//		if (GraphicsQueueIndex == UINT32_MAX)
+		//			GraphicsQueueIndex = x;
 
-				if (SupportsPresent[x] == VK_TRUE)
-				{
-					GraphicsQueueIndex = x;
-					PresentQueueIndex = x;
-					break;
-				}
-			}
-		}
+		//		if (SupportsPresent[x] == VK_TRUE)
+		//		{
+		//			GraphicsQueueIndex = x;
+		//			PresentQueueIndex = x;
+		//			break;
+		//		}
+		//	}
+		//}
 
-		//In case present is not found
-		if (PresentQueueIndex == UINT32_MAX)
-		{
-			for (uint32_t x = 0; x < NumberofQueues; x++)
-			{
-				if (SupportsPresent[x] == VK_TRUE)
-				{
-					PresentQueueIndex = x;
-					break;
-				}
-			}
-		}
+		////In case present is not found
+		//if (PresentQueueIndex == UINT32_MAX)
+		//{
+		//	for (uint32_t x = 0; x < NumberofQueues; x++)
+		//	{
+		//		if (SupportsPresent[x] == VK_TRUE)
+		//		{
+		//			PresentQueueIndex = x;
+		//			break;
+		//		}
+		//	}
+		//}
 
-		assert(PresentQueueIndex != UINT32_MAX);
-		assert(GraphicsQueueIndex != UINT32_MAX);
+		//assert(PresentQueueIndex != UINT32_MAX);
+		//assert(GraphicsQueueIndex != UINT32_MAX);
 
-		m_QueueIndex = GraphicsQueueIndex;
-
-		FindImageFormatAndColorSpace();
-
-		m_SwapChainSettings.m_DepthFormat = m_LogicalDevice->GetPhysicalDevice()->GetDepthFormat();
+		//m_QueueIndex = GraphicsQueueIndex;
 	}
 
 	void SwapChain::CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync)
 	{
-		VkSwapchainKHR CurrentSwapChain = m_SwapChain;
+		FindImageFormatAndColorSpace();
+		m_SwapChainSettings.m_DepthFormat = m_LogicalDevice->GetPhysicalDevice()->GetDepthFormat();
+
 		auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
 
 		VkSurfaceCapabilitiesKHR SurfaceCapabilities;
@@ -241,7 +236,7 @@ namespace TRE
 		SwapChainCreateInfo.pQueueFamilyIndices = nullptr; //^
 		SwapChainCreateInfo.imageArrayLayers = 1;
 		SwapChainCreateInfo.presentMode = SwapChainPresentMode;
-		SwapChainCreateInfo.oldSwapchain = CurrentSwapChain;
+		SwapChainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 		SwapChainCreateInfo.clipped = VK_TRUE;
 		SwapChainCreateInfo.compositeAlpha = compositeAlphaFlag;
 
@@ -261,36 +256,34 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		if (CurrentSwapChain)
-			vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), CurrentSwapChain, nullptr);
-
 		for (auto& image : m_SwapChainImages)
 		{
-			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
-			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
+			//vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
+			//vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
 		m_SwapChainImages.clear();
+		m_VulkanImages.clear();
+		//m_DepthImages.clear();
+		//m_DepthMemory.clear();
 
-		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &m_ImageCount, nullptr); Result != VK_SUCCESS)
+		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &ImageCount, nullptr); Result != VK_SUCCESS)
 		{
 			TRE_CORE_WARN("Unable to get number of swapchain images");
 			assert(Result == VK_SUCCESS);
 		}
 
-		m_SwapChainImages.resize(m_ImageCount);
-		m_VulkanImages.resize(m_ImageCount);
-		m_DepthImages.resize(m_ImageCount);
-		m_DepthMemory.resize(m_ImageCount);
+		m_SwapChainImages.resize(ImageCount);
+		m_VulkanImages.resize(ImageCount);
+		//m_DepthImages.resize(ImageCount);
+		//m_DepthMemory.resize(ImageCount);
 		
-		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &m_ImageCount, m_VulkanImages.data()); Result != VK_SUCCESS)
+		if (VkResult Result = vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &ImageCount, m_VulkanImages.data()); Result != VK_SUCCESS)
 		{
 			TRE_CORE_WARN("Unable to get swapchain images");
 			assert(Result == VK_SUCCESS);
 		}
 
-		m_SwapChainImages.resize(m_ImageCount);
-
-		for (uint32_t x = 0; x < m_ImageCount; x++)
+		for (uint32_t x = 0; x < ImageCount; x++)
 		{
 			VkImageViewCreateInfo ImageViewCreateInfo{};
 			ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -310,116 +303,100 @@ namespace TRE
 			ImageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 			ImageViewCreateInfo.subresourceRange.layerCount = 1;
 
-			m_SwapChainImages[x].Image = m_VulkanImages[x];
+			//m_SwapChainImages[x].Image = m_VulkanImages[x];
 
-			if (VkResult Result = vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &ImageViewCreateInfo, nullptr, &m_SwapChainImages[x].ImageView); Result != VK_SUCCESS)
-			{
-				TRE_CORE_WARN("Unable to create image view for swap chain");
-				assert(Result == VK_SUCCESS);
-			}
+			//if (VkResult Result = vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &ImageViewCreateInfo, nullptr, &m_SwapChainImages[x].ImageView); Result != VK_SUCCESS)
+			//{
+			//	TRE_CORE_WARN("Unable to create image view for swap chain");
+			//	assert(Result == VK_SUCCESS);
+			//}
 		}
 
 		//Depth Image
-		for (uint32_t x = 0; x < ImageCount; ++x)
-		{
-			VkImageCreateInfo image{};
-			image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-			image.imageType = VK_IMAGE_TYPE_2D;
-			image.format = m_SwapChainSettings.m_DepthFormat;
-			image.extent.width = m_Extent.width;
-			image.extent.height = m_Extent.height;
-			image.extent.depth = 1;
-			image.mipLevels = 1;
-			image.arrayLayers = 1;
-			image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			image.samples = VK_SAMPLE_COUNT_1_BIT;
-			image.tiling = VK_IMAGE_TILING_OPTIMAL;
-			image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-			if (VkResult Result = vkCreateImage(m_LogicalDevice->GetLogicalDevice(), &image, nullptr, &m_DepthImages[x]); Result != VK_SUCCESS)
-			{
-				TRE_CORE_WARN("Unable to create depth image for swap chain");
-				assert(Result == VK_SUCCESS);
-			}
-			m_SwapChainImages[x].DepthImage = m_DepthImages[x];
+		//for (uint32_t x = 0; x < ImageCount; ++x)
+		//{
+		//	VkImageCreateInfo image{};
+		//	image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		//	image.imageType = VK_IMAGE_TYPE_2D;
+		//	image.format = m_SwapChainSettings.m_DepthFormat;
+		//	image.extent.width = m_Extent.width;
+		//	image.extent.height = m_Extent.height;
+		//	image.extent.depth = 1;
+		//	image.mipLevels = 1;
+		//	image.arrayLayers = 1;
+		//	image.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		//	image.samples = VK_SAMPLE_COUNT_1_BIT;
+		//	image.tiling = VK_IMAGE_TILING_OPTIMAL;
+		//	image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		//	if (VkResult Result = vkCreateImage(m_LogicalDevice->GetLogicalDevice(), &image, nullptr, &m_DepthImages[x]); Result != VK_SUCCESS)
+		//	{
+		//		TRE_CORE_WARN("Unable to create depth image for swap chain");
+		//		assert(Result == VK_SUCCESS);
+		//	}
+		//	//m_SwapChainImages[x].DepthImage = m_DepthImages[x];
 
-			VkMemoryRequirements memReqs;
-			VkMemoryAllocateInfo memAlloc{};
-			memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-			vkGetImageMemoryRequirements(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], &memReqs);
-			memAlloc.allocationSize = memReqs.size;
-			memAlloc.memoryTypeIndex = m_LogicalDevice->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-			vkAllocateMemory(m_LogicalDevice->GetLogicalDevice(), &memAlloc, nullptr, &m_DepthMemory[x]);
-			vkBindImageMemory(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], m_DepthMemory[x], 0);
+		//	VkMemoryRequirements memReqs;
+		//	VkMemoryAllocateInfo memAlloc{};
+		//	memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		//	vkGetImageMemoryRequirements(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], &memReqs);
+		//	memAlloc.allocationSize = memReqs.size;
+		//	memAlloc.memoryTypeIndex = m_LogicalDevice->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+		//	vkAllocateMemory(m_LogicalDevice->GetLogicalDevice(), &memAlloc, nullptr, &m_DepthMemory[x]);
+		//	vkBindImageMemory(m_LogicalDevice->GetLogicalDevice(), m_DepthImages[x], m_DepthMemory[x], 0);
 
-			VkImageViewCreateInfo depthStencilView{};
-			depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			depthStencilView.format = m_SwapChainSettings.m_DepthFormat;
-			depthStencilView.flags = 0;
-			depthStencilView.subresourceRange = {};
-			depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-			depthStencilView.subresourceRange.baseMipLevel = 0;
-			depthStencilView.subresourceRange.levelCount = 1;
-			depthStencilView.subresourceRange.baseArrayLayer = 0;
-			depthStencilView.subresourceRange.layerCount = 1;
-			depthStencilView.image = m_DepthImages[x];
-			vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &depthStencilView, nullptr, &m_SwapChainImages[x].DepthImageView);
-		}
+		//	VkImageViewCreateInfo depthStencilView{};
+		//	depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		//	depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		//	depthStencilView.format = m_SwapChainSettings.m_DepthFormat;
+		//	depthStencilView.flags = 0;
+		//	depthStencilView.subresourceRange = {};
+		//	depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+		//	depthStencilView.subresourceRange.baseMipLevel = 0;
+		//	depthStencilView.subresourceRange.levelCount = 1;
+		//	depthStencilView.subresourceRange.baseArrayLayer = 0;
+		//	depthStencilView.subresourceRange.layerCount = 1;
+		//	depthStencilView.image = m_DepthImages[x];
+		//	vkCreateImageView(m_LogicalDevice->GetLogicalDevice(), &depthStencilView, nullptr, &m_SwapChainImages[x].DepthImageView);
+		//}
 
-		//Command Buffers
-		for (auto& CommandBuffer : m_CommandBuffers)
-			vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), CommandBuffer.CommandPool, nullptr);
-
-		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
-		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		CommandPoolCreateInfo.queueFamilyIndex = m_QueueIndex;
-		CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-
-		VkCommandBufferAllocateInfo CommandBufferAllocateInfo{};
-		CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		CommandBufferAllocateInfo.commandBufferCount = 1;
-		CommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
-		m_CommandBuffers.resize(m_ImageCount);
-		for (auto& Command : m_CommandBuffers)
-		{
-			if (VkResult Result = vkCreateCommandPool(m_LogicalDevice->GetLogicalDevice(), &CommandPoolCreateInfo, nullptr, &Command.CommandPool); Result != VK_SUCCESS)
-			{
-				TRE_CORE_WARN("Unable to create a command pool");
-				assert(Result == VK_SUCCESS);
-			}
-
-			CommandBufferAllocateInfo.commandPool = Command.CommandPool;
-			if (VkResult Result = vkAllocateCommandBuffers(m_LogicalDevice->GetLogicalDevice(), &CommandBufferAllocateInfo, &Command.CommandBuffer); Result != VK_SUCCESS)
-			{
-				TRE_CORE_WARN("Unable to create a command buffer");
-				assert(Result == VK_SUCCESS);
-			}
-		}
-		
 		//Synchronization
-		if (!m_Semaphores.RenderComplete || !m_Semaphores.PresentComplete)
+		//if (!m_Semaphores.RenderComplete || !m_Semaphores.PresentComplete)
 		{
+			for (int x = 0; x < m_Semaphores.size(); x++)
+			{
+				vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores[x].RenderComplete, nullptr);
+				vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores[x].PresentComplete, nullptr);
+			}
+			m_Semaphores.clear();
 			VkSemaphoreCreateInfo SemaphoreCreateInfo{};
 			SemaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-			if (auto Result = vkCreateSemaphore(m_LogicalDevice->GetLogicalDevice(), &SemaphoreCreateInfo, nullptr, &m_Semaphores.RenderComplete); Result != VK_SUCCESS)
+			m_Semaphores.resize(ImageCount);
+			for (int x = 0; x < m_Semaphores.size(); x++)
 			{
-				TRE_CORE_WARN("Unable to create semaphore");
-				assert(Result == VK_SUCCESS);
-			}
-			if (auto Result = vkCreateSemaphore(m_LogicalDevice->GetLogicalDevice(), &SemaphoreCreateInfo, nullptr, &m_Semaphores.PresentComplete); Result != VK_SUCCESS)
-			{
-				TRE_CORE_WARN("Unable to create semaphore");
-				assert(Result == VK_SUCCESS);
+				if (auto Result = vkCreateSemaphore(m_LogicalDevice->GetLogicalDevice(), &SemaphoreCreateInfo, nullptr, &m_Semaphores[x].RenderComplete); Result != VK_SUCCESS)
+				{
+					TRE_CORE_WARN("Unable to create semaphore");
+					assert(Result == VK_SUCCESS);
+				}
+				if (auto Result = vkCreateSemaphore(m_LogicalDevice->GetLogicalDevice(), &SemaphoreCreateInfo, nullptr, &m_Semaphores[x].PresentComplete); Result != VK_SUCCESS)
+				{
+					TRE_CORE_WARN("Unable to create semaphore");
+					assert(Result == VK_SUCCESS);
+				}
 			}
 		}
 
-		if (m_WaitFences.size() != m_ImageCount)
-		{
+		//if (m_WaitFences.size() != m_ImageCount)
+		//{
+			for (auto& Fence : m_WaitFences)
+			{
+				vkDestroyFence(m_LogicalDevice->GetLogicalDevice(), Fence, nullptr);
+			}
+			m_WaitFences.clear();
 			VkFenceCreateInfo FenceCreateInfo{};
 			FenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 			FenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-			m_WaitFences.resize(m_ImageCount);
+			m_WaitFences.resize(ImageCount);
 
 			for (auto& Fence : m_WaitFences)
 			{
@@ -429,7 +406,7 @@ namespace TRE
 					assert(Result == VK_SUCCESS);
 				}
 			}
-		}
+		//}
 
 		//RenderPass
 		RenderPassInfo RenderPassCreateInfo{};
@@ -437,28 +414,32 @@ namespace TRE
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		RenderPassCreateInfo.DepthImageFormat = m_SwapChainSettings.m_DepthFormat;
 		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, RenderPassCreateInfo);
+	/*	if (!m_Renderpass)
+			m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, RenderPassCreateInfo);
+		else
+			m_Renderpass->Recreate();*/
 
 		//FrameBuffers
 		for (auto& framebuffer : m_FrameBuffers)
 		{
-			vkDestroyFramebuffer(m_LogicalDevice->GetLogicalDevice(), framebuffer, nullptr);
+			if (framebuffer != VK_NULL_HANDLE)
+				vkDestroyFramebuffer(m_LogicalDevice->GetLogicalDevice(), framebuffer, nullptr);
 		}
 
 		VkFramebufferCreateInfo FrameBufferCreateInfo{};
 		FrameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		FrameBufferCreateInfo.renderPass = m_Renderpass->GetHandle();
+		//FrameBufferCreateInfo.renderPass = m_Renderpass->GetHandle();
 		FrameBufferCreateInfo.attachmentCount = 2;
 		FrameBufferCreateInfo.width = m_Width;
 		FrameBufferCreateInfo.height = m_Height;
 		FrameBufferCreateInfo.layers = 1;
 		
-		m_FrameBuffers.resize(m_ImageCount);
+		m_FrameBuffers.resize(ImageCount);
 
-		for (int x = 0; x < m_FrameBuffers.size(); x++)
+		for (int x = 0; x < ImageCount; x++)
 		{
-			std::array<VkImageView, 2> Attachments = { m_SwapChainImages[x].ImageView, m_SwapChainImages[x].DepthImageView };
-			FrameBufferCreateInfo.pAttachments = Attachments.data();
+			//std::array<VkImageView, 2> Attachments = { m_SwapChainImages[x].ImageView, m_SwapChainImages[x].DepthImageView };
+			//FrameBufferCreateInfo.pAttachments = Attachments.data();
 			if (auto Result = vkCreateFramebuffer(m_LogicalDevice->GetLogicalDevice(), &FrameBufferCreateInfo, nullptr, &m_FrameBuffers[x]); Result != VK_SUCCESS)
 			{
 				TRE_CORE_WARN("Unable to create framebuffer");
@@ -479,29 +460,28 @@ namespace TRE
 
 		for (auto& image : m_SwapChainImages)
 		{
-			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
-			vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
+			//vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
+			//vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
 		}
 
-		for(auto& image : m_DepthImages)
-			vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
+		//for(auto& image : m_DepthImages)
+		//	vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
 
-		for (auto& memory : m_DepthMemory)
-			vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
+		//for (auto& memory : m_DepthMemory)
+		//	vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
 
-		for (auto& CommandBuffer : m_CommandBuffers)
-			vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), CommandBuffer.CommandPool, nullptr);
+		vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandPool, nullptr);
 
 		for (auto& framebuffer : m_FrameBuffers)
 		{
 			vkDestroyFramebuffer(m_LogicalDevice->GetLogicalDevice(), framebuffer, nullptr);
 		}
 
-		if (m_Semaphores.RenderComplete)
-			vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores.RenderComplete, nullptr);
+		//if (m_Semaphores.RenderComplete)
+		//	vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores.RenderComplete, nullptr);
 
-		if (m_Semaphores.PresentComplete)
-			vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores.PresentComplete, nullptr);
+		//if (m_Semaphores.PresentComplete)
+		//	vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores.PresentComplete, nullptr);
 
 		for (auto& fence : m_WaitFences)
 			vkDestroyFence(m_LogicalDevice->GetLogicalDevice(), fence, nullptr);
@@ -512,14 +492,74 @@ namespace TRE
 	void SwapChain::BeginFrame()
 	{
 		vkWaitForFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX);
-		vkResetFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex]);
 
-		m_CurrentImageIndex = AccuireNextImage();
-		if (auto result = vkResetCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandBuffers[m_CurrentBufferIndex].CommandPool, 0); result != VK_SUCCESS)
+		//m_CurrentImageIndex = AccuireNextImage();
+
+		if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, UINT64_MAX, m_Semaphores[m_CurrentBufferIndex].PresentComplete, VK_NULL_HANDLE, &m_CurrentImageIndex); Result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			TRE_CORE_WARN("Unable to reset pool");
+			//Resize(m_Width, m_Height);
+			return;
+		}
+		else if (Result != VK_SUCCESS && Result != VK_SUBOPTIMAL_KHR)
+		{
+			TRE_CORE_WARN("Unable to get next image");
+			assert(Result == VK_SUCCESS);
+		}
+
+		assert(m_CurrentImageIndex >= 0);
+		assert(m_CurrentImageIndex < 3);
+		if (m_CurrentImageIndex == (-1))
+			return;
+
+		if (auto Result = vkResetFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
+		{
+			TRE_CORE_WARN("Unable to reset fences");
+			assert(Result == VK_SUCCESS);
+		}
+
+		if (auto result = vkResetCommandBuffer(m_CommandBuffers[m_CurrentBufferIndex], 0); result != VK_SUCCESS)
+		{
+			TRE_CORE_WARN("Unable to reset buffer");
 			assert(result == VK_SUCCESS);
 		}
+
+		VkCommandBufferBeginInfo Info{};
+		Info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		vkBeginCommandBuffer(m_CommandBuffers[m_CurrentBufferIndex], &Info);
+		//m_Renderpass->BeginRenderPass(m_CommandBuffers[m_CurrentBufferIndex], m_FrameBuffers[m_CurrentImageIndex]);
+		VkRenderPassBeginInfo RenderPassInfo{};
+		RenderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		RenderPassInfo.framebuffer = m_FrameBuffers[m_CurrentImageIndex];
+		RenderPassInfo.renderPass = m_Renderpass;
+		RenderPassInfo.renderArea.offset = { 0, 0 };
+		RenderPassInfo.renderArea.extent = m_Extent;
+
+		std::array<VkClearValue, 2> ClearColor{}; //Order of these should be same as order of attachments!!
+		ClearColor[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+		ClearColor[1].depthStencil = { 1.0f, 0 };
+
+		RenderPassInfo.clearValueCount = static_cast<uint32_t>(ClearColor.size());
+		RenderPassInfo.pClearValues = ClearColor.data();
+
+		vkCmdBeginRenderPass(m_CommandBuffers[m_CurrentBufferIndex], &RenderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport = {};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.height = m_Height;
+		viewport.width = m_Width;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffers[m_CurrentBufferIndex], 0, 1, &viewport);
+
+		VkRect2D scissor {};
+		scissor.offset.x = 0;
+		scissor.offset.y = 0;
+		vkCmdSetScissor(m_CommandBuffers[m_CurrentBufferIndex], 0, 1, &scissor);
+
+		//m_Renderpass->EndRenderPass(m_CommandBuffers[m_CurrentBufferIndex]);
+		vkCmdEndRenderPass(m_CommandBuffers[m_CurrentBufferIndex]);
+		vkEndCommandBuffer(m_CommandBuffers[m_CurrentBufferIndex]);
 	}
 
 	void SwapChain::Present()
@@ -529,17 +569,11 @@ namespace TRE
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		SubmitInfo.pWaitDstStageMask = &PipelineStageFlags;
 		SubmitInfo.waitSemaphoreCount = 1;
-		SubmitInfo.pWaitSemaphores = &m_Semaphores.PresentComplete;
+		SubmitInfo.pWaitSemaphores = &m_Semaphores[m_CurrentBufferIndex].PresentComplete;
 		SubmitInfo.signalSemaphoreCount = 1;
-		SubmitInfo.pSignalSemaphores = &m_Semaphores.RenderComplete;
+		SubmitInfo.pSignalSemaphores = &m_Semaphores[m_CurrentBufferIndex].RenderComplete;
 		SubmitInfo.commandBufferCount = 1;
-		SubmitInfo.pCommandBuffers = &m_CommandBuffers[m_CurrentBufferIndex].CommandBuffer;
-
-		if (auto Result = vkResetFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
-		{
-			TRE_CORE_WARN("Unable to reset fences");
-			assert(Result == VK_SUCCESS);
-		}
+		SubmitInfo.pCommandBuffers = &m_CommandBuffers[m_CurrentBufferIndex];
 
 		if (auto Result = vkQueueSubmit(m_LogicalDevice->GetGraphicsQ(), 1, &SubmitInfo, m_WaitFences[m_CurrentBufferIndex]); Result != VK_SUCCESS)
 		{
@@ -552,17 +586,16 @@ namespace TRE
 		PresentInfo.swapchainCount = 1;
 		PresentInfo.pSwapchains = &m_SwapChain;
 		PresentInfo.pImageIndices = &m_CurrentImageIndex;
-		PresentInfo.pWaitSemaphores = &m_Semaphores.RenderComplete;
+		PresentInfo.pWaitSemaphores = &m_Semaphores[m_CurrentBufferIndex].RenderComplete;
 		PresentInfo.waitSemaphoreCount = 1;
 
 		if (auto Result = vkQueuePresentKHR(m_LogicalDevice->GetGraphicsQ(), &PresentInfo); Result != VK_SUCCESS)
 		{
-			TRE_CORE_INFO("Resized");
-			if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
+			if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR || Engine::GetInstance().GetWindow()->GetWindowConfig().resize)
 			{
-				Resize(m_Width, m_Height);
-				Engine::GetInstance().GetRenderer()->Resize();
-				Engine::GetInstance().GetVulkanImgui()->Resize();
+				TRE_CORE_INFO("Resized");
+				Engine::GetInstance().GetWindow()->GetWindowConfig().resize = false;
+				//Resize(m_Width, m_Height);
 			}
 			else
 			{
@@ -570,21 +603,20 @@ namespace TRE
 			}
 		}
 
-		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT;
-		m_CurrentImageIndex = (m_CurrentImageIndex + 1) % MAX_FRAMES_IN_FLIGHT;
 
-		if (auto Result = vkWaitForFences(m_LogicalDevice->GetLogicalDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX); Result != VK_SUCCESS)
-		{
-			TRE_CORE_WARN("Failed to wait for fence");
-			assert(Result == VK_SUCCESS);
-		}
+		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
 	uint32_t SwapChain::AccuireNextImage()
 	{
 		uint32_t Index;
 
-		if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, UINT64_MAX, m_Semaphores.PresentComplete, nullptr, &Index); Result != VK_SUCCESS)
+		if (auto Result = vkAcquireNextImageKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, UINT64_MAX, m_Semaphores[m_CurrentBufferIndex].PresentComplete, VK_NULL_HANDLE, &Index); Result == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			Resize(m_Width, m_Height);
+			return -1;
+		}
+		else if (Result != VK_SUCCESS && Result != VK_SUBOPTIMAL_KHR)
 		{
 			TRE_CORE_WARN("Unable to get next image");
 			assert(Result == VK_SUCCESS);
@@ -594,20 +626,36 @@ namespace TRE
 
 	void SwapChain::Resize(uint32_t width, uint32_t height)
 	{
+		int wid = 0, hei = 0;
+		glfwGetFramebufferSize(Engine::GetInstance().GetWindow()->GetWindowHandle(), &wid, &hei);
+		m_Width = wid;
+		m_Height = hei;
+		while (wid == 0 || hei == 0)
+		{
+			glfwGetFramebufferSize(Engine::GetInstance().GetWindow()->GetWindowHandle(), &wid, &hei);
+			glfwWaitEvents();
+		}
+
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
-		for (auto& image : m_DepthImages)
-			vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
-		for (auto& memory : m_DepthMemory)
-			vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
+
+
+		vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, nullptr);
+		//for (auto& image : m_DepthImages)
+		//	vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
+		//for (auto& memory : m_DepthMemory)
+		//vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
 		CreateSwapChain(&width, &height, true); //Change later
+
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
+		//Engine::GetInstance().GetRenderer()->Resize();
+		//Engine::GetInstance().GetVulkanImgui()->Resize();
 	}
 
 	void SwapChain::FindImageFormatAndColorSpace()
 	{
-		auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
+		//auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
 		uint32_t FormatCount;
-		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
+		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice(), m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
 		{
 			TRE_CORE_WARN("Surface Format bad result at {0} and line {1}", __FILE__, __LINE__);
 			assert(Result == VK_SUCCESS);
@@ -616,7 +664,7 @@ namespace TRE
 		assert(FormatCount > 0);
 
 		std::vector<VkSurfaceFormatKHR> SurfaceFormats(FormatCount);
-		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, SurfaceFormats.data()); Result != VK_SUCCESS)
+		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice(), m_WindowSurface, &FormatCount, SurfaceFormats.data()); Result != VK_SUCCESS)
 		{
 			TRE_CORE_WARN("Unable to get Surface Format at {0} and line {1}", __FILE__, __LINE__);
 			assert(Result == VK_SUCCESS);
@@ -648,4 +696,6 @@ namespace TRE
 			}
 		}
 	}
+
+	
 }
