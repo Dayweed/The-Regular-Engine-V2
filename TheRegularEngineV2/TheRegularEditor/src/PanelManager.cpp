@@ -10,15 +10,14 @@ namespace TRE
 {
 	PanelManager::PanelManager()
 	{
-		StorePanels.clear();
+		m_StorePanels.clear();
 	}
 
 	PanelManager::~PanelManager()
 	{
-		StorePanels.clear();
+		m_StorePanels.clear();
 	}
 
-	//update (viewport and panels; nothing to do with rendering)
 	//render (show panel)
 	//shutdown (delete memory)
 	void PanelManager::Init()
@@ -31,19 +30,28 @@ namespace TRE
 		InsertPanel<ConsolePanel>("Console");
 	}
 
+	//(viewport and panels; nothing to do with rendering)
+	void PanelManager::Update()
+	{
+		for (auto x : m_StorePanels)
+		{
+			x.second->Update();
+		}
+	}
+
 	void PanelManager::RemovePanel(std::string PanelName)
 	{
-		StorePanels.erase(PanelName);
+		m_StorePanels.erase(PanelName);
 	}
 
 	bool PanelManager::DoesPanelExist(std::string PanelName)
 	{
-		if (StorePanels.find(PanelName) == StorePanels.end()) return false;
+		if (m_StorePanels.find(PanelName) == m_StorePanels.end()) return false;
 		return true;
 	}
 
 	std::unordered_map<std::string, std::shared_ptr<Panel>>& PanelManager::GetPanels()
 	{
-		return StorePanels;
+		return m_StorePanels;
 	}
 }

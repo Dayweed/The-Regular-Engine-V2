@@ -5,7 +5,7 @@ namespace TRE
 {
 	void CameraSystem::Update()
 	{
-		for (Entity& go : _ecs_manager->GetEntities<Camera>())
+		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
 			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsDirty)
@@ -202,7 +202,7 @@ namespace TRE
 		//Can only have one main camera
 		Entity mainCamera;
 		int count = 0;
-		for (Entity& go : _ecs_manager->GetEntities<Camera>())
+		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
 			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsMainCamera)

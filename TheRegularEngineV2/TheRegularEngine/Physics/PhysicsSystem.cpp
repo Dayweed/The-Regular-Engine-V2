@@ -167,7 +167,7 @@ namespace TRE
 	void OLDSTUFF_Update()
 	{
 		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
-		for (Entity obj : _ecs_manager->GetEntities<Transform>())
+		for (Entity obj : ECSManager::Instance().GetEntities<Transform>())
 		{
 			std::cout << obj->GetComponent<Transform>().m_PosX << "|";
 		}
@@ -177,7 +177,7 @@ namespace TRE
 	void OLDSTUFF_OnDestroyGO()
 	{
 		/*std::cout << "Destroy GOs that have transform is to be removed\n";
-		for (Entity obj : _ecs_manager->GetEntities<Transform, Removal>())
+		for (Entity obj : ECSManager::Instance().GetEntities<Transform, Removal>())
 		{
 			std::cout << "Found object " << obj->GetComponent<Properties>().m_Name << "\n";
 		}
@@ -285,7 +285,7 @@ namespace TRE
 		{
 			for (unsigned j = 0; j < size - i; j++)
 			{
-				Entity go = _ecs_manager->CreateEntity();
+				Entity go = ECSManager::Instance().CreateEntity();
 				const physx::PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
 				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
 				go->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(newPos);
