@@ -7,6 +7,31 @@
 
 namespace TRE
 {
+#if 1
+	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
+	physx::PxVec3 QuatToEulerAngles(physx::PxQuat q)
+	{
+		physx::PxVec3 angles;
+
+		// roll (x-axis rotation)
+		float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+		float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+		angles.x = std::atan2(sinr_cosp, cosr_cosp);
+
+		// pitch (y-axis rotation)
+		float sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+		float cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+		angles.y = 2 * std::atan2(sinp, cosp) - 3.141592653f / 2;
+
+		// yaw (z-axis rotation)
+		float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+		float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+		angles.z = std::atan2(siny_cosp, cosy_cosp);
+
+		return angles;
+	}
+#endif
+
 	PhysicsSystem::PhysicsSystem()
 	{
 		TRE_CORE_INFO("Physics System Constructor called");
@@ -66,7 +91,7 @@ namespace TRE
 		}
 		else
 		{
-			printf("oh no, no flags for my pvd :(\n");
+			TRE_CORE_WARN("Unable to obain scene's PVD client.");
 		}
 #endif
 
@@ -74,24 +99,29 @@ namespace TRE
 		m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
 
 		//Static object creation
-		m_GroundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0), *m_Material);
+		m_GroundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0.5), *m_Material);
 		m_Scene->addActor(*m_GroundPlane);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
 
-	PhysicsSystem::~PhysicsSystem()
-	{
-		
-	}
-
 	bool PhysicsSystem::TESTUpdate()
 	{
+#if 0
 		const float stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
 		const unsigned stackSize = 3, numOfStacks = 1;
 
 		for (physx::PxU32 i = 0; i < numOfStacks; i++)
 			CreateStack(physx::PxTransform({ 0, 0, stackInitialZ - (stackSeparation * i) }), stackSize, shapeHalfExtent);
+#endif
+
+		//GO e1 = _ecs_manager->CreateGO("box 1");
+		//e1->GetComponent<Transform>().m_Position = {};
+		//ConstructBoxCollider(e1);
+
+		//GO e2 = _ecs_manager->CreateGO("box 2");
+		//e2->GetComponent<Transform>().m_Position = { 1,1,0 };
+		//ConstructBoxCollider(e2);
 
 		return m_IsReadyForUpdate = true;
 	}
@@ -103,19 +133,30 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
-		// deletes a SphereCollider every second, if found
-		static std::time_t start_timer = std::time(nullptr);
-		auto const result = std::time(nullptr) - start_timer;
-		if (result >= 1)
-		{
-			auto vec = ECSManager::Instance().GetEntities<SphereCollider>();
-			if (!vec.empty())
-				DestructSphereCollider(vec.front());
-			std::time(&start_timer);
-		}
-
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
+
+		auto UpdateTransform = []<typename Collider>
+		{
+			for (Entity& entity : ECSManager::Instance().GetEntities<Collider>())
+			{
+				entity->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
+
+				// I hope this is right XO
+				auto eulerAngles = QuatToEulerAngles(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().q);
+				entity->GetComponent<Transform>().m_Rotation = PxVec3ToGLMVec3(eulerAngles) / 3.141592654f * 180.0f;
+
+				//printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
+				//glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
+				//glm::vec3 rot = entity->GetComponent<Transform>().m_Rotation;
+				//printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
+				//printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
+			}
+		};
+
+		// because I can't do UpdateTransform< Type >() :(
+		UpdateTransform.operator() < BoxCollider > ();
+		UpdateTransform.operator() < SphereCollider > ();
 	}
 
 	void PhysicsSystem::OnDestroyGO()
@@ -166,7 +207,7 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	void PhysicsSystem::ConstructSphereCollider(const Entity& go, const float radius, const glm::vec3& offset) const
+	void PhysicsSystem::ConstructSphereCollider(const Entity& go, const float radius, const Vector3& offset) const
 	{
 		auto& sphereCollider = go->AddComponent<SphereCollider>();
 		// add component if missing, otherwise get existing component
@@ -207,7 +248,7 @@ namespace TRE
 		go->RemoveComponent<SphereCollider>();
 	}
 
-	void PhysicsSystem::ConstructBoxCollider(const Entity& go, const glm::vec3& halfExtents, const glm::vec3& offset) const
+	void PhysicsSystem::ConstructBoxCollider(const Entity& go, const Vector3& halfExtents, const Vector3& offset) const
 	{
 		auto& boxCollider = go->AddComponent<BoxCollider>();
 		// add component if missing, otherwise get existing component
@@ -249,7 +290,7 @@ namespace TRE
 				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
 				go->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(newPos);
 				// ConstructSphereCollider(go, halfExtent);
-				ConstructBoxCollider(go, glm::vec3{ halfExtent });
+				ConstructBoxCollider(go, Vector3{ halfExtent });
 			}
 		}
 	}
