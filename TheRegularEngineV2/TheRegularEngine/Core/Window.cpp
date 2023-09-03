@@ -18,14 +18,14 @@ namespace TRE
 
 		m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
 
-		//m_RenderContext = std::make_shared<RendererContext>();
-		//m_RenderContext->CreateVulkanInstance(m_WindowHandle);
-		//m_RenderContext->SetupDebugMessage();
-		//m_RenderContext->CreateWindowSurface(m_WindowHandle);
-		//m_RenderContext->PhysicalDeviceSetup();
-		//m_RenderContext->CreateLogicalDevice();
-		//
-		//m_SwapChain.Initialize(m_RenderContext);
+		m_RenderContext = std::make_shared<RendererContext>();
+		m_RenderContext->Initialize();
+		
+		if (glfwCreateWindowSurface(RendererContext::GetVKInstance(), m_WindowHandle, nullptr, &m_Surface) != VK_SUCCESS)
+		{
+			assert(false);
+		}
+
 		//m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
 
 		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);

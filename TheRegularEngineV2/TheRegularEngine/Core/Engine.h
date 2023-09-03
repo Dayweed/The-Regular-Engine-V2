@@ -60,34 +60,27 @@ namespace TRE
 
 			VkInstance m_VKInstance{}; //Data member to hold handle to instance
 			const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-			VkDebugUtilsMessengerEXT m_DebugMessage;
 			VkPhysicalDevice m_PhysicalDevice; //Auto destroyed when instance is destroyed
 			VkDevice m_LogicalDevice;
 			VkQueue m_GraphicsQueue;
 			VkQueue m_PresentQueue;
-			VkSurfaceKHR m_Surface;
 			const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+
 			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
-			std::vector<VkImage> m_Images;
 			VkExtent2D m_Extent;
 			VkFormat m_Format;
-			std::vector<VkImageView> m_SwapChainImageViews;
 			VkRenderPass m_RenderPass;
+			std::vector<VkImage> m_Images;
+			std::vector<VkImageView> m_SwapChainImageViews;
 			std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 			VkCommandPool m_CommandPool;
-
 			std::vector<VkCommandBuffer> m_Commandbuffer;
-
 			std::vector<VkSemaphore> m_ImageAvailable;
 			std::vector<VkSemaphore> m_ImageRendered;
 			std::vector<VkFence> m_FlightFence;
 			uint32_t m_CurrentFrame = 0;
 
-			void SetupDebugMessage();
-			void CreateVulkanInstance();
-			bool CheckValidationLayerSupported();
-			std::vector<const char*> GetRequiredExtensions() const;
-			static VkResult CreateDebugMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debugmsger);
 			void PhysicalDeviceSetup();
 			uint32_t GetPhysicalDeviceCount();
 			bool IsPhysicalDeviceSuitable(VkPhysicalDevice pd);

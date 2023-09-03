@@ -93,12 +93,7 @@ namespace TRE
 		//if (m_EngineInfo.EnableEditor)
 		//	m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
-		CreateVulkanInstance();
-		SetupDebugMessage();
-		if (glfwCreateWindowSurface(m_VKInstance, m_Window->GetWindowHandle(), nullptr, &m_Surface) != VK_SUCCESS)
-		{
-			assert(false);
-		}
+		m_VKInstance = RendererContext::GetVKInstance();
 		PhysicalDeviceSetup();
 		CreateLogicalDevice();
 		CreateSwapChain();
@@ -274,24 +269,24 @@ namespace TRE
 	SwapChainDetails Engine::QuerySwapChainSupprt(VkPhysicalDevice device)
 	{
 		SwapChainDetails Details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Surface, &Details.Capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Window->GetSurface(), &Details.Capabilities);
 
 		uint32_t FormatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &FormatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Window->GetSurface(), &FormatCount, nullptr);
 
 		if (FormatCount != 0)
 		{
 			Details.Formats.resize(FormatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &FormatCount, Details.Formats.data());
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Window->GetSurface(), &FormatCount, Details.Formats.data());
 		}
 
 		uint32_t PresentCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &PresentCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Window->GetSurface(), &PresentCount, nullptr);
 
 		if (PresentCount != 0)
 		{
 			Details.PresentModes.resize(PresentCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &PresentCount, Details.PresentModes.data());
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Window->GetSurface(), &PresentCount, Details.PresentModes.data());
 		}
 
 		return Details;
@@ -364,7 +359,7 @@ namespace TRE
 			}
 
 			VkBool32 PresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, m_Surface, &PresentSupport);
+			vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, m_Window->GetSurface(), &PresentSupport);
 
 			if (PresentSupport)
 			{
@@ -434,143 +429,6 @@ namespace TRE
 		}
 
 		return RequiredExtension.empty();
-	}
-
-	std::vector<const char*> Engine::GetRequiredExtensions() const
-	{
-		uint32_t glfwExtensionsCount = 0;
-		const char** glfwExtensions;
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionsCount); //Vulkan requires extensions to interface with window, GLFW returns the required extensions.
-
-		std::vector<const char*> AllRequiredExtensions(glfwExtensions, glfwExtensions + glfwExtensionsCount);
-
-		if (EnableValidationLayer)
-		{
-			AllRequiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-		}
-
-		return AllRequiredExtensions;
-	}
-
-	bool Engine::CheckValidationLayerSupported()
-	{
-		uint32_t LayerCount = 0;
-		vkEnumerateInstanceLayerProperties(&LayerCount, nullptr); //Returns the available layers
-
-		std::vector<VkLayerProperties> AvailableLayers(LayerCount);
-		vkEnumerateInstanceLayerProperties(&LayerCount, AvailableLayers.data());
-
-		for (const char* LayerName : m_ValidationLayers)
-		{
-			bool LayerFound = false;
-			for (const auto& LayerProp : AvailableLayers)
-			{
-				if (strcmp(LayerName, LayerProp.layerName) == 0)
-				{
-					LayerFound = true;
-					break;
-				}
-			}
-
-			if (!LayerFound)
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	void Engine::CreateVulkanInstance()
-	{
-		if (EnableValidationLayer && !CheckValidationLayerSupported())
-		{
-			assert(false);
-		}
-
-		auto Extensions = GetRequiredExtensions();
-
-		std::cout << "GLFW Extensions to be supported: \n";
-		for (uint32_t i = 0; i < Extensions.size(); i++)
-		{
-			std::cout << Extensions[i] << "\n";
-		}
-
-		VkApplicationInfo VulkanAppInfo{}; //Value initialization pnext to nullptr
-		VulkanAppInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		VulkanAppInfo.pApplicationName = "The Regular Engine";
-		VulkanAppInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		VulkanAppInfo.pEngineName = "The Regular Engine";
-		VulkanAppInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		VulkanAppInfo.apiVersion = VK_API_VERSION_1_0;
-
-		VkInstanceCreateInfo VulkanInstanceInfo{};
-		VulkanInstanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-		VulkanInstanceInfo.pApplicationInfo = &VulkanAppInfo;
-		VulkanInstanceInfo.enabledExtensionCount = static_cast<uint32_t>(Extensions.size());
-		VulkanInstanceInfo.ppEnabledExtensionNames = Extensions.data();
-		VulkanInstanceInfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
-		VulkanInstanceInfo.ppEnabledLayerNames = m_ValidationLayers.data();
-		VulkanInstanceInfo.pNext = nullptr;
-
-		uint32_t ExtensionCount = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &ExtensionCount, nullptr);
-
-		std::vector<VkExtensionProperties> ExtensionsList(ExtensionCount);
-		vkEnumerateInstanceExtensionProperties(nullptr, &ExtensionCount, ExtensionsList.data());
-
-		std::cout << "\nVulkan supported extensions: \n";
-		for (const auto& Extension : ExtensionsList)
-		{
-			std::cout << Extension.extensionName << " | " << Extension.specVersion << "\n";
-		}
-
-		VkResult result = vkCreateInstance(&VulkanInstanceInfo, nullptr, &m_VKInstance); //Creates instance
-		(result != VK_SUCCESS) ? throw std::runtime_error("\nFailed to create vulkan instance\n") : std::cout << "\nVulkan instance created\n\n";
-	}
-
-	static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(VkDebugUtilsMessageSeverityFlagBitsEXT MessageSeverity, VkDebugUtilsMessageTypeFlagsEXT MessageType,
-		const VkDebugUtilsMessengerCallbackDataEXT* CallBackData, void* UserData)
-	{
-		UNREFERENCED_PARAMETER(MessageType);
-		UNREFERENCED_PARAMETER(UserData);
-
-		std::string Message;
-		if (MessageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		{
-			Message += "[Vulkan Debug Warning] ";
-			Message += CallBackData->pMessage;
-			TRE_CORE_INFO(Message);
-		}
-		else if (MessageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		{
-			Message += "[Vulkan Debug Error] ";
-			Message += CallBackData->pMessage;
-			TRE_CORE_INFO(Message);
-		}
-		
-		return VK_FALSE;
-	}
-
-	VkResult Engine::CreateDebugMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debugmsger)
-	{
-		auto CreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-		auto res = CreateDebugUtilsMessengerEXT(instance, info, nullptr, debugmsger);
-		return res;
-	}
-
-	void Engine::SetupDebugMessage()
-	{
-		VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
-		DebugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-		DebugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		DebugCreateInfo.pfnUserCallback = DebugCallBack;
-		DebugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-
-		if (CreateDebugMessengerEXT(m_VKInstance, &DebugCreateInfo, nullptr, &m_DebugMessage) != VK_SUCCESS)
-		{
-			assert(false);
-		}
 	}
 
 	void Engine::PhysicalDeviceSetup()
@@ -695,7 +553,7 @@ namespace TRE
 
 		VkSwapchainCreateInfoKHR CreateInfo{};
 		CreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		CreateInfo.surface = m_Surface;
+		CreateInfo.surface = m_Window->GetSurface();
 		CreateInfo.minImageCount = ImageCount;
 		CreateInfo.imageFormat = surfaceformat.format;
 		CreateInfo.imageColorSpace = surfaceformat.colorSpace;

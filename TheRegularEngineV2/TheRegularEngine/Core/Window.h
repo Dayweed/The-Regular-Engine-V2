@@ -33,6 +33,7 @@ namespace TRE
 			WindowConfig& GetWindowConfig();
 			std::shared_ptr<RendererContext> GetRenderContext();
 			SwapChain GetSwapChain();
+			VkSurfaceKHR GetSurface() { return m_Surface; }
 
 		private:
 			GLFWwindow* m_WindowHandle = nullptr;
@@ -40,6 +41,7 @@ namespace TRE
 
 			std::shared_ptr<RendererContext> m_RenderContext;
 			SwapChain m_SwapChain;
+			VkSurfaceKHR m_Surface;
 
 			static bool FrameBufferResized;
 	};
