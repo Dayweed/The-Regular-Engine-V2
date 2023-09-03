@@ -120,13 +120,13 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 
 		// Allocate Default Size for Memory Manager
-		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
+		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
 	}
 
 	void Engine::Update()
 	{
 		// To remove eventually
-		ECSManager::Instance().TESTRUN();
+		//ECSManager::Instance().TESTRUN();
 
 		DemoScene();
 
@@ -170,5 +170,6 @@ namespace TRE
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
+		MemoryManager::Instance().DeleteEntities();
 	}
 }

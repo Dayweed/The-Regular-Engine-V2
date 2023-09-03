@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ECS.h"
+#include "MemoryManager.h"
 #include "Core/Logger.h"
 
 namespace TRE
@@ -21,11 +22,12 @@ namespace TRE
 		{
 			// Remove from m_EntityList
 			m_EntityList.erase(m_EntityList.find(static_cast<Entity_ID>(object->m_Entity)));
-			object->AbandonChildren();
-			// Release all components and entity itself
-			registry.destroy(object->m_Entity);
-			// Free unique ptr from the object
-			object.reset();
+			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<Entity_ID>(object->m_Entity));
+			//object->AbandonChildren();
+			//// Release all components and entity itself
+			//registry.destroy(object->m_Entity);
+			//// Free unique ptr from the object
+			//object.reset();
 		}
 	}
 
@@ -41,11 +43,15 @@ namespace TRE
 
 	Entity ECSManager::CreateEntity(std::string name)
 	{
-		Entity obj{ std::make_shared<Ent>() };
+		/*Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = registry.create();
 		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 		obj->AddComponent<Properties>().m_Name = name;
 		obj->AddComponent<Transform>();
+		return obj;*/
+		Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
+		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+		obj->GetComponent<Properties>().m_Name = name;
 		return obj;
 	}
 
@@ -57,8 +63,11 @@ namespace TRE
 
 	Entity ECSManager::CloneEntity(Entity& object, std::string name)
 	{
-		Entity obj{ std::make_shared<Ent>() };
-		obj->m_Entity = registry.create();
+		Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
+		// Remove all components in one entity
+		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
+			elem.second.remove(obj->m_Entity);
+		}
 		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())

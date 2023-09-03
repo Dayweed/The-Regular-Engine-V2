@@ -28,7 +28,7 @@ namespace TRE
 		static MemoryManager& Instance();
 
 		// ECS Manager
-		Entity GetUndeployedEntity();
+		Entity& GetUndeployedEntity();
 		void ReleaseDeployedEntity(Entity_ID id);
 
 		bool AllocateEntitySize(size_t size_);

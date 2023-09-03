@@ -786,7 +786,8 @@ namespace TRE
 	std::vector<Entity> ECSManager::GetEntities()
 	{
 		std::vector<Entity> objects{};
-		auto view = registry.view<Comp, Others...>();
+		entt::exclude_t<Undeployed> u;
+		auto view = registry.view<Comp, Others...>(u);
 		objects.reserve(m_EntityList.size());
 
 		// Get all Entity owning the entities

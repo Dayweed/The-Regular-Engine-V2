@@ -31,11 +31,18 @@ namespace TRE
 		return instance;
 	}
 
-	Entity MemoryManager::GetUndeployedEntity()
+	Entity& MemoryManager::GetUndeployedEntity()
 	{
 		// Allocate additional space if there is no undeployed
 		if (m_UndeployedEntityList.empty())
 		{
+			if (m_AllEntityList.empty())
+			{
+				std::string funcName{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + funcName + "] m_AllEntityList is no empty! (Remember to allocate size for MemoryManager at RegisterECS)");
+				assert(!m_AllEntityList.empty());
+			}
+
 			AllocateEntitySize(m_AllEntityList.size());
 		}
 
@@ -44,6 +51,7 @@ namespace TRE
 		m_UndeployedEntityList.erase(id);
 		m_DeployedEntityList.emplace(id);
 		m_AllEntityList[id]->RemoveComponent<Undeployed>();
+
 		return m_AllEntityList[id];
 	}
 
@@ -52,7 +60,10 @@ namespace TRE
 		// Remove id from Deployed and put id back to undeployed
 		m_DeployedEntityList.erase(id);
 		m_UndeployedEntityList.emplace(id);
-		ECSManager::Instance().GetRegistry().release(m_AllEntityList[id]->m_Entity);
+		// Remove all components in one entity
+		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
+			elem.second.remove(m_AllEntityList[id]->m_Entity);
+		}
 		// Readd Basic Components
 		m_AllEntityList[id]->AddComponent<Properties>().m_Name = "AllocatedEntity";
 		m_AllEntityList[id]->AddComponent<Transform>();
@@ -106,7 +117,8 @@ namespace TRE
 			// Remove from m_EntityList
 			object.second->AbandonChildren();
 			// Release all components and entity itself
-			ECSManager::Instance().GetRegistry().destroy(object.second->m_Entity);
+			if (ECSManager::Instance().GetRegistry().valid(object.second->m_Entity))
+				ECSManager::Instance().GetRegistry().destroy(object.second->m_Entity);
 			// Free unique ptr from the object
 			object.second.reset();
 		}
@@ -114,6 +126,7 @@ namespace TRE
 		m_AllEntityList.clear();
 		m_DeployedEntityList.clear();
 		m_UndeployedEntityList.clear();
+		ECSManager::Instance().GetRegistry().clear();
 
 		// Successful deletion
 		return true;
