@@ -29,8 +29,8 @@ namespace TRE
 				//VkImageView DepthImageView = nullptr;
 			};
 
-			SwapChain() = default;
-			void Initialize(VkInstance Instance, const std::shared_ptr<Device>& LogicalDevice, VkSurfaceKHR Handle);
+			SwapChain(VkDevice LogicalDevice, GLFWwindow* Handle);
+			void Initialize();
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
 			void DestroySwapChain();
@@ -55,10 +55,11 @@ namespace TRE
 			VkExtent2D GetSwapChainExtent();
 			SwapChainSettings GetSwapChainSettings();
 			uint32_t GetCurrentImageIndex();
+			VkSurfaceKHR GetSurface() { return m_WindowSurface; }
 
 		private:
 			VkInstance m_Instance = nullptr;
-			std::shared_ptr<Device> m_LogicalDevice;
+			VkDevice  m_LogicalDevice;
 		
 		private:
 			VkSwapchainKHR m_SwapChain;

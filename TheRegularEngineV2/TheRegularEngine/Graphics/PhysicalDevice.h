@@ -39,7 +39,5 @@ namespace TRE
 			
 			std::unordered_set<std::string> m_SupportedExtensions;
 			VkFormat m_DepthFormat;
-
-			friend class Device;
 	};
 }

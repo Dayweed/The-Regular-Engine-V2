@@ -69,14 +69,14 @@ namespace TRE
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
-		viewport.width = static_cast<float>(SwapChain.GetWidth());
-		viewport.height = static_cast<float>(SwapChain.GetHeight());
+		viewport.width = static_cast<float>(SwapChain->GetWidth());
+		viewport.height = static_cast<float>(SwapChain->GetHeight());
 		viewport.minDepth = 0.f;
 		viewport.maxDepth = 1.f;
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = SwapChain.GetSwapChainExtent();
+		scissor.extent = SwapChain->GetSwapChainExtent();
 
 		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -156,7 +156,7 @@ namespace TRE
 			.Build();
 
 		//Create descriptor set layout
-		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_UBOBuffers.resize(imageCount);
 		for (int i = 0; i < m_UBOBuffers.size(); i++)
 		{

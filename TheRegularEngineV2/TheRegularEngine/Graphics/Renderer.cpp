@@ -25,13 +25,13 @@ namespace TRE
 
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		RenderPassCreateInfo.ImageFormat = SwapChain.GetColorFormat();
-		RenderPassCreateInfo.DepthImageFormat = SwapChain.GetDepthFormat();
+		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
+		RenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
 		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		m_Renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
 		Create();
 
-		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		// Create sampler to sample from the attachment in the fragment shader
 		VkSamplerCreateInfo samplerInfo{};
@@ -55,7 +55,7 @@ namespace TRE
 
 		VkCommandPoolCreateInfo CmdPoolCreateInfo{};
 		CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		CmdPoolCreateInfo.queueFamilyIndex = SwapChain.GetQueueIndex();
+		CmdPoolCreateInfo.queueFamilyIndex = SwapChain->GetQueueIndex();
 		CmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 		VkCommandBufferAllocateInfo CommandBufferAllocateInfo{};
@@ -87,7 +87,7 @@ namespace TRE
 
 	void Renderer::Create()
 	{
-		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_ColorImages.resize(ImageCount);
 		m_DepthImages.resize(ImageCount);
 		m_FrameBuffer.resize(ImageCount);
@@ -97,14 +97,14 @@ namespace TRE
 		// Color attachment
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			m_ColorImages[x] = std::make_unique<Image>(SwapChain.GetWidth(), SwapChain.GetHeight(), SwapChain.GetColorFormat(), 
+			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(),
 				VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 
 		// Depth attachment
 		for (int x = 0; x < m_DepthImages.size(); x++)
 		{
-			m_DepthImages[x] = std::make_unique<Image>(SwapChain.GetWidth(), SwapChain.GetHeight(), SwapChain.GetDepthFormat(),
+			m_DepthImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetDepthFormat(),
 								VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
 
@@ -116,8 +116,8 @@ namespace TRE
 			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView()};
 			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			fbufCreateInfo.pAttachments = attachments.data();
-			fbufCreateInfo.width = SwapChain.GetWidth();
-			fbufCreateInfo.height = SwapChain.GetHeight();
+			fbufCreateInfo.width = SwapChain->GetWidth();
+			fbufCreateInfo.height = SwapChain->GetHeight();
 			fbufCreateInfo.layers = 1;
 
 			if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &fbufCreateInfo, nullptr, &m_FrameBuffer[x]); Result != VK_SUCCESS)
@@ -168,8 +168,8 @@ namespace TRE
 
 	void Renderer::BeginFrame()
 	{
-		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentBufferIndex();
-		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex();
+		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -191,15 +191,15 @@ namespace TRE
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain().GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain().GetHeight());
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_Commandbuffers[Index], 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain().GetSwapChainExtent();
+		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
 		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
