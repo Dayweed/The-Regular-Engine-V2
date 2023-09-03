@@ -19,12 +19,14 @@ namespace TRE
 			VkQueue GetGraphicsQ();
 			VkQueue GetComputeQ();
 			const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-			const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+			
 			uint32_t FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags);
+		
+		private:
+			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 
 		private:
 			VkDevice m_LogicalDevice;
-			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 			VkPhysicalDeviceFeatures m_EnabledFeatures;
 			VkCommandPool m_CommandPool;
 			VkCommandPool m_ComputeCommandPool;

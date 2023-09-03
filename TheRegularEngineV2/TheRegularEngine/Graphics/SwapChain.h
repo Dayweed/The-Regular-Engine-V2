@@ -31,7 +31,7 @@ namespace TRE
 			};
 
 			SwapChain();
-			void Initialize(VkDevice LogicalDevice, GLFWwindow* Handle, VkQueue GraphicsQ, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface);
+			void Initialize(std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
 			
@@ -53,7 +53,6 @@ namespace TRE
 			VkExtent2D GetSwapChainExtent();
 			SwapChainSettings GetSwapChainSettings();
 			uint32_t GetCurrentImageIndex();
-			VkSurfaceKHR& GetSurface() { return m_WindowSurface; }
 
 		public: //TBR
 			void CreateSwapChain();
@@ -71,23 +70,13 @@ namespace TRE
 			VkPresentModeKHR ChooseSwapChainPresentMode(const std::vector<VkPresentModeKHR>& AvailableModes);
 			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities);
 			
-			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 			GLFWwindow* m_Handle;
-			VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
-			VkExtent2D m_Extent;
 			VkFormat m_Format;
-			VkRenderPass m_RenderPass;
-			std::vector<VkImage> m_Images;
-			std::vector<VkImageView> m_SwapChainImageViews;
-			std::vector<VkFramebuffer> m_SwapChainFramebuffers;
-
-			std::vector<VkSemaphore> m_ImageAvailable;
-			std::vector<VkSemaphore> m_ImageRendered;
-			std::vector<VkFence> m_FlightFence;
-
+			
 		private:
 			VkInstance m_Instance = nullptr;
-			VkDevice  m_LogicalDevice;
+			std::shared_ptr<Device> m_LogicalDevice;
+			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 		
 		private:
 			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
@@ -96,9 +85,9 @@ namespace TRE
 
 			uint32_t m_Width = 1600;
 			uint32_t m_Height = 900;
-			//VkExtent2D m_Extent;
+			VkExtent2D m_Extent;
 
-			//std::vector<SwapChainImage> m_SwapChainImages;
+			std::vector<SwapChainImage> m_SwapChainImages;
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;
 
@@ -115,15 +104,13 @@ namespace TRE
 			};
 
 			std::vector<Semaphores> m_Semaphores;
-
 			std::vector<VkFence> m_WaitFences;
-			//std::shared_ptr<RenderPass> m_Renderpass;
-			VkRenderPass m_Renderpass;
 
 			uint32_t m_CurrentBufferIndex = 0;
 			uint32_t m_CurrentImageIndex = 0;
 
-			std::vector<VkFramebuffer> m_FrameBuffers;
+			VkRenderPass m_RenderPass;
+			std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
 			uint32_t m_QueueIndex = UINT32_MAX;
 	};

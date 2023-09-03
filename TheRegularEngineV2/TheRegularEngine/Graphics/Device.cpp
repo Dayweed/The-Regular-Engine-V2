@@ -25,23 +25,6 @@ namespace TRE
 		return m_ComputeQ;
 	}
 
-	uint32_t Device::FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags)
-	{
-		VkPhysicalDeviceMemoryProperties MemoryProperties = m_PhysicalDevice->GetPhysicalDeviceMemoryProperties();
-
-		for (uint32_t x = 0; x < MemoryProperties.memoryTypeCount; x++)
-		{
-			if ((memorytypebits & (1 << x)) && (MemoryProperties.memoryTypes[x].propertyFlags & MemoryPropertyFlags) == MemoryPropertyFlags)
-			{
-				return x;
-			}
-		}
-
-		TRE_CORE_ERROR("Unable to find memory type");
-		assert(false);
-		return 0;
-	}
-
 	Device::Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features)
 	{
 		m_PhysicalDevice = physicalDevice;
@@ -66,6 +49,7 @@ namespace TRE
 		VkPhysicalDeviceFeatures physicalfeatures{}; //Later
 		physicalfeatures.samplerAnisotropy = VK_TRUE;
 
+		const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 		VkDeviceCreateInfo deviceinfo{};
 		deviceinfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		deviceinfo.pQueueCreateInfos = AllQueueInfos.data();
@@ -91,9 +75,6 @@ namespace TRE
 
 		vkGetDeviceQueue(m_LogicalDevice, queuefamily.Graphics, 0, &m_GraphicsQ);
 		vkGetDeviceQueue(m_LogicalDevice, queuefamily.Present, 0, &m_ComputeQ);
-		//std::vector<const char*> DeviceLevelExtensions;
-		////assert(m_PhysicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME)); //cannot dun have else cannot present on screen
-		//DeviceLevelExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 		//VkDeviceCreateInfo DeviceCreateInfo = {};
 		//DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -103,32 +84,23 @@ namespace TRE
 		//DeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(DeviceLevelExtensions.size());
 		//DeviceCreateInfo.ppEnabledExtensionNames = DeviceLevelExtensions.data();
 
-		//if (auto Result = vkCreateDevice(m_PhysicalDevice->m_PhysicalDevice, &DeviceCreateInfo, nullptr, &m_LogicalDevice); Result != VK_SUCCESS)
-		//{
-		//	TRE_CORE_CRITICAL("Unable to create Logical Device");
-		//	assert(Result == VK_SUCCESS);
-		//}
+		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
+		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilies().Graphics;
+		CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-		//VkCommandPoolCreateInfo CommandPoolCreateInfo{};
-		//CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		//CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Graphics;
-		//CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_CommandPool); Result != VK_SUCCESS)
+		{
+			TRE_CORE_CRITICAL("Unable to create command pool for graphics");
+			assert(Result == VK_SUCCESS);
+		}
 
-		//if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_CommandPool); Result != VK_SUCCESS)
-		//{
-		//	TRE_CORE_CRITICAL("Unable to create command pool for graphics");
-		//	assert(Result == VK_SUCCESS);
-		//}
-
-		//CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilies.Compute;
-		//if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_ComputeCommandPool); Result != VK_SUCCESS)
-		//{
-		//	TRE_CORE_CRITICAL("Unable to create command pool for compute");
-		//	assert(Result == VK_SUCCESS);
-		//}
-
-		//vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_Family.Graphics, 0, &m_GraphicsQ);
-		//vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_Family.Compute, 0, &m_ComputeQ);
+		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilies().Present;
+		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_ComputeCommandPool); Result != VK_SUCCESS)
+		{
+			TRE_CORE_CRITICAL("Unable to create command pool for compute");
+			assert(Result == VK_SUCCESS);
+		}
 	}
 
 	Device::~Device()
@@ -230,5 +202,22 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 		return cmdBuffer;
+	}
+
+	uint32_t Device::FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags)
+	{
+		VkPhysicalDeviceMemoryProperties MemoryProperties = m_PhysicalDevice->GetPhysicalDeviceMemoryProperties();
+
+		for (uint32_t x = 0; x < MemoryProperties.memoryTypeCount; x++)
+		{
+			if ((memorytypebits & (1 << x)) && (MemoryProperties.memoryTypes[x].propertyFlags & MemoryPropertyFlags) == MemoryPropertyFlags)
+			{
+				return x;
+			}
+		}
+
+		TRE_CORE_ERROR("Unable to find memory type");
+		assert(false);
+		return 0;
 	}
 }

@@ -4,13 +4,6 @@
 
 namespace TRE
 {
-	struct QueueFamilyIndices
-	{
-		int32_t Graphics = -1;
-		int32_t Compute = -1;
-		//int32_t Transfer = -1;
-	};
-
 	struct QueueFamilies
 	{
 		int32_t Graphics = -1;
@@ -32,8 +25,8 @@ namespace TRE
 			PhysicalDevice(VkSurfaceKHR Surface);
 			~PhysicalDevice();
 
-			QueueFamilyIndices GetQueueFamilies();
-			QueueFamilyIndices GetQueueFamilies(int flags);
+			QueueFamilies GetQueueFamilies();
+			QueueFamilies GetQueueFamilies(int flags);
 			VkFormat GetDepthFormat();
 			VkPhysicalDevice GetPhysicalDevice() const;
 			VkPhysicalDeviceProperties GetPhysicalDeviceProperties();
@@ -46,7 +39,7 @@ namespace TRE
 			bool IsPhysicalDeviceSuitable(VkPhysicalDevice pd);
 			SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
 			bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-			const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+			
 
 		private:
 			VkSurfaceKHR m_Surface;
@@ -55,7 +48,7 @@ namespace TRE
 			VkPhysicalDeviceFeatures m_Features;
 			VkPhysicalDeviceMemoryProperties m_MemoryProperties;
 
-			QueueFamilyIndices m_QueueFamilies;
+			QueueFamilies m_QueueFamilies;
 			std::vector <VkQueueFamilyProperties> m_QueueFamilyProperties;
 			std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
 			

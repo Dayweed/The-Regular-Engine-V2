@@ -24,19 +24,24 @@ namespace TRE
 		return Get()->GetDeviceInternally();
 	}
 
-	std::shared_ptr<Device> RendererContext::GetDeviceInternally()
-	{
-		return m_Devices;
-	}
-
-	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDeviceInternally()
-	{
-		return m_PhysicalDevices;
-	}
-
 	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDevice()
 	{
 		return Get()->GetPhysicalDeviceInternally();
+	}
+
+	std::shared_ptr<Device>& RendererContext::GetDeviceInternally()
+	{
+		return m_Device;
+	}
+
+	std::shared_ptr<PhysicalDevice>& RendererContext::GetPhysicalDeviceInternally()
+	{
+		return m_PhysicalDevice;
+	}
+
+	VkSurfaceKHR RendererContext::GetSurface()
+	{
+		return m_Surface;
 	}
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -70,7 +75,7 @@ namespace TRE
 
 	RendererContext::~RendererContext()
 	{
-		vkDeviceWaitIdle(Engine::GetInstance().GetWindow()->GetDevice());
+		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
 		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
 		//m_Device->Destroy();
@@ -78,7 +83,7 @@ namespace TRE
 		m_instance = nullptr;
 	}
 
-	void RendererContext::Initialize()
+	void RendererContext::Initialize(GLFWwindow* Handle)
 	{
 		TRE_CORE_INFO("Initializing Renderer Context");
 		if (int Supported = glfwVulkanSupported(); !Supported)
@@ -195,6 +200,14 @@ namespace TRE
 				assert(Result == VK_SUCCESS);
 			}
 		}
+
+		if (glfwCreateWindowSurface(RendererContext::GetVKInstance(), Handle, nullptr, &m_Surface) != VK_SUCCESS)
+		{
+			assert(false);
+		}
+
+		m_PhysicalDevice = std::make_shared<PhysicalDevice>(m_Surface);
+		m_Device = std::make_shared<Device>(m_PhysicalDevice);
 
 		//m_PhysicalDevice = std::make_shared<PhysicalDevice>();
 		//

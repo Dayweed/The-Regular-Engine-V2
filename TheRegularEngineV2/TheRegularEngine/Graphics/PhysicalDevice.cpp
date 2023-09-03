@@ -11,7 +11,7 @@ namespace TRE
 		return m_PhysicalDevice;
 	}
 
-	QueueFamilyIndices PhysicalDevice::GetQueueFamilies()
+	QueueFamilies PhysicalDevice::GetQueueFamilies()
 	{
 		return m_QueueFamilies;
 	}
@@ -28,8 +28,6 @@ namespace TRE
 	
 	QueueFamilies PhysicalDevice::FindQueueFamilies(VkPhysicalDevice dev)
 	{
-		QueueFamilies MyQueues;
-
 		uint32_t Queuecount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, nullptr); //Get number of queue by passing nullptr
 
@@ -41,7 +39,7 @@ namespace TRE
 		{
 			if (queuefamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
-				MyQueues.Graphics = i;
+				m_QueueFamilies.Graphics = i;
 			}
 
 			VkBool32 PresentSupport = false;
@@ -49,16 +47,17 @@ namespace TRE
 
 			if (PresentSupport)
 			{
-				MyQueues.Present = i;
+				m_QueueFamilies.Present = i;
 			}
 
-			if (MyQueues.IsComplete())
+			if (m_QueueFamilies.IsComplete())
 			{
 				break;
 			}
 			i++;
 		}
-		return MyQueues;
+
+		return m_QueueFamilies;
 	}
 
 	SwapChainDetails PhysicalDevice::QuerySwapChainSupprt(VkPhysicalDevice device)
@@ -94,7 +93,7 @@ namespace TRE
 
 		std::vector<VkExtensionProperties> AvailableExtensions(ExtensionCount);
 		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, AvailableExtensions.data()); //Get the properties
-
+		const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 		std::set<std::string> RequiredExtension(m_DeviceExtensions.begin(), m_DeviceExtensions.end());
 
 		for (const auto& extension : AvailableExtensions)
@@ -107,7 +106,7 @@ namespace TRE
 
 	bool PhysicalDevice::IsPhysicalDeviceSuitable(VkPhysicalDevice pd)
 	{
-		QueueFamilies queues = FindQueueFamilies(pd);
+		m_QueueFamilies = FindQueueFamilies(pd);
 		bool ExtensionSupported = CheckDeviceExtensionSupport(pd);
 
 		bool SwapChainSupported = false;
@@ -120,7 +119,7 @@ namespace TRE
 		VkPhysicalDeviceFeatures supportedFeatures;
 		vkGetPhysicalDeviceFeatures(pd, &supportedFeatures);
 
-		return queues.IsComplete() && ExtensionSupported && SwapChainSupported && supportedFeatures.samplerAnisotropy;
+		return m_QueueFamilies.IsComplete() && ExtensionSupported && SwapChainSupported && supportedFeatures.samplerAnisotropy;
 	}
 
 	uint32_t PhysicalDevice::GetPhysicalDeviceCount()
@@ -270,57 +269,57 @@ namespace TRE
 
 	}
 
-	QueueFamilyIndices PhysicalDevice::GetQueueFamilies(int flags)
+	QueueFamilies PhysicalDevice::GetQueueFamilies(int flags)
 	{
-		QueueFamilyIndices NewFamily;
+		QueueFamilies NewFamily;
 
-		if (flags & VK_QUEUE_COMPUTE_BIT)
-		{
-			for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
-			{
-				auto& properties = m_QueueFamilyProperties[x];
-				if ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
-				{
-					NewFamily.Compute = x;
-					break;
-				}
-			}
-		}
+		//if (flags & VK_QUEUE_COMPUTE_BIT)
+		//{
+		//	for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
+		//	{
+		//		auto& properties = m_QueueFamilyProperties[x];
+		//		if ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
+		//		{
+		//			NewFamily.Compute = x;
+		//			break;
+		//		}
+		//	}
+		//}
 
-		if (flags & VK_QUEUE_TRANSFER_BIT)
-		{
-			for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
-			{
-				auto& properties = m_QueueFamilyProperties[x];
-				if ((properties.queueFlags & VK_QUEUE_TRANSFER_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) 
-																	&& ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0))
-				{
-					NewFamily.Compute = x;
-					break;
-				}
-			}
-		}
+		//if (flags & VK_QUEUE_TRANSFER_BIT)
+		//{
+		//	for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
+		//	{
+		//		auto& properties = m_QueueFamilyProperties[x];
+		//		if ((properties.queueFlags & VK_QUEUE_TRANSFER_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) 
+		//															&& ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0))
+		//		{
+		//			NewFamily.Compute = x;
+		//			break;
+		//		}
+		//	}
+		//}
 
-		for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
-		{
-			if ((flags & VK_QUEUE_COMPUTE_BIT) && NewFamily.Compute == -1)
-			{
-				if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_COMPUTE_BIT)
-					NewFamily.Compute = x;
-			}
+		//for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
+		//{
+		//	if ((flags & VK_QUEUE_COMPUTE_BIT) && NewFamily.Compute == -1)
+		//	{
+		//		if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_COMPUTE_BIT)
+		//			NewFamily.Compute = x;
+		//	}
 
-		/*	if ((flags & VK_QUEUE_TRANSFER_BIT) && NewFamily.Transfer == -1)
-			{
-				if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_TRANSFER_BIT)
-					NewFamily.Transfer = x;
-			}*/
+		///*	if ((flags & VK_QUEUE_TRANSFER_BIT) && NewFamily.Transfer == -1)
+		//	{
+		//		if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_TRANSFER_BIT)
+		//			NewFamily.Transfer = x;
+		//	}*/
 
-			if (flags & VK_QUEUE_GRAPHICS_BIT)
-			{
-				if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-					NewFamily.Graphics = x;
-			}
-		}
+		//	if (flags & VK_QUEUE_GRAPHICS_BIT)
+		//	{
+		//		if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+		//			NewFamily.Graphics = x;
+		//	}
+		//}
 
 		return NewFamily;
 	}
