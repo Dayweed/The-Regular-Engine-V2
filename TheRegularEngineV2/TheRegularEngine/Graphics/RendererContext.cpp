@@ -70,11 +70,12 @@ namespace TRE
 
 	RendererContext::~RendererContext()
 	{
+		vkDeviceWaitIdle(Engine::GetInstance().GetWindow()->GetDevice());
 		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
 		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
 		//m_Device->Destroy();
-		//vkDestroyInstance(m_instance, nullptr);
-		//m_instance = nullptr;
+		vkDestroyInstance(m_instance, nullptr);
+		m_instance = nullptr;
 	}
 
 	void RendererContext::Initialize()
