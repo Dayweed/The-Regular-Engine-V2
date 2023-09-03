@@ -93,7 +93,21 @@ namespace TRE
 		//if (m_EngineInfo.EnableEditor)
 		//	m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
-		InitVulkan();
+		CreateVulkanInstance();
+		SetupDebugMessage();
+		if (glfwCreateWindowSurface(m_VKInstance, m_Window->GetWindowHandle(), nullptr, &m_Surface) != VK_SUCCESS)
+		{
+			assert(false);
+		}
+		PhysicalDeviceSetup();
+		CreateLogicalDevice();
+		CreateSwapChain();
+		CreateImageViews();
+		CreateRenderPass();
+		CreateCommandPool();
+		CreateFrameBuffer();
+		CreateCommandbuffer();
+		CreateSyncObjects();
 	}
 
 	Engine::~Engine()
@@ -163,17 +177,12 @@ namespace TRE
 				RecreateSwapChain();
 				return;
 			}
-			else if (Result != VK_SUCCESS && Result != VK_SUBOPTIMAL_KHR)
-			{
-				throw std::runtime_error("Failed to acquire swap chain image");
-			}
 
 			vkResetFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentFrame]);
 
 			vkResetCommandBuffer(m_Commandbuffer[m_CurrentFrame], 0);
 
 			RecordCommandBuffer(m_Commandbuffer[m_CurrentFrame], ImageIndex);
-
 
 			VkSubmitInfo SubmitInfo{};
 			SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -192,7 +201,7 @@ namespace TRE
 
 			if (vkQueueSubmit(m_GraphicsQueue, 1, &SubmitInfo, m_FlightFence[m_CurrentFrame]) != VK_SUCCESS)
 			{
-				throw std::runtime_error("Failed to submit draw command buffer");
+				assert(false);
 			}
 
 			VkPresentInfoKHR PresentInfo{};
@@ -213,10 +222,6 @@ namespace TRE
 				TRE_CORE_INFO("Recreate");
 				RecreateSwapChain();
 			}
-			else if (Result != VK_SUCCESS)
-			{
-				throw std::runtime_error("Failed to present swap chain image");
-			}
 
 			m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame
 
@@ -228,22 +233,6 @@ namespace TRE
 	{
 		_system_manager->ShutdownSystem();
 		_ecs_manager->DestroyAll();
-	}
-
-	void Engine::InitVulkan()
-	{
-		CreateVulkanInstance();
-		SetupDebugMessage();
-		CreateWindowSurface();
-		PhysicalDeviceSetup();
-		CreateLogicalDevice();
-		CreateSwapChain();
-		CreateImageViews();
-		CreateRenderPass();
-		CreateCommandPool();
-		CreateFrameBuffer();
-		CreateCommandbuffer();
-		CreateSyncObjects();
 	}
 
 	VkSurfaceFormatKHR Engine::ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats)
@@ -270,14 +259,7 @@ namespace TRE
 		}
 		return VK_PRESENT_MODE_FIFO_KHR; //FIFO Queue for images, less energy consumed
 	}
-	void Engine::PopulateDebugMessengerInfo(VkDebugUtilsMessengerCreateInfoEXT& DebugInfo)
-	{
-		DebugInfo = {};
-		DebugInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-		DebugInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-		DebugInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-		DebugInfo.pfnUserCallback = DebugCallBack;
-	}
+
 	void Engine::CleanSwapChain()
 	{
 		for (auto fb : m_SwapChainFramebuffers)
@@ -321,13 +303,9 @@ namespace TRE
 		CommandBufferInfo.flags = 0;
 		CommandBufferInfo.pInheritanceInfo = nullptr;
 
-		if (vkBeginCommandBuffer(CommandBuffer, &CommandBufferInfo) == VK_SUCCESS)
+		if (vkBeginCommandBuffer(CommandBuffer, &CommandBufferInfo) != VK_SUCCESS)
 		{
-			//std::cout << "Command buffer begined!" << std::endl;
-		}
-		else
-		{
-			std::cout << "Command buffer unable to begin" << std::endl;
+			assert(false);
 		}
 
 		VkRenderPassBeginInfo RenderPassInfo{};
@@ -345,7 +323,6 @@ namespace TRE
 		RenderPassInfo.pClearValues = ClearColor.data();
 
 		vkCmdBeginRenderPass(CommandBuffer, &RenderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-		//vkCmdBindPipeline(CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -361,18 +338,11 @@ namespace TRE
 		scissor.offset = { 0,0 };
 		vkCmdSetScissor(CommandBuffer, 0, 1, &scissor);
 
-		/*VkBuffer vb[] = { m_VertexBuffer };
-		VkDeviceSize offset[] = { 0 };
-		vkCmdBindVertexBuffers(CommandBuffer, 0, 1, vb, offset);
-		vkCmdBindIndexBuffer(CommandBuffer, m_IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
-		vkCmdBindDescriptorSets(CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[m_CurrentFrame], 0, nullptr);
-		vkCmdDrawIndexed(CommandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);*/
-
 		vkCmdEndRenderPass(CommandBuffer);
 
 		if (vkEndCommandBuffer(CommandBuffer) != VK_SUCCESS)
 		{
-			throw std::runtime_error("Failed to record command buffer");
+			assert(false);
 		}
 	}
 	Engine::QueueFamilies Engine::FindQueueFamilies(VkPhysicalDevice dev)
@@ -425,7 +395,6 @@ namespace TRE
 
 		CreateSwapChain();
 		CreateImageViews();
-		//createDepthResources();
 		CreateFrameBuffer();
 	}
 
@@ -540,22 +509,9 @@ namespace TRE
 		VulkanInstanceInfo.pApplicationInfo = &VulkanAppInfo;
 		VulkanInstanceInfo.enabledExtensionCount = static_cast<uint32_t>(Extensions.size());
 		VulkanInstanceInfo.ppEnabledExtensionNames = Extensions.data();
-
-		VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
-
-		if (EnableValidationLayer)
-		{
-			VulkanInstanceInfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
-			VulkanInstanceInfo.ppEnabledLayerNames = m_ValidationLayers.data();
-
-			PopulateDebugMessengerInfo(DebugCreateInfo);
-			VulkanInstanceInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&DebugCreateInfo;
-		}
-		else
-		{
-			VulkanInstanceInfo.pNext = nullptr;
-			VulkanInstanceInfo.enabledLayerCount = 0;
-		}
+		VulkanInstanceInfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
+		VulkanInstanceInfo.ppEnabledLayerNames = m_ValidationLayers.data();
+		VulkanInstanceInfo.pNext = nullptr;
 
 		uint32_t ExtensionCount = 0;
 		vkEnumerateInstanceExtensionProperties(nullptr, &ExtensionCount, nullptr);
@@ -573,53 +529,45 @@ namespace TRE
 		(result != VK_SUCCESS) ? throw std::runtime_error("\nFailed to create vulkan instance\n") : std::cout << "\nVulkan instance created\n\n";
 	}
 
-	VKAPI_ATTR VkBool32 VKAPI_CALL Engine::DebugCallBack(VkDebugUtilsMessageSeverityFlagBitsEXT MessageSeverity, VkDebugUtilsMessageTypeFlagsEXT MessageType,
+	static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(VkDebugUtilsMessageSeverityFlagBitsEXT MessageSeverity, VkDebugUtilsMessageTypeFlagsEXT MessageType,
 		const VkDebugUtilsMessengerCallbackDataEXT* CallBackData, void* UserData)
 	{
 		UNREFERENCED_PARAMETER(MessageType);
 		UNREFERENCED_PARAMETER(UserData);
+
 		std::string Message;
-		if ((MessageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) || (MessageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT))
+		if (MessageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 		{
 			Message += "[Vulkan Debug Warning] ";
 			Message += CallBackData->pMessage;
-			std::cout << Message;
+			TRE_CORE_INFO(Message);
 		}
-
-		std::cerr << "Validation layer: " << CallBackData->pMessage << std::endl;
+		else if (MessageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			Message += "[Vulkan Debug Error] ";
+			Message += CallBackData->pMessage;
+			TRE_CORE_INFO(Message);
+		}
+		
 		return VK_FALSE;
 	}
 
 	VkResult Engine::CreateDebugMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debugmsger)
 	{
-		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-		if (func != nullptr)
-		{
-			return func(instance, info, allocator, debugmsger);
-		}
-		else
-		{
-			return VK_ERROR_EXTENSION_NOT_PRESENT;
-		}
+		auto CreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+		auto res = CreateDebugUtilsMessengerEXT(instance, info, nullptr, debugmsger);
+		return res;
 	}
 
 	void Engine::SetupDebugMessage()
 	{
-		if (!EnableValidationLayer) return;
+		VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
+		DebugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+		DebugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+		DebugCreateInfo.pfnUserCallback = DebugCallBack;
+		DebugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 
-		VkDebugUtilsMessengerCreateInfoEXT DebugInfo;
-		PopulateDebugMessengerInfo(DebugInfo);
-
-
-		if (CreateDebugMessengerEXT(m_VKInstance, &DebugInfo, nullptr, &m_DebugMessage) != VK_SUCCESS)
-		{
-			assert(false);
-		}
-	}
-
-	void Engine::CreateWindowSurface()
-	{
-		if (glfwCreateWindowSurface(m_VKInstance, m_Window->GetWindowHandle(), nullptr, &m_Surface) != VK_SUCCESS)
+		if (CreateDebugMessengerEXT(m_VKInstance, &DebugCreateInfo, nullptr, &m_DebugMessage) != VK_SUCCESS)
 		{
 			assert(false);
 		}
@@ -638,8 +586,6 @@ namespace TRE
 			vkGetPhysicalDeviceProperties(device, &DeviceProp);
 			std::cout << DeviceProp.deviceName << std::endl;
 		}
-		std::cout << "-----------------------------------------------------------------------------------------------" << std::endl;
-
 		for (const auto& device : PhysicalDevice)
 		{
 			if (IsPhysicalDeviceSuitable(device))
@@ -649,10 +595,7 @@ namespace TRE
 			}
 		}
 
-		if (m_PhysicalDevice == VK_NULL_HANDLE)
-		{
-			assert(false);
-		}
+		assert(m_PhysicalDevice != VK_NULL_HANDLE);
 	}
 
 	bool Engine::IsPhysicalDeviceSuitable(VkPhysicalDevice pd)
@@ -759,10 +702,7 @@ namespace TRE
 		CreateInfo.imageExtent = Extent;
 		CreateInfo.imageArrayLayers = 1;
 		CreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		if (OldSwapChain != VK_NULL_HANDLE)
 		CreateInfo.oldSwapchain = OldSwapChain;
-		else
-			CreateInfo.oldSwapchain = VK_NULL_HANDLE;
 		CreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		CreateInfo.queueFamilyIndexCount = 0;
 		CreateInfo.pQueueFamilyIndices = nullptr;
@@ -790,30 +730,23 @@ namespace TRE
 
 		for (size_t i = 0; i < m_Images.size(); i++)
 		{
-			m_SwapChainImageViews[i] = createImageView(m_Images[i], m_Format, VK_IMAGE_ASPECT_COLOR_BIT);
+			VkImageViewCreateInfo viewInfo{};
+			viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			viewInfo.image = m_Images[i];
+			viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			viewInfo.format = m_Format;
+			viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			viewInfo.subresourceRange.baseMipLevel = 0;
+			viewInfo.subresourceRange.levelCount = 1;
+			viewInfo.subresourceRange.baseArrayLayer = 0;
+			viewInfo.subresourceRange.layerCount = 1;
+
+			if (vkCreateImageView(m_LogicalDevice, &viewInfo, nullptr, &m_SwapChainImageViews[i]) != VK_SUCCESS) {
+				assert(false);
+			}
 		}
 	}
 
-	VkImageView Engine::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
-	{
-		VkImageViewCreateInfo viewInfo{};
-		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewInfo.image = image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		viewInfo.format = format;
-		viewInfo.subresourceRange.aspectMask = aspectFlags;
-		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = 1;
-		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
-
-		VkImageView ImageView;
-		if (vkCreateImageView(m_LogicalDevice, &viewInfo, nullptr, &ImageView) != VK_SUCCESS) {
-			assert(false);
-		}
-
-		return ImageView;
-	}
 	void Engine::CreateRenderPass()
 	{
 		VkAttachmentDescription ColorAttachment{};

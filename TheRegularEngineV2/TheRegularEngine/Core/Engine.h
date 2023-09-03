@@ -83,39 +83,16 @@ namespace TRE
 			std::vector<VkFence> m_FlightFence;
 			uint32_t m_CurrentFrame = 0;
 
-			void InitVulkan();
 			void SetupDebugMessage();
 			void CreateVulkanInstance();
 			bool CheckValidationLayerSupported();
 			std::vector<const char*> GetRequiredExtensions() const;
-			VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-			//-----Debug-----//
-			static 	VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(VkDebugUtilsMessageSeverityFlagBitsEXT MessageSeverity, VkDebugUtilsMessageTypeFlagsEXT MessageType,
-				const VkDebugUtilsMessengerCallbackDataEXT* CallBackData, void* UserData);
 			static VkResult CreateDebugMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debugmsger);
-			void DestroyDebugMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugmessenger, const VkAllocationCallbacks* allocator);
-			void PopulateDebugMessengerInfo(VkDebugUtilsMessengerCreateInfoEXT& createinfo);
-			//-----Debug-----//
-
-			//-----Physical Device-----//
 			void PhysicalDeviceSetup();
 			uint32_t GetPhysicalDeviceCount();
 			bool IsPhysicalDeviceSuitable(VkPhysicalDevice pd);
-			//-----Physical Device-----//
-
-			//-----Logical Device-----//
 			void CreateLogicalDevice();
-			//-----Logical Device-----//
-
-			//-----Queues-----//
 			QueueFamilies FindQueueFamilies(VkPhysicalDevice dev);
-			//-----Queues-----//
-
-			//-----Window Surface-----//
-			void CreateWindowSurface();
-			//-----Window Surface-----//
-
-			//-----Swapchain-----//
 			bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 			SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
 			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
