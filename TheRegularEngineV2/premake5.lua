@@ -158,7 +158,6 @@ project "TheRegularEditor"
 	includedirs 
 	{
 		"%{prj.name}/src",
-		"TheRegularEngine",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		"%{IncludeDir.Freetype}",
@@ -166,14 +165,15 @@ project "TheRegularEditor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
-		"%{IncludeDir.Math}",
 		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
+		"TheRegularEngine",
 	}
 
 	postbuildcommands
