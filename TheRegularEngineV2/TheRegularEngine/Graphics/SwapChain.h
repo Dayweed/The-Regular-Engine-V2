@@ -34,7 +34,6 @@ namespace TRE
 			void Initialize(VkDevice LogicalDevice, GLFWwindow* Handle, VkQueue GraphicsQ, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
-			void DestroySwapChain();
 			
 			void BeginFrame();
 			void Present();
@@ -68,7 +67,6 @@ namespace TRE
 			void RecordCommandBuffer(VkCommandBuffer CommandBuffer, uint32_t imageindex);
 			void CreateSyncObjects();
 			SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
-			QueueFamilies FindQueueFamilies(VkPhysicalDevice dev);
 			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
 			VkPresentModeKHR ChooseSwapChainPresentMode(const std::vector<VkPresentModeKHR>& AvailableModes);
 			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities);
@@ -76,26 +74,23 @@ namespace TRE
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 			GLFWwindow* m_Handle;
 			VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
-			VkSwapchainKHR m_SwapChainee = VK_NULL_HANDLE;
 			VkExtent2D m_Extent;
 			VkFormat m_Format;
 			VkRenderPass m_RenderPass;
 			std::vector<VkImage> m_Images;
 			std::vector<VkImageView> m_SwapChainImageViews;
 			std::vector<VkFramebuffer> m_SwapChainFramebuffers;
-			VkCommandPool m_CommandPool;
-			std::vector<VkCommandBuffer> m_Commandbuffer;
+
 			std::vector<VkSemaphore> m_ImageAvailable;
 			std::vector<VkSemaphore> m_ImageRendered;
 			std::vector<VkFence> m_FlightFence;
-			uint32_t m_CurrentFrame = 0;
 
 		private:
 			VkInstance m_Instance = nullptr;
 			VkDevice  m_LogicalDevice;
 		
 		private:
-			VkSwapchainKHR m_SwapChain;
+			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
 			VkSurfaceKHR m_WindowSurface;
 			SwapChainSettings m_SwapChainSettings;
 
@@ -104,16 +99,14 @@ namespace TRE
 			//VkExtent2D m_Extent;
 
 			//std::vector<SwapChainImage> m_SwapChainImages;
-			std::vector<VkImage> m_SwapChainImages;
-			std::vector<VkImageView> m_SwapChainImagesview;
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;
 
 			//std::vector<VkImage> m_DepthImages;
 			//std::vector<VkDeviceMemory> m_DepthMemory;
 
-			//VkCommandPool m_CommandPool = VK_NULL_HANDLE;
-			//std::vector<VkCommandBuffer> m_CommandBuffers;
+			VkCommandPool m_CommandPool;
+			std::vector<VkCommandBuffer> m_Commandbuffers;
 
 			struct Semaphores
 			{
@@ -128,7 +121,7 @@ namespace TRE
 			VkRenderPass m_Renderpass;
 
 			uint32_t m_CurrentBufferIndex = 0;
-			uint32_t m_CurrentImageIndex=0;
+			uint32_t m_CurrentImageIndex = 0;
 
 			std::vector<VkFramebuffer> m_FrameBuffers;
 

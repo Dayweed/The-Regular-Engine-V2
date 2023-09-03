@@ -129,7 +129,7 @@ namespace TRE
 			//Update
 
 			//Draw
-			//m_Window->GetSwapChain().BeginFrame();
+			m_Window->BeginFrame();
 			//m_Renderer->BeginFrame();
 
 			if (m_EngineInfo.EnableEditor)
@@ -145,7 +145,6 @@ namespace TRE
 			{
 				//m_VulkanEditor->EndFrame();
 			}
-			m_Window->BeginFrame();
 			m_Window->SwapBuffers();
 
 			m_Window->PollEvents();

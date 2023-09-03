@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Device.h"
+#include "RendererContext.h"
 #include "Core/Logger.h"
 
 namespace TRE
@@ -44,6 +45,52 @@ namespace TRE
 	Device::Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features)
 	{
 		m_PhysicalDevice = physicalDevice;
+
+		QueueFamilies queuefamily = m_PhysicalDevice->FindQueueFamilies(m_PhysicalDevice->GetPhysicalDevice());
+
+		std::vector<VkDeviceQueueCreateInfo> AllQueueInfos;
+		std::set<int32_t> UniqueQueueFamilies = { queuefamily.Graphics, queuefamily.Present };
+
+		float QueuePiority = 1.f;
+
+		for (uint32_t QueueFamily : UniqueQueueFamilies)
+		{
+			VkDeviceQueueCreateInfo Queueinfo{};
+			Queueinfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			Queueinfo.queueFamilyIndex = QueueFamily;
+			Queueinfo.queueCount = 1;
+			Queueinfo.pQueuePriorities = &QueuePiority;
+			AllQueueInfos.push_back(Queueinfo);
+		}
+
+		VkPhysicalDeviceFeatures physicalfeatures{}; //Later
+		physicalfeatures.samplerAnisotropy = VK_TRUE;
+
+		VkDeviceCreateInfo deviceinfo{};
+		deviceinfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		deviceinfo.pQueueCreateInfos = AllQueueInfos.data();
+		deviceinfo.queueCreateInfoCount = static_cast<uint32_t>(AllQueueInfos.size());
+		deviceinfo.pEnabledFeatures = &physicalfeatures;
+		deviceinfo.enabledExtensionCount = static_cast<uint32_t>(m_DeviceExtensions.size());
+		deviceinfo.ppEnabledExtensionNames = m_DeviceExtensions.data();
+
+		if (EnableValidationLayer)
+		{
+			deviceinfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
+			deviceinfo.ppEnabledLayerNames = m_ValidationLayers.data();
+		}
+		else
+		{
+			deviceinfo.enabledLayerCount = 0;
+		}
+
+		if (vkCreateDevice(m_PhysicalDevice->GetPhysicalDevice(), &deviceinfo, nullptr, &m_LogicalDevice) != VK_SUCCESS)
+		{
+			assert(false);
+		}
+
+		vkGetDeviceQueue(m_LogicalDevice, queuefamily.Graphics, 0, &m_GraphicsQ);
+		vkGetDeviceQueue(m_LogicalDevice, queuefamily.Present, 0, &m_ComputeQ);
 		//std::vector<const char*> DeviceLevelExtensions;
 		////assert(m_PhysicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME)); //cannot dun have else cannot present on screen
 		//DeviceLevelExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);

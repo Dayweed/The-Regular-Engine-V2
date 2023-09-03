@@ -38,8 +38,8 @@ namespace TRE
 
 	VkCommandBuffer SwapChain::GetCurrentCommandBuffer()
 	{
-		//assert(m_CurrentBufferIndex < m_CommandBuffers.size()); //Cannot go out of bound
-		//return m_CommandBuffers[m_CurrentBufferIndex];
+		//assert(m_CurrentBufferIndex < m_Commandbufferss.size()); //Cannot go out of bound
+		//return m_Commandbufferss[m_CurrentBufferIndex];
 		return nullptr;
 	}
 
@@ -465,51 +465,10 @@ namespace TRE
 		//}
 	}
 
-	void SwapChain::DestroySwapChain()
-	{
-		vkDeviceWaitIdle(m_LogicalDevice);
-
-		if (m_SwapChain)
-			vkDestroySwapchainKHR(m_LogicalDevice, m_SwapChain, nullptr);
-
-		if (m_WindowSurface)
-			vkDestroySurfaceKHR(RendererContext::GetVKInstance(), m_WindowSurface, nullptr);
-
-		for (auto& image : m_SwapChainImages)
-		{
-			//vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.ImageView, nullptr);
-			//vkDestroyImageView(m_LogicalDevice->GetLogicalDevice(), image.DepthImageView, nullptr);
-		}
-
-		//for(auto& image : m_DepthImages)
-		//	vkDestroyImage(m_LogicalDevice->GetLogicalDevice(), image, nullptr);
-
-		//for (auto& memory : m_DepthMemory)
-		//	vkFreeMemory(m_LogicalDevice->GetLogicalDevice(), memory, nullptr);
-
-		vkDestroyCommandPool(m_LogicalDevice, m_CommandPool, nullptr);
-
-		for (auto& framebuffer : m_FrameBuffers)
-		{
-			vkDestroyFramebuffer(m_LogicalDevice, framebuffer, nullptr);
-		}
-
-		//if (m_Semaphores.RenderComplete)
-		//	vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores.RenderComplete, nullptr);
-
-		//if (m_Semaphores.PresentComplete)
-		//	vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores.PresentComplete, nullptr);
-
-		for (auto& fence : m_WaitFences)
-			vkDestroyFence(m_LogicalDevice, fence, nullptr);
-
-		vkDeviceWaitIdle(m_LogicalDevice);
-	}
-
 	void SwapChain::BeginFrame()
 	{
-		vkWaitForFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentFrame], VK_TRUE, UINT64_MAX); //Wait for previous frame to finish //uin64_max disable timeout
-		VkResult Result = vkAcquireNextImageKHR(m_LogicalDevice, m_SwapChainee, UINT64_MAX, m_ImageAvailable[m_CurrentFrame], VK_NULL_HANDLE, &m_CurrentImageIndex);
+		vkWaitForFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX); //Wait for previous frame to finish //uin64_max disable timeout
+		VkResult Result = vkAcquireNextImageKHR(m_LogicalDevice, m_SwapChain, UINT64_MAX, m_ImageAvailable[m_CurrentBufferIndex], VK_NULL_HANDLE, &m_CurrentImageIndex);
 		if (Result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			TRE_CORE_INFO("No Acquire");
@@ -517,31 +476,31 @@ namespace TRE
 			return;
 		}
 
-		vkResetFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentFrame]);
+		vkResetFences(m_LogicalDevice, 1, &m_FlightFence[m_CurrentBufferIndex]);
 
-		vkResetCommandBuffer(m_Commandbuffer[m_CurrentFrame], 0);
+		vkResetCommandBuffer(m_Commandbuffers[m_CurrentBufferIndex], 0);
 	}
 
 	void SwapChain::Present()
 	{
-		RecordCommandBuffer(m_Commandbuffer[m_CurrentFrame], m_CurrentImageIndex);
+		RecordCommandBuffer(m_Commandbuffers[m_CurrentBufferIndex], m_CurrentImageIndex);
 
 		VkSubmitInfo SubmitInfo{};
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore WaitSemaphores[] = { m_ImageAvailable[m_CurrentFrame] };
+		VkSemaphore WaitSemaphores[] = { m_ImageAvailable[m_CurrentBufferIndex] };
 		VkPipelineStageFlags WaitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		SubmitInfo.waitSemaphoreCount = 1;
 		SubmitInfo.pWaitSemaphores = WaitSemaphores;
 		SubmitInfo.pWaitDstStageMask = WaitStages;
 		SubmitInfo.commandBufferCount = 1;
-		SubmitInfo.pCommandBuffers = &m_Commandbuffer[m_CurrentFrame];
+		SubmitInfo.pCommandBuffers = &m_Commandbuffers[m_CurrentBufferIndex];
 
-		VkSemaphore SingalSemaphores[] = { m_ImageRendered[m_CurrentFrame] };
+		VkSemaphore SingalSemaphores[] = { m_ImageRendered[m_CurrentBufferIndex] };
 		SubmitInfo.signalSemaphoreCount = 1;
 		SubmitInfo.pSignalSemaphores = SingalSemaphores;
 
-		if (vkQueueSubmit(m_GraphicsQueue, 1, &SubmitInfo, m_FlightFence[m_CurrentFrame]) != VK_SUCCESS)
+		if (vkQueueSubmit(m_GraphicsQueue, 1, &SubmitInfo, m_FlightFence[m_CurrentBufferIndex]) != VK_SUCCESS)
 		{
 			assert(false);
 		}
@@ -551,7 +510,7 @@ namespace TRE
 		PresentInfo.waitSemaphoreCount = 1;
 		PresentInfo.pWaitSemaphores = SingalSemaphores;
 
-		VkSwapchainKHR SwapChains[] = { m_SwapChainee };
+		VkSwapchainKHR SwapChains[] = { m_SwapChain };
 		PresentInfo.swapchainCount = 1;
 		PresentInfo.pSwapchains = SwapChains;
 		PresentInfo.pImageIndices = &m_CurrentImageIndex;
@@ -565,7 +524,7 @@ namespace TRE
 			RecreateSwapChain();
 		}
 
-		m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame
+		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame
 	}
 
 	void SwapChain::FindImageFormatAndColorSpace()
@@ -616,7 +575,7 @@ namespace TRE
 
 	void SwapChain::CreateSwapChain()
 	{
-		VkSwapchainKHR OldSwapChain = m_SwapChainee;
+		VkSwapchainKHR OldSwapChain = m_SwapChain;
 
 		SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice->GetPhysicalDevice());
 		VkSurfaceFormatKHR surfaceformat = ChooseSwapChainFormat(Details.Formats);
@@ -649,7 +608,7 @@ namespace TRE
 		CreateInfo.presentMode = PresentMode;
 		CreateInfo.clipped = VK_TRUE;
 
-		if (vkCreateSwapchainKHR(m_LogicalDevice, &CreateInfo, nullptr, &m_SwapChainee) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(m_LogicalDevice, &CreateInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
 		{
 			assert(false);
 		}
@@ -657,9 +616,9 @@ namespace TRE
 		vkDestroySwapchainKHR(m_LogicalDevice, OldSwapChain, nullptr);
 
 		uint32_t ImageCounter;
-		vkGetSwapchainImagesKHR(m_LogicalDevice, m_SwapChainee, &ImageCounter, nullptr);
+		vkGetSwapchainImagesKHR(m_LogicalDevice, m_SwapChain, &ImageCounter, nullptr);
 		m_Images.resize(ImageCounter);
-		vkGetSwapchainImagesKHR(m_LogicalDevice, m_SwapChainee, &ImageCounter, m_Images.data());
+		vkGetSwapchainImagesKHR(m_LogicalDevice, m_SwapChain, &ImageCounter, m_Images.data());
 	}
 
 	void SwapChain::CreateImageViews()
@@ -733,7 +692,7 @@ namespace TRE
 
 	void SwapChain::CreateCommandPool()
 	{
-		QueueFamilies Queuefam = FindQueueFamilies(m_PhysicalDevice->GetPhysicalDevice());
+		QueueFamilies Queuefam = m_PhysicalDevice->FindQueueFamilies(m_PhysicalDevice->GetPhysicalDevice());
 
 		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
 		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -771,15 +730,15 @@ namespace TRE
 
 	void SwapChain::CreateCommandbuffer()
 	{
-		m_Commandbuffer.resize(MAX_FRAMES_IN_FLIGHT);
+		m_Commandbuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
 		VkCommandBufferAllocateInfo CommandBufferInfo{};
 		CommandBufferInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		CommandBufferInfo.commandPool = m_CommandPool;
 		CommandBufferInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		CommandBufferInfo.commandBufferCount = static_cast<uint32_t>(m_Commandbuffer.size());
+		CommandBufferInfo.commandBufferCount = static_cast<uint32_t>(m_Commandbuffers.size());
 
-		if (vkAllocateCommandBuffers(m_LogicalDevice, &CommandBufferInfo, m_Commandbuffer.data()) != VK_SUCCESS)
+		if (vkAllocateCommandBuffers(m_LogicalDevice, &CommandBufferInfo, m_Commandbuffers.data()) != VK_SUCCESS)
 		{
 			assert(false);
 		}
@@ -965,40 +924,5 @@ namespace TRE
 			Extent.height = std::clamp(Extent.height, Capabilities.minImageExtent.height, Capabilities.maxImageExtent.height);
 			return Extent;
 		}
-	}
-
-	QueueFamilies SwapChain::FindQueueFamilies(VkPhysicalDevice dev)
-	{
-		QueueFamilies MyQueues;
-
-		uint32_t Queuecount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, nullptr); //Get number of queue by passing nullptr
-
-		std::vector<VkQueueFamilyProperties> QueueFamilies(Queuecount);
-		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, QueueFamilies.data()); //Get the actual queues properties by passing data
-
-		int i = 0;
-		for (const auto& queuefamily : QueueFamilies)
-		{
-			if (queuefamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-			{
-				MyQueues.Graphics = i;
-			}
-
-			VkBool32 PresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, m_WindowSurface, &PresentSupport);
-
-			if (PresentSupport)
-			{
-				MyQueues.Present = i;
-			}
-
-			if (MyQueues.IsComplete())
-			{
-				break;
-			}
-			i++;
-		}
-		return MyQueues;
 	}
 }

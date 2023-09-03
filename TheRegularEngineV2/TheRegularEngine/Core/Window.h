@@ -36,18 +36,10 @@ namespace TRE
 			std::shared_ptr<RendererContext> GetRenderContext();
 			std::shared_ptr<SwapChain> GetSwapChain();
 			VkSurfaceKHR GetSurface() { return m_WindowSurface; }
-			VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
-			VkDevice GetDevice() { return m_LogicalDevice; }
+			VkDevice GetDevice() { return m_LogicalDevice->GetLogicalDevice(); }
 
 			//TBR
-			const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-			VkDevice m_LogicalDevice;
-			VkQueue m_GraphicsQueue;
-			VkQueue m_PresentQueue;
-			const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-			void CreateLogicalDevice();
-			
-
+			std::shared_ptr<Device> m_LogicalDevice;
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice; //Auto destroyed when instance is destroyed
 
 		private:

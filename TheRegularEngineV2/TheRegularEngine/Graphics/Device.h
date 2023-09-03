@@ -6,7 +6,7 @@ namespace TRE
 	class Device
 	{
 		public:
-			Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features);
+			Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features = VkPhysicalDeviceFeatures());
 			~Device();
 
 			void Destroy();
@@ -18,7 +18,8 @@ namespace TRE
 			VkDevice GetLogicalDevice() const;
 			VkQueue GetGraphicsQ();
 			VkQueue GetComputeQ();
-
+			const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
+			const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 			uint32_t FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags);
 
 		private:
