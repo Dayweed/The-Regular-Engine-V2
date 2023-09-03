@@ -1,3 +1,16 @@
+/*!
+	@file      Vector2Int.cpp
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains the definitions of the Vector2Int member
+			   functions, which is a useful representation of a 2D vector
+			   using only integers.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #include "Vector2Int.h"
 #include <cmath>
 

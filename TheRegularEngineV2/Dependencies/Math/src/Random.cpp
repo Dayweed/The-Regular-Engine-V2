@@ -1,3 +1,15 @@
+/*!
+	@file      Random.cpp
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains a number of definitions of commonly used
+			   random functions, similar to Unity's Random functions.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #include "Random.h"
 #include <chrono>
 
@@ -8,6 +20,7 @@ bool Random::isInitialized = false;
 std::minstd_rand Random::randomEngine{};
 
 void Random::SetState(state_type state_) { state = state_; isInitialized = false; }
+
 Random::state_type Random::GetState() { return state; }
 
 float Random::RangeFloat(float minInclusive, float maxInclusive)
@@ -45,29 +58,23 @@ float Random::Value01() { return RangeFloat(0, 1); }
 
 // quaternion?? Rotation();
 
-Random::vec2_type Random::InsideUnitCircle()
+Vector2 Random::InsideUnitCircle()
 {
-	const float radius = Value01();
-	const vec2_type pt = OnUnitCircle();
-	return { pt.x * radius, pt.y * radius };
-	// return OnUnitCircle() * Value01();
+	return OnUnitCircle() * Value01();
 }
 
-Random::vec2_type Random::OnUnitCircle()
+Vector2 Random::OnUnitCircle()
 {
 	const float radians = RangeFloat(0, 2 * PI);
 	return { cosf(radians), sinf(radians) };
 }
 
-Random::vec3_type Random::InsideUnitSphere()
+Vector3 Random::InsideUnitSphere()
 {
-	const float radius = Value01();
-	const vec3_type pt = OnUnitSphere();
-	return { pt.x * radius, pt.y * radius, pt.z * radius };
-	// return OnUnitSphere() * Value01();
+	return OnUnitSphere() * Value01();
 }
 
-Random::vec3_type Random::OnUnitSphere()
+Vector3 Random::OnUnitSphere()
 {
 	// orite, trust https://en.wikipedia.org/wiki/N-vector#Converting_latitude/longitude_to_n-vector
 	const float longitude = RangeFloat(0, 2 * PI);
