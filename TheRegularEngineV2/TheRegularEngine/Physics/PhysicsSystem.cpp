@@ -138,7 +138,7 @@ namespace TRE
 
 		auto UpdateTransform = []<typename Collider>
 		{
-			for (Entity& entity : _ecs_manager->GetEntities<Collider>())
+			for (Entity& entity : ECSManager::Instance().GetEntities<Collider>())
 			{
 				entity->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
 
