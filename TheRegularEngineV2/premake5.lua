@@ -74,6 +74,7 @@ project "TheRegularEngine"
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}
 
 	links
@@ -83,11 +84,11 @@ project "TheRegularEngine"
 		"%{Library.GLFW}",
 		"%{Library.Mono}",
 		"%{Library.PhysX_64}",
-		"%{Library.PhysX_Foundation}",
-		"%{Library.PhysX_Extension}",
 		"%{Library.PhysX_Character}",
 		"%{Library.PhysX_Common}",
 		--"%{Library.PhysX_Cooking}",
+		"%{Library.PhysX_Extension}",
+		"%{Library.PhysX_Foundation}",
 		"%{Library.PhysX_Pvd}",
 		"%{Library.PhysX_TaskStatic}",
 		"%{Library.PhysX_VehicleStatic}",
@@ -146,6 +147,7 @@ project "TheRegularEditor"
 	{
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}
 
 	files 
@@ -180,10 +182,10 @@ project "TheRegularEditor"
 	postbuildcommands
 	{
 		'{COPY} "%{Binaries.PhysX_64}" "%{cfg.targetdir}"',
-		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Common}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Cooking}" "%{cfg.targetdir}"',
-		'{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
+		-- '{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
 	}
 
 	filter "configurations:Debug"
