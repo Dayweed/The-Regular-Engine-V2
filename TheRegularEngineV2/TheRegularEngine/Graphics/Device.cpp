@@ -85,42 +85,6 @@ namespace TRE
 		return Details;
 	}
 
-	bool PhysicalDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
-	{
-		uint32_t ExtensionCount;
-		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, nullptr); //Get the count
-
-		std::vector<VkExtensionProperties> AvailableExtensions(ExtensionCount);
-		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, AvailableExtensions.data()); //Get the properties
-		const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-		std::set<std::string> RequiredExtension(m_DeviceExtensions.begin(), m_DeviceExtensions.end());
-
-		for (const auto& extension : AvailableExtensions)
-		{
-			RequiredExtension.erase(extension.extensionName);
-		}
-
-		return RequiredExtension.empty();
-	}
-
-	bool PhysicalDevice::IsPhysicalDeviceSuitable(VkPhysicalDevice pd)
-	{
-		m_QueueFamilies = FindQueueFamilies(pd);
-		bool ExtensionSupported = CheckDeviceExtensionSupport(pd);
-
-		bool SwapChainSupported = false;
-		if (ExtensionSupported)
-		{
-			SwapChainDetails Details = QuerySwapChainSupprt(pd);
-			SwapChainSupported = !Details.Formats.empty() && !Details.PresentModes.empty();
-		}
-
-		VkPhysicalDeviceFeatures supportedFeatures;
-		vkGetPhysicalDeviceFeatures(pd, &supportedFeatures);
-
-		return m_QueueFamilies.IsComplete() && ExtensionSupported && SwapChainSupported && supportedFeatures.samplerAnisotropy;
-	}
-
 	PhysicalDevice::PhysicalDevice(VkSurfaceKHR Surface) : m_Surface(Surface)
 	{
 		uint32_t PhysicalDeviceCount = 0;
@@ -159,40 +123,41 @@ namespace TRE
 			assert(m_PhysicalDevice);
 		}
 
+		vkGetPhysicalDeviceFeatures(m_PhysicalDevice, &m_Features);
+		vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &m_MemoryProperties);
+
 		for (const auto& device : PhysicalDevice)
 		{
-			if (IsPhysicalDeviceSuitable(device))
-			{
-				m_PhysicalDevice = device;
+			m_QueueFamilies = FindQueueFamilies(m_PhysicalDevice);
+			SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice);
+			bool SwapChainSupported = !Details.Formats.empty() && !Details.PresentModes.empty();
+
+			if (m_QueueFamilies.IsComplete() && SwapChainSupported && m_Features.samplerAnisotropy)
 				break;
+		}
+
+		uint32_t ExtensionCount;
+		vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionCount, nullptr);
+		if (ExtensionCount > 0)
+		{
+			std::vector<VkExtensionProperties> AvailableExtensions(ExtensionCount);
+			if (auto Result = vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionCount, AvailableExtensions.data()); Result == VK_SUCCESS)
+			{
+				TRE_CORE_TRACE("This GPU has {0] extensions", ExtensionCount);
+				for (const auto& extension : AvailableExtensions)
+				{
+					m_SupportedExtensions.emplace(extension.extensionName);
+					TRE_CORE_TRACE("{0}", extension.extensionName);
+				}
 			}
 		}
 
-		//vkGetPhysicalDeviceFeatures(m_PhysicalDevice, &m_Features);
-		//vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &m_MemoryProperties);
+		uint32_t QueueFamilyCount;
+		vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, nullptr);
+		assert(QueueFamilyCount > 0);
 
-		//uint32_t ExtensionsCount;
-		//vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, nullptr);
-		//if (ExtensionsCount > 0)
-		//{
-		//	std::vector<VkExtensionProperties> Extensions(ExtensionsCount);
-		//	if (vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionsCount, Extensions.data()) == VK_SUCCESS)
-		//	{
-		//		TRE_CORE_INFO("Supported Extensions from this GPU: ");
-		//		for (const auto& Ext : Extensions)
-		//		{
-		//			m_SupportedExtensions.emplace(Ext.extensionName);
-		//			TRE_CORE_INFO(Ext.extensionName);
-		//		}
-		//	}
-		//}
-
-		//uint32_t QueueFamilyCount;
-		//vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, nullptr);
-		//assert(QueueFamilyCount > 0);
-
-		//m_QueueFamilyProperties.resize(QueueFamilyCount);
-		//vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, m_QueueFamilyProperties.data());
+		m_QueueFamilyProperties.resize(QueueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, m_QueueFamilyProperties.data());
 
 		//static const float DefaultQueuePriority = 0.f;
 		//int RequestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
@@ -320,11 +285,6 @@ namespace TRE
 		return VK_FORMAT_UNDEFINED;
 	}
 
-	bool PhysicalDevice::IsExtensionSupported(const std::string& Extension)
-	{
-		return m_SupportedExtensions.find(Extension) != m_SupportedExtensions.end();
-	}
-
 	//-----------------------Device--------------------------//
 
 	const std::shared_ptr<PhysicalDevice>& Device::GetPhysicalDevice() const
@@ -381,6 +341,8 @@ namespace TRE
 		//DeviceCreateInfo.pEnabledFeatures = &Features;
 		//DeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(DeviceLevelExtensions.size());
 		//DeviceCreateInfo.ppEnabledExtensionNames = DeviceLevelExtensions.data();
+
+		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 
 		if (EnableValidationLayer)
 		{

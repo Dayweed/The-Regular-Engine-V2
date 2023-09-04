@@ -6,7 +6,6 @@
 namespace TRE
 {
 	#define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
-	const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 	VkInstance RendererContext::m_instance = VK_NULL_HANDLE;
 
 	VkInstance RendererContext::GetVKInstance()
@@ -226,7 +225,7 @@ namespace TRE
 
 		if (CurrentVersion < supportedversion)
 		{
-			TRE_CORE_INFO("Vulkan driver not supported");
+			TRE_CORE_INFO("Vulkan driver not supported, Go update");
 			TRE_CORE_INFO("You have: {0}.{1}.{2}", VK_API_VERSION_MAJOR(CurrentVersion), VK_API_VERSION_MINOR(CurrentVersion), VK_API_VERSION_PATCH(CurrentVersion));
 			TRE_CORE_INFO("You need: {0}.{1}.{2}", VK_API_VERSION_MAJOR(supportedversion), VK_API_VERSION_MINOR(supportedversion), VK_API_VERSION_PATCH(supportedversion));
 			return false;

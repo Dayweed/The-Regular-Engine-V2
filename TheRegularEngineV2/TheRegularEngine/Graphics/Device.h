@@ -32,8 +32,6 @@ namespace TRE
 		QueueFamilies FindQueueFamilies(VkPhysicalDevice dev);
 
 	private:
-		bool IsExtensionSupported(const std::string& Extension);
-		bool IsPhysicalDeviceSuitable(VkPhysicalDevice pd);
 		SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 
@@ -44,12 +42,12 @@ namespace TRE
 		VkPhysicalDeviceProperties m_Properties;
 		VkPhysicalDeviceFeatures m_Features;
 		VkPhysicalDeviceMemoryProperties m_MemoryProperties;
+		std::unordered_set<std::string> m_SupportedExtensions;
 
 		QueueFamilies m_QueueFamilies;
 		std::vector <VkQueueFamilyProperties> m_QueueFamilyProperties;
-		std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
+		//std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
 
-		std::unordered_set<std::string> m_SupportedExtensions;
 		VkFormat m_DepthFormat;
 	};
 
@@ -68,7 +66,6 @@ namespace TRE
 			VkDevice GetLogicalDevice() const;
 			VkQueue GetGraphicsQ();
 			VkQueue GetComputeQ();
-			const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 			
 			uint32_t FindMemoryType(uint32_t memorytypebits, VkMemoryPropertyFlags MemoryPropertyFlags);
 		
@@ -77,7 +74,6 @@ namespace TRE
 
 		private:
 			VkDevice m_LogicalDevice;
-			VkPhysicalDeviceFeatures m_EnabledFeatures;
 			VkCommandPool m_CommandPool;
 			VkCommandPool m_ComputeCommandPool;
 
