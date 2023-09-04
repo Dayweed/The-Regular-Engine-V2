@@ -105,14 +105,16 @@ namespace TRE
 	void ECSManager::SaveEntities(std::string filePath)
 	{
 		// Set up document
-		ECSOutputArchive arc { "Testing.json" };
+		ECSOutputArchive arc { "../" + filePath };
 
 		// Destroys all undeployed entities
 		MemoryManager::Instance().ClearUndeployed();
 
 		entt::snapshot snapshot{ GetRegistry() };
 		// Serialize all entities and components
-		snapshot.entities(arc).component<>(arc);
+		snapshot.entities(arc).component<Properties>(arc);
+
+		arc.Close();
 
 		for (Entity& ent : GetEntities<Properties>())
 		{
@@ -198,20 +200,21 @@ namespace TRE
 
 	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath(filePath)
 	{
-		m_Doc.StartArray();
+		m_Doc.SetArray();
 	}
 
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
 		if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
+			m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
 			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << " - ";
 		}
 	}
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
 	{
-		//m_Doc(u);
+		m_Doc.PushBack(u, m_Doc.GetAllocator());
 		std::cout << u << ";";
 	}
 
@@ -221,6 +224,22 @@ namespace TRE
 		rapidjson::OStreamWrapper osw(file);
 		rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
 		m_Doc.Accept(writer);
+	}
+
+
+	ECSInputArchive::ECSInputArchive(std::string filePath) : m_FilePath(filePath)
+	{
+
+	}
+
+	void ECSInputArchive::operator()(entt::entity& ent)
+	{
+		std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "\\";
+	}
+
+	void ECSInputArchive::operator()(std::underlying_type_t<entt::entity>& u)
+	{
+		std::cout << u << ":";
 	}
 
 	void ECSManager::TESTRUN()
@@ -442,6 +461,10 @@ namespace TRE
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
 		ECSManager::Instance().SaveEntities("Lmao.json");
+
+		std::cout << std::endl;
+		std::cout << "- Loading from input: " << GetEntities<Properties>().size() << "...\n";
+		ECSManager::Instance().LoadEntities("Lmao.json");
 		//ECSOutputArchive str{};
 		//entt::exclude_t<Undeployed> u;
 		//const auto view = registry.view<Undeployed>();
