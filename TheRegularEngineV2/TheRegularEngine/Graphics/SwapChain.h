@@ -64,7 +64,6 @@ namespace TRE
 			void CreateFrameBuffer();
 			void CreateCommandPool();
 			void CreateCommandbuffer();
-			void RecordCommandBuffer(VkCommandBuffer CommandBuffer, uint32_t imageindex);
 			void CreateSyncObjects();
 			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
 			

@@ -444,7 +444,7 @@ namespace TRE
 
 	void SwapChain::Present()
 	{
-		RecordCommandBuffer(m_Commandbuffers[m_CurrentBufferIndex], m_CurrentImageIndex);
+		//RecordCommandBuffer(m_Commandbuffers[m_CurrentBufferIndex], m_CurrentImageIndex);
 
 		VkSubmitInfo SubmitInfo{};
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -589,6 +589,8 @@ namespace TRE
 
 		m_Extent = { m_Width, m_Height };
 		m_Format = surfaceformat.format;
+		m_SwapChainSettings.m_SurfaceFormat = m_Format;
+		m_SwapChainSettings.m_DepthFormat = m_PhysicalDevice->GetDepthFormat();
 
 		uint32_t ImageCount = Details.Capabilities.minImageCount + 1; //Number of images in swapchain
 		if (Details.Capabilities.maxImageCount > 0 && ImageCount > Details.Capabilities.maxImageCount) //Don't go over max
@@ -625,6 +627,8 @@ namespace TRE
 		vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &ImageCounter, nullptr);
 		m_VulkanImages.resize(ImageCounter);
 		vkGetSwapchainImagesKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, &ImageCounter, m_VulkanImages.data());
+
+		m_ImageCount = ImageCounter;
 	}
 
 	void SwapChain::CreateImageViews()
@@ -815,61 +819,11 @@ namespace TRE
 		m_SwapChainFramebuffers.clear();
 	}
 
-	void SwapChain::RecordCommandBuffer(VkCommandBuffer CommandBuffer, uint32_t imageindex)
-	{
-		VkCommandBufferBeginInfo CommandBufferInfo{};
-		CommandBufferInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		CommandBufferInfo.flags = 0;
-		CommandBufferInfo.pInheritanceInfo = nullptr;
-
-		if (vkBeginCommandBuffer(CommandBuffer, &CommandBufferInfo) != VK_SUCCESS)
-		{
-			assert(false);
-		}
-
-		VkRenderPassBeginInfo RenderPassInfo{};
-		RenderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		RenderPassInfo.framebuffer = m_SwapChainFramebuffers[imageindex];
-		RenderPassInfo.renderPass = m_RenderPass;
-		RenderPassInfo.renderArea.offset = { 0, 0 };
-		RenderPassInfo.renderArea.extent = m_Extent;
-
-		std::array<VkClearValue, 2> ClearColor{}; //Order of these should be same as order of attachments!!
-		ClearColor[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
-		ClearColor[1].depthStencil = { 1.0f, 0 };
-
-		RenderPassInfo.clearValueCount = static_cast<uint32_t>(ClearColor.size());
-		RenderPassInfo.pClearValues = ClearColor.data();
-
-		vkCmdBeginRenderPass(CommandBuffer, &RenderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = static_cast<float>(m_Extent.width);
-		viewport.height = static_cast<float>(m_Extent.height);
-		viewport.maxDepth = 1.0f;
-		viewport.minDepth = 0.0f;
-		vkCmdSetViewport(CommandBuffer, 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.extent = m_Extent;
-		scissor.offset = { 0,0 };
-		vkCmdSetScissor(CommandBuffer, 0, 1, &scissor);
-
-		vkCmdEndRenderPass(CommandBuffer);
-
-		if (vkEndCommandBuffer(CommandBuffer) != VK_SUCCESS)
-		{
-			assert(false);
-		}
-	}
-
 	VkSurfaceFormatKHR SwapChain::ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats)
 	{
 		for (const auto& format : AvailableFormats)
 		{
-			if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				return format;
 			}
