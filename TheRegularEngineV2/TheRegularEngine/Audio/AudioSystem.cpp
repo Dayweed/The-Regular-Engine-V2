@@ -131,6 +131,7 @@ namespace TRE
 	void AudioSystem::CompileAudio(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
+		LoadFile(go);
 		m_Channel->setVolume(audio.m_Volume);
 		m_Channel->setPitch(audio.m_Pitch);
 		m_Channel->setPriority(audio.m_Priority);
