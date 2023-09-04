@@ -1,5 +1,7 @@
 #pragma once
+#include "pch.h"
 #include "Device.h"
+#include "RenderPass.h"
 
 //Forward declaration to prevent include header just for this
 struct GLFWwindow;
@@ -15,12 +17,15 @@ namespace TRE
 			{
 				VkColorSpaceKHR m_ColorSpace;
 				VkFormat m_SurfaceFormat;
+				VkFormat m_DepthFormat;
 			};
 
 			struct SwapChainImage
 			{
 				VkImage Image = nullptr;
 				VkImageView ImageView = nullptr;
+				VkImage DepthImage = nullptr;
+				VkImageView DepthImageView = nullptr;
 			};
 
 			SwapChain() = default;
@@ -44,6 +49,7 @@ namespace TRE
 			VkCommandBuffer GetCurrentCommandBuffer();
 			uint32_t GetCurrentBufferIndex();
 			VkFormat GetColorFormat();
+			VkFormat GetDepthFormat();
 			VkSemaphore GetRenderComplete();
 			VkExtent2D GetSwapChainExtent();
 			SwapChainSettings GetSwapChainSettings();
@@ -67,6 +73,9 @@ namespace TRE
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;
 
+			std::vector<VkImage> m_DepthImages;
+			std::vector<VkDeviceMemory> m_DepthMemory;
+
 			struct SwapChainCommandBuffer
 			{
 				VkCommandPool CommandPool;
@@ -81,9 +90,8 @@ namespace TRE
 			} m_Semaphores;
 
 			std::vector<VkFence> m_WaitFences;
-			VkRenderPass m_Renderpass;
+			std::shared_ptr<RenderPass> m_Renderpass;
 
-			VkRenderPass m_RenderPass;
 			uint32_t m_CurrentBufferIndex = 0;
 			uint32_t m_CurrentImageIndex = 0;
 

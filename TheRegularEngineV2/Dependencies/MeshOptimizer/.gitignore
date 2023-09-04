@@ -3,3 +3,9 @@
 /gltf/library.wasm
 /.idea/
 /cmake-build-*/
+
+## Debug Build artefacts
+bin/Debug/MeshOptimizer/MeshOptimizer.idb
+bin/Debug/MeshOptimizer/MeshOptimizer.lib
+bin/Debug/MeshOptimizer/MeshOptimizer.tlog/
+bin/Debug/MeshOptimizer/MeshOptimizer.vcxproj.FileListAbsolute.txt

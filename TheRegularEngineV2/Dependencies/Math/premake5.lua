@@ -3,9 +3,17 @@ project "Math"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
+	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin")
+	-- ! makes .obj files appear in the same folder
+	-- regardless of build configuration
+	objdir ("!bin/obj")
+
+	includedirs
+    {
+        "include"
+    }
 
 	files
 	{

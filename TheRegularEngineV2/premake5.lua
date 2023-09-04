@@ -20,6 +20,10 @@ group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
 include "Dependencies/MeshOptimizer"
+--include "Dependencies/Crunch"
+include "Compilers/CompilerLib"
+include "Compilers/GeomCompiler"
+--include "Compilers/TextureCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -47,7 +51,6 @@ project "TheRegularEngine"
 	includedirs
 	{
 		"%{prj.name}",
-		
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		"%{IncludeDir.Freetype}",
@@ -62,12 +65,15 @@ project "TheRegularEngine"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.tinyobjloader}"
+		"%{IncludeDir.stbi}",
+		"%{IncludeDir.Compiler}",
+		--"%{IncludeDir.Crunch}",
 	}
 
 	defines
 	{
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 	}
 
@@ -84,12 +90,15 @@ project "TheRegularEngine"
 		"%{Library.PhysX_Extension}",
 		"%{Library.PhysX_Character}",
 		"%{Library.PhysX_Common}",
-		"%{Library.PhysX_Cooking}",
+		--"%{Library.PhysX_Cooking}",
 		"%{Library.PhysX_Pvd}",
 		"%{Library.PhysX_TaskStatic}",
 		"%{Library.PhysX_VehicleStatic}",
 		"%{Library.PhysX_Vehicle2}",
 		"%{Library.Vulkan}",
+		"%{Library.Math}",
+		"%{Library.Compiler}",	
+		--"%{Library.Crunch}",	
 	}
 
 	filter "configurations:Debug"
@@ -152,7 +161,6 @@ project "TheRegularEditor"
 	includedirs 
 	{
 		"%{prj.name}/src",
-		"TheRegularEngine",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		"%{IncludeDir.Freetype}",
@@ -160,13 +168,16 @@ project "TheRegularEditor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
-		"%{IncludeDir.Math}",
 		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.Math}",
+		"%{IncludeDir.Compiler}",
+		--"%{IncludeDir.Crunch}",
+		"TheRegularEngine"
 	}
 
 	postbuildcommands

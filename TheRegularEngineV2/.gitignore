@@ -3,6 +3,7 @@
 
 # Custom Ignore
 Executable/
+TheRegularEditor/resources/Scripts
 
 # User-specific files
 *.suo
@@ -61,7 +62,6 @@ artifacts/
 *_i.h
 *.ilk
 *.meta
-#*.obj
 *.pch
 *.pdb
 *.pgc

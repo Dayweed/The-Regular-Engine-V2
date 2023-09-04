@@ -1,8 +1,7 @@
 #pragma once
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE //Forces depth values to be [0,1] instead of openGL [-1,1]
 #include "pch.h"
 #include "Buffer.h"
+#include "Geom.h"
 
 #include <functional>
 
@@ -31,8 +30,6 @@ namespace TRE
 		{
 			std::vector<Vertex> m_Vertices{};
 			std::vector<std::uint32_t> m_Indices{};
-
-			void LoadRenderObject(const std::string& filePath);
 		};
 
 		RenderObject(const Builder& builder);
@@ -42,6 +39,7 @@ namespace TRE
 		void operator=(const RenderObject&) = delete;
 
 		static std::unique_ptr<RenderObject> CreateFromFile(const std::string& filePath);
+		static std::unique_ptr<RenderObject> CreateFromGeom(std::unique_ptr<Geom> geom);
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 	private:

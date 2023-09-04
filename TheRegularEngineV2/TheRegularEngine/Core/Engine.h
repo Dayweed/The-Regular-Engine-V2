@@ -21,13 +21,14 @@ namespace TRE
 			Engine(Engine&) = delete;
 			void operator=(const Engine&) = delete;
 
+			void RegisterECS();
 			void Update();
 			virtual void Shutdown();
 
 			template <typename T>
 			void RegisterSystems()
 			{
-				m_SystemsManager->RegisterSystem<T>();
+				EditorSystemManager::Instance().RegisterSystem<T>();
 			}
 
 			const std::shared_ptr<Window>& GetWindow();
@@ -40,9 +41,9 @@ namespace TRE
 
 		private:
 			std::shared_ptr<Window> m_Window;
-			std::unique_ptr<SystemManager> m_SystemsManager;
-			std::shared_ptr<VulkanEditor> m_VulkanEditor;
+			//std::unique_ptr<SystemManager> m_SystemsManager;
 			std::shared_ptr<Renderer> m_Renderer;
+			std::shared_ptr<VulkanEditor> m_VulkanEditor;
 
 			EngineInfo m_EngineInfo;
 

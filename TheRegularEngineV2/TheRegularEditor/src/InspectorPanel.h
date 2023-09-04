@@ -1,0 +1,33 @@
+/*!
+	@file      InspectorPanel.h
+	@author    Hu Jun Ning (Code Contribution 100%)
+	@email     junning.hu@digipen.edu
+	@coauthor  Co-Author Name (Code Contribution 100%)
+	@email     CoAuthor.n@digipen.edu
+	@date      02/09/2023
+	@brief     Inspector panel
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
+#pragma once
+#include "TREIncludes.h"
+#include "Panel.h"
+
+namespace TRE
+{
+	class InspectorPanel : public Panel
+	{
+		public:
+			InspectorPanel();
+			~InspectorPanel();
+			void Init() override;
+			void Update() override;
+			void Shutdown() override;
+			//void EntityClicked(std::string EntityName);
+
+		private:
+			//std::string m_CurrentEntity;
+	};
+}

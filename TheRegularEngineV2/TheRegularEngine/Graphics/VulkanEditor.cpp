@@ -40,11 +40,12 @@ namespace TRE
 		
 		if (auto Result = vkCreateDescriptorPool(RendererContext::GetDevice()->GetLogicalDevice(), &DescriptorPoolCreateInfo, nullptr, &m_DescriptorPool); Result != VK_SUCCESS)
 		{
-			std::cout << "Unable to create descriptor pool for imgui" << std::endl;
+			TRE_CORE_WARN("Unable to create descriptor pool for imgui");
 			assert(Result == VK_SUCCESS);
 		}
 
-		ImGui::CreateContext();
+		SetUpImgui();
+		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
 
 		ImGui_ImplVulkan_InitInfo ImguiVulkanInitInfo{};
@@ -73,11 +74,22 @@ namespace TRE
 		}
 		
 		auto Renderer = Engine::GetInstance().GetRenderer();
-		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetImageView().size());
+		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetColorImages().size());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetImageView()[x], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
+	}
+
+	void VulkanEditor::SetUpImgui()
+	{
+		ImGui::CreateContext();
+		ImGui::StyleColorsDark();
+
+		ImGuiIO& IO = ImGui::GetIO();
+		IO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		IO.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	}
 
 	void VulkanEditor::BeginFrame()
@@ -85,7 +97,6 @@ namespace TRE
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		
 	}
 
 	void VulkanEditor::EndFrame()
@@ -94,8 +105,8 @@ namespace TRE
 
 		SwapChain swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		VkClearValue clearValues[2];
-		clearValues[0].color = { {0.1f, 0.1f,0.1f, 1.0f} };
+		std::array<VkClearValue, 2> clearValues{};
+		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		uint32_t width = swapChain.GetWidth();
@@ -122,8 +133,8 @@ namespace TRE
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = width;
 		renderPassBeginInfo.renderArea.extent.height = height;
-		renderPassBeginInfo.clearValueCount = 2;
-		renderPassBeginInfo.pClearValues = clearValues;
+		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassBeginInfo.pClearValues = clearValues.data();
 		renderPassBeginInfo.framebuffer = swapChain.GetCurrentFrameBuffer();
 
 		vkCmdBeginRenderPass(drawCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
@@ -177,6 +188,17 @@ namespace TRE
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
+		}
+	}
+
+	void VulkanEditor::Resize()
+	{
+		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_DescriptorSets.size()), m_DescriptorSets.data());
+		auto Renderer = Engine::GetInstance().GetRenderer();
+		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetColorImages().size());
+		for (int x = 0; x < m_DescriptorSets.size(); x++)
+		{
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 

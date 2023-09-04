@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Editor">
       <UniqueIdentifier>{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EventSystem">
+      <UniqueIdentifier>{CCE875DF-389E-EED4-C192-E8AB2D47E5D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\EventHandler">
+      <UniqueIdentifier>{FB41E081-E766-2F02-10B2-1492FC352E20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventSystem\Events">
+      <UniqueIdentifier>{3037AC02-1C1B-6D58-857B-67AB717E57DA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{1653CE33-0220-293F-2B39-17E717655ECD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InputHandler">
+      <UniqueIdentifier>{7392D63B-5FF5-65E0-087B-9E96F4BC3163}</UniqueIdentifier>
     </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
@@ -18,13 +33,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio\AudioSystem.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ComponentManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ECS.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Engine.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\MemoryManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\SceneManager.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\System.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\SystemManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Transform.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Window.h">
@@ -37,16 +76,49 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="EntryPoint.h" />
+    <ClInclude Include="EventSystem\EventHandler\EventHandler.h">
+      <Filter>EventSystem\EventHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem\Events\EventBase.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem\Events\ExampleEvent.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem\Events\InputEvent.h">
+      <Filter>EventSystem\Events</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Descriptor.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Device.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\FrameBuffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Image.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\MeshRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\PhysicalDevice.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Pipeline.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\RenderObject.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\RenderPass.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Renderer.h">
@@ -61,8 +133,17 @@
     <ClInclude Include="Graphics\SwapChain.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\VulkanEditor.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler\InputHandler.h">
+      <Filter>InputHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler\KeyButton.h">
+      <Filter>InputHandler</Filter>
     </ClInclude>
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
@@ -74,7 +155,28 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Audio\AudioSystem.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ECS.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Engine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MemoryManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\SceneManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Transform.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Window.cpp">
@@ -89,13 +191,34 @@
     <ClCompile Include="Graphics\Buffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Descriptor.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\Device.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\FrameBuffer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Image.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MeshRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\PhysicalDevice.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Pipeline.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\RenderObject.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\RenderPass.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Renderer.cpp">
@@ -110,8 +233,14 @@
     <ClCompile Include="Graphics\SwapChain.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\VulkanEditor.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler\InputHandler.cpp">
+      <Filter>InputHandler</Filter>
     </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Physics</Filter>
