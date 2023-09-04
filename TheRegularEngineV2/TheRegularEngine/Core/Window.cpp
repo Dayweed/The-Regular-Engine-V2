@@ -47,6 +47,7 @@ namespace TRE
 
 	Window::~Window()
 	{
+		m_SwapChain->DestroySwapChain();
 		glfwTerminate();
 	}
 

@@ -56,13 +56,13 @@ namespace TRE
 		{
 			Message += "[Vulkan Debug Warning] ";
 			Message += pCallbackData->pMessage;
-			TRE_CORE_INFO(Message);
+			TRE_CORE_WARN(Message);
 		}
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 		{
 			Message += "[Vulkan Debug Error] ";
 			Message += pCallbackData->pMessage;
-			TRE_CORE_INFO(Message);
+			TRE_CORE_WARN(Message);
 		}
 
 		return VK_FALSE;
@@ -78,7 +78,8 @@ namespace TRE
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
 		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
-		//m_Device->Destroy();
+		vkDestroySurfaceKHR(m_instance, m_Surface, nullptr);
+		m_Device->Destroy();
 		vkDestroyInstance(m_instance, nullptr);
 		m_instance = nullptr;
 	}
@@ -207,18 +208,15 @@ namespace TRE
 		}
 
 		m_PhysicalDevice = std::make_shared<PhysicalDevice>(m_Surface);
-		m_Device = std::make_shared<Device>(m_PhysicalDevice);
 
-		//m_PhysicalDevice = std::make_shared<PhysicalDevice>();
-		//
-		//VkPhysicalDeviceFeatures PhysicalDeviceFeatures{};
-		//PhysicalDeviceFeatures.samplerAnisotropy = true;
-		//PhysicalDeviceFeatures.wideLines = true;
-		//PhysicalDeviceFeatures.fillModeNonSolid = true;
-		//PhysicalDeviceFeatures.independentBlend = true;
-		//PhysicalDeviceFeatures.pipelineStatisticsQuery = true;
-		//
-		//m_Device = std::make_shared<Device>(m_PhysicalDevice, PhysicalDeviceFeatures);
+		VkPhysicalDeviceFeatures PhysicalDeviceFeatures{};
+		PhysicalDeviceFeatures.samplerAnisotropy = true;
+		PhysicalDeviceFeatures.wideLines = true;
+		PhysicalDeviceFeatures.fillModeNonSolid = true;
+		PhysicalDeviceFeatures.independentBlend = true;
+		PhysicalDeviceFeatures.pipelineStatisticsQuery = true;
+
+		m_Device = std::make_shared<Device>(m_PhysicalDevice, PhysicalDeviceFeatures);
 	}
 
 	bool RendererContext::CheckAPIVersion(uint32_t supportedversion)

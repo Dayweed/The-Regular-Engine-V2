@@ -84,6 +84,21 @@ namespace TRE
 
 	}
 
+	void SwapChain::DestroySwapChain()
+	{
+		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
+		for (int x = 0; x < MAX_FRAMES_IN_FLIGHT; x++)
+		{
+			vkDestroyFence(m_LogicalDevice->GetLogicalDevice(), m_WaitFences[x], nullptr);
+			vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores[x].PresentComplete, nullptr);
+			vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores[x].RenderComplete, nullptr);
+		}
+		vkDestroyRenderPass(m_LogicalDevice->GetLogicalDevice(), m_RenderPass, nullptr);
+		CleanSwapChain();
+		vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, nullptr);
+		vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandPool, nullptr);
+	}
+
 	void SwapChain::Initialize(std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface)
 	{
 		//auto PhysicalDevice = m_LogicalDevice->GetLogicalDevice()->GetPhysicalDevice()->GetPhysicalDevice();
@@ -578,7 +593,28 @@ namespace TRE
 
 		SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice->GetPhysicalDevice());
 		VkSurfaceFormatKHR surfaceformat = ChooseSwapChainFormat(Details.Formats);
-		VkPresentModeKHR PresentMode = ChooseSwapChainPresentMode(Details.PresentModes);
+
+		VkPresentModeKHR PresentModeInfo = VK_PRESENT_MODE_FIFO_KHR; //Guaranteed to have
+		for (const auto& PresentMode : Details.PresentModes)
+		{
+			if (PresentMode == VK_PRESENT_MODE_MAILBOX_KHR) //Something like Triple buffering, avoid tearing, render images as newest as possible, but might use more energy
+			{
+				PresentModeInfo = VK_PRESENT_MODE_MAILBOX_KHR; //We want this if have
+			}
+		}
+
+		if (PresentModeInfo == VK_PRESENT_MODE_FIFO_KHR)
+		{
+			for (const auto& PresentMode : Details.PresentModes)
+			{
+				if (PresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
+				{
+					PresentModeInfo = VK_PRESENT_MODE_IMMEDIATE_KHR; //Back up if no mailbox
+				}
+			}
+			
+		}
+
 		VkExtent2D Extent = ChooseSwapExtent(Details.Capabilities);
 		m_Extent = Extent;
 		m_Format = surfaceformat.format;
@@ -604,12 +640,12 @@ namespace TRE
 		CreateInfo.pQueueFamilyIndices = nullptr;
 		CreateInfo.preTransform = Details.Capabilities.currentTransform;
 		CreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-		CreateInfo.presentMode = PresentMode;
+		CreateInfo.presentMode = PresentModeInfo;
 		CreateInfo.clipped = VK_TRUE;
 
-		if (vkCreateSwapchainKHR(m_LogicalDevice->GetLogicalDevice(), &CreateInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
+		if (auto Result = vkCreateSwapchainKHR(m_LogicalDevice->GetLogicalDevice(), &CreateInfo, nullptr, &m_SwapChain); Result != VK_SUCCESS)
 		{
-			assert(false);
+			assert(Result == VK_SUCCESS);
 		}
 
 		vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), OldSwapChain, nullptr);
@@ -897,18 +933,6 @@ namespace TRE
 		}
 
 		return AvailableFormats[0];
-	}
-
-	VkPresentModeKHR SwapChain::ChooseSwapChainPresentMode(const std::vector<VkPresentModeKHR>& AvailableModes)
-	{
-		for (const auto& PresentMode : AvailableModes)
-		{
-			if (PresentMode == VK_PRESENT_MODE_MAILBOX_KHR) //Something like Triple buffering, avoid tearing, render images as newest as possible, but might use more energy
-			{
-				return PresentMode;
-			}
-		}
-		return VK_PRESENT_MODE_FIFO_KHR; //FIFO Queue for images, less energy consumed
 	}
 
 	VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities)

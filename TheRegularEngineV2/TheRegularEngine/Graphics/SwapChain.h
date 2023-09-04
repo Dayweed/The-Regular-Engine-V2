@@ -3,7 +3,6 @@
 #include "Device.h"
 #include "RenderPass.h"
 #include "RendererContext.h"
-#include "PhysicalDevice.h"
 
 //Forward declaration to prevent include header just for this
 struct GLFWwindow;
@@ -31,12 +30,14 @@ namespace TRE
 			};
 
 			SwapChain();
+			~SwapChain() = default;
 			void Initialize(std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
 			
 			void BeginFrame();
 			void Present();
+			void DestroySwapChain();
 
 		public:
 			VkRenderPass GetRenderPass();
@@ -67,7 +68,6 @@ namespace TRE
 			void CreateSyncObjects();
 			SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
 			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
-			VkPresentModeKHR ChooseSwapChainPresentMode(const std::vector<VkPresentModeKHR>& AvailableModes);
 			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities);
 			
 			GLFWwindow* m_Handle;
