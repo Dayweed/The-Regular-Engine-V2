@@ -7,11 +7,6 @@ namespace TRE
 	class PanelManager
 	{
 		public:
-			//static PanelManager& Instance()
-			//{
-			//	static PanelManager instance;
-			//	return instance;
-			//}
 			PanelManager();
 			~PanelManager();
 
@@ -27,13 +22,8 @@ namespace TRE
 			void RemovePanel(std::string PanelName);
 			bool DoesPanelExist(std::string PanelName);
 			std::unordered_map<std::string, std::shared_ptr<Panel>>& GetPanels();
-			void EntityClicked(std::string EntityName);
 
 		private:
-			//PanelManager(PanelManager const&) = delete;
-			//void operator=(PanelManager const&) = delete;
-			//void* operator new(size_t) = delete;
-
 			std::unordered_map<std::string, std::shared_ptr<Panel>> m_StorePanels;
 	};
 }
