@@ -12,20 +12,16 @@ project "CompilerLib"
 
 	includedirs
     {
-        "include",
+        "src",
 		"%{IncludeDir.glm}"
     }
 
 	files
 	{
-		"include/**.h", 
+		"src/**.h", 
 		"src/**.c", 
-		"include/**.hpp", 
+		"src/**.hpp", 
 		"src/**.cpp"
-	}
-
-	links
-	{
 	}
 
 	filter "configurations:Debug"

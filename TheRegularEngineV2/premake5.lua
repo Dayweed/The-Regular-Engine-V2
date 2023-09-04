@@ -21,9 +21,9 @@ include "Dependencies/ImGui"
 include "Dependencies/Math"
 include "Dependencies/MeshOptimizer"
 --include "Dependencies/Crunch"
-include "Compilers/CompilerLib"
+include "Dependencies/CompilerLib"
+include "Compilers/TextureCompiler"
 include "Compilers/GeomCompiler"
---include "Compilers/TextureCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -59,7 +59,6 @@ project "TheRegularEngine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
 		"%{IncludeDir.Math}",
-		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
@@ -79,8 +78,6 @@ project "TheRegularEngine"
 
 	links
 	{ 
-		"ImGui",
-		"MeshOptimizer",
 		"%{Library.Assimp}",
 		"%{Library.Freetype}",
 		"%{Library.GLFW}",
@@ -141,7 +138,8 @@ project "TheRegularEditor"
 
 	links 
 	{ 
-		"TheRegularEngine"
+		"TheRegularEngine",
+		"ImGui",
 	}
 
 	defines 
@@ -168,7 +166,6 @@ project "TheRegularEditor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
-		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",

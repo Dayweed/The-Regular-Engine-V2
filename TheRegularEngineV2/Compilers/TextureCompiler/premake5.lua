@@ -1,12 +1,9 @@
-include "Dependencies.lua"
-
 project "TextureCompiler"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
-	dependson "{Library.Compiler}"
 
 	targetdir ("../")
 	-- ! makes .obj files appear in the same folder
@@ -29,12 +26,13 @@ project "TextureCompiler"
 
 	links
 	{
-		"%{Library.Compiler}",
+		"CompilerLib",
 	}
 
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"
+
 
 	filter "configurations:Release"
 		runtime "Release"

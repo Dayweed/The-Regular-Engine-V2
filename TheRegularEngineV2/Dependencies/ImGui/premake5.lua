@@ -2,6 +2,8 @@ project "ImGui"
 	kind "StaticLib"
 	language "C++"
     staticruntime "off"
+	warnings ("Extra") -- enables Warning Level 4(/W4)
+
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin/" .. outputdir .. "/%{prj.name}")

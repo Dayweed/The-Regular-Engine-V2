@@ -18,7 +18,7 @@ IncludeDir["VULKANSDK"] = "%{VULKAN_SDK}/Include"
 IncludeDir["Rapidjson"] = "%{wks.location}/Dependencies/Rapidjson/include"
 IncludeDir["spdlog"] = "%{wks.location}/Dependencies/spdlog"
 IncludeDir["stbi"] = "%{wks.location}/Dependencies/stbi_image"
-IncludeDir["Compiler"] = "%{wks.location}/Compilers/CompilerLib/include"
+IncludeDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/src"
 IncludeDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/src"
 
 LibraryDir = {}
@@ -30,7 +30,7 @@ LibraryDir["Mono"] = "%{wks.location}/Dependencies/Mono/lib/%{cfg.buildcfg}"
 LibraryDir["PhysX"] = "%{wks.location}/Dependencies/PhysX/lib/%{cfg.buildcfg}"
 LibraryDir["Vulkan"] = "%{VULKAN_SDK}/Lib"
 LibraryDir["Math"] = "%{wks.location}/Dependencies/Math/bin"
-LibraryDir["Compiler"] = "%{wks.location}/Compilers/CompilerLib/bin"
+LibraryDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/bin"
 LibraryDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/bin"
 
 Library = {}

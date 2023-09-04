@@ -30,8 +30,8 @@ project "GeomCompiler"
 	links
 	{
 		"MeshOptimizer",
+		"CompilerLib",
 		"%{Library.Assimp}",
-		"%{Library.Compiler}",
 	}
 
 	filter "configurations:Debug"
