@@ -5,6 +5,10 @@
 #include "RendererContext.h"
 #include "TREIncludes.h"
 
+//#include "crnlib.h"
+//#include "crn_decomp.h"
+//#include "dds_defs.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -222,6 +226,27 @@ namespace TRE
 		{
 			throw std::runtime_error("Failed to load texture image");
 		}
+
+		//crn_comp_params comp_params;
+		//comp_params.m_width = texWidth;
+		//comp_params.m_height = texHeight;
+		//comp_params.m_file_type = cCRNFileTypeDDS;
+		//comp_params.m_format = cCRNFmtDXT1;
+		//comp_params.set_flag(cCRNCompFlagPerceptual, true);
+		//comp_params.set_flag(cCRNCompFlagDXT1AForTransparency, true);
+		//comp_params.set_flag(cCRNCompFlagHierarchical, true);
+		//comp_params.m_quality_level = cCRNMinQualityLevel;
+		//comp_params.m_dxt_quality = cCRNDXTQualitySuperFast;
+		//comp_params.m_dxt_compressor_type = cCRNDXTCompressorRYG;
+		//comp_params.m_pProgress_func = NULL;
+		//comp_params.m_pProgress_func_data = NULL;
+		//comp_params.m_num_helper_threads = 3;
+		//comp_params.m_pImages[0][0] = reinterpret_cast<uint32_t*>(pixels);
+
+		//crn_uint32 outputSize;
+		//void* outputData = crn_compress(comp_params, outputSize);
+
+		//crn_free_block(outputData);
 
 		m_Textures[name] = std::make_shared<Texture>(texWidth, texHeight, reinterpret_cast<void*>(pixels), imageFormat, imageFilter);
 	}

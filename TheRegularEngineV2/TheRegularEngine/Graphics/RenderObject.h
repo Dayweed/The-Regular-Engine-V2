@@ -30,8 +30,6 @@ namespace TRE
 		{
 			std::vector<Vertex> m_Vertices{};
 			std::vector<std::uint32_t> m_Indices{};
-
-			void LoadRenderObject(const std::string& filePath);
 		};
 
 		RenderObject(const Builder& builder);

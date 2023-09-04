@@ -50,5 +50,4 @@ namespace TRE
 	private:
 		std::unordered_map<std::string, std::shared_ptr<Texture>> m_Textures;
 	};
-	static TextureManager* _texture_manager{ &TextureManager::Instance() };
 }

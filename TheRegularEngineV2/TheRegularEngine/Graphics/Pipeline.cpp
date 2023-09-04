@@ -170,14 +170,14 @@ namespace TRE
 			.Build());
 
 		//TO DELETE
-		_texture_manager->LoadTexture("../Assets/Test.png", "Test");
+		TextureManager::Instance().LoadTexture("../Assets/Test.png", "Test");
 
 		int descriptorCount = imageCount;
 		m_DescriptorSets.resize(descriptorCount);
 		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
 			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
-			VkDescriptorImageInfo imageInfo = _texture_manager->GetTexture("Test")->GetDescriptorImageInfo();
+			VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
 
 			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
 				.WriteBuffer(0, &bufferInfo)
@@ -237,7 +237,7 @@ namespace TRE
 
 	Pipeline::~Pipeline()
 	{
-		_texture_manager->Shutdown();
+		TextureManager::Instance().Shutdown();
 		auto Device = RendererContext::GetDevice();
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);

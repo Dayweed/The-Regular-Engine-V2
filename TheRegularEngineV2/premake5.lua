@@ -20,8 +20,10 @@ group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
 include "Dependencies/MeshOptimizer"
+--include "Dependencies/Crunch"
 include "Compilers/CompilerLib"
 include "Compilers/GeomCompiler"
+--include "Compilers/TextureCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -63,9 +65,9 @@ project "TheRegularEngine"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.tinyobj}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
+		--"%{IncludeDir.Crunch}",
 	}
 
 	defines
@@ -96,6 +98,7 @@ project "TheRegularEngine"
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
 		"%{Library.Compiler}",	
+		--"%{Library.Crunch}",	
 	}
 
 	filter "configurations:Debug"
@@ -173,7 +176,8 @@ project "TheRegularEditor"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
-		"TheRegularEngine",
+		--"%{IncludeDir.Crunch}",
+		"TheRegularEngine"
 	}
 
 	postbuildcommands
