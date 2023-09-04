@@ -66,7 +66,6 @@ namespace TRE
 			void CreateCommandbuffer();
 			void RecordCommandBuffer(VkCommandBuffer CommandBuffer, uint32_t imageindex);
 			void CreateSyncObjects();
-			SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
 			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
 			
 			VkFormat m_Format;

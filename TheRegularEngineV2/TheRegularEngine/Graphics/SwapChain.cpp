@@ -31,16 +31,14 @@ namespace TRE
 
 	VkFramebuffer SwapChain::GetCurrentFrameBuffer()
 	{
-		//assert(m_CurrentImageIndex < m_FrameBuffers.size()); //Cannot go out of bound
-		//return m_FrameBuffers[m_CurrentImageIndex];
-		return nullptr;
+		assert(m_CurrentImageIndex < m_SwapChainFramebuffers.size()); //Cannot go out of bound
+		return m_SwapChainFramebuffers[m_CurrentImageIndex];
 	}
 
 	VkCommandBuffer SwapChain::GetCurrentCommandBuffer()
 	{
-		//assert(m_CurrentBufferIndex < m_Commandbufferss.size()); //Cannot go out of bound
-		//return m_Commandbufferss[m_CurrentBufferIndex];
-		return nullptr;
+		assert(m_CurrentBufferIndex < m_Commandbuffers.size()); //Cannot go out of bound
+		return m_Commandbuffers[m_CurrentBufferIndex];
 	}
 
 	uint32_t SwapChain::GetCurrentBufferIndex()
@@ -105,57 +103,7 @@ namespace TRE
 
 	void SwapChain::Initialize(uint32_t Width, uint32_t Height)
 	{
-		//auto PhysicalDevice = m_LogicalDevice->GetLogicalDevice()->GetPhysicalDevice()->GetPhysicalDevice();
-
-		//uint32_t NumberofQueues; 
-		//vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, nullptr);
-		//assert(NumberofQueues > 0);
-
-		//std::vector<VkQueueFamilyProperties> QueueProperties(NumberofQueues);
-		//vkGetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, &NumberofQueues, QueueProperties.data());
-
-		//std::vector<VkBool32> SupportsPresent(NumberofQueues);
-		//for (uint32_t x = 0; x < NumberofQueues; x++)
-		//{
-		//	vkGetPhysicalDeviceSurfaceSupportKHR(PhysicalDevice, x, m_WindowSurface, &SupportsPresent[x]);
-		//}
-
-		//uint32_t PresentQueueIndex = UINT32_MAX;
-		//uint32_t GraphicsQueueIndex = UINT32_MAX;
-
-		//for (uint32_t x = 0; x < NumberofQueues; x++)
-		//{
-		//	if ((QueueProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
-		//	{
-		//		if (GraphicsQueueIndex == UINT32_MAX)
-		//			GraphicsQueueIndex = x;
-
-		//		if (SupportsPresent[x] == VK_TRUE)
-		//		{
-		//			GraphicsQueueIndex = x;
-		//			PresentQueueIndex = x;
-		//			break;
-		//		}
-		//	}
-		//}
-
-		////In case present is not found
-		//if (PresentQueueIndex == UINT32_MAX)
-		//{
-		//	for (uint32_t x = 0; x < NumberofQueues; x++)
-		//	{
-		//		if (SupportsPresent[x] == VK_TRUE)
-		//		{
-		//			PresentQueueIndex = x;
-		//			break;
-		//		}
-		//	}
-		//}
-
-		//assert(PresentQueueIndex != UINT32_MAX);
-		//assert(GraphicsQueueIndex != UINT32_MAX);
-
-		//m_QueueIndex = GraphicsQueueIndex;
+		m_QueueIndex = m_PhysicalDevice->GetQueueFamilies().Graphics;
 
 		CreateSwapChain(Width, Height);
 		CreateImageViews();
@@ -593,7 +541,29 @@ namespace TRE
 
 		VkSwapchainKHR OldSwapChain = m_SwapChain;
 
-		SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice->GetPhysicalDevice());
+		auto PhysicalDevice = m_PhysicalDevice->GetPhysicalDevice();
+
+		SwapChainDetails Details;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(PhysicalDevice, m_WindowSurface, &Details.Capabilities);
+
+		uint32_t FormatCount;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, nullptr);
+
+		if (FormatCount != 0)
+		{
+			Details.Formats.resize(FormatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, m_WindowSurface, &FormatCount, Details.Formats.data());
+		}
+
+		uint32_t PresentCount;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(PhysicalDevice, m_WindowSurface, &PresentCount, nullptr);
+
+		if (PresentCount != 0)
+		{
+			Details.PresentModes.resize(PresentCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(PhysicalDevice, m_WindowSurface, &PresentCount, Details.PresentModes.data());
+		}
+
 		VkSurfaceFormatKHR surfaceformat = ChooseSwapChainFormat(Details.Formats);
 
 		VkPresentModeKHR PresentModeInfo = VK_PRESENT_MODE_FIFO_KHR; //Guaranteed to have
@@ -617,8 +587,6 @@ namespace TRE
 			
 		}
 
-		//VkExtent2D Extent = ChooseSwapExtent(Details.Capabilities);
-		//m_Extent = Extent;
 		m_Extent = { m_Width, m_Height };
 		m_Format = surfaceformat.format;
 
@@ -897,32 +865,6 @@ namespace TRE
 		}
 	}
 
-	SwapChainDetails SwapChain::QuerySwapChainSupprt(VkPhysicalDevice device)
-	{
-		SwapChainDetails Details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_WindowSurface, &Details.Capabilities);
-
-		uint32_t FormatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_WindowSurface, &FormatCount, nullptr);
-
-		if (FormatCount != 0)
-		{
-			Details.Formats.resize(FormatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_WindowSurface, &FormatCount, Details.Formats.data());
-		}
-
-		uint32_t PresentCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_WindowSurface, &PresentCount, nullptr);
-
-		if (PresentCount != 0)
-		{
-			Details.PresentModes.resize(PresentCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_WindowSurface, &PresentCount, Details.PresentModes.data());
-		}
-
-		return Details;
-	}
-
 	VkSurfaceFormatKHR SwapChain::ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats)
 	{
 		for (const auto& format : AvailableFormats)
@@ -935,22 +877,4 @@ namespace TRE
 
 		return AvailableFormats[0];
 	}
-
-	//VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities)
-	//{
-	//	if (Capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-	//	{
-	//		return Capabilities.currentExtent;
-	//	}
-	//	else
-	//	{
-	//		int width, height;
-	//		glfwGetFramebufferSize(m_Handle, &width, &height);
-
-	//		VkExtent2D Extent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
-	//		Extent.width = std::clamp(Extent.width, Capabilities.minImageExtent.width, Capabilities.maxImageExtent.width);
-	//		Extent.height = std::clamp(Extent.height, Capabilities.minImageExtent.height, Capabilities.maxImageExtent.height);
-	//		return Extent;
-	//	}
-	//}
 }
