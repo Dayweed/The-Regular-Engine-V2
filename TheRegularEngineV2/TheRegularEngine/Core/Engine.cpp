@@ -48,16 +48,14 @@ namespace TRE
 
 		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
-		/*Entity audio = ECSManager::Instance().CreateEntity();
-		audio->AddComponent<Audio>();
-		audio->GetComponent<Audio>().m_IsPlaying = true;*/
-
+		//Entity audio = ECSManager::Instance().CreateEntity();
+		//audio->AddComponent<Audio>();
 
 
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
-		//_system_manager->GetSystem<AudioSystem>()->LoadFile(audio);
-		//_system_manager->GetSystem<AudioSystem>()->Play(audio, true);
+		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->LoadFile(audio);
+		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 	}
 }
 #pragma endregion TO DELETE TEST
