@@ -87,11 +87,11 @@ namespace TRE
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 		
-		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDevice());
-		m_Renderer->Initialize();
+		//m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDevice());
+		//m_Renderer->Initialize();
 
-		if (m_EngineInfo.EnableEditor)
-			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
+		//if (m_EngineInfo.EnableEditor)
+		//	m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 	}
 
 	Engine::~Engine()
@@ -125,13 +125,12 @@ namespace TRE
 		// To remove eventually
 		//ECSManager::Instance().TESTRUN();
 
-		DemoScene();
+		//DemoScene();
 
 		while (!m_Window->ShouldWindowClose())
 		{
-			m_Window->PollEvents();
 
-			m_Window->GetSwapChain().BeginFrame();
+			m_Window->BeginFrame();
 
 			//Update
 			Profiler::Instance().StartTimer("Update");

@@ -8,7 +8,7 @@ namespace TRE
 {
 	VkDescriptorSet VulkanEditor::GetDset()
 	{
-		return m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain().GetCurrentImageIndex()];
+		return m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex()];
 	}
 
 	VulkanEditor::VulkanEditor(const std::shared_ptr<Device>& LogicalDevice)
@@ -48,6 +48,8 @@ namespace TRE
 		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
 
+		auto ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
+
 		ImGui_ImplVulkan_InitInfo ImguiVulkanInitInfo{};
 		ImguiVulkanInitInfo.Instance = RendererContext::GetVKInstance();
 		ImguiVulkanInitInfo.PhysicalDevice = LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
@@ -56,10 +58,10 @@ namespace TRE
 		ImguiVulkanInitInfo.Queue = m_LogicalDevice->GetGraphicsQ();
 		ImguiVulkanInitInfo.DescriptorPool = m_DescriptorPool;
 		ImguiVulkanInitInfo.MinImageCount = 2;
-		ImguiVulkanInitInfo.ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		ImguiVulkanInitInfo.ImageCount = ImageCount;
 		ImguiVulkanInitInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
-		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain().GetRenderPass());
+		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain()->GetRenderPass());
 
 		auto cmdbuffer = LogicalDevice->AllocateCommandBuffer(true);
 		ImGui_ImplVulkan_CreateFontsTexture(cmdbuffer);
@@ -67,8 +69,8 @@ namespace TRE
 		vkDeviceWaitIdle(LogicalDevice->GetLogicalDevice());
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 
-		m_ImGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-		for (int x = 0; x < MAX_FRAMES_IN_FLIGHT; x++)
+		m_ImGuiCommandBuffers.resize(ImageCount);
+		for (int x = 0; x < ImageCount; x++)
 		{
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}
@@ -103,23 +105,23 @@ namespace TRE
 	{
 		ImGui::Render();
 
-		SwapChain swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		auto swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		std::array<VkClearValue, 2> clearValues{};
 		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
-		uint32_t width = swapChain.GetWidth();
-		uint32_t height = swapChain.GetHeight();
+		uint32_t width = swapChain->GetWidth();
+		uint32_t height = swapChain->GetHeight();
 
-		uint32_t commandBufferIndex = swapChain.GetCurrentBufferIndex();
+		uint32_t commandBufferIndex = swapChain->GetCurrentBufferIndex();
 
 		VkCommandBufferBeginInfo drawCmdBufInfo = {};
 		drawCmdBufInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		drawCmdBufInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		drawCmdBufInfo.pNext = nullptr;
 
-		VkCommandBuffer drawCommandBuffer = swapChain.GetCurrentCommandBuffer();
+		VkCommandBuffer drawCommandBuffer = swapChain->GetCurrentCommandBuffer();
 		if (auto Result = vkBeginCommandBuffer(drawCommandBuffer, &drawCmdBufInfo); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS);
@@ -128,21 +130,21 @@ namespace TRE
 		VkRenderPassBeginInfo renderPassBeginInfo = {};
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassBeginInfo.pNext = nullptr;
-		renderPassBeginInfo.renderPass = swapChain.GetRenderPass();
+		renderPassBeginInfo.renderPass = swapChain->GetRenderPass();
 		renderPassBeginInfo.renderArea.offset.x = 0;
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = width;
 		renderPassBeginInfo.renderArea.extent.height = height;
 		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassBeginInfo.pClearValues = clearValues.data();
-		renderPassBeginInfo.framebuffer = swapChain.GetCurrentFrameBuffer();
+		renderPassBeginInfo.framebuffer = swapChain->GetCurrentFrameBuffer();
 
 		vkCmdBeginRenderPass(drawCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
 		VkCommandBufferInheritanceInfo inheritanceInfo = {};
 		inheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-		inheritanceInfo.renderPass = swapChain.GetRenderPass();
-		inheritanceInfo.framebuffer = swapChain.GetCurrentFrameBuffer();
+		inheritanceInfo.renderPass = swapChain->GetRenderPass();
+		inheritanceInfo.framebuffer = swapChain->GetCurrentFrameBuffer();
 
 		VkCommandBufferBeginInfo cmdBufInfo = {};
 		cmdBufInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
