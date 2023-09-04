@@ -1,16 +1,18 @@
 #pragma once
 #include "pch.h"
 #include "Image.h"
+#include "Texture.h"
 
 namespace TRE
 {
-	class Texture
+	class VulkanTexture
 	{
 	public:
-		Texture() {};
-		Texture(const uint32_t texWidth, const uint32_t texHeight, void* pixels, 
+		VulkanTexture() {};
+		VulkanTexture(const uint32_t texWidth, const uint32_t texHeight, void* pixels,
 			const VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB, VkFilter imageFilter = VK_FILTER_NEAREST);
-		~Texture();
+		VulkanTexture(std::unique_ptr<Texture> texture);
+		~VulkanTexture();
 
 		VkDescriptorImageInfo GetDescriptorImageInfo() const;
 
@@ -38,7 +40,8 @@ namespace TRE
 		}
 
 		void LoadTexture(const std::string& path, const std::string& name, const VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB, const VkFilter imageFilter = VK_FILTER_NEAREST);
-		std::shared_ptr<Texture> GetTexture(const std::string& name);
+		void LoadTexture(std::unique_ptr<Texture> texture);
+		std::shared_ptr<VulkanTexture> GetTexture(const std::string& name);
 		
 		void Shutdown();
 	
@@ -48,6 +51,6 @@ namespace TRE
 		void operator=(TextureManager const&) = delete;
 		void* operator new(size_t) = delete;
 	private:
-		std::unordered_map<std::string, std::shared_ptr<Texture>> m_Textures;
+		std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_Textures;
 	};
 }

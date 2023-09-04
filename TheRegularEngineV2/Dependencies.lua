@@ -18,7 +18,7 @@ IncludeDir["VULKANSDK"] = "%{VULKAN_SDK}/Include"
 IncludeDir["Rapidjson"] = "%{wks.location}/Dependencies/Rapidjson/include"
 IncludeDir["spdlog"] = "%{wks.location}/Dependencies/spdlog"
 IncludeDir["stbi"] = "%{wks.location}/Dependencies/stbi_image"
-IncludeDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/src"
+IncludeDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/include"
 IncludeDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/src"
 
 LibraryDir = {}

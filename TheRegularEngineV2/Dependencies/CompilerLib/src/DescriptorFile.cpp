@@ -8,7 +8,7 @@ namespace TRE
 		std::cout << "Generating descriptor file for " << assetPath << std::endl;
 		SetAssetPath(assetPath);
 		WriteAssetPath();
-		Generate();
+		Write();
 		m_DescriptorFile.close();
 	}
 
@@ -25,7 +25,6 @@ namespace TRE
 		m_DescriptorPath = std::string(m_AssetPath);
 		m_DescriptorPath = m_AssetPath.substr(0, m_AssetPath.find_last_of("."));
 		m_DescriptorPath += ".desc";
-		std::cout << "Descriptor path: " << m_DescriptorPath << std::endl;
 		m_DescriptorFile = std::fstream(m_DescriptorPath, std::fstream::out);
 		if (m_DescriptorFile.is_open() == false)
 		{
