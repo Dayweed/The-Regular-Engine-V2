@@ -170,7 +170,7 @@ namespace TRE
 			.Build());
 
 		//TO DELETE
-		//TextureManager::Instance().LoadTexture("../Assets/Test.png", "Test");
+		Texture::RunCompiler("../Assets/Test.desc");
 		auto texture = Texture::Deserialize("../Assets/Test.DDS");
 		TextureManager::Instance().LoadTexture(std::move(texture));
 

@@ -5,7 +5,7 @@
 int main(int argc, char** argv)
 {
 	TRE::TextureDescriptorFile descriptorFile;
-	/*if (argc != 2)
+	if (argc != 2)
 	{
 		std::cout << "Usage: ./TextureCompiler.exe descriptor_path" << std::endl;
 		return 0;
@@ -14,9 +14,8 @@ int main(int argc, char** argv)
 	{
 		std::cout << "Error: descriptor file does not exist" << std::endl;
 		return 0;
-	}*/
-	descriptorFile.GenerateDescriptorFile("../../Assets/Test.png");
-	descriptorFile.ReadDescriptorFile("../../Assets/Test.desc"/*argv[1]*/);
+	}
+	descriptorFile.ReadDescriptorFile(argv[1]);
 	TRE::TextureCompiler::Instance().Compile(descriptorFile);
 	TRE::Texture::Serialize(descriptorFile.GetTexturePath(), TRE::TextureCompiler::Instance().GetTexture());
 

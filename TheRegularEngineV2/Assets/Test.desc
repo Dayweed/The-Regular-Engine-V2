@@ -1,17 +1,17 @@
 Asset File Path:
-../../Assets/Test.png
+../Assets/Test.png
 
 Texture File Path:
-../../Assets/Test.DDS
+../Assets/Test.DDS
 
 Texture Name:
 Test
 
 Width:
-0
+1024
 
 Height:
-0
+1024
 Check vulkan page for enums
 Texture Format:
 43
