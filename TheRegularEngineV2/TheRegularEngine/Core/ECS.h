@@ -7,6 +7,12 @@
 #include <typeindex>
 #include "Core/Logger.h"
 
+#include "rapidjson/document.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/istreamwrapper.h"
+#include "rapidjson/ostreamwrapper.h"
+
 namespace TRE
 {
 	// DO NOT USE THIS UNLESS YOU WANT THE Entity TO BE DELETED!
@@ -255,16 +261,18 @@ namespace TRE
 	class ECSOutputArchive
 	{
 	public:
+		ECSOutputArchive(std::string filePath);
 		void operator()(entt::entity ent);
-		void operator()(std::underlying_type_t<entt::entity> u)
-		{
-			std::cout << u << ";";
-		}
+		void operator()(std::underlying_type_t<entt::entity> u);
 		template <typename T>
 		void operator()(const T& t)
 		{
 			std::cout << "&";
 		}
+		void Close();
+	private:
+		std::string m_FilePath;
+		rapidjson::Document m_Doc;
 	};
 
 	class ECSInputArchive
@@ -482,6 +490,10 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		std::vector<Entity> GetAllEntities();
 
+		void SaveEntities(std::string filePath);
+
+		void LoadEntities(std::string filePath);
+
 		// TODELETE
 		void TESTRUN();
 
@@ -508,7 +520,7 @@ namespace TRE
 	std::vector<Entity> ECSManager::GetEntities()
 	{
 		std::vector<Entity> objects{};
-		entt::exclude_t<Undeployed> u;
+		entt::exclude_t<Undeployed> u{};
 		auto view = registry.view<Comp, Others...>(u);
 		objects.reserve(m_EntityList.size());
 

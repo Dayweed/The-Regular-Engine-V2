@@ -94,12 +94,35 @@ namespace TRE
 		objects.reserve(m_EntityList.size());
 
 		// Get all Entity owning the entities
-		for (auto obj : m_EntityList)
+		for (auto& obj : m_EntityList)
 		{
 			objects.emplace_back(obj.second);
 		}
 
 		return objects;
+	}
+
+	void ECSManager::SaveEntities(std::string filePath)
+	{
+		// Set up document
+		ECSOutputArchive arc { "Testing.json" };
+
+		// Destroys all undeployed entities
+		MemoryManager::Instance().ClearUndeployed();
+
+		entt::snapshot snapshot{ GetRegistry() };
+		// Serialize all entities and components
+		snapshot.entities(arc).component<>(arc);
+
+		for (Entity& ent : GetEntities<Properties>())
+		{
+			//object.insertValue("GO_objectName", ent, allocator);
+		}
+	}
+
+	void ECSManager::LoadEntities(std::string filePath)
+	{
+
 	}
 
 	Entity Ent::GetThis()
@@ -173,10 +196,31 @@ namespace TRE
 		m_Children.clear();
 	}
 
+	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath(filePath)
+	{
+		m_Doc.StartArray();
+	}
+
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
 		if (ECSManager::Instance().GetRegistry().valid(ent))
-			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "|";
+		{
+			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << " - ";
+		}
+	}
+
+	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
+	{
+		//m_Doc(u);
+		std::cout << u << ";";
+	}
+
+	void ECSOutputArchive::Close()
+	{
+		std::ofstream file(m_FilePath.c_str());
+		rapidjson::OStreamWrapper osw(file);
+		rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+		m_Doc.Accept(writer);
 	}
 
 	void ECSManager::TESTRUN()
@@ -262,13 +306,13 @@ namespace TRE
 		std::cout << "- Cloned Entity value is " << cloneobj->GetComponent<Transform>().m_Position.x << "\n";
 
 		std::cout << "\nIterating All Available Component in ComponentManager\n";
-		for (auto comp : ComponentManager::Instance().m_Components)
+		for (auto& comp : ComponentManager::Instance().m_Components)
 		{
 			std::cout << "- " << comp.second << "\n";
 		}
 
 		std::cout << "\nTesting iterating through All Entity with Properties\n";
-		for (auto go : GetEntities<Properties>())
+		for (auto& go : GetEntities<Properties>())
 		{
 			go->GetComponent<Properties>().m_Active = true;
 		}
@@ -328,6 +372,7 @@ namespace TRE
 			std::cout << "- " << storage.first << "|" << storage.second.size() << "\n";
 		std::cout << "-------\n";*/
 
+#if false
 		std::cout << "\nTesting Listener\n";
 		registry.on_construct<Transform>().connect<&Transform::Init>();
 		registry.on_update<Transform>().connect<&Transform::UpdateValues>();
@@ -354,7 +399,10 @@ namespace TRE
 		registry.on_destroy<Transform>().disconnect<&Transform::Destroy>();
 
 		std::cout << "- Testing complete!\n";
+#endif
 
+
+#if false
 		std::cout << "\nTesting observer noticing if any Transform change\n";
 		entt::observer existingObserver{ registry, entt::collector.group<Transform>() };
 		entt::observer updatedObserver{ registry, entt::collector.update<Transform>() };
@@ -387,33 +435,35 @@ namespace TRE
 		existingObserver.disconnect();
 		updatedObserver.disconnect();
 		std::cout << "- Testing complete!\n";
+#endif
 
 		std::cout << "\nTrying out snapshot for archiving entities\n";
 		std::cout << "- Total Objects: " << GetEntities<Properties>().size() << "...\n";
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		ECSOutputArchive str{};
-		entt::exclude_t<Undeployed> u;
-		const auto view = registry.view<Undeployed>();
-		int i{};
-		for (auto& obj : view)
-		{
-			++i;
-		}
-		std::cout << ">>>> " << i << "\n";
-		// Destroys all undeployed entities
-		MemoryManager::Instance().ClearUndeployed();
-		//registry.destroy(view.begin(), view.end());
-		i = 0;
-		for (auto& obj : registry.view<Undeployed>())
-		{
-			++i;
-		}
-		std::cout << ">>>> " << i << "\n";
+		ECSManager::Instance().SaveEntities("Lmao.json");
+		//ECSOutputArchive str{};
+		//entt::exclude_t<Undeployed> u;
+		//const auto view = registry.view<Undeployed>();
+		//int i{};
+		//for (auto& obj : view)
+		//{
+		//	++i;
+		//}
+		//std::cout << ">>>> " << i << "\n";
+		//// Destroys all undeployed entities
+		//MemoryManager::Instance().ClearUndeployed();
+		////registry.destroy(view.begin(), view.end());
+		//i = 0;
+		//for (auto& obj : registry.view<Undeployed>())
+		//{
+		//	++i;
+		//}
+		//std::cout << ">>>> " << i << "\n";
 
-		entt::snapshot snapshot{ GetRegistry() };
-		// Serialize all entities and components
-		snapshot.entities(str).component<>(str);
+		//entt::snapshot snapshot{ GetRegistry() };
+		//// Serialize all entities and components
+		//snapshot.entities(str).component<>(str);
 		//snapshot.component<>(str);
 
 		std::cout << "\n\nEntities IDs\n";
