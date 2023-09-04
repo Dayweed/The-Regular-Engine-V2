@@ -729,12 +729,10 @@ namespace TRE
 
 	void SwapChain::CreateCommandPool()
 	{
-		QueueFamilies Queuefam = m_PhysicalDevice->FindQueueFamilies(m_PhysicalDevice->GetPhysicalDevice());
-
 		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
 		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		CommandPoolCreateInfo.queueFamilyIndex = Queuefam.Graphics;
+		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilies().Graphics;
 
 		if (vkCreateCommandPool(m_LogicalDevice->GetLogicalDevice(), &CommandPoolCreateInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
 		{

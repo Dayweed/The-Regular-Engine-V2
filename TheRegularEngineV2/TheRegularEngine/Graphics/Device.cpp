@@ -25,64 +25,9 @@ namespace TRE
 		return m_MemoryProperties;
 	}
 
-	QueueFamilies PhysicalDevice::FindQueueFamilies(VkPhysicalDevice dev)
+	std::vector<VkDeviceQueueCreateInfo>& PhysicalDevice::GetQueueCreateInfos()
 	{
-		uint32_t Queuecount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, nullptr); //Get number of queue by passing nullptr
-
-		std::vector<VkQueueFamilyProperties> QueueFamilies(Queuecount);
-		vkGetPhysicalDeviceQueueFamilyProperties(dev, &Queuecount, QueueFamilies.data()); //Get the actual queues properties by passing data
-
-		int i = 0;
-		for (const auto& queuefamily : QueueFamilies)
-		{
-			if (queuefamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-			{
-				m_QueueFamilies.Graphics = i;
-			}
-
-			VkBool32 PresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, m_Surface, &PresentSupport);
-
-			if (PresentSupport)
-			{
-				m_QueueFamilies.Compute = i;
-			}
-
-			if (m_QueueFamilies.IsComplete())
-			{
-				break;
-			}
-			i++;
-		}
-
-		return m_QueueFamilies;
-	}
-
-	SwapChainDetails PhysicalDevice::QuerySwapChainSupprt(VkPhysicalDevice device)
-	{
-		SwapChainDetails Details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Surface, &Details.Capabilities);
-
-		uint32_t FormatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &FormatCount, nullptr);
-
-		if (FormatCount != 0)
-		{
-			Details.Formats.resize(FormatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &FormatCount, Details.Formats.data());
-		}
-
-		uint32_t PresentCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &PresentCount, nullptr);
-
-		if (PresentCount != 0)
-		{
-			Details.PresentModes.resize(PresentCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &PresentCount, Details.PresentModes.data());
-		}
-
-		return Details;
+		return m_QueueCreateInfos;
 	}
 
 	PhysicalDevice::PhysicalDevice(VkSurfaceKHR Surface) : m_Surface(Surface)
@@ -126,16 +71,6 @@ namespace TRE
 		vkGetPhysicalDeviceFeatures(m_PhysicalDevice, &m_Features);
 		vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &m_MemoryProperties);
 
-		for (const auto& device : PhysicalDevice)
-		{
-			m_QueueFamilies = FindQueueFamilies(m_PhysicalDevice);
-			SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice);
-			bool SwapChainSupported = !Details.Formats.empty() && !Details.PresentModes.empty();
-
-			if (m_QueueFamilies.IsComplete() && SwapChainSupported && m_Features.samplerAnisotropy)
-				break;
-		}
-
 		uint32_t ExtensionCount;
 		vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionCount, nullptr);
 		if (ExtensionCount > 0)
@@ -159,48 +94,35 @@ namespace TRE
 		m_QueueFamilyProperties.resize(QueueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &QueueFamilyCount, m_QueueFamilyProperties.data());
 
-		//static const float DefaultQueuePriority = 0.f;
-		//int RequestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
-		//m_QueueFamilies = GetQueueFamilies(RequestedQueueTypes);
+		static const float DefaultQueuePriority = 0.f;
+		int RequestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
+		m_QueueFamilies = GetQueueFamilies(RequestedQueueTypes);
 
-		//if (RequestedQueueTypes & VK_QUEUE_GRAPHICS_BIT)
-		//{
-		//	VkDeviceQueueCreateInfo QueueCreateInfo{};
-		//	QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		//	QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Graphics;
-		//	QueueCreateInfo.queueCount = 1;
-		//	QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
-		//	m_QueueCreateInfos.push_back(QueueCreateInfo);
-		//}
+		if (RequestedQueueTypes & VK_QUEUE_GRAPHICS_BIT)
+		{
+			VkDeviceQueueCreateInfo QueueCreateInfo{};
+			QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Graphics;
+			QueueCreateInfo.queueCount = 1;
+			QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
+			m_QueueCreateInfos.push_back(QueueCreateInfo);
+		}
 
-		//if (RequestedQueueTypes & VK_QUEUE_COMPUTE_BIT)
-		//{
-		//	if (m_QueueFamilies.Compute != m_QueueFamilies.Graphics) //If same no need create twice
-		//	{
-		//		VkDeviceQueueCreateInfo QueueCreateInfo{};
-		//		QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		//		QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Compute;
-		//		QueueCreateInfo.queueCount = 1;
-		//		QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
-		//		m_QueueCreateInfos.push_back(QueueCreateInfo);
-		//	}
-		//}
+		if (RequestedQueueTypes & VK_QUEUE_COMPUTE_BIT)
+		{
+			if (m_QueueFamilies.Compute != m_QueueFamilies.Graphics) //If same no need create twice
+			{
+				VkDeviceQueueCreateInfo QueueCreateInfo{};
+				QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+				QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Compute;
+				QueueCreateInfo.queueCount = 1;
+				QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
+				m_QueueCreateInfos.push_back(QueueCreateInfo);
+			}
+		}
 
-		//if (RequestedQueueTypes & VK_QUEUE_TRANSFER_BIT)
-		//{
-		//	if ((m_QueueFamilies.Compute != m_QueueFamilies.Transfer) && (m_QueueFamilies.Graphics != m_QueueFamilies.Transfer)) //If same no need create twice
-		//	{
-		//		VkDeviceQueueCreateInfo QueueCreateInfo{};
-		//		QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		//		QueueCreateInfo.queueFamilyIndex = m_QueueFamilies.Transfer;
-		//		QueueCreateInfo.queueCount = 1;
-		//		QueueCreateInfo.pQueuePriorities = &DefaultQueuePriority;
-		//		m_QueueCreateInfos.push_back(QueueCreateInfo);
-		//	}
-		//}
-
-		//m_DepthFormat = GetDepthFormat();
-		//assert(m_DepthFormat);
+		m_DepthFormat = GetDepthFormat();
+		assert(m_DepthFormat);
 	}
 
 	PhysicalDevice::~PhysicalDevice()
@@ -212,53 +134,33 @@ namespace TRE
 	{
 		QueueFamilies NewFamily;
 
-		//if (flags & VK_QUEUE_COMPUTE_BIT)
-		//{
-		//	for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
-		//	{
-		//		auto& properties = m_QueueFamilyProperties[x];
-		//		if ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
-		//		{
-		//			NewFamily.Compute = x;
-		//			break;
-		//		}
-		//	}
-		//}
+		if (flags & VK_QUEUE_COMPUTE_BIT)
+		{
+			for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
+			{
+				auto& properties = m_QueueFamilyProperties[x];
+				if ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
+				{
+					NewFamily.Compute = x;
+					break;
+				}
+			}
+		}
 
-		//if (flags & VK_QUEUE_TRANSFER_BIT)
-		//{
-		//	for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
-		//	{
-		//		auto& properties = m_QueueFamilyProperties[x];
-		//		if ((properties.queueFlags & VK_QUEUE_TRANSFER_BIT) && ((properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) 
-		//															&& ((properties.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0))
-		//		{
-		//			NewFamily.Compute = x;
-		//			break;
-		//		}
-		//	}
-		//}
+		for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
+		{
+			if ((flags & VK_QUEUE_COMPUTE_BIT) && NewFamily.Compute == -1)
+			{
+				if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_COMPUTE_BIT)
+					NewFamily.Compute = x;
+			}
 
-		//for (int x = 0; x < m_QueueFamilyProperties.size(); x++)
-		//{
-		//	if ((flags & VK_QUEUE_COMPUTE_BIT) && NewFamily.Compute == -1)
-		//	{
-		//		if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_COMPUTE_BIT)
-		//			NewFamily.Compute = x;
-		//	}
-
-		///*	if ((flags & VK_QUEUE_TRANSFER_BIT) && NewFamily.Transfer == -1)
-		//	{
-		//		if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_TRANSFER_BIT)
-		//			NewFamily.Transfer = x;
-		//	}*/
-
-		//	if (flags & VK_QUEUE_GRAPHICS_BIT)
-		//	{
-		//		if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-		//			NewFamily.Graphics = x;
-		//	}
-		//}
+			if (flags & VK_QUEUE_GRAPHICS_BIT)
+			{
+				if (m_QueueFamilyProperties[x].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+					NewFamily.Graphics = x;
+			}
+		}
 
 		return NewFamily;
 	}
@@ -309,41 +211,19 @@ namespace TRE
 
 	Device::Device(const std::shared_ptr<PhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures Features) : m_PhysicalDevice(physicalDevice)
 	{
-		QueueFamilies queuefamily = m_PhysicalDevice->GetQueueFamilies();
-
-		std::vector<VkDeviceQueueCreateInfo> AllQueueInfos;
-		std::set<int32_t> UniqueQueueFamilies = { queuefamily.Graphics, queuefamily.Compute };
-
-		float QueuePiority = 1.f;
-
-		for (uint32_t QueueFamily : UniqueQueueFamilies)
-		{
-			VkDeviceQueueCreateInfo Queueinfo{};
-			Queueinfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			Queueinfo.queueFamilyIndex = QueueFamily;
-			Queueinfo.queueCount = 1;
-			Queueinfo.pQueuePriorities = &QueuePiority;
-			AllQueueInfos.push_back(Queueinfo);
-		}
+		auto QueueCreateInfos = m_PhysicalDevice->GetQueueCreateInfos();
+		auto QueueFam = m_PhysicalDevice->GetQueueFamilies();
 
 		const std::vector<const char*> m_DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 		VkDeviceCreateInfo deviceinfo{};
 		deviceinfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		deviceinfo.pQueueCreateInfos = AllQueueInfos.data();
-		deviceinfo.queueCreateInfoCount = static_cast<uint32_t>(AllQueueInfos.size());
+		deviceinfo.pQueueCreateInfos = QueueCreateInfos.data();
+		deviceinfo.queueCreateInfoCount = static_cast<uint32_t>(QueueCreateInfos.size());
 		deviceinfo.pEnabledFeatures = &Features;
 		deviceinfo.enabledExtensionCount = static_cast<uint32_t>(m_DeviceExtensions.size());
 		deviceinfo.ppEnabledExtensionNames = m_DeviceExtensions.data();
-		//VkDeviceCreateInfo DeviceCreateInfo = {};
-		//DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		//DeviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(physicalDevice->m_QueueCreateInfos.size());
-		//DeviceCreateInfo.pQueueCreateInfos = physicalDevice->m_QueueCreateInfos.data();
-		//DeviceCreateInfo.pEnabledFeatures = &Features;
-		//DeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(DeviceLevelExtensions.size());
-		//DeviceCreateInfo.ppEnabledExtensionNames = DeviceLevelExtensions.data();
 
 		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-
 		if (EnableValidationLayer)
 		{
 			deviceinfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
@@ -354,17 +234,18 @@ namespace TRE
 			deviceinfo.enabledLayerCount = 0;
 		}
 
-		if (vkCreateDevice(m_PhysicalDevice->GetPhysicalDevice(), &deviceinfo, nullptr, &m_LogicalDevice) != VK_SUCCESS)
+		if (auto Result = vkCreateDevice(m_PhysicalDevice->GetPhysicalDevice(), &deviceinfo, nullptr, &m_LogicalDevice); Result != VK_SUCCESS)
 		{
-			assert(false);
+			TRE_CORE_CRITICAL("Unable to create logical device");
+			assert(Result == VK_SUCCESS);
 		}
 
-		vkGetDeviceQueue(m_LogicalDevice, queuefamily.Graphics, 0, &m_GraphicsQ);
-		vkGetDeviceQueue(m_LogicalDevice, queuefamily.Compute, 0, &m_ComputeQ);
+		vkGetDeviceQueue(m_LogicalDevice, QueueFam.Graphics, 0, &m_GraphicsQ);
+		vkGetDeviceQueue(m_LogicalDevice, QueueFam.Compute, 0, &m_ComputeQ);
 
 		VkCommandPoolCreateInfo CommandPoolCreateInfo{};
 		CommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilies().Graphics;
+		CommandPoolCreateInfo.queueFamilyIndex = QueueFam.Graphics;
 		CommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_CommandPool); Result != VK_SUCCESS)
@@ -373,7 +254,7 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		CommandPoolCreateInfo.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilies().Compute;
+		CommandPoolCreateInfo.queueFamilyIndex = QueueFam.Compute;
 		if (auto Result = vkCreateCommandPool(m_LogicalDevice, &CommandPoolCreateInfo, nullptr, &m_ComputeCommandPool); Result != VK_SUCCESS)
 		{
 			TRE_CORE_CRITICAL("Unable to create command pool for compute");

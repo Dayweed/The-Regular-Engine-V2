@@ -6,8 +6,6 @@ namespace TRE
 	{
 		int32_t Graphics = -1;
 		int32_t Compute = -1;
-
-		bool IsComplete() { return ((Graphics != -1) && (Compute != -1)); }
 	};
 
 	struct SwapChainDetails
@@ -29,12 +27,7 @@ namespace TRE
 		VkPhysicalDevice GetPhysicalDevice() const;
 		VkPhysicalDeviceProperties GetPhysicalDeviceProperties();
 		VkPhysicalDeviceMemoryProperties GetPhysicalDeviceMemoryProperties();
-		QueueFamilies FindQueueFamilies(VkPhysicalDevice dev);
-
-	private:
-		SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
-		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-
+		std::vector<VkDeviceQueueCreateInfo>& GetQueueCreateInfos();
 
 	private:
 		VkSurfaceKHR m_Surface;
@@ -46,7 +39,7 @@ namespace TRE
 
 		QueueFamilies m_QueueFamilies;
 		std::vector <VkQueueFamilyProperties> m_QueueFamilyProperties;
-		//std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
+		std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
 
 		VkFormat m_DepthFormat;
 	};
