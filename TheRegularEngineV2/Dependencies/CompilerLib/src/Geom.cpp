@@ -107,12 +107,12 @@ namespace TRE
 			}
 			else
 			{
-				//TRE_CORE_ERROR("Failed to open file: {0}", geomPath);
+				std::cout << "Error: could not open file: " << filePath << std::endl;
 			}
 		}
 		else
 		{
-			//TRE_CORE_ERROR("File does not exist: {0}", geomPath);
+			std::cout << "Error: file does not exist: " << filePath << std::endl;
 		}
 
 		return geom;

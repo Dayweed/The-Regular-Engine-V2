@@ -26,7 +26,7 @@ namespace
 
 namespace TRE
 {
-	void GeomDescriptorFile::Generate()
+	void GeomDescriptorFile::Write()
 	{
 		m_DescriptorFile << "Geom File Path:\n";
 		std::string geomPath = m_AssetPath.substr(0, m_AssetPath.find_last_of("."));

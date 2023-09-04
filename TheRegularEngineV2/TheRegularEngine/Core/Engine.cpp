@@ -10,7 +10,6 @@
 #pragma region TO DELETE TEST
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Texture.h"
 #include "Geom.h"
 namespace TRE
 {
@@ -45,8 +44,6 @@ namespace TRE
 		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 		cam->GetComponent<Camera>().m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		cam->GetComponent<Camera>().m_Fov = 30.0f;
-
-		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();

@@ -4,7 +4,7 @@
 #include "RenderObject.h"
 #include "Core/Engine.h"
 #include "Descriptor.h"
-#include "Texture.h"
+#include "VulkanTexture.h"
 
 namespace TRE
 {
@@ -170,7 +170,9 @@ namespace TRE
 			.Build());
 
 		//TO DELETE
-		TextureManager::Instance().LoadTexture("../Assets/Test.png", "Test");
+		//TextureManager::Instance().LoadTexture("../Assets/Test.png", "Test");
+		auto texture = Texture::Deserialize("../Assets/Test.DDS");
+		TextureManager::Instance().LoadTexture(std::move(texture));
 
 		int descriptorCount = imageCount;
 		m_DescriptorSets.resize(descriptorCount);
