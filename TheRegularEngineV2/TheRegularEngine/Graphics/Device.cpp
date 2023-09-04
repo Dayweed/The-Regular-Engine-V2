@@ -30,7 +30,7 @@ namespace TRE
 		return m_QueueCreateInfos;
 	}
 
-	PhysicalDevice::PhysicalDevice(VkSurfaceKHR Surface) : m_Surface(Surface)
+	PhysicalDevice::PhysicalDevice()
 	{
 		uint32_t PhysicalDeviceCount = 0;
 		vkEnumeratePhysicalDevices(RendererContext::GetVKInstance(), &PhysicalDeviceCount, nullptr);

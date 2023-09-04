@@ -37,10 +37,10 @@ namespace TRE
 		m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
 
 		m_RenderContext = std::make_shared<RendererContext>();
-		m_RenderContext->Initialize(m_WindowHandle);
+		m_RenderContext->Initialize();
 
-		m_SwapChain = std::make_shared<SwapChain>();
-		m_SwapChain->Initialize(m_RenderContext->GetDeviceInternally(), m_WindowHandle, m_RenderContext->GetPhysicalDeviceInternally(), m_RenderContext->GetSurface());
+		m_SwapChain = std::make_shared<SwapChain>(m_RenderContext->GetDeviceInternally(), m_RenderContext->GetPhysicalDeviceInternally(), m_WindowHandle);
+		m_SwapChain->Initialize(m_Config.width, m_Config.height);
 
 		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
 	}

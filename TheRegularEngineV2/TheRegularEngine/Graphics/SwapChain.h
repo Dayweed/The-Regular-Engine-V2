@@ -29,9 +29,9 @@ namespace TRE
 				//VkImageView DepthImageView = nullptr;
 			};
 
-			SwapChain();
+			SwapChain(std::shared_ptr<Device>& LogicalDevice, std::shared_ptr<PhysicalDevice>& PD, GLFWwindow* Handle);
 			~SwapChain() = default;
-			void Initialize(std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface);
+			void Initialize(uint32_t Width, uint32_t Height);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
 			
@@ -56,7 +56,7 @@ namespace TRE
 			uint32_t GetCurrentImageIndex();
 
 		public: //TBR
-			void CreateSwapChain();
+			void CreateSwapChain(uint32_t Width, uint32_t Height);
 			void RecreateSwapChain();
 			void CleanSwapChain();
 			void CreateImageViews();
@@ -68,13 +68,10 @@ namespace TRE
 			void CreateSyncObjects();
 			SwapChainDetails QuerySwapChainSupprt(VkPhysicalDevice device);
 			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
-			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities);
 			
-			GLFWwindow* m_Handle;
 			VkFormat m_Format;
 			
 		private:
-			VkInstance m_Instance = nullptr;
 			std::shared_ptr<Device> m_LogicalDevice;
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 		

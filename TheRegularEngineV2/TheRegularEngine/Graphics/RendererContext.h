@@ -19,7 +19,7 @@ namespace TRE
 			RendererContext();
 			~RendererContext();
 
-			void Initialize(GLFWwindow* Handle);
+			void Initialize();
 
 			std::shared_ptr<PhysicalDevice>& GetPhysicalDeviceInternally();
 			std::shared_ptr<Device>& GetDeviceInternally();

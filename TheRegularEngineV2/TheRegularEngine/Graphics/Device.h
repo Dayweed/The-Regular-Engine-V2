@@ -18,7 +18,7 @@ namespace TRE
 	class PhysicalDevice
 	{
 	public:
-		PhysicalDevice(VkSurfaceKHR Surface);
+		PhysicalDevice();
 		~PhysicalDevice();
 
 		QueueFamilies GetQueueFamilies();
@@ -30,7 +30,6 @@ namespace TRE
 		std::vector<VkDeviceQueueCreateInfo>& GetQueueCreateInfos();
 
 	private:
-		VkSurfaceKHR m_Surface;
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties m_Properties;
 		VkPhysicalDeviceFeatures m_Features;

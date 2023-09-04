@@ -79,9 +79,12 @@ namespace TRE
 		return m_Extent;
 	}
 
-	SwapChain::SwapChain()
+	SwapChain::SwapChain(std::shared_ptr<Device>& LogicalDevice, std::shared_ptr<PhysicalDevice>& PD, GLFWwindow* Handle) : m_LogicalDevice(LogicalDevice), m_PhysicalDevice(PD)
 	{
-
+		if (auto Result = glfwCreateWindowSurface(RendererContext::GetVKInstance(), Handle, nullptr, &m_WindowSurface) != VK_SUCCESS)
+		{
+			assert(false);
+		}
 	}
 
 	void SwapChain::DestroySwapChain()
@@ -97,9 +100,10 @@ namespace TRE
 		CleanSwapChain();
 		vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, nullptr);
 		vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandPool, nullptr);
+		vkDestroySurfaceKHR(RendererContext::GetVKInstance(), m_WindowSurface, nullptr);
 	}
 
-	void SwapChain::Initialize(std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle, std::shared_ptr<PhysicalDevice>& PD, VkSurfaceKHR Surface)
+	void SwapChain::Initialize(uint32_t Width, uint32_t Height)
 	{
 		//auto PhysicalDevice = m_LogicalDevice->GetLogicalDevice()->GetPhysicalDevice()->GetPhysicalDevice();
 
@@ -153,12 +157,7 @@ namespace TRE
 
 		//m_QueueIndex = GraphicsQueueIndex;
 
-		m_LogicalDevice = LogicalDevice;
-		m_Handle = Handle;
-		m_PhysicalDevice = PD;
-		m_WindowSurface = Surface;
-
-		CreateSwapChain();
+		CreateSwapChain(Width, Height);
 		CreateImageViews();
 		CreateRenderPass();
 		CreateCommandPool();
@@ -543,15 +542,15 @@ namespace TRE
 
 	void SwapChain::FindImageFormatAndColorSpace()
 	{
-		//auto PhysicalDevice = m_LogicalDevice->GetLogicalDevice()->GetPhysicalDevice()->GetPhysicalDevice();
+		auto PhysicalDevice = m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice();
 		uint32_t FormatCount;
-		//if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(m_LogicalDevice->GetLogicalDevice()->GetPhysicalDevice()->GetPhysicalDevice(), m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
-		//{
-		//	TRE_CORE_WARN("Surface Format bad result at {0} and line {1}", __FILE__, __LINE__);
-		//	assert(Result == VK_SUCCESS);
-		//}
+		if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(m_LogicalDevice->GetPhysicalDevice()->GetPhysicalDevice(), m_WindowSurface, &FormatCount, nullptr); Result != VK_SUCCESS)
+		{
+			TRE_CORE_WARN("Surface Format bad result at {0} and line {1}", __FILE__, __LINE__);
+			assert(Result == VK_SUCCESS);
+		}
 		
-		//assert(FormatCount > 0);
+		assert(FormatCount > 0);
 
 		std::vector<VkSurfaceFormatKHR> SurfaceFormats(FormatCount);
 		//if (VkResult Result = vkGetPhysicalDeviceSurfaceFormatsKHR(m_LogicalDevice->GetLogicalDevice()->GetPhysicalDevice()->GetPhysicalDevice(), m_WindowSurface, &FormatCount, SurfaceFormats.data()); Result != VK_SUCCESS)
@@ -587,8 +586,11 @@ namespace TRE
 		}
 	}
 
-	void SwapChain::CreateSwapChain()
+	void SwapChain::CreateSwapChain(uint32_t Width, uint32_t Height)
 	{
+		m_Width = Width;
+		m_Height = Height;
+
 		VkSwapchainKHR OldSwapChain = m_SwapChain;
 
 		SwapChainDetails Details = QuerySwapChainSupprt(m_PhysicalDevice->GetPhysicalDevice());
@@ -615,8 +617,9 @@ namespace TRE
 			
 		}
 
-		VkExtent2D Extent = ChooseSwapExtent(Details.Capabilities);
-		m_Extent = Extent;
+		//VkExtent2D Extent = ChooseSwapExtent(Details.Capabilities);
+		//m_Extent = Extent;
+		m_Extent = { m_Width, m_Height };
 		m_Format = surfaceformat.format;
 
 		uint32_t ImageCount = Details.Capabilities.minImageCount + 1; //Number of images in swapchain
@@ -631,7 +634,7 @@ namespace TRE
 		CreateInfo.minImageCount = ImageCount;
 		CreateInfo.imageFormat = surfaceformat.format;
 		CreateInfo.imageColorSpace = surfaceformat.colorSpace;
-		CreateInfo.imageExtent = Extent;
+		CreateInfo.imageExtent = m_Extent;
 		CreateInfo.imageArrayLayers = 1;
 		CreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		CreateInfo.oldSwapchain = OldSwapChain;
@@ -813,10 +816,10 @@ namespace TRE
 	void SwapChain::RecreateSwapChain()
 	{
 		int width = 0, height = 0;
-		glfwGetFramebufferSize(m_Handle, &width, &height);
+		glfwGetFramebufferSize(Engine::GetInstance().GetWindow()->GetWindowHandle(), &width, &height);
 		while (width == 0 || height == 0)
 		{
-			glfwGetFramebufferSize(m_Handle, &width, &height);
+			glfwGetFramebufferSize(Engine::GetInstance().GetWindow()->GetWindowHandle(), &width, &height);
 			glfwWaitEvents();
 		}
 
@@ -824,7 +827,7 @@ namespace TRE
 
 		CleanSwapChain();
 
-		CreateSwapChain();
+		CreateSwapChain(width, height);
 		CreateImageViews();
 		CreateFrameBuffer();
 	}
@@ -933,21 +936,21 @@ namespace TRE
 		return AvailableFormats[0];
 	}
 
-	VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities)
-	{
-		if (Capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-		{
-			return Capabilities.currentExtent;
-		}
-		else
-		{
-			int width, height;
-			glfwGetFramebufferSize(m_Handle, &width, &height);
+	//VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& Capabilities)
+	//{
+	//	if (Capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+	//	{
+	//		return Capabilities.currentExtent;
+	//	}
+	//	else
+	//	{
+	//		int width, height;
+	//		glfwGetFramebufferSize(m_Handle, &width, &height);
 
-			VkExtent2D Extent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
-			Extent.width = std::clamp(Extent.width, Capabilities.minImageExtent.width, Capabilities.maxImageExtent.width);
-			Extent.height = std::clamp(Extent.height, Capabilities.minImageExtent.height, Capabilities.maxImageExtent.height);
-			return Extent;
-		}
-	}
+	//		VkExtent2D Extent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+	//		Extent.width = std::clamp(Extent.width, Capabilities.minImageExtent.width, Capabilities.maxImageExtent.width);
+	//		Extent.height = std::clamp(Extent.height, Capabilities.minImageExtent.height, Capabilities.maxImageExtent.height);
+	//		return Extent;
+	//	}
+	//}
 }

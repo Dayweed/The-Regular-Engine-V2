@@ -77,13 +77,12 @@ namespace TRE
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
 		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
-		vkDestroySurfaceKHR(m_instance, m_Surface, nullptr);
 		m_Device->Destroy();
 		vkDestroyInstance(m_instance, nullptr);
 		m_instance = nullptr;
 	}
 
-	void RendererContext::Initialize(GLFWwindow* Handle)
+	void RendererContext::Initialize()
 	{
 		TRE_CORE_INFO("Initializing Renderer Context");
 		if (int Supported = glfwVulkanSupported(); !Supported)
@@ -201,12 +200,7 @@ namespace TRE
 			}
 		}
 
-		if (glfwCreateWindowSurface(RendererContext::GetVKInstance(), Handle, nullptr, &m_Surface) != VK_SUCCESS)
-		{
-			assert(false);
-		}
-
-		m_PhysicalDevice = std::make_shared<PhysicalDevice>(m_Surface);
+		m_PhysicalDevice = std::make_shared<PhysicalDevice>();
 
 		VkPhysicalDeviceFeatures PhysicalDeviceFeatures{};
 		PhysicalDeviceFeatures.samplerAnisotropy = true;
