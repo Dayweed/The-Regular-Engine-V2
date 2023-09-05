@@ -105,7 +105,7 @@ namespace TRE
 	void ECSManager::SaveEntities(std::string filePath)
 	{
 		// Set up document
-		ECSOutputArchive arc { "../" + filePath };
+		ECSOutputArchive arc;
 
 		// Destroys all undeployed entities
 		MemoryManager::Instance().ClearUndeployed();
@@ -115,11 +115,6 @@ namespace TRE
 		snapshot.entities(arc).component<Properties>(arc);
 
 		arc.Close();
-
-		for (Entity& ent : GetEntities<Properties>())
-		{
-			//object.insertValue("GO_objectName", ent, allocator);
-		}
 	}
 
 	void ECSManager::LoadEntities(std::string filePath)
@@ -198,32 +193,44 @@ namespace TRE
 		m_Children.clear();
 	}
 
-	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath(filePath)
+	ECSOutputArchive::ECSOutputArchive()
 	{
-		m_Doc.SetArray();
+		root = nlohmann::json::array();
+		//m_Doc.SetArray();
 	}
 
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
 		if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
-			m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
+			current.push_back(static_cast<uint32_t>(ent));
+			//m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
 			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << " - ";
 		}
 	}
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
 	{
-		m_Doc.PushBack(u, m_Doc.GetAllocator());
+		//m_Doc.PushBack(u, m_Doc.GetAllocator());
+		
+		// First element of each array keeps the amount of elements. 
+		if (!current.empty()) {
+			root.push_back(current);
+		}
+		current = nlohmann::json::array();
+		current.push_back(u);
+
 		std::cout << u << ";";
 	}
 
 	void ECSOutputArchive::Close()
 	{
-		std::ofstream file(m_FilePath.c_str());
-		rapidjson::OStreamWrapper osw(file);
-		rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
-		m_Doc.Accept(writer);
+		if (!current.empty()) {
+			root.push_back(current);
+		}
+
+		std::ofstream file("../Save.json");
+		file << root;
 	}
 
 

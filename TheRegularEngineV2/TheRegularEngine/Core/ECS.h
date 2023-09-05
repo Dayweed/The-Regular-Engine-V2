@@ -7,6 +7,8 @@
 #include <typeindex>
 #include "Core/Logger.h"
 
+#include <nlohmann/json.hpp>
+
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
@@ -32,6 +34,8 @@ namespace TRE
 	public:
 		std::string m_Name; // To get the name
 		bool m_Active;		// To check if it is active
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Name, m_Active)
 	};
 
 	class Ent;
@@ -258,45 +262,6 @@ namespace TRE
 		entt::entity m_Entity;
 	};
 
-	class ECSOutputArchive
-	{
-	public:
-		ECSOutputArchive(std::string filePath);
-		void operator()(entt::entity ent);
-		void operator()(std::underlying_type_t<entt::entity> u);
-		template <typename T>
-		void operator()(entt::entity ent, const T& t)
-		{
-			//rapidjson::Value Array(rapidjson::kObjectType);
-
-			m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
-			//rapidjson::Value v = t;
-			//Array.PushBack(v, m_Doc.GetAllocator());
-
-			std::cout << "&";
-		}
-		void Close();
-	private:
-		std::string m_FilePath;
-		rapidjson::Document m_Doc;
-	};
-
-	class ECSInputArchive
-	{
-	public:
-		ECSInputArchive(std::string filePath);
-		void operator()(entt::entity& ent);
-		void operator()(std::underlying_type_t<entt::entity>& u);
-		template <typename T>
-		void operator()(entt::entity ent, const T& t)
-		{
-			std::cout << "\\/";
-		}
-	private:
-		std::string m_FilePath;
-		rapidjson::Document m_Doc;
-	};
-
 	// ECS Manager (Entity Manager) THERE CAN ONLY BE ONE! >:o
 	//==================================================
 	class ECSManager
@@ -519,6 +484,51 @@ namespace TRE
 		std::unordered_map<Entity_ID, Entity> m_EntityList;
 	};
 
+	class ECSOutputArchive
+	{
+	public:
+		ECSOutputArchive();
+		void operator()(entt::entity ent);
+		void operator()(std::underlying_type_t<entt::entity> u);
+		template <typename T>
+		void operator()(entt::entity ent, const T& t);
+		void Close();
+
+
+
+		// create a json as string
+		const std::string AsString() {
+			std::string output = root.dump();
+			return output;
+		}
+
+		// create bson-data
+		const std::vector<uint8_t> AsBson() {
+			std::vector<std::uint8_t> as_bson = nlohmann::json::to_bson(root);
+			return as_bson;
+		}
+
+	private:
+		nlohmann::json root;
+		nlohmann::json current;
+	};
+
+	class ECSInputArchive
+	{
+	public:
+		ECSInputArchive(std::string filePath);
+		void operator()(entt::entity& ent);
+		void operator()(std::underlying_type_t<entt::entity>& u);
+		template <typename T>
+		void operator()(entt::entity ent, const T& t)
+		{
+			std::cout << "\\/";
+		}
+	private:
+		std::string m_FilePath;
+		rapidjson::Document m_Doc;
+	};
+
 
 	template <typename Comp, typename... Others>
 	std::vector<Entity> ECSManager::GetEntities()
@@ -633,5 +643,26 @@ namespace TRE
 
 		if (HasComponent<T>())
 			ECSManager::Instance().GetRegistry().remove<T>(m_Entity);
+	}
+
+	template <typename T>
+	void ECSOutputArchive::operator()(entt::entity ent, const T& t)
+	{
+
+		if (ECSManager::Instance().GetRegistry().valid(ent))
+		{
+			current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+
+			nlohmann::json json = t;
+			current.push_back(json);
+
+			//rapidjson::Value Array(rapidjson::kObjectType);
+
+			//m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
+			//rapidjson::Value v = t;
+			//Array.PushBack(v, m_Doc.GetAllocator());
+
+			std::cout << "&";
+		}
 	}
 }
