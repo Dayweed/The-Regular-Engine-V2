@@ -24,12 +24,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include "rapidjson/document.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/istreamwrapper.h"
-#include "rapidjson/ostreamwrapper.h"
-
 /*                                                                 defines
 ----------------------------------------------------------------------------- */
 #define ECS_ENTITY_DEFAULT_NAME "Default_Entity_Name"

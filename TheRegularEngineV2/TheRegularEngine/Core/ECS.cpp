@@ -101,7 +101,9 @@ namespace TRE
 
 		entt::snapshot snapshot{ GetRegistry() };
 		// Serialize all entities and components
-		snapshot.entities(arc).component<Properties, Parenting>(arc);
+		snapshot.entities(arc)
+			.component<Properties>(arc)
+			.component<Parenting>(arc);
 
 		arc.Close();
 
@@ -115,7 +117,9 @@ namespace TRE
 		entt::registry copy;
 		ECSInputArchive arc(filePath);
 		entt::basic_snapshot_loader loader(copy);
-		loader.entities(arc).component<Properties, Parenting>(arc);
+		loader.entities(arc)
+			.component<Properties>(arc)
+			.component<Parenting>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}
