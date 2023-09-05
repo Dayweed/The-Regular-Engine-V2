@@ -15,7 +15,7 @@
 #include "PhysX/PxPhysicsAPI.h"
 
 // USE_PHYSX_PVD is not defined in Release
-#if defined(DEBUG) | defined(_DEBUG)
+#ifdef _DEBUG
 #define USE_PHYSX_PVD 0
 #endif
 

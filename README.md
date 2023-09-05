@@ -13,7 +13,7 @@ How to add libraries:
 
 1) Open Dependencies.lua and there are 3 array-like variables (IncludeDir, LibraryDir, Library)
     - IncludeDir is the path you want to include for that lib
-    - LibraryDir is the path where you lib is located
+    - LibraryDir is the path where your lib is located
     - Library is the .lib itself
 2) After specifiying those 3 variables, open premake5.lua in root folder.
 3) Under "includedirs" in the project you want, add the include path following how it's done.

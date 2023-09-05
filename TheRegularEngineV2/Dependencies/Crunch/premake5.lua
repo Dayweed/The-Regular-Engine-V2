@@ -1,27 +1,31 @@
-project "ImGui"
+project "Crunch"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++20"
     staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin")
+	-- ! makes .obj files appear in the same folder
+	-- regardless of build configuration
+	objdir ("!bin/obj")
 
     includedirs
     {
-        "include/Imgui"
+		"src"
     }
 
 	files
 	{
-		"include/Imgui/**.h",
-		"include/Imgui/**.cpp",
+		"src/**.h",
+		"src/**.hpp",
+		"src/**.cpp",
+		"src/**.c",
 	}
 
-	filter "system:windows"
-		systemversion "latest"
-		cppdialect "C++17"
+	links
+	{
+	}
 
 	filter "configurations:Debug"
 		runtime "Debug"

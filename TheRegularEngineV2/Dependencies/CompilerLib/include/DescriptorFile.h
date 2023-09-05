@@ -17,7 +17,7 @@ namespace TRE
 		const std::string& GetAssetPath() const { return m_AssetPath; }
 		const std::string& GetDescriptorPath() const { return m_DescriptorPath; }
 	protected:
-		virtual void Generate() {};
+		virtual void Write() {};
 		virtual void Read() {};
 
 	protected:

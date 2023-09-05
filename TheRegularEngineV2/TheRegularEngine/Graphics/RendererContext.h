@@ -1,7 +1,7 @@
 #pragma once
 #include "vulkan/vulkan.h"
-#include "PhysicalDevice.h"
 #include "Device.h"
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {
@@ -11,6 +11,8 @@ namespace TRE
 		static const bool EnableValidationLayer = false;
 	#endif
 
+
+
 	class RendererContext
 	{
 		public:
@@ -19,8 +21,9 @@ namespace TRE
 
 			void Initialize();
 
-			std::shared_ptr<PhysicalDevice> GetPhysicalDeviceInternally();
-			std::shared_ptr<Device> GetDeviceInternally();
+			std::shared_ptr<PhysicalDevice>& GetPhysicalDeviceInternally();
+			std::shared_ptr<Device>& GetDeviceInternally();
+			VkSurfaceKHR GetSurface();
 
 			static VkInstance GetVKInstance();
 			static std::shared_ptr<RendererContext> Get();
@@ -31,9 +34,12 @@ namespace TRE
 			bool CheckAPIVersion(uint32_t supportedversion);
 
 		private:
-			static VkInstance m_instance;
 			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 			std::shared_ptr<Device> m_Device;
+
+		private:
+			static VkInstance m_instance;
 			VkDebugUtilsMessengerEXT m_DebugUtilsMessenger;
+			VkSurfaceKHR m_Surface;
 	};
 }

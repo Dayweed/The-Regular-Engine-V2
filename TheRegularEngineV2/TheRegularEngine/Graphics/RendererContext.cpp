@@ -6,7 +6,7 @@
 namespace TRE
 {
 	#define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
-	VkInstance RendererContext::m_instance = nullptr;
+	VkInstance RendererContext::m_instance = VK_NULL_HANDLE;
 
 	VkInstance RendererContext::GetVKInstance()
 	{
@@ -23,19 +23,24 @@ namespace TRE
 		return Get()->GetDeviceInternally();
 	}
 
-	std::shared_ptr<Device> RendererContext::GetDeviceInternally()
+	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDevice()
+	{
+		return Get()->GetPhysicalDeviceInternally();
+	}
+
+	std::shared_ptr<Device>& RendererContext::GetDeviceInternally()
 	{
 		return m_Device;
 	}
 
-	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDeviceInternally()
+	std::shared_ptr<PhysicalDevice>& RendererContext::GetPhysicalDeviceInternally()
 	{
 		return m_PhysicalDevice;
 	}
 
-	std::shared_ptr<PhysicalDevice> RendererContext::GetPhysicalDevice()
+	VkSurfaceKHR RendererContext::GetSurface()
 	{
-		return Get()->GetPhysicalDeviceInternally();
+		return m_Surface;
 	}
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -50,13 +55,13 @@ namespace TRE
 		{
 			Message += "[Vulkan Debug Warning] ";
 			Message += pCallbackData->pMessage;
-			TRE_CORE_INFO(Message);
+			TRE_CORE_WARN(Message);
 		}
 		else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 		{
 			Message += "[Vulkan Debug Error] ";
 			Message += pCallbackData->pMessage;
-			TRE_CORE_INFO(Message);
+			TRE_CORE_WARN(Message);
 		}
 
 		return VK_FALSE;
@@ -69,6 +74,7 @@ namespace TRE
 
 	RendererContext::~RendererContext()
 	{
+		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
 		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
 		m_Device->Destroy();
@@ -81,13 +87,13 @@ namespace TRE
 		TRE_CORE_INFO("Initializing Renderer Context");
 		if (int Supported = glfwVulkanSupported(); !Supported)
 		{
-			TRE_CORE_INFO("GLFW doesn't support vulkan");
+			TRE_CORE_ERROR("GLFW doesn't support vulkan");
 			assert(Supported); //Change to proper assert
 		}
 
 		if (bool Supported = CheckAPIVersion(VK_API_VERSION_1_3); !Supported)
 		{
-			TRE_CORE_INFO("Vulkan API version not supported");
+			TRE_CORE_ERROR("Vulkan API version not supported");
 			assert(Supported); //Change to proper assert
 		}
 
@@ -111,14 +117,25 @@ namespace TRE
 			Extentions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 		}
 
+		uint32_t glfwExtensionsCount = 0;
+		const char** glfwExtensions;
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionsCount); //Vulkan requires extensions to interface with window, GLFW returns the required extensions.
+
+		std::vector<const char*> AllRequiredExtensions(glfwExtensions, glfwExtensions + glfwExtensionsCount);
+		if (EnableValidationLayer)
+		{
+			AllRequiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+			AllRequiredExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+			AllRequiredExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+		}
+
 		VkInstanceCreateInfo InstanceCreateInfo{};
 		InstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		InstanceCreateInfo.pApplicationInfo = &Appinfo;
-		InstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(Extentions.size());
-		InstanceCreateInfo.ppEnabledExtensionNames = Extentions.data();
+		InstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(AllRequiredExtensions.size());
+		InstanceCreateInfo.ppEnabledExtensionNames = AllRequiredExtensions.data();
 		
 		std::vector<const char*> ValidationLayer;
-
 		if (EnableValidationLayer)
 		{
 			ValidationLayer.push_back("VK_LAYER_KHRONOS_validation");
@@ -170,13 +187,13 @@ namespace TRE
 			auto CreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkCreateDebugUtilsMessengerEXT");
 			assert(CreateDebugUtilsMessengerEXT);
 
-			VkDebugUtilsMessengerCreateInfoEXT DebugMessengerCreateInfo{};
-			DebugMessengerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-			DebugMessengerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-			DebugMessengerCreateInfo.pfnUserCallback = VulkanDebugUtilsMessengerCallback;
-			DebugMessengerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+			VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
+			DebugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+			DebugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+			DebugCreateInfo.pfnUserCallback = VulkanDebugUtilsMessengerCallback;
+			DebugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 
-			if (VkResult Result = CreateDebugUtilsMessengerEXT(m_instance, &DebugMessengerCreateInfo, nullptr, &m_DebugUtilsMessenger); Result != VK_SUCCESS)
+			if (VkResult Result = CreateDebugUtilsMessengerEXT(m_instance, &DebugCreateInfo, nullptr, &m_DebugUtilsMessenger); Result != VK_SUCCESS)
 			{
 				TRE_CORE_INFO("Failed to create debug utils messenger");
 				assert(Result == VK_SUCCESS);
@@ -202,7 +219,7 @@ namespace TRE
 
 		if (CurrentVersion < supportedversion)
 		{
-			TRE_CORE_INFO("Vulkan driver not supported");
+			TRE_CORE_INFO("Vulkan driver not supported, Go update");
 			TRE_CORE_INFO("You have: {0}.{1}.{2}", VK_API_VERSION_MAJOR(CurrentVersion), VK_API_VERSION_MINOR(CurrentVersion), VK_API_VERSION_PATCH(CurrentVersion));
 			TRE_CORE_INFO("You need: {0}.{1}.{2}", VK_API_VERSION_MAJOR(supportedversion), VK_API_VERSION_MINOR(supportedversion), VK_API_VERSION_PATCH(supportedversion));
 			return false;

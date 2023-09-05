@@ -6,6 +6,14 @@
 
 namespace TRE
 {
+	class Camera;
+
+	namespace CameraHelper
+	{
+		void UpdateViewMatrix(Camera& camera);
+		void UpdateProjectionMatrix(Camera& camera);
+	}
+
 	class Camera
 	{
 	public:
@@ -14,7 +22,7 @@ namespace TRE
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
 		glm::vec2 m_ViewportSize{ 1920.f, 1080.f };
-		float m_Fov{ 60.f };	//Vertical fov - has to be converted to radians
+		float m_Fov{ 30.f };	//Vertical fov - has to be converted to radians
 		float m_Near{ 0.3f };
 		float m_Far{ 1000.f };
 		float m_Left{ -1.f };
@@ -30,7 +38,6 @@ namespace TRE
 	class CameraSystem : public ECSSystem
 	{
 	public:
-
 		void Update() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
@@ -69,9 +76,6 @@ namespace TRE
 
 		void SetIsDirty(const bool isDirty);
 		const bool GetIsDirty() const;
-	private:
-		void UpdateViewMatrix(Camera& camera);
-		void UpdateProjectionMatrix(Camera& camera);
 	private:
 		bool m_IsDirty{ false };
 	};

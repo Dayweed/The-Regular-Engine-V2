@@ -1,4 +1,4 @@
-project "GeomCompiler"
+project "TextureCompiler"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
@@ -13,40 +13,29 @@ project "GeomCompiler"
 	includedirs
     {
         "include",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.Assimp}",
-		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Compiler}",
-    }
+		"%{IncludeDir.stbi}",
+	}
 
 	files
 	{
 		"include/**.h", 
 		"src/**.c", 
 		"include/**.hpp", 
-		"src/**.cpp"
+		"src/**.cpp",
 	}
 
 	links
 	{
-		"MeshOptimizer",
 		"CompilerLib",
-		"%{Library.Assimp}",
 	}
 
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"
-		postbuildcommands
-		{
-			'{COPY} "%{Binaries.Assimp}" "../"',
-		}
+
 
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "On"
 		symbols "Off"
-		postbuildcommands
-		{
-			'{COPY} "%{Binaries.Assimp}" "../"',
-		}
