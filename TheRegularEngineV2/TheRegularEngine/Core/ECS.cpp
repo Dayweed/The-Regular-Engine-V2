@@ -131,11 +131,7 @@ namespace TRE
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc).component<Properties>(arc);
 
-		std::cout << "\nRegistry size: " << ECSManager::Instance().GetRegistry().size() << "\n";
-
 		MemoryManager::Instance().UpdateECSManager(copy);
-
-		std::cout << "\nRegistry size: " << ECSManager::Instance().GetRegistry().size() << "\n";
 	}
 
 	Entity Ent::GetThis()
@@ -227,8 +223,6 @@ namespace TRE
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
 	{
-		//m_Doc.PushBack(u, m_Doc.GetAllocator());
-		
 		// First element of each array keeps the amount of elements. 
 		if (!m_Current.empty()) {
 			m_Root.push_back(m_Current);

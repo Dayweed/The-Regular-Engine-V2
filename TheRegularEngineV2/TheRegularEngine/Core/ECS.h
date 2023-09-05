@@ -668,16 +668,10 @@ namespace TRE
 		auto comp = componentData.get<T>();
 		t = comp;
 
-		if (typeid(T) == typeid(Properties))
-		{
-			std::cout << "\n??? " << comp.m_Name;
-			std::cout << "\n??? " << comp.m_Active;
-		}
-
 		uint32_t entID = m_Current[m_CurrentIdx * 2 - 1];
 		ent = entt::entity(entID); // last element is the entity-id
 		m_CurrentIdx++;
 
-		std::cout << "\\/\n";
+		std::cout << "\\/";
 	}
 }

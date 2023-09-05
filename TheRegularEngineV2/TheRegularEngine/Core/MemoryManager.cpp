@@ -91,8 +91,6 @@ namespace TRE
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
 
-			std::cout << "== " << static_cast<Entity_ID>(obj->m_Entity) << "," << ECSManager::Instance().GetRegistry().valid(obj->m_Entity) << "\n";
-
 			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 			m_UndeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
 			if (!obj->HasComponent<Properties>())
@@ -144,12 +142,6 @@ namespace TRE
 		m_UndeployedEntityList.clear();
 
 		ECSManager::Instance().GetRegistry().clear();
-
-		/*entt::registry empty;
-
-		ECSManager::Instance().GetRegistry().swap(empty);*/
-
-		std::cout << "LL " << ECSManager::Instance().GetRegistry().size() << "|" << ECSManager::Instance().GetRegistry().alive() << "|" << m_AllEntityList.size() << "\n";
 
 		// Successful deletion
 		return true;
@@ -205,7 +197,6 @@ namespace TRE
 
 	void MemoryManager::ClearUndeployed()
 	{
-		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
 		for (Entity_ID id : m_UndeployedEntityList)
 		{
 			ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
@@ -214,90 +205,36 @@ namespace TRE
 			m_AllEntityList.erase(id);
 		}
 		m_UndeployedEntityList.clear();
-		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
 	}
 
 	void MemoryManager::UpdateECSManager(entt::registry& reg)
 	{
-		//// Copy registry
-		//for (size_t i{}; i < reg.size(); ++i)
-		//{
-		//	Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
-		//	// Remove all components in one entity
-		//	for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
-		//		elem.second.remove(obj->m_Entity);
-		//	}
-		//	m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
-		//	// Clone each component of the object into the clone
-		//	for (auto&& curr : registry.storage())
-		//	{
-		//		TRE_CORE_INFO("A Component Type {0}", curr.first);
-		//		if (auto& storage = curr.second; storage.contains(object->m_Entity))
-		//		{
-		//			TRE_CORE_INFO("Storage of entities with mentioned component");
-		//			TRE_CORE_INFO("Size of Storage: {0}", storage.size());
-		//			TRE_CORE_INFO("Cloning Component...");
-		//			storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
-		//		}
-		//	}
-		//}
-
 		// Update ECS Manager based on current registry
-		reg.each([&](entt::entity src_entity) {
+		reg.each([&](entt::entity srcEntity) {
 
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
-			std::cout << "|| " << static_cast<Entity_ID>(obj->m_Entity) << " \\ " << ECSManager::Instance().GetRegistry().valid(obj->m_Entity) << " \\ " << reg.valid(obj->m_Entity) << "\n";
-
-			// Remove all components in one entity
-			for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
-				elem.second.remove(obj->m_Entity);
-			}
 
 			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
 			ECSManager::Instance().m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 
-			//// Clone each component of the object into the clone
-			//for (auto&& curr : ECSManager::Instance().GetRegistry().storage())
-			//{
-			//	TRE_CORE_INFO("A Component Type {0}", curr.first);
-			//	if (auto& storage = curr.second; storage.contains(entity))
-			//	{
-			//		TRE_CORE_INFO("Storage of entities with mentioned component");
-			//		TRE_CORE_INFO("Size of Storage: {0}", storage.size());
-			//		TRE_CORE_INFO("Cloning Component...");
-			//		storage.emplace(obj->m_Entity, storage.get(entity));
-			//	}
-			//}
-
-			for (auto [id, source_storage] : reg.storage()) {
+			for (auto [id, source_storage] : reg.storage())
+			{
 				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
-				if (destination_storage != nullptr && source_storage.contains(src_entity)) {
-					if (!destination_storage->contains(obj->m_Entity)) {
-						destination_storage->emplace(obj->m_Entity, source_storage.get(src_entity));
-						// If destination already contains the component, then either skip or "overwrite"
+				if (destination_storage != nullptr && source_storage.contains(srcEntity))
+				{
+					// Overwrite m_Entity if m_Entity already contains the component
+					if (!destination_storage->contains(obj->m_Entity))
+					{
+						destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
 					}
-					else {
+					else
+					{
 						destination_storage->erase(obj->m_Entity);
-						destination_storage->emplace(obj->m_Entity, source_storage.get(src_entity));
+						destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
 					}
 				}
-			}
-
-			/*Entity obj{ std::make_shared<Ent>() };
-			obj->m_Entity = entity;
-			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
-			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
-			ECSManager::Instance().m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);*/
-
-			std::cout << "]] " << static_cast<Entity_ID>(obj->m_Entity) << obj->GetComponent<Properties>().m_Name << "|" << obj->GetComponent<Properties>().m_Active << "\n";
-
-
-			std::cout << "\nOBJ SIZE: " << ECSManager::Instance().m_EntityList.size() << "\n";
-			for (Entity& ent : ECSManager::Instance().GetAllEntities())
-			{
-				std::cout << "-" << static_cast<Entity_ID>(ent->m_Entity) << "|" << ent->GetComponent<Properties>().m_Name << " | " << ent->GetComponent<Properties>().m_Active << "\n";
 			}
 		});
 
