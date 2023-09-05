@@ -181,7 +181,7 @@ namespace TRE
 		//Descriptor set
 		//UBO
 		UBO ubo{};
-		Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
 		m_Pipeline->GetUBOBuffers()[Index]->Flush();

@@ -26,8 +26,10 @@ namespace TRE
 		switch(action)
 		{
 			case GLFW_PRESS:
+				event.publish(InputEvent {button, (int)KeyState::keyPressed});
 				break;
 			case GLFW_REPEAT:
+				//event.publish(InputEvent {button, (int)KeyState::keyHeld});
 				break;
 			case GLFW_RELEASE:
 				event.publish(InputEvent {button, action});

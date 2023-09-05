@@ -112,7 +112,6 @@ namespace TRE
 		{
 			assert(result == VK_SUCCESS && "Failed to create texture sampler");
 		}
-		TRE_CORE_INFO("CTOR");
 	}
 
 	VulkanTexture::VulkanTexture(std::unique_ptr<Texture> texture)
@@ -217,7 +216,6 @@ namespace TRE
 
 	VulkanTexture::~VulkanTexture()
 	{
-		TRE_CORE_INFO("DTOR");
 		auto device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDestroySampler(device, m_Sampler, nullptr);
 		vkDestroyImageView(device, m_ImageView, nullptr);

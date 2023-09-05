@@ -35,6 +35,8 @@ namespace TRE
 			std::shared_ptr<RendererContext>& GetRenderContext();
 			std::shared_ptr<SwapChain>& GetSwapChain();
 
+			float GetDeltaTime() const;
+
 		private:
 			GLFWwindow* m_WindowHandle = nullptr;
 			WindowConfig m_Config;
