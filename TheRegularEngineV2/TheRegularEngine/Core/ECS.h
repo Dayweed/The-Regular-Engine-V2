@@ -39,19 +39,20 @@ namespace TRE
 
 	struct Properties
 	{
-		std::string m_Name{};		// To get the name
+		std::string m_GUID{};
 		bool m_Active{ true };		// To check if it is active
+		std::string m_Name{};		// To get the name
 
 		Properties() = default;
 		~Properties() = default;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Name, m_Active)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_GUID, m_Active, m_Name)
 	};
 
 	struct Parenting
 	{
-		Entity_ID m_Parent{ entt::null };
-		std::vector<Entity_ID> m_Children;
+		std::string m_Parent{};
+		std::vector<std::string> m_Children{};
 
 		Parenting() = default;
 		~Parenting() = default;
@@ -476,9 +477,9 @@ namespace TRE
 
 		void LoadEntities(std::string filePath);
 
-		Entity FindEntity(Entity_ID id);
+		Entity FindEntity(std::string id);
 
-		Entity_ID FindEntityID(Entity ent);
+		std::string FindEntityID(Entity ent);
 
 		// TODELETE
 		void TESTRUN();
@@ -498,7 +499,7 @@ namespace TRE
 		// Component Types
 		std::map<size_t, void*> componentTypes;
 
-		std::unordered_map<Entity_ID, Entity> m_EntityList;
+		std::unordered_map<std::string, Entity> m_EntityList;
 	};
 
 	class ECSOutputArchive
@@ -549,10 +550,18 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			if (m_EntityList.find(static_cast<Entity_ID>(obj)) != m_EntityList.end())
+			for (auto ent : m_EntityList)
+			{
+				if (ent.second->m_Entity == obj)
+				{
+					objects.emplace_back(ent.second);
+					break;
+				}
+			}
+			/*if (m_EntityList.find(static_cast<Entity_ID>(obj)) != m_EntityList.end())
 			{
 				objects.emplace_back(m_EntityList[static_cast<Entity_ID>(obj)]);
-			}
+			}*/
 		}
 
 		return objects;
@@ -622,7 +631,14 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " does not have the component " + compName);
+			if (typeid(T) == typeid(Properties))
+			{
+				TRE_CORE_ERROR("[" + funcName + "] Object does not have the component " + compName);
+			}
+			else
+			{
+				TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " does not have the component " + compName);
+			}
 			assert(HasComponent<T>());
 		}
 

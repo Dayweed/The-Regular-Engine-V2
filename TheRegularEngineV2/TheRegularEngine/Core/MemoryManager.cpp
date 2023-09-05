@@ -13,6 +13,8 @@
 
 #include "pch.h"
 #include "MemoryManager.h"
+#include <combaseapi.h>
+#include <atlconv.h>
 
 namespace TRE
 {
@@ -51,6 +53,8 @@ namespace TRE
 		m_UndeployedEntityList.erase(id);
 		m_DeployedEntityList.emplace(id);
 		m_AllEntityList[id]->RemoveComponent<Undeployed>();
+
+		m_AllEntityList[id]->GetComponent<Properties>().m_GUID = GenerateGUIDStr();
 
 		return m_AllEntityList[id];
 	}
@@ -222,7 +226,6 @@ namespace TRE
 
 			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
-			ECSManager::Instance().m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 
 			for (auto [id, source_storage] : reg.storage())
 			{
@@ -241,9 +244,21 @@ namespace TRE
 					}
 				}
 			}
+
+			ECSManager::Instance().m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		});
 
 		ResetToConfig();
+	}
+
+	std::string MemoryManager::GenerateGUIDStr()
+	{
+		GUID guid;
+		HRESULT result{ CoCreateGuid(&guid) };
+		LPOLESTR guidLPOLEStr;
+		result = StringFromCLSID(guid, &guidLPOLEStr);
+		USES_CONVERSION;
+		return OLE2CA(guidLPOLEStr);
 	}
 
 	void MemoryManager::SetConfigSize(size_t configSize)

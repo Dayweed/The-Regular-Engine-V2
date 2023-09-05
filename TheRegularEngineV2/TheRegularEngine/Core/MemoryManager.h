@@ -39,6 +39,7 @@ namespace TRE
 		void ClearUndeployed();
 
 		void UpdateECSManager(entt::registry& reg);
+		std::string GenerateGUIDStr();
 
 		// Set and Get
 		void SetConfigSize(size_t config_obj_);

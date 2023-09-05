@@ -21,7 +21,7 @@ namespace TRE
 		for (Entity& object : GetEntities<Removal>())
 		{
 			// Remove from m_EntityList
-			m_EntityList.erase(m_EntityList.find(static_cast<Entity_ID>(object->m_Entity)));
+			m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
 			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<Entity_ID>(object->m_Entity));
 		}
 	}
@@ -39,7 +39,7 @@ namespace TRE
 	Entity ECSManager::CreateEntity(std::string name)
 	{
 		Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
-		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		obj->GetComponent<Properties>().m_Name = name;
 		return obj;
 	}
@@ -60,7 +60,6 @@ namespace TRE
 		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
 			elem.second.remove(obj->m_Entity);
 		}
-		m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 		// Clone each component of the object into the clone
 		for (auto&& curr : registry.storage())
 		{
@@ -75,6 +74,8 @@ namespace TRE
 		}
 		// Change Name
 		obj->GetComponent<Properties>().m_Name = name;
+		obj->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
+		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		// Return clone
 		return obj;
 	}
@@ -123,7 +124,7 @@ namespace TRE
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}
 
-	Entity ECSManager::FindEntity(Entity_ID id)
+	Entity ECSManager::FindEntity(std::string id)
 	{
 		if (m_EntityList.find(id) != m_EntityList.end())
 		{
@@ -133,9 +134,9 @@ namespace TRE
 		return nullptr;
 	}
 
-	Entity_ID ECSManager::FindEntityID(Entity ent)
+	std::string ECSManager::FindEntityID(Entity ent)
 	{
-		return static_cast<Entity_ID>(ent->m_Entity);
+		return ent->GetComponent<Properties>().m_GUID;
 	}
 
 	Entity Ent::GetThis()
@@ -151,9 +152,10 @@ namespace TRE
 			ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->AbandonChild(GetThis());
 		}
 		// Ensure self can't be parent or parent is one of its children
-		GetComponent<Parenting>().m_Parent = (ECSManager::Instance().FindEntityID(parent) != ECSManager::Instance().FindEntityID(GetThis()) && std::find(GetComponent<Parenting>().m_Children.begin(), GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(parent)) == GetComponent<Parenting>().m_Children.end()) ? ECSManager::Instance().FindEntityID(parent) : entt::null;
+		GetComponent<Parenting>().m_Parent = (ECSManager::Instance().FindEntityID(parent) != ECSManager::Instance().FindEntityID(GetThis()) && std::find(GetComponent<Parenting>().m_Children.begin(), GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(parent)) == GetComponent<Parenting>().m_Children.end()) ? ECSManager::Instance().FindEntityID(parent) : "";
+
 		// Add this as parent child if valid
-		if (GetComponent<Parenting>().m_Parent != entt::null && std::find(ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.begin(), ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(GetThis())) == ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end())
+		if (GetComponent<Parenting>().m_Parent != "" && std::find(ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.begin(), ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(GetThis())) == ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end())
 		{
 			ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(GetThis()));
 		}
@@ -166,7 +168,7 @@ namespace TRE
 
 	void Ent::RemoveParent()
 	{
-		if (GetComponent<Parenting>().m_Parent)
+		if (GetComponent<Parenting>().m_Parent != "")
 		{
 			auto it = std::find(ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.begin(), ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(shared_from_this()));
 			if (it != ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end())
@@ -174,7 +176,7 @@ namespace TRE
 				ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.erase(it);
 			}
 		}
-		GetComponent<Parenting>().m_Parent = entt::null;
+		GetComponent<Parenting>().m_Parent = "";
 	}
 
 	void Ent::AddChild(Entity child)
@@ -185,7 +187,7 @@ namespace TRE
 	std::vector<Entity> Ent::GetChildren()
 	{
 		std::vector<Entity> children;
-		for (Entity_ID id : GetComponent<Parenting>().m_Children)
+		for (std::string id : GetComponent<Parenting>().m_Children)
 		{
 			Entity child{ ECSManager::Instance().FindEntity(id) };
 			if (child)
@@ -397,8 +399,8 @@ namespace TRE
 		std::cout << "-------\n";*/
 
 		std::cout << "\nTesting setting, getting and removing parent\n";
-		Entity parentEntity = CreateEntity("Parent");
-		Entity childEntity = CreateEntity("Child");
+		Entity parentEntity = CreateEntity("ParentEntity");
+		Entity childEntity = CreateEntity("ChildEntity");
 		std::cout << "+ Active: " << oriobj->GetComponent<Properties>().m_Active << "\n";
 		std::cout << "+ Active: " << parentEntity->GetComponent<Properties>().m_Active << "\n";
 		std::cout << "+ Active: " << childEntity->GetComponent<Properties>().m_Active << "\n";
@@ -436,6 +438,7 @@ namespace TRE
 		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
 		std::cout << "- 1 Entity Setting another parent...\n";
 		allobj2->SetParent(childEntity);
+		std::cout << "- childEntity children size: " << childEntity->GetChildren().size() << "\n";
 		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
 		std::cout << "- parentEntity abandoning all remaining children...\n";
 		parentEntity->AbandonChildren();
@@ -520,6 +523,13 @@ namespace TRE
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
 			std::cout << "-" << static_cast<Entity_ID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+			std::cout << "-- Parent: " << obj->GetParent() << ": " << (obj->GetParent() ? obj->GetParent()->GetComponent<Properties>().m_Name : "NONE") << "\n";
+			std::cout << "-- Children: " << obj->GetChildren().size() << "\n";
+			for (Entity& child : obj->GetChildren())
+			{
+				std::cout << "---" << static_cast<Entity_ID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
+			}
+			std::cout << "\n";
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
@@ -538,6 +548,13 @@ namespace TRE
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
 			std::cout << "-" << static_cast<Entity_ID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+			std::cout << "-- Parent: " << obj->GetParent() << ": " << (obj->GetParent() ? obj->GetParent()->GetComponent<Properties>().m_Name : "NONE") << "\n";
+			std::cout << "-- Children: " << obj->GetChildren().size() << "\n";
+			for (Entity& child : obj->GetChildren())
+			{
+				std::cout << "---" << static_cast<Entity_ID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
+			}
+			std::cout << "\n";
 		}
 
 		//ECSOutputArchive str{};
