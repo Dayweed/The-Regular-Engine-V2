@@ -57,8 +57,6 @@ namespace TRE
 			Config.height = height;
 			Config.resize = true;
 		});
-
-
 	}
 
 	Window::~Window()
@@ -85,5 +83,14 @@ namespace TRE
 	int Window::ShouldWindowClose()
 	{
 		return glfwWindowShouldClose(m_WindowHandle);
+	}
+
+	float Window::GetDeltaTime() const
+	{
+		static double lastTime = glfwGetTime();
+		double currentTime = glfwGetTime();
+		float deltaTime = float(currentTime - lastTime);
+		lastTime = currentTime;
+		return deltaTime;
 	}
 }

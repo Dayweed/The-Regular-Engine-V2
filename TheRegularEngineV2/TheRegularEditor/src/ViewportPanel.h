@@ -14,6 +14,7 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
+#include "EventSystem/Events/InputEvent.h"
 
 namespace TRE
 {
@@ -26,7 +27,13 @@ namespace TRE
 			void Update() override;
 			void Shutdown() override;
 
+			void OnMouseMove(const MouseMoveEvent& event);
+			void OnMouseClick(const InputEvent& event);
+
 		private:
-			
+			bool m_IsViewportHovered = false;
+			glm::vec2 m_MousePos{};
+			glm::vec2 m_MouseStartPos{};
+			glm::vec2 m_MouseEndPos{};
 	};
 }
