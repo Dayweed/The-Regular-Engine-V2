@@ -39,6 +39,7 @@ namespace TRE
 			m_MouseEndPos = m_MousePos;
 			glm::vec2 positionOffset = m_MouseEndPos - m_MouseStartPos;
 			positionOffset.x *= -1;
+			positionOffset = glm::normalize(positionOffset);
 			positionOffset *= m_PanSensitivity;
 			positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
@@ -50,7 +51,7 @@ namespace TRE
 			m_MouseStartPos = m_MousePos;
 		}
 
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
+		/*if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
 		{
 			m_MouseEndPos = m_MousePos;
 			glm::vec2 rotationOffset = m_MouseEndPos - m_MouseStartPos;
@@ -64,8 +65,8 @@ namespace TRE
 		}
 		else
 		{
-			//m_MouseStartPos = m_MousePos;
-		}
+			m_MouseStartPos = m_MousePos;
+		}*/
 	}
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)

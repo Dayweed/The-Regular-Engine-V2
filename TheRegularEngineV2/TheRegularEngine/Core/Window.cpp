@@ -3,6 +3,8 @@
 #include "Core/Logger.h"
 #include "InputHandler/InputHandler.h"
 
+#include <chrono>
+
 namespace TRE
 {
 	GLFWwindow* Window::GetWindowHandle() const
@@ -85,12 +87,16 @@ namespace TRE
 		return glfwWindowShouldClose(m_WindowHandle);
 	}
 
+	void Window::UpdateDeltaTime()
+	{
+		static auto lastTime = std::chrono::high_resolution_clock::now();
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		m_DeltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
+		lastTime = currentTime;
+	}
+
 	float Window::GetDeltaTime() const
 	{
-		static double lastTime = glfwGetTime();
-		double currentTime = glfwGetTime();
-		float deltaTime = float(currentTime - lastTime);
-		lastTime = currentTime;
-		return deltaTime;
+		return m_DeltaTime;
 	}
 }

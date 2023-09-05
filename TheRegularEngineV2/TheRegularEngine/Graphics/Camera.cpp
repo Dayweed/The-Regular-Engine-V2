@@ -99,6 +99,7 @@ namespace TRE
 			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsDirty)
 			{
+				NormalizeOrientation(go);
 				CameraHelper::UpdateViewMatrix(camera);
 				CameraHelper::UpdateProjectionMatrix(camera);
 				camera.m_IsDirty = false;
@@ -129,7 +130,6 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Rotation = rotation;
 		camera.m_IsDirty = true;
-		NormalizeOrientation(go);
 	}
 
 	void CameraSystem::SetViewportSize(Entity& go, const glm::vec2& viewportSize)

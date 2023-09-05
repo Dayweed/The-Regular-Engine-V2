@@ -24,7 +24,7 @@ namespace TRE
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
 		glm::vec2 m_ViewportSize{ 1920.f, 1080.f };
-		glm::vec3 m_UpVec{ 0.f, -1.f, 0.f };
+		glm::vec3 m_UpVec{ 0.f, 1.f, 0.f };
 		glm::vec3 m_RightVec{ 1.f, 0.f, 0.f };
 		glm::vec3 m_ForwardVec{ 0.f, 0.f, 1.f };
 		float m_Fov{ 30.f };	//Vertical fov - has to be converted to radians

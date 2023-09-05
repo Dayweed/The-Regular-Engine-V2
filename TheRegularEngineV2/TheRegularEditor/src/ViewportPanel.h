@@ -38,7 +38,7 @@ namespace TRE
 			glm::vec2 m_MouseStartPos{};
 			glm::vec2 m_MouseEndPos{};
 			float m_ZoomSensitivity = 5.f;
-			float m_PanSensitivity = 10.f;
+			float m_PanSensitivity = 50.f;
 			float m_RotationSensitivity = 0.3f;
 	};
 }

@@ -29,12 +29,12 @@ namespace TRE
 			int ShouldWindowClose();
 			void BeginFrame();
 			void SwapBuffers();
+			void UpdateDeltaTime();
 
 			GLFWwindow* GetWindowHandle() const;
 			WindowConfig& GetWindowConfig();
 			std::shared_ptr<RendererContext>& GetRenderContext();
 			std::shared_ptr<SwapChain>& GetSwapChain();
-
 			float GetDeltaTime() const;
 
 		private:
@@ -43,5 +43,6 @@ namespace TRE
 			
 			std::shared_ptr<RendererContext> m_RenderContext;
 			std::shared_ptr<SwapChain> m_SwapChain;
+			float m_DeltaTime = 0.0f;
 	};
 }
