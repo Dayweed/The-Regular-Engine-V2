@@ -101,6 +101,7 @@ namespace TRE
 		// Register Components
 		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
 		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
+		ComponentManager::Instance().RegisterComponent<Parenting>("Parenting", true);
 		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
 		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
 		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");

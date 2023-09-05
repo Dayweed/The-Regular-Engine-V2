@@ -13,18 +13,11 @@
 
 #include "pch.h"
 #include "MemoryManager.h"
+#include <combaseapi.h>
+#include <atlconv.h>
 
 namespace TRE
 {
-	/* !
-	@function	Instance
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params
-
-	@brief		Creates a static instance of the MemoryManager
-
-	*//*__________________________________________________________________________*/
 	MemoryManager& MemoryManager::Instance()
 	{
 		static MemoryManager instance{};
@@ -52,6 +45,8 @@ namespace TRE
 		m_DeployedEntityList.emplace(id);
 		m_AllEntityList[id]->RemoveComponent<Undeployed>();
 
+		m_AllEntityList[id]->GetComponent<Properties>().m_GUID = GenerateGUIDStr();
+
 		return m_AllEntityList[id];
 	}
 
@@ -65,20 +60,12 @@ namespace TRE
 			elem.second.remove(m_AllEntityList[id]->m_Entity);
 		}
 		// Readd Basic Components
-		m_AllEntityList[id]->AddComponent<Properties>().m_Name = "AllocatedEntity";
+		m_AllEntityList[id]->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+		m_AllEntityList[id]->AddComponent<Parenting>();
 		m_AllEntityList[id]->AddComponent<Transform>();
 		m_AllEntityList[id]->AddComponent<Undeployed>();
 	}
 
-	/* !
-	@function	AllocateEntitySize
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params		size_t size_ [Adds new amount of size_ into objects]
-
-	@brief		Adds the additional amount of objects into objects
-
-	*//*__________________________________________________________________________*/
 	bool MemoryManager::AllocateEntitySize(size_t size)
 	{
 		// Reserve size for objects and registry in ECSManager
@@ -90,26 +77,35 @@ namespace TRE
 		{
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
+
 			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 			m_UndeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
-			obj->AddComponent<Properties>().m_Name = "AllocatedEntity";
-			obj->AddComponent<Transform>();
-			obj->AddComponent<Undeployed>();
+			if (!obj->HasComponent<Properties>())
+			{
+				obj->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+			}
+			else
+			{
+				obj->GetComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+			}
+			if (!obj->HasComponent<Parenting>())
+			{
+				obj->AddComponent<Parenting>();
+			}
+			if (!obj->HasComponent<Transform>())
+			{
+				obj->AddComponent<Transform>();
+			}
+			if (!obj->HasComponent<Undeployed>())
+			{
+				obj->AddComponent<Undeployed>();
+			}
 		}
 
 		// Successful Allocation
 		return true;
 	}
 
-	/* !
-	@function	DeleteEntities
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params
-
-	@brief		Deletes all entities in m_AllEntityList
-
-	*//*__________________________________________________________________________*/
 	bool MemoryManager::DeleteEntities()
 	{
 		for (auto& object : m_AllEntityList)
@@ -126,26 +122,13 @@ namespace TRE
 		m_AllEntityList.clear();
 		m_DeployedEntityList.clear();
 		m_UndeployedEntityList.clear();
+
 		ECSManager::Instance().GetRegistry().clear();
 
 		// Successful deletion
 		return true;
 	}
 
-	/* !
-	@function	MemoryManager::ResetToConfig
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params
-
-	@brief		Deletes all undeployed objects, leaving only
-				x amount of objects/components (Deployed or Undeployed) available
-				based on the config_obj & config_comp
-
-				This means it is possible that there are more deployed objects
-				or components than the config size
-
-	*//*__________________________________________________________________________*/
 	void MemoryManager::ResetToConfig()
 	{
 		// Auto clear all the Undeployed Entities if m_ConfigSize exceeds deployed size
@@ -160,11 +143,11 @@ namespace TRE
 			}
 			m_UndeployedEntityList.clear();
 		}
-		else
+		else if (!m_UndeployedEntityList.empty())
 		{
 			size_t remainingSize{ m_ConfigSize - m_DeployedEntityList.size() };
 
-			for (size_t i{}; i < remainingSize; ++i)
+			for (size_t i{}; i < remainingSize && !m_UndeployedEntityList.empty(); ++i)
 			{
 				Entity_ID id{ *m_UndeployedEntityList.rbegin() };
 				ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
@@ -182,7 +165,6 @@ namespace TRE
 
 	void MemoryManager::ClearUndeployed()
 	{
-		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
 		for (Entity_ID id : m_UndeployedEntityList)
 		{
 			ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
@@ -191,7 +173,51 @@ namespace TRE
 			m_AllEntityList.erase(id);
 		}
 		m_UndeployedEntityList.clear();
-		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
+	}
+
+	void MemoryManager::UpdateECSManager(entt::registry& reg)
+	{
+		// Update ECS Manager based on current registry
+		reg.each([&](entt::entity srcEntity) {
+
+			Entity obj{ std::make_shared<Ent>() };
+			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
+
+			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
+
+			for (auto [id, source_storage] : reg.storage())
+			{
+				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+				if (destination_storage != nullptr && source_storage.contains(srcEntity))
+				{
+					// Overwrite m_Entity if m_Entity already contains the component
+					if (!destination_storage->contains(obj->m_Entity))
+					{
+						destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
+					}
+					else
+					{
+						destination_storage->erase(obj->m_Entity);
+						destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
+					}
+				}
+			}
+
+			ECSManager::Instance().m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
+		});
+
+		ResetToConfig();
+	}
+
+	std::string MemoryManager::GenerateGUIDStr()
+	{
+		GUID guid;
+		HRESULT result{ CoCreateGuid(&guid) };
+		LPOLESTR guidLPOLEStr;
+		result = StringFromCLSID(guid, &guidLPOLEStr);
+		USES_CONVERSION;
+		return OLE2CA(guidLPOLEStr);
 	}
 
 	void MemoryManager::SetConfigSize(size_t configSize)
