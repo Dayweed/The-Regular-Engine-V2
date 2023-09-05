@@ -102,10 +102,10 @@ namespace TRE
 		return objects;
 	}
 
-	void ECSManager::SaveEntities(std::string filePath)
+	std::string ECSManager::SaveEntities(std::string filePath)
 	{
 		// Set up document
-		ECSOutputArchive arc;
+		ECSOutputArchive arc("TestScene");
 
 		// Destroys all undeployed entities
 		MemoryManager::Instance().ClearUndeployed();
@@ -115,11 +115,19 @@ namespace TRE
 		snapshot.entities(arc).component<Properties>(arc);
 
 		arc.Close();
+
+		return arc.AsString();
 	}
 
 	void ECSManager::LoadEntities(std::string filePath)
 	{
+		ECSManager::Instance().GetRegistry().clear();
 
+		ECSInputArchive arc(filePath);
+		entt::basic_snapshot_loader loader(ECSManager::Instance().GetRegistry());
+		loader.entities(arc).component<Properties>(arc);
+
+		std::cout << "\nRegistry size: " << ECSManager::Instance().GetRegistry().size() << "\n";
 	}
 
 	Entity Ent::GetThis()
@@ -193,9 +201,9 @@ namespace TRE
 		m_Children.clear();
 	}
 
-	ECSOutputArchive::ECSOutputArchive()
+	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath(filePath)
 	{
-		root = nlohmann::json::array();
+		m_Root = nlohmann::json::array();
 		//m_Doc.SetArray();
 	}
 
@@ -203,7 +211,7 @@ namespace TRE
 	{
 		if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
-			current.push_back(static_cast<uint32_t>(ent));
+			m_Current.push_back(static_cast<uint32_t>(ent));
 			//m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
 			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << " - ";
 		}
@@ -214,38 +222,62 @@ namespace TRE
 		//m_Doc.PushBack(u, m_Doc.GetAllocator());
 		
 		// First element of each array keeps the amount of elements. 
-		if (!current.empty()) {
-			root.push_back(current);
+		if (!m_Current.empty()) {
+			m_Root.push_back(m_Current);
 		}
-		current = nlohmann::json::array();
-		current.push_back(u);
+		m_Current = nlohmann::json::array();
+		m_Current.push_back(ECSManager::Instance().GetAllEntities().size());
 
 		std::cout << u << ";";
 	}
 
 	void ECSOutputArchive::Close()
 	{
-		if (!current.empty()) {
-			root.push_back(current);
+		if (!m_Current.empty()) {
+			m_Root.push_back(m_Current);
 		}
 
-		std::ofstream file("../Save.json");
-		file << root;
+		std::filesystem::path path{ "../Scenes" };
+		path /= (m_FilePath + ".json");
+		std::filesystem::create_directories(path.parent_path());
+		std::ofstream file(path);
+		file << m_Root;
+		file.close();
 	}
 
+	std::string ECSOutputArchive::AsString()
+	{
+		return m_Root.dump();
+	}
 
 	ECSInputArchive::ECSInputArchive(std::string filePath) : m_FilePath(filePath)
 	{
-
+		m_Root = nlohmann::json::parse(m_FilePath);
 	}
 
 	void ECSInputArchive::operator()(entt::entity& ent)
 	{
+		uint32_t entID = m_Current[m_CurrentIdx].get<uint32_t>();
+		ent = entt::entity(entID);
+		m_CurrentIdx++;
+
 		std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "\\";
 	}
 
 	void ECSInputArchive::operator()(std::underlying_type_t<entt::entity>& u)
 	{
+		m_RootIdx++;
+		if (m_RootIdx >= m_Root.size()) {
+			// ERROR
+			return;
+		}
+		m_Current = m_Root[m_RootIdx];
+		m_CurrentIdx = 0;
+
+		int size = m_Current[0].get<int>();
+		m_CurrentIdx++;
+		u = static_cast<std::underlying_type_t<entt::entity>>(size); // pass amount to entt
+
 		std::cout << u << ":";
 	}
 
@@ -464,14 +496,31 @@ namespace TRE
 #endif
 
 		std::cout << "\nTrying out snapshot for archiving entities\n";
-		std::cout << "- Total Objects: " << GetEntities<Properties>().size() << "...\n";
+
+		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "-" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		ECSManager::Instance().SaveEntities("Lmao.json");
+		std::string file = ECSManager::Instance().SaveEntities("Lmao.json");
+
+		ECSManager::Instance().DestroyAll();
+
+		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		std::cout << "- Total Objects: " << GetEntities<Properties>().size() << "...\n";
 
 		std::cout << std::endl;
 		std::cout << "- Loading from input: " << GetEntities<Properties>().size() << "...\n";
-		ECSManager::Instance().LoadEntities("Lmao.json");
+		ECSManager::Instance().LoadEntities(file);
+
+		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "-" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+		}
+
 		//ECSOutputArchive str{};
 		//entt::exclude_t<Undeployed> u;
 		//const auto view = registry.view<Undeployed>();

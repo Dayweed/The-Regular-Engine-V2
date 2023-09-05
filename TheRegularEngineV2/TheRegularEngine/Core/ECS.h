@@ -459,7 +459,7 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		std::vector<Entity> GetAllEntities();
 
-		void SaveEntities(std::string filePath);
+		std::string SaveEntities(std::string filePath);
 
 		void LoadEntities(std::string filePath);
 
@@ -487,30 +487,19 @@ namespace TRE
 	class ECSOutputArchive
 	{
 	public:
-		ECSOutputArchive();
+		ECSOutputArchive(std::string filePath);
 		void operator()(entt::entity ent);
 		void operator()(std::underlying_type_t<entt::entity> u);
 		template <typename T>
 		void operator()(entt::entity ent, const T& t);
 		void Close();
-
-
-
-		// create a json as string
-		const std::string AsString() {
-			std::string output = root.dump();
-			return output;
-		}
-
-		// create bson-data
-		const std::vector<uint8_t> AsBson() {
-			std::vector<std::uint8_t> as_bson = nlohmann::json::to_bson(root);
-			return as_bson;
-		}
+		std::string AsString();
 
 	private:
-		nlohmann::json root;
-		nlohmann::json current;
+		nlohmann::json m_Root;
+		nlohmann::json m_Current;
+
+		std::string m_FilePath;
 	};
 
 	class ECSInputArchive
@@ -520,13 +509,15 @@ namespace TRE
 		void operator()(entt::entity& ent);
 		void operator()(std::underlying_type_t<entt::entity>& u);
 		template <typename T>
-		void operator()(entt::entity ent, const T& t)
-		{
-			std::cout << "\\/";
-		}
+		void operator()(entt::entity& ent, T& t);
 	private:
 		std::string m_FilePath;
-		rapidjson::Document m_Doc;
+
+		nlohmann::json m_Root;
+		nlohmann::json m_Current;
+
+		int m_RootIdx = -1;
+		int m_CurrentIdx = 0;
 	};
 
 
@@ -651,10 +642,10 @@ namespace TRE
 
 		if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
-			current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+			m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
 
 			nlohmann::json json = t;
-			current.push_back(json);
+			m_Current.push_back(json);
 
 			//rapidjson::Value Array(rapidjson::kObjectType);
 
@@ -664,5 +655,20 @@ namespace TRE
 
 			std::cout << "&";
 		}
+	}
+
+	template <typename T>
+	void ECSInputArchive::operator()(entt::entity& ent, T& t)
+	{
+		nlohmann::json componentData = m_Current[m_CurrentIdx * 2];
+
+		auto comp = componentData.get<T>();
+		t = comp;
+
+		uint32_t entID = m_Current[m_CurrentIdx * 2 - 1];
+		ent = entt::entity(entID); // last element is the entity-id
+		m_CurrentIdx++;
+
+		std::cout << "\\/";
 	}
 }
