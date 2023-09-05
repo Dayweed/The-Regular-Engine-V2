@@ -43,14 +43,22 @@ namespace TRE
 		m_SwapChain = std::make_shared<SwapChain>(m_RenderContext->GetDeviceInternally(), m_RenderContext->GetPhysicalDeviceInternally(), m_WindowHandle);
 		m_SwapChain->Initialize(m_Config.width, m_Config.height);
 
-		glfwSetKeyCallback(GetWindowHandle(), InputHandler::key_cb);
-		glfwSetMouseButtonCallback(GetWindowHandle(), InputHandler::mousebutton_cb);
-		glfwSetCursorPosCallback(GetWindowHandle(), InputHandler::mousepos_cb);
-		glfwSetScrollCallback(GetWindowHandle(), InputHandler::mousescroll_cb);
-		glfwSetCursorEnterCallback(GetWindowHandle(), InputHandler::mousefocus_cb);
-
-
 		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
+		glfwSetKeyCallback(m_WindowHandle, InputHandler::key_cb);
+		glfwSetMouseButtonCallback(m_WindowHandle, InputHandler::mousebutton_cb);
+		glfwSetCursorPosCallback(m_WindowHandle, InputHandler::mousepos_cb);
+		glfwSetScrollCallback(m_WindowHandle, InputHandler::mousescroll_cb);
+		glfwSetCursorEnterCallback(m_WindowHandle, InputHandler::mousefocus_cb);
+		glfwSetFramebufferSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height)
+		{
+			auto& Config = *(WindowConfig*)glfwGetWindowUserPointer(window);
+
+			Config.width = width;
+			Config.height = height;
+			Config.resize = true;
+		});
+
+
 	}
 
 	Window::~Window()

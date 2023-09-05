@@ -444,8 +444,6 @@ namespace TRE
 
 	void SwapChain::Present()
 	{
-		//RecordCommandBuffer(m_Commandbuffers[m_CurrentBufferIndex], m_CurrentImageIndex);
-
 		VkSubmitInfo SubmitInfo{};
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -479,10 +477,13 @@ namespace TRE
 
 		auto Result = vkQueuePresentKHR(m_LogicalDevice->GetGraphicsQ(), &PresentInfo);
 
-		if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
+		if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR || Engine::GetInstance().GetWindow()->GetWindowConfig().resize)
 		{
 			TRE_CORE_INFO("Recreate");
+			Engine::GetInstance().GetWindow()->GetWindowConfig().resize = false;
 			RecreateSwapChain();
+			Engine::GetInstance().GetRenderer()->Resize();
+			Engine::GetInstance().GetVulkanImgui()->Resize();
 		}
 
 		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame
