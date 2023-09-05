@@ -62,6 +62,36 @@ namespace TRE
 		}
 	}
 
+	void CameraHelper::SetViewDirection(Camera& camera, const glm::vec3& direction)
+	{
+		assert(direction.length() > 0.f);
+		const glm::vec3 w{ glm::normalize(direction) };
+		const glm::vec3 u{ glm::normalize(glm::cross(w, camera.m_UpVec)) };
+		const glm::vec3 v{ glm::cross(w, u) };
+		camera.m_ForwardVec = w;
+		camera.m_RightVec = u;
+		camera.m_UpVec = v;
+
+		camera.m_ViewMatrix = glm::mat4{ 1.f };
+		camera.m_ViewMatrix[0][0] = u.x;
+		camera.m_ViewMatrix[1][0] = u.y;
+		camera.m_ViewMatrix[2][0] = u.z;
+		camera.m_ViewMatrix[0][1] = v.x;
+		camera.m_ViewMatrix[1][1] = v.y;
+		camera.m_ViewMatrix[2][1] = v.z;
+		camera.m_ViewMatrix[0][2] = w.x;
+		camera.m_ViewMatrix[1][2] = w.y;
+		camera.m_ViewMatrix[2][2] = w.z;
+		camera.m_ViewMatrix[3][0] = -glm::dot(u, camera.m_Position);
+		camera.m_ViewMatrix[3][1] = -glm::dot(v, camera.m_Position);
+		camera.m_ViewMatrix[3][2] = -glm::dot(w, camera.m_Position);
+	}
+
+	void CameraHelper::SetViewTarget(Camera& camera, const glm::vec3& target)
+	{
+		CameraHelper::SetViewDirection(camera, target - camera.m_Position);
+	}
+
 	void CameraSystem::Update()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
@@ -99,6 +129,7 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Rotation = rotation;
 		camera.m_IsDirty = true;
+		NormalizeOrientation(go);
 	}
 
 	void CameraSystem::SetViewportSize(Entity& go, const glm::vec2& viewportSize)
@@ -284,5 +315,13 @@ namespace TRE
 	const bool CameraSystem::GetIsDirty() const
 	{
 		return m_IsDirty;
+	}
+
+	void CameraSystem::NormalizeOrientation(Entity& go)
+	{
+		auto camera = go->GetComponent<Camera>();
+		camera.m_UpVec = glm::normalize(camera.m_UpVec);
+		camera.m_RightVec = glm::normalize(camera.m_RightVec);
+		camera.m_ForwardVec = glm::normalize(camera.m_ForwardVec);
 	}
 }

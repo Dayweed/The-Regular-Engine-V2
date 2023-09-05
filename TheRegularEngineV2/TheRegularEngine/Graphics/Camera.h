@@ -12,6 +12,8 @@ namespace TRE
 	{
 		void UpdateViewMatrix(Camera& camera);
 		void UpdateProjectionMatrix(Camera& camera);
+		void SetViewDirection(Camera& camera, const glm::vec3& direction);
+		void SetViewTarget(Camera& camera, const glm::vec3& target);
 	}
 
 	class Camera
@@ -22,6 +24,9 @@ namespace TRE
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
 		glm::vec2 m_ViewportSize{ 1920.f, 1080.f };
+		glm::vec3 m_UpVec{ 0.f, -1.f, 0.f };
+		glm::vec3 m_RightVec{ 1.f, 0.f, 0.f };
+		glm::vec3 m_ForwardVec{ 0.f, 0.f, 1.f };
 		float m_Fov{ 30.f };	//Vertical fov - has to be converted to radians
 		float m_Near{ 0.3f };
 		float m_Far{ 1000.f };
@@ -77,6 +82,8 @@ namespace TRE
 		void SetIsDirty(const bool isDirty);
 		const bool GetIsDirty() const;
 	private:
-		bool m_IsDirty{ false };
+		void NormalizeOrientation(Entity& go);
+	private:
+		bool m_IsDirty{ false }; //Bool to update descriptor set
 	};
 }

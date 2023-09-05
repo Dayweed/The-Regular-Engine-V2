@@ -29,11 +29,16 @@ namespace TRE
 
 			void OnMouseMove(const MouseMoveEvent& event);
 			void OnMouseClick(const InputEvent& event);
+			void OnMouseScroll(const MouseScrollEvent& event);
 
 		private:
 			bool m_IsViewportHovered = false;
+			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};
 			glm::vec2 m_MouseStartPos{};
 			glm::vec2 m_MouseEndPos{};
+			float m_ZoomSensitivity = 5.f;
+			float m_PanSensitivity = 10.f;
+			float m_RotationSensitivity = 0.3f;
 	};
 }
