@@ -20,6 +20,11 @@
 
 namespace TRE
 {
+	class Ent;
+	typedef std::shared_ptr<Ent> Entity;
+
+	typedef std::uint32_t Entity_ID;
+
 	// DO NOT USE THIS UNLESS YOU WANT THE Entity TO BE DELETED!
 	// Get this component in GetEntities to get Entity that are going to be deleted in this loop
 	class Removal
@@ -32,19 +37,27 @@ namespace TRE
 		bool fake;
 	};
 
-	class Properties
+	struct Properties
 	{
-	public:
-		std::string m_Name; // To get the name
-		bool m_Active;		// To check if it is active
+		std::string m_Name{};		// To get the name
+		bool m_Active{ true };		// To check if it is active
+
+		Properties() = default;
+		~Properties() = default;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Name, m_Active)
 	};
 
-	class Ent;
-	typedef std::shared_ptr<Ent> Entity;
+	struct Parenting
+	{
+		Entity_ID m_Parent{ entt::null };
+		std::vector<Entity_ID> m_Children;
 
-	typedef std::uint32_t Entity_ID;
+		Parenting() = default;
+		~Parenting() = default;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Parenting, m_Parent, m_Children)
+	};
 
 	class Ent : public std::enable_shared_from_this<Ent>
 	{
@@ -259,9 +272,6 @@ namespace TRE
 		friend class ECSManager;
 		friend class MemoryManager;
 
-		Entity m_Parent;
-		std::vector<Entity> m_Children;
-
 		entt::entity m_Entity;
 	};
 
@@ -466,6 +476,10 @@ namespace TRE
 
 		void LoadEntities(std::string filePath);
 
+		Entity FindEntity(Entity_ID id);
+
+		Entity_ID FindEntityID(Entity ent);
+
 		// TODELETE
 		void TESTRUN();
 
@@ -591,7 +605,7 @@ namespace TRE
 		if (this == nullptr || &m_Entity == nullptr)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] " + GetComponent<Properties>().m_Name + " is no longer valid (this or entity is nullptr)");
+			TRE_CORE_ERROR("[" + funcName + "] Object is no longer valid (this or entity is nullptr)");
 			assert(this != nullptr);
 			assert(&m_Entity != nullptr);
 		}

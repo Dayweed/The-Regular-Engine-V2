@@ -66,6 +66,7 @@ namespace TRE
 		}
 		// Readd Basic Components
 		m_AllEntityList[id]->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+		m_AllEntityList[id]->AddComponent<Parenting>();
 		m_AllEntityList[id]->AddComponent<Transform>();
 		m_AllEntityList[id]->AddComponent<Undeployed>();
 	}
@@ -100,6 +101,10 @@ namespace TRE
 			else
 			{
 				obj->GetComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+			}
+			if (!obj->HasComponent<Parenting>())
+			{
+				obj->AddComponent<Parenting>();
 			}
 			if (!obj->HasComponent<Transform>())
 			{
