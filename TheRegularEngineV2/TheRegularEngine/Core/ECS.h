@@ -265,8 +265,14 @@ namespace TRE
 		void operator()(entt::entity ent);
 		void operator()(std::underlying_type_t<entt::entity> u);
 		template <typename T>
-		void operator()(const T& t)
+		void operator()(entt::entity ent, const T& t)
 		{
+			//rapidjson::Value Array(rapidjson::kObjectType);
+
+			m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
+			//rapidjson::Value v = t;
+			//Array.PushBack(v, m_Doc.GetAllocator());
+
 			std::cout << "&";
 		}
 		void Close();
@@ -278,19 +284,17 @@ namespace TRE
 	class ECSInputArchive
 	{
 	public:
-		void operator()(entt::entity& ent)
-		{
-			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "\\";
-		}
-		void operator()(std::underlying_type_t<entt::entity>& u)
-		{
-			std::cout << u << ":";
-		}
+		ECSInputArchive(std::string filePath);
+		void operator()(entt::entity& ent);
+		void operator()(std::underlying_type_t<entt::entity>& u);
 		template <typename T>
-		void operator()(const T&)
+		void operator()(entt::entity ent, const T& t)
 		{
-			std::cout << "/";
+			std::cout << "\\/";
 		}
+	private:
+		std::string m_FilePath;
+		rapidjson::Document m_Doc;
 	};
 
 	// ECS Manager (Entity Manager) THERE CAN ONLY BE ONE! >:o
