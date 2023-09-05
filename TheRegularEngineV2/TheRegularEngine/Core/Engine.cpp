@@ -50,7 +50,7 @@ namespace TRE
 
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
-		ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
+		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 	}
 }
 #pragma endregion TO DELETE TEST
