@@ -57,7 +57,10 @@ namespace TRE
 
 	void ECSManager::MarkForDeletion(Entity& object)
 	{
-		object->AddComponent<Removal>();
+		if (!object->HasComponent<Removal>())
+		{
+			object->AddComponent<Removal>();
+		}
 		return;
 	}
 
@@ -121,11 +124,16 @@ namespace TRE
 
 	void ECSManager::LoadEntities(std::string filePath)
 	{
-		ECSManager::Instance().GetRegistry().clear();
+		MemoryManager::Instance().DeleteEntities();
 
+		entt::registry copy;
 		ECSInputArchive arc(filePath);
-		entt::basic_snapshot_loader loader(ECSManager::Instance().GetRegistry());
+		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc).component<Properties>(arc);
+
+		std::cout << "\nRegistry size: " << ECSManager::Instance().GetRegistry().size() << "\n";
+
+		MemoryManager::Instance().UpdateECSManager(copy);
 
 		std::cout << "\nRegistry size: " << ECSManager::Instance().GetRegistry().size() << "\n";
 	}
@@ -309,7 +317,7 @@ namespace TRE
 		}
 		std::cout << "++++++++++++\n";*/
 
-		test->AddComponent<Transform>().m_Position.x = 19;
+		test->GetComponent<Transform>().m_Position.x = 19;
 		std::cout << "Creating Entity, Adding, Getting and editing a value: " << test->GetComponent<Transform>().m_Position.x << std::endl;
 		std::cout << "Removing Editted Component...\n";
 		test->RemoveComponent<Transform>();
@@ -355,12 +363,13 @@ namespace TRE
 		std::cout << "Testing cloning Entity...\n";
 		std::cout << "- Setting Original Entity value to 123...\n";
 		Entity oriobj = CreateEntity("oriobj");
-		oriobj->AddComponent<Transform>().m_Position.x = 123;
+		oriobj->GetComponent<Transform>().m_Position.x = 123;
 		std::cout << "- Cloning Original Entity\n";
 		Entity cloneobj = CloneEntity(oriobj);
 		std::cout << "- Cloned Entity value is " << cloneobj->GetComponent<Transform>().m_Position.x << "\n";
 		std::cout << "- Setting Original Entity value to 0...\n";
 		oriobj->GetComponent<Transform>().m_Position.x = 0;
+		std::cout << "- Origin Entity value is " << oriobj->GetComponent<Transform>().m_Position.x << "\n";
 		std::cout << "- Cloned Entity value is " << cloneobj->GetComponent<Transform>().m_Position.x << "\n";
 
 		std::cout << "\nIterating All Available Component in ComponentManager\n";
@@ -382,7 +391,7 @@ namespace TRE
 		std::cout << "-------\n";*/
 
 		std::cout << "\nTesting setting, getting and removing parent\n";
-		Entity parentEntity = CreateEntity();
+		Entity parentEntity = CreateEntity("Parent");
 		Entity childEntity = CreateEntity();
 		std::cout << "- Default childEntity parent: " << childEntity->GetParent() << "\n";
 		std::cout << "- childEntity address: " << childEntity << "\n";
@@ -500,7 +509,7 @@ namespace TRE
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
-			std::cout << "-" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+			std::cout << "-" << static_cast<Entity_ID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
@@ -518,7 +527,7 @@ namespace TRE
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
-			std::cout << "-" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+			std::cout << "-" << static_cast<Entity_ID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
 		}
 
 		//ECSOutputArchive str{};

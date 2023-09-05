@@ -15,6 +15,9 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/ostreamwrapper.h"
 
+#define ECS_ENTITY_DEFAULT_NAME "Default_Entity_Name"
+#define ECS_CLONE_DEFAULT_NAME "Clone_Entity_Name"
+
 namespace TRE
 {
 	// DO NOT USE THIS UNLESS YOU WANT THE Entity TO BE DELETED!
@@ -334,7 +337,7 @@ namespace TRE
 		// true
 		// goVar
 		*//*__________________________________________________________________________*/
-		Entity CreateEntity(std::string name = "Ent");
+		Entity CreateEntity(std::string name = ECS_ENTITY_DEFAULT_NAME);
 
 		/* !
 		@function	MarkForDeletion
@@ -368,7 +371,7 @@ namespace TRE
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity clonGoVar = ECSManager::Instance().CloneEntity(goVar, "ClonedEntityName");
 		*//*__________________________________________________________________________*/
-		Entity CloneEntity(Entity& object, std::string name = "Cloned_GameObject");
+		Entity CloneEntity(Entity& object, std::string name = ECS_CLONE_DEFAULT_NAME);
 
 		/* !
 		@function	EntityHasComponent
@@ -665,10 +668,16 @@ namespace TRE
 		auto comp = componentData.get<T>();
 		t = comp;
 
+		if (typeid(T) == typeid(Properties))
+		{
+			std::cout << "\n??? " << comp.m_Name;
+			std::cout << "\n??? " << comp.m_Active;
+		}
+
 		uint32_t entID = m_Current[m_CurrentIdx * 2 - 1];
 		ent = entt::entity(entID); // last element is the entity-id
 		m_CurrentIdx++;
 
-		std::cout << "\\/";
+		std::cout << "\\/\n";
 	}
 }

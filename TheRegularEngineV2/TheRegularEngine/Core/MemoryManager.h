@@ -18,11 +18,13 @@
 #include "ECS.h"
 #include <map>
 
+#define MEM_MGR_DEFAULT_NAME "AllocatedEntity"
+
 namespace TRE
 {
 	// Memory Manager [The ONLY ONE to handle new and delete]
 	//==================================================
-	struct MemoryManager // Handles Memory Allocation and should be run once at the start and end of main!
+	class MemoryManager // Handles Memory Allocation and should be run once at the start and end of main!
 	{
 	public:
 		static MemoryManager& Instance();
@@ -35,6 +37,8 @@ namespace TRE
 		bool DeleteEntities();
 		void ResetToConfig();
 		void ClearUndeployed();
+
+		void UpdateECSManager(entt::registry& reg);
 
 		// Set and Get
 		void SetConfigSize(size_t config_obj_);

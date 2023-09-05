@@ -65,7 +65,7 @@ namespace TRE
 			elem.second.remove(m_AllEntityList[id]->m_Entity);
 		}
 		// Readd Basic Components
-		m_AllEntityList[id]->AddComponent<Properties>().m_Name = "AllocatedEntity";
+		m_AllEntityList[id]->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
 		m_AllEntityList[id]->AddComponent<Transform>();
 		m_AllEntityList[id]->AddComponent<Undeployed>();
 	}
@@ -90,11 +90,27 @@ namespace TRE
 		{
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
+
+			std::cout << "== " << static_cast<Entity_ID>(obj->m_Entity) << "," << ECSManager::Instance().GetRegistry().valid(obj->m_Entity) << "\n";
+
 			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
 			m_UndeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
-			obj->AddComponent<Properties>().m_Name = "AllocatedEntity";
-			obj->AddComponent<Transform>();
-			obj->AddComponent<Undeployed>();
+			if (!obj->HasComponent<Properties>())
+			{
+				obj->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+			}
+			else
+			{
+				obj->GetComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
+			}
+			if (!obj->HasComponent<Transform>())
+			{
+				obj->AddComponent<Transform>();
+			}
+			if (!obj->HasComponent<Undeployed>())
+			{
+				obj->AddComponent<Undeployed>();
+			}
 		}
 
 		// Successful Allocation
@@ -126,7 +142,14 @@ namespace TRE
 		m_AllEntityList.clear();
 		m_DeployedEntityList.clear();
 		m_UndeployedEntityList.clear();
+
 		ECSManager::Instance().GetRegistry().clear();
+
+		/*entt::registry empty;
+
+		ECSManager::Instance().GetRegistry().swap(empty);*/
+
+		std::cout << "LL " << ECSManager::Instance().GetRegistry().size() << "|" << ECSManager::Instance().GetRegistry().alive() << "|" << m_AllEntityList.size() << "\n";
 
 		// Successful deletion
 		return true;
@@ -160,11 +183,11 @@ namespace TRE
 			}
 			m_UndeployedEntityList.clear();
 		}
-		else
+		else if (!m_UndeployedEntityList.empty())
 		{
 			size_t remainingSize{ m_ConfigSize - m_DeployedEntityList.size() };
 
-			for (size_t i{}; i < remainingSize; ++i)
+			for (size_t i{}; i < remainingSize && !m_UndeployedEntityList.empty(); ++i)
 			{
 				Entity_ID id{ *m_UndeployedEntityList.rbegin() };
 				ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
@@ -192,6 +215,93 @@ namespace TRE
 		}
 		m_UndeployedEntityList.clear();
 		std::cout << ECSManager::Instance().GetRegistry().size() << "|" << m_AllEntityList.size() << "==\n";
+	}
+
+	void MemoryManager::UpdateECSManager(entt::registry& reg)
+	{
+		//// Copy registry
+		//for (size_t i{}; i < reg.size(); ++i)
+		//{
+		//	Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
+		//	// Remove all components in one entity
+		//	for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
+		//		elem.second.remove(obj->m_Entity);
+		//	}
+		//	m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+		//	// Clone each component of the object into the clone
+		//	for (auto&& curr : registry.storage())
+		//	{
+		//		TRE_CORE_INFO("A Component Type {0}", curr.first);
+		//		if (auto& storage = curr.second; storage.contains(object->m_Entity))
+		//		{
+		//			TRE_CORE_INFO("Storage of entities with mentioned component");
+		//			TRE_CORE_INFO("Size of Storage: {0}", storage.size());
+		//			TRE_CORE_INFO("Cloning Component...");
+		//			storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
+		//		}
+		//	}
+		//}
+
+		// Update ECS Manager based on current registry
+		reg.each([&](entt::entity src_entity) {
+
+			Entity obj{ std::make_shared<Ent>() };
+			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
+			std::cout << "|| " << static_cast<Entity_ID>(obj->m_Entity) << " \\ " << ECSManager::Instance().GetRegistry().valid(obj->m_Entity) << " \\ " << reg.valid(obj->m_Entity) << "\n";
+
+			// Remove all components in one entity
+			for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
+				elem.second.remove(obj->m_Entity);
+			}
+
+			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
+			ECSManager::Instance().m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+
+			//// Clone each component of the object into the clone
+			//for (auto&& curr : ECSManager::Instance().GetRegistry().storage())
+			//{
+			//	TRE_CORE_INFO("A Component Type {0}", curr.first);
+			//	if (auto& storage = curr.second; storage.contains(entity))
+			//	{
+			//		TRE_CORE_INFO("Storage of entities with mentioned component");
+			//		TRE_CORE_INFO("Size of Storage: {0}", storage.size());
+			//		TRE_CORE_INFO("Cloning Component...");
+			//		storage.emplace(obj->m_Entity, storage.get(entity));
+			//	}
+			//}
+
+			for (auto [id, source_storage] : reg.storage()) {
+				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+				if (destination_storage != nullptr && source_storage.contains(src_entity)) {
+					if (!destination_storage->contains(obj->m_Entity)) {
+						destination_storage->emplace(obj->m_Entity, source_storage.get(src_entity));
+						// If destination already contains the component, then either skip or "overwrite"
+					}
+					else {
+						destination_storage->erase(obj->m_Entity);
+						destination_storage->emplace(obj->m_Entity, source_storage.get(src_entity));
+					}
+				}
+			}
+
+			/*Entity obj{ std::make_shared<Ent>() };
+			obj->m_Entity = entity;
+			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
+			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
+			ECSManager::Instance().m_EntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);*/
+
+			std::cout << "]] " << static_cast<Entity_ID>(obj->m_Entity) << obj->GetComponent<Properties>().m_Name << "|" << obj->GetComponent<Properties>().m_Active << "\n";
+
+
+			std::cout << "\nOBJ SIZE: " << ECSManager::Instance().m_EntityList.size() << "\n";
+			for (Entity& ent : ECSManager::Instance().GetAllEntities())
+			{
+				std::cout << "-" << static_cast<Entity_ID>(ent->m_Entity) << "|" << ent->GetComponent<Properties>().m_Name << " | " << ent->GetComponent<Properties>().m_Active << "\n";
+			}
+		});
+
+		ResetToConfig();
 	}
 
 	void MemoryManager::SetConfigSize(size_t configSize)
