@@ -74,10 +74,11 @@ namespace TRE
 
 	RendererContext::~RendererContext()
 	{
-		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
-		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
-		vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
-		m_Device->Destroy();
+		if (EnableValidationLayer)
+		{
+			auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
+			vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
+		}
 		vkDestroyInstance(m_instance, nullptr);
 		m_instance = nullptr;
 	}
