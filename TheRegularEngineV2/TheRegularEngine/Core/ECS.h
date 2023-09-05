@@ -1,4 +1,19 @@
 #pragma once
+/*!
+	@file		ECS.h
+	@author		Isaiah Lim (Code Contribution 100%)
+	@email		lim.i@digipen.edu
+	@date		25/08/2023
+	@brief		Handles all the front end of handling entities and linking
+				with the entt::entities
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
+
+/*                                                                 includes
+----------------------------------------------------------------------------- */
 #include "pch.h"
 #include "entt.hpp"
 #include "System.h"
@@ -15,6 +30,8 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/ostreamwrapper.h"
 
+/*                                                                 defines
+----------------------------------------------------------------------------- */
 #define ECS_ENTITY_DEFAULT_NAME "Default_Entity_Name"
 #define ECS_CLONE_DEFAULT_NAME "Clone_Entity_Name"
 
@@ -30,11 +47,13 @@ namespace TRE
 	class Removal
 	{
 		//static constexpr auto in_place_delete = false;
-		bool fake; //This value is to ensure it can compile and be registered
+		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
+	// DO NOT USE THIS UNLESS IT IS CREATING ALLOCATED ENTITIES!
+	// Get this component in GetEntities to get Entity that are going to be deleted in this loop
 	class Undeployed
 	{
-		bool fake;
+		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
 
 	struct Properties
@@ -46,7 +65,7 @@ namespace TRE
 		Properties() = default;
 		~Properties() = default;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_GUID, m_Active, m_Name)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Active, m_GUID, m_Name)
 	};
 
 	struct Parenting
@@ -64,23 +83,22 @@ namespace TRE
 	{
 	public:
 		/* !
-		@function	GetThis
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetThis
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Returns this in the form of a shared_ptr (Entity)
-					Note! Not using Ent, but using the shared_ptr variant.
-					This should replace the variable this
+		@brief			Returns this in the form of a shared_ptr (Entity)
+						Note! Not using Ent, but using the shared_ptr variant.
+						This should replace the variable this
 		*//*__________________________________________________________________________*/
 		Entity GetThis();
 
 		/* !
-		@function	HasComponent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		HasComponent
+		@author			Isaiah Lim lim.i@digipen.edu
 
-		@brief		Checks if this Entity has a specific component
+		@brief			Checks if this Entity has a specific component
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		if (goVar->HasComponent<ComponentStruct>())
 		{
@@ -91,17 +109,16 @@ namespace TRE
 		bool HasComponent();
 
 		/* !
-		@function	AddComponent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		AddComponent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Adds the component into the Entity
-					If it already exist, can be used an alternative GetComponent
+		@brief			Adds the component into the Entity
+						If it already exist, can be used an alternative GetComponent
 
-		[Warning]	If the typename is not registered in _component_manager, it will
-					cause an assert
+		[Warning]		If the typename is not registered in _component_manager, it will
+						cause an assert
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		goVar->AddComponent<ComponentStruct>();
 
@@ -111,14 +128,14 @@ namespace TRE
 		T& AddComponent();
 
 		/* !
-		@function	GetComponent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetComponent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Get the component from the Entity
+		@brief			Get the component from the Entity
 
-		[Warning]	If the typename is not registered in _component_manager,
-					or the Entity is deleted or the Entity does not have the component,
-					it will	cause an assert
+		[Warning]		If the typename is not registered in _component_manager,
+						or the Entity is deleted or the Entity does not have the component,
+						it will	cause an assert
 
 		Example:
 		if 
@@ -127,16 +144,15 @@ namespace TRE
 		T& GetComponent();
 
 		/* !
-		@function	RemoveComponent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		RemoveComponent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Remove the component from the Entity
+		@brief			Remove the component from the Entity
 
-		[Warning]	If the typename is not registered in _component_manager, it will
-					cause an assert
+		[Warning]		If the typename is not registered in _component_manager, it will
+						cause an assert
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		if (goVar->HasComponent<ComponentStruct>())
 		{
@@ -147,17 +163,16 @@ namespace TRE
 		void RemoveComponent();
 
 		/* !
-		@function	SetParent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		SetParent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		Entity parent // Entity for the new parent
+		@params			parent	Entity for the new parent
 
-		@brief		Abandons the previous parent if it exist
-					Set the parent of the Entity
-					Automatically add this Entity to the parent's children list
+		@brief			Abandons the previous parent if it exist
+						Set the parent of the Entity
+						Automatically add this Entity to the parent's children list
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
@@ -165,11 +180,11 @@ namespace TRE
 		void SetParent(Entity parent);
 
 		/* !
-		@function	GetParent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetParent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Returns the parent of the Entity
-					Returns nullptr if it doesn't exist
+		@brief			Returns the parent of the Entity
+						Returns nullptr if it doesn't exist
 
 		Example:
 
@@ -182,14 +197,13 @@ namespace TRE
 		Entity GetParent();
 
 		/* !
-		@function	RemoveParent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		RemoveParent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Remove the parent of the Entity
-					Automatically Abandons this Entity from the parent's children list
+		@brief			Remove the parent of the Entity
+						Automatically Abandons this Entity from the parent's children list
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
@@ -199,16 +213,15 @@ namespace TRE
 		void RemoveParent();
 
 		/* !
-		@function	AddChild
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		AddChild
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		Entity child // Entity for the child
+		@params			child	Entity for the child
 
-		@brief		Add a child to this Entity children list
-					Automatically set this Entity as the parent of the child
+		@brief			Add a child to this Entity children list
+						Automatically set this Entity as the parent of the child
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity goChildVar = ECSManager::Instance().CreateEntity("goChildVar");
 
@@ -217,13 +230,12 @@ namespace TRE
 		void AddChild(Entity child);
 
 		/* !
-		@function	GetChildren
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetChildren
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Returns the children of the Entity
+		@brief			Returns the vector of children of the Entity
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
@@ -233,17 +245,16 @@ namespace TRE
 		std::vector<Entity> GetChildren();
 
 		/* !
-		@function	AbandonChild
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		AbandonChild
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		Entity child // Entity for the child
+		@params			child	Entity for the child
 
-		@brief		Remove child from children list
-					Automatically remove parent from the child Entity
-					Ignores command if child's parent is not this Entity
+		@brief			Remove child from children list
+						Automatically remove parent from the child Entity
+						Ignores command if child's parent is not this Entity
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
@@ -253,14 +264,13 @@ namespace TRE
 		void AbandonChild(Entity child);
 
 		/* !
-		@function	AbandonChildren
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		AbandonChildren
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Remove all children from children list
-					Automatically remove parent from each child Entity
+		@brief			Remove all children from children list
+						Automatically remove parent from each child Entity
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
 		goVar->SetParent(goParentVar);
@@ -282,20 +292,20 @@ namespace TRE
 	{
 	public:
 		/* !
-		@function	Instance
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		Instance
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Holds the singleton for the ECSManager
-					This shouldn't be used, use ECSManager::Instance() instead
+		@brief			Holds the singleton for the ECSManager
+						This shouldn't be used, use ECSManager::Instance() instead
 		*//*__________________________________________________________________________*/
 		static ECSManager& Instance();
 
 		/* !
-		@function	GetRegistry
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetRegistry
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Returns entt registry in the ECSManager::Instance() singleton
-					This should ideally be used for ECSManager::Instance() only
+		@brief			Returns entt registry in the ECSManager::Instance() singleton
+						This should ideally be used for ECSManager::Instance() only
 
 		Example:
 		ECSManager::Instance().GetRegistry();
@@ -304,11 +314,11 @@ namespace TRE
 
 		// Engine Loop
 		/* !
-		@function	DestroyRemovalEntities
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		DestroyRemovalEntities
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Delete all Entity that has the component Removal
-					This is only run under Engine.cpp at the end of the frame
+		@brief			Delete all Entity that has the component Removal
+						This is only run under Engine.cpp at the end of the frame
 
 		Example:
 		ECSManager::Instance().DestroyRemovalEntity();
@@ -317,10 +327,10 @@ namespace TRE
 
 		// Shutdown Functions
 		/* !
-		@function	DestroyAll
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		DestroyAll
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Destroys all the Entitys
+		@brief			Destroys all the Entitys
 
 		Example:
 		ECSManager::Instance().DestroyAll();
@@ -329,37 +339,36 @@ namespace TRE
 
 		// Entity Controller
 		/* !
-		@function	CreateEntity
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		CreateEntity
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		std::string name	// Default name is "Ent", can be renamed
-										// name is found in Properties::m_Name
+		@params			name	Default name is "Ent", can be renamed
+								name is found in Properties::m_Name
 
-		@brief		Create a new Entity
-					Automatically adds the Properties Component
+		@brief			Create a new Entity
+						Automatically adds the Properties Component
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 
 		std::cout << goVar->HasComponent<Properties>() << std::endl;
 		std::cout << goVar->GetComponent<Properties>().m_Name << std::endl;
-		// Output
-		// true
-		// goVar
+		
+		Output:
+		true
+		goVar
 		*//*__________________________________________________________________________*/
 		Entity CreateEntity(std::string name = ECS_ENTITY_DEFAULT_NAME);
 
 		/* !
-		@function	MarkForDeletion
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		MarkForDeletion
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		Entity& object			// Entity to be destroyed
+		@params			object	Entity to be destroyed
 
-		@brief		Create a new Entity
+		@brief			Create a new Entity
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 
 		std::cout << goVar << std::endl; // Address of goVar
@@ -369,52 +378,49 @@ namespace TRE
 		void MarkForDeletion(Entity& object);
 
 		/* !
-		@function	CloneEntity
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		CloneEntity
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		Entity& object			// Entity to clone from
-					std::string name	// Name for the cloned Entity
+		@params			object	Entity to clone from
+						name	Name for the cloned Entity
 
-		@brief		Create a new Entity from an existing Entity
+		@brief			Create a new Entity from an existing Entity
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		Entity clonGoVar = ECSManager::Instance().CloneEntity(goVar, "ClonedEntityName");
 		*//*__________________________________________________________________________*/
 		Entity CloneEntity(Entity& object, std::string name = ECS_CLONE_DEFAULT_NAME);
 
 		/* !
-		@function	EntityHasComponent
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		EntityHasComponent
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params		Entity& object			// Entity to check from
+		@params			object	Entity to check from
 
-		@brief		Check if the Entity have a component
+		@brief			Check if the Entity have a component
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
 		goVar->AddComponent<Transform>();
 
 		std::cout << ECSManager::Instance().EntityHasComponent<Transform>(goVar) << std::endl;
 		std::cout << ECSManager::Instance().EntityHasComponent<HUMAN>(goVar) << std::endl;
 
-		// Output
-		// true
-		// false
+		Output:
+		true
+		false
 		*//*__________________________________________________________________________*/
 		template <typename T>
 		bool EntityHasComponent(Entity object);
 
 		/* !
-		@function	GetEntities
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetEntities
+		@author			Isaiah Lim lim.i@digipen.edu
 
-		@brief		Returns a vector of Entity with the components listed
+		@brief			Returns a vector of Entity with the components listed
 
 		Example:
-
 		Entity goVar = ECSManager::Instance().CreateEntity("Object1");
 		goVar->AddComponent<Transform>();
 		goVar->AddComponent<Component>();
@@ -445,40 +451,120 @@ namespace TRE
 		for (Entity& obj : ECSManager::Instance().GetEntities<Transform, Component>())
 			std::cout << "- " << obj->GetComponent<Properties>().m_Name << std::endl;
 
-		// Output
-		// Entity with Properties Size: 3
-		// - Object1
-		// - Object2
-		// - Object3
-		// Entity with Transform Size: 3
-		// - Object1
-		// - Object2
-		// - Object3
-		// Entity with Component Size: 2
-		// - Object1
-		// - Object3
-		// Entity with Removal Size: 1
-		// - Object3
-		// Entity with Transform and Component and Removal Size: 1
-		// - Object3
+		Output:
+		Entity with Properties Size: 3
+		- Object1
+		- Object2
+		- Object3
+		Entity with Transform Size: 3
+		- Object1
+		- Object2
+		- Object3
+		Entity with Component Size: 2
+		- Object1
+		- Object3
+		Entity with Removal Size: 1
+		- Object3
+		Entity with Transform and Component and Removal Size: 1
+		- Object3
 		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
 		std::vector<Entity> GetEntities();
 
 		/* !
-		@function	GetAllEntities
-		@author		Isaiah Lim lim.i@digipen.edu
+		@function		GetAllEntities
+		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@brief		Returns a vector of all Entities
+		@brief			Returns a vector of all Entities
 		*//*__________________________________________________________________________*/
 		std::vector<Entity> GetAllEntities();
 
+		/* !
+		@function		SaveEntities
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			filePath	File Name, including .json
+
+		@brief			Saves Entities in a json file
+
+		Example:
+		std::cout << ECSManager::Instance().SaveEntities("TestFile.json") << "\n";
+
+		Output:
+		../Scenes/TestFile.json
+		*//*__________________________________________________________________________*/
 		std::string SaveEntities(std::string filePath);
 
+		/* !
+		@function		LoadEntities
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			filePath	Entire File Path Name, including .json
+
+		@brief			Loads Entities from a json file
+
+		Example:
+		ECSManager::Instance().LoadEntities("TestFile.json");
+		*//*__________________________________________________________________________*/
 		void LoadEntities(std::string filePath);
 
+		/* !
+		@function		FindEntity
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			id	string of GUID of the Entity
+
+		@brief			Returns the Entity based on the GUID
+						Returns a nullptr if GUID is invalid
+
+		Example:
+		Entity entitySample = CreateEntity("entitySample");
+		std::string entityGUID = entitySample->GetComponent<Properties>().m_GUID;
+
+		std::cout << "1) " << ECSManager::Instance().FindEntity(entityGUID) << "\n";
+
+		// This would not delete the object!
+		ECSManager::Instance().MarkForDeletion(entitySample);
+		std::cout << "2) " << ECSManager::Instance().FindEntity(entityGUID) << "\n";
+
+		// Destroy All deletes all the entities immediately (This is for debugging mostly)
+		ECSManager::Instance().DestroyAll();
+		std::cout << "3) " << ECSManager::Instance().FindEntity(entityGUID) << "\n";
+
+		Output:
+		1) 00000204471513A0
+		2) 00000204471513A0
+		3) 0000000000000000
+		*//*__________________________________________________________________________*/
 		Entity FindEntity(std::string id);
 
+		/* !
+		@function		FindEntityID
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			ent	Entity to find the GUID string
+
+		@brief			Returns the GUID based on the entity
+						Returns a "" if entity is invalid
+
+		Example:
+		Entity entitySample = CreateEntity("entitySample");
+
+		std::cout << "1) " << ECSManager::Instance().FindEntityID(entitySample) << "\n";
+
+		// This would not delete the object!
+		ECSManager::Instance().MarkForDeletion(entitySample);
+		std::cout << "2) " << ECSManager::Instance().FindEntityID(entitySample) << "\n";
+
+		// Destroy All deletes all the entities immediately (This is for debugging mostly)
+		ECSManager::Instance().DestroyAll();
+		std::cout << "3) " << ECSManager::Instance().FindEntityID(entitySample) << "\n";
+
+		Output:
+		1) "{03A691F2-02DB-4957-8A0E-CA2BDAB9CDF8}"
+		2) "{03A691F2-02DB-4957-8A0E-CA2BDAB9CDF8}"
+		3) ""
+		*//*__________________________________________________________________________*/
 		std::string FindEntityID(Entity ent);
 
 		// TODELETE
@@ -494,10 +580,7 @@ namespace TRE
 		void* operator new(size_t) = delete;
 
 		// EnTT stuff
-		entt::registry registry;
-
-		// Component Types
-		std::map<size_t, void*> componentTypes;
+		entt::registry m_Registry;
 
 		std::unordered_map<std::string, Entity> m_EntityList;
 	};
@@ -544,7 +627,7 @@ namespace TRE
 	{
 		std::vector<Entity> objects{};
 		entt::exclude_t<Undeployed> u{};
-		auto view = registry.view<Comp, Others...>(u);
+		auto view = m_Registry.view<Comp, Others...>(u);
 		objects.reserve(m_EntityList.size());
 
 		// Get all Entity owning the entities
@@ -558,10 +641,6 @@ namespace TRE
 					break;
 				}
 			}
-			/*if (m_EntityList.find(static_cast<Entity_ID>(obj)) != m_EntityList.end())
-			{
-				objects.emplace_back(m_EntityList[static_cast<Entity_ID>(obj)]);
-			}*/
 		}
 
 		return objects;
@@ -570,7 +649,7 @@ namespace TRE
 	template <typename T>
 	bool ECSManager::EntityHasComponent(Entity object)
 	{
-		return registry.any_of<T>(object->m_Entity);
+		return m_Registry.any_of<T>(object->m_Entity);
 	}
 
 	template <typename T>
@@ -679,14 +758,6 @@ namespace TRE
 
 			nlohmann::json json = t;
 			m_Current.push_back(json);
-
-			//rapidjson::Value Array(rapidjson::kObjectType);
-
-			//m_Doc.PushBack(static_cast<uint32_t>(ent), m_Doc.GetAllocator());
-			//rapidjson::Value v = t;
-			//Array.PushBack(v, m_Doc.GetAllocator());
-
-			std::cout << "&";
 		}
 	}
 
@@ -698,10 +769,9 @@ namespace TRE
 		auto comp = componentData.get<T>();
 		t = comp;
 
+		// Last element is the entID
 		uint32_t entID = m_Current[m_CurrentIdx * 2 - 1];
-		ent = entt::entity(entID); // last element is the entity-id
+		ent = entt::entity(entID); 
 		m_CurrentIdx++;
-
-		std::cout << "\\/";
 	}
 }

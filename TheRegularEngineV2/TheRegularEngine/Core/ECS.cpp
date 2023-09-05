@@ -13,7 +13,7 @@ namespace TRE
 
 	entt::registry& ECSManager::GetRegistry()
 	{
-		return registry;
+		return m_Registry;
 	}
 
 	void ECSManager::DeleteRemovalEntities()
@@ -61,14 +61,10 @@ namespace TRE
 			elem.second.remove(obj->m_Entity);
 		}
 		// Clone each component of the object into the clone
-		for (auto&& curr : registry.storage())
+		for (auto&& curr : m_Registry.storage())
 		{
-			TRE_CORE_INFO("A Component Type {0}", curr.first);
 			if (auto& storage = curr.second; storage.contains(object->m_Entity))
 			{
-				TRE_CORE_INFO("Storage of entities with mentioned component");
-				TRE_CORE_INFO("Size of Storage: {0}", storage.size());
-				TRE_CORE_INFO("Cloning Component...");
 				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
 			}
 		}
@@ -231,7 +227,6 @@ namespace TRE
 		if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
 			m_Current.push_back(static_cast<uint32_t>(ent));
-			std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << " - ";
 		}
 	}
 
@@ -243,8 +238,6 @@ namespace TRE
 		}
 		m_Current = nlohmann::json::array();
 		m_Current.push_back(ECSManager::Instance().GetAllEntities().size());
-
-		std::cout << u << ";";
 	}
 
 	void ECSOutputArchive::Close()
@@ -276,15 +269,17 @@ namespace TRE
 		uint32_t entID = m_Current[m_CurrentIdx].get<uint32_t>();
 		ent = entt::entity(entID);
 		m_CurrentIdx++;
-
-		std::cout << static_cast<std::underlying_type_t<entt::entity>>(ent) << "\\";
 	}
 
 	void ECSInputArchive::operator()(std::underlying_type_t<entt::entity>& u)
 	{
 		m_RootIdx++;
-		if (m_RootIdx >= m_Root.size()) {
-			// ERROR
+		if (m_RootIdx >= m_Root.size())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size()) };
+			TRE_CORE_ERROR(error);
+			assert(m_RootIdx < m_Root.size());
 			return;
 		}
 		m_Current = m_Root[m_RootIdx];
@@ -292,9 +287,8 @@ namespace TRE
 
 		int size = m_Current[0].get<int>();
 		m_CurrentIdx++;
-		u = static_cast<std::underlying_type_t<entt::entity>>(size); // pass amount to entt
-
-		std::cout << u << ":";
+		// Pass amount to entt
+		u = static_cast<std::underlying_type_t<entt::entity>>(size); 
 	}
 
 	void ECSManager::TESTRUN()

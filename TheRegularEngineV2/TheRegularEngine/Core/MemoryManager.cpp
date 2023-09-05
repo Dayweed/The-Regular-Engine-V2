@@ -18,15 +18,6 @@
 
 namespace TRE
 {
-	/* !
-	@function	Instance
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params
-
-	@brief		Creates a static instance of the MemoryManager
-
-	*//*__________________________________________________________________________*/
 	MemoryManager& MemoryManager::Instance()
 	{
 		static MemoryManager instance{};
@@ -75,15 +66,6 @@ namespace TRE
 		m_AllEntityList[id]->AddComponent<Undeployed>();
 	}
 
-	/* !
-	@function	AllocateEntitySize
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params		size_t size_ [Adds new amount of size_ into objects]
-
-	@brief		Adds the additional amount of objects into objects
-
-	*//*__________________________________________________________________________*/
 	bool MemoryManager::AllocateEntitySize(size_t size)
 	{
 		// Reserve size for objects and registry in ECSManager
@@ -124,15 +106,6 @@ namespace TRE
 		return true;
 	}
 
-	/* !
-	@function	DeleteEntities
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params
-
-	@brief		Deletes all entities in m_AllEntityList
-
-	*//*__________________________________________________________________________*/
 	bool MemoryManager::DeleteEntities()
 	{
 		for (auto& object : m_AllEntityList)
@@ -156,20 +129,6 @@ namespace TRE
 		return true;
 	}
 
-	/* !
-	@function	MemoryManager::ResetToConfig
-	@author		Isaiah Lim Ji Rong  (lim.i@digipen.edu)
-
-	@params
-
-	@brief		Deletes all undeployed objects, leaving only
-				x amount of objects/components (Deployed or Undeployed) available
-				based on the config_obj & config_comp
-
-				This means it is possible that there are more deployed objects
-				or components than the config size
-
-	*//*__________________________________________________________________________*/
 	void MemoryManager::ResetToConfig()
 	{
 		// Auto clear all the Undeployed Entities if m_ConfigSize exceeds deployed size
