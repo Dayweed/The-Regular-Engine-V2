@@ -10,7 +10,6 @@
 #pragma region TO DELETE TEST
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Texture.h"
 #include "Geom.h"
 namespace TRE
 {
@@ -46,11 +45,8 @@ namespace TRE
 		cam->GetComponent<Camera>().m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		cam->GetComponent<Camera>().m_Fov = 30.0f;
 
-		//_texture_manager->LoadTexture("../Assets/Test.png", "Test");
-
-		Entity audio = ECSManager::Instance().CreateEntity();
-		audio->AddComponent<Audio>();
-
+		//Entity audio = ECSManager::Instance().CreateEntity();
+		//audio->AddComponent<Audio>();
 
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
@@ -89,7 +85,7 @@ namespace TRE
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 		
-		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDevice());
+		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
 
 		if (m_EngineInfo.EnableEditor)
@@ -131,9 +127,8 @@ namespace TRE
 
 		while (!m_Window->ShouldWindowClose())
 		{
-			m_Window->PollEvents();
 
-			m_Window->GetSwapChain().BeginFrame();
+			m_Window->BeginFrame();
 
 			//Update
 			Profiler::Instance().StartTimer("Update");
@@ -157,6 +152,7 @@ namespace TRE
 			Profiler::Instance().StartTimer("Draw");
 
 			m_Window->SwapBuffers();
+			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2

@@ -12,15 +12,15 @@ project "CompilerLib"
 
 	includedirs
     {
-        "src",
+        "include",
 		"%{IncludeDir.glm}"
     }
 
 	files
 	{
-		"src/**.h", 
+		"include/**.h", 
 		"src/**.c", 
-		"src/**.hpp", 
+		"include/**.hpp", 
 		"src/**.cpp"
 	}
 

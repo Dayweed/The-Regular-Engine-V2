@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Device.h"
 #include "RenderPass.h"
+#include "RendererContext.h"
 
 //Forward declaration to prevent include header just for this
 struct GLFWwindow;
@@ -24,20 +25,19 @@ namespace TRE
 			{
 				VkImage Image = nullptr;
 				VkImageView ImageView = nullptr;
-				VkImage DepthImage = nullptr;
-				VkImageView DepthImageView = nullptr;
+				//VkImage DepthImage = nullptr;
+				//VkImageView DepthImageView = nullptr;
 			};
 
-			SwapChain() = default;
-			void Initialize(VkInstance Instance, const std::shared_ptr<Device>& LogicalDevice, GLFWwindow* Handle);
+			SwapChain(std::shared_ptr<Device>& LogicalDevice, std::shared_ptr<PhysicalDevice>& PD, GLFWwindow* Handle);
+			~SwapChain() = default;
+			void Initialize(uint32_t Width, uint32_t Height);
 			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
 			void FindImageFormatAndColorSpace();
-			void DestroySwapChain();
 			
 			void BeginFrame();
 			void Present();
-			uint32_t AccuireNextImage();
-			void Resize(uint32_t width, uint32_t height);
+			void DestroySwapChain();
 
 		public:
 			VkRenderPass GetRenderPass();
@@ -53,49 +53,59 @@ namespace TRE
 			VkSemaphore GetRenderComplete();
 			VkExtent2D GetSwapChainExtent();
 			SwapChainSettings GetSwapChainSettings();
-			std::vector<SwapChainImage> GetCurrentSwapChainImage();
 			uint32_t GetCurrentImageIndex();
 
+		public: //TBR
+			void CreateSwapChain(uint32_t Width, uint32_t Height);
+			void RecreateSwapChain();
+			void CleanSwapChain();
+			void CreateImageViews();
+			void CreateRenderPass();
+			void CreateFrameBuffer();
+			void CreateCommandPool();
+			void CreateCommandbuffer();
+			void CreateSyncObjects();
+			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
+			
+			VkFormat m_Format;
+			
 		private:
-			VkInstance m_Instance = nullptr;
 			std::shared_ptr<Device> m_LogicalDevice;
+			std::shared_ptr<PhysicalDevice> m_PhysicalDevice;
 		
 		private:
-			VkSwapchainKHR m_SwapChain = nullptr;
+			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
 			VkSurfaceKHR m_WindowSurface;
 			SwapChainSettings m_SwapChainSettings;
 
-			uint32_t m_Width;
-			uint32_t m_Height;
+			uint32_t m_Width = 1600;
+			uint32_t m_Height = 900;
 			VkExtent2D m_Extent;
 
 			std::vector<SwapChainImage> m_SwapChainImages;
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;
 
-			std::vector<VkImage> m_DepthImages;
-			std::vector<VkDeviceMemory> m_DepthMemory;
+			//std::vector<VkImage> m_DepthImages;
+			//std::vector<VkDeviceMemory> m_DepthMemory;
 
-			struct SwapChainCommandBuffer
-			{
-				VkCommandPool CommandPool;
-				VkCommandBuffer CommandBuffer;
-			};
-			std::vector<SwapChainCommandBuffer> m_CommandBuffers;
+			VkCommandPool m_CommandPool;
+			std::vector<VkCommandBuffer> m_Commandbuffers;
 
-			struct
+			struct Semaphores
 			{
 				VkSemaphore PresentComplete = nullptr; //Swap Chain present
 				VkSemaphore RenderComplete = nullptr; //Command Buffer
-			} m_Semaphores;
+			};
 
+			std::vector<Semaphores> m_Semaphores;
 			std::vector<VkFence> m_WaitFences;
-			std::shared_ptr<RenderPass> m_Renderpass;
 
 			uint32_t m_CurrentBufferIndex = 0;
 			uint32_t m_CurrentImageIndex = 0;
 
-			std::vector<VkFramebuffer> m_FrameBuffers;
+			VkRenderPass m_RenderPass;
+			std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
 			uint32_t m_QueueIndex = UINT32_MAX;
 	};

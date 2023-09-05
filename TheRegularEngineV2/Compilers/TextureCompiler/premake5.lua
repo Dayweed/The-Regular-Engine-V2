@@ -14,7 +14,8 @@ project "TextureCompiler"
     {
         "include",
 		"%{IncludeDir.Compiler}",
-    }
+		"%{IncludeDir.stbi}",
+	}
 
 	files
 	{

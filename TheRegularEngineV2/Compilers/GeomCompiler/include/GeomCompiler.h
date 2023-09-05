@@ -24,7 +24,7 @@ namespace TRE
 		//const bool GetMeshRenameBool() const { return m_MeshRename; }
 		//const std::string& GetMeshName() const { return m_MeshName; }
 	protected:
-		void Generate() override;
+		void Write() override;
 		void Read() override;
 	private:
 		std::string m_GeomPath;

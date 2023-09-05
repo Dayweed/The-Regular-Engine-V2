@@ -1,4 +1,6 @@
 #pragma once
+#include "Window.h"
+
 namespace TRE
 {
 	class System
