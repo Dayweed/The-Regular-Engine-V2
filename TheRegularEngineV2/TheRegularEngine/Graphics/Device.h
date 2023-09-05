@@ -11,8 +11,6 @@ namespace TRE
 	struct SwapChainDetails
 	{
 		VkSurfaceCapabilitiesKHR Capabilities{};
-		std::vector<VkSurfaceFormatKHR> Formats;
-		std::vector<VkPresentModeKHR> PresentModes;
 	};
 
 	class PhysicalDevice
