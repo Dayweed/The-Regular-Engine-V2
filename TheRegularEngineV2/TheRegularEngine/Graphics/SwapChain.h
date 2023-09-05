@@ -25,16 +25,11 @@ namespace TRE
 			{
 				VkImage Image = nullptr;
 				VkImageView ImageView = nullptr;
-				//VkImage DepthImage = nullptr;
-				//VkImageView DepthImageView = nullptr;
 			};
 
 			SwapChain(std::shared_ptr<Device>& LogicalDevice, std::shared_ptr<PhysicalDevice>& PD, GLFWwindow* Handle);
 			~SwapChain() = default;
 			void Initialize(uint32_t Width, uint32_t Height);
-			void CreateSwapChain(uint32_t* width, uint32_t* height, bool Vsync);
-			void FindImageFormatAndColorSpace();
-			
 			void BeginFrame();
 			void Present();
 			void DestroySwapChain();
@@ -55,7 +50,7 @@ namespace TRE
 			SwapChainSettings GetSwapChainSettings();
 			uint32_t GetCurrentImageIndex();
 
-		public: //TBR
+		public:
 			void CreateSwapChain(uint32_t Width, uint32_t Height);
 			void RecreateSwapChain();
 			void CleanSwapChain();
@@ -65,9 +60,6 @@ namespace TRE
 			void CreateCommandPool();
 			void CreateCommandbuffer();
 			void CreateSyncObjects();
-			VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& AvailableFormats);
-			
-			VkFormat m_Format;
 			
 		private:
 			std::shared_ptr<Device> m_LogicalDevice;
@@ -85,9 +77,6 @@ namespace TRE
 			std::vector<SwapChainImage> m_SwapChainImages;
 			std::vector<VkImage> m_VulkanImages;
 			uint32_t m_ImageCount = 0;
-
-			//std::vector<VkImage> m_DepthImages;
-			//std::vector<VkDeviceMemory> m_DepthMemory;
 
 			VkCommandPool m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
