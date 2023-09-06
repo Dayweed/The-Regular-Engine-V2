@@ -130,6 +130,7 @@ namespace TRE
 		{
 
 			m_Window->BeginFrame();
+			m_Window->UpdateDeltaTime();
 
 			//Update
 			Profiler::Instance().StartTimer("Update");

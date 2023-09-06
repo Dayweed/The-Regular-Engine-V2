@@ -79,6 +79,7 @@ namespace TRE
 			auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
 			vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
 		}
+		m_Device->Destroy();
 		vkDestroyInstance(m_instance, nullptr);
 		m_instance = nullptr;
 	}
