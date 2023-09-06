@@ -1,9 +1,7 @@
 #include "ViewportPanel.h"
-#include "Imgui/imgui.h"
 #include "EditorCamera.h"
 #include "Core/Engine.h"
 #include "EventSystem/EventHandler/EventHandler.h"
-
 
 //To Delete
 #include "Graphics/Camera.h"
@@ -34,39 +32,50 @@ namespace TRE
 
 		Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		const Camera& camera = entity->GetComponent<Camera>();
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
 		{
-			m_MouseEndPos = m_MousePos;
-			glm::vec2 positionOffset = m_MouseEndPos - m_MouseStartPos;
-			positionOffset.x *= -1;
-			positionOffset = glm::normalize(positionOffset);
-			positionOffset *= m_PanSensitivity;
-			positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+			static glm::vec2 panMouseStartPos{};
+			static glm::vec2 panMouseEndPos{};
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
+			{
+				panMouseEndPos = m_MousePos;
+				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
+				positionOffset.x *= -1;
+				positionOffset = glm::normalize(positionOffset);
+				const auto panSensitivity = PanSpeed(m_ViewportSize.x, m_ViewportSize.y);
+				positionOffset.x *= panSensitivity.x;
+				positionOffset.y *= panSensitivity.y;
+				positionOffset *= m_PanSpeed;
+				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-			ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetPosition(entity, camera.m_Position + camera.m_RightVec * positionOffset.x);
-			ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetPosition(entity, camera.m_Position + camera.m_UpVec * positionOffset.y);
-		}
-		else
-		{
-			m_MouseStartPos = m_MousePos;
+				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(entity, camera.m_FocalPoint + camera.m_RightVec * positionOffset.x);
+				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(entity, camera.m_FocalPoint + camera.m_UpVec * positionOffset.y);
+			}
+			else
+			{
+				panMouseStartPos = m_MousePos;
+			}
 		}
 
-		/*if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
 		{
-			m_MouseEndPos = m_MousePos;
-			glm::vec2 rotationOffset = m_MouseEndPos - m_MouseStartPos;
-			rotationOffset = glm::normalize(rotationOffset);
-			rotationOffset.x *= -1;
-			rotationOffset *= m_RotationSensitivity;
-			rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+			static glm::vec2 rotMouseStartPos{};
+			static glm::vec2 rotMouseEndPos{};
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
+			{
+				rotMouseEndPos = m_MousePos;
+				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
+				rotationOffset = glm::normalize(rotationOffset);
+				rotationOffset.x *= -1;
+				rotationOffset *= m_RotationSensitivity;
+				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-			ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(entity, camera.m_Rotation + camera.m_RightVec * rotationOffset.y);
-			ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(entity, camera.m_Rotation + camera.m_UpVec * rotationOffset.x);
+				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(entity, camera.m_Rotation + camera.m_RightVec * rotationOffset.y);
+				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(entity, camera.m_Rotation + camera.m_UpVec * rotationOffset.x);
+			}
+			else
+			{
+				rotMouseStartPos = m_MousePos;
+			}
 		}
-		else
-		{
-			m_MouseStartPos = m_MousePos;
-		}*/
 	}
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
@@ -92,17 +101,16 @@ namespace TRE
 		Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		const Camera& camera = entity.get()->GetComponent<Camera>();
 		CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-		glm::vec3 scrollOffset = camera.m_ForwardVec;
-		scrollOffset *= m_ZoomSensitivity;
+		const float zoomSpeed = event._yoffset * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-		if (event._yoffset > 0)
-		{	
-			cameraSystem->SetPosition(entity, camera.m_Position + scrollOffset);
-		}
-		else if (event._yoffset < 0)
+		cameraSystem->SetFocalLength(entity, camera.m_FocalLength - zoomSpeed);
+
+		if (camera.m_FocalLength < 1.f)
 		{
-			cameraSystem->SetPosition(entity, camera.m_Position - scrollOffset);
+			cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.m_ForwardVec);
+			cameraSystem->SetFocalLength(entity, 1.f);
 		}
+
 	}
 
 	void ViewportPanel::Init()
@@ -118,8 +126,8 @@ namespace TRE
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();
 
-		ImVec2 ViewportSize = ImGui::GetContentRegionAvail();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), ViewportSize);
+		m_ViewportSize = ImGui::GetContentRegionAvail();
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ViewportSize);
 
 		m_IsViewportHovered = ImGui::IsWindowHovered();
 

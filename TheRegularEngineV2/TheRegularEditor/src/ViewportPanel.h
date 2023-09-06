@@ -30,15 +30,25 @@ namespace TRE
 			void OnMouseMove(const MouseMoveEvent& event);
 			void OnMouseClick(const InputEvent& event);
 			void OnMouseScroll(const MouseScrollEvent& event);
-
 		private:
+			//Gonna rewrite in editor camera next time
+			glm::vec2 PanSpeed(const float viewportWidth, const float viewportHeight)
+			{
+				float x = std::min(viewportWidth / 1000.f, 2.4f); //Max is 2.4f
+				float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+
+				float y = std::min(viewportHeight / 1000.f, 2.4f); //Max is 2.4f
+				float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+
+				return { xFactor, yFactor };
+			}
+		private:
+			ImVec2 m_ViewportSize;
 			bool m_IsViewportHovered = false;
 			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};
-			glm::vec2 m_MouseStartPos{};
-			glm::vec2 m_MouseEndPos{};
-			float m_ZoomSensitivity = 5.f;
-			float m_PanSensitivity = 50.f;
-			float m_RotationSensitivity = 0.3f;
+			float m_ZoomSensitivity = 50.f;
+			float m_PanSpeed = 200.f;
+			float m_RotationSensitivity = 3.f;
 	};
 }

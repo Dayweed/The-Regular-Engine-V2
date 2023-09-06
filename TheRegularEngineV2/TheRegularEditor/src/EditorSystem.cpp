@@ -9,7 +9,6 @@ namespace TRE
 	{
 		TRE_INFO("Editor Init");
 
-		std::cout << "Editor Init" << std::endl; //Replace with Logging
 		m_PanelManager = std::make_unique<PanelManager>();
 		m_PanelManager->Init();
 	}

@@ -139,6 +139,27 @@ namespace TRE
 		camera.m_IsDirty = true;
 	}
 
+	void CameraSystem::SetFocalPoint(Entity& go, const glm::vec3& focalPoint)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_FocalPoint = focalPoint;
+		camera.m_IsDirty = true;
+		std::cout << "Focal Point: " << focalPoint.x << ", " << focalPoint.y << ", " << focalPoint.z << std::endl;
+		
+		SetPosition(go, focalPoint - camera.m_ForwardVec * camera.m_FocalLength);
+		//SetRotation(go, CameraHelper::SetViewDirection(camera, camera.m_FocalPoint - camera.m_Position));
+	}
+
+	void CameraSystem::SetFocalLength(Entity& go, const float focalLength)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_FocalLength = focalLength;
+		camera.m_IsDirty = true;
+		std::cout << "Focal Length: " << focalLength << std::endl;
+
+		SetPosition(go, camera.m_FocalPoint - camera.m_ForwardVec * focalLength);
+	}
+
 	void CameraSystem::SetFov(Entity& go, const float fov)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
@@ -235,6 +256,16 @@ namespace TRE
 	const glm::vec2& CameraSystem::GetViewportSize(const Entity& go) const
 	{
 		return go.get()->GetComponent<Camera>().m_ViewportSize;
+	}
+
+	const glm::vec3& CameraSystem::GetFocalPoint(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_FocalPoint;
+	}
+
+	const float CameraSystem::GetFocalLength(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_FocalLength;
 	}
 
 	const float CameraSystem::GetFov(const Entity& go) const
