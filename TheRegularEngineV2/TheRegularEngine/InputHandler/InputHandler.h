@@ -55,13 +55,9 @@ namespace TRE
         static void mousefocus_cb(GLFWwindow* win_ptr, int entered);
 
         private:
-            bool m_KeysHeld[512];
-            bool m_KeysPressed[512];
-            bool m_KeysReleased[512];
-            bool m_MouseButtonsHeld[32];
-            bool m_MouseButtonsPressed[32];
-            bool m_MouseButtonsReleased[32];
+            static bool m_isMouseHeld;
     };
+    
 }
 
 #endif

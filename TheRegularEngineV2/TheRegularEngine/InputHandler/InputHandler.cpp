@@ -6,6 +6,7 @@
 #define DEBUG 1
 namespace TRE
 {
+	bool InputHandler::m_isMouseHeld = false;
 	void InputHandler::key_cb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
 		(void)win_ptr;
@@ -14,7 +15,10 @@ namespace TRE
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 
 		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
+		{
+			TRE_CORE_INFO("Key pressed: {0}", key);
 			event.publish(InputEvent {key, action});
+		}
 	}
 
 	void InputHandler::mousebutton_cb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -23,19 +27,20 @@ namespace TRE
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 
-		switch(action)
+		if (m_isMouseHeld)
 		{
-			case GLFW_PRESS:
-				event.publish(InputEvent {button, (int)KeyState::keyPressed});
-				break;
-			case GLFW_REPEAT:
-				//event.publish(InputEvent {button, (int)KeyState::keyHeld});
-				break;
-			case GLFW_RELEASE:
-				event.publish(InputEvent {button, action});
-				break;
-			default:
-				break;
+			TRE_CORE_INFO("Button pressed: {0}", button);
+			event.publish(InputEvent {button, action});
+		}
+		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
+		{
+			m_isMouseHeld = true;
+			TRE_CORE_INFO("Button pressed: {0}", button);
+			event.publish(InputEvent {button, action});
+		}
+		if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
+		{
+			m_isMouseHeld = false;
 		}
 	}
 
