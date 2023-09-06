@@ -34,7 +34,8 @@ namespace TRE
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
 
-	typedef std::uint32_t Entity_ID;
+	// NOT the GUID, this is to return the entt::entity id if needed
+	typedef std::uint32_t ENTTID;
 
 	// DO NOT USE THIS UNLESS YOU WANT THE Entity TO BE DELETED!
 	// Get this component in GetEntities to get Entity that are going to be deleted in this loop
@@ -272,6 +273,67 @@ namespace TRE
 		goParentVar->AbandonChildren();
 		*//*__________________________________________________________________________*/
 		void AbandonChildren();
+
+		/* !
+		@function		GetENTTID
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@brief			Returns the Entity ENTTID
+
+		[Warning]		This ENTTID IS NOT the GUID!!!
+						Used for getting uint32_t data type for the entt::entity
+						that may change upon serializing and deserialzing
+
+						Usage may be for one-time running a container that does not
+						need it to be consistent
+
+		Example:
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+		std::cout << goVar->GetENTTID();
+
+		// After serializing and deserializing the scene...
+
+		std::cout << goVar->GetENTTID();
+
+		Output:
+		0
+		1023479
+		*//*__________________________________________________________________________*/
+		ENTTID GetENTTID();
+
+		/* !
+		@function		GetName
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@brief			Returns the Entity Name for less typing
+
+		Example:
+		Entity goVar = ECSManager::Instance().CreateEntity("goVarName");
+		std::cout << goVar->GetComponent<Properties>().m_Name;
+		std::cout << goVar->GetName();
+
+		Output:
+		goVarName
+		goVarName
+		*//*__________________________________________________________________________*/
+		std::string GetName();
+
+		/* !
+		@function		GetGUID
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@brief			Returns the Entity GUID for less typing
+
+		Example:
+		Entity goVar = ECSManager::Instance().CreateEntity("goVarName");
+		std::cout << goVar->GetComponent<Properties>().m_GUID;
+		std::cout << goVar->GetGUID();
+
+		Output:
+		"{03A691F2-02DB-4957-8A0E-CA2BDAB9CDF8}"
+		"{03A691F2-02DB-4957-8A0E-CA2BDAB9CDF8}"
+		*//*__________________________________________________________________________*/
+		std::string GetGUID();
 		
 	private:
 		friend class ECSManager;

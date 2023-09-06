@@ -221,6 +221,21 @@ namespace TRE
 		GetComponent<Parenting>().m_Children.clear();
 	}
 
+	ENTTID Ent::GetENTTID()
+	{
+		return static_cast<ENTTID>(m_Entity);
+	}
+
+	std::string Ent::GetName()
+	{
+		return GetComponent<Properties>().m_Name;
+	}
+
+	std::string Ent::GetGUID()
+	{
+		return GetComponent<Properties>().m_GUID;
+	}
+
 	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath(filePath)
 	{
 		m_Root = nlohmann::json::array();
