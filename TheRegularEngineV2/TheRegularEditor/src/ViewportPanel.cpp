@@ -80,14 +80,23 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
-		if ((event._key == (int)KeyButton::mouseButtonMiddle || event._key == (int)KeyButton::mouseButtonRight) && event._state == (int)KeyState::keyPressed)
+		if((event._key != (int)KeyButton::mouseButtonLeft) 
+			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
+			&& (event._key != (int)KeyButton::mouseButtonRight))
+			return;
+		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
+			if ((event._key != (int)KeyButton::mouseButtonLeft))
+			{
+				//Object picking
+
+			}
 		}
-		else if ((event._key == (int)KeyButton::mouseButtonMiddle || event._key == (int)KeyButton::mouseButtonRight) && event._state == (int)KeyState::keyHeld)
+		else if (event._state == (int)KeyState::keyHeld)
 		{
 		}
-		else if ((event._key == (int)KeyButton::mouseButtonMiddle || event._key == (int)KeyButton::mouseButtonRight) && event._state == (int)KeyState::keyReleased)
+		else if (event._state == (int)KeyState::keyReleased)
 		{
 			m_IsViewportFocused = false;
 		}

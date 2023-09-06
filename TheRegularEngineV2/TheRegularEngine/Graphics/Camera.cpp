@@ -144,7 +144,7 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_FocalPoint = focalPoint;
 		camera.m_IsDirty = true;
-		std::cout << "Focal Point: " << focalPoint.x << ", " << focalPoint.y << ", " << focalPoint.z << std::endl;
+		//std::cout << "Focal Point: " << focalPoint.x << ", " << focalPoint.y << ", " << focalPoint.z << std::endl;
 		
 		SetPosition(go, focalPoint - camera.m_ForwardVec * camera.m_FocalLength);
 		//SetRotation(go, CameraHelper::SetViewDirection(camera, camera.m_FocalPoint - camera.m_Position));
@@ -155,7 +155,7 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_FocalLength = focalLength;
 		camera.m_IsDirty = true;
-		std::cout << "Focal Length: " << focalLength << std::endl;
+		//std::cout << "Focal Length: " << focalLength << std::endl;
 
 		SetPosition(go, camera.m_FocalPoint - camera.m_ForwardVec * focalLength);
 	}
