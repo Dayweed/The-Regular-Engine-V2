@@ -8,6 +8,11 @@
 
 namespace TRE
 {
+	PipelineConfigurations& Pipeline::GetConfig()
+	{
+		return m_Config;
+	}
+
 	std::vector<VkDescriptorSet> Pipeline::GetDescriptorSets()
 	{
 		return m_DescriptorSets;
@@ -28,7 +33,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(std::shared_ptr<RenderPass> RenderPass) : m_Renderpass(RenderPass)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
@@ -65,7 +70,7 @@ namespace TRE
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		inputAssembly.topology = GetVulkanTopology(m_Config.Primitive);
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
@@ -224,13 +229,14 @@ namespace TRE
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_Layout;
-		pipelineInfo.renderPass = m_Renderpass->GetHandle();
+		pipelineInfo.renderPass = m_Config.RenderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS)
+		if (auto Result = vkCreateGraphicsPipelines(Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create graphics pipeline!");
+			TRE_CORE_CRITICAL("Pipeline failed to create");
+			assert(Result == VK_SUCCESS);
 		}
 
 		vkDestroyShaderModule(Device->GetLogicalDevice(), fragShaderModule, nullptr);
@@ -278,5 +284,22 @@ namespace TRE
 		file.close();
 
 		return buffer;
+	}
+
+	VkPrimitiveTopology Pipeline::GetVulkanTopology(PrimitiveType TopologyType)
+	{
+		switch (TopologyType)
+		{
+			case PrimitiveType::Point:			return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+			case PrimitiveType::Lines:			return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+			case PrimitiveType::LinesStrip:		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+			case PrimitiveType::Triangles:		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+			case PrimitiveType::TrianglesStrip:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			case PrimitiveType::TranglesFan:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
+		}
+
+		TRE_CORE_ERROR("Unknown toplogy");
+		assert(false);
+		return VK_PRIMITIVE_TOPOLOGY_MAX_ENUM;
 	}
 }
