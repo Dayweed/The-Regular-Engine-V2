@@ -40,7 +40,7 @@ namespace TRE
 		}
 
 		// Get an Entity_ID from Undeployed and assign it to Deployed, returns the Entity
-		Entity_ID id{ *m_UndeployedEntityList.begin() };
+		ENTTID id{ *m_UndeployedEntityList.begin() };
 		m_UndeployedEntityList.erase(id);
 		m_DeployedEntityList.emplace(id);
 		m_AllEntityList[id]->RemoveComponent<Undeployed>();
@@ -50,7 +50,7 @@ namespace TRE
 		return m_AllEntityList[id];
 	}
 
-	void MemoryManager::ReleaseDeployedEntity(Entity_ID id)
+	void MemoryManager::ReleaseDeployedEntity(ENTTID id)
 	{
 		// Remove id from Deployed and put id back to undeployed
 		m_DeployedEntityList.erase(id);
@@ -78,8 +78,8 @@ namespace TRE
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
 
-			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
-			m_UndeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
+			m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
+			m_UndeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
 			if (!obj->HasComponent<Properties>())
 			{
 				obj->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
@@ -134,7 +134,7 @@ namespace TRE
 		// Auto clear all the Undeployed Entities if m_ConfigSize exceeds deployed size
 		if (m_ConfigSize <= m_DeployedEntityList.size())
 		{
-			for (Entity_ID id : m_UndeployedEntityList)
+			for (ENTTID id : m_UndeployedEntityList)
 			{
 				ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
 				// Free unique ptr from the object
@@ -149,7 +149,7 @@ namespace TRE
 
 			for (size_t i{}; i < remainingSize && !m_UndeployedEntityList.empty(); ++i)
 			{
-				Entity_ID id{ *m_UndeployedEntityList.rbegin() };
+				ENTTID id{ *m_UndeployedEntityList.rbegin() };
 				ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
 				// Free unique ptr from the object
 				m_AllEntityList[id].reset();
@@ -165,7 +165,7 @@ namespace TRE
 
 	void MemoryManager::ClearUndeployed()
 	{
-		for (Entity_ID id : m_UndeployedEntityList)
+		for (ENTTID id : m_UndeployedEntityList)
 		{
 			ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
 			// Free unique ptr from the object
@@ -183,8 +183,8 @@ namespace TRE
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
 
-			m_AllEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity), obj);
-			m_DeployedEntityList.emplace(static_cast<Entity_ID>(obj->m_Entity));
+			m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
+			m_DeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
 
 			for (auto [id, source_storage] : reg.storage())
 			{

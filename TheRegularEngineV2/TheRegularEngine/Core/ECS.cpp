@@ -22,7 +22,7 @@ namespace TRE
 		{
 			// Remove from m_EntityList
 			m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
-			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<Entity_ID>(object->m_Entity));
+			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
 		}
 	}
 
@@ -535,12 +535,12 @@ namespace TRE
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
-			std::cout << "-" << static_cast<Entity_ID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+			std::cout << "-" << static_cast<ENTTID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
 			std::cout << "-- Parent: " << obj->GetParent() << ": " << (obj->GetParent() ? obj->GetParent()->GetComponent<Properties>().m_Name : "NONE") << "\n";
 			std::cout << "-- Children: " << obj->GetChildren().size() << "\n";
 			for (Entity& child : obj->GetChildren())
 			{
-				std::cout << "---" << static_cast<Entity_ID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
+				std::cout << "---" << static_cast<ENTTID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
 			}
 			std::cout << "\n";
 		}
@@ -560,12 +560,12 @@ namespace TRE
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
-			std::cout << "-" << static_cast<Entity_ID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
+			std::cout << "-" << static_cast<ENTTID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
 			std::cout << "-- Parent: " << obj->GetParent() << ": " << (obj->GetParent() ? obj->GetParent()->GetComponent<Properties>().m_Name : "NONE") << "\n";
 			std::cout << "-- Children: " << obj->GetChildren().size() << "\n";
 			for (Entity& child : obj->GetChildren())
 			{
-				std::cout << "---" << static_cast<Entity_ID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
+				std::cout << "---" << static_cast<ENTTID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
 			}
 			std::cout << "\n";
 		}

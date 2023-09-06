@@ -56,7 +56,7 @@ namespace TRE
 
 		@brief			Release a deployed Entity based on the id
 		*//*__________________________________________________________________________*/
-		void ReleaseDeployedEntity(Entity_ID id);
+		void ReleaseDeployedEntity(ENTTID id);
 
 		/* !
 		@function		AllocateEntitySize
@@ -132,10 +132,10 @@ namespace TRE
 		void* operator new(size_t) = delete;
 
 		// Size set in config
-		size_t									m_ConfigSize{ 100 };
+		size_t								m_ConfigSize{ 100 };
 
-		std::unordered_map<Entity_ID, Entity>	m_AllEntityList;
-		std::set<Entity_ID>						m_DeployedEntityList;
-		std::set<Entity_ID>						m_UndeployedEntityList;
+		std::unordered_map<ENTTID, Entity>	m_AllEntityList;
+		std::set<ENTTID>					m_DeployedEntityList;
+		std::set<ENTTID>					m_UndeployedEntityList;
 	};
 }
