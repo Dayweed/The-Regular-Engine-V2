@@ -23,9 +23,10 @@ namespace TRE
 			exePath += geomExe;
 
 			std::replace(descPath.begin(), descPath.end(), '/', '\\');
-			std::string newDescPath = currentDir;
-			newDescPath += "\\";
-			newDescPath += descPath;
+			//std::string newDescPath = currentDir;
+			//newDescPath += "\\";
+			//newDescPath += descPath;
+			std::string newDescPath = descPath;
 
 			char command[256];
 			snprintf(command, sizeof(command), "\"%s %s\"", exePath.c_str(), newDescPath.c_str());
@@ -49,8 +50,6 @@ namespace TRE
 		std::string_view name = filePath;
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
-
-		std::cout << "serializing mesh... " << name << std::endl;
 
 		std::ofstream file(filePath, std::ios::binary);
 

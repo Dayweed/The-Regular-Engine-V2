@@ -18,14 +18,16 @@ namespace TRE
 		char currentDir[FILENAME_MAX];
 		if (_getcwd(currentDir, sizeof(currentDir)))
 		{
-			std::string exePath = currentDir;
-			exePath += "\\";
-			exePath += textureExe;
+			//std::string exePath = currentDir;
+			//exePath += "\\";
+			//exePath += textureExe;
+			std::string exePath = textureExe;
 
 			std::replace(descPath.begin(), descPath.end(), '/', '\\');
-			std::string newDescPath = currentDir;
-			newDescPath += "\\";
-			newDescPath += descPath;
+			//std::string newDescPath = currentDir;
+			//newDescPath += "\\";
+			//newDescPath += descPath;
+			std::string newDescPath = descPath;
 
 			char command[256];
 			snprintf(command, sizeof(command), "\"%s %s\"", exePath.c_str(), newDescPath.c_str());

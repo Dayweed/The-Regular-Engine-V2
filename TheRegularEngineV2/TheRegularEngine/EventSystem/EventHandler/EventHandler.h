@@ -10,13 +10,13 @@ namespace TRE
 	public:
 		virtual ~HandlerFunctionBase() = default;
 
-		void exec(Event& event)
+		void Exec(Event& event)
 		{
-			call(event);
+			Call(event);
 		}
 
 	private:
-		virtual void call(Event& event) = 0;
+		virtual void Call(Event& event) = 0;
 	};
 
 	template <typename T, typename EventType>
@@ -25,21 +25,21 @@ namespace TRE
 	private:
 		using MemberFunction = void (T::*)(EventType&);
 		//Pointer to the class instance
-		T* _instance;
+		T* m_Instance;
 		//Pointer to the member function
-		MemberFunction _memberFunction;
+		MemberFunction m_MemberFunction;
 	public:
 		//Default ctor
-		MemberFunctionHandler() : _instance{nullptr}, _memberFunction{nullptr}
+		MemberFunctionHandler() : m_Instance{nullptr}, m_MemberFunction{nullptr}
 		{}
 		//User defined ctor
 		MemberFunctionHandler(T* instance, MemberFunction memberFunction) :
-			_instance{instance}, _memberFunction{memberFunction}
+			m_Instance{instance}, m_MemberFunction{memberFunction}
 		{}
 		//Calls the response function
-		void call(Event& event) override
+		void Call(Event& event) override
 		{
-			(_instance->*_memberFunction)(static_cast<EventType&>(event));
+			(m_Instance->*m_MemberFunction)(static_cast<EventType&>(event));
 		}
 	};
 
@@ -48,7 +48,7 @@ namespace TRE
 	private:
 		using HandlerList = std::vector<std::unique_ptr<HandlerFunctionBase>>;
 		//Map of (type of event) - (Subscribers)
-		std::unordered_map<std::type_index, HandlerList> _subscribers;
+		std::unordered_map<std::type_index, HandlerList> m_Subscribers;
 	public:
 		//Singleton Class
 		static EventHandler& getEventHandlerInstance()
@@ -58,18 +58,18 @@ namespace TRE
 		}
 
 		template<typename EventType>
-		void publish(EventType&& event)
+		void Publish(EventType&& event)
 		{
 			//Get the handler based on type index / type id of the event
-			const auto& delegates = _subscribers[typeid(EventType)];
+			const auto& delegates = m_Subscribers[typeid(EventType)];
 			for (auto& handler : delegates)
-				if (handler != nullptr) handler->exec(event);
+				if (handler != nullptr) handler->Exec(event);
 		}
 
 		template<typename T, typename EventType>
 		void subscribe(T* instance, void(T::* memberFunction)(EventType&))
 		{
-			_subscribers[typeid(EventType)].emplace_back
+			m_Subscribers[typeid(EventType)].emplace_back
 			(
 				std::make_unique<MemberFunctionHandler<T, EventType>>(instance, memberFunction)
 			);

@@ -27,5 +27,6 @@ namespace TRE
 			void Shutdown() override;
 
 		private:
+			std::filesystem::path m_CurrentDirectory;
 	};
 }

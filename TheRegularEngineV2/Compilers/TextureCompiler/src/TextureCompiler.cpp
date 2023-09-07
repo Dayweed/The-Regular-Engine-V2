@@ -16,10 +16,6 @@ namespace TRE
 		m_TextureName = m_TextureName.substr(0, m_TextureName.find_last_of("."));
 		m_DescriptorFile << "Texture Name:\n";
 		m_DescriptorFile << m_TextureName << "\n\n";
-		m_DescriptorFile << "Width:\n";
-		m_DescriptorFile << m_Width << "\n\n";
-		m_DescriptorFile << "Height:\n";
-		m_DescriptorFile << m_Height << "\n";
 		m_DescriptorFile << "Check vulkan page for enums\n";
 		m_DescriptorFile << "Texture Format:\n";
 		m_DescriptorFile << m_Format << "\n\n";
@@ -52,34 +48,6 @@ namespace TRE
 		else
 		{
 			std::cout << "Error: Texture Name is not valid" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Width:")
-		{
-			std::getline(m_DescriptorFile, line);
-
-			m_Width = std::stoi(line);
-			
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Width missing" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Height:")
-		{
-			std::getline(m_DescriptorFile, line);
-
-			m_Height = std::stoi(line);
-
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Height missing" << std::endl;
 			return;
 		}
 		std::getline(m_DescriptorFile, line);
@@ -119,7 +87,7 @@ namespace TRE
 
 		if (!pixels)
 		{
-			std::cout << "Failed to load texture image\n";
+			std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
 			return;
 		}
 
