@@ -161,10 +161,10 @@
       <Filter>Scripting</Filter>
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="Utilities\spirv_reflect.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -263,9 +263,9 @@
     <ClCompile Include="Scripting\ScriptEngine.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="Utilities\spirv_reflect.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp" />
   </ItemGroup>
 </Project>
