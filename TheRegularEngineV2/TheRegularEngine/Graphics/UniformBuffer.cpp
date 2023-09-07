@@ -25,13 +25,6 @@ namespace TRE
 	//	m_Buffer->Map();
 	//}
 
-
-
-
-
-
-
-
 	std::shared_ptr<Buffer> UniformBuffer::GetBuffer()
 	{
 		return m_Buffer;
