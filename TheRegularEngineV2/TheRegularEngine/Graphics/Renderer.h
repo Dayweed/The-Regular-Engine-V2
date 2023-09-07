@@ -52,6 +52,7 @@ namespace TRE
 			VkPipeline m_GraphicsPipeline;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
+			
 
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
