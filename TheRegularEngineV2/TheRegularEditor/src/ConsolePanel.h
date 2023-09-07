@@ -27,6 +27,9 @@ namespace TRE
 			void Shutdown() override;
 
 		private:
-
+			std::vector<std::string> m_ConsoleLog;
+			std::vector<std::string> m_ConsoleTimestamp;
+			bool m_AutoScroll = true;
+			bool m_AutoClear = true;
 	};
 }
