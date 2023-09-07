@@ -58,7 +58,7 @@ namespace TRE
         *******************************************************************************/
         static void MouseFocusCb(GLFWwindow* win_ptr, int entered);
 
-        bool CheckMouseEvent(MouseCode key);
+        static void CheckMouseEvent(GLFWwindow* win_ptr, int button, int action);
 
         private:
             static bool m_IsMouseHeld;

@@ -33,21 +33,14 @@ namespace TRE
 
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
-			TRE_CORE_INFO("Key pressed: {0}", key);
+			//TRE_CORE_INFO("Mouse pressed:x {0}", key);
 			event.Publish(InputEvent {button, action});
 		}
-		/*switch (action)
+		else if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
 		{
-		case(GLFW_PRESS):
-			TRE_CORE_INFO("button pressed: {0}", button);
-			m_MouseEvent.insert_or_assign(key, true);
-			break;
-		case(GLFW_RELEASE):
-			TRE_CORE_INFO("button Release: {0}", button);	
-			m_MouseEvent.insert_or_assign(key, false);	
-			break;
+			//TRE_CORE_INFO("Mouse Released:x {0}", key);
+			event.Publish(InputEvent {button, action});
 		}
-		event.Publish(InputEvent {button, action});*/
 	}
 
 	void InputHandler::MouseScrollCb(GLFWwindow* win_ptr, double xoffset, double yoffset)
@@ -71,29 +64,13 @@ namespace TRE
 		event.Publish(MouseFocusEvent {entered});
 	}
 
-	bool TRE::InputHandler::CheckMouseEvent(MouseCode key)
+	void TRE::InputHandler::CheckMouseEvent(GLFWwindow* win_ptr, int button, int action)
 	{
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-		if (key == MouseCode::MIDDLE || key == MouseCode::LEFTCLICK || key == MouseCode::RIGHTCLICK)
+		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
-			if (m_MouseEvent[key] == false)
-			{
-				TRE_CORE_INFO("called");
-				m_LastMouseEvent.insert_or_assign(key, false);
-				event.Publish(InputEvent {static_cast<int>(key), GLFW_RELEASE});
-				return false;
-			}
-			else if (m_MouseEvent[key] && m_LastMouseEvent[key] == false)
-			{
-				m_LastMouseEvent.insert_or_assign(key, true);
-				m_MouseEvent.insert_or_assign(key, false);
-				return true;
-			}
+			//TRE_CORE_INFO("Mouse Button: {0}", button);
+			event.Publish(InputEvent {button, action});
 		}
-		else if (key == MouseCode::TOPBUTTON || key == MouseCode::BOTTOMBUTTON)
-		{
-			return m_MouseEvent[key];
-		}
-		return false;
 	}
 }

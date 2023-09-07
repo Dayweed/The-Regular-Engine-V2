@@ -45,7 +45,7 @@ namespace TRE
 		m_SwapChain = std::make_shared<SwapChain>(m_RenderContext->GetDeviceInternally(), m_RenderContext->GetPhysicalDeviceInternally(), m_WindowHandle);
 		m_SwapChain->Initialize(m_Config.width, m_Config.height);
 
-		glfwSetInputMode(m_WindowHandle, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+		//glfwSetInputMode(m_WindowHandle, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
 		glfwSetKeyCallback(m_WindowHandle, InputHandler::KeyCb);
 		glfwSetMouseButtonCallback(m_WindowHandle, InputHandler::MouseButtonCb);
@@ -81,10 +81,12 @@ namespace TRE
 	void Window::PollEvents()
 	{
 		glfwPollEvents();
-		if (glfwGetMouseButton(m_WindowHandle, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		/*CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_1, GLFW_PRESS);
+		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_2, GLFW_PRESS);
+		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_3, GLFW_PRESS);*/
+		for (int i{}; i < 5; ++i)
 		{
-			// TRE_CORE_INFO("Key pressed: {0}", key);
-			printf("Mouse button 1 pressed\n");
+			InputHandler::CheckMouseEvent(m_WindowHandle, i, GLFW_PRESS);
 		}
 	}
 
