@@ -5,6 +5,26 @@
 
 namespace TRE
 {
+	GLFWwindow* Window::GetWindowHandle() const
+	{
+		return m_WindowHandle;
+	}
+
+	WindowConfig& Window::GetWindowConfig()
+	{
+		return m_Config;
+	}
+
+	std::shared_ptr<RendererContext>& Window::GetRenderContext()
+	{
+		return m_RenderContext;
+	}
+
+	std::shared_ptr<SwapChain>& Window::GetSwapChain()
+	{
+		return m_SwapChain;
+	}
+
 	Window::Window(const WindowConfig& config) : m_Config(config)
 	{
 		if (int Error = glfwInit(); !Error)
@@ -20,25 +40,41 @@ namespace TRE
 		m_RenderContext = std::make_shared<RendererContext>();
 		m_RenderContext->Initialize();
 		
-		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetDeviceInternally(), m_WindowHandle);
-		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
+		m_SwapChain = std::make_shared<SwapChain>(m_RenderContext->GetDeviceInternally(), m_RenderContext->GetPhysicalDeviceInternally(), m_WindowHandle);
+		m_SwapChain->Initialize(m_Config.width, m_Config.height);
 
-		glfwSetKeyCallback(GetWindowHandle(), InputHandler::key_cb);
-		glfwSetMouseButtonCallback(GetWindowHandle(), InputHandler::mousebutton_cb);
-		glfwSetCursorPosCallback(GetWindowHandle(), InputHandler::mousepos_cb);
-		glfwSetScrollCallback(GetWindowHandle(), InputHandler::mousescroll_cb);
-		glfwSetCursorEnterCallback(GetWindowHandle(), InputHandler::mousefocus_cb);
+		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
+		glfwSetKeyCallback(m_WindowHandle, InputHandler::key_cb);
+		glfwSetMouseButtonCallback(m_WindowHandle, InputHandler::mousebutton_cb);
+		glfwSetCursorPosCallback(m_WindowHandle, InputHandler::mousepos_cb);
+		glfwSetScrollCallback(m_WindowHandle, InputHandler::mousescroll_cb);
+		glfwSetCursorEnterCallback(m_WindowHandle, InputHandler::mousefocus_cb);
+		glfwSetFramebufferSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height)
+		{
+			auto& Config = *(WindowConfig*)glfwGetWindowUserPointer(window);
+
+			Config.width = width;
+			Config.height = height;
+			Config.resize = true;
+		});
+
+
 	}
 
 	Window::~Window()
 	{
-		m_SwapChain.DestroySwapChain();
+		m_SwapChain->DestroySwapChain();
 		glfwTerminate();
+	}
+
+	void Window::BeginFrame()
+	{
+		m_SwapChain->BeginFrame();
 	}
 
 	void Window::SwapBuffers()
 	{
-		m_SwapChain.Present();
+		m_SwapChain->Present();
 	}
 
 	void Window::PollEvents()
@@ -49,25 +85,5 @@ namespace TRE
 	int Window::ShouldWindowClose()
 	{
 		return glfwWindowShouldClose(m_WindowHandle);
-	}
-
-	GLFWwindow* Window::GetWindowHandle() const
-	{
-		return m_WindowHandle;
-	}
-
-	const WindowConfig& Window::GetWindowConfig() const
-	{
-		return m_Config;
-	}
-
-	std::shared_ptr<RendererContext> Window::GetRenderContext()
-	{
-		return m_RenderContext;
-	}
-
-	SwapChain Window::GetSwapChain()
-	{
-		return m_SwapChain;
 	}
 }

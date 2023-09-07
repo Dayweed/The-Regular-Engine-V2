@@ -1,3 +1,15 @@
+/*!
+	@file      Easing.cpp
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains a number of definitions of commonly used
+			   easing functions.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #include "Easing.h"
 
 #define _USE_MATH_DEFINES
@@ -10,647 +22,306 @@
 
 namespace Mathf::Easing // nested namespace definitions! :D
 {
-	/* !
-	@function  EaseLinear
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			linearly.
-
-	*//*__________________________________________________________________________*/
-	float EaseLinear(float start_, float end_, float value_)
+	float EaseLinear(float start, float end, float value)
 	{
-		return (1.f - value_) * start_ + value_ * end_;
+		return (1.f - value) * start + value * end;
+	}
+	
+	float EaseInQuad(float start, float end, float value)
+	{
+		end -= start;
+		return end * value * value + start;
 	}
 
-	/* !
-	@function  EaseInQuad
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards quadratically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInQuad(float start_, float end_, float value_)
+	float EaseOutQuad(float start, float end, float value)
 	{
-		end_ -= start_;
-		return end_ * value_ * value_ + start_;
+		end -= start;
+		return -end * value * (value - 2) + start;
 	}
 
-	/* !
-	@function  EaseOutQuad
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards quadratically.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutQuad(float start_, float end_, float value_)
+	float EaseInOutQuad(float start, float end, float value)
 	{
-		end_ -= start_;
-		return -end_ * value_ * (value_ - 2) + start_;
+		value /= .5f;
+		end -= start;
+		if (value < 1) return end * 0.5f * value * value + start;
+		value--;
+		return -end * 0.5f * (value * (value - 2) - 1) + start;
 	}
 
-	/* !
-	@function  EaseInOutQuad
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards quadratically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutQuad(float start_, float end_, float value_)
+	float EaseInCubic(float start, float end, float value)
 	{
-		value_ /= .5f;
-		end_ -= start_;
-		if (value_ < 1) return end_ * 0.5f * value_ * value_ + start_;
-		value_--;
-		return -end_ * 0.5f * (value_ * (value_ - 2) - 1) + start_;
+		end -= start;
+		return end * value * value * value + start;
 	}
 
-	/* !
-	@function  EaseInCubic
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards cubically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInCubic(float start_, float end_, float value_)
+	float EaseOutCubic(float start, float end, float value)
 	{
-		end_ -= start_;
-		return end_ * value_ * value_ * value_ + start_;
+		value--;
+		end -= start;
+		return end * (value * value * value + 1) + start;
 	}
 
-	/* !
-	@function  EaseOutCubic
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards cubically.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutCubic(float start_, float end_, float value_)
+	float EaseInOutCubic(float start, float end, float value)
 	{
-		value_--;
-		end_ -= start_;
-		return end_ * (value_ * value_ * value_ + 1) + start_;
+		value /= .5f;
+		end -= start;
+		if (value < 1) return end * 0.5f * value * value * value + start;
+		value -= 2;
+		return end * 0.5f * (value * value * value + 2) + start;
+	}
+	
+	float EaseInQuart(float start, float end, float value)
+	{
+		end -= start;
+		return end * value * value * value * value + start;
+	}
+	
+	float EaseOutQuart(float start, float end, float value)
+	{
+		value--;
+		end -= start;
+		return -end * (value * value * value * value - 1) + start;
 	}
 
-	/* !
-	@function  EaseInOutCubic
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards cubically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutCubic(float start_, float end_, float value_)
+	float EaseInOutQuart(float start, float end, float value)
 	{
-		value_ /= .5f;
-		end_ -= start_;
-		if (value_ < 1) return end_ * 0.5f * value_ * value_ * value_ + start_;
-		value_ -= 2;
-		return end_ * 0.5f * (value_ * value_ * value_ + 2) + start_;
+		value /= .5f;
+		end -= start;
+		if (value < 1) return end * 0.5f * value * value * value * value + start;
+		value -= 2;
+		return -end * 0.5f * (value * value * value * value - 2) + start;
+	}
+	
+	float EaseInQuint(float start, float end, float value)
+	{
+		end -= start;
+		return end * value * value * value * value * value + start;
+	}
+	
+	float EaseOutQuint(float start, float end, float value)
+	{
+		value--;
+		end -= start;
+		return end * (value * value * value * value * value + 1) + start;
 	}
 
-	/* !
-	@function  EaseInQuart
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards quartically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInQuart(float start_, float end_, float value_)
+	float EaseInOutQuint(float start, float end, float value)
 	{
-		end_ -= start_;
-		return end_ * value_ * value_ * value_ * value_ + start_;
+		value /= .5f;
+		end -= start;
+		if (value < 1) return end * 0.5f * value * value * value * value * value + start;
+		value -= 2;
+		return end * 0.5f * (value * value * value * value * value + 2) + start;
 	}
 
-	/* !
-	@function  EaseOutQuart
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards quartically.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutQuart(float start_, float end_, float value_)
+	float EaseInSine(float start, float end, float value)
 	{
-		value_--;
-		end_ -= start_;
-		return -end_ * (value_ * value_ * value_ * value_ - 1) + start_;
+		end -= start;
+		return -end * cosf(value * PI_2) + end + start;
 	}
 
-	/* !
-	@function  EaseInOutQuart
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards quartically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutQuart(float start_, float end_, float value_)
+	float EaseOutSine(float start, float end, float value)
 	{
-		value_ /= .5f;
-		end_ -= start_;
-		if (value_ < 1) return end_ * 0.5f * value_ * value_ * value_ * value_ + start_;
-		value_ -= 2;
-		return -end_ * 0.5f * (value_ * value_ * value_ * value_ - 2) + start_;
+		end -= start;
+		return end * sinf(value * PI_2) + start;
 	}
 
-	/* !
-	@function  EaseInQuint
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards quintically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInQuint(float start_, float end_, float value_)
+	float EaseInOutSine(float start, float end, float value)
 	{
-		end_ -= start_;
-		return end_ * value_ * value_ * value_ * value_ * value_ + start_;
+		end -= start;
+		return -end * 0.5f * (cosf(PI * value) - 1) + start;
 	}
 
-	/* !
-	@function  EaseOutQuint
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards quintically.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutQuint(float start_, float end_, float value_)
+	float EaseInExpo(float start, float end, float value)
 	{
-		value_--;
-		end_ -= start_;
-		return end_ * (value_ * value_ * value_ * value_ * value_ + 1) + start_;
+		end -= start;
+		return end * powf(2, 10 * (value - 1)) + start;
+	}
+	
+	float EaseOutExpo(float start, float end, float value)
+	{
+		end -= start;
+		return end * (-powf(2, -10 * value) + 1) + start;
 	}
 
-	/* !
-	@function  EaseInOutQuint
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards quintically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutQuint(float start_, float end_, float value_)
+	float EaseInOutExpo(float start, float end, float value)
 	{
-		value_ /= .5f;
-		end_ -= start_;
-		if (value_ < 1) return end_ * 0.5f * value_ * value_ * value_ * value_ * value_ + start_;
-		value_ -= 2;
-		return end_ * 0.5f * (value_ * value_ * value_ * value_ * value_ + 2) + start_;
+		value /= .5f;
+		end -= start;
+		if (value < 1) return end * 0.5f * powf(2, 10 * (value - 1)) + start;
+		value--;
+		return end * 0.5f * (-powf(2, -10 * value) + 2) + start;
 	}
 
-	/* !
-	@function  EaseInSine
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards sinusoidally.
-
-	*//*__________________________________________________________________________*/
-	float EaseInSine(float start_, float end_, float value_)
+	float EaseInCirc(float start, float end, float value)
 	{
-		end_ -= start_;
-		return -end_ * cosf(value_ * PI_2) + end_ + start_;
+		end -= start;
+		return -end * (sqrtf(1 - value * value) - 1) + start;
 	}
 
-	/* !
-	@function  EaseOutSine
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards sinusoidally.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutSine(float start_, float end_, float value_)
+	float EaseOutCirc(float start, float end, float value)
 	{
-		end_ -= start_;
-		return end_ * sinf(value_ * PI_2) + start_;
+		value--;
+		end -= start;
+		return end * sqrtf(1 - value * value) + start;
+	}
+	
+	float EaseInOutCirc(float start, float end, float value)
+	{
+		value /= .5f;
+		end -= start;
+		if (value < 1) return -end * 0.5f * (sqrtf(1 - value * value) - 1) + start;
+		value -= 2;
+		return end * 0.5f * (sqrtf(1 - value * value) + 1) + start;
 	}
 
-	/* !
-	@function  EaseInOutSine
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards sinusoidally.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutSine(float start_, float end_, float value_)
+	float EaseOutBounce(float start, float end, float value)
 	{
-		end_ -= start_;
-		return -end_ * 0.5f * (cosf(PI * value_) - 1) + start_;
-	}
-
-	/* !
-	@function  EaseInExpo
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards exponentially.
-
-	*//*__________________________________________________________________________*/
-	float EaseInExpo(float start_, float end_, float value_)
-	{
-		end_ -= start_;
-		return end_ * powf(2, 10 * (value_ - 1)) + start_;
-	}
-
-	/* !
-	@function  EaseOutExpo
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards exponentially.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutExpo(float start_, float end_, float value_)
-	{
-		end_ -= start_;
-		return end_ * (-powf(2, -10 * value_) + 1) + start_;
-	}
-
-	/* !
-	@function  EaseInOutExpo
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards exponentially.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutExpo(float start_, float end_, float value_)
-	{
-		value_ /= .5f;
-		end_ -= start_;
-		if (value_ < 1) return end_ * 0.5f * powf(2, 10 * (value_ - 1)) + start_;
-		value_--;
-		return end_ * 0.5f * (-powf(2, -10 * value_) + 2) + start_;
-	}
-
-	/* !
-	@function  EaseInCirc
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards circularly.
-
-	*//*__________________________________________________________________________*/
-	float EaseInCirc(float start_, float end_, float value_)
-	{
-		end_ -= start_;
-		return -end_ * (sqrtf(1 - value_ * value_) - 1) + start_;
-	}
-
-	/* !
-	@function  EaseOutCirc
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards circularly.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutCirc(float start_, float end_, float value_)
-	{
-		value_--;
-		end_ -= start_;
-		return end_ * sqrtf(1 - value_ * value_) + start_;
-	}
-
-	/* !
-	@function  EaseInOutCirc
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards circularly.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutCirc(float start_, float end_, float value_)
-	{
-		value_ /= .5f;
-		end_ -= start_;
-		if (value_ < 1) return -end_ * 0.5f * (sqrtf(1 - value_ * value_) - 1) + start_;
-		value_ -= 2;
-		return end_ * 0.5f * (sqrtf(1 - value_ * value_) + 1) + start_;
-	}
-
-	/* !
-	@function  EaseOutBounce
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards as a bounce.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutBounce(float start_, float end_, float value_)
-	{
-		value_ /= 1.f;
-		end_ -= start_;
-		if (value_ < (1 / 2.75f))
+		value /= 1.f;
+		end -= start;
+		if (value < (1 / 2.75f))
 		{
-			return end_ * (7.5625f * value_ * value_) + start_;
+			return end * (7.5625f * value * value) + start;
 		}
-		else if (value_ < (2 / 2.75f))
+		else if (value < (2 / 2.75f))
 		{
-			value_ -= (1.5f / 2.75f);
-			return end_ * (7.5625f * (value_)*value_ + .75f) + start_;
+			value -= (1.5f / 2.75f);
+			return end * (7.5625f * (value)*value + .75f) + start;
 		}
-		else if (value_ < (2.5 / 2.75))
+		else if (value < (2.5 / 2.75))
 		{
-			value_ -= (2.25f / 2.75f);
-			return end_ * (7.5625f * (value_)*value_ + .9375f) + start_;
+			value -= (2.25f / 2.75f);
+			return end * (7.5625f * (value)*value + .9375f) + start;
 		}
 		else
 		{
-			value_ -= (2.625f / 2.75f);
-			return end_ * (7.5625f * (value_)*value_ + .984375f) + start_;
+			value -= (2.625f / 2.75f);
+			return end * (7.5625f * (value)*value + .984375f) + start;
 		}
 	}
 
-	/* !
-	@function  EaseInBounce
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards as a bounce.
-
-	*//*__________________________________________________________________________*/
-	float EaseInBounce(float start_, float end_, float value_)
+	float EaseInBounce(float start, float end, float value)
 	{
-		end_ -= start_;
+		end -= start;
 		float d = 1.f;
-		return end_ - EaseOutBounce(0, end_, d - value_) + start_;
+		return end - EaseOutBounce(0, end, d - value) + start;
 	}
 
-	/* !
-	@function  EaseInOutBounce
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards as a bounce.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutBounce(float start_, float end_, float value_)
+	float EaseInOutBounce(float start, float end, float value)
 	{
-		end_ -= start_;
+		end -= start;
 		float d = 1.f;
-		if (value_ < d * 0.5f) return EaseInBounce(0, end_, value_ * 2) * 0.5f + start_;
-		else return EaseOutBounce(0, end_, value_ * 2 - d) * 0.5f + end_ * 0.5f + start_;
+		if (value < d * 0.5f) return EaseInBounce(0, end, value * 2) * 0.5f + start;
+		else return EaseOutBounce(0, end, value * 2 - d) * 0.5f + end * 0.5f + start;
 	}
 
-	/* !
-	@function  EaseInBack
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards with a back.
-
-	*//*__________________________________________________________________________*/
-	float EaseInBack(float start_, float end_, float value_)
+	float EaseInBack(float start, float end, float value)
 	{
-		end_ -= start_;
-		value_ /= 1;
+		end -= start;
+		value /= 1;
 		float s = 1.70158f;
-		return end_ * (value_)*value_ * ((s + 1) * value_ - s) + start_;
+		return end * (value)*value * ((s + 1) * value - s) + start;
 	}
 
-	/* !
-	@function  EaseOutBack
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards with a back.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutBack(float start_, float end_, float value_)
+	float EaseOutBack(float start, float end, float value)
 	{
 		float s = 1.70158f;
-		end_ -= start_;
-		value_ = (value_)-1;
-		return end_ * ((value_)*value_ * ((s + 1) * value_ + s) + 1) + start_;
+		end -= start;
+		value = (value)-1;
+		return end * ((value)*value * ((s + 1) * value + s) + 1) + start;
 	}
 
-	/* !
-	@function  EaseInOutBack
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards with a back.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutBack(float start_, float end_, float value_)
+	float EaseInOutBack(float start, float end, float value)
 	{
 		float s = 1.70158f;
-		end_ -= start_;
-		value_ /= .5f;
-		if ((value_) < 1)
+		end -= start;
+		value /= .5f;
+		if ((value) < 1)
 		{
 			s *= (1.525f);
-			return end_ * 0.5f * (value_ * value_ * (((s)+1) * value_ - s)) + start_;
+			return end * 0.5f * (value * value * (((s)+1) * value - s)) + start;
 		}
-		value_ -= 2;
+		value -= 2;
 		s *= (1.525f);
-		return end_ * 0.5f * ((value_)*value_ * (((s)+1) * value_ + s) + 2) + start_;
+		return end * 0.5f * ((value)*value * (((s)+1) * value + s) + 2) + start;
 	}
 
-	/* !
-	@function  EaseInElastic
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards elastically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInElastic(float start_, float end_, float value_)
+	float EaseInElastic(float start, float end, float value)
 	{
-		end_ -= start_;
+		end -= start;
 
 		float d = 1.f;
 		float p = d * .3f;
 		float s;
 		float a = 0;
 
-		if (value_ == 0) return start_;
+		if (value == 0) return start;
 
-		if ((value_ /= d) == 1) return start_ + end_;
+		if ((value /= d) == 1) return start + end;
 
-		if (a == 0.f || a < fabs(end_))
+		if (a == 0.f || a < fabs(end))
 		{
-			a = end_;
+			a = end;
 			s = p / 4;
 		}
 		else
 		{
-			s = p / (PIx2) * asinf(end_ / a);
+			s = p / (PIx2) * asinf(end / a);
 		}
 
-		return -(a * powf(2, 10 * (value_ -= 1)) * sinf((value_ * d - s) * (PIx2) / p)) + start_;
+		return -(a * powf(2, 10 * (value -= 1)) * sinf((value * d - s) * (PIx2) / p)) + start;
 	}
 
-	/* !
-	@function  EaseOutElastic
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			outwards elastically.
-
-	*//*__________________________________________________________________________*/
-	float EaseOutElastic(float start_, float end_, float value_)
+	float EaseOutElastic(float start, float end, float value)
 	{
-		end_ -= start_;
+		end -= start;
 
 		float d = 1.f;
 		float p = d * .3f;
 		float s;
 		float a = 0;
 
-		if (value_ == 0) return start_;
+		if (value == 0) return start;
 
-		if ((value_ /= d) == 1) return start_ + end_;
+		if ((value /= d) == 1) return start + end;
 
-		if (a == 0.f || a < fabs(end_))
+		if (a == 0.f || a < fabs(end))
 		{
-			a = end_;
+			a = end;
 			s = p * 0.25f;
 		}
 		else
 		{
-			s = p / (PIx2) * asinf(end_ / a);
+			s = p / (PIx2) * asinf(end / a);
 		}
 
-		return (a * powf(2, -10 * value_) * sinf((value_ * d - s) * (PIx2) / p) + end_ + start_);
+		return (a * powf(2, -10 * value) * sinf((value * d - s) * (PIx2) / p) + end + start);
 	}
 
-	/* !
-	@function  EaseInOutElastic
-
-	@params	start_ : the start value of the interpolation
-	@params	end_ : the end value of the interpolation
-	@params	value_ : the value to interpolate
-
-	@brief	Interpolates between `start_` and `end_` with the given `value_`
-			inwards and outwards elastically.
-
-	*//*__________________________________________________________________________*/
-	float EaseInOutElastic(float start_, float end_, float value_)
+	float EaseInOutElastic(float start, float end, float value)
 	{
-		end_ -= start_;
+		end -= start;
 
 		float d = 1.f;
 		float p = d * .3f;
 		float s;
 		float a = 0;
 
-		if (value_ == 0) return start_;
+		if (value == 0) return start;
 
-		if ((value_ /= d * 0.5f) == 2) return start_ + end_;
+		if ((value /= d * 0.5f) == 2) return start + end;
 
-		if (a == 0.f || a < fabs(end_))
+		if (a == 0.f || a < fabs(end))
 		{
-			a = end_;
+			a = end;
 			s = p / 4;
 		}
 		else
 		{
-			s = p / (PIx2) * asinf(end_ / a);
+			s = p / (PIx2) * asinf(end / a);
 		}
 
-		if (value_ < 1) return -0.5f * (a * powf(2, 10 * (value_ -= 1)) * sinf((value_ * d - s) * (PIx2) / p)) + start_;
-		return a * powf(2, -10 * (value_ -= 1)) * sinf((value_ * d - s) * (PIx2) / p) * 0.5f + end_ + start_;
+		if (value < 1) return -0.5f * (a * powf(2, 10 * (value -= 1)) * sinf((value * d - s) * (PIx2) / p)) + start;
+		return a * powf(2, -10 * (value -= 1)) * sinf((value * d - s) * (PIx2) / p) * 0.5f + end + start;
 	}
 }

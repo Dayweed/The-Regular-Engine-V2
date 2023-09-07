@@ -1,3 +1,15 @@
+/*!
+	@file      Vector3.h
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains the definition of the Vector3 class,
+			   which is a useful representation of a 3D vector.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #pragma once
 #include "../../GLM/include/glm/glm.hpp" // for glm::vec
 

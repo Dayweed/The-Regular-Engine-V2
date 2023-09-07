@@ -1,12 +1,24 @@
+/*!
+	@file      Vector3.cpp
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains the definitions of the Vector3 member
+			   functions, which is a useful representation of a 3D vector.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #include "Vector3.h"
 #include <cmath>
 #include "Mathf.h"
 
 #define EPSILON (0.00001f)
 
-Vector3::Vector3(float scalar) : x{ scalar }, y{ scalar }, z{ scalar } {}
+Vector3::Vector3(const float scalar) : x{ scalar }, y{ scalar }, z{ scalar } {}
 
-Vector3::Vector3(float _x, float _y, float _z) : x{ _x }, y{ _y }, z{ _z } {}
+Vector3::Vector3(const float _x, const float _y, const float _z) : x{ _x }, y{ _y }, z{ _z } {}
 
 Vector3& Vector3::operator+=(const Vector3& rhs)
 {

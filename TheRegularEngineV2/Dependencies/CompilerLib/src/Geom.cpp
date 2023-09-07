@@ -46,14 +46,13 @@ namespace TRE
 
 	void Geom::Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom)
 	{
-		std::string_view path = filePath;
-		std::string_view name = path;
+		std::string_view name = filePath;
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
 
 		std::cout << "serializing mesh... " << name << std::endl;
 
-		std::ofstream file(path, std::ios::binary);
+		std::ofstream file(filePath, std::ios::binary);
 
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pSubMesh), sizeof(Geom::SubMesh) * m_Geom->nSubMeshes);
@@ -108,12 +107,12 @@ namespace TRE
 			}
 			else
 			{
-				//TRE_CORE_ERROR("Failed to open file: {0}", geomPath);
+				std::cout << "Error: could not open file: " << filePath << std::endl;
 			}
 		}
 		else
 		{
-			//TRE_CORE_ERROR("File does not exist: {0}", geomPath);
+			std::cout << "Error: file does not exist: " << filePath << std::endl;
 		}
 
 		return geom;

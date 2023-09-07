@@ -24,10 +24,6 @@ project "CompilerLib"
 		"src/**.cpp"
 	}
 
-	links
-	{
-	}
-
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"

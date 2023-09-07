@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Buffer.h"
 #include "RendererContext.h"
-#include "PhysicalDevice.h"
+#include "Device.h"
 
 namespace TRE
 {

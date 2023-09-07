@@ -1,9 +1,20 @@
+/*!
+	@file      PhysicsSystem.cpp
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains the definition of the PhysicsSystem
+			   member functions, which is an interface for PhysX functions.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #include "pch.h"
 #include "TREIncludes.h"
 #include "PhysicsSystem.h"
 
-#define GLMVec3ToPxVec3(glmVec) (physx::PxVec3{(glmVec).x, (glmVec).y, (glmVec).z})
-#define PxVec3ToGLMVec3(pxVec) (glm::vec3{(pxVec).x, (pxVec).y, (pxVec).z})
+#define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
 
 namespace TRE
 {
@@ -112,14 +123,14 @@ namespace TRE
 		const unsigned stackSize = 3, numOfStacks = 1;
 
 		for (physx::PxU32 i = 0; i < numOfStacks; i++)
-			CreateStack(physx::PxTransform({ 0, 0, stackInitialZ - (stackSeparation * i) }), stackSize, shapeHalfExtent);
+			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
 #endif
 
-		//GO e1 = _ecs_manager->CreateGO("box 1");
+		//Entity e1 = ECSManager::Instance().CreateEntity("box 1");
 		//e1->GetComponent<Transform>().m_Position = {};
 		//ConstructBoxCollider(e1);
 
-		//GO e2 = _ecs_manager->CreateGO("box 2");
+		//Entity e2 = ECSManager::Instance().CreateEntity("box 1");
 		//e2->GetComponent<Transform>().m_Position = { 1,1,0 };
 		//ConstructBoxCollider(e2);
 
@@ -140,11 +151,11 @@ namespace TRE
 		{
 			for (Entity& entity : ECSManager::Instance().GetEntities<Collider>())
 			{
-				entity->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
+				entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
 
 				// I hope this is right XO
 				auto eulerAngles = QuatToEulerAngles(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().q);
-				entity->GetComponent<Transform>().m_Rotation = PxVec3ToGLMVec3(eulerAngles) / 3.141592654f * 180.0f;
+				entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
 
 				//printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
 				//glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
@@ -207,13 +218,13 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	void PhysicsSystem::ConstructSphereCollider(const Entity& go, const float radius, const Vector3& offset) const
+	void PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const Vector3& offset) const
 	{
-		auto& sphereCollider = go->AddComponent<SphereCollider>();
+		auto& sphereCollider = entity->AddComponent<SphereCollider>();
 		// add component if missing, otherwise get existing component
 
-		const auto objPos = go->GetComponent<Transform>().m_Position;
-		const physx::PxVec3 colliderPos = GLMVec3ToPxVec3(objPos) + GLMVec3ToPxVec3(offset);
+		const auto objPos = entity->GetComponent<Transform>().m_Position;
+		const physx::PxVec3 colliderPos = VEC3_CAST(physx::PxVec3, objPos) + VEC3_CAST(physx::PxVec3, offset);
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
 		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(colliderPos));
@@ -242,25 +253,25 @@ namespace TRE
 		*/
 	}
 
-	void PhysicsSystem::DestructSphereCollider(const Entity& go) const
+	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
 	{
-		go->GetComponent<SphereCollider>().m_RigidActor->release();
-		go->RemoveComponent<SphereCollider>();
+		entity->GetComponent<SphereCollider>().m_RigidActor->release();
+		entity->RemoveComponent<SphereCollider>();
 	}
 
-	void PhysicsSystem::ConstructBoxCollider(const Entity& go, const Vector3& halfExtents, const Vector3& offset) const
+	void PhysicsSystem::ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents, const Vector3& offset) const
 	{
-		auto& boxCollider = go->AddComponent<BoxCollider>();
+		auto& boxCollider = entity->AddComponent<BoxCollider>();
 		// add component if missing, otherwise get existing component
 
-		const auto objPos = go->GetComponent<Transform>().m_Position;
-		const physx::PxVec3 colliderPos = GLMVec3ToPxVec3(objPos) + GLMVec3ToPxVec3(offset);
+		const auto objPos = entity->GetComponent<Transform>().m_Position;
+		const physx::PxVec3 colliderPos = VEC3_CAST(physx::PxVec3, objPos) + VEC3_CAST(physx::PxVec3, offset);
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
 		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(colliderPos));
 
 		// fill the 'container' with a shape, that being a box
-		physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(GLMVec3ToPxVec3(halfExtents)), *m_Material);
+		physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(VEC3_CAST(physx::PxVec3, halfExtents)), *m_Material);
 		body->attachShape(*shape);
 
 		physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -272,10 +283,10 @@ namespace TRE
 		shape->release();
 	}
 
-	void PhysicsSystem::DestructBoxCollider(const Entity& go) const
+	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
-		go->GetComponent<BoxCollider>().m_RigidActor->release();
-		go->RemoveComponent<BoxCollider>();
+		entity->GetComponent<BoxCollider>().m_RigidActor->release();
+		entity->RemoveComponent<BoxCollider>();
 	}
 
 	//This function creates a stack of shapes
@@ -285,12 +296,12 @@ namespace TRE
 		{
 			for (unsigned j = 0; j < size - i; j++)
 			{
-				Entity go = ECSManager::Instance().CreateEntity();
+				Entity entity = ECSManager::Instance().CreateEntity();
 				const physx::PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
 				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
-				go->GetComponent<Transform>().m_Position = PxVec3ToGLMVec3(newPos);
-				// ConstructSphereCollider(go, halfExtent);
-				ConstructBoxCollider(go, Vector3{ halfExtent });
+				entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, newPos);
+				// ConstructSphereCollider(entity, halfExtent);
+				ConstructBoxCollider(entity, Vector3{ halfExtent });
 			}
 		}
 	}
