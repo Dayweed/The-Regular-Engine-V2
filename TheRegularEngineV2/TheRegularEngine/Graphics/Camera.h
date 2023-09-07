@@ -3,6 +3,9 @@
 #include "Core/System.h"
 #include "Core/ECS.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/quaternion.hpp"
+
 namespace TRE
 {
 	class Camera;
@@ -40,11 +43,13 @@ namespace TRE
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
 		glm::vec2 m_ViewportSize{ 1920.f, 1080.f };
-		glm::vec3 m_UpVec{ 0.f, 1.f, 0.f };
-		glm::vec3 m_RightVec{ 1.f, 0.f, 0.f };
-		glm::vec3 m_ForwardVec{ 0.f, 0.f, 1.f };
+		//glm::vec3 m_UpVec{ 0.f, 1.f, 0.f };
+		//glm::vec3 m_RightVec{ 1.f, 0.f, 0.f };
+		//glm::vec3 m_ForwardVec{ 0.f, 0.f, 1.f };
 		glm::vec3 m_FocalPoint{ 0.f, 0.f, 10.f };
 		float m_FocalLength{ 10.f };
+		float m_Pitch{ 0.f };
+		float m_Yaw{ 0.f };
 		float m_Fov{ 30.f };	//Vertical fov - has to be converted to radians
 		float m_Near{ 0.1f };
 		float m_Far{ 1000.f };
@@ -57,14 +62,10 @@ namespace TRE
 		bool m_IsMainCamera{ false };
 		bool m_IsDirty{ false };
 
-		Camera() = default;
-		~Camera() = default;
-
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Camera
-											//, fel
-											//, m_Position, m_Rotation, m_ViewMatrix, m_ProjectionMatrix, m_ViewportSize, m_UpVec, m_RightVec, m_ForwardVec, m_FocalPoint
-											, m_Fov, m_Near, m_Far, m_Left, m_Right, m_Bottom, m_Top, m_AspectRatio
-											, m_IsPerspective, m_IsMainCamera, m_IsDirty)
+		const glm::quat& GetOrientation() const;
+		const glm::vec3& GetUpVec() const;
+		const glm::vec3& GetRightVec() const;
+		const glm::vec3& GetForwardVec() const;
 	};
 	
 	class CameraSystem : public ECSSystem
@@ -79,6 +80,8 @@ namespace TRE
 		void SetViewportSize(Entity& go, const glm::vec2& viewportSize);
 		void SetFocalPoint(Entity& go, const glm::vec3& focalPoint);
 		void SetFocalLength(Entity& go, const float focalLength);
+		void SetPitch(Entity& go, const float pitch);
+		void SetYaw(Entity& go, const float yaw);
 		void SetFov(Entity& go, const float fov);
 		void SetNear(Entity& go, const  float near);
 		void SetFar(Entity& go, const float far);
@@ -97,6 +100,8 @@ namespace TRE
 		const glm::vec2& GetViewportSize(const Entity& go) const;
 		const glm::vec3& GetFocalPoint(const Entity& go) const;
 		const float GetFocalLength(const Entity& go) const;
+		const float GetPitch(const Entity& go) const;
+		const float GetYaw(const Entity& go) const;
 		const float GetFov(const Entity& go) const;
 		const float GetNear(const Entity& go) const;
 		const float GetFar(const Entity& go) const;
@@ -113,7 +118,7 @@ namespace TRE
 		void SetIsDirty(const bool isDirty);
 		const bool GetIsDirty() const;
 	private:
-		void NormalizeOrientation(Entity& go);
+		//void NormalizeOrientation(Entity& go);
 	private:
 		bool m_IsDirty{ false }; //Bool to update descriptor set
 	};
