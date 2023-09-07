@@ -35,19 +35,22 @@ namespace TRE
 
 		public:
 			std::vector<VkDescriptorSet> GetDescriptorSets();
-			std::vector<std::shared_ptr<Buffer>> GetUBOBuffers();
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();
 			PipelineConfigurations& GetConfig();
+			std::vector<std::shared_ptr<Buffer>> GetUBOBuffers() { return m_UBOBuffers; }
 
 		private:
 			VkPipeline m_Pipeline;
 			VkPipelineLayout m_Layout;
 
 			PipelineConfigurations m_Config;
-			std::vector<std::shared_ptr<Buffer>> m_UBOBuffers{};
+			
 			std::unique_ptr<DescriptorPool> m_DescriptorPool;
-			std::vector<std::unique_ptr<DescriptorSetLayout>> m_DescriptorSetLayouts;
 			std::vector<VkDescriptorSet> m_DescriptorSets;
+
+			std::vector<std::shared_ptr<Buffer>> m_UBOBuffers{};
+
+			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};
 }

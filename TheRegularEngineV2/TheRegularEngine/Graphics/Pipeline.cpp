@@ -18,11 +18,6 @@ namespace TRE
 		return m_DescriptorSets;
 	}
 
-	std::vector<std::shared_ptr<Buffer>> Pipeline::GetUBOBuffers()
-	{
-		return m_UBOBuffers;
-	}
-
 	VkPipelineLayout Pipeline::GetPipelineLayout()
 	{
 		return m_Layout;
@@ -169,33 +164,70 @@ namespace TRE
 			m_UBOBuffers[i]->Map();
 		}
 
-		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
-			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-			.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-			.Build());
+		VkDescriptorSetLayoutBinding layoutBinding1{};
+		layoutBinding1.binding = 0;
+		layoutBinding1.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		layoutBinding1.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		layoutBinding1.descriptorCount = 1;
+
+		VkDescriptorSetLayoutBinding layoutBinding2{};
+		layoutBinding2.binding = 1;
+		layoutBinding2.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		layoutBinding2.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		layoutBinding2.descriptorCount = 1;
+
+		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings
+		{
+			layoutBinding1, layoutBinding2
+		};
+
+		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
+
+		if (vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create descriptor set layout");
+		}
 
 		//TO DELETE
 		Texture::RunCompiler("../Assets/Test.desc");
 		auto texture = Texture::Deserialize("../Assets/Test.DDS");
 		TextureManager::Instance().LoadTexture(std::move(texture));
 
-		int descriptorCount = imageCount;
-		m_DescriptorSets.resize(descriptorCount);
+		m_DescriptorSets.resize(imageCount);
 		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
-			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
 			VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
 
-			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
-				.WriteBuffer(0, &bufferInfo)
-				.WriteImage(1, &imageInfo)
-				.Build(m_DescriptorSets[i]);
-		}
+			VkDescriptorBufferInfo BufferInfo{};
+			BufferInfo.buffer = m_UBOBuffers[i]->GetBuffer();
+			BufferInfo.offset = 0;
+			BufferInfo.range = sizeof(UBO);
+			m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[i]);
+			VkWriteDescriptorSet write{};
+			write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			write.dstBinding = 0;
+			write.pBufferInfo = &BufferInfo;
+			write.descriptorCount = 1;
+			write.dstSet = m_DescriptorSets[i];
 
-		std::vector<VkDescriptorSetLayout> layouts{};
-		for (auto& x : m_DescriptorSetLayouts)
-		{
-			layouts.push_back(x->GetDescriptorSetLayout());
+			VkWriteDescriptorSet writeimage{};
+			writeimage.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeimage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writeimage.dstBinding = 1;
+			writeimage.pImageInfo = &imageInfo;
+			writeimage.descriptorCount = 1;
+			writeimage.dstSet = m_DescriptorSets[i];
+
+			std::vector<VkWriteDescriptorSet> Writes
+			{
+				write, writeimage
+			};
+
+			vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 		}
 
 		//Create pipeline layout
@@ -206,8 +238,8 @@ namespace TRE
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
-		pipelineLayoutInfo.pSetLayouts = layouts.data();
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
