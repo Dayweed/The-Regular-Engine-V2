@@ -33,6 +33,7 @@ namespace TRE
 
 		Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		const Camera& camera = entity->GetComponent<Camera>();
+		CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		{
 			static glm::vec2 panMouseStartPos{};
 			static glm::vec2 panMouseEndPos{};
@@ -42,14 +43,14 @@ namespace TRE
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
 				positionOffset.x *= -1;
 				positionOffset = glm::normalize(positionOffset);
-				const auto panSensitivity = PanSpeed(m_ViewportSize.x, m_ViewportSize.y);
+				const auto panSensitivity = PanSensitivity(m_ViewportSize.x, m_ViewportSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
 				positionOffset *= m_PanSpeed;
 				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(entity, camera.m_FocalPoint + camera.m_RightVec * positionOffset.x);
-				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(entity, camera.m_FocalPoint + camera.m_UpVec * positionOffset.y);
+				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetRightVec() * positionOffset.x);
+				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetUpVec() * positionOffset.y);
 			}
 			else
 			{
@@ -65,12 +66,13 @@ namespace TRE
 				rotMouseEndPos = m_MousePos;
 				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
 				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset.x *= -1;
+				rotationOffset *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(entity, camera.m_Rotation + camera.m_RightVec * rotationOffset.y);
-				ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(entity, camera.m_Rotation + camera.m_UpVec * rotationOffset.x);
+				const float yawSign = camera.GetUpVec().y < 0 ? -1.f : 1.f;
+				cameraSystem->SetPitch(entity, camera.m_Pitch + rotationOffset.y);
+				cameraSystem->SetYaw(entity, camera.m_Yaw + yawSign * rotationOffset.x);
 			}
 			else
 			{
@@ -117,7 +119,7 @@ namespace TRE
 
 		if (camera.m_FocalLength < 1.f)
 		{
-			cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.m_ForwardVec);
+			cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetForwardVec());
 			cameraSystem->SetFocalLength(entity, 1.f);
 		}
 
