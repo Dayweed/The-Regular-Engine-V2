@@ -60,6 +60,9 @@ Library["RTTR"] = "%{LibraryDir.RTTR}/rttr_core.lib"
 Library["RTTR_Debug"] = "%{LibraryDir.RTTR}/rttr_core_d.lib"
 Library["Compiler"] = "%{LibraryDir.Compiler}/CompilerLib.lib"
 Library["Crunch"] = "%{LibraryDir.Crunch}/Crunch.lib"
+Library["ShaderC_Debug"] = "%{LibraryDir.Vulkan}/shaderc_sharedd"
+Library["ShaderC_Release"] = "%{LibraryDir.Vulkan}/shaderc_shared"
+
 
 Binaries = {}
 Binaries["Assimp"] = "%{wks.location}/Dependencies/Assimp/lib/assimp-vc143-mt.dll"

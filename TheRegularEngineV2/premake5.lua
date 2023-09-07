@@ -99,7 +99,7 @@ project "TheRegularEngine"
 		"%{Library.RTTR}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
-		"%{Library.Compiler}",	
+		"%{Library.Compiler}",
 		--"%{Library.Crunch}",	
 	}
 
@@ -115,9 +115,10 @@ project "TheRegularEngine"
 		links
 		{
 			"%{Library.FMOD_Debug}",
-			"%{Library.RTTR_Debug}"
+			"%{Library.RTTR_Debug}",
+			"%{Library.ShaderC_Debug}"
 		}
-
+		
 	filter "configurations:Release"
 		optimize "On"
 
@@ -129,7 +130,8 @@ project "TheRegularEngine"
 		links
 		{
 			"%{Library.FMOD_Release}",
-			"%{Library.RTTR}"
+			"%{Library.RTTR}",
+			"%{Library.ShaderC_Release}"
 		}
 
 project "TheRegularEditor"
