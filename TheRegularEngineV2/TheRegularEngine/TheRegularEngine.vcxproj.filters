@@ -36,6 +36,9 @@
     <ClInclude Include="Audio\AudioSystem.h">
       <Filter>Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Asserts.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\ComponentManager.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -55,6 +58,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\SceneManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Serialization.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\System.h">
@@ -150,9 +156,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Core\Serialization.h">
-      <Filter>Core</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -174,6 +177,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\SceneManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Serialization.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Transform.cpp">
@@ -246,8 +252,5 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Core\Serialization.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
