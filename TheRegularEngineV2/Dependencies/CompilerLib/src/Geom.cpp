@@ -23,9 +23,10 @@ namespace TRE
 			exePath += geomExe;
 
 			std::replace(descPath.begin(), descPath.end(), '/', '\\');
-			std::string newDescPath = currentDir;
-			newDescPath += "\\";
-			newDescPath += descPath;
+			//std::string newDescPath = currentDir;
+			//newDescPath += "\\";
+			//newDescPath += descPath;
+			std::string newDescPath = descPath;
 
 			char command[256];
 			snprintf(command, sizeof(command), "\"%s %s\"", exePath.c_str(), newDescPath.c_str());

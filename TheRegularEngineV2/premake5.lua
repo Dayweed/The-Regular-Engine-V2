@@ -64,6 +64,7 @@ project "TheRegularEngine"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.Nlohmannjson}",
+		"%{IncludeDir.RTTR}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
@@ -94,6 +95,7 @@ project "TheRegularEngine"
 		"%{Library.PhysX_TaskStatic}",
 		"%{Library.PhysX_VehicleStatic}",
 		"%{Library.PhysX_Vehicle2}",
+		"%{Library.RTTR}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
 		"%{Library.Compiler}",	
@@ -111,7 +113,8 @@ project "TheRegularEngine"
 
 		links
 		{
-			"%{Library.FMOD_Debug}"
+			"%{Library.FMOD_Debug}",
+			"%{Library.RTTR_Debug}"
 		}
 
 	filter "configurations:Release"
@@ -124,7 +127,8 @@ project "TheRegularEngine"
 
 		links
 		{
-			"%{Library.FMOD_Release}"
+			"%{Library.FMOD_Release}",
+			"%{Library.RTTR}"
 		}
 
 project "TheRegularEditor"
@@ -174,6 +178,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.Nlohmannjson}",
+		"%{IncludeDir.RTTR}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
@@ -201,6 +206,7 @@ project "TheRegularEditor"
 
 		links
 		{
+			"%{Library.RTTR_Debug}",
 			"%{Library.FMOD_Debug}"
 		}
 
@@ -221,6 +227,7 @@ project "TheRegularEditor"
 
 		links
 		{
+			"%{Library.RTTR}",
 			"%{Library.FMOD_Release}"
 		}
 

@@ -32,7 +32,7 @@ namespace TRE
 			void OnMouseScroll(const MouseScrollEvent& event);
 		private:
 			//Gonna rewrite in editor camera next time
-			glm::vec2 PanSpeed(const float viewportWidth, const float viewportHeight)
+			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight)
 			{
 				float x = std::min(viewportWidth / 1000.f, 2.4f); //Max is 2.4f
 				float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
@@ -48,7 +48,7 @@ namespace TRE
 			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};
 			float m_ZoomSensitivity = 50.f;
-			float m_PanSpeed = 200.f;
+			float m_PanSpeed = 300.f;
 			float m_RotationSensitivity = 3.f;
 	};
 }

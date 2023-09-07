@@ -25,9 +25,7 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
-			//void EntityClicked(std::string EntityName);
 
 		private:
-			//std::string m_CurrentEntity;
 	};
 }

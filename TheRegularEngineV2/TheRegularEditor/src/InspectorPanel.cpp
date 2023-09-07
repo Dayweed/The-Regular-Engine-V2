@@ -56,12 +56,24 @@ namespace TRE
 		ImGui::Combo("##Tag", &TagsIndex, Tags, IM_ARRAYSIZE(Tags));
 
 		//layer
-		ImGui::SameLine();
+		//ImGui::SameLine();
 		ImGui::Text("Layer");
 		ImGui::SameLine();
 		const char* Layers[] = { "Default" };
 		static int LayersIndex = 0; // If the selection isn't within 0..count, Combo won't display a preview
-		ImGui::Combo("##Layer", &LayersIndex, Layers, IM_ARRAYSIZE(Layers));
+		//ImGui::Combo("##Layer", &LayersIndex, Layers, IM_ARRAYSIZE(Layers));
+		if(ImGui::BeginCombo("##Layer", Layers[LayersIndex]))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(Layers); n++)
+			{
+				bool is_selected = (LayersIndex == n);
+				if (ImGui::Selectable(Layers[n], is_selected))
+					LayersIndex = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
 
 		ImGui::End();
 	}

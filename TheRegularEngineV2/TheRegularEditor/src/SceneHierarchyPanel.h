@@ -25,7 +25,9 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
+			void DisplayChildren(TRE::Entity const& ParentEntity);
 
 		private:
+			Entity m_SelectionContext;
 	};
 }
