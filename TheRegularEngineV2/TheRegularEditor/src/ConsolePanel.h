@@ -14,6 +14,7 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
+#include "EventSystem/Events/ConsoleEvent.h"
 
 namespace TRE
 {
@@ -25,6 +26,7 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
+			void OnConsole(ConsoleDebugEvent& event);
 
 		private:
 			std::vector<std::string> m_ConsoleLog;

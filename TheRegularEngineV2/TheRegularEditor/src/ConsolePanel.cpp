@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ConsolePanel.h"
 #include "Imgui/imgui.h"
+#include "EventSystem/EventHandler/EventHandler.h"
 
 namespace TRE
 {
@@ -16,7 +17,7 @@ namespace TRE
 
 	void ConsolePanel::Init()
 	{
-
+        EventHandler::getEventHandlerInstance().subscribe(this, &ConsolePanel::OnConsole);
 	}
 	
 	void ConsolePanel::Update()
@@ -71,6 +72,16 @@ namespace TRE
         }
 		ImGui::End();
 	}
+
+    void ConsolePanel::OnConsole(ConsoleDebugEvent& event)
+    {
+        time_t now = time(0);
+        const tm* localTime = localtime(&now);
+        std::stringstream ss{};
+        ss << "[" << (localTime->tm_hour) << ":" << std::setw(2) << std::setfill('0') << (localTime->tm_min) << ":" << (localTime->tm_sec) << "]";
+        m_ConsoleTimestamp.emplace_back(ss.str().c_str());
+        m_ConsoleLog.emplace_back(event.m_Msg.c_str());
+    }
 
 	void ConsolePanel::Shutdown()
 	{
