@@ -24,6 +24,8 @@ namespace TRE
 	{
 		ImGui::Begin("Inspector");
 
+		//if (m_SelectionManager->GetSelectedEntity() != nullptr)
+		//std::cout << "current object: " << m_SelectionManager->GetSelectedEntity()->GetName() << "\n";
 		//std::cout << "size of vector: " << ECSManager::Instance().GetEntities<Properties>().size() << "\n";
 		//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 		//{
@@ -45,6 +47,8 @@ namespace TRE
 
 		//object name
 		static char str1[128] = "";
+		if (m_SelectionManager->GetSelectedEntity() != nullptr)
+		strcpy(str1, m_SelectionManager->GetSelectedEntity()->GetName().c_str());
 		ImGui::InputTextWithHint("##ObjectName", "Object name", str1, IM_ARRAYSIZE(str1));
 
 		//tag
