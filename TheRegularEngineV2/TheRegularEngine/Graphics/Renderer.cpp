@@ -22,16 +22,9 @@ namespace TRE
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-
-		RenderPassInfo RenderPassCreateInfo{};
-		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
-		RenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
-		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		m_Renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
-		Create();
-
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
+
+		Create();
 
 		// Create sampler to sample from the attachment in the fragment shader
 		VkSamplerCreateInfo samplerInfo{};
@@ -82,7 +75,43 @@ namespace TRE
 			}
 		}
 
-		m_Pipeline = std::make_unique<Pipeline>(m_Renderpass);
+		RenderPassInfo RenderPassCreateInfo{};
+		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
+		RenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
+		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		std::shared_ptr<RenderPass> renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+
+		CreateFrameBuffer(renderpass);
+
+		PipelineConfigurations PipelineConfig;
+		PipelineConfig.Primitive = PrimitiveType::Triangles;
+		PipelineConfig.RenderPass = renderpass;
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+	}
+
+	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
+	{
+		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		m_FrameBuffer.resize(ImageCount);
+		for (int x = 0; x < m_FrameBuffer.size(); x++)
+		{
+			VkFramebufferCreateInfo fbufCreateInfo{};
+			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			fbufCreateInfo.renderPass = renderpass->GetHandle();
+			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
+			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+			fbufCreateInfo.pAttachments = attachments.data();
+			fbufCreateInfo.width = SwapChain->GetWidth();
+			fbufCreateInfo.height = SwapChain->GetHeight();
+			fbufCreateInfo.layers = 1;
+
+			if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &fbufCreateInfo, nullptr, &m_FrameBuffer[x]); Result != VK_SUCCESS)
+			{
+				assert(Result == VK_SUCCESS);
+			}
+		}
 	}
 
 	void Renderer::Create()
@@ -90,7 +119,6 @@ namespace TRE
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_ColorImages.resize(ImageCount);
 		m_DepthImages.resize(ImageCount);
-		m_FrameBuffer.resize(ImageCount);
 
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
@@ -107,24 +135,6 @@ namespace TRE
 			m_DepthImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetDepthFormat(),
 								VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
-
-		for (int x = 0; x < m_FrameBuffer.size(); x++)
-		{
-			VkFramebufferCreateInfo fbufCreateInfo{};
-			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			fbufCreateInfo.renderPass = m_Renderpass->GetHandle();
-			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView()};
-			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-			fbufCreateInfo.pAttachments = attachments.data();
-			fbufCreateInfo.width = SwapChain->GetWidth();
-			fbufCreateInfo.height = SwapChain->GetHeight();
-			fbufCreateInfo.layers = 1;
-
-			if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &fbufCreateInfo, nullptr, &m_FrameBuffer[x]); Result != VK_SUCCESS)
-			{
-				assert(Result == VK_SUCCESS);
-			}
-		}
 	}
 
 	void Renderer::Resize()
@@ -138,6 +148,7 @@ namespace TRE
 		m_DepthImages.clear();
 
 		Create();
+		CreateFrameBuffer(m_Pipeline->GetConfig().RenderPass);
 	}
 
 	Renderer::~Renderer()
@@ -186,7 +197,7 @@ namespace TRE
 		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
 		m_Pipeline->GetUBOBuffers()[Index]->Flush();
 
-		m_Renderpass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
+		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -218,7 +229,7 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 
-		m_Renderpass->EndRenderPass(m_Commandbuffers[Index]);
+		m_Pipeline->GetConfig().RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 
 		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
 		{

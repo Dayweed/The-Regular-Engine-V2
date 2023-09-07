@@ -35,7 +35,7 @@ namespace TRE
 
 			std::vector<char> readFile(const std::string& filename);
 			VkShaderModule CreateShader(std::vector<char>& code);
-
+			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
 			VkSampler GetSampler();
@@ -49,7 +49,6 @@ namespace TRE
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
-			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
