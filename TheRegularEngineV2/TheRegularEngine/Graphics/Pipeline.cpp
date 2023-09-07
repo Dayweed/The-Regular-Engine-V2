@@ -5,6 +5,7 @@
 #include "Core/Engine.h"
 #include "Descriptor.h"
 #include "VulkanTexture.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {

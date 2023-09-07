@@ -1,7 +1,5 @@
 #pragma once
-#include "vulkan/vulkan.h"
 #include "Device.h"
-#include "GLFW/glfw3.h"
 
 namespace TRE
 {

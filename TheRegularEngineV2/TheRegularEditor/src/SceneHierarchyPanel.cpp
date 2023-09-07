@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SceneHierarchyPanel.h"
 #include "Imgui/imgui.h"
 

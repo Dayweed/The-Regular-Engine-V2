@@ -12,7 +12,10 @@
 ************************************************************************/
 #pragma once
 #include "Core/System.h"
+#include "Core/ECS.h"
 #include "PhysX/PxPhysicsAPI.h"
+#include "Vector2.h"
+#include "Vector3.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG

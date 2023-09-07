@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Core/Logger.h"
 #include "InputHandler.h"
-#include "../EventSystem/Events/InputEvent.h"
+#include "EventSystem/Events/InputEvent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include "GLFW/glfw3.h"
 #define DEBUG 1
 namespace TRE
 {

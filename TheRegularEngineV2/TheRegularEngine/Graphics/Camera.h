@@ -1,6 +1,5 @@
 #pragma once
 #include "pch.h"
-#include "Core/entt.hpp"
 #include "Core/System.h"
 #include "Core/ECS.h"
 

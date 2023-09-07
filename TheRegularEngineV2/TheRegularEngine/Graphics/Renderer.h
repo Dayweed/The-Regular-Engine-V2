@@ -1,6 +1,6 @@
 #pragma once
-#include "Graphics/Device.h"
-#include "Graphics/VulkanEditor.h"
+#include "Device.h"
+#include "VulkanEditor.h"
 #include "RenderObject.h"
 #include "Descriptor.h"
 #include "RenderPass.h"
