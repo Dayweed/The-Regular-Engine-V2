@@ -255,11 +255,16 @@ namespace TRE
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
 	{
 		// First element of each array keeps the amount of elements. 
-		if (!m_Current.empty()) {
-			m_Root.push_back(m_Current);
+		if (m_Current.empty()) {
+			m_Current = nlohmann::json::array();
+			m_Current.push_back(ECSManager::Instance().GetAllEntities().size());
 		}
-		m_Current = nlohmann::json::array();
-		m_Current.push_back(ECSManager::Instance().GetAllEntities().size());
+		else
+		{
+			m_Root.push_back(m_Current);
+			m_Current = nlohmann::json::array();
+			m_Current.push_back(u);
+		}
 	}
 
 	void ECSOutputArchive::Close()
@@ -549,7 +554,7 @@ namespace TRE
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		std::string file = ECSManager::Instance().SaveEntities("Lmao.json");
+		std::string file = ECSManager::Instance().SaveEntities("Lmao");
 
 		ECSManager::Instance().DestroyAll();
 

@@ -18,10 +18,36 @@ namespace TRE
 	{
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "AHH";
-		test->AddComponent<FEL>();
-		std::cout << test->GetComponent<Parenting>().m_Children.size() << "\n";
+		Entity ab = ECSManager::Instance().CreateEntity();
+		ab->GetComponent<Properties>().m_Name = "CARLON";
+		ab->AddComponent<FEL>().vec_i = { 4.5f, 2.f };
+		ab->GetComponent<FEL>().nestedstruct.arr_c = '{';
+	
+		Entity fun = ECSManager::Instance().CreateEntity();
+		fun->GetComponent<Properties>().m_Name = "fFNNN";
+		fun->AddComponent<FEL>().arr_i[1] = 1.2f;
 
-		ECSManager::Instance().LoadEntities(ECSManager::Instance().SaveEntities("Demo.json"));
+		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
+		}
+		std::string filePath{ECSManager::Instance().SaveEntities("Demo")};
+
+		ECSManager::Instance().LoadEntities(filePath);
+		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
+			if (obj->HasComponent<FEL>())
+			{
+				std::cout << "== " << obj->GetComponent<FEL>().nestedstruct.arr_c << "\n";
+				for (auto v : obj->GetComponent<FEL>().vec_i)
+				{
+					std::cout << "=== " << v << "\n";
+				}
+			}
+		}
 	}
 
 	void DemoScene()
@@ -137,7 +163,7 @@ namespace TRE
 	{
 		// To remove eventually
 		//ECSManager::Instance().TESTRUN();
-		AHHH();
+		//AHHH();
 		DemoScene();
 
 		while (!m_Window->ShouldWindowClose())
