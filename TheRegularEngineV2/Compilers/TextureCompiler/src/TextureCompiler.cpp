@@ -119,7 +119,7 @@ namespace TRE
 
 		if (!pixels)
 		{
-			std::cout << "Failed to load texture image\n";
+			std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
 			return;
 		}
 

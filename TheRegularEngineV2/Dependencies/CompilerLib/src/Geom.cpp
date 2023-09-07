@@ -51,8 +51,6 @@ namespace TRE
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
 
-		std::cout << "serializing mesh... " << name << std::endl;
-
 		std::ofstream file(filePath, std::ios::binary);
 
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
