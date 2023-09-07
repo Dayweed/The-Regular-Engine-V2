@@ -14,20 +14,23 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
+#include "SelectionManager.h"
 
 namespace TRE
 {
 	class SceneHierarchyPanel : public Panel
 	{
 		public:
-			SceneHierarchyPanel();
+			SceneHierarchyPanel(const std::shared_ptr<SelectionManager>& Selection_Manager);
 			~SceneHierarchyPanel();
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
 			void DisplayChildren(TRE::Entity const& ParentEntity);
+			Entity& GetSelectionContext();
 
 		private:
 			Entity m_SelectionContext;
+			std::shared_ptr<SelectionManager> m_SelectionManager;
 	};
 }

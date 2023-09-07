@@ -5,9 +5,9 @@
 
 namespace TRE
 {
-	InspectorPanel::InspectorPanel()
+	InspectorPanel::InspectorPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
-		
+		m_SelectionManager = Selection_Manager;
 	}
 
 	InspectorPanel::~InspectorPanel()

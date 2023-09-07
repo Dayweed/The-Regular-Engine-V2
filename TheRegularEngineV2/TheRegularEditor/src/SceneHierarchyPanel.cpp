@@ -4,9 +4,9 @@
 
 namespace TRE
 {
-	SceneHierarchyPanel::SceneHierarchyPanel()
+	SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
-
+		m_SelectionManager = Selection_Manager;
 	}
 
 	SceneHierarchyPanel::~SceneHierarchyPanel()
@@ -52,6 +52,7 @@ namespace TRE
 						{
 							if (ImGui::IsItemClicked())
 							{
+								m_SelectionManager->SelectEntity(ECSManager::Instance().GetEntities<Properties>()[i]);
 								m_SelectionContext = ECSManager::Instance().GetEntities<Properties>()[i];
 							}
 
@@ -114,5 +115,10 @@ namespace TRE
 
 			ImGui::TreePop();
 		}
+	}
+
+	Entity& SceneHierarchyPanel::GetSelectionContext()
+	{
+		return m_SelectionContext;
 	}
 }
