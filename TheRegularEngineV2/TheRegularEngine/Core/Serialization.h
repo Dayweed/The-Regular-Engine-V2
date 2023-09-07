@@ -150,12 +150,7 @@ namespace TRE
 		ObjectDeserializer();
 
 		//constructor with filename
-		ObjectDeserializer(const char* filename)
-		{
-			ReadExternalFile(m_document, filename);
-			indexDocument();
-		}
-
+		ObjectDeserializer(const char* filename);
 		//destructor
 		~ObjectDeserializer();
 

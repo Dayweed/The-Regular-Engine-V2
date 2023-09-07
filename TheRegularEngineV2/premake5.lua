@@ -215,6 +215,7 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.RTTR_Debug}" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -236,6 +237,7 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.RTTR}" "%{cfg.targetdir}"',
 		}
 
 project "TRE-ScriptCore"
