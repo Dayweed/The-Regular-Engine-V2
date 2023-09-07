@@ -37,7 +37,7 @@ namespace TRE
 			m_Instance{instance}, m_MemberFunction{memberFunction}
 		{}
 		//Calls the response function
-		void call(Event& event) override
+		void Call(Event& event) override
 		{
 			(m_Instance->*m_MemberFunction)(static_cast<EventType&>(event));
 		}

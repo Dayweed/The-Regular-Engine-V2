@@ -81,6 +81,7 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
+		
 		if((event._key != (int)KeyButton::mouseButtonLeft) 
 			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
 			&& (event._key != (int)KeyButton::mouseButtonRight))

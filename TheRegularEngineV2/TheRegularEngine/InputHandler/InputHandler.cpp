@@ -8,6 +8,8 @@
 namespace TRE
 {
 	bool InputHandler::m_IsMouseHeld = false;
+	std::unordered_map<InputHandler::MouseCode, bool> InputHandler::m_LastMouseEvent;
+	std::unordered_map<InputHandler::MouseCode, bool> InputHandler::m_MouseEvent;
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
 		(void)win_ptr;
@@ -18,7 +20,7 @@ namespace TRE
 		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
 		{
 			TRE_CORE_INFO("Key pressed: {0}", key);
-			event.publish(InputEvent {key, action});
+			event.Publish(InputEvent {key, action});
 		}
 	}
 
@@ -27,42 +29,71 @@ namespace TRE
 		(void)win_ptr;
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
+		MouseCode key = static_cast<MouseCode>(button);
 
-		if (m_IsMouseHeld)
-		{
-			TRE_CORE_INFO("Button pressed: {0}", button);
-			event.publish(InputEvent {button, action});
-		}
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
-			m_IsMouseHeld = true;
-			TRE_CORE_INFO("Button pressed: {0}", button);
-			event.publish(InputEvent {button, action});
+			TRE_CORE_INFO("Key pressed: {0}", key);
+			event.Publish(InputEvent {button, action});
 		}
-		if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
+		/*switch (action)
 		{
-			m_IsMouseHeld = false;
+		case(GLFW_PRESS):
+			TRE_CORE_INFO("button pressed: {0}", button);
+			m_MouseEvent.insert_or_assign(key, true);
+			break;
+		case(GLFW_RELEASE):
+			TRE_CORE_INFO("button Release: {0}", button);	
+			m_MouseEvent.insert_or_assign(key, false);	
+			break;
 		}
+		event.Publish(InputEvent {button, action});*/
 	}
 
 	void InputHandler::MouseScrollCb(GLFWwindow* win_ptr, double xoffset, double yoffset)
 	{
 		(void)win_ptr;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-		event.publish(MouseScrollEvent {xoffset, yoffset});
+		event.Publish(MouseScrollEvent {xoffset, yoffset});
 	}
 
 	void InputHandler::MousePosCb(GLFWwindow* win_ptr, double xpos, double ypos)
 	{
 		(void)win_ptr;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-		event.publish(MouseMoveEvent {xpos, ypos});
+		event.Publish(MouseMoveEvent {xpos, ypos});
 	}
 
 	void InputHandler::MouseFocusCb(GLFWwindow* win_ptr, int entered)
 	{
 		(void)win_ptr;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-		event.publish(MouseFocusEvent {entered});
+		event.Publish(MouseFocusEvent {entered});
+	}
+
+	bool TRE::InputHandler::CheckMouseEvent(MouseCode key)
+	{
+		EventHandler& event = EventHandler::getEventHandlerInstance();
+		if (key == MouseCode::MIDDLE || key == MouseCode::LEFTCLICK || key == MouseCode::RIGHTCLICK)
+		{
+			if (m_MouseEvent[key] == false)
+			{
+				TRE_CORE_INFO("called");
+				m_LastMouseEvent.insert_or_assign(key, false);
+				event.Publish(InputEvent {static_cast<int>(key), GLFW_RELEASE});
+				return false;
+			}
+			else if (m_MouseEvent[key] && m_LastMouseEvent[key] == false)
+			{
+				m_LastMouseEvent.insert_or_assign(key, true);
+				m_MouseEvent.insert_or_assign(key, false);
+				return true;
+			}
+		}
+		else if (key == MouseCode::TOPBUTTON || key == MouseCode::BOTTOMBUTTON)
+		{
+			return m_MouseEvent[key];
+		}
+		return false;
 	}
 }

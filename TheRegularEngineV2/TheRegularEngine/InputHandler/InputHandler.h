@@ -11,6 +11,10 @@ namespace TRE
     class InputHandler
     {
         public:
+        enum class MouseCode
+        {
+            LEFTCLICK, RIGHTCLICK, MIDDLE, BOTTOMBUTTON, TOPBUTTON
+        };
         /*!*****************************************************************************
         *\brief     Response function for keyboard callbacks.
         *
@@ -54,10 +58,13 @@ namespace TRE
         *******************************************************************************/
         static void MouseFocusCb(GLFWwindow* win_ptr, int entered);
 
+        bool CheckMouseEvent(MouseCode key);
+
         private:
             static bool m_IsMouseHeld;
+            static std::unordered_map<MouseCode, bool> m_MouseEvent;
+            static std::unordered_map<MouseCode, bool> m_LastMouseEvent;
     };
-    
 }
 
 #endif

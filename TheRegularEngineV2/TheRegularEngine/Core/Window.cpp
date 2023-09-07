@@ -45,12 +45,13 @@ namespace TRE
 		m_SwapChain = std::make_shared<SwapChain>(m_RenderContext->GetDeviceInternally(), m_RenderContext->GetPhysicalDeviceInternally(), m_WindowHandle);
 		m_SwapChain->Initialize(m_Config.width, m_Config.height);
 
+		glfwSetInputMode(m_WindowHandle, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
-		glfwSetKeyCallback(m_WindowHandle, InputHandler::key_cb);
-		glfwSetMouseButtonCallback(m_WindowHandle, InputHandler::mousebutton_cb);
-		glfwSetCursorPosCallback(m_WindowHandle, InputHandler::mousepos_cb);
-		glfwSetScrollCallback(m_WindowHandle, InputHandler::mousescroll_cb);
-		glfwSetCursorEnterCallback(m_WindowHandle, InputHandler::mousefocus_cb);
+		glfwSetKeyCallback(m_WindowHandle, InputHandler::KeyCb);
+		glfwSetMouseButtonCallback(m_WindowHandle, InputHandler::MouseButtonCb);
+		glfwSetCursorPosCallback(m_WindowHandle, InputHandler::MousePosCb);
+		glfwSetScrollCallback(m_WindowHandle, InputHandler::MouseScrollCb);
+		glfwSetCursorEnterCallback(m_WindowHandle, InputHandler::MouseFocusCb);
 		glfwSetFramebufferSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height)
 		{
 			auto& Config = *(WindowConfig*)glfwGetWindowUserPointer(window);
@@ -80,6 +81,11 @@ namespace TRE
 	void Window::PollEvents()
 	{
 		glfwPollEvents();
+		if (glfwGetMouseButton(m_WindowHandle, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		{
+			// TRE_CORE_INFO("Key pressed: {0}", key);
+			printf("Mouse button 1 pressed\n");
+		}
 	}
 
 	int Window::ShouldWindowClose()
