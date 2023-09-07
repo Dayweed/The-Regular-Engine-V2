@@ -6,8 +6,8 @@
 #define DEBUG 1
 namespace TRE
 {
-	bool InputHandler::m_isMouseHeld = false;
-	void InputHandler::key_cb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
+	bool InputHandler::m_IsMouseHeld = false;
+	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
 		(void)win_ptr;
 		(void)scancode;
@@ -21,44 +21,44 @@ namespace TRE
 		}
 	}
 
-	void InputHandler::mousebutton_cb(GLFWwindow* win_ptr, int button, int action, int mod)
+	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)
 	{
 		(void)win_ptr;
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 
-		if (m_isMouseHeld)
+		if (m_IsMouseHeld)
 		{
 			TRE_CORE_INFO("Button pressed: {0}", button);
 			event.publish(InputEvent {button, action});
 		}
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
-			m_isMouseHeld = true;
+			m_IsMouseHeld = true;
 			TRE_CORE_INFO("Button pressed: {0}", button);
 			event.publish(InputEvent {button, action});
 		}
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
 		{
-			m_isMouseHeld = false;
+			m_IsMouseHeld = false;
 		}
 	}
 
-	void InputHandler::mousescroll_cb(GLFWwindow* win_ptr, double xoffset, double yoffset)
+	void InputHandler::MouseScrollCb(GLFWwindow* win_ptr, double xoffset, double yoffset)
 	{
 		(void)win_ptr;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 		event.publish(MouseScrollEvent {xoffset, yoffset});
 	}
 
-	void InputHandler::mousepos_cb(GLFWwindow* win_ptr, double xpos, double ypos)
+	void InputHandler::MousePosCb(GLFWwindow* win_ptr, double xpos, double ypos)
 	{
 		(void)win_ptr;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 		event.publish(MouseMoveEvent {xpos, ypos});
 	}
 
-	void InputHandler::mousefocus_cb(GLFWwindow* win_ptr, int entered)
+	void InputHandler::MouseFocusCb(GLFWwindow* win_ptr, int entered)
 	{
 		(void)win_ptr;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
