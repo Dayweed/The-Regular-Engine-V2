@@ -63,10 +63,10 @@ project "TheRegularEngine"
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
+		"%{IncludeDir.Nlohmannjson}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
-		"%{IncludeDir.RTTR}",
 		--"%{IncludeDir.Crunch}",
 	}
 
@@ -96,8 +96,7 @@ project "TheRegularEngine"
 		"%{Library.PhysX_Vehicle2}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
-		"%{Library.Compiler}",
-		"%{Library.RTTR}"	
+		"%{Library.Compiler}",	
 		--"%{Library.Crunch}",	
 	}
 
@@ -112,8 +111,7 @@ project "TheRegularEngine"
 
 		links
 		{
-			"%{Library.FMOD_Debug}",
-			"%{Library.RTTR_Debug}",
+			"%{Library.FMOD_Debug}"
 		}
 
 	filter "configurations:Release"
@@ -126,8 +124,7 @@ project "TheRegularEngine"
 
 		links
 		{
-			"%{Library.FMOD_Release}",
-			"%{Library.RTTR}",
+			"%{Library.FMOD_Release}"
 		}
 
 project "TheRegularEditor"
@@ -176,10 +173,10 @@ project "TheRegularEditor"
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
+		"%{IncludeDir.Nlohmannjson}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
-		"%{IncludeDir.RTTR}",
 		--"%{IncludeDir.Crunch}",
 		"TheRegularEngine"
 	}
@@ -204,8 +201,7 @@ project "TheRegularEditor"
 
 		links
 		{
-			"%{Library.FMOD_Debug}",
-			"%{Library.RTTR_Debug}"
+			"%{Library.FMOD_Debug}"
 		}
 
 		postbuildcommands
@@ -213,7 +209,6 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
-			'{COPY} "%{Binaries.RTTR_Debug}" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -226,8 +221,7 @@ project "TheRegularEditor"
 
 		links
 		{
-			"%{Library.FMOD_Release}",
-			"%{Library.RTTR}"
+			"%{Library.FMOD_Release}"
 		}
 
 		postbuildcommands
@@ -235,7 +229,6 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
-			'{COPY} "%{Binaries.RTTR}" "%{cfg.targetdir}"',
 		}
 
 project "TRE-ScriptCore"
