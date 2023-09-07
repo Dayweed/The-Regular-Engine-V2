@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "Core/Logger.h"
 #include "InputHandler/InputHandler.h"
-
+#include "GLFW/glfw3.h"
 #include <chrono>
 
 namespace TRE

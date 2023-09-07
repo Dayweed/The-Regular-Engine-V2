@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "PanelManager.h"
 #include "SceneHierarchyPanel.h"
 #include "ViewportPanel.h"

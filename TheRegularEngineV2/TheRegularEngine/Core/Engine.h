@@ -1,9 +1,8 @@
 #pragma once
-#include "pch.h"
 #include "Window.h"
 #include "SystemManager.h"
-#include "Graphics/VulkanEditor.h"
 #include "Graphics/Renderer.h"
+#include "Graphics/VulkanEditor.h"
 
 namespace TRE
 {

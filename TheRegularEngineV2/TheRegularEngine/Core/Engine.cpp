@@ -1,10 +1,11 @@
 #include "pch.h"
+#include "Engine.h"
 #include "ECS.h"
 #include "MemoryManager.h"
-#include "Engine.h"
 #include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
 #include "Audio/AudioSystem.h"
+#include "Logger.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST

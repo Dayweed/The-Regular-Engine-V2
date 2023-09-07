@@ -14,7 +14,6 @@
 
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
-#include "pch.h"
 #include "entt.hpp"
 #include "System.h"
 #include "ComponentManager.h"
