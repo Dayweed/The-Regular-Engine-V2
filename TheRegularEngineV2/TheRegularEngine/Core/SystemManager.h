@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "System.h"
 
 namespace TRE

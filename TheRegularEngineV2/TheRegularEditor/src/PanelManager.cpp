@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "PanelManager.h"
 #include "SceneHierarchyPanel.h"
 #include "ViewportPanel.h"
@@ -28,6 +29,11 @@ namespace TRE
 		InsertPanel<InspectorPanel>("Inspector");
 		InsertPanel<ContentBrowserPanel>("Content Browser");
 		InsertPanel<ConsolePanel>("Console");
+
+		for (auto x : m_StorePanels)
+		{
+			x.second->Init();
+		}
 	}
 
 	//(viewport and panels; nothing to do with rendering)

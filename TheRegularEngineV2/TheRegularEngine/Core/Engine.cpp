@@ -1,10 +1,11 @@
 #include "pch.h"
+#include "Engine.h"
 #include "ECS.h"
 #include "MemoryManager.h"
-#include "Engine.h"
 #include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
 #include "Audio/AudioSystem.h"
+#include "Logger.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
@@ -48,10 +49,8 @@ namespace TRE
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
 
-
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
-		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->LoadFile(audio);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 	}
 }
@@ -103,6 +102,7 @@ namespace TRE
 		// Register Components
 		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
 		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
+		ComponentManager::Instance().RegisterComponent<Parenting>("Parenting", true);
 		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
 		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
 		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");
@@ -131,6 +131,7 @@ namespace TRE
 		{
 
 			m_Window->BeginFrame();
+			m_Window->UpdateDeltaTime();
 
 			//Update
 			Profiler::Instance().StartTimer("Update");

@@ -7,8 +7,8 @@ namespace TRE
 {
 	struct Audio
 	{
-		std::string m_FileName{ "ViveLeFromageBGM1" };
-		std::string m_FilePath{ "../Assets/Audio/ViveLeFromageBGM1.wav" };
+		std::string m_FileName{ "ViveLeFromageBGM1.wav" };
+		//std::string m_FilePath{ "../Assets/Audio/ViveLeFromageBGM1.wav" };
 		FMOD::ChannelGroup* m_ChannelGroup{};
 
 		float m_Volume{ 1.f };

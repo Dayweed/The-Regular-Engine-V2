@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "InspectorPanel.h"
 #include "Imgui/imgui.h"
 #include "TREIncludes.h"

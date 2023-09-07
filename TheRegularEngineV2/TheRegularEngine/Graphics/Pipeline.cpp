@@ -5,17 +5,18 @@
 #include "Core/Engine.h"
 #include "Descriptor.h"
 #include "VulkanTexture.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
+	PipelineConfigurations& Pipeline::GetConfig()
+	{
+		return m_Config;
+	}
+
 	std::vector<VkDescriptorSet> Pipeline::GetDescriptorSets()
 	{
 		return m_DescriptorSets;
-	}
-
-	std::vector<std::shared_ptr<Buffer>> Pipeline::GetUBOBuffers()
-	{
-		return m_UBOBuffers;
 	}
 
 	VkPipelineLayout Pipeline::GetPipelineLayout()
@@ -28,7 +29,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(std::shared_ptr<RenderPass> RenderPass) : m_Renderpass(RenderPass)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
@@ -65,7 +66,7 @@ namespace TRE
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		inputAssembly.topology = GetVulkanTopology(m_Config.Primitive);
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
@@ -164,33 +165,70 @@ namespace TRE
 			m_UBOBuffers[i]->Map();
 		}
 
-		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
-			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-			.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-			.Build());
+		VkDescriptorSetLayoutBinding layoutBinding1{};
+		layoutBinding1.binding = 0;
+		layoutBinding1.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		layoutBinding1.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		layoutBinding1.descriptorCount = 1;
+
+		VkDescriptorSetLayoutBinding layoutBinding2{};
+		layoutBinding2.binding = 1;
+		layoutBinding2.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		layoutBinding2.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		layoutBinding2.descriptorCount = 1;
+
+		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings
+		{
+			layoutBinding1, layoutBinding2
+		};
+
+		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
+
+		if (vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create descriptor set layout");
+		}
 
 		//TO DELETE
 		Texture::RunCompiler("../Assets/Test.desc");
 		auto texture = Texture::Deserialize("../Assets/Test.DDS");
 		TextureManager::Instance().LoadTexture(std::move(texture));
 
-		int descriptorCount = imageCount;
-		m_DescriptorSets.resize(descriptorCount);
+		m_DescriptorSets.resize(imageCount);
 		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
-			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
 			VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
 
-			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
-				.WriteBuffer(0, &bufferInfo)
-				.WriteImage(1, &imageInfo)
-				.Build(m_DescriptorSets[i]);
-		}
+			VkDescriptorBufferInfo BufferInfo{};
+			BufferInfo.buffer = m_UBOBuffers[i]->GetBuffer();
+			BufferInfo.offset = 0;
+			BufferInfo.range = sizeof(UBO);
+			m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[i]);
+			VkWriteDescriptorSet write{};
+			write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			write.dstBinding = 0;
+			write.pBufferInfo = &BufferInfo;
+			write.descriptorCount = 1;
+			write.dstSet = m_DescriptorSets[i];
 
-		std::vector<VkDescriptorSetLayout> layouts{};
-		for (auto& x : m_DescriptorSetLayouts)
-		{
-			layouts.push_back(x->GetDescriptorSetLayout());
+			VkWriteDescriptorSet writeimage{};
+			writeimage.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeimage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writeimage.dstBinding = 1;
+			writeimage.pImageInfo = &imageInfo;
+			writeimage.descriptorCount = 1;
+			writeimage.dstSet = m_DescriptorSets[i];
+
+			std::vector<VkWriteDescriptorSet> Writes
+			{
+				write, writeimage
+			};
+
+			vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 		}
 
 		//Create pipeline layout
@@ -201,8 +239,8 @@ namespace TRE
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
-		pipelineLayoutInfo.pSetLayouts = layouts.data();
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -224,13 +262,14 @@ namespace TRE
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_Layout;
-		pipelineInfo.renderPass = m_Renderpass->GetHandle();
+		pipelineInfo.renderPass = m_Config.RenderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS)
+		if (auto Result = vkCreateGraphicsPipelines(Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create graphics pipeline!");
+			TRE_CORE_CRITICAL("Pipeline failed to create");
+			assert(Result == VK_SUCCESS);
 		}
 
 		vkDestroyShaderModule(Device->GetLogicalDevice(), fragShaderModule, nullptr);
@@ -278,5 +317,22 @@ namespace TRE
 		file.close();
 
 		return buffer;
+	}
+
+	VkPrimitiveTopology Pipeline::GetVulkanTopology(PrimitiveType TopologyType)
+	{
+		switch (TopologyType)
+		{
+			case PrimitiveType::Point:			return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+			case PrimitiveType::Lines:			return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+			case PrimitiveType::LinesStrip:		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+			case PrimitiveType::Triangles:		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+			case PrimitiveType::TrianglesStrip:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			case PrimitiveType::TranglesFan:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
+		}
+
+		TRE_CORE_ERROR("Unknown toplogy");
+		assert(false);
+		return VK_PRIMITIVE_TOPOLOGY_MAX_ENUM;
 	}
 }

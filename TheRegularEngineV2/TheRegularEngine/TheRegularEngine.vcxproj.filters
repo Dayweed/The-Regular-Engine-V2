@@ -148,6 +148,7 @@
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
+    <ClInclude Include="Serialization.h" />
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
@@ -242,6 +243,7 @@
     <ClCompile Include="Scripting\ScriptEngine.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="Serialization.cpp" />
     <ClCompile Include="pch.cpp" />
   </ItemGroup>
 </Project>

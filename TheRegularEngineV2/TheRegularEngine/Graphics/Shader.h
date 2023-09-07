@@ -12,6 +12,5 @@ namespace TRE
 		private:
 			VkShaderModule m_ShaderModule;
 
-
 	};
 }

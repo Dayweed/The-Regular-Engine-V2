@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "Device.h"
 #include "RenderPass.h"
 #include "RendererContext.h"

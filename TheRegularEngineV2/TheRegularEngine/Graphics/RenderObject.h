@@ -1,9 +1,6 @@
 #pragma once
-#include "pch.h"
 #include "Buffer.h"
 #include "Geom.h"
-
-#include <functional>
 
 namespace TRE
 {

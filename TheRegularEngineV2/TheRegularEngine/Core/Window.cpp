@@ -2,6 +2,8 @@
 #include "Window.h"
 #include "Core/Logger.h"
 #include "InputHandler/InputHandler.h"
+#include "GLFW/glfw3.h"
+#include <chrono>
 
 namespace TRE
 {
@@ -57,8 +59,6 @@ namespace TRE
 			Config.height = height;
 			Config.resize = true;
 		});
-
-
 	}
 
 	Window::~Window()
@@ -85,5 +85,18 @@ namespace TRE
 	int Window::ShouldWindowClose()
 	{
 		return glfwWindowShouldClose(m_WindowHandle);
+	}
+
+	void Window::UpdateDeltaTime()
+	{
+		static auto lastTime = std::chrono::high_resolution_clock::now();
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		m_DeltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
+		lastTime = currentTime;
+	}
+
+	float Window::GetDeltaTime() const
+	{
+		return m_DeltaTime;
 	}
 }

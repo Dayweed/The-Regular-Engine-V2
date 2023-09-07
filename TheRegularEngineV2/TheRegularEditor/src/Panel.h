@@ -13,6 +13,7 @@
 ************************************************************************/
 #pragma once
 #include "TREIncludes.h"
+#include "Imgui/imgui.h"
 
 namespace TRE
 {

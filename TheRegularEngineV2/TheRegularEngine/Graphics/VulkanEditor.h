@@ -1,6 +1,5 @@
 #pragma once
-#include "TREIncludes.h"
-#include "pch.h"
+#include "Device.h"
 
 namespace TRE
 {

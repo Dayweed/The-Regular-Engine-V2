@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EditorSystem.h"
 #include "Imgui/imgui.h"
 #include "imgui_impl_vulkan.h"
@@ -9,7 +10,6 @@ namespace TRE
 	{
 		TRE_INFO("Editor Init");
 
-		std::cout << "Editor Init" << std::endl; //Replace with Logging
 		m_PanelManager = std::make_unique<PanelManager>();
 		m_PanelManager->Init();
 	}

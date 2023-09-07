@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "Image.h"
 #include "Texture.h"
 
@@ -8,7 +7,7 @@ namespace TRE
 	class VulkanTexture
 	{
 	public:
-		VulkanTexture() {};
+		VulkanTexture() = default;
 		VulkanTexture(const uint32_t texWidth, const uint32_t texHeight, void* pixels,
 			const VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB, VkFilter imageFilter = VK_FILTER_NEAREST);
 		VulkanTexture(std::unique_ptr<Texture> texture);

@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Core/Logger.h"
 #include "InputHandler.h"
-#include "../EventSystem/Events/InputEvent.h"
+#include "EventSystem/Events/InputEvent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include "GLFW/glfw3.h"
 #define DEBUG 1
 namespace TRE
 {
@@ -26,8 +27,10 @@ namespace TRE
 		switch(action)
 		{
 			case GLFW_PRESS:
+				event.publish(InputEvent {button, (int)KeyState::keyPressed});
 				break;
 			case GLFW_REPEAT:
+				//event.publish(InputEvent {button, (int)KeyState::keyHeld});
 				break;
 			case GLFW_RELEASE:
 				event.publish(InputEvent {button, action});
