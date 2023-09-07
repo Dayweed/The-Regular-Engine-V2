@@ -15,9 +15,26 @@ namespace TRE
 		void SetViewTarget(Camera& camera, const glm::vec3& target);
 	}
 
+	struct FEL
+	{
+		std::vector<float> i{};
+		/*friend void to_json(nlohmann::json& j, const FEL&f)
+		{
+			j = nlohmann::json{
+				{ "i", f.i }
+			};
+		}
+		friend void from_json(const nlohmann::json& j, FEL& f)
+		{
+				f.i = j.at("i").get<std::vector<float>>();
+		}*/
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FEL, i)
+	};
+
 	class Camera
 	{
 	public:
+		FEL fel;
 		glm::vec3 m_Position{ 0.f, 0.f, 0.f };
 		glm::vec3 m_Rotation{ 0.f, 0.f, 0.f };
 		glm::mat4 m_ViewMatrix{ 1.f };
@@ -39,6 +56,15 @@ namespace TRE
 		bool m_IsPerspective{ true };
 		bool m_IsMainCamera{ false };
 		bool m_IsDirty{ false };
+
+		Camera() = default;
+		~Camera() = default;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Camera
+											//, fel
+											//, m_Position, m_Rotation, m_ViewMatrix, m_ProjectionMatrix, m_ViewportSize, m_UpVec, m_RightVec, m_ForwardVec, m_FocalPoint
+											, m_Fov, m_Near, m_Far, m_Left, m_Right, m_Bottom, m_Top, m_AspectRatio
+											, m_IsPerspective, m_IsMainCamera, m_IsDirty)
 	};
 	
 	class CameraSystem : public ECSSystem

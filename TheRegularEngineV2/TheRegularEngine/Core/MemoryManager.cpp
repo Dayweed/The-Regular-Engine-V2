@@ -123,6 +123,7 @@ namespace TRE
 		m_DeployedEntityList.clear();
 		m_UndeployedEntityList.clear();
 
+		ECSManager::Instance().m_EntityList.clear();
 		ECSManager::Instance().GetRegistry().clear();
 
 		// Successful deletion

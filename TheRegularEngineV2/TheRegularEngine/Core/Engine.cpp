@@ -14,6 +14,16 @@
 #include "Geom.h"
 namespace TRE
 {
+	void AHHH()
+	{
+		Entity test = ECSManager::Instance().CreateEntity();
+		test->GetComponent<Properties>().m_Name = "AHH";
+		test->AddComponent<FEL>();
+		std::cout << test->GetComponent<Parenting>().m_Children.size() << "\n";
+
+		ECSManager::Instance().LoadEntities(ECSManager::Instance().SaveEntities("Demo.json"));
+	}
+
 	void DemoScene()
 	{
 		Geom::RunCompiler("../Assets/smooth_vase.desc");
@@ -52,6 +62,8 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
+
+		//ECSManager::Instance().SaveEntities("Demo.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -110,6 +122,7 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
 		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
 		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
+		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
@@ -124,7 +137,7 @@ namespace TRE
 	{
 		// To remove eventually
 		//ECSManager::Instance().TESTRUN();
-
+		AHHH();
 		DemoScene();
 
 		while (!m_Window->ShouldWindowClose())

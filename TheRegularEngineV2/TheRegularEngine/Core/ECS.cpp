@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ECS.h"
+#include "Graphics/Camera.h"
 #include "MemoryManager.h"
 #include "Core/Logger.h"
 
@@ -94,7 +95,7 @@ namespace TRE
 	std::string ECSManager::SaveEntities(std::string filePath)
 	{
 		// Set up document
-		ECSOutputArchive arc("TestScene");
+		ECSOutputArchive arc(filePath);
 
 		// Destroys all undeployed entities
 		MemoryManager::Instance().ClearUndeployed();
@@ -103,7 +104,8 @@ namespace TRE
 		// Serialize all entities and components
 		snapshot.entities(arc)
 			.component<Properties>(arc)
-			.component<Parenting>(arc);
+			.component<Parenting>(arc)
+			.component<FEL>(arc);
 
 		arc.Close();
 
@@ -119,7 +121,8 @@ namespace TRE
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
 			.component<Properties>(arc)
-			.component<Parenting>(arc);
+			.component<Parenting>(arc)
+			.component<FEL>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}
