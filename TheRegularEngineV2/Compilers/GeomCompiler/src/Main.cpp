@@ -6,8 +6,8 @@
 
 int main(int argc, char** argv)
 {
+	std::cout << "===Runnning Geom Compiler===" << std::endl;
 	TRE::GeomDescriptorFile descriptorFile;
-	//descriptorFile.GenerateDescriptorFile("../../Assets/smooth_vase.obj");
 
 	// ./GeomCompiler.exe "descriptor path"
 	if (argc != 2)
@@ -17,11 +17,13 @@ int main(int argc, char** argv)
 	}
 	if(std::filesystem::exists(argv[1]) == false)
 	{
-		std::cout << "Error: descriptor file does not exist" << std::endl;
+		std::cout << "Error: descriptor file does not exist: " << argv[1] << std::endl;
 		return 0;
 	}
 	descriptorFile.ReadDescriptorFile(argv[1]);
 	TRE::GeomCompiler::Instance().Compile(descriptorFile.GetAssetPath());
 	TRE::Geom::Serialize(descriptorFile.GetGeomPath(), TRE::GeomCompiler::Instance().GetGeom());
+	std::cout << "===End of Geom Compiler===" << std::endl;
+
 	return 0;
 }

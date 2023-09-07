@@ -114,7 +114,7 @@ namespace TRE
 		Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		const Camera& camera = entity.get()->GetComponent<Camera>();
 		CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-		const float zoomSpeed = event._yoffset * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
+		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
 
 		cameraSystem->SetFocalLength(entity, camera.m_FocalLength - zoomSpeed);
 
