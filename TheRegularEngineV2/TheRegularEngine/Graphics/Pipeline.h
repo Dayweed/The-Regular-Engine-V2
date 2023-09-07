@@ -2,6 +2,7 @@
 #include "Buffer.h"
 #include "Descriptor.h"
 #include "RenderPass.h"
+#include "UniformBuffer.h"
 
 namespace TRE
 {

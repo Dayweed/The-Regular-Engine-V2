@@ -14,6 +14,42 @@
 #include "Geom.h"
 namespace TRE
 {
+	void AHHH()
+	{
+		Entity test = ECSManager::Instance().CreateEntity();
+		test->GetComponent<Properties>().m_Name = "AHH";
+		Entity ab = ECSManager::Instance().CreateEntity();
+		ab->GetComponent<Properties>().m_Name = "CARLON";
+		ab->AddComponent<FEL>().vec_i = { 4.5f, 2.f };
+		ab->GetComponent<FEL>().nestedstruct.arr_c = '{';
+	
+		Entity fun = ECSManager::Instance().CreateEntity();
+		fun->GetComponent<Properties>().m_Name = "fFNNN";
+		fun->AddComponent<FEL>().arr_i[1] = 1.2f;
+
+		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
+		}
+		std::string filePath{ECSManager::Instance().SaveEntities("Demo")};
+
+		ECSManager::Instance().LoadEntities(filePath);
+		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
+			if (obj->HasComponent<FEL>())
+			{
+				std::cout << "== " << obj->GetComponent<FEL>().nestedstruct.arr_c << "\n";
+				for (auto v : obj->GetComponent<FEL>().vec_i)
+				{
+					std::cout << "=== " << v << "\n";
+				}
+			}
+		}
+	}
+
 	void DemoScene()
 	{
 		Geom::RunCompiler("../Assets/smooth_vase.desc");
@@ -52,6 +88,8 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
+
+		//ECSManager::Instance().SaveEntities("Demo.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -110,6 +148,7 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
 		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
 		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
+		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
@@ -124,7 +163,7 @@ namespace TRE
 	{
 		// To remove eventually
 		//ECSManager::Instance().TESTRUN();
-
+		//AHHH();
 		DemoScene();
 
 		while (!m_Window->ShouldWindowClose())

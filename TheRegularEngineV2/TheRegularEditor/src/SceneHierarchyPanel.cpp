@@ -45,10 +45,9 @@ namespace TRE
 					//entities without children and parent
 					if (!ECSManager::Instance().GetEntities<Properties>()[i]->GetChildren().size())
 					{
-						const char* object_name = ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name.c_str();
 						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == ECSManager::Instance().GetEntities<Properties>()[i]) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 					
-						if (ImGui::TreeNodeEx(object_name, node_flag))
+						if (ImGui::TreeNodeEx(ECSManager::Instance().GetEntities<Properties>()[i]->GetName().c_str(), node_flag))
 						{
 							if (ImGui::IsItemClicked())
 							{
@@ -79,17 +78,17 @@ namespace TRE
 
 	}
 
-	void SceneHierarchyPanel::DisplayChildren(TRE::Entity const& CurrentEntity)
+	void SceneHierarchyPanel::DisplayChildren(TRE::Entity& CurrentEntity)
 	{
 		//parent has children
 		if (CurrentEntity->GetChildren().size())
 		{
-			const char* object_name = CurrentEntity->GetComponent<Properties>().m_Name.c_str();
 			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			if (ImGui::TreeNodeEx(object_name, Flags))
+			if (ImGui::TreeNodeEx(CurrentEntity->GetName().c_str(), Flags))
 			{
 				if (ImGui::IsItemClicked())
 				{
+					m_SelectionManager->SelectEntity(CurrentEntity);
 					m_SelectionContext = CurrentEntity;
 				}
 
@@ -105,11 +104,11 @@ namespace TRE
 		//its a leaf node
 		else
 		{
-			const char* object_name = CurrentEntity->GetComponent<Properties>().m_Name.c_str();
 			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			ImGui::TreeNodeEx(object_name, Flags | ImGuiTreeNodeFlags_Leaf);
+			ImGui::TreeNodeEx(CurrentEntity->GetName().c_str(), Flags | ImGuiTreeNodeFlags_Leaf);
 			if (ImGui::IsItemClicked())
 			{
+				m_SelectionManager->SelectEntity(CurrentEntity);
 				m_SelectionContext = CurrentEntity;
 			}
 
