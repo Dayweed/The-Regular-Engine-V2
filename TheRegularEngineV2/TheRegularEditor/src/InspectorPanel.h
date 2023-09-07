@@ -14,18 +14,20 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
+#include "SelectionManager.h"
 
 namespace TRE
 {
 	class InspectorPanel : public Panel
 	{
 		public:
-			InspectorPanel();
+			InspectorPanel(const std::shared_ptr<SelectionManager>& Selection_Manager);
 			~InspectorPanel();
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
 
 		private:
+			std::shared_ptr<SelectionManager> m_SelectionManager;
 	};
 }

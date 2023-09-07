@@ -11,9 +11,12 @@ namespace TRE
 			~PanelManager();
 
 			template <typename T>
-			void InsertPanel(std::string PanelName)
+			std::shared_ptr<Panel> operator=(std::shared_ptr<T> data);
+
+			template <typename T, typename... Args>
+			void InsertPanel(std::string PanelName, Args... data)
 			{
-				std::shared_ptr<Panel> ptr1 = std::make_shared<T>();
+				std::shared_ptr<Panel> ptr1 = std::make_shared<T>(std::forward<Args>(data)...);
 				m_StorePanels.insert({ PanelName, ptr1 });
 			}
 

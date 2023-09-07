@@ -3,6 +3,12 @@
 #include "Imgui/imgui.h"
 #include "imgui_impl_vulkan.h"
 #include "TREIncludes.h"
+#include "SceneHierarchyPanel.h"
+#include "ViewportPanel.h"
+#include "MenuBarPanel.h"
+#include "InspectorPanel.h"
+#include "ContentBrowserPanel.h"
+#include "ConsolePanel.h"
 
 namespace TRE
 {
@@ -11,6 +17,14 @@ namespace TRE
 		TRE_INFO("Editor Init");
 
 		m_PanelManager = std::make_unique<PanelManager>();
+		m_SelectionManager = std::make_shared<SelectionManager>();
+
+		m_PanelManager->InsertPanel<SceneHierarchyPanel>("Scene Hierarchy", m_SelectionManager);
+		m_PanelManager->InsertPanel<ViewportPanel>("Viewport");
+		m_PanelManager->InsertPanel<MenuBarPanel>("Menu Bar");
+		m_PanelManager->InsertPanel<InspectorPanel>("Inspector", m_SelectionManager);
+		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser");
+		m_PanelManager->InsertPanel<ConsolePanel>("Console");
 		m_PanelManager->Init();
 	}
 	

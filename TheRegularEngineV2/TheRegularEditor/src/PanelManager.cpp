@@ -1,11 +1,5 @@
 #include "pch.h"
 #include "PanelManager.h"
-#include "SceneHierarchyPanel.h"
-#include "ViewportPanel.h"
-#include "MenuBarPanel.h"
-#include "InspectorPanel.h"
-#include "ContentBrowserPanel.h"
-#include "ConsolePanel.h"
 
 namespace TRE
 {
@@ -19,17 +13,16 @@ namespace TRE
 		m_StorePanels.clear();
 	}
 
+	template <typename T>
+	std::shared_ptr<Panel> PanelManager::operator=(std::shared_ptr<T> data)
+	{
+		return data;
+	}
+
 	//render (show panel)
 	//shutdown (delete memory)
 	void PanelManager::Init()
 	{
-		InsertPanel<SceneHierarchyPanel>("Scene Hierarchy");
-		InsertPanel<ViewportPanel>("Viewport");
-		InsertPanel<MenuBarPanel>("Menu Bar");
-		InsertPanel<InspectorPanel>("Inspector");
-		InsertPanel<ContentBrowserPanel>("Content Browser");
-		InsertPanel<ConsolePanel>("Console");
-
 		for (auto x : m_StorePanels)
 		{
 			x.second->Init();
