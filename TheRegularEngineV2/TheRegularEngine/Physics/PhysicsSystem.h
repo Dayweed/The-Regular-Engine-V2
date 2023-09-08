@@ -14,7 +14,6 @@
 #include "Core/System.h"
 #include "Core/ECS.h"
 #include "PhysX/PxPhysicsAPI.h"
-#include "Vector2.h"
 #include "Vector3.h"
 
 // USE_PHYSX_PVD is not defined in Release
@@ -37,6 +36,23 @@ namespace TRE
 		physx::PxRigidActor* m_RigidActor = nullptr;
 		glm::vec3 m_HalfExtents = Vector3(0.5f);
 	};
+
+	// GOTTA SEPARATE ACTOR/BODY AND SHAPES!!!
+	// RIGIDBODY AND COLLIDERSSSSSS
+
+
+	//struct Rigidbody
+	//{
+	//	physx::PxRigidBody* m_thingy = nullptr;
+	//	float m_Mass = 1.0f;
+	//	float m_Drag = 0.0f;
+	//	float m_AngularDrag = 0.05f;
+	//	bool m_UseGravity = true;
+	//	bool m_IsKinematic = false;
+	//	// interpolation modes
+	//	// collision detection modes
+	//	// constraints - freeze position x,y,z & rotation x, y, z
+	//};
 
 	class PhysicsSystem : public ECSSystem
 	{
@@ -114,6 +130,10 @@ namespace TRE
 		DestructBoxCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructBoxCollider(const Entity& entity) const;
+
+		// void CreateRigidBody(const Entity& entity) const;
+
+		// void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;

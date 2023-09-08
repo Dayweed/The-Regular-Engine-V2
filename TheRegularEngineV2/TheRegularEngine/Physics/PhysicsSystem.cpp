@@ -126,13 +126,13 @@ namespace TRE
 			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
 #endif
 
-		//Entity e1 = ECSManager::Instance().CreateEntity("box 1");
+		//const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
 		//e1->GetComponent<Transform>().m_Position = {};
 		//ConstructBoxCollider(e1);
 
 		//Entity e2 = ECSManager::Instance().CreateEntity("box 1");
 		//e2->GetComponent<Transform>().m_Position = { 1,1,0 };
-		//ConstructBoxCollider(e2);
+		//ConstructSphereCollider(e2);
 
 		return m_IsReadyForUpdate = true;
 	}
@@ -143,6 +143,20 @@ namespace TRE
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
+
+		static std::time_t start_timer = std::time(nullptr);
+		auto const result = std::time(nullptr) - start_timer;
+		if (result >= 1)
+		{
+			auto vec = ECSManager::Instance().GetEntities<BoxCollider>();
+			if (!vec.empty())
+			{
+				auto collider = vec.front()->GetComponent<BoxCollider>();
+				auto rb = collider.m_RigidActor->is<physx::PxRigidBody>();
+				rb->addForce({ 0, 800, 0 });
+			}
+			std::time(&start_timer); // reset timer
+		}
 
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
@@ -170,29 +184,26 @@ namespace TRE
 		UpdateTransform.operator() < SphereCollider > ();
 	}
 
-	void PhysicsSystem::OnDestroyGO()
-	{
-
-	}
+	void PhysicsSystem::OnDestroyGO() {}
 
 	void OLDSTUFF_Update()
 	{
-		/*std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
-		for (Entity obj : ECSManager::Instance().GetEntities<Transform>())
-		{
-			std::cout << obj->GetComponent<Transform>().m_PosX << "|";
-		}
-		std::cout << "\n-------------------------------------------------------------------\n";*/
+		//std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
+		//for (Entity entity : ECSManager::Instance().GetEntities<Transform>())
+		//{
+		//	std::cout << entity->GetComponent<Transform>().m_Position.x << "|";
+		//}
+		//std::cout << "\n-------------------------------------------------------------------\n";
 	}
 
 	void OLDSTUFF_OnDestroyGO()
 	{
-		/*std::cout << "Destroy GOs that have transform is to be removed\n";
-		for (Entity obj : ECSManager::Instance().GetEntities<Transform, Removal>())
-		{
-			std::cout << "Found object " << obj->GetComponent<Properties>().m_Name << "\n";
-		}
-		std::cout << "================\n";*/
+		//std::cout << "Destroy GOs that have transform is to be removed\n";
+		//for (Entity entity : ECSManager::Instance().GetEntities<Transform, Removal>())
+		//{
+		//	std::cout << "Found object " << entity->GetComponent<Properties>().m_Name << "\n";
+		//}
+		//std::cout << "================\n";
 	}
 
 	void PhysicsSystem::Shutdown()
@@ -233,7 +244,7 @@ namespace TRE
 		physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(radius), *m_Material);
 		body->attachShape(*shape);
 
-		physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+		physx::PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
 
 		m_Scene->addActor(*body);
 		sphereCollider.m_RigidActor = body;
@@ -274,7 +285,7 @@ namespace TRE
 		physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(VEC3_CAST(physx::PxVec3, halfExtents)), *m_Material);
 		body->attachShape(*shape);
 
-		physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+		physx::PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
 
 		m_Scene->addActor(*body);
 		boxCollider.m_RigidActor = body;
@@ -288,6 +299,24 @@ namespace TRE
 		entity->GetComponent<BoxCollider>().m_RigidActor->release();
 		entity->RemoveComponent<BoxCollider>();
 	}
+
+	//void PhysicsSystem::CreateRigidBody(const Entity& entity) const
+	//{
+	//	auto& rb = entity->AddComponent<Rigidbody>();
+	//}
+
+	//void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
+	//{
+	//	physx::PxRigidBody* body = nullptr;
+	//	char result = 0;
+
+	//	// auto body = entity->GetComponent<BoxCollider>().m_RigidActor->is<physx::PxRigidBody>();
+	//	
+	//	if (result |= entity->HasComponent<BoxCollider>())
+	//		body = entity->GetComponent<BoxCollider>().m_RigidActor->is<physx::PxRigidBody>();
+	//	else if (result |= entity->HasComponent<SphereCollider>())
+	//		body = entity->GetComponent<SphereCollider>().m_RigidActor->is<physx::PxRigidBody>();
+	//}
 
 	//This function creates a stack of shapes
 	void PhysicsSystem::CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const
