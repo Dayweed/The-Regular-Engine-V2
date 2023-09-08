@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Engine.h"
 #include "ECS.h"
+#include "SceneManager.h"
 #include "MemoryManager.h"
 #include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
@@ -39,11 +40,12 @@ namespace TRE
 		{
 			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
 		}
-		std::string filePath{ECSManager::Instance().SaveEntities("Demo")};
+		std::string fileName{ "AHHHScene" };
+		SceneManager::Instance().SaveSceneAs(fileName);
 
-		std::cout << "File Path: > " << filePath << "\n";
+		std::cout << "File Name: > " << fileName << "\n";
 
-		ECSManager::Instance().LoadEntities("Demo");
+		SceneManager::Instance().LoadScene(fileName);
 		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{

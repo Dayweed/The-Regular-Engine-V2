@@ -79,5 +79,4 @@ namespace TRE
 		std::string m_CurrentScene{ SCENE_DEFAULT_NAME };
 		int m_DupDefaultName{};
 	};
-	static SceneManager* _scene_manager{ &SceneManager::Instance() };
 }

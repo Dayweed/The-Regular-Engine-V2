@@ -51,6 +51,9 @@
     <ClInclude Include="Core\Engine.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\FileSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Logger.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -177,6 +180,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Engine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\FileSystem.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Logger.cpp">

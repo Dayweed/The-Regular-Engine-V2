@@ -240,7 +240,7 @@ namespace TRE
 		return GetComponent<Properties>().m_GUID;
 	}
 
-	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath("../Scenes/" + filePath + ".json")
+	ECSOutputArchive::ECSOutputArchive(std::string fileName) : m_FileName(fileName)
 	{
 		m_Root = nlohmann::json::array();
 	}
@@ -274,7 +274,7 @@ namespace TRE
 			m_Root.push_back(m_Current);
 		}
 
-		std::filesystem::path path{ m_FilePath };
+		std::filesystem::path path{ m_FileName };
 		std::filesystem::create_directories(path.parent_path());
 		std::ofstream file(path);
 		file << m_Root;
@@ -288,12 +288,12 @@ namespace TRE
 
 	std::string ECSOutputArchive::GetFilePath()
 	{
-		return m_FilePath;
+		return m_FileName;
 	}
 
-	ECSInputArchive::ECSInputArchive(std::string filePath) : m_FilePath("../Scenes/" + filePath + ".json")
+	ECSInputArchive::ECSInputArchive(std::string fileName) : m_FileName(fileName)
 	{
-		std::ifstream file(m_FilePath);
+		std::ifstream file(m_FileName);
 		m_Root = nlohmann::json::parse(file);
 	}
 
@@ -560,7 +560,7 @@ namespace TRE
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		std::string file = ECSManager::Instance().SaveEntities("Lmao");
+		std::string file = ECSManager::Instance().SaveEntities("../Scenes/Lmao.json");
 
 		ECSManager::Instance().DestroyAll();
 
@@ -569,7 +569,7 @@ namespace TRE
 
 		std::cout << std::endl;
 		std::cout << "- Loading from input: " << GetEntities<Properties>().size() << "...\n";
-		ECSManager::Instance().LoadEntities("Lmao");
+		ECSManager::Instance().LoadEntities("../Scenes/Lmao.json");
 
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
