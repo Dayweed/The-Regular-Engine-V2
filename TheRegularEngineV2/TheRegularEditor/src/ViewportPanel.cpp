@@ -1,16 +1,17 @@
 #include "pch.h"
 #include "ViewportPanel.h"
 #include "EditorCamera.h"
-#include "Core/Engine.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include "Editor/ImGuizmo.h"
+#include "Ray3D.h"
 
 //To Delete
 #include "Graphics/Camera.h"
 namespace TRE
 {
-	ViewportPanel::ViewportPanel()
+	ViewportPanel::ViewportPanel(const std::shared_ptr<SelectionManager>& selection_Manager)
 	{
-
+		m_SelectionManager = selection_Manager;
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -83,7 +84,6 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
-		
 		if((event._key != (int)KeyButton::mouseButtonLeft) 
 			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
 			&& (event._key != (int)KeyButton::mouseButtonRight))
@@ -94,6 +94,8 @@ namespace TRE
 			if ((event._key != (int)KeyButton::mouseButtonLeft))
 			{
 				//Object picking
+				//Offset mouse position to the middle of the viewport as if in game
+				glm::vec2 mousePos = m_MousePos;
 
 			}
 		}
@@ -123,7 +125,6 @@ namespace TRE
 			cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetForwardVec());
 			cameraSystem->SetFocalLength(entity, 1.f);
 		}
-
 	}
 
 	void ViewportPanel::Init()
@@ -139,8 +140,27 @@ namespace TRE
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();
 
-		m_ViewportSize = ImGui::GetContentRegionAvail();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ViewportSize);
+		m_ImageSize = m_ViewportSize = ImGui::GetContentRegionAvail();
+		//Window resize -- force to follow 16:9 aspect ratio
+		const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
+		const float aspectRatio = static_cast<float>(windowConfig.width) / windowConfig.height;
+		if ((m_ViewportSize.x / m_ViewportSize.y) < aspectRatio)
+		{
+			m_ImageSize.x = m_ViewportSize.x;
+			m_ImageSize.y = m_ViewportSize.x / aspectRatio;
+		}
+		else
+		{
+			m_ImageSize.y = m_ViewportSize.y;
+			m_ImageSize.x = m_ViewportSize.y * aspectRatio;
+			
+		}
+		//Center the image
+		ImVec2 centerImage = m_ViewportSize - m_ImageSize + ImVec2(0, ImGui::GetCurrentWindow()->TitleBarHeight());
+		centerImage.x *= 0.5f;
+		centerImage.y *= 0.5f;
+		ImGui::SetCursorPos(centerImage);
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
 
 		m_IsViewportHovered = ImGui::IsWindowHovered();
 

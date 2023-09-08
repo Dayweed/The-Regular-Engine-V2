@@ -15,13 +15,14 @@
 #include "TREIncludes.h"
 #include "Panel.h"
 #include "EventSystem/Events/InputEvent.h"
+#include "SelectionManager.h"
 
 namespace TRE
 {
 	class ViewportPanel : public Panel
 	{
 		public:
-			ViewportPanel();
+			ViewportPanel(const std::shared_ptr<SelectionManager>& selection_Manager);
 			~ViewportPanel();
 			void Init() override;
 			void Update() override;
@@ -43,7 +44,15 @@ namespace TRE
 				return { xFactor, yFactor };
 			}
 		private:
+			std::shared_ptr<SelectionManager> m_SelectionManager;
+
 			ImVec2 m_ViewportSize;
+			ImVec2 m_ViewportPos;
+			ImVec2 m_ViewportMin;
+			ImVec2 m_ViewportMax;
+			ImVec2 m_ViewportCenter;
+			ImVec2 m_ImageSize;
+			ImVec2 m_ImagePos;
 			bool m_IsViewportHovered = false;
 			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};

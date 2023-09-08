@@ -51,6 +51,7 @@ namespace TRE
 			return;
 		}
 		std::getline(m_DescriptorFile, line);
+		std::getline(m_DescriptorFile, line);
 		if (line == "Texture Format:")
 		{
 			std::getline(m_DescriptorFile, line);

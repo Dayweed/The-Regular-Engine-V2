@@ -35,10 +35,10 @@ namespace TRE
 		RenderObject(RenderObject&) = delete;
 		void operator=(const RenderObject&) = delete;
 
-		static std::unique_ptr<RenderObject> CreateFromFile(const std::string& filePath);
 		static std::unique_ptr<RenderObject> CreateFromGeom(std::unique_ptr<Geom> geom);
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
+
 	private:
 		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffer(const std::vector<std::uint32_t>& indices);

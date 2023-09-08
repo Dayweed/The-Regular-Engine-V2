@@ -6,6 +6,6 @@ namespace TRE
 	class MeshRenderer
 	{
 	public:
-		std::shared_ptr<RenderObject> m_RenderObject;
+		std::shared_ptr<RenderObject>	m_RenderObject;
 	};
 }

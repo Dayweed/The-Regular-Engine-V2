@@ -31,7 +31,7 @@ namespace TRE
 				m_Scale.z * (c1 * c2),
 				0.0f,
 			},
-			{m_Position.x, m_Position.y, m_Position.z, 1.0f}
+			{m_Position.x, -m_Position.y, m_Position.z, 1.0f} // VUlkan's y axis points down, so we need to flip it
 		};
 	}
 
