@@ -1,5 +1,7 @@
 #pragma once
 
+#define SCENE_DEFAULT_NAME "New Scene"
+
 namespace TRE
 {
 	class SceneManager
@@ -14,8 +16,9 @@ namespace TRE
 		}
 
 		void NewScene();
-		void LoadScene(std::string filepath);
-		void SaveScene(std::string scenename);
+		void LoadScene(std::string sceneName);
+		void SaveSceneAs(std::string sceneName);
+		void SaveScene();
 
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
@@ -24,8 +27,11 @@ namespace TRE
 		void operator=(SceneManager const&) = delete;
 		void* operator new(size_t) = delete;
 
-		std::pair<std::string, std::string> m_CurrentScene; // Filepath, Scene Name
-		std::map<std::string, std::string> m_Scenes; // Filepath, Scene Name
+		//std::pair<std::string, std::string> m_CurrentScene; // Filepath, Scene Name
+		//std::map<std::string, std::string> m_Scenes; // Filepath, Scene Name
+
+		std::string m_CurrentScene{ SCENE_DEFAULT_NAME };
+		int m_DupDefaultName{};
 	};
 	static SceneManager* _scene_manager{ &SceneManager::Instance() };
 }

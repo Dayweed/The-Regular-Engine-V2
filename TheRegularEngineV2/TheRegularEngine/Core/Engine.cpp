@@ -41,7 +41,9 @@ namespace TRE
 		}
 		std::string filePath{ECSManager::Instance().SaveEntities("Demo")};
 
-		ECSManager::Instance().LoadEntities(filePath);
+		std::cout << "File Path: > " << filePath << "\n";
+
+		ECSManager::Instance().LoadEntities("Demo");
 		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
@@ -97,6 +99,8 @@ namespace TRE
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
+
+		SceneManager::Instance().SaveSceneAs("DemoScene");
 	}
 }
 #pragma endregion TO DELETE TEST

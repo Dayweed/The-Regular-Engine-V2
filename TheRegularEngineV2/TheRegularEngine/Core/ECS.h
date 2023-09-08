@@ -694,6 +694,7 @@ namespace TRE
 		void operator()(entt::entity ent, const T& t);
 		void Close();
 		std::string AsString();
+		std::string GetFilePath();
 
 	private:
 		nlohmann::json m_Root;
