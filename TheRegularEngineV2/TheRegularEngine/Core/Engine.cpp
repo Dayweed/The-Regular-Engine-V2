@@ -12,8 +12,15 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Geom.h"
+#include "Graphics/Shader.h"
 namespace TRE
 {
+	void TestShader()
+	{
+		Shader MyShader;
+		MyShader.LoadShader();
+	}
+
 	void AHHH()
 	{
 		Entity test = ECSManager::Instance().CreateEntity();
@@ -129,6 +136,8 @@ namespace TRE
 
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
+
+		TestShader();
 	}
 
 	Engine::~Engine()

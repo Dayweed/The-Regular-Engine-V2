@@ -10,13 +10,13 @@ layout(location = 1) out vec2 outTexCoord;
 
 layout(push_constant) uniform Push
 {
-	mat4 m_Model; // Model
-	mat4 m_NormalMat; //Normal mat for light
+	mat4 m_Model;
+	mat4 m_NormalMat;
 } push;
 
 layout(set = 0, binding = 0) uniform UBO
 {
-	mat4 m_ProjView; // Projection * View
+	mat4 m_ProjView;
 	vec3 m_DirectionToLight;
 }ubo;
 
