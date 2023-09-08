@@ -23,6 +23,7 @@ IncludeDir["stbi"] = "%{wks.location}/Dependencies/stbi_image"
 IncludeDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/include"
 IncludeDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/src"
 IncludeDir["SPIRVREFLECT"] = "%{wks.location}/Dependencies/SPIRV-Reflect"
+IncludeDir["Tracy"] = "%{wks.location}/Dependencies/Tracy"
 
 LibraryDir = {}
 LibraryDir["Assimp"] = "%{wks.location}/Dependencies/assimp/lib"

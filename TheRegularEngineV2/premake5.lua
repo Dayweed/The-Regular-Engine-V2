@@ -68,7 +68,8 @@ project "TheRegularEngine"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
-		"%{IncludeDir.SPIRVREFLECT}"
+		"%{IncludeDir.SPIRVREFLECT}",
+		"%{IncludeDir.Tracy}"
 		--"%{IncludeDir.Crunch}",
 	}
 
@@ -186,6 +187,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.SPIRVREFLECT}",
+		"%{IncludeDir.Tracy}",
 		--"%{IncludeDir.Crunch}",
 		"TheRegularEngine"
 	}
