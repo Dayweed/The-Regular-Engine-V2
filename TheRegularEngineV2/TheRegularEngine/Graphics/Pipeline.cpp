@@ -206,6 +206,7 @@ namespace TRE
 			BufferInfo.buffer = m_UBOBuffers[i]->GetBuffer();
 			BufferInfo.offset = 0;
 			BufferInfo.range = sizeof(UBO);
+			
 			m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[i]);
 			VkWriteDescriptorSet write{};
 			write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -280,6 +281,7 @@ namespace TRE
 	{
 		TextureManager::Instance().Shutdown();
 		auto Device = RendererContext::GetDevice();
+		vkDestroyDescriptorSetLayout(Device->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);
 	}

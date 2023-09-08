@@ -1,9 +1,11 @@
 #include "pch.h"
+#include "GLFW/glfw3.h"
 #include "Core/Logger.h"
 #include "InputHandler.h"
 #include "EventSystem/Events/InputEvent.h"
+#include "EventSystem/Events/ConsoleEvent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
-#include "GLFW/glfw3.h"
+
 #define DEBUG 1
 namespace TRE
 {
@@ -19,7 +21,7 @@ namespace TRE
 
 		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
 		{
-			TRE_CORE_INFO("Key pressed: {0}", key);
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
 		}
 	}

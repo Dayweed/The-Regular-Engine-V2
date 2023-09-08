@@ -123,6 +123,7 @@ namespace TRE
 		m_DeployedEntityList.clear();
 		m_UndeployedEntityList.clear();
 
+		ECSManager::Instance().m_EntityList.clear();
 		ECSManager::Instance().GetRegistry().clear();
 
 		// Successful deletion
@@ -185,17 +186,17 @@ namespace TRE
 
 			m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
 			m_DeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
-
+			
 			for (auto [id, source_storage] : reg.storage())
 			{
 				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
 				if (destination_storage != nullptr && source_storage.contains(srcEntity))
 				{
-					// Overwrite m_Entity if m_Entity already contains the component
 					if (!destination_storage->contains(obj->m_Entity))
 					{
 						destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
 					}
+					// Overwrite m_Entity if m_Entity already contains the component
 					else
 					{
 						destination_storage->erase(obj->m_Entity);

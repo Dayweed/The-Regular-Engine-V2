@@ -50,6 +50,50 @@ namespace TRE
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
 
+	struct NESTCOMP
+	{
+		char arr_c;
+
+		NESTCOMP() = default;
+		~NESTCOMP() = default;
+
+		// Can use NLOHMANN_DEFINE_TYPE_INTRUSIVE even with functions
+		void UselessFunction()
+		{
+			return;
+		}
+
+		// Use this if dont have struct/class variables
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(NESTCOMP, arr_c)
+	};
+
+	struct FEL
+	{
+		std::vector<float> vec_i{};
+		float arr_i[3]{};
+		NESTCOMP nestedstruct{};
+		std::string tobeignored{ "(>-<)" };
+
+		FEL() = default;
+		~FEL() = default;
+
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const FEL&f) // Serialize
+		{
+			j = nlohmann::json{
+				{ "vector", f.vec_i },
+				{ "array", f.arr_i },
+				{ "nested", f.nestedstruct }
+			};
+		}
+		friend void from_json(const nlohmann::json& j, FEL& f) // Deserialize
+		{
+				f.vec_i = j.at("vector").get<std::vector<float>>();
+				j.at("array").get_to(f.arr_i);
+				j.at("nested").get_to(f.nestedstruct);
+		}
+	};
+
 	struct Properties
 	{
 		std::string m_GUID{};
@@ -806,7 +850,6 @@ namespace TRE
 	template <typename T>
 	void ECSOutputArchive::operator()(entt::entity ent, const T& t)
 	{
-
 		if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
 			m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
@@ -821,12 +864,29 @@ namespace TRE
 	{
 		nlohmann::json componentData = m_Current[m_CurrentIdx * 2];
 
-		auto comp = componentData.get<T>();
-		t = comp;
+		if (!componentData.is_null() && (m_CurrentIdx * 2 - 1) < m_Current.size())
+		{
+			auto comp = componentData.get<T>();
+			t = comp;
 
-		// Last element is the entID
-		uint32_t entID = m_Current[m_CurrentIdx * 2 - 1];
-		ent = entt::entity(entID); 
-		m_CurrentIdx++;
+			// Last element is the entID
+			uint32_t entID = m_Current[m_CurrentIdx * 2 - 1];
+			ent = entt::entity(entID);
+			m_CurrentIdx++;
+		}
+		else if (componentData.is_null())
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is NULL");
+			assert(!componentData.is_null());
+		}
+		else
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string compName{ typeid(T).name() };
+			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " have an index [" + std::to_string(m_CurrentIdx * 2 - 1) + "] that is >= container size of [" + std::to_string(m_Current.size()) + "]\n");
+			assert((m_CurrentIdx * 2 - 1) < m_Current.size());
+		}
 	}
 }
