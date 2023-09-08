@@ -3,8 +3,8 @@
 
 namespace Collision
 {
-	extern class Box3D;
-	extern class Sphere3D;
+	class Box3D;
+	class Sphere3D;
 
 	class Ray3D
 	{

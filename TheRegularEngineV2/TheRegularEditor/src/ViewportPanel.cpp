@@ -25,8 +25,9 @@ namespace TRE
 		m_MousePos.y = static_cast<float>(event._ypos);
 
 		//Center mouse to the middle of Window
-		m_MousePos.x = m_MousePos.x - Engine::GetInstance().GetWindow()->GetWindowConfig().width / 2.f;
-		m_MousePos.y = m_MousePos.y - Engine::GetInstance().GetWindow()->GetWindowConfig().height / 2.f;
+		const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
+		m_MousePos.x = m_MousePos.x - windowConfig.width / 2.f;
+		m_MousePos.y = m_MousePos.y - windowConfig.height / 2.f;
 		m_MousePos.y = -m_MousePos.y;
 
 		if (m_IsViewportFocused == false)
@@ -44,7 +45,7 @@ namespace TRE
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
 				positionOffset.x *= -1;
 				positionOffset = glm::normalize(positionOffset);
-				const auto panSensitivity = PanSensitivity(m_ViewportSize.x, m_ViewportSize.y);
+				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
 				positionOffset *= m_PanSpeed;
@@ -67,7 +68,7 @@ namespace TRE
 				rotMouseEndPos = m_MousePos;
 				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
 				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset *= -1;
+				rotationOffset.y *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
@@ -84,23 +85,55 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
+		if (m_IsViewportHovered == false)
+			return;
+
 		if((event._key != (int)KeyButton::mouseButtonLeft) 
 			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
 			&& (event._key != (int)KeyButton::mouseButtonRight))
 			return;
+
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if ((event._key != (int)KeyButton::mouseButtonLeft))
+			if ((event._key == (int)KeyButton::mouseButtonLeft))
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
-				glm::vec2 mousePos = m_MousePos;
+				const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
 
+				ImVec2 worldSpaceMousePos = ImGui::GetMousePos();
+				worldSpaceMousePos -= m_WindowPos;
+				worldSpaceMousePos -= m_ImageOffset;
+				worldSpaceMousePos.x /= m_ImageSize.x;
+				worldSpaceMousePos.x -= 0.5f;
+				worldSpaceMousePos.y /= m_ImageSize.y;
+				worldSpaceMousePos.y = 1.f - worldSpaceMousePos.y;
+				worldSpaceMousePos.y -= 0.5f;
+				worldSpaceMousePos.x *= windowConfig.width;
+				worldSpaceMousePos.y *= windowConfig.height;
+				const glm::vec3 mousePos = { worldSpaceMousePos.x, worldSpaceMousePos.y, 0.f };
+
+				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+				const Camera& camera = entity->GetComponent<Camera>();
+				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position + mousePos, camera.GetForwardVec());
+				//std::cout <<"ray position " << cameraRay.GetOrigin().x << " " << cameraRay.GetOrigin().y << " " << cameraRay.GetOrigin().z << std::endl;
+
+				//Entity test2 = ECSManager::Instance().CreateEntity();
+				//test2->GetComponent<Properties>().m_Name = "ray";
+				//test2->GetComponent<Transform>().m_Position = cameraRay.GetOrigin() + cameraRay.GetDirection() * 5.f;
+				////std::cout << "ray position " << test2->GetComponent<Transform>().m_Position.x << " " << test2->GetComponent<Transform>().m_Position.y << " " << test2->GetComponent<Transform>().m_Position.z << std::endl;
+				//test2->GetComponent<Transform>().m_Scale = glm::vec3(100.f, 100.f, 100.f);
+				//test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
+				//test2->AddComponent<MeshRenderer>();
+				//auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
+				//std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
+				//test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 			}
 		}
 		else if (event._state == (int)KeyState::keyHeld)
 		{
+			
 		}
 		else if (event._state == (int)KeyState::keyReleased)
 		{
@@ -118,7 +151,7 @@ namespace TRE
 		CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-		cameraSystem->SetFocalLength(entity, camera.m_FocalLength - zoomSpeed);
+		cameraSystem->SetFocalLength(entity, camera.m_FocalLength + zoomSpeed);
 
 		if (camera.m_FocalLength < 1.f)
 		{
@@ -140,8 +173,23 @@ namespace TRE
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();
 
+		m_IsViewportHovered = ImGui::IsWindowHovered();
 		m_ImageSize = m_ViewportSize = ImGui::GetContentRegionAvail();
+		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
+		UpdateViewportSize();
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
+
+		ImGui::End();
+	}
+
+	void ViewportPanel::Shutdown()
+	{
+
+	}
+
+	void ViewportPanel::UpdateViewportSize()
+	{
 		const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
 		const float aspectRatio = static_cast<float>(windowConfig.width) / windowConfig.height;
 		if ((m_ViewportSize.x / m_ViewportSize.y) < aspectRatio)
@@ -153,22 +201,13 @@ namespace TRE
 		{
 			m_ImageSize.y = m_ViewportSize.y;
 			m_ImageSize.x = m_ViewportSize.y * aspectRatio;
-			
+
 		}
 		//Center the image
-		ImVec2 centerImage = m_ViewportSize - m_ImageSize + ImVec2(0, ImGui::GetCurrentWindow()->TitleBarHeight());
-		centerImage.x *= 0.5f;
-		centerImage.y *= 0.5f;
-		ImGui::SetCursorPos(centerImage);
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
-
-		m_IsViewportHovered = ImGui::IsWindowHovered();
-
-		ImGui::End();
-	}
-
-	void ViewportPanel::Shutdown()
-	{
-
+		m_ImageOffset = m_ViewportSize - m_ImageSize;
+		m_ImageOffset.x *= 0.5f;
+		m_ImageOffset.y *= 0.5f;
+		m_ImageOffset += ImGui::GetWindowSize() - m_ViewportSize;
+		ImGui::SetCursorPos(m_ImageOffset);
 	}
 }

@@ -43,16 +43,16 @@ namespace TRE
 
 				return { xFactor, yFactor };
 			}
+
+			void UpdateViewportSize();
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 
 			ImVec2 m_ViewportSize;
-			ImVec2 m_ViewportPos;
-			ImVec2 m_ViewportMin;
-			ImVec2 m_ViewportMax;
-			ImVec2 m_ViewportCenter;
 			ImVec2 m_ImageSize;
-			ImVec2 m_ImagePos;
+			ImVec2 m_ImageOffset;
+			ImVec2 m_WindowPos;
+			ImVec2 m_WorldMousePos;
 			bool m_IsViewportHovered = false;
 			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};

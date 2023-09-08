@@ -70,7 +70,7 @@ namespace TRE
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 
 		m_ImGuiCommandBuffers.resize(ImageCount);
-		for (int x = 0; x < ImageCount; x++)
+		for (uint32_t x = 0; x < ImageCount; x++)
 		{
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}

@@ -6,8 +6,17 @@ namespace TRE
 	void CameraHelper::UpdateViewMatrix(Camera& camera)
 	{
 		const glm::quat orientation = camera.GetOrientation();
-		camera.m_ViewMatrix = glm::translate(glm::mat4(1.f), camera.m_Position) * glm::toMat4(orientation);
+		const glm::vec3 position = camera.m_FocalPoint - camera.m_FocalLength * camera.GetForwardVec();
+		camera.m_ViewMatrix = glm::translate(glm::mat4(1.f), position) * glm::toMat4(orientation);
+		std::cout << "Camera Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+		std::cout << "focal point: " << camera.m_FocalPoint.x << ", " << camera.m_FocalPoint.y << ", " << camera.m_FocalPoint.z << std::endl;
+
 		camera.m_ViewMatrix = glm::inverse(camera.m_ViewMatrix);
+
+		glm::mat4 x = glm::mat4(1.f);
+		x[1][1] = -1;
+		x[2][2] = -1;
+		camera.m_ViewMatrix = glm::inverse(x) * camera.m_ViewMatrix;
 	}
 
 	void CameraHelper::UpdateProjectionMatrix(Camera& camera)
@@ -20,7 +29,7 @@ namespace TRE
 			assert(camera.m_AspectRatio < std::numeric_limits<float>::max());
 			assert(camera.m_Far > camera.m_Near);
 			camera.m_ProjectionMatrix = glm::mat4(1.f);
-			const float tanHalfFov = glm::tan(glm::radians(camera.m_Fov) / 2.f);
+			const float tanHalfFov = glm::tan(glm::radians(camera.m_Fov));
 			camera.m_ProjectionMatrix[0][0] = 1.f / (tanHalfFov * camera.m_AspectRatio);
 			camera.m_ProjectionMatrix[1][1] = 1.f / tanHalfFov;
 			camera.m_ProjectionMatrix[2][2] = camera.m_Far / (camera.m_Far - camera.m_Near);
@@ -69,22 +78,22 @@ namespace TRE
 		CameraHelper::SetViewDirection(camera, target - camera.m_Position);
 	}
 
-	const glm::quat& Camera::GetOrientation() const
+	const glm::quat Camera::GetOrientation() const
 	{
 		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
 	}
 
-	const glm::vec3& Camera::GetUpVec() const
+	const glm::vec3 Camera::GetUpVec() const
 	{
 		return glm::rotate(GetOrientation(), glm::vec3(0.f, 1.f, 0.f));
 	}
 
-	const glm::vec3& Camera::GetRightVec() const
+	const glm::vec3 Camera::GetRightVec() const
 	{
 		return glm::rotate(GetOrientation(), glm::vec3(1.f, 0.f, 0.f));
 	}
 
-	const glm::vec3& Camera::GetForwardVec() const
+	const glm::vec3 Camera::GetForwardVec() const
 	{
 		return glm::rotate(GetOrientation(), glm::vec3(0.f, 0.f, 1.f));
 	}
@@ -96,7 +105,6 @@ namespace TRE
 			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsDirty)
 			{
-				//NormalizeOrientation(go);
 				CameraHelper::UpdateViewMatrix(camera);
 				CameraHelper::UpdateProjectionMatrix(camera);
 				camera.m_IsDirty = false;
@@ -141,10 +149,8 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_FocalPoint = focalPoint;
 		camera.m_IsDirty = true;
-		//std::cout << "Focal Point: " << focalPoint.x << ", " << focalPoint.y << ", " << focalPoint.z << std::endl;
 		
 		SetPosition(go, focalPoint - camera.GetForwardVec() * camera.m_FocalLength);
-		//SetRotation(go, CameraHelper::SetViewDirection(camera, camera.m_FocalPoint - camera.m_Position));
 	}
 
 	void CameraSystem::SetFocalLength(Entity& go, const float focalLength)
@@ -152,7 +158,6 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_FocalLength = focalLength;
 		camera.m_IsDirty = true;
-		//std::cout << "Focal Length: " << focalLength << std::endl;
 
 		SetPosition(go, camera.m_FocalPoint - camera.GetForwardVec() * focalLength);
 	}

@@ -31,7 +31,7 @@ namespace TRE
 		(void)win_ptr;
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-		MouseCode key = static_cast<MouseCode>(button);
+		//MouseCode key = static_cast<MouseCode>(button);
 
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{

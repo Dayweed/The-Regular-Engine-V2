@@ -25,17 +25,14 @@ namespace TRE
 		glm::vec3 m_Rotation{ 0.f, 0.f, 0.f };
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
-		glm::vec2 m_ViewportSize{ 1920.f, 1080.f };
-		//glm::vec3 m_UpVec{ 0.f, 1.f, 0.f };
-		//glm::vec3 m_RightVec{ 1.f, 0.f, 0.f };
-		//glm::vec3 m_ForwardVec{ 0.f, 0.f, 1.f };
-		glm::vec3 m_FocalPoint{ 0.f, 0.f, 10.f };
-		float m_FocalLength{ 10.f };
+		glm::vec2 m_ViewportSize{ 1600.f, 900.f };
 		float m_Pitch{ 0.f };
 		float m_Yaw{ 0.f };
 		float m_Fov{ 30.f };	//Vertical fov - has to be converted to radians
 		float m_Near{ 0.1f };
 		float m_Far{ 1000.f };
+		float m_FocalLength{ 10.f };
+		glm::vec3 m_FocalPoint{ 0.f, 0.f, m_FocalLength };
 		float m_Left{ -1.f };
 		float m_Right{ 1.f };
 		float m_Bottom{ -1.f };
@@ -45,10 +42,10 @@ namespace TRE
 		bool m_IsMainCamera{ false };
 		bool m_IsDirty{ false };
 
-		const glm::quat& GetOrientation() const;
-		const glm::vec3& GetUpVec() const;
-		const glm::vec3& GetRightVec() const;
-		const glm::vec3& GetForwardVec() const;
+		const glm::quat GetOrientation() const;
+		const glm::vec3 GetUpVec() const;
+		const glm::vec3 GetRightVec() const;
+		const glm::vec3 GetForwardVec() const;
 	};
 	
 	class CameraSystem : public ECSSystem

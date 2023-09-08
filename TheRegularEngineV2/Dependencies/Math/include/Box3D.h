@@ -16,8 +16,8 @@ namespace Collision
 
 		const glm::vec3& GetCenter() const;
 		const glm::vec3& GetExtents() const;
-		const glm::vec3& GetMin() const;
-		const glm::vec3& GetMax() const;
+		const glm::vec3 GetMin() const;
+		const glm::vec3 GetMax() const;
 	private:
 		glm::vec3 m_Center;
 		glm::vec3 m_Extents;

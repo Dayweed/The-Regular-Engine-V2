@@ -38,12 +38,12 @@ namespace Collision
 		return m_Extents;
 	}
 
-	const glm::vec3& Box3D::GetMin() const
+	const glm::vec3 Box3D::GetMin() const
 	{
 		return m_Center - m_Extents;
 	}
 
-	const glm::vec3& Box3D::GetMax() const
+	const glm::vec3 Box3D::GetMax() const
 	{
 		return m_Center + m_Extents;
 	}

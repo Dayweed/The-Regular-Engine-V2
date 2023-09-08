@@ -63,9 +63,9 @@ namespace TRE
 
 	void DemoScene()
 	{
-		Geom::RunCompiler("../Assets/smooth_vase.desc");
+		Geom::RunCompiler("../Assets/mine.desc");
 		
-		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
+		auto geom = Geom::Deserialize("../Assets/mine.geom");
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
@@ -78,9 +78,9 @@ namespace TRE
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
-		test2->GetComponent<Transform>().m_Position.x = 2.f;
-		test2->GetComponent<Transform>().m_Position.y = 10.f;
-		test2->GetComponent<Transform>().m_Position.z = 50.f;
+		test2->GetComponent<Transform>().m_Position.x = 10.f;
+		test2->GetComponent<Transform>().m_Position.y = 30.f;
+		test2->GetComponent<Transform>().m_Position.z = 100.f;
 		test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
 		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
 		test2->AddComponent<MeshRenderer>();

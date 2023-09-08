@@ -20,7 +20,7 @@ layout(set = 0, binding = 0) uniform UBO
 	vec3 m_DirectionToLight;
 }ubo;
 
-const float AMBIENT_INTENSITY = 0.02;
+const float AMBIENT_INTENSITY = 0.22;
 
 void main() 
 {

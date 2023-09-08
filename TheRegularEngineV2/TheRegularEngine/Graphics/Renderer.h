@@ -18,7 +18,7 @@ namespace TRE
 	struct UBO
 	{
 		alignas(16) glm::mat4 m_ProjView{ 1.f }; //World to view to projection
-		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.5f, 0.f, 1.f)), 1.f);
+		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
 	};
 
 	class Renderer
