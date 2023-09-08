@@ -61,9 +61,6 @@ namespace TRE
         static void CheckMouseEvent(GLFWwindow* win_ptr, int button, int action);
 
         private:
-            static bool m_IsMouseHeld;
-            static std::unordered_map<MouseCode, bool> m_MouseEvent;
-            static std::unordered_map<MouseCode, bool> m_LastMouseEvent;
     };
 }
 

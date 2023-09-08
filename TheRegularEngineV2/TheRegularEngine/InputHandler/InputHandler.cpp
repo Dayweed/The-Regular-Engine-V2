@@ -9,9 +9,6 @@
 #define DEBUG 1
 namespace TRE
 {
-	bool InputHandler::m_IsMouseHeld = false;
-	std::unordered_map<InputHandler::MouseCode, bool> InputHandler::m_LastMouseEvent;
-	std::unordered_map<InputHandler::MouseCode, bool> InputHandler::m_MouseEvent;
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
 		(void)win_ptr;
@@ -21,7 +18,7 @@ namespace TRE
 
 		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
 		{
-			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
+			//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
 		}
 	}
