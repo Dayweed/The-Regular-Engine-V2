@@ -43,7 +43,7 @@ namespace TRE
 			{
 				panMouseEndPos = m_MousePos;
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
-				positionOffset.x *= -1;
+				//positionOffset.x *= -1;
 				positionOffset = glm::normalize(positionOffset);
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
@@ -68,7 +68,7 @@ namespace TRE
 				rotMouseEndPos = m_MousePos;
 				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
 				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset.y *= -1;
+				rotationOffset.x *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
@@ -151,7 +151,7 @@ namespace TRE
 		CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
 
-		cameraSystem->SetFocalLength(entity, camera.m_FocalLength + zoomSpeed);
+		cameraSystem->SetFocalLength(entity, camera.m_FocalLength - zoomSpeed);
 
 		if (camera.m_FocalLength < 1.f)
 		{

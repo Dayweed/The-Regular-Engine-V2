@@ -36,8 +36,7 @@ namespace TRE
 		//};
 
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		glm::vec3 pos = m_Position;
-		modelMatrix = glm::translate(modelMatrix, pos);
+		modelMatrix = glm::translate(modelMatrix, m_Position);
 		modelMatrix = glm::rotate(modelMatrix, m_Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 		modelMatrix = glm::rotate(modelMatrix, m_Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelMatrix = glm::rotate(modelMatrix, m_Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));

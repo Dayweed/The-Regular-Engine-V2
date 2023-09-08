@@ -158,8 +158,8 @@ namespace TRE
 
 		VkViewport viewport = {};
 		viewport.x = 0.0f;
-		viewport.y = (float)height;
-		viewport.height = -(float)height;
+		viewport.y = 0.0f;
+		viewport.height = (float)height;
 		viewport.width = (float)width;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;

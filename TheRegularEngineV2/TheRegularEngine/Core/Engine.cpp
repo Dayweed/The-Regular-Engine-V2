@@ -70,7 +70,7 @@ namespace TRE
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
 		test->GetComponent<Transform>().m_Position.z = 25.f;
-		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
+		test->GetComponent<Transform>().m_Scale = glm::vec3(5.f, 5.f, 5.f);
 		test->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
 		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
 		test->AddComponent<MeshRenderer>();
@@ -81,8 +81,8 @@ namespace TRE
 		test2->GetComponent<Transform>().m_Position.x = 10.f;
 		test2->GetComponent<Transform>().m_Position.y = 30.f;
 		test2->GetComponent<Transform>().m_Position.z = 100.f;
-		test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
-		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
+		test2->GetComponent<Transform>().m_Scale = glm::vec3(5.f, 5.f, 5.f);
+		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
 		test2->AddComponent<MeshRenderer>();
 		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
 		

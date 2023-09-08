@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Camera.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/matrix_access.hpp"
 
 namespace TRE
 {
@@ -8,15 +10,17 @@ namespace TRE
 		const glm::quat orientation = camera.GetOrientation();
 		const glm::vec3 position = camera.m_FocalPoint - camera.m_FocalLength * camera.GetForwardVec();
 		camera.m_ViewMatrix = glm::translate(glm::mat4(1.f), position) * glm::toMat4(orientation);
-		std::cout << "Camera Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
-		std::cout << "focal point: " << camera.m_FocalPoint.x << ", " << camera.m_FocalPoint.y << ", " << camera.m_FocalPoint.z << std::endl;
+		//std::cout << "Camera Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+		//std::cout << "focal point: " << camera.m_FocalPoint.x << ", " << camera.m_FocalPoint.y << ", " << camera.m_FocalPoint.z << std::endl;
 
 		camera.m_ViewMatrix = glm::inverse(camera.m_ViewMatrix);
 
 		glm::mat4 x = glm::mat4(1.f);
 		x[1][1] = -1;
 		x[2][2] = -1;
-		camera.m_ViewMatrix = glm::inverse(x) * camera.m_ViewMatrix;
+		//x[1] = glm::vec4(camera.GetUpVec(), 0.f);
+		//x[2] = glm::vec4(camera.GetForwardVec(), 0.f);
+		//camera.m_ViewMatrix = glm::inverse(x) * camera.m_ViewMatrix;
 	}
 
 	void CameraHelper::UpdateProjectionMatrix(Camera& camera)
