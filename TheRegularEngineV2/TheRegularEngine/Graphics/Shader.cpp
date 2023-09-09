@@ -97,6 +97,6 @@ namespace TRE
 		if (ReflectDataResult == SPV_REFLECT_RESULT_SUCCESS)
 			std::cout << "Got Dset" << std::endl;
 
-
+		spvReflectDestroyShaderModule(&Mod);
 	}
 }
