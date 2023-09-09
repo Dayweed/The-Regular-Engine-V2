@@ -83,20 +83,20 @@ namespace TRE
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->GetComponent<Transform>().m_Position;
-		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
-		cam->GetComponent<Camera>().m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		cam->GetComponent<Camera>().m_Fov = 30.0f;
+		cam->AddComponent<Camera>();
+
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
 
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
+		//ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(cam, test->GetComponent<Transform>().m_Position);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
 
-		SceneManager::Instance().SaveSceneAs("DemoScene");
+		//SceneManager::Instance().SaveSceneAs("DemoScene");
 	}
 }
 #pragma endregion TO DELETE TEST

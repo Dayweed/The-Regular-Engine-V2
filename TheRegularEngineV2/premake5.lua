@@ -159,6 +159,7 @@ project "TheRegularEditor"
 	defines 
 	{
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}

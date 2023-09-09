@@ -28,7 +28,8 @@ namespace TRE
 		glm::vec2 m_ViewportSize{ 1600.f, 900.f };
 		float m_Pitch{ 0.f };
 		float m_Yaw{ 0.f };
-		float m_Fov{ 30.f };	//Vertical fov - has to be converted to radians
+		float m_Roll{ 0.f };
+		float m_Fov{ 60.f };	//Vertical fov - has to be converted to radians
 		float m_Near{ 0.1f };
 		float m_Far{ 1000.f };
 		float m_FocalLength{ 10.f };
@@ -46,6 +47,7 @@ namespace TRE
 		const glm::vec3 GetUpVec() const;
 		const glm::vec3 GetRightVec() const;
 		const glm::vec3 GetForwardVec() const;
+		const glm::vec3 GetViewDirection() const;
 	};
 	
 	class CameraSystem : public ECSSystem
@@ -62,6 +64,7 @@ namespace TRE
 		void SetFocalLength(Entity& go, const float focalLength);
 		void SetPitch(Entity& go, const float pitch);
 		void SetYaw(Entity& go, const float yaw);
+		void SetRoll(Entity& go, const float roll);
 		void SetFov(Entity& go, const float fov);
 		void SetNear(Entity& go, const  float near);
 		void SetFar(Entity& go, const float far);
@@ -77,11 +80,15 @@ namespace TRE
 		const glm::vec3& GetRotation(const Entity& go) const;
 		const glm::mat4& GetViewMatrix(const Entity& go) const;
 		const glm::mat4& GetProjectionMatrix(const Entity& go) const;
+		const glm::mat4 GetInverseViewMatrix(const Entity& go) const;
+		const glm::mat4 GetInverseProjectionMatrix(const Entity& go) const;
+		const glm::mat4 GetInverseViewProjectionMatrix(const Entity& go) const;
 		const glm::vec2& GetViewportSize(const Entity& go) const;
 		const glm::vec3& GetFocalPoint(const Entity& go) const;
 		const float GetFocalLength(const Entity& go) const;
 		const float GetPitch(const Entity& go) const;
 		const float GetYaw(const Entity& go) const;
+		const float GetRoll(const Entity& go) const;
 		const float GetFov(const Entity& go) const;
 		const float GetNear(const Entity& go) const;
 		const float GetFar(const Entity& go) const;
