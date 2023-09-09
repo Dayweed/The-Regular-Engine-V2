@@ -6,6 +6,7 @@
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
 #include "Core/Logger.h"
+#include "ShaderCompiler.h"
 
 namespace TRE
 {
@@ -84,9 +85,17 @@ namespace TRE
 
 		CreateFrameBuffer(renderpass);
 
+		//std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
+		//VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+
+		//std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
+		//FragShader = ShaderCompiler::CompileShader("Resources/Shaders/template.frag");
+
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
+		//PipelineConfig.VertexShader = VertShader;
+		//PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 	}
 

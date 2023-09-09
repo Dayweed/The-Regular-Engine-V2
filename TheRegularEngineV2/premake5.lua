@@ -117,7 +117,9 @@ project "TheRegularEngine"
 		{
 			"%{Library.FMOD_Debug}",
 			"%{Library.RTTR_Debug}",
-			"%{Library.ShaderC_Debug}"
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}",
 		}
 		
 	filter "configurations:Release"
@@ -132,7 +134,9 @@ project "TheRegularEngine"
 		{
 			"%{Library.FMOD_Release}",
 			"%{Library.RTTR}",
-			"%{Library.ShaderC_Release}"
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}",
 		}
 
 project "TheRegularEditor"
