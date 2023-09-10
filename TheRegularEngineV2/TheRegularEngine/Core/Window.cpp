@@ -2,9 +2,31 @@
 #include "Window.h"
 #include "Core/Logger.h"
 #include "InputHandler/InputHandler.h"
+#include "GLFW/glfw3.h"
+#include <chrono>
 
 namespace TRE
 {
+	GLFWwindow* Window::GetWindowHandle() const
+	{
+		return m_WindowHandle;
+	}
+
+	WindowConfig& Window::GetWindowConfig()
+	{
+		return m_Config;
+	}
+
+	std::shared_ptr<RendererContext>& Window::GetRenderContext()
+	{
+		return m_RenderContext;
+	}
+
+	std::shared_ptr<SwapChain>& Window::GetSwapChain()
+	{
+		return m_SwapChain;
+	}
+
 	Window::Window(const WindowConfig& config) : m_Config(config)
 	{
 		if (int Error = glfwInit(); !Error)
@@ -20,30 +42,52 @@ namespace TRE
 		m_RenderContext = std::make_shared<RendererContext>();
 		m_RenderContext->Initialize();
 		
-		m_SwapChain.Initialize(m_RenderContext->GetVKInstance(), m_RenderContext->GetDeviceInternally(), m_WindowHandle);
-		m_SwapChain.CreateSwapChain(&m_Config.width, &m_Config.height, m_Config.Vsync);
+		m_SwapChain = std::make_shared<SwapChain>(m_RenderContext->GetDeviceInternally(), m_RenderContext->GetPhysicalDeviceInternally(), m_WindowHandle);
+		m_SwapChain->Initialize(m_Config.width, m_Config.height);
 
-		glfwSetKeyCallback(GetWindowHandle(), InputHandler::key_cb);
-		glfwSetMouseButtonCallback(GetWindowHandle(), InputHandler::mousebutton_cb);
-		glfwSetCursorPosCallback(GetWindowHandle(), InputHandler::mousepos_cb);
-		glfwSetScrollCallback(GetWindowHandle(), InputHandler::mousescroll_cb);
-		glfwSetCursorEnterCallback(GetWindowHandle(), InputHandler::mousefocus_cb);
+		//glfwSetInputMode(m_WindowHandle, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+		glfwSetWindowUserPointer(m_WindowHandle, &m_Config);
+		glfwSetKeyCallback(m_WindowHandle, InputHandler::KeyCb);
+		glfwSetMouseButtonCallback(m_WindowHandle, InputHandler::MouseButtonCb);
+		glfwSetCursorPosCallback(m_WindowHandle, InputHandler::MousePosCb);
+		glfwSetScrollCallback(m_WindowHandle, InputHandler::MouseScrollCb);
+		glfwSetCursorEnterCallback(m_WindowHandle, InputHandler::MouseFocusCb);
+		glfwSetFramebufferSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height)
+		{
+			auto& Config = *(WindowConfig*)glfwGetWindowUserPointer(window);
+
+			Config.width = width;
+			Config.height = height;
+			Config.resize = true;
+		});
 	}
 
 	Window::~Window()
 	{
-		m_SwapChain.DestroySwapChain();
+		m_SwapChain->DestroySwapChain();
 		glfwTerminate();
+	}
+
+	void Window::BeginFrame()
+	{
+		m_SwapChain->BeginFrame();
 	}
 
 	void Window::SwapBuffers()
 	{
-		m_SwapChain.Present();
+		m_SwapChain->Present();
 	}
 
 	void Window::PollEvents()
 	{
 		glfwPollEvents();
+		/*CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_1, GLFW_PRESS);
+		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_2, GLFW_PRESS);
+		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_3, GLFW_PRESS);*/
+		for (int i{}; i < 5; ++i)
+		{
+			InputHandler::CheckMouseEvent(m_WindowHandle, i, GLFW_PRESS);
+		}
 	}
 
 	int Window::ShouldWindowClose()
@@ -51,23 +95,16 @@ namespace TRE
 		return glfwWindowShouldClose(m_WindowHandle);
 	}
 
-	GLFWwindow* Window::GetWindowHandle() const
+	void Window::UpdateDeltaTime()
 	{
-		return m_WindowHandle;
+		static auto lastTime = std::chrono::high_resolution_clock::now();
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		m_DeltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
+		lastTime = currentTime;
 	}
 
-	const WindowConfig& Window::GetWindowConfig() const
+	float Window::GetDeltaTime() const
 	{
-		return m_Config;
-	}
-
-	std::shared_ptr<RendererContext> Window::GetRenderContext()
-	{
-		return m_RenderContext;
-	}
-
-	SwapChain Window::GetSwapChain()
-	{
-		return m_SwapChain;
+		return m_DeltaTime;
 	}
 }

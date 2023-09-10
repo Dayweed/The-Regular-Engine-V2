@@ -1,15 +1,20 @@
 #ifndef INPUTHANDLER_H
 #define INPUTHANDLER_H
-#include "pch.h"
-#include "GLFW/glfw3.h"
+
+struct GLFWwindow;
 namespace TRE
 {
     /*!*****************************************************************************
     *\brief 	Contains static functions for glfw's callback functions.
     *
     *******************************************************************************/
-    struct InputHandler
+    class InputHandler
     {
+        public:
+        enum class MouseCode
+        {
+            LEFTCLICK, RIGHTCLICK, MIDDLE, BOTTOMBUTTON, TOPBUTTON
+        };
         /*!*****************************************************************************
         *\brief     Response function for keyboard callbacks.
         *
@@ -19,7 +24,7 @@ namespace TRE
         *\param 	action      key action. (Pressed/Held/Released..)
         *\param 	mod         key mods. (Shift/Capslock/Ctrl..)
         *******************************************************************************/
-        static void key_cb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod);
+        static void KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod);
         /*!*****************************************************************************
         *\brief 	Response function for mouse button callbacks.
         *
@@ -28,7 +33,7 @@ namespace TRE
         *\param 	action      key action. (Pressed/Held/Released..)
         *\param 	mod         key mods. (Shift/Capslock/Ctrl..)
         *******************************************************************************/
-        static void mousebutton_cb(GLFWwindow* win_ptr, int button, int action, int mod);
+        static void MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod);
         /*!*****************************************************************************
         *\brief 	Response function for mouse scroll callbacks.
         *
@@ -36,7 +41,7 @@ namespace TRE
         *\param 	xoffset     new xoffset of scrollwheel.
         *\param 	yoffset     new yoffset of scrollwheel.
         *******************************************************************************/
-        static void mousescroll_cb(GLFWwindow* win_ptr, double xoffset, double yoffset);
+        static void MouseScrollCb(GLFWwindow* win_ptr, double xoffset, double yoffset);
         /*!*****************************************************************************
         *\brief 	Response function for mouse position callbacks.
         *
@@ -44,14 +49,21 @@ namespace TRE
         *\param 	xpos        new mouse position's x value.
         *\param 	ypos        new mouse position's y value.
         *******************************************************************************/
-        static void mousepos_cb(GLFWwindow* win_ptr, double xpos, double ypos);
+        static void MousePosCb(GLFWwindow* win_ptr, double xpos, double ypos);
         /*!*****************************************************************************
         *\brief 	Response function for when mouse is focus on application window.
         *
         *\param 	win_ptr     pointer to GLFW window.
         *\param 	entered     new window focus state.
         *******************************************************************************/
-        static void mousefocus_cb(GLFWwindow* win_ptr, int entered);
+        static void MouseFocusCb(GLFWwindow* win_ptr, int entered);
+
+        static void CheckMouseEvent(GLFWwindow* win_ptr, int button, int action);
+
+        private:
+            static bool m_IsMouseHeld;
+            static std::unordered_map<MouseCode, bool> m_MouseEvent;
+            static std::unordered_map<MouseCode, bool> m_LastMouseEvent;
     };
 }
 

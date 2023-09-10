@@ -4,18 +4,19 @@
 #include "RenderObject.h"
 #include "Core/Engine.h"
 #include "Descriptor.h"
-#include "Texture.h"
+#include "VulkanTexture.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
+	PipelineConfigurations& Pipeline::GetConfig()
+	{
+		return m_Config;
+	}
+
 	std::vector<VkDescriptorSet> Pipeline::GetDescriptorSets()
 	{
 		return m_DescriptorSets;
-	}
-
-	std::vector<std::shared_ptr<Buffer>> Pipeline::GetUBOBuffers()
-	{
-		return m_UBOBuffers;
 	}
 
 	VkPipelineLayout Pipeline::GetPipelineLayout()
@@ -28,7 +29,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(std::shared_ptr<RenderPass> RenderPass) : m_Renderpass(RenderPass)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
@@ -65,18 +66,18 @@ namespace TRE
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		inputAssembly.topology = GetVulkanTopology(m_Config.Primitive);
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkViewport viewport{};
-		viewport.width = static_cast<float>(SwapChain.GetWidth());
-		viewport.height = static_cast<float>(SwapChain.GetHeight());
+		viewport.width = static_cast<float>(SwapChain->GetWidth());
+		viewport.height = static_cast<float>(SwapChain->GetHeight());
 		viewport.minDepth = 0.f;
 		viewport.maxDepth = 1.f;
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = SwapChain.GetSwapChainExtent();
+		scissor.extent = SwapChain->GetSwapChainExtent();
 
 		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -141,7 +142,7 @@ namespace TRE
 		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = VK_TRUE;
 		depthStencil.depthWriteEnable = VK_TRUE;
-		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
 		depthStencil.depthBoundsTestEnable = VK_FALSE;
 		depthStencil.stencilTestEnable = VK_FALSE;
 		depthStencil.minDepthBounds = 0.f;
@@ -156,7 +157,7 @@ namespace TRE
 			.Build();
 
 		//Create descriptor set layout
-		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain().GetImageCount();
+		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_UBOBuffers.resize(imageCount);
 		for (int i = 0; i < m_UBOBuffers.size(); i++)
 		{
@@ -164,31 +165,71 @@ namespace TRE
 			m_UBOBuffers[i]->Map();
 		}
 
-		m_DescriptorSetLayouts.push_back(DescriptorSetLayout::Builder()
-			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-			.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-			.Build());
+		VkDescriptorSetLayoutBinding layoutBinding1{};
+		layoutBinding1.binding = 0;
+		layoutBinding1.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		layoutBinding1.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		layoutBinding1.descriptorCount = 1;
 
-		//TO DELETE
-		_texture_manager->LoadTexture("../Assets/Test.png", "Test");
+		VkDescriptorSetLayoutBinding layoutBinding2{};
+		layoutBinding2.binding = 1;
+		layoutBinding2.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		layoutBinding2.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		layoutBinding2.descriptorCount = 1;
 
-		int descriptorCount = imageCount;
-		m_DescriptorSets.resize(descriptorCount);
-		for (int i = 0; i < m_DescriptorSets.size(); ++i)
+		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings
 		{
-			auto bufferInfo = m_UBOBuffers[i]->DescriptorInfo(sizeof(UBO), 0);
-			VkDescriptorImageInfo imageInfo = _texture_manager->GetTexture("Test")->GetDescriptorImageInfo();
+			layoutBinding1, layoutBinding2
+		};
 
-			DescriptorWriter(*(m_DescriptorSetLayouts[0]), *m_DescriptorPool)
-				.WriteBuffer(0, &bufferInfo)
-				.WriteImage(1, &imageInfo)
-				.Build(m_DescriptorSets[i]);
+		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
+
+		if (vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create descriptor set layout");
 		}
 
-		std::vector<VkDescriptorSetLayout> layouts{};
-		for (auto& x : m_DescriptorSetLayouts)
+		//TO DELETE
+		Texture::RunCompiler("../Assets/Test.desc");
+		auto texture = Texture::Deserialize("../Assets/Test.DDS");
+		TextureManager::Instance().LoadTexture(std::move(texture));
+
+		m_DescriptorSets.resize(imageCount);
+		for (int i = 0; i < m_DescriptorSets.size(); ++i)
 		{
-			layouts.push_back(x->GetDescriptorSetLayout());
+			VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
+
+			VkDescriptorBufferInfo BufferInfo{};
+			BufferInfo.buffer = m_UBOBuffers[i]->GetBuffer();
+			BufferInfo.offset = 0;
+			BufferInfo.range = sizeof(UBO);
+			
+			m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[i]);
+			VkWriteDescriptorSet write{};
+			write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			write.dstBinding = 0;
+			write.pBufferInfo = &BufferInfo;
+			write.descriptorCount = 1;
+			write.dstSet = m_DescriptorSets[i];
+
+			VkWriteDescriptorSet writeimage{};
+			writeimage.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeimage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writeimage.dstBinding = 1;
+			writeimage.pImageInfo = &imageInfo;
+			writeimage.descriptorCount = 1;
+			writeimage.dstSet = m_DescriptorSets[i];
+
+			std::vector<VkWriteDescriptorSet> Writes
+			{
+				write, writeimage
+			};
+
+			vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 		}
 
 		//Create pipeline layout
@@ -199,8 +240,8 @@ namespace TRE
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(layouts.size());
-		pipelineLayoutInfo.pSetLayouts = layouts.data();
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -222,13 +263,14 @@ namespace TRE
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_Layout;
-		pipelineInfo.renderPass = m_Renderpass->GetHandle();
+		pipelineInfo.renderPass = m_Config.RenderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS)
+		if (auto Result = vkCreateGraphicsPipelines(Device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create graphics pipeline!");
+			TRE_CORE_CRITICAL("Pipeline failed to create");
+			assert(Result == VK_SUCCESS);
 		}
 
 		vkDestroyShaderModule(Device->GetLogicalDevice(), fragShaderModule, nullptr);
@@ -237,8 +279,9 @@ namespace TRE
 
 	Pipeline::~Pipeline()
 	{
-		_texture_manager->Shutdown();
+		TextureManager::Instance().Shutdown();
 		auto Device = RendererContext::GetDevice();
+		vkDestroyDescriptorSetLayout(Device->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);
 	}
@@ -276,5 +319,22 @@ namespace TRE
 		file.close();
 
 		return buffer;
+	}
+
+	VkPrimitiveTopology Pipeline::GetVulkanTopology(PrimitiveType TopologyType)
+	{
+		switch (TopologyType)
+		{
+			case PrimitiveType::Point:			return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+			case PrimitiveType::Lines:			return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+			case PrimitiveType::LinesStrip:		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+			case PrimitiveType::Triangles:		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+			case PrimitiveType::TrianglesStrip:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			case PrimitiveType::TranglesFan:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
+		}
+
+		TRE_CORE_ERROR("Unknown toplogy");
+		assert(false);
+		return VK_PRIMITIVE_TOPOLOGY_MAX_ENUM;
 	}
 }

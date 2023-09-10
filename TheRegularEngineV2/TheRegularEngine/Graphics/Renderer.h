@@ -1,6 +1,6 @@
 #pragma once
-#include "Graphics/Device.h"
-#include "Graphics/VulkanEditor.h"
+#include "Device.h"
+#include "VulkanEditor.h"
 #include "RenderObject.h"
 #include "Descriptor.h"
 #include "RenderPass.h"
@@ -18,7 +18,7 @@ namespace TRE
 	struct UBO
 	{
 		alignas(16) glm::mat4 m_ProjView{ 1.f }; //World to view to projection
-		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.5f, 0.f, 1.f)), 1.f);
+		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
 	};
 
 	class Renderer
@@ -35,7 +35,7 @@ namespace TRE
 
 			std::vector<char> readFile(const std::string& filename);
 			VkShaderModule CreateShader(std::vector<char>& code);
-
+			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
 			VkSampler GetSampler();
@@ -49,10 +49,10 @@ namespace TRE
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
-			std::shared_ptr<RenderPass> m_Renderpass;
 			VkPipeline m_GraphicsPipeline;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
+			
 
 			std::vector<VkFramebuffer> m_FrameBuffer;
 

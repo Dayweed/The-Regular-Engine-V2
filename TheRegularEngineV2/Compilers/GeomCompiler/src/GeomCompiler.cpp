@@ -4,9 +4,113 @@
 #include <filesystem>
 #include <functional>
 #include <fstream>
+#include <sstream>
+#include <iostream>
+
+namespace
+{
+	std::vector<std::string> SplitString(const std::string& str, const std::string& delimiter)
+	{
+		std::vector<std::string> strings;
+		std::string::size_type pos = 0;
+		std::string::size_type prev = 0;
+		while ((pos = str.find(delimiter, prev)) != std::string::npos)
+		{
+			strings.push_back(str.substr(prev, pos - prev));
+			prev = pos + 1;
+		}
+		strings.push_back(str.substr(prev));
+		return strings;
+	}
+}
 
 namespace TRE
 {
+	void GeomDescriptorFile::Write()
+	{
+		m_DescriptorFile << "Geom File Path:\n";
+		std::string geomPath = m_AssetPath.substr(0, m_AssetPath.find_last_of("."));
+		geomPath += ".geom";
+		m_DescriptorFile << geomPath << "\n\n";
+		m_DescriptorFile << "Scale:\n";
+		m_DescriptorFile << m_Scale.x << ", " << m_Scale.y << ", " << m_Scale.z << "\n\n";
+		m_DescriptorFile << "Rotation:\n";
+		m_DescriptorFile << m_Rotation.x << ", " << m_Rotation.y << ", " << m_Rotation.z << "\n\n";
+		m_DescriptorFile << "Translation:\n";
+		m_DescriptorFile << m_Position.x << ", " << m_Position.y << ", " << m_Position.z << "\n\n";
+		//m_DescriptorFile << "Mesh rename:\n";
+		//m_DescriptorFile << (m_MeshRename ? "True" : "False") << std::endl << std::endl;
+		//m_DescriptorFile << "Mesh name:\n";
+		//m_DescriptorFile << m_MeshName << std::endl << std::endl;
+	}
+
+	void GeomDescriptorFile::Read()
+	{
+		std::string line;
+		std::getline(m_DescriptorFile, line);
+		if (line == "Geom File Path:")
+		{
+			std::getline(m_DescriptorFile, line);
+			m_GeomPath = line;
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Geom file is not valid" << std::endl;
+			return;
+		}
+		std::getline(m_DescriptorFile, line);
+		if (line == "Scale:")
+		{
+			std::getline(m_DescriptorFile, line);
+			std::vector<std::string> scaleContainer = SplitString(line, ", ");
+		
+			m_Scale.x = std::stof(scaleContainer[0]);
+			m_Scale.y = std::stof(scaleContainer[1]);
+			m_Scale.z = std::stof(scaleContainer[2]);
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Scale missing" << std::endl;
+			return;
+		}
+		std::getline(m_DescriptorFile, line);
+		if (line == "Rotation:")
+		{
+			std::getline(m_DescriptorFile, line);
+			std::vector<std::string> rotateContainer = SplitString(line, ", ");
+
+			m_Rotation.x = std::stof(rotateContainer[0]);
+			m_Rotation.y = std::stof(rotateContainer[1]);
+			m_Rotation.z = std::stof(rotateContainer[2]);
+
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Rotation missing" << std::endl;
+			return;
+		}
+		std::getline(m_DescriptorFile, line);
+		if (line == "Translation:")
+		{
+			std::getline(m_DescriptorFile, line);
+			std::vector<std::string> translationContainer = SplitString(line, ", ");
+
+			m_Position.x = std::stof(translationContainer[0]);
+			m_Position.y = std::stof(translationContainer[1]);
+			m_Position.z = std::stof(translationContainer[2]);
+
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Translation missing" << std::endl;
+			return;
+		}
+	}
+
 	void GeomCompiler::Compile(const std::string& filename)
 	{
 		Assimp::Importer importer;
@@ -18,13 +122,17 @@ namespace TRE
 			| aiProcess_CalcTangentSpace           // calculate tangents and bitangents if possible (definetly you will meed UVs)
 			| aiProcess_RemoveRedundantMaterials   // remove redundant materials
 			| aiProcess_FindInvalidData            // detect invalid model data, such as invalid normal vectors
-			//| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
+			| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
 			;
 
 		m_filePath = filename;
 		m_Scene = importer.ReadFile(filename, flag);
-
-		assert(m_Scene != nullptr && "Error loading model");
+		if (m_Scene == nullptr)
+		{
+			std::cout << "Error loading model: " << filename << std::endl;
+			return;
+		}
+		//assert(m_Scene != nullptr && "Error loading model");
 
 		if (SanityCheck())
 		{
@@ -33,27 +141,6 @@ namespace TRE
 		}
 
 		ImportData();
-	}
-
-	void GeomCompiler::Serialize(const std::string& filePath)
-	{
-		std::string_view path = filePath;
-		std::string_view name = path;
-		name.remove_prefix(name.find_last_of('/') + 1);
-		name.remove_suffix(name.size() - name.find_last_of('.'));
-
-		std::ofstream file(path, std::ios::binary);
-
-		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
-		//file.write(reinterpret_cast<const char*>(&m_Geom->pSubMesh), sizeof(Geom::SubMesh) * m_Geom->nSubMeshes);
-		file.write(reinterpret_cast<const char*>(&m_Geom->nPosition), sizeof(std::uint32_t));
-		file.write(reinterpret_cast<const char*>(m_Geom->pPosition), sizeof(Geom::Position) * m_Geom->nPosition);
-		file.write(reinterpret_cast<const char*>(&m_Geom->nExtras), sizeof(std::uint32_t));
-		file.write(reinterpret_cast<const char*>(m_Geom->pExtra), sizeof(Geom::Extra) * m_Geom->nExtras);
-		file.write(reinterpret_cast<const char*>(&m_Geom->nIndices), sizeof(std::uint32_t));
-		file.write(reinterpret_cast<const char*>(m_Geom->pIndices), sizeof(std::uint32_t) * m_Geom->nIndices);
-
-		file.close();
 	}
 
 	bool GeomCompiler::SanityCheck()
@@ -196,7 +283,8 @@ namespace TRE
 					Vertex.Tangent.B = static_cast<std::uint8_t>(static_cast<std::int8_t>(Vertex.fTangent.z < 0 ? std::max(-128, static_cast<int>(Vertex.fTangent.z * 128)) : std::min(127, static_cast<int>(Vertex.fTangent.z * 127))));
 					Vertex.Tangent.A = 0;
 
-					assert(AssimpMesh.HasNormals());
+					if (AssimpMesh.HasNormals() == false)
+						std::cout << "Model contains no normals" << std::endl;
 					Vertex.Normal.R = static_cast<std::uint8_t>(static_cast<std::int8_t>(Vertex.fNormal.x < 0 ? std::max(-128, static_cast<int>(Vertex.fNormal.x * 128)) : std::min(127, static_cast<int>(Vertex.fNormal.x * 127))));
 					Vertex.Normal.G = static_cast<std::uint8_t>(static_cast<std::int8_t>(Vertex.fNormal.y < 0 ? std::max(-128, static_cast<int>(Vertex.fNormal.y * 128)) : std::min(127, static_cast<int>(Vertex.fNormal.y * 127))));
 					Vertex.Normal.B = static_cast<std::uint8_t>(static_cast<std::int8_t>(Vertex.fNormal.z < 0 ? std::max(-128, static_cast<int>(Vertex.fNormal.z * 128)) : std::min(127, static_cast<int>(Vertex.fNormal.z * 127))));
@@ -529,6 +617,7 @@ namespace TRE
 				std::size_t vertSize = tempGeom->Meshes[i].Submeshes[j].Position.size();
 				std::size_t extraSize = tempGeom->Meshes[i].Submeshes[j].Extra.size();
 				std::size_t indexSize = tempGeom->Meshes[i].Submeshes[j].Indices.size();
+				(void)extraSize;
 
 				const auto& submesh = tempGeom->Meshes[i].Submeshes[j];
 

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EditorSystem.h"
 #include "TREIncludes.h"
 #include "EntryPoint.h"

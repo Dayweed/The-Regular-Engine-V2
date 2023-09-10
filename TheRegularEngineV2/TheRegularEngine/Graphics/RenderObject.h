@@ -1,9 +1,6 @@
 #pragma once
-#include "pch.h"
 #include "Buffer.h"
 #include "Geom.h"
-
-#include <functional>
 
 namespace TRE
 {
@@ -30,8 +27,6 @@ namespace TRE
 		{
 			std::vector<Vertex> m_Vertices{};
 			std::vector<std::uint32_t> m_Indices{};
-
-			void LoadRenderObject(const std::string& filePath);
 		};
 
 		RenderObject(const Builder& builder);
@@ -40,10 +35,10 @@ namespace TRE
 		RenderObject(RenderObject&) = delete;
 		void operator=(const RenderObject&) = delete;
 
-		static std::unique_ptr<RenderObject> CreateFromFile(const std::string& filePath);
 		static std::unique_ptr<RenderObject> CreateFromGeom(std::unique_ptr<Geom> geom);
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
+
 	private:
 		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffer(const std::vector<std::uint32_t>& indices);

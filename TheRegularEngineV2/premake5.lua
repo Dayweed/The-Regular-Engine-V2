@@ -20,7 +20,9 @@ group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
 include "Dependencies/MeshOptimizer"
-include "Compilers/CompilerLib"
+--include "Dependencies/Crunch"
+include "Dependencies/CompilerLib"
+include "Compilers/TextureCompiler"
 include "Compilers/GeomCompiler"
 group ""
 
@@ -57,15 +59,18 @@ project "TheRegularEngine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
 		"%{IncludeDir.Math}",
-		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
+		"%{IncludeDir.Nlohmannjson}",
+		"%{IncludeDir.RTTR}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.tinyobj}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.SPIRVREFLECT}",
+		"%{IncludeDir.Tracy}"
+		--"%{IncludeDir.Crunch}",
 	}
 
 	defines
@@ -73,29 +78,30 @@ project "TheRegularEngine"
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}
 
 	links
 	{ 
-		"ImGui",
-		"MeshOptimizer",
 		"%{Library.Assimp}",
 		"%{Library.Freetype}",
 		"%{Library.GLFW}",
 		"%{Library.Mono}",
 		"%{Library.PhysX_64}",
-		"%{Library.PhysX_Foundation}",
-		"%{Library.PhysX_Extension}",
 		"%{Library.PhysX_Character}",
 		"%{Library.PhysX_Common}",
-		"%{Library.PhysX_Cooking}",
+		--"%{Library.PhysX_Cooking}",
+		"%{Library.PhysX_Extension}",
+		"%{Library.PhysX_Foundation}",
 		"%{Library.PhysX_Pvd}",
 		"%{Library.PhysX_TaskStatic}",
 		"%{Library.PhysX_VehicleStatic}",
 		"%{Library.PhysX_Vehicle2}",
+		"%{Library.RTTR}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
-		"%{Library.Compiler}",	
+		"%{Library.Compiler}",
+		--"%{Library.Crunch}",	
 	}
 
 	filter "configurations:Debug"
@@ -109,9 +115,13 @@ project "TheRegularEngine"
 
 		links
 		{
-			"%{Library.FMOD_Debug}"
+			"%{Library.FMOD_Debug}",
+			"%{Library.RTTR_Debug}",
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}",
 		}
-
+		
 	filter "configurations:Release"
 		optimize "On"
 
@@ -122,7 +132,11 @@ project "TheRegularEngine"
 
 		links
 		{
-			"%{Library.FMOD_Release}"
+			"%{Library.FMOD_Release}",
+			"%{Library.RTTR}",
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}",
 		}
 
 project "TheRegularEditor"
@@ -138,13 +152,16 @@ project "TheRegularEditor"
 
 	links 
 	{ 
-		"TheRegularEngine"
+		"TheRegularEngine",
+		"ImGui",
 	}
 
 	defines 
 	{
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}
 
 	files 
@@ -158,7 +175,6 @@ project "TheRegularEditor"
 	includedirs 
 	{
 		"%{prj.name}/src",
-		"TheRegularEngine",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		"%{IncludeDir.Freetype}",
@@ -166,23 +182,28 @@ project "TheRegularEditor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuiBackEnd}",
-		"%{IncludeDir.Math}",
-		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
+		"%{IncludeDir.Nlohmannjson}",
+		"%{IncludeDir.RTTR}",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.SPIRVREFLECT}",
+		"%{IncludeDir.Tracy}",
+		--"%{IncludeDir.Crunch}",
+		"TheRegularEngine"
 	}
 
 	postbuildcommands
 	{
 		'{COPY} "%{Binaries.PhysX_64}" "%{cfg.targetdir}"',
-		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Common}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Cooking}" "%{cfg.targetdir}"',
-		'{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
+		-- '{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
 	}
 
 	filter "configurations:Debug"
@@ -196,6 +217,7 @@ project "TheRegularEditor"
 
 		links
 		{
+			"%{Library.RTTR_Debug}",
 			"%{Library.FMOD_Debug}"
 		}
 
@@ -204,6 +226,7 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.RTTR_Debug}" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -216,6 +239,7 @@ project "TheRegularEditor"
 
 		links
 		{
+			"%{Library.RTTR}",
 			"%{Library.FMOD_Release}"
 		}
 
@@ -224,6 +248,7 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.RTTR}" "%{cfg.targetdir}"',
 		}
 
 project "TRE-ScriptCore"

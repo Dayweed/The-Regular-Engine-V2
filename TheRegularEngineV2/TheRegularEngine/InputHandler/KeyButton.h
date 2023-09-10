@@ -165,7 +165,7 @@ namespace TRE
     {
         keyReleased = 0,
         keyPressed =  1,
-        keyRepeated = 2,
+        keyHeld = 2,
     };
     /*!*****************************************************************************
     *\brief 	Mod enum of the key interaction.
@@ -181,6 +181,12 @@ namespace TRE
         NUMLOCK_SHIFT = 33,
         NUMLOCK_CONTROL = 34,
         NUMLOCK_CAPSLOCK = 48
+    };
+
+    enum TotalKeys
+    {
+        MAXKEY = 512,
+        MAXMOUSEKEY = 32
     };
 }
 

@@ -12,7 +12,8 @@ project "Math"
 
 	includedirs
     {
-        "include"
+        "include",
+		"%{IncludeDir.glm}"
     }
 
 	files

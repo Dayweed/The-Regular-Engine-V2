@@ -1,9 +1,24 @@
+/*!
+	@file      PhysicsSystem.h
+	@author    Prashanth Subrahmanyam Sharma (Code Contribution 100%)
+	@email     p.sharma@digipen.edu
+	@date      03/09/2023
+	@brief     This file contains the definition of the PhysicsSystem
+			   class, which is an interface for PhysX functions.
+
+	Copyright (C) 2023 DigiPen Institute of Technology.
+	Reproduction or disclosure of this file or its contents without the
+	prior written consent of DigiPen Institute of Technology is prohibited.
+************************************************************************/
 #pragma once
 #include "Core/System.h"
+#include "Core/ECS.h"
 #include "PhysX/PxPhysicsAPI.h"
+#include "Vector2.h"
+#include "Vector3.h"
 
 // USE_PHYSX_PVD is not defined in Release
-#if defined(DEBUG) | defined(_DEBUG)
+#ifdef _DEBUG
 #define USE_PHYSX_PVD 0
 #endif
 
@@ -20,65 +35,90 @@ namespace TRE
 	struct BoxCollider
 	{
 		physx::PxRigidActor* m_RigidActor = nullptr;
-		glm::vec3 m_HalfExtents = glm::vec3(1);
+		glm::vec3 m_HalfExtents = Vector3(0.5f);
 	};
 
 	class PhysicsSystem : public ECSSystem
 	{
 	public:
 		PhysicsSystem();
-		~PhysicsSystem() override;
 
 		bool TESTUpdate();
 		void Update() override;
-		// void RenderImgui() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
 
-		/*!
-		\brief	Creates a SphereCollider component for the given entity.
-		\author	Prashanth S. Sharma p.sharma@digipen.edu
+		/* !
+		@function      ConstructSphereCollider
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
-		\param	[in,out] go		The `const Entity&` representing the entity to create the component for.
-		\param	[in]	 radius	The `const float` representing the collider's radius.
-		\param	[in]	 offset	The offset from the entity's position, if applicable.
-		*/
-		void ConstructSphereCollider(const Entity& go, const float radius = 1.0f, const glm::vec3& offset = glm::vec3(0)) const;
+		@params        entity    The entity to create the component for.
+		@params        radius    The collider's radius.
+		@params        offset    The offset from the entity's position, if applicable.
 
-		/*!
-		\brief	Destroys an entity's SphereCollider component.
-		\author	Prashanth S. Sharma p.sharma@digipen.edu
+		@brief         Creates a SphereCollider component for the given entity,
+					   overwriting any current SphereCollider for this entity.
 
-		\param	[in,out] go		The `const Entity&` representing the entity containing the collider to destroy.
-		*/
-		void DestructSphereCollider(const Entity& go) const;
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		ConstructSphereCollider(e1);
+		*//*__________________________________________________________________________*/
+		void ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
 
-		/*!
-		\brief	Creates a BoxCollider component for the given entity.
-		\author	Prashanth S. Sharma p.sharma@digipen.edu
+		/* !
+		@function      DestructSphereCollider
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
-		\param	[in,out] go				The `const Entity&` representing the entity to create the component for.
-		\param	[in]	 halfExtents	The `const glm::vec3&` representing the collider's half extents in all axes.
-		\param	[in]	 offset			The offset from the entity's position, if applicable.
-		*/
-		void ConstructBoxCollider(const Entity& go, const glm::vec3& halfExtents = glm::vec3(0.5f), const glm::vec3& offset = glm::vec3(0)) const;
+		@params        entity    The entity containing the collider to destroy.
 
-		/*!
-		\brief	Destroys an entity's BoxCollider component.
-		\author	Prashanth S. Sharma p.sharma@digipen.edu
+		@brief         Destroys an entity's SphereCollider component.
 
-		\param	[in,out] go		The `const Entity&` representing the entity containing the collider to destroy.
-		*/
-		void DestructBoxCollider(const Entity& go) const;
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		ConstructSphereCollider(e1);
+		// ----- using collider here... -----
+		DestructSphereCollider(e1)
+		*//*__________________________________________________________________________*/
+		void DestructSphereCollider(const Entity& entity) const;
+
+		/* !
+		@function      ConstructBoxCollider
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity         The entity to create the component for.
+		@params        halfExtents    The collider's half extents in all axes.
+		@params        offset         The offset from the entity's position, if
+									  applicable.
+
+		@brief         Creates a BoxCollider component for the given entity,
+					   overwriting any current BoxCollider for this entity.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		ConstructBoxCollider(e1);
+		*//*__________________________________________________________________________*/
+		void ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
+
+		/* !
+		@function      DestructBoxCollider
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity containing the collider to destroy.
+
+		@brief         Destroys an entity's BoxCollider component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		ConstructBoxCollider(e1);
+		// ----- using collider here... -----
+		DestructBoxCollider(e1)
+		*//*__________________________________________________________________________*/
+		void DestructBoxCollider(const Entity& entity) const;
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
 
 	private:
-
-		// Systems aren't meant to have variables, Components are.
-		// But for variables that all components should be able to access,
-		// being in a System is alright.
 
 		bool m_IsReadyForUpdate = false;
 

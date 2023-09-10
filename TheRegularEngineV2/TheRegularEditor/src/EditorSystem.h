@@ -1,5 +1,8 @@
 #pragma once
 #include "TREIncludes.h"
+#include "pch.h"
+#include "PanelManager.h"
+#include "SelectionManager.h"
 
 namespace TRE
 {
@@ -14,6 +17,7 @@ namespace TRE
 			void Shutdown() override;
 
 		private:
-			
+			std::unique_ptr<PanelManager> m_PanelManager;
+			std::shared_ptr<SelectionManager> m_SelectionManager;
 	};
 }
