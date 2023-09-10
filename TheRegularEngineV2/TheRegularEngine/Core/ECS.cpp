@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ECS.h"
+#include "Transform.h"
 #include "Graphics/Camera.h"
 #include "MemoryManager.h"
 #include "Core/Logger.h"

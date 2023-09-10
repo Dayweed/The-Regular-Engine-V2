@@ -65,16 +65,44 @@ namespace Collision
 
 	bool Ray3D::Intersects(const Sphere3D& sphere, float* rt) const
 	{
-		const glm::vec3 v = sphere.GetCenter() - m_Origin;
-		const float b = glm::dot(v, m_Direction);
-		const float c = glm::dot(v, v) - (sphere.GetRadius() * sphere.GetRadius());
-		if (c > 0.f && b > 0.f)
+		float a = glm::dot(m_Direction, m_Direction);
+		float b = 2.f * glm::dot(m_Origin - sphere.GetCenter(), m_Direction);
+		float c = glm::dot(m_Origin - sphere.GetCenter(), m_Origin - sphere.GetCenter()) - (sphere.GetRadius() * sphere.GetRadius());
+
+		//Denominator zero
+		if (abs(a) < FLT_EPSILON)
 			return false;
-		const float discriminant = (b * b) - c;
+
+		float discriminant = static_cast<float>(pow(b, 2)) - 4.f * a * c;
+
 		if (discriminant < 0.f)
 			return false;
-		if (rt != nullptr)
-			*rt = -b - sqrt(discriminant);
-		return true;
+
+		if (abs(discriminant) < FLT_EPSILON)
+			return true;
+
+		float t0 = (-b + sqrt(discriminant)) / (2.f * a);
+		float t1 = (-b - sqrt(discriminant)) / (2.f * a);
+
+		if (t0 >= 0.f && t1 >= 0.f)
+		{
+			if (rt)
+				*rt = std::min(t0, t1);
+			return true;
+		}
+		else if (t0 >= 0.f)
+		{
+			if (rt)
+				*rt = t0;
+			return true;
+		}
+		else if (t1 >= 0.f)
+		{
+			if (rt)
+				*rt = t1;
+			return true;
+		}
+
+		return false;
 	}
 }

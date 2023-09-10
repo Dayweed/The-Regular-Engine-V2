@@ -293,7 +293,6 @@ namespace TRE
 
 	const glm::mat4 CameraSystem::GetInverseViewProjectionMatrix(const Entity& go) const
 	{
-		const Camera& camera = go.get()->GetComponent<Camera>();
 		return GetInverseViewMatrix(go) * GetInverseProjectionMatrix(go);
 	}
 

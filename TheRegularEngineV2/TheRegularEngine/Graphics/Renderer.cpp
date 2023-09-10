@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Core/Engine.h"
+#include "Core/Transform.h"
 #include "Renderer.h"
 #include "RendererContext.h"
 #include "MeshRenderer.h"
@@ -234,6 +235,8 @@ namespace TRE
 			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			if(mr.m_RenderObject == nullptr)
+				continue;
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
