@@ -33,16 +33,12 @@ namespace TRE
 
 			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
 
-			//Shader stuff
-			VkShaderModule CreateShader(std::vector<char>& code);
-			std::vector<char> readFile(const std::string& filename);
-
 		public:
-			std::vector<VkDescriptorSet> GetDescriptorSets();
+			const VkDescriptorSet& GetDescriptorSets();
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();
 			PipelineConfigurations& GetConfig();
-			std::vector<std::shared_ptr<Buffer>> GetUBOBuffers() { return m_UBOBuffers; }
+			std::shared_ptr<Buffer> GetUBOBuffers() { return m_UBOBuffer; }
 
 		private:
 			VkPipeline m_Pipeline;
@@ -51,9 +47,9 @@ namespace TRE
 			PipelineConfigurations m_Config;
 			
 			std::unique_ptr<DescriptorPool> m_DescriptorPool;
-			std::vector<VkDescriptorSet> m_DescriptorSets;
+			VkDescriptorSet m_DescriptorSet;
 
-			std::vector<std::shared_ptr<Buffer>> m_UBOBuffers{};
+			std::shared_ptr<Buffer> m_UBOBuffer{};
 
 			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};

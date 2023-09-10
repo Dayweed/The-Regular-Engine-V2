@@ -86,17 +86,17 @@ namespace TRE
 
 		CreateFrameBuffer(renderpass);
 
-		//std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
-		//VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
+		VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert", VK_SHADER_STAGE_VERTEX_BIT);
 
-		//std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
-		//FragShader = ShaderCompiler::CompileShader("Resources/Shaders/template.frag");
+		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
+		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
-		//PipelineConfig.VertexShader = VertShader;
-		//PipelineConfig.FragmentShader = FragShader;
+		PipelineConfig.VertexShader = VertShader;
+		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 	}
 
@@ -204,8 +204,8 @@ namespace TRE
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
-		m_Pipeline->GetUBOBuffers()[Index]->Flush();
+		m_Pipeline->GetUBOBuffers()->WriteToBuffer(&ubo);
+		m_Pipeline->GetUBOBuffers()->Flush();
 
 		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
@@ -224,7 +224,7 @@ namespace TRE
 		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
-		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, m_Pipeline->GetDescriptorSets().data(), 0, NULL);
+		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Pipeline->GetDescriptorSets(), 0, NULL);
 
 		//VERY INEFFICIENT
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
