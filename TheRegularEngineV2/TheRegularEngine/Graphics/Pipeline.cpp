@@ -14,9 +14,9 @@ namespace TRE
 		return m_Config;
 	}
 
-	std::vector<VkDescriptorSet> Pipeline::GetDescriptorSets()
+	const VkDescriptorSet& Pipeline::GetDescriptorSets()
 	{
-		return m_DescriptorSets;
+		return m_DescriptorSet;
 	}
 
 	VkPipelineLayout Pipeline::GetPipelineLayout()
@@ -33,25 +33,7 @@ namespace TRE
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
-		auto vertShaderCode = readFile("Resources/Shaders/vert.spv");
-		auto fragShaderCode = readFile("Resources/Shaders/frag.spv");
-
-		VkShaderModule vertShaderModule = CreateShader(vertShaderCode);
-		VkShaderModule fragShaderModule = CreateShader(fragShaderCode);
-
-		VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
-		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-		vertShaderStageInfo.module = vertShaderModule;
-		vertShaderStageInfo.pName = "main";
-
-		VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
-		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		fragShaderStageInfo.module = fragShaderModule;
-		fragShaderStageInfo.pName = "main";
-
-		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+		VkPipelineShaderStageCreateInfo shaderStages[] = { m_Config.VertexShader->GetPipelineShaderInfo(), m_Config.FragmentShader->GetPipelineShaderInfo() };
 
 		//Vertex input
 		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
@@ -158,35 +140,20 @@ namespace TRE
 
 		//Create descriptor set layout
 		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
-		m_UBOBuffers.resize(imageCount);
-		for (int i = 0; i < m_UBOBuffers.size(); i++)
-		{
-			m_UBOBuffers[i] = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-			m_UBOBuffers[i]->Map();
-		}
-
-		VkDescriptorSetLayoutBinding layoutBinding1{};
-		layoutBinding1.binding = 0;
-		layoutBinding1.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		layoutBinding1.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-		layoutBinding1.descriptorCount = 1;
-
-		VkDescriptorSetLayoutBinding layoutBinding2{};
-		layoutBinding2.binding = 1;
-		layoutBinding2.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		layoutBinding2.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		layoutBinding2.descriptorCount = 1;
-
+		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+		m_UBOBuffer->Map();
+		
 		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings
 		{
-			layoutBinding1, layoutBinding2
+			m_Config.VertexShader->GetDescriptorBindings()[0],
+			m_Config.FragmentShader->GetDescriptorBindings()[0]
 		};
 
 		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
 		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+		descriptorSetLayoutInfo.bindingCount = setLayoutBindings.size();
 		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
-
+		
 		if (vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create descriptor set layout");
@@ -197,40 +164,32 @@ namespace TRE
 		auto texture = Texture::Deserialize("../Assets/Test.DDS");
 		TextureManager::Instance().LoadTexture(std::move(texture));
 
-		m_DescriptorSets.resize(imageCount);
-		for (int i = 0; i < m_DescriptorSets.size(); ++i)
-		{
-			VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
-
-			VkDescriptorBufferInfo BufferInfo{};
-			BufferInfo.buffer = m_UBOBuffers[i]->GetBuffer();
-			BufferInfo.offset = 0;
-			BufferInfo.range = sizeof(UBO);
+		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
+		
+		m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
+		
+		VkDescriptorBufferInfo BufferInfo{};
+		BufferInfo.buffer = m_UBOBuffer->GetBuffer();
+		BufferInfo.offset = 0;
+		BufferInfo.range = sizeof(UBO);
 			
-			m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[i]);
-			VkWriteDescriptorSet write{};
-			write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			write.dstBinding = 0;
-			write.pBufferInfo = &BufferInfo;
-			write.descriptorCount = 1;
-			write.dstSet = m_DescriptorSets[i];
-
-			VkWriteDescriptorSet writeimage{};
-			writeimage.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			writeimage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			writeimage.dstBinding = 1;
-			writeimage.pImageInfo = &imageInfo;
-			writeimage.descriptorCount = 1;
-			writeimage.dstSet = m_DescriptorSets[i];
-
-			std::vector<VkWriteDescriptorSet> Writes
-			{
-				write, writeimage
-			};
-
-			vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
+		std::vector<VkWriteDescriptorSet> Writes;
+		for (auto x : m_Config.VertexShader->GetWriteDescriptorSets())
+		{
+			x.second.pBufferInfo = &BufferInfo;
+			x.second.dstSet = m_DescriptorSet;
+			Writes.push_back(x.second);
 		}
+
+		for (auto x : m_Config.FragmentShader->GetWriteDescriptorSets())
+		{
+			x.second.dstBinding = 1;
+			x.second.pImageInfo = &imageInfo;
+			x.second.dstSet = m_DescriptorSet;
+			Writes.push_back(x.second);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 
 		//Create pipeline layout
 		VkPushConstantRange pushConstantRange{};
@@ -244,6 +203,7 @@ namespace TRE
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+		
 
 		if (vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout) != VK_SUCCESS)
 		{
@@ -272,9 +232,6 @@ namespace TRE
 			TRE_CORE_CRITICAL("Pipeline failed to create");
 			assert(Result == VK_SUCCESS);
 		}
-
-		vkDestroyShaderModule(Device->GetLogicalDevice(), fragShaderModule, nullptr);
-		vkDestroyShaderModule(Device->GetLogicalDevice(), vertShaderModule, nullptr);
 	}
 
 	Pipeline::~Pipeline()
@@ -284,41 +241,6 @@ namespace TRE
 		vkDestroyDescriptorSetLayout(Device->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);
-	}
-
-	VkShaderModule Pipeline::CreateShader(std::vector<char>& code)
-	{
-		VkShaderModuleCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		createInfo.codeSize = code.size();
-		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-		VkShaderModule shaderModule;
-		if (auto Result = vkCreateShaderModule(RendererContext::GetDevice()->GetLogicalDevice(), &createInfo, nullptr, &shaderModule); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
-
-		return shaderModule;
-	}
-
-	std::vector<char> Pipeline::readFile(const std::string& filename)
-	{
-		std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-		if (!file.is_open()) {
-			throw std::runtime_error("failed to open file!");
-		}
-
-		size_t fileSize = (size_t)file.tellg();
-		std::vector<char> buffer(fileSize);
-
-		file.seekg(0);
-		file.read(buffer.data(), fileSize);
-
-		file.close();
-
-		return buffer;
 	}
 
 	VkPrimitiveTopology Pipeline::GetVulkanTopology(PrimitiveType TopologyType)
