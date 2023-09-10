@@ -70,7 +70,7 @@ namespace TRE
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 
 		m_ImGuiCommandBuffers.resize(ImageCount);
-		for (int x = 0; x < ImageCount; x++)
+		for (uint32_t x = 0; x < ImageCount; x++)
 		{
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}
@@ -158,8 +158,8 @@ namespace TRE
 
 		VkViewport viewport = {};
 		viewport.x = 0.0f;
-		viewport.y = (float)height;
-		viewport.height = -(float)height;
+		viewport.y = 0.0f;
+		viewport.height = (float)height;
 		viewport.width = (float)width;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;

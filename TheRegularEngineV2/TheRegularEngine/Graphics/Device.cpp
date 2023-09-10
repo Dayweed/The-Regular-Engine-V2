@@ -50,13 +50,13 @@ namespace TRE
 		//Note that this does not account for computers with more than 1 discrete GPU.
 		//It will just choose the first one that was iterated.
 		TRE_CORE_INFO("Available GPUs:");
-		for (VkPhysicalDevice PhysicalDevice : PhysicalDevice)
+		for (VkPhysicalDevice physicalDevice : PhysicalDevice)
 		{
-			vkGetPhysicalDeviceProperties(PhysicalDevice, &m_Properties);
+			vkGetPhysicalDeviceProperties(physicalDevice, &m_Properties);
 			if (m_Properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			{
 				TRE_CORE_INFO("GPU Chosen: {0}", m_Properties.deviceName);
-				m_PhysicalDevice = PhysicalDevice;
+				m_PhysicalDevice = physicalDevice;
 				break;
 			}
 		}

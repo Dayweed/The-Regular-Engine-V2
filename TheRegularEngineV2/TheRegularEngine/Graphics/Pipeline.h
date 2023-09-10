@@ -3,6 +3,7 @@
 #include "Descriptor.h"
 #include "RenderPass.h"
 #include "UniformBuffer.h"
+#include "Shader.h"
 
 namespace TRE
 {
@@ -20,6 +21,8 @@ namespace TRE
 	{
 		std::shared_ptr<RenderPass> RenderPass;
 		PrimitiveType Primitive;
+		std::shared_ptr<Shader> VertexShader;
+		std::shared_ptr<Shader> FragmentShader;
 	};
 
 	class Pipeline

@@ -11,7 +11,7 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #pragma once
-#include "../../GLM/include/glm/glm.hpp" // for glm::vec
+#include "glm/glm.hpp"
 
 struct Vector3
 {

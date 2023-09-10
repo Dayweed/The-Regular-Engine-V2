@@ -68,7 +68,8 @@ project "TheRegularEngine"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
-		"%{IncludeDir.SPIRVREFLECT}"
+		"%{IncludeDir.SPIRVREFLECT}",
+		"%{IncludeDir.Tracy}"
 		--"%{IncludeDir.Crunch}",
 	}
 
@@ -99,7 +100,7 @@ project "TheRegularEngine"
 		"%{Library.RTTR}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
-		"%{Library.Compiler}",	
+		"%{Library.Compiler}",
 		--"%{Library.Crunch}",	
 	}
 
@@ -115,9 +116,12 @@ project "TheRegularEngine"
 		links
 		{
 			"%{Library.FMOD_Debug}",
-			"%{Library.RTTR_Debug}"
+			"%{Library.RTTR_Debug}",
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}",
 		}
-
+		
 	filter "configurations:Release"
 		optimize "On"
 
@@ -129,7 +133,10 @@ project "TheRegularEngine"
 		links
 		{
 			"%{Library.FMOD_Release}",
-			"%{Library.RTTR}"
+			"%{Library.RTTR}",
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}",
 		}
 
 project "TheRegularEditor"
@@ -152,6 +159,7 @@ project "TheRegularEditor"
 	defines 
 	{
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}
@@ -184,6 +192,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.SPIRVREFLECT}",
+		"%{IncludeDir.Tracy}",
 		--"%{IncludeDir.Crunch}",
 		"TheRegularEngine"
 	}

@@ -122,7 +122,7 @@ namespace TRE
 			| aiProcess_CalcTangentSpace           // calculate tangents and bitangents if possible (definetly you will meed UVs)
 			| aiProcess_RemoveRedundantMaterials   // remove redundant materials
 			| aiProcess_FindInvalidData            // detect invalid model data, such as invalid normal vectors
-			//| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
+			| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
 			;
 
 		m_filePath = filename;
@@ -617,6 +617,7 @@ namespace TRE
 				std::size_t vertSize = tempGeom->Meshes[i].Submeshes[j].Position.size();
 				std::size_t extraSize = tempGeom->Meshes[i].Submeshes[j].Extra.size();
 				std::size_t indexSize = tempGeom->Meshes[i].Submeshes[j].Indices.size();
+				(void)extraSize;
 
 				const auto& submesh = tempGeom->Meshes[i].Submeshes[j];
 

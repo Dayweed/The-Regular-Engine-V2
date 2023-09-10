@@ -9,6 +9,7 @@
 #include "InspectorPanel.h"
 #include "ContentBrowserPanel.h"
 #include "ConsolePanel.h"
+#include "ProfilerPanel.h"
 
 namespace TRE
 {
@@ -20,11 +21,12 @@ namespace TRE
 		m_SelectionManager = std::make_shared<SelectionManager>();
 
 		m_PanelManager->InsertPanel<SceneHierarchyPanel>("Scene Hierarchy", m_SelectionManager);
-		m_PanelManager->InsertPanel<ViewportPanel>("Viewport");
+		m_PanelManager->InsertPanel<ViewportPanel>("Viewport", m_SelectionManager);
 		m_PanelManager->InsertPanel<MenuBarPanel>("Menu Bar");
 		m_PanelManager->InsertPanel<InspectorPanel>("Inspector", m_SelectionManager);
 		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser");
 		m_PanelManager->InsertPanel<ConsolePanel>("Console");
+		m_PanelManager->InsertPanel<ProfilerPanel>("Profiler");
 		m_PanelManager->Init();
 	}
 	

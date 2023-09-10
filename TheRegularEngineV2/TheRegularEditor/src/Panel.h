@@ -13,7 +13,10 @@
 ************************************************************************/
 #pragma once
 #include "TREIncludes.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "Imgui/imgui_internal.h"
 #include "Imgui/imgui.h"
+
 
 namespace TRE
 {

@@ -28,7 +28,6 @@ namespace TRE
 		(void)win_ptr;
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
 			//TRE_CORE_INFO("Mouse pressed:x {0}", key);

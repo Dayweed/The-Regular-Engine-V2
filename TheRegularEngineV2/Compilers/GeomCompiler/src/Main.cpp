@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv)
 {
-	std::cout << "===Runnning Geom Compiler===" << std::endl;
+	std::cout << "===Geom Compiler: Run===" << std::endl;
 	TRE::GeomDescriptorFile descriptorFile;
 
 	// ./GeomCompiler.exe "descriptor path"
@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	descriptorFile.ReadDescriptorFile(argv[1]);
 	TRE::GeomCompiler::Instance().Compile(descriptorFile.GetAssetPath());
 	TRE::Geom::Serialize(descriptorFile.GetGeomPath(), TRE::GeomCompiler::Instance().GetGeom());
-	std::cout << "===End of Geom Compiler===" << std::endl;
+	std::cout << "===Geom Compiler: Success===" << std::endl;
 
 	return 0;
 }

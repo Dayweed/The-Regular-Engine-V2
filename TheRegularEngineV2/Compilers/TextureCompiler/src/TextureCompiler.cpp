@@ -51,6 +51,7 @@ namespace TRE
 			return;
 		}
 		std::getline(m_DescriptorFile, line);
+		std::getline(m_DescriptorFile, line);
 		if (line == "Texture Format:")
 		{
 			std::getline(m_DescriptorFile, line);
@@ -114,7 +115,7 @@ namespace TRE
 		//crn_free_block(outputData);
 		m_Texture = std::make_unique<Texture>();
 		m_Texture->Data = reinterpret_cast<void*>(pixels);
-		int len = std::min(descriptor.GetTextureName().length(), sizeof(m_Texture->Name));
+		int len = static_cast<int>(std::min(descriptor.GetTextureName().length(), sizeof(m_Texture->Name)));
 		for (int i = 0; i < len; ++i)
 			m_Texture->Name[i] = descriptor.GetTextureName()[i];
 		m_Texture->Width = texWidth;

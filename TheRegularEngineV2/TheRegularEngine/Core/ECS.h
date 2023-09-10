@@ -17,7 +17,6 @@
 #include "entt.hpp"
 #include "System.h"
 #include "ComponentManager.h"
-#include "Transform.h"
 #include <typeindex>
 #include "Core/Logger.h"
 
@@ -687,31 +686,32 @@ namespace TRE
 	class ECSOutputArchive
 	{
 	public:
-		ECSOutputArchive(std::string filePath);
+		ECSOutputArchive(std::string fileName);
 		void operator()(entt::entity ent);
 		void operator()(std::underlying_type_t<entt::entity> u);
 		template <typename T>
 		void operator()(entt::entity ent, const T& t);
 		void Close();
 		std::string AsString();
+		std::string GetFilePath();
 
 	private:
 		nlohmann::json m_Root;
 		nlohmann::json m_Current;
 
-		std::string m_FilePath;
+		std::string m_FileName;
 	};
 
 	class ECSInputArchive
 	{
 	public:
-		ECSInputArchive(std::string filePath);
+		ECSInputArchive(std::string fileName);
 		void operator()(entt::entity& ent);
 		void operator()(std::underlying_type_t<entt::entity>& u);
 		template <typename T>
 		void operator()(entt::entity& ent, T& t);
 	private:
-		std::string m_FilePath;
+		std::string m_FileName;
 
 		nlohmann::json m_Root;
 		nlohmann::json m_Current;

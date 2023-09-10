@@ -31,7 +31,7 @@ namespace TRE
 		//    std::cout << "do i have children?\t" << ECSManager::Instance().GetEntities<Properties>()[i]->GetChildren().size() << "\n";
 		//}
 
-		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow))
+		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			static int selection_mask = 0; //nothing is selected in the beginning
 			int object_clicked = -1; //none of the objects are selected
