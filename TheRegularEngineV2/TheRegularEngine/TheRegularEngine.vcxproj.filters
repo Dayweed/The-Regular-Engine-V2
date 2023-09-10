@@ -31,9 +31,6 @@
     <Filter Include="Scripting">
       <UniqueIdentifier>{985A7358-04C5-27CF-4D03-D974B9AC0524}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utilities">
-      <UniqueIdentifier>{010A8043-6D74-34BA-B6B2-E55F225C120F}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioSystem.h">
@@ -142,6 +139,12 @@
     <ClInclude Include="Graphics\Shader.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\ShaderCompiler.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ShaderResource.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\SwapChain.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -167,9 +170,6 @@
       <Filter>Scripting</Filter>
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
-    <ClInclude Include="Utilities\spirv_reflect.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +251,9 @@
     <ClCompile Include="Graphics\Shader.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ShaderCompiler.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\SwapChain.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -271,9 +274,6 @@
     </ClCompile>
     <ClCompile Include="Scripting\ScriptEngine.cpp">
       <Filter>Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilities\spirv_reflect.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
   </ItemGroup>

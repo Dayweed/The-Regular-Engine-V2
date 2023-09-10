@@ -13,6 +13,7 @@
 
 #include "pch.h"
 #include "MemoryManager.h"
+#include "Transform.h"
 #include <combaseapi.h>
 #include <atlconv.h>
 

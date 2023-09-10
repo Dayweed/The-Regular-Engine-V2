@@ -43,8 +43,8 @@ namespace TRE
 			{
 				panMouseEndPos = m_MousePos;
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
-				//positionOffset.x *= -1;
 				positionOffset = glm::normalize(positionOffset);
+				positionOffset *= -1;
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
@@ -100,40 +100,62 @@ namespace TRE
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
-				const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
+				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+				const Camera& camera = entity->GetComponent<Camera>();
+				CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 
 				ImVec2 worldSpaceMousePos = ImGui::GetMousePos();
 				worldSpaceMousePos -= m_WindowPos;
 				worldSpaceMousePos -= m_ImageOffset;
 				worldSpaceMousePos.x /= m_ImageSize.x;
 				worldSpaceMousePos.x -= 0.5f;
+				worldSpaceMousePos.x *= 2.f;
 				worldSpaceMousePos.y /= m_ImageSize.y;
 				worldSpaceMousePos.y = 1.f - worldSpaceMousePos.y;
 				worldSpaceMousePos.y -= 0.5f;
-				worldSpaceMousePos.x *= windowConfig.width;
-				worldSpaceMousePos.y *= windowConfig.height;
-				const glm::vec3 mousePos = { worldSpaceMousePos.x, worldSpaceMousePos.y, 0.f };
+				worldSpaceMousePos.y *= 2.f;
 
-				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
-				const Camera& camera = entity->GetComponent<Camera>();
-				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position + mousePos, camera.GetForwardVec());
-				//std::cout <<"ray position " << cameraRay.GetOrigin().x << " " << cameraRay.GetOrigin().y << " " << cameraRay.GetOrigin().z << std::endl;
+				glm::mat4 invProjView = cameraSystem->GetInverseViewProjectionMatrix(entity);
+				glm::vec4 start = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 0.f, 1.f);
+				glm::vec4 end = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 1.f, 1.f);
+				start = invProjView * start;
+				end = invProjView * end;
+				start.x /= start.w;
+				start.y /= start.w;
+				start.z /= start.w;
+				end.x /= end.w;
+				end.y /= end.w;
+				end.z /= end.w;
+				glm::vec3 ray = end - start;
+				
+				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position, ray);
 
-				//Entity test2 = ECSManager::Instance().CreateEntity();
-				//test2->GetComponent<Properties>().m_Name = "ray";
-				//test2->GetComponent<Transform>().m_Position = cameraRay.GetOrigin() + cameraRay.GetDirection() * 5.f;
-				////std::cout << "ray position " << test2->GetComponent<Transform>().m_Position.x << " " << test2->GetComponent<Transform>().m_Position.y << " " << test2->GetComponent<Transform>().m_Position.z << std::endl;
-				//test2->GetComponent<Transform>().m_Scale = glm::vec3(100.f, 100.f, 100.f);
-				//test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
-				//test2->AddComponent<MeshRenderer>();
-				//auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
-				//std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
-				//test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
+				auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
+				auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
+				std::map<float, Entity> entitiesHit;
+				for (auto mr : ent_mrs)
+				{
+					const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
+					float t = 0.f;
+					if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
+					{
+						entitiesHit[t] = mr;
+					}
+				}
+
+				if (entitiesHit.size() > 0)
+				{
+					//Single click for now
+					m_SelectionManager->SelectEntity(entitiesHit.begin()->second);
+				}
+				else
+				{
+					//Clear
+				}
 			}
 		}
 		else if (event._state == (int)KeyState::keyHeld)
 		{
-			
 		}
 		else if (event._state == (int)KeyState::keyReleased)
 		{
@@ -155,7 +177,7 @@ namespace TRE
 
 		if (camera.m_FocalLength < 1.f)
 		{
-			cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetForwardVec());
+			cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetViewDirection());
 			cameraSystem->SetFocalLength(entity, 1.f);
 		}
 	}

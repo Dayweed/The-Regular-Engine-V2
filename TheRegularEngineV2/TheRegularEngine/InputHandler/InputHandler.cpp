@@ -32,7 +32,7 @@ namespace TRE
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 		//MouseCode key = static_cast<MouseCode>(button);
-
+		glfwSetInputMode(win_ptr, GLFW_STICKY_KEYS, GLFW_FALSE);
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
 			//TRE_CORE_INFO("Mouse pressed:x {0}", key);
@@ -68,11 +68,11 @@ namespace TRE
 
 	void TRE::InputHandler::CheckMouseEvent(GLFWwindow* win_ptr, int button, int action)
 	{
-		EventHandler& event = EventHandler::getEventHandlerInstance();
-		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
-		{
-			//TRE_CORE_INFO("Mouse Button: {0}", button);
-			event.Publish(InputEvent {button, action});
-		}
+		//EventHandler& event = EventHandler::getEventHandlerInstance();
+		//if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
+		//{
+		//	//TRE_CORE_INFO("Mouse Button: {0}", button);
+		//	event.Publish(InputEvent {button, action});
+		//}
 	}
 }

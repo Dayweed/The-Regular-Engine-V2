@@ -61,8 +61,12 @@ Library["RTTR"] = "%{LibraryDir.RTTR}/rttr_core.lib"
 Library["RTTR_Debug"] = "%{LibraryDir.RTTR}/rttr_core_d.lib"
 Library["Compiler"] = "%{LibraryDir.Compiler}/CompilerLib.lib"
 Library["Crunch"] = "%{LibraryDir.Crunch}/Crunch.lib"
-Library["ShaderC_Debug"] = "%{LibraryDir.Vulkan}/shaderc_sharedd"
-Library["ShaderC_Release"] = "%{LibraryDir.Vulkan}/shaderc_shared"
+Library["ShaderC_Debug"] = "%{LibraryDir.Vulkan}/shaderc_sharedd.lib"
+Library["ShaderC_Release"] = "%{LibraryDir.Vulkan}/shaderc_shared.lib"
+Library["SPIRV_Cross_Debug"] = "%{LibraryDir.Vulkan}/spirv-cross-cored.lib"
+Library["SPIRV_Cross_Release"] = "%{LibraryDir.Vulkan}/spirv-cross-core.lib"
+Library["SPIRV_Cross_GLSL_Debug"] = "%{LibraryDir.Vulkan}/spirv-cross-glsld.lib"
+Library["SPIRV_Cross_GLSL_Release"] = "%{LibraryDir.Vulkan}/spirv-cross-glsl.lib"
 
 
 Binaries = {}

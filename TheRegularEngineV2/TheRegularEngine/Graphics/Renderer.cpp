@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Core/Engine.h"
+#include "Core/Transform.h"
 #include "Renderer.h"
 #include "RendererContext.h"
 #include "MeshRenderer.h"
 #include "imgui_impl_vulkan.h"
 #include "Camera.h"
 #include "Core/Logger.h"
+#include "ShaderCompiler.h"
 
 namespace TRE
 {
@@ -84,9 +86,17 @@ namespace TRE
 
 		CreateFrameBuffer(renderpass);
 
+		//std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
+		//VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+
+		//std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
+		//FragShader = ShaderCompiler::CompileShader("Resources/Shaders/template.frag");
+
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
+		//PipelineConfig.VertexShader = VertShader;
+		//PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 	}
 
@@ -201,9 +211,9 @@ namespace TRE
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
-		viewport.y = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.y = 0.f;// static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = -static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_Commandbuffers[Index], 0, 1, &viewport);
@@ -225,6 +235,8 @@ namespace TRE
 			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			if(mr.m_RenderObject == nullptr)
+				continue;
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
