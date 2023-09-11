@@ -24,6 +24,11 @@ project "CompilerLib"
 		"src/**.cpp"
 	}
 
+	links
+	{
+		"Crunch",
+	}
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"

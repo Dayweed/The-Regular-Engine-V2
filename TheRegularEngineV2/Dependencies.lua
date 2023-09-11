@@ -21,7 +21,7 @@ IncludeDir["RTTR"] = "%{wks.location}/Dependencies/RTTR/install/include"
 IncludeDir["spdlog"] = "%{wks.location}/Dependencies/spdlog"
 IncludeDir["stbi"] = "%{wks.location}/Dependencies/stbi_image"
 IncludeDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/include"
-IncludeDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/src"
+IncludeDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/inc"
 IncludeDir["SPIRVREFLECT"] = "%{wks.location}/Dependencies/SPIRV-Reflect"
 IncludeDir["Tracy"] = "%{wks.location}/Dependencies/Tracy"
 

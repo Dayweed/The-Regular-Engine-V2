@@ -71,7 +71,7 @@ namespace TRE
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
-		transformSystem->SetPosition(test2, glm::vec3(0.f, 0.f, 100.f));
+		transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
 		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
@@ -79,7 +79,7 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 25.f));
+		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, vase);

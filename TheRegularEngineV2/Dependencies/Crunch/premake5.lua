@@ -10,17 +10,24 @@ project "Crunch"
 	-- regardless of build configuration
 	objdir ("!bin/obj")
 
+	defines
+	{
+		"WIN32=true" -- PhysX Requires This
+	}
+
     includedirs
     {
-		"src"
+		"inc"
     }
 
 	files
 	{
-		"src/**.h",
-		"src/**.hpp",
+		"inc/**.h",
+		"inc/**.hpp",
 		"src/**.cpp",
 		"src/**.c",
+		"crnlib/**.c",
+		"crnlib/**.cpp",
 	}
 
 	links

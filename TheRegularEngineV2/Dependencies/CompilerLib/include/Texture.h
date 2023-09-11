@@ -13,6 +13,7 @@ namespace TRE
 		std::uint32_t			Height;
 		int						Format;
 		int						Filter;
+		std::uint32_t			DataSize;
 		void*					Data;
 
 		~Texture()
