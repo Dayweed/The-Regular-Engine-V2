@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Core/Logger.h"
 #include "ShaderCompiler.h"
+#include "VulkanTexture.h"
 
 namespace TRE
 {
@@ -117,6 +118,34 @@ namespace TRE
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_UBOBuffer);
+
+		//TO DELETE
+		Texture::RunCompiler("../Assets/Test.desc");
+		auto texture = Texture::Deserialize("../Assets/Test.DDS");
+		TextureManager::Instance().LoadTexture(std::move(texture));
+
+		VkDescriptorBufferInfo BufferInfo{};
+		BufferInfo.buffer = m_UBOBuffer->GetBuffer();
+		BufferInfo.offset = 0;
+		BufferInfo.range = sizeof(UBO);
+
+		std::vector<VkWriteDescriptorSet> Writes;
+		for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
+		{
+			x.second.pBufferInfo = &BufferInfo;
+			x.second.dstSet = m_Pipeline->GetDescriptorSets();
+			Writes.push_back(x.second);
+		}
+		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
+		for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
+		{
+			x.second.dstBinding = 1;
+			x.second.pImageInfo = &imageInfo;
+			x.second.dstSet = m_Pipeline->GetDescriptorSets();
+			Writes.push_back(x.second);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -183,7 +212,7 @@ namespace TRE
 	Renderer::~Renderer()
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
-
+		TextureManager::Instance().Shutdown();
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
@@ -205,6 +234,7 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
+
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -213,7 +243,6 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		//Descriptor set
 		//UBO
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
@@ -225,7 +254,7 @@ namespace TRE
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
-		viewport.y = 0.f;// static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.y = 0.f;
 		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
 		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.minDepth = 0.0f;
