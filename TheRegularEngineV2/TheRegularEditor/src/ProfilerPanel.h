@@ -1,11 +1,11 @@
 /*!
-	@file      Panel.h
+	@file      ProfilerPanel.h
 	@author    Hu Jun Ning (Code Contribution 100%)
 	@email     junning.hu@digipen.edu
 	@coauthor  Co-Author Name (Code Contribution 100%)
 	@email     CoAuthor.n@digipen.edu
-	@date      02/09/2023
-	@brief     Panel parent class
+	@date      10/09/2023
+	@brief     Profiler panel
 
 	Copyright (C) 2023 DigiPen Institute of Technology.
 	Reproduction or disclosure of this file or its contents without the
@@ -13,23 +13,19 @@
 ************************************************************************/
 #pragma once
 #include "TREIncludes.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "Imgui/imgui_internal.h"
-#include "Imgui/imgui.h"
-
+#include "Panel.h"
 
 namespace TRE
 {
-	class Panel
+	class ProfilerPanel : public Panel
 	{
-		public:
-			Panel() {};
-			virtual ~Panel() {};
-			virtual void Init() = 0;
-			virtual void Update() = 0;
-			virtual void Shutdown() = 0;
+	public:
+		ProfilerPanel();
+		~ProfilerPanel();
+		void Init() override;
+		void Update() override;
+		void Shutdown() override;
 
-		private:
-			std::string PanelName;
+	private:
 	};
 }

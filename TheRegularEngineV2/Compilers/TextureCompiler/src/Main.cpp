@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv)
 {
-	std::cout << "===Running Texture Compiler===" << std::endl;
+	std::cout << "===Texture Compiler: Run===" << std::endl;
 	TRE::TextureDescriptorFile descriptorFile;
 	if (argc != 2)
 	{
@@ -19,6 +19,6 @@ int main(int argc, char** argv)
 	descriptorFile.ReadDescriptorFile(argv[1]);
 	TRE::TextureCompiler::Instance().Compile(descriptorFile);
 	TRE::Texture::Serialize(descriptorFile.GetTexturePath(), TRE::TextureCompiler::Instance().GetTexture());
-	std::cout << "===End of Texture Compiler===" << std::endl;
+	std::cout << "===Texture Compiler: Success===" << std::endl;
 	return 0;
 }

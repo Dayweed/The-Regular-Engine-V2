@@ -3,6 +3,7 @@
 #include "Descriptor.h"
 #include "RenderPass.h"
 #include "UniformBuffer.h"
+#include "Shader.h"
 
 namespace TRE
 {
@@ -20,38 +21,30 @@ namespace TRE
 	{
 		std::shared_ptr<RenderPass> RenderPass;
 		PrimitiveType Primitive;
+		std::shared_ptr<Shader> VertexShader;
+		std::shared_ptr<Shader> FragmentShader;
 	};
 
 	class Pipeline
 	{
 		public:
-			Pipeline(const PipelineConfigurations& PipelineConfig);
+			Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer);
 			~Pipeline();
 
 			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
 
-			//Shader stuff
-			VkShaderModule CreateShader(std::vector<char>& code);
-			std::vector<char> readFile(const std::string& filename);
-
 		public:
-			std::vector<VkDescriptorSet> GetDescriptorSets();
+			const VkDescriptorSet& GetDescriptorSets();
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();
 			PipelineConfigurations& GetConfig();
-			std::vector<std::shared_ptr<Buffer>> GetUBOBuffers() { return m_UBOBuffers; }
 
 		private:
 			VkPipeline m_Pipeline;
 			VkPipelineLayout m_Layout;
-
 			PipelineConfigurations m_Config;
-			
-			std::unique_ptr<DescriptorPool> m_DescriptorPool;
-			std::vector<VkDescriptorSet> m_DescriptorSets;
 
-			std::vector<std::shared_ptr<Buffer>> m_UBOBuffers{};
-
+			VkDescriptorSet m_DescriptorSet;
 			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};
 }

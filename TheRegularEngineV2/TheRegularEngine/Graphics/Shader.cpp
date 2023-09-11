@@ -1,102 +1,127 @@
 #include "pch.h"
 #include "Shader.h"
-#include "shaderc/shaderc.hpp"
-#include "Utilities/spirv_reflect.h"
+#include "RendererContext.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
-	int Shader::SkipBOM(std::istream& in)
+	std::vector<PushConstants>& Shader::GetPushConstants()
 	{
-		char test[4] = { 0 };
-		in.seekg(0, std::ios::beg);
-		in.read(test, 3);
-		if (strcmp(test, "\xEF\xBB\xBF") == 0)
-		{
-			in.seekg(3, std::ios::beg);
-			return 3;
-		}
-		in.seekg(0, std::ios::beg);
-		return 0;
+		return m_ReflectionData.PushConstants;
 	}
 
-	std::string Shader::ReadGLSLToString(const std::string& filename)
+	std::vector<VkDescriptorSetLayoutBinding>& Shader::GetDescriptorBindings()
 	{
-		std::ifstream file(filename, std::ios::in | std::ios::binary);
-		std::string Result;
-
-		if (!file.is_open()) {
-			throw std::runtime_error("failed to open file!");
-		}
-
-		file.seekg(0, std::ios::end);
-		auto FileSize = file.tellg();
-		const int Skipped = SkipBOM(file);
-		FileSize -= Skipped - 1;
-
-		Result.resize(FileSize);
-
-		file.read(Result.data() + 1, FileSize);
-		Result[0] = '\t';
-		file.close();
-
-		return Result;
+		return m_DescriptorBindings;
 	}
 
-	void Shader::LoadShader()
+	VkPipelineShaderStageCreateInfo Shader::GetPipelineShaderInfo()
 	{
-		std::string Code = ReadGLSLToString("Resources/Shaders/Template.vert");
+		return m_PipelineShaderCreateInfo;
+	}
 
-		shaderc::Compiler ShaderCompiler;
-		shaderc::CompileOptions options;
-		options.AddMacroDefinition("DEFINE", "1");
-		auto PPResult = ShaderCompiler.PreprocessGlsl(Code, shaderc_glsl_default_vertex_shader, "Template.vert", options);
+	const std::unordered_map<std::string, VkWriteDescriptorSet>& Shader::GetWriteDescriptorSets()
+	{
+		return m_ReflectionData.DescriptorSets[0].WriteDescriptorSets;
+	}
 
-		if (PPResult.GetCompilationStatus() != shaderc_compilation_status_success)
+	Shader::Shader(const std::filesystem::path& ShaderPath) : m_ShaderPath(ShaderPath)
+	{
+
+	}
+
+	Shader::~Shader()
+	{
+		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
+		vkDestroyShaderModule(Device, m_PipelineShaderCreateInfo.module, nullptr);
+	}
+
+	void Shader::LoadAndCreateShader(const std::vector<uint32_t>& ShaderBinary, VkShaderStageFlagBits ShaderStage)
+	{
+		m_ShaderBinary = ShaderBinary;
+
+		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
+
+		VkShaderModuleCreateInfo ShaderModCreateInfo{};
+		ShaderModCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		ShaderModCreateInfo.codeSize = ShaderBinary.size() * sizeof(uint32_t);
+		ShaderModCreateInfo.pCode = ShaderBinary.data();
+
+		VkShaderModule ShaderMod;
+		if (auto Result = vkCreateShaderModule(Device, &ShaderModCreateInfo, nullptr, &ShaderMod); Result != VK_SUCCESS)
 		{
-			std::cout << PPResult.GetErrorMessage() << std::endl;
+			TRE_CORE_WARN("Shader Module failed to create");
+			assert(Result == VK_SUCCESS);
 		}
-		else
+
+		m_PipelineShaderCreateInfo = {};
+		m_PipelineShaderCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		m_PipelineShaderCreateInfo.stage = ShaderStage;
+		m_PipelineShaderCreateInfo.module = ShaderMod;
+		m_PipelineShaderCreateInfo.pName = "main";
+	}
+
+	void Shader::CreateDescriptors()
+	{
+		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
+		m_Types.clear();
+
+		for (uint32_t x = 0; x < m_ReflectionData.DescriptorSets.size(); x++)
 		{
-			std::cout << "Success Precompile" << std::endl;
+			auto& ShaderDescriptorSet = m_ReflectionData.DescriptorSets[x];
+			if (ShaderDescriptorSet.UniformBuffers.size())
+			{
+				VkDescriptorPoolSize& PoolSize = m_Types[x].emplace_back();
+				PoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				PoolSize.descriptorCount = (uint32_t)ShaderDescriptorSet.UniformBuffers.size();
+			}
+
+			if (ShaderDescriptorSet.ImageSamplers.size())
+			{
+				VkDescriptorPoolSize& PoolSize = m_Types[x].emplace_back();
+				PoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+				PoolSize.descriptorCount = (uint32_t)ShaderDescriptorSet.ImageSamplers.size();
+			}
+
+			std::vector<VkDescriptorSetLayoutBinding> LayoutBindings;
+			for (auto& [binding, uniformBuffer] : ShaderDescriptorSet.UniformBuffers)
+			{
+				VkDescriptorSetLayoutBinding& layout = m_DescriptorBindings.emplace_back();
+				layout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				layout.descriptorCount = 1;
+				layout.stageFlags = uniformBuffer.ShaderStageFlag;
+				layout.pImmutableSamplers = nullptr;
+				layout.binding = binding;
+
+				VkWriteDescriptorSet& Set = ShaderDescriptorSet.WriteDescriptorSets[uniformBuffer.Name];
+				Set = {};
+				Set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET; 
+				Set.descriptorCount = 1;
+				Set.descriptorType = layout.descriptorType;
+				Set.dstBinding = layout.binding;
+			}
+
+			for (auto& [binding, ImageSampler] : ShaderDescriptorSet.ImageSamplers)
+			{
+				VkDescriptorSetLayoutBinding& layout = m_DescriptorBindings.emplace_back();
+				layout.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+				layout.descriptorCount = ImageSampler.ArraySize;
+				layout.stageFlags = ImageSampler.ShaderStage;
+				layout.pImmutableSamplers = nullptr;
+				layout.binding = binding;
+
+				VkWriteDescriptorSet& Set = ShaderDescriptorSet.WriteDescriptorSets[ImageSampler.Name];
+				Set = {};
+				Set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				Set.descriptorCount = ImageSampler.ArraySize;
+				Set.descriptorType = layout.descriptorType;
+				Set.dstBinding = layout.binding;
+			}
 		}
+	}
 
-		std::string NewCode = { PPResult.cbegin(), PPResult.cend() };
-
-		auto CompilationResult = ShaderCompiler.CompileGlslToSpv(NewCode, shaderc_glsl_default_vertex_shader, "Template.vert");
-		auto status = CompilationResult.GetCompilationStatus();
-		if (status == shaderc_compilation_status_success)
-		{
-			std::cout << "Shader Compile Success" << std::endl;
-		}
-		else
-		{
-			std::cout << CompilationResult.GetErrorMessage() << std::endl;
-		}
-
-		std::vector<uint32_t> Binary(CompilationResult.begin(), CompilationResult.end());
-
-		SpvReflectShaderModule Mod;
-		SpvReflectResult ReflectResult = spvReflectCreateShaderModule(Binary.size() * sizeof(uint32_t), Binary.data(), &Mod);
-		if (ReflectResult == SPV_REFLECT_RESULT_SUCCESS)
-		{
-			std::cout << "Reflect Success" << std::endl;
-		}
-		else
-		{
-			std::cout << "Reflect Failed" << std::endl;
-		}
-		
-
-		uint32_t Count = 0;
-		auto Result = spvReflectEnumerateDescriptorSets(&Mod, &Count, nullptr);
-		if (Result == SPV_REFLECT_RESULT_SUCCESS)
-			std::cout << "Got Count" << std::endl;
-
-		std::vector<SpvReflectDescriptorSet*> Dset(Count);
-		auto ReflectDataResult = spvReflectEnumerateDescriptorSets(&Mod, &Count, Dset.data());
-		if (ReflectDataResult == SPV_REFLECT_RESULT_SUCCESS)
-			std::cout << "Got Dset" << std::endl;
-
-
+	void Shader::SetReflectionData(const ShaderReflectionData& ReflectionData)
+	{
+		m_ReflectionData = ReflectionData;
 	}
 }

@@ -29,6 +29,7 @@ namespace TRE
 	{
 		CreateVertexBuffer(_Builder.m_Vertices);
 		CreateIndexBuffer(_Builder.m_Indices);
+		CreateBoundingSphere(_Builder.m_Vertices);
 	}
 
 	RenderObject::~RenderObject()
@@ -121,6 +122,17 @@ namespace TRE
 
 		VkDeviceSize bufferSize = indexSize * m_IndexCount;
 		CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
+	}
+
+	void RenderObject::CreateBoundingSphere(const std::vector<Vertex>& vertices)
+	{
+		std::vector<glm::vec3> positions(vertices.size());
+		for (int i = 0; i < vertices.size(); ++i)
+		{
+			positions[i] = vertices[i].m_Position;
+		}
+
+		m_BoundingSphere.Create(positions);
 	}
 
 	std::vector<VkVertexInputBindingDescription> RenderObject::Vertex::GetBindingDescriptions()

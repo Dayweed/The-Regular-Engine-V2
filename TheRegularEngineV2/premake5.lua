@@ -117,7 +117,9 @@ project "TheRegularEngine"
 		{
 			"%{Library.FMOD_Debug}",
 			"%{Library.RTTR_Debug}",
-			"%{Library.ShaderC_Debug}"
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}",
 		}
 		
 	filter "configurations:Release"
@@ -132,7 +134,9 @@ project "TheRegularEngine"
 		{
 			"%{Library.FMOD_Release}",
 			"%{Library.RTTR}",
-			"%{Library.ShaderC_Release}"
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}",
 		}
 
 project "TheRegularEditor"
@@ -155,6 +159,7 @@ project "TheRegularEditor"
 	defines 
 	{
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
 	}

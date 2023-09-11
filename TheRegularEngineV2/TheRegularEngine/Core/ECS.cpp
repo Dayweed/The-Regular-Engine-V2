@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ECS.h"
+#include "Transform.h"
 #include "Graphics/Camera.h"
 #include "MemoryManager.h"
 #include "Core/Logger.h"
@@ -109,7 +110,7 @@ namespace TRE
 
 		arc.Close();
 
-		return arc.AsString();
+		return arc.GetFilePath();
 	}
 
 	void ECSManager::LoadEntities(std::string filePath)
@@ -118,6 +119,7 @@ namespace TRE
 
 		entt::registry copy;
 		ECSInputArchive arc(filePath);
+
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
 			.component<Properties>(arc)
@@ -239,7 +241,7 @@ namespace TRE
 		return GetComponent<Properties>().m_GUID;
 	}
 
-	ECSOutputArchive::ECSOutputArchive(std::string filePath) : m_FilePath(filePath)
+	ECSOutputArchive::ECSOutputArchive(std::string fileName) : m_FileName(fileName)
 	{
 		m_Root = nlohmann::json::array();
 	}
@@ -273,8 +275,7 @@ namespace TRE
 			m_Root.push_back(m_Current);
 		}
 
-		std::filesystem::path path{ "../Scenes" };
-		path /= (m_FilePath + ".json");
+		std::filesystem::path path{ m_FileName };
 		std::filesystem::create_directories(path.parent_path());
 		std::ofstream file(path);
 		file << m_Root;
@@ -286,9 +287,15 @@ namespace TRE
 		return m_Root.dump();
 	}
 
-	ECSInputArchive::ECSInputArchive(std::string filePath) : m_FilePath(filePath)
+	std::string ECSOutputArchive::GetFilePath()
 	{
-		m_Root = nlohmann::json::parse(m_FilePath);
+		return m_FileName;
+	}
+
+	ECSInputArchive::ECSInputArchive(std::string fileName) : m_FileName(fileName)
+	{
+		std::ifstream file(m_FileName);
+		m_Root = nlohmann::json::parse(file);
 	}
 
 	void ECSInputArchive::operator()(entt::entity& ent)
@@ -554,7 +561,7 @@ namespace TRE
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		std::string file = ECSManager::Instance().SaveEntities("Lmao");
+		std::string file = ECSManager::Instance().SaveEntities("../Scenes/Lmao.json");
 
 		ECSManager::Instance().DestroyAll();
 
@@ -563,7 +570,7 @@ namespace TRE
 
 		std::cout << std::endl;
 		std::cout << "- Loading from input: " << GetEntities<Properties>().size() << "...\n";
-		ECSManager::Instance().LoadEntities(file);
+		ECSManager::Instance().LoadEntities("../Scenes/Lmao.json");
 
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())

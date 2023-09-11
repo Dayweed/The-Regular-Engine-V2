@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Engine.h"
 #include "ECS.h"
+#include "Transform.h"
+#include "SceneManager.h"
 #include "MemoryManager.h"
 #include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
@@ -12,15 +14,9 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Geom.h"
-#include "Graphics/Shader.h"
+
 namespace TRE
 {
-	void TestShader()
-	{
-		Shader MyShader;
-		MyShader.LoadShader();
-	}
-
 	void AHHH()
 	{
 		Entity test = ECSManager::Instance().CreateEntity();
@@ -39,9 +35,12 @@ namespace TRE
 		{
 			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
 		}
-		std::string filePath{ECSManager::Instance().SaveEntities("Demo")};
+		std::string fileName{ "AHHHScene" };
+		SceneManager::Instance().SaveSceneAs(fileName);
 
-		ECSManager::Instance().LoadEntities(filePath);
+		std::cout << "File Name: > " << fileName << "\n";
+
+		SceneManager::Instance().LoadScene(fileName);
 		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
@@ -59,44 +58,50 @@ namespace TRE
 
 	void DemoScene()
 	{
-		Geom::RunCompiler("../Assets/smooth_vase.desc");
+		Geom::RunCompiler("../Assets/mine.desc");
 		
-		auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
+		auto geom = Geom::Deserialize("../Assets/mine.geom");
 
-		Entity test = ECSManager::Instance().CreateEntity();
-		test->GetComponent<Properties>().m_Name = "Test";
-		test->GetComponent<Transform>().m_Position.z = 25.f;
-		test->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
-		test->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
-		//std::shared_ptr<RenderObject> vase = RenderObject::CreateFromFile("../Assets/smooth_vase.obj");
+		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
+		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
-		test->AddComponent<MeshRenderer>();
-		test->GetComponent<MeshRenderer>().m_RenderObject = vase;
+
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
-		test2->GetComponent<Transform>().m_Position.x = 2.f;
-		test2->GetComponent<Transform>().m_Position.z = 50.f;
-		test2->GetComponent<Transform>().m_Scale = glm::vec3(20.f, 20.f, 20.f);
-		test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 45.f);
+		transformSystem->SetPosition(test2, glm::vec3(0.f, 0.f, 100.f));
+		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
+		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
-		test2->GetComponent<MeshRenderer>().m_RenderObject = vase;
-		
+		meshRendererSystem->SetMeshRenderer(test2, vase);
+
+		Entity test = ECSManager::Instance().CreateEntity();
+		test->GetComponent<Properties>().m_Name = "Test";
+		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 25.f));
+		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
+		test->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(test, vase);
+
+		Entity test3 = ECSManager::Instance().CreateEntity();
+		transformSystem->SetPosition(test3, glm::vec3(0.f, 0.f, 0.f));
+
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
-		cam->GetComponent<Transform>().m_Position;
-		cam->AddComponent<Camera>().m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
-		cam->GetComponent<Camera>().m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		cam->GetComponent<Camera>().m_Fov = 30.0f;
+		cam->AddComponent<Camera>();
+
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
 
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(cam, true);
+		cameraSystem->SetIsMainCamera(cam, true);
+		//ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(cam, test->GetComponent<Transform>().m_Position);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
+
+		//SceneManager::Instance().SaveSceneAs("DemoScene");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -136,8 +141,6 @@ namespace TRE
 
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
-
-		TestShader();
 	}
 
 	Engine::~Engine()
@@ -160,9 +163,11 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
+		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
