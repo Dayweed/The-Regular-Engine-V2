@@ -23,6 +23,7 @@ namespace TRE
 	{
 		ImGui::Begin("Hierarchy");
 
+		static bool openPopup = false;
 		//std::cout << "size of vector: " << ECSManager::Instance().GetEntities<Properties>().size() << "\n";
 		//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 		//{
@@ -47,12 +48,23 @@ namespace TRE
 					{
 						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == ECSManager::Instance().GetEntities<Properties>()[i]) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 					
+						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+						ImGui::Button("X");
+						ImGui::PopStyleColor(1);
+						ImGui::SameLine();
+
 						if (ImGui::TreeNodeEx(ECSManager::Instance().GetEntities<Properties>()[i]->GetName().c_str(), node_flag))
 						{
-							if (ImGui::IsItemClicked())
+							if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 							{
 								m_SelectionManager->SelectEntity(ECSManager::Instance().GetEntities<Properties>()[i]);
 								m_SelectionContext = ECSManager::Instance().GetEntities<Properties>()[i];
+							}
+
+							if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+							{
+								ImGui::OpenPopup("Create_New_Entity");
+								ImGui::Text("pressed with objects");
 							}
 
 							ImGui::TreePop();
@@ -68,6 +80,16 @@ namespace TRE
 			}
 
 			ImGui::TreePop();
+		}
+
+		if (ImGui::BeginPopupContextWindow("Create_New_Entity"))
+		{
+			if (ImGui::Selectable("Create Entity"))
+			{
+				Entity GameObject = ECSManager::Instance().CreateEntity();
+				GameObject->GetComponent<Properties>().m_Name = "GameObject";
+			}
+			ImGui::EndPopup();
 		}
 
 		ImGui::End();
