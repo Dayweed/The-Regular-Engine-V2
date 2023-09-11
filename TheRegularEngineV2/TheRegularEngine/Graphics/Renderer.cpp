@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Core/Engine.h"
+#include "Core/Transform.h"
 #include "Renderer.h"
 #include "RendererContext.h"
 #include "MeshRenderer.h"
@@ -10,6 +11,11 @@
 
 namespace TRE
 {
+	std::shared_ptr<DescriptorPool>& Renderer::GetDescriptorPool()
+	{
+		return m_DescriptorPool;
+	}
+
 	std::vector<std::unique_ptr<Image>>& Renderer::GetColorImages()
 	{
 		return m_ColorImages;
@@ -76,6 +82,20 @@ namespace TRE
 			}
 		}
 
+		m_DescriptorPool = DescriptorPool::Builder()
+			.SetMaxSets(10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
+			.Build();
+
+		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+		m_UBOBuffer->Map();
+	}
+
+	void Renderer::Initialize()
+	{
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
@@ -85,18 +105,18 @@ namespace TRE
 
 		CreateFrameBuffer(renderpass);
 
-		//std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
-		//VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
+		VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert", VK_SHADER_STAGE_VERTEX_BIT);
 
-		//std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
-		//FragShader = ShaderCompiler::CompileShader("Resources/Shaders/template.frag");
+		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
+		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
-		//PipelineConfig.VertexShader = VertShader;
-		//PipelineConfig.FragmentShader = FragShader;
-		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+		PipelineConfig.VertexShader = VertShader;
+		PipelineConfig.FragmentShader = FragShader;
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_UBOBuffer);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -176,11 +196,6 @@ namespace TRE
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 	}
 
-	void Renderer::Initialize()
-	{
-
-	}
-
 	void Renderer::Shutdown()
 	{
 
@@ -203,8 +218,8 @@ namespace TRE
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_Pipeline->GetUBOBuffers()[Index]->WriteToBuffer(&ubo);
-		m_Pipeline->GetUBOBuffers()[Index]->Flush();
+		m_UBOBuffer->WriteToBuffer(&ubo);
+		m_UBOBuffer->Flush();
 
 		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
@@ -223,17 +238,18 @@ namespace TRE
 		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
-		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, m_Pipeline->GetDescriptorSets().data(), 0, NULL);
+		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Pipeline->GetDescriptorSets(), 0, NULL);
 
 		//VERY INEFFICIENT
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			pc.m_LightNormal = go_mr->GetComponent<Transform>().GetNormalMatrix();
 			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			if(mr.m_RenderObject == nullptr)
+				continue;
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}

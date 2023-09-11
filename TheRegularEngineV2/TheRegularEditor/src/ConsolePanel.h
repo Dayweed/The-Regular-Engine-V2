@@ -3,7 +3,7 @@
 	@author    Hu Jun Ning (Code Contribution 100%)
 	@email     junning.hu@digipen.edu
 	@coauthor  Co-Author Name (Code Contribution 100%)
-	@email     CoAuthor.n@digipen.edu
+	@email     CoAuthor.tan.d@digipen.edu
 	@date      02/09/2023
 	@brief     Console panel
 

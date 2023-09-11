@@ -100,7 +100,6 @@ namespace TRE
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
-				const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
 				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 				const Camera& camera = entity->GetComponent<Camera>();
 				CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
@@ -115,34 +114,44 @@ namespace TRE
 				worldSpaceMousePos.y = 1.f - worldSpaceMousePos.y;
 				worldSpaceMousePos.y -= 0.5f;
 				worldSpaceMousePos.y *= 2.f;
-				//worldSpaceMousePos.x *= windowConfig.width;
-				//worldSpaceMousePos.y *= windowConfig.height;
-				glm::mat4 invProjection = cameraSystem->GetInverseProjectionMatrix(entity);
-				glm::mat4 invView = cameraSystem->GetInverseViewMatrix(entity);
-				glm::mat4 invProjView = cameraSystem->GetInverseViewProjectionMatrix(entity);
-				glm::vec4 mousePos = glm::vec4(worldSpaceMousePos.x, worldSpaceMousePos.y, 0.f, 1.f);
-				mousePos = invProjection * mousePos;
-				mousePos /= mousePos.w;
-				mousePos = invView * mousePos;
-				mousePos /= mousePos.w;
-				mousePos.x *= mousePos.z;
-				mousePos.y *= mousePos.z;
-				//mousePos = glm::normalize(mousePos);
-				//std::cout << "mouse pos " << mousePos.x << " " << mousePos.y << " " << mousePos.z << std::endl;
 
-				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position + glm::vec3(mousePos.x, mousePos.y, mousePos.z), camera.GetViewDirection());
-				//std::cout <<"ray position " << cameraRay.GetOrigin().x << " " << cameraRay.GetOrigin().y << " " << cameraRay.GetOrigin().z << std::endl;
-				//std::cout << "camera position " << camera.m_Position.x << " " << camera.m_Position.y << " " << camera.m_Position.z << std::endl;
-				//std::cout << "mouse pos " << mousePos.x << " " << mousePos.y << " " << mousePos.z << std::endl;
-				/*Entity test2 = ECSManager::Instance().CreateEntity();
-				test2->GetComponent<Properties>().m_Name = "ray";
-				test2->GetComponent<Transform>().m_Position = cameraRay.GetOrigin() + cameraRay.GetDirection() * 5.f;
-				test2->GetComponent<Transform>().m_Scale = glm::vec3(10.f, 10.f, 10.f);
-				test2->GetComponent<Transform>().m_Rotation = glm::vec3(0.f, 0.f, 0.f);
-				test2->AddComponent<MeshRenderer>();
-				auto geom = Geom::Deserialize("../Assets/smooth_vase.geom");
-				std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
-				test2->GetComponent<MeshRenderer>().m_RenderObject = vase;*/
+				glm::mat4 invProjView = cameraSystem->GetInverseViewProjectionMatrix(entity);
+				glm::vec4 start = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 0.f, 1.f);
+				glm::vec4 end = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 1.f, 1.f);
+				start = invProjView * start;
+				end = invProjView * end;
+				start.x /= start.w;
+				start.y /= start.w;
+				start.z /= start.w;
+				end.x /= end.w;
+				end.y /= end.w;
+				end.z /= end.w;
+				glm::vec3 ray = end - start;
+				
+				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position, ray);
+
+				auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
+				auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
+				std::map<float, Entity> entitiesHit;
+				for (auto mr : ent_mrs)
+				{
+					const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
+					float t = 0.f;
+					if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
+					{
+						entitiesHit[t] = mr;
+					}
+				}
+
+				if (entitiesHit.size() > 0)
+				{
+					//Single click for now
+					m_SelectionManager->SelectEntity(entitiesHit.begin()->second);
+				}
+				else
+				{
+					//Clear
+				}
 			}
 		}
 		else if (event._state == (int)KeyState::keyHeld)

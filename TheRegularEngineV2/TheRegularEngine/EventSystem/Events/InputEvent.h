@@ -13,11 +13,11 @@ namespace TRE
 		{}
 	};
 
-	struct TypingEvent : Event
+	struct MouseHoldEvent : Event
 	{
-		int _key, _mod;
+		int _key, _state;
 
-		TypingEvent(const int& key, const int& mod) : _key(key), _mod(mod)
+        MouseHoldEvent(const int& key, const int& state) : _key(key), _state(state)
 		{}
 	};
 

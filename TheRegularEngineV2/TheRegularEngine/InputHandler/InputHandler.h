@@ -57,13 +57,16 @@ namespace TRE
         *\param 	entered     new window focus state.
         *******************************************************************************/
         static void MouseFocusCb(GLFWwindow* win_ptr, int entered);
-
+        /*!*****************************************************************************
+        *\brief 	Response function for when mouse is button is held on application
+        window.
+        *
+        *\param 	win_ptr     pointer to GLFW window.
+        *\param 	entered     new window focus state.
+        *******************************************************************************/
         static void CheckMouseEvent(GLFWwindow* win_ptr, int button, int action);
 
         private:
-            static bool m_IsMouseHeld;
-            static std::unordered_map<MouseCode, bool> m_MouseEvent;
-            static std::unordered_map<MouseCode, bool> m_LastMouseEvent;
     };
 }
 

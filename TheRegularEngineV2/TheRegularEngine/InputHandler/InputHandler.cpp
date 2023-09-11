@@ -9,9 +9,6 @@
 #define DEBUG 1
 namespace TRE
 {
-	bool InputHandler::m_IsMouseHeld = false;
-	std::unordered_map<InputHandler::MouseCode, bool> InputHandler::m_LastMouseEvent;
-	std::unordered_map<InputHandler::MouseCode, bool> InputHandler::m_MouseEvent;
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
 		(void)win_ptr;
@@ -21,7 +18,7 @@ namespace TRE
 
 		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
 		{
-			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
+			//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
 		}
 	}
@@ -31,8 +28,6 @@ namespace TRE
 		(void)win_ptr;
 		(void)mod;
 		EventHandler& event = EventHandler::getEventHandlerInstance();
-		//MouseCode key = static_cast<MouseCode>(button);
-		glfwSetInputMode(win_ptr, GLFW_STICKY_KEYS, GLFW_FALSE);
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
 			//TRE_CORE_INFO("Mouse pressed:x {0}", key);
@@ -68,11 +63,11 @@ namespace TRE
 
 	void TRE::InputHandler::CheckMouseEvent(GLFWwindow* win_ptr, int button, int action)
 	{
-		//EventHandler& event = EventHandler::getEventHandlerInstance();
-		//if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
-		//{
-		//	//TRE_CORE_INFO("Mouse Button: {0}", button);
-		//	event.Publish(InputEvent {button, action});
-		//}
+		EventHandler& event = EventHandler::getEventHandlerInstance();
+		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
+		{
+			//TRE_CORE_INFO("Mouse Button: {0}", button);
+			event.Publish(MouseHoldEvent {button, action});
+		}
 	}
 }

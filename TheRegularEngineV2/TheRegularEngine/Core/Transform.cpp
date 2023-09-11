@@ -1,47 +1,48 @@
 #include "pch.h"
 #include "Transform.h"
-#include "glm/gtc/matrix_transform.hpp"
+#include "Graphics/MeshRenderer.h"
+#include "SystemManager.h"
 
 namespace TRE
 {
 	const glm::mat4 Transform::GetModelMatrix() const
 	{
-		//const float c3 = glm::cos(m_Rotation.z);
-		//const float s3 = glm::sin(m_Rotation.z);
-		//const float c2 = glm::cos(m_Rotation.x);
-		//const float s2 = glm::sin(m_Rotation.x);
-		//const float c1 = glm::cos(m_Rotation.y);
-		//const float s1 = glm::sin(m_Rotation.y);
-		//return glm::mat4
-		//{
-		//	{
-		//		m_Scale.x * (c1 * c3 + s1 * s2 * s3),
-		//		m_Scale.x * (c2 * s3),
-		//		m_Scale.x * (c1 * s2 * s3 - c3 * s1),
-		//		0.0f,
-		//	},
-		//	{
-		//		m_Scale.y * (c3 * s1 * s2 - c1 * s3),
-		//		m_Scale.y * (c2 * c3),
-		//		m_Scale.y * (c1 * c3 * s2 + s1 * s3),
-		//		0.0f,
-		//	},
-		//	{
-		//		m_Scale.z * (c2 * s1),
-		//		m_Scale.z * (-s2),
-		//		m_Scale.z * (c1 * c2),
-		//		0.0f,
-		//	},
-		//	{m_Position.x, -m_Position.y, m_Position.z, 1.0f} // VUlkan's y axis points down, so we need to flip it
-		//};
+		const float c3 = glm::cos(m_Rotation.z);
+		const float s3 = glm::sin(m_Rotation.z);
+		const float c2 = glm::cos(m_Rotation.x);
+		const float s2 = glm::sin(m_Rotation.x);
+		const float c1 = glm::cos(m_Rotation.y);
+		const float s1 = glm::sin(m_Rotation.y);
+		return glm::mat4
+		{
+			{
+				m_Scale.x * (c1 * c3 + s1 * s2 * s3),
+				m_Scale.x * (c2 * s3),
+				m_Scale.x * (c1 * s2 * s3 - c3 * s1),
+				0.0f,
+			},
+			{
+				m_Scale.y * (c3 * s1 * s2 - c1 * s3),
+				m_Scale.y * (c2 * c3),
+				m_Scale.y * (c1 * c3 * s2 + s1 * s3),
+				0.0f,
+			},
+			{
+				m_Scale.z * (c2 * s1),
+				m_Scale.z * (-s2),
+				m_Scale.z * (c1 * c2),
+				0.0f,
+			},
+			{m_Position.x, m_Position.y, m_Position.z, 1.0f}
+		};
 
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, m_Position);
-		modelMatrix = glm::rotate(modelMatrix, m_Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		modelMatrix = glm::rotate(modelMatrix, m_Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-		modelMatrix = glm::rotate(modelMatrix, m_Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-		modelMatrix = glm::scale(modelMatrix, m_Scale);
-		return modelMatrix;
+		//glm::mat4 modelMatrix = glm::mat4(1.0f);
+		//modelMatrix = glm::translate(modelMatrix, m_Position);
+		//modelMatrix = glm::rotate(modelMatrix, m_Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		//modelMatrix = glm::rotate(modelMatrix, m_Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		//modelMatrix = glm::rotate(modelMatrix, m_Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		//modelMatrix = glm::scale(modelMatrix, m_Scale);
+		//return modelMatrix;
 	}
 
 	const glm::mat4 Transform::GetNormalMatrix() const
@@ -76,5 +77,85 @@ namespace TRE
 			},
 			{0.f, 0.f, 0.f, 1.f }
 		};
+	}
+
+	void TransformSystem::Update()
+	{
+		if (m_IsDirty == false)
+			return;
+
+		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
+		{
+			Transform& transform = go.get()->GetComponent<Transform>();
+			if (transform.m_IsDirty)
+			{
+				//Update model matrix or sth
+				//Tell mesh renderer to update bounding sphere
+				if (go->HasComponent<MeshRenderer>())
+				{
+					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
+				}
+				transform.m_IsDirty = false;
+			}
+		}
+	}
+
+	void TransformSystem::OnDestroyGO()
+	{
+
+	}
+	
+	void TransformSystem::Shutdown()
+	{
+
+	}
+		
+	void TransformSystem::SetPosition(Entity& go, const glm::vec3& position)
+	{
+		m_IsDirty = true;
+
+		Transform& transform = go.get()->GetComponent<Transform>();
+		transform.m_Position = position;
+		transform.m_IsDirty = true;
+	}
+
+	void TransformSystem::SetRotation(Entity& go, const glm::vec3& rotation)
+	{
+		m_IsDirty = true;
+
+		Transform& transform = go.get()->GetComponent<Transform>();
+		transform.m_Rotation = rotation;
+		transform.m_IsDirty = true;
+	}
+
+	void TransformSystem::SetScale(Entity& go, const glm::vec3& scale)
+	{
+		m_IsDirty = true;
+
+		Transform& transform = go.get()->GetComponent<Transform>();
+		transform.m_Scale = scale;
+		transform.m_IsDirty = true;
+	}
+
+	const glm::vec3& TransformSystem::GetPosition(const Entity& go) const
+	{
+		return go.get()->GetComponent<Transform>().m_Position;
+	}
+
+	const glm::vec3& TransformSystem::GetRotation(const Entity& go) const
+	{
+		return go.get()->GetComponent<Transform>().m_Rotation;
+	}
+
+	const glm::vec3& TransformSystem::GetScale(const Entity& go) const
+	{
+		return go.get()->GetComponent<Transform>().m_Scale;
+	}
+
+	const glm::mat4 TransformSystem::GetModelMatrix(const Entity& go) const
+	{
+		//Next time then i do this
+		(void)go;
+		return glm::mat4(1.f);
 	}
 }

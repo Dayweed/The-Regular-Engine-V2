@@ -15,20 +15,24 @@ namespace TRE
 
 	struct PushConstants
 	{
-		VkShaderStageFlagBits ShaderStageFlag = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+		VkShaderStageFlags ShaderStageFlag;
 		uint32_t Offset = 0;
 		uint32_t Size = 0;
 	};
 
 	struct ImageSampler
 	{
-
+		uint32_t BindingPoint = 0;
+		uint32_t DescriptorSet = 0;
+		uint32_t ArraySize = 0;
+		std::string Name;
+		VkShaderStageFlagBits ShaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
 	};
 
 	struct ShaderDescriptorSets
 	{
-		std::vector<UniformBuffer_GLSL> UniformBuffers;
-		std::vector<ImageSampler> ImageSamplers;
+		std::unordered_map<uint32_t, UniformBuffer_GLSL> UniformBuffers;
+		std::unordered_map<uint32_t, ImageSampler> ImageSamplers;
 
 		std::unordered_map<std::string, VkWriteDescriptorSet> WriteDescriptorSets;
 
