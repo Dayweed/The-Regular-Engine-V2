@@ -23,7 +23,7 @@ namespace TRE
 	{
 		ImGui::Begin("Hierarchy");
 
-		static bool openPopup = false;
+		int deleteEntity = -1;
 		//std::cout << "size of vector: " << ECSManager::Instance().GetEntities<Properties>().size() << "\n";
 		//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 		//{
@@ -49,7 +49,10 @@ namespace TRE
 						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == ECSManager::Instance().GetEntities<Properties>()[i]) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 					
 						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
-						ImGui::Button("X");
+						if ((ImGui::Button("X") || ImGui::IsItemClicked()) && ECSManager::Instance().GetEntities<Properties>()[i]->GetName() != "cam")
+						{
+							deleteEntity = i;
+						}
 						ImGui::PopStyleColor(1);
 						ImGui::SameLine();
 
@@ -80,6 +83,11 @@ namespace TRE
 			}
 
 			ImGui::TreePop();
+		}
+
+		if (deleteEntity > -1)
+		{
+			ECSManager::Instance().DestroyEntity(ECSManager::Instance().GetEntities<Properties>()[deleteEntity]);
 		}
 
 		if (ImGui::BeginPopupContextWindow("Create_New_Entity"))
