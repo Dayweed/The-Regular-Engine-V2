@@ -29,7 +29,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
@@ -140,8 +140,6 @@ namespace TRE
 
 		//Create descriptor set layout
 		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
-		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-		m_UBOBuffer->Map();
 		
 		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings
 		{
@@ -169,7 +167,7 @@ namespace TRE
 		m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
 		
 		VkDescriptorBufferInfo BufferInfo{};
-		BufferInfo.buffer = m_UBOBuffer->GetBuffer();
+		BufferInfo.buffer = UniformBuffer->GetBuffer();
 		BufferInfo.offset = 0;
 		BufferInfo.range = sizeof(UBO);
 			
@@ -216,12 +214,13 @@ namespace TRE
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = PushConstantRanges.size();
-		pipelineLayoutInfo.pPushConstantRanges = &PushConstantRanges[0];
+		pipelineLayoutInfo.pPushConstantRanges = PushConstantRanges.data();
 		
 
-		if (vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout) != VK_SUCCESS)
+		if (auto Result = vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create pipeline layout!");
+			TRE_CORE_CRITICAL("Unable to create pipeline");
+			assert(Result == VK_SUCCESS);
 		}
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};

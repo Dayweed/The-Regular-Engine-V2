@@ -92,12 +92,16 @@ namespace TRE
 		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
 		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
+		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+		m_UBOBuffer->Map();
+
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
-		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_UBOBuffer);
+
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -204,8 +208,8 @@ namespace TRE
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_Pipeline->GetUBOBuffers()->WriteToBuffer(&ubo);
-		m_Pipeline->GetUBOBuffers()->Flush();
+		m_UBOBuffer->WriteToBuffer(&ubo);
+		m_UBOBuffer->Flush();
 
 		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 

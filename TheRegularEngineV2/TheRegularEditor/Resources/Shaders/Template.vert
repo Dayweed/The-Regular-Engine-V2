@@ -16,7 +16,7 @@ layout(push_constant) uniform Push
 layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
-	vec3 m_LightDirection;
+	vec4 m_LightDirection;
 }ubo;
 
 const float AMBIENT_INTENSITY = 0.05;
@@ -26,7 +26,7 @@ void main()
     gl_Position = ubo.m_ProjView * push.m_Model * vec4(inPosition, 1.0);
 
 	vec3 normalWorldSpace = normalize(mat3(push.m_Model) * inNormal);
-	float lightIntensity = AMBIENT_INTENSITY + max(dot(normalWorldSpace, -normalize(ubo.m_LightDirection)), 0);
+	float lightIntensity = AMBIENT_INTENSITY + max(dot(normalWorldSpace, -normalize(ubo.m_LightDirection.xyz)), 0);
 
     outColor = lightIntensity * inColor;
     outTexCoord = inTexCoord;

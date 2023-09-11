@@ -12,7 +12,6 @@ namespace TRE
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
-		//glm::mat4 m_LightNormal; //Normal matrix per model
 	};
 
 	struct UBO
@@ -58,5 +57,7 @@ namespace TRE
 
 			std::vector<VkCommandPool> m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
+
+			std::shared_ptr<Buffer> m_UBOBuffer;
 	};
 }
