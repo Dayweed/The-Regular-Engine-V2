@@ -42,10 +42,8 @@ namespace TRE
 		private:
 			VkPipeline m_Pipeline;
 			VkPipelineLayout m_Layout;
-
 			PipelineConfigurations m_Config;
-			
-			std::unique_ptr<DescriptorPool> m_DescriptorPool;
+
 			VkDescriptorSet m_DescriptorSet;
 			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};

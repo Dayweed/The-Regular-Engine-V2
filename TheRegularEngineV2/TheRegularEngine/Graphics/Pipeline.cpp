@@ -132,12 +132,6 @@ namespace TRE
 		depthStencil.front = {};
 		depthStencil.back = {};
 
-		m_DescriptorPool = DescriptorPool::Builder()
-			.SetMaxSets(10)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10)
-			.Build();
-
 		//Create descriptor set layout
 		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		
@@ -164,7 +158,7 @@ namespace TRE
 
 		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
 		
-		m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
+		Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
 		
 		VkDescriptorBufferInfo BufferInfo{};
 		BufferInfo.buffer = UniformBuffer->GetBuffer();

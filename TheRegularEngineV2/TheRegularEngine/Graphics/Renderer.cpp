@@ -11,6 +11,11 @@
 
 namespace TRE
 {
+	std::shared_ptr<DescriptorPool>& Renderer::GetDescriptorPool()
+	{
+		return m_DescriptorPool;
+	}
+
 	std::vector<std::unique_ptr<Image>>& Renderer::GetColorImages()
 	{
 		return m_ColorImages;
@@ -77,6 +82,20 @@ namespace TRE
 			}
 		}
 
+		m_DescriptorPool = DescriptorPool::Builder()
+			.SetMaxSets(10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
+			.Build();
+
+		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+		m_UBOBuffer->Map();
+	}
+
+	void Renderer::Initialize()
+	{
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
@@ -92,16 +111,12 @@ namespace TRE
 		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
 		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
-		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-		m_UBOBuffer->Map();
-
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_UBOBuffer);
-
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -179,11 +194,6 @@ namespace TRE
 		m_DepthImages.clear();
 
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
-	}
-
-	void Renderer::Initialize()
-	{
-
 	}
 
 	void Renderer::Shutdown()

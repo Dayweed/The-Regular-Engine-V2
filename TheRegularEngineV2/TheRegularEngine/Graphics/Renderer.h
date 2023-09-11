@@ -32,12 +32,12 @@ namespace TRE
 			void Shutdown();
 			void BeginFrame();
 
-			std::vector<char> readFile(const std::string& filename);
-			VkShaderModule CreateShader(std::vector<char>& code);
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
+		public:
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
 			VkSampler GetSampler();
+			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
 			std::shared_ptr<Device> m_Device;
@@ -51,7 +51,7 @@ namespace TRE
 			VkPipeline m_GraphicsPipeline;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
-			
+			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
