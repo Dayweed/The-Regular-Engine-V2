@@ -25,23 +25,35 @@ namespace TRE
 
 	void FileSystem::LoadDefaultFolderFileNames(std::string filePath)
 	{
+
+	}
+
+	void FileSystem::GenerateFolderFileNamesFile(std::string filePath)
+	{
 		// Set up document
 		rapidjson::Document fileSystemDoc;
-		std::string file_properties_name{ filePath + ".json" };
+		std::string filePathString{ filePath + ".json" };
 		fileSystemDoc.SetObject();
-		WriteToExternalFile(fileSystemDoc, file_properties_name.c_str());
+		WriteToExternalFile(fileSystemDoc, filePathString.c_str());
 
-		// Save scene properties
-		ObjectSerializer scene_prop(file_properties_name.c_str());
-		Allocator allocator = scene_prop.getDoc().GetAllocator();
+		ObjectSerializer fileSerial(filePathString.c_str());
+		Allocator allocator = fileSerial.getDoc().GetAllocator();
 
-		// Scene Properties
-		ObjectBuilder scene;
-		scene.insertValue(FILESYS_SCENE, "../Scenes/", allocator);
-		//scene_prop_obj.insertComponent(scene.getValue(), "FILESYS_SCENE", allocator);
-		scene_prop.AddObjectToDoc(scene.getValue(), FILESYS_SCENE);
+		// Folder Name
+		ObjectBuilder folder;
+		folder.insertValue(FILESYS_SCENE, std::string("../Scenes/"), allocator);
+		folder.insertValue(FILESYS_DESC, std::string("../Assets/"), allocator);
+		folder.insertValue(FILESYS_GEOM, std::string("../Assets/"), allocator);
+		fileSerial.AddObjectToDoc(folder.getValue(), "FolderNames");
+
+		// File Name
+		ObjectBuilder file;
+		file.insertValue(FILESYS_SCENE, std::string(".json"), allocator);
+		file.insertValue(FILESYS_DESC, std::string(".desc"), allocator);
+		file.insertValue(FILESYS_GEOM, std::string(".geom"), allocator);
+		fileSerial.AddObjectToDoc(file.getValue(), "FileNames");
 
 		// Write to Doc
-		scene_prop.writeToDoc(file_properties_name.c_str());
+		fileSerial.writeToDoc(filePathString.c_str());
 	}
 }

@@ -151,7 +151,7 @@ namespace TRE
 	void Engine::RegisterECS()
 	{
 		// Load set folders and names
-		FileSystem::Instance().LoadDefaultFolderFileNames("FileSystemNames");
+		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
 		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
