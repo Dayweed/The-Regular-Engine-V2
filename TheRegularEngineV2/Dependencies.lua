@@ -35,8 +35,8 @@ LibraryDir["PhysX"] = "%{wks.location}/Dependencies/PhysX/lib/%{cfg.buildcfg}"
 LibraryDir["Vulkan"] = "%{VULKAN_SDK}/Lib"
 LibraryDir["Math"] = "%{wks.location}/Dependencies/Math/bin"
 LibraryDir["RTTR"] = "%{wks.location}/Dependencies/RTTR/install/lib"
-LibraryDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/bin"
-LibraryDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/bin"
+LibraryDir["Compiler"] = "%{wks.location}/Dependencies/CompilerLib/%{cfg.buildcfg}"
+LibraryDir["Crunch"] = "%{wks.location}/Dependencies/Crunch/%{cfg.buildcfg}"
 
 Library = {}
 Library["Assimp"] = "%{LibraryDir.Assimp}/assimp-vc143-mt.lib"
