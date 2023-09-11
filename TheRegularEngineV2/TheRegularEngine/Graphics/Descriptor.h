@@ -37,7 +37,7 @@ namespace TRE
 			Builder& AddPoolSize(VkDescriptorType descriptorType, uint32_t count);
 			Builder& SetPoolFlags(VkDescriptorPoolCreateFlags flags);
 			Builder& SetMaxSets(uint32_t count);
-			std::unique_ptr<DescriptorPool> Build() const;
+			std::shared_ptr<DescriptorPool> Build() const;
 
 		private:
 			std::vector<VkDescriptorPoolSize> m_PoolSizes;

@@ -28,7 +28,7 @@ namespace TRE
 	class Pipeline
 	{
 		public:
-			Pipeline(const PipelineConfigurations& PipelineConfig);
+			Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer);
 			~Pipeline();
 
 			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
@@ -38,19 +38,13 @@ namespace TRE
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();
 			PipelineConfigurations& GetConfig();
-			std::shared_ptr<Buffer> GetUBOBuffers() { return m_UBOBuffer; }
 
 		private:
 			VkPipeline m_Pipeline;
 			VkPipelineLayout m_Layout;
-
 			PipelineConfigurations m_Config;
-			
-			std::unique_ptr<DescriptorPool> m_DescriptorPool;
+
 			VkDescriptorSet m_DescriptorSet;
-
-			std::shared_ptr<Buffer> m_UBOBuffer{};
-
 			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};
 }

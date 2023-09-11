@@ -12,7 +12,6 @@ namespace TRE
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
-		//glm::mat4 m_LightNormal; //Normal matrix per model
 	};
 
 	struct UBO
@@ -33,12 +32,12 @@ namespace TRE
 			void Shutdown();
 			void BeginFrame();
 
-			std::vector<char> readFile(const std::string& filename);
-			VkShaderModule CreateShader(std::vector<char>& code);
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
+		public:
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
 			VkSampler GetSampler();
+			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
 			std::shared_ptr<Device> m_Device;
@@ -52,11 +51,13 @@ namespace TRE
 			VkPipeline m_GraphicsPipeline;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
-			
+			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
 			std::vector<VkCommandPool> m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
+
+			std::shared_ptr<Buffer> m_UBOBuffer;
 	};
 }

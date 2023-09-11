@@ -73,9 +73,9 @@ namespace TRE
 		return *this;
 	}
 
-	std::unique_ptr<DescriptorPool> DescriptorPool::Builder::Build() const
+	std::shared_ptr<DescriptorPool> DescriptorPool::Builder::Build() const
 	{
-		return std::make_unique<DescriptorPool>(m_MaxSets, m_PoolFlags, m_PoolSizes);
+		return std::make_shared<DescriptorPool>(m_MaxSets, m_PoolFlags, m_PoolSizes);
 	}
 #pragma endregion Descriptor Pool Builder
 
