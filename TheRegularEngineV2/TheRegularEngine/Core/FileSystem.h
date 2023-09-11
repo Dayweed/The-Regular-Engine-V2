@@ -11,7 +11,9 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 
-#define FILESYS_SCENE "SCENE_FOLDER"
+#define FILESYS_SCENE	"SCENE_FOLDER"
+#define FILESYS_DESC	"DESC_FOLDER"
+#define FILESYS_GEOM	"GEOM_FOLDER"
 
 namespace TRE
 {
@@ -27,6 +29,7 @@ namespace TRE
 		std::string GetFolderName(std::string type);
 		std::string GetFileTypeName(std::string type);
 		void LoadDefaultFolderFileNames(std::string filePath);
+		void GenerateFolderFileNamesFile(std::string filePath);
 
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
