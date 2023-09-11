@@ -14,12 +14,12 @@
 
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
-#include "entt.hpp"
-#include "System.h"
-#include "ComponentManager.h"
-#include <typeindex>
 #include "Core/Logger.h"
+#include "entt.hpp"
+#include "ComponentManager.h"
+#include "System.h"
 
+#include <typeindex>
 #include <nlohmann/json.hpp>
 
 /*                                                                 defines
@@ -459,12 +459,30 @@ namespace TRE
 		Entity CreateEntity(std::string name = ECS_ENTITY_DEFAULT_NAME);
 
 		/* !
+		@function		DestroyEntity
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			object	Entity to be destroyed
+
+		@brief			Destroys Entity instantly
+
+		Example:
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+
+		std::cout << goVar << std::endl; // Address of goVar
+
+		ECSManager::Instance().DestroyEntity(goVar);
+		*//*__________________________________________________________________________*/
+		void DestroyEntity(Entity& object);
+
+		/* !
 		@function		MarkForDeletion
 		@author			Isaiah Lim (lim.i@digipen.edu)
 
 		@params			object	Entity to be destroyed
 
-		@brief			Create a new Entity
+		@brief			Marks an Entity for deletion, it would run through normal
+						gameloop first before deleting
 
 		Example:
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");

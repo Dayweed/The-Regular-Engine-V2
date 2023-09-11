@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "TREIncludes.h"
 #include "Engine.h"
 #include "ECS.h"
 #include "Transform.h"
@@ -149,6 +150,9 @@ namespace TRE
 
 	void Engine::RegisterECS()
 	{
+		// Load set folders and names
+		FileSystem::Instance().LoadDefaultFolderFileNames("FileSystemNames");
+
 		// Register Components
 		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
 		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);

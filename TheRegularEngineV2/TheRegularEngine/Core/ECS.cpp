@@ -1,9 +1,8 @@
 #include "pch.h"
 #include "ECS.h"
-#include "Transform.h"
-#include "Graphics/Camera.h"
 #include "MemoryManager.h"
-#include "Core/Logger.h"
+
+#include "Transform.h"
 
 namespace TRE
 {
@@ -44,6 +43,13 @@ namespace TRE
 		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		obj->GetComponent<Properties>().m_Name = name;
 		return obj;
+	}
+
+	void ECSManager::DestroyEntity(Entity& object)
+	{
+		// Remove from m_EntityList
+		m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
+		MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
 	}
 
 	void ECSManager::MarkForDeletion(Entity& object)
