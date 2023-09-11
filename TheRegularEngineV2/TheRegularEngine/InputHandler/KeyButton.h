@@ -1,5 +1,4 @@
-#ifndef KEY_BUTTON_H
-#define KEY_BUTTON_H
+#pragma once
 
 namespace TRE
 {
@@ -189,5 +188,3 @@ namespace TRE
         MAXMOUSEKEY = 32
     };
 }
-
-#endif

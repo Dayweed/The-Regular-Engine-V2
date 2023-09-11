@@ -1,5 +1,4 @@
-#ifndef EXAMPLE_EVENT_H
-#define EXAMPLE_EVENT_H
+#pragma once
 //Step 1: Have these 2 header files in your event file
 #include "pch.h"
 #include "EventBase.h"
@@ -20,4 +19,3 @@ namespace TRE
 		
 	};
 }
-#endif
