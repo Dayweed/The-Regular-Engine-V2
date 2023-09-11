@@ -5,6 +5,11 @@
 
 namespace TRE
 {
+	std::vector<PushConstants>& Shader::GetPushConstants()
+	{
+		return m_ReflectionData.PushConstants;
+	}
+
 	std::vector<VkDescriptorSetLayoutBinding>& Shader::GetDescriptorBindings()
 	{
 		return m_DescriptorBindings;

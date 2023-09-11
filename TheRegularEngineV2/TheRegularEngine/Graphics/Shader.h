@@ -15,6 +15,7 @@ namespace TRE
 			void CreateDescriptors();
 
 			std::vector<VkDescriptorSetLayoutBinding>& GetDescriptorBindings();
+			std::vector<PushConstants>& GetPushConstants();
 
 		public:
 			VkPipelineShaderStageCreateInfo GetPipelineShaderInfo();

@@ -163,7 +163,7 @@ namespace TRE
 
 			auto& PushConstant = m_ReflectionData.PushConstants.emplace_back();
 			PushConstant.Offset = Offset;
-			PushConstant.ShaderStageFlag = ShaderStage;
+			PushConstant.ShaderStageFlag = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 			PushConstant.Size = BufferSize - Offset;
 
 			TRE_CORE_TRACE("Push Constant Name: {0}", Name);

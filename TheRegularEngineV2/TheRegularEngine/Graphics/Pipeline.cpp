@@ -192,17 +192,31 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 
 		//Create pipeline layout
-		VkPushConstantRange pushConstantRange{};
-		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; //Push constant can be accessed from both vertex and fragment shaders
-		pushConstantRange.offset = 0;
-		pushConstantRange.size = sizeof(PushConstant);
+		std::vector<VkPushConstantRange> PushConstantRanges;
+		for (auto& PushConstant : m_Config.VertexShader->GetPushConstants())
+		{
+			VkPushConstantRange PushConst{};
+			PushConst.size = PushConstant.Size;
+			PushConst.stageFlags = PushConstant.ShaderStageFlag;
+			PushConst.offset = PushConstant.Offset;
+			PushConstantRanges.push_back(PushConst);
+		}
+
+		for (auto& PushConstant : m_Config.FragmentShader->GetPushConstants())
+		{
+			VkPushConstantRange PushConst{};
+			PushConst.size = PushConstant.Size;
+			PushConst.stageFlags = PushConstant.ShaderStageFlag;
+			PushConst.offset = PushConstant.Offset;
+			PushConstantRanges.push_back(PushConst);
+		}
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
-		pipelineLayoutInfo.pushConstantRangeCount = 1;
-		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+		pipelineLayoutInfo.pushConstantRangeCount = PushConstantRanges.size();
+		pipelineLayoutInfo.pPushConstantRanges = &PushConstantRanges[0];
 		
 
 		if (vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout) != VK_SUCCESS)

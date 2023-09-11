@@ -15,7 +15,7 @@ namespace TRE
 
 	struct PushConstants
 	{
-		VkShaderStageFlagBits ShaderStageFlag = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+		VkShaderStageFlags ShaderStageFlag;
 		uint32_t Offset = 0;
 		uint32_t Size = 0;
 	};

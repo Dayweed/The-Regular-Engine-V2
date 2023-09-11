@@ -12,7 +12,7 @@ namespace TRE
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
-		glm::mat4 m_LightNormal; //Normal matrix per model
+		//glm::mat4 m_LightNormal; //Normal matrix per model
 	};
 
 	struct UBO
