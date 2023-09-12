@@ -615,4 +615,13 @@ namespace TRE
 
 		std::cout << "====================================\n\n";
 	}
+
+	void ECSManager::STRESSTEST()
+	{
+		std::cout << "\STRESS TEST ECS\n====================================\n";
+		for (int i{}; i < 100; ++i)
+		{
+			ECSManager::Instance().CreateEntity();
+		}
+	}
 }

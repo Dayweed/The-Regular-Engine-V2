@@ -557,6 +557,7 @@ namespace TRE
 
 		// TODELETE
 		void TESTRUN();
+		void STRESSTEST();
 
 	private:
 		friend class MemoryManager;

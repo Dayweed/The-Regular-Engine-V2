@@ -189,6 +189,7 @@ namespace TRE
 		// To remove eventually
 		//ECSManager::Instance().TESTRUN();
 		//AHHH();
+		//ECSManager::Instance().STRESSTEST();
 		DemoScene();
 
 		while (!m_Window->ShouldWindowClose())
@@ -223,7 +224,7 @@ namespace TRE
 			Profiler::Instance().EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
-			//Profiler::Instance().PrintTimers();
+			Profiler::Instance().PrintTimers();
 		}
 	}
 
