@@ -57,6 +57,9 @@
     <ClInclude Include="Core\MemoryManager.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Parent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -189,6 +192,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\MemoryManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Parent.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
