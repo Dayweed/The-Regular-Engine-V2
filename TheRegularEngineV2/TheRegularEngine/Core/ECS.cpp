@@ -3,8 +3,13 @@
 #include "MemoryManager.h"
 #include "Parent.h"
 #include "SystemManager.h"
+#include "TREIncludes.h"
 
+#define TO DELETE
 #include "Transform.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/ext.hpp"
+
 
 namespace TRE
 {
@@ -362,10 +367,6 @@ namespace TRE
 		std::cout << "\nTesting setting, getting and removing parent\n";
 		Entity parentEntity = CreateEntity("ParentEntity");
 		Entity childEntity = CreateEntity("ChildEntity");
-		std::cout << "+ Active: " << oriobj->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "+ Active: " << parentEntity->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "+ Active: " << childEntity->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "+ Active: " << CreateEntity()->GetComponent<Properties>().m_Active << "\n";
 		std::cout << "- Default childEntity parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(childEntity) << "\n";
 		std::cout << "- childEntity address: " << childEntity << "\n";
 		std::cout << "- parentEntity address: " << parentEntity << "\n";
@@ -407,6 +408,35 @@ namespace TRE
 		std::cout << "- Attempting to remove a non child in parentEntity...\n";
 		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(parentEntity, test2);
 		std::cout << "- Testing Complete\n";
+
+		std::cout << "\nTesting Parent and Child Postion, Rotation, Scale updates\n";
+		Entity parentPosEntity = CreateEntity("ParentPosEntity");
+		Entity childPosEntity = CreateEntity("ChildPosEntity");
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentPosEntity, childPosEntity);
+		std::cout << "Position\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetPosition(childPosEntity, { 3, 2, 1 });
+		std::cout << "- Parent Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(parentPosEntity)) << "\n";
+		std::cout << "- Child  Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(childPosEntity)) << "\n";
+		std::cout << "- Changing Parent Pos to (4, 5, 6)...\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetPosition(parentPosEntity, { 4, 5, 6 });
+		std::cout << "- Parent Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(parentPosEntity)) << "\n";
+		std::cout << "- Child  Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(childPosEntity)) << "\n";
+		std::cout << "Rotation\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetRotation(childPosEntity, { 2, 4, 6 });
+		std::cout << "- Parent Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(parentPosEntity)) << "\n";
+		std::cout << "- Child  Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(childPosEntity)) << "\n";
+		std::cout << "- Changing Parent Rot to (1, 2, 3)...\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetRotation(parentPosEntity, { 1, 2, 3 });
+		std::cout << "- Parent Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(parentPosEntity)) << "\n";
+		std::cout << "- Child  Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(childPosEntity)) << "\n";
+		std::cout << "Scale\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetScale(childPosEntity, { 8, 2, 5 });
+		std::cout << "- Parent Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(parentPosEntity)) << "\n";
+		std::cout << "- Child  Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(childPosEntity)) << "\n";
+		std::cout << "- Changing Parent Scale to (3, 1, 2)...\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetScale(parentPosEntity, { 3, 1, 2 });
+		std::cout << "- Parent Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(parentPosEntity)) << "\n";
+		std::cout << "- Child  Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(childPosEntity)) << "\n";
 
 		/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 		for (auto&& storage : GetRegistry().storage())
