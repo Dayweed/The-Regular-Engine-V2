@@ -60,6 +60,8 @@ namespace TRE
 		m_DescriptorFile << m_Format << "\n\n";
 		m_DescriptorFile << "Texture Filter:\n";
 		m_DescriptorFile << m_Filter << "\n\n";
+		m_DescriptorFile << "Compress:\n";
+		m_DescriptorFile << m_Compress << "\n\n";
 	}
 
 	void TextureDescriptorFile::Read()
@@ -118,6 +120,20 @@ namespace TRE
 			std::cout << "Error: Texture Filter missing" << std::endl;
 			return;
 		}
+		std::getline(m_DescriptorFile, line);
+		if (line == "Compress:")
+		{
+			std::getline(m_DescriptorFile, line);
+
+			m_Compress = (bool)std::stoi(line);
+
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Texture Compression flag missing" << std::endl;
+			return;
+		}
 	}
 
 	void TextureCompiler::Compile(const TextureDescriptorFile& descriptor)
@@ -139,33 +155,38 @@ namespace TRE
 			std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
 			return;
 		}
+		void* outputData = (void*)pixels;
+		std::uint32_t outputSize = width * height * 4;
 
-		SYSTEM_INFO sys_info;
-		GetSystemInfo(&sys_info);
-		int num_threads = std::max<int>(0, (int)sys_info.dwNumberOfProcessors - 1);
-		
-		//Do compression here
-		crn_comp_params comp_params;
-		comp_params.m_file_type = cCRNFileTypeDDS;
-		comp_params.m_faces = 1;
-		comp_params.m_width = width;
-		comp_params.m_height = height;
-		comp_params.set_flag(cCRNCompFlagPerceptual, true);
-		comp_params.set_flag(cCRNCompFlagDXT1AForTransparency, true);
-		comp_params.set_flag(cCRNCompFlagHierarchical, true);
-		comp_params.m_format = cCRNFmtDXT5;
-		comp_params.m_pImages[0][0] = pixels;
-		comp_params.m_quality_level = 128;
-		comp_params.m_levels = 1;
-		comp_params.m_dxt_quality = cCRNDXTQualitySuperFast;
-		comp_params.m_num_helper_threads = num_threads;
+		if (descriptor.GetCompress())
+		{
+			SYSTEM_INFO sys_info;
+			GetSystemInfo(&sys_info);
+			int num_threads = std::max<int>(0, (int)sys_info.dwNumberOfProcessors - 1);
 
-		crn_uint32 outputSize;
-		void* outputData = crn_compress(comp_params, outputSize);
-		std::cout << "Compressing texture" << std::endl;
+			//Do compression here
+			crn_comp_params comp_params;
+			comp_params.m_file_type = cCRNFileTypeDDS;
+			comp_params.m_faces = 1;
+			comp_params.m_width = width;
+			comp_params.m_height = height;
+			comp_params.set_flag(cCRNCompFlagPerceptual, true);
+			comp_params.set_flag(cCRNCompFlagDXT1AForTransparency, true);
+			comp_params.set_flag(cCRNCompFlagHierarchical, true);
+			comp_params.m_format = cCRNFmtDXT5;
+			comp_params.m_pImages[0][0] = pixels;
+			comp_params.m_quality_level = 128;
+			comp_params.m_levels = 1;
+			comp_params.m_dxt_quality = cCRNDXTQualitySuperFast;
+			comp_params.m_num_helper_threads = num_threads;
+
+			outputData = crn_compress(comp_params, outputSize);
+			std::cout << "Compressed texture size: " << outputSize << std::endl;
+			std::cout << "Compressing texture" << std::endl;
+		}
 
 		m_Texture = std::make_unique<Texture>();
-		m_Texture->Data = reinterpret_cast<void*>(outputData);
+		m_Texture->Data = outputData;
 		m_Texture->DataSize = outputSize;
 		int len = static_cast<int>(std::min<int>(descriptor.GetTextureName().length(), sizeof(m_Texture->Name)));
 		for (int i = 0; i < len; ++i)
