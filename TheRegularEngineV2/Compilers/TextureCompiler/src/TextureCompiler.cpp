@@ -139,22 +139,21 @@ namespace TRE
 	void TextureCompiler::Compile(const TextureDescriptorFile& descriptor)
 	{
 		/*int texWidth, texHeight, texChannels;*/
-		//std::uint32_t fileSize;
-		//std::uint8_t* fileData = ReadFileIntoBuffer(descriptor.GetAssetPath().c_str(), fileSize);
-		//if (fileData == nullptr)
-		//{
-		//	std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
-		//	return;
-		//}
+		std::uint32_t fileSize;
+		std::uint8_t* fileData = ReadFileIntoBuffer(descriptor.GetAssetPath().c_str(), fileSize);
+		if (fileData == nullptr)
+		{
+			std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
+			return;
+		}
 		int width, height, actual_comps;
-		//std::uint32_t* pixels = (std::uint32_t*)stbi_load_from_memory(fileData, fileSize, &width, &height, &actual_comps, STBI_rgb_alpha);
-
-		std::uint32_t* pixels = (std::uint32_t*)stbi_load(descriptor.GetAssetPath().c_str(), &width, &height, &actual_comps, STBI_rgb_alpha);
+		std::uint32_t* pixels = (std::uint32_t*)stbi_load_from_memory(fileData, fileSize, &width, &height, &actual_comps, STBI_rgb_alpha);
 		if (pixels == nullptr)
 		{
 			std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
 			return;
 		}
+
 		void* outputData = (void*)pixels;
 		std::uint32_t outputSize = width * height * 4;
 
@@ -163,6 +162,11 @@ namespace TRE
 			SYSTEM_INFO sys_info;
 			GetSystemInfo(&sys_info);
 			int num_threads = std::max<int>(0, (int)sys_info.dwNumberOfProcessors - 1);
+			//Max num of threads for crnlib is 16
+			if (num_threads > 16)
+			{
+				num_threads = 16;
+			}
 
 			//Do compression here
 			crn_comp_params comp_params;
