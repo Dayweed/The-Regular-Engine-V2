@@ -13,7 +13,7 @@
 
 #include "pch.h"
 #include "MemoryManager.h"
-#include "Transform.h"
+#include "TREIncludes.h"
 #include <combaseapi.h>
 #include <atlconv.h>
 
@@ -112,7 +112,7 @@ namespace TRE
 		for (auto& object : m_AllEntityList)
 		{
 			// Remove from m_EntityList
-			object.second->AbandonChildren();
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(object.second);
 			// Release all components and entity itself
 			if (ECSManager::Instance().GetRegistry().valid(object.second->m_Entity))
 				ECSManager::Instance().GetRegistry().destroy(object.second->m_Entity);

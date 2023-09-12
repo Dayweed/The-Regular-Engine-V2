@@ -1,8 +1,15 @@
 #include "pch.h"
 #include "ECS.h"
 #include "MemoryManager.h"
+#include "Parent.h"
+#include "SystemManager.h"
+#include "TREIncludes.h"
 
+#define TO DELETE
 #include "Transform.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/ext.hpp"
+
 
 namespace TRE
 {
@@ -31,7 +38,7 @@ namespace TRE
 	{
 		for (auto& pair : m_EntityList)
 		{
-			pair.second->AbandonChildren();
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(pair.second);
 			MarkForDeletion(pair.second);
 		}
 		DeleteRemovalEntities();
@@ -112,6 +119,7 @@ namespace TRE
 		snapshot.entities(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
+			.component<Transform>(arc)
 			.component<FEL>(arc);
 
 		arc.Close();
@@ -130,6 +138,7 @@ namespace TRE
 		loader.entities(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
+			.component<Transform>(arc)
 			.component<FEL>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -153,83 +162,6 @@ namespace TRE
 	Entity Ent::GetThis()
 	{
 		return shared_from_this();
-	}
-
-	void Ent::SetParent(Entity parent)
-	{
-		// Tell existing parent to abandon this
-		if (ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent))
-		{
-			ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->AbandonChild(GetThis());
-		}
-		// Ensure self can't be parent or parent is one of its children
-		GetComponent<Parenting>().m_Parent = (ECSManager::Instance().FindEntityID(parent) != ECSManager::Instance().FindEntityID(GetThis()) && std::find(GetComponent<Parenting>().m_Children.begin(), GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(parent)) == GetComponent<Parenting>().m_Children.end()) ? ECSManager::Instance().FindEntityID(parent) : "";
-
-		// Add this as parent child if valid
-		if (GetComponent<Parenting>().m_Parent != "" && std::find(ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.begin(), ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(GetThis())) == ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end())
-		{
-			ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(GetThis()));
-		}
-	}
-
-	Entity Ent::GetParent()
-	{
-		return ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent);
-	}
-
-	void Ent::RemoveParent()
-	{
-		if (GetComponent<Parenting>().m_Parent != "")
-		{
-			auto it = std::find(ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.begin(), ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(shared_from_this()));
-			if (it != ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.end())
-			{
-				ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Parent)->GetComponent<Parenting>().m_Children.erase(it);
-			}
-		}
-		GetComponent<Parenting>().m_Parent = "";
-	}
-
-	void Ent::AddChild(Entity child)
-	{
-		child->SetParent(GetThis());
-	}
-
-	std::vector<Entity> Ent::GetChildren()
-	{
-		std::vector<Entity> children;
-		for (std::string id : GetComponent<Parenting>().m_Children)
-		{
-			Entity child{ ECSManager::Instance().FindEntity(id) };
-			if (child)
-			{
-				children.emplace_back(child);
-			}
-		}
-
-		return children;
-	}
-
-	void Ent::AbandonChild(Entity child)
-	{
-		if (child->GetParent().get() == this)
-		{
-			child->RemoveParent();
-			auto it = std::find(GetComponent<Parenting>().m_Children.begin(), GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child));
-			if (it != GetComponent<Parenting>().m_Children.end())
-			{
-				GetComponent<Parenting>().m_Children.erase(it);
-			}
-		}
-	}
-
-	void Ent::AbandonChildren()
-	{
-		for (int i{ static_cast<int>(GetComponent<Parenting>().m_Children.size()) - 1 }; i >= 0; --i)
-		{
-			AbandonChild(ECSManager::Instance().FindEntity(GetComponent<Parenting>().m_Children[i]));
-		}
-		GetComponent<Parenting>().m_Children.clear();
 	}
 
 	ENTTID Ent::GetENTTID()
@@ -370,7 +302,7 @@ namespace TRE
 		std::cout << "-------\n";*/
 
 		//std::cout << "Attempting to get a component it does not have: " << test->GetComponent<Transform>().m_Scale.x << std::endl; // Will call assert in GetComponent!
-		std::cout << "Default Parent: " << test->GetParent() << "\n";
+		std::cout << "Default Parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(test) << "\n";
 		MarkForDeletion(test);
 		std::cout << "Destroyed earlier Entity...\n";
 		//std::cout << "Attempting to call a deleted/destroyed Entity: " << test->GetComponent<Properties>().m_Name << std::endl; // Will not call assert in GetComponent until next loop!
@@ -435,51 +367,76 @@ namespace TRE
 		std::cout << "\nTesting setting, getting and removing parent\n";
 		Entity parentEntity = CreateEntity("ParentEntity");
 		Entity childEntity = CreateEntity("ChildEntity");
-		std::cout << "+ Active: " << oriobj->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "+ Active: " << parentEntity->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "+ Active: " << childEntity->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "+ Active: " << CreateEntity()->GetComponent<Properties>().m_Active << "\n";
-		std::cout << "- Default childEntity parent: " << childEntity->GetParent() << "\n";
+		std::cout << "- Default childEntity parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(childEntity) << "\n";
 		std::cout << "- childEntity address: " << childEntity << "\n";
 		std::cout << "- parentEntity address: " << parentEntity << "\n";
 		std::cout << "- Setting parentEntity as childEntity parent...\n";
-		childEntity->SetParent(parentEntity);
-		std::cout << "- New childEntity parent: " << childEntity->GetParent() << "\n";
-		std::cout << "- childEntity children size: " << childEntity->GetChildren().size() << "\n";
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(childEntity, parentEntity);
+		std::cout << "- New childEntity parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(childEntity) << "\n";
+		std::cout << "- childEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(childEntity).size() << "\n";
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- Removing childEntity parent...\n";
-		childEntity->RemoveParent();
-		std::cout << "- Removed childEntity parent: " << childEntity->GetParent() << "\n";
-		std::cout << "- childEntity children size: " << childEntity->GetChildren().size() << "\n";
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(childEntity);
+		std::cout << "- Removed childEntity parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(childEntity) << "\n";
+		std::cout << "- childEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(childEntity).size() << "\n";
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- Setting childEntity as childEntity parent...\n";
-		childEntity->SetParent(childEntity);
-		std::cout << "- New childEntity parent (Ideally it would set parent as a nullptr): " << childEntity->GetParent() << "\n";
-		std::cout << "- childEntity children size: " << childEntity->GetChildren().size() << "\n";
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(childEntity, childEntity);
+		std::cout << "- New childEntity parent (Ideally it would set parent as a nullptr): " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(childEntity) << "\n";
+		std::cout << "- childEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(childEntity).size() << "\n";
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "\n- Adding 5 Entitys to parentEntity as children...\n";
-		parentEntity->AddChild(test2);
-		parentEntity->AddChild(allobj);
-		parentEntity->AddChild(allobj2);
-		parentEntity->AddChild(cloneobj);
-		parentEntity->AddChild(oriobj);
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentEntity, test2);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentEntity, allobj);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentEntity, allobj2);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentEntity, cloneobj);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentEntity, oriobj);
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- 1 Entity removing parentEntity...\n";
-		test2->RemoveParent();
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(test2);
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- parentEntity abandoning 1 children...\n";
-		parentEntity->AbandonChild(allobj);
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(parentEntity, allobj);
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- 1 Entity Setting another parent...\n";
-		allobj2->SetParent(childEntity);
-		std::cout << "- childEntity children size: " << childEntity->GetChildren().size() << "\n";
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(allobj2, childEntity);
+		std::cout << "- childEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(childEntity).size() << "\n";
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- parentEntity abandoning all remaining children...\n";
-		parentEntity->AbandonChildren();
-		std::cout << "- parentEntity children size: " << parentEntity->GetChildren().size() << "\n";
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(parentEntity);
+		std::cout << "- parentEntity children size: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parentEntity).size() << "\n";
 		std::cout << "- Attempting to remove a non child in parentEntity...\n";
-		parentEntity->AbandonChild(test2);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(parentEntity, test2);
 		std::cout << "- Testing Complete\n";
+
+		std::cout << "\nTesting Parent and Child Postion, Rotation, Scale updates\n";
+		Entity parentPosEntity = CreateEntity("ParentPosEntity");
+		Entity childPosEntity = CreateEntity("ChildPosEntity");
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(parentPosEntity, childPosEntity);
+		std::cout << "Position\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetPosition(childPosEntity, { 3, 2, 1 });
+		std::cout << "- Parent Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(parentPosEntity)) << "\n";
+		std::cout << "- Child  Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(childPosEntity)) << "\n";
+		std::cout << "- Changing Parent Pos to (4, 5, 6)...\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetPosition(parentPosEntity, { 4, 5, 6 });
+		std::cout << "- Parent Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(parentPosEntity)) << "\n";
+		std::cout << "- Child  Pos: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetPosition(childPosEntity)) << "\n";
+		std::cout << "Rotation\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetRotation(childPosEntity, { 2, 4, 6 });
+		std::cout << "- Parent Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(parentPosEntity)) << "\n";
+		std::cout << "- Child  Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(childPosEntity)) << "\n";
+		std::cout << "- Changing Parent Rot to (1, 2, 3)...\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetRotation(parentPosEntity, { 1, 2, 3 });
+		std::cout << "- Parent Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(parentPosEntity)) << "\n";
+		std::cout << "- Child  Rot: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetRotation(childPosEntity)) << "\n";
+		std::cout << "Scale\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetScale(childPosEntity, { 8, 2, 5 });
+		std::cout << "- Parent Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(parentPosEntity)) << "\n";
+		std::cout << "- Child  Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(childPosEntity)) << "\n";
+		std::cout << "- Changing Parent Scale to (3, 1, 2)...\n";
+		ECSSystemManager::Instance().GetSystem<TransformSystem>()->SetScale(parentPosEntity, { 3, 1, 2 });
+		std::cout << "- Parent Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(parentPosEntity)) << "\n";
+		std::cout << "- Child  Scale: " << glm::to_string(ECSSystemManager::Instance().GetSystem<TransformSystem>()->GetScale(childPosEntity)) << "\n";
 
 		/*std::cout << "Sizes: " << m_EntityList.size() << "\n";
 		for (auto&& storage : GetRegistry().storage())
@@ -557,9 +514,9 @@ namespace TRE
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
 			std::cout << "-" << static_cast<ENTTID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
-			std::cout << "-- Parent: " << obj->GetParent() << ": " << (obj->GetParent() ? obj->GetParent()->GetComponent<Properties>().m_Name : "NONE") << "\n";
-			std::cout << "-- Children: " << obj->GetChildren().size() << "\n";
-			for (Entity& child : obj->GetChildren())
+			std::cout << "-- Parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(obj) << ": " << (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(obj) ? ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(obj)->GetComponent<Properties>().m_Name : "NONE") << "\n";
+			std::cout << "-- Children: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(obj).size() << "\n";
+			for (Entity& child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(obj))
 			{
 				std::cout << "---" << static_cast<ENTTID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
 			}
@@ -582,9 +539,9 @@ namespace TRE
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
 		{
 			std::cout << "-" << static_cast<ENTTID>(obj->m_Entity) << "|" << obj->GetComponent<Properties>().m_Name << " | " << obj->GetComponent<Properties>().m_Active << "\n";
-			std::cout << "-- Parent: " << obj->GetParent() << ": " << (obj->GetParent() ? obj->GetParent()->GetComponent<Properties>().m_Name : "NONE") << "\n";
-			std::cout << "-- Children: " << obj->GetChildren().size() << "\n";
-			for (Entity& child : obj->GetChildren())
+			std::cout << "-- Parent: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(obj) << ": " << (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(obj) ? ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(obj)->GetComponent<Properties>().m_Name : "NONE") << "\n";
+			std::cout << "-- Children: " << ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(obj).size() << "\n";
+			for (Entity& child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(obj))
 			{
 				std::cout << "---" << static_cast<ENTTID>(child->m_Entity) << "|" << child->GetComponent<Properties>().m_Name << " | " << child->GetComponent<Properties>().m_Active << "\n";
 			}
