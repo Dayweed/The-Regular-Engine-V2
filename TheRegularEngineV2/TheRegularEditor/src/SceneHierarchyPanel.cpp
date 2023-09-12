@@ -48,13 +48,17 @@ namespace TRE
 					{
 						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == ECSManager::Instance().GetEntities<Properties>()[i]) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 					
-						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
-						if ((ImGui::Button("X") || ImGui::IsItemClicked()) && ECSManager::Instance().GetEntities<Properties>()[i]->GetName() != "cam")
+
+						if (ECSManager::Instance().GetEntities<Properties>()[i]->GetName() != "cam")
 						{
-							deleteEntity = i;
+							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+							if ((ImGui::Button("X") || ImGui::IsItemClicked()))
+							{
+								deleteEntity = i;
+							}
+							ImGui::PopStyleColor(1);
+							ImGui::SameLine();
 						}
-						ImGui::PopStyleColor(1);
-						ImGui::SameLine();
 
 						if (ImGui::TreeNodeEx(ECSManager::Instance().GetEntities<Properties>()[i]->GetName().c_str(), node_flag))
 						{
