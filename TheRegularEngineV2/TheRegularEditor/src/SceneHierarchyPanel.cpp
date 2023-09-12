@@ -41,10 +41,10 @@ namespace TRE
 			{
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
 
-				if (ECSManager::Instance().GetEntities<Properties>()[i]->GetParent() == nullptr)
+				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(ECSManager::Instance().GetEntities<Properties>()[i]) == nullptr)
 				{
 					//entities without children and parent
-					if (!ECSManager::Instance().GetEntities<Properties>()[i]->GetChildren().size())
+					if (!ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(ECSManager::Instance().GetEntities<Properties>()[i]).size())
 					{
 						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == ECSManager::Instance().GetEntities<Properties>()[i]) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 					
@@ -111,7 +111,7 @@ namespace TRE
 	void SceneHierarchyPanel::DisplayChildren(TRE::Entity& CurrentEntity)
 	{
 		//parent has children
-		if (CurrentEntity->GetChildren().size())
+		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size())
 		{
 			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 			if (ImGui::TreeNodeEx(CurrentEntity->GetName().c_str(), Flags))
@@ -122,9 +122,9 @@ namespace TRE
 					m_SelectionContext = CurrentEntity;
 				}
 
-				for (size_t i{}; i < CurrentEntity->GetChildren().size(); ++i)
+				for (size_t i{}; i < ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size(); ++i)
 				{
-					DisplayChildren(CurrentEntity->GetChildren()[i]);
+					DisplayChildren(ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity)[i]);
 				}
 
 				ImGui::TreePop();

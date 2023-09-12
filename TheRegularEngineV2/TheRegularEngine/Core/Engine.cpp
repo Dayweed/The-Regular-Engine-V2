@@ -167,6 +167,7 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
@@ -180,7 +181,7 @@ namespace TRE
 	void Engine::Update()
 	{
 		// To remove eventually
-		//ECSManager::Instance().TESTRUN();
+		ECSManager::Instance().TESTRUN();
 		//AHHH();
 		DemoScene();
 
