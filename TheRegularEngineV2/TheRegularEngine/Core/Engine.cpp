@@ -181,7 +181,7 @@ namespace TRE
 	void Engine::Update()
 	{
 		// To remove eventually
-		ECSManager::Instance().TESTRUN();
+		//ECSManager::Instance().TESTRUN();
 		//AHHH();
 		DemoScene();
 
