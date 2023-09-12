@@ -126,7 +126,7 @@ namespace TRE
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.format = VK_FORMAT_BC3_SRGB_BLOCK;//VkFormat(texture->Format);
+		imageInfo.format = VkFormat(texture->Format);
 		imageInfo.extent.width = texture->Width;
 		imageInfo.extent.height = texture->Height;
 		imageInfo.extent.depth = 1;
@@ -169,7 +169,7 @@ namespace TRE
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewInfo.image = m_Image;
 		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		viewInfo.format = VK_FORMAT_BC3_SRGB_BLOCK;//VkFormat(texture->Format);
+		viewInfo.format = VkFormat(texture->Format);
 		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		viewInfo.subresourceRange.baseMipLevel = 0;
 		viewInfo.subresourceRange.levelCount = 1;
