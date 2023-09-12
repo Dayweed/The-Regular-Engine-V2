@@ -123,15 +123,22 @@ namespace TRE
 	void TextureCompiler::Compile(const TextureDescriptorFile& descriptor)
 	{
 		/*int texWidth, texHeight, texChannels;*/
-		std::uint32_t fileSize;
-		std::uint8_t* fileData = ReadFileIntoBuffer(descriptor.GetAssetPath().c_str(), fileSize);
-		if (fileData == nullptr)
+		//std::uint32_t fileSize;
+		//std::uint8_t* fileData = ReadFileIntoBuffer(descriptor.GetAssetPath().c_str(), fileSize);
+		//if (fileData == nullptr)
+		//{
+		//	std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
+		//	return;
+		//}
+		int width, height, actual_comps;
+		//std::uint32_t* pixels = (std::uint32_t*)stbi_load_from_memory(fileData, fileSize, &width, &height, &actual_comps, STBI_rgb_alpha);
+
+		std::uint32_t* pixels = (std::uint32_t*)stbi_load(descriptor.GetAssetPath().c_str(), &width, &height, &actual_comps, STBI_rgb_alpha);
+		if (pixels == nullptr)
 		{
 			std::cout << "Failed to load texture image: " << descriptor.GetAssetPath() << std::endl;
 			return;
 		}
-		int width, height, actual_comps;
-		std::uint32_t* pixels = (std::uint32_t*)stbi_load_from_memory(fileData, fileSize, &width, &height, &actual_comps, STBI_rgb_alpha);
 
 		SYSTEM_INFO sys_info;
 		GetSystemInfo(&sys_info);
@@ -155,6 +162,7 @@ namespace TRE
 
 		crn_uint32 outputSize;
 		void* outputData = crn_compress(comp_params, outputSize);
+		std::cout << "Compressing texture" << std::endl;
 
 		m_Texture = std::make_unique<Texture>();
 		m_Texture->Data = reinterpret_cast<void*>(outputData);
@@ -168,6 +176,6 @@ namespace TRE
 		m_Texture->Filter = descriptor.GetFilter();
 
 		//crn_free_block(outputData);
-		stbi_image_free(pixels);
+		//stbi_image_free(pixels);
 	}
 }

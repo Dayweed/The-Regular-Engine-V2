@@ -5,10 +5,6 @@
 #include "RendererContext.h"
 #include "TREIncludes.h"
 
-//#include "crnlib.h"
-//#include "crn_decomp.h"
-//#include "dds_defs.h"
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
