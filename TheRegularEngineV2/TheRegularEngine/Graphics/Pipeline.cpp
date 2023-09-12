@@ -4,7 +4,6 @@
 #include "RenderObject.h"
 #include "Core/Engine.h"
 #include "Descriptor.h"
-#include "VulkanTexture.h"
 #include "Core/Logger.h"
 
 namespace TRE
@@ -29,7 +28,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
@@ -39,7 +38,7 @@ namespace TRE
 		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
 		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
 
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{}; //Make it modular
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescription.size());
@@ -132,64 +131,28 @@ namespace TRE
 		depthStencil.front = {};
 		depthStencil.back = {};
 
-		m_DescriptorPool = DescriptorPool::Builder()
-			.SetMaxSets(10)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10)
-			.Build();
-
 		//Create descriptor set layout
 		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
-		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-		m_UBOBuffer->Map();
 		
-		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings
+		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = m_Config.VertexShader->GetDescriptorBindings();
+		std::vector<VkDescriptorSetLayoutBinding>& FragLayoutBindings = m_Config.FragmentShader->GetDescriptorBindings();
+		for (int x = 0; x < FragLayoutBindings.size(); x++)
 		{
-			m_Config.VertexShader->GetDescriptorBindings()[0],
-			m_Config.FragmentShader->GetDescriptorBindings()[0]
-		};
+			setLayoutBindings.push_back(FragLayoutBindings[x]);
+		}
 
 		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
 		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		descriptorSetLayoutInfo.bindingCount = setLayoutBindings.size();
 		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 		
-		if (vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+		if (auto Result = vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create descriptor set layout");
+			TRE_CORE_ERROR("Unable to create pipeline descriptor set layout");
+			assert(Result == VK_SUCCESS);
 		}
 
-		//TO DELETE
-		Texture::RunCompiler("../Assets/Test.desc");
-		auto texture = Texture::Deserialize("../Assets/Test.DDS");
-		TextureManager::Instance().LoadTexture(std::move(texture));
-
-		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
-		
-		m_DescriptorPool->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
-		
-		VkDescriptorBufferInfo BufferInfo{};
-		BufferInfo.buffer = m_UBOBuffer->GetBuffer();
-		BufferInfo.offset = 0;
-		BufferInfo.range = sizeof(UBO);
-			
-		std::vector<VkWriteDescriptorSet> Writes;
-		for (auto x : m_Config.VertexShader->GetWriteDescriptorSets())
-		{
-			x.second.pBufferInfo = &BufferInfo;
-			x.second.dstSet = m_DescriptorSet;
-			Writes.push_back(x.second);
-		}
-
-		for (auto x : m_Config.FragmentShader->GetWriteDescriptorSets())
-		{
-			x.second.dstBinding = 1;
-			x.second.pImageInfo = &imageInfo;
-			x.second.dstSet = m_DescriptorSet;
-			Writes.push_back(x.second);
-		}
-
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
+		Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
 
 		//Create pipeline layout
 		std::vector<VkPushConstantRange> PushConstantRanges;
@@ -216,12 +179,13 @@ namespace TRE
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = PushConstantRanges.size();
-		pipelineLayoutInfo.pPushConstantRanges = &PushConstantRanges[0];
+		pipelineLayoutInfo.pPushConstantRanges = PushConstantRanges.data();
 		
 
-		if (vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout) != VK_SUCCESS)
+		if (auto Result = vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout); Result != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to create pipeline layout!");
+			TRE_CORE_CRITICAL("Unable to create pipeline");
+			assert(Result == VK_SUCCESS);
 		}
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -250,7 +214,6 @@ namespace TRE
 
 	Pipeline::~Pipeline()
 	{
-		TextureManager::Instance().Shutdown();
 		auto Device = RendererContext::GetDevice();
 		vkDestroyDescriptorSetLayout(Device->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);

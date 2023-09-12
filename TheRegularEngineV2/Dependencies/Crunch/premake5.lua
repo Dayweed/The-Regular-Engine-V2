@@ -5,22 +5,27 @@ project "Crunch"
     staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-	targetdir ("bin")
-	-- ! makes .obj files appear in the same folder
-	-- regardless of build configuration
-	objdir ("!bin/obj")
+	targetdir ("%{cfg.buildcfg}")
+	objdir ("!%{cfg.buildcfg}/obj")
+
+	defines
+	{
+		"WIN32=true" -- PhysX Requires This
+	}
 
     includedirs
     {
-		"src"
+		"inc"
     }
 
 	files
 	{
-		"src/**.h",
-		"src/**.hpp",
+		"inc/**.h",
+		"inc/**.hpp",
 		"src/**.cpp",
 		"src/**.c",
+		"crnlib/**.c",
+		"crnlib/**.cpp",
 	}
 
 	links

@@ -8,9 +8,15 @@
 #include "Camera.h"
 #include "Core/Logger.h"
 #include "ShaderCompiler.h"
+#include "VulkanTexture.h"
 
 namespace TRE
 {
+	std::shared_ptr<DescriptorPool>& Renderer::GetDescriptorPool()
+	{
+		return m_DescriptorPool;
+	}
+
 	std::vector<std::unique_ptr<Image>>& Renderer::GetColorImages()
 	{
 		return m_ColorImages;
@@ -77,6 +83,20 @@ namespace TRE
 			}
 		}
 
+		m_DescriptorPool = DescriptorPool::Builder()
+			.SetMaxSets(10)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
+			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
+			.Build();
+
+		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+		m_UBOBuffer->Map();
+	}
+
+	void Renderer::Initialize()
+	{
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
@@ -97,7 +117,35 @@ namespace TRE
 		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
-		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_UBOBuffer);
+
+		//TO DELETE
+		Texture::RunCompiler("../Assets/Test.desc");
+		auto texture = Texture::Deserialize("../Assets/Test.DDS");
+		TextureManager::Instance().LoadTexture(std::move(texture));
+
+		VkDescriptorBufferInfo BufferInfo{};
+		BufferInfo.buffer = m_UBOBuffer->GetBuffer();
+		BufferInfo.offset = 0;
+		BufferInfo.range = sizeof(UBO);
+
+		std::vector<VkWriteDescriptorSet> Writes;
+		for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
+		{
+			x.second.pBufferInfo = &BufferInfo;
+			x.second.dstSet = m_Pipeline->GetDescriptorSets();
+			Writes.push_back(x.second);
+		}
+		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
+		for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
+		{
+			x.second.dstBinding = 1;
+			x.second.pImageInfo = &imageInfo;
+			x.second.dstSet = m_Pipeline->GetDescriptorSets();
+			Writes.push_back(x.second);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -164,7 +212,7 @@ namespace TRE
 	Renderer::~Renderer()
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
-
+		TextureManager::Instance().Shutdown();
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
@@ -177,11 +225,6 @@ namespace TRE
 		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 	}
 
-	void Renderer::Initialize()
-	{
-
-	}
-
 	void Renderer::Shutdown()
 	{
 
@@ -191,6 +234,7 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
+
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -199,19 +243,18 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		//Descriptor set
 		//UBO
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_Pipeline->GetUBOBuffers()->WriteToBuffer(&ubo);
-		m_Pipeline->GetUBOBuffers()->Flush();
+		m_UBOBuffer->WriteToBuffer(&ubo);
+		m_UBOBuffer->Flush();
 
 		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
-		viewport.y = 0.f;// static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.y = 0.f;
 		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
 		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.minDepth = 0.0f;
