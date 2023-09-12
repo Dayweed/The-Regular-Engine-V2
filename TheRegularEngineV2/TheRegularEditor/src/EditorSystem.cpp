@@ -10,6 +10,7 @@
 #include "ContentBrowserPanel.h"
 #include "ConsolePanel.h"
 #include "ProfilerPanel.h"
+#include "ToolBarPanel.h"
 
 namespace TRE
 {
@@ -27,6 +28,7 @@ namespace TRE
 		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser");
 		m_PanelManager->InsertPanel<ConsolePanel>("Console");
 		m_PanelManager->InsertPanel<ProfilerPanel>("Profiler");
+		m_PanelManager->InsertPanel<ToolBarPanel>("Tool Bar");
 		m_PanelManager->Init();
 	}
 	
