@@ -114,6 +114,7 @@ namespace TRE
 		snapshot.entities(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
+			.component<Transform>(arc)
 			.component<FEL>(arc);
 
 		arc.Close();
@@ -132,6 +133,7 @@ namespace TRE
 		loader.entities(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
+			.component<Transform>(arc)
 			.component<FEL>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
