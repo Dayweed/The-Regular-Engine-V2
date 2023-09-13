@@ -13,9 +13,9 @@ namespace TRE
 		return m_Config;
 	}
 
-	const VkDescriptorSet& Pipeline::GetDescriptorSets()
+	const std::vector<VkDescriptorSet>& Pipeline::GetDescriptorSets()
 	{
-		return m_DescriptorSet;
+		return m_DescriptorSets;
 	}
 
 	VkPipelineLayout Pipeline::GetPipelineLayout()
@@ -152,7 +152,9 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSet);
+		m_DescriptorSets.resize(Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount());
+		for (int x = 0; x < m_DescriptorSets.size(); x++)
+			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[x]);
 
 		//Create pipeline layout
 		std::vector<VkPushConstantRange> PushConstantRanges;

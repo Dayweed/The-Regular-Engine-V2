@@ -18,6 +18,9 @@ namespace TRE
 			Asset() = default;
 			virtual ~Asset() {}
 
+		public:
+			virtual AssetType GetAssetType() const = 0;
+
 		private:
 			AssetHandle m_Handle;
 			AssetType m_Type;

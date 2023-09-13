@@ -33,7 +33,7 @@ namespace TRE
 
 		public:
 			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
-			const VkDescriptorSet& GetDescriptorSets();
+			const std::vector<VkDescriptorSet>& GetDescriptorSets();
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();
 			PipelineConfigurations& GetConfig();
@@ -43,7 +43,7 @@ namespace TRE
 			VkPipelineLayout m_Layout;
 			PipelineConfigurations m_Config;
 
-			VkDescriptorSet m_DescriptorSet;
+			std::vector<VkDescriptorSet> m_DescriptorSets;
 			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};
 }
