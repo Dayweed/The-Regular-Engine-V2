@@ -201,9 +201,16 @@ namespace TRE
 			//Update
 			Profiler::Instance().StartTimer("Update");
 			ECSSystemManager::Instance().UpdateSystem();
-			ECSSystemManager::Instance().OnDestroyEntities();
-			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("Update");
+
+			Profiler::Instance().StartTimer("OnDestroyEntities");
+			ECSSystemManager::Instance().OnDestroyEntities();
+			Profiler::Instance().EndTimer("OnDestroyEntities");
+
+			Profiler::Instance().StartTimer("DeleteRemovalEntities");
+			ECSManager::Instance().DeleteRemovalEntities();
+			Profiler::Instance().EndTimer("DeleteRemovalEntities");
+
 			m_Renderer->BeginFrame();
 
 			// Imgui Update
@@ -218,13 +225,12 @@ namespace TRE
 
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
-
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
-			Profiler::Instance().PrintTimers();
+			//Profiler::Instance().PrintTimers();
 		}
 	}
 

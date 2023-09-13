@@ -619,9 +619,10 @@ namespace TRE
 	void ECSManager::STRESSTEST()
 	{
 		std::cout << "\STRESS TEST ECS\n====================================\n";
-		for (int i{}; i < 100; ++i)
+		for (int i{}; i < 250; ++i)
 		{
-			ECSManager::Instance().CreateEntity();
+			Entity ent{ ECSManager::Instance().CreateEntity() };
+			ent->AddComponent<MeshRenderer>();
 		}
 	}
 }

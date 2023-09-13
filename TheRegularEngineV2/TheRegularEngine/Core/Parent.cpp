@@ -53,10 +53,11 @@ namespace TRE
 		std::string parentID{ child->GetComponent<Parenting>().m_Parent };
 		if (parentID != "")
 		{
-			auto it = std::find(ECSManager::Instance().FindEntity(parentID)->GetComponent<Parenting>().m_Children.begin(), ECSManager::Instance().FindEntity(parentID)->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child));
-			if (it != ECSManager::Instance().FindEntity(parentID)->GetComponent<Parenting>().m_Children.end())
+			Parenting& parenting{ ECSManager::Instance().FindEntity(parentID)->GetComponent<Parenting>() };
+			auto it = std::find(parenting.m_Children.begin(), parenting.m_Children.end(), ECSManager::Instance().FindEntityID(child));
+			if (it != parenting.m_Children.end())
 			{
-				ECSManager::Instance().FindEntity(parentID)->GetComponent<Parenting>().m_Children.erase(it);
+				parenting.m_Children.erase(it);
 			}
 		}
 		child->GetComponent<Parenting>().m_Parent = "";
@@ -84,13 +85,14 @@ namespace TRE
 
 	void ParentingSystem::AbandonChild(Entity parent, Entity child)
 	{
+		Parenting& parenting{ parent->GetComponent<Parenting>() };
 		if (GetParent(child) && ECSManager::Instance().FindEntityID(GetParent(child)) == ECSManager::Instance().FindEntityID(parent))
 		{
 			RemoveParent(child);
-			auto it = std::find(parent->GetComponent<Parenting>().m_Children.begin(), parent->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child));
-			if (it != parent->GetComponent<Parenting>().m_Children.end())
+			auto it = std::find(parenting.m_Children.begin(), parenting.m_Children.end(), ECSManager::Instance().FindEntityID(child));
+			if (it != parenting.m_Children.end())
 			{
-				parent->GetComponent<Parenting>().m_Children.erase(it);
+				parenting.m_Children.erase(it);
 			}
 		}
 		else
@@ -104,10 +106,11 @@ namespace TRE
 
 	void ParentingSystem::AbandonChildren(Entity parent)
 	{
-		for (int i{ static_cast<int>(parent->GetComponent<Parenting>().m_Children.size()) - 1 }; i >= 0; --i)
+		Parenting& parenting{ parent->GetComponent<Parenting>() };
+		for (int i{ static_cast<int>(parenting.m_Children.size()) - 1 }; i >= 0; --i)
 		{
-			AbandonChild(parent, ECSManager::Instance().FindEntity(parent->GetComponent<Parenting>().m_Children[i]));
+			AbandonChild(parent, ECSManager::Instance().FindEntity(parenting.m_Children[i]));
 		}
-		parent->GetComponent<Parenting>().m_Children.clear();
+		parenting.m_Children.clear();
 	}
 }
