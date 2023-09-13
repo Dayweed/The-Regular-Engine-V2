@@ -15,6 +15,7 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Geom.h"
+#include <time.h>       /* time */
 
 namespace TRE
 {
@@ -83,6 +84,17 @@ namespace TRE
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, vase);
+
+		/*std::cout << "\STRESS TEST ECS\n====================================\n";
+		srand(time(NULL));
+		for (int i{}; i < 2500; ++i)
+		{
+			Entity ent{ ECSManager::Instance().CreateEntity() };
+			ent->AddComponent<MeshRenderer>();
+			transformSystem->SetPosition(ent, glm::vec3(0.f, 0.f, 25.f));
+			transformSystem->SetScale(ent, glm::vec3(rand() % 10, rand() % 10, rand() % 10));
+			meshRendererSystem->SetMeshRenderer(ent, vase);
+		}*/
 
 		Entity test3 = ECSManager::Instance().CreateEntity();
 		transformSystem->SetPosition(test3, glm::vec3(0.f, 0.f, 0.f));
@@ -190,6 +202,7 @@ namespace TRE
 		//ECSManager::Instance().TESTRUN();
 		//AHHH();
 		DemoScene();
+		//ECSManager::Instance().STRESSTEST();
 
 		while (!m_Window->ShouldWindowClose())
 		{
@@ -200,9 +213,16 @@ namespace TRE
 			//Update
 			Profiler::Instance().StartTimer("Update");
 			ECSSystemManager::Instance().UpdateSystem();
-			ECSSystemManager::Instance().OnDestroyEntities();
-			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("Update");
+
+			Profiler::Instance().StartTimer("OnDestroyEntities");
+			ECSSystemManager::Instance().OnDestroyEntities();
+			Profiler::Instance().EndTimer("OnDestroyEntities");
+
+			Profiler::Instance().StartTimer("DeleteRemovalEntities");
+			ECSManager::Instance().DeleteRemovalEntities();
+			Profiler::Instance().EndTimer("DeleteRemovalEntities");
+
 			m_Renderer->BeginFrame();
 
 			// Imgui Update
@@ -217,13 +237,12 @@ namespace TRE
 
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
-
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
-			//Profiler::Instance().PrintTimers();
+			Profiler::Instance().PrintTimers();
 		}
 	}
 

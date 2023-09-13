@@ -1,5 +1,6 @@
 #pragma once
 #include "System.h"
+#include "Profiler.h"
 
 namespace TRE
 {
@@ -113,6 +114,7 @@ namespace TRE
 
 			std::shared_ptr<T> system = std::make_shared<T>();
 			m_Systems.insert({ hashcode, std::move(system) });
+			m_SystemsName.insert({ hashcode, typeid(T).name()});
 			//m_Systems.emplace(std::piecewise_construct, std::forward_as_tuple(hashcode), std::forward_as_tuple());
 			return system;
 		}
@@ -126,6 +128,7 @@ namespace TRE
 
 			std::shared_ptr<T> system = std::make_shared<T>(std::forward<Arguments>(arg)...);
 			m_Systems.insert({ hashcode, std::move(system) });
+			m_SystemsName.insert({ hashcode, typeid(T).name() });
 			return system;
 		}
 
@@ -156,7 +159,10 @@ namespace TRE
 		{
 			for (auto& system : m_Systems)
 			{
+
+				Profiler::Instance().StartTimer("- " + m_SystemsName[system.first]);
 				system.second->Update();
+				Profiler::Instance().EndTimer("- " + m_SystemsName[system.first]);
 			}
 		}
 
@@ -184,5 +190,6 @@ namespace TRE
 		void* operator new(size_t) = delete;
 
 		std::map<size_t, std::shared_ptr<ECSSystem>> m_Systems;
+		std::map<size_t, std::string> m_SystemsName;
 	};
 }

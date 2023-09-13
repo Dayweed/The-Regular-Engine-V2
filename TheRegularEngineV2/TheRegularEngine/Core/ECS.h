@@ -557,6 +557,7 @@ namespace TRE
 
 		// TODELETE
 		void TESTRUN();
+		void STRESSTEST();
 
 	private:
 		friend class MemoryManager;
@@ -571,6 +572,7 @@ namespace TRE
 		entt::registry m_Registry;
 
 		std::unordered_map<std::string, Entity> m_EntityList;
+		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 	};
 
 	class ECSOutputArchive
@@ -622,14 +624,18 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			for (auto ent : m_EntityList)
+			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end())
+			{
+				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
+			}
+			/*for (auto ent : m_EntityList)
 			{
 				if (ent.second->m_Entity == obj)
 				{
 					objects.emplace_back(ent.second);
 					break;
 				}
-			}
+			}*/
 		}
 
 		return objects;
