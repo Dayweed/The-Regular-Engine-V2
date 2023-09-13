@@ -14,12 +14,12 @@
 
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
-#include "entt.hpp"
-#include "System.h"
-#include "ComponentManager.h"
-#include <typeindex>
 #include "Core/Logger.h"
+#include "entt.hpp"
+#include "ComponentManager.h"
+#include "System.h"
 
+#include <typeindex>
 #include <nlohmann/json.hpp>
 
 /*                                                                 defines
@@ -105,17 +105,6 @@ namespace TRE
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Active, m_GUID, m_Name)
 	};
 
-	struct Parenting
-	{
-		std::string m_Parent{};
-		std::vector<std::string> m_Children{};
-
-		Parenting() = default;
-		~Parenting() = default;
-
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Parenting, m_Parent, m_Children)
-	};
-
 	class Ent : public std::enable_shared_from_this<Ent>
 	{
 	public:
@@ -198,123 +187,6 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		template <typename T>
 		void RemoveComponent();
-
-		/* !
-		@function		SetParent
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@params			parent	Entity for the new parent
-
-		@brief			Abandons the previous parent if it exist
-						Set the parent of the Entity
-						Automatically add this Entity to the parent's children list
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
-		goVar->SetParent(goParentVar);
-		*//*__________________________________________________________________________*/
-		void SetParent(Entity parent);
-
-		/* !
-		@function		GetParent
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@brief			Returns the parent of the Entity
-						Returns nullptr if it doesn't exist
-
-		Example:
-
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
-		goVar->SetParent(goParentVar);
-
-		Entity AccessEntityVarParent = goVar->GetParent();
-		*//*__________________________________________________________________________*/
-		Entity GetParent();
-
-		/* !
-		@function		RemoveParent
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@brief			Remove the parent of the Entity
-						Automatically Abandons this Entity from the parent's children list
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
-		goVar->SetParent(goParentVar);
-
-		goVar->RemoveParent();
-		*//*__________________________________________________________________________*/
-		void RemoveParent();
-
-		/* !
-		@function		AddChild
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@params			child	Entity for the child
-
-		@brief			Add a child to this Entity children list
-						Automatically set this Entity as the parent of the child
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goChildVar = ECSManager::Instance().CreateEntity("goChildVar");
-
-		goVar->AddChild(goChildVar);
-		*//*__________________________________________________________________________*/
-		void AddChild(Entity child);
-
-		/* !
-		@function		GetChildren
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@brief			Returns the vector of children of the Entity
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
-		goVar->SetParent(goParentVar);
-
-		std::vector<Entity> goParentVarChildren = goParentVar->GetChildren();
-		*//*__________________________________________________________________________*/
-		std::vector<Entity> GetChildren();
-
-		/* !
-		@function		AbandonChild
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@params			child	Entity for the child
-
-		@brief			Remove child from children list
-						Automatically remove parent from the child Entity
-						Ignores command if child's parent is not this Entity
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
-		goVar->SetParent(goParentVar);
-
-		goParentVar->AbandonChild(goVar);
-		*//*__________________________________________________________________________*/
-		void AbandonChild(Entity child);
-
-		/* !
-		@function		AbandonChildren
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@brief			Remove all children from children list
-						Automatically remove parent from each child Entity
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-		Entity goParentVar = ECSManager::Instance().CreateEntity("goParentVar");
-		goVar->SetParent(goParentVar);
-
-		goParentVar->AbandonChildren();
-		*//*__________________________________________________________________________*/
-		void AbandonChildren();
 
 		/* !
 		@function		GetENTTID
@@ -459,12 +331,30 @@ namespace TRE
 		Entity CreateEntity(std::string name = ECS_ENTITY_DEFAULT_NAME);
 
 		/* !
+		@function		DestroyEntity
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			object	Entity to be destroyed
+
+		@brief			Destroys Entity instantly
+
+		Example:
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+
+		std::cout << goVar << std::endl; // Address of goVar
+
+		ECSManager::Instance().DestroyEntity(goVar);
+		*//*__________________________________________________________________________*/
+		void DestroyEntity(Entity& object);
+
+		/* !
 		@function		MarkForDeletion
 		@author			Isaiah Lim (lim.i@digipen.edu)
 
 		@params			object	Entity to be destroyed
 
-		@brief			Create a new Entity
+		@brief			Marks an Entity for deletion, it would run through normal
+						gameloop first before deleting
 
 		Example:
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
@@ -667,6 +557,7 @@ namespace TRE
 
 		// TODELETE
 		void TESTRUN();
+		void STRESSTEST();
 
 	private:
 		friend class MemoryManager;
@@ -681,6 +572,7 @@ namespace TRE
 		entt::registry m_Registry;
 
 		std::unordered_map<std::string, Entity> m_EntityList;
+		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 	};
 
 	class ECSOutputArchive
@@ -732,14 +624,18 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			for (auto ent : m_EntityList)
+			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end())
+			{
+				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
+			}
+			/*for (auto ent : m_EntityList)
 			{
 				if (ent.second->m_Entity == obj)
 				{
 					objects.emplace_back(ent.second);
 					break;
 				}
-			}
+			}*/
 		}
 
 		return objects;
@@ -779,7 +675,7 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string compName{ typeid(T).name() };
-			TRE_CORE_ERROR("[" + funcName + "] Component " + compName + " is already in " + GetComponent<Properties>().m_Name + "...");
+			TRE_CORE_WARN("[" + funcName + "] Component " + compName + " is already in " + GetComponent<Properties>().m_Name + "...");
 			return GetComponent<T>();
 		}
 		return ECSManager::Instance().GetRegistry().emplace<T>(m_Entity);

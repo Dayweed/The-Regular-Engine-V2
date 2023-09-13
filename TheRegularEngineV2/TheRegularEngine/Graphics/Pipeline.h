@@ -20,20 +20,19 @@ namespace TRE
 	struct PipelineConfigurations
 	{
 		std::shared_ptr<RenderPass> RenderPass;
-		PrimitiveType Primitive;
 		std::shared_ptr<Shader> VertexShader;
 		std::shared_ptr<Shader> FragmentShader;
+		PrimitiveType Primitive;
 	};
 
 	class Pipeline
 	{
 		public:
-			Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer);
+			Pipeline(const PipelineConfigurations& PipelineConfig);
 			~Pipeline();
 
-			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
-
 		public:
+			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
 			const VkDescriptorSet& GetDescriptorSets();
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();

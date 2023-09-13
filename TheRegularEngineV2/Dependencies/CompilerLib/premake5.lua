@@ -5,10 +5,8 @@ project "CompilerLib"
 	staticruntime "off"
 	warnings ("Extra") -- enables Warning Level 4(/W4)
 
-	targetdir ("bin")
-	-- ! makes .obj files appear in the same folder
-	-- regardless of build configuration
-	objdir ("!bin/obj")
+	targetdir ("%{cfg.buildcfg}")
+	objdir ("!%{cfg.buildcfg}/obj")
 
 	includedirs
     {
@@ -22,6 +20,11 @@ project "CompilerLib"
 		"src/**.c", 
 		"include/**.hpp", 
 		"src/**.cpp"
+	}
+
+	links
+	{
+		"Crunch",
 	}
 
 	filter "configurations:Debug"

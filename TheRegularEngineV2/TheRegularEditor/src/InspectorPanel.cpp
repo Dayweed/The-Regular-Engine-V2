@@ -33,11 +33,12 @@ namespace TRE
 		//	
 		//}
 		//create entity
+		auto entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
-		if (m_SelectionManager->GetSelectedEntity() != nullptr)
+		if (entity != nullptr)
 		{
-			if (m_SelectionManager->GetSelectedEntity()->HasComponent<Properties>())
+			if (entity->HasComponent<Properties>())
 			{
 				bool check = m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active;
 				ImGui::Checkbox("Active", &check);
@@ -56,19 +57,18 @@ namespace TRE
 				}
 			}
 		
-			if (m_SelectionManager->GetSelectedEntity()->HasComponent<Transform>())
+			if (entity->HasComponent<Transform>())
 			{
 				if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 				{
-					float pos[3] = { m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x, m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.y, m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.z };
+					auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+					const glm::vec3& tempPos = transformSystem->GetPosition(entity);
+					float pos[3] = { tempPos.x, tempPos.y, tempPos.z };
+					
 					ImGui::DragFloat3("Position", pos);
-					//std::cout << "x before: " << m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x << "\n";
-					if (pos[0] != m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x || pos[1] != m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.y || pos[2] != m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.z)
+					if (pos[0] != tempPos.x || pos[1] != tempPos.y || pos[2] != tempPos.z)
 					{
-						m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Scale.x = pos[0];
-						m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Scale.y = pos[1];
-						m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Scale.z = pos[2];
-						//std::cout << "x after: " << m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x << "\n";
+						transformSystem->SetPosition(entity, { pos[0], pos[1], pos[2]});
 					}
 					ImGui::TreePop();
 				}

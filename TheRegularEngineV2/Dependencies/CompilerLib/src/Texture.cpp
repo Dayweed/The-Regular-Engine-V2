@@ -35,7 +35,7 @@ namespace TRE
 			int result = system(command);
 			if (result != 0)
 			{
-				std::cout << "Error: GeomCompiler.exe failed to run. Code: " << result << std::endl;
+				std::cout << "Error: TextureCompiler.exe failed to run. Code: " << result << std::endl;
 				return;
 			}
 		}
@@ -55,7 +55,8 @@ namespace TRE
 		file.write(reinterpret_cast<const char*>(&texture->Height), sizeof(Texture::Height));
 		file.write(reinterpret_cast<const char*>(&texture->Format), sizeof(Texture::Format));
 		file.write(reinterpret_cast<const char*>(&texture->Filter), sizeof(Texture::Filter));
-		file.write(reinterpret_cast<const char*>(texture->Data), texture->Height * texture->Width * 4);
+		file.write(reinterpret_cast<const char*>(&texture->DataSize), sizeof(Texture::DataSize));
+		file.write(reinterpret_cast<const char*>(texture->Data), texture->DataSize);
 
 		file.close();
 	}
@@ -94,9 +95,12 @@ namespace TRE
 				//Filter
 				texture->Filter = *reinterpret_cast<int*>(buffer + offset);
 				offset += sizeof(int);
+				//DataSize
+				texture->DataSize = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+				offset += sizeof(std::uint32_t);
 				//Data
-				texture->Data = new char[texture->Height * texture->Width * 4];
-				memcpy(texture->Data, buffer + offset, texture->Height * texture->Width * 4);
+				texture->Data = new char[texture->DataSize];
+				memcpy(texture->Data, buffer + offset, texture->DataSize);
 
 				delete[] buffer;
 			}

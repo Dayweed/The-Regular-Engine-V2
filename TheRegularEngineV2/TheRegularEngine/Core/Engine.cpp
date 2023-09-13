@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "TREIncludes.h"
 #include "Engine.h"
 #include "ECS.h"
 #include "Transform.h"
@@ -14,6 +15,7 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Geom.h"
+#include <time.h>       /* time */
 
 namespace TRE
 {
@@ -70,7 +72,7 @@ namespace TRE
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
-		transformSystem->SetPosition(test2, glm::vec3(0.f, 0.f, 100.f));
+		transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
 		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
@@ -78,10 +80,21 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 25.f));
+		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, vase);
+
+		/*std::cout << "\STRESS TEST ECS\n====================================\n";
+		srand(time(NULL));
+		for (int i{}; i < 2500; ++i)
+		{
+			Entity ent{ ECSManager::Instance().CreateEntity() };
+			ent->AddComponent<MeshRenderer>();
+			transformSystem->SetPosition(ent, glm::vec3(0.f, 0.f, 25.f));
+			transformSystem->SetScale(ent, glm::vec3(rand() % 10, rand() % 10, rand() % 10));
+			meshRendererSystem->SetMeshRenderer(ent, vase);
+		}*/
 
 		Entity test3 = ECSManager::Instance().CreateEntity();
 		transformSystem->SetPosition(test3, glm::vec3(0.f, 0.f, 0.f));
@@ -102,6 +115,12 @@ namespace TRE
 		//ECSManager::Instance().SaveEntities("Demo.json");
 
 		//SceneManager::Instance().SaveSceneAs("DemoScene");
+
+		/*SceneManager::Instance().LoadScene("DemoScene");
+		Entity cam2 = ECSManager::Instance().CreateEntity();
+		cam2->GetComponent<Properties>().m_Name = "cam2";
+		cam2->AddComponent<Camera>();
+		cameraSystem->SetIsMainCamera(cam2, true);*/
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -149,6 +168,9 @@ namespace TRE
 
 	void Engine::RegisterECS()
 	{
+		// Load set folders and names
+		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
+
 		// Register Components
 		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
 		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
@@ -163,6 +185,7 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
@@ -179,6 +202,7 @@ namespace TRE
 		//ECSManager::Instance().TESTRUN();
 		//AHHH();
 		DemoScene();
+		//ECSManager::Instance().STRESSTEST();
 
 		while (!m_Window->ShouldWindowClose())
 		{
@@ -189,9 +213,16 @@ namespace TRE
 			//Update
 			Profiler::Instance().StartTimer("Update");
 			ECSSystemManager::Instance().UpdateSystem();
-			ECSSystemManager::Instance().OnDestroyEntities();
-			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("Update");
+
+			Profiler::Instance().StartTimer("OnDestroyEntities");
+			ECSSystemManager::Instance().OnDestroyEntities();
+			Profiler::Instance().EndTimer("OnDestroyEntities");
+
+			Profiler::Instance().StartTimer("DeleteRemovalEntities");
+			ECSManager::Instance().DeleteRemovalEntities();
+			Profiler::Instance().EndTimer("DeleteRemovalEntities");
+
 			m_Renderer->BeginFrame();
 
 			// Imgui Update
@@ -206,7 +237,6 @@ namespace TRE
 
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
-
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");

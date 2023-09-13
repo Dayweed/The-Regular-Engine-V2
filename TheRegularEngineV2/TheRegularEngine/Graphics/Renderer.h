@@ -41,23 +41,19 @@ namespace TRE
 
 		private:
 			std::shared_ptr<Device> m_Device;
-			VkPipelineLayout m_PipelineLayout;
 
-			VkSampler m_Sampler;
-			
-			std::vector<std::unique_ptr<Image>> m_ColorImages;
-			std::vector<std::unique_ptr<Image>> m_DepthImages;
-
-			VkPipeline m_GraphicsPipeline;
-
+		private:
 			std::unique_ptr<Pipeline> m_Pipeline;
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
-			std::vector<VkFramebuffer> m_FrameBuffer;
+			VkSampler m_Sampler;
+			std::vector<std::unique_ptr<Image>> m_ColorImages;
+			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
 			std::vector<VkCommandPool> m_CommandPool;
 			std::vector<VkCommandBuffer> m_Commandbuffers;
+			std::vector<VkFramebuffer> m_FrameBuffer;
 
-			std::shared_ptr<Buffer> m_UBOBuffer;
+			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 	};
 }
