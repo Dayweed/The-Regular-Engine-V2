@@ -16,13 +16,16 @@
 
 #define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
 
+using namespace physx;
+// to save my dwindling sanity
+
 namespace TRE
 {
 #if 1
 	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
-	physx::PxVec3 QuatToEulerAngles(physx::PxQuat q)
+	PxVec3 QuatToEulerAngles(PxQuat q)
 	{
-		physx::PxVec3 angles;
+		PxVec3 angles;
 
 		// roll (x-axis rotation)
 		float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
@@ -64,10 +67,10 @@ namespace TRE
 		m_Pvd = PxCreatePvd(*m_Foundation);
 		assert(m_Pvd);
 
-		m_Transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+		m_Transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 		assert(m_Transport);
 
-		m_Pvd->connect(*m_Transport, physx::PxPvdInstrumentationFlag::eALL);
+		m_Pvd->connect(*m_Transport, PxPvdInstrumentationFlag::eALL);
 		/* ^ this line gives the following PhysX error when PVD is enabled AND connected... for some reason... :(
 		code was		: |32|
 		message was		: |Failed to load PhysXGpu_64.dll!|
@@ -77,28 +80,28 @@ namespace TRE
 #endif
 
 		// set trackOutstandingAllocations to `true` for tracking memory allocations
-		m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, physx::PxTolerancesScale(), false, m_Pvd);
+		m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, PxTolerancesScale(), false, m_Pvd);
 		assert(m_Physics);
 
-		physx::PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
-		sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
+		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 
 		//A cpu thread for the scene
-		m_Dispatcher = physx::PxDefaultCpuDispatcherCreate(2);
+		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
 		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;
 
 		//A thread that will do collision management
-		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 		m_Scene = m_Physics->createScene(sceneDesc);
 		assert(m_Scene);
 
 #if USE_PHYSX_PVD
-		if (physx::PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
+		if (PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
 		{
-			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-			pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 		}
 		else
 		{
@@ -110,7 +113,7 @@ namespace TRE
 		m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
 
 		//Static object creation
-		m_GroundPlane = PxCreatePlane(*m_Physics, physx::PxPlane(0, 1, 0, 0.5), *m_Material);
+		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_Material);
 		m_Scene->addActor(*m_GroundPlane);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
@@ -122,13 +125,13 @@ namespace TRE
 		const float stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
 		const unsigned stackSize = 3, numOfStacks = 1;
 
-		for (physx::PxU32 i = 0; i < numOfStacks; i++)
+		for (PxU32 i = 0; i < numOfStacks; i++)
 			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
 #endif
 
-		//const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
-		//e1->GetComponent<Transform>().m_Position = {};
-		//ConstructBoxCollider(e1);
+		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
+		e1->GetComponent<Transform>().m_Position = {};
+		ConstructBoxCollider(e1);
 
 		//Entity e2 = ECSManager::Instance().CreateEntity("box 1");
 		//e2->GetComponent<Transform>().m_Position = { 1,1,0 };
@@ -152,7 +155,7 @@ namespace TRE
 			if (!vec.empty())
 			{
 				auto collider = vec.front()->GetComponent<BoxCollider>();
-				auto rb = collider.m_RigidActor->is<physx::PxRigidBody>();
+				auto rb = collider.m_RigidActor->is<PxRigidBody>();
 				rb->addForce({ 0, 800, 0 });
 			}
 			std::time(&start_timer); // reset timer
@@ -235,16 +238,16 @@ namespace TRE
 		// add component if missing, otherwise get existing component
 
 		const auto objPos = entity->GetComponent<Transform>().m_Position;
-		const physx::PxVec3 colliderPos = VEC3_CAST(physx::PxVec3, objPos) + VEC3_CAST(physx::PxVec3, offset);
+		const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
-		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(colliderPos));
+		PxRigidDynamic* body = m_Physics->createRigidDynamic(PxTransform(colliderPos));
 
 		// fill the 'container' with a shape, that being a sphere
-		physx::PxShape* shape = m_Physics->createShape(physx::PxSphereGeometry(radius), *m_Material);
+		PxShape* shape = m_Physics->createShape(PxSphereGeometry(radius), *m_Material);
 		body->attachShape(*shape);
 
-		physx::PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
+		PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
 
 		m_Scene->addActor(*body);
 		sphereCollider.m_RigidActor = body;
@@ -253,10 +256,10 @@ namespace TRE
 		shape->release();
 
 		/*
-		Obtaining the shape of an actor (e.g physx::PxGeometryType::Enum::eSPHERE)
+		Obtaining the shape of an actor (e.g PxGeometryType::Enum::eSPHERE)
 
 		const int nbShapes = sphereCollider.m_RigidActor->getNbShapes();
-		physx::PxShape** buffer = new physx::PxShape * [nbShapes + 1];
+		PxShape** buffer = new PxShape * [nbShapes + 1];
 		const int actualNbShapes = sphereCollider.m_RigidActor->getShapes(buffer, nbShapes + 1);
 
 		for (int i = 0; i < actualNbShapes; ++i)
@@ -276,16 +279,16 @@ namespace TRE
 		// add component if missing, otherwise get existing component
 
 		const auto objPos = entity->GetComponent<Transform>().m_Position;
-		const physx::PxVec3 colliderPos = VEC3_CAST(physx::PxVec3, objPos) + VEC3_CAST(physx::PxVec3, offset);
+		const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
-		physx::PxRigidDynamic* body = m_Physics->createRigidDynamic(physx::PxTransform(colliderPos));
+		PxRigidDynamic* body = m_Physics->createRigidDynamic(PxTransform(colliderPos));
 
 		// fill the 'container' with a shape, that being a box
-		physx::PxShape* shape = m_Physics->createShape(physx::PxBoxGeometry(VEC3_CAST(physx::PxVec3, halfExtents)), *m_Material);
+		PxShape* shape = m_Physics->createShape(PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_Material);
 		body->attachShape(*shape);
 
-		physx::PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
+		PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
 
 		m_Scene->addActor(*body);
 		boxCollider.m_RigidActor = body;
@@ -307,27 +310,27 @@ namespace TRE
 
 	//void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
 	//{
-	//	physx::PxRigidBody* body = nullptr;
+	//	PxRigidBody* body = nullptr;
 	//	char result = 0;
 
-	//	// auto body = entity->GetComponent<BoxCollider>().m_RigidActor->is<physx::PxRigidBody>();
+	//	// auto body = entity->GetComponent<BoxCollider>().m_RigidActor->is<PxRigidBody>();
 	//	
 	//	if (result |= entity->HasComponent<BoxCollider>())
-	//		body = entity->GetComponent<BoxCollider>().m_RigidActor->is<physx::PxRigidBody>();
+	//		body = entity->GetComponent<BoxCollider>().m_RigidActor->is<PxRigidBody>();
 	//	else if (result |= entity->HasComponent<SphereCollider>())
-	//		body = entity->GetComponent<SphereCollider>().m_RigidActor->is<physx::PxRigidBody>();
+	//		body = entity->GetComponent<SphereCollider>().m_RigidActor->is<PxRigidBody>();
 	//}
 
 	//This function creates a stack of shapes
-	void PhysicsSystem::CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const
+	void PhysicsSystem::CreateStack(const PxTransform& t, unsigned size, float halfExtent) const
 	{
 		for (unsigned i = 0; i < size; i++)
 		{
 			for (unsigned j = 0; j < size - i; j++)
 			{
 				Entity entity = ECSManager::Instance().CreateEntity();
-				const physx::PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
-				const physx::PxVec3 newPos = t.transform(halfExtent * stackPos);
+				const PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
+				const PxVec3 newPos = t.transform(halfExtent * stackPos);
 				entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, newPos);
 				// ConstructSphereCollider(entity, halfExtent);
 				ConstructBoxCollider(entity, Vector3{ halfExtent });
