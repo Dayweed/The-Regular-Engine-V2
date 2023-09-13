@@ -28,7 +28,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer) : m_Config(PipelineConfig)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();

@@ -54,6 +54,6 @@ namespace TRE
 			std::vector<VkCommandBuffer> m_Commandbuffers;
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
-			std::shared_ptr<Buffer> m_UBOBuffer;
+			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 	};
 }

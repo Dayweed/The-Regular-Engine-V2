@@ -89,8 +89,7 @@ namespace TRE
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
 			.Build();
 
-		m_UBOBuffer = std::make_shared<Buffer>(sizeof(UBO), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-		m_UBOBuffer->Map();
+		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
 	}
 
 	void Renderer::Initialize()
@@ -117,22 +116,18 @@ namespace TRE
 		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
-		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_UBOBuffer);
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 
 		//TO DELETE
 		Texture::RunCompiler("../Assets/Test.desc");
 		auto texture = Texture::Deserialize("../Assets/Test.DDS");
 		TextureManager::Instance().LoadTexture(std::move(texture));
 
-		VkDescriptorBufferInfo BufferInfo{};
-		BufferInfo.buffer = m_UBOBuffer->GetBuffer();
-		BufferInfo.offset = 0;
-		BufferInfo.range = sizeof(UBO);
-
 		std::vector<VkWriteDescriptorSet> Writes;
 		for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
 		{
-			x.second.pBufferInfo = &BufferInfo;
+			//x.second.pBufferInfo = &BufferInfo;
+			x.second.pBufferInfo = &m_UBOBuffer->GetDescriptorBufferInfo();
 			x.second.dstSet = m_Pipeline->GetDescriptorSets();
 			Writes.push_back(x.second);
 		}
@@ -247,8 +242,7 @@ namespace TRE
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_UBOBuffer->WriteToBuffer(&ubo);
-		m_UBOBuffer->Flush();
+		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 
 		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 

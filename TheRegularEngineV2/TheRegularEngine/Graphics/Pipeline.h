@@ -28,7 +28,7 @@ namespace TRE
 	class Pipeline
 	{
 		public:
-			Pipeline(const PipelineConfigurations& PipelineConfig, std::shared_ptr<Buffer>& UniformBuffer);
+			Pipeline(const PipelineConfigurations& PipelineConfig);
 			~Pipeline();
 
 		public:
