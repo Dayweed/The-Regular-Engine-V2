@@ -30,6 +30,7 @@ namespace TRE
 		{
 			// Remove from m_EntityList
 			m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
+			m_EnttIDList.erase(m_EnttIDList.find(static_cast<ENTTID>(object->m_Entity)));
 			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
 		}
 	}
@@ -48,6 +49,7 @@ namespace TRE
 	{
 		Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
 		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
+		m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
 		obj->GetComponent<Properties>().m_Name = name;
 		return obj;
 	}
@@ -56,6 +58,7 @@ namespace TRE
 	{
 		// Remove from m_EntityList
 		m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
+		m_EnttIDList.erase(m_EnttIDList.find(static_cast<ENTTID>(object->m_Entity)));
 		MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
 	}
 
@@ -87,6 +90,7 @@ namespace TRE
 		obj->GetComponent<Properties>().m_Name = name;
 		obj->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
 		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
+		m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
 		// Return clone
 		return obj;
 	}
@@ -619,7 +623,7 @@ namespace TRE
 	void ECSManager::STRESSTEST()
 	{
 		std::cout << "\STRESS TEST ECS\n====================================\n";
-		for (int i{}; i < 250; ++i)
+		for (int i{}; i < 2500; ++i)
 		{
 			Entity ent{ ECSManager::Instance().CreateEntity() };
 			ent->AddComponent<MeshRenderer>();
