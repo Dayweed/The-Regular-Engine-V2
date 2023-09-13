@@ -16,6 +16,7 @@
 #include "Graphics/Camera.h"
 #include "Geom.h"
 #include <time.h>       /* time */
+#include "Graphics/VulkanTexture.h"
 
 namespace TRE
 {
@@ -60,6 +61,15 @@ namespace TRE
 
 	void DemoScene()
 	{
+		//TO DELETE
+		Texture::RunCompiler("../Assets/Test.desc");
+		auto texture = Texture::Deserialize("../Assets/Test.DDS");
+		TextureManager::Instance().LoadTexture(std::move(texture));
+
+		Texture::RunCompiler("../Assets/Test2.desc");
+		auto texture2 = Texture::Deserialize("../Assets/Test2.DDS");
+		TextureManager::Instance().LoadTexture(std::move(texture2));
+
 		Geom::RunCompiler("../Assets/mine.desc");
 		
 		auto geom = Geom::Deserialize("../Assets/mine.geom");
@@ -68,7 +78,6 @@ namespace TRE
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
-
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";

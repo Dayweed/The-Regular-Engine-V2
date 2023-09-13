@@ -170,13 +170,14 @@ namespace TRE
 
 			//Do compression here
 			crn_comp_params comp_params;
+			comp_params.clear();
 			comp_params.m_file_type = cCRNFileTypeDDS;
 			comp_params.m_faces = 1;
 			comp_params.m_width = width;
 			comp_params.m_height = height;
-			comp_params.set_flag(cCRNCompFlagPerceptual, true);
-			comp_params.set_flag(cCRNCompFlagDXT1AForTransparency, true);
-			comp_params.set_flag(cCRNCompFlagHierarchical, true);
+			//comp_params.set_flag(cCRNCompFlagPerceptual, true);
+			//comp_params.set_flag(cCRNCompFlagDXT1AForTransparency, true);
+			//comp_params.set_flag(cCRNCompFlagHierarchical, true);
 			comp_params.m_format = cCRNFmtDXT5;
 			comp_params.m_pImages[0][0] = pixels;
 			comp_params.m_quality_level = 128;
@@ -186,7 +187,11 @@ namespace TRE
 
 			outputData = crn_compress(comp_params, outputSize);
 			std::cout << "Compressed texture size: " << outputSize << std::endl;
-			std::cout << "Compressing texture" << std::endl;
+			if (outputData == nullptr || outputSize == 0)
+			{
+				std::cout << "Failed to compress texture: " << descriptor.GetAssetPath() << std::endl;
+				return;
+			}
 		}
 
 		m_Texture = std::make_unique<Texture>();

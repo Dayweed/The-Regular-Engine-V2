@@ -117,15 +117,6 @@ namespace TRE
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
-
-		//TO DELETE
-		Texture::RunCompiler("../Assets/Test.desc");
-		auto texture = Texture::Deserialize("../Assets/Test.DDS");
-		TextureManager::Instance().LoadTexture(std::move(texture));
-
-
-
-		
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -215,25 +206,6 @@ namespace TRE
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 
-
-		std::vector<VkWriteDescriptorSet> Writes;
-		for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
-		{
-			//x.second.pBufferInfo = &BufferInfo;
-			x.second.pBufferInfo = &m_UBOBuffer->GetDescriptorBufferInfo();
-			x.second.dstSet = m_Pipeline->GetDescriptorSets()[Index];
-			Writes.push_back(x.second);
-		}
-		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
-		for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
-		{
-			x.second.dstBinding = 1;
-			x.second.pImageInfo = &imageInfo;
-			x.second.dstSet = m_Pipeline->GetDescriptorSets()[Index];
-			Writes.push_back(x.second);
-		}
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
-
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -265,7 +237,6 @@ namespace TRE
 		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
-		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Pipeline->GetDescriptorSets()[Index], 0, NULL);
 
 		//VERY INEFFICIENT
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
@@ -277,6 +248,10 @@ namespace TRE
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
+
+			UpdateDescriptorSets(go_mr->GetComponent<Properties>().m_Name);
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Pipeline->GetDescriptorSets()[Index], 0, NULL);
+
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
@@ -300,5 +275,26 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to queue submit");
 			assert(Result == VK_SUCCESS);
 		}
+	}
+
+	void Renderer::UpdateDescriptorSets(std::string texture)
+	{
+		const int Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+		std::vector<VkWriteDescriptorSet> Writes;
+		for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
+		{
+			x.second.pBufferInfo = &m_UBOBuffer->GetDescriptorBufferInfo();
+			x.second.dstSet = m_Pipeline->GetDescriptorSets()[Index];
+			Writes.push_back(x.second);
+		}
+		VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture(texture)->GetDescriptorImageInfo();
+		for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
+		{
+			x.second.dstBinding = 1;
+			x.second.pImageInfo = &imageInfo;
+			x.second.dstSet = m_Pipeline->GetDescriptorSets()[Index];
+			Writes.push_back(x.second);
+		}
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 	}
 }

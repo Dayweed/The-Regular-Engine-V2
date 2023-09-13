@@ -182,7 +182,6 @@ namespace TRE
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = PushConstantRanges.size();
 		pipelineLayoutInfo.pPushConstantRanges = PushConstantRanges.data();
-		
 
 		if (auto Result = vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout); Result != VK_SUCCESS)
 		{
