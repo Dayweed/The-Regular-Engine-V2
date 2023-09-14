@@ -159,7 +159,7 @@ namespace TRE
 				//auto* rigidbody = collider.m_RigidDynamic->is<PxRigidBody>();
 				//rigidbody->addForce({ 0, 800, 0 });
 
-				AddForce(vec.front(), { 0, 8, 0 });
+				AddForce(vec.front(), { 0, 800, 0 });
 			}
 			std::time(&start_timer); // reset timer
 		}
@@ -239,10 +239,6 @@ namespace TRE
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
 			m_Actors[entity->GetGUID()] = tempSharedData;
-		}
-		else
-		{
-			TRE_CORE_WARN("we literally share the same guy my dude");
 		}
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
@@ -327,10 +323,6 @@ namespace TRE
 
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
-		else
-		{
-			TRE_CORE_WARN("we literally share the same guy my dude");
-		}
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
@@ -412,10 +404,6 @@ namespace TRE
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
 			m_Actors[entity->GetGUID()] = tempSharedData;
-		}
-		else
-		{
-			TRE_CORE_WARN("we literally share the same guy my dude");
 		}
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];

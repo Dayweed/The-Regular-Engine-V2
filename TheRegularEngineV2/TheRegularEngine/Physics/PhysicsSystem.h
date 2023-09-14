@@ -43,11 +43,11 @@ namespace TRE
 		@params        radius    The collider's radius.
 		@params        offset    The offset from the entity's position, if applicable.
 
-		@brief         Creates a SphereCollider component for the given entity,
-					   overwriting any current SphereCollider for this entity.
+		@brief         Initializes the SphereCollider component for the given entity.
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		e1->AddComponent<SphereCollider>();
 		ConstructSphereCollider(e1);
 		*//*__________________________________________________________________________*/
 		void ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
@@ -62,6 +62,7 @@ namespace TRE
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		e1->AddComponent<SphereCollider>();
 		ConstructSphereCollider(e1);
 		// ----- using collider here... -----
 		DestructSphereCollider(e1)
@@ -77,11 +78,11 @@ namespace TRE
 		@params        offset         The offset from the entity's position, if
 									  applicable.
 
-		@brief         Creates a BoxCollider component for the given entity,
-					   overwriting any current BoxCollider for this entity.
+		@brief         Initializes the BoxCollider component for the given entity.
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<BoxCollider>();
 		ConstructBoxCollider(e1);
 		*//*__________________________________________________________________________*/
 		void ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
@@ -96,16 +97,60 @@ namespace TRE
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<BoxCollider>();
 		ConstructBoxCollider(e1);
 		// ----- using collider here... -----
 		DestructBoxCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructBoxCollider(const Entity& entity) const;
 
+		/* !
+		@function      ConstructRigidBody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity         The entity to create the component for.
+
+		@brief         Initializes the RigidBody component for the given entity.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidBody(e1);
+		*//*__________________________________________________________________________*/
 		void ConstructRigidBody(const Entity& entity) const;
 
+		/* !
+		@function      DestructRigidBody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity containing the Rigidbody to destroy.
+
+		@brief         Destroys an entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidBody(e1);
+		// ----- using Rigidbody here... -----
+		DestructRigidBody(e1)
+		*//*__________________________________________________________________________*/
 		void DestructRigidBody(const Entity& entity) const;
 
+		/* !
+		@function      AddForce
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity to add force to.
+		@params        force     The force to apply.
+		@params        mode      The method of applying the given force.
+
+		@brief         Adds a given force to the given's entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<Rigidbody>(); ConstructRigidBody(e1);
+		AddForce(e1,{0, 80, 0});
+		*//*__________________________________________________________________________*/
 		void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
 		//This test function creates a stack of shapes
