@@ -60,6 +60,6 @@ namespace TRE
 
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 
-			std::unique_ptr<Material> m_TestMaterial;
+			std::vector<std::shared_ptr<Material>> m_TestMaterial;
 	};
 }
