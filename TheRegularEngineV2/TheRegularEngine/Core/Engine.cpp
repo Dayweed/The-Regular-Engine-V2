@@ -116,11 +116,19 @@ namespace TRE
 
 		SceneManager::Instance().SaveSceneAs("DemoScene");
 
-		SceneManager::Instance().LoadScene("DemoScene");
+		std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
+
+
+		//cameraSystem->SetIsMainCamera(cam, false);
+		//SceneManager::Instance().NewScene();
+		//SceneManager::Instance().LoadScene("DemoScene");
+
 		/*Entity cam2 = ECSManager::Instance().CreateEntity();
 		cam2->GetComponent<Properties>().m_Name = "cam2";
 		cam2->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam2, true);*/
+
+		std::cout << "Deserialized Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -172,17 +180,17 @@ namespace TRE
 		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
-		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
-		ComponentManager::Instance().RegisterComponent<Parenting>("Parenting", true);
-		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
-		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
-		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");
-		ComponentManager::Instance().RegisterComponent<Camera>("Camera");
+		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);		// ignore
+		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);			// ignore
+		ComponentManager::Instance().RegisterComponent<Parenting>("Parenting", true);		// serialized
+		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);		// serialized
+		ComponentManager::Instance().RegisterComponent<Transform>("Transform");				// serialized
+		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");		// 
+		ComponentManager::Instance().RegisterComponent<Camera>("Camera");					// serialized
 		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
 		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
 		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
-		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
+		ComponentManager::Instance().RegisterComponent<FEL>("FEL");							// serialized
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();

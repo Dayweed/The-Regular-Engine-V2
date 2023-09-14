@@ -54,6 +54,26 @@ namespace TRE
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
 		friend void to_json(nlohmann::json& j, const Camera& t) // Serialize
 		{
+			/*std::cout << "SERIALIZING CAMERA.....\n";
+			std::cout << "- Pos: " << t.m_Position.x << ", " << t.m_Position.y << ", " << t.m_Position.z << "\n";
+			std::cout << "- Rot: " << t.m_Rotation.x << ", " << t.m_Rotation.y << ", " << t.m_Rotation.z << "\n";
+			std::cout << "- Vps: " << t.m_ViewportSize.x << ", " << t.m_ViewportSize.y << ", " << t.m_ViewportSize.r << ", " << t.m_ViewportSize.s << ", " << t.m_ViewportSize.t << ", " << t.m_ViewportSize.g << "\n";
+			std::cout << "- FcP: " << t.m_FocalPoint.x << ", " << t.m_FocalPoint.y << "\n";
+			std::cout << "- m_Pitch: " << t.m_Pitch << "\n";
+			std::cout << "- m_Yaw: " << t.m_Yaw << "\n";
+			std::cout << "- m_Roll: " << t.m_Roll << "\n";
+			std::cout << "- m_Fov: " << t.m_Fov << "\n";
+			std::cout << "- m_Near: " << t.m_Near << "\n";
+			std::cout << "- m_Far: " << t.m_Far << "\n";
+			std::cout << "- m_FocalLength: " << t.m_FocalLength << "\n";
+			std::cout << "- m_Left: " << t.m_Left << "\n";
+			std::cout << "- m_Right: " << t.m_Right << "\n";
+			std::cout << "- m_Bottom: " << t.m_Bottom << "\n";
+			std::cout << "- m_Top: " << t.m_Top << "\n";
+			std::cout << "- m_AspectRatio: " << t.m_AspectRatio << "\n";
+			std::cout << "- m_IsPerspective: " << t.m_IsPerspective << "\n";
+			std::cout << "- m_IsMainCamera: " << t.m_IsMainCamera << "\n";*/
+
 			// Converting to vectors...
 			const float* pos = glm::value_ptr(t.m_Position);
 			std::vector<float> v_pos{ pos[0], pos[1], pos[2] };
@@ -113,6 +133,28 @@ namespace TRE
 			t.m_AspectRatio = j.at("m_AspectRatio").get<float>();
 			t.m_IsPerspective = j.at("m_IsPerspective").get<bool>();
 			t.m_IsMainCamera = j.at("m_IsMainCamera").get<bool>();
+			t.m_IsDirty = true;
+
+
+			/*std::cout << "DESERIALIZING CAMERA.....\n";
+			std::cout << "- Pos: " << t.m_Position.x << ", " << t.m_Position.y << ", " << t.m_Position.z << "\n";
+			std::cout << "- Rot: " << t.m_Rotation.x << ", " << t.m_Rotation.y << ", " << t.m_Rotation.z << "\n";
+			std::cout << "- Vps: " << t.m_ViewportSize.x << ", " << t.m_ViewportSize.y << ", " << t.m_ViewportSize.r << ", " << t.m_ViewportSize.s << ", " << t.m_ViewportSize.t << ", " << t.m_ViewportSize.g << "\n";
+			std::cout << "- FcP: " << t.m_FocalPoint.x << ", " << t.m_FocalPoint.y << "\n";
+			std::cout << "- m_Pitch: " << t.m_Pitch << "\n";
+			std::cout << "- m_Yaw: " << t.m_Yaw << "\n";
+			std::cout << "- m_Roll: " << t.m_Roll << "\n";
+			std::cout << "- m_Fov: " << t.m_Fov << "\n";
+			std::cout << "- m_Near: " << t.m_Near << "\n";
+			std::cout << "- m_Far: " << t.m_Far << "\n";
+			std::cout << "- m_FocalLength: " << t.m_FocalLength << "\n";
+			std::cout << "- m_Left: " << t.m_Left << "\n";
+			std::cout << "- m_Right: " << t.m_Right << "\n";
+			std::cout << "- m_Bottom: " << t.m_Bottom << "\n";
+			std::cout << "- m_Top: " << t.m_Top << "\n";
+			std::cout << "- m_AspectRatio: " << t.m_AspectRatio << "\n";
+			std::cout << "- m_IsPerspective: " << t.m_IsPerspective << "\n";
+			std::cout << "- m_IsMainCamera: " << t.m_IsMainCamera << "\n";*/
 		}
 	};
 	
