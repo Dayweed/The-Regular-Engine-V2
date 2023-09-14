@@ -555,6 +555,11 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		std::string FindEntityID(Entity ent);
 
+
+		template <typename T>
+		void RegisterComponent(std::string name, bool hidden = false);
+
+
 		// TODELETE
 		void TESTRUN();
 		void STRESSTEST();
@@ -628,14 +633,6 @@ namespace TRE
 			{
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}
-			/*for (auto ent : m_EntityList)
-			{
-				if (ent.second->m_Entity == obj)
-				{
-					objects.emplace_back(ent.second);
-					break;
-				}
-			}*/
 		}
 
 		return objects;
@@ -645,6 +642,16 @@ namespace TRE
 	bool ECSManager::EntityHasComponent(Entity object)
 	{
 		return m_Registry.any_of<T>(object->m_Entity);
+	}
+
+	template <typename T>
+	void ECSManager::RegisterComponent(std::string name, bool hidden)
+	{
+		// m_Components.insert({ hashcode, name });	// This works too
+		ComponentManager::Instance().RegisterComponent<T>(name, hidden);
+
+		// Ensure entt knows this component exist
+		m_Registry.view<T>();
 	}
 
 	template <typename T>
@@ -785,4 +792,5 @@ namespace TRE
 			assert((m_CurrentIdx * 2 - 1) < m_Current.size());
 		}
 	}
+
 }

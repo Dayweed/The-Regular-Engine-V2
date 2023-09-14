@@ -27,9 +27,9 @@ namespace TRE
 		//std::cout << "size of vector: " << ECSManager::Instance().GetEntities<Properties>().size() << "\n";
 		//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 		//{
-		//    std::cout << i << "\twhats the name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
+		//    std::cout << i << "\twhats the name: " << currentEntity->GetComponent<Properties>().m_Name << "\n";
 		//    
-		//    std::cout << "do i have children?\t" << ECSManager::Instance().GetEntities<Properties>()[i]->GetChildren().size() << "\n";
+		//    std::cout << "do i have children?\t" << currentEntity->GetChildren().size() << "\n";
 		//}
 
 		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
@@ -40,16 +40,17 @@ namespace TRE
 			for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 			{
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
+				auto currentEntity = ECSManager::Instance().GetEntities<Properties>()[i];
+				std::string entityName = currentEntity->GetName();
 
-				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(ECSManager::Instance().GetEntities<Properties>()[i]) == nullptr)
+				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
 				{
 					//entities without children and parent
-					if (!ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(ECSManager::Instance().GetEntities<Properties>()[i]).size())
+					if (!ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(currentEntity).size())
 					{
-						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == ECSManager::Instance().GetEntities<Properties>()[i]) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
-					
+						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == currentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 
-						if (ECSManager::Instance().GetEntities<Properties>()[i]->GetName() != "cam")
+						if (entityName != "cam")
 						{
 							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
 							if ((ImGui::Button("X") || ImGui::IsItemClicked()))
@@ -60,12 +61,12 @@ namespace TRE
 							ImGui::SameLine();
 						}
 
-						if (ImGui::TreeNodeEx(ECSManager::Instance().GetEntities<Properties>()[i]->GetName().c_str(), node_flag))
+						if (ImGui::TreeNodeEx(entityName.c_str(), node_flag))
 						{
 							if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 							{
 								m_SelectionManager->SelectEntity(ECSManager::Instance().GetEntities<Properties>()[i]);
-								m_SelectionContext = ECSManager::Instance().GetEntities<Properties>()[i];
+								m_SelectionContext = currentEntity;
 							}
 
 							if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
@@ -81,7 +82,7 @@ namespace TRE
 					else
 					{
 						//entities with children
-						DisplayChildren(ECSManager::Instance().GetEntities<Properties>()[i]);
+						DisplayChildren(currentEntity);
 					}
 				}
 			}
@@ -114,11 +115,14 @@ namespace TRE
 
 	void SceneHierarchyPanel::DisplayChildren(TRE::Entity& CurrentEntity)
 	{
+		std::string entityName = CurrentEntity->GetName();
+		
 		//parent has children
 		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size())
 		{
 			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			if (ImGui::TreeNodeEx(CurrentEntity->GetName().c_str(), Flags))
+
+			if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 			{
 				if (ImGui::IsItemClicked())
 				{
@@ -139,7 +143,7 @@ namespace TRE
 		else
 		{
 			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			ImGui::TreeNodeEx(CurrentEntity->GetName().c_str(), Flags | ImGuiTreeNodeFlags_Leaf);
+			ImGui::TreeNodeEx(entityName.c_str(), Flags | ImGuiTreeNodeFlags_Leaf);
 			if (ImGui::IsItemClicked())
 			{
 				m_SelectionManager->SelectEntity(CurrentEntity);
