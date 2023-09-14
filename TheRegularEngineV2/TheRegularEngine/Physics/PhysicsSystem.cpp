@@ -23,7 +23,7 @@ namespace TRE
 {
 #if 1
 	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
-	PxVec3 QuatToEulerAngles(PxQuat q)
+	PxVec3 QuatToEulerAngles(const PxQuat& q)
 	{
 		PxVec3 angles;
 
@@ -105,15 +105,15 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_WARN("Unable to obain scene's PVD client.");
+			TRE_CORE_WARN("PhysicsSystem::PhysicsSystem() - Unable to obain scene's PVD client.");
 		}
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
+		m_DefaultMaterial = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
 
 		//Static object creation
-		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_Material);
+		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
 		m_Scene->addActor(*m_GroundPlane);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
@@ -130,8 +130,9 @@ namespace TRE
 #endif
 
 		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
-		e1->GetComponent<Transform>().m_Position = {};
+		e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
 		ConstructBoxCollider(e1);
+		// e1->AddComponent<Rigidbody>(); ConstructRigidBody(e1);
 
 		//Entity e2 = ECSManager::Instance().CreateEntity("box 1");
 		//e2->GetComponent<Transform>().m_Position = { 1,1,0 };
@@ -147,67 +148,52 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
+#if 1
 		static std::time_t start_timer = std::time(nullptr);
-		auto const result = std::time(nullptr) - start_timer;
+		const long long result = std::time(nullptr) - start_timer;
 		if (result >= 1)
 		{
-			auto vec = ECSManager::Instance().GetEntities<BoxCollider>();
+			auto vec = ECSManager::Instance().GetEntities<Rigidbody>();
 			if (!vec.empty())
 			{
-				auto collider = vec.front()->GetComponent<BoxCollider>();
-				auto rb = collider.m_RigidActor->is<PxRigidBody>();
-				rb->addForce({ 0, 800, 0 });
+				//BoxCollider collider = vec.front()->GetComponent<BoxCollider>();
+				//auto* rb = collider.m_RigidDynamic->is<PxRigidBody>();
+				//rb->addForce({ 0, 800, 0 });
+
+				AddForce(vec.front(), { 0, 8, 0 });
 			}
 			std::time(&start_timer); // reset timer
 		}
+#endif
 
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
 
-		auto UpdateTransform = []<typename Collider>
-		{
-			for (Entity& entity : ECSManager::Instance().GetEntities<Collider>())
-			{
-				entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().p);
-
-				// I hope this is right XO
-				auto eulerAngles = QuatToEulerAngles(entity->GetComponent<Collider>().m_RigidActor->getGlobalPose().q);
-				entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
-
-				//printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
-				//glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
-				//glm::vec3 rot = entity->GetComponent<Transform>().m_Rotation;
-				//printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
-				//printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
-			}
-		};
-
+		// auto UpdateTransform = []<typename Collider>{};
 		// because I can't do UpdateTransform< Type >() :(
-		UpdateTransform.operator() < BoxCollider > ();
-		UpdateTransform.operator() < SphereCollider > ();
+		// UpdateTransform.operator() < BoxCollider > ();
+		// UpdateTransform.operator() < SphereCollider > ();
+		// UpdateTransform.operator() < Rigidbody > ();
+
+		for (const auto& pair : m_Actors)
+		{
+			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
+			const PhysicsComponent* component = pair.second;
+			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, component->m_RigidDynamic->getGlobalPose().p);
+
+			// I hope this is right XO
+			const PxVec3 eulerAngles = QuatToEulerAngles(component->m_RigidDynamic->getGlobalPose().q);
+			entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
+
+			printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
+			glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
+			glm::vec3 rot = entity->GetComponent<Transform>().m_Rotation;
+			printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
+			printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
+		}
 	}
 
 	void PhysicsSystem::OnDestroyGO() {}
-
-	void OLDSTUFF_Update()
-	{
-		//std::cout << "PhysicsUpdate: Printing useless data m_PosX...---------------------\n";
-		//for (Entity entity : ECSManager::Instance().GetEntities<Transform>())
-		//{
-		//	std::cout << entity->GetComponent<Transform>().m_Position.x << "|";
-		//}
-		//std::cout << "\n-------------------------------------------------------------------\n";
-	}
-
-	void OLDSTUFF_OnDestroyGO()
-	{
-		//std::cout << "Destroy GOs that have transform is to be removed\n";
-		//for (Entity entity : ECSManager::Instance().GetEntities<Transform, Removal>())
-		//{
-		//	std::cout << "Found object " << entity->GetComponent<Properties>().m_Name << "\n";
-		//}
-		//std::cout << "================\n";
-	}
 
 	void PhysicsSystem::Shutdown()
 	{
@@ -216,8 +202,9 @@ namespace TRE
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
 
+		m_Actors.clear();
 		PX_RELEASE(m_GroundPlane);
-		PX_RELEASE(m_Material);
+		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Scene);
 		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Physics);
@@ -237,39 +224,54 @@ namespace TRE
 		auto& sphereCollider = entity->AddComponent<SphereCollider>();
 		// add component if missing, otherwise get existing component
 
-		const auto objPos = entity->GetComponent<Transform>().m_Position;
+		const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
 		const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
 		PxRigidDynamic* body = m_Physics->createRigidDynamic(PxTransform(colliderPos));
 
 		// fill the 'container' with a shape, that being a sphere
-		PxShape* shape = m_Physics->createShape(PxSphereGeometry(radius), *m_Material);
-		body->attachShape(*shape);
+		PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *m_DefaultMaterial);
 
 		PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
 
 		m_Scene->addActor(*body);
-		sphereCollider.m_RigidActor = body;
+		sphereCollider.m_AttachedComponents |= PhysicsComponents::SphereCollider;
+		sphereCollider.m_RigidDynamic = body;
 		sphereCollider.m_Radius = radius;
 
-		shape->release();
-
-		/*
-		Obtaining the shape of an actor (e.g PxGeometryType::Enum::eSPHERE)
-
-		const int nbShapes = sphereCollider.m_RigidActor->getNbShapes();
-		PxShape** buffer = new PxShape * [nbShapes + 1];
-		const int actualNbShapes = sphereCollider.m_RigidActor->getShapes(buffer, nbShapes + 1);
-
-		for (int i = 0; i < actualNbShapes; ++i)
-			printf("%d\n", buffer[i]->getGeometry().getType());
-		*/
+		m_Actors[entity->GetGUID()] = &sphereCollider;
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
 	{
-		entity->GetComponent<SphereCollider>().m_RigidActor->release();
+		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
+		PxRigidDynamic* rigidDynamic = sphereCollider.m_RigidDynamic;
+
+		// reset bit for this component
+		sphereCollider.m_AttachedComponents &= ~PhysicsComponents::SphereCollider;
+
+		if (!sphereCollider.m_AttachedComponents)
+		{
+			m_Scene->removeActor(*rigidDynamic);
+			rigidDynamic->release();
+			m_Actors.erase(entity->GetGUID());
+		}
+		else // there's still more attached physics components
+		{
+			const unsigned nbShapes = rigidDynamic->getNbShapes();
+			const std::shared_ptr<PxShape* []> buffer(new PxShape * [nbShapes]); // I hate that I have to do this...
+			const unsigned actualNbShapes = rigidDynamic->getShapes(buffer.get(), nbShapes);
+
+			for (unsigned i = 0; i < actualNbShapes; ++i)
+			{
+				if (buffer[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+
+				// there should only be ONE of each physics component, so it's safe to stop looping here
+				rigidDynamic->detachShape(*buffer[i]); break;
+			}
+		}
+
 		entity->RemoveComponent<SphereCollider>();
 	}
 
@@ -278,48 +280,92 @@ namespace TRE
 		auto& boxCollider = entity->AddComponent<BoxCollider>();
 		// add component if missing, otherwise get existing component
 
-		const auto objPos = entity->GetComponent<Transform>().m_Position;
+		const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
 		const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
 
 		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
 		PxRigidDynamic* body = m_Physics->createRigidDynamic(PxTransform(colliderPos));
 
 		// fill the 'container' with a shape, that being a box
-		PxShape* shape = m_Physics->createShape(PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_Material);
-		body->attachShape(*shape);
+		/*auto huh = */PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_DefaultMaterial);
+		// huh->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 
 		PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
 
 		m_Scene->addActor(*body);
-		boxCollider.m_RigidActor = body;
+		boxCollider.m_AttachedComponents |= PhysicsComponents::BoxCollider;
+		boxCollider.m_RigidDynamic = body;
 		boxCollider.m_HalfExtents = halfExtents;
 
-		shape->release();
+		m_Actors[entity->GetGUID()] = &boxCollider;
 	}
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
-		entity->GetComponent<BoxCollider>().m_RigidActor->release();
+		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+		PxRigidDynamic* rigidDynamic = boxCollider.m_RigidDynamic;
+
+		// reset bit for this component
+		boxCollider.m_AttachedComponents &= ~PhysicsComponents::BoxCollider;
+
+		if (!boxCollider.m_AttachedComponents)
+		{
+			m_Scene->removeActor(*rigidDynamic);
+			rigidDynamic->release();
+			m_Actors.erase(entity->GetGUID());
+		}
+		else // there's still more attached physics components
+		{
+			const unsigned nbShapes = rigidDynamic->getNbShapes();
+			const std::shared_ptr<PxShape* []> buffer(new PxShape * [nbShapes]); // I hate that I have to do this...
+			const unsigned actualNbShapes = rigidDynamic->getShapes(buffer.get(), nbShapes);
+
+			for (unsigned i = 0; i < actualNbShapes; ++i)
+			{
+				if (buffer[i]->getGeometryType() != PxGeometryType::eBOX) continue;
+
+				// there should only be ONE of each physics component, so it's safe to stop looping here
+				rigidDynamic->detachShape(*buffer[i]); break;
+			}
+		}
+
 		entity->RemoveComponent<BoxCollider>();
 	}
 
-	//void PhysicsSystem::CreateRigidBody(const Entity& entity) const
-	//{
-	//	auto& rb = entity->AddComponent<Rigidbody>();
-	//}
+#if 1
+	void PhysicsSystem::ConstructRigidBody(const Entity& entity) const
+	{
+		auto it = m_Actors.find(entity->GetGUID());
 
-	//void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
-	//{
-	//	PxRigidBody* body = nullptr;
-	//	char result = 0;
+		if (it == m_Actors.end()) // create rigidbody here
+		{
+			Rigidbody& rb = entity->AddComponent<Rigidbody>();
+			const Vector3& pos = entity->GetComponent<Transform>().m_Position;
 
-	//	// auto body = entity->GetComponent<BoxCollider>().m_RigidActor->is<PxRigidBody>();
-	//	
-	//	if (result |= entity->HasComponent<BoxCollider>())
-	//		body = entity->GetComponent<BoxCollider>().m_RigidActor->is<PxRigidBody>();
-	//	else if (result |= entity->HasComponent<SphereCollider>())
-	//		body = entity->GetComponent<SphereCollider>().m_RigidActor->is<PxRigidBody>();
-	//}
+			rb.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ VEC3_CAST(PxVec3, pos) });
+			// rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
+			m_Scene->addActor(*rb.m_RigidDynamic);
+
+			rb.m_AttachedComponents |= PhysicsComponents::Rigidbody;
+			m_Actors[entity->GetGUID()] = &rb;
+		}
+
+		// assign rigidbody here(?)
+		// auto& rb = entity->GetComponent<Rigidbody>();
+	}
+	void PhysicsSystem::DestructRigidBody(const Entity& entity) const
+	{
+		;
+	}
+#endif
+
+#if 1
+	void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
+	{
+		Rigidbody& rb = entity->GetComponent<Rigidbody>();
+		rb.m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
+	}
+#endif
 
 	//This function creates a stack of shapes
 	void PhysicsSystem::CreateStack(const PxTransform& t, unsigned size, float halfExtent) const

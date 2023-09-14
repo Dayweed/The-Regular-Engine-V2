@@ -181,6 +181,7 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<Camera>("Camera");
 		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
 		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
+		ComponentManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
 		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
 		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
 

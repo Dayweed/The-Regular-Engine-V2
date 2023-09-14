@@ -11,6 +11,7 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #pragma once
+#include "pch.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
 #include "PhysX/PxPhysicsAPI.h"
@@ -25,34 +26,52 @@
 
 namespace TRE
 {
-	struct SphereCollider
+	struct PhysicsComponents
 	{
-		physx::PxRigidActor* m_RigidActor = nullptr;
+		enum Enum : short
+		{
+			Rigidbody		= 1 << 0,
+			SphereCollider	= 1 << 1,
+			BoxCollider		= 1 << 2,
+		};
+	};
+
+	struct PhysicsComponent
+	{
+		physx::PxRigidDynamic* m_RigidDynamic = nullptr;
+		short m_AttachedComponents = 0;
+	};
+
+	struct BaseCollider : PhysicsComponent
+	{
+		bool m_IsTrigger = false;
+		physx::PxMaterial* m_PhysicsMaterial = nullptr;
+	};
+
+	struct SphereCollider : BaseCollider
+	{
 		float m_Radius = 1.0f;
 	};
 
-	struct BoxCollider
+	struct BoxCollider : BaseCollider
 	{
-		physx::PxRigidActor* m_RigidActor = nullptr;
-		glm::vec3 m_HalfExtents = Vector3(0.5f);
+		Vector3 m_HalfExtents = Vector3(0.5f);
 	};
 
 	// GOTTA SEPARATE ACTOR/BODY AND SHAPES!!!
 	// RIGIDBODY AND COLLIDERSSSSSS
 
-
-	//struct Rigidbody
-	//{
-	//	physx::PxRigidBody* m_thingy = nullptr;
-	//	float m_Mass = 1.0f;
-	//	float m_Drag = 0.0f;
-	//	float m_AngularDrag = 0.05f;
-	//	bool m_UseGravity = true;
-	//	bool m_IsKinematic = false;
-	//	// interpolation modes
-	//	// collision detection modes
-	//	// constraints - freeze position x,y,z & rotation x, y, z
-	//};
+	struct Rigidbody : PhysicsComponent
+	{
+		float m_Mass = 1.0f;
+		float m_Drag = 0.0f;
+		float m_AngularDrag = 0.05f;
+		bool m_UseGravity = true;
+		bool m_IsKinematic = false;
+		// interpolation modes
+		// collision detection modes
+		// constraints - freeze position x,y,z & rotation x, y, z
+	};
 
 	class PhysicsSystem : public ECSSystem
 	{
@@ -131,9 +150,11 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void DestructBoxCollider(const Entity& entity) const;
 
-		// void CreateRigidBody(const Entity& entity) const;
+		void ConstructRigidBody(const Entity& entity) const;
 
-		// void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
+		void DestructRigidBody(const Entity& entity) const;
+
+		void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
@@ -141,6 +162,8 @@ namespace TRE
 	private:
 
 		bool m_IsReadyForUpdate = false;
+
+		mutable std::unordered_map<std::string, PhysicsComponent*> m_Actors;
 
 		physx::PxDefaultAllocator		m_Allocator;
 		physx::PxDefaultErrorCallback	m_ErrorCallback;
@@ -151,8 +174,17 @@ namespace TRE
 		physx::PxPhysics*				m_Physics = nullptr;
 		physx::PxDefaultCpuDispatcher*	m_Dispatcher = nullptr;
 		physx::PxScene*					m_Scene = nullptr;
-		physx::PxMaterial*				m_Material = nullptr;
+		physx::PxMaterial*				m_DefaultMaterial = nullptr;
 
-		physx::PxRigidStatic*			m_GroundPlane = nullptr; // REMEMBER TO RELEASE SHAPES, DAMN IT.
+		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 	};
 }
+
+// none			- just don't have anything, please
+// collider		- make shape with 
+// rigidbody	- 
+// both			- create stuff like prior
+
+// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
+// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
+// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
