@@ -133,6 +133,7 @@ namespace TRE
 			t.m_AspectRatio = j.at("m_AspectRatio").get<float>();
 			t.m_IsPerspective = j.at("m_IsPerspective").get<bool>();
 			t.m_IsMainCamera = j.at("m_IsMainCamera").get<bool>();
+
 			t.m_IsDirty = true;
 
 
