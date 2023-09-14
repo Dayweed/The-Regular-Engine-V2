@@ -26,6 +26,51 @@ namespace TRE
 			void Update() override;
 			void Shutdown() override;
 
+			/*!*****************************************************************************
+			*\brief 	Getter functions
+			*
+			*******************************************************************************/
+			void GetShowHierarchyPanel(bool& showHierarchyPanel) { showHierarchyPanel = m_ShowHierarchyPanel; }
+			void GetShowInspectorPanel(bool& showInspectorPanel) { showInspectorPanel = m_ShowInspectorPanel; }
+			void GetShowToolBarPanel(bool& showToolBarPanel) { showToolBarPanel = m_ShowToolBarPanel; }
+			void GetShowScenePanel(bool& showScenePanel) { showScenePanel = m_ShowScenePanel; }
+			void GetShowGamePanel(bool& showGamePanel) { showGamePanel = m_ShowGamePanel; }
+			void GetShowConsolePanel(bool& showConsolePanel) { showConsolePanel = m_ShowConsolePanel; }
+			void GetShowAssetPanel(bool& showAssetPanel) { showAssetPanel = m_ShowAssetPanel; }
+
 		private:
+			//Bool to the status of every menu item
+			bool m_ShowHierarchyPanel = true;
+			bool m_ShowInspectorPanel = true;
+			bool m_ShowToolBarPanel = true;
+			bool m_ShowScenePanel = true;
+			bool m_ShowGamePanel = true;
+			bool m_ShowConsolePanel = true;
+			bool m_ShowAssetPanel = true;
+
+			//bool for options
+			bool m_Test = false;
+
+			//bool for exit prompt
+			bool m_ExitPrompt = false;
+
+			//Store some custom flags
+			ImGuiConfigFlags m_PopUps{};
+			
+			/*!*****************************************************************************
+			*\brief 	Creates a new, empty scene.
+			*
+			*******************************************************************************/
+			void NewScene();
+			/*!*****************************************************************************
+			*\brief 	Opens the file explorer and allows the user to select a scene to load.
+			*
+			*******************************************************************************/
+			void OpenScene();
+			/*!*****************************************************************************
+			*\brief 	Opens the file explorer and allows the user to save over a scene.
+			*
+			*******************************************************************************/
+			void SaveScene();
 	};
 }
