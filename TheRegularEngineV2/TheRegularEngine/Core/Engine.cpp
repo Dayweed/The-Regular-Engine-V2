@@ -114,10 +114,10 @@ namespace TRE
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
 
-		//SceneManager::Instance().SaveSceneAs("DemoScene");
+		SceneManager::Instance().SaveSceneAs("DemoScene");
 
-		/*SceneManager::Instance().LoadScene("DemoScene");
-		Entity cam2 = ECSManager::Instance().CreateEntity();
+		SceneManager::Instance().LoadScene("DemoScene");
+		/*Entity cam2 = ECSManager::Instance().CreateEntity();
 		cam2->GetComponent<Properties>().m_Name = "cam2";
 		cam2->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam2, true);*/

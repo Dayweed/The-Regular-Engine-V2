@@ -124,6 +124,7 @@ namespace TRE
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
+			.component<Camera>(arc)
 			.component<FEL>(arc);
 
 		arc.Close();
@@ -143,6 +144,7 @@ namespace TRE
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
+			.component<Camera>(arc)
 			.component<FEL>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
