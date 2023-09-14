@@ -40,18 +40,18 @@ namespace TRE
 		{
 			if (entity->HasComponent<Properties>())
 			{
-				bool check = m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active;
+				bool check = entity->GetComponent<Properties>().m_Active;
 				ImGui::Checkbox("Active", &check);
-				if (check != m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active) 
+				if (check != entity->GetComponent<Properties>().m_Active) 
 				{
-					m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active = check;
+					entity->GetComponent<Properties>().m_Active = check;
 				}
 
 				ImGui::SameLine();
 				char objectName[128] = "";
-				strcpy(objectName, m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name.c_str());
+				strcpy(objectName, entity->GetComponent<Properties>().m_Name.c_str());
 				ImGui::InputTextWithHint("##ObjectName", "Object name", objectName, IM_ARRAYSIZE(objectName));
-				if (0 != strcmp(objectName, m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name.c_str()))
+				if (0 != strcmp(objectName, entity->GetComponent<Properties>().m_Name.c_str()))
 				{
 					m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name = objectName;
 				}
@@ -88,11 +88,11 @@ namespace TRE
 			//	}
 			//		
 			//}
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<MeshRenderer>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<SphereCollider>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<BoxCollider>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<Audio>();
+			//entity->HasComponent<MeshRenderer>();
+			//entity->HasComponent<Camera>();
+			//entity->HasComponent<SphereCollider>();
+			//entity->HasComponent<BoxCollider>();
+			//entity->HasComponent<Audio>();
 
 		}
 
