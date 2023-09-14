@@ -84,7 +84,7 @@ namespace TRE
 		}
 
 		m_DescriptorPool = DescriptorPool::Builder()
-			.SetMaxSets(10)
+			.SetMaxSets(100)
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
 			.Build();
@@ -117,6 +117,8 @@ namespace TRE
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+
+		m_TestMaterial = std::make_unique<Material>(VertShader, FragShader);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -249,8 +251,25 @@ namespace TRE
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
-			UpdateDescriptorSets(go_mr->GetComponent<Properties>().m_Name);
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Pipeline->GetDescriptorSets()[Index], 0, NULL);
+			const int Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+			std::vector<VkWriteDescriptorSet> Writes;
+			for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
+			{
+				x.second.pBufferInfo = &m_UBOBuffer->GetDescriptorBufferInfo();
+				x.second.dstSet = m_TestMaterial->GetDescriptor(Index);
+				Writes.push_back(x.second);
+			}
+			VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture("Test")->GetDescriptorImageInfo();
+			for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
+			{
+				x.second.dstBinding = 1;
+				x.second.pImageInfo = &imageInfo;
+				x.second.dstSet = m_TestMaterial->GetDescriptor(Index);
+				Writes.push_back(x.second);
+			}
+			vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
+
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_TestMaterial->GetDescriptor(Index), 0, NULL);
 
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
