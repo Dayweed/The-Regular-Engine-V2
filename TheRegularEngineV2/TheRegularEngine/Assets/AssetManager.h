@@ -39,13 +39,32 @@ namespace TRE
 			template <typename N>
 			void DestroyAssetsOfType(N type)
 			{
-				for (auto& asset : m_Assets)
+				for (auto it = m_Assets.begin(); it != m_Assets.end();)
 				{
-					if (asset.second->GetType() == type)
+					if (it->second->GetType() == type)
 					{
-						asset.second.reset();
+						it = m_Assets.erase(it);
+					}
+					else
+					{
+						++it;
 					}
 				}
+			}
+
+			void DestroyAsset(AssetHandle Handle)
+			{
+				m_Assets[Handle].reset();
+			}
+
+			void DestroyAllAssets()
+			{
+				m_Assets.clear();
+			}
+
+			std::size_t GetAssetCount()
+			{
+				return m_Assets.size();
 			}
 
 		private:

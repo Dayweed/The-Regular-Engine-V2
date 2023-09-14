@@ -16,6 +16,7 @@
 #include "Graphics/Camera.h"
 #include "Geom.h"
 #include <time.h>       /* time */
+#include "Assets/AssetManager.h"
 
 namespace TRE
 {
@@ -61,14 +62,13 @@ namespace TRE
 	void DemoScene()
 	{
 		Geom::RunCompiler("../Assets/mine.desc");
-		
-		auto geom = Geom::Deserialize("../Assets/mine.geom");
+		std::unique_ptr<RenderObject> ro = RenderObject::CreateFromGeom((Geom::Deserialize("../Assets/mine.geom")));
+		ro->SetHandle(1);
+		AssetManager::Instance().AddAsset(std::move(ro));
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
-
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
@@ -76,14 +76,14 @@ namespace TRE
 		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test2, vase);
+		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(1));
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
 		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, vase);
+		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(1));
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));

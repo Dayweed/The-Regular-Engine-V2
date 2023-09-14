@@ -14,12 +14,6 @@ namespace TRE
 		return m_Assets[Handle]->GetType();
 	}
 
-	//template <typename T>
-	//std::shared_ptr<T> AssetManager::GetAsset(AssetHandle Handle)
-	//{
-	//	return m_Assets[Handle];
-	//}
-
 	AssetManager::~AssetManager()
 	{
 

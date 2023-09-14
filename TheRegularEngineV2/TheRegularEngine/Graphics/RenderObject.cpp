@@ -27,6 +27,7 @@ namespace TRE
 {
 	RenderObject::RenderObject(const Builder& _Builder)
 	{
+		m_Type = AssetType::Mesh;
 		CreateVertexBuffer(_Builder.m_Vertices);
 		CreateIndexBuffer(_Builder.m_Indices);
 		CreateBoundingSphere(_Builder.m_Vertices);

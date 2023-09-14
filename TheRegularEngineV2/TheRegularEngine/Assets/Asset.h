@@ -20,6 +20,11 @@ namespace TRE
 			virtual ~Asset() {}
 
 		public:
+			void SetHandle(AssetHandle handle)
+			{
+				m_Handle = handle;
+			}
+
 			AssetHandle GetHandle() const
 			{
 				return m_Handle;

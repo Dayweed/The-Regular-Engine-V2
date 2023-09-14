@@ -190,6 +190,7 @@ namespace TRE
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
