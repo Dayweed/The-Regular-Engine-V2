@@ -14,8 +14,7 @@
 #include "pch.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
-#include "PhysX/PxPhysicsAPI.h"
-#include "Vector3.h"
+#include "PhysicsComponents.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
@@ -25,54 +24,7 @@
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
 
 namespace TRE
-{
-	struct PhysicsComponents
-	{
-		enum Enum : short
-		{
-			Rigidbody		= 1 << 0,
-			SphereCollider	= 1 << 1,
-			BoxCollider		= 1 << 2,
-		};
-	};
-
-	struct PhysicsComponent
-	{
-		physx::PxRigidDynamic* m_RigidDynamic = nullptr;
-		short m_AttachedComponents = 0;
-	};
-
-	struct BaseCollider : PhysicsComponent
-	{
-		bool m_IsTrigger = false;
-		physx::PxMaterial* m_PhysicsMaterial = nullptr;
-	};
-
-	struct SphereCollider : BaseCollider
-	{
-		float m_Radius = 1.0f;
-	};
-
-	struct BoxCollider : BaseCollider
-	{
-		Vector3 m_HalfExtents = Vector3(0.5f);
-	};
-
-	// GOTTA SEPARATE ACTOR/BODY AND SHAPES!!!
-	// RIGIDBODY AND COLLIDERSSSSSS
-
-	struct Rigidbody : PhysicsComponent
-	{
-		float m_Mass = 1.0f;
-		float m_Drag = 0.0f;
-		float m_AngularDrag = 0.05f;
-		bool m_UseGravity = true;
-		bool m_IsKinematic = false;
-		// interpolation modes
-		// collision detection modes
-		// constraints - freeze position x,y,z & rotation x, y, z
-	};
-
+{	
 	class PhysicsSystem : public ECSSystem
 	{
 	public:
@@ -163,7 +115,7 @@ namespace TRE
 
 		bool m_IsReadyForUpdate = false;
 
-		mutable std::unordered_map<std::string, PhysicsComponent*> m_Actors;
+		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
 		physx::PxDefaultAllocator		m_Allocator;
 		physx::PxDefaultErrorCallback	m_ErrorCallback;
@@ -179,12 +131,3 @@ namespace TRE
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 	};
 }
-
-// none			- just don't have anything, please
-// collider		- make shape with 
-// rigidbody	- 
-// both			- create stuff like prior
-
-// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
-// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
-// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);

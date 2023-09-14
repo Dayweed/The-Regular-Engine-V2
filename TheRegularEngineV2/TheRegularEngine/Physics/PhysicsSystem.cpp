@@ -21,7 +21,6 @@ using namespace physx;
 
 namespace TRE
 {
-#if 1
 	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
 	PxVec3 QuatToEulerAngles(const PxQuat& q)
 	{
@@ -44,7 +43,6 @@ namespace TRE
 
 		return angles;
 	}
-#endif
 
 	PhysicsSystem::PhysicsSystem()
 	{
@@ -129,14 +127,15 @@ namespace TRE
 			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
 #endif
 
-		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
-		e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
-		ConstructBoxCollider(e1);
-		// e1->AddComponent<Rigidbody>(); ConstructRigidBody(e1);
+		//const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
+		//e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
+		//e1->AddComponent<BoxCollider>(); ConstructBoxCollider(e1);
+		//e1->AddComponent<Rigidbody>(); ConstructRigidBody(e1);
 
-		//Entity e2 = ECSManager::Instance().CreateEntity("box 1");
-		//e2->GetComponent<Transform>().m_Position = { 1,1,0 };
-		//ConstructSphereCollider(e2);
+		//const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
+		//e2->GetComponent<Transform>().m_Position = { 1,5,0 };
+		//e2->AddComponent<SphereCollider>(); ConstructSphereCollider(e2);
+		//e2->AddComponent<Rigidbody>(); ConstructRigidBody(e2);
 
 		return m_IsReadyForUpdate = true;
 	}
@@ -148,7 +147,7 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
-#if 1
+#if 0
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
 		if (result >= 1)
@@ -157,8 +156,8 @@ namespace TRE
 			if (!vec.empty())
 			{
 				//BoxCollider collider = vec.front()->GetComponent<BoxCollider>();
-				//auto* rb = collider.m_RigidDynamic->is<PxRigidBody>();
-				//rb->addForce({ 0, 800, 0 });
+				//auto* rigidbody = collider.m_RigidDynamic->is<PxRigidBody>();
+				//rigidbody->addForce({ 0, 800, 0 });
 
 				AddForce(vec.front(), { 0, 8, 0 });
 			}
@@ -178,11 +177,11 @@ namespace TRE
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
-			const PhysicsComponent* component = pair.second;
-			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, component->m_RigidDynamic->getGlobalPose().p);
+			const SharedData& sharedData = pair.second;
+			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, sharedData.m_RigidDynamic->getGlobalPose().p);
 
 			// I hope this is right XO
-			const PxVec3 eulerAngles = QuatToEulerAngles(component->m_RigidDynamic->getGlobalPose().q);
+			const PxVec3 eulerAngles = QuatToEulerAngles(sharedData.m_RigidDynamic->getGlobalPose().q);
 			entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
 
 			printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
@@ -221,55 +220,86 @@ namespace TRE
 
 	void PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const Vector3& offset) const
 	{
-		auto& sphereCollider = entity->AddComponent<SphereCollider>();
-		// add component if missing, otherwise get existing component
+		if (!entity->HasComponent<SphereCollider>())
+		{
+			const std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] Entity \"" + entity->GetName() + "\" has no SphereCollider to construct.");
+			assert(entity->HasComponent<SphereCollider>());
+		}
 
-		const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
-		const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
+		// if there are no existing physics components on the entity
+		if (!m_Actors.contains(entity->GetGUID()))
+		{
+			SharedData tempSharedData;
 
-		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
-		PxRigidDynamic* body = m_Physics->createRigidDynamic(PxTransform(colliderPos));
+			const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
+			const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
 
-		// fill the 'container' with a shape, that being a sphere
-		PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *m_DefaultMaterial);
+			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ colliderPos });
+			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
-		PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
+			m_Actors[entity->GetGUID()] = tempSharedData;
+		}
+		else
+		{
+			TRE_CORE_WARN("we literally share the same guy my dude");
+		}
 
-		m_Scene->addActor(*body);
-		sphereCollider.m_AttachedComponents |= PhysicsComponents::SphereCollider;
-		sphereCollider.m_RigidDynamic = body;
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+
+		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial);
+
+		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
+		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
+		{
+			PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
+			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
+			sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+		}
+		else
+		{
+			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
+			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+		}
+
+		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
+
+		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 		sphereCollider.m_Radius = radius;
-
-		m_Actors[entity->GetGUID()] = &sphereCollider;
+		// TODO: assign more data here
+		// sphereCollider.m_IsTrigger = ...
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
 	{
-		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
-		PxRigidDynamic* rigidDynamic = sphereCollider.m_RigidDynamic;
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
 
 		// reset bit for this component
-		sphereCollider.m_AttachedComponents &= ~PhysicsComponents::SphereCollider;
+		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::SphereCollider;
 
-		if (!sphereCollider.m_AttachedComponents)
+		if (!sharedData.m_AttachedComponents)
 		{
-			m_Scene->removeActor(*rigidDynamic);
-			rigidDynamic->release();
+			m_Scene->removeActor(*sharedData.m_RigidDynamic);
+			sharedData.m_RigidDynamic->release();
 			m_Actors.erase(entity->GetGUID());
 		}
 		else // there's still more attached physics components
 		{
-			const unsigned nbShapes = rigidDynamic->getNbShapes();
+			const unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
 			const std::shared_ptr<PxShape* []> buffer(new PxShape * [nbShapes]); // I hate that I have to do this...
-			const unsigned actualNbShapes = rigidDynamic->getShapes(buffer.get(), nbShapes);
+			const unsigned actualNbShapes = sharedData.m_RigidDynamic->getShapes(buffer.get(), nbShapes);
 
 			for (unsigned i = 0; i < actualNbShapes; ++i)
 			{
 				if (buffer[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				rigidDynamic->detachShape(*buffer[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*buffer[i]); break;
 			}
+
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
 
 		entity->RemoveComponent<SphereCollider>();
@@ -277,95 +307,160 @@ namespace TRE
 
 	void PhysicsSystem::ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents, const Vector3& offset) const
 	{
-		auto& boxCollider = entity->AddComponent<BoxCollider>();
-		// add component if missing, otherwise get existing component
+		if (!entity->HasComponent<BoxCollider>())
+		{
+			const std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] Entity \"" + entity->GetName() + "\" has no BoxCollider to construct.");
+			assert(entity->HasComponent<BoxCollider>());
+		}
 
-		const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
-		const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
+		// if there are no existing physics components on the entity
+		if (!m_Actors.contains(entity->GetGUID()))
+		{
+			SharedData tempSharedData;
 
-		// create a 'container', that being the PxActor (specifically a PxRigidDynamic in this case)
-		PxRigidDynamic* body = m_Physics->createRigidDynamic(PxTransform(colliderPos));
+			const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
+			const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
 
-		// fill the 'container' with a shape, that being a box
-		/*auto huh = */PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_DefaultMaterial);
-		// huh->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ colliderPos });
+			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
-		PxRigidBodyExt::updateMassAndInertia(*body, 1.0f);
+			m_Actors[entity->GetGUID()] = tempSharedData;
+		}
+		else
+		{
+			TRE_CORE_WARN("we literally share the same guy my dude");
+		}
 
-		m_Scene->addActor(*body);
-		boxCollider.m_AttachedComponents |= PhysicsComponents::BoxCollider;
-		boxCollider.m_RigidDynamic = body;
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+
+		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_DefaultMaterial);
+		// (above))->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+
+		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
+		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
+		{
+			PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
+			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
+			sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+		}
+		else
+		{
+			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
+			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+		}
+
+		sharedData.m_AttachedComponents |= PhysicsComponentTypes::BoxCollider;
+
+		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
 		boxCollider.m_HalfExtents = halfExtents;
-
-		m_Actors[entity->GetGUID()] = &boxCollider;
+		// TODO: assign more data here
+		// boxCollider.m_IsTrigger = ...
 	}
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
-		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
-		PxRigidDynamic* rigidDynamic = boxCollider.m_RigidDynamic;
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		// PxRigidDynamic* rigidDynamic = sharedComponent.m_RigidDynamic;
 
 		// reset bit for this component
-		boxCollider.m_AttachedComponents &= ~PhysicsComponents::BoxCollider;
+		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::BoxCollider;
 
-		if (!boxCollider.m_AttachedComponents)
+		if (!sharedData.m_AttachedComponents)
 		{
-			m_Scene->removeActor(*rigidDynamic);
-			rigidDynamic->release();
+			m_Scene->removeActor(*sharedData.m_RigidDynamic);
+			sharedData.m_RigidDynamic->release();
 			m_Actors.erase(entity->GetGUID());
 		}
 		else // there's still more attached physics components
 		{
-			const unsigned nbShapes = rigidDynamic->getNbShapes();
+			const unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
 			const std::shared_ptr<PxShape* []> buffer(new PxShape * [nbShapes]); // I hate that I have to do this...
-			const unsigned actualNbShapes = rigidDynamic->getShapes(buffer.get(), nbShapes);
+			const unsigned actualNbShapes = sharedData.m_RigidDynamic->getShapes(buffer.get(), nbShapes);
 
 			for (unsigned i = 0; i < actualNbShapes; ++i)
 			{
 				if (buffer[i]->getGeometryType() != PxGeometryType::eBOX) continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				rigidDynamic->detachShape(*buffer[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*buffer[i]); break;
 			}
+
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
 
 		entity->RemoveComponent<BoxCollider>();
 	}
 
-#if 1
 	void PhysicsSystem::ConstructRigidBody(const Entity& entity) const
 	{
-		auto it = m_Actors.find(entity->GetGUID());
-
-		if (it == m_Actors.end()) // create rigidbody here
+		if (!entity->HasComponent<Rigidbody>())
 		{
-			Rigidbody& rb = entity->AddComponent<Rigidbody>();
-			const Vector3& pos = entity->GetComponent<Transform>().m_Position;
-
-			rb.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ VEC3_CAST(PxVec3, pos) });
-			// rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
-			m_Scene->addActor(*rb.m_RigidDynamic);
-
-			rb.m_AttachedComponents |= PhysicsComponents::Rigidbody;
-			m_Actors[entity->GetGUID()] = &rb;
+			const std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] Entity \"" + entity->GetName() + "\" has no Rigidbody to construct.");
+			assert(entity->HasComponent<Rigidbody>());
 		}
 
-		// assign rigidbody here(?)
-		// auto& rb = entity->GetComponent<Rigidbody>();
+		// if there are no existing physics components on the entity
+		if (!m_Actors.contains(entity->GetGUID()))
+		{
+			SharedData tempSharedData;
+			const Vector3& pos = entity->GetComponent<Transform>().m_Position;
+
+			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ VEC3_CAST(PxVec3, pos) });
+			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
+
+			m_Actors[entity->GetGUID()] = tempSharedData;
+		}
+		else
+		{
+			TRE_CORE_WARN("we literally share the same guy my dude");
+		}
+
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+
+		// activate gravity by default
+		PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
+		if (sharedData.m_RigidDynamic) // enabling gravity
+			actorFlags.clear(PxActorFlag::eDISABLE_GRAVITY);
+		else // TODO: disabling gravity
+			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
+		sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+
+		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
 	}
+
 	void PhysicsSystem::DestructRigidBody(const Entity& entity) const
 	{
-		;
-	}
-#endif
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::Rigidbody;
 
-#if 1
+		// if colliders are *still* present on this entity
+		if (sharedData.m_AttachedComponents)
+		{
+			// turn the gravity off so that these colliders won't 'fall'
+			PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
+			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
+			sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+		}
+		else
+		{
+			// get rid of all things related to the actor
+			m_Scene->removeActor(*sharedData.m_RigidDynamic);
+			sharedData.m_RigidDynamic->release();
+			m_Actors.erase(entity->GetGUID());
+		}
+
+		entity->RemoveComponent<Rigidbody>();
+	}
+
 	void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
 	{
-		Rigidbody& rb = entity->GetComponent<Rigidbody>();
-		rb.m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
+		assert(entity->HasComponent<Rigidbody>()); // just in case
+		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
 	}
-#endif
 
 	//This function creates a stack of shapes
 	void PhysicsSystem::CreateStack(const PxTransform& t, unsigned size, float halfExtent) const
