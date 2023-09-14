@@ -390,7 +390,6 @@ namespace TRE
 				mainCamera = go;
 			}
 		}
-
 		assert(count == 1 && "There can only be one main camera");
 		return mainCamera;
 	}

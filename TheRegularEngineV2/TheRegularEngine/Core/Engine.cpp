@@ -102,25 +102,33 @@ namespace TRE
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
+		cameraSystem->SetIsMainCamera(cam, true);
 
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
 
-		cameraSystem->SetIsMainCamera(cam, true);
 		//ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(cam, test->GetComponent<Transform>().m_Position);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
 
-		//SceneManager::Instance().SaveSceneAs("DemoScene");
+		SceneManager::Instance().SaveSceneAs("DemoScene");
 
-		/*SceneManager::Instance().LoadScene("DemoScene");
-		Entity cam2 = ECSManager::Instance().CreateEntity();
+		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
+
+
+		//cameraSystem->SetIsMainCamera(cam, false);
+		//SceneManager::Instance().NewScene();
+		//SceneManager::Instance().LoadScene("DemoScene");
+
+		/*Entity cam2 = ECSManager::Instance().CreateEntity();
 		cam2->GetComponent<Properties>().m_Name = "cam2";
 		cam2->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam2, true);*/
+
+		//std::cout << "Deserialized Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -172,17 +180,17 @@ namespace TRE
 		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
-		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
-		ComponentManager::Instance().RegisterComponent<Parenting>("Parenting", true);
-		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
-		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
-		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");
-		ComponentManager::Instance().RegisterComponent<Camera>("Camera");
-		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
-		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
-		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
-		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
+		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);		// ignore
+		ECSManager::Instance().RegisterComponent<Removal>("Removal", true);				// ignore
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true);			// serialized
+		ECSManager::Instance().RegisterComponent<Properties>("Properties", true);		// serialized
+		ECSManager::Instance().RegisterComponent<Transform>("Transform");				// serialized
+		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");		// 
+		ECSManager::Instance().RegisterComponent<Camera>("Camera");						// serialized
+		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
+		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
+		ECSManager::Instance().RegisterComponent<Audio>("Audio");
+		ECSManager::Instance().RegisterComponent<FEL>("FEL");							// serialized
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
