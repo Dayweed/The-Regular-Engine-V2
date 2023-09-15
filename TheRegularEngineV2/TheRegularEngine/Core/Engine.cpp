@@ -125,7 +125,7 @@ namespace TRE
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
 
-		SceneManager::Instance().SaveSceneAs("DemoScene");
+		//SceneManager::Instance().SaveSceneAs("DemoScene");
 
 		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 
