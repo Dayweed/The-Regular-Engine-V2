@@ -14,6 +14,7 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
+#include "EventSystem/Events/InputEvent.h"
 
 namespace TRE
 {
@@ -30,13 +31,16 @@ namespace TRE
 			*\brief 	Getter functions
 			*
 			*******************************************************************************/
-			void GetShowHierarchyPanel(bool& showHierarchyPanel) { showHierarchyPanel = m_ShowHierarchyPanel; }
-			void GetShowInspectorPanel(bool& showInspectorPanel) { showInspectorPanel = m_ShowInspectorPanel; }
-			void GetShowToolBarPanel(bool& showToolBarPanel) { showToolBarPanel = m_ShowToolBarPanel; }
-			void GetShowScenePanel(bool& showScenePanel) { showScenePanel = m_ShowScenePanel; }
-			void GetShowGamePanel(bool& showGamePanel) { showGamePanel = m_ShowGamePanel; }
-			void GetShowConsolePanel(bool& showConsolePanel) { showConsolePanel = m_ShowConsolePanel; }
-			void GetShowAssetPanel(bool& showAssetPanel) { showAssetPanel = m_ShowAssetPanel; }
+			bool GetShowHierarchyPanel() const { return m_ShowHierarchyPanel; }
+			bool GetShowInspectorPanel() const { return m_ShowInspectorPanel; }
+			bool GetShowToolBarPanel() const { return m_ShowToolBarPanel; }
+			bool GetShowScenePanel() const { return m_ShowScenePanel; }
+			bool GetShowGamePanel() const { return m_ShowGamePanel; }
+			bool GetShowConsolePanel() const { return m_ShowConsolePanel; }
+			bool GetShowAssetPanel() const { return m_ShowAssetPanel; }
+			bool GetExitPrompt() const { return m_ExitPrompt; }
+
+			void HandleShortcuts(TypingEvent& event);
 
 		private:
 			//Bool to the status of every menu item
@@ -50,6 +54,11 @@ namespace TRE
 
 			//bool for options
 			bool m_Test = false;
+
+			//bool for shortcuts
+			bool m_ShortcutNewScene = false;
+			bool m_ShortcutOpenScene = false;
+			bool m_ShortcutSaveScene = false;
 
 			//bool for exit prompt
 			bool m_ExitPrompt = false;

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MenuBarPanel.h"
 #include "Imgui/imgui.h"
+#include "EventSystem/EventHandler/EventHandler.h"
 
 namespace TRE
 {
@@ -21,7 +22,7 @@ namespace TRE
 
 	void MenuBarPanel::Init()
 	{
-
+		EventHandler::getEventHandlerInstance().subscribe(this, &MenuBarPanel::HandleShortcuts);
 	}
 
 	void MenuBarPanel::Update()
@@ -57,10 +58,12 @@ namespace TRE
 				if (ImGui::MenuItem("Undo", "Ctrl+Z"))
 				{
 					//to do
+					EventHandler::getEventHandlerInstance().Publish(TypingEvent{ static_cast<int>(KeyButton::Z), static_cast<int>(KeyMods::CONTROL) });
 				}
 				if (ImGui::MenuItem("Redo", "Ctrl+Y"))
 				{
 					//to do
+					EventHandler::getEventHandlerInstance().Publish(TypingEvent{ static_cast<int>(KeyButton::Y), static_cast<int>(KeyMods::CONTROL) });
 				}
 				ImGui::EndMenu();
 			}
@@ -85,25 +88,25 @@ namespace TRE
 				ImGui::EndMenu();
 			}
 
-			if (m_ExitPrompt)
-			{
-				ImGui::OpenPopup("Exit");
-				m_ExitPrompt = false;
-			}
-
-			ImGui::SetNextWindowSize(ImVec2(400, 100));
-			ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-			if (ImGui::BeginPopupModal("Exit", nullptr, m_PopUps))
-			{
-				ImGui::Text("Are you sure? Please remember to save before quitting!");
-				if (ImGui::Button("Yes"))
-					TRE_CORE_INFO("Closing window (fake)");
-				if (ImGui::Button("No"))
-					ImGui::CloseCurrentPopup();
-				ImGui::EndPopup();
-			}
-
 			ImGui::EndMainMenuBar();
+		}
+
+		if (m_ExitPrompt)
+		{
+			ImGui::OpenPopup("Exit");
+			m_ExitPrompt = false;
+		}
+
+		ImGui::SetNextWindowSize(ImVec2(400, 100));
+		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+		if (ImGui::BeginPopupModal("Exit", nullptr, m_PopUps))
+		{
+			ImGui::Text("Are you sure? Please remember to save before quitting!");
+			if (ImGui::Button("Yes"))
+				TRE_CORE_INFO("Closing window (fake)");
+			if (ImGui::Button("No"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
 		}
 	}
 
@@ -125,5 +128,18 @@ namespace TRE
 	void MenuBarPanel::SaveScene()
 	{
 		return;
+	}
+
+	void MenuBarPanel::HandleShortcuts(TypingEvent& event)
+	{
+		const KeyButton key = static_cast<KeyButton>(event.m_Key);
+		const KeyMods mods = static_cast<KeyMods>(event.m_Mod);
+
+		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
+		{
+			m_ShortcutNewScene	= key == KeyButton::N;
+			m_ShortcutOpenScene = key == KeyButton::O;
+			m_ShortcutSaveScene = key == KeyButton::S;
+		}
 	}
 }
