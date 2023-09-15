@@ -1,5 +1,4 @@
-#ifndef INPUT_EVENT_H
-#define INPUT_EVENT_H
+#pragma once
 #include "pch.h"
 #include "EventBase.h"
 #include "InputHandler/KeyButton.h"
@@ -42,4 +41,3 @@ namespace TRE
         {}
     };
 }
-#endif

@@ -2,10 +2,11 @@
 #include "Buffer.h"
 #include "Geom.h"
 #include "Sphere3D.h"
+#include "Assets/Asset.h"
 
 namespace TRE
 {
-	class RenderObject
+	class RenderObject : public Asset
 	{
 	public:
 		struct Vertex

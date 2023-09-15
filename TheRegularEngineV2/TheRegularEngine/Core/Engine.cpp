@@ -17,6 +17,7 @@
 #include "Geom.h"
 #include <time.h>       /* time */
 #include "Graphics/VulkanTexture.h"
+#include "Assets/AssetManager.h"
 
 namespace TRE
 {
@@ -71,13 +72,13 @@ namespace TRE
 		TextureManager::Instance().LoadTexture(std::move(texture2));
 
 		Geom::RunCompiler("../Assets/mine.desc");
-		
-		auto geom = Geom::Deserialize("../Assets/mine.geom");
+		std::unique_ptr<RenderObject> ro = RenderObject::CreateFromGeom((Geom::Deserialize("../Assets/mine.geom")));
+		ro->SetHandle(1);
+		AssetManager::Instance().AddAsset(std::move(ro));
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-		std::shared_ptr<RenderObject> vase = RenderObject::CreateFromGeom(std::move(geom));
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
@@ -85,14 +86,14 @@ namespace TRE
 		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test2, vase);
+		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(1));
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
 		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, vase);
+		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(1));
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));
@@ -111,25 +112,33 @@ namespace TRE
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
+		cameraSystem->SetIsMainCamera(cam, true);
 
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
 
-		cameraSystem->SetIsMainCamera(cam, true);
 		//ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(cam, test->GetComponent<Transform>().m_Position);
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
 		//ECSManager::Instance().SaveEntities("Demo.json");
 
-		//SceneManager::Instance().SaveSceneAs("DemoScene");
+		SceneManager::Instance().SaveSceneAs("DemoScene");
 
-		/*SceneManager::Instance().LoadScene("DemoScene");
-		Entity cam2 = ECSManager::Instance().CreateEntity();
+		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
+
+
+		//cameraSystem->SetIsMainCamera(cam, false);
+		//SceneManager::Instance().NewScene();
+		//SceneManager::Instance().LoadScene("DemoScene");
+
+		/*Entity cam2 = ECSManager::Instance().CreateEntity();
 		cam2->GetComponent<Properties>().m_Name = "cam2";
 		cam2->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam2, true);*/
+
+		//std::cout << "Deserialized Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -184,17 +193,18 @@ namespace TRE
 		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ComponentManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);
-		ComponentManager::Instance().RegisterComponent<Removal>("Removal", true);
-		ComponentManager::Instance().RegisterComponent<Parenting>("Parenting", true);
-		ComponentManager::Instance().RegisterComponent<Properties>("Properties", true);
-		ComponentManager::Instance().RegisterComponent<Transform>("Transform");
-		ComponentManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");
-		ComponentManager::Instance().RegisterComponent<Camera>("Camera");
-		ComponentManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
-		ComponentManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
-		ComponentManager::Instance().RegisterComponent<Audio>("Audio");
-		ComponentManager::Instance().RegisterComponent<FEL>("FEL");
+		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);		// ignore
+		ECSManager::Instance().RegisterComponent<Removal>("Removal", true);				// ignore
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true);			// serialized
+		ECSManager::Instance().RegisterComponent<Properties>("Properties", true);		// serialized
+		ECSManager::Instance().RegisterComponent<Transform>("Transform");				// serialized
+		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");		// 
+		ECSManager::Instance().RegisterComponent<Camera>("Camera");						// serialized
+		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
+		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
+		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
+		ECSManager::Instance().RegisterComponent<Audio>("Audio");
+		ECSManager::Instance().RegisterComponent<FEL>("FEL");							// serialized
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();

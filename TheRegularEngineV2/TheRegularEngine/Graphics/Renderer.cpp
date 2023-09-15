@@ -9,6 +9,7 @@
 #include "Core/Logger.h"
 #include "ShaderCompiler.h"
 #include "VulkanTexture.h"
+#include "Assets/AssetManager.h"
 
 namespace TRE
 {
@@ -130,6 +131,9 @@ namespace TRE
 			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = std::make_shared<Material>(VertShader, FragShader);
 			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->SetTextures(TextureManager::Instance().GetTexture(go_mr->GetComponent<Properties>().m_Name));
 		}
+		//TO DELETE
+		Texture::RunCompiler("../Assets/Test.desc");
+		AssetManager::Instance().AddAsset(std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test.DDS")));
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -196,7 +200,10 @@ namespace TRE
 	Renderer::~Renderer()
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
-		TextureManager::Instance().Shutdown();
+		
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
+
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);

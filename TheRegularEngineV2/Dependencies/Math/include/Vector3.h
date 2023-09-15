@@ -21,7 +21,7 @@ struct Vector3
 	Vector3(const float _x, const float _y, const float _z);
 	Vector3(const Vector3& temp) = default;
 	Vector3(Vector3&& temp) = default;
-	// Vector3(const Vector4& temp);
+	Vector3(const glm::vec3 v);
 	~Vector3() = default;
 
 	Vector3& operator=(const Vector3& rhs) = default;
