@@ -15,7 +15,7 @@ namespace TRE
 		bool							m_IsVisible{ true };
 		bool							m_IsCulled{ false };
 		bool							m_IsDirty{ false };
-		std::shared_ptr<Material> m_MaterialInstance;
+		std::shared_ptr<Material>		m_MaterialInstance;
 	};
 
 	class MeshRendererSystem : public ECSSystem

@@ -11,6 +11,7 @@ namespace TRE
 		Font,
 		Mesh,
 		Texture,
+		Material,
 	};
 
 	class Asset

@@ -2,21 +2,23 @@
 #include "Shader.h"
 #include "VulkanTexture.h"
 #include "UniformBuffer.h"
+#include "Assets/Asset.h"
 
 namespace TRE
 {
-	class Material
+	class Material : public Asset
 	{
 		public:
 			Material(const std::shared_ptr<Shader>& VertexShader, const std::shared_ptr<Shader>& FragShader);
-			Material(std::shared_ptr<Material> CopyMaterial);
+			//Material(std::shared_ptr<Material> CopyMaterial);
 			~Material();
 
 			void Invalidate();
-			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, VkDescriptorImageInfo test);
+			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
 
-			void SetTextures(std::shared_ptr<VulkanTexture> Textures); //This should be removed eventually
-			
+			//This should be removed eventually
+			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures = std::move(Textures); }
+
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 			std::shared_ptr<VulkanTexture> GetTextures() { return m_Textures; }
 

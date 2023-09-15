@@ -19,6 +19,10 @@ namespace TRE
 			template <typename T>
 			std::shared_ptr<T> GetAsset(AssetHandle Handle)
 			{
+				if (m_Assets.find(Handle) == m_Assets.end())
+				{
+					assert(false && "Cant find asset\n");
+				}
 				return std::dynamic_pointer_cast<T>(m_Assets[Handle]);
 			}
 

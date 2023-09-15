@@ -119,11 +119,24 @@ namespace TRE
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 
-		int i = 0;
-		for (auto go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		// Create a material instance
+		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
+		mat1->SetHandle(3);
+		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
+		AssetManager::Instance().AddAsset(std::move(mat1));
+
+		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
+		mat2->SetHandle(4);
+		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
+		AssetManager::Instance().AddAsset(std::move(mat2));
+
+		for (int i = 0; i < ECSManager::Instance().GetEntities<MeshRenderer>().size(); ++i)
 		{
-			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = std::make_shared<Material>(VertShader, FragShader);
-			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(i++));
+			auto go_mr = ECSManager::Instance().GetEntities<MeshRenderer>()[i];
+			if(i == 0)
+				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(4);
+			else			
+				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(3);
 		}
 	}
 
@@ -259,9 +272,11 @@ namespace TRE
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
-	
-			VkDescriptorImageInfo imageInfo = go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetTextures()->GetDescriptorImageInfo();
-			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, imageInfo);
+
+			if(go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+				continue;
+
+			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 
