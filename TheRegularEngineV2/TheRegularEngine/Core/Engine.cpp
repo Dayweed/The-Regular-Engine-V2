@@ -66,16 +66,19 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test.DDS"));
 		vkt1->SetHandle(0);
 		AssetManager::Instance().AddAsset(std::move(vkt1));
+		std::cout << std::hex << Asset::GenerateGUID() << std::endl;
 
 		Texture::RunCompiler("../Assets/Test2.desc");
 		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test2.DDS"));
 		vkt2->SetHandle(1);
 		AssetManager::Instance().AddAsset(std::move(vkt2));
+		std::cout << std::hex << Asset::GenerateGUID() << std::endl;
 
 		Geom::RunCompiler("../Assets/mine.desc");
 		std::unique_ptr<RenderObject> ro = RenderObject::CreateFromGeom((Geom::Deserialize("../Assets/mine.geom")));
 		ro->SetHandle(2);
 		AssetManager::Instance().AddAsset(std::move(ro));
+		std::cout << std::hex << Asset::GenerateGUID() << std::endl;
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();

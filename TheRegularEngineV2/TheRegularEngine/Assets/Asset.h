@@ -19,6 +19,7 @@ namespace TRE
 		public:
 			Asset() = default;
 			virtual ~Asset() {}
+			static AssetHandle GenerateGUID();
 
 		public:
 			void SetHandle(AssetHandle handle)
