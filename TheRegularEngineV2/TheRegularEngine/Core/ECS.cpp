@@ -615,6 +615,113 @@ namespace TRE
 		snapshotLoader.entities(instr);*/
 		//snapshotLoader.component<>(str);
 
+		std::cout << "\nTesting if can compile with LIONart Properties\n";
+		Entity INSPECT{ ECSManager::Instance().CreateEntity("INSPECTENT")};
+		Properties& INSPECTPROP{ INSPECT->GetComponent<Properties>() };
+
+		std::vector<property::entry> List;
+		property::SerializeEnum(INSPECTPROP, [&](std::string_view PropertyName, property::data&& Data, const property::table&, std::size_t, property::flags::type Flags)
+			{
+				// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
+				assert(Flags.m_isScope == false || PropertyName.back() == ']');
+				List.push_back(property::entry { PropertyName, Data });
+			});
+
+		std::cout << "Original Name: " << INSPECT->GetName() << "\n";
+		std::cout << "---------------\n";
+		for (const auto& [Name, Data] : List)
+		{
+			std::cout << Name;
+
+			std::visit([&](auto&& Value)
+				{
+					using T = std::decay_t<decltype(Value)>;
+
+					if constexpr (std::is_same_v<T, int>)
+					{
+						printf(" int    (%d)", Value);
+					}
+					else if constexpr (std::is_same_v<T, float>)
+					{
+						printf(" float  (%f)", Value);
+					}
+					else if constexpr (std::is_same_v<T, bool>)
+					{
+						printf(" bool   (%s)", Value ? "true" : "false");
+					}
+					else if constexpr (std::is_same_v<T, string_t>)
+					{
+						printf(" string (%s)", Value.c_str());
+					}
+					else if constexpr (std::is_same_v<T, oobb>)
+					{
+						printf(" oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+					}
+					else static_assert(always_false<T>::value, "We are not covering all the cases!");
+				}
+			, Data);
+
+			std::cout << std::endl;
+
+		}
+		std::cout << "---------------\n";
+
+		property::data data;
+		List[2].second = "CHANGENAME";
+
+		std::cout << "---------------\n";
+		for (const auto& [Name, Data] : List)
+		{
+			std::cout << Name;
+
+			std::visit([&](auto&& Value)
+				{
+					using T = std::decay_t<decltype(Value)>;
+
+					if constexpr (std::is_same_v<T, int>)
+					{
+						printf(" int    (%d)", Value);
+					}
+					else if constexpr (std::is_same_v<T, float>)
+					{
+						printf(" float  (%f)", Value);
+					}
+					else if constexpr (std::is_same_v<T, bool>)
+					{
+						printf(" bool   (%s)", Value ? "true" : "false");
+					}
+					else if constexpr (std::is_same_v<T, string_t>)
+					{
+						printf(" string (%s)", Value.c_str());
+					}
+					else if constexpr (std::is_same_v<T, oobb>)
+					{
+						printf(" oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+					}
+					else static_assert(always_false<T>::value, "We are not covering all the cases!");
+				}
+			, Data);
+
+			std::cout << std::endl;
+
+		}
+		std::cout << "---------------\n";
+
+		std::cout << "Copying list back to entity...\n";
+		for (const auto& [Name, Data] : List)
+		{
+			// Copy to INSPECTPROP
+			property::set(INSPECTPROP, Name.c_str(), Data);
+		}
+
+		std::cout << "New Name: " << INSPECT->GetName() << "\n";
+
+		void* pBase = &INSPECTPROP;
+		property::DisplayEnum(INSPECT->GetComponent<Properties>().getPropertyVTable(), pBase, [&](std::string_view PropertyName, property::data&& Data, const property::table& Table, std::size_t Index, property::flags::type Flags)
+			{
+				//C->m_List.push_back(std::make_unique<entry>(std::string{ PropertyName }, Data, &Table.m_pEntry[Index], Flags));
+			});
+
 		std::cout << "\nDestroying all " << GetEntities<Properties>().size() << "  test objects...\n";
 		DestroyAll();
 		std::cout << "- Remaining: " << GetEntities<Properties>().size() << " | Successfully cleared: " << (GetEntities<Properties>().empty() ? "true" : "false") << "\n";

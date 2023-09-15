@@ -14,6 +14,7 @@
 
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
+#include "pch.h"
 #include "Core/Logger.h"
 #include "entt.hpp"
 #include "ComponentManager.h"
@@ -93,7 +94,7 @@ namespace TRE
 		}
 	};
 
-	struct Properties
+	struct Properties : property::base
 	{
 		std::string m_GUID{};
 		bool m_Active{ true };		// To check if it is active
@@ -101,6 +102,8 @@ namespace TRE
 
 		Properties() = default;
 		~Properties() = default;
+
+		property_vtable()           // Allows the base class to get these properties  
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Active, m_GUID, m_Name)
 	};
@@ -794,3 +797,10 @@ namespace TRE
 	}
 
 }
+
+property_begin(TRE::Properties)
+{
+	property_var(m_GUID)
+		, property_var(m_Active)
+		, property_var(m_Name)
+} property_vend_h(TRE::Properties)
