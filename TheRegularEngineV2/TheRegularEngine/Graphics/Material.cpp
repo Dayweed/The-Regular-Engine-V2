@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "Core/Engine.h"
 #include "Core/Logger.h"
+#include "Assets/AssetManager.h"
 
 namespace TRE
 {
@@ -26,7 +27,7 @@ namespace TRE
 
 	Material::~Material()
 	{
-
+		vkDestroyDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 	}
 
 	void Material::Invalidate()
@@ -54,7 +55,7 @@ namespace TRE
 		}
 	}
 
-	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& imageInfo)
 	{
 		std::vector<VkWriteDescriptorSet> Writes;
 
@@ -67,7 +68,8 @@ namespace TRE
 
 		for (auto x : m_FragmentShader->GetWriteDescriptorSets())
 		{
-			x.second.pImageInfo = &m_Textures->GetDescriptorImageInfo();
+			auto imageInfo = m_Textures->GetDescriptorImageInfo();
+			x.second.pImageInfo = &imageInfo;
 			x.second.dstSet = m_DescriptorSets[Index];
 			Writes.push_back(x.second);
 		}

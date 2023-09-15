@@ -66,7 +66,7 @@ namespace TRE
 				m_Assets.clear();
 			}
 
-			std::size_t GetAssetCount()
+			std::size_t GetAllAssetCount()
 			{
 				return m_Assets.size();
 			}

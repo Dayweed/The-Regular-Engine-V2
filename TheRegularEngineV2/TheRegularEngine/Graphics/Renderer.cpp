@@ -207,6 +207,7 @@ namespace TRE
 		
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Material);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
@@ -276,7 +277,8 @@ namespace TRE
 			if(go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
 				continue;
 
-			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+			auto imageInfo = mr.m_MaterialInstance->GetTextures()->GetDescriptorImageInfo();
+			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, imageInfo);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 

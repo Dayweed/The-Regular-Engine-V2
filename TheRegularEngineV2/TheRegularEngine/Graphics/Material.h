@@ -14,7 +14,7 @@ namespace TRE
 			~Material();
 
 			void Invalidate();
-			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
+			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& imageInfo);
 
 			//This should be removed eventually
 			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures = std::move(Textures); }
