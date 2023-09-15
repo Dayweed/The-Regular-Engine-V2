@@ -1,4 +1,6 @@
-#include "pch.h"
+#include <variant>
+
+#include "glm/glm.hpp"
 
 #pragma once
 using string_t = std::string;
@@ -9,11 +11,6 @@ using string_t = std::string;
 struct oobb
 {
     float m_Min{}, m_Max{};
-};
-
-struct fakestuff
-{
-    //glm::vec3 BOOM{};
 };
 
 //--------------------------------------------------------------------------------------------
@@ -141,7 +138,7 @@ namespace property
             , float
             , string_t
             , oobb
-            //, fakestuff
+            , glm::vec3
         >;
     
         //--------------------------------------------------------------------------------------------

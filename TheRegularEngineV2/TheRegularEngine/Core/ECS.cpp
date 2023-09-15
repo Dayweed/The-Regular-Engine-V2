@@ -678,26 +678,31 @@ namespace TRE
 
 						if constexpr (std::is_same_v<T, int>)
 						{
-							printf(" int    (%d)", Value);
+							printf("\t int    (%d)", Value);
 						}
 						else if constexpr (std::is_same_v<T, float>)
 						{
-							printf(" float  (%f)", Value);
+							printf("\t float  (%f)", Value);
 						}
 						else if constexpr (std::is_same_v<T, bool>)
 						{
-							printf(" bool   (%s)", Value ? "true" : "false");
-							// WE CAN CHANGE DATA THIS WAY
+							printf("\t bool   (%s)", Value ? "true" : "false");
+							// TO DELETE WE CAN CHANGE DATA THIS WAY
 							Data = false;
 						}
 						else if constexpr (std::is_same_v<T, string_t>)
 						{
-							printf(" string (%s)", Value.c_str());
+							printf("\t string (%s)", Value.c_str());
+							// TO DELETE WE CAN CHANGE DATA THIS WAY
 							Data = "CHANGEDNAME";
 						}
 						else if constexpr (std::is_same_v<T, oobb>)
 						{
-							printf(" oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+							printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+						}
+						else if constexpr (std::is_same_v<T, glm::vec3>)
+						{
+							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
 						else static_assert(always_false<T>::value, "We are not covering all the cases!");
 					}
@@ -722,23 +727,27 @@ namespace TRE
 
 						if constexpr (std::is_same_v<T, int>)
 						{
-							printf(" int    (%d)", Value);
+							printf("\t int    (%d)", Value);
 						}
 						else if constexpr (std::is_same_v<T, float>)
 						{
-							printf(" float  (%f)", Value);
+							printf("\t float  (%f)", Value);
 						}
 						else if constexpr (std::is_same_v<T, bool>)
 						{
-							printf(" bool   (%s)", Value ? "true" : "false");
+							printf("\t bool   (%s)", Value ? "true" : "false");
 						}
 						else if constexpr (std::is_same_v<T, string_t>)
 						{
-							printf(" string (%s)", Value.c_str());
+							printf("\t string (%s)", Value.c_str());
 						}
 						else if constexpr (std::is_same_v<T, oobb>)
 						{
-							printf(" oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+							printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+						}
+						else if constexpr (std::is_same_v<T, glm::vec3>)
+						{
+							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
 						else static_assert(always_false<T>::value, "We are not covering all the cases!");
 					}
