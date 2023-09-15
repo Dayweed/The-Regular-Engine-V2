@@ -124,8 +124,10 @@ namespace TRE
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
+			//.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<FEL>(arc);
+			//.component<FEL>(arc);
+			;
 
 		arc.Close();
 
@@ -222,7 +224,7 @@ namespace TRE
 		std::filesystem::path path{ m_FileName };
 		std::filesystem::create_directories(path.parent_path());
 		std::ofstream file(path);
-		file << m_Root;
+		file << m_Root.dump(3);
 		file.close();
 	}
 

@@ -8,8 +8,7 @@ namespace TRE
 	class VulkanTexture : public Asset
 	{
 	public:
-		VulkanTexture() = default;
-		VulkanTexture(std::unique_ptr<Texture> texture);
+		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();
 
 		const VkDescriptorImageInfo& GetDescriptorImageInfo() const;
@@ -21,6 +20,9 @@ namespace TRE
 	private:
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);
+
+		VulkanTexture(VulkanTexture&) = delete;
+		void operator=(const VulkanTexture&) = delete;
 	private:
 		VkSampler m_Sampler;
 		VkImage m_Image;

@@ -10,9 +10,10 @@
 
 namespace TRE
 {
-	VulkanTexture::VulkanTexture(std::unique_ptr<Texture> texture)
+	VulkanTexture::VulkanTexture(const std::string& texturePath)
 	{
-		//m_Handle = ;
+		std::unique_ptr<Texture> texture = Texture::Deserialize(texturePath);
+
 		m_Type = AssetType::Texture;
 
 		VkDeviceSize imageSize = texture->DataSize;
