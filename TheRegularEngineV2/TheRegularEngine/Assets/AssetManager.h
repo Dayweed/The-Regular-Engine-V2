@@ -14,12 +14,7 @@ namespace TRE
 			}
 		public:
 			template <typename T>
-			void LoadAsset(AssetHandle handle)
-			{
-				std::unique_ptr<T> asset = std::make_unique<T>(handle);
-				asset->SetHandle(handle);
-				AddAsset(std::move(asset));
-			}
+			void LoadAsset(AssetHandle handle);
 
 			void AddAsset(std::unique_ptr<Asset> asset);
 

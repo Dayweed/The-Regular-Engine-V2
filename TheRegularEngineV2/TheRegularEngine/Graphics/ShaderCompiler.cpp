@@ -24,25 +24,37 @@ namespace TRE
 		m_ShaderLanguage = ShaderLanguage::GLSL; //For the sake of allowing it to be modular in future
 	}
 
-	std::shared_ptr<Shader> ShaderCompiler::CompileShader(const std::filesystem::path& ShaderPath, VkShaderStageFlagBits ShaderStage, bool EnableOptimization)
+	std::unique_ptr<Shader> ShaderCompiler::CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
 	{
 		std::string path = ShaderPath.string();
 		size_t found = path.find_last_of("/\\");
 		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
 		found = name.find_last_of('.');
 		name = found != std::string::npos ? name.substr(0, found) : name;
+		std::string shaderStage = path.substr(path.find_last_of('.') + 1);
+		VkShaderStageFlagBits ShaderStage;
+		if (shaderStage == "vert")
+		{
+			ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;
+		}
+		else if (shaderStage == "frag")
+		{
+			ShaderStage = VK_SHADER_STAGE_FRAGMENT_BIT;
+		}
+		else
+			TRE_CORE_CRITICAL("Shader stage not supported");
 		TRE_CORE_INFO("Shader Name: {0}", name);
 
-		std::shared_ptr<ShaderCompiler> Compiler = std::make_shared<ShaderCompiler>(ShaderPath, true);
+		std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
 		Compiler->Compile(ShaderStage);
 
-		std::shared_ptr<Shader> GeneratedShader = std::make_shared<Shader>(ShaderPath);
+		std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
 		GeneratedShader->m_ShaderName = name;
 		GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData, ShaderStage);
 		GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
 		GeneratedShader->CreateDescriptors();
 
-		return GeneratedShader;
+		return std::move(GeneratedShader);
 	}
 
 	void ShaderCompiler::Compile(VkShaderStageFlagBits ShaderStage)

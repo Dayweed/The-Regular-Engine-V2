@@ -66,20 +66,24 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Assets/Test.DDS");
 		vkt1->SetHandle(0);
 		AssetManager::Instance().AddAsset(std::move(vkt1));
-		std::cout << std::hex << Asset::GenerateGUID() << std::endl;
 
 		Texture::RunCompiler("../Assets/Test2.desc");
 		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Assets/Test2.DDS");
 		vkt2->SetHandle(1);
 		AssetManager::Instance().AddAsset(std::move(vkt2));
-		std::cout << std::hex << Asset::GenerateGUID() << std::endl;
 
 		Geom::RunCompiler("../Assets/mine.desc");
-		//std::unique_ptr<RenderObject> ro = RenderObject::CreateFromGeom((Geom::Deserialize("../Assets/mine.geom")));
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Assets/mine.geom");
 		ro->SetHandle(2);
 		AssetManager::Instance().AddAsset(std::move(ro));
-		std::cout << std::hex << Asset::GenerateGUID() << std::endl;
+
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		vert->SetHandle(3);
+		AssetManager::Instance().AddAsset(std::move(vert));
+
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
+		frag->SetHandle(4);
+		AssetManager::Instance().AddAsset(std::move(frag));
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
@@ -99,12 +103,6 @@ namespace TRE
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(2));
-
-		/*std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
-		VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert", VK_SHADER_STAGE_VERTEX_BIT);
-
-		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
-		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);*/
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));

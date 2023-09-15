@@ -1,9 +1,10 @@
 #pragma once
 #include "ShaderResource.h"
+#include "Assets/Asset.h"
 
 namespace TRE
 {
-	class Shader
+	class Shader : public Asset
 	{
 		public:
 			Shader() = default;

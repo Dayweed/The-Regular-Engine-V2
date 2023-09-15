@@ -12,6 +12,7 @@ namespace TRE
 		Mesh,
 		Texture,
 		Material,
+		Shader,
 	};
 
 	class Asset

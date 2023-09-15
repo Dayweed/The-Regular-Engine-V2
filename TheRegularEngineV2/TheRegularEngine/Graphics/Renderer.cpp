@@ -106,11 +106,8 @@ namespace TRE
 
 		CreateFrameBuffer(renderpass);
 
-		std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
-		VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert", VK_SHADER_STAGE_VERTEX_BIT);
-
-		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
-		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
+		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
 
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
@@ -121,12 +118,12 @@ namespace TRE
 
 		// Create a material instance
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
-		mat1->SetHandle(3);
+		mat1->SetHandle(5);
 		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
 		AssetManager::Instance().AddAsset(std::move(mat1));
 
 		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
-		mat2->SetHandle(4);
+		mat2->SetHandle(6);
 		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
 		AssetManager::Instance().AddAsset(std::move(mat2));
 
@@ -134,9 +131,9 @@ namespace TRE
 		{
 			auto go_mr = ECSManager::Instance().GetEntities<MeshRenderer>()[i];
 			if(i == 0)
-				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(4);
+				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(5);
 			else			
-				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(3);
+				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(6);
 		}
 	}
 
@@ -208,6 +205,7 @@ namespace TRE
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Material);
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Shader);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
