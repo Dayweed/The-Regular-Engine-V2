@@ -10,6 +10,11 @@ namespace TRE
 		return m_DescriptorSets[FrameIndex];
 	}
 
+	void Material::SetTextures(std::shared_ptr<VulkanTexture> Textures)
+	{
+		m_Textures = Textures;
+	}
+
 	Material::Material(const std::shared_ptr<Shader>& VertexShader, const std::shared_ptr<Shader>& FragShader) : m_VertexShader(VertexShader), m_FragmentShader(FragShader)
 	{
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
@@ -53,8 +58,24 @@ namespace TRE
 		}
 	}
 
-	void Material::UpdateForRendering(std::vector<VkWriteDescriptorSet> DescriptorWrites)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, VkDescriptorImageInfo test)
 	{
+		std::vector<VkWriteDescriptorSet> Writes;
 
+		for (auto x : m_VertexShader->GetWriteDescriptorSets())
+		{
+			x.second.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			x.second.dstSet = m_DescriptorSets[Index];
+			Writes.push_back(x.second);
+		}
+
+		for (auto x : m_FragmentShader->GetWriteDescriptorSets())
+		{
+			x.second.pImageInfo = &m_Textures->GetDescriptorImageInfo();
+			x.second.dstSet = m_DescriptorSets[Index];
+			Writes.push_back(x.second);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
 	}
 }

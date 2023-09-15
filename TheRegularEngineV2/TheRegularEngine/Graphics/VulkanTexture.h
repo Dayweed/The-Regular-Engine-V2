@@ -13,7 +13,7 @@ namespace TRE
 		VulkanTexture(std::unique_ptr<Texture> texture);
 		~VulkanTexture();
 
-		VkDescriptorImageInfo GetDescriptorImageInfo() const;
+		const VkDescriptorImageInfo& GetDescriptorImageInfo() const;
 
 		VkSampler GetSampler() const { return m_Sampler; }
 		VkImage GetImage() const { return m_Image; }

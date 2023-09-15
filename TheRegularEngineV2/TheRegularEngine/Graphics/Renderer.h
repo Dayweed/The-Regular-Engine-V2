@@ -41,9 +41,6 @@ namespace TRE
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
-			void UpdateDescriptorSets(std::string texture);
-
-		private:
 			std::shared_ptr<Device> m_Device;
 
 		private:

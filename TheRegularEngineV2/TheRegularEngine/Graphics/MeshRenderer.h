@@ -3,6 +3,7 @@
 #include "Core/System.h"
 #include "RenderObject.h"
 #include "Sphere3D.h"
+#include "Material.h"
 
 namespace TRE
 {
@@ -14,6 +15,7 @@ namespace TRE
 		bool							m_IsVisible{ true };
 		bool							m_IsCulled{ false };
 		bool							m_IsDirty{ false };
+		std::shared_ptr<Material> m_MaterialInstance;
 	};
 
 	class MeshRendererSystem : public ECSSystem

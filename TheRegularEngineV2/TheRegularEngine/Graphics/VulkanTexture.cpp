@@ -217,7 +217,7 @@ namespace TRE
 		vkFreeMemory(device, m_ImageMemory, nullptr);
 	}
 
-	VkDescriptorImageInfo VulkanTexture::GetDescriptorImageInfo() const
+	const VkDescriptorImageInfo& VulkanTexture::GetDescriptorImageInfo() const
 	{
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

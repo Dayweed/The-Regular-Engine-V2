@@ -163,7 +163,10 @@ namespace TRE
 		s_Instance = this;
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
-		
+
+		RegisterECS();
+		DemoScene();
+
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
 
@@ -210,7 +213,7 @@ namespace TRE
 		// To remove eventually
 		//ECSManager::Instance().TESTRUN();
 		//AHHH();
-		DemoScene();
+		//DemoScene();
 		//ECSManager::Instance().STRESSTEST();
 
 		while (!m_Window->ShouldWindowClose())
