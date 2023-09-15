@@ -14,7 +14,8 @@ namespace TRE
 			~Material();
 
 			void Invalidate();
-			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& imageInfo);
+			void AllocateLayouts();
+			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
 
 			//This should be removed eventually
 			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures = std::move(Textures); }
@@ -22,6 +23,9 @@ namespace TRE
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 			std::shared_ptr<VulkanTexture> GetTextures() { return m_Textures; }
 
+			static AssetType GetType() {return AssetType::Material;}
+
+			void Serialize() override;
 		private:
 			std::shared_ptr<Shader> m_VertexShader;
 			std::shared_ptr<Shader> m_FragmentShader;

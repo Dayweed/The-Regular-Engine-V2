@@ -24,7 +24,7 @@ namespace TRE
 			std::stringstream ss;
 			ss << std::hex << t.m_RenderObject->GetHandle();
 			std::string roHandle = ss.str();
-			ss.clear();
+			ss.str("");
 			ss << std::hex << t.m_MaterialInstance->GetHandle();
 			std::string matHandle = ss.str();
 
@@ -77,6 +77,7 @@ namespace TRE
 		void UpdateBoundingSphere(Entity& go);
 
 		void SetMeshRenderer(Entity& go, const std::shared_ptr<RenderObject>& renderObject);
+		void SetMaterial(Entity& go, const std::shared_ptr<Material>& material);
 		void SetVisible(Entity& go, bool isVisible);
 		void SetCulled(Entity& go, bool isCulled);
 

@@ -33,6 +33,8 @@ namespace TRE
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
+		static AssetType GetType() { return AssetType::Mesh; }
+
 	private:
 		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffer(const std::vector<std::uint32_t>& indices);

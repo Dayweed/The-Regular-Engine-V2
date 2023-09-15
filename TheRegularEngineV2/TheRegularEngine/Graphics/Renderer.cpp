@@ -116,24 +116,9 @@ namespace TRE
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 
-		// Create a material instance
-		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
-		mat1->SetHandle(5);
-		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
-		AssetManager::Instance().AddAsset(std::move(mat1));
-
-		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
-		mat2->SetHandle(6);
-		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
-		AssetManager::Instance().AddAsset(std::move(mat2));
-
-		for (int i = 0; i < ECSManager::Instance().GetEntities<MeshRenderer>().size(); ++i)
+		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
 		{
-			auto go_mr = ECSManager::Instance().GetEntities<MeshRenderer>()[i];
-			if(i == 0)
-				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(5);
-			else			
-				go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(6);
+			material->AllocateLayouts();
 		}
 	}
 
@@ -275,8 +260,7 @@ namespace TRE
 			if(go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
 				continue;
 
-			auto imageInfo = mr.m_MaterialInstance->GetTextures()->GetDescriptorImageInfo();
-			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, imageInfo);
+			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 

@@ -48,14 +48,17 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to create pipeline descriptor set layout");
 			assert(Result == VK_SUCCESS);
 		}
+	}
 
+	void Material::AllocateLayouts()
+	{
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
 			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[x]);
 		}
 	}
 
-	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& imageInfo)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
 		std::vector<VkWriteDescriptorSet> Writes;
 
@@ -75,5 +78,31 @@ namespace TRE
 		}
 
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
+	}
+
+	void Material::Serialize()
+	{
+		std::cout << "MAT\n";
+		std::string path = "../Assets/";
+		std::filesystem::directory_entry entry(path);
+		if (!entry.exists())
+		{
+			std::filesystem::create_directory(path);
+		}
+
+		path += GetHandleHex() + ".mat";
+
+		std::ofstream file(path);
+		if (!file.is_open())
+		{
+			TRE_CORE_ERROR("Unable to open file {0}", path);
+			return;
+		}
+
+		file << "VertexShader: " << m_VertexShader->GetHandle() << std::endl;
+		file << "FragmentShader: " << m_FragmentShader->GetHandle() << std::endl;
+		file << "Textures: " << m_Textures->GetHandle() << std::endl;
+
+		file.close();
 	}
 }

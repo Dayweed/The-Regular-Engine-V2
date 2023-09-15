@@ -18,6 +18,8 @@ namespace TRE
 			std::vector<VkDescriptorSetLayoutBinding>& GetDescriptorBindings();
 			std::vector<PushConstants>& GetPushConstants();
 
+			static AssetType GetType() { return AssetType::Shader; }
+
 		public:
 			VkPipelineShaderStageCreateInfo GetPipelineShaderInfo();
 			const std::unordered_map<std::string, VkWriteDescriptorSet>& GetWriteDescriptorSets();

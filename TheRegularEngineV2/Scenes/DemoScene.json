@@ -10,19 +10,19 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{EB6B3DFC-9D47-43D9-84A8-41468B2D51B2}",
+         "m_GUID": "{26C61F2E-A530-413C-8A53-B4CE10BF8B7D}",
          "m_Name": "Test2"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{56ABDACF-A82C-4D70-A9D5-DE0FF786EDDB}",
+         "m_GUID": "{27B2F60E-B070-4E49-8DC7-77B235E7AEA2}",
          "m_Name": "Test"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{0B854D97-480D-4ABD-97C1-5EC2E0F99230}",
+         "m_GUID": "{FFA46E21-F7F1-4DDE-9D56-C9306797632D}",
          "m_Name": "cam"
       }
    ],
@@ -99,6 +99,21 @@
             1.0,
             1.0
          ]
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "2",
+         "ASSET_MAT_m_MaterialInstance": "5",
+         "m_IsVisible": true
+      },
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "2",
+         "ASSET_MAT_m_MaterialInstance": "6",
+         "m_IsVisible": true
       }
    ],
    [

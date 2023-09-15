@@ -60,6 +60,15 @@ namespace TRE
 		UpdateBoundingSphere(go);
 	}
 
+	void MeshRendererSystem::SetMaterial(Entity& go, const std::shared_ptr<Material>& material)
+	{
+		m_IsDirty = true;
+	
+		MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
+		meshRenderer.m_MaterialInstance = material;
+		meshRenderer.m_IsDirty = true;
+	}
+
 	void MeshRendererSystem::SetVisible(Entity& go, bool isVisible)
 	{
 		m_IsDirty = true;

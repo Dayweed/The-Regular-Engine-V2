@@ -17,6 +17,8 @@ namespace TRE
 		const VkImage& GetImage() const { return m_Image; }
 		const VkImageView& GetImageView() const { return m_ImageView; }
 		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
+
+		static AssetType GetType() { return AssetType::Texture; }
 	private:
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);

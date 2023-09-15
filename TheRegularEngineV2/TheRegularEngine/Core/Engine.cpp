@@ -85,6 +85,19 @@ namespace TRE
 		frag->SetHandle(4);
 		AssetManager::Instance().AddAsset(std::move(frag));
 
+		// Create a material instance
+		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
+		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
+		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
+		mat1->SetHandle(5);
+		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
+		AssetManager::Instance().AddAsset(std::move(mat1));
+
+		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
+		mat2->SetHandle(6);
+		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
+		AssetManager::Instance().AddAsset(std::move(mat2));
+
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
@@ -96,6 +109,7 @@ namespace TRE
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(2));
+		meshRendererSystem->SetMaterial(test2, AssetManager::Instance().GetAsset<Material>(5));
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
@@ -103,6 +117,7 @@ namespace TRE
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(2));
+		meshRendererSystem->SetMaterial(test, AssetManager::Instance().GetAsset<Material>(6));
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));
