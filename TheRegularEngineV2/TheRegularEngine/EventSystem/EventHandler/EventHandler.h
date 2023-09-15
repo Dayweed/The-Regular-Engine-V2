@@ -1,5 +1,4 @@
-#ifndef EVENTHANDLER_H
-#define EVENTHANDLER_H
+#pragma once
 #include "pch.h"
 #include "../Events/EventBase.h"
 
@@ -76,5 +75,3 @@ namespace TRE
 		}
 	};
 }
-
-#endif

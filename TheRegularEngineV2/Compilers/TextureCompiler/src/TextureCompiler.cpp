@@ -193,7 +193,7 @@ namespace TRE
 		m_Texture = std::make_unique<Texture>();
 		m_Texture->Data = outputData;
 		m_Texture->DataSize = outputSize;
-		int len = static_cast<int>(std::min<int>(descriptor.GetTextureName().length(), sizeof(m_Texture->Name)));
+		int len = static_cast<int>(std::min<int>((int)descriptor.GetTextureName().length(), sizeof(m_Texture->Name)));
 		for (int i = 0; i < len; ++i)
 			m_Texture->Name[i] = descriptor.GetTextureName()[i];
 		m_Texture->Width = width;

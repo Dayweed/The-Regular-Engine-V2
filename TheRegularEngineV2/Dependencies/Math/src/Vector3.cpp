@@ -20,6 +20,8 @@ Vector3::Vector3(const float scalar) : x{ scalar }, y{ scalar }, z{ scalar } {}
 
 Vector3::Vector3(const float _x, const float _y, const float _z) : x{ _x }, y{ _y }, z{ _z } {}
 
+Vector3::Vector3(const glm::vec3 v) : x{ v.x }, y{ v.y }, z{ v.z } {}
+
 Vector3& Vector3::operator+=(const Vector3& rhs)
 {
 	x += rhs.x;
