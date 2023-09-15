@@ -82,7 +82,6 @@ namespace TRE
 
 	void Material::Serialize()
 	{
-		std::cout << "MAT\n";
 		std::string path = "../Assets/";
 		std::filesystem::directory_entry entry(path);
 		if (!entry.exists())
@@ -90,7 +89,7 @@ namespace TRE
 			std::filesystem::create_directory(path);
 		}
 
-		path += GetHandleHex() + ".mat";
+		path += GetHandleHex() + ".material";
 
 		std::ofstream file(path);
 		if (!file.is_open())

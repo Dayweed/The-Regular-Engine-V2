@@ -21,16 +21,9 @@ namespace TRE
 
 		friend void to_json(nlohmann::json& j, const MeshRenderer& t)
 		{
-			std::stringstream ss;
-			ss << std::hex << t.m_RenderObject->GetHandle();
-			std::string roHandle = ss.str();
-			ss.str("");
-			ss << std::hex << t.m_MaterialInstance->GetHandle();
-			std::string matHandle = ss.str();
-
 			j = nlohmann::json{
-				{ "ASSET_GEOM_m_RenderObject", roHandle},
-				{ "ASSET_MAT_m_MaterialInstance", matHandle},
+				{ "ASSET_GEOM_m_RenderObject", t.m_RenderObject->GetHandleHex()},
+				{ "ASSET_MAT_m_MaterialInstance", t.m_MaterialInstance->GetHandleHex()},
 				{ "m_IsVisible", t.m_IsVisible },	
 			};
 		}
