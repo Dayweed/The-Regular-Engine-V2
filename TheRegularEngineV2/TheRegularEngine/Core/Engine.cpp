@@ -100,11 +100,11 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(2));
 
-		std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
+		/*std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
 		VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert", VK_SHADER_STAGE_VERTEX_BIT);
 
 		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
-		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);*/
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));
@@ -133,9 +133,7 @@ namespace TRE
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
-		ECSManager::Instance().SaveEntities("Demo.json");
-
-		//SceneManager::Instance().SaveSceneAs("DemoScene");
+		SceneManager::Instance().SaveSceneAs("DemoScene");
 
 		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 
