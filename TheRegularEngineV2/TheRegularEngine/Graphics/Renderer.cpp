@@ -119,21 +119,12 @@ namespace TRE
 		PipelineConfig.FragmentShader = FragShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 
-		m_TestMaterial.resize(2);
-		for (int x = 0; x < 2; x++)
-			m_TestMaterial[x] = std::make_shared<Material>(VertShader, FragShader);
-
-		m_TestMaterial[0]->SetTextures(TextureManager::Instance().GetTexture("Test"));
-		m_TestMaterial[1]->SetTextures(TextureManager::Instance().GetTexture("Test2"));
-
+		int i = 0;
 		for (auto go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance = std::make_shared<Material>(VertShader, FragShader);
-			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->SetTextures(TextureManager::Instance().GetTexture(go_mr->GetComponent<Properties>().m_Name));
+			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(i++));
 		}
-		//TO DELETE
-		Texture::RunCompiler("../Assets/Test.desc");
-		AssetManager::Instance().AddAsset(std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test.DDS")));
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -259,7 +250,6 @@ namespace TRE
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
 
 		//VERY INEFFICIENT
-		int y = 0;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			PushConstant pc{};
@@ -269,33 +259,14 @@ namespace TRE
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
+	
+			VkDescriptorImageInfo imageInfo = go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetTextures()->GetDescriptorImageInfo();
+			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, imageInfo);
 
-			const int Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-	/*		std::vector<VkWriteDescriptorSet> Writes;
-			for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
-			{
-				x.second.pBufferInfo = &m_UBOBuffer->GetDescriptorBufferInfo();
-				x.second.dstSet = m_TestMaterial[y]->GetDescriptor(Index);
-				Writes.push_back(x.second);
-			}*/
-			//VkDescriptorImageInfo imageInfo = TextureManager::Instance().GetTexture(go_mr->GetComponent<Properties>().m_Name)->GetDescriptorImageInfo();
-			VkDescriptorImageInfo imageInfo = m_TestMaterial[y]->GetTextures()->GetDescriptorImageInfo();
-			/*for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
-			{
-				x.second.pImageInfo = &imageInfo;
-				x.second.dstSet = m_TestMaterial[y]->GetDescriptor(Index);
-				Writes.push_back(x.second);
-			}*/
-			//vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
-			m_TestMaterial[y]->UpdateForRendering(m_UBOBuffer, Index, imageInfo);
-			//go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, imageInfo);
-
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_TestMaterial[y]->GetDescriptor(Index), 0, NULL);
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
-
-			++y;
 		}
 
 		m_Pipeline->GetConfig().RenderPass->EndRenderPass(m_Commandbuffers[Index]);

@@ -62,18 +62,19 @@ namespace TRE
 
 	void DemoScene()
 	{
-		//TO DELETE
 		Texture::RunCompiler("../Assets/Test.desc");
-		auto texture = Texture::Deserialize("../Assets/Test.DDS");
-		TextureManager::Instance().LoadTexture(std::move(texture));
+		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test.DDS"));
+		vkt1->SetHandle(0);
+		AssetManager::Instance().AddAsset(std::move(vkt1));
 
 		Texture::RunCompiler("../Assets/Test2.desc");
-		auto texture2 = Texture::Deserialize("../Assets/Test2.DDS");
-		TextureManager::Instance().LoadTexture(std::move(texture2));
+		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test2.DDS"));
+		vkt2->SetHandle(1);
+		AssetManager::Instance().AddAsset(std::move(vkt2));
 
 		Geom::RunCompiler("../Assets/mine.desc");
 		std::unique_ptr<RenderObject> ro = RenderObject::CreateFromGeom((Geom::Deserialize("../Assets/mine.geom")));
-		ro->SetHandle(1);
+		ro->SetHandle(3);
 		AssetManager::Instance().AddAsset(std::move(ro));
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
@@ -86,14 +87,14 @@ namespace TRE
 		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(1));
+		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(3));
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
 		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(1));
+		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(3));
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));

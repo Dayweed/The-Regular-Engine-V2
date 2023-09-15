@@ -12,7 +12,7 @@ namespace TRE
 
 	void Material::SetTextures(std::shared_ptr<VulkanTexture> Textures)
 	{
-		m_Textures = Textures;
+		m_Textures = std::move(Textures);
 	}
 
 	Material::Material(const std::shared_ptr<Shader>& VertexShader, const std::shared_ptr<Shader>& FragShader) : m_VertexShader(VertexShader), m_FragmentShader(FragShader)
@@ -71,7 +71,7 @@ namespace TRE
 
 		for (auto x : m_FragmentShader->GetWriteDescriptorSets())
 		{
-			x.second.pImageInfo = &m_Textures->GetDescriptorImageInfo();
+			x.second.pImageInfo = &test; //&(m_Textures.get()->GetDescriptorImageInfo());
 			x.second.dstSet = m_DescriptorSets[Index];
 			Writes.push_back(x.second);
 		}
