@@ -563,6 +563,9 @@ namespace TRE
 		void RegisterComponent(std::string name, bool hidden = false);
 
 
+		std::vector<property::base*> GetAllInspectableComponents(Entity object);
+
+
 		// TODELETE
 		void TESTRUN();
 		void STRESSTEST();
@@ -581,6 +584,8 @@ namespace TRE
 
 		std::unordered_map<std::string, Entity> m_EntityList;
 		std::unordered_map<ENTTID, Entity> m_EnttIDList;
+
+		std::unordered_map<entt::id_type, std::string> m_PropertyBased;
 	};
 
 	class ECSOutputArchive
@@ -652,6 +657,12 @@ namespace TRE
 	{
 		// m_Components.insert({ hashcode, name });	// This works too
 		ComponentManager::Instance().RegisterComponent<T>(name, hidden);
+
+		// Check if this is derived from property::base, used to get all inspectable components
+		if (std::is_base_of<property::base, T>::value == true)
+		{
+			m_PropertyBased.emplace(std::piecewise_construct, std::forward_as_tuple(entt::type_hash<T>::value()), std::forward_as_tuple(name));
+		}
 
 		// Ensure entt knows this component exist
 		m_Registry.view<T>();
@@ -800,7 +811,6 @@ namespace TRE
 
 property_begin(TRE::Properties)
 {
-	property_var(m_GUID)
-		, property_var(m_Active)
+	property_var(m_Active)
 		, property_var(m_Name)
 } property_vend_h(TRE::Properties)

@@ -184,6 +184,7 @@
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PropertyConfig.h" />
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
