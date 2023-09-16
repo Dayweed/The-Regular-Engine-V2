@@ -165,16 +165,16 @@ namespace TRE
 		return ent->GetComponent<Properties>().m_GUID;
 	}
 
-	std::vector<property::base*> ECSManager::GetAllInspectableComponents(Entity object)
+	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
 	{
-		std::vector<property::base*> components;
+		std::vector<std::pair<std::string, property::base*>> components;
 		for (auto&& curr : m_Registry.storage())
 		{
 			if (auto& storage = curr.second; storage.contains(object->m_Entity))
 			{
 				if (m_PropertyBased.find(curr.first) != m_PropertyBased.end())
 				{
-					components.emplace_back(static_cast<property::base*>(storage.get(object->m_Entity)));
+					components.push_back({ m_PropertyBased[curr.first], static_cast<property::base*>(storage.get(object->m_Entity)) });
 				}
 			}
 		}
@@ -644,16 +644,16 @@ namespace TRE
 		std::cout << "\nTesting if can compile with LIONart Properties\n";
 		Entity INSPECT{ ECSManager::Instance().CreateEntity("INSPECTENT")};
 
-		std::vector<property::base*> components{ ECSManager::Instance().GetAllInspectableComponents(INSPECT) };
+		std::vector<std::pair<std::string, property::base*>> components{ ECSManager::Instance().GetAllInspectableComponents(INSPECT) };
 
 		std::cout << "- Size: " << components.size() << "\n";
 
 		//property::base& INSPECTPROP{ INSPECT->GetComponent<Properties>() };
 
-		std::vector<std::vector<property::entry>> LList;
+		std::vector< std::pair<std::string, std::vector<property::entry>>> LList;
 		for (size_t i{}; i < components.size(); ++i)
 		{
-			property::base& INSPECTPROP { *components[i] };
+			property::base& INSPECTPROP { *components[i].second };
 			std::vector<property::entry> List;
 			property::SerializeEnum(INSPECTPROP, [&](std::string_view PropertyName, property::data&& Data, const property::table&, std::size_t, property::flags::type Flags)
 				{
@@ -661,16 +661,19 @@ namespace TRE
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
 					List.push_back(property::entry { PropertyName, Data });
 				});
-			LList.push_back(List);
+			LList.push_back({ components[i].first, List });
 		}
 
 		std::cout << "Original Name: " << INSPECT->GetName() << "\n";
 		std::cout << "---------------\n";
 		for (auto& List : LList)
 		{
-			for (auto& [Name, Data] : List)
+			std::cout << List.first << "\n";
+			for (auto& [Name, Data] : List.second)
 			{
-				std::cout << Name;
+				//std::cout << Name.c_str();
+				std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+				std::cout << NameStr;
 
 				std::visit([&](auto&& Value)
 					{
@@ -717,9 +720,12 @@ namespace TRE
 		std::cout << "---------------\n";
 		for (auto& List : LList)
 		{
-			for (const auto& [Name, Data] : List)
+			std::cout << List.first << "\n";
+			for (const auto& [Name, Data] : List.second)
 			{
-				std::cout << Name;
+				//std::cout << Name;
+				std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+				std::cout << NameStr;
 
 				std::visit([&](auto&& Value)
 					{
@@ -762,8 +768,8 @@ namespace TRE
 		std::cout << "Copying list back to entity...\n";
 		for (size_t i{}; i < components.size(); ++i)
 		{
-			property::base& INSPECTPROP { *components[i] };
-			std::vector<property::entry> List{ LList[i] };
+			property::base& INSPECTPROP { *components[i].second };
+			std::vector<property::entry> List{ LList[i].second };
 			for (const auto& [Name, Data] : List)
 			{
 				// Copy to INSPECTPROP

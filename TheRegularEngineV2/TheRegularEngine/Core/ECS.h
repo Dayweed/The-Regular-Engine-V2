@@ -563,7 +563,7 @@ namespace TRE
 		void RegisterComponent(std::string name, bool hidden = false);
 
 
-		std::vector<property::base*> GetAllInspectableComponents(Entity object);
+		std::vector<std::pair<std::string, property::base*>> GetAllInspectableComponents(Entity object);
 
 
 		// TODELETE
@@ -811,6 +811,6 @@ namespace TRE
 
 property_begin(TRE::Properties)
 {
-	property_var(m_Active)
-		, property_var(m_Name)
+	property_var(m_Name).Name("Name"),
+	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)

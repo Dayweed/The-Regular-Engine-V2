@@ -222,9 +222,9 @@ namespace TRE
 	void Engine::Update()
 	{
 		// To remove eventually
-		ECSManager::Instance().TESTRUN();
+		//ECSManager::Instance().TESTRUN();
 		//AHHH();
-		DemoScene();
+		//DemoScene();
 		//ECSManager::Instance().STRESSTEST();
 
 		while (!m_Window->ShouldWindowClose())
