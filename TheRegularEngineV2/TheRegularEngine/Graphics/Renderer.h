@@ -6,6 +6,7 @@
 #include "RenderPass.h"
 #include "Image.h"
 #include "Pipeline.h"
+#include "Material.h"
 
 namespace TRE
 {
@@ -55,5 +56,7 @@ namespace TRE
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
+
+			std::vector<std::shared_ptr<Material>> m_TestMaterial;
 	};
 }

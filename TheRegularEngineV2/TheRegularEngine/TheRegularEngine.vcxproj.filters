@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{3824E0A7-24C6-0A7E-0D81-1ED2F9C191CE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Audio">
       <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
     </Filter>
@@ -33,6 +36,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\Asset.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\AssetManager.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
     <ClInclude Include="Audio\AudioSystem.h">
       <Filter>Audio</Filter>
     </ClInclude>
@@ -121,6 +130,9 @@
     <ClInclude Include="Graphics\Image.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Material.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\MeshRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -166,9 +178,13 @@
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
     </ClInclude>
+    <ClInclude Include="Physics\PhysicsComponents.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PropertyConfig.h" />
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
@@ -176,6 +192,9 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Assets\AssetManager.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
@@ -234,6 +253,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Image.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Material.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\MeshRenderer.cpp">

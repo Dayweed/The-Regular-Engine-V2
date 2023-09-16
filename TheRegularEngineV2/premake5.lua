@@ -19,11 +19,11 @@ outputdir = "%{cfg.buildcfg}"
 group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
-include "Dependencies/MeshOptimizer"
-include "Dependencies/Crunch"
-include "Dependencies/CompilerLib"
-include "Compilers/TextureCompiler"
-include "Compilers/GeomCompiler"
+-- include "Dependencies/MeshOptimizer"
+-- include "Dependencies/Crunch"
+-- include "Dependencies/CompilerLib"
+-- include "Compilers/TextureCompiler"
+-- include "Compilers/GeomCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -57,7 +57,9 @@ project "TheRegularEngine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuiDirect}",
 		"%{IncludeDir.ImGuiBackEnd}",
+		"%{IncludeDir.ImGuiMisc}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
@@ -68,6 +70,7 @@ project "TheRegularEngine"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.Properties}",
 		"%{IncludeDir.SPIRVREFLECT}",
 		"%{IncludeDir.Tracy}"
 		--"%{IncludeDir.Crunch}",
@@ -181,7 +184,9 @@ project "TheRegularEditor"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuiDirect}",
 		"%{IncludeDir.ImGuiBackEnd}",
+		"%{IncludeDir.ImGuiMisc}",
 		"%{IncludeDir.Mono}",
 		"%{IncludeDir.PhysX}",
 		"%{IncludeDir.VULKANSDK}",
@@ -191,6 +196,7 @@ project "TheRegularEditor"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.Properties}",
 		"%{IncludeDir.SPIRVREFLECT}",
 		"%{IncludeDir.Tracy}",
 		--"%{IncludeDir.Crunch}",

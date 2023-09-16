@@ -1,1 +1,158 @@
-[[4,0,1,2,3],[4,0,{"m_Active":true,"m_GUID":"{9C46C254-92B6-4E55-9759-B00E95E46AB4}","m_Name":"Test2"},1,{"m_Active":true,"m_GUID":"{6ADFD744-883E-4A71-AB3C-2F9B3CE1C288}","m_Name":"Test"},2,{"m_Active":true,"m_GUID":"{A61AE9D0-4F76-44F0-9F8A-4CEE32061628}","m_Name":"Default_Entity_Name"},3,{"m_Active":true,"m_GUID":"{17923935-4E86-497E-8C66-A0EFBA1F221E}","m_Name":"cam"}],[4,0,{"m_Children":[],"m_Parent":""},1,{"m_Children":[],"m_Parent":""},2,{"m_Children":[],"m_Parent":""},3,{"m_Children":[],"m_Parent":""}],[4,0,{"m_Position":[30.0,10.0,100.0],"m_Rotation":[0.0,0.0,45.0],"m_Scale":[5.0,5.0,5.0]},1,{"m_Position":[0.0,0.0,25.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[5.0,5.0,5.0]},2,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},3,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]}],[0]]
+[
+   [
+      3,
+      0,
+      1,
+      2
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "{530A6B6F-E1A2-45BC-9FAD-47EDB3BF482E}",
+         "m_Name": "Test2"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "{B796B69F-B883-4D8E-A719-73F938632D6C}",
+         "m_Name": "Test"
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "{A78FCCCE-9B24-4B5D-879F-C4512F246B67}",
+         "m_Name": "cam"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Position": [
+            30.0,
+            10.0,
+            100.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            45.0
+         ],
+         "m_Scale": [
+            5.0,
+            5.0,
+            5.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            25.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            5.0,
+            5.0,
+            5.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "2",
+         "ASSET_MAT_m_MaterialInstance": "5",
+         "m_IsVisible": true
+      },
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "2",
+         "ASSET_MAT_m_MaterialInstance": "6",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      2,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 10.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            10.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Pitch": 0.0,
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Right": 1.0,
+         "m_Roll": 0.0,
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ],
+         "m_Yaw": 0.0
+      }
+   ]
+]

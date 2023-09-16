@@ -7,7 +7,7 @@
 
 namespace TRE
 {
-	class Transform
+	class Transform : property::base
 	{
 	public:
 		glm::vec3	m_Position{ 0.f,0.f,0.f };
@@ -16,6 +16,8 @@ namespace TRE
 		bool		m_IsDirty{ false };
 		const glm::mat4 GetModelMatrix() const;
 		const glm::mat4 GetNormalMatrix() const;
+
+		property_vtable()           // Allows the base class to get these properties  
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
 		friend void to_json(nlohmann::json& j, const Transform& t) // Serialize
@@ -67,3 +69,11 @@ namespace TRE
 		bool m_IsDirty{ false };
 	};
 }
+
+property_begin(TRE::Transform)
+{
+	property_var(m_Position).Name("Position [Vec3]")
+		, property_var(m_Rotation)
+		, property_var(m_Scale)
+
+} property_vend_h(TRE::Transform)

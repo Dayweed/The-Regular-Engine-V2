@@ -138,7 +138,6 @@ namespace TRE
 
 	void TextureCompiler::Compile(const TextureDescriptorFile& descriptor)
 	{
-		/*int texWidth, texHeight, texChannels;*/
 		std::uint32_t fileSize;
 		std::uint8_t* fileData = ReadFileIntoBuffer(descriptor.GetAssetPath().c_str(), fileSize);
 		if (fileData == nullptr)
@@ -170,13 +169,11 @@ namespace TRE
 
 			//Do compression here
 			crn_comp_params comp_params;
+			comp_params.clear();
 			comp_params.m_file_type = cCRNFileTypeDDS;
 			comp_params.m_faces = 1;
 			comp_params.m_width = width;
 			comp_params.m_height = height;
-			comp_params.set_flag(cCRNCompFlagPerceptual, true);
-			comp_params.set_flag(cCRNCompFlagDXT1AForTransparency, true);
-			comp_params.set_flag(cCRNCompFlagHierarchical, true);
 			comp_params.m_format = cCRNFmtDXT5;
 			comp_params.m_pImages[0][0] = pixels;
 			comp_params.m_quality_level = 128;
@@ -185,22 +182,22 @@ namespace TRE
 			comp_params.m_num_helper_threads = num_threads;
 
 			outputData = crn_compress(comp_params, outputSize);
-			std::cout << "Compressed texture size: " << outputSize << std::endl;
-			std::cout << "Compressing texture" << std::endl;
+			if (outputData == nullptr || outputSize == 0)
+			{
+				std::cout << "Failed to compress texture: " << descriptor.GetAssetPath() << std::endl;
+				return;
+			}
 		}
 
 		m_Texture = std::make_unique<Texture>();
 		m_Texture->Data = outputData;
 		m_Texture->DataSize = outputSize;
-		int len = static_cast<int>(std::min<int>(descriptor.GetTextureName().length(), sizeof(m_Texture->Name)));
+		int len = static_cast<int>(std::min<int>((int)descriptor.GetTextureName().length(), sizeof(m_Texture->Name)));
 		for (int i = 0; i < len; ++i)
 			m_Texture->Name[i] = descriptor.GetTextureName()[i];
 		m_Texture->Width = width;
 		m_Texture->Height = height;
 		m_Texture->Format = descriptor.GetFormat();
 		m_Texture->Filter = descriptor.GetFilter();
-
-		//crn_free_block(outputData);
-		//stbi_image_free(pixels);
 	}
 }

@@ -1,9 +1,10 @@
 #pragma once
 #include "ShaderResource.h"
+#include "Assets/Asset.h"
 
 namespace TRE
 {
-	class Shader
+	class Shader : public Asset
 	{
 		public:
 			Shader() = default;
@@ -16,6 +17,8 @@ namespace TRE
 
 			std::vector<VkDescriptorSetLayoutBinding>& GetDescriptorBindings();
 			std::vector<PushConstants>& GetPushConstants();
+
+			static AssetType GetType() { return AssetType::Shader; }
 
 		public:
 			VkPipelineShaderStageCreateInfo GetPipelineShaderInfo();

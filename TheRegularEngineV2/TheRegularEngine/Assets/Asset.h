@@ -6,10 +6,13 @@ namespace TRE
 
 	enum class AssetType : uint16_t
 	{
+		None,
 		Audio,
 		Font,
 		Mesh,
 		Texture,
+		Material,
+		Shader,
 	};
 
 	class Asset
@@ -17,12 +20,34 @@ namespace TRE
 		public:
 			Asset() = default;
 			virtual ~Asset() {}
+			static AssetHandle GenerateGUID();
+			
+			virtual void Serialize() {}
 
-		public:
-			virtual AssetType GetAssetType() const = 0;
+			void SetHandle(AssetHandle handle)
+			{
+				m_Handle = handle;
+			}
 
-		private:
-			AssetHandle m_Handle;
-			AssetType m_Type;
+			AssetHandle GetHandle() const
+			{
+				return m_Handle;
+			}
+
+			std::string GetHandleHex() const
+			{
+				std::stringstream ss;
+				ss << std::hex << m_Handle;
+				return ss.str();
+			}
+
+			AssetType GetType() const
+			{
+				return m_Type;
+			}
+
+		protected:
+			AssetHandle m_Handle{ 0 };
+			AssetType m_Type{ AssetType::None };
 	};
 }

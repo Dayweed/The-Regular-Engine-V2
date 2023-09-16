@@ -172,11 +172,17 @@ void *crn_compress(const crn_comp_params &comp_params, crn_uint32 &compressed_si
    if (pActual_bitrate) *pActual_bitrate = 0.0f;
 
    if (!comp_params.check())
-      return NULL;
+   {
+       printf("jerel\n"); 
+       return NULL;
+   }
 
    crnlib::vector<uint8> crn_file_data;
    if (!create_compressed_texture(comp_params, crn_file_data, pActual_quality_level, pActual_bitrate))
+   {
+       printf("here\n");
       return NULL;
+   }
 
    compressed_size = crn_file_data.size();
    return crn_file_data.assume_ownership();

@@ -1,5 +1,4 @@
-#ifndef INPUTHANDLER_H
-#define INPUTHANDLER_H
+#pragma once
 
 struct GLFWwindow;
 namespace TRE
@@ -69,5 +68,3 @@ namespace TRE
         private:
     };
 }
-
-#endif

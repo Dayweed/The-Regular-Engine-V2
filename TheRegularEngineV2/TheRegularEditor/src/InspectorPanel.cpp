@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "InspectorPanel.h"
 #include "Imgui/imgui.h"
+#include "cpp/imgui_stdlib.h"
+#include "cpp/imgui_stdlib.cpp"
 #include "TREIncludes.h"
 
 namespace TRE
@@ -38,7 +40,7 @@ namespace TRE
 		//object name
 		if (entity != nullptr)
 		{
-			if (entity->HasComponent<Properties>())
+			/*if (entity->HasComponent<Properties>())
 			{
 				bool check = entity->GetComponent<Properties>().m_Active;
 				ImGui::Checkbox("Active", &check);
@@ -55,9 +57,9 @@ namespace TRE
 				{
 					m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name = objectName;
 				}
-			}
+			}*/
 		
-			if (entity->HasComponent<Transform>())
+			/*if (entity->HasComponent<Transform>())
 			{
 				if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 				{
@@ -72,7 +74,7 @@ namespace TRE
 					}
 					ImGui::TreePop();
 				}
-			}
+			}*/
 
 			//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 			//{
@@ -94,6 +96,66 @@ namespace TRE
 			//entity->HasComponent<BoxCollider>();
 			//entity->HasComponent<Audio>();
 
+			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
+
+			// View all inspectable components
+			for (auto& List : properties)
+			{
+				for (auto& [Name, Data] : List.second)
+				{
+					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+
+					std::visit([&](auto&& Value)
+						{
+							using T = std::decay_t<decltype(Value)>;
+
+							if constexpr (std::is_same_v<T, int>)
+							{
+								ImGui::InputInt(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, float>)
+							{
+								ImGui::InputFloat(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, bool>)
+							{
+								ImGui::Checkbox(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, string_t>)
+							{
+								ImGui::InputText(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, oobb>)
+							{
+								// Fake example of using structs (Should remove b4 m2!)...
+								//printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+							}
+							else if constexpr (std::is_same_v<T, glm::vec3>)
+							{
+								float pos[3]{ Value.x, Value.y, Value.z };
+								ImGui::DragFloat3(NameStr.c_str(), pos);
+								Value = { pos[0], pos[1], pos[2] };
+							}
+							else static_assert(always_false<T>::value, "We are not covering all the cases!");
+						}
+					, Data);
+
+				}
+			}
+
+			// Update values into the entity itself
+			auto components = m_SelectionManager->GetSelectedEntityComponents();
+
+			for (size_t i{}; i < properties.size(); ++i)
+			{
+				property::base& compProp { *components[i].second };
+				std::vector<property::entry> List{ properties[i].second };
+				for (const auto& [Name, Data] : List)
+				{
+					// Copy to compProp
+					property::set(compProp, Name.c_str(), Data);
+				}
+			}
 		}
 
 
