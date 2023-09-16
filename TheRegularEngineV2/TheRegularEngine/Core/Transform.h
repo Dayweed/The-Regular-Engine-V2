@@ -72,7 +72,7 @@ namespace TRE
 
 property_begin(TRE::Transform)
 {
-	property_var(m_Position)
+	property_var(m_Position).Name("Position [Vec3]")
 		, property_var(m_Rotation)
 		, property_var(m_Scale)
 
