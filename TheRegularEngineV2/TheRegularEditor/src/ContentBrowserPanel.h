@@ -36,29 +36,29 @@ namespace TRE
 
 			//Texture for icons waiting on zr to put into my descriptor set
 
-			//Variables for formatting
-			const float m_Padding = 20.f;
-			const float m_ImgSize = 64.f;
-			const float m_CellSize = m_ImgSize + m_Padding;
+			////Variables for formatting
+			//const float m_Padding = 20.f;
+			//const float m_ImgSize = 64.f;
+			//const float m_CellSize = m_ImgSize + m_Padding;
 
-			//Variable for limiting poll rate
-			const float m_RefreshRate = 1.f;
-			float m_CurrentTimer = 0.0f;
+			////Variable for limiting poll rate
+			//const float m_RefreshRate = 1.f;
+			//float m_CurrentTimer = 0.0f;
 
-			struct Asset
-			{
-				bool m_Folder = false;
-				std::string m_ResourceType{"m_Invalid"};
-				std::string m_FileName{};
-				std::filesystem::path m_Path{};
-			};
-			std::vector<Asset> m_Assets;
+			//struct Asset
+			//{
+			//	bool m_Folder = false;
+			//	std::string m_ResourceType{"m_Invalid"};
+			//	std::string m_FileName{};
+			//	std::filesystem::path m_Path{};
+			//};
+			//std::vector<Asset> m_Assets;
 
-			//Store some ImGui Assets
-			ImGuiConfigFlags m_PopUps;
+			////Store some ImGui Assets
+			//ImGuiConfigFlags m_PopUps;
 
-			//PopUp for invalid resources
-			bool m_InvalidResourcePopUp = false;
+			////PopUp for invalid resources
+			//bool m_InvalidResourcePopUp = false;
 
 	};
 }
