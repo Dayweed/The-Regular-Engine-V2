@@ -70,15 +70,18 @@ namespace TRE
 		}
 		
 		int x = 0;
-		for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
+		if (m_FragmentShader->GetWriteDescriptorSets().size())
 		{
-			if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
 			{
-				auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
-				FragmentBindings.second.pImageInfo = &imageInfo;
-				FragmentBindings.second.dstSet = m_DescriptorSets[Index];
-				m_WriteDescriptors.push_back(FragmentBindings.second);
-				++x;
+				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+				{
+					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
+					FragmentBindings.second.pImageInfo = &imageInfo;
+					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
+					m_WriteDescriptors.push_back(FragmentBindings.second);
+					++x;
+				}
 			}
 		}
 

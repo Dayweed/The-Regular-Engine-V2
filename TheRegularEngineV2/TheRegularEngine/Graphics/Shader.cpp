@@ -22,7 +22,10 @@ namespace TRE
 
 	const std::unordered_map<std::string, VkWriteDescriptorSet>& Shader::GetWriteDescriptorSets()
 	{
-		return m_ReflectionData.DescriptorSets[0].WriteDescriptorSets;
+		if (m_ReflectionData.DescriptorSets.size())
+			return m_ReflectionData.DescriptorSets[0].WriteDescriptorSets;
+		else
+			return std::unordered_map<std::string, VkWriteDescriptorSet>();
 	}
 
 	Shader::Shader(const std::filesystem::path& ShaderPath) : m_ShaderPath(ShaderPath)

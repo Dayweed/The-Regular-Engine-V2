@@ -126,6 +126,40 @@ namespace TRE
 		{
 			material->AllocateLayouts();
 		}
+
+		auto DebugDrawVertShader = AssetManager::Instance().GetAsset<Shader>(7);
+		auto DebugDrawFragShader = AssetManager::Instance().GetAsset<Shader>(8);
+
+		//Debug Draw Pipelines
+		RenderPassInfo DebugDrawRenderPassCreateInfo{};
+		DebugDrawRenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		DebugDrawRenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
+		DebugDrawRenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
+		DebugDrawRenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		std::shared_ptr<RenderPass> DebugDrawRenderPass = std::make_shared<RenderPass>(m_Device, DebugDrawRenderPassCreateInfo);
+
+		std::vector<VkVertexInputBindingDescription> DebugDrawBindingDescriptions(1);
+		DebugDrawBindingDescriptions[0].binding = 0;
+		DebugDrawBindingDescriptions[0].stride = sizeof(LineVertex);
+		DebugDrawBindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		std::vector<VkVertexInputAttributeDescription> DebugDrawattributeDescriptions{};
+		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Position) });
+		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
+
+		PipelineConfigurations DebugDrawPipelineConfig;
+		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
+		DebugDrawPipelineConfig.RenderPass = DebugDrawRenderPass;
+		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
+		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
+		DebugDrawPipelineConfig.VertexBindingDescriptions = DebugDrawBindingDescriptions;
+		DebugDrawPipelineConfig.VertexAttributeDescriptions = DebugDrawattributeDescriptions;
+		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig);
+
+		TRE_CORE_INFO("Debug Pipeline Created");
+
+		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawVertShader, DebugDrawFragShader);
+		m_DebugMaterialInstance->AllocateLayouts();
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -252,7 +286,7 @@ namespace TRE
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
 
-		//VERY INEFFICIENT
+		//VERY INEFFICIENT //Geom Pass
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			PushConstant pc{};
@@ -274,6 +308,28 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 
+		//Debug Pass
+		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipeline());
+		m_DebugMaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		{
+			PushConstant pc{};
+			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugDrawPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			
+			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			if (mr.m_RenderObject == nullptr)
+				continue;
+
+			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+				continue;
+
+			//Bind
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipelineLayout(), 0, 1, &m_DebugMaterialInstance->GetDescriptor(Index), 0, NULL);
+		
+			vkCmdDraw(m_Commandbuffers[Index], 2, 1, 0, 0);
+		}
+
 		m_Pipeline->GetConfig().RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 
 		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
@@ -293,5 +349,10 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to queue submit");
 			assert(Result == VK_SUCCESS);
 		}
+	}
+
+	void Renderer::DebugDrawPass(VkCommandBuffer CommandBuffer)
+	{
+		
 	}
 }
