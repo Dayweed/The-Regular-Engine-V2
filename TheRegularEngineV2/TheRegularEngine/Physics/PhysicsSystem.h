@@ -53,6 +53,22 @@ namespace TRE
 		void ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
 
 		/* !
+		@function      ResizeSphereCollider
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity       The entity to create the component for.
+		@params        newRadius    The collider's new radius.
+		
+		@brief         Resizes the SphereCollider component for the given entity.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		e1->AddComponent<SphereCollider>(); ConstructSphereCollider(e1);
+		ResizeSphereCollider(e1, 2);
+		*//*__________________________________________________________________________*/
+		void ResizeSphereCollider(const Entity& entity, const float newRadius) const;
+
+		/* !
 		@function      DestructSphereCollider
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
@@ -88,6 +104,22 @@ namespace TRE
 		void ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
 
 		/* !
+		@function      ResizeBoxCollider
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity            The entity to create the component for.
+		@params        newHalfExtents    The collider's new half extents in all axes.
+
+		@brief         Resizes the BoxCollider component for the given entity.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<BoxCollider>(); ConstructBoxCollider(e1);
+		ResizeBoxCollider(e1, {1, 1, 1});
+		*//*__________________________________________________________________________*/
+		void ResizeBoxCollider(const Entity& entity, const Vector3& newHalfExtents) const;
+
+		/* !
 		@function      DestructBoxCollider
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
@@ -120,23 +152,6 @@ namespace TRE
 		void ConstructRigidBody(const Entity& entity) const;
 
 		/* !
-		@function      DestructRigidBody
-		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
-
-		@params        entity    The entity containing the Rigidbody to destroy.
-
-		@brief         Destroys an entity's Rigidbody component.
-
-		Example:
-		Entity e1 = ECSManager::Instance().CreateEntity("mass");
-		e1->AddComponent<Rigidbody>();
-		ConstructRigidBody(e1);
-		// ----- using Rigidbody here... -----
-		DestructRigidBody(e1)
-		*//*__________________________________________________________________________*/
-		void DestructRigidBody(const Entity& entity) const;
-
-		/* !
 		@function      AddForce
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
@@ -153,8 +168,27 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
+		/* !
+		@function      DestructRigidBody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity containing the Rigidbody to destroy.
+
+		@brief         Destroys an entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidBody(e1);
+		// ----- using Rigidbody here... -----
+		DestructRigidBody(e1)
+		*//*__________________________________________________________________________*/
+		void DestructRigidBody(const Entity& entity) const;
+
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
+
+		void RigidbodyConstraintsStuff(const Entity& entity) const;
 
 	private:
 
