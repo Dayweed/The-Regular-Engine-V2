@@ -26,6 +26,7 @@ namespace TRE
 			static AssetType GetType() {return AssetType::Material;}
 
 			void Serialize() override;
+			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);
 		private:
 			std::shared_ptr<Shader> m_VertexShader;
 			std::shared_ptr<Shader> m_FragmentShader;

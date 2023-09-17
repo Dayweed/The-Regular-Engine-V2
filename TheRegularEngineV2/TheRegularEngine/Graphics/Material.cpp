@@ -114,4 +114,63 @@ namespace TRE
 
 		file.close();
 	}
+
+	std::shared_ptr<Material> Material::Deserialize(const std::string& assetHexGUID)
+	{
+		//Open material file
+		std::string materialPath = "../Assets/" + assetHexGUID + ".material";
+		std::ifstream file(materialPath);
+		if (!file.is_open())
+		{
+			TRE_CORE_ERROR("Unable to open file {0}", materialPath);
+			return nullptr;
+		}
+
+		std::string line;
+		std::string vertexShaderGUID;
+		std::string fragmentShaderGUID;
+		std::vector<std::string> textureGUIDs;
+
+		while (std::getline(file, line))
+		{
+			if (line == "VertexShader:")
+			{
+				std::getline(file, vertexShaderGUID);
+			}
+			else if (line == "FragmentShader:")
+			{
+				std::getline(file, fragmentShaderGUID);
+			}
+			else if (line == "Textures:")
+			{
+				while (std::getline(file, line))
+				{
+					textureGUIDs.push_back(line);
+				}
+			}
+		}
+
+		auto vertShader = AssetManager::Instance().GetAsset<Shader>(Asset::GetGUIDFromHex(vertexShaderGUID));
+		auto fragShader = AssetManager::Instance().GetAsset<Shader>(Asset::GetGUIDFromHex(fragmentShaderGUID));
+		std::unique_ptr<Material> mat = std::make_unique<Material>(vertShader, fragShader);
+		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		mat->m_Handle = assetHandle;
+
+		mat->m_Textures.resize(textureGUIDs.size());
+		for (int i = 0; i < textureGUIDs.size(); ++i)
+		{	
+			std::string textureHexGUID = textureGUIDs[i];
+			auto texture = AssetManager::Instance().GetAsset<VulkanTexture>(Asset::GetGUIDFromHex(textureHexGUID));
+			//Load into engine if not in asset manager
+			if (texture == nullptr)
+			{
+				texture = VulkanTexture::Deserialize(textureHexGUID);
+			}
+			mat->m_Textures[i] = texture;
+		}
+
+		AssetManager::Instance().AddAsset(std::move(mat));
+
+		return std::move(AssetManager::Instance().GetAsset<Material>(assetHandle));
+	}
 }

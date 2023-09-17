@@ -124,4 +124,9 @@ namespace TRE
 	{
 		m_ReflectionData = ReflectionData;
 	}
+
+	void Shader::Serialize()
+	{
+		
+	}
 }

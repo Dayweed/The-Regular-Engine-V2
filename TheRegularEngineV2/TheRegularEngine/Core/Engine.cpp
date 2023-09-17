@@ -60,6 +60,22 @@ namespace TRE
 		}
 	}
 
+	void DemoDeserialize()
+	{
+		auto vertHandle = 3;
+		auto fragHandle = 4;
+
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		vert->SetHandle(vertHandle);
+		AssetManager::Instance().AddAsset(std::move(vert));
+
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
+		frag->SetHandle(fragHandle);
+		AssetManager::Instance().AddAsset(std::move(frag));
+
+		SceneManager::Instance().LoadScene("DemoScene");
+	}
+
 	void DemoScene()
 	{
 		auto textureHandle = Asset::GetGUIDFromHex("140ecd34766a2024");
@@ -206,7 +222,8 @@ namespace TRE
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
 		RegisterECS();
-		DemoScene();
+		DemoDeserialize();
+		//DemoScene();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();

@@ -212,4 +212,15 @@ namespace TRE
 
 		device->SubmitCommands(commandBuffer);
 	}
+
+	std::shared_ptr<VulkanTexture> VulkanTexture::Deserialize(const std::string& assetHexGUID)
+	{
+		std::string textureString = "../Assets/" + assetHexGUID + ".DDS";
+		std::unique_ptr<VulkanTexture> ro = std::make_unique<VulkanTexture>(textureString);
+		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ro->m_Handle = assetHandle;
+		AssetManager::Instance().AddAsset(std::move(ro));
+
+		return std::move(AssetManager::Instance().GetAsset<VulkanTexture>(assetHandle));
+	}
 }

@@ -19,6 +19,8 @@ namespace TRE
 		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
 
 		static AssetType GetType() { return AssetType::Texture; }
+		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
+
 	private:
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);
