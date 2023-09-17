@@ -103,9 +103,14 @@ namespace TRE
 			return;
 		}
 
-		file << "VertexShader: " << m_VertexShader->GetHandle() << std::endl;
-		file << "FragmentShader: " << m_FragmentShader->GetHandle() << std::endl;
-		//file << "Textures: " << m_Textures->GetHandle() << std::endl;
+		file << "VertexShader:\n" << m_VertexShader->GetHandleHex() << std::endl;
+		file << "FragmentShader:\n" << m_FragmentShader->GetHandleHex() << std::endl;
+		file << "Textures:\n";
+		//For loop next time
+		for (auto texture : m_Textures)
+		{
+			file << texture->GetHandleHex() << std::endl;
+		}
 
 		file.close();
 	}

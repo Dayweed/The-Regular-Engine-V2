@@ -18,4 +18,16 @@ namespace TRE
 
 		return hashedValue;
 	}
+
+	std::string Asset::GetGUIDHex(const AssetHandle assetHandle)
+	{
+		std::stringstream ss;
+		ss << std::hex << assetHandle;
+		return ss.str();
+	}
+
+	AssetHandle Asset::GetGUIDFromHex(const std::string& GUID)
+	{
+		return std::stoull(GUID, nullptr, 16);
+	}
 }

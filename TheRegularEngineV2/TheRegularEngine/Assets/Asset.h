@@ -21,6 +21,8 @@ namespace TRE
 			Asset() = default;
 			virtual ~Asset() {}
 			static AssetHandle GenerateGUID();
+			static std::string GetGUIDHex(const AssetHandle assetHandle);
+			static AssetHandle GetGUIDFromHex(const std::string& GUID);
 			
 			virtual void Serialize() {}
 
