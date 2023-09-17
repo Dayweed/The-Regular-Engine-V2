@@ -109,11 +109,17 @@ namespace TRE
 		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
 		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
 
+		//Vertex input
+		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
+		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
+
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
+		PipelineConfig.VertexBindingDescriptions = bindingDescription;
+		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 
 		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())

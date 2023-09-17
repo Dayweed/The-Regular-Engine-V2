@@ -60,24 +60,29 @@ namespace TRE
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
-		std::vector<VkWriteDescriptorSet> Writes;
+		m_WriteDescriptors.clear();
 
 		for (auto x : m_VertexShader->GetWriteDescriptorSets())
 		{
 			x.second.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			x.second.dstSet = m_DescriptorSets[Index];
-			Writes.push_back(x.second);
+			m_WriteDescriptors.push_back(x.second);
 		}
-
-		for (auto x : m_FragmentShader->GetWriteDescriptorSets())
+		
+		int x = 0;
+		for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
 		{
-			auto imageInfo = m_Textures->GetDescriptorImageInfo();
-			x.second.pImageInfo = &imageInfo;
-			x.second.dstSet = m_DescriptorSets[Index];
-			Writes.push_back(x.second);
+			if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
+				FragmentBindings.second.pImageInfo = &imageInfo;
+				FragmentBindings.second.dstSet = m_DescriptorSets[Index];
+				m_WriteDescriptors.push_back(FragmentBindings.second);
+				++x;
+			}
 		}
 
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
 	void Material::Serialize()
@@ -100,7 +105,7 @@ namespace TRE
 
 		file << "VertexShader: " << m_VertexShader->GetHandle() << std::endl;
 		file << "FragmentShader: " << m_FragmentShader->GetHandle() << std::endl;
-		file << "Textures: " << m_Textures->GetHandle() << std::endl;
+		//file << "Textures: " << m_Textures->GetHandle() << std::endl;
 
 		file.close();
 	}

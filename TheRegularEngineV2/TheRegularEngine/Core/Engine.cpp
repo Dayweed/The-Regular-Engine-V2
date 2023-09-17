@@ -91,10 +91,12 @@ namespace TRE
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
 		mat1->SetHandle(5);
 		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
+		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
 		AssetManager::Instance().AddAsset(std::move(mat1));
 
 		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
 		mat2->SetHandle(6);
+		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
 		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
 		AssetManager::Instance().AddAsset(std::move(mat2));
 
