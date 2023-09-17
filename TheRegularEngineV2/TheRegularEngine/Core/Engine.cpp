@@ -236,8 +236,8 @@ namespace TRE
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
 		RegisterECS();
-		DemoDeserialize();
-		//DemoScene();
+		//DemoDeserialize();
+		DemoScene();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
