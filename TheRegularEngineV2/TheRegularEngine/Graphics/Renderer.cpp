@@ -85,7 +85,7 @@ namespace TRE
 		}
 
 		m_DescriptorPool = DescriptorPool::Builder()
-			.SetMaxSets(10)
+			.SetMaxSets(100)
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
 			.Build();
@@ -106,22 +106,26 @@ namespace TRE
 
 		CreateFrameBuffer(renderpass);
 
-		std::shared_ptr<Shader> VertShader = std::make_shared<Shader>();
-		VertShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert", VK_SHADER_STAGE_VERTEX_BIT);
+		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
+		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
 
-		std::shared_ptr<Shader> FragShader = std::make_shared<Shader>();
-		FragShader = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+		//Vertex input
+		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
+		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
 
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
+		PipelineConfig.VertexBindingDescriptions = bindingDescription;
+		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
 
-		//TO DELETE
-		Texture::RunCompiler("../Assets/Test.desc");
-		AssetManager::Instance().AddAsset(std::make_unique<VulkanTexture>(Texture::Deserialize("../Assets/Test.DDS")));
+		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
+		{
+			material->AllocateLayouts();
+		}
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -191,6 +195,8 @@ namespace TRE
 		
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
 		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Material);
+		AssetManager::Instance().DestroyAssetsOfType(AssetType::Shader);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
@@ -214,25 +220,6 @@ namespace TRE
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 
-
-		std::vector<VkWriteDescriptorSet> Writes;
-		for (auto x : m_Pipeline->GetConfig().VertexShader->GetWriteDescriptorSets())
-		{
-			//x.second.pBufferInfo = &BufferInfo;
-			x.second.pBufferInfo = &m_UBOBuffer->GetDescriptorBufferInfo();
-			x.second.dstSet = m_Pipeline->GetDescriptorSets()[Index];
-			Writes.push_back(x.second);
-		}
-		VkDescriptorImageInfo imageInfo = AssetManager::Instance().GetAsset<VulkanTexture>(0)->GetDescriptorImageInfo();
-		for (auto x : m_Pipeline->GetConfig().FragmentShader->GetWriteDescriptorSets())
-		{
-			x.second.dstBinding = 1;
-			x.second.pImageInfo = &imageInfo;
-			x.second.dstSet = m_Pipeline->GetDescriptorSets()[Index];
-			Writes.push_back(x.second);
-		}
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
-
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -240,7 +227,7 @@ namespace TRE
 		{
 			assert(Result == VK_SUCCESS);
 		}
-
+		
 		//UBO
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
@@ -264,7 +251,6 @@ namespace TRE
 		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
-		vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Pipeline->GetDescriptorSets()[Index], 0, NULL);
 
 		//VERY INEFFICIENT
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
@@ -276,6 +262,14 @@ namespace TRE
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
+
+			if(go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+				continue;
+
+			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}

@@ -182,7 +182,6 @@ namespace TRE
 			comp_params.m_num_helper_threads = num_threads;
 
 			outputData = crn_compress(comp_params, outputSize);
-
 			if (outputData == nullptr || outputSize == 0)
 			{
 				std::cout << "Failed to compress texture: " << descriptor.GetAssetPath() << std::endl;

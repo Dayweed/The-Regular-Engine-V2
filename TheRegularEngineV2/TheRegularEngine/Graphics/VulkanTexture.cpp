@@ -10,9 +10,10 @@
 
 namespace TRE
 {
-	VulkanTexture::VulkanTexture(std::unique_ptr<Texture> texture)
+	VulkanTexture::VulkanTexture(const std::string& texturePath)
 	{
-		//m_Handle = ;
+		std::unique_ptr<Texture> texture = Texture::Deserialize(texturePath);
+
 		m_Type = AssetType::Texture;
 
 		VkDeviceSize imageSize = texture->DataSize;
@@ -120,7 +121,7 @@ namespace TRE
 		vkFreeMemory(device, m_ImageMemory, nullptr);
 	}
 
-	VkDescriptorImageInfo VulkanTexture::GetDescriptorImageInfo() const
+	const VkDescriptorImageInfo& VulkanTexture::GetDescriptorImageInfo() const
 	{
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

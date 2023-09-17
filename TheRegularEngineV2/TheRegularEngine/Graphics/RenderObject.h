@@ -25,28 +25,23 @@ namespace TRE
 			}
 		};
 
-		struct Builder
-		{
-			std::vector<Vertex> m_Vertices{};
-			std::vector<std::uint32_t> m_Indices{};
-		};
-
-		RenderObject(const Builder& builder);
+		RenderObject(const std::string& geomAsset);
 		~RenderObject();
 
-		RenderObject(RenderObject&) = delete;
-		void operator=(const RenderObject&) = delete;
-
-		static std::unique_ptr<RenderObject> CreateFromGeom(std::unique_ptr<Geom> geom);
 		const Collision::Sphere3D& GetBoundingSphere() const { return m_BoundingSphere; }
 
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
+		static AssetType GetType() { return AssetType::Mesh; }
+
 	private:
 		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffer(const std::vector<std::uint32_t>& indices);
 		void CreateBoundingSphere(const std::vector<Vertex>& vertices);
+
+		RenderObject(RenderObject&) = delete;
+		void operator=(const RenderObject&) = delete;
 	private:
 		std::unique_ptr<Buffer> m_VertexBuffer;
 		std::uint32_t m_VertexCount;

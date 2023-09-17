@@ -8,19 +8,23 @@ namespace TRE
 	class VulkanTexture : public Asset
 	{
 	public:
-		VulkanTexture() = default;
-		VulkanTexture(std::unique_ptr<Texture> texture);
+		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();
 
-		VkDescriptorImageInfo GetDescriptorImageInfo() const;
+		const VkDescriptorImageInfo& GetDescriptorImageInfo() const;
 
-		VkSampler GetSampler() const { return m_Sampler; }
-		VkImage GetImage() const { return m_Image; }
-		VkImageView GetImageView() const { return m_ImageView; }
-		VkDeviceMemory GetMemory() const { return m_ImageMemory; }
+		const VkSampler& GetSampler() const { return m_Sampler; }
+		const VkImage& GetImage() const { return m_Image; }
+		const VkImageView& GetImageView() const { return m_ImageView; }
+		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
+
+		static AssetType GetType() { return AssetType::Texture; }
 	private:
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);
+
+		VulkanTexture(VulkanTexture&) = delete;
+		void operator=(const VulkanTexture&) = delete;
 	private:
 		VkSampler m_Sampler;
 		VkImage m_Image;

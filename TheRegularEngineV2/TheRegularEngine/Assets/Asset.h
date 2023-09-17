@@ -11,6 +11,8 @@ namespace TRE
 		Font,
 		Mesh,
 		Texture,
+		Material,
+		Shader,
 	};
 
 	class Asset
@@ -18,8 +20,12 @@ namespace TRE
 		public:
 			Asset() = default;
 			virtual ~Asset() {}
+			static AssetHandle GenerateGUID();
+			static std::string GetGUIDHex(const AssetHandle assetHandle);
+			static AssetHandle GetGUIDFromHex(const std::string& GUID);
+			
+			virtual void Serialize() {}
 
-		public:
 			void SetHandle(AssetHandle handle)
 			{
 				m_Handle = handle;
@@ -28,6 +34,13 @@ namespace TRE
 			AssetHandle GetHandle() const
 			{
 				return m_Handle;
+			}
+
+			std::string GetHandleHex() const
+			{
+				std::stringstream ss;
+				ss << std::hex << m_Handle;
+				return ss.str();
 			}
 
 			AssetType GetType() const

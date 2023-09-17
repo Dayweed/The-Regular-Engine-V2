@@ -27,7 +27,7 @@ namespace TRE
 
 	Shader::Shader(const std::filesystem::path& ShaderPath) : m_ShaderPath(ShaderPath)
 	{
-
+		m_Type = AssetType::Shader;
 	}
 
 	Shader::~Shader()

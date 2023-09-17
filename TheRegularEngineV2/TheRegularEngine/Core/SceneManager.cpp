@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "FileSystem.h"
+#include "Assets/AssetManager.h"
 
 namespace TRE
 {
@@ -21,6 +22,7 @@ namespace TRE
 	void SceneManager::SaveSceneAs(std::string sceneName)
 	{
 		ECSManager::Instance().SaveEntities(GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE));
+		AssetManager::Instance().Serialize();
 		m_CurrentScene = sceneName;
 	}
 
