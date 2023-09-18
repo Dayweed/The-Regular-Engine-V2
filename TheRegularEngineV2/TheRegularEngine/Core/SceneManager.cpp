@@ -28,6 +28,6 @@ namespace TRE
 
 	void SceneManager::SaveScene()
 	{
-		ECSManager::Instance().SaveEntities(m_CurrentScene);
+		ECSManager::Instance().SaveEntities(GETFOLDER(FILESYS_SCENE) + m_CurrentScene + GETFILE(FILESYS_SCENE));
 	}
 }
