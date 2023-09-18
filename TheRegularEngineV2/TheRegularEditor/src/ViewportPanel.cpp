@@ -202,6 +202,17 @@ namespace TRE
 		UpdateViewportSize();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			{
+				std::string assetName = (const char*)payload->Data;
+				std::cout << "drag and dropped " << assetName << " from Content Browser Panel\n";
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		ImGui::End();
 	}
 

@@ -66,7 +66,6 @@ project "TheRegularEngine"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.Nlohmannjson}",
-		"%{IncludeDir.RTTR}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stbi}",
 		"%{IncludeDir.Compiler}",
@@ -100,7 +99,6 @@ project "TheRegularEngine"
 		"%{Library.PhysX_TaskStatic}",
 		"%{Library.PhysX_VehicleStatic}",
 		"%{Library.PhysX_Vehicle2}",
-		"%{Library.RTTR}",
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
 		"%{Library.Compiler}",
@@ -119,7 +117,6 @@ project "TheRegularEngine"
 		links
 		{
 			"%{Library.FMOD_Debug}",
-			"%{Library.RTTR_Debug}",
 			"%{Library.ShaderC_Debug}",
 			"%{Library.SPIRV_Cross_Debug}",
 			"%{Library.SPIRV_Cross_GLSL_Debug}",
@@ -136,7 +133,6 @@ project "TheRegularEngine"
 		links
 		{
 			"%{Library.FMOD_Release}",
-			"%{Library.RTTR}",
 			"%{Library.ShaderC_Release}",
 			"%{Library.SPIRV_Cross_Release}",
 			"%{Library.SPIRV_Cross_GLSL_Release}",
@@ -192,7 +188,6 @@ project "TheRegularEditor"
 		"%{IncludeDir.VULKANSDK}",
 		"%{IncludeDir.Rapidjson}",
 		"%{IncludeDir.Nlohmannjson}",
-		"%{IncludeDir.RTTR}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.Math}",
 		"%{IncludeDir.Compiler}",
@@ -223,7 +218,6 @@ project "TheRegularEditor"
 
 		links
 		{
-			"%{Library.RTTR_Debug}",
 			"%{Library.FMOD_Debug}"
 		}
 
@@ -232,7 +226,6 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
-			'{COPY} "%{Binaries.RTTR_Debug}" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -245,7 +238,6 @@ project "TheRegularEditor"
 
 		links
 		{
-			"%{Library.RTTR}",
 			"%{Library.FMOD_Release}"
 		}
 
@@ -254,7 +246,6 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
-			'{COPY} "%{Binaries.RTTR}" "%{cfg.targetdir}"',
 		}
 
 project "TRE-ScriptCore"

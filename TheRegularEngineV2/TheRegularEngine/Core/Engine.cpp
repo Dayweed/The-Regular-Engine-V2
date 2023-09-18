@@ -39,7 +39,7 @@ namespace TRE
 		{
 			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
 		}
-		std::string fileName{ "AHHHScene" };
+		std::string fileName{ "../Scenes/AHHHScene.json" };
 		SceneManager::Instance().SaveSceneAs(fileName);
 
 		std::cout << "File Name: > " << fileName << "\n";
@@ -186,14 +186,14 @@ namespace TRE
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
-		SceneManager::Instance().SaveSceneAs("DemoScene");
+		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 
 		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 
 
 		//cameraSystem->SetIsMainCamera(cam, false);
 		//SceneManager::Instance().NewScene();
-		//SceneManager::Instance().LoadScene("DemoScene");
+		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 
 		/*Entity cam2 = ECSManager::Instance().CreateEntity();
 		cam2->GetComponent<Properties>().m_Name = "cam2";

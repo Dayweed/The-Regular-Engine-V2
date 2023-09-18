@@ -1,1 +1,444 @@
-[[10,0,1,2,3,4,5,6,7,8,9],[10,0,{"m_Active":true,"m_GUID":"{41D78862-3623-41C8-96B0-AFDE95E3ACF6}","m_Name":"Test 1"},1,{"m_Active":true,"m_GUID":"{503153AE-C2C2-4D98-9EA2-CF5E984BF219}","m_Name":"test2"},2,{"m_Active":true,"m_GUID":"{ED6E9750-21CA-485F-AA6C-012B88436E93}","m_Name":"allobj"},3,{"m_Active":true,"m_GUID":"{9ADBE172-6590-46FE-84D2-37FCB18ACEC8}","m_Name":"allobj2"},4,{"m_Active":true,"m_GUID":"{90DC1677-39AE-4D40-8E98-89DADDC7AF85}","m_Name":"oriobj"},5,{"m_Active":true,"m_GUID":"{FDDC8D7D-27CC-4EBE-AF77-A2FD422B2007}","m_Name":"Clone_Entity_Name"},6,{"m_Active":true,"m_GUID":"{16320389-B83E-4A2B-9CB0-A81451F57C7E}","m_Name":"ParentEntity"},7,{"m_Active":true,"m_GUID":"{48A723F3-D1A7-4370-82E1-6947ADD3FA8F}","m_Name":"ChildEntity"},8,{"m_Active":true,"m_GUID":"{34B33F34-9A48-4B2D-A683-9EBAEDB5B0DA}","m_Name":"ParentPosEntity"},9,{"m_Active":true,"m_GUID":"{6ACB9FE4-12B0-46EE-A4B1-F91544E84A10}","m_Name":"ChildPosEntity"}],[10,0,{"m_Children":[],"m_Parent":""},1,{"m_Children":[],"m_Parent":""},2,{"m_Children":[],"m_Parent":""},3,{"m_Children":[],"m_Parent":"{48A723F3-D1A7-4370-82E1-6947ADD3FA8F}"},4,{"m_Children":[],"m_Parent":""},5,{"m_Children":[],"m_Parent":""},6,{"m_Children":[],"m_Parent":""},7,{"m_Children":["{9ADBE172-6590-46FE-84D2-37FCB18ACEC8}"],"m_Parent":""},8,{"m_Children":["{6ACB9FE4-12B0-46EE-A4B1-F91544E84A10}"],"m_Parent":""},9,{"m_Children":[],"m_Parent":"{34B33F34-9A48-4B2D-A683-9EBAEDB5B0DA}"}],[9,9,{"m_Position":[7.0,7.0,7.0],"m_Rotation":[3.0,6.0,9.0],"m_Scale":[24.0,2.0,10.0]},1,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},2,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},3,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},4,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},5,{"m_Position":[123.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},6,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},7,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},8,{"m_Position":[4.0,5.0,6.0],"m_Rotation":[1.0,2.0,3.0],"m_Scale":[3.0,1.0,2.0]}],[0],[0]]
+[
+   [
+      13,
+      1048576,
+      1048577,
+      1048578,
+      1048579,
+      1048580,
+      1048581,
+      1048582,
+      1048583,
+      1048584,
+      1048585,
+      100,
+      101,
+      102
+   ],
+   [
+      13,
+      1048578,
+      {
+         "m_Active": true,
+         "m_GUID": "{1538E935-91BA-4E50-9543-9BDB1B28DCB2}",
+         "m_Name": "Test2"
+      },
+      1048577,
+      {
+         "m_Active": true,
+         "m_GUID": "{4B250A21-FB7C-44C4-BE2E-F3B25F79791F}",
+         "m_Name": "Test"
+      },
+      1048576,
+      {
+         "m_Active": true,
+         "m_GUID": "{9F4D0D03-8DA1-4464-BD76-4F89BF6B2851}",
+         "m_Name": "cam"
+      },
+      1048585,
+      {
+         "m_Active": true,
+         "m_GUID": "{0971D4BF-C089-4C1D-964B-A86545C4F9BC}",
+         "m_Name": "ChildPosEntity"
+      },
+      1048584,
+      {
+         "m_Active": true,
+         "m_GUID": "{09501579-F829-4B2A-9B3E-F26FA3BC0977}",
+         "m_Name": "ParentPosEntity"
+      },
+      1048583,
+      {
+         "m_Active": true,
+         "m_GUID": "{0A4E17FF-1482-4E50-A9A1-526C835ADE52}",
+         "m_Name": "ChildEntity"
+      },
+      1048582,
+      {
+         "m_Active": true,
+         "m_GUID": "{DD1E4E3A-B91E-47EE-968C-2FD5BE4F20BB}",
+         "m_Name": "ParentEntity"
+      },
+      102,
+      {
+         "m_Active": true,
+         "m_GUID": "{4A3609D0-A296-4A4D-B047-607215DA4786}",
+         "m_Name": "allobj"
+      },
+      1048580,
+      {
+         "m_Active": true,
+         "m_GUID": "{FA347C8D-4DCC-4101-8238-298C129446A2}",
+         "m_Name": "oriobj"
+      },
+      1048579,
+      {
+         "m_Active": true,
+         "m_GUID": "{880208A0-3B2E-4879-83CB-547FCACD10C5}",
+         "m_Name": "allobj2"
+      },
+      100,
+      {
+         "m_Active": true,
+         "m_GUID": "{3484ED91-2767-4998-BBA5-D4060BFB58E7}",
+         "m_Name": "Test 1"
+      },
+      101,
+      {
+         "m_Active": true,
+         "m_GUID": "{E826DFB8-1094-4C83-BEFC-0E53C127E685}",
+         "m_Name": "test2"
+      },
+      1048581,
+      {
+         "m_Active": true,
+         "m_GUID": "{82867186-0518-454F-AB03-AF37D5B857B3}",
+         "m_Name": "Clone_Entity_Name"
+      }
+   ],
+   [
+      13,
+      1048578,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048577,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048576,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048585,
+      {
+         "m_Children": [],
+         "m_Parent": "{09501579-F829-4B2A-9B3E-F26FA3BC0977}"
+      },
+      1048584,
+      {
+         "m_Children": [
+            "{0971D4BF-C089-4C1D-964B-A86545C4F9BC}"
+         ],
+         "m_Parent": ""
+      },
+      1048583,
+      {
+         "m_Children": [
+            "{880208A0-3B2E-4879-83CB-547FCACD10C5}"
+         ],
+         "m_Parent": ""
+      },
+      1048582,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      102,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048580,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048579,
+      {
+         "m_Children": [],
+         "m_Parent": "{0A4E17FF-1482-4E50-A9A1-526C835ADE52}"
+      },
+      100,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      101,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048581,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      12,
+      1048578,
+      {
+         "m_Position": [
+            30.0,
+            10.0,
+            100.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            45.0
+         ],
+         "m_Scale": [
+            5.0,
+            5.0,
+            5.0
+         ]
+      },
+      1048577,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            25.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            5.0,
+            5.0,
+            5.0
+         ]
+      },
+      1048576,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048585,
+      {
+         "m_Position": [
+            7.0,
+            7.0,
+            7.0
+         ],
+         "m_Rotation": [
+            3.0,
+            6.0,
+            9.0
+         ],
+         "m_Scale": [
+            24.0,
+            2.0,
+            10.0
+         ]
+      },
+      1048584,
+      {
+         "m_Position": [
+            4.0,
+            5.0,
+            6.0
+         ],
+         "m_Rotation": [
+            1.0,
+            2.0,
+            3.0
+         ],
+         "m_Scale": [
+            3.0,
+            1.0,
+            2.0
+         ]
+      },
+      1048583,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048582,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      101,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048580,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048579,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      102,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048581,
+      {
+         "m_Position": [
+            123.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      2,
+      1048578,
+      {
+         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
+         "ASSET_MAT_m_MaterialInstance": "74b283e6a2bed9d8",
+         "m_IsVisible": true
+      },
+      1048577,
+      {
+         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
+         "ASSET_MAT_m_MaterialInstance": "89f11168a1b5734c",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      1048576,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 10.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            10.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Pitch": 0.0,
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Right": 1.0,
+         "m_Roll": 0.0,
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ],
+         "m_Yaw": 0.0
+      }
+   ]
+]

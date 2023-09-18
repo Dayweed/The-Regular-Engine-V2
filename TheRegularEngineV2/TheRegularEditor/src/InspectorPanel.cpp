@@ -34,6 +34,18 @@ namespace TRE
 		//	std::cout << "whats the name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
 		//	
 		//}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			{
+				std::string assetName = (const char*)payload->Data;
+				std::cout << "drag and dropped " << assetName << " from Content Browser Panel\n";
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		//create entity
 		auto entity = m_SelectionManager->GetSelectedEntity();
 
@@ -75,26 +87,6 @@ namespace TRE
 					ImGui::TreePop();
 				}
 			}*/
-
-			//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
-			//{
-			//	std::cout << "name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
-			//	if (ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Active)
-			//	{
-			//		std::cout << "active\n";
-			//	}
-			//	
-			//	else
-			//	{
-			//		std::cout << "not active\n";
-			//	}
-			//		
-			//}
-			//entity->HasComponent<MeshRenderer>();
-			//entity->HasComponent<Camera>();
-			//entity->HasComponent<SphereCollider>();
-			//entity->HasComponent<BoxCollider>();
-			//entity->HasComponent<Audio>();
 
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
@@ -141,6 +133,8 @@ namespace TRE
 					, Data);
 
 				}
+
+				ImGui::Separator();
 			}
 
 			// Update values into the entity itself
@@ -157,7 +151,6 @@ namespace TRE
 				}
 			}
 		}
-
 
 		////tag
 		//ImGui::AlignTextToFramePadding();
