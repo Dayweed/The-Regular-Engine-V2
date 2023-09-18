@@ -108,6 +108,8 @@ namespace TRE
 		m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, PxTolerancesScale(), false, m_Pvd);
 		assert(m_Physics);
 
+		PxInitExtensions(*m_Physics, m_Pvd);
+
 		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 
@@ -124,9 +126,11 @@ namespace TRE
 #if USE_PHYSX_PVD
 		if (PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
 		{
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+			PxPvdSceneFlags sceneFlags = pvdClient->getScenePvdFlags();
+			sceneFlags.raise(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS);
+			sceneFlags.raise(PxPvdSceneFlag::eTRANSMIT_CONTACTS);
+			sceneFlags.raise(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+			pvdClient->setScenePvdFlags(sceneFlags);
 		}
 		else
 		{
@@ -185,6 +189,14 @@ namespace TRE
 		{
 			// do a test thingy here
 
+			//const auto& vec = ECSManager::Instance().GetEntities<BoxCollider>();
+			//auto& rb = m_Actors[vec.front()->GetGUID()].m_RigidDynamic;
+
+			//std::unique_ptr<PxShape* []> arr(new PxShape * [rb->getNbShapes()]);
+			//const unsigned n = rb->getShapes(arr.get(), rb->getNbShapes());
+			//arr[0]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			//arr[0]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+
 			// reset timer
 			std::time(&start_timer);
 		}
@@ -241,6 +253,7 @@ namespace TRE
 		PX_RELEASE(m_GroundPlane);
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Scene);
+		PxCloseExtensions();
 		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Physics);
 		PX_RELEASE(m_Transport);
@@ -279,9 +292,7 @@ namespace TRE
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
-			PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
-			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
-			sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 		}
 		else
 		{
@@ -305,7 +316,7 @@ namespace TRE
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::shared_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
 		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
 
 		for (unsigned i = 0; i < nbShapes; ++i)
@@ -335,7 +346,7 @@ namespace TRE
 		else // there's still more attached physics components
 		{
 			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::shared_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
 			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
 
 			for (unsigned i = 0; i < nbShapes; ++i)
@@ -378,9 +389,7 @@ namespace TRE
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
-			PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
-			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
-			sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 		}
 		else
 		{
@@ -404,7 +413,7 @@ namespace TRE
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 		
 		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::shared_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
 		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
 
 		for (unsigned i = 0; i < nbShapes; ++i)
@@ -438,7 +447,7 @@ namespace TRE
 		else // there's still more attached physics components
 		{
 			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::shared_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
 			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
 
 			for (unsigned i = 0; i < nbShapes; ++i)
@@ -475,12 +484,8 @@ namespace TRE
 		PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
 
 		// activate gravity by default
-		PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
-		if (sharedData.m_RigidDynamic) // enabling gravity
-			actorFlags.clear(PxActorFlag::eDISABLE_GRAVITY);
-		else // TODO: disabling gravity
-			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
-		sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+		bool useGravity = true; // TODO: disabling gravity
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
 	}
@@ -502,9 +507,7 @@ namespace TRE
 		if (sharedData.m_AttachedComponents)
 		{
 			// turn the gravity off so that these colliders won't 'fall'
-			PxActorFlags actorFlags = sharedData.m_RigidDynamic->getActorFlags();
-			actorFlags.raise(PxActorFlag::eDISABLE_GRAVITY);
-			sharedData.m_RigidDynamic->setActorFlags(actorFlags);
+			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 		}
 		else
 		{
