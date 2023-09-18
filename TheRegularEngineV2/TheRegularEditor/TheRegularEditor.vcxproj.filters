@@ -40,6 +40,15 @@
     <ClCompile Include="src\SelectionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ProfilerPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ToolBarPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditorAssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorSystem.h">
@@ -73,6 +82,11 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ViewportPanel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProfilerPanel.h" />
+    <ClInclude Include="src\ToolBarPanel.h" />
+    <ClInclude Include="src\EditorAssetManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

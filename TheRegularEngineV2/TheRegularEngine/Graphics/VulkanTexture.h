@@ -22,6 +22,7 @@ namespace TRE
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
 
 	private:
+		void GenerateDefaultTexture();
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);
 
@@ -33,5 +34,7 @@ namespace TRE
 		VkImageView m_ImageView;
 		VkDeviceMemory m_ImageMemory;
 		VkDescriptorImageInfo m_DescriptorImageInfo;
+
+		static AssetHandle m_DefaultTextureID;
 	};
 }

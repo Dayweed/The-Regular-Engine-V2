@@ -88,17 +88,17 @@ namespace TRE
 		auto matHandle = Asset::GetGUIDFromHex("74b283e6a2bed9d8");
 		auto matHandle2 = Asset::GetGUIDFromHex("89f11168a1b5734c");
 
-		Texture::RunCompiler("../Assets/140ecd34766a2024.desc");
+		//Texture::RunCompiler("../Assets/140ecd34766a2024.desc");
 		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Assets/140ecd34766a2024.DDS");
 		vkt1->SetHandle(1445318155641167908);
 		AssetManager::Instance().AddAsset(std::move(vkt1));
 
-		Texture::RunCompiler("../Assets/500a79fe5030f521.desc");
+		//Texture::RunCompiler("../Assets/500a79fe5030f521.desc");
 		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Assets/500a79fe5030f521.DDS");
 		vkt2->SetHandle(textureHandle2);
 		AssetManager::Instance().AddAsset(std::move(vkt2));
 
-		Geom::RunCompiler("../Assets/d07c9c27d46df02f.desc");
+		//Geom::RunCompiler("../Assets/d07c9c27d46df02f.desc");
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Assets/d07c9c27d46df02f.geom");
 		ro->SetHandle(geomHandle);
 		AssetManager::Instance().AddAsset(std::move(ro));
