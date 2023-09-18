@@ -13,7 +13,7 @@
 
 #include "pch.h"
 #include "MemoryManager.h"
-#include "Transform.h"
+#include "TREIncludes.h"
 #include <combaseapi.h>
 #include <atlconv.h>
 
@@ -112,7 +112,7 @@ namespace TRE
 		for (auto& object : m_AllEntityList)
 		{
 			// Remove from m_EntityList
-			object.second->AbandonChildren();
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(object.second);
 			// Release all components and entity itself
 			if (ECSManager::Instance().GetRegistry().valid(object.second->m_Entity))
 				ECSManager::Instance().GetRegistry().destroy(object.second->m_Entity);
@@ -125,6 +125,7 @@ namespace TRE
 		m_UndeployedEntityList.clear();
 
 		ECSManager::Instance().m_EntityList.clear();
+		ECSManager::Instance().m_EnttIDList.clear();
 		ECSManager::Instance().GetRegistry().clear();
 
 		// Successful deletion
@@ -180,14 +181,22 @@ namespace TRE
 	void MemoryManager::UpdateECSManager(entt::registry& reg)
 	{
 		// Update ECS Manager based on current registry
+		std::vector<entt::entity> toFlip;
+		toFlip.reserve(reg.size());
 		reg.each([&](entt::entity srcEntity) {
+			toFlip.emplace_back(srcEntity);
+		});
 
+		std::reverse(toFlip.begin(), toFlip.end());
+
+		for (entt::entity srcEntity : toFlip)
+		{
 			Entity obj{ std::make_shared<Ent>() };
 			obj->m_Entity = ECSManager::Instance().GetRegistry().create();
 
 			m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
 			m_DeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
-			
+
 			for (auto [id, source_storage] : reg.storage())
 			{
 				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
@@ -207,7 +216,8 @@ namespace TRE
 			}
 
 			ECSManager::Instance().m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
-		});
+			ECSManager::Instance().m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
+		}
 
 		ResetToConfig();
 	}

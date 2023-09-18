@@ -53,7 +53,7 @@ namespace TRE
 		// Debugging purposes for Profiler
 		void PrintTimers();
 
-		std::map<std::string, Timer*>& GetTimers();
+		std::unordered_map<std::string, Timer*>& GetTimers();
 		const long long GetTotalTime() const;
 	private:
 		// Ctor and Dtor
@@ -67,7 +67,7 @@ namespace TRE
 
 		// Member Variables
 		// Timers to store individual timings
-		std::map<std::string, Timer*> timers;
+		std::unordered_map<std::string, Timer*> timers;
 		// Debug Mode
 		bool debug_mode{ true };
 		long long totalTime{ 0 };

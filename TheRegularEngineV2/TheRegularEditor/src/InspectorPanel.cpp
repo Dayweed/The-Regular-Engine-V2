@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "InspectorPanel.h"
 #include "Imgui/imgui.h"
+#include "cpp/imgui_stdlib.h"
+#include "cpp/imgui_stdlib.cpp"
 #include "TREIncludes.h"
 
 namespace TRE
@@ -33,46 +35,46 @@ namespace TRE
 		//	
 		//}
 		//create entity
+		auto entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
-		if (m_SelectionManager->GetSelectedEntity() != nullptr)
+		if (entity != nullptr)
 		{
-			if (m_SelectionManager->GetSelectedEntity()->HasComponent<Properties>())
+			/*if (entity->HasComponent<Properties>())
 			{
-				bool check = m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active;
+				bool check = entity->GetComponent<Properties>().m_Active;
 				ImGui::Checkbox("Active", &check);
-				if (check != m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active) 
+				if (check != entity->GetComponent<Properties>().m_Active) 
 				{
-					m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Active = check;
+					entity->GetComponent<Properties>().m_Active = check;
 				}
 
 				ImGui::SameLine();
 				char objectName[128] = "";
-				strcpy(objectName, m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name.c_str());
+				strcpy(objectName, entity->GetComponent<Properties>().m_Name.c_str());
 				ImGui::InputTextWithHint("##ObjectName", "Object name", objectName, IM_ARRAYSIZE(objectName));
-				if (0 != strcmp(objectName, m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name.c_str()))
+				if (0 != strcmp(objectName, entity->GetComponent<Properties>().m_Name.c_str()))
 				{
 					m_SelectionManager->GetSelectedEntity()->GetComponent<Properties>().m_Name = objectName;
 				}
-			}
+			}*/
 		
-			if (m_SelectionManager->GetSelectedEntity()->HasComponent<Transform>())
+			/*if (entity->HasComponent<Transform>())
 			{
 				if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 				{
-					float pos[3] = { m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x, m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.y, m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.z };
+					auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+					const glm::vec3& tempPos = transformSystem->GetPosition(entity);
+					float pos[3] = { tempPos.x, tempPos.y, tempPos.z };
+					
 					ImGui::DragFloat3("Position", pos);
-					//std::cout << "x before: " << m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x << "\n";
-					if (pos[0] != m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x || pos[1] != m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.y || pos[2] != m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.z)
+					if (pos[0] != tempPos.x || pos[1] != tempPos.y || pos[2] != tempPos.z)
 					{
-						m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Scale.x = pos[0];
-						m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Scale.y = pos[1];
-						m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Scale.z = pos[2];
-						//std::cout << "x after: " << m_SelectionManager->GetSelectedEntity()->GetComponent<Transform>().m_Position.x << "\n";
+						transformSystem->SetPosition(entity, { pos[0], pos[1], pos[2]});
 					}
 					ImGui::TreePop();
 				}
-			}
+			}*/
 
 			//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 			//{
@@ -88,12 +90,72 @@ namespace TRE
 			//	}
 			//		
 			//}
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<MeshRenderer>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<SphereCollider>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<BoxCollider>();
-			//m_SelectionManager->GetSelectedEntity()->HasComponent<Audio>();
+			//entity->HasComponent<MeshRenderer>();
+			//entity->HasComponent<Camera>();
+			//entity->HasComponent<SphereCollider>();
+			//entity->HasComponent<BoxCollider>();
+			//entity->HasComponent<Audio>();
 
+			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
+
+			// View all inspectable components
+			for (auto& List : properties)
+			{
+				for (auto& [Name, Data] : List.second)
+				{
+					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+
+					std::visit([&](auto&& Value)
+						{
+							using T = std::decay_t<decltype(Value)>;
+
+							if constexpr (std::is_same_v<T, int>)
+							{
+								ImGui::InputInt(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, float>)
+							{
+								ImGui::InputFloat(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, bool>)
+							{
+								ImGui::Checkbox(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, string_t>)
+							{
+								ImGui::InputText(NameStr.c_str(), &Value);
+							}
+							else if constexpr (std::is_same_v<T, oobb>)
+							{
+								// Fake example of using structs (Should remove b4 m2!)...
+								//printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+							}
+							else if constexpr (std::is_same_v<T, glm::vec3>)
+							{
+								float pos[3]{ Value.x, Value.y, Value.z };
+								ImGui::DragFloat3(NameStr.c_str(), pos);
+								Value = { pos[0], pos[1], pos[2] };
+							}
+							else static_assert(always_false<T>::value, "We are not covering all the cases!");
+						}
+					, Data);
+
+				}
+			}
+
+			// Update values into the entity itself
+			auto components = m_SelectionManager->GetSelectedEntityComponents();
+
+			for (size_t i{}; i < properties.size(); ++i)
+			{
+				property::base& compProp { *components[i].second };
+				std::vector<property::entry> List{ properties[i].second };
+				for (const auto& [Name, Data] : List)
+				{
+					// Copy to compProp
+					property::set(compProp, Name.c_str(), Data);
+				}
+			}
 		}
 
 

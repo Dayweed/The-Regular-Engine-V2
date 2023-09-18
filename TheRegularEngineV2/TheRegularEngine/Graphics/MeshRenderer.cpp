@@ -6,8 +6,8 @@ namespace TRE
 {
 	void MeshRendererSystem::Update()
 	{
-		if (m_IsDirty == false)
-			return;
+		/*if (m_IsDirty == false)
+			return;*/
 
 		for (Entity& go : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
@@ -58,6 +58,15 @@ namespace TRE
 		//I think i need to update vertex & index buffer
 
 		UpdateBoundingSphere(go);
+	}
+
+	void MeshRendererSystem::SetMaterial(Entity& go, const std::shared_ptr<Material>& material)
+	{
+		m_IsDirty = true;
+	
+		MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
+		meshRenderer.m_MaterialInstance = material;
+		meshRenderer.m_IsDirty = true;
 	}
 
 	void MeshRendererSystem::SetVisible(Entity& go, bool isVisible)

@@ -15,6 +15,7 @@ project "TextureCompiler"
         "include",
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.stbi}",
+		"%{IncludeDir.Crunch}"
 	}
 
 	files
@@ -28,6 +29,7 @@ project "TextureCompiler"
 	links
 	{
 		"CompilerLib",
+		
 	}
 
 	filter "configurations:Debug"

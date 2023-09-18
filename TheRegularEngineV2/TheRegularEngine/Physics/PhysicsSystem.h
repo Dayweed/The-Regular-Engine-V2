@@ -11,11 +11,10 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #pragma once
+#include "pch.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
-#include "PhysX/PxPhysicsAPI.h"
-#include "Vector2.h"
-#include "Vector3.h"
+#include "PhysicsComponents.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
@@ -25,19 +24,7 @@
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
 
 namespace TRE
-{
-	struct SphereCollider
-	{
-		physx::PxRigidActor* m_RigidActor = nullptr;
-		float m_Radius = 1.0f;
-	};
-
-	struct BoxCollider
-	{
-		physx::PxRigidActor* m_RigidActor = nullptr;
-		glm::vec3 m_HalfExtents = Vector3(0.5f);
-	};
-
+{	
 	class PhysicsSystem : public ECSSystem
 	{
 	public:
@@ -56,11 +43,11 @@ namespace TRE
 		@params        radius    The collider's radius.
 		@params        offset    The offset from the entity's position, if applicable.
 
-		@brief         Creates a SphereCollider component for the given entity,
-					   overwriting any current SphereCollider for this entity.
+		@brief         Initializes the SphereCollider component for the given entity.
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		e1->AddComponent<SphereCollider>();
 		ConstructSphereCollider(e1);
 		*//*__________________________________________________________________________*/
 		void ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
@@ -75,6 +62,7 @@ namespace TRE
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("ball");
+		e1->AddComponent<SphereCollider>();
 		ConstructSphereCollider(e1);
 		// ----- using collider here... -----
 		DestructSphereCollider(e1)
@@ -90,11 +78,11 @@ namespace TRE
 		@params        offset         The offset from the entity's position, if
 									  applicable.
 
-		@brief         Creates a BoxCollider component for the given entity,
-					   overwriting any current BoxCollider for this entity.
+		@brief         Initializes the BoxCollider component for the given entity.
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<BoxCollider>();
 		ConstructBoxCollider(e1);
 		*//*__________________________________________________________________________*/
 		void ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
@@ -109,11 +97,61 @@ namespace TRE
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<BoxCollider>();
 		ConstructBoxCollider(e1);
 		// ----- using collider here... -----
 		DestructBoxCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructBoxCollider(const Entity& entity) const;
+
+		/* !
+		@function      ConstructRigidBody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity         The entity to create the component for.
+
+		@brief         Initializes the RigidBody component for the given entity.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidBody(e1);
+		*//*__________________________________________________________________________*/
+		void ConstructRigidBody(const Entity& entity) const;
+
+		/* !
+		@function      DestructRigidBody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity containing the Rigidbody to destroy.
+
+		@brief         Destroys an entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidBody(e1);
+		// ----- using Rigidbody here... -----
+		DestructRigidBody(e1)
+		*//*__________________________________________________________________________*/
+		void DestructRigidBody(const Entity& entity) const;
+
+		/* !
+		@function      AddForce
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity to add force to.
+		@params        force     The force to apply.
+		@params        mode      The method of applying the given force.
+
+		@brief         Adds a given force to the given's entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<Rigidbody>(); ConstructRigidBody(e1);
+		AddForce(e1,{0, 80, 0});
+		*//*__________________________________________________________________________*/
+		void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
@@ -121,6 +159,8 @@ namespace TRE
 	private:
 
 		bool m_IsReadyForUpdate = false;
+
+		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
 		physx::PxDefaultAllocator		m_Allocator;
 		physx::PxDefaultErrorCallback	m_ErrorCallback;
@@ -131,8 +171,8 @@ namespace TRE
 		physx::PxPhysics*				m_Physics = nullptr;
 		physx::PxDefaultCpuDispatcher*	m_Dispatcher = nullptr;
 		physx::PxScene*					m_Scene = nullptr;
-		physx::PxMaterial*				m_Material = nullptr;
+		physx::PxMaterial*				m_DefaultMaterial = nullptr;
 
-		physx::PxRigidStatic*			m_GroundPlane = nullptr; // REMEMBER TO RELEASE SHAPES, DAMN IT.
+		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 	};
 }

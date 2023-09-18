@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "Graphics/MeshRenderer.h"
 #include "SystemManager.h"
+#include "TREIncludes.h"
 
 namespace TRE
 {
@@ -115,8 +116,16 @@ namespace TRE
 		m_IsDirty = true;
 
 		Transform& transform = go.get()->GetComponent<Transform>();
+		glm::vec3 posDiff = position - transform.m_Position;
 		transform.m_Position = position;
 		transform.m_IsDirty = true;
+
+		// Update Children Position
+		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
+		{
+			glm::vec3 childPos = obj->GetComponent<Transform>().m_Position;
+			SetPosition(obj, childPos + posDiff);
+		}
 	}
 
 	void TransformSystem::SetRotation(Entity& go, const glm::vec3& rotation)
@@ -124,8 +133,16 @@ namespace TRE
 		m_IsDirty = true;
 
 		Transform& transform = go.get()->GetComponent<Transform>();
+		glm::vec3 rotDiff = rotation - transform.m_Rotation;
 		transform.m_Rotation = rotation;
 		transform.m_IsDirty = true;
+
+		// Update Children Rotation
+		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
+		{
+			glm::vec3 childRot = obj->GetComponent<Transform>().m_Rotation;
+			SetRotation(obj, childRot + rotDiff);
+		}
 	}
 
 	void TransformSystem::SetScale(Entity& go, const glm::vec3& scale)
@@ -133,8 +150,16 @@ namespace TRE
 		m_IsDirty = true;
 
 		Transform& transform = go.get()->GetComponent<Transform>();
+		glm::vec3 scaDiff = scale / transform.m_Scale;
 		transform.m_Scale = scale;
 		transform.m_IsDirty = true;
+
+		// Update Children Scale
+		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
+		{
+			glm::vec3 childSca = obj->GetComponent<Transform>().m_Scale;
+			SetScale(obj, childSca * scaDiff);
+		}
 	}
 
 	const glm::vec3& TransformSystem::GetPosition(const Entity& go) const

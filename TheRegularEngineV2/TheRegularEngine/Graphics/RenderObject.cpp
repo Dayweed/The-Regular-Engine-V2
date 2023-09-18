@@ -2,6 +2,7 @@
 #include "RenderObject.h"
 #include "RendererContext.h"
 #include "Core/Engine.h"
+#include "Assets/AssetManager.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/hash.hpp"
@@ -25,39 +26,36 @@ namespace TRE
 
 namespace TRE
 {
-	RenderObject::RenderObject(const Builder& _Builder)
+	RenderObject::RenderObject(const std::string& geomAsset)
 	{
-		CreateVertexBuffer(_Builder.m_Vertices);
-		CreateIndexBuffer(_Builder.m_Indices);
-		CreateBoundingSphere(_Builder.m_Vertices);
+		std::unique_ptr<Geom> geom = Geom::Deserialize(geomAsset);
+
+		m_Type = AssetType::Mesh;
+
+		std::vector<Vertex> vertices(geom->nPosition);
+		std::vector<std::uint32_t> indices(geom->nIndices);
+
+		for (uint32_t i = 0; i < geom->nPosition; ++i)
+		{
+			vertices[i].m_Position = geom->pPosition[i].Position;
+			vertices[i].m_Color = geom->pExtra[i].Color;
+			vertices[i].m_Normal = geom->pExtra[i].Normal;
+			vertices[i].m_UV = geom->pExtra[i].UV;
+		}
+
+		for (uint32_t i = 0; i < geom->nIndices; ++i)
+		{
+			indices[i] = geom->pIndices[i];
+		}
+
+		CreateVertexBuffer(vertices);
+		CreateIndexBuffer(indices);
+		CreateBoundingSphere(vertices);
 	}
 
 	RenderObject::~RenderObject()
 	{
 		vkDeviceWaitIdle(RendererContext::GetDevice()->GetLogicalDevice());
-	}
-
-	std::unique_ptr<RenderObject> RenderObject::CreateFromGeom(std::unique_ptr<Geom> geom)
-	{
-		Builder builder{};
-		builder.m_Vertices.clear();
-		builder.m_Indices.clear();
-		builder.m_Vertices.resize(geom->nPosition);
-		builder.m_Indices.resize(geom->nIndices);
-		for (uint32_t i = 0; i < geom->nPosition; ++i)
-		{
-			builder.m_Vertices[i].m_Position = geom->pPosition[i].Position;
-			builder.m_Vertices[i].m_Color = geom->pExtra[i].Color;
-			builder.m_Vertices[i].m_Normal = geom->pExtra[i].Normal;
-			builder.m_Vertices[i].m_UV = geom->pExtra[i].UV;
-		}
-
-		for (uint32_t i = 0; i < geom->nIndices; ++i)
-		{
-			builder.m_Indices[i] = geom->pIndices[i];
-		}
-
-		return std::make_unique<RenderObject>(builder);
 	}
 
 	void RenderObject::Bind(VkCommandBuffer commandBuffer)
@@ -154,5 +152,21 @@ namespace TRE
 		attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, m_UV) });
 
 		return attributeDescriptions;
+	}
+
+	void RenderObject::Serialize()
+	{
+		
+	}
+
+	std::shared_ptr<RenderObject> RenderObject::Deserialize(const std::string& assetHexGUID)
+	{
+		std::string geomString = "../Assets/" + assetHexGUID + ".geom";
+		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>(geomString);
+		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ro->m_Handle = assetHandle;
+		AssetManager::Instance().AddAsset(std::move(ro));
+
+		return std::move(AssetManager::Instance().GetAsset<RenderObject>(assetHandle));
 	}
 }

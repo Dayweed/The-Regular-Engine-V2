@@ -40,7 +40,10 @@ namespace TRE
 			}
 		}
 
-		m_ListenerPosition = player.get()->GetComponent<Transform>().m_Position;
+		if (player)
+		{
+			m_ListenerPosition = player.get()->GetComponent<Transform>().m_Position;
+		}
 
 	}
 

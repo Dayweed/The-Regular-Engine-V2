@@ -1,5 +1,4 @@
-#ifndef EVENT_BASE_H
-#define EVENT_BASE_H
+#pragma once
 
 namespace TRE
 {
@@ -11,5 +10,3 @@ namespace TRE
 		{}
 	};
 }
-
-#endif

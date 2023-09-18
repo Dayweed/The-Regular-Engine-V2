@@ -18,7 +18,7 @@ namespace TRE
 			ShaderCompiler(const std::filesystem::path& ShaderPath, bool EnableOptimization = true);
 			~ShaderCompiler() = default;
 
-			static std::shared_ptr<Shader> CompileShader(const std::filesystem::path& ShaderPath, VkShaderStageFlagBits ShaderStage, bool EnableOptimization = true);
+			static std::unique_ptr<Shader> CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization = true);
 		
 		private:
 			int SkipBOM(std::istream& in); //Can create utilities header file if too much in future

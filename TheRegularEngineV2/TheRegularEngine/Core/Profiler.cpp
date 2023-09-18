@@ -48,7 +48,7 @@ namespace TRE
 	*//*__________________________________________________________________________*/
 	void Profiler::StartTimer(std::string name_)
 	{
-		std::map<std::string, Timer*>::iterator timer{ timers.find(name_) };
+		std::unordered_map<std::string, Timer*>::iterator timer{ timers.find(name_) };
 		// Check if it exist
 		if (timer != timers.end())
 		{
@@ -76,7 +76,7 @@ namespace TRE
 	*//*__________________________________________________________________________*/
 	bool Profiler::EndTimer(std::string name_)
 	{
-		std::map<std::string, Timer*>::iterator timer{ timers.find(name_) };
+		std::unordered_map<std::string, Timer*>::iterator timer{ timers.find(name_) };
 		// Check if it exist
 		if (timer != timers.end())
 		{
@@ -99,7 +99,7 @@ namespace TRE
 	*//*__________________________________________________________________________*/
 	bool Profiler::RemoveTimer(std::string name_)
 	{
-		std::map<std::string, Timer*>::iterator timer{ timers.find(name_) };
+		std::unordered_map<std::string, Timer*>::iterator timer{ timers.find(name_) };
 		// Check if it exist
 		if (timer != timers.end())
 		{
@@ -142,7 +142,7 @@ namespace TRE
 		//=========================================================================
 		// Print out each timer
 		std::cout << "[==TIMERS======================]\n";
-		for (std::map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
+		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
 			// TO DO! Print out to the text
 			std::cout << (*timer).first << " took " << (*timer).second->GetTime() << " microseconds\n";
@@ -152,11 +152,11 @@ namespace TRE
 		// Iteration 2 Print by percentage
 		//=========================================================================
 		totalTime = 0;
-		for (std::map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
+		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
 			totalTime += (*timer).second->GetTime();
 		}
-		for (std::map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
+		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
 			// Calculate percentage
 			timer->second->SetPercentage(static_cast<float>((*timer).second->GetTime()) / totalTime * 100.f);
@@ -164,7 +164,7 @@ namespace TRE
 		start_delay = std::chrono::steady_clock::now();
 	}
 
-	std::map<std::string, Timer*>& Profiler::GetTimers()
+	std::unordered_map<std::string, Timer*>& Profiler::GetTimers()
 	{
 		return timers;
 	}
@@ -203,7 +203,7 @@ namespace TRE
 	Profiler::~Profiler()
 	{
 		// Delete all timers
-		for (std::map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
+		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
 			delete (timer->second);
 		}

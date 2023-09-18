@@ -3,39 +3,30 @@
 
 namespace TRE
 {
-	//class UniformBuffer
-	//{
-	//	public:
-	//		UniformBuffer(uint32_t Size, uint32_t Binding);
-	//		~UniformBuffer();
-
-	//		void Map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
-
-	//		std::shared_ptr<Buffer> GetBuffer();
-
-	//	private:
-	//		//std::shared_ptr<Buffer> m_Buffer;
-
-	//		VkBuffer m_Buffer;
-	//		VkDescriptorBufferInfo m_BufferInfo;
-	//		uint32_t m_Size;
-	//		uint32_t m_Binding;
-	//		VkShaderStageFlagBits m_ShaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
-	//		uint8_t* m_Storage;
-	//};
-
-
 	class UniformBuffer
 	{
-	public:
-		UniformBuffer();
-		~UniformBuffer();
+		public:
+			UniformBuffer(uint32_t Size, uint32_t Binding);
+			~UniformBuffer();
+			void SetData(const void* data, uint32_t size, uint32_t offset = 0);
 
-		void Map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
-		std::shared_ptr<Buffer> GetBuffer();
+		public:
+			uint32_t GetBinding() const;
+			const VkDescriptorBufferInfo& GetDescriptorBufferInfo() const;
 
-	private:
-		std::shared_ptr<Buffer> m_Buffer;
+		private:
+			void Release();
+			void Invalidate();
+
+		private:
+			VkBuffer m_Buffer = VK_NULL_HANDLE;
+			VkDeviceMemory m_BufferMemory;
+			VkDescriptorBufferInfo m_BufferInfo{};
+			uint32_t m_Size = 0;
+			uint32_t m_Binding = 0;
+			VkShaderStageFlagBits m_ShaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+			uint8_t* m_Storage = nullptr;
+			std::string DebugName;
 	};
 }

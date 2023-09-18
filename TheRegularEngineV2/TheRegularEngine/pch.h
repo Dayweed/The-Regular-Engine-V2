@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <variant>
 
 //Utilities
 #include <algorithm>
@@ -36,5 +37,6 @@
 #include <utility>
 
 //Libaries
+#include <Properties.h>
 #include "vulkan/vulkan.h"
 #include "glm/glm.hpp"
