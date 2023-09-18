@@ -13,7 +13,7 @@ namespace TRE
 	struct LineVertex
 	{
 		glm::vec3 Position;
-		//glm::vec4 Color;
+		glm::vec4 Color;
 	};
 
 	struct PushConstant
@@ -45,7 +45,6 @@ namespace TRE
 
 		public:
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
-			VkSampler GetSampler();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 			void CreateDebugDraw(); //Just for now
@@ -63,7 +62,6 @@ namespace TRE
 			std::unique_ptr<Pipeline> m_DebugDrawPipeline;
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
-			VkSampler m_Sampler;
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;
 

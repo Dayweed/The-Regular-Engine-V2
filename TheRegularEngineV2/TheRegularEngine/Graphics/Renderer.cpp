@@ -23,37 +23,12 @@ namespace TRE
 		return m_ColorImages;
 	}
 
-	VkSampler Renderer::GetSampler()
-	{
-		return m_Sampler;
-	}
-
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		Create();
-
-		// Create sampler to sample from the attachment in the fragment shader
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerInfo.addressModeV = samplerInfo.addressModeU;
-		samplerInfo.addressModeW = samplerInfo.addressModeU;
-		samplerInfo.mipLodBias = 0.0f;
-		samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.minLod = 0.0f;
-		samplerInfo.maxLod = 1.0f;
-		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-		
-		if (auto Result = vkCreateSampler(m_Device->GetLogicalDevice(), &samplerInfo, nullptr, &m_Sampler); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
 
 		VkCommandPoolCreateInfo CmdPoolCreateInfo{};
 		CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -137,7 +112,7 @@ namespace TRE
 
 		std::vector<VkVertexInputAttributeDescription> DebugDrawattributeDescriptions{};
 		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Position) });
-		//DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
+		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
 
 		PipelineConfigurations DebugDrawPipelineConfig;
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
@@ -175,7 +150,7 @@ namespace TRE
 		float Theta = (3.14 * 2) / 48.f;
 		for (int x = 0; x < 48; x++)
 		{
-			DebugSphereVert.push_back(LineVertex(glm::vec3(cosf(Theta * x), sinf((Theta * x)), 0)));
+			DebugSphereVert.push_back(LineVertex(glm::vec3(cosf(Theta * x), sinf((Theta * x)), 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
 			DebugSphereIndices.push_back(x);
 		}
 
@@ -288,8 +263,6 @@ namespace TRE
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
-
-		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 	}
 
 	void Renderer::Shutdown()

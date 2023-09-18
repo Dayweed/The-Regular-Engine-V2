@@ -32,5 +32,6 @@ namespace TRE
 		VkImage m_Image;
 		VkImageView m_ImageView;
 		VkDeviceMemory m_ImageMemory;
+		VkDescriptorImageInfo m_DescriptorImageInfo;
 	};
 }
