@@ -24,6 +24,12 @@ namespace TRE
 		return m_SelectedEntity;
 	}
 
+	void SelectionManager::ClearSelectedEntity()
+	{
+		m_SelectedEntity = nullptr;
+		m_SelectedEntityInspectableComp.clear();
+	}
+
 	std::vector<std::pair<std::string, property::base*>>& SelectionManager::GetSelectedEntityComponents()
 	{
 		return m_SelectedEntityInspectableComp;
