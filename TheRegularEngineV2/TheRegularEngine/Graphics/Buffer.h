@@ -24,7 +24,7 @@ namespace TRE
 		VkDescriptorBufferInfo DescriptorInfoIndex(int index);
 		VkResult InvalidateIndex(int index);
 
-		VkBuffer GetBuffer() const { return m_Buffer; }
+		const VkBuffer& GetBuffer() { return m_Buffer; }
 		void* GetMappedMemory() const { return m_Mapped; }
 		uint32_t GetInstanceCount() const { return m_InstanceCount; }
 		VkDeviceSize GetInstanceSize() const { return m_InstanceSize; }

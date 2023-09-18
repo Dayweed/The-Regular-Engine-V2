@@ -4,7 +4,6 @@
 #include "Renderer.h"
 #include "RendererContext.h"
 #include "MeshRenderer.h"
-#include "imgui_impl_vulkan.h"
 #include "Camera.h"
 #include "Core/Logger.h"
 #include "ShaderCompiler.h"
@@ -101,88 +100,7 @@ namespace TRE
 			material->AllocateLayouts();
 		}
 
-		auto DebugDrawVertShader = AssetManager::Instance().GetAsset<Shader>(7);
-		auto DebugDrawFragShader = AssetManager::Instance().GetAsset<Shader>(8);
-
-		//Debug Draw Pipelines
-		std::vector<VkVertexInputBindingDescription> DebugDrawBindingDescriptions(1);
-		DebugDrawBindingDescriptions[0].binding = 0;
-		DebugDrawBindingDescriptions[0].stride = sizeof(LineVertex);
-		DebugDrawBindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		std::vector<VkVertexInputAttributeDescription> DebugDrawattributeDescriptions{};
-		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Position) });
-		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
-
-		PipelineConfigurations DebugDrawPipelineConfig;
-		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
-		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
-		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
-		DebugDrawPipelineConfig.VertexBindingDescriptions = DebugDrawBindingDescriptions;
-		DebugDrawPipelineConfig.VertexAttributeDescriptions = DebugDrawattributeDescriptions;
-		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
-
-		TRE_CORE_INFO("Debug Pipeline Created");
-
-		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawVertShader, DebugDrawFragShader);
-		m_DebugMaterialInstance->AllocateLayouts();
-		CreateDebugDraw();
-	}
-
-	static void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-	{
-		auto logicalDevice = RendererContext::GetDevice();
-		VkCommandBuffer commandBuffer = logicalDevice->AllocateCommandBuffer(true);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;  // Optional
-		copyRegion.dstOffset = 0;  // Optional
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-		logicalDevice->SubmitCommands(commandBuffer);
-	}
-
-	void Renderer::CreateDebugDraw()
-	{
-		std::vector<LineVertex> DebugSphereVert;
-		std::vector<int> DebugSphereIndices;
-		float Theta = (3.14 * 2) / 48.f;
-		for (int x = 0; x < 48; x++)
-		{
-			DebugSphereVert.push_back(LineVertex(glm::vec3(cosf(Theta * x), sinf((Theta * x)), 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-			DebugSphereIndices.push_back(x);
-		}
-
-		int VertexCount = DebugSphereVert.size();
-
-		uint32_t vertexSize = sizeof(DebugSphereVert[0]);
-		Buffer stagingBuffer(vertexSize, VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		//Create a staging buffer to copy the vertex data to
-		stagingBuffer.Map();
-		stagingBuffer.WriteToBuffer((void*)DebugSphereVert.data());
-
-		//Flush data from staging buffer to vertex buffer
-		m_DebugVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		VkDeviceSize bufferSize = vertexSize * VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_DebugVertexBuffer->GetBuffer(), bufferSize);
-
-		//Index
-		m_IndexCount = DebugSphereIndices.size();
-
-		uint32_t indexSize = sizeof(int);
-		Buffer stagingBufferindex(indexSize, m_IndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		stagingBufferindex.Map();
-		stagingBufferindex.WriteToBuffer((void*)DebugSphereIndices.data());
-
-		m_DebugIndexBuffer = std::make_unique<Buffer>(indexSize, m_IndexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		VkDeviceSize indexbufferSize = indexSize * m_IndexCount;
-		CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugIndexBuffer->GetBuffer(), indexbufferSize);
+		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -329,13 +247,13 @@ namespace TRE
 		}
 
 		//Debug Pass
-		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipeline());
-		m_DebugMaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+		m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
+		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugDrawPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 			
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if (mr.m_RenderObject == nullptr)
@@ -345,13 +263,10 @@ namespace TRE
 				continue;
 
 			//Bind
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipelineLayout(), 0, 1, &m_DebugMaterialInstance->GetDescriptor(Index), 0, NULL);
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 		
-			VkBuffer vertexBuffers[] = { m_DebugVertexBuffer->GetBuffer() };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(m_Commandbuffers[Index], 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(m_Commandbuffers[Index], m_DebugIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-			vkCmdDrawIndexed(m_Commandbuffers[Index], m_IndexCount, 1, 0, 0, 0);
+			m_DebugRenderer->BindDebugAABB(m_Commandbuffers[Index]);
+			m_DebugRenderer->DrawDebugAABB(m_Commandbuffers[Index]);
 		}
 
 		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
