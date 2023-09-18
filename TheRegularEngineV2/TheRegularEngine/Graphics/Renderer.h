@@ -58,6 +58,8 @@ namespace TRE
 
 		private:
 			std::unique_ptr<Pipeline> m_Pipeline;
+			std::shared_ptr<RenderPass> m_RenderPass;
+
 			std::unique_ptr<Pipeline> m_DebugDrawPipeline;
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 

@@ -102,9 +102,9 @@ namespace TRE
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
 		RenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
 		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		std::shared_ptr<RenderPass> renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+		m_RenderPass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
 
-		CreateFrameBuffer(renderpass);
+		CreateFrameBuffer(m_RenderPass);
 
 		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
 		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
@@ -115,12 +115,11 @@ namespace TRE
 
 		PipelineConfigurations PipelineConfig;
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
 		PipelineConfig.VertexBindingDescriptions = bindingDescription;
 		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
-		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
 		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
 		{
@@ -131,13 +130,6 @@ namespace TRE
 		auto DebugDrawFragShader = AssetManager::Instance().GetAsset<Shader>(8);
 
 		//Debug Draw Pipelines
-		RenderPassInfo DebugDrawRenderPassCreateInfo{};
-		DebugDrawRenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		DebugDrawRenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
-		DebugDrawRenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
-		DebugDrawRenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		std::shared_ptr<RenderPass> DebugDrawRenderPass = std::make_shared<RenderPass>(m_Device, DebugDrawRenderPassCreateInfo);
-
 		std::vector<VkVertexInputBindingDescription> DebugDrawBindingDescriptions(1);
 		DebugDrawBindingDescriptions[0].binding = 0;
 		DebugDrawBindingDescriptions[0].stride = sizeof(LineVertex);
@@ -149,12 +141,11 @@ namespace TRE
 
 		PipelineConfigurations DebugDrawPipelineConfig;
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
-		DebugDrawPipelineConfig.RenderPass = DebugDrawRenderPass;
 		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
 		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
 		DebugDrawPipelineConfig.VertexBindingDescriptions = DebugDrawBindingDescriptions;
 		DebugDrawPipelineConfig.VertexAttributeDescriptions = DebugDrawattributeDescriptions;
-		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig);
+		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		TRE_CORE_INFO("Debug Pipeline Created");
 
@@ -277,7 +268,7 @@ namespace TRE
 		m_DepthImages.clear();
 
 		Create();
-		CreateFrameBuffer(m_Pipeline->GetConfig().RenderPass);
+		CreateFrameBuffer(m_RenderPass);
 	}
 
 	Renderer::~Renderer()
@@ -325,7 +316,7 @@ namespace TRE
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 
-		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
+		m_RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -390,7 +381,7 @@ namespace TRE
 			vkCmdDrawIndexed(m_Commandbuffers[Index], m_IndexCount, 1, 0, 0, 0);
 		}
 
-		m_Pipeline->GetConfig().RenderPass->EndRenderPass(m_Commandbuffers[Index]);
+		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 
 		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
 		{
