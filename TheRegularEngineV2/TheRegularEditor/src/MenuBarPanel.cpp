@@ -131,6 +131,7 @@ namespace TRE
 
 	void MenuBarPanel::SaveScene()
 	{
+		
 		SceneManager::Instance().SaveScene();
 		return;
 	}
