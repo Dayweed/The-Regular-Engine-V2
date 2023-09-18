@@ -13,7 +13,7 @@ namespace TRE
 	struct LineVertex
 	{
 		glm::vec3 Position;
-		glm::vec4 Color;
+		//glm::vec4 Color;
 	};
 
 	struct PushConstant
@@ -48,6 +48,11 @@ namespace TRE
 			VkSampler GetSampler();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
+			void CreateDebugDraw(); //Just for now
+			std::unique_ptr<Buffer> m_DebugVertexBuffer;
+			std::unique_ptr<Buffer> m_DebugIndexBuffer;
+			int m_IndexCount;
+
 		private:
 			std::shared_ptr<Device> m_Device;
 
@@ -67,5 +72,7 @@ namespace TRE
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 
 			std::shared_ptr<Material> m_DebugMaterialInstance;
+
+
 	};
 }

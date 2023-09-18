@@ -145,10 +145,10 @@ namespace TRE
 
 		std::vector<VkVertexInputAttributeDescription> DebugDrawattributeDescriptions{};
 		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Position) });
-		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
+		//DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
 
 		PipelineConfigurations DebugDrawPipelineConfig;
-		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
+		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
 		DebugDrawPipelineConfig.RenderPass = DebugDrawRenderPass;
 		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
 		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
@@ -160,6 +160,63 @@ namespace TRE
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawVertShader, DebugDrawFragShader);
 		m_DebugMaterialInstance->AllocateLayouts();
+		CreateDebugDraw();
+	}
+
+	static void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+	{
+		auto logicalDevice = RendererContext::GetDevice();
+		VkCommandBuffer commandBuffer = logicalDevice->AllocateCommandBuffer(true);
+
+		VkBufferCopy copyRegion{};
+		copyRegion.srcOffset = 0;  // Optional
+		copyRegion.dstOffset = 0;  // Optional
+		copyRegion.size = size;
+		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+		logicalDevice->SubmitCommands(commandBuffer);
+	}
+
+	void Renderer::CreateDebugDraw()
+	{
+		std::vector<LineVertex> DebugSphereVert;
+		std::vector<int> DebugSphereIndices;
+		float Theta = (3.14 * 2) / 48.f;
+		for (int x = 0; x < 48; x++)
+		{
+			DebugSphereVert.push_back(LineVertex(glm::vec3(cosf(Theta * x), sinf((Theta * x)), 0)));
+			DebugSphereIndices.push_back(x);
+		}
+
+		int VertexCount = DebugSphereVert.size();
+
+		uint32_t vertexSize = sizeof(DebugSphereVert[0]);
+		Buffer stagingBuffer(vertexSize, VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+		//Create a staging buffer to copy the vertex data to
+		stagingBuffer.Map();
+		stagingBuffer.WriteToBuffer((void*)DebugSphereVert.data());
+
+		//Flush data from staging buffer to vertex buffer
+		m_DebugVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		VkDeviceSize bufferSize = vertexSize * VertexCount;
+		CopyBuffer(stagingBuffer.GetBuffer(), m_DebugVertexBuffer->GetBuffer(), bufferSize);
+
+		//Index
+		m_IndexCount = DebugSphereIndices.size();
+
+		uint32_t indexSize = sizeof(int);
+		Buffer stagingBufferindex(indexSize, m_IndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+		stagingBufferindex.Map();
+		stagingBufferindex.WriteToBuffer((void*)DebugSphereIndices.data());
+
+		m_DebugIndexBuffer = std::make_unique<Buffer>(indexSize, m_IndexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		VkDeviceSize indexbufferSize = indexSize * m_IndexCount;
+		CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugIndexBuffer->GetBuffer(), indexbufferSize);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -303,7 +360,6 @@ namespace TRE
 			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
-
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
@@ -327,7 +383,11 @@ namespace TRE
 			//Bind
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipelineLayout(), 0, 1, &m_DebugMaterialInstance->GetDescriptor(Index), 0, NULL);
 		
-			vkCmdDraw(m_Commandbuffers[Index], 2, 1, 0, 0);
+			VkBuffer vertexBuffers[] = { m_DebugVertexBuffer->GetBuffer() };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(m_Commandbuffers[Index], 0, 1, vertexBuffers, offsets);
+			vkCmdBindIndexBuffer(m_Commandbuffers[Index], m_DebugIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+			vkCmdDrawIndexed(m_Commandbuffers[Index], m_IndexCount, 1, 0, 0, 0);
 		}
 
 		m_Pipeline->GetConfig().RenderPass->EndRenderPass(m_Commandbuffers[Index]);
