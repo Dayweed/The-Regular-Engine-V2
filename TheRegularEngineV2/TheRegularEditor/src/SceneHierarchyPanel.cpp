@@ -32,8 +32,20 @@ namespace TRE
 		//    std::cout << "do i have children?\t" << currentEntity->GetChildren().size() << "\n";
 		//}
 
+
 		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+				{
+					Entity GameObject = ECSManager::Instance().CreateEntity();
+					GameObject->GetComponent<Properties>().m_Name = (const char*)payload->Data;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
 			static int selection_mask = 0; //nothing is selected in the beginning
 			int object_clicked = -1; //none of the objects are selected
 
@@ -85,6 +97,7 @@ namespace TRE
 						DisplayChildren(currentEntity);
 					}
 				}
+			
 			}
 
 			ImGui::TreePop();
@@ -104,6 +117,7 @@ namespace TRE
 			}
 			ImGui::EndPopup();
 		}
+
 
 		ImGui::End();
 	}

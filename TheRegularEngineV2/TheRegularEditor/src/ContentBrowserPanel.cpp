@@ -7,9 +7,10 @@ namespace TRE
 
 	//Root Folders
 	static std::filesystem::path assetPath = "../Assets/";
-	ContentBrowserPanel::ContentBrowserPanel()
+	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 		: m_CurrentDirectory(assetPath), m_AssetDirectory(assetPath)
 	{
+		m_SelectionManager = Selection_Manager;
 	}
 
 	ContentBrowserPanel::~ContentBrowserPanel()
@@ -118,17 +119,27 @@ namespace TRE
 
 			if(directoryEntry.is_directory())
 			{
+				//files
 				if (ImGui::Button(fileNameString.c_str()))
 				{
 					m_CurrentDirectory /= path.filename();
 				}
-
 			}
+
 			else
 			{
+				//assets
 				if (ImGui::Button(fileNameString.c_str()))
 				{
+					
+				}
 
+				if (ImGui::BeginDragDropSource())
+				{
+						ImGui::SetDragDropPayload("Content Browser item", fileNameString.c_str(), fileNameString.size());
+						ImGui::Text("Move %s", fileNameString.c_str());
+
+					ImGui::EndDragDropSource();
 				}
 			}
 		}
