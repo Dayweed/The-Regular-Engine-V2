@@ -11,23 +11,26 @@ namespace TRE
 
 		// Generate new Scene Name
 		m_CurrentScene = SCENE_DEFAULT_NAME;
+		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + m_CurrentScene + GETFILE(FILESYS_SCENE);
 	}
 
-	void SceneManager::LoadScene(std::string sceneName)
+	void SceneManager::LoadScene(std::string scenePath)
 	{
-		ECSManager::Instance().LoadEntities(GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE));
-		m_CurrentScene = sceneName;
+		ECSManager::Instance().LoadEntities(scenePath);
+		m_CurrentScene = scenePath;
+		m_CurrentSceneFilePath = scenePath;
 	}
 
-	void SceneManager::SaveSceneAs(std::string sceneName)
+	void SceneManager::SaveSceneAs(std::string scenePath)
 	{
-		ECSManager::Instance().SaveEntities(GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE));
+		ECSManager::Instance().SaveEntities(scenePath);
 		AssetManager::Instance().Serialize();
-		m_CurrentScene = sceneName;
+		m_CurrentScene = scenePath;
+		m_CurrentSceneFilePath = scenePath;
 	}
 
 	void SceneManager::SaveScene()
 	{
-		ECSManager::Instance().SaveEntities(GETFOLDER(FILESYS_SCENE) + m_CurrentScene + GETFILE(FILESYS_SCENE));
+		ECSManager::Instance().SaveEntities(m_CurrentSceneFilePath);
 	}
 }
