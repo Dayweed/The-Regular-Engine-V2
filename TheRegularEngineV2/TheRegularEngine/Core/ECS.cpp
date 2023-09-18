@@ -146,8 +146,10 @@ namespace TRE
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
+			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<FEL>(arc);
+			//.component<FEL>(arc)
+			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}

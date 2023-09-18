@@ -29,10 +29,10 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, MeshRenderer& t)
 		{
-			/*std::string roString = j.at("ASSET_GEOM_m_RenderObject").get<std::string>();
-			AssetHandle roHandle = std::stoul(roString, nullptr, 16);
+			std::string roString = j.at("ASSET_GEOM_m_RenderObject").get<std::string>();
+			AssetHandle roHandle = Asset::GetGUIDFromHex(roString);
 			std::string matString = j.at("ASSET_MAT_m_MaterialInstance").get<std::string>();
-			AssetHandle matHandle = std::stoul(matString, nullptr, 16);
+			AssetHandle matHandle = Asset::GetGUIDFromHex(matString);
 
 			if (auto renderObject = AssetManager::Instance().GetAsset<RenderObject>(roHandle); renderObject)
 			{
@@ -40,8 +40,10 @@ namespace TRE
 			}
 			else
 			{
-				AssetManager::Instance().LoadAsset<RenderObject>(roHandle);
-				t.m_RenderObject = AssetManager::Instance().GetAsset<RenderObject>(roHandle);
+				t.m_RenderObject = RenderObject::Deserialize(roString);
+
+				if(t.m_RenderObject == nullptr)
+					TRE_CORE_CRITICAL(roString + ".geom not found!");
 			}
 
 			if (auto material = AssetManager::Instance().GetAsset<Material>(matHandle); material)
@@ -50,13 +52,14 @@ namespace TRE
 			}
 			else
 			{
-				AssetManager::Instance().LoadAsset<Material>(matHandle);
-				t.m_MaterialInstance = AssetManager::Instance().GetAsset<Material>(matHandle);
-			}*/
+				t.m_MaterialInstance = Material::Deserialize(matString);
+
+				if(t.m_MaterialInstance == nullptr)
+					TRE_CORE_CRITICAL(matString + ".mat not found!");
+			}
 
 			t.m_IsVisible = j.at("m_IsVisible").get<bool>();
-
-			//ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->SetDirty(true);
+			t.m_IsDirty = true;
 		}
 	};
 

@@ -60,6 +60,22 @@ namespace TRE
 		}
 	}
 
+	void DemoDeserialize()
+	{
+		auto vertHandle = 3;
+		auto fragHandle = 4;
+
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		vert->SetHandle(vertHandle);
+		AssetManager::Instance().AddAsset(std::move(vert));
+
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
+		frag->SetHandle(fragHandle);
+		AssetManager::Instance().AddAsset(std::move(frag));
+
+		SceneManager::Instance().LoadScene("DemoScene");
+	}
+
 	void DemoScene()
 	{
 		auto textureHandle = Asset::GetGUIDFromHex("140ecd34766a2024");
@@ -67,6 +83,8 @@ namespace TRE
 		auto geomHandle = Asset::GetGUIDFromHex("d07c9c27d46df02f");
 		auto vertHandle = 3;
 		auto fragHandle = 4;
+		auto DebugDrawVertHandle = 7;
+		auto DebugDrawFragHandle = 8;
 		auto matHandle = Asset::GetGUIDFromHex("74b283e6a2bed9d8");
 		auto matHandle2 = Asset::GetGUIDFromHex("89f11168a1b5734c");
 
@@ -92,6 +110,18 @@ namespace TRE
 		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
 		frag->SetHandle(fragHandle);
 		AssetManager::Instance().AddAsset(std::move(frag));
+
+		//DebugDrawShaders
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
+		DebugDrawVert->SetHandle(DebugDrawVertHandle);
+		AssetManager::Instance().AddAsset(std::move(DebugDrawVert));
+
+		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
+		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
+		AssetManager::Instance().AddAsset(std::move(DebugDrawFrag));
+
+		auto DebugVertShader = AssetManager::Instance().GetAsset<Shader>(DebugDrawVertHandle);
+		auto DebugFragShader = AssetManager::Instance().GetAsset<Shader>(DebugDrawFragHandle);
 
 		// Create a material instance
 		auto VertShader = AssetManager::Instance().GetAsset<Shader>(vertHandle);
@@ -206,6 +236,7 @@ namespace TRE
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
 		RegisterECS();
+		//DemoDeserialize();
 		DemoScene();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());

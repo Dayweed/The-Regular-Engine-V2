@@ -10,6 +10,12 @@
 
 namespace TRE
 {
+	struct LineVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+	};
+
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
@@ -35,19 +41,27 @@ namespace TRE
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
+			void DebugDrawPass(VkCommandBuffer CommandBuffer);
+
 		public:
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
-			VkSampler GetSampler();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
+
+			void CreateDebugDraw(); //Just for now
+			std::unique_ptr<Buffer> m_DebugVertexBuffer;
+			std::unique_ptr<Buffer> m_DebugIndexBuffer;
+			int m_IndexCount;
 
 		private:
 			std::shared_ptr<Device> m_Device;
 
 		private:
 			std::unique_ptr<Pipeline> m_Pipeline;
+			std::shared_ptr<RenderPass> m_RenderPass;
+
+			std::unique_ptr<Pipeline> m_DebugDrawPipeline;
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
-			VkSampler m_Sampler;
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
@@ -57,6 +71,8 @@ namespace TRE
 
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 
-			std::vector<std::shared_ptr<Material>> m_TestMaterial;
+			std::shared_ptr<Material> m_DebugMaterialInstance;
+
+
 	};
 }

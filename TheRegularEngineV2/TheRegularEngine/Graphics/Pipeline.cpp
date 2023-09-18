@@ -28,7 +28,7 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig, const std::shared_ptr<RenderPass>& TargetRenderPass) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
@@ -198,7 +198,7 @@ namespace TRE
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_Layout;
-		pipelineInfo.renderPass = m_Config.RenderPass->GetHandle();
+		pipelineInfo.renderPass = TargetRenderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 

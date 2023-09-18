@@ -35,6 +35,9 @@ namespace TRE
 
 		static AssetType GetType() { return AssetType::Mesh; }
 
+		void Serialize() override;
+		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
+
 	private:
 		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffer(const std::vector<std::uint32_t>& indices);

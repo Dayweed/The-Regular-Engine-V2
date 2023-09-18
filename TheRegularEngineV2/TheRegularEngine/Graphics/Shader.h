@@ -20,6 +20,8 @@ namespace TRE
 
 			static AssetType GetType() { return AssetType::Shader; }
 
+			void Serialize() override;
+
 		public:
 			VkPipelineShaderStageCreateInfo GetPipelineShaderInfo();
 			const std::unordered_map<std::string, VkWriteDescriptorSet>& GetWriteDescriptorSets();
