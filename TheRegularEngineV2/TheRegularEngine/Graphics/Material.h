@@ -18,14 +18,15 @@ namespace TRE
 			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
 
 			//This should be removed eventually
-			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures = std::move(Textures); }
+			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures.push_back(Textures); }
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
-			std::shared_ptr<VulkanTexture> GetTextures() { return m_Textures; }
+			std::vector<std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
 
 			static AssetType GetType() {return AssetType::Material;}
 
 			void Serialize() override;
+			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);
 		private:
 			std::shared_ptr<Shader> m_VertexShader;
 			std::shared_ptr<Shader> m_FragmentShader;
@@ -34,6 +35,6 @@ namespace TRE
 			std::vector<VkWriteDescriptorSet> m_WriteDescriptors;
 			VkDescriptorSetLayout m_DescriptorSetLayout;
 
-			std::shared_ptr<VulkanTexture> m_Textures;
+			std::vector<std::shared_ptr<VulkanTexture>> m_Textures;
 	};
 }

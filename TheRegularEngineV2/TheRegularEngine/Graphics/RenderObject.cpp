@@ -2,6 +2,7 @@
 #include "RenderObject.h"
 #include "RendererContext.h"
 #include "Core/Engine.h"
+#include "Assets/AssetManager.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/hash.hpp"
@@ -151,5 +152,21 @@ namespace TRE
 		attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, m_UV) });
 
 		return attributeDescriptions;
+	}
+
+	void RenderObject::Serialize()
+	{
+		
+	}
+
+	std::shared_ptr<RenderObject> RenderObject::Deserialize(const std::string& assetHexGUID)
+	{
+		std::string geomString = "../Assets/" + assetHexGUID + ".geom";
+		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>(geomString);
+		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ro->m_Handle = assetHandle;
+		AssetManager::Instance().AddAsset(std::move(ro));
+
+		return std::move(AssetManager::Instance().GetAsset<RenderObject>(assetHandle));
 	}
 }

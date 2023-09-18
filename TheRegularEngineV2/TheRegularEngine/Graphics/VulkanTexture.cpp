@@ -110,6 +110,10 @@ namespace TRE
 		{
 			assert(result == VK_SUCCESS && "Failed to create texture sampler");
 		}
+
+		m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		m_DescriptorImageInfo.imageView = m_ImageView;
+		m_DescriptorImageInfo.sampler = m_Sampler;
 	}
 
 	VulkanTexture::~VulkanTexture()
@@ -123,11 +127,7 @@ namespace TRE
 
 	const VkDescriptorImageInfo& VulkanTexture::GetDescriptorImageInfo() const
 	{
-		VkDescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = m_ImageView;
-		imageInfo.sampler = m_Sampler;
-		return imageInfo;
+		return m_DescriptorImageInfo;
 	}
 
 	void VulkanTexture::TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout)
@@ -211,5 +211,16 @@ namespace TRE
 			&region);
 
 		device->SubmitCommands(commandBuffer);
+	}
+
+	std::shared_ptr<VulkanTexture> VulkanTexture::Deserialize(const std::string& assetHexGUID)
+	{
+		std::string textureString = "../Assets/" + assetHexGUID + ".DDS";
+		std::unique_ptr<VulkanTexture> ro = std::make_unique<VulkanTexture>(textureString);
+		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ro->m_Handle = assetHandle;
+		AssetManager::Instance().AddAsset(std::move(ro));
+
+		return std::move(AssetManager::Instance().GetAsset<VulkanTexture>(assetHandle));
 	}
 }

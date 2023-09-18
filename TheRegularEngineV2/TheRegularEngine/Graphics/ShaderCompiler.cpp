@@ -32,7 +32,7 @@ namespace TRE
 		found = name.find_last_of('.');
 		name = found != std::string::npos ? name.substr(0, found) : name;
 		std::string shaderStage = path.substr(path.find_last_of('.') + 1);
-		VkShaderStageFlagBits ShaderStage;
+		VkShaderStageFlagBits ShaderStage{};
 		if (shaderStage == "vert")
 		{
 			ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;

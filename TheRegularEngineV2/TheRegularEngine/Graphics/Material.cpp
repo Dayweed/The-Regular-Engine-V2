@@ -60,24 +60,32 @@ namespace TRE
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
-		std::vector<VkWriteDescriptorSet> Writes;
+		m_WriteDescriptors.clear();
 
 		for (auto x : m_VertexShader->GetWriteDescriptorSets())
 		{
 			x.second.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			x.second.dstSet = m_DescriptorSets[Index];
-			Writes.push_back(x.second);
+			m_WriteDescriptors.push_back(x.second);
 		}
-
-		for (auto x : m_FragmentShader->GetWriteDescriptorSets())
+		
+		int x = 0;
+		if (m_FragmentShader->GetWriteDescriptorSets().size())
 		{
-			auto imageInfo = m_Textures->GetDescriptorImageInfo();
-			x.second.pImageInfo = &imageInfo;
-			x.second.dstSet = m_DescriptorSets[Index];
-			Writes.push_back(x.second);
+			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
+			{
+				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+				{
+					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
+					FragmentBindings.second.pImageInfo = &imageInfo;
+					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
+					m_WriteDescriptors.push_back(FragmentBindings.second);
+					++x;
+				}
+			}
 		}
 
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(Writes.size()), Writes.data(), 0, nullptr);
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
 	void Material::Serialize()
@@ -98,10 +106,74 @@ namespace TRE
 			return;
 		}
 
-		file << "VertexShader: " << m_VertexShader->GetHandle() << std::endl;
-		file << "FragmentShader: " << m_FragmentShader->GetHandle() << std::endl;
-		file << "Textures: " << m_Textures->GetHandle() << std::endl;
+		file << "VertexShader:\n" << m_VertexShader->GetHandleHex() << std::endl;
+		file << "FragmentShader:\n" << m_FragmentShader->GetHandleHex() << std::endl;
+		file << "Textures:\n";
+		//For loop next time
+		for (auto texture : m_Textures)
+		{
+			file << texture->GetHandleHex() << std::endl;
+		}
 
 		file.close();
+	}
+
+	std::shared_ptr<Material> Material::Deserialize(const std::string& assetHexGUID)
+	{
+		//Open material file
+		std::string materialPath = "../Assets/" + assetHexGUID + ".material";
+		std::ifstream file(materialPath);
+		if (!file.is_open())
+		{
+			TRE_CORE_ERROR("Unable to open file {0}", materialPath);
+			return nullptr;
+		}
+
+		std::string line;
+		std::string vertexShaderGUID;
+		std::string fragmentShaderGUID;
+		std::vector<std::string> textureGUIDs;
+
+		while (std::getline(file, line))
+		{
+			if (line == "VertexShader:")
+			{
+				std::getline(file, vertexShaderGUID);
+			}
+			else if (line == "FragmentShader:")
+			{
+				std::getline(file, fragmentShaderGUID);
+			}
+			else if (line == "Textures:")
+			{
+				while (std::getline(file, line))
+				{
+					textureGUIDs.push_back(line);
+				}
+			}
+		}
+
+		auto vertShader = AssetManager::Instance().GetAsset<Shader>(Asset::GetGUIDFromHex(vertexShaderGUID));
+		auto fragShader = AssetManager::Instance().GetAsset<Shader>(Asset::GetGUIDFromHex(fragmentShaderGUID));
+		std::unique_ptr<Material> mat = std::make_unique<Material>(vertShader, fragShader);
+		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		mat->m_Handle = assetHandle;
+
+		mat->m_Textures.resize(textureGUIDs.size());
+		for (int i = 0; i < textureGUIDs.size(); ++i)
+		{	
+			std::string textureHexGUID = textureGUIDs[i];
+			auto texture = AssetManager::Instance().GetAsset<VulkanTexture>(Asset::GetGUIDFromHex(textureHexGUID));
+			//Load into engine if not in asset manager
+			if (texture == nullptr)
+			{
+				texture = VulkanTexture::Deserialize(textureHexGUID);
+			}
+			mat->m_Textures[i] = texture;
+		}
+
+		AssetManager::Instance().AddAsset(std::move(mat));
+
+		return std::move(AssetManager::Instance().GetAsset<Material>(assetHandle));
 	}
 }

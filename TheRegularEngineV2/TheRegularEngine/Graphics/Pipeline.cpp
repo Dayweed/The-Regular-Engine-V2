@@ -28,22 +28,18 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig, const std::shared_ptr<RenderPass>& TargetRenderPass) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
 		VkPipelineShaderStageCreateInfo shaderStages[] = { m_Config.VertexShader->GetPipelineShaderInfo(), m_Config.FragmentShader->GetPipelineShaderInfo() };
 
-		//Vertex input
-		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
-		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
-
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{}; //Make it modular
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescription.size());
-		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-		vertexInputInfo.pVertexBindingDescriptions = bindingDescription.data();
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_Config.VertexAttributeDescriptions.size());
+		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(m_Config.VertexBindingDescriptions.size());
+		vertexInputInfo.pVertexAttributeDescriptions = m_Config.VertexAttributeDescriptions.data();
+		vertexInputInfo.pVertexBindingDescriptions = m_Config.VertexBindingDescriptions.data();
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -202,7 +198,7 @@ namespace TRE
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_Layout;
-		pipelineInfo.renderPass = m_Config.RenderPass->GetHandle();
+		pipelineInfo.renderPass = TargetRenderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 

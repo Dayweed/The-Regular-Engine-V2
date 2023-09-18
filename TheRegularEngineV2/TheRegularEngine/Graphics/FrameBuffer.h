@@ -2,6 +2,11 @@
 
 namespace TRE
 {
+	struct FrameBufferConfig
+	{
+
+	};
+
 	class Framebuffer
 	{
 		public:

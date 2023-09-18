@@ -39,7 +39,7 @@ namespace TRE
 		{
 			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
 		}
-		std::string fileName{ "AHHHScene" };
+		std::string fileName{ "../Scenes/AHHHScene.json" };
 		SceneManager::Instance().SaveSceneAs(fileName);
 
 		std::cout << "File Name: > " << fileName << "\n";
@@ -60,42 +60,82 @@ namespace TRE
 		}
 	}
 
-	void DemoScene()
+	void DemoDeserialize()
 	{
-		Texture::RunCompiler("../Assets/Test.desc");
-		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Assets/Test.DDS");
-		vkt1->SetHandle(0);
-		AssetManager::Instance().AddAsset(std::move(vkt1));
-
-		Texture::RunCompiler("../Assets/Test2.desc");
-		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Assets/Test2.DDS");
-		vkt2->SetHandle(1);
-		AssetManager::Instance().AddAsset(std::move(vkt2));
-
-		Geom::RunCompiler("../Assets/mine.desc");
-		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Assets/mine.geom");
-		ro->SetHandle(2);
-		AssetManager::Instance().AddAsset(std::move(ro));
+		auto vertHandle = 3;
+		auto fragHandle = 4;
 
 		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
-		vert->SetHandle(3);
+		vert->SetHandle(vertHandle);
 		AssetManager::Instance().AddAsset(std::move(vert));
 
 		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
-		frag->SetHandle(4);
+		frag->SetHandle(fragHandle);
 		AssetManager::Instance().AddAsset(std::move(frag));
 
+		SceneManager::Instance().LoadScene("DemoScene");
+	}
+
+	void DemoScene()
+	{
+		auto textureHandle = Asset::GetGUIDFromHex("140ecd34766a2024");
+		auto textureHandle2 = Asset::GetGUIDFromHex("500a79fe5030f521");
+		auto geomHandle = Asset::GetGUIDFromHex("d07c9c27d46df02f");
+		auto vertHandle = 3;
+		auto fragHandle = 4;
+		auto DebugDrawVertHandle = 7;
+		auto DebugDrawFragHandle = 8;
+		auto matHandle = Asset::GetGUIDFromHex("74b283e6a2bed9d8");
+		auto matHandle2 = Asset::GetGUIDFromHex("89f11168a1b5734c");
+
+		Texture::RunCompiler("../Assets/140ecd34766a2024.desc");
+		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Assets/140ecd34766a2024.DDS");
+		vkt1->SetHandle(1445318155641167908);
+		AssetManager::Instance().AddAsset(std::move(vkt1));
+
+		Texture::RunCompiler("../Assets/500a79fe5030f521.desc");
+		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Assets/500a79fe5030f521.DDS");
+		vkt2->SetHandle(textureHandle2);
+		AssetManager::Instance().AddAsset(std::move(vkt2));
+
+		Geom::RunCompiler("../Assets/d07c9c27d46df02f.desc");
+		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Assets/d07c9c27d46df02f.geom");
+		ro->SetHandle(geomHandle);
+		AssetManager::Instance().AddAsset(std::move(ro));
+
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		vert->SetHandle(vertHandle);
+		AssetManager::Instance().AddAsset(std::move(vert));
+
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
+		frag->SetHandle(fragHandle);
+		AssetManager::Instance().AddAsset(std::move(frag));
+
+		//DebugDrawShaders
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
+		DebugDrawVert->SetHandle(DebugDrawVertHandle);
+		AssetManager::Instance().AddAsset(std::move(DebugDrawVert));
+
+		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
+		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
+		AssetManager::Instance().AddAsset(std::move(DebugDrawFrag));
+
+		auto DebugVertShader = AssetManager::Instance().GetAsset<Shader>(DebugDrawVertHandle);
+		auto DebugFragShader = AssetManager::Instance().GetAsset<Shader>(DebugDrawFragHandle);
+
 		// Create a material instance
-		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
-		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
+		auto VertShader = AssetManager::Instance().GetAsset<Shader>(vertHandle);
+		auto FragShader = AssetManager::Instance().GetAsset<Shader>(fragHandle);
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
-		mat1->SetHandle(5);
-		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(0));
+		mat1->SetHandle(matHandle);
+		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(textureHandle));
+		mat1->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(textureHandle2));
 		AssetManager::Instance().AddAsset(std::move(mat1));
 
 		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
-		mat2->SetHandle(6);
-		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(1));
+		mat2->SetHandle(matHandle2);
+		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(textureHandle2));
+		mat2->SetTextures(AssetManager::Instance().GetAsset<VulkanTexture>(textureHandle));
 		AssetManager::Instance().AddAsset(std::move(mat2));
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
@@ -108,16 +148,16 @@ namespace TRE
 		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(2));
-		meshRendererSystem->SetMaterial(test2, AssetManager::Instance().GetAsset<Material>(5));
+		meshRendererSystem->SetMeshRenderer(test2, AssetManager::Instance().GetAsset<RenderObject>(geomHandle));
+		meshRendererSystem->SetMaterial(test2, AssetManager::Instance().GetAsset<Material>(matHandle));
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
 		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
 		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
 		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(2));
-		meshRendererSystem->SetMaterial(test, AssetManager::Instance().GetAsset<Material>(6));
+		meshRendererSystem->SetMeshRenderer(test, AssetManager::Instance().GetAsset<RenderObject>(geomHandle));
+		meshRendererSystem->SetMaterial(test, AssetManager::Instance().GetAsset<Material>(matHandle2));
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));
@@ -146,14 +186,14 @@ namespace TRE
 		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
 		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
 
-		SceneManager::Instance().SaveSceneAs("DemoScene");
+		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 
 		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
 
 
 		//cameraSystem->SetIsMainCamera(cam, false);
 		//SceneManager::Instance().NewScene();
-		//SceneManager::Instance().LoadScene("DemoScene");
+		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 
 		/*Entity cam2 = ECSManager::Instance().CreateEntity();
 		cam2->GetComponent<Properties>().m_Name = "cam2";
@@ -196,6 +236,7 @@ namespace TRE
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
 		RegisterECS();
+		//DemoDeserialize();
 		DemoScene();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());

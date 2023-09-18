@@ -6,8 +6,8 @@ namespace TRE
 {
 	void MeshRendererSystem::Update()
 	{
-		if (m_IsDirty == false)
-			return;
+		/*if (m_IsDirty == false)
+			return;*/
 
 		for (Entity& go : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{

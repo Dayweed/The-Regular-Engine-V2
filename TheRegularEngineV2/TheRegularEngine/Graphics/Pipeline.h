@@ -19,16 +19,17 @@ namespace TRE
 
 	struct PipelineConfigurations
 	{
-		std::shared_ptr<RenderPass> RenderPass;
 		std::shared_ptr<Shader> VertexShader;
 		std::shared_ptr<Shader> FragmentShader;
 		PrimitiveType Primitive;
+		std::vector<VkVertexInputAttributeDescription> VertexAttributeDescriptions;
+		std::vector<VkVertexInputBindingDescription> VertexBindingDescriptions;
 	};
 
 	class Pipeline
 	{
 		public:
-			Pipeline(const PipelineConfigurations& PipelineConfig);
+			Pipeline(const PipelineConfigurations& PipelineConfig, const std::shared_ptr<RenderPass>& TargetRenderPass);
 			~Pipeline();
 
 		public:
