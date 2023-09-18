@@ -2,6 +2,7 @@
 #include "MenuBarPanel.h"
 #include "Imgui/imgui.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include <EventSystem/Events/ConsoleEvent.h>
 
 namespace TRE
 {
@@ -117,16 +118,20 @@ namespace TRE
 
 	void MenuBarPanel::NewScene()
 	{
-		return;
+		SceneManager::Instance().NewScene();
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "New Scene Created" });
 	}
 
 	void MenuBarPanel::OpenScene()
 	{
+		//To do
+		//SceneManager::Instance().LoadScene();
 		return;
 	}
 
 	void MenuBarPanel::SaveScene()
 	{
+		SceneManager::Instance().SaveScene();
 		return;
 	}
 
