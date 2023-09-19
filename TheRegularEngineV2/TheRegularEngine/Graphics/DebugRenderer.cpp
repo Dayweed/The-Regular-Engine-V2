@@ -61,16 +61,28 @@ namespace TRE
 
 	void DebugRenderer::CreateDebugAABB()
 	{
+		//std::vector<DebugVertex> DebugAABBVertices =
+		//{
+		//	DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(0.f,1.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(1.f,1.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(1.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(0.f,0.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(0.f,1.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(1.f,1.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+		//	DebugVertex(glm::vec3(1.f,0.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f))
+		//};
+
 		std::vector<DebugVertex> DebugAABBVertices =
 		{
-			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.f,1.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(1.f,1.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(1.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.f,0.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.f,1.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(1.f,1.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(1.f,0.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f))
+			DebugVertex(glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,-0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f))
 		};
 
 		std::vector<int> DebugAABBIndices = { 0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7, 0, 4 };
