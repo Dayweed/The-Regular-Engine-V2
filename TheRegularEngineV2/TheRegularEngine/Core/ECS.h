@@ -846,5 +846,6 @@ property_begin(TRE::Properties)
 
 property_begin(TRE::FEL)
 {
+	property_var(vec_i).Name("vec_i"),
 	property_var(tobeignored).Name("tobeignored")
 } property_vend_h(TRE::FEL)

@@ -101,6 +101,19 @@ namespace TRE
 			// View all inspectable components
 			for (auto& List : properties)
 			{
+				for (size_t c{}; c < List.first.size(); ++c)
+				{
+					std::string charac { List.first[c]  };
+					float diff{ static_cast<float>(c) / static_cast<float>(List.first.size()) };
+					ImGui::TextColored({ 1, diff, 0, 1 }, charac.c_str());
+					ImGui::SameLine();
+				}
+
+				if (ImGui::Button("Remove Component"))
+				{
+					std::cout << "Remove Component...\n";
+				}
+
 				for (auto& [Name, Data] : List.second)
 				{
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
