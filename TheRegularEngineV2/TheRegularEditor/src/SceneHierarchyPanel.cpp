@@ -105,7 +105,13 @@ namespace TRE
 
 		if (deleteEntity > -1)
 		{
-			ECSManager::Instance().DestroyEntity(ECSManager::Instance().GetEntities<Properties>()[deleteEntity]);
+			Entity ent{ ECSManager::Instance().GetEntities<Properties>()[deleteEntity] };
+			ECSManager::Instance().DestroyEntity(ent);
+			deleteEntity = -1;
+			if (ent == m_SelectionManager->GetSelectedEntity())
+			{
+				m_SelectionManager->ClearSelectedEntity();
+			}
 		}
 
 		if (ImGui::BeginPopupContextWindow("Create_New_Entity"))

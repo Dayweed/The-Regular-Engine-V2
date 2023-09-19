@@ -9,6 +9,10 @@ namespace TRE
 	{
 		ECSManager::Instance().DestroyAll();
 
+		Entity MainCamera = ECSManager::Instance().CreateEntity("Main Camera");
+		MainCamera->AddComponent<Camera>();
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
+
 		// Generate new Scene Name
 		m_CurrentScene = SCENE_DEFAULT_NAME;
 		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + m_CurrentScene + GETFILE(FILESYS_SCENE);

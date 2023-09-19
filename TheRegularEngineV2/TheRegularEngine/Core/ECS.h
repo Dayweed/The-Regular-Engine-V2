@@ -67,7 +67,7 @@ namespace TRE
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(NESTCOMP, arr_c)
 	};
 
-	struct FEL
+	struct FEL : property::base
 	{
 		std::vector<float> vec_i{};
 		float arr_i[3]{};
@@ -76,6 +76,7 @@ namespace TRE
 
 		FEL() = default;
 		~FEL() = default;
+		property_vtable()           // Allows the base class to get these properties  
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
 		friend void to_json(nlohmann::json& j, const FEL&f) // Serialize
@@ -560,11 +561,17 @@ namespace TRE
 
 
 		template <typename T>
-		void RegisterComponent(std::string name, bool hidden = false);
+		void RegisterComponent(std::string name, bool hidden = false, bool removable = true);
 
+		bool IsRemovableComponent(std::string compName);
 
 		std::vector<std::pair<std::string, property::base*>> GetAllInspectableComponents(Entity object);
 
+		std::vector<std::string> GetAllNonAddedComponents(Entity object);
+
+		void AddCompFromName(Entity ent, std::string compName);
+
+		void RemCompFromName(Entity ent, std::string compName);
 
 		// TODELETE
 		void TESTRUN();
@@ -585,7 +592,36 @@ namespace TRE
 		std::unordered_map<std::string, Entity> m_EntityList;
 		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 
-		std::unordered_map<entt::id_type, std::string> m_PropertyBased;
+		std::unordered_map<entt::id_type, std::string> m_PropertyBased; // ID type, name, 
+
+		std::map<std::string, std::function<void(Entity)>> m_AddCompFunctions{};	// Add
+		std::map<std::string, std::function<void(Entity)>> m_RemCompFunctions{};	// Remove
+		std::map<std::string, bool> m_CompRemovable{};		// Removable
+
+		template <typename T>
+		static void AddEntityComponent(Entity ent)
+		{
+			ent->AddComponent<T>();
+		}
+
+		template <typename T>
+		static void RemoveEntityComponent(Entity ent)
+		{
+			ent->RemoveComponent<T>();
+		}
+
+		/*template <typename T>
+		static void TESTFUNCTION(int ent)
+		{
+			std::cout << ">>>> " << typeid(T).name() << "|" << ent << "\n";
+		}*/
+
+		template <typename FUNCTION1, typename FUNCTION2>
+		void CompFunction(std::string name, FUNCTION1&& func1, FUNCTION2&& func2)
+		{
+			m_AddCompFunctions.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::forward<FUNCTION1>(func1)));
+			m_RemCompFunctions.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::forward<FUNCTION2>(func2)));
+		}
 	};
 
 	class ECSOutputArchive
@@ -653,7 +689,7 @@ namespace TRE
 	}
 
 	template <typename T>
-	void ECSManager::RegisterComponent(std::string name, bool hidden)
+	void ECSManager::RegisterComponent(std::string name, bool hidden, bool removable)
 	{
 		// m_Components.insert({ hashcode, name });	// This works too
 		ComponentManager::Instance().RegisterComponent<T>(name, hidden);
@@ -666,6 +702,10 @@ namespace TRE
 
 		// Ensure entt knows this component exist
 		m_Registry.view<T>();
+
+		// Prepare map for ImGui
+		CompFunction(name, AddEntityComponent<T>, RemoveEntityComponent<T>);
+		m_CompRemovable.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(removable));
 	}
 
 	template <typename T>
@@ -814,3 +854,9 @@ property_begin(TRE::Properties)
 	property_var(m_Name).Name("Name"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
+
+property_begin(TRE::FEL)
+{
+	property_var(vec_i).Name("vec_i"),
+	property_var(tobeignored).Name("tobeignored")
+} property_vend_h(TRE::FEL)
