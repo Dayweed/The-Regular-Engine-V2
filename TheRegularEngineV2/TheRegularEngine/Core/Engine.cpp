@@ -256,18 +256,18 @@ namespace TRE
 		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true);		// ignore
-		ECSManager::Instance().RegisterComponent<Removal>("Removal", true);				// ignore
-		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true);			// serialized
-		ECSManager::Instance().RegisterComponent<Properties>("Properties", true);		// serialized
-		ECSManager::Instance().RegisterComponent<Transform>("Transform");				// serialized
-		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");		// 
-		ECSManager::Instance().RegisterComponent<Camera>("Camera");						// serialized
+		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// 
+		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized
 		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
 		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");
-		ECSManager::Instance().RegisterComponent<FEL>("FEL");							// serialized
+		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();

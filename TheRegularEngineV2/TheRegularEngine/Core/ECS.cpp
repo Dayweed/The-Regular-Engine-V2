@@ -169,9 +169,24 @@ namespace TRE
 		return ent->GetComponent<Properties>().m_GUID;
 	}
 
+	bool ECSManager::IsRemovableComponent(std::string compName)
+	{
+		if (m_CompRemovable.find(compName) != m_CompRemovable.end())
+		{
+			return m_CompRemovable[compName];
+		}
+		// Return false if doesnt exist
+		return false;
+	}
+
 	void ECSManager::AddCompFromName(Entity ent, std::string compName)
 	{
 		m_AddCompFunctions[compName](ent);
+	}
+
+	void ECSManager::RemCompFromName(Entity ent, std::string compName)
+	{
+		m_RemCompFunctions[compName](ent);
 	}
 
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)

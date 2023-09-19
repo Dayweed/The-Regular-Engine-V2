@@ -109,11 +109,17 @@ namespace TRE
 					ImGui::SameLine();
 				}
 
-				if (ImGui::Button("Remove Component"))
+				if (ECSManager::Instance().IsRemovableComponent(List.first))
 				{
-					std::cout << "Remove Component...\n";
+					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
+					{
+						ECSManager::Instance().RemCompFromName(entity, List.first);
+						m_SelectionManager->SelectEntity(entity);
+						break;
+					}
 				}
 
+				ImGui::NewLine();
 				for (auto& [Name, Data] : List.second)
 				{
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);

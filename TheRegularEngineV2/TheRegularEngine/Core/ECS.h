@@ -561,14 +561,17 @@ namespace TRE
 
 
 		template <typename T>
-		void RegisterComponent(std::string name, bool hidden = false);
+		void RegisterComponent(std::string name, bool hidden = false, bool removable = true);
 
+		bool IsRemovableComponent(std::string compName);
 
 		std::vector<std::pair<std::string, property::base*>> GetAllInspectableComponents(Entity object);
 
 		std::vector<std::string> GetAllNonAddedComponents(Entity object);
 
 		void AddCompFromName(Entity ent, std::string compName);
+
+		void RemCompFromName(Entity ent, std::string compName);
 
 		// TODELETE
 		void TESTRUN();
@@ -589,15 +592,22 @@ namespace TRE
 		std::unordered_map<std::string, Entity> m_EntityList;
 		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 
-		std::unordered_map<entt::id_type, std::string> m_PropertyBased;
+		std::unordered_map<entt::id_type, std::string> m_PropertyBased; // ID type, name, 
 
-		std::map<std::string, std::function<void(Entity)>> m_AddCompFunctions{};
+		std::map<std::string, std::function<void(Entity)>> m_AddCompFunctions{};	// Add
+		std::map<std::string, std::function<void(Entity)>> m_RemCompFunctions{};	// Remove
+		std::map<std::string, bool> m_CompRemovable{};		// Removable
 
 		template <typename T>
 		static void AddEntityComponent(Entity ent)
 		{
-			std::cout << ">>>> " << typeid(T).name() << "|" << ent << "\n";
 			ent->AddComponent<T>();
+		}
+
+		template <typename T>
+		static void RemoveEntityComponent(Entity ent)
+		{
+			ent->RemoveComponent<T>();
 		}
 
 		/*template <typename T>
@@ -606,10 +616,11 @@ namespace TRE
 			std::cout << ">>>> " << typeid(T).name() << "|" << ent << "\n";
 		}*/
 
-		template <typename FUNCTION>
-		void AddFunction(std::string name, FUNCTION&& func)
+		template <typename FUNCTION1, typename FUNCTION2>
+		void CompFunction(std::string name, FUNCTION1&& func1, FUNCTION2&& func2)
 		{
-			m_AddCompFunctions.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::forward<FUNCTION>(func)));
+			m_AddCompFunctions.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::forward<FUNCTION1>(func1)));
+			m_RemCompFunctions.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::forward<FUNCTION2>(func2)));
 		}
 	};
 
@@ -678,7 +689,7 @@ namespace TRE
 	}
 
 	template <typename T>
-	void ECSManager::RegisterComponent(std::string name, bool hidden)
+	void ECSManager::RegisterComponent(std::string name, bool hidden, bool removable)
 	{
 		// m_Components.insert({ hashcode, name });	// This works too
 		ComponentManager::Instance().RegisterComponent<T>(name, hidden);
@@ -692,9 +703,9 @@ namespace TRE
 		// Ensure entt knows this component exist
 		m_Registry.view<T>();
 
-		AddFunction(name, AddEntityComponent<T>);
-		//m_AddCompFunctions.back()(-1);
-		//AddFunctionFIX<T>();
+		// Prepare map for ImGui
+		CompFunction(name, AddEntityComponent<T>, RemoveEntityComponent<T>);
+		m_CompRemovable.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(removable));
 	}
 
 	template <typename T>
