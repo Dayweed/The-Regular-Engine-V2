@@ -19,13 +19,13 @@ namespace TRE
 {
 	class ToolBarPanel : public Panel
 	{
-	public:
-		ToolBarPanel();
-		~ToolBarPanel();
-		void Init() override;
-		void Update() override;
-		void Shutdown() override;
+		public:
+			ToolBarPanel();
+			~ToolBarPanel();
+			void Init() override;
+			void Update() override;
+			void Shutdown() override;
 
-	private:
+		private:
 	};
 }

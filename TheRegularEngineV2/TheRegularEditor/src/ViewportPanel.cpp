@@ -4,6 +4,7 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
+#include "Utilities.h"
 
 //To Delete
 #include "Graphics/Camera.h"
@@ -231,11 +232,17 @@ namespace TRE
 
 			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(xform));
+			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, glm::value_ptr(xform));
+
+			glm::vec3 Scale;
+			glm::quat Rotation;
+			glm::vec3 Translate;
+			Util::DecomposeTransform(xform, Translate, Rotation, Scale);
 			if (ImGuizmo::IsUsing())
 			{
-
+				XformSystem->SetScale(SelectedEntity, Scale);
 			}
 		}
 
