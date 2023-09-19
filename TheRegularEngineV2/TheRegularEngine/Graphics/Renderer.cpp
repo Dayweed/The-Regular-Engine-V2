@@ -95,12 +95,18 @@ namespace TRE
 		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
-		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
+		/*for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
 		{
 			material->AllocateLayouts();
+		}*/
+
+		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		{
+			go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->AllocateLayouts();
 		}
 
-		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
+
+		//m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -245,29 +251,29 @@ namespace TRE
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
-
-		//Debug Pass
-		m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
-		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
-		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
-		{
-			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-			
-			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
-			if (mr.m_RenderObject == nullptr)
-				continue;
-
-			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
-				continue;
-
-			//Bind
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 		
-			m_DebugRenderer->BindDebugAABB(m_Commandbuffers[Index]);
-			m_DebugRenderer->DrawDebugAABB(m_Commandbuffers[Index]);
-		}
+		//Debug Pass
+		//m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
+		//m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
+		//for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		//{
+		//	PushConstant pc{};
+		//	pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+		//	vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+		//	
+		//	MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+		//	if (mr.m_RenderObject == nullptr)
+		//		continue;
+
+		//	if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+		//		continue;
+
+		//	//Bind
+		//	vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+		//
+		//	m_DebugRenderer->BindDebugSphere(m_Commandbuffers[Index]);
+		//	m_DebugRenderer->DrawDebugSphere(m_Commandbuffers[Index]);
+		//}
 
 		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 

@@ -213,6 +213,32 @@ namespace TRE
 			ImGui::EndDragDropTarget();
 		}
 
+		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
+		if (SelectedEntity)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			float WindowWith = (float)ImGui::GetWindowWidth();
+			float WindowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
+
+			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+			const Camera& camera = entity->GetComponent<Camera>();
+			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
+			const glm::mat4& proj = cameraSystem->GetProjectionMatrix(entity);
+			glm::mat4 View = cameraSystem->GetViewMatrix(entity);
+
+			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(xform));
+
+			if (ImGuizmo::IsUsing())
+			{
+
+			}
+		}
+
 		ImGui::End();
 	}
 
