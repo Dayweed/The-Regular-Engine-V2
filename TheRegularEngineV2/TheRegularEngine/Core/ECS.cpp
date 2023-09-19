@@ -169,6 +169,11 @@ namespace TRE
 		return ent->GetComponent<Properties>().m_GUID;
 	}
 
+	void ECSManager::AddCompFromName(Entity ent, std::string compName)
+	{
+		m_AddCompFunctions[compName](ent);
+	}
+
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
 	{
 		std::vector<std::pair<std::string, property::base*>> components;
@@ -183,6 +188,29 @@ namespace TRE
 			}
 		}
 		return components;
+	}
+
+	std::vector<std::string> ECSManager::GetAllNonAddedComponents(Entity object)
+	{
+		// Get all existing comp
+		std::vector<std::pair<std::string, property::base*>> exisingComp{ GetAllInspectableComponents(object) };
+		std::vector<std::string> existingCompName;
+		for (auto& c : exisingComp)
+		{
+			existingCompName.emplace_back(c.first);
+		}
+
+		// Add all non-existing comp into vector
+		std::vector<std::string> compName;
+		for (auto& compPair : ComponentManager::Instance().GetImguiAddComp())
+		{
+			if (std::find(existingCompName.begin(), existingCompName.end(), compPair.second) == existingCompName.end())
+			{
+				compName.emplace_back(compPair.second);
+			}
+		}
+
+		return compName;
 	}
 
 	Entity Ent::GetThis()
@@ -784,16 +812,30 @@ namespace TRE
 
 		std::cout << "New Name: " << INSPECT->GetName() << "\n";
 
-		// NOT WIRTH USING FOR NOW
+		// NOT WORTH USING FOR NOW
 		//void* pBase = &INSPECTPROP;
 		//property::DisplayEnum(INSPECT->GetComponent<Properties>().getPropertyVTable(), pBase, [&](std::string_view PropertyName, property::data&& Data, const property::table& Table, std::size_t Index, property::flags::type Flags)
 		//	{
 		//		//C->m_List.push_back(std::make_unique<entry>(std::string{ PropertyName }, Data, &Table.m_pEntry[Index], Flags));
 		//	});
 
+		std::cout << "\n\nECSMANAGER PRIVATE FUNCTION!!!\n";
+		std::cout << "- Testing if calling this function can add component...\n";
+		std::cout << "Creating Entity w/o FEL\n";
+		Entity felENT = CreateEntity("FELENT");
+		std::cout << "- Does FELENT have FEL? >" << felENT->HasComponent<FEL>() << "\n";
+		std::cout << "- Adding using m_AddCompFunctions...\n";
+		m_AddCompFunctions[ComponentManager::Instance().GetComponentName<FEL>()](felENT);
+		std::cout << "- Does FELENT have FEL? >" << felENT->HasComponent<FEL>() << "\n";
+
 		std::cout << "\nDestroying all " << GetEntities<Properties>().size() << "  test objects...\n";
 		DestroyAll();
 		std::cout << "- Remaining: " << GetEntities<Properties>().size() << " | Successfully cleared: " << (GetEntities<Properties>().empty() ? "true" : "false") << "\n";
+
+		SceneManager::Instance().NewScene();
+
+		Entity TESTCIO = CreateEntity("LOK");
+		TESTCIO->RemoveComponent<Transform>();
 
 		std::cout << "====================================\n\n";
 	}

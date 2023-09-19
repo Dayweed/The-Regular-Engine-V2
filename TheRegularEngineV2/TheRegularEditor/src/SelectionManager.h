@@ -19,6 +19,6 @@ namespace TRE
 		private:
 			Entity m_SelectedEntity;
 			std::vector<std::pair<std::string, property::base*>> m_SelectedEntityInspectableComp;
-			std::vector< std::pair<std::string, std::vector<property::entry>>> m_SelectedEntityPropTable;
+			std::vector<std::pair<std::string, std::vector<property::entry>>> m_SelectedEntityPropTable;
 	};
 }

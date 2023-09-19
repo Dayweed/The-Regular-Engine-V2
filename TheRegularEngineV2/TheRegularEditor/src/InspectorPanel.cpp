@@ -156,6 +156,26 @@ namespace TRE
 					property::set(compProp, Name.c_str(), Data);
 				}
 			}
+
+			// Add additional components
+			if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 0.0f)))
+			{
+				ImGui::OpenPopup("AddComponent");
+			}
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				for (std::string& compName : ECSManager::Instance().GetAllNonAddedComponents(entity))
+				{
+					if (ImGui::Selectable(compName.c_str()))
+					{
+						ECSManager::Instance().AddCompFromName(entity, compName);
+						m_SelectionManager->SelectEntity(entity);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
 		}
 
 
