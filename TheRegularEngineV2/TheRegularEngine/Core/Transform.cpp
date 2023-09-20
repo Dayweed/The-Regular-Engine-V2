@@ -85,20 +85,20 @@ namespace TRE
 		/*if (m_IsDirty == false)
 			return;*/
 
-		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
-		{
-			Transform& transform = go.get()->GetComponent<Transform>();
-			if (transform.m_IsDirty)
-			{
-				//Update model matrix or sth
-				//Tell mesh renderer to update bounding sphere
-				if (go->HasComponent<MeshRenderer>())
-				{
-					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-				}
-				transform.m_IsDirty = false;
-			}
-		}
+		//for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
+		//{
+		//	Transform& transform = go.get()->GetComponent<Transform>();
+		//	if (transform.m_IsDirty)
+		//	{
+		//		//Update model matrix or sth
+		//		//Tell mesh renderer to update bounding sphere
+		//		if (go->HasComponent<MeshRenderer>())
+		//		{
+		//			ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
+		//		}
+		//		transform.m_IsDirty = false;
+		//	}
+		//}
 	}
 
 	void TransformSystem::OnDestroyGO()

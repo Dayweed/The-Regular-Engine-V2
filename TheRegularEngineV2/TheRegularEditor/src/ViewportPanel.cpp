@@ -147,8 +147,6 @@ namespace TRE
 				if (entitiesHit.size() > 0)
 				{
 					//Single click for now
-					std::cout << entitiesHit.size() << std::endl;
-					std::cout << "hit " << entitiesHit.begin()->second.get()->GetComponent<Properties>().m_Name << std::endl;
 					m_SelectionManager->SelectEntity(entitiesHit.begin()->second);
 				}
 				else
