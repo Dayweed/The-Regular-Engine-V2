@@ -8,6 +8,7 @@ namespace TRE
 	{
 		//Go throught assets folder and link assetname to asset handle based on available descriptor files
 		std::filesystem::path assetsPath = "../Assets";
+		std::filesystem::path resourcePath = "../Resources";
 		for (const auto& entry : std::filesystem::directory_iterator(assetsPath))
 		{
 			if (entry.path().extension() == ".desc")
@@ -23,7 +24,17 @@ namespace TRE
 						std::getline(file, line);
 						std::string assetName = line;
 						assetName = assetName.substr(line.find_last_of('/') + 1);
-						m_AssetNameToHandle[assetName] = Resource::GetGUIDFromHex(assetHandle);
+						std::string resourceCheck = resourcePath.string() + "/" + assetHandle;
+						
+						for (const auto& rscEntry : std::filesystem::directory_iterator(resourcePath))
+						{
+							std::string rscHandle = rscEntry.path().stem().string();
+							if (rscHandle == assetHandle)
+							{
+								m_AssetNameToHandle[assetName] = Resource::GetGUIDFromHex(assetHandle);
+								break;
+							}
+						}
 					}
 				}
 				file.close();
