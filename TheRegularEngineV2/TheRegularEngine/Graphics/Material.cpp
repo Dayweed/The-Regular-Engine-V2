@@ -70,7 +70,7 @@ namespace TRE
 		}
 		
 		int x = 0;
-		if (m_FragmentShader->GetWriteDescriptorSets().size())
+		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0)
 		{
 			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
 			{

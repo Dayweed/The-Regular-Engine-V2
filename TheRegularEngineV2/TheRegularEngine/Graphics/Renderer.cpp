@@ -87,7 +87,7 @@ namespace TRE
 		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
 		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
 
-		PipelineConfigurations PipelineConfig;
+		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
@@ -190,6 +190,15 @@ namespace TRE
 
 	void Renderer::BeginFrame()
 	{
+		//UBO
+		UBO ubo{};
+		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
+		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+	}
+
+	void Renderer::EndFrame()
+	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 
@@ -200,12 +209,6 @@ namespace TRE
 		{
 			assert(Result == VK_SUCCESS);
 		}
-		
-		//UBO
-		UBO ubo{};
-		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 
 		m_RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
@@ -246,28 +249,7 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 		
-		//Debug Pass
-		m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
-		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
-		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
-		{
-			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-			
-			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
-			if (mr.m_RenderObject == nullptr)
-				continue;
-
-			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
-				continue;
-
-			//Bind
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
-		
-			m_DebugRenderer->BindDebugSphere(m_Commandbuffers[Index]);
-			m_DebugRenderer->DrawDebugSphere(m_Commandbuffers[Index]);
-		}
+		DebugDrawPass(Index);
 
 		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 
@@ -290,8 +272,28 @@ namespace TRE
 		}
 	}
 
-	void Renderer::DebugDrawPass(VkCommandBuffer CommandBuffer)
+	void Renderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
-		
+		m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
+		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
+		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		{
+			PushConstant pc{};
+			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			if (mr.m_RenderObject == nullptr)
+				continue;
+
+			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+				continue;
+
+			//Bind
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+			m_DebugRenderer->BindDebugSphere(m_Commandbuffers[Index]);
+			m_DebugRenderer->DrawDebugSphere(m_Commandbuffers[Index]);
+		}
 	}
 }

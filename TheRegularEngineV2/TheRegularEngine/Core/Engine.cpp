@@ -309,6 +309,7 @@ namespace TRE
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
 			m_Renderer->BeginFrame();
+			m_Renderer->EndFrame();
 
 			// Imgui Update
 			if (m_EngineInfo.EnableEditor)

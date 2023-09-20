@@ -1,6 +1,7 @@
 #pragma once
 #include "Material.h"
 #include "Pipeline.h"
+#include "Buffer.h"
 
 namespace TRE
 {
@@ -13,7 +14,7 @@ namespace TRE
 	class DebugRenderer
 	{
 		public:
-			DebugRenderer(const std::shared_ptr<RenderPass>& TargetPass);
+			DebugRenderer(std::shared_ptr<RenderPass> TargetPass);
 			~DebugRenderer();
 			void CreateDebugSphere();
 			void CreateDebugAABB();
@@ -29,7 +30,7 @@ namespace TRE
 
 		public:
 			const VkDescriptorSet& GetDescriptor(uint32_t index);
-			const VkPipelineLayout& GetPipelineLayout();
+			VkPipelineLayout GetPipelineLayout();
 
 		private:
 			std::shared_ptr<Material> m_DebugMaterialInstance;
@@ -42,5 +43,7 @@ namespace TRE
 			std::unique_ptr<Buffer> m_DebugAABBVertexBuffer;
 			std::unique_ptr<Buffer> m_DebugAABBIndexBuffer;
 			uint32_t m_AABBIndexCount;
+
+			std::shared_ptr<RenderPass> m_RenderPass;
 	};
 }

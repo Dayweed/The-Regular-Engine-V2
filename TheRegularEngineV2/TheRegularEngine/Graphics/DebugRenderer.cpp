@@ -24,12 +24,12 @@ namespace TRE
 		return m_DebugMaterialInstance->GetDescriptor(index);
 	}
 
-	const VkPipelineLayout& DebugRenderer::GetPipelineLayout()
+	VkPipelineLayout DebugRenderer::GetPipelineLayout()
 	{
 		return m_DebugDrawPipeline->GetPipelineLayout();
 	}
 
-	DebugRenderer::DebugRenderer(const std::shared_ptr<RenderPass>& TargetPass)
+	DebugRenderer::DebugRenderer(std::shared_ptr<RenderPass> TargetPass) : m_RenderPass(TargetPass)
 	{
 		auto DebugDrawVertShader = AssetManager::Instance().GetAsset<Shader>(7);
 		auto DebugDrawFragShader = AssetManager::Instance().GetAsset<Shader>(8);
@@ -44,13 +44,14 @@ namespace TRE
 		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(DebugVertex, Position) });
 		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(DebugVertex, Color) });
 
-		PipelineConfigurations DebugDrawPipelineConfig;
+		PipelineConfigurations DebugDrawPipelineConfig{};
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
 		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
 		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
 		DebugDrawPipelineConfig.VertexBindingDescriptions = DebugDrawBindingDescriptions;
 		DebugDrawPipelineConfig.VertexAttributeDescriptions = DebugDrawattributeDescriptions;
-		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, TargetPass);
+		DebugDrawPipelineConfig.LineWidth = 5.f;
+		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawVertShader, DebugDrawFragShader);
 		m_DebugMaterialInstance->AllocateLayouts();
@@ -121,12 +122,13 @@ namespace TRE
 	{
 		std::vector<DebugVertex> DebugSphereVert;
 		std::vector<int> DebugSphereIndices;
-		float Theta = (3.14 * 2) / 48.f;
+		float Theta = (3.14f * 2) / 48.f;
 		for (int x = 0; x < 48; x++)
 		{
 			DebugSphereVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x), sinf((Theta * x)), 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
 			DebugSphereIndices.push_back(x);
 		}
+		DebugSphereIndices.push_back(0); //Strip back to the first point
 
 		int VertexCount = DebugSphereVert.size();
 

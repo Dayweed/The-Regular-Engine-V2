@@ -32,11 +32,13 @@ namespace TRE
 			void Create();
 			void Resize();
 			void Shutdown();
+			
 			void BeginFrame();
+			void EndFrame();
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
-			void DebugDrawPass(VkCommandBuffer CommandBuffer);
+			void DebugDrawPass(uint32_t Index);
 
 		public:
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
