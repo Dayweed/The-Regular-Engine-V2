@@ -82,8 +82,8 @@ namespace TRE
 
 	void TransformSystem::Update()
 	{
-		if (m_IsDirty == false)
-			return;
+		/*if (m_IsDirty == false)
+			return;*/
 
 		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
 		{
@@ -153,6 +153,7 @@ namespace TRE
 		glm::vec3 scaDiff = scale / transform.m_Scale;
 		transform.m_Scale = scale;
 		transform.m_IsDirty = true;
+		std::cout << "scale " << transform.m_Scale.x << " " << transform.m_Scale.y << " " << transform.m_Scale.z << std::endl;
 
 		// Update Children Scale
 		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))

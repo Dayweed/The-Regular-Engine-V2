@@ -50,7 +50,7 @@ namespace TRE
 		auto entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
-		if (entity != nullptr)
+		if (ImGui::IsWindowFocused() && entity != nullptr)
 		{
 			/*if (entity->HasComponent<Properties>())
 			{

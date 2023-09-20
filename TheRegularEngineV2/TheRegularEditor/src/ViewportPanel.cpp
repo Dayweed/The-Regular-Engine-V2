@@ -147,11 +147,14 @@ namespace TRE
 				if (entitiesHit.size() > 0)
 				{
 					//Single click for now
+					std::cout << entitiesHit.size() << std::endl;
+					std::cout << "hit " << entitiesHit.begin()->second.get()->GetComponent<Properties>().m_Name << std::endl;
 					m_SelectionManager->SelectEntity(entitiesHit.begin()->second);
 				}
 				else
 				{
 					//Clear
+					m_SelectionManager->ClearSelectedEntity();
 				}
 			}
 		}
@@ -227,22 +230,27 @@ namespace TRE
 			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 			const Camera& camera = entity->GetComponent<Camera>();
 			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-			const glm::mat4& proj = cameraSystem->GetProjectionMatrix(entity);
+			glm::mat4 proj = cameraSystem->GetProjectionMatrix(entity);
+			proj[1][1] *= -1.f;
 			glm::mat4 View = cameraSystem->GetViewMatrix(entity);
 
 			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
 
 			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, glm::value_ptr(xform));
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(xform));
 
-			glm::vec3 Scale;
-			glm::quat Rotation;
-			glm::vec3 Translate;
-			Util::DecomposeTransform(xform, Translate, Rotation, Scale);
+			
 			if (ImGuizmo::IsUsing())
 			{
-				XformSystem->SetScale(SelectedEntity, Scale);
+				glm::vec3 Scale;
+				glm::quat Rotation;
+				glm::vec3 Translate;
+				//Util::DecomposeTransform(xform, Translate, Rotation, Scale);
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(xform), glm::value_ptr(Translate), glm::value_ptr(Rotation), glm::value_ptr(Scale));
+				//XformSystem->SetScale(SelectedEntity, Scale);
+			//XformSystem->SetRotation(SelectedEntity, Rotation);
+				XformSystem->SetPosition(SelectedEntity, Translate);
 			}
 		}
 
