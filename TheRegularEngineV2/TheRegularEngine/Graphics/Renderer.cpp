@@ -8,7 +8,7 @@
 #include "Core/Logger.h"
 #include "ShaderCompiler.h"
 #include "VulkanTexture.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
@@ -80,8 +80,8 @@ namespace TRE
 
 		CreateFrameBuffer(m_RenderPass);
 
-		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
-		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
+		auto VertShader = ResourceManager::Instance().GetResource<Shader>(3);
+		auto FragShader = ResourceManager::Instance().GetResource<Shader>(4);
 
 		//Vertex input
 		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
@@ -95,7 +95,7 @@ namespace TRE
 		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
-		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
+		for (auto material : ResourceManager::Instance().GetResourcesOfType<Material>())
 		{
 			material->AllocateLayouts();
 		}
@@ -168,10 +168,10 @@ namespace TRE
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Material);
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Shader);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Texture);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Mesh);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Material);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Shader);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{

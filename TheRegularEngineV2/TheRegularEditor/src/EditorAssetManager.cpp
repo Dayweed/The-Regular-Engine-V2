@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EditorAssetManager.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
@@ -23,7 +23,7 @@ namespace TRE
 						std::getline(file, line);
 						std::string assetName = line;
 						assetName = assetName.substr(line.find_last_of('/') + 1);
-						m_AssetNameToHandle[assetName] = Asset::GetGUIDFromHex(assetHandle);
+						m_AssetNameToHandle[assetName] = Resource::GetGUIDFromHex(assetHandle);
 					}
 				}
 				file.close();
@@ -35,10 +35,10 @@ namespace TRE
 		m_AssetNameToHandle.clear();
 	}
 
-	void EditorAssetManager::AddAsset(const std::string& assetName, std::unique_ptr<Asset> asset)
+	void EditorAssetManager::AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset)
 	{
 		m_AssetNameToHandle[assetName] = asset->GetHandle();
-		AssetManager::Instance().AddAsset(std::move(asset));
+		ResourceManager::Instance().AddResource(std::move(asset));
 	}
 
 	bool EditorAssetManager::Contains(const std::string& assetName)

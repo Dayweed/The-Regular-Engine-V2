@@ -1,5 +1,5 @@
 #pragma once
-#include "Assets/Asset.h"
+#include "Resource/Resource.h"
 #include "pch.h"
 
 namespace TRE
@@ -17,7 +17,7 @@ namespace TRE
 		void Shutdown();
 
 		//Use for drag and drop
-		void AddAsset(const std::string& assetName, std::unique_ptr<Asset> asset);
+		void AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset);
 		bool Contains(const std::string& assetName);
 	private:
 		EditorAssetManager() = default;
@@ -25,6 +25,6 @@ namespace TRE
 		EditorAssetManager& operator=(const EditorAssetManager&) = delete;
 		void* operator new(size_t) = delete;
 	private:
-		std::unordered_map<std::string, AssetHandle> m_AssetNameToHandle;
+		std::unordered_map<std::string, ResourceHandle> m_AssetNameToHandle;
 	};
 }

@@ -14,7 +14,7 @@ namespace TRE
 	{
 		std::unique_ptr<Texture> texture = Texture::Deserialize(texturePath);
 
-		m_Type = AssetType::Texture;
+		m_Type = ResourceType::Texture;
 
 		VkDeviceSize imageSize = texture->DataSize;
 		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -217,10 +217,10 @@ namespace TRE
 	{
 		std::string textureString = "../Assets/" + assetHexGUID + ".DDS";
 		std::unique_ptr<VulkanTexture> ro = std::make_unique<VulkanTexture>(textureString);
-		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		ro->m_Handle = assetHandle;
-		AssetManager::Instance().AddAsset(std::move(ro));
+		ResourceManager::Instance().AddResource(std::move(ro));
 
-		return std::move(AssetManager::Instance().GetAsset<VulkanTexture>(assetHandle));
+		return std::move(ResourceManager::Instance().GetResource<VulkanTexture>(assetHandle));
 	}
 }

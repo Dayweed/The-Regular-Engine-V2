@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "DebugRenderer.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 #include "RendererContext.h"
 
 namespace TRE
@@ -31,8 +31,8 @@ namespace TRE
 
 	DebugRenderer::DebugRenderer(std::shared_ptr<RenderPass> TargetPass) : m_RenderPass(TargetPass)
 	{
-		auto DebugDrawVertShader = AssetManager::Instance().GetAsset<Shader>(7);
-		auto DebugDrawFragShader = AssetManager::Instance().GetAsset<Shader>(8);
+		auto DebugDrawVertShader = ResourceManager::Instance().GetResource<Shader>(7);
+		auto DebugDrawFragShader = ResourceManager::Instance().GetResource<Shader>(8);
 
 		//Debug Draw Pipelines
 		std::vector<VkVertexInputBindingDescription> DebugDrawBindingDescriptions(1);
