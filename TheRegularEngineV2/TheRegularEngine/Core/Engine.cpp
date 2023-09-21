@@ -141,6 +141,7 @@ namespace TRE
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
+		auto audioSystem = ECSSystemManager::Instance().GetSystem<AudioSystem>();
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
@@ -158,6 +159,11 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		/*test->AddComponent<Audio>();
+		audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+		audioSystem->SetLoop(test, true);
+		audioSystem->SetSpatialize(test,true);
+		audioSystem->CompileAudio(test);*/
 
 		/*std::cout << "\STRESS TEST ECS\n====================================\n";
 		srand(time(NULL));
@@ -177,7 +183,8 @@ namespace TRE
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
-
+		/*cam->AddComponent<AudioListener>();
+		audioSystem->SetListenerPosition(cam);*/
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
@@ -268,6 +275,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
+		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");		
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
