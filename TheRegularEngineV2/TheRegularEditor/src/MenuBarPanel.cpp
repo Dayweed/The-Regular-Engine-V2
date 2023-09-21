@@ -3,6 +3,7 @@
 #include "Imgui/imgui.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include <EventSystem/Events/ConsoleEvent.h>
+#include "Core/Engine.h"
 
 namespace TRE
 {
@@ -48,7 +49,7 @@ namespace TRE
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))
 				{
-					m_ExitPrompt = true;
+					Engine::GetInstance().Shutdown();
 				}
 
 				ImGui::EndMenu();
