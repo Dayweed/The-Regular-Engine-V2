@@ -68,6 +68,8 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void ResizeSphereCollider(const Entity& entity, const float newRadius) const;
 
+		void UpdateSphereCollider(const Entity& entity) const;
+
 		/* !
 		@function      DestructSphereCollider
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
@@ -119,6 +121,8 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void ResizeBoxCollider(const Entity& entity, const Vector3& newHalfExtents) const;
 
+		void UpdateBoxCollider(const Entity& entity) const;
+
 		/* !
 		@function      DestructBoxCollider
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
@@ -137,19 +141,19 @@ namespace TRE
 		void DestructBoxCollider(const Entity& entity) const;
 
 		/* !
-		@function      ConstructRigidBody
+		@function      ConstructRigidbody
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
 		@params        entity         The entity to create the component for.
 
-		@brief         Initializes the RigidBody component for the given entity.
+		@brief         Initializes the Rigidbody component for the given entity.
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("mass");
 		e1->AddComponent<Rigidbody>();
-		ConstructRigidBody(e1);
+		ConstructRigidbody(e1);
 		*//*__________________________________________________________________________*/
-		void ConstructRigidBody(const Entity& entity) const;
+		void ConstructRigidbody(const Entity& entity) const;
 
 		/* !
 		@function      AddForce
@@ -163,13 +167,15 @@ namespace TRE
 
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("box");
-		e1->AddComponent<Rigidbody>(); ConstructRigidBody(e1);
+		e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
 		AddForce(e1,{0, 80, 0});
 		*//*__________________________________________________________________________*/
 		void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
+		void UpdateRigidbody(const Entity& entity) const;
+
 		/* !
-		@function      DestructRigidBody
+		@function      DestructRigidbody
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
 
 		@params        entity    The entity containing the Rigidbody to destroy.
@@ -179,11 +185,11 @@ namespace TRE
 		Example:
 		Entity e1 = ECSManager::Instance().CreateEntity("mass");
 		e1->AddComponent<Rigidbody>();
-		ConstructRigidBody(e1);
+		ConstructRigidbody(e1);
 		// ----- using Rigidbody here... -----
-		DestructRigidBody(e1)
+		DestructRigidbody(e1)
 		*//*__________________________________________________________________________*/
-		void DestructRigidBody(const Entity& entity) const;
+		void DestructRigidbody(const Entity& entity) const;
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;

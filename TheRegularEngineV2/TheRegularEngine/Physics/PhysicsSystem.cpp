@@ -234,7 +234,7 @@ namespace TRE
 		// hopefully this'll be the parameter of this function in the future!!
 		Entity entity = ECSManager::Instance().CreateEntity("PhysicsSystem::OnDestroyGO");
 
-		if (entity->HasComponent<Rigidbody>())		DestructRigidBody(entity);
+		if (entity->HasComponent<Rigidbody>())		DestructRigidbody(entity);
 		if (entity->HasComponent<SphereCollider>())	DestructSphereCollider(entity);
 		if (entity->HasComponent<BoxCollider>())	DestructBoxCollider(entity);
 
@@ -325,6 +325,35 @@ namespace TRE
 
 			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius))); break;
 		}
+	}
+
+	void PhysicsSystem::UpdateSphereCollider(const Entity& entity) const
+	{
+		PhysicsComponentAssertion(SphereCollider);
+
+		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// sphereCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
+
+		sphereCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
+
+		unsigned nbShapes = rigidDynamic->getNbShapes();
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+
+		// obtain the index of the sphere shape
+		unsigned i = 0;
+		for (; i < nbShapes; ++i)
+		{
+			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+
+			break;
+		}
+
+		PxSphereGeometry sphereGeometry;
+		shapes[i]->getSphereGeometry(sphereGeometry);
+		sphereCollider.m_Radius = sphereGeometry.radius;
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
@@ -428,6 +457,35 @@ namespace TRE
 		}
 	}
 
+	void PhysicsSystem::UpdateBoxCollider(const Entity& entity) const
+	{
+		PhysicsComponentAssertion(BoxCollider);
+
+		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// boxCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
+
+		boxCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
+
+		unsigned nbShapes = rigidDynamic->getNbShapes();
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+
+		// obtain the index of the box shape
+		unsigned i = 0;
+		for (; i < nbShapes; ++i)
+		{
+			if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
+
+			break;
+		}
+
+		PxBoxGeometry boxGeometry;
+		shapes[i]->getBoxGeometry(boxGeometry);
+		boxCollider.m_HalfExtents = VEC3_CAST(Vector3, boxGeometry.halfExtents);
+	}
+
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
 		PhysicsComponentDestructorAssertion(BoxCollider);
@@ -464,7 +522,7 @@ namespace TRE
 		entity->RemoveComponent<BoxCollider>();
 	}
 
-	void PhysicsSystem::ConstructRigidBody(const Entity& entity) const
+	void PhysicsSystem::ConstructRigidbody(const Entity& entity) const
 	{
 		PhysicsComponentConstructorAssertion(Rigidbody);
 
@@ -496,7 +554,21 @@ namespace TRE
 		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
 	}
 
-	void PhysicsSystem::DestructRigidBody(const Entity& entity) const
+	void PhysicsSystem::UpdateRigidbody(const Entity& entity) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+
+		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		rigidbody.m_Mass = rigidDynamic->getMass();
+		// rigidbody.m_Drag = ;
+		// rigidbody.m_AngularDrag = ;
+		rigidbody.m_UseGravity = !rigidDynamic->getActorFlags().isSet(PxActorFlag::eDISABLE_GRAVITY);
+		rigidbody.m_IsKinematic = rigidDynamic->getRigidBodyFlags().isSet(PxRigidBodyFlag::eKINEMATIC);
+	}
+
+	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
 	{
 		PhysicsComponentDestructorAssertion(Rigidbody);
 
@@ -531,7 +603,7 @@ namespace TRE
 				const PxVec3 stackPos{ (2.0f * j) - (size - i) , 2.0f * i + 1 , 0 };
 				const PxVec3 newPos = t.transform(halfExtent * stackPos);
 				entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, newPos);
-				entity->AddComponent<Rigidbody>();		ConstructRigidBody(entity);
+				entity->AddComponent<Rigidbody>();		ConstructRigidbody(entity);
 				entity->AddComponent<SphereCollider>();	ConstructSphereCollider(entity, halfExtent);
 				entity->AddComponent<BoxCollider>();	ConstructBoxCollider(entity, Vector3{ halfExtent });
 			}
