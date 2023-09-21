@@ -44,11 +44,18 @@ namespace TRE
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
 	// DO NOT USE THIS UNLESS IT IS CREATING ALLOCATED ENTITIES!
-	// Get this component in GetEntities to get Entity that are going to be deleted in this loop
+	// Get this component in GetEntities to get Entity that are allocated and not used in MemoryManager
 	class Undeployed
 	{
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
+	// DO NOT USE THIS UNLESS IT IS RELATED TO PREFABING ENTITIES!
+	// Get this component in GetEntities to get Entities that got micmic
+	class Prefab
+	{
+
+	};
+
 
 	struct NESTCOMP
 	{
