@@ -120,6 +120,13 @@ namespace TRE
 
 		//A thread that will do collision management
 		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+
+		// SimulationEventCallback must inherit PxSimulationEventCallback
+		// PUBLICLY in order to work, otherwise...
+		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
+		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
+		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
+
 		m_Scene = m_Physics->createScene(sceneDesc);
 		assert(m_Scene);
 
@@ -162,14 +169,14 @@ namespace TRE
 		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
 		e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
 		e1->AddComponent<BoxCollider>();	ConstructBoxCollider(e1);
-		e1->AddComponent<Rigidbody>();		ConstructRigidBody(e1);
+		e1->AddComponent<Rigidbody>();		ConstructRigidbody(e1);
 #endif
 
 #if 0
 		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
-		e2->GetComponent<Transform>().m_Position = { 1,5,0 };
+		e2->GetComponent<Transform>().m_Position = { 1,2,0 };
 		e2->AddComponent<SphereCollider>();	ConstructSphereCollider(e2);
-		e2->AddComponent<Rigidbody>();		ConstructRigidBody(e2);
+		// e2->AddComponent<Rigidbody>();		ConstructRigidbody(e2);
 #endif
 
 		return m_IsReadyForUpdate = true;
@@ -182,20 +189,12 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
-#if 0
+#if 1
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
 		if (result >= 1)
 		{
 			// do a test thingy here
-
-			//const auto& vec = ECSManager::Instance().GetEntities<BoxCollider>();
-			//auto& rb = m_Actors[vec.front()->GetGUID()].m_RigidDynamic;
-
-			//std::unique_ptr<PxShape* []> arr(new PxShape * [rb->getNbShapes()]);
-			//const unsigned n = rb->getShapes(arr.get(), rb->getNbShapes());
-			//arr[0]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-			//arr[0]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
 
 			// reset timer
 			std::time(&start_timer);
@@ -219,13 +218,15 @@ namespace TRE
 
 			// I hope this is right XO
 			const PxVec3 eulerAngles = QuatToEulerAngles(sharedData.m_RigidDynamic->getGlobalPose().q);
+			// WAIT THERE'S THIS: glm::eulerAngles(PxQuat());
 			entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
-
+#if 0
 			printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
 			const auto& pos = entity->GetComponent<Transform>().m_Position;
 			const auto& rot = entity->GetComponent<Transform>().m_Rotation;
 			printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
 			printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
+#endif
 		}
 	}
 
@@ -287,7 +288,23 @@ namespace TRE
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial);
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eVISUALIZATION, false);
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+		//sph_rb->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+		//sph_rb->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+		//sph_rb->setActorFlag(PxActorFlag::eVISUALIZATION, false);
+
+
+		PxShapeFlags huh;
+		huh.clear(PxShapeFlag::eSIMULATION_SHAPE);
+		huh.raise(PxShapeFlag::eSCENE_QUERY_SHAPE);
+		huh.raise(PxShapeFlag::eTRIGGER_SHAPE);
+		huh.raise(PxShapeFlag::eVISUALIZATION);
+
+		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, huh);
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
@@ -440,7 +457,7 @@ namespace TRE
 		PhysicsComponentAssertion(BoxCollider);
 
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-		
+
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
 		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
@@ -618,5 +635,39 @@ namespace TRE
 		auto x = rigidDynamic->getRigidDynamicLockFlags();
 		x.raise(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X);
 		rigidDynamic->setRigidDynamicLockFlags(x);
+	}
+
+	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
+	{
+		printf("|%s|\n", __FUNCTION__);
+	}
+
+	void SimulationEventCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
+	{
+		printf("|%s|\n", __FUNCTION__);
+	}
+
+	void SimulationEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
+	{
+		printf("|%s|\n", __FUNCTION__);
+	}
+
+	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
+	{
+		printf("|%s|\n", __FUNCTION__);
+	}
+
+	void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+	{
+		printf("|%s|\n", __FUNCTION__);
+
+		if (!count) return;
+		auto& pair = pairs[count - 1];
+		printf("YOOOOOOOOOOOOOOOOOOOOOOO");
+	}
+
+	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
+	{
+		printf("|%s|\n", __FUNCTION__);
 	}
 }

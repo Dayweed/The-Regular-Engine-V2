@@ -47,7 +47,7 @@ struct Rigidbody
 struct BaseCollider
 {
 	bool m_IsTrigger = false;
-	physx::PxMaterial* m_PhysicsMaterial = nullptr;
+	// physx::PxMaterial* m_PhysicsMaterial = nullptr;
 };
 
 struct SphereCollider : BaseCollider
