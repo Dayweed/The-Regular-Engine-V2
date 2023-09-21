@@ -1,13 +1,17 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "FileSystem.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
 	void SceneManager::NewScene()
 	{
 		ECSManager::Instance().DestroyAll();
+
+		Entity MainCamera = ECSManager::Instance().CreateEntity("Main Camera");
+		MainCamera->AddComponent<Camera>();
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
 
 		// Generate new Scene Name
 		m_CurrentScene = SCENE_DEFAULT_NAME;
@@ -24,7 +28,7 @@ namespace TRE
 	void SceneManager::SaveSceneAs(std::string scenePath)
 	{
 		ECSManager::Instance().SaveEntities(scenePath);
-		AssetManager::Instance().Serialize();
+		ResourceManager::Instance().Serialize();
 		m_CurrentScene = scenePath;
 		m_CurrentSceneFilePath = scenePath;
 	}

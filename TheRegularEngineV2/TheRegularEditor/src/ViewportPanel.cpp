@@ -4,6 +4,7 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
+#include "Utilities.h"
 
 //To Delete
 #include "Graphics/Camera.h"
@@ -151,6 +152,7 @@ namespace TRE
 				else
 				{
 					//Clear
+					m_SelectionManager->ClearSelectedEntity();
 				}
 			}
 		}
@@ -211,6 +213,43 @@ namespace TRE
 			}
 
 			ImGui::EndDragDropTarget();
+		}
+
+		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
+		if (SelectedEntity)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			float WindowWith = (float)ImGui::GetWindowWidth();
+			float WindowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
+
+			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+			const Camera& camera = entity->GetComponent<Camera>();
+			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
+			glm::mat4 proj = cameraSystem->GetProjectionMatrix(entity);
+			proj[1][1] *= -1.f;
+			glm::mat4 View = cameraSystem->GetViewMatrix(entity);
+
+			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
+
+			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(xform));
+
+			
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 Scale;
+				glm::quat Rotation;
+				glm::vec3 Translate;
+				//Util::DecomposeTransform(xform, Translate, Rotation, Scale);
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(xform), glm::value_ptr(Translate), glm::value_ptr(Rotation), glm::value_ptr(Scale));
+				//XformSystem->SetScale(SelectedEntity, Scale);
+			//XformSystem->SetRotation(SelectedEntity, Rotation);
+				XformSystem->SetPosition(SelectedEntity, Translate);
+			}
 		}
 
 		ImGui::End();

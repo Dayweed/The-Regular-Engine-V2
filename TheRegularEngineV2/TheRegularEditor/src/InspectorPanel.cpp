@@ -88,11 +88,33 @@ namespace TRE
 				}
 			}*/
 
+			// This updates the tables
+			m_SelectionManager->SelectEntity(entity);
+
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
 			// View all inspectable components
 			for (auto& List : properties)
 			{
+				for (size_t c{}; c < List.first.size(); ++c)
+				{
+					std::string charac { List.first[c]  };
+					float diff{ static_cast<float>(c) / static_cast<float>(List.first.size()) };
+					ImGui::TextColored({ 1, diff, 0, 1 }, charac.c_str());
+					ImGui::SameLine();
+				}
+
+				if (ECSManager::Instance().IsRemovableComponent(List.first))
+				{
+					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
+					{
+						ECSManager::Instance().RemCompFromName(entity, List.first);
+						m_SelectionManager->SelectEntity(entity);
+						break;
+					}
+				}
+
+				ImGui::NewLine();
 				for (auto& [Name, Data] : List.second)
 				{
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
@@ -149,6 +171,26 @@ namespace TRE
 					// Copy to compProp
 					property::set(compProp, Name.c_str(), Data);
 				}
+			}
+
+			// Add additional components
+			if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 0.0f)))
+			{
+				ImGui::OpenPopup("AddComponent");
+			}
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				for (std::string& compName : ECSManager::Instance().GetAllNonAddedComponents(entity))
+				{
+					if (ImGui::Selectable(compName.c_str()))
+					{
+						ECSManager::Instance().AddCompFromName(entity, compName);
+						m_SelectionManager->SelectEntity(entity);
+					}
+				}
+
+				ImGui::EndPopup();
 			}
 		}
 

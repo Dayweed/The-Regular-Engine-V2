@@ -24,6 +24,7 @@ namespace TRE
 		PrimitiveType Primitive;
 		std::vector<VkVertexInputAttributeDescription> VertexAttributeDescriptions;
 		std::vector<VkVertexInputBindingDescription> VertexBindingDescriptions;
+		float LineWidth = 1.f;
 	};
 
 	class Pipeline

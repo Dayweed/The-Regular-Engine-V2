@@ -2,7 +2,7 @@
 #include "RenderObject.h"
 #include "RendererContext.h"
 #include "Core/Engine.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/hash.hpp"
@@ -30,7 +30,7 @@ namespace TRE
 	{
 		std::unique_ptr<Geom> geom = Geom::Deserialize(geomAsset);
 
-		m_Type = AssetType::Mesh;
+		m_Type = ResourceType::Mesh;
 
 		std::vector<Vertex> vertices(geom->nPosition);
 		std::vector<std::uint32_t> indices(geom->nIndices);
@@ -163,10 +163,10 @@ namespace TRE
 	{
 		std::string geomString = "../Assets/" + assetHexGUID + ".geom";
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>(geomString);
-		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		ro->m_Handle = assetHandle;
-		AssetManager::Instance().AddAsset(std::move(ro));
+		ResourceManager::Instance().AddResource(std::move(ro));
 
-		return std::move(AssetManager::Instance().GetAsset<RenderObject>(assetHandle));
+		return std::move(ResourceManager::Instance().GetResource<RenderObject>(assetHandle));
 	}
 }
