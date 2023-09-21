@@ -83,11 +83,11 @@ namespace TRE
 				ImGui::PopItemFlag();
 				ImGui::EndMenu();
 			}
-
-			if (ImGui::BeginMenu("Options"))
-			{
-				ImGui::EndMenu();
-			}
+			//Commented out till I find a use for it
+			//if (ImGui::BeginMenu("Options"))
+			//{
+			//	ImGui::EndMenu();
+			//}
 
 			ImGui::EndMainMenuBar();
 		}
@@ -109,6 +109,22 @@ namespace TRE
 				ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
 		}
+
+		if (m_ShortcutNewScene)
+		{
+			NewScene();
+			m_ShortcutNewScene = false;
+		}
+		if (m_ShortcutOpenScene)
+		{
+			OpenScene();
+			m_ShortcutOpenScene = false;
+		}
+		if (m_ShortcutSaveScene)
+		{
+			SaveScene();
+			m_ShortcutSaveScene = false;
+		}
 	}
 
 	void MenuBarPanel::Shutdown()
@@ -126,13 +142,21 @@ namespace TRE
 	{
 		//To do
 		//SceneManager::Instance().LoadScene();
-		return;
+		const std::string path = FileExplorer::OpenFileExplorer("Scene(*.scene)\0*.scene\0");
+		if (!path.empty())
+		{
+			SceneManager::Instance().LoadScene(path);
+		}
 	}
 
 	void MenuBarPanel::SaveScene()
 	{
 		
-		SceneManager::Instance().SaveScene();
+		const std::string path = FileExplorer::SaveFileExplorer("Scene(*.scene)\0*.scene\0");
+		if (!path.empty())
+		{
+			SceneManager::Instance().SaveScene();
+		}
 		return;
 	}
 

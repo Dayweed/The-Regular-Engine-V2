@@ -53,24 +53,24 @@ namespace TRE
 		//auto textureHandle = Resource::GetGUIDFromHex("500a79fe5030f521");
 		//std::shared_ptr<VulkanTexture> m_PlayButtonTexture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle);
 		
-		if (ImGui::ImageButton(Util::GetTextureID(m_PlayButtonTexture->GetDescriptorImageInfo()), ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
-		{
-			TRE_CORE_INFO("Play Button Pressed");
-		}
+		//if (ImGui::ImageButton(Util::GetTextureID(m_PlayButtonTexture->GetDescriptorImageInfo()), ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
+		//{
+		//	TRE_CORE_INFO("Play Button Pressed");
+		//}
 
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
+		//ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
 
-		if (ImGui::ImageButton(Util::GetTextureID(m_PauseButtonTexture->GetDescriptorImageInfo()), ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
-		{
-			TRE_CORE_INFO("Button Pressed");
-		}
+		//if (ImGui::ImageButton(Util::GetTextureID(m_PauseButtonTexture->GetDescriptorImageInfo()), ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
+		//{
+		//	TRE_CORE_INFO("Pause Button Pressed");
+		//}
 
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
+		//ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
 
-		if (ImGui::ImageButton(Util::GetTextureID(m_StopButtonTexture->GetDescriptorImageInfo()), ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
-		{
-			TRE_CORE_INFO("Work Button Pressed");
-		}
+		//if (ImGui::ImageButton(Util::GetTextureID(m_StopButtonTexture->GetDescriptorImageInfo()), ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
+		//{
+		//	TRE_CORE_INFO("Stop Button Pressed");
+		//}
 
 		ImGui::End();
 	}
