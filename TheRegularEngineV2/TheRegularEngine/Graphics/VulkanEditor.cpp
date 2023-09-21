@@ -3,6 +3,7 @@
 #include "Imgui/imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
+#include "Editor/ImGuizmo.h"
 
 namespace TRE
 {
@@ -118,6 +119,7 @@ namespace TRE
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void VulkanEditor::EndFrame()

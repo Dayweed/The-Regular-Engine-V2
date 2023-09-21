@@ -11,6 +11,7 @@
 #include "ConsolePanel.h"
 #include "ProfilerPanel.h"
 #include "ToolBarPanel.h"
+#include "EditorAssetManager.h"
 
 namespace TRE
 {
@@ -25,11 +26,13 @@ namespace TRE
 		m_PanelManager->InsertPanel<ViewportPanel>("Viewport", m_SelectionManager);
 		m_PanelManager->InsertPanel<MenuBarPanel>("Menu Bar");
 		m_PanelManager->InsertPanel<InspectorPanel>("Inspector", m_SelectionManager);
-		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser");
+		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser", m_SelectionManager);
 		m_PanelManager->InsertPanel<ConsolePanel>("Console");
 		m_PanelManager->InsertPanel<ProfilerPanel>("Profiler");
 		m_PanelManager->InsertPanel<ToolBarPanel>("Tool Bar");
 		m_PanelManager->Init();
+
+		EditorAssetManager::Instance().Initialize();
 	}
 	
 	EditorSystem::~EditorSystem()

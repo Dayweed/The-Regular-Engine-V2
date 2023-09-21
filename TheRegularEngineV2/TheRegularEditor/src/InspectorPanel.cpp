@@ -34,11 +34,23 @@ namespace TRE
 		//	std::cout << "whats the name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
 		//	
 		//}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			{
+				std::string assetName = (const char*)payload->Data;
+				std::cout << "drag and dropped " << assetName << " from Content Browser Panel\n";
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		//create entity
 		auto entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
-		if (entity != nullptr)
+		if (ImGui::IsWindowFocused() && entity != nullptr)
 		{
 			/*if (entity->HasComponent<Properties>())
 			{
@@ -76,31 +88,30 @@ namespace TRE
 				}
 			}*/
 
-			//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
-			//{
-			//	std::cout << "name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
-			//	if (ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Active)
-			//	{
-			//		std::cout << "active\n";
-			//	}
-			//	
-			//	else
-			//	{
-			//		std::cout << "not active\n";
-			//	}
-			//		
-			//}
-			//entity->HasComponent<MeshRenderer>();
-			//entity->HasComponent<Camera>();
-			//entity->HasComponent<SphereCollider>();
-			//entity->HasComponent<BoxCollider>();
-			//entity->HasComponent<Audio>();
-
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
 			// View all inspectable components
 			for (auto& List : properties)
 			{
+				for (size_t c{}; c < List.first.size(); ++c)
+				{
+					std::string charac { List.first[c]  };
+					float diff{ static_cast<float>(c) / static_cast<float>(List.first.size()) };
+					ImGui::TextColored({ 1, diff, 0, 1 }, charac.c_str());
+					ImGui::SameLine();
+				}
+
+				if (ECSManager::Instance().IsRemovableComponent(List.first))
+				{
+					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
+					{
+						ECSManager::Instance().RemCompFromName(entity, List.first);
+						m_SelectionManager->SelectEntity(entity);
+						break;
+					}
+				}
+
+				ImGui::NewLine();
 				for (auto& [Name, Data] : List.second)
 				{
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
@@ -141,6 +152,8 @@ namespace TRE
 					, Data);
 
 				}
+
+				ImGui::Separator();
 			}
 
 			// Update values into the entity itself
@@ -156,8 +169,27 @@ namespace TRE
 					property::set(compProp, Name.c_str(), Data);
 				}
 			}
-		}
 
+			// Add additional components
+			if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 0.0f)))
+			{
+				ImGui::OpenPopup("AddComponent");
+			}
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				for (std::string& compName : ECSManager::Instance().GetAllNonAddedComponents(entity))
+				{
+					if (ImGui::Selectable(compName.c_str()))
+					{
+						ECSManager::Instance().AddCompFromName(entity, compName);
+						m_SelectionManager->SelectEntity(entity);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+		}
 
 		////tag
 		//ImGui::AlignTextToFramePadding();

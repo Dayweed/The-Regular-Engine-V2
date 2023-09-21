@@ -1,10 +1,10 @@
 #pragma once
 #include "ShaderResource.h"
-#include "Assets/Asset.h"
+#include "Resource/Resource.h"
 
 namespace TRE
 {
-	class Shader : public Asset
+	class Shader : public Resource
 	{
 		public:
 			Shader() = default;
@@ -18,7 +18,7 @@ namespace TRE
 			std::vector<VkDescriptorSetLayoutBinding>& GetDescriptorBindings();
 			std::vector<PushConstants>& GetPushConstants();
 
-			static AssetType GetType() { return AssetType::Shader; }
+			static ResourceType GetType() { return ResourceType::Shader; }
 
 			void Serialize() override;
 

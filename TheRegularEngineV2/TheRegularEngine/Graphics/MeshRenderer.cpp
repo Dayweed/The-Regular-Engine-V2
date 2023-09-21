@@ -12,9 +12,12 @@ namespace TRE
 		for (Entity& go : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
-			if (meshRenderer.m_IsDirty)
+			Transform& transform = go.get()->GetComponent<Transform>();
+			if (meshRenderer.m_IsDirty || transform.m_IsDirty)
 			{
+				UpdateBoundingSphere(go);
 				meshRenderer.m_IsDirty = false;
+				transform.m_IsDirty = false;
 			}
 		}
 	}
