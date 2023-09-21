@@ -2,17 +2,17 @@ Asset File Path:
 ../Assets/Test2.png
 
 Texture File Path:
-../Assets/500a79fe5030f521.DDS
+../Resources/500a79fe5030f521.DDS
 
 Texture Name:
 Test2
 
-Check vulkan page for enums
-Texture Format:
-138
-
-Texture Filter:
-0
-
 Compress:
 1
+
+GL_Linear:
+1
+
+Normal Map:
+1
+
