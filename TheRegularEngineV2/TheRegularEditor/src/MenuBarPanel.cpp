@@ -49,7 +49,7 @@ namespace TRE
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))
 				{
-					Engine::GetInstance().Shutdown();
+					m_ExitPrompt = true;
 				}
 
 				ImGui::EndMenu();
@@ -105,7 +105,7 @@ namespace TRE
 		{
 			ImGui::Text("Are you sure? Please remember to save before quitting!");
 			if (ImGui::Button("Yes"))
-				TRE_CORE_INFO("Closing window (fake)");
+				Engine::GetInstance().Shutdown();
 			if (ImGui::Button("No"))
 				ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
