@@ -23,7 +23,6 @@ int main()
 	TRE::Log::Init();
 
 	TRE::Engine* App = TRE::CreateApp();
-	//App->RegisterECS();
 	App->Update();
 	App->Shutdown();
 	delete App;

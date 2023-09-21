@@ -27,5 +27,8 @@ namespace TRE
 			void Shutdown() override;
 
 		private:
+			std::shared_ptr<VulkanTexture> m_PlayButtonTexture;
+			std::shared_ptr<VulkanTexture> m_PauseButtonTexture;
+			std::shared_ptr<VulkanTexture> m_StopButtonTexture;
 	};
 }

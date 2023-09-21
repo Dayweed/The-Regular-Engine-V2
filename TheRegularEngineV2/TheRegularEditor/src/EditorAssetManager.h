@@ -18,7 +18,9 @@ namespace TRE
 
 		//Use for drag and drop
 		void AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset);
+		void RemoveAsset(const std::string& assetName);
 		bool Contains(const std::string& assetName);
+		ResourceHandle GetAsset(const std::string& assetName);
 	private:
 		EditorAssetManager() = default;
 		EditorAssetManager(const EditorAssetManager&) = delete;

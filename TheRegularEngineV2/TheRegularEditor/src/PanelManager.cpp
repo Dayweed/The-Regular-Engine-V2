@@ -38,6 +38,14 @@ namespace TRE
 		}
 	}
 
+	void PanelManager::Shutdown()
+	{
+		for (auto x : m_StorePanels)
+		{
+			x.second->Shutdown();
+		}
+	}
+
 	void PanelManager::RemovePanel(std::string PanelName)
 	{
 		m_StorePanels.erase(PanelName);
