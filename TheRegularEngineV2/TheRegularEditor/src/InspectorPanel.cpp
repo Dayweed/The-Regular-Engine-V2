@@ -50,7 +50,7 @@ namespace TRE
 		auto entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
-		if (ImGui::IsWindowFocused() && entity != nullptr)
+		if (entity != nullptr)
 		{
 			/*if (entity->HasComponent<Properties>())
 			{
@@ -87,6 +87,9 @@ namespace TRE
 					ImGui::TreePop();
 				}
 			}*/
+
+			// This updates the tables
+			m_SelectionManager->SelectEntity(entity);
 
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
