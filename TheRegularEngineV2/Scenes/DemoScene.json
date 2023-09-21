@@ -10,19 +10,19 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{424069F2-E521-45C1-8A93-BCD4F9502060}",
+         "m_GUID": "{8E087516-0BC9-49C0-9D91-ECCCD226FFBA}",
          "m_Name": "Test2"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{D0ED8D39-3813-4485-B3DB-750DE5FA9CF0}",
+         "m_GUID": "{82143B1C-B722-4CBA-9343-3745E5BB590D}",
          "m_Name": "Test"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{5FB6942C-76EF-44BE-9DF8-2E09D80A675E}",
+         "m_GUID": "{F288E7E2-D3D2-425B-9726-E511D5EBB234}",
          "m_Name": "cam"
       }
    ],

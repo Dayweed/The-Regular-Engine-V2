@@ -119,6 +119,8 @@ namespace TRE
 		MemoryManager::Instance().ClearUndeployed();
 
 		entt::snapshot snapshot{ GetRegistry() };
+		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
+
 		// Serialize all entities and components
 		snapshot.entities(arc)
 			.component<Properties>(arc)
@@ -847,10 +849,17 @@ namespace TRE
 		DestroyAll();
 		std::cout << "- Remaining: " << GetEntities<Properties>().size() << " | Successfully cleared: " << (GetEntities<Properties>().empty() ? "true" : "false") << "\n";
 
+		std::cout << "\nCreating New Scene...\n";
 		SceneManager::Instance().NewScene();
 
-		Entity TESTCIO = CreateEntity("LOK");
-		TESTCIO->RemoveComponent<Transform>();
+		std::cout << "\nCreating Entity to prefab\n";
+		Entity prefabEnt = ECSManager::Instance().CreateEntity("Prefab Entity");
+		prefabEnt->AddComponent<FEL>().tobeignored = "uwu";
+
+		std::cout << "- Attempting to save prefab " << prefabEnt->GetName() << "\n";
+		std::string prefabFilePath = ECSSystemManager::Instance().GetSystem<PrefabManager>()->SavePrefabEntity(prefabEnt);
+		std::cout << "- File Path for prefab: " << prefabFilePath << "\n";
+
 
 		std::cout << "====================================\n\n";
 	}
