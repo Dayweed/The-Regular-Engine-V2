@@ -54,14 +54,14 @@ namespace TRE
 			TRE_CORE_INFO("Play Button Pressed");
 		}
 
-		//ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
 
 		if (ImGui::ImageButton(m_PauseID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
 			TRE_CORE_INFO("Button Pressed");
 		}
 
-		//ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
 
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
