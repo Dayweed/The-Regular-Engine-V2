@@ -25,7 +25,12 @@ namespace TRE
 		ImGui::Begin("Profiler");
 		std::stringstream Fps;
 		Fps << 1/Engine::GetInstance().GetWindow()->GetDeltaTime() << "FPS\n";
-		ImGui::TextUnformatted(Fps.str().c_str());
+		//Profiler::GetTimers()
+		//ImGui::PlotLines()
+		std::stringstream physics;
+		physics << Profiler::Instance().GetTimers()[typeid(MeshRendererSystem).name()]->GetTime() << "ms\n";
+		ImGui::TextUnformatted(physics.str().c_str());
+
 		ImGui::End();
 	}
 
