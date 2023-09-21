@@ -18,6 +18,7 @@
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
 #include "Graphics/ShaderCompiler.h"
+#include "TextureDescriptorFile.h"	
 
 namespace TRE
 {
@@ -177,6 +178,12 @@ namespace TRE
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
+
+		//// this is to get the main camera
+		//auto mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera(); 
+		//
+		//mainCamera->GetComponent<Camera>().GetViewDirection();
+		//mainCamera->GetComponent<Camera>().GetUpVec();
 
 
 		//Entity audio = ECSManager::Instance().CreateEntity();

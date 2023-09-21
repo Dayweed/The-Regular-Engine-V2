@@ -52,8 +52,18 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(asset));
 	}
 
+	void EditorAssetManager::RemoveAsset(const std::string& assetName)
+	{
+		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName]);
+	}
+
 	bool EditorAssetManager::Contains(const std::string& assetName)
 	{
 		return m_AssetNameToHandle.find(assetName) != m_AssetNameToHandle.end();
+	}
+
+	ResourceHandle EditorAssetManager::GetAsset(const std::string& assetName)
+	{
+		return m_AssetNameToHandle[assetName];
 	}
 }

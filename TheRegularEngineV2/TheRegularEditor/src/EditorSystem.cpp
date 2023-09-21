@@ -18,6 +18,8 @@ namespace TRE
 	EditorSystem::EditorSystem()
 	{
 		TRE_INFO("Editor Init");
+		
+		EditorAssetManager::Instance().Initialize();
 
 		m_PanelManager = std::make_unique<PanelManager>();
 		m_SelectionManager = std::make_shared<SelectionManager>();
@@ -31,8 +33,6 @@ namespace TRE
 		m_PanelManager->InsertPanel<ProfilerPanel>("Profiler");
 		m_PanelManager->InsertPanel<ToolBarPanel>("Tool Bar");
 		m_PanelManager->Init();
-
-		EditorAssetManager::Instance().Initialize();
 	}
 	
 	EditorSystem::~EditorSystem()
@@ -93,12 +93,13 @@ namespace TRE
 
 		m_PanelManager->Update();
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 		ImGui::End(); //Dockspace
 	}
 
 	void EditorSystem::Shutdown()
 	{
+		m_PanelManager->Shutdown();
 		TRE_INFO("Editor Shutdown");
 	}
 }

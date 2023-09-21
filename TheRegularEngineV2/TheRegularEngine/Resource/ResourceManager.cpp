@@ -9,6 +9,11 @@ namespace TRE
 		m_Resources[asset->GetHandle()] = std::move(asset);
 	}
 
+	void ResourceManager::RemoveResource(ResourceHandle Handle)
+	{
+		m_Resources.erase(Handle);
+	}
+
 	void ResourceManager::UnloadUnusedResources()
 	{
 		for (auto it = m_Resources.begin(); it != m_Resources.end();)

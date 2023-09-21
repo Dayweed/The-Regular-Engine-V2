@@ -22,6 +22,7 @@ namespace TRE
 
 			void Init();
 			void Update();
+			void Shutdown();
 			void RemovePanel(std::string PanelName);
 			bool DoesPanelExist(std::string PanelName);
 			std::unordered_map<std::string, std::shared_ptr<Panel>>& GetPanels();

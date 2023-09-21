@@ -14,6 +14,7 @@ namespace TRE
 			}
 		public:
 			void AddResource(std::unique_ptr<Resource> asset);
+			void RemoveResource(ResourceHandle Handle);
 			void UnloadUnusedResources();
 
 			ResourceType GetResourceType(ResourceHandle handle);
