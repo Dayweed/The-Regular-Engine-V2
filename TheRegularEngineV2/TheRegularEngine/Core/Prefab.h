@@ -14,6 +14,7 @@ namespace TRE
 	struct Prefabing
 	{
 		std::string m_PrefabGUID{};															// Prefabing GUID to be referred to when finding the correct doc / serializing
+																							// This GUID should only be filled in serialization, all runtime Entity should never have this filled!
 																							// (NOT Properties::m_GUID which is used intenrally in the Engine)
 																							// Blank if it is only an instance
 

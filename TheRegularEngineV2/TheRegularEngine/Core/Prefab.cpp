@@ -118,16 +118,29 @@ namespace TRE
 
 			prefabGUID = prefabExist.m_PrefabGUID;
 			filePath = m_ExistingPrefabs[prefabGUID];
+
+			// Update all instances to match
+			std::vector<std::string> invalidInstance;
+			for (std::string& instanceID : prefabExist.m_Instances)
+			{
+				if (!UpdateInstance(ECSManager::Instance().FindEntity(instanceID), prefabGUID))
+				{
+					invalidInstance.emplace_back(instanceID);
+				}
+			}
+
+			// Erase invalid instance from prefab
+			for (std::string& instanceID : invalidInstance)
+			{
+				prefabExist.m_Instances.erase(std::find(prefabExist.m_Instances.begin(), prefabExist.m_Instances.end(), instanceID));
+			}
 		}
 		else
 		{
 			prefabGUID = Resource::GetGUIDHex(Resource::GenerateGUID());
 			filePath = "../Resources/Prefabs/" + object->GetName() + ".json";
-			object->AddComponent<Prefabing>();
+			object->AddComponent<Prefabing>().m_PrefabGUID = prefabGUID;;
 		}
-
-		// Update neccessary stuff for object Prefab component
-		object->GetComponent<Prefabing>().m_PrefabGUID = prefabGUID;
 
 		std::string funcName{ __FUNCTION__ };
 		TRE_INFO("[" + funcName + "] Serializing to " + filePath);

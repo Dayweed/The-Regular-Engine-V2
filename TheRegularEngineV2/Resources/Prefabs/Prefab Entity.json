@@ -8,11 +8,9 @@
       0,
       {
          "m_BasedGUID": "",
-         "m_Instances": [
-            "{948C20EF-1F26-4565-A11C-0B5E8772F38C}"
-         ],
+         "m_Instances": [],
          "m_Overrides": {},
-         "m_PrefabGUID": "462d730965663d9a",
+         "m_PrefabGUID": "578d26374a51e31",
          "m_RemovedComps": []
       }
    ],
@@ -21,7 +19,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{CC50F944-AE61-4F73-BB76-1BF45B7B726E}",
+         "m_GUID": "{FE224DEB-22FA-4B1A-8D66-B9FE428F347F}",
          "m_Name": "Prefab Entity"
       }
    ],
@@ -38,17 +36,17 @@
       0,
       {
          "m_Position": [
-            0.0,
+            -33.0,
             0.0,
             0.0
          ],
          "m_Rotation": [
-            0.0,
+            24.0,
             0.0,
             0.0
          ],
          "m_Scale": [
-            1.0,
+            -15.0,
             1.0,
             1.0
          ]

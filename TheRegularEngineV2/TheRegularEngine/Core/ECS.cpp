@@ -866,6 +866,8 @@ namespace TRE
 		std::cout << "- Attempting to create prefab " << prefabEnt->GetName() << " instance\n";
 		Entity prefabEntInstance = prefabSystem->CreatePrefabEntityInstance(prefabEntGUID);
 		std::cout << "-- Succesfully created prefab instance named " << prefabEntInstance->GetName() << "\n";
+		std::cout << "> prefabEnt: " << prefabEnt->GetComponent<Prefabing>().m_Instances.size() << "\n";
+		std::cout << "> prefabEntInstance: " << prefabEntInstance->GetComponent<Prefabing>().m_Instances.size() << "\n";
 
 		/*SceneManager::Instance().SaveSceneAs("../Scenes/TESTING.json");
 		SceneManager::Instance().LoadScene("../Scenes/TESTING.json");
