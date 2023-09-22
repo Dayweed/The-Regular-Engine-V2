@@ -144,8 +144,10 @@ namespace TRE
 				{
 					bool UpdatedData = false;
 
+					std::string NameField = "##" + entity->GetGUID() + "/" + Name;
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
 
+					bool isEdited = false;
 					if (isPrefabInstance)
 					{
 						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
@@ -154,10 +156,19 @@ namespace TRE
 							std::vector<std::string> vecStr{ prefab.m_Overrides.find(List.first)->second };
 							if (std::find(vecStr.begin(), vecStr.end(), Name) != vecStr.end())
 							{
-								ImGui::TextColored({ 0.5, 0.5, 1, 1 }, "Edit");
+								isEdited = true;
 							}
 						}
 					}
+					if (isEdited)
+					{
+						ImGui::TextColored({ 0.5, 0.5, 1, 1 }, NameStr.c_str());
+					}
+					else
+					{
+						ImGui::Text(NameStr.c_str());
+					}
+					ImGui::SameLine();
 
 					std::visit([&](auto&& Value)
 						{
@@ -165,19 +176,19 @@ namespace TRE
 
 							if constexpr (std::is_same_v<T, int>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputInt(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, bool>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, string_t>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputText(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, oobb>)
 							{
@@ -187,7 +198,7 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, glm::vec3>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
-								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameStr.c_str(), pos);
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");

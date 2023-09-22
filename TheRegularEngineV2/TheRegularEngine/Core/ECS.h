@@ -99,10 +99,11 @@ namespace TRE
 	struct FAKEFEL : property::base
 	{
 		std::string fakeValue{ "NULL" };
+		int fakeInt{ 120 };
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FAKEFEL, fakeValue)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FAKEFEL, fakeValue, fakeInt)
 	};
 
 	struct Properties : property::base
@@ -874,5 +875,6 @@ property_begin(TRE::FEL)
 
 property_begin(TRE::FAKEFEL)
 {
-	property_var(fakeValue).Name("fakeValue")
+	property_var(fakeValue).Name("fakeValue"),
+	property_var(fakeInt).Name("fakeInt")
 } property_vend_h(TRE::FAKEFEL)
