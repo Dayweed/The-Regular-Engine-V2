@@ -18,6 +18,7 @@
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
 #include "Graphics/ShaderCompiler.h"
+#include "TextureDescriptorFile.h"	
 
 namespace TRE
 {
@@ -178,6 +179,12 @@ namespace TRE
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
 
+		//// this is to get the main camera
+		//auto mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera(); 
+		//
+		//mainCamera->GetComponent<Camera>().GetViewDirection();
+		//mainCamera->GetComponent<Camera>().GetUpVec();
+
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
@@ -248,6 +255,7 @@ namespace TRE
 
 	Engine::~Engine()
 	{
+		Shutdown();
 	}
 
 	void Engine::RegisterECS()
@@ -289,9 +297,8 @@ namespace TRE
 		//DemoScene();
 		//ECSManager::Instance().STRESSTEST();
 
-		while (!m_Window->ShouldWindowClose())
+		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
-
 			m_Window->BeginFrame();
 			m_Window->UpdateDeltaTime();
 
@@ -334,6 +341,7 @@ namespace TRE
 
 	void Engine::Shutdown()
 	{
+		m_Running = false;
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
