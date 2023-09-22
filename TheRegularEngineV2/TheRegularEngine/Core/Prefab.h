@@ -27,7 +27,9 @@ namespace TRE
 																							// - Instance does not have Prefabing Component
 																							// - m_Base of instance does not match the m_PrefabGUID
 		
-		std::vector<std::pair<std::string, std::vector<std::string>>> m_Overrides{};		// List of components/properties added/removed/overriten for a given component
+		std::vector<std::string> m_RemovedComps{};											// List of components removed
+
+		std::vector<std::pair<std::string, std::vector<std::string>>> m_Overrides{};		// List of components/properties added/overriten for a given component
 																							// std::pair<Component Name, std::vector<Data Variable Name>>
 																							// This will be updated for Components visible in INSPECTOR!
 																							// This container will override any data in the instance after the prefab update the instance
@@ -36,7 +38,7 @@ namespace TRE
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_Base, m_Instances, m_Overrides)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_Base, m_Instances, m_RemovedComps, m_Overrides)
 	};
 
 	class PrefabOutputArchive
