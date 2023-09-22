@@ -1,12 +1,16 @@
 #include "pch.h"
 #include "ScriptEngine.h"
 
+#include "Core/ECS.h"
+
 
 //Everything should be remove. This is just to test the calling of the runtime works.
 #include <fstream>
 
 namespace TRE
 {
+
+#pragma region ScriptEngine
     MonoDomain* ScriptEngine::s_RootDomain = nullptr;
     MonoDomain* ScriptEngine::s_AppDomain = nullptr;
     MonoAssembly* ScriptEngine::s_MonoAssembly = nullptr;
@@ -102,5 +106,33 @@ namespace TRE
 
         s_MonoAssembly = LoadCSharpAssembly("resources/Scripts/TRE-ScriptCore.dll");
         PrintAssemblyTypes(s_MonoAssembly);
+
 	}
+    void ScriptEngine::BindFunctions()
+    {
+        mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
+    }
+
+    void ScriptEngine::TestScriptingEngine()
+    {
+        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
+        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "");
+
+    }
+
+
+#pragma endregion
+
+#pragma region FuntionBindings
+    void BindCreateEntity(MonoString* name)
+    {
+		char* nameString = mono_string_to_utf8(name);
+        std::string str(nameString);
+        mono_free(nameString);
+
+		ECSManager::Instance().CreateEntity(str);
+        std::cout << "Created Entity from C#: " << str << std::endl;
+	}
+
+#pragma endregion
 }

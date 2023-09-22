@@ -9,6 +9,7 @@
 #include "Physics/PhysicsSystem.h"
 #include "Audio/AudioSystem.h"
 #include "Logger.h"
+#include "Scripting/ScriptEngine.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
@@ -246,6 +247,9 @@ namespace TRE
 		//DemoDeserialize();
 		DemoScene();
 
+		ScriptEngine::InitMono();
+		ScriptEngine::BindFunctions();
+
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
 
@@ -287,6 +291,8 @@ namespace TRE
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
+
+		
 	}
 
 	void Engine::Update()

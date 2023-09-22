@@ -1,19 +1,23 @@
 using System;
+using System.Runtime.CompilerServices;
 
-public class Main
+
+namespace TRE
 {
-    public Main()
+
+    public class Main
     {
-        Console.WriteLine("Constructor");
+        public Main()
+        {
+            Console.WriteLine("Hello World!");
+            ECSManager.CreateEntity("ScriptingTest");
+        }
     }
 
-    public void Print()
+    public class ECSManager
     {
-        Console.WriteLine("Test C#");
-    }
-
-    public void PrintCustom(string msg)
-    {
-        Console.WriteLine($"C#: {msg}");
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void CreateEntity(string name);
     }
 }
+
