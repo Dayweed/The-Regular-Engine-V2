@@ -15,6 +15,7 @@ namespace TRE
 			static void InitMono();
 			static void ShutdownMono();
 			static void BindFunctions();
+			void UpdateScriptingEngine();
 			static void TestScriptingEngine();
 
 		private:

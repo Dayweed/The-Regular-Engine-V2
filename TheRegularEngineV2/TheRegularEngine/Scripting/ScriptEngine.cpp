@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ScriptEngine.h"
+#include "InputHandler/InputHandler.h"
 
 #include "Core/ECS.h"
 
@@ -113,10 +114,20 @@ namespace TRE
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
     }
 
+    void ScriptEngine::UpdateScriptingEngine()
+    {
+        
+    }
+
     void ScriptEngine::TestScriptingEngine()
     {
         MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
-        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "");
+        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+
+		// creates new instance of the class
+		MonoObject* instance = mono_object_new(s_AppDomain, testClass);
+        // Run constructor of the object class
+    	mono_runtime_object_init(instance);
 
     }
 

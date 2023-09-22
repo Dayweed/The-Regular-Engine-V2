@@ -4,12 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace TRE
 {
-
     public class Main
     {
         public Main()
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello World from C#!");
             ECSManager.CreateEntity("ScriptingTest");
         }
     }

@@ -249,6 +249,7 @@ namespace TRE
 
 		ScriptEngine::InitMono();
 		ScriptEngine::BindFunctions();
+		ScriptEngine::TestScriptingEngine();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
@@ -342,6 +343,8 @@ namespace TRE
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			//Profiler::Instance().PrintTimers();
+
+
 		}
 	}
 
