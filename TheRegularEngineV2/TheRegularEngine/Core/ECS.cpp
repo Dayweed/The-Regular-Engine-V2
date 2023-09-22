@@ -123,6 +123,7 @@ namespace TRE
 
 		// Serialize all entities and components
 		snapshot.entities(arc)
+			//.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
@@ -143,8 +144,10 @@ namespace TRE
 		entt::registry copy;
 		ECSInputArchive arc(filePath);
 
+		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
+			//.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
@@ -857,8 +860,7 @@ namespace TRE
 		prefabEnt->AddComponent<FEL>().tobeignored = "uwu";
 
 		std::cout << "- Attempting to save prefab " << prefabEnt->GetName() << "\n";
-		std::string prefabFilePath = ECSSystemManager::Instance().GetSystem<PrefabManager>()->SavePrefabEntity(prefabEnt);
-		std::cout << "- File Path for prefab: " << prefabFilePath << "\n";
+		ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(prefabEnt);
 
 
 		std::cout << "====================================\n\n";

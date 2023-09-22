@@ -257,7 +257,7 @@ namespace TRE
 	private:
 		friend class ECSManager;
 		friend class MemoryManager;
-		friend class PrefabManager;
+		friend class PrefabSystem;
 
 		entt::entity m_Entity;
 	};

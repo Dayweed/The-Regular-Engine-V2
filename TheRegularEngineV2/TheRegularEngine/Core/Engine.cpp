@@ -265,6 +265,7 @@ namespace TRE
 		// Register Components
 		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
 		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
+		//ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);		// ignore, ignore
 		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
@@ -277,6 +278,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
