@@ -8,10 +8,10 @@
       0,
       {
          "m_Instances": [
-            "{AF91BFCC-E112-48B2-AF64-FC0A606DFB9A}"
+            "{F79CB149-381F-441B-B9DB-214F9913535B}"
          ],
          "m_Overrides": {},
-         "m_PrefabGUID": "2c6b889a24cd5987",
+         "m_PrefabGUID": "1ef4c92b6d8f522a",
          "m_RemovedComps": []
       }
    ],
@@ -20,7 +20,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{8D4D10B8-ED03-4C1B-82D6-216226DF60D8}",
+         "m_GUID": "{1C72D60B-D251-4A61-82F2-E6C864CF084E}",
          "m_Name": "Prefab Entity"
       }
    ],
@@ -73,5 +73,8 @@
          },
          "vector": []
       }
+   ],
+   [
+      0
    ]
 ]

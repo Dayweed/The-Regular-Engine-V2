@@ -154,7 +154,9 @@ namespace TRE
 			Transform,
 			MeshRenderer,
 			Camera,
-			FEL>();
+			FEL,
+			FAKEFEL
+		>();
 
 		// Create prefab
 		entt::entity ent = tmp.create();
@@ -189,7 +191,8 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<FEL>(arc);
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			;
 
 		arc.Close();
@@ -263,6 +266,7 @@ namespace TRE
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
 			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			;
 
 		// Clone each component of the object into the prefab
@@ -361,7 +365,9 @@ namespace TRE
 			Transform,
 			MeshRenderer,
 			Camera,
-			FEL>();
+			FEL,
+			FAKEFEL
+		>();
 
 		// Create prefab
 		entt::entity ent = tmp.create();
@@ -396,7 +402,8 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<FEL>(arc);
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 		;
 
 		arc.Close();

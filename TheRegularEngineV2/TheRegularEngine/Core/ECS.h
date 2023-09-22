@@ -96,6 +96,15 @@ namespace TRE
 		}
 	};
 
+	struct FAKEFEL : property::base
+	{
+		std::string fakeValue{ "NULL" };
+
+		property_vtable()           // Allows the base class to get these properties  
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FAKEFEL, fakeValue)
+	};
+
 	struct Properties : property::base
 	{
 		std::string m_GUID{};
@@ -862,3 +871,8 @@ property_begin(TRE::FEL)
 	property_var(vec_i).Name("vec_i"),
 	property_var(tobeignored).Name("tobeignored")
 } property_vend_h(TRE::FEL)
+
+property_begin(TRE::FAKEFEL)
+{
+	property_var(fakeValue).Name("fakeValue")
+} property_vend_h(TRE::FAKEFEL)

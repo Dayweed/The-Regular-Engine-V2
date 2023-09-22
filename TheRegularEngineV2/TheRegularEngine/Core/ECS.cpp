@@ -129,7 +129,8 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<FEL>(arc);
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			;
 
 		arc.Close();
@@ -154,6 +155,7 @@ namespace TRE
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
 			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
