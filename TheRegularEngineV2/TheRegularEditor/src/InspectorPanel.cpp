@@ -93,6 +93,25 @@ namespace TRE
 
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
+			bool isPrefabInstance = false;
+
+			// Show option of prefabing possibility if have prefab
+			if (ImGui::Button("Save As Prefab"))
+			{
+				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity);
+			}
+			ImGui::SameLine();
+			if (entity->HasComponent<Prefabing>() && entity->GetComponent<Prefabing>().m_PrefabGUID != "")
+			{
+				isPrefabInstance = true;
+
+				if (ImGui::Button("Resave Prefab"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
+				}
+			}
+			ImGui::NewLine();
+
 			// View all inspectable components
 			for (auto& List : properties)
 			{
@@ -108,6 +127,12 @@ namespace TRE
 				{
 					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
 					{
+						// Update Prefabing if have
+						if (isPrefabInstance)
+						{
+							entity->GetComponent<Prefabing>().m_RemovedComps.emplace_back(List.first);
+						}
+
 						ECSManager::Instance().RemCompFromName(entity, List.first);
 						m_SelectionManager->SelectEntity(entity);
 						break;
@@ -117,7 +142,22 @@ namespace TRE
 				ImGui::NewLine();
 				for (auto& [Name, Data] : List.second)
 				{
+					bool UpdatedData = false;
+
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+
+					if (isPrefabInstance)
+					{
+						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
+						if (prefab.m_Overrides.find(List.first) != prefab.m_Overrides.end())
+						{
+							std::vector<std::string> vecStr{ prefab.m_Overrides.find(List.first)->second };
+							if (std::find(vecStr.begin(), vecStr.end(), Name) != vecStr.end())
+							{
+								ImGui::TextColored({ 0.5, 0.5, 1, 1 }, "Edit");
+							}
+						}
+					}
 
 					std::visit([&](auto&& Value)
 						{
@@ -125,19 +165,19 @@ namespace TRE
 
 							if constexpr (std::is_same_v<T, int>)
 							{
-								ImGui::InputInt(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputInt(NameStr.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
-								ImGui::InputFloat(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameStr.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, bool>)
 							{
-								ImGui::Checkbox(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameStr.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, string_t>)
 							{
-								ImGui::InputText(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputText(NameStr.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, oobb>)
 							{
@@ -147,13 +187,26 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, glm::vec3>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
-								ImGui::DragFloat3(NameStr.c_str(), pos);
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameStr.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
 
+
+					// Update Prefabing if have
+					if (UpdatedData && isPrefabInstance)
+					{
+						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
+						// See if can emplace back
+						auto it{ prefab.m_Overrides.find(List.first) };
+						if (it == prefab.m_Overrides.end())
+						{
+							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(List.first), std::forward_as_tuple());
+						}
+						prefab.m_Overrides[List.first].emplace_back(Name);
+					}
 				}
 
 				ImGui::Separator();
@@ -185,6 +238,12 @@ namespace TRE
 				{
 					if (ImGui::Selectable(compName.c_str()))
 					{
+						// Update Prefabing if have
+						if (isPrefabInstance)
+						{
+							entity->GetComponent<Prefabing>().m_AddeddComps.emplace_back(compName);
+						}
+
 						ECSManager::Instance().AddCompFromName(entity, compName);
 						m_SelectionManager->SelectEntity(entity);
 					}

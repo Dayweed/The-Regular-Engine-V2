@@ -106,13 +106,13 @@ namespace TRE
 
 	}
 
-	std::string PrefabSystem::SavePrefabEntity(Entity object)
+	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab)
 	{
 		std::string prefabGUID;
 		std::string filePath;
 
 		// Will use m_TempPrefab if it already is a prefab with a base in m_ExistingPrefabs
-		if (object->HasComponent<Prefabing>() && object->GetComponent<Prefabing>().m_PrefabGUID != "" && m_ExistingPrefabs.find(object->GetComponent<Prefabing>().m_PrefabGUID) != m_ExistingPrefabs.end())
+		if (!newPrefab && object->HasComponent<Prefabing>() && object->GetComponent<Prefabing>().m_PrefabGUID != "" && m_ExistingPrefabs.find(object->GetComponent<Prefabing>().m_PrefabGUID) != m_ExistingPrefabs.end())
 		{
 			Prefabing& prefabExist{ object->GetComponent<Prefabing>() };
 
@@ -215,7 +215,7 @@ namespace TRE
 
 		// Update the Prefab component to make sense
 		Prefabing& instPrefab{ instance->GetComponent<Prefabing>() };
-		instPrefab.m_Base = tempPrefab.m_PrefabGUID;					// Make base to m_PrefabGUID
+		instPrefab.m_BasedGUID = tempPrefab.m_PrefabGUID;				// Make base to m_PrefabGUID
 		instPrefab.m_PrefabGUID = "";									// It is a newborn, it is not an actual prefab
 		instPrefab.m_Instances.clear();									// It is a newborn, it does not have any instances
 		instPrefab.m_Overrides.clear();									// It is a newborn, it does not have any overwritten
@@ -552,10 +552,10 @@ namespace TRE
 		}
 
 		// Check if instance have same prefabGUID
-		if (instance->GetComponent<Prefabing>().m_Base != prefabGUID)
+		if (instance->GetComponent<Prefabing>().m_BasedGUID != prefabGUID)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_Base (" + instance->GetComponent<Prefabing>().m_Base + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_BasedGUID (" + instance->GetComponent<Prefabing>().m_BasedGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
 			return false;
 		}
 
@@ -571,7 +571,7 @@ namespace TRE
 		for (size_t i{}; i < instInspectableComp.size(); ++i)
 		{
 			// Skip saving those that are not considered saving
-			if (std::find_if(instPrefabing.m_Overrides.begin(), instPrefabing.m_Overrides.end(), [&](std::pair<std::string, std::vector<std::string>>& c){ return c.first == instInspectableComp[i].first; }) == instPrefabing.m_Overrides.end())
+			if (instPrefabing.m_Overrides.find(instInspectableComp[i].first) == instPrefabing.m_Overrides.end())
 			{
 				continue;
 			}
@@ -608,7 +608,7 @@ namespace TRE
 		for (size_t i{}; i < instPropTable.size(); ++i)
 		{
 			// Only copy those that were registered as saved
-			auto it{ std::find_if(instPrefabing.m_Overrides.begin(), instPrefabing.m_Overrides.end(), [&](std::pair<std::string, std::vector<std::string>>& c) { return c.first == instInspectableComp[i].first; }) };
+			auto it{ instPrefabing.m_Overrides.find(instInspectableComp[i].first) };
 			if (it == instPrefabing.m_Overrides.end())
 			{
 				continue;
@@ -620,14 +620,23 @@ namespace TRE
 			for (const auto& [Name, Data] : List)
 			{
 				// Skip those data that were overwritten
-				if (std::find(instCompData.begin(), instCompData.end(), Name) == instCompData.end())
+				if (std::find(instPrefabing.m_AddeddComps.begin(), instPrefabing.m_AddeddComps.end(), Name) == instPrefabing.m_AddeddComps.end())
 				{
-					continue;
+					if (std::find(instCompData.begin(), instCompData.end(), Name) == instCompData.end())
+					{
+						continue;
+					}
 				}
 
 				// Copy to compProp
 				property::set(compProp, Name.c_str(), Data);
 			}
+		}
+
+		// Remove components marked as removed
+		for (std::string compName : instPrefabing.m_RemovedComps)
+		{
+			ECSManager::Instance().RemCompFromName(instance, compName);
 		}
 
 		return true;

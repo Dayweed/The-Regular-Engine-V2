@@ -17,7 +17,7 @@ namespace TRE
 																							// (NOT Properties::m_GUID which is used intenrally in the Engine)
 																							// Blank if it is only an instance
 
-		std::string m_Base{};																// m_PrefabGUID of the prefab it is finding from
+		std::string m_BasedGUID{};															// m_PrefabGUID of the prefab it is finding from
 
 		std::vector<std::string> m_Instances{};												// Instances that are based on this Entity (Properties::m_GUID to easily get them)
 																							// This gets updated everytime an Instance is created
@@ -27,10 +27,12 @@ namespace TRE
 																							// - Instance does not have Prefabing Component
 																							// - m_Base of instance does not match the m_PrefabGUID
 		
+		std::vector<std::string> m_AddeddComps{};											// List of components removed
+
 		std::vector<std::string> m_RemovedComps{};											// List of components removed
 
-		std::vector<std::pair<std::string, std::vector<std::string>>> m_Overrides{};		// List of components/properties added/overriten for a given component
-																							// std::pair<Component Name, std::vector<Data Variable Name>>
+		std::map<std::string, std::vector<std::string>> m_Overrides{};						// List of components/properties added/overriten for a given component
+																							// <Component Name, std::vector<Data Variable Name>>
 																							// This will be updated for Components visible in INSPECTOR!
 																							// This container will override any data in the instance after the prefab update the instance
 																							// Any Component Name/Data Variable Name will be bold in Inspector
@@ -38,7 +40,7 @@ namespace TRE
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_Base, m_Instances, m_RemovedComps, m_Overrides)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_BasedGUID, m_Instances, m_RemovedComps, m_Overrides)
 	};
 
 	class PrefabOutputArchive
@@ -91,7 +93,7 @@ namespace TRE
 		void Shutdown() override;
 
 		// (De)serializing Prefab
-		std::string SavePrefabEntity(Entity object);											// Returns true if successful
+		std::string SavePrefabEntity(Entity object, bool newPrefab = true);						// Returns true if successful
 																								// Properties::m_GUID would not matter from now
 
 		Entity CreatePrefabEntityInstance(std::string prefabGUID);								// Creates an Instance from the prefab
