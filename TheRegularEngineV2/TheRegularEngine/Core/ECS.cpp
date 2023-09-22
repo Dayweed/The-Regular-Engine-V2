@@ -123,13 +123,13 @@ namespace TRE
 
 		// Serialize all entities and components
 		snapshot.entities(arc)
-			//.component<Prefabing>(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			//.component<FEL>(arc);
+			.component<FEL>(arc);
 			;
 
 		arc.Close();
@@ -147,13 +147,13 @@ namespace TRE
 		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
-			//.component<Prefabing>(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			//.component<FEL>(arc)
+			.component<FEL>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -860,8 +860,20 @@ namespace TRE
 		prefabEnt->AddComponent<FEL>().tobeignored = "uwu";
 
 		std::cout << "- Attempting to save prefab " << prefabEnt->GetName() << "\n";
-		ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(prefabEnt);
+		PrefabSystem* prefabSystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
+		std::string prefabEntGUID = prefabSystem->SavePrefabEntity(prefabEnt);
+		std::cout << "-- Succesfully saved with prefab guid of " << prefabEntGUID << "\n";
+		std::cout << "- Attempting to create prefab " << prefabEnt->GetName() << " instance\n";
+		Entity prefabEntInstance = prefabSystem->CreatePrefabEntityInstance(prefabEntGUID);
+		std::cout << "-- Succesfully created prefab instance named " << prefabEntInstance->GetName() << "\n";
 
+		/*SceneManager::Instance().SaveSceneAs("../Scenes/TESTING.json");
+		SceneManager::Instance().LoadScene("../Scenes/TESTING.json");
+
+		for (auto& ent : GetEntities<Prefabing>())
+		{
+			std::cout << ent->GetName() << "|" << ent->GetComponent<Prefabing>().m_PrefabGUID << "\n";
+		}*/
 
 		std::cout << "====================================\n\n";
 	}

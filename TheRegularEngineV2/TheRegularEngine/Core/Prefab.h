@@ -2,8 +2,9 @@
 
 #include "pch.h"
 #include "ECS.h"
+#include "System.h"
 
-#define FILESYS_PREFABDIR		"Resources/Prefabs/PrefabDirectory.json"
+#define FILESYS_PREFABDIR		"PrefabDirectory.json"
 #define FILESYS_PREFABDIRNAME	"PrefabGUIDAndPrefabFilePath"
 #define FILESYS_PREFABDIRGUID	"m_ExistingPrefabsKey"
 #define FILESYS_PREFABDIRPATH	"m_ExistingPrefabsValue"
@@ -33,6 +34,9 @@ namespace TRE
 																							// Any Component Name/Data Variable Name will be bold in Inspector
 																							// Editting and changing back the values WILL still say it is overwritten
 																							// Only way to remove is to revert everything based on prefab
+
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_Base, m_Instances, m_Overrides)
 	};
 
 	class PrefabOutputArchive
@@ -85,7 +89,7 @@ namespace TRE
 		void Shutdown() override;
 
 		// (De)serializing Prefab
-		bool SavePrefabEntity(Entity object);													// Returns true if successful
+		std::string SavePrefabEntity(Entity object);											// Returns true if successful
 																								// Properties::m_GUID would not matter from now
 
 		Entity CreatePrefabEntityInstance(std::string prefabGUID);								// Creates an Instance from the prefab

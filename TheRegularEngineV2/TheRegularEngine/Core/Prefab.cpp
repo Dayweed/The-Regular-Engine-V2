@@ -106,11 +106,16 @@ namespace TRE
 
 	}
 
-	bool PrefabSystem::SavePrefabEntity(Entity object)
+	std::string PrefabSystem::SavePrefabEntity(Entity object)
 	{
-		std::string prefabGUID{ Resource::GetGUIDHex(Resource::GenerateGUID()) };
+		//std::string prefabGUID{ Resource::GetGUIDHex(Resource::GenerateGUID()) };
+		std::string prefabGUID{ MemoryManager::Instance().GenerateGUIDStr() };
 
-		std::string filePath{ "../Resources/Prefabs/" + object->GetName() + ".prefab"};
+		// Update neccessary stuff for object Prefab component
+		Prefabing& prefab{ object->AddComponent<Prefabing>() };
+		prefab.m_PrefabGUID = prefabGUID;
+
+		std::string filePath{ "../Resources/Prefabs/" + object->GetName() + ".json"};
 
 		std::string funcName{ __FUNCTION__ };
 		TRE_INFO("[" + funcName + "] Serializing to " + filePath);
@@ -118,6 +123,7 @@ namespace TRE
 		entt::registry tmp;
 
 		(void) tmp.view<
+			Prefabing,
 			Properties,
 			Parenting,
 			Transform,
@@ -152,7 +158,7 @@ namespace TRE
 		entt::snapshot snapshot{ tmp };
 		// Serialize all entities and components
 		snapshot.entities(arc)
-			//.component<Prefabing>(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
@@ -168,7 +174,7 @@ namespace TRE
 		// Update Prefab Directory
 		UpdatePrefabDirectory(prefabGUID, arc.GetFilePath());
 
-		return true;
+		return prefabGUID;
 	}
 
 	Entity PrefabSystem::CreatePrefabEntityInstance(std::string prefabGUID)
@@ -196,7 +202,7 @@ namespace TRE
 		Entity instance{ ECSManager::Instance().CreateEntity(m_TempPrefab->GetName() + " (" + std::to_string(instSize) + ")") };
 
 		// Update the Prefab component to make sense
-		Prefabing& instPrefab{ instance->GetComponent<Prefabing>() };
+		Prefabing& instPrefab{ instance->AddComponent<Prefabing>() };
 		instPrefab.m_Base = tempPrefab.m_PrefabGUID;					// Make base to m_PrefabGUID
 		instPrefab.m_PrefabGUID = "";									// It is a newborn, it is not an actual prefab
 		instPrefab.m_Instances.clear();									// It is a newborn, it does not have any instances
@@ -226,7 +232,7 @@ namespace TRE
 		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
-			//.component<Prefabing>(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
@@ -307,6 +313,7 @@ namespace TRE
 		entt::registry tmp;
 
 		(void) tmp.view<
+			Prefabing,
 			Properties,
 			Parenting,
 			Transform,
@@ -341,6 +348,7 @@ namespace TRE
 		entt::snapshot snapshot{ tmp };
 		// Serialize all entities and components
 		snapshot.entities(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
@@ -413,7 +421,7 @@ namespace TRE
 			// Compare if the value inside the prefab matches same prefabID
 			GetPrefabEntity(prefabPath);
 			std::string tmpPrefabGUID{ GetPrefabEntity(prefabPath)->GetComponent<Prefabing>().m_PrefabGUID };
-			if (tmpPrefabGUID == prefabID)
+			if (tmpPrefabGUID != prefabID)
 			{
 				std::string funcName{ __FUNCTION__ };
 				TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not match m_PrefabGUID (" + tmpPrefabGUID + ") in filepath (" + prefabPath + ")! Removing from m_ExistingPrefabs...");
@@ -495,7 +503,10 @@ namespace TRE
 
 	void PrefabSystem::ResetTempPrefab()
 	{
-		MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(m_TempPrefab->m_Entity));
-		m_TempPrefab = nullptr;
+		if (m_TempPrefab)
+		{
+			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(m_TempPrefab->m_Entity));
+			m_TempPrefab = nullptr;
+		}
 	}
 }

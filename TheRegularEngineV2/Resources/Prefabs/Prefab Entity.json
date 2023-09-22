@@ -7,8 +7,20 @@
       1,
       0,
       {
+         "m_Base": "",
+         "m_Instances": [
+            "{538BD003-E65D-4C3B-A80E-0E7976E991EE}"
+         ],
+         "m_Overrides": [],
+         "m_PrefabGUID": "{505536A4-33CF-43D6-8685-4FDED34DAF38}"
+      }
+   ],
+   [
+      1,
+      0,
+      {
          "m_Active": true,
-         "m_GUID": "{5E96D0B0-0A7B-4DEE-AD24-4A13D61CB97D}",
+         "m_GUID": "{8FDC36EC-C23D-41B9-97FA-833AACDB7E07}",
          "m_Name": "Prefab Entity"
       }
    ],

@@ -1,10 +1,10 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
         "m_ExistingPrefabsKey": [
-            "750c10cdc357d6a0"
+            "{505536A4-33CF-43D6-8685-4FDED34DAF38}"
         ],
         "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/Test.prefab"
+            "../Resources/Prefabs/Prefab Entity.json"
         ]
     }
 }
