@@ -151,6 +151,7 @@ namespace TRE
 					if (isPrefabInstance)
 					{
 						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
+						// Is override
 						if (prefab.m_Overrides.find(List.first) != prefab.m_Overrides.end())
 						{
 							std::vector<std::string> vecStr{ prefab.m_Overrides.find(List.first)->second };
@@ -158,6 +159,11 @@ namespace TRE
 							{
 								isEdited = true;
 							}
+						}
+						// Is an Added Component
+						else if (std::find(prefab.m_AddeddComps.begin(), prefab.m_AddeddComps.end(), List.first) != prefab.m_AddeddComps.end())
+						{
+							isEdited = true;
 						}
 					}
 					if (isEdited)
