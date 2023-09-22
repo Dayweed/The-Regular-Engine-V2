@@ -228,8 +228,7 @@ namespace TRE
 
 		// Update the Prefab component to make sense
 		Prefabing& instPrefab{ instance->GetComponent<Prefabing>() };
-		instPrefab.m_BasedGUID = tempPrefab.m_PrefabGUID;				// Make base to m_PrefabGUID
-		instPrefab.m_PrefabGUID = "";									// It is a newborn, it is not an actual prefab
+		instPrefab.m_PrefabGUID = tempPrefab.m_PrefabGUID;				// Assign it's m_PrefabGUID to m_PrefabGUID
 		instPrefab.m_Instances.clear();									// It is a newborn, it does not have any instances
 		instPrefab.m_Overrides.clear();									// It is a newborn, it does not have any overwritten
 
@@ -565,10 +564,10 @@ namespace TRE
 		}
 
 		// Check if instance have same prefabGUID
-		if (instance->GetComponent<Prefabing>().m_BasedGUID != prefabGUID)
+		if (instance->GetComponent<Prefabing>().m_PrefabGUID != prefabGUID)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_BasedGUID (" + instance->GetComponent<Prefabing>().m_BasedGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
 			return false;
 		}
 

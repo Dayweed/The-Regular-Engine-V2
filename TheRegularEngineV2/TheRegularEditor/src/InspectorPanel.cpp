@@ -94,7 +94,6 @@ namespace TRE
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
 			bool isPrefabInstance = false;
-			bool isPrefabBase = false;
 
 			// Show option of prefabing possibility if have prefab
 			if (ImGui::Button("Save As Prefab"))
@@ -105,18 +104,10 @@ namespace TRE
 			if (entity->HasComponent<Prefabing>())
 			{
 				// Is Prefab Instance
-				if (entity->GetComponent<Prefabing>().m_PrefabGUID == "")
+				isPrefabInstance = true;
+				if (ImGui::Button("Overwrite Prefab"))
 				{
-					isPrefabInstance = true;
-				}
-				else
-				{
-					isPrefabBase = true;
-
-					if (ImGui::Button("Overwrite Prefab"))
-					{
-						ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
-					}
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
 				}
 			}
 			ImGui::NewLine();
@@ -215,11 +206,6 @@ namespace TRE
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(List.first), std::forward_as_tuple());
 						}
 						prefab.m_Overrides[List.first].emplace_back(Name);
-					}
-					// Update Prefabing Base Instances
-					else if (UpdatedData && isPrefabBase)
-					{
-						ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
 					}
 				}
 

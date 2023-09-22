@@ -14,11 +14,11 @@ namespace TRE
 	struct Prefabing
 	{
 		std::string m_PrefabGUID{};															// Prefabing GUID to be referred to when finding the correct doc / serializing
-																							// This GUID should only be filled in serialization, all runtime Entity should never have this filled!
+																							// This GUID exist as a reference to the object
 																							// (NOT Properties::m_GUID which is used intenrally in the Engine)
 																							// Blank if it is only an instance
 
-		std::string m_BasedGUID{};															// m_PrefabGUID of the prefab it is finding from
+		//std::string m_BasedGUID{};															// m_PrefabGUID of the prefab it is finding from
 
 		std::vector<std::string> m_Instances{};												// Instances that are based on this Entity (Properties::m_GUID to easily get them)
 																							// This gets updated everytime an Instance is created
@@ -41,7 +41,7 @@ namespace TRE
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_BasedGUID, m_Instances, m_RemovedComps, m_Overrides)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_Instances, m_RemovedComps, m_Overrides)
 	};
 
 	class PrefabOutputArchive
