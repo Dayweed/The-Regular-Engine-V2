@@ -69,19 +69,19 @@ namespace TRE
 			m_WriteDescriptors.push_back(x.second);
 		}
 		
-		int x = 0;
-		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0)
+		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0 && m_FragmentShader->GetWriteDescriptorSets().size() == m_Textures.size())
 		{
+			int x = 0;
 			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
 			{
 				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				{
-					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
+					const VkDescriptorImageInfo imageInfo = m_Textures[x]->GetDescriptorImageInfo();
 					FragmentBindings.second.pImageInfo = &imageInfo;
 					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
 					FragmentBindings.second.dstBinding = x + 1;
-					FragmentBindings.second.dstArrayElement = x;
-
+					FragmentBindings.second.dstArrayElement = 0;
+					FragmentBindings.second.descriptorCount = 1;
 					m_WriteDescriptors.push_back(FragmentBindings.second);
 					++x;
 				}
