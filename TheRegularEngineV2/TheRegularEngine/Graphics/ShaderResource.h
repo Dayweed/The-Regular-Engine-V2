@@ -41,7 +41,9 @@ namespace TRE
 
 	struct ShaderReflectionData
 	{
-		std::vector<ShaderDescriptorSets> DescriptorSets;
+		std::vector<ShaderDescriptorSets> DescriptorSets; //One GLSL file, 2 shader stage, vert/frag
 		std::vector<PushConstants> PushConstants;
+		std::vector<VkVertexInputAttributeDescription> VertexInputAttributeDescriptions{};
+		uint32_t VertexStride = 0;
 	};
 }

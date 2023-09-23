@@ -5,6 +5,16 @@
 
 namespace TRE
 {
+	uint32_t Shader::GetVertexStrides()
+	{
+		return m_ReflectionData.VertexStride;
+	}
+
+	const std::vector<VkVertexInputAttributeDescription>& Shader::GetVertexAttributes()
+	{
+		return m_ReflectionData.VertexInputAttributeDescriptions;
+	}
+
 	std::vector<PushConstants>& Shader::GetPushConstants()
 	{
 		return m_ReflectionData.PushConstants;

@@ -19,6 +19,358 @@ namespace TRE
 		return {};
 	}
 
+    static uint32_t GetStrideFromVulkanFormat(VkFormat format)
+    {
+        switch (format)
+        {
+            case VK_FORMAT_R8_SINT:
+                return sizeof(int);
+            case VK_FORMAT_R32_SFLOAT:
+                return sizeof(float);
+            case VK_FORMAT_R32G32_SFLOAT:
+                return sizeof(glm::vec2);
+            case VK_FORMAT_R32G32B32_SFLOAT:
+                return sizeof(glm::vec3);
+            case VK_FORMAT_R32G32B32A32_SFLOAT:
+                return sizeof(glm::vec4);
+            case VK_FORMAT_R32G32_SINT:
+                return sizeof(glm::ivec2);
+            case VK_FORMAT_R32G32B32_SINT:
+                return sizeof(glm::ivec3);
+            case VK_FORMAT_R32G32B32A32_SINT:
+                return sizeof(glm::ivec4);
+            case VK_FORMAT_R32G32_UINT:
+                return sizeof(glm::ivec2);
+            case VK_FORMAT_R32G32B32_UINT:
+                return sizeof(glm::ivec3);
+            case VK_FORMAT_R32G32B32A32_UINT:
+                return sizeof(glm::ivec4); // Need uintvec?
+            default:
+                TRE_CORE_WARN("Unsupported Format {0}", (int)format);
+                return 0;
+        }
+
+        return 0;
+    }
+
+	static VkFormat GetVulkanFormat(const spirv_cross::SPIRType& type)
+    {
+        using namespace spirv_cross;
+        if (type.basetype == SPIRType::Struct || type.basetype == SPIRType::Sampler)
+        {
+            TRE_CORE_WARN("Tried to convert a structure or SPIR sampler into a VkFormat enum value!");
+            return VK_FORMAT_UNDEFINED;
+        }
+        else if (type.basetype == SPIRType::Image || type.basetype == SPIRType::SampledImage)
+        {
+            switch (type.image.format)
+            {
+                case spv::ImageFormatR8:
+                    return VK_FORMAT_R8_UNORM;
+                case spv::ImageFormatR8Snorm:
+                    return VK_FORMAT_R8_SNORM;
+                case spv::ImageFormatR8ui:
+                    return VK_FORMAT_R8_UINT;
+                case spv::ImageFormatR8i:
+                    return VK_FORMAT_R8_SINT;
+                case spv::ImageFormatRg8:
+                    return VK_FORMAT_R8G8_UNORM;
+                case spv::ImageFormatRg8Snorm:
+                    return VK_FORMAT_R8G8_SNORM;
+                case spv::ImageFormatRg8ui:
+                    return VK_FORMAT_R8G8_UINT;
+                case spv::ImageFormatRg8i:
+                    return VK_FORMAT_R8G8_SINT;
+                case spv::ImageFormatRgba8i:
+                    return VK_FORMAT_R8G8B8A8_SINT;
+                case spv::ImageFormatRgba8ui:
+                    return VK_FORMAT_R8G8B8A8_UINT;
+                case spv::ImageFormatRgba8:
+                    return VK_FORMAT_R8G8B8A8_UNORM;
+                case spv::ImageFormatRgba8Snorm:
+                    return VK_FORMAT_R8G8B8A8_SNORM;
+                case spv::ImageFormatR32i:
+                    return VK_FORMAT_R32_SINT;
+                case spv::ImageFormatR32ui:
+                    return VK_FORMAT_R32_UINT;
+                case spv::ImageFormatRg32i:
+                    return VK_FORMAT_R32G32_SINT;
+                case spv::ImageFormatRg32ui:
+                    return VK_FORMAT_R32G32_UINT;
+                case spv::ImageFormatRgba32f:
+                    return VK_FORMAT_R32G32B32A32_SFLOAT;
+                case spv::ImageFormatRgba16f:
+                    return VK_FORMAT_R16G16B16A16_SFLOAT;
+                case spv::ImageFormatR32f:
+                    return VK_FORMAT_R32_SFLOAT;
+                case spv::ImageFormatRg32f:
+                    return VK_FORMAT_R32G32_SFLOAT;
+                case spv::ImageFormatR16f:
+                    return VK_FORMAT_R16_SFLOAT;
+                case spv::ImageFormatRgba32i:
+                    return VK_FORMAT_R32G32B32A32_SINT;
+                case spv::ImageFormatRgba32ui:
+                    return VK_FORMAT_R32G32B32A32_UINT;
+                default:
+                    TRE_CORE_WARN("Failed to convert an image format to a VkFormat enum.");
+                    return VK_FORMAT_UNDEFINED;
+            }
+        }
+        else if (type.vecsize == 1) //type.width = number of bytes
+        {
+            if (type.width == 8)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R8_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R8_UINT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 16)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R16_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R16_UINT;
+                    case SPIRType::Float:
+                        return VK_FORMAT_R16_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 32)
+            {
+                switch (type.basetype)
+                {
+                case SPIRType::Int:
+                    return VK_FORMAT_R32_SINT;
+                case SPIRType::UInt:
+                    return VK_FORMAT_R32_UINT;
+                case SPIRType::Float:
+                    return VK_FORMAT_R32_SFLOAT;
+                default:
+                    return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 64)
+            {
+                switch (type.basetype)
+                {
+                case SPIRType::Int64:
+                    return VK_FORMAT_R64_SINT;
+                case SPIRType::UInt64:
+                    return VK_FORMAT_R64_UINT;
+                case SPIRType::Double:
+                    return VK_FORMAT_R64_SFLOAT;
+                default:
+                    return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else
+            {
+                TRE_CORE_WARN("Invalid type width for conversion of SPIR-Type to VkFormat enum value!");
+                return VK_FORMAT_UNDEFINED;
+            }
+        }
+        else if (type.vecsize == 2)
+        {
+            if (type.width == 8)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R8G8_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R8G8_UINT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 16)
+            {
+                switch (type.basetype)
+                {
+                case SPIRType::Int:
+                    return VK_FORMAT_R16G16_SINT;
+                case SPIRType::UInt:
+                    return VK_FORMAT_R16G16_UINT;
+                case SPIRType::Float:
+                    return VK_FORMAT_R16G16_SFLOAT;
+                default:
+                    return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 32)
+            {
+                switch (type.basetype)
+                {
+                case SPIRType::Int:
+                    return VK_FORMAT_R32G32_SINT;
+                case SPIRType::UInt:
+                    return VK_FORMAT_R32G32_UINT;
+                case SPIRType::Float:
+                    return VK_FORMAT_R32G32_SFLOAT;
+                default:
+                    return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 64)
+            {
+                switch (type.basetype)
+                {
+                case SPIRType::Int64:
+                    return VK_FORMAT_R64G64_SINT;
+                case SPIRType::UInt64:
+                    return VK_FORMAT_R64G64_UINT;
+                case SPIRType::Double:
+                    return VK_FORMAT_R64G64_SFLOAT;
+                default:
+                    return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else
+            {
+                TRE_CORE_WARN("Invalid type width for conversion of SPIR-Type to VkFormat enum value!");
+                return VK_FORMAT_UNDEFINED;
+            }
+        }
+        else if (type.vecsize == 3)
+        {
+            if (type.width == 8)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R8G8B8_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R8G8B8_UINT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 16)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R16G16B16_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R16G16B16_UINT;
+                    case SPIRType::Float:
+                        return VK_FORMAT_R16G16B16_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 32)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R32G32B32_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R32G32B32_UINT;
+                    case SPIRType::Float:
+                        return VK_FORMAT_R32G32B32_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 64)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int64:
+                        return VK_FORMAT_R64G64B64_SINT;
+                    case SPIRType::UInt64:
+                        return VK_FORMAT_R64G64B64_UINT;
+                    case SPIRType::Double:
+                        return VK_FORMAT_R64G64B64_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else
+            {
+                TRE_CORE_WARN("Invalid type width for conversion of SPIR-Type to VkFormat enum value!");
+                return VK_FORMAT_UNDEFINED;
+            }
+        }
+        else if (type.vecsize == 4)
+        {
+            if (type.width == 8)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R8G8B8A8_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R8G8B8A8_UINT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 16)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R16G16B16A16_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R16G16B16A16_UINT;
+                    case SPIRType::Float:
+                        return VK_FORMAT_R16G16B16A16_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 32)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int:
+                        return VK_FORMAT_R32G32B32A32_SINT;
+                    case SPIRType::UInt:
+                        return VK_FORMAT_R32G32B32A32_UINT;
+                    case SPIRType::Float:
+                        return VK_FORMAT_R32G32B32A32_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else if (type.width == 64)
+            {
+                switch (type.basetype)
+                {
+                    case SPIRType::Int64:
+                        return VK_FORMAT_R64G64B64A64_SINT;
+                    case SPIRType::UInt64:
+                        return VK_FORMAT_R64G64B64A64_UINT;
+                    case SPIRType::Double:
+                        return VK_FORMAT_R64G64B64A64_SFLOAT;
+                    default:
+                        return VK_FORMAT_UNDEFINED;
+                }
+            }
+            else
+            {
+                TRE_CORE_WARN("Invalid type width for conversion to a VkFormat enum");
+                return VK_FORMAT_UNDEFINED;
+            }
+        }
+        else
+        {
+            TRE_CORE_WARN("Vector size in vertex input attributes isn't explicitly supported for parsing from SPIRType->VkFormat");
+            return VK_FORMAT_UNDEFINED;
+        }
+    }
+
 	ShaderCompiler::ShaderCompiler(const std::filesystem::path& ShaderPath, bool EnableOptimization) : m_ShaderPath(ShaderPath), m_EnableOptimization(EnableOptimization)
 	{
 		m_ShaderLanguage = ShaderLanguage::GLSL; //For the sake of allowing it to be modular in future
@@ -121,9 +473,51 @@ namespace TRE
 	{
 		m_ReflectionData.PushConstants.clear();
 		m_ReflectionData.DescriptorSets.clear();
+        m_ReflectionData.VertexInputAttributeDescriptions.clear();
 
 		spirv_cross::Compiler Compiler(ShaderBinary);
 		auto Resources = Compiler.get_shader_resources();
+
+        if (ShaderStage == VK_SHADER_STAGE_VERTEX_BIT)
+        {
+            //To sort stage inputs according to locations else will break, why issit not sorted tho?
+            for (int x = 0; x < Resources.stage_inputs.size(); x++)
+            {
+                uint32_t Location = Compiler.get_decoration(Resources.stage_inputs[x].id, spv::DecorationLocation);
+                for (int y = 0; y < Resources.stage_inputs.size(); y++)
+                {
+                    uint32_t NextLocation = Compiler.get_decoration(Resources.stage_inputs[y].id, spv::DecorationLocation);
+                    if (Location < NextLocation)
+                    {
+                        std::swap(Resources.stage_inputs[x], Resources.stage_inputs[y]);
+                    }
+                }
+            }
+
+            TRE_CORE_INFO("Reflecting Shader Stage Inputs, Size: {0}", Resources.stage_inputs.size());
+            uint32_t OffsetStride = 0;
+            for (const auto& resource : Resources.stage_inputs)
+            {
+                const auto& Name = resource.name;
+                auto& Type = Compiler.get_type(resource.type_id);
+
+                uint32_t Binding = Compiler.get_decoration(resource.id, spv::DecorationBinding);
+                uint32_t Location = Compiler.get_decoration(resource.id, spv::DecorationLocation);
+
+                VkVertexInputAttributeDescription VertexAttributeDesc{};
+                VertexAttributeDesc.binding = Binding;
+                VertexAttributeDesc.location = Location;
+                VertexAttributeDesc.format = GetVulkanFormat(Type);
+                VertexAttributeDesc.offset = OffsetStride;
+
+                m_ReflectionData.VertexInputAttributeDescriptions.push_back(VertexAttributeDesc);
+                TRE_CORE_INFO("Reflected Input Stage: Name: {0} Binding:{1} Location: {2} Offset: {3}", Name, Binding, Location, OffsetStride);
+
+                OffsetStride += GetStrideFromVulkanFormat(VertexAttributeDesc.format);
+                //TRE_CORE_INFO("Reflected Input Stage: Offset: {0}", OffsetStride);
+            }
+            m_ReflectionData.VertexStride = OffsetStride;
+        }
 
 		TRE_CORE_INFO("Reflecting Uniform Buffers");
 		for (const auto& resource : Resources.uniform_buffers)
