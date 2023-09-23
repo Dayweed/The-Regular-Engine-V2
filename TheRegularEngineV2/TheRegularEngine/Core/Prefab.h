@@ -117,6 +117,8 @@ namespace TRE
 
 		void UpdatePrefabDirectory(std::string prefabGUID, std::string prefabFilePath);			// Add prefabGUID and prefabFilePath into m_ExistingPrefabs and auto SerializeExistingPrefabs
 
+		void UpdateAllInstances(std::vector<std::string>& instanceGUID, std::string prefabGUID);
+
 		// Returns true if instance is succesfully updates
 		// Returns false if instance does not belong to prefabGUID or no longer exist
 		bool UpdateInstance(Entity instance, std::string prefabGUID);

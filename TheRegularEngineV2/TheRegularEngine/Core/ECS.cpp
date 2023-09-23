@@ -887,7 +887,12 @@ namespace TRE
 		std::cout << entp1->AddComponent<FEL>().tobeignored << " <<\n";
 		entp1->GetComponent<FEL>() = p1;
 		std::cout << entp1->GetComponent<FEL>().tobeignored << " ?<\n";*/
-		
+
+		std::cout << "\nDestroying all " << GetEntities<Properties>().size() << "  test objects...\n";
+		DestroyAll();
+		std::cout << "- Remaining: " << GetEntities<Properties>().size() << " | Successfully cleared: " << (GetEntities<Properties>().empty() ? "true" : "false") << "\n";
+		std::cout << "\nCreating New Scene...\n";
+		SceneManager::Instance().NewScene();
 
 		std::cout << "====================================\n\n";
 	}

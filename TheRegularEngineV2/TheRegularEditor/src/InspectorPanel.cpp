@@ -100,16 +100,21 @@ namespace TRE
 			{
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity);
 			}
-			ImGui::SameLine();
 			if (entity->HasComponent<Prefabing>())
 			{
 				// Is Prefab Instance
 				isPrefabInstance = true;
+				ImGui::SameLine();
 				if (ImGui::Button("Overwrite Prefab"))
 				{
 					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
 				}
 				Prefabing& pref{ entity->GetComponent<Prefabing>() };
+				ImGui::SameLine();
+				if (ImGui::Button("Clone Prefab"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID);
+				}
 				ImGui::SameLine();
 				if (ImGui::Button("UnPrefab"))
 				{
@@ -123,8 +128,11 @@ namespace TRE
 					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->RevertInstance(entity, pref.m_PrefabGUID);
 					m_SelectionManager->SelectEntity(entity);
 				}
+				else if (!haveEdits)
+				{
+					ImGui::NewLine();
+				}
 			}
-			ImGui::NewLine();
 
 			// View all inspectable components
 			for (auto& List : properties)

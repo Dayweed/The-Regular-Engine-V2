@@ -8,11 +8,10 @@
       0,
       {
          "m_Instances": [
-            "{08B05A5B-3970-42B2-883C-FD14B0D45F67}",
-            "{7C4E6E5B-F2F7-4648-A6FD-13315B3F69DC}"
+            "{07CE2780-8AD4-4CC3-91C9-AC275A50F136}"
          ],
          "m_Overrides": {},
-         "m_PrefabGUID": "2c9154eb723d935d",
+         "m_PrefabGUID": "18e9c712d51d5785",
          "m_RemovedComps": []
       }
    ],
@@ -21,8 +20,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{08B05A5B-3970-42B2-883C-FD14B0D45F67}",
-         "m_Name": "Prefab Entity"
+         "m_GUID": "{07CE2780-8AD4-4CC3-91C9-AC275A50F136}",
+         "m_Name": "Test"
       }
    ],
    [
@@ -40,7 +39,7 @@
          "m_Position": [
             0.0,
             0.0,
-            0.0
+            25.0
          ],
          "m_Rotation": [
             0.0,
@@ -48,27 +47,28 @@
             0.0
          ],
          "m_Scale": [
-            1.0,
-            1.0,
-            1.0
+            5.0,
+            5.0,
+            5.0
          ]
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       1,
       0,
       {
-         "fakeInt": 120,
-         "fakeValue": "uwu"
+         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
+         "ASSET_MAT_m_MaterialInstance": "89f11168a1b5734c",
+         "m_IsVisible": true
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]
