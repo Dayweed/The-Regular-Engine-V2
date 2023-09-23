@@ -66,11 +66,11 @@ namespace TRE
 		auto vertHandle = 3;
 		auto fragHandle = 4;
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/PBR.frag");
 		frag->SetHandle(fragHandle);
 		ResourceManager::Instance().AddResource(std::move(frag));
 
@@ -104,11 +104,11 @@ namespace TRE
 		ro->SetHandle(geomHandle);
 		ResourceManager::Instance().AddResource(std::move(ro));
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/Template.vert");
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/Template.frag");
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/PBR.frag");
 		frag->SetHandle(fragHandle);
 		ResourceManager::Instance().AddResource(std::move(frag));
 
@@ -143,6 +143,14 @@ namespace TRE
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 
+		Entity test = ECSManager::Instance().CreateEntity();
+		test->GetComponent<Properties>().m_Name = "Test";
+		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 25.f));
+		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
+		test->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
+		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
 		transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
@@ -150,64 +158,17 @@ namespace TRE
 		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
 		test2->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
-		meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle));
-
-		Entity test = ECSManager::Instance().CreateEntity();
-		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f,0.f, 25.f));
-		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
-		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
-		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle2));
-
-		/*std::cout << "\STRESS TEST ECS\n====================================\n";
-		srand(time(NULL));
-		for (int i{}; i < 2500; ++i)
-		{
-			Entity ent{ ECSManager::Instance().CreateEntity() };
-			ent->AddComponent<MeshRenderer>();
-			transformSystem->SetPosition(ent, glm::vec3(0.f, 0.f, 25.f));
-			transformSystem->SetScale(ent, glm::vec3(rand() % 10, rand() % 10, rand() % 10));
-			meshRendererSystem->SetMeshRenderer(ent, vase);
-		}*/
-
-		/*Entity test3 = ECSManager::Instance().CreateEntity();
-		transformSystem->SetPosition(test3, glm::vec3(0.f, 0.f, 0.f));*/
+		meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));
 
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
 
-		//// this is to get the main camera
-		//auto mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera(); 
-		//
-		//mainCamera->GetComponent<Camera>().GetViewDirection();
-		//mainCamera->GetComponent<Camera>().GetUpVec();
+		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 
-
-		//Entity audio = ECSManager::Instance().CreateEntity();
-		//audio->AddComponent<Audio>();
-
-		//ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(cam, test->GetComponent<Transform>().m_Position);
-		// _system_manager->GetSystem<PhysicsSystem>()->ConstructSphereCollider(test2, { 4, 10, 4 }, 2);
-		//ECSSystemManager::Instance().GetSystem<AudioSystem>()->CompileAudio(audio);
-
-		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
-
-		//std::cout << "Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
-
-
-		//cameraSystem->SetIsMainCamera(cam, false);
 		//SceneManager::Instance().NewScene();
-		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
-
-		/*Entity cam2 = ECSManager::Instance().CreateEntity();
-		cam2->GetComponent<Properties>().m_Name = "cam2";
-		cam2->AddComponent<Camera>();
-		cameraSystem->SetIsMainCamera(cam2, true);*/
-
-		//std::cout << "Deserialized Main Camera is " << ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetName() << "\n";
+		//SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -291,12 +252,6 @@ namespace TRE
 
 	void Engine::Update()
 	{
-		// To remove eventually
-		//ECSManager::Instance().TESTRUN();
-		//AHHH();
-		//DemoScene();
-		//ECSManager::Instance().STRESSTEST();
-
 		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
 			m_Window->BeginFrame();

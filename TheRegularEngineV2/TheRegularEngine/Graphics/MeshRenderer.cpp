@@ -13,10 +13,14 @@ namespace TRE
 		{
 			MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
 			Transform& transform = go.get()->GetComponent<Transform>();
-			if (meshRenderer.m_IsDirty || transform.m_IsDirty)
+			if (meshRenderer.m_IsDirty)
+			{
+				meshRenderer.m_IsDirty = false;
+			}
+
+			if (transform.m_IsDirty)
 			{
 				UpdateBoundingSphere(go);
-				meshRenderer.m_IsDirty = false;
 				transform.m_IsDirty = false;
 			}
 		}

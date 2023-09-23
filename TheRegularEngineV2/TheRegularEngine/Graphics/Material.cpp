@@ -79,6 +79,9 @@ namespace TRE
 					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
 					FragmentBindings.second.pImageInfo = &imageInfo;
 					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
+					FragmentBindings.second.dstBinding = x + 1;
+					FragmentBindings.second.dstArrayElement = x;
+
 					m_WriteDescriptors.push_back(FragmentBindings.second);
 					++x;
 				}
@@ -90,7 +93,7 @@ namespace TRE
 
 	void Material::Serialize()
 	{
-		std::string path = "../Assets/";
+		std::string path = "../Resources/";
 		std::filesystem::directory_entry entry(path);
 		if (!entry.exists())
 		{
@@ -121,7 +124,7 @@ namespace TRE
 	std::shared_ptr<Material> Material::Deserialize(const std::string& assetHexGUID)
 	{
 		//Open material file
-		std::string materialPath = "../Assets/" + assetHexGUID + ".material";
+		std::string materialPath = "../Resources/" + assetHexGUID + ".material";
 		std::ifstream file(materialPath);
 		if (!file.is_open())
 		{
