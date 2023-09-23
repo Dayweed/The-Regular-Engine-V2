@@ -79,11 +79,28 @@ namespace TRE
 			elem.second.remove(obj->m_Entity);
 		}
 		// Clone each component of the object into the clone
-		for (auto&& curr : m_Registry.storage())
+		/*for (auto&& curr : m_Registry.storage())
 		{
 			if (auto& storage = curr.second; storage.contains(object->m_Entity))
 			{
 				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
+			}
+		}*/
+		for (auto [id, source_storage] : m_Registry.storage())
+		{
+			auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+			if (destination_storage != nullptr && source_storage.contains(object->m_Entity))
+			{
+				if (!destination_storage->contains(obj->m_Entity))
+				{
+					destination_storage->emplace(obj->m_Entity, source_storage.get(object->m_Entity));
+				}
+				// Overwrite m_Entity if m_Entity already contains the component
+				else
+				{
+					destination_storage->erase(obj->m_Entity);
+					destination_storage->emplace(obj->m_Entity, source_storage.get(object->m_Entity));
+				}
 			}
 		}
 		// Change Name
@@ -119,14 +136,18 @@ namespace TRE
 		MemoryManager::Instance().ClearUndeployed();
 
 		entt::snapshot snapshot{ GetRegistry() };
+		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
+
 		// Serialize all entities and components
 		snapshot.entities(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			//.component<FEL>(arc);
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			;
 
 		arc.Close();
@@ -141,14 +162,17 @@ namespace TRE
 		entt::registry copy;
 		ECSInputArchive arc(filePath);
 
+		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
+			.component<Prefabing>(arc)
 			.component<Properties>(arc)
 			.component<Parenting>(arc)
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			//.component<FEL>(arc)
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -847,10 +871,45 @@ namespace TRE
 		DestroyAll();
 		std::cout << "- Remaining: " << GetEntities<Properties>().size() << " | Successfully cleared: " << (GetEntities<Properties>().empty() ? "true" : "false") << "\n";
 
+		std::cout << "\nCreating New Scene...\n";
 		SceneManager::Instance().NewScene();
 
-		Entity TESTCIO = CreateEntity("LOK");
-		TESTCIO->RemoveComponent<Transform>();
+		std::cout << "\nCreating Entity to prefab\n";
+		Entity prefabEnt = ECSManager::Instance().CreateEntity("Prefab Entity");
+		prefabEnt->AddComponent<FAKEFEL>().fakeValue = "uwu";
+
+		std::cout << "- Attempting to save prefab " << prefabEnt->GetName() << "\n";
+		PrefabSystem* prefabSystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
+		std::string prefabEntGUID = prefabSystem->SavePrefabEntity(prefabEnt);
+		std::cout << "-- Succesfully saved with prefab guid of " << prefabEntGUID << "\n";
+		std::cout << "- Attempting to create prefab " << prefabEnt->GetName() << " instance\n";
+		Entity prefabEntInstance = prefabSystem->CreatePrefabEntityInstance(prefabEntGUID);
+		std::cout << "-- Succesfully created prefab instance named " << prefabEntInstance->GetName() << "\n";
+		std::cout << "> prefabEnt: " << prefabEnt->GetComponent<Prefabing>().m_Instances.size() << "\n";
+		std::cout << "> prefabEntInstance: " << prefabEntInstance->GetComponent<Prefabing>().m_Instances.size() << "\n";
+
+		/*SceneManager::Instance().SaveSceneAs("../Scenes/TESTING.json");
+		SceneManager::Instance().LoadScene("../Scenes/TESTING.json");
+
+		for (auto& ent : GetEntities<Prefabing>())
+		{
+			std::cout << ent->GetName() << "|" << ent->GetComponent<Prefabing>().m_PrefabGUID << "\n";
+		}*/
+
+		/*Entity entp1{ ECSManager::Instance().CreateEntity("entp1")};
+		entp1->AddComponent<FEL>().tobeignored = "owo";
+		FEL p1{ entp1->GetComponent<FEL>() };
+		std::cout << entp1->GetComponent<FEL>().tobeignored << " ?<\n";
+		entp1->RemoveComponent<FEL>();
+		std::cout << entp1->AddComponent<FEL>().tobeignored << " <<\n";
+		entp1->GetComponent<FEL>() = p1;
+		std::cout << entp1->GetComponent<FEL>().tobeignored << " ?<\n";*/
+
+		std::cout << "\nDestroying all " << GetEntities<Properties>().size() << "  test objects...\n";
+		DestroyAll();
+		std::cout << "- Remaining: " << GetEntities<Properties>().size() << " | Successfully cleared: " << (GetEntities<Properties>().empty() ? "true" : "false") << "\n";
+		std::cout << "\nCreating New Scene...\n";
+		SceneManager::Instance().NewScene();
 
 		std::cout << "====================================\n\n";
 	}

@@ -6,23 +6,26 @@
       2
    ],
    [
+      0
+   ],
+   [
       3,
       0,
       {
          "m_Active": true,
-         "m_GUID": "{0A8DB8E1-CAB3-461B-BE63-F3395AF14ED8}",
+         "m_GUID": "{A9BF3DE2-787C-42D6-960F-C1E036053800}",
          "m_Name": "Test2"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{842B2093-E8A7-4FFF-8AC5-A20837E7A782}",
+         "m_GUID": "{4008B0C8-6F58-48F5-ACA0-9FB2CE668169}",
          "m_Name": "Test"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{AFC58D5A-DD51-46B8-B786-7AB5360B2F4B}",
+         "m_GUID": "{CB1DFAF2-D3B1-4A87-8871-903C2565B76D}",
          "m_Name": "cam"
       }
    ],
@@ -154,5 +157,11 @@
          ],
          "m_Yaw": 0.0
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]

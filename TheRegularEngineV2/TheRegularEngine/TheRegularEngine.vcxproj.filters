@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Assets">
-      <UniqueIdentifier>{3824E0A7-24C6-0A7E-0D81-1ED2F9C191CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Audio">
       <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
     </Filter>
@@ -31,17 +28,14 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{ED6CDF9B-D939-3AA7-0253-284FEE7E6F35}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Scripting">
       <UniqueIdentifier>{985A7358-04C5-27CF-4D03-D974B9AC0524}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\Asset.h">
-      <Filter>Assets</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\AssetManager.h">
-      <Filter>Assets</Filter>
-    </ClInclude>
     <ClInclude Include="Audio\AudioSystem.h">
       <Filter>Audio</Filter>
     </ClInclude>
@@ -67,6 +61,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Parent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Prefab.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Profiler.h">
@@ -188,6 +185,12 @@
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="PropertyConfig.h" />
+    <ClInclude Include="Resource\Resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\ResourceManager.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
@@ -195,12 +198,6 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets\Asset.cpp">
-      <Filter>Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="Assets\AssetManager.cpp">
-      <Filter>Assets</Filter>
-    </ClCompile>
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
@@ -220,6 +217,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Parent.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Prefab.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
@@ -308,6 +308,12 @@
     </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Resource.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\ResourceManager.cpp">
+      <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="Scripting\ScriptEngine.cpp">
       <Filter>Scripting</Filter>
