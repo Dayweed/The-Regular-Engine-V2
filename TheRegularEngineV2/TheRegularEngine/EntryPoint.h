@@ -24,6 +24,5 @@ int main()
 
 	TRE::Engine* App = TRE::CreateApp();
 	App->Update();
-	App->Shutdown();
 	delete App;
 }

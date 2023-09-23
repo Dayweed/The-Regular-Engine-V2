@@ -20,6 +20,7 @@ namespace TRE
 		{
 			//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
+			event.Publish(TypingEvent {key, mod});
 		}
 	}
 

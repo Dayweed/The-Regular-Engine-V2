@@ -42,8 +42,8 @@ namespace TRE
 			std::shared_ptr<Window> m_Window;
 			std::shared_ptr<Renderer> m_Renderer;
 			std::shared_ptr<VulkanEditor> m_VulkanEditor;
-
 			EngineInfo m_EngineInfo;
+			bool m_Running = true;
 
 			static Engine* s_Instance;
 	};

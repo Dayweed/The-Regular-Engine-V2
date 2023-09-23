@@ -87,12 +87,16 @@
     <ClInclude Include="src\ViewportPanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ProfilerPanel.h" />
-    <ClInclude Include="src\ToolBarPanel.h" />
     <ClInclude Include="src\EditorAssetManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Utilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ToolBarPanel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProfilerPanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

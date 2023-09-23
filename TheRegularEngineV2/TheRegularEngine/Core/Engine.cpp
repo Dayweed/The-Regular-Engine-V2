@@ -255,6 +255,7 @@ namespace TRE
 
 	Engine::~Engine()
 	{
+		Shutdown();
 	}
 
 	void Engine::RegisterECS()
@@ -299,9 +300,8 @@ namespace TRE
 		//DemoScene();
 		//ECSManager::Instance().STRESSTEST();
 
-		while (!m_Window->ShouldWindowClose())
+		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
-
 			m_Window->BeginFrame();
 			m_Window->UpdateDeltaTime();
 
@@ -344,6 +344,7 @@ namespace TRE
 
 	void Engine::Shutdown()
 	{
+		m_Running = false;
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
