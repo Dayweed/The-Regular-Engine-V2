@@ -8,11 +8,11 @@
       0,
       {
          "m_Instances": [
-            "{DF7A62EB-FC08-4A37-A4FB-9FEA842936B7}",
-            "{6A6BC794-E734-4CA4-9288-B0F596D7FAAE}"
+            "{8F25BC12-ECF1-44B0-BCE7-7FC951CCC0BA}",
+            "{5A2C173F-7F43-4E4E-A68B-C05F5F4EE5B1}"
          ],
          "m_Overrides": {},
-         "m_PrefabGUID": "d085fe029d5e14c8",
+         "m_PrefabGUID": "37f379a7ac09fa40",
          "m_RemovedComps": []
       }
    ],
@@ -21,8 +21,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{6A6BC794-E734-4CA4-9288-B0F596D7FAAE}",
-         "m_Name": "Test2"
+         "m_GUID": "{8F25BC12-ECF1-44B0-BCE7-7FC951CCC0BA}",
+         "m_Name": "TestO"
       }
    ],
    [
@@ -38,7 +38,7 @@
       0,
       {
          "m_Position": [
-            30.0,
+            78.0,
             10.0,
             100.0
          ],
@@ -48,7 +48,7 @@
             45.0
          ],
          "m_Scale": [
-            20.0,
+            5.0,
             5.0,
             5.0
          ]

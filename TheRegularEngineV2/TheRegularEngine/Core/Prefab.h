@@ -20,7 +20,7 @@ namespace TRE
 
 		//std::string m_BasedGUID{};															// m_PrefabGUID of the prefab it is finding from
 
-		std::vector<std::string> m_Instances{};												// Instances that are based on this Entity (Properties::m_GUID to easily get them)
+		std::unordered_set<std::string> m_Instances{};										// Instances that are based on this Entity (Properties::m_GUID to easily get them)
 																							// This gets updated everytime an Instance is created
 																							// Automatically updates all instances if the Prefab is saved
 																							// Skips and removes instances when saving if:
@@ -28,11 +28,11 @@ namespace TRE
 																							// - Instance does not have Prefabing Component
 																							// - m_Base of instance does not match the m_PrefabGUID
 		
-		std::vector<std::string> m_AddeddComps{};											// List of components removed
+		std::unordered_set<std::string> m_AddeddComps{};									// List of components removed
 
-		std::vector<std::string> m_RemovedComps{};											// List of components removed
+		std::unordered_set<std::string> m_RemovedComps{};									// List of components removed
 
-		std::map<std::string, std::vector<std::string>> m_Overrides{};						// List of components/properties added/overriten for a given component
+		std::map<std::string, std::unordered_set<std::string>> m_Overrides{};				// List of components/properties added/overriten for a given component
 																							// <Component Name, std::vector<Data Variable Name>>
 																							// This will be updated for Components visible in INSPECTOR!
 																							// This container will override any data in the instance after the prefab update the instance
@@ -117,7 +117,7 @@ namespace TRE
 
 		void UpdatePrefabDirectory(std::string prefabGUID, std::string prefabFilePath);			// Add prefabGUID and prefabFilePath into m_ExistingPrefabs and auto SerializeExistingPrefabs
 
-		void UpdateAllInstances(std::vector<std::string>& instanceGUID, std::string prefabGUID);
+		void UpdateAllInstances(std::unordered_set<std::string>& instanceGUID, std::string prefabGUID);
 
 		// Returns true if instance is succesfully updates
 		// Returns false if instance does not belong to prefabGUID or no longer exist

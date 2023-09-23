@@ -152,7 +152,7 @@ namespace TRE
 						// Update Prefabing if have
 						if (isPrefabInstance)
 						{
-							entity->GetComponent<Prefabing>().m_RemovedComps.emplace_back(List.first);
+							entity->GetComponent<Prefabing>().m_RemovedComps.emplace(List.first);
 						}
 
 						ECSManager::Instance().RemCompFromName(entity, List.first);
@@ -176,7 +176,7 @@ namespace TRE
 						// Is override
 						if (prefab.m_Overrides.find(List.first) != prefab.m_Overrides.end())
 						{
-							std::vector<std::string> vecStr{ prefab.m_Overrides.find(List.first)->second };
+							std::unordered_set<std::string> vecStr{ prefab.m_Overrides.find(List.first)->second };
 							if (std::find(vecStr.begin(), vecStr.end(), Name) != vecStr.end())
 							{
 								isEdited = true;
@@ -238,13 +238,17 @@ namespace TRE
 					if (UpdatedData && isPrefabInstance)
 					{
 						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
-						// See if can emplace back
-						auto it{ prefab.m_Overrides.find(List.first) };
-						if (it == prefab.m_Overrides.end())
+						// Ignore overriding if it is a newly added component
+						if (prefab.m_AddeddComps.find(List.first) == prefab.m_AddeddComps.end())
 						{
-							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(List.first), std::forward_as_tuple());
+							// See if can emplace back
+							auto it{ prefab.m_Overrides.find(List.first) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(List.first), std::forward_as_tuple());
+							}
+							prefab.m_Overrides[List.first].emplace(Name);
 						}
-						prefab.m_Overrides[List.first].emplace_back(Name);
 					}
 				}
 
@@ -280,7 +284,7 @@ namespace TRE
 						// Update Prefabing if have
 						if (isPrefabInstance)
 						{
-							entity->GetComponent<Prefabing>().m_AddeddComps.emplace_back(compName);
+							entity->GetComponent<Prefabing>().m_AddeddComps.emplace(compName);
 						}
 
 						ECSManager::Instance().AddCompFromName(entity, compName);

@@ -79,11 +79,28 @@ namespace TRE
 			elem.second.remove(obj->m_Entity);
 		}
 		// Clone each component of the object into the clone
-		for (auto&& curr : m_Registry.storage())
+		/*for (auto&& curr : m_Registry.storage())
 		{
 			if (auto& storage = curr.second; storage.contains(object->m_Entity))
 			{
 				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
+			}
+		}*/
+		for (auto [id, source_storage] : m_Registry.storage())
+		{
+			auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+			if (destination_storage != nullptr && source_storage.contains(object->m_Entity))
+			{
+				if (!destination_storage->contains(obj->m_Entity))
+				{
+					destination_storage->emplace(obj->m_Entity, source_storage.get(object->m_Entity));
+				}
+				// Overwrite m_Entity if m_Entity already contains the component
+				else
+				{
+					destination_storage->erase(obj->m_Entity);
+					destination_storage->emplace(obj->m_Entity, source_storage.get(object->m_Entity));
+				}
 			}
 		}
 		// Change Name
