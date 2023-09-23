@@ -109,6 +109,20 @@ namespace TRE
 				{
 					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
 				}
+				Prefabing& pref{ entity->GetComponent<Prefabing>() };
+				ImGui::SameLine();
+				if (ImGui::Button("UnPrefab"))
+				{
+					entity->RemoveComponent<Prefabing>();
+					isPrefabInstance = false;
+				}
+				bool haveEdits{ !pref.m_Overrides.empty() || !pref.m_AddeddComps.empty() || !pref.m_RemovedComps.empty() };
+				ImGui::SameLine();
+				if (haveEdits && ImGui::Button("Revert"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->RevertInstance(entity, pref.m_PrefabGUID);
+					m_SelectionManager->SelectEntity(entity);
+				}
 			}
 			ImGui::NewLine();
 

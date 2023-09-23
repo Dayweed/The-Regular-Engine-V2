@@ -105,6 +105,8 @@ namespace TRE
 																								// Uses m_TempPrefab to update in Inspector, does nothing if it is nullptr
 																								// Returns true if m_TempPrefab exist and was successfully updated
 
+		bool RevertInstance(Entity instance, std::string prefabGUID);							// Revert instance back to same data as prefab
+
 	private:
 		// Deserializing list in prefabs directory into m_ExistingPrefabs
 		void DeserializePrefabDirectory();														// If a prefabFilePath no longer exist while checking:

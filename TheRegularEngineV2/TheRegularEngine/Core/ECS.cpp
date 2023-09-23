@@ -859,7 +859,7 @@ namespace TRE
 
 		std::cout << "\nCreating Entity to prefab\n";
 		Entity prefabEnt = ECSManager::Instance().CreateEntity("Prefab Entity");
-		prefabEnt->AddComponent<FEL>().tobeignored = "uwu";
+		prefabEnt->AddComponent<FAKEFEL>().fakeValue = "uwu";
 
 		std::cout << "- Attempting to save prefab " << prefabEnt->GetName() << "\n";
 		PrefabSystem* prefabSystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
@@ -879,14 +879,14 @@ namespace TRE
 			std::cout << ent->GetName() << "|" << ent->GetComponent<Prefabing>().m_PrefabGUID << "\n";
 		}*/
 
-		Entity entp1{ ECSManager::Instance().CreateEntity("entp1")};
+		/*Entity entp1{ ECSManager::Instance().CreateEntity("entp1")};
 		entp1->AddComponent<FEL>().tobeignored = "owo";
 		FEL p1{ entp1->GetComponent<FEL>() };
 		std::cout << entp1->GetComponent<FEL>().tobeignored << " ?<\n";
 		entp1->RemoveComponent<FEL>();
 		std::cout << entp1->AddComponent<FEL>().tobeignored << " <<\n";
 		entp1->GetComponent<FEL>() = p1;
-		std::cout << entp1->GetComponent<FEL>().tobeignored << " ?<\n";
+		std::cout << entp1->GetComponent<FEL>().tobeignored << " ?<\n";*/
 		
 
 		std::cout << "====================================\n\n";

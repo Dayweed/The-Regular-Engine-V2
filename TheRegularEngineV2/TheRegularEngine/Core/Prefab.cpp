@@ -419,6 +419,101 @@ namespace TRE
 		return true;
 	}
 
+	bool PrefabSystem::RevertInstance(Entity instance, std::string prefabGUID)
+	{
+		// Ensure it can check and copy over
+		if (m_ExistingPrefabs.empty() || m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] prefabGUID (" + prefabGUID + ") is invalid!");
+			assert(!m_ExistingPrefabs.empty());
+			assert(m_ExistingPrefabs.find(prefabGUID) != m_ExistingPrefabs.end());
+		}
+		std::string prefabFilePath{ m_ExistingPrefabs[prefabGUID] };
+
+		// Get Enitity based on filePath
+		GetPrefabEntity(prefabFilePath); // m_TempPrefab is already assign in it
+
+		if (!m_TempPrefab)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] m_TempPrefab is still a nullptr!");
+			assert(m_TempPrefab);
+		}
+
+		// Check if m_TempPrefab m_prefabGUID and prefabGUID is the same
+		if (m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID != prefabGUID)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] m_TempPrefab m_PrefabGUID (" + m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")!");
+			assert(m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID == prefabGUID);
+		}
+
+		// Check if instance even have Prefabing to begin with
+		if (!instance->HasComponent<Prefabing>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") does not have Prefabing! Removing from m_TempPrefab m_Instances...");
+			return false;
+		}
+
+		// Check if instance have same prefabGUID
+		if (instance->GetComponent<Prefabing>().m_PrefabGUID != prefabGUID)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
+			return false;
+		}
+
+		// Copy over instance stuff
+		// Save some values
+		std::string instName{ instance->GetComponent<Properties>().m_Name };
+		std::string instGUID{ instance->GetComponent<Properties>().m_GUID };
+		Prefabing& pref{ instance->GetComponent<Prefabing>() };
+
+		// Clear editted values
+		pref.m_AddeddComps.clear();
+		pref.m_Overrides.clear();
+		pref.m_RemovedComps.clear();
+		Prefabing instPrefabing{ pref };
+
+		// Save properties list if there are stuff overwritten
+		std::vector<std::pair<std::string, std::vector<property::entry>>> instPropTable;
+		std::vector<std::pair<std::string, property::base*>> instInspectableComp = ECSManager::Instance().GetAllInspectableComponents(instance);
+		for (size_t i{}; i < instInspectableComp.size(); ++i)
+		{
+			property::base& compProp { *instInspectableComp[i].second };
+			std::vector<property::entry> List;
+			property::SerializeEnum(compProp, [&](std::string_view PropertyName, property::data&& Data, const property::table&, std::size_t, property::flags::type Flags)
+				{
+					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
+					assert(Flags.m_isScope == false || PropertyName.back() == ']');
+					List.push_back(property::entry { PropertyName, Data });
+				});
+			instPropTable.push_back({ instInspectableComp[i].first, List });
+		}
+
+		// Remove all components in one entity
+		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
+			elem.second.remove(instance->m_Entity);
+		}
+		// Clone each component of the object into the clone
+		for (auto&& curr : ECSManager::Instance().GetRegistry().storage())
+		{
+			if (auto& storage = curr.second; storage.contains(m_TempPrefab->m_Entity))
+			{
+				storage.emplace(instance->m_Entity, storage.get(m_TempPrefab->m_Entity));
+			}
+		}
+
+		// Revert back to saved Values
+		instance->GetComponent<Properties>().m_Name = instName;
+		instance->GetComponent<Properties>().m_GUID = instGUID;
+		instance->GetComponent<Prefabing>() = instPrefabing;
+
+		return true;
+	}
+
 	void PrefabSystem::DeserializePrefabDirectory()
 	{
 		// Prepare file name [For deserialization too]
@@ -550,8 +645,26 @@ namespace TRE
 		if (!m_TempPrefab)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] m_TempPrefab is a nullptr!");
-			assert(m_TempPrefab);
+			TRE_CORE_WARN("[" + funcName + "] m_TempPrefab is a nullptr! Generating m_TempPrefab...");
+
+			if (m_ExistingPrefabs.empty() || m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
+			{
+				std::string funcName{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + funcName + "] prefabGUID (" + prefabGUID + ") is invalid!");
+				assert(!m_ExistingPrefabs.empty());
+				assert(m_ExistingPrefabs.find(prefabGUID) != m_ExistingPrefabs.end());
+			}
+			std::string prefabFilePath{ m_ExistingPrefabs[prefabGUID] };
+
+			// Get Enitity based on filePath
+			GetPrefabEntity(prefabFilePath); // m_TempPrefab is already assign in it
+
+			if (!m_TempPrefab)
+			{
+				std::string funcName{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + funcName + "] m_TempPrefab is still a nullptr!");
+				assert(m_TempPrefab);
+			}
 		}
 
 		// Check if m_TempPrefab m_prefabGUID and prefabGUID is the same
