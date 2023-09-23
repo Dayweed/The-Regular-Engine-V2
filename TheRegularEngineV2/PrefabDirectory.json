@@ -3,16 +3,16 @@
         "m_ExistingPrefabsKey": [
             "c59ed9e646813b88",
             "2c9154eb723d935d",
-            "1f2e32e4f3d621b7",
             "467f95809fb4c42",
-            "18e9c712d51d5785"
+            "18e9c712d51d5785",
+            "98208263955ee319"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/Default_Entity_Name.json",
             "../Resources/Prefabs/Prefab Entity.json",
-            "../Resources/Prefabs/Test2.json",
             "../Resources/Prefabs/Demo Prefab.json",
-            "../Resources/Prefabs/Test.json"
+            "../Resources/Prefabs/Test.json",
+            "../Resources/Prefabs/Test2.json"
         ]
     }
 }

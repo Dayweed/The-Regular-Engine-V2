@@ -689,12 +689,6 @@ namespace TRE
 		std::vector<std::pair<std::string, property::base*>> instInspectableComp = ECSManager::Instance().GetAllInspectableComponents(instance);
 		for (size_t i{}; i < instInspectableComp.size(); ++i)
 		{
-			// Skip saving those that are not considered saving
-			if (instPrefabing.m_Overrides.find(instInspectableComp[i].first) == instPrefabing.m_Overrides.end())
-			{
-				continue;
-			}
-
 			property::base& compProp { *instInspectableComp[i].second };
 			std::vector<property::entry> List;
 			property::SerializeEnum(compProp, [&](std::string_view PropertyName, property::data&& Data, const property::table&, std::size_t, property::flags::type Flags)
@@ -724,32 +718,46 @@ namespace TRE
 		instance->GetComponent<Prefabing>() = instPrefabing;
 		instance->GetComponent<Prefabing>().m_Instances = m_TempPrefab->GetComponent<Prefabing>().m_Instances;
 
+		std::cout << instPrefabing.m_AddeddComps.size() << "|" << instPrefabing.m_Overrides.size() << "|" << instPrefabing.m_RemovedComps.size() << "\n";
+
+		for (auto& vec : instPrefabing.m_Overrides)
+		{
+			std::cout << "- " << vec.first << "\n";
+			for (std::string str : vec.second)
+			{
+				std::cout << "-- " << str << "\n";
+			}
+		}
+
 		// Revert back those that are saved
 		for (size_t i{}; i < instPropTable.size(); ++i)
 		{
 			// Only copy those that were registered as saved
 			auto it{ instPrefabing.m_Overrides.find(instInspectableComp[i].first) };
-			if (it == instPrefabing.m_Overrides.end())
+			if (it != instPrefabing.m_Overrides.end())
 			{
-				continue;
-			}
-			std::vector<std::string> instCompData = it->second;
-			
-			property::base& compProp { *instInspectableComp[i].second };
-			std::vector<property::entry> List{ instPropTable[i].second };
-			for (const auto& [Name, Data] : List)
-			{
-				// Skip those data that were overwritten
-				if (std::find(instPrefabing.m_AddeddComps.begin(), instPrefabing.m_AddeddComps.end(), Name) == instPrefabing.m_AddeddComps.end())
+				std::vector<std::string> instCompData = it->second;
+
+				property::base& compProp { *instInspectableComp[i].second };
+				std::vector<property::entry> List{ instPropTable[i].second };
+				for (const auto& [Name, Data] : List)
 				{
-					if (std::find(instCompData.begin(), instCompData.end(), Name) == instCompData.end())
+					// Skip those data that were overwritten
+					bool skip = false;
+					if (std::find(instPrefabing.m_AddeddComps.begin(), instPrefabing.m_AddeddComps.end(), Name) == instPrefabing.m_AddeddComps.end())
 					{
-						continue;
+						if (std::find(instCompData.begin(), instCompData.end(), Name) == instCompData.end())
+						{
+							skip = true;
+						}
+					}
+
+					// Copy to compProp
+					if (!skip)
+					{
+						property::set(compProp, Name.c_str(), Data);
 					}
 				}
-
-				// Copy to compProp
-				property::set(compProp, Name.c_str(), Data);
 			}
 		}
 
