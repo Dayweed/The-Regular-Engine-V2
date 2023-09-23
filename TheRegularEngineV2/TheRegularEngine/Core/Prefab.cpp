@@ -108,7 +108,7 @@ namespace TRE
 
 	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab)
 	{
-		std::cout << "============= SavePrefabEntity\n";
+		std::cout << "============= SavePrefabEntity " << object->GetName() << "|" << object->GetGUID() << "\n";
 		std::string prefabGUID;
 		std::string filePath;
 
@@ -177,6 +177,9 @@ namespace TRE
 			}
 		}
 
+		// Specifically change entity properties m_GUID
+		tmp.get<Properties>(ent).m_GUID = "";
+
 		// Set up document
 		PrefabOutputArchive arc(filePath, tmp);
 		entt::snapshot snapshot{ tmp };
@@ -205,6 +208,8 @@ namespace TRE
 			GetPrefabEntity(arc.GetFilePath());
 
 			Prefabing& prefabExist{ m_TempPrefab->GetComponent<Prefabing>() };
+
+			// Remove own self to ensure it wont get overwritten
 			prefabExist.m_Instances.erase(object->GetGUID());
 
 			// Update all instances to match
@@ -268,6 +273,8 @@ namespace TRE
 			TRE_CORE_ERROR("[" + funcName + "] Failed to update PrefabEntity (" + m_TempPrefab->GetName() + ") succesfully");
 			assert(updateSuccessful);
 		}
+
+		instance->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
 
 		return instance;
 	}
@@ -333,8 +340,6 @@ namespace TRE
 			assert(m_TempPrefab->HasComponent<Prefabing>());
 		}
 
-		m_TempPrefab->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
-
 		return m_TempPrefab;
 	}
 
@@ -362,15 +367,12 @@ namespace TRE
 
 		for (const std::string& instanceID : prefabComp.m_Instances)
 		{
-			std::cout << "- " << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
+			std::cout << "- " << ECSManager::Instance().FindEntity(instanceID) << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
 		}
 
 		UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
 
 		std::string filePath{ m_ExistingPrefabs[prefabGUID] };
-
-		std::string funcName{ __FUNCTION__ };
-		TRE_INFO("[" + funcName + "] Serializing to " + filePath);
 
 		entt::registry tmp;
 
@@ -657,7 +659,7 @@ namespace TRE
 		std::cout << "===============INTO UpdateAllInstances\n";
 		for (const std::string& instanceID : instanceGUID)
 		{
-			std::cout << "- " << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
+			std::cout << "- " << ECSManager::Instance().FindEntity(instanceID) << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
 		}
 
 		// Update all instances to match
@@ -675,7 +677,7 @@ namespace TRE
 			std::cout << "NOW IS\n";
 			for (const std::string& instanceID : instanceGUID)
 			{
-				std::cout << "- " << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
+				std::cout << "- " << ECSManager::Instance().FindEntity(instanceID) << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
 			}
 		}
 
@@ -688,7 +690,7 @@ namespace TRE
 
 	bool PrefabSystem::UpdateInstance(Entity instance, std::string prefabGUID)
 	{
-		std::cout << "============= Updating instance " << instance->GetName() << "|" << instance->GetGUID() << "\n";
+		std::cout << "============= Updating instance " << &instance << "|" << instance->GetName() << "|" << instance->GetGUID() << "\n";
 
 		if (!m_TempPrefab)
 		{
@@ -722,6 +724,11 @@ namespace TRE
 			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
 			return false;
 		}
+
+		std::cout << "Original GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
+		std::cout << "Original Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
+		std::cout << "Original Properties: " << &instance->GetComponent<Properties>() << "|" << &m_TempPrefab->GetComponent<Properties>() << "\n";
+		std::cout << "Original Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
 
 		// Copy over instance stuff
 		// Save some values
@@ -758,23 +765,65 @@ namespace TRE
 		////	}
 		////}
 
-		for (auto [id, source_storage] : ECSManager::Instance().GetRegistry().storage())
+		// Copy tempPrefab Stuff
+		std::vector<std::pair<std::string, std::vector<property::entry>>> prefPropTable;
+		std::vector<std::pair<std::string, property::base*>> prefInspectableComp = ECSManager::Instance().GetAllInspectableComponents(m_TempPrefab);
+		for (size_t i{}; i < prefInspectableComp.size(); ++i)
 		{
-			auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
-			if (destination_storage != nullptr && source_storage.contains(m_TempPrefab->m_Entity))
+			property::base& compProp { *prefInspectableComp[i].second };
+			std::vector<property::entry> List;
+			property::SerializeEnum(compProp, [&](std::string_view PropertyName, property::data&& Data, const property::table&, std::size_t, property::flags::type Flags)
+				{
+					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
+					assert(Flags.m_isScope == false || PropertyName.back() == ']');
+					List.push_back(property::entry { PropertyName, Data });
+				});
+			prefPropTable.push_back({ prefInspectableComp[i].first, List });
+		}
+
+		// Copy stuff over to instance
+		for (size_t i{}; i < prefPropTable.size(); ++i)
+		{
+			// Find component
+			auto it{ std::find_if(instInspectableComp.begin(), instInspectableComp.end(), [&](std::pair<std::string, property::base*> p) { return p.first == prefPropTable[i].first; }) };
+			if (it != instInspectableComp.end())
 			{
-				if (!destination_storage->contains(instance->m_Entity))
+				property::base& compProp { *it->second };
+				std::vector<property::entry> List{ prefPropTable[i].second };
+				for (const auto& [Name, Data] : List)
 				{
-					destination_storage->emplace(instance->m_Entity, source_storage.get(m_TempPrefab->m_Entity));
-				}
-				// Overwrite m_Entity if m_Entity already contains the component
-				else
-				{
-					destination_storage->erase(instance->m_Entity);
-					destination_storage->emplace(instance->m_Entity, source_storage.get(m_TempPrefab->m_Entity));
+					// Copy to compProp
+					property::set(compProp, Name.c_str(), Data);
 				}
 			}
+			else
+			{
+				std::cout << "XXX Failed to find " << prefPropTable[i].first << "\n";
+			}
 		}
+
+		//for (auto [id, source_storage] : ECSManager::Instance().GetRegistry().storage())
+		//{
+		//	auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+		//	if (destination_storage != nullptr && source_storage.contains(m_TempPrefab->m_Entity))
+		//	{
+		//		if (!destination_storage->contains(instance->m_Entity))
+		//		{
+		//			destination_storage->emplace(instance->m_Entity, source_storage.get(m_TempPrefab->m_Entity));
+		//		}
+		//		// Overwrite m_Entity if m_Entity already contains the component
+		//		else
+		//		{
+		//			destination_storage->erase(instance->m_Entity);
+		//			destination_storage->emplace(instance->m_Entity, source_storage.get(m_TempPrefab->m_Entity));
+		//		}
+		//	}
+		//}
+
+		std::cout << "Copied GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
+		std::cout << "Copied Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
+		std::cout << "Copied Properties: " << &instance->GetComponent<Properties>() << "|" << &m_TempPrefab->GetComponent<Properties>() << "\n";
+		std::cout << "Copied Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
 
 		// Revert back to saved Values
 		instance->GetComponent<Prefabing>() = instPrefabing;
@@ -798,16 +847,37 @@ namespace TRE
 		}
 
 		// Revert back those that are saved
+		//std::string propCompName{ ComponentManager::Instance().GetComponentName<Properties>() };
+		//for (size_t i{}; i < instPropTable.size(); ++i)
+		//{
+		//	property::base& compProp { *instInspectableComp[i].second };
+		//	std::vector<property::entry> List{ instPropTable[i].second };
+		//	for (const auto& [Name, Data] : List)
+		//	{
+		//		// Copy to compProp
+		//		property::set(compProp, Name.c_str(), Data);
+		//	}
+		//}
+		//instance->GetComponent<Properties>().m_Name = instName;
+		//instance->GetComponent<Properties>().m_GUID = instGUID;
 		for (size_t i{}; i < instPropTable.size(); ++i)
 		{
 			// Only copy those that were registered as saved or is added
-			std::cout << "ABNUBUIBION " << ComponentManager::Instance().GetComponentName<Properties>() << "\n";
 			bool isProperties{ instInspectableComp[i].first == ComponentManager::Instance().GetComponentName<Properties>() };
 			bool isAddedComp{ instPrefabing.m_AddeddComps.find(instInspectableComp[i].first) != instPrefabing.m_AddeddComps.end() };
 			auto it{ instPrefabing.m_Overrides.find(instInspectableComp[i].first) };
 			std::cout << "Finding " << instInspectableComp[i].first << "|" << isProperties << "|" << isAddedComp << "|" << (it != instPrefabing.m_Overrides.end()) << "\n";
 			if (isProperties)
 			{
+				property::base& compProp { *instInspectableComp[i].second };
+				std::vector<property::entry> List{ instPropTable[i].second };
+				for (const auto& [Name, Data] : List)
+				{
+					// Copy to compProp
+					std::cout << "Finding Data " << Name << "\n";
+					//std::cout << instance->GetName() << " Data " << std::get<std::string>(Data) << "...\n";
+				}
+
 				std::cout << "TESTNAME: " << instance->GetComponent<Properties>().m_Name << "|" << instName << "\n";
 				std::cout << "TESTGUID: " << instance->GetComponent<Properties>().m_GUID << "|" << instGUID << "\n";
 				std::cout << "TEMPGUID: " << m_TempPrefab->GetComponent<Properties>().m_GUID << "|" << ECSManager::Instance().FindEntity(m_TempPrefab->GetComponent<Properties>().m_GUID) << "\n";
@@ -835,6 +905,7 @@ namespace TRE
 				std::unordered_set<std::string> instCompData = it->second;
 
 				property::base& compProp { *instInspectableComp[i].second };
+				std::cout << "Trying to assign to comp " << instInspectableComp[i].first << "\n";
 				std::vector<property::entry> List{ instPropTable[i].second };
 				for (const auto& [Name, Data] : List)
 				{
@@ -850,7 +921,12 @@ namespace TRE
 			}
 		}
 
-		std::cout << "Done updating " << instance->GetName() << "\n";
+		std::cout << "Reverted GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
+		std::cout << "Reverted Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
+		std::cout << "Reverted Properties: " << &instance->GetComponent<Properties>() << "|" << &m_TempPrefab->GetComponent<Properties>() << "\n";
+		std::cout << "Reverted Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
+
+		std::cout << "Done updating " << instance->GetName() << "|" << instance->GetGUID() << "\n";
 		// Remove components marked as removed
 		for (std::string compName : instPrefabing.m_RemovedComps)
 		{
