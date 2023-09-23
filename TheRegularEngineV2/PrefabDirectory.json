@@ -1,20 +1,6 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
-        "m_ExistingPrefabsKey": [
-            "c59ed9e646813b88",
-            "c6781812407f788f",
-            "2c9154eb723d935d",
-            "467f95809fb4c42",
-            "37f379a7ac09fa40",
-            "18e9c712d51d5785"
-        ],
-        "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/Default_Entity_Name.json",
-            "../Resources/Prefabs/Test2.json",
-            "../Resources/Prefabs/Prefab Entity.json",
-            "../Resources/Prefabs/Demo Prefab.json",
-            "../Resources/Prefabs/TestO.json",
-            "../Resources/Prefabs/Test.json"
-        ]
+        "m_ExistingPrefabsKey": [],
+        "m_ExistingPrefabsValue": []
     }
 }
