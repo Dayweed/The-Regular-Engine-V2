@@ -864,7 +864,6 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
-	property_var(m_GUID).Name("m_GUID"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
 
