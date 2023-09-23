@@ -63,6 +63,12 @@ namespace TRE
 			{
 				return m_Components[hashcode];
 			}
+			
+			// Check in hidden component
+			if (m_HiddenComponents.find(hashcode) != m_HiddenComponents.end())
+			{
+				return m_HiddenComponents[hashcode];
+			}
 
 			//Can add assert here to tell user they getting a non registered component
 			return "[ERROR!] Non Registered Component";

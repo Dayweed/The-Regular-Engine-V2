@@ -44,11 +44,12 @@ namespace TRE
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
 	// DO NOT USE THIS UNLESS IT IS CREATING ALLOCATED ENTITIES!
-	// Get this component in GetEntities to get Entity that are going to be deleted in this loop
+	// Get this component in GetEntities to get Entity that are allocated and not used in MemoryManager
 	class Undeployed
 	{
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
+
 
 	struct NESTCOMP
 	{
@@ -93,6 +94,16 @@ namespace TRE
 				j.at("array").get_to(f.arr_i);
 				j.at("nested").get_to(f.nestedstruct);
 		}
+	};
+
+	struct FAKEFEL : property::base
+	{
+		std::string fakeValue{ "NULL" };
+		int fakeInt{ 120 };
+
+		property_vtable()           // Allows the base class to get these properties  
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FAKEFEL, fakeValue, fakeInt)
 	};
 
 	struct Properties : property::base
@@ -256,6 +267,7 @@ namespace TRE
 	private:
 		friend class ECSManager;
 		friend class MemoryManager;
+		friend class PrefabSystem;
 
 		entt::entity m_Entity;
 	};
@@ -860,3 +872,9 @@ property_begin(TRE::FEL)
 	property_var(vec_i).Name("vec_i"),
 	property_var(tobeignored).Name("tobeignored")
 } property_vend_h(TRE::FEL)
+
+property_begin(TRE::FAKEFEL)
+{
+	property_var(fakeValue).Name("fakeValue"),
+	property_var(fakeInt).Name("fakeInt")
+} property_vend_h(TRE::FAKEFEL)

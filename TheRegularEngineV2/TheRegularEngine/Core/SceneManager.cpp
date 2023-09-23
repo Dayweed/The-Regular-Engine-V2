@@ -35,6 +35,6 @@ namespace TRE
 
 	void SceneManager::SaveScene()
 	{
-		ECSManager::Instance().SaveEntities(m_CurrentSceneFilePath);
+		SaveSceneAs(m_CurrentSceneFilePath);
 	}
 }
