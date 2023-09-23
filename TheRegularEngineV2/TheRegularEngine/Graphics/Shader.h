@@ -24,7 +24,7 @@ namespace TRE
 
 		public:
 			VkPipelineShaderStageCreateInfo GetPipelineShaderInfo();
-			const std::unordered_map<std::string, VkWriteDescriptorSet>& GetWriteDescriptorSets();
+			std::unordered_map<std::string, VkWriteDescriptorSet> GetWriteDescriptorSets();
 
 		private:
 			VkPipelineShaderStageCreateInfo m_PipelineShaderCreateInfo;
