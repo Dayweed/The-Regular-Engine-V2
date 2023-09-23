@@ -210,7 +210,7 @@ namespace TRE
 			Prefabing& prefabExist{ m_TempPrefab->GetComponent<Prefabing>() };
 
 			// Remove own self to ensure it wont get overwritten
-			prefabExist.m_Instances.erase(object->GetGUID());
+			//prefabExist.m_Instances.erase(object->GetGUID());
 
 			// Update all instances to match
 			UpdateAllInstances(prefabExist.m_Instances, prefabExist.m_PrefabGUID);
@@ -265,6 +265,7 @@ namespace TRE
 		{
 			std::cout << "- " << ECSManager::Instance().FindEntity(instanceID)->GetName() << "|" << instanceID << "|" << ECSManager::Instance().FindEntityID(ECSManager::Instance().FindEntity(instanceID)) << "\n";
 		}
+		std::cout << "----------------\n\n";
 
 		if (!updateSuccessful)
 		{
@@ -273,8 +274,6 @@ namespace TRE
 			TRE_CORE_ERROR("[" + funcName + "] Failed to update PrefabEntity (" + m_TempPrefab->GetName() + ") succesfully");
 			assert(updateSuccessful);
 		}
-
-		instance->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
 
 		return instance;
 	}
@@ -725,10 +724,10 @@ namespace TRE
 			return false;
 		}
 
-		std::cout << "Original GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
-		std::cout << "Original Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
+		//std::cout << "Original GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
+		//std::cout << "Original Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
 		std::cout << "Original Properties: " << &instance->GetComponent<Properties>() << "|" << &m_TempPrefab->GetComponent<Properties>() << "\n";
-		std::cout << "Original Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
+		//std::cout << "Original Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
 
 		// Copy over instance stuff
 		// Save some values
@@ -781,6 +780,20 @@ namespace TRE
 			prefPropTable.push_back({ prefInspectableComp[i].first, List });
 		}
 
+		// Add components marked as to be added into instance
+		for (auto prefComp : prefInspectableComp)
+		{
+			// Get Prefab component name
+			std::string compName{ prefComp.first };
+			// Add comp if cannot find in instance
+			if (std::find_if(instInspectableComp.begin(), instInspectableComp.end(), [&](std::pair<std::string, property::base*> p) { return p.first == compName; }) == instInspectableComp.end())
+			{
+				std::cout << "!!! Added " << compName << "\n";
+				ECSManager::Instance().AddCompFromName(instance, compName);
+				instInspectableComp = ECSManager::Instance().GetAllInspectableComponents(instance);
+			}
+		}
+
 		// Copy stuff over to instance
 		for (size_t i{}; i < prefPropTable.size(); ++i)
 		{
@@ -820,10 +833,10 @@ namespace TRE
 		//	}
 		//}
 
-		std::cout << "Copied GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
-		std::cout << "Copied Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
+		//std::cout << "Copied GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
+		//std::cout << "Copied Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
 		std::cout << "Copied Properties: " << &instance->GetComponent<Properties>() << "|" << &m_TempPrefab->GetComponent<Properties>() << "\n";
-		std::cout << "Copied Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
+		//std::cout << "Copied Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
 
 		// Revert back to saved Values
 		instance->GetComponent<Prefabing>() = instPrefabing;
@@ -831,7 +844,7 @@ namespace TRE
 
 		std::cout << instPrefabing.m_AddeddComps.size() << "|" << instPrefabing.m_Overrides.size() << "|" << instPrefabing.m_RemovedComps.size() << "\n";
 
-		std::cout << "> m_Overrides\n";
+		/*std::cout << "> m_Overrides\n";
 		for (auto& vec : instPrefabing.m_Overrides)
 		{
 			std::cout << "- " << vec.first << "\n";
@@ -844,7 +857,7 @@ namespace TRE
 		for (std::string str : instPrefabing.m_AddeddComps)
 		{
 			std::cout << "- " << str << "\n";
-		}
+		}*/
 
 		// Revert back those that are saved
 		//std::string propCompName{ ComponentManager::Instance().GetComponentName<Properties>() };
@@ -863,41 +876,20 @@ namespace TRE
 		for (size_t i{}; i < instPropTable.size(); ++i)
 		{
 			// Only copy those that were registered as saved or is added
-			bool isProperties{ instInspectableComp[i].first == ComponentManager::Instance().GetComponentName<Properties>() };
 			bool isAddedComp{ instPrefabing.m_AddeddComps.find(instInspectableComp[i].first) != instPrefabing.m_AddeddComps.end() };
 			auto it{ instPrefabing.m_Overrides.find(instInspectableComp[i].first) };
-			std::cout << "Finding " << instInspectableComp[i].first << "|" << isProperties << "|" << isAddedComp << "|" << (it != instPrefabing.m_Overrides.end()) << "\n";
-			if (isProperties)
+			//std::cout << "Finding " << instInspectableComp[i].first << "|" << isAddedComp << "|" << (it != instPrefabing.m_Overrides.end()) << "\n";
+			if (isAddedComp)
 			{
 				property::base& compProp { *instInspectableComp[i].second };
 				std::vector<property::entry> List{ instPropTable[i].second };
 				for (const auto& [Name, Data] : List)
 				{
 					// Copy to compProp
-					std::cout << "Finding Data " << Name << "\n";
-					//std::cout << instance->GetName() << " Data " << std::get<std::string>(Data) << "...\n";
-				}
-
-				std::cout << "TESTNAME: " << instance->GetComponent<Properties>().m_Name << "|" << instName << "\n";
-				std::cout << "TESTGUID: " << instance->GetComponent<Properties>().m_GUID << "|" << instGUID << "\n";
-				std::cout << "TEMPGUID: " << m_TempPrefab->GetComponent<Properties>().m_GUID << "|" << ECSManager::Instance().FindEntity(m_TempPrefab->GetComponent<Properties>().m_GUID) << "\n";
-
-				instance->GetComponent<Properties>().m_Name = instName;
-				instance->GetComponent<Properties>().m_GUID = instGUID;
-
-				std::cout << "Skip reverting properties\n";
-			}
-			else if (isAddedComp)
-			{
-				property::base& compProp { *instInspectableComp[i].second };
-				std::vector<property::entry> List{ instPropTable[i].second };
-				for (const auto& [Name, Data] : List)
-				{
-					// Copy to compProp
-					std::cout << "Finding Data " << Name << "| isAddComp \n";
-					std::cout << instance->GetName() << " Moving Data " << Name << "...\n";
+					//std::cout << "Finding Data " << Name << "| isAddComp \n";
+					//std::cout << instance->GetName() << " Moving Data " << Name << "...\n";
 					property::set(compProp, Name.c_str(), Data);
-					std::cout << instance->GetName() << " Moved Data " << Name << "!!!\n";
+					//std::cout << instance->GetName() << " Moved Data " << Name << "!!!\n";
 				}
 			}
 			else if (it != instPrefabing.m_Overrides.end())
@@ -905,26 +897,28 @@ namespace TRE
 				std::unordered_set<std::string> instCompData = it->second;
 
 				property::base& compProp { *instInspectableComp[i].second };
-				std::cout << "Trying to assign to comp " << instInspectableComp[i].first << "\n";
+				//std::cout << "Trying to assign to comp " << instInspectableComp[i].first << "\n";
 				std::vector<property::entry> List{ instPropTable[i].second };
 				for (const auto& [Name, Data] : List)
 				{
 					// Copy to compProp
-					std::cout << "Finding Data " << Name << "|" << isAddedComp << "|" << (instCompData.find(Name) != instCompData.end()) << "\n";
+					//std::cout << "Finding Data " << Name << "|" << isAddedComp << "|" << (instCompData.find(Name) != instCompData.end()) << "\n";
 					if (instCompData.find(Name) != instCompData.end())
 					{
-						std::cout << instance->GetName() << " Moving Data " << Name << "...\n";
+						//std::cout << instance->GetName() << " Moving Data " << Name << "...\n";
 						property::set(compProp, Name.c_str(), Data);
-						std::cout << instance->GetName() << " Moved Data " << Name << "!!!\n";
+						//std::cout << instance->GetName() << " Moved Data " << Name << "!!!\n";
 					}
 				}
 			}
 		}
+		instance->GetComponent<Properties>().m_Name = instName;
+		instance->GetComponent<Properties>().m_GUID = instGUID;
 
-		std::cout << "Reverted GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
-		std::cout << "Reverted Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
+		//std::cout << "Reverted GUID: " << instance->GetComponent<Properties>().m_GUID << "|" << m_TempPrefab->GetComponent<Properties>().m_GUID << "\n";
+		//std::cout << "Reverted Entt: " << static_cast<ENTTID>(instance->m_Entity) << "|" << static_cast<ENTTID>(m_TempPrefab->m_Entity) << "\n";
 		std::cout << "Reverted Properties: " << &instance->GetComponent<Properties>() << "|" << &m_TempPrefab->GetComponent<Properties>() << "\n";
-		std::cout << "Reverted Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
+		//std::cout << "Reverted Transform: " << instance->GetComponent<Transform>().m_Position.x << "," << instance->GetComponent<Transform>().m_Position.y << "," << instance->GetComponent<Transform>().m_Position.z << "\n";
 
 		std::cout << "Done updating " << instance->GetName() << "|" << instance->GetGUID() << "\n";
 		// Remove components marked as removed
