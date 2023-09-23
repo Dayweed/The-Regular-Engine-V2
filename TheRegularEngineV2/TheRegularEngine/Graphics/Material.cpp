@@ -76,8 +76,7 @@ namespace TRE
 			{
 				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				{
-					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
-					FragmentBindings.second.pImageInfo = &imageInfo;
+					FragmentBindings.second.pImageInfo = &m_Textures[x]->GetDescriptorImageInfo();
 					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
 					m_WriteDescriptors.push_back(FragmentBindings.second);
 					++x;
