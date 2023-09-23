@@ -71,37 +71,17 @@ namespace TRE
 		
 		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0 && m_FragmentShader->GetWriteDescriptorSets().size() == m_Textures.size())
 		{
-			//REQUIRES FIXING
-			VkWriteDescriptorSet DiffuseMap = m_FragmentShader->GetWriteDescriptorSets()["DiffuseMap"];
-			DiffuseMap.dstSet = m_DescriptorSets[Index];
-			DiffuseMap.pImageInfo = &m_Textures[0]->GetDescriptorImageInfo();
-			m_WriteDescriptors.push_back(DiffuseMap);
-
-			VkWriteDescriptorSet NormalMap = m_FragmentShader->GetWriteDescriptorSets()["NormalMap"];
-			NormalMap.dstSet = m_DescriptorSets[Index];
-			NormalMap.pImageInfo = &m_Textures[1]->GetDescriptorImageInfo();
-			m_WriteDescriptors.push_back(NormalMap);
-
-			//int x = 1;
-			//for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
-			//{
-			//	if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-			//	{
-			//		VkDescriptorImageInfo imageInfo = m_Textures[x]->GetDescriptorImageInfo();
-			//		VkWriteDescriptorSet Test = FragmentBindings.second;
-			//		Test.pImageInfo = &imageInfo;
-			//		Test.dstSet = m_DescriptorSets[Index];
-			//		m_WriteDescriptors.push_back(Test);
-
-			//		//FragmentBindings.second.pImageInfo = &imageInfo;
-			//		//FragmentBindings.second.dstSet = m_DescriptorSets[Index];
-			//		//FragmentBindings.second.dstBinding = x + 1;
-			//		//FragmentBindings.second.dstArrayElement = 0;
-			//		//FragmentBindings.second.descriptorCount = 1;
-			//		//m_WriteDescriptors.push_back(FragmentBindings.second);
-			//		--x;
-			//	}
-			//}
+			int x = 0;
+			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
+			{
+				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+				{
+					FragmentBindings.second.pImageInfo = &m_Textures[x]->GetDescriptorImageInfo();
+					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
+					m_WriteDescriptors.push_back(FragmentBindings.second);
+					++x;
+				}
+			}
 		}
 
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
