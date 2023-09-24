@@ -65,6 +65,8 @@ namespace TRE
 	{
 		auto vertHandle = 3;
 		auto fragHandle = 4;
+		auto DebugDrawVertHandle = 7;
+		auto DebugDrawFragHandle = 8;
 
 		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
 		vert->SetHandle(vertHandle);
@@ -74,7 +76,16 @@ namespace TRE
 		frag->SetHandle(fragHandle);
 		ResourceManager::Instance().AddResource(std::move(frag));
 
-		SceneManager::Instance().LoadScene("DemoScene");
+		//DebugDrawShaders
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
+		DebugDrawVert->SetHandle(DebugDrawVertHandle);
+		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
+
+		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
+		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
+		ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
+
+		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
 
 	void DemoScene()
@@ -183,10 +194,10 @@ namespace TRE
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
 
-		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 
 		//SceneManager::Instance().NewScene();
-		//SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
+		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -222,8 +233,8 @@ namespace TRE
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
 		RegisterECS();
-		//DemoDeserialize();
-		DemoScene();
+		DemoDeserialize();
+		//DemoScene();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
