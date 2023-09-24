@@ -12,13 +12,13 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{EA4913CD-6880-4FD4-9ACF-30524A8323C3}",
+         "m_GUID": "{293B2362-AE20-4AF4-8940-2C582820117A}",
          "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{0BFA0A30-A26A-419F-9FEA-76FF002CD93D}",
+         "m_GUID": "{610E1C94-934A-4C70-97B9-7959C008AC57}",
          "m_Name": "cam"
       }
    ],
@@ -46,7 +46,7 @@
          ],
          "m_Rotation": [
             0.0,
-            3.1419999599456787,
+            180.0,
             0.0
          ],
          "m_Scale": [

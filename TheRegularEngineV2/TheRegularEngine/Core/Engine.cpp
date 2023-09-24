@@ -175,7 +175,7 @@ namespace TRE
 		test->GetComponent<Properties>().m_Name = "Test";
 		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 150.f));
 		transformSystem->SetScale(test, glm::vec3(0.5f, 0.5f, 0.5f));
-		transformSystem->SetRotation(test, glm::vec3(0,3.142f,0));
+		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
@@ -233,8 +233,8 @@ namespace TRE
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
 		RegisterECS();
-		DemoDeserialize();
-		//DemoScene();
+		//DemoDeserialize();
+		DemoScene();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();
