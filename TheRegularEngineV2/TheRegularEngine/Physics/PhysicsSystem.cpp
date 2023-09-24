@@ -13,6 +13,8 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "PhysicsSystem.h"
+#include <EventSystem/Events/EditorEvent.h>
+#include <EventSystem/EventHandler/EventHandler.h>
 
 #define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
 
@@ -142,6 +144,8 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
+		//Start Timer
+		const auto start = std::chrono::high_resolution_clock::now();
 		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
@@ -190,6 +194,9 @@ namespace TRE
 			printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
 			printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
 		}
+		const auto end = std::chrono::high_resolution_clock::now();
+		const std::chrono::nanoseconds time_taken = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{ time_taken, TimerType::PHYSICS });
 	}
 
 	void PhysicsSystem::OnDestroyGO() {}
