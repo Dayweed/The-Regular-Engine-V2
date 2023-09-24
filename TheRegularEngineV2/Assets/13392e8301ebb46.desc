@@ -1,11 +1,11 @@
 Asset File Path:
-../Assets/Test2.png
+../Assets/Skull_ao.png
 
 Texture File Path:
-../Resources/500a79fe5030f521.DDS
+../Resources/13392e8301ebb46.DDS
 
 Texture Name:
-Test2
+Skull_ao
 
 Compress:
 1
@@ -14,5 +14,4 @@ GL_Linear:
 1
 
 Normal Map:
-1
-
+0

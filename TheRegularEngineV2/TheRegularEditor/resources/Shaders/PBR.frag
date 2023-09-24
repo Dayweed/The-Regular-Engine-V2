@@ -7,6 +7,7 @@ layout(location = 2) in struct
 	mat3 BTN;
 	vec3 LightPosWorld;
 	vec4 LightColor;
+    vec4 CamearPos;
 	vec4 PosWorld; //w for gamma correction
 } In;
 
@@ -14,8 +15,11 @@ layout(location = 0) out vec4 outColor;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
+layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
+layout(set = 0, binding = 4) uniform sampler2D AOMap;
 
-const float AMBIENT_INTENSITY = 0.1;
+const float AMBIENT_INTENSITY = 0.05;
+const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
 void main() 
 {
@@ -30,18 +34,34 @@ void main()
     const float lightDistance = length(lightDirection);
     lightDirection = normalize(lightDirection);
 
-    const float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
-    const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb * In.LightColor.a;
+    float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
+    lightAttenuation = clamp(lightAttenuation, 0.0, 1.0);
+    //float lightAttenuation = clamp(1 / lightDistance, 0.0, 1.0);
+    const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
 
     //Diffuse intensity
-    float diffuseIntensity = AMBIENT_INTENSITY + max(dot(normal, lightDirection), 0.0);
+    const float diffuseIntensity = max(dot(normal, lightDirection), 0.0);
+
+    //Eye to texel direction
+    const vec3 eyeDirection = normalize(In.PosWorld.xyz - In.CamearPos.xyz);
+
+    //Shininess
+    const float shininess = mix(1, 100, 1 - texture(RoughnessMap, In.TexCoord).r);
+    const float specularIntensity = pow(max(dot(reflect(lightDirection, normal), eyeDirection), 0.0), shininess);
 
     //Diffuse color
     vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord);
 
-    //Final color
-    outColor = diffuseColor * diffuseIntensity;
-    //outColor.rgb += attenuationColor;
+    outColor.rgb = AMBIENT_INTENSITY.rrr * diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb;
+
+    vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
+
+    outColor.rgb += lightModel * attenuationColor;
+
+    //Convert from HDR to LDR before gamma correction - for the blue tint
+    outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
+
+    //Gamma correction
     outColor.rgb = pow(outColor.rgb, vec3(1.0 / In.PosWorld.w));
     outColor.a = 1.0;
 }

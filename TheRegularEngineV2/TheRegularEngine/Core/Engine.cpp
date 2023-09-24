@@ -81,9 +81,10 @@ namespace TRE
 	{
 		//std::cout << Resource::GetGUIDHex(Resource::GenerateGUID()) << "\n";
 
-		auto textureHandle = Resource::GetGUIDFromHex("474d70e35d64e711");
-		auto textureHandle2 = Resource::GetGUIDFromHex("d3464713e4f44bee");
-		//auto geomHandle = Resource::GetGUIDFromHex("d07c9c27d46df02f");
+		auto textureHandle = Resource::GetGUIDFromHex("474d70e35d64e711"); //diffuse
+		auto textureHandle2 = Resource::GetGUIDFromHex("d3464713e4f44bee"); //normal
+		auto textureHandle3 = Resource::GetGUIDFromHex("8a0c8bee2a64d76b"); //roughness
+		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876");
 		auto vertHandle = 3;
 		auto fragHandle = 4;
@@ -101,6 +102,16 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Resources/d3464713e4f44bee.DDS");
 		vkt2->SetHandle(textureHandle2);
 		ResourceManager::Instance().AddResource(std::move(vkt2));
+
+		//Texture::RunCompiler("../Assets/8a0c8bee2a64d76b.desc");
+		std::unique_ptr<VulkanTexture> vkt3 = std::make_unique<VulkanTexture>("../Resources/8a0c8bee2a64d76b.DDS");
+		vkt3->SetHandle(textureHandle3);
+		ResourceManager::Instance().AddResource(std::move(vkt3));
+
+		//Texture::RunCompiler("../Assets/13392e8301ebb46.desc");
+		std::unique_ptr<VulkanTexture> vkt4 = std::make_unique<VulkanTexture>("../Resources/13392e8301ebb46.DDS");
+		vkt4->SetHandle(textureHandle4);
+		ResourceManager::Instance().AddResource(std::move(vkt4));
 
 		//Geom::RunCompiler("../Assets/b1d2057915001876.desc");
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/b1d2057915001876.geom");
@@ -134,13 +145,16 @@ namespace TRE
 		mat1->SetHandle(matHandle);
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
+		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
+		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
+
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
-		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
+		/*std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
 		mat2->SetHandle(matHandle2);
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
-		ResourceManager::Instance().AddResource(std::move(mat2));
+		ResourceManager::Instance().AddResource(std::move(mat2));*/
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
