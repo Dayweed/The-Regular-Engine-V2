@@ -49,7 +49,7 @@ namespace TRE
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed;
+				positionOffset *= m_PanSpeed * camera.m_FocalLength / 10.f;
 				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetRightVec() * positionOffset.x);

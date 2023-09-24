@@ -79,9 +79,12 @@ namespace TRE
 
 	void DemoScene()
 	{
-		auto textureHandle = Resource::GetGUIDFromHex("140ecd34766a2024");
-		auto textureHandle2 = Resource::GetGUIDFromHex("500a79fe5030f521");
-		auto geomHandle = Resource::GetGUIDFromHex("d07c9c27d46df02f");
+		//std::cout << Resource::GetGUIDHex(Resource::GenerateGUID()) << "\n";
+
+		auto textureHandle = Resource::GetGUIDFromHex("474d70e35d64e711");
+		auto textureHandle2 = Resource::GetGUIDFromHex("d3464713e4f44bee");
+		//auto geomHandle = Resource::GetGUIDFromHex("d07c9c27d46df02f");
+		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876");
 		auto vertHandle = 3;
 		auto fragHandle = 4;
 		auto DebugDrawVertHandle = 7;
@@ -89,19 +92,19 @@ namespace TRE
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 		auto matHandle2 = Resource::GetGUIDFromHex("89f11168a1b5734c");
 
-		//Texture::RunCompiler("../Assets/140ecd34766a2024.desc");
-		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Resources/140ecd34766a2024.DDS");
+		//Texture::RunCompiler("../Assets/474d70e35d64e711.desc");
+		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Resources/474d70e35d64e711.DDS");
 		vkt1->SetHandle(textureHandle);
 		ResourceManager::Instance().AddResource(std::move(vkt1));
 
-		//Texture::RunCompiler("../Assets/500a79fe5030f521.desc");
-		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Resources/500a79fe5030f521.DDS");
+		//Texture::RunCompiler("../Assets/d3464713e4f44bee.desc");
+		std::unique_ptr<VulkanTexture> vkt2 = std::make_unique<VulkanTexture>("../Resources/d3464713e4f44bee.DDS");
 		vkt2->SetHandle(textureHandle2);
 		ResourceManager::Instance().AddResource(std::move(vkt2));
 
-		//Geom::RunCompiler("../Assets/d07c9c27d46df02f.desc");
-		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/d07c9c27d46df02f.geom");
-		ro->SetHandle(geomHandle);
+		//Geom::RunCompiler("../Assets/b1d2057915001876.desc");
+		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/b1d2057915001876.geom");
+		ro->SetHandle(skullHandle);
 		ResourceManager::Instance().AddResource(std::move(ro));
 
 		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
@@ -135,8 +138,8 @@ namespace TRE
 
 		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
 		mat2->SetHandle(matHandle2);
-		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
+		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
 		ResourceManager::Instance().AddResource(std::move(mat2));
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
@@ -145,20 +148,21 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 25.f));
-		transformSystem->SetScale(test, glm::vec3(5.f, 5.f, 5.f));
+		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 150.f));
+		transformSystem->SetScale(test, glm::vec3(0.5f, 0.5f, 0.5f));
+		transformSystem->SetRotation(test, glm::vec3(0,3.142f,0));
 		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
+		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-		Entity test2 = ECSManager::Instance().CreateEntity();
-		test2->GetComponent<Properties>().m_Name = "Test2";
-		transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
-		transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
-		transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
-		test2->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
-		meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		//Entity test2 = ECSManager::Instance().CreateEntity();
+		//test2->GetComponent<Properties>().m_Name = "Test2";
+		//transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
+		////transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
+		//transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
+		//test2->AddComponent<MeshRenderer>();
+		//meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		//meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));
 
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
@@ -257,7 +261,6 @@ namespace TRE
 	{
 		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
-			m_Window->BeginFrame();
 			m_Window->UpdateDeltaTime();
 
 			//Update
@@ -273,6 +276,7 @@ namespace TRE
 			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
+			m_Window->BeginFrame();
 			m_Renderer->BeginFrame();
 			m_Renderer->EndFrame();
 

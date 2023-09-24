@@ -1,40 +1,47 @@
 #version 450
 
-layout(location = 0) in vec3 inColor;
-layout(location = 1) in vec2 inTexCoord;
-
 layout(location = 2) in struct
 {
+	vec3 VertColor;
+	vec2 TexCoord;
 	mat3 BTN;
-    vec4 LightDirection;
-    vec4 WorldSpacePos;
-
-} inStruct;
+	vec3 LightPosWorld;
+	vec4 LightColor;
+	vec4 PosWorld; //w for gamma correction
+} In;
 
 layout(location = 0) out vec4 outColor;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 
+const float AMBIENT_INTENSITY = 0.1;
+
 void main() 
 {
-    // //Calculate normal from normal map
-    // vec3 normal;
-    // normal.xy = (texture(NormalMap, inTexCoord).gr * 2.0) - 1.0;
-    // normal.z = sqrt(1.0 - clamp(dot(normal.xy, normal.xy), 0.0, 1.0));
-    // normal = normalize(normal * inStruct.BTN);
+    //Calculate normal from normal map
+    vec3 normal;
+    normal.rg = (texture(NormalMap, In.TexCoord).gr) * 2.0 - 1.0;
+    normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
+    normal = normalize(In.BTN * normal); //Transform normal to world space
     
-    // //Light calculations
-    // const float lightDistance = length(inStruct.LightDirection.xyz);
-    // vec3 lightDirection = normalize(inStruct.LightDirection.xyz);
+    //Light calculations
+    vec3 lightDirection = In.LightPosWorld - In.PosWorld.xyz;
+    const float lightDistance = length(lightDirection);
+    lightDirection = normalize(lightDirection);
 
-    // //Diffuse intensity
-    // float diffuseIntensity = max(dot(normal, -lightDirection), 0.0);
+    const float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
+    const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb * In.LightColor.a;
+
+    //Diffuse intensity
+    float diffuseIntensity = AMBIENT_INTENSITY + max(dot(normal, lightDirection), 0.0);
 
     //Diffuse color
-    vec4 diffuseColor = texture(DiffuseMap, inTexCoord) * vec4(inColor, 1.0);
+    vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord);
 
     //Final color
-    outColor = diffuseColor;// * diffuseIntensity;
-    outColor = vec4(outColor.rgb, 1.0);
+    outColor = diffuseColor * diffuseIntensity;
+    //outColor.rgb += attenuationColor;
+    outColor.rgb = pow(outColor.rgb, vec3(1.0 / In.PosWorld.w));
+    outColor.a = 1.0;
 }
