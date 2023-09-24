@@ -35,6 +35,7 @@ namespace TRE
 			ImGui::Text("Render Time: %.4f ns", m_RenderTime);
 			ImGui::Text("Physics Time: %.4f ns", m_PhysicsTime);
 			ImGui::Text("Script Time: %.4f ns", m_ScriptTime);
+			ImGui::Text("Imgui Time: %.4f ns", m_ImguiTime);
 		}
 		ImGui::End();
 	}
@@ -64,7 +65,7 @@ namespace TRE
 		count /= 1000.f;
 		switch (event.m_type)
 		{
-		case TimerType::RENDERING:
+		case TimerType::VKRENDER:
 			m_RenderTime = count;
 			break;
 		case TimerType::PHYSICS:
@@ -72,6 +73,9 @@ namespace TRE
 			break;
 		case TimerType::SCRIPTS:
 			m_ScriptTime = count;
+			break;
+		case TimerType::IMGUI:
+			m_ImguiTime = count;
 			break;
 		default:
 			break;

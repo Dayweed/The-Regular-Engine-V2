@@ -141,13 +141,11 @@ namespace TRE
 		// Iteration 1 [Too much info]
 		//=========================================================================
 		// Print out each timer
-		std::cout << "[==TIMERS======================]\n";
 		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
 			// TO DO! Print out to the text
 			std::cout << (*timer).first << " took " << (*timer).second->GetTime() << " microseconds\n";
 		}
-		std::cout << "[==============================]\n";
 
 		// Iteration 2 Print by percentage
 		//=========================================================================

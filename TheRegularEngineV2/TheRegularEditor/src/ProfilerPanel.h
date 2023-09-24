@@ -37,6 +37,7 @@ namespace TRE
 		float m_TotalTime{};
 		float m_RenderTime{};
 		float m_PhysicsTime{};
+		float m_ImguiTime{};
 		//To be done
 		float m_ScriptTime{};
 

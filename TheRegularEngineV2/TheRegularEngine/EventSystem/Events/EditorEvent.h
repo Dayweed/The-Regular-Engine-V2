@@ -13,11 +13,12 @@ namespace TRE
 	//To use the event just include this file and publish the event like this:
 	//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 
-	enum class TimerType :int
+	enum class TimerType : int
 	{
 		VKRENDER,
 		PHYSICS,
 		SCRIPTS,
+		IMGUI,
 		MAX
 	};
 
