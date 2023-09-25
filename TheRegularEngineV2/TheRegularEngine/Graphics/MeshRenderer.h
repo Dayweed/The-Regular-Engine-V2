@@ -99,7 +99,10 @@ property_begin(TRE::MeshRenderer)
 	{
 		if (isRead)
 		{
-			InOut.m_Vale = Self.m_RenderObject->GetHandle();
+			if (Self.m_RenderObject && Self.m_MaterialInstance)
+			{
+				InOut.m_Vale = Self.m_RenderObject->GetHandle();
+			}
 		}
 		else
 		{
