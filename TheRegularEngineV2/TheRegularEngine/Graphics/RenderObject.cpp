@@ -165,7 +165,7 @@ namespace TRE
 
 	std::shared_ptr<RenderObject> RenderObject::Deserialize(const std::string& assetHexGUID)
 	{
-		std::string geomString = "../Assets/" + assetHexGUID + ".geom";
+		std::string geomString = "../Resources/" + assetHexGUID + ".geom";
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>(geomString);
 		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		ro->m_Handle = assetHandle;

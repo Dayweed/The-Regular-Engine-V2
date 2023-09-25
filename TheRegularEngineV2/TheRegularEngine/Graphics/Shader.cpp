@@ -30,7 +30,7 @@ namespace TRE
 		return m_PipelineShaderCreateInfo;
 	}
 
-	const std::unordered_map<std::string, VkWriteDescriptorSet>& Shader::GetWriteDescriptorSets()
+	std::unordered_map<std::string, VkWriteDescriptorSet> Shader::GetWriteDescriptorSets()
 	{
 		if (m_ReflectionData.DescriptorSets.size())
 			return m_ReflectionData.DescriptorSets[0].WriteDescriptorSets;

@@ -1,91 +1,61 @@
 [
    [
-      3,
+      2,
       0,
-      1,
-      2
+      1
    ],
    [
       0
    ],
    [
-      3,
+      2,
       0,
       {
          "m_Active": true,
-         "m_GUID": "{A9BF3DE2-787C-42D6-960F-C1E036053800}",
-         "m_Name": "Test2"
+         "m_GUID": "{293B2362-AE20-4AF4-8940-2C582820117A}",
+         "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{4008B0C8-6F58-48F5-ACA0-9FB2CE668169}",
-         "m_Name": "Test"
-      },
-      2,
-      {
-         "m_Active": true,
-         "m_GUID": "{CB1DFAF2-D3B1-4A87-8871-903C2565B76D}",
+         "m_GUID": "{610E1C94-934A-4C70-97B9-7959C008AC57}",
          "m_Name": "cam"
       }
    ],
    [
-      3,
+      2,
       0,
       {
          "m_Children": [],
          "m_Parent": ""
       },
       1,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      2,
       {
          "m_Children": [],
          "m_Parent": ""
       }
    ],
    [
-      3,
+      2,
       0,
       {
          "m_Position": [
-            30.0,
-            10.0,
-            100.0
+            0.0,
+            0.0,
+            150.0
          ],
          "m_Rotation": [
             0.0,
-            0.0,
-            45.0
-         ],
-         "m_Scale": [
-            5.0,
-            5.0,
-            5.0
-         ]
-      },
-      1,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            25.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
+            180.0,
             0.0
          ],
          "m_Scale": [
-            5.0,
-            5.0,
-            5.0
+            0.5,
+            0.5,
+            0.5
          ]
       },
-      2,
+      1,
       {
          "m_Position": [
             0.0,
@@ -105,32 +75,26 @@
       }
    ],
    [
-      2,
+      1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
+         "ASSET_GEOM_m_RenderObject": "b1d2057915001876",
          "ASSET_MAT_m_MaterialInstance": "74b283e6a2bed9d8",
-         "m_IsVisible": true
-      },
-      1,
-      {
-         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
-         "ASSET_MAT_m_MaterialInstance": "89f11168a1b5734c",
          "m_IsVisible": true
       }
    ],
    [
       1,
-      2,
+      1,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
          "m_Far": 1000.0,
-         "m_FocalLength": 10.0,
+         "m_FocalLength": 100.0,
          "m_FocalPoint": [
             0.0,
             0.0,
-            10.0
+            100.0
          ],
          "m_Fov": 60.0,
          "m_IsMainCamera": true,

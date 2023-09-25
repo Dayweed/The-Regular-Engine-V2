@@ -32,7 +32,7 @@ namespace TRE
 	struct ShaderDescriptorSets
 	{
 		std::unordered_map<uint32_t, UniformBuffer_GLSL> UniformBuffers;
-		std::unordered_map<uint32_t, ImageSampler> ImageSamplers;
+		std::map<uint32_t, ImageSampler> ImageSamplers;
 
 		std::unordered_map<std::string, VkWriteDescriptorSet> WriteDescriptorSets{};
 
@@ -44,6 +44,7 @@ namespace TRE
 		std::vector<ShaderDescriptorSets> DescriptorSets; //One GLSL file, 2 shader stage, vert/frag
 		std::vector<PushConstants> PushConstants;
 		std::vector<VkVertexInputAttributeDescription> VertexInputAttributeDescriptions{};
+		//std::map<std::uint32_t, VkVertexInputAttributeDescription> VertexInputAttributeDescriptions{}; 
 		uint32_t VertexStride = 0;
 	};
 }

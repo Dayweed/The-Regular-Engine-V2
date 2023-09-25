@@ -18,8 +18,11 @@ namespace TRE
 
 	struct UBO
 	{
-		alignas(16) glm::mat4 m_ProjView{ 1.f }; //World to view to projection
-		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
+		glm::mat4 m_ProjView{ 1.f }; //World to view to projection
+		glm::vec3 m_LightPosition{ 0.f, 0.f, 0.f}; //Light position for now will be the camera in world space
+		alignas(16) glm::vec4 m_LightColor{ 1.f, 1.f, 1.f, 40.f }; //Light color, w for intensity
+		glm::vec4 m_CameraPosition{0.f, 0.f, 0.f, 1.f}; //Camera position in world space
+		//glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
 	};
 
 	class Renderer

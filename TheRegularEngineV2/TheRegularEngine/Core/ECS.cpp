@@ -710,7 +710,6 @@ namespace TRE
 		entt::meta<Properties>()
 			.type(entt::type_hash<Properties>::value())
 			.data<&Properties::m_Active>(active_hs);
-#endif
 
 		std::cout << "\nTesting if can compile with LIONart Properties\n";
 		Entity INSPECT{ ECSManager::Instance().CreateEntity("INSPECTENT")};
@@ -778,6 +777,10 @@ namespace TRE
 						{
 							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
+						else if constexpr (std::is_same_v<T, respurce_ref>)
+						{
+							//printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
+						}
 						else static_assert(always_false<T>::value, "We are not covering all the cases!");
 					}
 				, Data);
@@ -826,6 +829,10 @@ namespace TRE
 						{
 							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
+						else if constexpr (std::is_same_v<T, respurce_ref>)
+						{
+							//printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
+						}
 						else static_assert(always_false<T>::value, "We are not covering all the cases!");
 					}
 				, Data);
@@ -850,7 +857,7 @@ namespace TRE
 
 
 		std::cout << "New Name: " << INSPECT->GetName() << "\n";
-
+#endif
 		// NOT WORTH USING FOR NOW
 		//void* pBase = &INSPECTPROP;
 		//property::DisplayEnum(INSPECT->GetComponent<Properties>().getPropertyVTable(), pBase, [&](std::string_view PropertyName, property::data&& Data, const property::table& Table, std::size_t Index, property::flags::type Flags)

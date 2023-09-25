@@ -188,6 +188,8 @@ namespace TRE
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
+		ubo.m_LightPosition = mainCamera.m_Position;
+		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 	}
 

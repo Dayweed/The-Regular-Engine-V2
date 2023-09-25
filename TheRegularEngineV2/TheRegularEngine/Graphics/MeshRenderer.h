@@ -9,7 +9,7 @@
 
 namespace TRE
 {
-	class MeshRenderer
+	class MeshRenderer : property::base
 	{
 	public:
 		std::shared_ptr<RenderObject>	m_RenderObject;
@@ -18,6 +18,8 @@ namespace TRE
 		bool							m_IsVisible{ true };
 		bool							m_IsCulled{ false };
 		bool							m_IsDirty{ false };
+
+		property_vtable()
 
 		friend void to_json(nlohmann::json& j, const MeshRenderer& t)
 		{
@@ -90,3 +92,19 @@ namespace TRE
 		bool m_IsDirty{ false };
 	};
 }
+
+property_begin(TRE::MeshRenderer)
+{
+	property_var_fnbegin("Render Object", respurce_ref )
+	{
+		if (isRead)
+		{
+			InOut.m_Vale = Self.m_RenderObject->GetHandle();
+		}
+		else
+		{
+			// It does not handle writing
+		}
+	} property_var_fnend().Help("<MESH> ")
+
+} property_vend_h(TRE::MeshRenderer)
