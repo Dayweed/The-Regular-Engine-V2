@@ -14,7 +14,7 @@ namespace TRE
 
 	void GameLoop::Init()
 	{
-
+		m_GameRunning = false;
 	}
 
 	bool GameLoop::IsGameRunning()
