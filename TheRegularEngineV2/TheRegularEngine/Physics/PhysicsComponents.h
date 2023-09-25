@@ -50,13 +50,13 @@ struct BaseCollider
 	// physx::PxMaterial* m_PhysicsMaterial = nullptr;
 };
 
-struct SphereCollider : BaseCollider
+struct SphereCollider : public BaseCollider
 {
 	Vector3 m_Offset = {};
 	float m_Radius = 1.0f;
 };
 
-struct BoxCollider : BaseCollider
+struct BoxCollider : public BaseCollider
 {
 	Vector3 m_Offset = {};
 	Vector3 m_HalfExtents = Vector3(0.5f);

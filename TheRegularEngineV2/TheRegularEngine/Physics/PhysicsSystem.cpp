@@ -177,6 +177,7 @@ namespace TRE
 		e2->GetComponent<Transform>().m_Position = { 1,2,0 };
 		e2->AddComponent<SphereCollider>();	ConstructSphereCollider(e2);
 		// e2->AddComponent<Rigidbody>();		ConstructRigidbody(e2);
+		// ColliderToTrigger(e2);			TriggerToCollider(e2);
 #endif
 
 		return m_IsReadyForUpdate = true;
@@ -288,28 +289,15 @@ namespace TRE
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eVISUALIZATION, false);
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-
-		//sph_rb->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-		//sph_rb->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
-		//sph_rb->setActorFlag(PxActorFlag::eVISUALIZATION, false);
-
-
-		PxShapeFlags huh;
-		huh.clear(PxShapeFlag::eSIMULATION_SHAPE);
-		huh.raise(PxShapeFlag::eSCENE_QUERY_SHAPE);
-		huh.raise(PxShapeFlag::eTRIGGER_SHAPE);
-		huh.raise(PxShapeFlag::eVISUALIZATION);
-
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, huh);
+		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial);
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+			// so that colliders without rigidbodies will stay put when hit
+			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
@@ -436,6 +424,9 @@ namespace TRE
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+			// so that colliders without rigidbodies will stay put when hit
+			// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
@@ -562,6 +553,9 @@ namespace TRE
 		bool useGravity = true; // TODO: disabling gravity
 		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
 
+		// no kinematic rigidbodies for now pls thanks
+		// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
 	}
 
@@ -637,6 +631,84 @@ namespace TRE
 		rigidDynamic->setRigidDynamicLockFlags(x);
 	}
 
+	// if one shape is a trigger, they're all triggers now :)
+	void PhysicsSystem::ColliderToTrigger(const Entity& entity) const
+	{
+		assert(m_Actors.contains(entity->GetGUID()));
+
+		// assert that there is at least 1 collider component on this entity
+		assert(m_Actors[entity->GetGUID()].m_AttachedComponents >> 1);
+
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
+		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
+
+		// if there's a rigidbody attached, enable gravity
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+
+		unsigned nbShapes = rigidDynamic->getNbShapes();
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+
+		for (unsigned i = 0; i < nbShapes; ++i)
+		{
+			PxShapeFlags shapeFlags = shapes[i]->getFlags();
+			shapeFlags.clear(PxShapeFlag::eSIMULATION_SHAPE);
+			shapeFlags.raise(PxShapeFlag::eTRIGGER_SHAPE);
+			shapes[i]->setFlags(shapeFlags);
+		}
+
+		auto MarkAsTrigger = []<typename Collider>(const Entity & e)
+		{
+			if (e->HasComponent<Collider>())
+				e->GetComponent<Collider>().m_IsTrigger = true;
+		};
+
+		// because I can't do fn<Collider>() with lambdas...
+		MarkAsTrigger.operator() < SphereCollider > (entity);
+		MarkAsTrigger.operator() < BoxCollider > (entity);
+	}
+
+	// if one shape is a collider, they're all colliders now :)
+	void PhysicsSystem::TriggerToCollider(const Entity& entity) const
+	{
+		assert(m_Actors.contains(entity->GetGUID()));
+
+		// assert that there is at least 1 collider component on this entity
+		assert(m_Actors[entity->GetGUID()].m_AttachedComponents >> 1);
+
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
+		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
+
+		// if there's a rigidbody attached, enable gravity
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+
+		unsigned nbShapes = rigidDynamic->getNbShapes();
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+
+		for (unsigned i = 0; i < nbShapes; ++i)
+		{
+			PxShapeFlags shapeFlags = shapes[i]->getFlags();
+			shapeFlags.clear(PxShapeFlag::eTRIGGER_SHAPE);
+			shapeFlags.raise(PxShapeFlag::eSIMULATION_SHAPE);
+			shapes[i]->setFlags(shapeFlags);
+		}
+
+		auto MarkAsTrigger = []<typename Collider>(const Entity & e)
+		{
+			if (e->HasComponent<Collider>())
+				e->GetComponent<Collider>().m_IsTrigger = false;
+		};
+
+		// because I can't do fn<Collider>() with lambdas...
+		MarkAsTrigger.operator() < SphereCollider > (entity);
+		MarkAsTrigger.operator() < BoxCollider > (entity);
+	}
+
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
 	{
 		printf("|%s|\n", __FUNCTION__);
@@ -663,7 +735,7 @@ namespace TRE
 
 		if (!count) return;
 		auto& pair = pairs[count - 1];
-		printf("YOOOOOOOOOOOOOOOOOOOOOOO");
+		printf("YOOOOOOOOOOOOOOOOOOOOOOO\n");
 	}
 
 	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)

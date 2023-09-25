@@ -207,6 +207,10 @@ namespace TRE
 
 		void RigidbodyConstraintsStuff(const Entity& entity) const;
 
+		void ColliderToTrigger(const Entity& entity) const;
+
+		void TriggerToCollider(const Entity& entity) const;
+
 	private:
 
 		bool m_IsReadyForUpdate = false;
