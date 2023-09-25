@@ -66,4 +66,15 @@ namespace TRE
 	{
 		return m_AssetNameToHandle[assetName];
 	}
+
+	std::string EditorAssetManager::GetName(const ResourceHandle resourceHandle)
+	{
+		std::string name;
+		for (auto x : m_AssetNameToHandle)
+		{
+			if (x.second == resourceHandle)
+				name = x.second;
+		}
+		return name;
+	}
 }

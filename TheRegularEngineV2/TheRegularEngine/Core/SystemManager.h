@@ -160,9 +160,9 @@ namespace TRE
 			for (auto& system : m_Systems)
 			{
 
-				Profiler::Instance().StartTimer("- " + m_SystemsName[system.first]);
+				Profiler::Instance().StartTimer(m_SystemsName[system.first]);
 				system.second->Update();
-				Profiler::Instance().EndTimer("- " + m_SystemsName[system.first]);
+				Profiler::Instance().EndTimer(m_SystemsName[system.first]);
 			}
 		}
 

@@ -69,15 +69,14 @@ namespace TRE
 			m_WriteDescriptors.push_back(x.second);
 		}
 		
-		int x = 0;
-		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0)
+		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0 /*&& m_FragmentShader->GetWriteDescriptorSets().size() <= m_Textures.size()*/)
 		{
+			int x = 0;
 			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
 			{
 				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				{
-					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
-					FragmentBindings.second.pImageInfo = &imageInfo;
+					FragmentBindings.second.pImageInfo = &m_Textures[x]->GetDescriptorImageInfo();
 					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
 					m_WriteDescriptors.push_back(FragmentBindings.second);
 					++x;
@@ -90,7 +89,7 @@ namespace TRE
 
 	void Material::Serialize()
 	{
-		std::string path = "../Assets/";
+		std::string path = "../Resources/";
 		std::filesystem::directory_entry entry(path);
 		if (!entry.exists())
 		{
@@ -121,7 +120,7 @@ namespace TRE
 	std::shared_ptr<Material> Material::Deserialize(const std::string& assetHexGUID)
 	{
 		//Open material file
-		std::string materialPath = "../Assets/" + assetHexGUID + ".material";
+		std::string materialPath = "../Resources/" + assetHexGUID + ".material";
 		std::ifstream file(materialPath);
 		if (!file.is_open())
 		{

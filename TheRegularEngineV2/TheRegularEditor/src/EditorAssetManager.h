@@ -20,7 +20,9 @@ namespace TRE
 		void AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset);
 		void RemoveAsset(const std::string& assetName);
 		bool Contains(const std::string& assetName);
+
 		ResourceHandle GetAsset(const std::string& assetName);
+		std::string GetName(const ResourceHandle resourceHandle);
 	private:
 		EditorAssetManager() = default;
 		EditorAssetManager(const EditorAssetManager&) = delete;

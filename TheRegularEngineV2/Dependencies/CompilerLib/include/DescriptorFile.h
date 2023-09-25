@@ -8,7 +8,7 @@ namespace TRE
 	{
 	public:
 		//Order: SetAssetPath, Generate, Close file
-		void GenerateDescriptorFile(const std::string& assetPath);
+		void GenerateDescriptorFile(const std::string& assetPath, const std::string& descPath);
 		void ReadDescriptorFile(const std::string& descriptorPath);
 
 		void SetAssetPath(const std::string& path) { m_AssetPath = path; }

@@ -49,7 +49,7 @@ namespace TRE
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed;
+				positionOffset *= m_PanSpeed * camera.m_FocalLength / 10.f;
 				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetRightVec() * positionOffset.x);
@@ -165,6 +165,22 @@ namespace TRE
 		}
 	}
 
+	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
+	{
+		if (event._key == (int)KeyButton::Q)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
+		}
+		if (event._key == (int)KeyButton::W)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		}
+		if (event._key == (int)KeyButton::E)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		}
+	}
+
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
 	{
 		if(m_IsViewportHovered == false)
@@ -189,6 +205,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseMove);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 	}
 
 	void ViewportPanel::Update()
@@ -216,9 +233,9 @@ namespace TRE
 		}
 
 		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
-		if (SelectedEntity)
+		if (SelectedEntity && m_GizmoOperation != -1)
 		{
-			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetOrthographic(true);
 			ImGuizmo::SetDrawlist();
 
 			float WindowWith = (float)ImGui::GetWindowWidth();
@@ -236,19 +253,33 @@ namespace TRE
 
 			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(xform));
-
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
 			
 			if (ImGuizmo::IsUsing())
 			{
 				glm::vec3 Scale;
-				glm::quat Rotation;
+				glm::vec3 Rotation;
 				glm::vec3 Translate;
-				//Util::DecomposeTransform(xform, Translate, Rotation, Scale);
 				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(xform), glm::value_ptr(Translate), glm::value_ptr(Rotation), glm::value_ptr(Scale));
-				//XformSystem->SetScale(SelectedEntity, Scale);
-			//XformSystem->SetRotation(SelectedEntity, Rotation);
-				XformSystem->SetPosition(SelectedEntity, Translate);
+				switch (m_GizmoOperation)
+				{
+					case ImGuizmo::OPERATION::SCALE:
+					{
+						XformSystem->SetScale(SelectedEntity, Scale);
+						break;
+					}
+					case ImGuizmo::OPERATION::ROTATE:
+					{
+						XformSystem->SetRotation(SelectedEntity, Rotation);
+						break;
+					}
+					case ImGuizmo::OPERATION::TRANSLATE:
+					{
+						XformSystem->SetPosition(SelectedEntity, Translate);
+						break;
+					}
+				}
+				
 			}
 		}
 

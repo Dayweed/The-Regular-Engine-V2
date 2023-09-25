@@ -18,6 +18,7 @@ namespace TRE
 		const VkImageView& GetImageView() const { return m_ImageView; }
 		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
 
+		const ResourceHandle& GetDefaultTextureID() const { return m_DefaultTextureID; }
 		static ResourceType GetType() { return ResourceType::Texture; }
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
 

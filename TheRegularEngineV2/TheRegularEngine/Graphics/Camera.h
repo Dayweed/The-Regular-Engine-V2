@@ -34,7 +34,7 @@ namespace TRE
 		float m_Fov{ 60.f }; // SSSS	//Vertical fov - has to be converted to radians
 		float m_Near{ 0.1f }; // SSSS
 		float m_Far{ 1000.f }; // SSSS
-		float m_FocalLength{ 10.f }; // SSSS
+		float m_FocalLength{ 100.f }; // SSSS
 		glm::vec3 m_FocalPoint{ 0.f, 0.f, m_FocalLength }; // SSSS
 		float m_Left{ -1.f }; // SSSS
 		float m_Right{ 1.f }; // SSSS
