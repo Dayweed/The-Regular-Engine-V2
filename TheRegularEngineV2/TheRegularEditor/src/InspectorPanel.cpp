@@ -235,7 +235,6 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, respurce_ref>)
 							{
 								static char renderObject[200];
-								//std::cout << "Whats this: " << EditorAssetManager::Instance().GetName(Value.m_Vale) << "\n";
 								strcpy(renderObject, EditorAssetManager::Instance().GetName(Value.m_Vale).c_str());
 								ImGui::InputText("##", renderObject, sizeof(renderObject));
 			
