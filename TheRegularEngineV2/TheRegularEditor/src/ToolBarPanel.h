@@ -14,6 +14,7 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -34,5 +35,9 @@ namespace TRE
 			ImTextureID m_PlayID;
 			ImTextureID m_PauseID;
 			ImTextureID m_StopID;
+
+			bool m_Start{ false };
+			static inline bool m_Play{ false };
+			bool m_Once{ false };
 	};
 }
