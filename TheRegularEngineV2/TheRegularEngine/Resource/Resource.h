@@ -37,6 +37,11 @@ namespace TRE
 				return m_Handle;
 			}
 
+			ResourceHandle& GetHandleRef()
+			{
+				return m_Handle;
+			}
+
 			std::string GetHandleHex() const
 			{
 				std::stringstream ss;

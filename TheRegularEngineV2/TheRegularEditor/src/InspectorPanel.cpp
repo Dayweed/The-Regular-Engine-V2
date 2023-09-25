@@ -4,6 +4,7 @@
 #include "cpp/imgui_stdlib.h"
 #include "cpp/imgui_stdlib.cpp"
 #include "TREIncludes.h"
+#include "EditorAssetManager.h"
 
 namespace TRE
 {
@@ -137,6 +138,7 @@ namespace TRE
 			// View all inspectable components
 			for (auto& List : properties)
 			{
+				//std::cout << "properties: " << List.first.c_str() << "\n";
 				for (size_t c{}; c < List.first.size(); ++c)
 				{
 					std::string charac { List.first[c]  };
@@ -208,7 +210,8 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameField.c_str(), &Value);
+								ImGui::InputFloat(NameStr.c_str(), &Value);
+								//std::cout << "name: " << NameStr << " value: " << Value << "\n";
 							}
 							else if constexpr (std::is_same_v<T, bool>)
 							{
@@ -229,6 +232,14 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
+							else if constexpr (std::is_same_v<T, respurce_ref>)
+							{
+								static char renderObject[200];
+								//std::cout << "Whats this: " << EditorAssetManager::Instance().GetName(Value.m_Vale) << "\n";
+								strcpy(renderObject, EditorAssetManager::Instance().GetName(Value.m_Vale).c_str());
+								ImGui::InputText("##", renderObject, sizeof(renderObject));
+			
+							}							
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
@@ -251,7 +262,6 @@ namespace TRE
 						}
 					}
 				}
-
 				ImGui::Separator();
 			}
 
@@ -285,12 +295,12 @@ namespace TRE
 						if (isPrefabInstance)
 						{
 							entity->GetComponent<Prefabing>().m_AddeddComps.emplace(compName);
-						}
 
-						// Remove from m_RemovedComps to let it stay
-						if (entity->GetComponent<Prefabing>().m_RemovedComps.find(compName) != entity->GetComponent<Prefabing>().m_RemovedComps.end())
-						{
-							entity->GetComponent<Prefabing>().m_RemovedComps.erase(compName);
+							// Remove from m_RemovedComps to let it stay
+							if (entity->GetComponent<Prefabing>().m_RemovedComps.find(compName) != entity->GetComponent<Prefabing>().m_RemovedComps.end())
+							{
+								entity->GetComponent<Prefabing>().m_RemovedComps.erase(compName);
+							}
 						}
 
 						ECSManager::Instance().AddCompFromName(entity, compName);

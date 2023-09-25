@@ -45,8 +45,6 @@ namespace TRE
 	void ToolBarPanel::Update()
 	{
 		ImGui::Begin("Tool Bar");
-		//ImGui::Text("Testing where the tool bar is");
-		//How to pad in imgui
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x/2 - 25);
 		
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
