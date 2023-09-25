@@ -50,7 +50,6 @@ namespace TRE
 		
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Play Button Pressed");
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 
@@ -58,7 +57,6 @@ namespace TRE
 
 		if (ImGui::ImageButton(m_PauseID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Button Pressed");
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
 		}
 
