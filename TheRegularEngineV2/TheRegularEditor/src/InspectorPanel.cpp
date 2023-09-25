@@ -295,12 +295,12 @@ namespace TRE
 						if (isPrefabInstance)
 						{
 							entity->GetComponent<Prefabing>().m_AddeddComps.emplace(compName);
-						}
 
-						// Remove from m_RemovedComps to let it stay
-						if (entity->GetComponent<Prefabing>().m_RemovedComps.find(compName) != entity->GetComponent<Prefabing>().m_RemovedComps.end())
-						{
-							entity->GetComponent<Prefabing>().m_RemovedComps.erase(compName);
+							// Remove from m_RemovedComps to let it stay
+							if (entity->GetComponent<Prefabing>().m_RemovedComps.find(compName) != entity->GetComponent<Prefabing>().m_RemovedComps.end())
+							{
+								entity->GetComponent<Prefabing>().m_RemovedComps.erase(compName);
+							}
 						}
 
 						ECSManager::Instance().AddCompFromName(entity, compName);
