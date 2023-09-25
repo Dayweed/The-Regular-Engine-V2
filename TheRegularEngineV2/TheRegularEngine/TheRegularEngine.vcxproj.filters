@@ -97,7 +97,7 @@
     <ClInclude Include="EventSystem\EventHandler\EventHandler.h">
       <Filter>EventSystem\EventHandler</Filter>
     </ClInclude>
-    <ClInclude Include="EventSystem\Events\EditorEvent.h">
+    <ClInclude Include="EventSystem\Events\ConsoleEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
     <ClInclude Include="EventSystem\Events\EventBase.h">

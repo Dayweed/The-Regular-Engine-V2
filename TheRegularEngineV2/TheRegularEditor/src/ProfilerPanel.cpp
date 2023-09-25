@@ -3,7 +3,6 @@
 #include "ProfilerPanel.h"
 #include "Imgui/imgui.h"
 #include <EventSystem/EventHandler/EventHandler.h>
-#include "implot.h"
 
 namespace TRE
 {

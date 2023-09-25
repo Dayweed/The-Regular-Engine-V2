@@ -238,7 +238,7 @@ namespace TRE
 		AudioListener& listener = go.get()->GetComponent<AudioListener>();
 
 		listener.m_Position = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().m_Position);
-		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetViewDirection());
+		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetForwardVec());
 		listener.m_Up = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetUpVec());
 
 		FMOD_VECTOR testpos = {100.0f,0.0f,200.0f};

@@ -181,10 +181,10 @@ namespace TRE
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 		test->AddComponent<Audio>();
-		//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-		//audioSystem->SetLoop(test, true);
-		//audioSystem->SetSpatialize(test,true);
-		//audioSystem->CompileAudio(test);
+		/*audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+		audioSystem->SetLoop(test, true);
+		audioSystem->SetSpatialize(test,true);
+		audioSystem->CompileAudio(test);*/
 
 		//Entity test2 = ECSManager::Instance().CreateEntity();
 		//test2->GetComponent<Properties>().m_Name = "Test2";
@@ -281,8 +281,8 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
 		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");
-		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
+		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");		
 		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
 
 		// Register Systems
