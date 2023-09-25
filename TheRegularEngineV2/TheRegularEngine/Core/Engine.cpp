@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "Engine.h"
+#include "GameLoop.h"
 #include "ECS.h"
 #include "Transform.h"
 #include "SceneManager.h"
@@ -305,9 +306,12 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			//Update
-			Profiler::Instance().StartTimer("Update");
-			ECSSystemManager::Instance().UpdateSystem();
-			Profiler::Instance().EndTimer("Update");
+			if (GameLoop::Instance().IsGameRunning())
+			{
+				Profiler::Instance().StartTimer("Update");
+				ECSSystemManager::Instance().UpdateSystem();
+				Profiler::Instance().EndTimer("Update");
+			}
 
 			Profiler::Instance().StartTimer("OnDestroyEntities");
 			ECSSystemManager::Instance().OnDestroyEntities();
