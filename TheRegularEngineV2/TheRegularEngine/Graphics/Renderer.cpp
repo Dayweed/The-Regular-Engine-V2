@@ -95,6 +95,8 @@ namespace TRE
 		}
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
+
+		m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)

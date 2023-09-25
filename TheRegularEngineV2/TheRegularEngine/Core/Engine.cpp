@@ -99,6 +99,8 @@ namespace TRE
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876");
 		auto vertHandle = 3;
 		auto fragHandle = 4;
+		auto AnimationVertHandle = 5;
+		auto AnimationFragHandle = 6;
 		auto DebugDrawVertHandle = 7;
 		auto DebugDrawFragHandle = 8;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
@@ -148,6 +150,18 @@ namespace TRE
 
 		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawVertHandle);
 		auto DebugFragShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawFragHandle);
+
+		//AnimationShaders
+		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::CompileShader("Resources/Shaders/Animation.vert");
+		AnimationVert->SetHandle(AnimationVertHandle);
+		ResourceManager::Instance().AddResource(std::move(AnimationVert));
+
+		std::unique_ptr<Shader> AnimationFrag = ShaderCompiler::CompileShader("Resources/Shaders/Animation.frag");
+		AnimationFrag->SetHandle(AnimationFragHandle);
+		ResourceManager::Instance().AddResource(std::move(AnimationFrag));
+
+		auto AnimationVertShader = ResourceManager::Instance().GetResource<Shader>(AnimationVertHandle);
+		auto AnimationFragShader = ResourceManager::Instance().GetResource<Shader>(AnimationFragHandle);
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);

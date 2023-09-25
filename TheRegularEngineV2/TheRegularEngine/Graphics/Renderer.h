@@ -8,6 +8,7 @@
 #include "Pipeline.h"
 #include "Material.h"
 #include "DebugRenderer.h"
+#include "AnimationTest.h"
 
 namespace TRE
 {
@@ -66,5 +67,7 @@ namespace TRE
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 
 			std::unique_ptr<DebugRenderer> m_DebugRenderer;
+
+			std::unique_ptr<AnimationTest> m_Animation;
 	};
 }

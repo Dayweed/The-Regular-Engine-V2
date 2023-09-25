@@ -1,0 +1,1096 @@
+#include "pch.h"
+#include "AnimationImporter.h"
+#include "AnimationStructure.h"
+#include "Core/Logger.h"
+#include "glm/ext.hpp"
+
+namespace TRE
+{
+	AnimationImporter::AnimationImporter()
+	{
+
+	}
+
+	AnimationImporter::~AnimationImporter()
+	{
+
+	}
+
+	bool AnimationImporter::Import(std::string FileName, geom* pGeom, Skeleton* pSkeleton, anim_package* pAnimPackage)
+	{
+        m_pAnimPackage = nullptr;
+        m_pGeom = nullptr;
+        m_pSkeleton = nullptr;
+        m_pScene = nullptr;
+
+        auto Importer = std::make_unique<Assimp::Importer>();
+
+        m_pAnimPackage = pAnimPackage;
+        m_pGeom = pGeom;
+        m_pSkeleton = pSkeleton;
+
+        if (m_pGeom) m_pGeom->m_FileName = FileName;
+
+        m_pScene = Importer->ReadFile(FileName
+            , aiProcess_Triangulate                // Make sure we get triangles rather than nvert polygons
+            | aiProcess_LimitBoneWeights           // 4 weights for skin model max
+            | aiProcess_GenUVCoords                // Convert any type of mapping to uv mapping
+            | aiProcess_TransformUVCoords          // preprocess UV transformations (scaling, translation ...)
+            | aiProcess_FindInstances              // search for instanced meshes and remove them by references to one master
+            | aiProcess_GenNormals                 // if it does not have normals generate them... (this may not be a good option as it may hide issues from artist)
+            | aiProcess_CalcTangentSpace           // calculate tangents and bitangents if possible (definetly you will meed UVs)
+            //| aiProcess_JoinIdenticalVertices      // join identical vertices/ optimize indexing (It seems to be creating cracks in the mesh... some bug?)
+            | aiProcess_RemoveRedundantMaterials   // remove redundant materials
+            | aiProcess_FindInvalidData            // detect invalid model data, such as invalid normal vectors
+            | aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
+        );
+        if (m_pScene == nullptr)
+        {
+            TRE_CORE_INFO("Failed to retrieve aiscene from model");
+            return false;
+        }
+
+        if (SanityCheck())
+        {
+            TRE_CORE_INFO("Sanity Check Failed");
+            return false;
+        }
+
+        if (m_pSkeleton)
+        {
+            ImportSkeleton();
+            TRE_CORE_INFO("Skeleton Loaded");
+        }
+
+        if (m_pAnimPackage)
+        {
+            assert(m_pSkeleton); // to deal with animations we must be able to load the skeleton
+            ImportAnimations();
+            TRE_CORE_INFO("Animation Loaded");
+        }
+
+        if (m_pGeom)
+        {
+            ImportGeometry();
+            TRE_CORE_INFO("Geometry Loaded");
+            ImportMaterials();
+            TRE_CORE_INFO("Materials Loaded");
+        }
+
+        return true;
+	}
+
+    bool AnimationImporter::SanityCheck()
+    {
+        m_MeshReferences.resize(m_pScene->mNumMeshes);
+
+        std::function<void(const aiNode& Node)> ProcessNode = [&](const aiNode& Node) noexcept
+        {
+            for (auto i = 0u, end = Node.mNumMeshes; i < end; ++i)
+            {
+                aiMesh* pMesh = m_pScene->mMeshes[Node.mMeshes[i]];
+
+                m_MeshReferences[Node.mMeshes[i]].m_Nodes.push_back(&Node);
+            }
+
+            for (auto i = 0u; i < Node.mNumChildren; ++i)
+            {
+                ProcessNode(*Node.mChildren[i]);
+            }
+        };
+
+        ProcessNode(*m_pScene->mRootNode);
+
+        for (auto iMesh = 0u; iMesh < m_pScene->mNumMeshes; ++iMesh)
+        {
+            const aiMesh& AssimpMesh = *m_pScene->mMeshes[iMesh];
+            const auto& Refs = m_MeshReferences[iMesh].m_Nodes;
+
+            if (Refs.size() == 0u)
+            {
+                printf("ERROR: I had a mesh but no reference to it in the scene... very strange\n");
+                return true;
+            }
+
+            if (AssimpMesh.HasBones())
+            {
+                if (Refs.size() > 1)
+                {
+                    printf("ERROR: I had a skin mesh (%s) that is reference in the scene %zd times. We don't support this feature.\n", AssimpMesh.mName.C_Str(), Refs.size());
+                    return true;
+                }
+            }
+            else
+            {
+                if (Refs.size() > 1)
+                {
+                    printf("INFO: I will be duplicating mesh %s, %zd times\n", AssimpMesh.mName.C_Str(), Refs.size());
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void AnimationImporter::ImportSkeleton()
+    {
+        std::unordered_map<std::string, const aiNode*> NameToNode;
+        std::unordered_map<std::string, const aiBone*> NameToBone;
+
+        // Add bones base on bone associated by meshes
+        for (auto iMesh = 0u; iMesh < m_pScene->mNumMeshes; ++iMesh)
+        {
+            const aiMesh& Mesh = *m_pScene->mMeshes[iMesh];
+            for (auto iBone = 0u; iBone < Mesh.mNumBones; ++iBone)
+            {
+                const aiBone& Bone = *Mesh.mBones[iBone];
+                if (auto E = NameToBone.find(Bone.mName.data); E == NameToBone.end())
+                {
+                    auto pNode = m_pScene->mRootNode->FindNode(Bone.mName);
+                    NameToBone[Bone.mName.data] = &Bone;
+                    NameToNode[Bone.mName.data] = pNode;
+                }
+            }
+        }
+
+        // Make sure all the parent nodes are inserted in the hash table, this algorithum is a bit overkill but is ok... 
+        for (auto itr1 : NameToNode)
+        {
+            for (auto pParentNode = NameToNode.find(itr1.first)->second->mParent; pParentNode != nullptr; pParentNode = pParentNode->mParent)
+            {
+                if (auto e = NameToNode.find(pParentNode->mName.C_Str()); e == NameToNode.end())
+                {
+                    NameToNode[pParentNode->mName.C_Str()] = pParentNode;
+                }
+            }
+        }
+
+        // Check to see if we readed too many bones!
+        if (NameToNode.size() > 0xff)
+        {
+            TRE_CORE_INFO("ERROR: This mesh has {0} Bones we can only handle up to 256\n", NameToNode.size());
+        }
+
+        // Organize build the skeleton 
+        // We want the parents to be first then the children
+        // Ideally we also want to have the bones that have more children higher
+        struct proto
+        {
+            const aiNode*   m_pAssimpNode{ nullptr };
+            int             m_Depth{ 0 };
+            int             m_nTotalChildren{ 0 };
+            int             m_nChildren{ 0 };
+        };
+        std::vector<proto> Proto;
+
+        // Set the Assimp Node
+        Proto.resize(NameToNode.size());
+        {
+            int i = 0;
+            for (auto itr = NameToNode.begin(); itr != NameToNode.end(); ++itr)
+            {
+                auto& P = Proto[i++];
+                P.m_pAssimpNode = itr->second;
+            }
+        }
+
+        // Set the Depth, m_nTotalChildren and nChildren
+        for (auto i = 0u; i < Proto.size(); ++i)
+        {
+            auto& P = Proto[i];
+            bool  bFoundParent = false;
+
+            for (aiNode* pNode = P.m_pAssimpNode->mParent; pNode; pNode = pNode->mParent)
+            {
+                P.m_Depth++;
+
+                // If we can find the parent lets keep a count of how many total children it has
+                for (auto j = 0; j < Proto.size(); ++j)
+                {
+                    auto& ParentProto = Proto[j];
+                    if (pNode == ParentProto.m_pAssimpNode)
+                    {
+                        ParentProto.m_nTotalChildren++;
+                        if (bFoundParent == false) ParentProto.m_nChildren++;
+                        bFoundParent = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Put all the Proto bones in the right order
+        std::qsort(Proto.data(), Proto.size(), sizeof(proto), [](const void* pA, const void* pB) -> int
+            {
+                const auto& A = *reinterpret_cast<const proto*>(pA);
+                const auto& B = *reinterpret_cast<const proto*>(pB);
+
+                if (A.m_Depth < B.m_Depth) return -1;
+                if (A.m_Depth > B.m_Depth) return  1;
+                if (A.m_nTotalChildren < B.m_nTotalChildren) return  -1;
+                return (A.m_nTotalChildren > B.m_nTotalChildren);
+            });
+
+        // Create all the real bones
+        m_pSkeleton->m_Bones.resize(Proto.size());
+        {
+            int i = 0;
+            for (auto& ACBone : m_pSkeleton->m_Bones)
+            {
+                auto& ProtoBone = Proto[i++];
+                ACBone.m_Name = ProtoBone.m_pAssimpNode->mName.data;
+                ACBone.m_iParent = -1;
+
+                // Potentially we may not have all parent nodes in our skeleton
+                // so we must search by each of the potential assimp nodes
+                for (aiNode* pNode = ProtoBone.m_pAssimpNode->mParent; ACBone.m_iParent == -1 && pNode; pNode = pNode->mParent)
+                {
+                    for (auto j = 0; j < i; ++j)
+                    {
+                        if (Proto[j].m_pAssimpNode == ProtoBone.m_pAssimpNode->mParent)
+                        {
+                            ACBone.m_iParent = j;
+                            break;
+                        }
+                    }
+                }
+
+                // Check if we have a binding matrix
+                if (auto B = NameToBone.find(ProtoBone.m_pAssimpNode->mName.data); B != NameToBone.end())
+                {
+                    // Inverse bind matrix
+                    auto OffsetMatrix = B->second->mOffsetMatrix;
+                    auto NodeMatrix = m_MeshReferences[0].m_Nodes[0]->mTransformation;
+                    NodeMatrix = OffsetMatrix * NodeMatrix.Inverse();
+
+                    std::memcpy(&ACBone.m_InvBind, &NodeMatrix, sizeof(glm::mat4));
+                    ACBone.m_InvBind = glm::transpose(ACBone.m_InvBind);
+                }
+                else
+                {
+                    ACBone.m_InvBind = glm::mat4(1.f);
+                }
+
+                // Neutral pose
+                {
+                    const auto  C = NameToNode.find(ProtoBone.m_pAssimpNode->mName.data);
+                    auto        NodeMatrix = C->second->mTransformation;
+                    for (auto p = C->second->mParent; p; p = p->mParent) NodeMatrix = p->mTransformation * NodeMatrix;
+                    std::memcpy(&ACBone.m_NeutalPose, &NodeMatrix, sizeof(glm::mat4));
+                    ACBone.m_NeutalPose = glm::transpose(ACBone.m_NeutalPose);
+                    ACBone.m_NeutalPose *= ACBone.m_InvBind;
+                }
+            }
+        }
+    }
+
+    void AnimationImporter::ImportAnimations()
+    {
+        int MaxSamplingFPS = 60;
+
+        struct indices
+        {
+            std::uint32_t m_iPositions{ 0 };
+            std::uint32_t m_iRotations{ 0 };
+            std::uint32_t m_iScales   { 0 };
+        };
+
+        m_pAnimPackage->m_Animations.resize(m_pScene->mNumAnimations);
+        for (auto i = 0ul; i < m_pScene->mNumAnimations; ++i)
+        {
+            const aiAnimation& AssimpAnim = *m_pScene->mAnimations[i];
+            const int               SamplingFPS = static_cast<int>(MaxSamplingFPS > AssimpAnim.mTicksPerSecond ? AssimpAnim.mTicksPerSecond : MaxSamplingFPS);
+            const double            AnimationDuration = AssimpAnim.mDuration / AssimpAnim.mTicksPerSecond;
+            const double            DeltaTime = (AssimpAnim.mTicksPerSecond / SamplingFPS);
+            const int               FrameCount = (int)std::ceil(AssimpAnim.mDuration / DeltaTime);
+            assert(FrameCount > 0);
+            std::vector<indices>    LastPositions;
+
+            // Allocate all the bones for this animation
+            // assert( AssimpAnim.mNumChannels <= m_pSkeleton->m_Bones.size() );
+            auto& MyAnim = m_pAnimPackage->m_Animations[i];
+            MyAnim.m_BoneKeyFrames.resize(m_pSkeleton->m_Bones.size());
+            MyAnim.m_FPS = SamplingFPS;
+            MyAnim.m_Name = AssimpAnim.mName.C_Str();
+            MyAnim.m_TimeLength = static_cast<float>(AnimationDuration);
+
+            // To cache the last positions for a given frame for each bone
+            LastPositions.resize(AssimpAnim.mNumChannels);
+
+            // Create/Sample all the frames            
+            for (int iFrame = 0; iFrame < FrameCount; iFrame++)
+            {
+                const auto t = iFrame * DeltaTime;
+                for (auto b = 0ul; b < AssimpAnim.mNumChannels; ++b)
+                {
+                    const aiNodeAnim& Channel = *AssimpAnim.mChannels[b];
+                    auto& LastPos = LastPositions[b];
+
+                    // Sample the position key
+                    aiVector3D presentPosition(0, 0, 0);
+                    if (Channel.mNumPositionKeys > 0)
+                    {
+                        // Update the Position Index for the given bone
+                        while (LastPos.m_iPositions < Channel.mNumPositionKeys - 1)
+                        {
+                            if (t < Channel.mPositionKeys[LastPos.m_iPositions + 1].mTime) break;
+                            ++LastPos.m_iPositions;
+                        }
+
+                        // interpolate between this frame's value and next frame's value
+                        unsigned int        NextFrame = (LastPos.m_iPositions + 1) % Channel.mNumPositionKeys;
+                        const aiVectorKey& Key = Channel.mPositionKeys[LastPos.m_iPositions];
+                        const aiVectorKey& NextKey = Channel.mPositionKeys[NextFrame];
+                        double              diffTime = NextKey.mTime - Key.mTime;
+
+                        if (diffTime < 0.0) diffTime += AssimpAnim.mDuration;
+                        if (diffTime > 0)
+                        {
+                            float factor = float((t - Key.mTime) / diffTime);
+                            presentPosition = Key.mValue + (NextKey.mValue - Key.mValue) * factor;
+                        }
+                        else
+                        {
+                            presentPosition = Key.mValue;
+                        }
+                    }
+
+                    // Sample the Rotation key
+                    aiQuaternion presentRotation(1, 0, 0, 0);
+                    if (Channel.mNumRotationKeys > 0)
+                    {
+                        // Update the Rotation Index for the given bone
+                        while (LastPos.m_iRotations < Channel.mNumRotationKeys - 1)
+                        {
+                            if (t < Channel.mRotationKeys[LastPos.m_iRotations + 1].mTime) break;
+                            ++LastPos.m_iRotations;
+                        }
+
+                        // interpolate between this frame's value and next frame's value
+                        unsigned int        NextFrame = (LastPos.m_iRotations + 1) % Channel.mNumRotationKeys;
+                        const aiQuatKey& Key = Channel.mRotationKeys[LastPos.m_iRotations];
+                        const aiQuatKey& NextKey = Channel.mRotationKeys[NextFrame];
+                        double              diffTime = NextKey.mTime - Key.mTime;
+
+                        if (diffTime < 0.0) diffTime += AssimpAnim.mDuration;
+                        if (diffTime > 0)
+                        {
+                            float factor = float((t - Key.mTime) / diffTime);
+                            aiQuaternion::Interpolate(presentRotation, Key.mValue, NextKey.mValue, factor);
+                        }
+                        else
+                        {
+                            presentRotation = Key.mValue;
+                        }
+                    }
+
+                    // Sample the Scale key
+                    aiVector3D presentScaling(1, 1, 1);
+                    if (Channel.mNumScalingKeys > 0)
+                    {
+                        // Update the Rotation Index for the given bone
+                        while (LastPos.m_iScales < Channel.mNumScalingKeys - 1)
+                        {
+                            if (t < Channel.mScalingKeys[LastPos.m_iScales + 1].mTime) break;
+                            ++LastPos.m_iScales;
+                        }
+
+                        // TODO: interpolation maybe? This time maybe even logarithmic, not linear!
+                        // interpolate between this frame's value and next frame's value
+                        unsigned int        NextFrame = (LastPos.m_iScales + 1) % Channel.mNumScalingKeys;
+                        const aiVectorKey& Key = Channel.mScalingKeys[LastPos.m_iScales];
+                        const aiVectorKey& NextKey = Channel.mScalingKeys[NextFrame];
+                        double              diffTime = NextKey.mTime - Key.mTime;
+
+                        if (diffTime < 0.0) diffTime += AssimpAnim.mDuration;
+                        if (diffTime > 0)
+                        {
+                            float factor = float((t - Key.mTime) / diffTime);
+                            presentScaling = Key.mValue + (NextKey.mValue - Key.mValue) * factor;
+                        }
+                        else
+                        {
+                            presentScaling = Key.mValue;
+                        }
+                    }
+
+                    // Set all the computer components into our frame
+                    // make sure that we can find the bone                         
+                    const int iBone = m_pSkeleton->findBone(Channel.mNodeName.C_Str());
+                    if (-1 == iBone)
+                    {
+                        continue;
+                    }
+
+                    if (MyAnim.m_BoneKeyFrames[iBone].m_Scale.size() == 0)
+                    {
+                        MyAnim.m_BoneKeyFrames[iBone].m_Scale.resize(FrameCount);
+                        MyAnim.m_BoneKeyFrames[iBone].m_Rotate.resize(FrameCount);
+                        MyAnim.m_BoneKeyFrames[iBone].m_Translate.resize(FrameCount);
+                    }
+
+                    auto& MyBoneKeyFrame = MyAnim.m_BoneKeyFrames[iBone];
+                    
+                    MyBoneKeyFrame.m_Translate[iFrame] = glm::vec3(presentPosition.x, presentPosition.y, presentPosition.z);
+                    MyBoneKeyFrame.m_Rotate[iFrame] = glm::vec4(presentRotation.x, presentRotation.y, presentRotation.z, presentRotation.w);
+                    MyBoneKeyFrame.m_Scale[iFrame] = glm::vec3(presentScaling.x, presentScaling.y, presentScaling.z);
+                }
+            }
+
+            // Add transforms without animations
+            for (int i = 0; i < m_pSkeleton->m_Bones.size(); ++i)
+            {
+                if (MyAnim.m_BoneKeyFrames[i].m_Scale.size() == 0)
+                {
+                    MyAnim.m_BoneKeyFrames[i].m_Scale.resize(FrameCount);
+                    MyAnim.m_BoneKeyFrames[i].m_Rotate.resize(FrameCount);
+                    MyAnim.m_BoneKeyFrames[i].m_Translate.resize(FrameCount);
+                    auto pNode = m_pScene->mRootNode->FindNode(m_pSkeleton->m_Bones[i].m_Name.c_str());
+
+                    aiQuaternion Q(0, 0, 0, 1);
+                    aiVector3D   S(1, 1, 1);
+                    aiVector3D   T(0, 0, 0);
+                    pNode->mTransformation.Decompose(S, Q, T);
+
+                    for (int f = 0; f < FrameCount; ++f)
+                    {
+                        auto& MyBoneKeyFrame = MyAnim.m_BoneKeyFrames[i];
+                        MyBoneKeyFrame.m_Translate[f] = glm::vec3(T.x, T.y, T.z);
+                        MyBoneKeyFrame.m_Scale[f] = glm::vec3(S.x, S.y, S.z);
+                        MyBoneKeyFrame.m_Rotate[f] = glm::vec4(Q.x, Q.y, Q.z, Q.w);
+
+                        /*
+                        MyBoneKeyFrame.m_Translate.setup(T.x, T.y, T.z);
+                        MyBoneKeyFrame.m_Rotate.setup(Q.x, Q.y, Q.z, Q.w);
+                        MyBoneKeyFrame.m_Scale.setup(S.x, S.y, S.z);
+                        */
+                    }
+                }
+            }
+        }
+    }
+
+    void AnimationImporter::ImportGeometry()
+    {
+        std::vector<myMeshPart> MyNodes;
+
+        // Import from scene
+        if (m_pSkeleton && m_pSkeleton->m_Bones.size())
+        {
+            ImportGeometrySkin(MyNodes);
+        }
+        else
+        {
+            assert(false, && "No Skeleton");
+        }
+
+        // Remove Mesh parts with zero vertices
+        for (auto i = 0u; i < MyNodes.size(); ++i)
+        {
+            if (MyNodes[i].m_Vertices.size() == 0 || MyNodes[i].m_Indices.size() == 0)
+            {
+                MyNodes.erase(MyNodes.begin() + i);
+                --i;
+            }
+        }
+
+        // Merge any mesh part based on Mesh and iMaterial...
+        for (auto i = 0u; i < MyNodes.size(); ++i)
+        {
+            for (auto j = i + 1; j < MyNodes.size(); ++j)
+            {
+                // Lets find a candidate to merge...
+                if (MyNodes[i].m_iMaterialInstance == MyNodes[j].m_iMaterialInstance
+                    && MyNodes[i].m_MeshName == MyNodes[j].m_MeshName)
+                {
+                    const int  iBaseVertex = static_cast<int>(MyNodes[i].m_Vertices.size());
+                    const auto iBaseIndex = MyNodes[i].m_Indices.size();
+                    MyNodes[i].m_Vertices.insert(MyNodes[i].m_Vertices.end(), MyNodes[j].m_Vertices.begin(), MyNodes[j].m_Vertices.end());
+                    MyNodes[i].m_Indices.insert(MyNodes[i].m_Indices.end(), MyNodes[j].m_Indices.begin(), MyNodes[j].m_Indices.end());
+
+                    // Fix the indices
+                    for (auto I = iBaseIndex; I < MyNodes[i].m_Indices.size(); ++I)
+                    {
+                        MyNodes[i].m_Indices[I] += iBaseVertex;
+                    }
+
+                    MyNodes.erase(MyNodes.begin() + j);
+                    --j;
+                }
+            }
+        }
+
+        // Create final structure
+        for (auto& E : MyNodes)
+        {
+            int iFinalMesh = -1;
+            for (auto i = 0u; i < m_pGeom->m_Mesh.size(); ++i)
+            {
+                if (m_pGeom->m_Mesh[i].m_Name == E.m_MeshName)
+                {
+                    iFinalMesh = i;
+                    break;
+                }
+            }
+
+            if (iFinalMesh == -1)
+            {
+                iFinalMesh = static_cast<int>(m_pGeom->m_Mesh.size());
+                m_pGeom->m_Mesh.emplace_back();
+                m_pGeom->m_Mesh.back().m_Name = E.m_MeshName;
+            }
+
+            auto& FinalMesh = m_pGeom->m_Mesh[iFinalMesh];
+            auto& SubMesh = FinalMesh.m_Submeshes.emplace_back();
+
+            SubMesh.m_Vertices = std::move(E.m_Vertices);
+            SubMesh.m_Indices = std::move(E.m_Indices);
+            SubMesh.m_iMaterial = E.m_iMaterialInstance;
+        }
+    }
+
+    static bool ImportGeometryValidateMesh(const aiMesh& AssimpMesh, int& iTexture)
+    {
+        if (AssimpMesh.HasPositions() == false)
+        {
+            TRE_CORE_TRACE("WARNING: Found a mesh {0} without position! mesh will be removed\n", AssimpMesh.mName.C_Str());
+            return true;
+        }
+
+        if (AssimpMesh.HasFaces() == false)
+        {
+            TRE_CORE_TRACE("WARNING: Found a mesh {0} without position! mesh will be removed\n", AssimpMesh.mName.C_Str());
+            return true;
+        }
+
+        if (AssimpMesh.HasNormals() == false)
+        {
+            TRE_CORE_TRACE("WARNING: Found a mesh {0} without normals! mesh will be removed\n", AssimpMesh.mName.C_Str());
+            return true;
+        }
+
+        if (AssimpMesh.HasTangentsAndBitangents() == false)
+        {
+            TRE_CORE_TRACE("WARNING: Found a mesh {0} without Tangets! We will create fake tangets.. but it will look bad!\n", AssimpMesh.mName.C_Str());
+        }
+
+        if (AssimpMesh.GetNumUVChannels() != 1)
+        {
+            if (AssimpMesh.GetNumUVChannels() == 0)
+            {
+                TRE_CORE_TRACE("WARNING: Found a mesh {0} without UVs we will assign 0,0 to all uvs\n", AssimpMesh.mName.C_Str());
+            }
+            else
+            {
+                TRE_CORE_TRACE("WARNING: Found a mesh {0} without too many UV chanels we will use only one...\n", AssimpMesh.mName.C_Str());
+            }
+        }
+
+        iTexture = [&]()->int
+        {
+            for (auto i = 0u; i < AssimpMesh.GetNumUVChannels(); ++i)
+                if (AssimpMesh.HasTextureCoords(i)) return i;
+            return -1;
+        }();
+
+        return false;
+    }
+
+    static std::string GetMeshNameFromNode(const aiNode& Node)
+    {
+        for (auto pNode = &Node; pNode; pNode = pNode->mParent)
+        {
+            // Using the naming convention to group meshes...
+            std::string Name = pNode->mName.C_Str();
+            if (Name.find("MESH_") != 0)
+            {
+                return pNode->mName.C_Str();
+            }
+            /*if (xcore::string::FindStrI(pNode->mName.C_Str(), "MESH_") != -1)
+            {
+                return pNode->mName.C_Str();
+            }*/
+        }
+
+        return {};
+    }
+
+    void AnimationImporter::ImportGeometrySkin(std::vector<myMeshPart>& MyNodes)
+    {
+        // Add bones base on bone associated by meshes
+        MyNodes.resize(m_pScene->mNumMeshes);
+        for (auto iMesh = 0u; iMesh < m_pScene->mNumMeshes; ++iMesh)
+        {
+            const aiMesh& AssimpMesh = *m_pScene->mMeshes[iMesh];
+
+            int iTexCordinates;
+            if (ImportGeometryValidateMesh(AssimpMesh, iTexCordinates)) 
+                continue;
+
+            // Copy mesh name and Material Index
+            MyNodes[iMesh].m_Name = AssimpMesh.mName.C_Str();
+            MyNodes[iMesh].m_iMaterialInstance = AssimpMesh.mMaterialIndex;
+
+            // get the rotation for the normals
+            aiQuaternion presentRotation;
+            {
+                aiVector3D p;
+                m_MeshReferences[iMesh].m_Nodes[0]->mTransformation.DecomposeNoScaling(presentRotation, p);
+            }
+
+            // Copy Vertices
+            MyNodes[iMesh].m_Vertices.resize(AssimpMesh.mNumVertices);
+            for (auto i = 0u; i < AssimpMesh.mNumVertices; ++i)
+            {
+                vertex& Vertex = MyNodes[iMesh].m_Vertices[i];
+
+                auto L = AssimpMesh.mVertices[i];
+                L = m_MeshReferences[iMesh].m_Nodes[0]->mTransformation * L;
+
+                Vertex.m_Position = glm::vec3(static_cast<float>(L.x), static_cast<float>(L.y), static_cast<float>(L.z));
+
+                if (iTexCordinates == -1)
+                {
+                    Vertex.m_UV = glm::vec2(0, 0);
+                }
+                else
+                {
+                    Vertex.m_UV = glm::vec2(static_cast<float>(AssimpMesh.mTextureCoords[iTexCordinates][i].x), static_cast<float>(AssimpMesh.mTextureCoords[iTexCordinates][i].y));
+                }
+
+                if (AssimpMesh.HasTangentsAndBitangents())
+                {
+                    assert(AssimpMesh.HasNormals());
+
+                    const auto T = presentRotation.Rotate(AssimpMesh.mTangents[i]);
+                    const auto B = presentRotation.Rotate(AssimpMesh.mBitangents[i]);
+                    const auto N = presentRotation.Rotate(AssimpMesh.mNormals[i]);
+
+                    Vertex.m_Normal = glm::vec3(N.x, N.y, N.z);
+                    Vertex.m_Tangent = glm::vec3(T.x, T.y, T.z);
+                    Vertex.m_Bitangent = glm::vec3(B.x, B.y, B.z);
+                    Vertex.m_Normal = glm::normalize(Vertex.m_Normal);
+                    Vertex.m_Tangent = glm::normalize(Vertex.m_Tangent);
+                    Vertex.m_Bitangent = glm::normalize(Vertex.m_Bitangent);
+                }
+                else
+                {
+                    const auto N = presentRotation.Rotate(AssimpMesh.mNormals[i]);
+                    Vertex.m_Normal = glm::vec3(N.x, N.y, N.z);
+                    Vertex.m_Tangent = glm::vec3(1, 0, 0);
+                    Vertex.m_Bitangent = glm::vec3(1, 0, 0);
+
+                    Vertex.m_Normal = glm::normalize(Vertex.m_Normal);
+                }
+
+                // Mark the weights as uninitialized we will be setting them later
+                Vertex.m_BoneIndex.x = Vertex.m_BoneIndex.y = Vertex.m_BoneIndex.z = Vertex.m_BoneIndex.w = 0;
+                Vertex.m_BoneWeights.x = Vertex.m_BoneWeights.y = Vertex.m_BoneWeights.z = Vertex.m_BoneWeights.w = 0;
+            }
+
+            // Copy the indices
+            for (auto i = 0u; i < AssimpMesh.mNumFaces; ++i)
+            {
+                const auto& Face = AssimpMesh.mFaces[i];
+                for (auto j = 0u; j < Face.mNumIndices; ++j)
+                    MyNodes[iMesh].m_Indices.push_back(Face.mIndices[j]);
+            }
+
+            // Add the bone weights
+            if (AssimpMesh.mNumBones > 0)
+            {
+                struct tmp_weight
+                {
+                    std::uint8_t m_iBone;
+                    float        m_Weight{ 0 };
+                };
+
+                struct my_weights
+                {
+                    int                         m_Count{ 0 };
+                    std::array<tmp_weight, 4>    m_Weights;
+                };
+
+                std::vector<my_weights> MyWeights;
+                MyWeights.resize(AssimpMesh.mNumVertices);
+
+                // Collect bones indices and weights
+                assert(m_MeshReferences[iMesh].m_Nodes.size() == 1);
+
+                MyNodes[iMesh].m_MeshName = GetMeshNameFromNode(*m_MeshReferences[iMesh].m_Nodes[0]);
+                for (auto iBone = 0u; iBone < AssimpMesh.mNumBones; iBone++)
+                {
+                    const auto& AssimpBone = *AssimpMesh.mBones[iBone];
+                    const std::uint8_t   iSkeletonBone = m_pSkeleton->findBone(AssimpBone.mName.C_Str());
+                    assert(m_pSkeleton->findBone(AssimpBone.mName.C_Str()) != -1);
+
+                    for (auto iWeight = 0u; iWeight < AssimpBone.mNumWeights; ++iWeight)
+                    {
+                        const auto& AssimpWeight = AssimpBone.mWeights[iWeight];
+                        auto& MyWeight = MyWeights[AssimpWeight.mVertexId];
+
+                        MyWeight.m_Weights[MyWeight.m_Count].m_iBone = iSkeletonBone;
+                        MyWeight.m_Weights[MyWeight.m_Count].m_Weight = AssimpWeight.mWeight;
+
+                        // get ready for the next one
+                        MyWeight.m_Count++;
+                    }
+                }
+
+                // Sort weights, normalize and set to the final vert
+                for (int iVertex = 0u; iVertex < MyWeights.size(); ++iVertex)
+                {
+                    auto& E = MyWeights[iVertex];
+
+                    // Short from bigger to smaller
+                    std::qsort(E.m_Weights.data(), E.m_Weights.size(), sizeof(tmp_weight), [](const void* pA, const void* pB) ->int
+                        {
+                            auto& A = *reinterpret_cast<const tmp_weight*>(pA);
+                            auto& B = *reinterpret_cast<const tmp_weight*>(pB);
+                            if (B.m_Weight < A.m_Weight) return -1;
+                            return B.m_Weight > A.m_Weight;
+                        });
+
+                    assert(E.m_Weights[0].m_Weight >= E.m_Weights[1].m_Weight);
+
+                    // Normalize the weights
+                    float Total = 0;
+                    for (int i = 0; i < E.m_Count; ++i)
+                    {
+                        Total += E.m_Weights[i].m_Weight;
+                    }
+
+                    for (int i = 0; i < E.m_Count; ++i)
+                    {
+                        E.m_Weights[i].m_Weight /= Total;
+                    }
+
+                    // Copy Weight To the Vert
+                    auto& V = MyNodes[iMesh].m_Vertices[iVertex];
+                    for (int i = 0; i < E.m_Count; ++i)
+                    {
+                        const auto& BW = E.m_Weights[i];
+
+                        switch (i)
+                        {
+                        case 0: V.m_BoneIndex.x = static_cast<std::uint8_t>(BW.m_iBone);
+                            V.m_BoneWeights.x = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
+                            break;
+                        case 1: V.m_BoneIndex.y = static_cast<std::uint8_t>(BW.m_iBone);
+                            V.m_BoneWeights.y = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
+                            break;
+                        case 2: V.m_BoneIndex.z = static_cast<std::uint8_t>(BW.m_iBone);
+                            V.m_BoneWeights.z = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
+                            break;
+                        case 3: V.m_BoneIndex.w = static_cast<std::uint8_t>(BW.m_iBone);
+                            V.m_BoneWeights.w = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
+                            break;
+                        }
+                    }
+                }
+
+                // Sanity check (make sure that all the vertices have bone and weights
+                for (auto& V : MyNodes[iMesh].m_Vertices)
+                {
+                    assert(V.m_BoneWeights.x > 0);
+                }
+            }
+            else
+            {
+                // Set the weights and duplicate mesh if needed
+
+                // Remember where was the base
+                int iBase = static_cast<int>(m_MeshReferences[iMesh].m_Nodes.size());
+
+                // Grow the total number of meshes if we have to...
+                if (iBase > 1) MyNodes.resize(MyNodes.size() + m_MeshReferences[iMesh].m_Nodes.size() - 1);
+
+                auto pMyNode = &MyNodes[iMesh];
+                for (const auto pN : m_MeshReferences[iMesh].m_Nodes)
+                {
+                    pMyNode->m_MeshName = GetMeshNameFromNode(*pN);
+                    const std::uint8_t   iSkeletonBone = m_pSkeleton->findBone(pN->mName.C_Str());
+                    for (auto iVertex = 0u; iVertex < AssimpMesh.mNumVertices; ++iVertex)
+                    {
+                        auto& V = pMyNode->m_Vertices[iVertex];
+                        V.m_BoneIndex.x = iSkeletonBone;
+                        V.m_BoneWeights.x = 0xff;
+                    }
+
+                    if (iBase < MyNodes.size())
+                    {
+                        pMyNode = &MyNodes[iBase++];
+
+                        // Deep copy the mesh...
+                        *pMyNode = MyNodes[iMesh];
+                    }
+                }
+            }
+        }
+    }
+
+    void AnimationImporter::ImportMaterials()
+    {
+        std::unordered_map<int, int>             AssimMaterialToGeomMaterial;
+        std::unordered_map<std::string, int>    TextureToIndex;
+
+        // Handle the samplers and textures
+        auto HandleSampler = [&](material_instance::sampler& Sampler, aiString& TexPath, aiTextureMapMode UMap, aiTextureMapMode VMap)
+        {
+            if (std::string FilePath = TexPath.C_Str();  FilePath.empty())
+            {
+                Sampler.m_iTexture = -1;
+            }
+            else
+            {
+                if (auto I = TextureToIndex.find(FilePath); I == TextureToIndex.end())
+                {
+                    Sampler.m_iTexture = static_cast<int>(m_pGeom->m_TexturePaths.size());
+                    TextureToIndex[FilePath] = Sampler.m_iTexture;
+                    m_pGeom->m_TexturePaths.emplace_back(std::move(FilePath));
+                    //xcore::string::CleanPath(m_pGeom->m_TexturePaths.back());
+                }
+                else
+                {
+                    Sampler.m_iTexture = I->second;
+                }
+            }
+
+            static constexpr auto Address = [](aiTextureMapMode A) constexpr
+            {
+                switch (A)
+                {
+                case aiTextureMapMode_Decal:
+                case aiTextureMapMode_Clamp:    return material_instance::address_mode::CLAMP;
+                case aiTextureMapMode_Mirror:   return material_instance::address_mode::MIRROR;
+                }
+
+                return material_instance::address_mode::TILE;
+            };
+
+            Sampler.m_UMode = Address(UMap);
+            Sampler.m_VMode = Address(VMap);
+        };
+
+        // Go through all the submeshes
+        for (auto& Mesh : m_pGeom->m_Mesh)
+            for (auto& Submesh : Mesh.m_Submeshes)
+            {
+                if (auto I = AssimMaterialToGeomMaterial.find(Submesh.m_iMaterial); I != AssimMaterialToGeomMaterial.end())
+                {
+                    Submesh.m_iMaterial = I->second;
+                    continue;
+                }
+
+                AssimMaterialToGeomMaterial[Submesh.m_iMaterial] = static_cast<int>(m_pGeom->m_MaterialInstance.size());
+
+                auto  pcMat = m_pScene->mMaterials[Submesh.m_iMaterial];
+                auto& MatI = m_pGeom->m_MaterialInstance.emplace_back();
+
+                MatI.m_Name = pcMat->GetName().C_Str();
+
+                // Shading model
+                {
+                    int ShadingModel = -1;
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_SHADING_MODEL, (int*)&ShadingModel);
+                    switch (ShadingModel)
+                    {
+                    case aiShadingMode_Gouraud:
+                    case aiShadingMode_Flat:
+                    case aiShadingMode_Phong:
+                    case aiShadingMode_Blinn:       MatI.m_ShadingModel = material_instance::shading_model::GOURAUD; break;
+                    case aiShadingMode_Toon:        MatI.m_ShadingModel = material_instance::shading_model::TOON; break;
+                    case aiShadingMode_NoShading:   MatI.m_ShadingModel = material_instance::shading_model::UNLIGHT; break;
+                    case aiShadingMode_OrenNayar:
+                    case aiShadingMode_Minnaert:
+                    case aiShadingMode_Fresnel:
+                    case aiShadingMode_CookTorrance:
+                    case aiShadingMode_PBR_BRDF:    MatI.m_ShadingModel = material_instance::shading_model::PBR; break;
+                    default:                        MatI.m_ShadingModel = material_instance::shading_model::UNKOWN; break;
+                    }
+                }
+
+                // Diffuse Color
+                {
+                    aiColor4D C(1, 1, 1, 1);
+                    aiGetMaterialColor(pcMat, AI_MATKEY_COLOR_DIFFUSE, (aiColor4D*)&C);
+                    MatI.m_DiffuseColor = glm::ivec4(C.r, C.g, C.b, C.a);
+                }
+
+                // Specular Color
+                {
+                    aiColor4D C(0, 0, 0, 1);
+                    aiGetMaterialColor(pcMat, AI_MATKEY_COLOR_SPECULAR, (aiColor4D*)&C);
+                    MatI.m_SpecularColor = glm::ivec4(C.r, C.g, C.b, C.a);
+                }
+
+                // Ambient Color
+                {
+                    aiColor4D C(0, 0, 0, 1);
+                    aiGetMaterialColor(pcMat, AI_MATKEY_COLOR_AMBIENT, (aiColor4D*)&C);
+                    MatI.m_AmbientColor = glm::ivec4(C.r, C.g, C.b, C.a);
+                }
+
+                // Emissive Color
+                {
+                    aiColor4D C(0, 0, 0, 1);
+                    aiGetMaterialColor(pcMat, AI_MATKEY_COLOR_EMISSIVE, (aiColor4D*)&C);
+                    MatI.m_EmmisiveColor = glm::ivec4(C.r, C.g, C.b, C.a);
+                }
+
+                // Opacity float
+                {
+                    MatI.m_OpacityFactor = 1;
+                    aiGetMaterialFloat(pcMat, AI_MATKEY_OPACITY, &MatI.m_OpacityFactor);
+                }
+
+                // Shininess float
+                {
+                    MatI.m_ShininessFactor = 0;
+                    aiGetMaterialFloat(pcMat, AI_MATKEY_SHININESS, &MatI.m_ShininessFactor);
+                }
+
+                // Shininess strength float
+                {
+                    MatI.m_ShininessStreanthFactor = 0;
+                    aiGetMaterialFloat(pcMat, AI_MATKEY_SHININESS_STRENGTH, &MatI.m_ShininessStreanthFactor);
+                }
+
+                // Diffuse Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    if (AI_SUCCESS != aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_DIFFUSE(0), &szPath))
+                    {
+                        for (std::uint32_t i = 0; i < pcMat->mNumProperties; ++i)
+                        {
+                            const auto& Props = *pcMat->mProperties[i];
+                            if (Props.mType == aiPTI_String)
+                            {
+                                if (Props.mSemantic != aiTextureType_NONE)
+                                {
+                                    if (Props.mSemantic == aiTextureType_BASE_COLOR)
+                                    {
+                                        szPath = *(aiString*)Props.mData;
+                                        break;
+                                    }
+                                    else if (Props.mSemantic == aiTextureType_UNKNOWN)
+                                    {
+                                        std::string Data = ((aiString*)Props.mData)->C_Str();
+                                        if (Data.find("_Base_Color") != 0)
+                                        {
+                                            szPath = *(aiString*)Props.mData;
+                                            break;
+                                        }
+                                        //if (xcore::string::FindStrI(((aiString*)Props.mData)->C_Str(), "_Base_Color") != -1)
+                                        //{
+                                        //    szPath = *(aiString*)Props.mData;
+                                        //    break;
+                                        //}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_DIFFUSE(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_DIFFUSE(0), (int*)&mapV);
+                    HandleSampler(MatI.m_DiffuseSampler, szPath, mapU, mapV);
+                }
+
+                // Specular Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_SPECULAR(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_SPECULAR(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_SPECULAR(0), (int*)&mapV);
+                    HandleSampler(MatI.m_SpecularSampler, szPath, mapU, mapV);
+                }
+
+                // Opacity Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    if (AI_SUCCESS == aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_OPACITY(0), &szPath))
+                    {
+                        aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_OPACITY(0), (int*)&mapU);
+                        aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_OPACITY(0), (int*)&mapV);
+                        HandleSampler(MatI.m_OpacitySampler, szPath, mapU, mapV);
+                    }
+                    else
+                    {
+                        int flags = 0;
+                        aiGetMaterialInteger(pcMat, AI_MATKEY_TEXFLAGS_DIFFUSE(0), &flags);
+
+                        if (MatI.m_DiffuseSampler.m_iTexture != -1
+                            && !(flags & aiTextureFlags_IgnoreAlpha)
+                            && true // HasAlphaPixels(pcMesh->piDiffuseTexture)
+                            )
+                        {
+                            MatI.m_OpacitySampler = MatI.m_DiffuseSampler;
+                        }
+                    }
+                }
+
+                // Ambient Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_AMBIENT(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_AMBIENT(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_AMBIENT(0), (int*)&mapV);
+                    HandleSampler(MatI.m_AmbientSampler, szPath, mapU, mapV);
+                }
+
+                // Emmisive Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_EMISSIVE(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_EMISSIVE(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_EMISSIVE(0), (int*)&mapV);
+                    HandleSampler(MatI.m_EmissiveSampler, szPath, mapU, mapV);
+                }
+
+                // Shininess Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_SHININESS(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_SHININESS(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_SHININESS(0), (int*)&mapV);
+                    HandleSampler(MatI.m_ShininessSampler, szPath, mapU, mapV);
+                }
+
+                // Lightmap Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_LIGHTMAP(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_LIGHTMAP(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_LIGHTMAP(0), (int*)&mapV);
+                    HandleSampler(MatI.m_LightmapSampler, szPath, mapU, mapV);
+                }
+
+                // Normal Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_NORMALS(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_NORMALS(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_NORMALS(0), (int*)&mapV);
+                    HandleSampler(MatI.m_NormalSampler, szPath, mapU, mapV);
+                }
+
+                // Height Texture
+                {
+                    aiString         szPath;
+                    aiTextureMapMode mapU(aiTextureMapMode_Wrap), mapV(aiTextureMapMode_Wrap);
+                    aiGetMaterialString(pcMat, AI_MATKEY_TEXTURE_HEIGHT(0), &szPath);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_U_HEIGHT(0), (int*)&mapU);
+                    aiGetMaterialInteger(pcMat, AI_MATKEY_MAPPINGMODE_V_HEIGHT(0), (int*)&mapV);
+                    HandleSampler(MatI.m_HeightSampler, szPath, mapU, mapV);
+                }
+            }
+    }
+}
