@@ -115,7 +115,6 @@ namespace TRE
 			}
 			else
 			{
-				std::cout << "loop\n";
 				audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
 				audio.m_Sound->setLoopCount(-1);
 			};
