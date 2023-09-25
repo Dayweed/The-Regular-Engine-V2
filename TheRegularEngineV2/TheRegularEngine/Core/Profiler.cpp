@@ -16,6 +16,8 @@
 #include "Profiler.h"
 #include <iostream>
 #include <thread>
+#include "EventSystem/EventHandler/EventHandler.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -137,20 +139,9 @@ namespace TRE
 		{
 			return;
 		}
-
-		// Iteration 1 [Too much info]
-		//=========================================================================
-		// Print out each timer
-		std::cout << "[==TIMERS======================]\n";
-		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
-		{
-			// TO DO! Print out to the text
-			std::cout << (*timer).first << " took " << (*timer).second->GetTime() << " microseconds\n";
-		}
-		std::cout << "[==============================]\n";
-
-		// Iteration 2 Print by percentage
-		//=========================================================================
+		std::list<std::string> list;
+		//// Iteration 2 Print by percentage
+		////=========================================================================
 		totalTime = 0;
 		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
@@ -158,9 +149,13 @@ namespace TRE
 		}
 		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
+			std::stringstream str;
 			// Calculate percentage
-			timer->second->SetPercentage(static_cast<float>((*timer).second->GetTime()) / totalTime * 100.f);
+			str << (*timer).first << ": " << std::setprecision(4) << static_cast<float>((*timer).second->GetTime()) / totalTime * 100.f << "%";
+
+			list.emplace_back(str.str());
 		}
+		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{ list });
 		start_delay = std::chrono::steady_clock::now();
 	}
 
@@ -270,7 +265,7 @@ namespace TRE
 	*//*__________________________________________________________________________*/
 	const long long Timer::GetTime() const
 	{
-		return std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+		return std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 	}
 
 	void Timer::SetPercentage(float perc)
