@@ -5,6 +5,16 @@
 
 namespace TRE
 {
+	uint32_t Shader::GetVertexStrides()
+	{
+		return m_ReflectionData.VertexStride;
+	}
+
+	const std::vector<VkVertexInputAttributeDescription>& Shader::GetVertexAttributes()
+	{
+		return m_ReflectionData.VertexInputAttributeDescriptions;
+	}
+
 	std::vector<PushConstants>& Shader::GetPushConstants()
 	{
 		return m_ReflectionData.PushConstants;
@@ -20,7 +30,7 @@ namespace TRE
 		return m_PipelineShaderCreateInfo;
 	}
 
-	const std::unordered_map<std::string, VkWriteDescriptorSet>& Shader::GetWriteDescriptorSets()
+	std::unordered_map<std::string, VkWriteDescriptorSet> Shader::GetWriteDescriptorSets()
 	{
 		if (m_ReflectionData.DescriptorSets.size())
 			return m_ReflectionData.DescriptorSets[0].WriteDescriptorSets;

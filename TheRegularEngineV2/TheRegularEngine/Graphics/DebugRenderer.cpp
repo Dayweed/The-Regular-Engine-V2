@@ -34,22 +34,10 @@ namespace TRE
 		auto DebugDrawVertShader = ResourceManager::Instance().GetResource<Shader>(7);
 		auto DebugDrawFragShader = ResourceManager::Instance().GetResource<Shader>(8);
 
-		//Debug Draw Pipelines
-		std::vector<VkVertexInputBindingDescription> DebugDrawBindingDescriptions(1);
-		DebugDrawBindingDescriptions[0].binding = 0;
-		DebugDrawBindingDescriptions[0].stride = sizeof(DebugVertex);
-		DebugDrawBindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		std::vector<VkVertexInputAttributeDescription> DebugDrawattributeDescriptions{};
-		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(DebugVertex, Position) });
-		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(DebugVertex, Color) });
-
 		PipelineConfigurations DebugDrawPipelineConfig{};
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
 		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
 		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
-		DebugDrawPipelineConfig.VertexBindingDescriptions = DebugDrawBindingDescriptions;
-		DebugDrawPipelineConfig.VertexAttributeDescriptions = DebugDrawattributeDescriptions;
 		DebugDrawPipelineConfig.LineWidth = 5.f;
 		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 

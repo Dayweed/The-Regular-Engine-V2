@@ -7,12 +7,11 @@ Texture File Path:
 Texture Name:
 icon-play
 
-Check vulkan page for enums
-Texture Format:
-138
-
-Texture Filter:
-0
-
 Compress:
 1
+
+GL_Linear:
+0
+
+Normal Map:
+0

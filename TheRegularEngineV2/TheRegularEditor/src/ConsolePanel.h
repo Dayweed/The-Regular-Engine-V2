@@ -14,7 +14,7 @@
 #pragma once
 #include "TREIncludes.h"
 #include "Panel.h"
-#include "EventSystem/Events/ConsoleEvent.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {

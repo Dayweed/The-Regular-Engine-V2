@@ -508,6 +508,8 @@ namespace TRE
 			{
 				compressedMeshParts[i].Position[j].Position = inputMesh[i].Vertices[j].Position;
 				compressedMeshParts[i].Extra[j].Normal = inputMesh[i].Vertices[j].fNormal;
+				compressedMeshParts[i].Extra[j].Tangent = inputMesh[i].Vertices[j].fTangent;
+				compressedMeshParts[i].Extra[j].Bitangent = inputMesh[i].Vertices[j].fBitangent;
 				compressedMeshParts[i].Extra[j].UV = inputMesh[i].Vertices[j].UV;
 				compressedMeshParts[i].Extra[j].Color = inputMesh[i].Vertices[j].fColor;
 			}

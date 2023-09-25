@@ -7,12 +7,14 @@ Texture File Path:
 Texture Name:
 icon-stop
 
-Check vulkan page for enums
-Texture Format:
-138
-
-Texture Filter:
-0
+Texture Name:
+icon-stop
 
 Compress:
 1
+
+GL_Linear:
+0
+
+Normal Map:
+0
