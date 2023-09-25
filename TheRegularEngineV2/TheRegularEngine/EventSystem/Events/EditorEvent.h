@@ -19,4 +19,11 @@ namespace TRE
 		SendTimeTakenEvent() = delete;
 		SendTimeTakenEvent(std::list<std::string> str) : m_Str(str) {}
 	};
+
+	struct PlayButtonEvent : Event
+	{
+		bool m_Playing{ false };
+		PlayButtonEvent() = delete;
+		PlayButtonEvent(bool playing) : m_Playing(playing) {}
+	};
 }

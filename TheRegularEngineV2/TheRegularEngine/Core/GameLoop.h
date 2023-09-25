@@ -3,6 +3,9 @@
 
 #include "entt.hpp"
 
+#include "EventSystem/EventHandler/EventHandler.h"
+#include "EventSystem/Events/EditorEvent.h"
+
 #define FILESYS_GAMELOOP_TEMPSAVE "../tmp/SavedScene"
 
 namespace TRE
@@ -18,6 +21,7 @@ namespace TRE
 
 		void ToggleRun(bool isRunning);
 		void ResetScene();
+		void ToggleRun(ToggleRunEvent& event);
 
 	private:
 		// Game Loop

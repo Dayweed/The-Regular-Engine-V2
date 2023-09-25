@@ -4,6 +4,7 @@
 #include "ECS.h"
 #include "GameLoop.h"
 
+
 namespace TRE
 {
 	GameLoop& GameLoop::Instance()
@@ -15,6 +16,7 @@ namespace TRE
 	void GameLoop::Init()
 	{
 		m_GameRunning = false;
+		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::ToggleRun);
 	}
 
 	bool GameLoop::IsGameRunning()
@@ -37,5 +39,10 @@ namespace TRE
 		{
 			ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
 		}
+	}
+
+	void GameLoop::ToggleRun(ToggleRunEvent& event)
+	{
+		m_GameRunning = event.m_Playing;
 	}
 }
