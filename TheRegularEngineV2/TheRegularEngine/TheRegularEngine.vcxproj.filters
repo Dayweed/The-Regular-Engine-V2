@@ -63,6 +63,9 @@
     <ClInclude Include="Core\Parent.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Prefab.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -214,6 +217,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Parent.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Prefab.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">

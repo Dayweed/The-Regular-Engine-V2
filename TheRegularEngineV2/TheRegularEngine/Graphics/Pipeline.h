@@ -22,8 +22,6 @@ namespace TRE
 		std::shared_ptr<Shader> VertexShader;
 		std::shared_ptr<Shader> FragmentShader;
 		PrimitiveType Primitive;
-		std::vector<VkVertexInputAttributeDescription> VertexAttributeDescriptions;
-		std::vector<VkVertexInputBindingDescription> VertexBindingDescriptions;
 		float LineWidth = 1.f;
 	};
 

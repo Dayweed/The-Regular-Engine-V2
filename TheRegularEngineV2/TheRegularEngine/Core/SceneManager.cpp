@@ -20,9 +20,17 @@ namespace TRE
 
 	void SceneManager::LoadScene(std::string scenePath)
 	{
-		ECSManager::Instance().LoadEntities(scenePath);
-		m_CurrentScene = scenePath;
-		m_CurrentSceneFilePath = scenePath;
+		if (std::filesystem::exists(scenePath))
+		{
+			ECSManager::Instance().LoadEntities(scenePath);
+			m_CurrentScene = scenePath;
+			m_CurrentSceneFilePath = scenePath;
+		}
+		else
+		{
+			TRE_CORE_CRITICAL("Scene file not found!");
+			return;
+		}
 	}
 
 	void SceneManager::SaveSceneAs(std::string scenePath)
@@ -35,6 +43,6 @@ namespace TRE
 
 	void SceneManager::SaveScene()
 	{
-		ECSManager::Instance().SaveEntities(m_CurrentSceneFilePath);
+		SaveSceneAs(m_CurrentSceneFilePath);
 	}
 }

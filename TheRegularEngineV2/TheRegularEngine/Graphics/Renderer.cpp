@@ -83,16 +83,10 @@ namespace TRE
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(3);
 		auto FragShader = ResourceManager::Instance().GetResource<Shader>(4);
 
-		//Vertex input
-		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
-		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
-
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
-		PipelineConfig.VertexBindingDescriptions = bindingDescription;
-		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
 		for (auto material : ResourceManager::Instance().GetResourcesOfType<Material>())
@@ -194,6 +188,8 @@ namespace TRE
 		UBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
+		ubo.m_LightPosition = mainCamera.m_Position;
+		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 	}
 

@@ -34,12 +34,18 @@ namespace TRE
 		auto Device = RendererContext::GetDevice();
 		VkPipelineShaderStageCreateInfo shaderStages[] = { m_Config.VertexShader->GetPipelineShaderInfo(), m_Config.FragmentShader->GetPipelineShaderInfo() };
 
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo{}; //Make it modular
+		const auto& VertexInputAttributesDescriptions = m_Config.VertexShader->GetVertexAttributes();
+		VkVertexInputBindingDescription VertexInputBindingDescriptions{};
+		VertexInputBindingDescriptions.binding = 0;
+		VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_Config.VertexAttributeDescriptions.size());
-		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(m_Config.VertexBindingDescriptions.size());
-		vertexInputInfo.pVertexAttributeDescriptions = m_Config.VertexAttributeDescriptions.data();
-		vertexInputInfo.pVertexBindingDescriptions = m_Config.VertexBindingDescriptions.data();
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
+		vertexInputInfo.pVertexBindingDescriptions = &VertexInputBindingDescriptions;
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
