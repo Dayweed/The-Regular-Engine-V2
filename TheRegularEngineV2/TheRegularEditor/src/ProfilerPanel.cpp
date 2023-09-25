@@ -26,6 +26,7 @@ namespace TRE
 		std::stringstream Fps;
 		Fps << 1/Engine::GetInstance().GetWindow()->GetDeltaTime() << "FPS\n";
 		ImGui::TextUnformatted(Fps.str().c_str());
+
 		ImGui::End();
 	}
 

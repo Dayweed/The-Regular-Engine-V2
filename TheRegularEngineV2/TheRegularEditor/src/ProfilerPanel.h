@@ -27,5 +27,12 @@ namespace TRE
 		void Shutdown() override;
 
 	private:
+		std::array<float, 20> m_FpsInfo{};
+		int m_FpsInfoIndex{};
+		float m_AvgFps{};
+		float m_TotalTime{};
+		float m_RenderTime{};
+		float m_PhysicsTime{};
+
 	};
 }

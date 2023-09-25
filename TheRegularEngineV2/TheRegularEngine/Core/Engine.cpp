@@ -255,6 +255,7 @@ namespace TRE
 
 	Engine::~Engine()
 	{
+		Shutdown();
 	}
 
 	void Engine::RegisterECS()
@@ -265,6 +266,7 @@ namespace TRE
 		// Register Components
 		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
 		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);		// ignore, ignore
 		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
@@ -274,9 +276,11 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
 		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");
-		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
+		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized, reflected
+		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
@@ -291,14 +295,13 @@ namespace TRE
 	void Engine::Update()
 	{
 		// To remove eventually
-		ECSManager::Instance().TESTRUN();
+		//ECSManager::Instance().TESTRUN();
 		//AHHH();
 		//DemoScene();
 		//ECSManager::Instance().STRESSTEST();
 
-		while (!m_Window->ShouldWindowClose())
+		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
-
 			m_Window->BeginFrame();
 			m_Window->UpdateDeltaTime();
 
@@ -341,6 +344,7 @@ namespace TRE
 
 	void Engine::Shutdown()
 	{
+		m_Running = false;
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
