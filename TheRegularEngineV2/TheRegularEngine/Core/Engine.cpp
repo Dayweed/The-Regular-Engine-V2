@@ -248,6 +248,7 @@ namespace TRE
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
+		GameLoop::Instance().Init();
 		RegisterECS();
 		//DemoDeserialize();
 		DemoScene();
