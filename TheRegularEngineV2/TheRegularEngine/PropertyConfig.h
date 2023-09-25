@@ -5,6 +5,11 @@
 #pragma once
 using string_t = std::string;
 
+struct respurce_ref
+{
+    std::uint64_t m_Vale;
+};
+
 //--------------------------------------------------------------------------------------------
 // Some structure to show that you can add your own atomic structures
 //--------------------------------------------------------------------------------------------
@@ -139,6 +144,7 @@ namespace property
             , string_t
             , oobb
             , glm::vec3
+            , respurce_ref
         >;
     
         //--------------------------------------------------------------------------------------------
