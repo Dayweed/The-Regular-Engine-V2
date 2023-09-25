@@ -159,8 +159,8 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(geomHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle2));
-		/*test->AddComponent<Audio>();
-		audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+		test->AddComponent<Audio>();
+		/*audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
 		audioSystem->SetLoop(test, true);
 		audioSystem->SetSpatialize(test,true);
 		audioSystem->CompileAudio(test);*/

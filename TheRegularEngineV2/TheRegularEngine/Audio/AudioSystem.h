@@ -32,6 +32,8 @@ namespace TRE
 		FMOD_VECTOR m_Forward{ 0.0f, 0.0f, 0.0f };
 		FMOD_VECTOR m_Up{ 0.0f, 0.0f, 0.0f };
 
+		FMOD_VECTOR m_Velocity{};
+
 	};
 
 	class AudioSystem : public ECSSystem
@@ -46,6 +48,7 @@ namespace TRE
 
 		//void SetAudioData(Audio* file);
 		void LoadFile(Entity& go);
+		void Load3DFile(Entity& go); //-----
 		//void CreateChildChannelGroup(FMOD::ChannelGroup* child, std::string name);
 		void Play(Entity& go);
 		void TogglePause(Entity& go);
@@ -65,6 +68,7 @@ namespace TRE
 		void SetPlay(Entity& go, const bool play);
 		void SetSpatialize(Entity& go, const bool spatialize);
 		void SetListenerPosition(Entity& go);
+		void SetSourcePosition(Entity& go);
 		
 		float GetVolume(Entity& go);
 		float GetPitch(Entity& go);
@@ -75,6 +79,8 @@ namespace TRE
 		bool GetPlay(Entity& go);
 		bool GetSpatialize(Entity& go);
 		FMOD_VECTOR GetListenerPosition(Entity& go);
+		FMOD_VECTOR GetSourcePosition(Entity& go);
+
 
 		FMOD::ChannelGroup* GetChannelGroup(Entity& go);
 		std::string GetFileName(Entity& go);
@@ -91,7 +97,7 @@ namespace TRE
 
 	private:
 		FMOD::System* m_System = nullptr;
-		FMOD::Sound* m_Sound = nullptr;  
+		FMOD::Sound* m_Sound = nullptr; 
 		FMOD::Channel* m_Channel = nullptr;       
 
 		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;

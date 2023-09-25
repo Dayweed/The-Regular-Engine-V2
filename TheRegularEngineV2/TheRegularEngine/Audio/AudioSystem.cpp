@@ -29,7 +29,9 @@ namespace TRE
 		for (Entity& go : ECSManager::Instance().GetEntities<AudioListener>())
 		{
 			SetListenerPosition(go);
-		}
+		}	
+
+		m_System->update();
 
 	}
 
@@ -71,11 +73,33 @@ namespace TRE
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_DEFAULT, nullptr, &m_Sound), "FMOD: LoadFile()");
 	}
 
-	//void AudioSystem::CreateChildChannelGroup(FMOD::ChannelGroup* child, std::string channelname)
-	//{
-	//	child = nullptr;
-	//	ErrorCheck(m_System->createChannelGroup(channelname.c_str(), &child), "FMOD: createChannelGroup()");
-	//}
+	void AudioSystem::Load3DFile(Entity& go)
+	{
+		Audio& audio = go.get()->GetComponent<Audio>();
+
+		std::string file_path_{ "../Assets/Audio/" };
+		std::string m_FilePath = file_path_ + audio.m_FileName;
+		std::size_t fs = audio.m_FileName.find_last_of(".");
+		std::string filetype = audio.m_FileName.substr(fs);
+
+		if (filetype != ".wav")
+		{
+			TRE_CORE_ERROR("FMOD: Invalid File Type! Audio file is not a .wav file. File not loaded");
+			std::cout << "filetype" << filetype << "_" << std::endl;
+			return;
+		}
+
+		std::ifstream ifs(m_FilePath);
+
+		audio.m_ChannelGroup = m_MusicChannelGroup;
+
+		if (!ifs.is_open())
+		{
+			TRE_CORE_ERROR("Unable to open audio file");
+		}
+
+		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &m_Sound), "FMOD: LoadFile()");
+	}
 
 	void AudioSystem::Play(Entity& go)
 	{
@@ -83,7 +107,6 @@ namespace TRE
 
 		if (audio.m_Play == true)
 		{
-
 			FMOD::Channel* m_Channel = nullptr;
 
 			if (audio.m_Loop == false)
@@ -122,6 +145,7 @@ namespace TRE
 	{
 		if (result != FMOD_OK) {
 			TRE_CORE_ERROR(function);
+
 			return 1;
 		}
 		return 0;
@@ -129,12 +153,20 @@ namespace TRE
 
 	void AudioSystem::CompileAudio(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		LoadFile(go);
+		Audio& audio = go.get()->GetComponent<Audio>();	
+		if (audio.m_Spatialize)
+		{
+			Load3DFile(go);
+		}
+		else
+		{
+			LoadFile(go);
+		}
 
 		m_Channel->setVolume(audio.m_Volume);
 		m_Channel->setPitch(audio.m_Pitch);
 		m_Channel->setPriority(audio.m_Priority);
+		SetSourcePosition(go);
 		
 		Play(go);
 
@@ -197,18 +229,8 @@ namespace TRE
 	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)
 	{
 		Audio& audiosource = go.get()->GetComponent<Audio>();
-		Transform& sourceposition = go.get()->GetComponent<Transform>();
-		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
 		
 		audiosource.m_Spatialize = spatialize;
-
-		m_Sound->setMode(FMOD_3D);
-		m_Sound->set3DMinMaxDistance(1.0f, 100.0f);
-
-		m_Channel->setMode(FMOD_3D);
-		m_Channel->set3DMinMaxDistance(1.0f, 100.0f);
-		m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
-
 	}
 
 	void AudioSystem::SetListenerPosition(Entity& go)
@@ -219,9 +241,25 @@ namespace TRE
 		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetForwardVec());
 		listener.m_Up = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetUpVec());
 
+		FMOD_VECTOR testpos = {100.0f,0.0f,200.0f};
 		m_System->set3DListenerAttributes(0, &listener.m_Position, nullptr, &listener.m_Forward, &listener.m_Up);
-
+		//m_System->set3DListenerAttributes(0, &testpos, nullptr, &listener.m_Forward, &listener.m_Up);
 	}
+
+	void AudioSystem::SetSourcePosition(Entity& go)
+	{
+		Transform& sourceposition = go.get()->GetComponent<Transform>();
+		Audio& audiosource = go.get()->GetComponent<Audio>();
+		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
+
+		
+		m_Sound->set3DMinMaxDistance(1.0f, 100.0f);
+		m_Sound->setMode(FMOD_3D);
+		//m_Channel->setMode(FMOD_3D);
+		//m_Channel->set3DMinMaxDistance(1.0f, 100.0f);
+		m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
+	}
+
 
 	float AudioSystem::GetVolume(Entity& go)
 	{
@@ -276,6 +314,11 @@ namespace TRE
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go)
 	{
 		return go.get()->GetComponent<AudioListener>().m_Position;
+	}
+
+	FMOD_VECTOR AudioSystem::GetSourcePosition(Entity& go)
+	{
+		return go.get()->GetComponent<Audio>().m_goPosition;
 	}
 
 }
