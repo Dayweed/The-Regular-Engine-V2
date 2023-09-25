@@ -40,6 +40,7 @@ namespace TRE
 		float m_ImguiTime{};
 		//To be done
 		float m_ScriptTime{};
+		std::list<std::string> m_ProfilerStringList{};
 
 	};
 }

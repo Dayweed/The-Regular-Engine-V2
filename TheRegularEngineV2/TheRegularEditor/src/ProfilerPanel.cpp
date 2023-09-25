@@ -8,7 +8,7 @@ namespace TRE
 {
 	ProfilerPanel::ProfilerPanel()
 	{
-
+		
 	}
 
 	ProfilerPanel::~ProfilerPanel()
@@ -28,14 +28,20 @@ namespace TRE
 			addFps(1 / Engine::GetInstance().GetWindow()->GetDeltaTime());
 			const std::string avgFpsString = "Average FPS: " + std::to_string(static_cast<int>(m_AvgFps));
 			ImGui::PlotLines("FPS", m_FpsInfo.data(), static_cast<int>(m_FpsInfo.size()), 0, avgFpsString.c_str(), 0.f, 80.f, ImVec2(300.f, 20.f));
-			m_TotalTime = Profiler::Instance().GetTotalTime();
-			const float otherTime = m_TotalTime - (m_RenderTime + m_PhysicsTime + m_ScriptTime);
 
-			ImGui::Text("Total Time: %.4f ns", m_TotalTime);
-			ImGui::Text("Render Time: %.4f ns", m_RenderTime);
-			ImGui::Text("Physics Time: %.4f ns", m_PhysicsTime);
-			ImGui::Text("Script Time: %.4f ns", m_ScriptTime);
-			ImGui::Text("Imgui Time: %.4f ns", m_ImguiTime);
+			m_TotalTime = Profiler::Instance().GetTotalTime();
+			ImGui::Text("Total Time: %.2f microseconds", m_TotalTime);
+			ImGui::Text("Percentages for each system by order its called:");
+
+			const std::string str = "class TRE::";
+			for (auto& i : m_ProfilerStringList)
+			{
+				if (i.find(str) != std::string::npos)
+				{
+					i.erase(0, str.size());
+				}
+				ImGui::TextUnformatted(i.c_str());
+			}
 		}
 		ImGui::End();
 	}
@@ -61,24 +67,6 @@ namespace TRE
 
 	void ProfilerPanel::ReceiveTimeTaken(const SendTimeTakenEvent& event)
 	{
-		float count = static_cast<float>(event.m_ms.count());
-		count /= 1000.f;
-		switch (event.m_type)
-		{
-		case TimerType::VKRENDER:
-			m_RenderTime = count;
-			break;
-		case TimerType::PHYSICS:
-			m_PhysicsTime = count;
-			break;
-		case TimerType::SCRIPTS:
-			m_ScriptTime = count;
-			break;
-		case TimerType::IMGUI:
-			m_ImguiTime = count;
-			break;
-		default:
-			break;
-		}	
+		m_ProfilerStringList = event.m_Str;
 	}
 }

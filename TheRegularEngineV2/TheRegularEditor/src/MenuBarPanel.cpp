@@ -2,7 +2,7 @@
 #include "MenuBarPanel.h"
 #include "Imgui/imgui.h"
 #include "EventSystem/EventHandler/EventHandler.h"
-#include <EventSystem/Events/ConsoleEvent.h>
+#include <EventSystem/Events/EditorEvent.h>
 #include "Core/Engine.h"
 
 namespace TRE
