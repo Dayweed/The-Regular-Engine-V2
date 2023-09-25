@@ -24,6 +24,12 @@ namespace TRE
 		return m_SelectedEntity;
 	}
 
+	void SelectionManager::ClearSelectedEntity()
+	{
+		m_SelectedEntity = nullptr;
+		m_SelectedEntityInspectableComp.clear();
+	}
+
 	std::vector<std::pair<std::string, property::base*>>& SelectionManager::GetSelectedEntityComponents()
 	{
 		return m_SelectedEntityInspectableComp;
@@ -48,6 +54,7 @@ namespace TRE
 			for (size_t i{}; i < m_SelectedEntityInspectableComp.size(); ++i)
 			{
 				property::base& compProp { *m_SelectedEntityInspectableComp[i].second };
+				//std::cout << "what is this: " << m_SelectedEntityInspectableComp[i].first.c_str() << "\n";
 				std::vector<property::entry> List;
 				property::SerializeEnum(compProp, [&](std::string_view PropertyName, property::data&& Data, const property::table&, std::size_t, property::flags::type Flags)
 					{

@@ -2,7 +2,7 @@
 #include "Material.h"
 #include "Core/Engine.h"
 #include "Core/Logger.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
@@ -13,7 +13,7 @@ namespace TRE
 
 	Material::Material(const std::shared_ptr<Shader>& VertexShader, const std::shared_ptr<Shader>& FragShader) : m_VertexShader(VertexShader), m_FragmentShader(FragShader)
 	{
-		m_Type = AssetType::Material;
+		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
 
@@ -69,15 +69,14 @@ namespace TRE
 			m_WriteDescriptors.push_back(x.second);
 		}
 		
-		int x = 0;
-		if (m_FragmentShader->GetWriteDescriptorSets().size())
+		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0 /*&& m_FragmentShader->GetWriteDescriptorSets().size() <= m_Textures.size()*/)
 		{
+			int x = 0;
 			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
 			{
 				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				{
-					auto imageInfo = m_Textures[x]->GetDescriptorImageInfo();
-					FragmentBindings.second.pImageInfo = &imageInfo;
+					FragmentBindings.second.pImageInfo = &m_Textures[x]->GetDescriptorImageInfo();
 					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
 					m_WriteDescriptors.push_back(FragmentBindings.second);
 					++x;
@@ -90,7 +89,7 @@ namespace TRE
 
 	void Material::Serialize()
 	{
-		std::string path = "../Assets/";
+		std::string path = "../Resources/";
 		std::filesystem::directory_entry entry(path);
 		if (!entry.exists())
 		{
@@ -121,7 +120,7 @@ namespace TRE
 	std::shared_ptr<Material> Material::Deserialize(const std::string& assetHexGUID)
 	{
 		//Open material file
-		std::string materialPath = "../Assets/" + assetHexGUID + ".material";
+		std::string materialPath = "../Resources/" + assetHexGUID + ".material";
 		std::ifstream file(materialPath);
 		if (!file.is_open())
 		{
@@ -153,17 +152,17 @@ namespace TRE
 			}
 		}
 
-		auto vertShader = AssetManager::Instance().GetAsset<Shader>(Asset::GetGUIDFromHex(vertexShaderGUID));
-		auto fragShader = AssetManager::Instance().GetAsset<Shader>(Asset::GetGUIDFromHex(fragmentShaderGUID));
+		auto vertShader = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(vertexShaderGUID));
+		auto fragShader = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(fragmentShaderGUID));
 		std::unique_ptr<Material> mat = std::make_unique<Material>(vertShader, fragShader);
-		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		mat->m_Handle = assetHandle;
 
 		mat->m_Textures.resize(textureGUIDs.size());
 		for (int i = 0; i < textureGUIDs.size(); ++i)
 		{	
 			std::string textureHexGUID = textureGUIDs[i];
-			auto texture = AssetManager::Instance().GetAsset<VulkanTexture>(Asset::GetGUIDFromHex(textureHexGUID));
+			auto texture = ResourceManager::Instance().GetResource<VulkanTexture>(Resource::GetGUIDFromHex(textureHexGUID));
 			//Load into engine if not in asset manager
 			if (texture == nullptr)
 			{
@@ -172,8 +171,8 @@ namespace TRE
 			mat->m_Textures[i] = texture;
 		}
 
-		AssetManager::Instance().AddAsset(std::move(mat));
+		ResourceManager::Instance().AddResource(std::move(mat));
 
-		return std::move(AssetManager::Instance().GetAsset<Material>(assetHandle));
+		return std::move(ResourceManager::Instance().GetResource<Material>(assetHandle));
 	}
 }

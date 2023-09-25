@@ -3,7 +3,7 @@
 #include "Core/Logger.h"
 #include "InputHandler.h"
 #include "EventSystem/Events/InputEvent.h"
-#include "EventSystem/Events/ConsoleEvent.h"
+#include "EventSystem/Events/EditorEvent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 
 #define DEBUG 1
@@ -20,6 +20,7 @@ namespace TRE
 		{
 			//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
+			event.Publish(TypingEvent {key, mod});
 		}
 	}
 

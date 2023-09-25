@@ -48,6 +48,13 @@ namespace TRE
 			{FILESYS_SCENE, ".json"}
 		};
 	};
+
+	class FileExplorer
+	{
+		public:
+			static std::string OpenFileExplorer(const char* filter);
+			static std::string SaveFileExplorer(const char* filter);
+	};
 }
 
 #define GETFOLDER	FileSystem::Instance().GetFolderName

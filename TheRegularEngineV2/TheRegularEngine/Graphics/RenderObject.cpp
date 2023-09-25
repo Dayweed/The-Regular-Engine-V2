@@ -2,7 +2,7 @@
 #include "RenderObject.h"
 #include "RendererContext.h"
 #include "Core/Engine.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/hash.hpp"
@@ -30,7 +30,7 @@ namespace TRE
 	{
 		std::unique_ptr<Geom> geom = Geom::Deserialize(geomAsset);
 
-		m_Type = AssetType::Mesh;
+		m_Type = ResourceType::Mesh;
 
 		std::vector<Vertex> vertices(geom->nPosition);
 		std::vector<std::uint32_t> indices(geom->nIndices);
@@ -40,6 +40,8 @@ namespace TRE
 			vertices[i].m_Position = geom->pPosition[i].Position;
 			vertices[i].m_Color = geom->pExtra[i].Color;
 			vertices[i].m_Normal = geom->pExtra[i].Normal;
+			vertices[i].m_Tangent = geom->pExtra[i].Tangent;
+			vertices[i].m_Bitangent = geom->pExtra[i].Bitangent;
 			vertices[i].m_UV = geom->pExtra[i].UV;
 		}
 
@@ -149,7 +151,9 @@ namespace TRE
 		attributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, m_Position) });
 		attributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, m_Color) });
 		attributeDescriptions.push_back({ 2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, m_Normal) });
-		attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, m_UV) });
+		attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, m_Tangent) });
+		attributeDescriptions.push_back({ 4, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, m_Bitangent) });
+		attributeDescriptions.push_back({ 5, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, m_UV) });
 
 		return attributeDescriptions;
 	}
@@ -161,12 +165,12 @@ namespace TRE
 
 	std::shared_ptr<RenderObject> RenderObject::Deserialize(const std::string& assetHexGUID)
 	{
-		std::string geomString = "../Assets/" + assetHexGUID + ".geom";
+		std::string geomString = "../Resources/" + assetHexGUID + ".geom";
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>(geomString);
-		AssetHandle assetHandle = Asset::GetGUIDFromHex(assetHexGUID);
+		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		ro->m_Handle = assetHandle;
-		AssetManager::Instance().AddAsset(std::move(ro));
+		ResourceManager::Instance().AddResource(std::move(ro));
 
-		return std::move(AssetManager::Instance().GetAsset<RenderObject>(assetHandle));
+		return std::move(ResourceManager::Instance().GetResource<RenderObject>(assetHandle));
 	}
 }

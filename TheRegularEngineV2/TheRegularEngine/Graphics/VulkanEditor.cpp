@@ -3,6 +3,7 @@
 #include "Imgui/imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
+#include "Editor/ImGuizmo.h"
 
 namespace TRE
 {
@@ -44,6 +45,25 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeV = samplerInfo.addressModeU;
+		samplerInfo.addressModeW = samplerInfo.addressModeU;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.maxAnisotropy = 1.0f;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = 1.0f;
+		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+
+		if (auto Result = vkCreateSampler(m_LogicalDevice->GetLogicalDevice(), &samplerInfo, nullptr, &m_Sampler); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS);
+		}
+
 		SetUpImgui();
 		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
@@ -79,7 +99,7 @@ namespace TRE
 		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetColorImages().size());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -99,6 +119,7 @@ namespace TRE
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void VulkanEditor::EndFrame()
@@ -200,7 +221,7 @@ namespace TRE
 		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetColorImages().size());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Renderer->GetSampler(), Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -208,6 +229,7 @@ namespace TRE
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
 		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
+		vkDestroySampler(m_LogicalDevice->GetLogicalDevice(), m_Sampler, nullptr);
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();

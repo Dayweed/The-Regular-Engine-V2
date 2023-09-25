@@ -5,11 +5,11 @@
 #include "RenderObject.h"
 #include "Sphere3D.h"
 #include "Material.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
-	class MeshRenderer
+	class MeshRenderer : property::base
 	{
 	public:
 		std::shared_ptr<RenderObject>	m_RenderObject;
@@ -18,6 +18,8 @@ namespace TRE
 		bool							m_IsVisible{ true };
 		bool							m_IsCulled{ false };
 		bool							m_IsDirty{ false };
+
+		property_vtable()
 
 		friend void to_json(nlohmann::json& j, const MeshRenderer& t)
 		{
@@ -30,11 +32,11 @@ namespace TRE
 		friend void from_json(const nlohmann::json& j, MeshRenderer& t)
 		{
 			std::string roString = j.at("ASSET_GEOM_m_RenderObject").get<std::string>();
-			AssetHandle roHandle = Asset::GetGUIDFromHex(roString);
+			ResourceHandle roHandle = Resource::GetGUIDFromHex(roString);
 			std::string matString = j.at("ASSET_MAT_m_MaterialInstance").get<std::string>();
-			AssetHandle matHandle = Asset::GetGUIDFromHex(matString);
+			ResourceHandle matHandle = Resource::GetGUIDFromHex(matString);
 
-			if (auto renderObject = AssetManager::Instance().GetAsset<RenderObject>(roHandle); renderObject)
+			if (auto renderObject = ResourceManager::Instance().GetResource<RenderObject>(roHandle); renderObject)
 			{
 				t.m_RenderObject = renderObject;
 			}
@@ -46,7 +48,7 @@ namespace TRE
 					TRE_CORE_CRITICAL(roString + ".geom not found!");
 			}
 
-			if (auto material = AssetManager::Instance().GetAsset<Material>(matHandle); material)
+			if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
 			{
 				t.m_MaterialInstance = material;
 			}
@@ -90,3 +92,22 @@ namespace TRE
 		bool m_IsDirty{ false };
 	};
 }
+
+property_begin(TRE::MeshRenderer)
+{
+	property_var_fnbegin("Render Object", respurce_ref )
+	{
+		if (isRead)
+		{
+			if (Self.m_RenderObject && Self.m_MaterialInstance)
+			{
+				InOut.m_Vale = Self.m_RenderObject->GetHandle();
+			}
+		}
+		else
+		{
+			// It does not handle writing
+		}
+	} property_var_fnend().Help("<MESH> ")
+
+} property_vend_h(TRE::MeshRenderer)

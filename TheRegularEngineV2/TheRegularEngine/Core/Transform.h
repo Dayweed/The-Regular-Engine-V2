@@ -15,7 +15,6 @@ namespace TRE
 		glm::vec3	m_Scale{ 1.f,1.f,1.f };
 		bool		m_IsDirty{ false };
 		const glm::mat4 GetModelMatrix() const;
-		const glm::mat4 GetNormalMatrix() const;
 
 		property_vtable()           // Allows the base class to get these properties  
 
@@ -72,7 +71,7 @@ namespace TRE
 
 property_begin(TRE::Transform)
 {
-	property_var(m_Position).Name("Position [Vec3]")
+		property_var(m_Position)
 		, property_var(m_Rotation)
 		, property_var(m_Scale)
 

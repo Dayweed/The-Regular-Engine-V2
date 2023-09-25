@@ -7,15 +7,10 @@
 #include "Image.h"
 #include "Pipeline.h"
 #include "Material.h"
+#include "DebugRenderer.h"
 
 namespace TRE
 {
-	struct LineVertex
-	{
-		glm::vec3 Position;
-		glm::vec4 Color;
-	};
-
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
@@ -23,8 +18,11 @@ namespace TRE
 
 	struct UBO
 	{
-		alignas(16) glm::mat4 m_ProjView{ 1.f }; //World to view to projection
-		alignas(16) glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
+		glm::mat4 m_ProjView{ 1.f }; //World to view to projection
+		glm::vec3 m_LightPosition{ 0.f, 0.f, 0.f}; //Light position for now will be the camera in world space
+		alignas(16) glm::vec4 m_LightColor{ 1.f, 1.f, 1.f, 40.f }; //Light color, w for intensity
+		glm::vec4 m_CameraPosition{0.f, 0.f, 0.f, 1.f}; //Camera position in world space
+		//glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
 	};
 
 	class Renderer
@@ -37,15 +35,16 @@ namespace TRE
 			void Create();
 			void Resize();
 			void Shutdown();
+			
 			void BeginFrame();
+			void EndFrame();
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
-			void DebugDrawPass(VkCommandBuffer CommandBuffer);
+			void DebugDrawPass(uint32_t Index);
 
 		public:
 			std::vector<std::unique_ptr<Image>>& GetColorImages();
-			VkSampler GetSampler();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
@@ -53,10 +52,10 @@ namespace TRE
 
 		private:
 			std::unique_ptr<Pipeline> m_Pipeline;
-			std::unique_ptr<Pipeline> m_DebugDrawPipeline;
+			std::shared_ptr<RenderPass> m_RenderPass;
+
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
-			VkSampler m_Sampler;
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
@@ -66,6 +65,6 @@ namespace TRE
 
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 
-			std::shared_ptr<Material> m_DebugMaterialInstance;
+			std::unique_ptr<DebugRenderer> m_DebugRenderer;
 	};
 }

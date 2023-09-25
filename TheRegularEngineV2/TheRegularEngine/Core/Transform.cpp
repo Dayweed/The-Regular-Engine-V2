@@ -8,12 +8,14 @@ namespace TRE
 {
 	const glm::mat4 Transform::GetModelMatrix() const
 	{
-		const float c3 = glm::cos(m_Rotation.z);
-		const float s3 = glm::sin(m_Rotation.z);
-		const float c2 = glm::cos(m_Rotation.x);
-		const float s2 = glm::sin(m_Rotation.x);
-		const float c1 = glm::cos(m_Rotation.y);
-		const float s1 = glm::sin(m_Rotation.y);
+		const glm::vec3 rotation = glm::radians(m_Rotation);
+
+		const float c3 = glm::cos(rotation.z);
+		const float s3 = glm::sin(rotation.z);
+		const float c2 = glm::cos(rotation.x);
+		const float s2 = glm::sin(rotation.x);
+		const float c1 = glm::cos(rotation.y);
+		const float s1 = glm::sin(rotation.y);
 		return glm::mat4
 		{
 			{
@@ -36,69 +38,27 @@ namespace TRE
 			},
 			{m_Position.x, m_Position.y, m_Position.z, 1.0f}
 		};
-
-		//glm::mat4 modelMatrix = glm::mat4(1.0f);
-		//modelMatrix = glm::translate(modelMatrix, m_Position);
-		//modelMatrix = glm::rotate(modelMatrix, m_Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		//modelMatrix = glm::rotate(modelMatrix, m_Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-		//modelMatrix = glm::rotate(modelMatrix, m_Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-		//modelMatrix = glm::scale(modelMatrix, m_Scale);
-		//return modelMatrix;
-	}
-
-	const glm::mat4 Transform::GetNormalMatrix() const
-	{
-		const float c3 = glm::cos(m_Rotation.z);
-		const float s3 = glm::sin(m_Rotation.z);
-		const float c2 = glm::cos(m_Rotation.x);
-		const float s2 = glm::sin(m_Rotation.x);
-		const float c1 = glm::cos(m_Rotation.y);
-		const float s1 = glm::sin(m_Rotation.y);
-		const glm::vec3 invScale = 1.0f / m_Scale;
-
-		return glm::mat4
-		{
-			{
-				invScale.x * (c1 * c3 + s1 * s2 * s3),
-				invScale.x * (c2 * s3),
-				invScale.x * (c1 * s2 * s3 - c3 * s1),
-				0.f,
-			},
-			{
-				invScale.y * (c3 * s1 * s2 - c1 * s3),
-				invScale.y * (c2 * c3),
-				invScale.y * (c1 * c3 * s2 + s1 * s3),
-				0.f,
-			},
-			{
-				invScale.z * (c2 * s1),
-				invScale.z * (-s2),
-				invScale.z * (c1 * c2),
-				0.f,
-			},
-			{0.f, 0.f, 0.f, 1.f }
-		};
 	}
 
 	void TransformSystem::Update()
 	{
-		if (m_IsDirty == false)
-			return;
+		/*if (m_IsDirty == false)
+			return;*/
 
-		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
-		{
-			Transform& transform = go.get()->GetComponent<Transform>();
-			if (transform.m_IsDirty)
-			{
-				//Update model matrix or sth
-				//Tell mesh renderer to update bounding sphere
-				if (go->HasComponent<MeshRenderer>())
-				{
-					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-				}
-				transform.m_IsDirty = false;
-			}
-		}
+		//for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
+		//{
+		//	Transform& transform = go.get()->GetComponent<Transform>();
+		//	if (transform.m_IsDirty)
+		//	{
+		//		//Update model matrix or sth
+		//		//Tell mesh renderer to update bounding sphere
+		//		if (go->HasComponent<MeshRenderer>())
+		//		{
+		//			ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
+		//		}
+		//		transform.m_IsDirty = false;
+		//	}
+		//}
 	}
 
 	void TransformSystem::OnDestroyGO()
@@ -131,7 +91,6 @@ namespace TRE
 	void TransformSystem::SetRotation(Entity& go, const glm::vec3& rotation)
 	{
 		m_IsDirty = true;
-
 		Transform& transform = go.get()->GetComponent<Transform>();
 		glm::vec3 rotDiff = rotation - transform.m_Rotation;
 		transform.m_Rotation = rotation;

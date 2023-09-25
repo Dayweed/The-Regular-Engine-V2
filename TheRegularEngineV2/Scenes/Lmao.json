@@ -1,1 +1,616 @@
-[[10,0,1,2,3,4,5,6,7,8,9],[10,0,{"m_Active":true,"m_GUID":"{41D78862-3623-41C8-96B0-AFDE95E3ACF6}","m_Name":"Test 1"},1,{"m_Active":true,"m_GUID":"{503153AE-C2C2-4D98-9EA2-CF5E984BF219}","m_Name":"test2"},2,{"m_Active":true,"m_GUID":"{ED6E9750-21CA-485F-AA6C-012B88436E93}","m_Name":"allobj"},3,{"m_Active":true,"m_GUID":"{9ADBE172-6590-46FE-84D2-37FCB18ACEC8}","m_Name":"allobj2"},4,{"m_Active":true,"m_GUID":"{90DC1677-39AE-4D40-8E98-89DADDC7AF85}","m_Name":"oriobj"},5,{"m_Active":true,"m_GUID":"{FDDC8D7D-27CC-4EBE-AF77-A2FD422B2007}","m_Name":"Clone_Entity_Name"},6,{"m_Active":true,"m_GUID":"{16320389-B83E-4A2B-9CB0-A81451F57C7E}","m_Name":"ParentEntity"},7,{"m_Active":true,"m_GUID":"{48A723F3-D1A7-4370-82E1-6947ADD3FA8F}","m_Name":"ChildEntity"},8,{"m_Active":true,"m_GUID":"{34B33F34-9A48-4B2D-A683-9EBAEDB5B0DA}","m_Name":"ParentPosEntity"},9,{"m_Active":true,"m_GUID":"{6ACB9FE4-12B0-46EE-A4B1-F91544E84A10}","m_Name":"ChildPosEntity"}],[10,0,{"m_Children":[],"m_Parent":""},1,{"m_Children":[],"m_Parent":""},2,{"m_Children":[],"m_Parent":""},3,{"m_Children":[],"m_Parent":"{48A723F3-D1A7-4370-82E1-6947ADD3FA8F}"},4,{"m_Children":[],"m_Parent":""},5,{"m_Children":[],"m_Parent":""},6,{"m_Children":[],"m_Parent":""},7,{"m_Children":["{9ADBE172-6590-46FE-84D2-37FCB18ACEC8}"],"m_Parent":""},8,{"m_Children":["{6ACB9FE4-12B0-46EE-A4B1-F91544E84A10}"],"m_Parent":""},9,{"m_Children":[],"m_Parent":"{34B33F34-9A48-4B2D-A683-9EBAEDB5B0DA}"}],[9,9,{"m_Position":[7.0,7.0,7.0],"m_Rotation":[3.0,6.0,9.0],"m_Scale":[24.0,2.0,10.0]},1,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},2,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},3,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},4,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},5,{"m_Position":[123.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},6,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},7,{"m_Position":[0.0,0.0,0.0],"m_Rotation":[0.0,0.0,0.0],"m_Scale":[1.0,1.0,1.0]},8,{"m_Position":[4.0,5.0,6.0],"m_Rotation":[1.0,2.0,3.0],"m_Scale":[3.0,1.0,2.0]}],[0],[0]]
+[
+   [
+      16,
+      1048576,
+      1048577,
+      1048578,
+      1048579,
+      1048580,
+      1048581,
+      1048582,
+      1048583,
+      1048584,
+      1048585,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106
+   ],
+   [
+      4,
+      1048579,
+      {
+         "m_Instances": [
+            "{6F5105C0-40C3-433D-A841-9813AAF3C045}"
+         ],
+         "m_Overrides": {},
+         "m_PrefabGUID": "49cb27ddb05ec1d3",
+         "m_RemovedComps": []
+      },
+      1048578,
+      {
+         "m_Instances": [
+            "{81ED7E6A-9D75-406A-9395-DD2B04E82479}",
+            "{3C04D393-82B1-4825-A0D4-139AB49113C4}"
+         ],
+         "m_Overrides": {},
+         "m_PrefabGUID": "c59ed9e646813b88",
+         "m_RemovedComps": []
+      },
+      1048577,
+      {
+         "m_Instances": [
+            "{6F5105C0-40C3-433D-A841-9813AAF3C045}"
+         ],
+         "m_Overrides": {},
+         "m_PrefabGUID": "49cb27ddb05ec1d3",
+         "m_RemovedComps": []
+      },
+      1048576,
+      {
+         "m_Instances": [
+            "{1E2BC974-0C1F-4F28-B0AB-2F6AB8D82AC8}",
+            "{7B1400FD-889A-4F49-AC34-AF88AB88964B}"
+         ],
+         "m_Overrides": {},
+         "m_PrefabGUID": "872ff324f9c877e",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      17,
+      1048582,
+      {
+         "m_Active": true,
+         "m_GUID": "{51967307-F7F6-4C33-81F9-013406B61D99}",
+         "m_Name": "Test2"
+      },
+      1048581,
+      {
+         "m_Active": true,
+         "m_GUID": "{C4CF9F9F-F6DF-4FB6-8578-1678A90DD526}",
+         "m_Name": "Test"
+      },
+      1048580,
+      {
+         "m_Active": true,
+         "m_GUID": "{0DA67638-8730-4AFF-AC3D-C0E070E41E31}",
+         "m_Name": "cam"
+      },
+      1048579,
+      {
+         "m_Active": true,
+         "m_GUID": "{6F5105C0-40C3-433D-A841-9813AAF3C045}",
+         "m_Name": "Demo Prefab"
+      },
+      1048578,
+      {
+         "m_Active": true,
+         "m_GUID": "{81ED7E6A-9D75-406A-9395-DD2B04E82479}",
+         "m_Name": "Default_Entity_Name"
+      },
+      1048577,
+      {
+         "m_Active": true,
+         "m_GUID": "{6F5105C0-40C3-433D-A841-9813AAF3C045}",
+         "m_Name": "Demo Prefab"
+      },
+      1048576,
+      {
+         "m_Active": true,
+         "m_GUID": "{1E2BC974-0C1F-4F28-B0AB-2F6AB8D82AC8}",
+         "m_Name": "Prefab Entity"
+      },
+      1048585,
+      {
+         "m_Active": true,
+         "m_GUID": "{787BAD9E-ED07-4CFB-A44E-0CB2724EE4C8}",
+         "m_Name": "ChildPosEntity"
+      },
+      1048584,
+      {
+         "m_Active": true,
+         "m_GUID": "{E05E28DD-6171-4CF7-9001-E128BAC61A4C}",
+         "m_Name": "ParentPosEntity"
+      },
+      1048583,
+      {
+         "m_Active": true,
+         "m_GUID": "{53174AD9-124A-49A7-97D8-3AE8930CE775}",
+         "m_Name": "ChildEntity"
+      },
+      100,
+      {
+         "m_Active": true,
+         "m_GUID": "{A529DA50-8D3F-455D-9A39-A5A57173F42C}",
+         "m_Name": "Test 1"
+      },
+      101,
+      {
+         "m_Active": true,
+         "m_GUID": "{19990C22-5F3E-4778-AC55-F76BEE7E0390}",
+         "m_Name": "test2"
+      },
+      102,
+      {
+         "m_Active": true,
+         "m_GUID": "{1E7A4CE1-6742-4361-A0B4-A7CC0F9A1DF4}",
+         "m_Name": "allobj"
+      },
+      103,
+      {
+         "m_Active": true,
+         "m_GUID": "{1BA60B2B-C84D-48DE-BBBD-C2AF1C40310B}",
+         "m_Name": "allobj2"
+      },
+      104,
+      {
+         "m_Active": true,
+         "m_GUID": "{21D973E0-B1BF-48C4-BA0A-9D299634A9AF}",
+         "m_Name": "oriobj"
+      },
+      106,
+      {
+         "m_Active": true,
+         "m_GUID": "{1007D851-6A0D-4ED6-8D10-78911E202B2E}",
+         "m_Name": "ParentEntity"
+      },
+      105,
+      {
+         "m_Active": true,
+         "m_GUID": "{5BEAAF7D-8F49-4662-98C6-DED0B4360F97}",
+         "m_Name": "Clone_Entity_Name"
+      }
+   ],
+   [
+      17,
+      1048582,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048581,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048580,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048579,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048578,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048577,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048576,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048585,
+      {
+         "m_Children": [],
+         "m_Parent": "{E05E28DD-6171-4CF7-9001-E128BAC61A4C}"
+      },
+      1048584,
+      {
+         "m_Children": [
+            "{787BAD9E-ED07-4CFB-A44E-0CB2724EE4C8}"
+         ],
+         "m_Parent": ""
+      },
+      1048583,
+      {
+         "m_Children": [
+            "{1BA60B2B-C84D-48DE-BBBD-C2AF1C40310B}"
+         ],
+         "m_Parent": ""
+      },
+      100,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      101,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      102,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      103,
+      {
+         "m_Children": [],
+         "m_Parent": "{53174AD9-124A-49A7-97D8-3AE8930CE775}"
+      },
+      104,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      106,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      105,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      16,
+      1048582,
+      {
+         "m_Position": [
+            30.0,
+            10.0,
+            100.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            45.0
+         ],
+         "m_Scale": [
+            5.0,
+            5.0,
+            5.0
+         ]
+      },
+      1048581,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            25.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            5.0,
+            5.0,
+            5.0
+         ]
+      },
+      1048580,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048579,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048578,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048577,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048576,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048585,
+      {
+         "m_Position": [
+            7.0,
+            7.0,
+            7.0
+         ],
+         "m_Rotation": [
+            3.0,
+            6.0,
+            9.0
+         ],
+         "m_Scale": [
+            24.0,
+            2.0,
+            10.0
+         ]
+      },
+      1048584,
+      {
+         "m_Position": [
+            4.0,
+            5.0,
+            6.0
+         ],
+         "m_Rotation": [
+            1.0,
+            2.0,
+            3.0
+         ],
+         "m_Scale": [
+            3.0,
+            1.0,
+            2.0
+         ]
+      },
+      1048583,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      106,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      101,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      102,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      103,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      104,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      105,
+      {
+         "m_Position": [
+            123.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      2,
+      1048582,
+      {
+         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
+         "ASSET_MAT_m_MaterialInstance": "74b283e6a2bed9d8",
+         "m_IsVisible": true
+      },
+      1048581,
+      {
+         "ASSET_GEOM_m_RenderObject": "d07c9c27d46df02f",
+         "ASSET_MAT_m_MaterialInstance": "89f11168a1b5734c",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      1048580,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 10.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            10.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Pitch": 0.0,
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Right": 1.0,
+         "m_Roll": 0.0,
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ],
+         "m_Yaw": 0.0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      1048576,
+      {
+         "fakeInt": 120,
+         "fakeValue": "uwu"
+      }
+   ]
+]

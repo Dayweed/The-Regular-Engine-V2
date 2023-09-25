@@ -2,11 +2,11 @@
 #include "Buffer.h"
 #include "Geom.h"
 #include "Sphere3D.h"
-#include "Assets/Asset.h"
+#include "Resource/Resource.h"
 
 namespace TRE
 {
-	class RenderObject : public Asset
+	class RenderObject : public Resource
 	{
 	public:
 		struct Vertex
@@ -14,6 +14,8 @@ namespace TRE
 			glm::vec3 m_Position{};
 			glm::vec3 m_Color{};
 			glm::vec3 m_Normal{};
+			glm::vec3 m_Tangent{};
+			glm::vec3 m_Bitangent{};
 			glm::vec2 m_UV{};
 
 			static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();
@@ -33,7 +35,7 @@ namespace TRE
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
 
-		static AssetType GetType() { return AssetType::Mesh; }
+		static ResourceType GetType() { return ResourceType::Mesh; }
 
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);

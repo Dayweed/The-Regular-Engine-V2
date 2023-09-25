@@ -40,23 +40,23 @@ namespace TRE
 		@function		LoadScene
 		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params			sceneName	Name of the scene to be load as
+		@params			sceneName	Name of the filepath for the scene to be load at
 
-		@brief			Load a new scene based on the scene name
+		@brief			Load a new scene based on the filepath
 
 		[Warning]		Will delete all the entities! Remember to save first!
 		*//*__________________________________________________________________________*/
-		void LoadScene(std::string sceneName);
+		void LoadScene(std::string scenePath);
 
 		/* !
 		@function		SaveSceneAs
 		@author			Isaiah Lim (lim.i@digipen.edu)
 
-		@params			sceneName	Name of the scene to be save as
+		@params			sceneName	Name of the filepath for the scene to be save at
 
-		@brief			Save the scene based on the scene name
+		@brief			Save the scene based on the filepath
 		*//*__________________________________________________________________________*/
-		void SaveSceneAs(std::string sceneName);
+		void SaveSceneAs(std::string scenePath);
 
 		/* !
 		@function		SaveScene
@@ -77,6 +77,7 @@ namespace TRE
 		//std::map<std::string, std::string> m_Scenes; // Filepath, Scene Name
 
 		std::string m_CurrentScene{ SCENE_DEFAULT_NAME };
+		std::string m_CurrentSceneFilePath{};
 		int m_DupDefaultName{};
 	};
 }

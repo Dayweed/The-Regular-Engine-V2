@@ -2,11 +2,11 @@
 #include "Shader.h"
 #include "VulkanTexture.h"
 #include "UniformBuffer.h"
-#include "Assets/Asset.h"
+#include "Resource/Resource.h"
 
 namespace TRE
 {
-	class Material : public Asset
+	class Material : public Resource
 	{
 		public:
 			Material(const std::shared_ptr<Shader>& VertexShader, const std::shared_ptr<Shader>& FragShader);
@@ -23,7 +23,7 @@ namespace TRE
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 			std::vector<std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
 
-			static AssetType GetType() {return AssetType::Material;}
+			static ResourceType GetType() {return ResourceType::Material;}
 
 			void Serialize() override;
 			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);

@@ -28,18 +28,24 @@ namespace TRE
 		return m_Pipeline;
 	}
 
-	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig) : m_Config(PipelineConfig)
+	Pipeline::Pipeline(const PipelineConfigurations& PipelineConfig, const std::shared_ptr<RenderPass>& TargetRenderPass) : m_Config(PipelineConfig)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
 		VkPipelineShaderStageCreateInfo shaderStages[] = { m_Config.VertexShader->GetPipelineShaderInfo(), m_Config.FragmentShader->GetPipelineShaderInfo() };
 
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo{}; //Make it modular
+		const auto& VertexInputAttributesDescriptions = m_Config.VertexShader->GetVertexAttributes();
+		VkVertexInputBindingDescription VertexInputBindingDescriptions{};
+		VertexInputBindingDescriptions.binding = 0;
+		VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_Config.VertexAttributeDescriptions.size());
-		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(m_Config.VertexBindingDescriptions.size());
-		vertexInputInfo.pVertexAttributeDescriptions = m_Config.VertexAttributeDescriptions.data();
-		vertexInputInfo.pVertexBindingDescriptions = m_Config.VertexBindingDescriptions.data();
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
+		vertexInputInfo.pVertexBindingDescriptions = &VertexInputBindingDescriptions;
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -68,7 +74,7 @@ namespace TRE
 		rasterizer.depthClampEnable = VK_FALSE;
 		rasterizer.rasterizerDiscardEnable = VK_FALSE;
 		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-		rasterizer.lineWidth = 1.0f;
+		rasterizer.lineWidth = m_Config.LineWidth;
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
@@ -198,7 +204,7 @@ namespace TRE
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.layout = m_Layout;
-		pipelineInfo.renderPass = m_Config.RenderPass->GetHandle();
+		pipelineInfo.renderPass = TargetRenderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 

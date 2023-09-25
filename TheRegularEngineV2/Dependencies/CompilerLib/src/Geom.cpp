@@ -18,9 +18,10 @@ namespace TRE
 		char currentDir[FILENAME_MAX];
 		if (_getcwd(currentDir, sizeof(currentDir)))
 		{
-			std::string exePath = currentDir;
-			exePath += "\\";
-			exePath += geomExe;
+			//std::string exePath = currentDir;
+			//exePath += "\\";
+			//exePath += textureExe;
+			std::string exePath = geomExe;
 
 			std::replace(descPath.begin(), descPath.end(), '/', '\\');
 			//std::string newDescPath = currentDir;

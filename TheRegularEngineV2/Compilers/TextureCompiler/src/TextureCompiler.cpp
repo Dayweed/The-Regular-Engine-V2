@@ -45,97 +45,6 @@ namespace
 
 namespace TRE
 {
-	void TextureDescriptorFile::Write()
-	{
-		m_DescriptorFile << "Texture File Path:\n";
-		m_TexturePath = m_AssetPath.substr(0, m_AssetPath.find_last_of("."));
-		m_TexturePath += ".DDS";
-		m_DescriptorFile << m_TexturePath << "\n\n";
-		m_TextureName = m_TexturePath.substr(m_TexturePath.find_last_of("/") + 1);
-		m_TextureName = m_TextureName.substr(0, m_TextureName.find_last_of("."));
-		m_DescriptorFile << "Texture Name:\n";
-		m_DescriptorFile << m_TextureName << "\n\n";
-		m_DescriptorFile << "Check vulkan page for enums\n";
-		m_DescriptorFile << "Texture Format:\n";
-		m_DescriptorFile << m_Format << "\n\n";
-		m_DescriptorFile << "Texture Filter:\n";
-		m_DescriptorFile << m_Filter << "\n\n";
-		m_DescriptorFile << "Compress:\n";
-		m_DescriptorFile << m_Compress << "\n\n";
-	}
-
-	void TextureDescriptorFile::Read()
-	{
-		std::string line;
-		std::getline(m_DescriptorFile, line);
-		if (line == "Texture File Path:")
-		{
-			std::getline(m_DescriptorFile, line);
-			m_TexturePath = line;
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Texture is not valid" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Texture Name:")
-		{
-			std::getline(m_DescriptorFile, line);
-			m_TextureName = line;
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Texture Name is not valid" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		std::getline(m_DescriptorFile, line);
-		if (line == "Texture Format:")
-		{
-			std::getline(m_DescriptorFile, line);
-
-			m_Format = std::stoi(line);
-
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Texture Format missing" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Texture Filter:")
-		{
-			std::getline(m_DescriptorFile, line);
-
-			m_Filter = std::stoi(line);
-
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Texture Filter missing" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Compress:")
-		{
-			std::getline(m_DescriptorFile, line);
-
-			m_Compress = (bool)std::stoi(line);
-
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Texture Compression flag missing" << std::endl;
-			return;
-		}
-	}
-
 	void TextureCompiler::Compile(const TextureDescriptorFile& descriptor)
 	{
 		std::uint32_t fileSize;
@@ -155,6 +64,7 @@ namespace TRE
 
 		void* outputData = (void*)pixels;
 		std::uint32_t outputSize = width * height * 4;
+		crn_format format;
 
 		if (descriptor.GetCompress())
 		{
@@ -167,6 +77,8 @@ namespace TRE
 				num_threads = 16;
 			}
 
+			format = descriptor.GetNormalMap() ? cCRNFmtDXT5 : cCRNFmtDXT5;
+
 			//Do compression here
 			crn_comp_params comp_params;
 			comp_params.clear();
@@ -174,7 +86,7 @@ namespace TRE
 			comp_params.m_faces = 1;
 			comp_params.m_width = width;
 			comp_params.m_height = height;
-			comp_params.m_format = cCRNFmtDXT5;
+			comp_params.m_format = format;
 			comp_params.m_pImages[0][0] = pixels;
 			comp_params.m_quality_level = 128;
 			comp_params.m_levels = 1;
@@ -197,7 +109,14 @@ namespace TRE
 			m_Texture->Name[i] = descriptor.GetTextureName()[i];
 		m_Texture->Width = width;
 		m_Texture->Height = height;
-		m_Texture->Format = descriptor.GetFormat();
-		m_Texture->Filter = descriptor.GetFilter();
+		if (descriptor.GetNormalMap())
+		{
+			m_Texture->Format = descriptor.GetCompress() ? 137 : 37; //VK_FORMAT_BC3_UNORM_BLOCK  : VK_FORMAT_R8G8B8A8_UNORM  
+		}
+		else
+		{
+			m_Texture->Format = descriptor.GetCompress() ? 138 : 43; //VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_R8G8B8A8_SRGB 
+		}
+		m_Texture->Filter = descriptor.GetLinear();
 	}
 }

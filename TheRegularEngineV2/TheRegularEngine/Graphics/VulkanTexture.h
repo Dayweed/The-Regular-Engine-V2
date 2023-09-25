@@ -1,11 +1,11 @@
 #pragma once
 #include "Image.h"
 #include "Texture.h"
-#include "Assets/Asset.h"
+#include "Resource/Resource.h"
 
 namespace TRE
 {
-	class VulkanTexture : public Asset
+	class VulkanTexture : public Resource
 	{
 	public:
 		VulkanTexture(const std::string& texturePath);
@@ -18,10 +18,12 @@ namespace TRE
 		const VkImageView& GetImageView() const { return m_ImageView; }
 		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
 
-		static AssetType GetType() { return AssetType::Texture; }
+		const ResourceHandle& GetDefaultTextureID() const { return m_DefaultTextureID; }
+		static ResourceType GetType() { return ResourceType::Texture; }
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
 
 	private:
+		void GenerateDefaultTexture();
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);
 
@@ -32,5 +34,8 @@ namespace TRE
 		VkImage m_Image;
 		VkImageView m_ImageView;
 		VkDeviceMemory m_ImageMemory;
+		VkDescriptorImageInfo m_DescriptorImageInfo;
+
+		static ResourceHandle m_DefaultTextureID;
 	};
 }

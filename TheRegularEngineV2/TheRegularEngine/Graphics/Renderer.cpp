@@ -4,12 +4,11 @@
 #include "Renderer.h"
 #include "RendererContext.h"
 #include "MeshRenderer.h"
-#include "imgui_impl_vulkan.h"
 #include "Camera.h"
 #include "Core/Logger.h"
 #include "ShaderCompiler.h"
 #include "VulkanTexture.h"
-#include "Assets/AssetManager.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
@@ -23,37 +22,12 @@ namespace TRE
 		return m_ColorImages;
 	}
 
-	VkSampler Renderer::GetSampler()
-	{
-		return m_Sampler;
-	}
-
 	Renderer::Renderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		Create();
-
-		// Create sampler to sample from the attachment in the fragment shader
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerInfo.addressModeV = samplerInfo.addressModeU;
-		samplerInfo.addressModeW = samplerInfo.addressModeU;
-		samplerInfo.mipLodBias = 0.0f;
-		samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.minLod = 0.0f;
-		samplerInfo.maxLod = 1.0f;
-		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-		
-		if (auto Result = vkCreateSampler(m_Device->GetLogicalDevice(), &samplerInfo, nullptr, &m_Sampler); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
 
 		VkCommandPoolCreateInfo CmdPoolCreateInfo{};
 		CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -102,64 +76,25 @@ namespace TRE
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
 		RenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
 		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		std::shared_ptr<RenderPass> renderpass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+		m_RenderPass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
 
-		CreateFrameBuffer(renderpass);
+		CreateFrameBuffer(m_RenderPass);
 
-		auto VertShader = AssetManager::Instance().GetAsset<Shader>(3);
-		auto FragShader = AssetManager::Instance().GetAsset<Shader>(4);
+		auto VertShader = ResourceManager::Instance().GetResource<Shader>(3);
+		auto FragShader = ResourceManager::Instance().GetResource<Shader>(4);
 
-		//Vertex input
-		auto attributeDescriptions = RenderObject::Vertex::GetAttributeDescriptions();
-		auto bindingDescription = RenderObject::Vertex::GetBindingDescriptions();
-
-		PipelineConfigurations PipelineConfig;
+		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.RenderPass = renderpass;
 		PipelineConfig.VertexShader = VertShader;
 		PipelineConfig.FragmentShader = FragShader;
-		PipelineConfig.VertexBindingDescriptions = bindingDescription;
-		PipelineConfig.VertexAttributeDescriptions = attributeDescriptions;
-		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig);
+		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
-		for (auto material : AssetManager::Instance().GetAssetsOfType<Material>())
+		for (auto material : ResourceManager::Instance().GetResourcesOfType<Material>())
 		{
 			material->AllocateLayouts();
 		}
 
-		auto DebugDrawVertShader = AssetManager::Instance().GetAsset<Shader>(7);
-		auto DebugDrawFragShader = AssetManager::Instance().GetAsset<Shader>(8);
-
-		//Debug Draw Pipelines
-		RenderPassInfo DebugDrawRenderPassCreateInfo{};
-		DebugDrawRenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		DebugDrawRenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
-		DebugDrawRenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
-		DebugDrawRenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		std::shared_ptr<RenderPass> DebugDrawRenderPass = std::make_shared<RenderPass>(m_Device, DebugDrawRenderPassCreateInfo);
-
-		std::vector<VkVertexInputBindingDescription> DebugDrawBindingDescriptions(1);
-		DebugDrawBindingDescriptions[0].binding = 0;
-		DebugDrawBindingDescriptions[0].stride = sizeof(LineVertex);
-		DebugDrawBindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		std::vector<VkVertexInputAttributeDescription> DebugDrawattributeDescriptions{};
-		DebugDrawattributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Position) });
-		DebugDrawattributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(LineVertex, Color) });
-
-		PipelineConfigurations DebugDrawPipelineConfig;
-		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
-		DebugDrawPipelineConfig.RenderPass = DebugDrawRenderPass;
-		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
-		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
-		DebugDrawPipelineConfig.VertexBindingDescriptions = DebugDrawBindingDescriptions;
-		DebugDrawPipelineConfig.VertexAttributeDescriptions = DebugDrawattributeDescriptions;
-		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig);
-
-		TRE_CORE_INFO("Debug Pipeline Created");
-
-		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawVertShader, DebugDrawFragShader);
-		m_DebugMaterialInstance->AllocateLayouts();
+		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -220,17 +155,17 @@ namespace TRE
 		m_DepthImages.clear();
 
 		Create();
-		CreateFrameBuffer(m_Pipeline->GetConfig().RenderPass);
+		CreateFrameBuffer(m_RenderPass);
 	}
 
 	Renderer::~Renderer()
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 		
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Texture);
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Mesh);
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Material);
-		AssetManager::Instance().DestroyAssetsOfType(AssetType::Shader);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Texture);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Mesh);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Material);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Shader);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
@@ -240,8 +175,6 @@ namespace TRE
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
-
-		vkDestroySampler(m_Device->GetLogicalDevice(), m_Sampler, nullptr);
 	}
 
 	void Renderer::Shutdown()
@@ -250,6 +183,17 @@ namespace TRE
 	}
 
 	void Renderer::BeginFrame()
+	{
+		//UBO
+		UBO ubo{};
+		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
+		ubo.m_LightPosition = mainCamera.m_Position;
+		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
+		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+	}
+
+	void Renderer::EndFrame()
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
@@ -261,14 +205,8 @@ namespace TRE
 		{
 			assert(Result == VK_SUCCESS);
 		}
-		
-		//UBO
-		UBO ubo{};
-		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 
-		m_Pipeline->GetConfig().RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
+		m_RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -303,34 +241,13 @@ namespace TRE
 			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
-
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
-
-		//Debug Pass
-		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipeline());
-		m_DebugMaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
-		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
-		{
-			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugDrawPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-			
-			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
-			if (mr.m_RenderObject == nullptr)
-				continue;
-
-			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
-				continue;
-
-			//Bind
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugDrawPipeline->GetPipelineLayout(), 0, 1, &m_DebugMaterialInstance->GetDescriptor(Index), 0, NULL);
 		
-			vkCmdDraw(m_Commandbuffers[Index], 2, 1, 0, 0);
-		}
+		DebugDrawPass(Index);
 
-		m_Pipeline->GetConfig().RenderPass->EndRenderPass(m_Commandbuffers[Index]);
+		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 
 		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
 		{
@@ -351,8 +268,28 @@ namespace TRE
 		}
 	}
 
-	void Renderer::DebugDrawPass(VkCommandBuffer CommandBuffer)
+	void Renderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
-		
+		m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
+		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
+		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		{
+			PushConstant pc{};
+			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			if (mr.m_RenderObject == nullptr)
+				continue;
+
+			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+				continue;
+
+			//Bind
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+			m_DebugRenderer->BindDebugSphere(m_Commandbuffers[Index]);
+			m_DebugRenderer->DrawDebugSphere(m_Commandbuffers[Index]);
+		}
 	}
 }

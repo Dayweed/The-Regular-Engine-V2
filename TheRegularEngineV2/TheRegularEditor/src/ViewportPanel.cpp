@@ -4,6 +4,7 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
+#include "Utilities.h"
 
 //To Delete
 #include "Graphics/Camera.h"
@@ -48,7 +49,7 @@ namespace TRE
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed;
+				positionOffset *= m_PanSpeed * camera.m_FocalLength / 10.f;
 				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetRightVec() * positionOffset.x);
@@ -151,6 +152,7 @@ namespace TRE
 				else
 				{
 					//Clear
+					m_SelectionManager->ClearSelectedEntity();
 				}
 			}
 		}
@@ -160,6 +162,22 @@ namespace TRE
 		else if (event._state == (int)KeyState::keyReleased)
 		{
 			m_IsViewportFocused = false;
+		}
+	}
+
+	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
+	{
+		if (event._key == (int)KeyButton::Q)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
+		}
+		if (event._key == (int)KeyButton::W)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		}
+		if (event._key == (int)KeyButton::E)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		}
 	}
 
@@ -187,6 +205,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseMove);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 	}
 
 	void ViewportPanel::Update()
@@ -201,6 +220,68 @@ namespace TRE
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			{
+				std::string assetName = (const char*)payload->Data;
+				std::cout << "drag and dropped " << assetName << " from Content Browser Panel\n";
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
+		if (SelectedEntity && m_GizmoOperation != -1)
+		{
+			ImGuizmo::SetOrthographic(true);
+			ImGuizmo::SetDrawlist();
+
+			float WindowWith = (float)ImGui::GetWindowWidth();
+			float WindowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
+
+			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+			const Camera& camera = entity->GetComponent<Camera>();
+			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
+			glm::mat4 proj = cameraSystem->GetProjectionMatrix(entity);
+			proj[1][1] *= -1.f;
+			glm::mat4 View = cameraSystem->GetViewMatrix(entity);
+
+			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
+
+			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
+			
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 Scale;
+				glm::vec3 Rotation;
+				glm::vec3 Translate;
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(xform), glm::value_ptr(Translate), glm::value_ptr(Rotation), glm::value_ptr(Scale));
+				switch (m_GizmoOperation)
+				{
+					case ImGuizmo::OPERATION::SCALE:
+					{
+						XformSystem->SetScale(SelectedEntity, Scale);
+						break;
+					}
+					case ImGuizmo::OPERATION::ROTATE:
+					{
+						XformSystem->SetRotation(SelectedEntity, Rotation);
+						break;
+					}
+					case ImGuizmo::OPERATION::TRANSLATE:
+					{
+						XformSystem->SetPosition(SelectedEntity, Translate);
+						break;
+					}
+				}
+				
+			}
+		}
 
 		ImGui::End();
 	}

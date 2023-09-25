@@ -4,6 +4,7 @@
 #include "cpp/imgui_stdlib.h"
 #include "cpp/imgui_stdlib.cpp"
 #include "TREIncludes.h"
+#include "EditorAssetManager.h"
 
 namespace TRE
 {
@@ -34,6 +35,18 @@ namespace TRE
 		//	std::cout << "whats the name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
 		//	
 		//}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			{
+				std::string assetName = (const char*)payload->Data;
+				std::cout << "drag and dropped " << assetName << " from Content Browser Panel\n";
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		//create entity
 		auto entity = m_SelectionManager->GetSelectedEntity();
 
@@ -76,34 +89,116 @@ namespace TRE
 				}
 			}*/
 
-			//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
-			//{
-			//	std::cout << "name: " << ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Name << "\n";
-			//	if (ECSManager::Instance().GetEntities<Properties>()[i]->GetComponent<Properties>().m_Active)
-			//	{
-			//		std::cout << "active\n";
-			//	}
-			//	
-			//	else
-			//	{
-			//		std::cout << "not active\n";
-			//	}
-			//		
-			//}
-			//entity->HasComponent<MeshRenderer>();
-			//entity->HasComponent<Camera>();
-			//entity->HasComponent<SphereCollider>();
-			//entity->HasComponent<BoxCollider>();
-			//entity->HasComponent<Audio>();
+			// This updates the tables
+			m_SelectionManager->SelectEntity(entity);
 
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
+
+			bool isPrefabInstance = false;
+
+			// Show option of prefabing possibility if have prefab
+			if (ImGui::Button("Save As Prefab"))
+			{
+				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity);
+			}
+			if (entity->HasComponent<Prefabing>())
+			{
+				// Is Prefab Instance
+				isPrefabInstance = true;
+				ImGui::SameLine();
+				if (ImGui::Button("Overwrite Prefab"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
+				}
+				Prefabing& pref{ entity->GetComponent<Prefabing>() };
+				ImGui::SameLine();
+				if (ImGui::Button("Clone Prefab"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID);
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("UnPrefab"))
+				{
+					entity->RemoveComponent<Prefabing>();
+					isPrefabInstance = false;
+				}
+				bool haveEdits{ !pref.m_Overrides.empty() || !pref.m_AddeddComps.empty() || !pref.m_RemovedComps.empty() };
+				ImGui::SameLine();
+				if (haveEdits && ImGui::Button("Revert"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->RevertInstance(entity, pref.m_PrefabGUID);
+					m_SelectionManager->SelectEntity(entity);
+				}
+				else if (!haveEdits)
+				{
+					ImGui::NewLine();
+				}
+			}
 
 			// View all inspectable components
 			for (auto& List : properties)
 			{
+				//std::cout << "properties: " << List.first.c_str() << "\n";
+				for (size_t c{}; c < List.first.size(); ++c)
+				{
+					std::string charac { List.first[c]  };
+					float diff{ static_cast<float>(c) / static_cast<float>(List.first.size()) };
+					ImGui::TextColored({ 1, diff, 0, 1 }, charac.c_str());
+					ImGui::SameLine();
+				}
+
+				if (ECSManager::Instance().IsRemovableComponent(List.first))
+				{
+					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
+					{
+						// Update Prefabing if have
+						if (isPrefabInstance)
+						{
+							entity->GetComponent<Prefabing>().m_RemovedComps.emplace(List.first);
+						}
+
+						ECSManager::Instance().RemCompFromName(entity, List.first);
+						m_SelectionManager->SelectEntity(entity);
+						break;
+					}
+				}
+
+				ImGui::NewLine();
 				for (auto& [Name, Data] : List.second)
 				{
+					bool UpdatedData = false;
+
+					std::string NameField = "##" + entity->GetGUID() + "/" + Name;
 					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+
+					bool isEdited = false;
+					if (isPrefabInstance)
+					{
+						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
+						// Is override
+						if (prefab.m_Overrides.find(List.first) != prefab.m_Overrides.end())
+						{
+							std::unordered_set<std::string> vecStr{ prefab.m_Overrides.find(List.first)->second };
+							if (std::find(vecStr.begin(), vecStr.end(), Name) != vecStr.end())
+							{
+								isEdited = true;
+							}
+						}
+						// Is an Added Component
+						else if (std::find(prefab.m_AddeddComps.begin(), prefab.m_AddeddComps.end(), List.first) != prefab.m_AddeddComps.end())
+						{
+							isEdited = true;
+						}
+					}
+					if (isEdited)
+					{
+						ImGui::TextColored({ 0.5, 0.5, 1, 1 }, NameStr.c_str());
+					}
+					else
+					{
+						ImGui::Text(NameStr.c_str());
+					}
+					ImGui::SameLine();
 
 					std::visit([&](auto&& Value)
 						{
@@ -111,19 +206,20 @@ namespace TRE
 
 							if constexpr (std::is_same_v<T, int>)
 							{
-								ImGui::InputInt(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
 								ImGui::InputFloat(NameStr.c_str(), &Value);
+								//std::cout << "name: " << NameStr << " value: " << Value << "\n";
 							}
 							else if constexpr (std::is_same_v<T, bool>)
 							{
-								ImGui::Checkbox(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, string_t>)
 							{
-								ImGui::InputText(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, oobb>)
 							{
@@ -133,14 +229,39 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, glm::vec3>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
-								ImGui::DragFloat3(NameStr.c_str(), pos);
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
+							else if constexpr (std::is_same_v<T, respurce_ref>)
+							{
+								static char renderObject[200];
+								strcpy(renderObject, EditorAssetManager::Instance().GetName(Value.m_Vale).c_str());
+								ImGui::InputText("##", renderObject, sizeof(renderObject));
+			
+							}							
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
 
+
+					// Update Prefabing Instance data if have
+					if (UpdatedData && isPrefabInstance)
+					{
+						Prefabing& prefab{ entity->GetComponent<Prefabing>() };
+						// Ignore overriding if it is a newly added component
+						if (prefab.m_AddeddComps.find(List.first) == prefab.m_AddeddComps.end())
+						{
+							// See if can emplace back
+							auto it{ prefab.m_Overrides.find(List.first) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(List.first), std::forward_as_tuple());
+							}
+							prefab.m_Overrides[List.first].emplace(Name);
+						}
+					}
 				}
+				ImGui::Separator();
 			}
 
 			// Update values into the entity itself
@@ -156,8 +277,39 @@ namespace TRE
 					property::set(compProp, Name.c_str(), Data);
 				}
 			}
-		}
 
+			// Add additional components
+			if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 0.0f)))
+			{
+				ImGui::OpenPopup("AddComponent");
+			}
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				for (std::string& compName : ECSManager::Instance().GetAllNonAddedComponents(entity))
+				{
+					if (ImGui::Selectable(compName.c_str()))
+					{
+						// Update Prefabing if have
+						if (isPrefabInstance)
+						{
+							entity->GetComponent<Prefabing>().m_AddeddComps.emplace(compName);
+
+							// Remove from m_RemovedComps to let it stay
+							if (entity->GetComponent<Prefabing>().m_RemovedComps.find(compName) != entity->GetComponent<Prefabing>().m_RemovedComps.end())
+							{
+								entity->GetComponent<Prefabing>().m_RemovedComps.erase(compName);
+							}
+						}
+
+						ECSManager::Instance().AddCompFromName(entity, compName);
+						m_SelectionManager->SelectEntity(entity);
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+		}
 
 		////tag
 		//ImGui::AlignTextToFramePadding();

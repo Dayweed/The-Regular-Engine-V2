@@ -61,12 +61,24 @@ namespace TRE
 			auto hashcode = typeid(T).hash_code();
 			if (HasComponent<T>())
 			{
-				return m_Components[hashcode].get();
+				return m_Components[hashcode];
+			}
+			
+			// Check in hidden component
+			if (m_HiddenComponents.find(hashcode) != m_HiddenComponents.end())
+			{
+				return m_HiddenComponents[hashcode];
 			}
 
 			//Can add assert here to tell user they getting a non registered component
 			return "[ERROR!] Non Registered Component";
 		}
+
+		std::map<size_t, std::string> GetImguiAddComp()
+		{
+			return m_Components;
+		}
+
 
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
@@ -75,7 +87,7 @@ namespace TRE
 		void operator=(ComponentManager const&) = delete;
 		void* operator new(size_t) = delete;
 
-		std::map<size_t, std::string> m_Components;
+		std::map<size_t, std::string> m_Components;		  // This only has components to be viewed in Imgui Add Component
 		std::map<size_t, std::string> m_HiddenComponents; // This is not to be exposed in Imgui
 	};
 }
