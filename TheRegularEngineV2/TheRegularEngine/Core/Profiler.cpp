@@ -139,7 +139,6 @@ namespace TRE
 		{
 			return;
 		}
-		std::list<std::string> list;
 		//// Iteration 2 Print by percentage
 		////=========================================================================
 		totalTime = 0;
@@ -153,9 +152,8 @@ namespace TRE
 			// Calculate percentage
 			str << (*timer).first << ": " << std::setprecision(4) << static_cast<float>((*timer).second->GetTime()) / totalTime * 100.f << "%";
 
-			list.emplace_back(str.str());
 		}
-		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{ list });
+		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{ GetTimers()});
 		start_delay = std::chrono::steady_clock::now();
 	}
 

@@ -41,6 +41,67 @@ namespace TRE
 		//To be done
 		float m_ScriptTime{};
 		std::list<std::string> m_ProfilerStringList{};
+		//For stoopid ImPlot
+		std::unordered_map<std::string, Timer*>m_ProfiledData;
 
+		struct ScrollingBuffer
+		{
+			ScrollingBuffer(const int size = 8000)
+			{
+				m_MaxSize = size;
+				m_Offset = 0;
+				m_Data.reserve(m_MaxSize);
+			}
+			~ScrollingBuffer() = default;
+
+			void AddPoint(const float x, const float y)
+			{
+				if(m_Data.size() < m_MaxSize)
+				{
+					m_Data.push_back(ImVec2(x, y));
+				}
+				else
+				{
+					m_Data[m_Offset] = ImVec2(x, y);
+					m_Offset = (m_Offset + 1) % m_MaxSize;
+				}
+			}
+
+			void Erase()
+			{
+				if (!m_Data.empty())
+				{
+					m_Data.shrink(0);
+					m_Offset = 0;
+				}
+			}
+
+			int m_MaxSize;
+			int m_Offset;
+			ImVector<ImVec2> m_Data;
+		};
+
+		struct RollingBuffer
+		{
+			RollingBuffer()
+			{
+				m_Span = 10.f;
+				m_Data.reserve(8000);
+			}
+
+			void AddPoint(float x, float y)
+			{
+				const float xmod = fmodf(x, m_Span);
+				if (!m_Data.empty() && xmod < m_Data.back().x)
+					m_Data.shrink(0);
+				m_Data.push_back(ImVec2(xmod, y));
+			}
+
+			float m_Span;
+			ImVector<ImVec2> m_Data;
+		};
+
+		std::unordered_map<std::string, RollingBuffer> m_BufferMap{};
+		void PlotRealTimeGraph();
 	};
 }

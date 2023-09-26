@@ -68,6 +68,42 @@ namespace TRE
 
 	void ProfilerPanel::ReceiveTimeTaken(const SendTimeTakenEvent& event)
 	{
-		m_ProfilerStringList = event.m_Str;
+		m_ProfiledData = event.m_Timers;
+	}
+
+	void ProfilerPanel::PlotRealTimeGraph()
+	{
+		static float t = 0;
+		t += ImGui::GetIO().DeltaTime;
+		if(m_ProfiledData.empty())
+			return;
+
+		std::vector<std::string> labels;
+		for (auto& [key, val] : m_ProfiledData)
+		{
+			labels.push_back(key);
+			if (m_BufferMap.find(key) == m_BufferMap.end())
+			{
+				m_BufferMap[key] = RollingBuffer();
+			}
+		}
+
+		for (auto& [key, val] : m_BufferMap)
+		{
+			m_BufferMap[key].AddPoint(t, m_ProfiledData[key]->GetTime());
+		}
+
+		static ImPlotAxisFlags flags = ImPlotAxisFlags_AutoFit;
+		if (ImPlot::BeginPlot("##Rolling", ImVec2(-1, 0)))
+		{
+			ImPlot::SetupAxes("Time(s)", nullptr, flags, flags);
+			ImPlot::SetupAxisLimits(ImAxis_X1, 0, 10, ImGuiCond_Always);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
+
+			for (int i{}; i < labels.size(); ++i)
+				ImPlot::PlotLine(labels[i].data(), &m_BufferMap[labels[i]].m_Data[0].x, &m_BufferMap[labels[i]].m_Data[0].y,
+					m_BufferMap[labels[i]].m_Data.size(), 0, 0, 2 * sizeof(float));
+			ImPlot::EndPlot();
+		}
 	}
 }
