@@ -15,13 +15,12 @@ namespace TRE
 
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
-		
 	}
 
 	AudioSystem::~AudioSystem()
 	{
 		ErrorCheck(m_System->release(), "FMOD: m_System->release()");
-		ErrorCheck(m_Sound->release(), "FMOD: m_Sound->release()");
+		//ErrorCheck(m_Sound->release(), "FMOD: m_Sound->release()");
 	}
 
 	void AudioSystem::Update()
@@ -70,7 +69,7 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
 
-		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_DEFAULT, nullptr, &m_Sound), "FMOD: LoadFile()");
+		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_DEFAULT, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
 
 	void AudioSystem::Load3DFile(Entity& go)
@@ -98,41 +97,41 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
 
-		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &m_Sound), "FMOD: LoadFile()");
+		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
 
 	void AudioSystem::Play(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 
+		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, true, &audio.m_Channel), "FMOD: playSound()");
+		SetSourcePosition(go);
+
 		if (audio.m_Play == true)
 		{
-			FMOD::Channel* m_Channel = nullptr;
-
 			if (audio.m_Loop == false)
 			{
-				m_Sound->setMode(FMOD_LOOP_OFF);
+				audio.m_Sound->setMode(FMOD_LOOP_OFF);
 			}
 			else
 			{
-				m_Sound->setMode(FMOD_LOOP_NORMAL);
-				m_Sound->setLoopCount(-1);
+				audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
+				audio.m_Sound->setLoopCount(-1);
 			};
 
-			ErrorCheck(m_System->playSound(m_Sound, audio.m_ChannelGroup, audio.m_Pause, &m_Channel), "FMOD: playSound()");
+			audio.m_Channel->setPaused(false);
 		}
 		else
 		{
 			TogglePause(go);
 		}
-
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 		audio.m_Pause = !audio.m_Pause;
-		ErrorCheck(audio.m_ChannelGroup->setPaused(&audio.m_Pause), "FMOD: TogglePause()");
+		ErrorCheck(audio.m_ChannelGroup->setPaused(audio.m_Pause), "FMOD: TogglePause()");
 	}
 
 	void AudioSystem::StopAudio(Entity& go)
@@ -163,13 +162,10 @@ namespace TRE
 			LoadFile(go);
 		}
 
-		m_Channel->setVolume(audio.m_Volume);
-		m_Channel->setPitch(audio.m_Pitch);
-		m_Channel->setPriority(audio.m_Priority);
-		SetSourcePosition(go);
-		
 		Play(go);
-
+		audio.m_Channel->setVolume(audio.m_Volume);
+		audio.m_Channel->setPitch(audio.m_Pitch);
+		audio.m_Channel->setPriority(audio.m_Priority);
 	}
 
 	void AudioSystem::SetVolume(Entity& go, const float volume)
@@ -237,46 +233,52 @@ namespace TRE
 	{
 		AudioListener& listener = go.get()->GetComponent<AudioListener>();
 
+		glm::vec3 pos = go.get()->GetComponent<Camera>().m_Position;
+		glm::vec3 view = go.get()->GetComponent<Camera>().GetViewDirection();
+		glm::vec3 up = go.get()->GetComponent<Camera>().GetUpVec();
+
 		listener.m_Position = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().m_Position);
-		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetForwardVec());
+		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetViewDirection());
 		listener.m_Up = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetUpVec());
 
-		FMOD_VECTOR testpos = {100.0f,0.0f,200.0f};
 		m_System->set3DListenerAttributes(0, &listener.m_Position, nullptr, &listener.m_Forward, &listener.m_Up);
-		//m_System->set3DListenerAttributes(0, &testpos, nullptr, &listener.m_Forward, &listener.m_Up);
 	}
 
 	void AudioSystem::SetSourcePosition(Entity& go)
 	{
 		Transform& sourceposition = go.get()->GetComponent<Transform>();
 		Audio& audiosource = go.get()->GetComponent<Audio>();
-		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
+		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);		
 
-		
-		m_Sound->set3DMinMaxDistance(1.0f, 100.0f);
-		m_Sound->setMode(FMOD_3D);
-		//m_Channel->setMode(FMOD_3D);
-		//m_Channel->set3DMinMaxDistance(1.0f, 100.0f);
-		m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
+		audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
+		audiosource.m_Channel->setMode(FMOD_3D_LINEARROLLOFF);
+		audiosource.m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
 	}
 
+	void AudioSystem::SetSourceRadius(Entity& go, const float min, const float max)
+	{
+		Audio& audiosource = go.get()->GetComponent<Audio>();
+		audiosource.m_Channel->set3DMinMaxDistance(min, max);
+		audiosource.m_MinDistance = min;
+		audiosource.m_MaxDistance = max;
+	}
 
-	float AudioSystem::GetVolume(Entity& go)
+	float AudioSystem::GetVolume(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Volume;
 	}
 
-	float AudioSystem::GetPitch(Entity& go)
+	float AudioSystem::GetPitch(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Pause;
 	}
 
-	bool AudioSystem::GetPause(Entity& go)
+	bool AudioSystem::GetPause(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Pause;
 	}
 
-	bool AudioSystem::GetLoop(Entity& go)
+	bool AudioSystem::GetLoop(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Loop;
 	}
@@ -286,39 +288,47 @@ namespace TRE
 		return go.get()->GetComponent<Audio>().m_ChannelGroup;
 	}
 
-	std::string AudioSystem::GetFileName(Entity& go)
+	std::string AudioSystem::GetFileName(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_FileName;
 	}
 
-	int AudioSystem::GetPriority(Entity& go)
+	int AudioSystem::GetPriority(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Priority;
 	}
 
-	bool AudioSystem::GetMute(Entity& go)
+	bool AudioSystem::GetMute(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Mute;
 	}
 
-	bool AudioSystem::GetPlay(Entity& go)
+	bool AudioSystem::GetPlay(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Play;
 	}
 
-	bool AudioSystem::GetSpatialize(Entity& go)
+	bool AudioSystem::GetSpatialize(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_Spatialize;
 	}
 
-	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go)
+	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
 	{
 		return go.get()->GetComponent<AudioListener>().m_Position;
 	}
 
-	FMOD_VECTOR AudioSystem::GetSourcePosition(Entity& go)
+	FMOD_VECTOR AudioSystem::GetSourcePosition(Entity& go) const
 	{
 		return go.get()->GetComponent<Audio>().m_goPosition;
 	}
 
+	const std::pair<float, float> AudioSystem::GetSourceRadius(Entity& go) const
+	{
+		const Audio& audioSource = go.get()->GetComponent<Audio>();
+		std::pair<float, float> radius;
+		radius.first = audioSource.m_MinDistance;
+		radius.second = audioSource.m_MaxDistance;
+		return radius;
+	}
 }

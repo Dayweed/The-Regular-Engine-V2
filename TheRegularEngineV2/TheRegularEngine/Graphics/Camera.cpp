@@ -167,7 +167,7 @@ namespace TRE
 		camera.m_Pitch = pitch;
 		camera.m_IsDirty = true;
 
-		SetPosition(go, camera.m_FocalPoint - camera.GetViewDirection() * camera.m_FocalLength);
+		camera.m_FocalPoint = camera.m_Position + camera.GetViewDirection() * camera.m_FocalLength;
 	}
 
 	void CameraSystem::SetYaw(Entity& go, const float yaw)
@@ -176,7 +176,7 @@ namespace TRE
 		camera.m_Yaw = yaw;
 		camera.m_IsDirty = true;
 
-		SetPosition(go, camera.m_FocalPoint - camera.GetViewDirection() * camera.m_FocalLength);
+		camera.m_FocalPoint = camera.m_Position + camera.GetViewDirection() * camera.m_FocalLength;
 	}
 
 	void CameraSystem::SetRoll(Entity& go, const float roll)
@@ -184,8 +184,8 @@ namespace TRE
 		Camera& camera = go.get()->GetComponent<Camera>();
 		camera.m_Roll = roll;
 		camera.m_IsDirty = true;
-
-		SetPosition(go, camera.m_FocalPoint - camera.GetViewDirection() * camera.m_FocalLength);
+		
+		camera.m_FocalPoint = camera.m_Position + camera.GetViewDirection() * camera.m_FocalLength;
 	}
 
 	void CameraSystem::SetFov(Entity& go, const float fov)

@@ -71,8 +71,6 @@ project "TheRegularEngine"
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.Properties}",
 		"%{IncludeDir.SPIRVREFLECT}",
-		"%{IncludeDir.Tracy}"
-		--"%{IncludeDir.Crunch}",
 	}
 
 	defines
@@ -193,8 +191,6 @@ project "TheRegularEditor"
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.Properties}",
 		"%{IncludeDir.SPIRVREFLECT}",
-		"%{IncludeDir.Tracy}",
-		--"%{IncludeDir.Crunch}",
 		"TheRegularEngine"
 	}
 
