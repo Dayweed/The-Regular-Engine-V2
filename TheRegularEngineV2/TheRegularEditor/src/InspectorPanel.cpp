@@ -210,7 +210,7 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
-								ImGui::InputFloat(NameStr.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameField.c_str(), &Value);
 								//std::cout << "name: " << NameStr << " value: " << Value << "\n";
 							}
 							else if constexpr (std::is_same_v<T, bool>)
@@ -232,12 +232,17 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
-							else if constexpr (std::is_same_v<T, respurce_ref>)
+							else if constexpr (std::is_same_v<T, Vector3>) // I guess this is fine too!
+							{
+								float pos[3]{ Value.x, Value.y, Value.z };
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
+								Value = { pos[0], pos[1], pos[2] };
+							}
+							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
 								static char renderObject[200];
-								strcpy(renderObject, EditorAssetManager::Instance().GetName(Value.m_Vale).c_str());
-								ImGui::InputText("##", renderObject, sizeof(renderObject));
-			
+								strcpy(renderObject, EditorAssetManager::Instance().GetName(Value.m_Value).c_str());
+								ImGui::InputText("##", renderObject, sizeof(renderObject));			
 							}							
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
