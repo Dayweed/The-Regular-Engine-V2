@@ -29,9 +29,11 @@ namespace TRE
 	{
 		m_GameRunning = isRunning;
 
-		// If true, save scene registry scene stuff
-		entt::registry& ecsRegistry{ ECSManager::Instance().GetRegistry() };
-		ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+		// If toggle to run, save scene temporarily
+		if (m_GameRunning)
+		{
+			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+		}
 	}
 
 	void GameLoop::ResetScene()
@@ -39,17 +41,18 @@ namespace TRE
 		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
 		{
 			ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 		}
 	}
 
 	void GameLoop::ToggleRun(ToggleRunEvent& event)
 	{
-		m_GameRunning = event.m_Playing;
+		ToggleRun(event.m_Playing);
 	}
 
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
-		m_GameRunning = event.m_Nth;
+		ToggleRun(event.m_Nth);
 		ResetScene();
 	}
 }
