@@ -130,20 +130,20 @@ namespace TRE
 		ro->SetHandle(skullHandle);
 		ResourceManager::Instance().AddResource(std::move(ro));
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.vert");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/PBR.frag");
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.frag");
 		frag->SetHandle(fragHandle);
 		ResourceManager::Instance().AddResource(std::move(frag));
 
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.vert");
 		DebugDrawVert->SetHandle(DebugDrawVertHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
-		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
+		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.frag");
 		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
 
