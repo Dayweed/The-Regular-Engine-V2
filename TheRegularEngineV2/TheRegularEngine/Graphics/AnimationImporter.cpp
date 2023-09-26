@@ -668,17 +668,17 @@ namespace TRE
 
                     Vertex.m_Normal = glm::vec3(N.x, N.y, N.z);
                     Vertex.m_Tangent = glm::vec3(T.x, T.y, T.z);
-                    Vertex.m_Bitangent = glm::vec3(B.x, B.y, B.z);
+                    //Vertex.m_Bitangent = glm::vec3(B.x, B.y, B.z);
                     Vertex.m_Normal = glm::normalize(Vertex.m_Normal);
                     Vertex.m_Tangent = glm::normalize(Vertex.m_Tangent);
-                    Vertex.m_Bitangent = glm::normalize(Vertex.m_Bitangent);
+                    //Vertex.m_Bitangent = glm::normalize(Vertex.m_Bitangent);
                 }
                 else
                 {
                     const auto N = presentRotation.Rotate(AssimpMesh.mNormals[i]);
                     Vertex.m_Normal = glm::vec3(N.x, N.y, N.z);
                     Vertex.m_Tangent = glm::vec3(1, 0, 0);
-                    Vertex.m_Bitangent = glm::vec3(1, 0, 0);
+                    //Vertex.m_Bitangent = glm::vec3(1, 0, 0);
 
                     Vertex.m_Normal = glm::normalize(Vertex.m_Normal);
                 }

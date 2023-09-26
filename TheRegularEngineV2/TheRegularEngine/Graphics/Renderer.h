@@ -26,6 +26,12 @@ namespace TRE
 		//glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(0.0f, 0.f, 1.f)), 1.f);
 	};
 
+	struct AnimationUBO
+	{
+		glm::mat4 ProjView {1.f};
+		glm::mat4 L2W[256];
+	};
+
 	class Renderer
 	{
 		public:
@@ -69,5 +75,7 @@ namespace TRE
 			std::unique_ptr<DebugRenderer> m_DebugRenderer;
 
 			std::unique_ptr<AnimationTest> m_Animation;
+			std::shared_ptr<UniformBuffer> m_AnimationUBO;
+			AnimationUBO m_AnimationBuffer;
 	};
 }

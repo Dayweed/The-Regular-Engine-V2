@@ -88,13 +88,13 @@ namespace TRE
 
 	struct vertex
 	{
+		glm::vec4         m_BoneWeights;
+		glm::ivec4        m_BoneIndex;
 		glm::vec3         m_Position;
 		glm::vec2         m_UV;
 		glm::vec3         m_Normal;
 		glm::vec3         m_Tangent;
-		glm::vec3         m_Bitangent;
-		glm::vec4         m_BoneWeights;
-		glm::ivec4        m_BoneIndex;
+		//glm::vec3         m_Bitangent;
 	};
 
 	struct submesh

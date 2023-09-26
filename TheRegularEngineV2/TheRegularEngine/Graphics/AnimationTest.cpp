@@ -70,9 +70,6 @@ namespace TRE
 			assert(ImportResult == true && "Failed to load animated model");
 		}
 
-		std::cout << "Size of Vertices: " << m_AnimationCharacter->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Vertices.size() << std::endl;
-		std::cout << "Size of Indices: " << m_AnimationCharacter->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size() << std::endl;
-
 		CreateVertexBuffer(m_AnimationCharacter->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Vertices);
 		CreateIndexBuffer(m_AnimationCharacter->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices);
 	}

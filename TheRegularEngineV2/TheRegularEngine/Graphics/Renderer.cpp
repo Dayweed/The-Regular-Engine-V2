@@ -65,6 +65,10 @@ namespace TRE
 			.Build();
 
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
+		m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
+
+		for (int x = 0; x < 256; x++)
+			m_AnimationBuffer.L2W[x] = glm::identity<glm::mat4>();
 	}
 
 	void Renderer::Initialize()
@@ -192,7 +196,9 @@ namespace TRE
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		ubo.m_LightPosition = mainCamera.m_Position;
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
+		m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+		m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
 	}
 
 	void Renderer::EndFrame()
@@ -259,7 +265,7 @@ namespace TRE
 			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
 			//vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-			m_Animation->UpdateMaterial(m_UBOBuffer, Index);
+			m_Animation->UpdateMaterial(m_AnimationUBO, Index);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
 			m_Animation->BindBuffers(m_Commandbuffers[Index]);
