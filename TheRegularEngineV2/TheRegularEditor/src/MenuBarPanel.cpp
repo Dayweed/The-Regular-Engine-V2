@@ -143,7 +143,7 @@ namespace TRE
 	{
 		//To do
 		//SceneManager::Instance().LoadScene();
-		const std::string path = FileExplorer::OpenFileExplorer("Scene(*.scene)\0*.scene\0");
+		const std::string path = FileExplorer::OpenFileExplorer("Scene(*.json)\0*.json\0");
 		if (!path.empty())
 		{
 			SceneManager::Instance().LoadScene(path);
@@ -153,10 +153,10 @@ namespace TRE
 	void MenuBarPanel::SaveScene()
 	{
 		
-		const std::string path = FileExplorer::SaveFileExplorer("Scene(*.scene)\0*.scene\0");
+		const std::string path = FileExplorer::SaveFileExplorer("Scene(*.json)\0*.json\0");
 		if (!path.empty())
 		{
-			SceneManager::Instance().SaveScene();
+			SceneManager::Instance().SaveSceneAs(path);
 		}
 		return;
 	}

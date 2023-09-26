@@ -11,6 +11,8 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 
+#include "FileSystem.h"
+
 #define SCENE_DEFAULT_NAME "New Scene"
 
 namespace TRE
@@ -77,7 +79,7 @@ namespace TRE
 		//std::map<std::string, std::string> m_Scenes; // Filepath, Scene Name
 
 		std::string m_CurrentScene{ SCENE_DEFAULT_NAME };
-		std::string m_CurrentSceneFilePath{};
+		std::string m_CurrentSceneFilePath{ GETFOLDER(FILESYS_SCENE) + SCENE_DEFAULT_NAME + GETFILE(FILESYS_SCENE) };
 		int m_DupDefaultName{};
 	};
 }

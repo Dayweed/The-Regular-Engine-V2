@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "TREIncludes.h"
-#include "FileSystem.h"
 #include "Resource/ResourceManager.h"
 
 namespace TRE
@@ -15,7 +14,7 @@ namespace TRE
 
 		// Generate new Scene Name
 		m_CurrentScene = SCENE_DEFAULT_NAME;
-		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + m_CurrentScene + GETFILE(FILESYS_SCENE);
+		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + SCENE_DEFAULT_NAME + GETFILE(FILESYS_SCENE);
 	}
 
 	void SceneManager::LoadScene(std::string scenePath)
