@@ -8,7 +8,7 @@ namespace TRE
 {
 	struct Texture
 	{
-		std::array<char, 64>	Name;
+		//std::array<char, 64>	Name;
 		std::uint32_t			Width;
 		std::uint32_t			Height;
 		int						Format;
