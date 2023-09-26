@@ -1,21 +1,21 @@
 #version 450
 
 layout(location = 0) in vec3 inPosition;
-layout(location = 1) in vec3 inColor;
-layout(location = 2) in vec3 inNormal;
-layout(location = 3) in vec3 inTangent;
-layout(location = 4) in vec3 inBitangent;
+layout(location = 1) in vec3 inNormal;
+layout(location = 2) in vec3 inTangent;
+layout(location = 3) in vec3 inBitangent;
+layout(location = 4) in vec3 inColor;
 layout(location = 5) in vec2 inTexCoord;
 
-layout(location = 2) out struct
+layout(location = 0) out struct
 {
-	vec3 VertColor;
-	vec2 TexCoord;
 	mat3 BTN;
-	vec3 LightPosWorld;
 	vec4 LightColor;
 	vec4 CamearPos;
 	vec4 PosWorld; //w for gamma correction
+	vec3 LightPosWorld;
+	vec3 VertColor;
+	vec2 TexCoord;
 } Out;
 
 layout(push_constant) uniform Push
@@ -53,7 +53,6 @@ void main()
 	vec3 bitangent = normalize(rot * inBitangent);
 
 	Out.BTN = mat3(tangent, bitangent, normal);
-	//outStruct.LightDirection = normalize(ubo.m_LightDirection.xyz);
 	Out.LightPosWorld = ubo.m_LightPosition;
 	Out.PosWorld = push.m_Model * vec4(inPosition, 1.0);
 	Out.PosWorld.w = gamma;

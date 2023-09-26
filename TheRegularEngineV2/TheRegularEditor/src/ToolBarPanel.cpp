@@ -20,6 +20,7 @@ namespace TRE
 	{
 		const auto playGUID = EditorAssetManager::Instance().GetAsset("icon-play.png");
 		const auto playHexGUID = Resource::GetGUIDHex(playGUID);
+		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> playButton = std::make_unique<VulkanTexture>("../Resources/" + playHexGUID + ".DDS");
 		playButton->SetHandle(playGUID);
 		EditorAssetManager::Instance().AddAsset("icon-play.png", std::move(playButton));
@@ -28,6 +29,7 @@ namespace TRE
 
 		const auto pauseGUID = EditorAssetManager::Instance().GetAsset("icon-pause.png");
 		const auto pauseHexGUID = Resource::GetGUIDHex(pauseGUID);
+		//Texture::RunCompiler("../Assets/" + pauseHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> pauseButton = std::make_unique<VulkanTexture>("../Resources/" + pauseHexGUID + ".DDS");
 		pauseButton->SetHandle(pauseGUID);
 		EditorAssetManager::Instance().AddAsset("icon-pause.png", std::move(pauseButton));
@@ -36,6 +38,7 @@ namespace TRE
 
 		const auto stopGUID = EditorAssetManager::Instance().GetAsset("icon-stop.png");
 		const auto stopHexGUID = Resource::GetGUIDHex(stopGUID);
+		//Texture::RunCompiler("../Assets/" + stopHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> stopButton = std::make_unique<VulkanTexture>("../Resources/" + stopHexGUID + ".DDS");
 		stopButton->SetHandle(stopGUID);
 		EditorAssetManager::Instance().AddAsset("icon-stop.png", std::move(stopButton));
