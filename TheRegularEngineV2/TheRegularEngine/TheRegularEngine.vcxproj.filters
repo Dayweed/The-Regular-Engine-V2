@@ -54,6 +54,9 @@
     <ClInclude Include="Core\FileSystem.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\GameLoop.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Logger.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -97,7 +100,7 @@
     <ClInclude Include="EventSystem\EventHandler\EventHandler.h">
       <Filter>EventSystem\EventHandler</Filter>
     </ClInclude>
-    <ClInclude Include="EventSystem\Events\ConsoleEvent.h">
+    <ClInclude Include="EventSystem\Events\EditorEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
     <ClInclude Include="EventSystem\Events\EventBase.h">
@@ -208,6 +211,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\FileSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GameLoop.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Logger.cpp">

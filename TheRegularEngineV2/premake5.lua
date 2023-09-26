@@ -34,8 +34,8 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Executable/")
+	objdir ("Executable/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -71,8 +71,6 @@ project "TheRegularEngine"
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.Properties}",
 		"%{IncludeDir.SPIRVREFLECT}",
-		"%{IncludeDir.Tracy}"
-		--"%{IncludeDir.Crunch}",
 	}
 
 	defines
@@ -146,8 +144,8 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Executable/")
+	objdir ("Executable/")
 
 	links 
 	{ 
@@ -193,8 +191,6 @@ project "TheRegularEditor"
 		"%{IncludeDir.Compiler}",
 		"%{IncludeDir.Properties}",
 		"%{IncludeDir.SPIRVREFLECT}",
-		"%{IncludeDir.Tracy}",
-		--"%{IncludeDir.Crunch}",
 		"TheRegularEngine"
 	}
 
@@ -254,8 +250,8 @@ project "TRE-ScriptCore"
 	language "C#"
 	dotnetframework "4.7.2"
 
-	targetdir ("TheRegularEditor/resources/Scripts")
-	objdir ("TheRegularEditor/resources/Scripts")
+	targetdir ("Resources/Scripts")
+	objdir ("Resources/Scripts")
 
 	files 
 	{

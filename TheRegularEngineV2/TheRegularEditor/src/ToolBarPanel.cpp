@@ -3,6 +3,7 @@
 #include "Imgui/imgui.h"
 #include "Utilities.h"
 #include "EditorAssetManager.h"
+#include "EventSystem/EventHandler/EventHandler.h"
 
 namespace TRE
 {
@@ -49,20 +50,21 @@ namespace TRE
 		
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Play Button Pressed");
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
 
 		if (ImGui::ImageButton(m_PauseID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Button Pressed");
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
 
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
+			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
 			TRE_CORE_INFO("Work Button Pressed");
 		}
 

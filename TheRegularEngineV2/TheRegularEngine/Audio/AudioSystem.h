@@ -10,6 +10,8 @@ namespace TRE
 		std::string m_FileName{""};
 		//std::string m_FilePath{ "../Assets/Audio/ViveLeFromageBGM1.wav" };
 		FMOD::ChannelGroup* m_ChannelGroup{};
+		FMOD::Channel* m_Channel{};
+		FMOD::Sound* m_Sound{};
 
 		float m_Volume{ 1.f };
 		float m_Pitch{ 1.f };
@@ -19,6 +21,8 @@ namespace TRE
 		bool m_Mute{ false };
 		bool m_Play{ true };
 		bool m_Spatialize{ false };
+		float m_MinDistance{ 1.f };
+		float m_MaxDistance{ 300.f };
 		
 		//
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
@@ -69,21 +73,23 @@ namespace TRE
 		void SetSpatialize(Entity& go, const bool spatialize);
 		void SetListenerPosition(Entity& go);
 		void SetSourcePosition(Entity& go);
+		void SetSourceRadius(Entity& go, const float min, const float max);
 		
-		float GetVolume(Entity& go);
-		float GetPitch(Entity& go);
-		bool GetPause(Entity& go);
-		bool GetLoop(Entity& go);
-		int GetPriority(Entity& go);
-		bool GetMute(Entity& go);
-		bool GetPlay(Entity& go);
-		bool GetSpatialize(Entity& go);
-		FMOD_VECTOR GetListenerPosition(Entity& go);
-		FMOD_VECTOR GetSourcePosition(Entity& go);
+		float GetVolume(Entity& go) const;
+		float GetPitch(Entity& go) const;
+		bool GetPause(Entity& go) const;
+		bool GetLoop(Entity& go) const;
+		int GetPriority(Entity& go) const;
+		bool GetMute(Entity& go) const;
+		bool GetPlay(Entity& go) const;
+		bool GetSpatialize(Entity& go) const;
+		FMOD_VECTOR GetListenerPosition(Entity& go) const;
+		FMOD_VECTOR GetSourcePosition(Entity& go) const;
+		const std::pair<float, float> GetSourceRadius(Entity& go) const;
 
 
 		FMOD::ChannelGroup* GetChannelGroup(Entity& go);
-		std::string GetFileName(Entity& go);
+		std::string GetFileName(Entity& go) const;
 
 
 		FMOD_VECTOR glmVec3ToFmodVector(const glm::vec3& glmVector)
@@ -97,8 +103,8 @@ namespace TRE
 
 	private:
 		FMOD::System* m_System = nullptr;
-		FMOD::Sound* m_Sound = nullptr; 
-		FMOD::Channel* m_Channel = nullptr;       
+		//FMOD::Sound* m_Sound = nullptr; 
+		//FMOD::Channel* m_Channel = nullptr;       
 
 		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
 		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;

@@ -591,6 +591,7 @@ namespace TRE
 
 	private:
 		friend class MemoryManager;
+		friend class GameLoop;
 
 		// Delete possible copy ctor and assignment to ensure singleton
 		ECSManager() {};

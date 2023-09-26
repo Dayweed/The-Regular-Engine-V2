@@ -777,7 +777,7 @@ namespace TRE
 						{
 							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
-						else if constexpr (std::is_same_v<T, respurce_ref>)
+						else if constexpr (std::is_same_v<T, resource_ref>)
 						{
 							//printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
@@ -829,7 +829,7 @@ namespace TRE
 						{
 							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}
-						else if constexpr (std::is_same_v<T, respurce_ref>)
+						else if constexpr (std::is_same_v<T, resource_ref>)
 						{
 							//printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
 						}

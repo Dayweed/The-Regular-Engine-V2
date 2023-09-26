@@ -73,7 +73,7 @@ namespace TRE
 		for (auto x : m_AssetNameToHandle)
 		{
 			if (x.second == resourceHandle)
-				name = x.second;
+				name = x.first;
 		}
 		return name;
 	}

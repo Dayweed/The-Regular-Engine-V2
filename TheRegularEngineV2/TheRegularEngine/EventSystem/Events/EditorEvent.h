@@ -19,4 +19,18 @@ namespace TRE
 		SendTimeTakenEvent() = delete;
 		SendTimeTakenEvent(std::list<std::string> str) : m_Str(str) {}
 	};
+
+	struct ToggleRunEvent : Event
+	{
+		bool m_Playing{ false };
+		ToggleRunEvent() = delete;
+		ToggleRunEvent(bool playing) : m_Playing(playing) {}
+	};
+
+	struct ResetSceneEvent : Event
+	{
+		bool m_Nth{ false };
+		ResetSceneEvent() = delete;
+		ResetSceneEvent(bool nth) : m_Nth(nth) {}
+	};
 }
