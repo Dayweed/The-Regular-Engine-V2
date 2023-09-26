@@ -23,8 +23,9 @@ namespace TRE
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
-		
-		//
+
+		bool isPlaying{};
+
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
 
 	};
@@ -66,7 +67,7 @@ namespace TRE
 		void SetPause(Entity& go, const bool pause);
 		void SetLoop(Entity& go, const bool loop);
 		void SetFileName(Entity& go, const std::string filename);
-		void SetChannelGroup(Entity& go, FMOD::ChannelGroup* channelgroup);
+		void SetChannelGroup(Entity& go, const int channel);
 		void SetPriority(Entity& go, const int priority);
 		void SetMute(Entity& go, const bool mute);
 		void SetPlay(Entity& go, const bool play);
