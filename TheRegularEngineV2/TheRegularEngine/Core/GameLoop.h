@@ -22,6 +22,7 @@ namespace TRE
 		void ToggleRun(bool isRunning);
 		void ResetScene();
 		void ToggleRun(ToggleRunEvent& event);
+		void Reset(ResetSceneEvent& event);
 
 	private:
 		// Game Loop

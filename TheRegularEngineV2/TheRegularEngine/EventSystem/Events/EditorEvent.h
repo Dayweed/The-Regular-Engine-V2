@@ -26,4 +26,11 @@ namespace TRE
 		ToggleRunEvent() = delete;
 		ToggleRunEvent(bool playing) : m_Playing(playing) {}
 	};
+
+	struct ResetSceneEvent : Event
+	{
+		bool m_Nth{ false };
+		ResetSceneEvent() = delete;
+		ResetSceneEvent(bool nth) : m_Nth(nth) {}
+	};
 }

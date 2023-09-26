@@ -17,6 +17,7 @@ namespace TRE
 	{
 		m_GameRunning = false;
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::ToggleRun);
+		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);
 	}
 
 	bool GameLoop::IsGameRunning()
@@ -44,5 +45,11 @@ namespace TRE
 	void GameLoop::ToggleRun(ToggleRunEvent& event)
 	{
 		m_GameRunning = event.m_Playing;
+	}
+
+	void GameLoop::Reset(ResetSceneEvent& event)
+	{
+		m_GameRunning = event.m_Nth;
+		ResetScene();
 	}
 }
