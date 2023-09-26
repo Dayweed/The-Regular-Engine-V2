@@ -247,7 +247,24 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 		
-		DebugDrawPass(Index);
+		//Debug Drawing Pass
+		{
+			//DebugDrawPass(Index);
+		}
+
+		//Animation Pass
+		{
+			m_Animation->BindPipeline(m_Commandbuffers[Index]);
+			//PushConstant pc{};
+			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			//vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			m_Animation->UpdateMaterial(m_UBOBuffer, Index);
+
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
+			m_Animation->BindBuffers(m_Commandbuffers[Index]);
+			m_Animation->Draw(m_Commandbuffers[Index]);
+		}
 
 		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 

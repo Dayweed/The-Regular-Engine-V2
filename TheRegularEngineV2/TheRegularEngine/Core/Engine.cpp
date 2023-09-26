@@ -90,7 +90,7 @@ namespace TRE
 
 	void DemoScene()
 	{
-		//std::cout << Resource::GetGUIDHex(Resource::GenerateGUID()) << "\n";
+		std::cout << Resource::GetGUIDHex(Resource::GenerateGUID()) << "\n";
 
 		auto textureHandle = Resource::GetGUIDFromHex("474d70e35d64e711"); //diffuse
 		auto textureHandle2 = Resource::GetGUIDFromHex("d3464713e4f44bee"); //normal
@@ -105,6 +105,12 @@ namespace TRE
 		auto DebugDrawFragHandle = 8;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 		auto matHandle2 = Resource::GetGUIDFromHex("89f11168a1b5734c");
+
+		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
+		auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
+		auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
+		auto AnimationtextureHandle4 = Resource::GetGUIDFromHex("c076cd64a7491d7");
+		auto AnimationtextureHandle5 = Resource::GetGUIDFromHex("6b2822ce3972f53");
 
 		//Texture::RunCompiler("../Assets/474d70e35d64e711.desc");
 		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Resources/474d70e35d64e711.DDS");
@@ -125,6 +131,34 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt4 = std::make_unique<VulkanTexture>("../Resources/13392e8301ebb46.DDS");
 		vkt4->SetHandle(textureHandle4);
 		ResourceManager::Instance().AddResource(std::move(vkt4));
+
+
+		//Animation Textures//
+		//Texture::RunCompiler("../Assets/9c6509635ee2d750.desc");
+		std::unique_ptr<VulkanTexture> vkt5 = std::make_unique<VulkanTexture>("../Resources/9c6509635ee2d750.DDS");
+		vkt5->SetHandle(AnimationtextureHandle1);
+		ResourceManager::Instance().AddResource(std::move(vkt5));
+
+		//Texture::RunCompiler("../Assets/52ba56f854e86f56.desc");
+		std::unique_ptr<VulkanTexture> vkt6 = std::make_unique<VulkanTexture>("../Resources/52ba56f854e86f56.DDS");
+		vkt6->SetHandle(AnimationtextureHandle2);
+		ResourceManager::Instance().AddResource(std::move(vkt6));
+
+		//Texture::RunCompiler("../Assets/547865c1f61ef1f9.desc");
+		std::unique_ptr<VulkanTexture> vkt7 = std::make_unique<VulkanTexture>("../Resources/547865c1f61ef1f9.DDS");
+		vkt7->SetHandle(AnimationtextureHandle3);
+		ResourceManager::Instance().AddResource(std::move(vkt7));
+
+		//Texture::RunCompiler("../Assets/c076cd64a7491d7.desc");
+		std::unique_ptr<VulkanTexture> vkt8 = std::make_unique<VulkanTexture>("../Resources/c076cd64a7491d7.DDS");
+		vkt8->SetHandle(AnimationtextureHandle4);
+		ResourceManager::Instance().AddResource(std::move(vkt8));
+		
+		//Texture::RunCompiler("../Assets/6b2822ce3972f53.desc");
+		std::unique_ptr<VulkanTexture> vkt9 = std::make_unique<VulkanTexture>("../Resources/6b2822ce3972f53.DDS");
+		vkt9->SetHandle(AnimationtextureHandle5);
+		ResourceManager::Instance().AddResource(std::move(vkt9));
+		//Animation Textures//
 
 		//Geom::RunCompiler("../Assets/b1d2057915001876.desc");
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/b1d2057915001876.geom");
