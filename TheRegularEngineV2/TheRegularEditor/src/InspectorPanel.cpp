@@ -144,7 +144,9 @@ namespace TRE
 					std::string charac { List.first[c]  };
 					float diff{ static_cast<float>(c) / static_cast<float>(List.first.size()) };
 					ImGui::TextColored({ 1, diff, 0, 1 }, charac.c_str());
-					ImGui::SameLine();
+					ImGui::SameLine(0, 0);
+					// ^ leaving the spacing as the default value of -1 does weird stuff
+					// but 0 ensures there are no gaps! :D
 				}
 
 				if (ECSManager::Instance().IsRemovableComponent(List.first))
