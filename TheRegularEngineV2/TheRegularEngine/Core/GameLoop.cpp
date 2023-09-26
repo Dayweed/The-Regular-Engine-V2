@@ -20,6 +20,14 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);
 	}
 
+	void GameLoop::Shutdown()
+	{
+		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
+		{
+			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
+		}
+	}
+
 	bool GameLoop::IsGameRunning()
 	{
 		return m_GameRunning;

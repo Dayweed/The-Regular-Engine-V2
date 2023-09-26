@@ -16,6 +16,7 @@ namespace TRE
 		static GameLoop& Instance();
 
 		void Init();
+		void Shutdown();
 
 		bool IsGameRunning();
 

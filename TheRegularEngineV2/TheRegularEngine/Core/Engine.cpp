@@ -355,5 +355,6 @@ namespace TRE
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
+		GameLoop::Instance().Shutdown();
 	}
 }
