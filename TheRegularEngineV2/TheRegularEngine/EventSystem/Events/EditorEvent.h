@@ -1,5 +1,6 @@
 #pragma once
 #include "EventBase.h"
+#include "TREIncludes.h"
 #include <string>
 #include <chrono>
 
