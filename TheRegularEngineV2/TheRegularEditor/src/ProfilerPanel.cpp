@@ -34,15 +34,17 @@ namespace TRE
 			ImGui::Text("Total Time: %.2f microseconds", m_TotalTime);
 			ImGui::Text("Percentages for each system by order its called:");
 
-			const std::string str = "class TRE::";
-			for (auto& i : m_ProfilerStringList)
-			{
-				if (i.find(str) != std::string::npos)
-				{
-					i.erase(0, str.size());
-				}
-				ImGui::TextUnformatted(i.c_str());
-			}
+			PlotRealTimeGraph();
+
+			//const std::string str = "class TRE::";
+			//for (auto& i : m_ProfilerStringList)
+			//{
+			//	if (i.find(str) != std::string::npos)
+			//	{
+			//		i.erase(0, str.size());
+			//	}
+			//	ImGui::TextUnformatted(i.c_str());
+			//}
 		}
 		ImGui::End();
 	}
