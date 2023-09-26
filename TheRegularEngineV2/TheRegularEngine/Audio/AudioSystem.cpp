@@ -13,6 +13,9 @@ namespace TRE
 
 		m_System->init(MAX_CHANNELS, FMOD_INIT_NORMAL, nullptr);
 
+		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
+		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
+
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
 	}
@@ -29,6 +32,24 @@ namespace TRE
 		{
 			SetListenerPosition(go);
 		}	
+
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+				Audio& source = go->GetComponent<Audio>();
+
+
+				bool isPlaying;
+				source.m_Channel->isPlaying(&isPlaying);
+
+				if (source.m_Loop)
+				{
+					if (!isPlaying)
+					{
+						Play(go);
+
+					}
+				}
+		}
 
 		m_System->update();
 
@@ -62,8 +83,6 @@ namespace TRE
 
 		std::ifstream ifs(m_FilePath);
 
-		audio.m_ChannelGroup = m_MusicChannelGroup;
-
 		if (!ifs.is_open())
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
@@ -90,8 +109,6 @@ namespace TRE
 
 		std::ifstream ifs(m_FilePath);
 
-		audio.m_ChannelGroup = m_MusicChannelGroup;
-
 		if (!ifs.is_open())
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
@@ -106,6 +123,7 @@ namespace TRE
 
 		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, true, &audio.m_Channel), "FMOD: playSound()");
 		SetSourcePosition(go);
+		audio.m_Channel->isPlaying(&audio.isPlaying);
 
 		if (audio.m_Play == true)
 		{
@@ -120,6 +138,7 @@ namespace TRE
 			};
 
 			audio.m_Channel->setPaused(false);
+			
 		}
 		else
 		{
@@ -198,10 +217,18 @@ namespace TRE
 		audio.m_FileName = filename;
 	}
 
-	void AudioSystem::SetChannelGroup(Entity& go, FMOD::ChannelGroup* channelgroup)
+	void AudioSystem::SetChannelGroup(Entity& go, const int channel)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_ChannelGroup = channelgroup;
+		if (channel)
+		{
+			audio.m_ChannelGroup = m_MusicChannelGroup;
+		}
+		else
+		{
+			audio.m_ChannelGroup = m_SFXChannelGroup;
+		}
+		
 	}
 
 	void AudioSystem::SetPriority(Entity& go, const int priority)

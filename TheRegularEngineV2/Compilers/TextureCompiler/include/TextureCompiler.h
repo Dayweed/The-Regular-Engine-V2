@@ -14,6 +14,7 @@ namespace TRE
 		}
 
 		void Compile(const TextureDescriptorFile& descriptor);
+		void Compile2(const TextureDescriptorFile& descriptor);
 		std::unique_ptr<Texture> GetTexture() { return std::move(m_Texture); }
 
 	private:
