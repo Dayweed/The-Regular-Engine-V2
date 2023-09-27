@@ -58,7 +58,7 @@ namespace TRE
 	{
 		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
 		{
-			ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
 			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 			m_IsResetted = true;
 		}
@@ -71,7 +71,7 @@ namespace TRE
 
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
-		ToggleRun(event.m_Nth);
+		ToggleRun(false);
 		ResetScene();
 	}
 }
