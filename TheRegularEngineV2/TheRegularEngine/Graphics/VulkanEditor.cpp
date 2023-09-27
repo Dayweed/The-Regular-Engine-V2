@@ -4,6 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 #include "Editor/ImGuizmo.h"
+#include "implot.h"
 
 namespace TRE
 {
@@ -106,6 +107,7 @@ namespace TRE
 	void VulkanEditor::SetUpImgui()
 	{
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 		ImGui::StyleColorsDark();
 
 		ImGuiIO& IO = ImGui::GetIO();
@@ -230,6 +232,7 @@ namespace TRE
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
 		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
 		vkDestroySampler(m_LogicalDevice->GetLogicalDevice(), m_Sampler, nullptr);
+		ImPlot::DestroyContext();
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();

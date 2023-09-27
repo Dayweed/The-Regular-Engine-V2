@@ -680,6 +680,7 @@ namespace TRE
 	{
 		std::vector<Entity> objects{};
 		entt::exclude_t<Undeployed> u{};
+
 		auto view = m_Registry.view<Comp, Others...>(u);
 		objects.reserve(m_EntityList.size());
 

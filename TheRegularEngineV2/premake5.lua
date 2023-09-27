@@ -19,11 +19,10 @@ outputdir = "%{cfg.buildcfg}"
 group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
--- include "Dependencies/MeshOptimizer"
--- include "Dependencies/Crunch"
--- include "Dependencies/CompilerLib"
--- include "Compilers/TextureCompiler"
--- include "Compilers/GeomCompiler"
+include "Dependencies/MeshOptimizer"
+include "Dependencies/CompilerLib"
+include "Compilers/TextureCompiler"
+include "Compilers/GeomCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -34,8 +33,8 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable/")
-	objdir ("Executable/")
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -100,7 +99,6 @@ project "TheRegularEngine"
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
 		"%{Library.Compiler}",
-		--"%{Library.Crunch}",	
 	}
 
 	filter "configurations:Debug"
@@ -144,8 +142,8 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/")
-	objdir ("Executable/")
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	links 
 	{ 

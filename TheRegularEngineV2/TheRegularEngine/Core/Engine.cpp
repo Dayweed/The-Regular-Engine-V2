@@ -176,18 +176,18 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 150.f));
+		transformSystem->SetPosition(test, glm::vec3(0.f, 20.f, 180.f));
 		transformSystem->SetScale(test, glm::vec3(0.5f, 0.5f, 0.5f));
 		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 		test->AddComponent<Audio>();
-		audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-		audioSystem->SetLoop(test, true);
-		audioSystem->SetSpatialize(test,true);
-		audioSystem->CompileAudio(test);
-		audioSystem->SetSourceRadius(test, 30.f, 200.f);
+		//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+		//audioSystem->SetLoop(test, true);
+		//audioSystem->SetSpatialize(test,true);
+		//audioSystem->CompileAudio(test);
+		//audioSystem->SetSourceRadius(test, 30.f, 200.f);
 
 		//Entity test2 = ECSManager::Instance().CreateEntity();
 		//test2->GetComponent<Properties>().m_Name = "Test2";
@@ -202,8 +202,8 @@ namespace TRE
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
-		cam->AddComponent<AudioListener>();
-		audioSystem->SetListenerPosition(cam);
+		//cam->AddComponent<AudioListener>();
+		//audioSystem->SetListenerPosition(cam);
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();

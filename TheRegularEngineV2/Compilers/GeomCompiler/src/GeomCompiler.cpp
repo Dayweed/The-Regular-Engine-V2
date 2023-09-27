@@ -118,6 +118,7 @@ namespace TRE
 		uint32_t flag = aiProcess_Triangulate                // Make sure we get triangles rather than nvert polygons
 			| aiProcess_LimitBoneWeights           // 4 weights for skin model max
 			| aiProcess_GenUVCoords                // Convert any type of mapping to uv mapping
+			| aiProcess_TransformUVCoords          // preprocess UV transformations (scaling, translation ...)
 			| aiProcess_FindInstances              // search for instanced meshes and remove them by references to one master
 			| aiProcess_CalcTangentSpace           // calculate tangents and bitangents if possible (definetly you will meed UVs)
 			| aiProcess_RemoveRedundantMaterials   // remove redundant materials
@@ -480,7 +481,7 @@ namespace TRE
 			meshopt_optimizeVertexCache(optimized_submesh.Indices.data(), optimized_submesh.Indices.data(), index_count, vertex_count);
 
 			//Optimize overdraw
-			meshopt_optimizeOverdraw(optimized_submesh.Indices.data(), optimized_submesh.Indices.data(), index_count, &optimized_submesh.Vertices[0].Position.x, vertex_count, sizeof(FullVertex), 1.05f);
+			meshopt_optimizeOverdraw(optimized_submesh.Indices.data(), optimized_submesh.Indices.data(), index_count, &optimized_submesh.Vertices[0].Position.x, vertex_count, sizeof(FullVertex), 1.03f);
 
 			//Optimize vertex fetch
 			optimized_submesh.Vertices.resize(meshopt_optimizeVertexFetch(optimized_submesh.Vertices.data(), optimized_submesh.Indices.data(), index_count, optimized_submesh.Vertices.data(), vertex_count, sizeof(FullVertex)));

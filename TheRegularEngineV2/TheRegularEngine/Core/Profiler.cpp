@@ -135,11 +135,11 @@ namespace TRE
 	*//*__________________________________________________________________________*/
 	void Profiler::PrintTimers()
 	{
+		std::unordered_map<std::string, Timer*> tmp{};
 		if (!debug_mode || std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_delay).count() < delay)
 		{
 			return;
 		}
-		std::list<std::string> list;
 		//// Iteration 2 Print by percentage
 		////=========================================================================
 		totalTime = 0;
@@ -147,15 +147,16 @@ namespace TRE
 		{
 			totalTime += (*timer).second->GetTime();
 		}
+		std::string EditLabel = "class TRE::";
 		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
 		{
-			std::stringstream str;
-			// Calculate percentage
-			str << (*timer).first << ": " << std::setprecision(4) << static_cast<float>((*timer).second->GetTime()) / totalTime * 100.f << "%";
-
-			list.emplace_back(str.str());
+			std::string label = (*timer).first;
+			if (label.find(EditLabel) != std::string::npos)
+				label.erase(label.find(EditLabel), EditLabel.length());
+			if((*timer).first != "Imgui")
+				tmp.insert({ label, (*timer).second });
 		}
-		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{ list });
+		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{tmp});
 		start_delay = std::chrono::steady_clock::now();
 	}
 
