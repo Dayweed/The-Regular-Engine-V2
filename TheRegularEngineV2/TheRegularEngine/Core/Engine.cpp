@@ -182,11 +182,12 @@ namespace TRE
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 		test->AddComponent<Audio>();
-		//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-		//audioSystem->SetLoop(test, true);
-		//audioSystem->SetSpatialize(test,true);
-		//audioSystem->CompileAudio(test);
-		//audioSystem->SetSourceRadius(test, 30.f, 200.f);
+
+		/*audioSystem->SetFileName(test, "33max.wav");
+		audioSystem->SetLoop(test, true);
+		audioSystem->SetSpatialize(test,true);
+		audioSystem->CompileAudio(test);
+		audioSystem->SetSourceRadius(test, 30.f, 200.f);*/
 
 		//Entity test2 = ECSManager::Instance().CreateEntity();
 		//test2->GetComponent<Properties>().m_Name = "Test2";

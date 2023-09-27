@@ -19,8 +19,12 @@ namespace TRE
 		m_DescriptorFile << m_Compress << "\n\n";
 		m_DescriptorFile << "GL_Linear:\n";
 		m_DescriptorFile << m_Linear << "\n\n";
-		m_DescriptorFile << "Normal Map:\n";
-		m_DescriptorFile << m_NormalMap << "\n\n";
+		m_DescriptorFile << "BCn:\n";
+		m_DescriptorFile << m_BCn << "\n\n";
+		m_DescriptorFile << "sRGB:\n";
+		m_DescriptorFile << m_sRGB << "\n\n";
+		m_DescriptorFile << "Transparent:\n";
+		m_DescriptorFile << m_Transparent << "\n\n";
 	}
 
 	void TextureDescriptorFile::Read()
@@ -79,17 +83,45 @@ namespace TRE
 			return;
 		}
 		std::getline(m_DescriptorFile, line);
-		if (line == "Normal Map:")
+		if (line == "BCn:")
 		{
 			std::getline(m_DescriptorFile, line);
 
-			m_NormalMap = (bool)std::stoi(line);
+			m_BCn = std::stoi(line);
 
 			std::getline(m_DescriptorFile, line);
 		}
 		else
 		{
-			std::cout << "Error: Texture Normal map flag missing" << std::endl;
+			std::cout << "Error: Texture BCn flag missing" << std::endl;
+			return;
+		}
+		std::getline(m_DescriptorFile, line);
+		if (line == "sRGB:")
+		{
+			std::getline(m_DescriptorFile, line);
+
+			m_sRGB = (bool)std::stoi(line);
+
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Texture sRGB flag missing" << std::endl;
+			return;
+		}
+		std::getline(m_DescriptorFile, line);
+		if (line == "Transparent:")
+		{
+			std::getline(m_DescriptorFile, line);
+
+			m_Transparent = (bool)std::stoi(line);
+
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Texture transparency flag missing" << std::endl;
 			return;
 		}
 	}
