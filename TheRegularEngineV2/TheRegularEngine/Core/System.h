@@ -19,9 +19,10 @@ namespace TRE
 			ECSSystem() = default;
 			virtual ~ECSSystem() = default;
 
-			virtual void Update() = 0;
-			virtual void OnReset() = 0;
-			virtual void OnDestroyGO() = 0;
-			virtual void Shutdown() = 0;
+			virtual void Init() {};
+			virtual void OnReset() {};
+			virtual void Update() {};
+			virtual void OnDestroyGO() {};
+			virtual void Shutdown() {};
 	};
 }

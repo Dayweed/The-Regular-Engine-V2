@@ -22,6 +22,8 @@
 #include "Graphics/ShaderCompiler.h"
 #include "TextureDescriptorFile.h"	
 
+#include "Demo/Demo.h"
+
 namespace TRE
 {
 	void AHHH()
@@ -160,13 +162,14 @@ namespace TRE
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
-
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
-		/*std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
+	/*	std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
 		mat2->SetHandle(matHandle2);
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
+		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
+		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat2));*/
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
@@ -183,21 +186,20 @@ namespace TRE
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 		test->AddComponent<Audio>();
-
-		/*audioSystem->SetFileName(test, "33max.wav");
+		audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
 		audioSystem->SetLoop(test, true);
 		audioSystem->SetSpatialize(test,true);
 		audioSystem->CompileAudio(test);
-		audioSystem->SetSourceRadius(test, 30.f, 200.f);*/
+		audioSystem->SetSourceRadius(test, 30.f, 200.f);
 
-		//Entity test2 = ECSManager::Instance().CreateEntity();
-		//test2->GetComponent<Properties>().m_Name = "Test2";
-		//transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
-		////transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
-		//transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
-		//test2->AddComponent<MeshRenderer>();
-		//meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		//meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		/*Entity test2 = ECSManager::Instance().CreateEntity();
+		test2->GetComponent<Properties>().m_Name = "Test2";
+		transformSystem->SetPosition(test2, glm::vec3(0.f, 20.f, 180.f));
+		transformSystem->SetScale(test2, glm::vec3(0.5f, 0.5f, 0.5f));
+		transformSystem->SetRotation(test2, glm::vec3(0, 180.f, 0));
+		test2->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));*/
 
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
@@ -217,6 +219,10 @@ namespace TRE
 
 		//SceneManager::Instance().NewScene();
 		//SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
+
+		
+		//for(int i = 0; i < 10; i++)
+		//Demo::SpawnObject();
 	}
 }
 #pragma endregion TO DELETE TEST

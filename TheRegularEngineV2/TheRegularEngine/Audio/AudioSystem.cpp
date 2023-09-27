@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Core/Transform.h"
 #include "AudioSystem.h"
+#include "Core/GameLoop.h"
+#include "InputHandler/InputHandler.h"
 
 namespace TRE
 {
@@ -35,20 +37,24 @@ namespace TRE
 
 		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
 		{
-				Audio& source = go->GetComponent<Audio>();
+			Audio& source = go->GetComponent<Audio>();
 
+			bool isPlaying;
+			source.m_Channel->isPlaying(&isPlaying);
 
-				bool isPlaying;
-				source.m_Channel->isPlaying(&isPlaying);
+			if (source.m_Play && source.m_Pause == false)
+			{
+				source.m_Channel->setPaused(source.m_Pause);
+			}
 
-				if (source.m_Loop)
+			if (source.m_Loop)
+			{
+				if (!isPlaying)
 				{
-					if (!isPlaying)
-					{
-						Play(go);
+					Play(go);
 
-					}
 				}
+			}
 		}
 
 		m_System->update();
@@ -57,7 +63,12 @@ namespace TRE
 
 	void AudioSystem::OnReset()
 	{
+	}
 
+	void AudioSystem::Init()
+	{
+		/*EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::ToggleRun);
+		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);*/
 	}
 
 	void AudioSystem::OnDestroyGO()
@@ -74,7 +85,7 @@ namespace TRE
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 
-		std::string file_path_{ "../Assets/Audio/" };
+		std::string file_path_{ "../Resources/Audio/" };
 		std::string m_FilePath = file_path_ + audio.m_FileName;
 		std::size_t fs = audio.m_FileName.find_last_of(".");
 		std::string filetype = audio.m_FileName.substr(fs);
@@ -100,7 +111,7 @@ namespace TRE
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
 
-		std::string file_path_{ "../Assets/Audio/" };
+		std::string file_path_{ "../Resources/Audio/" };
 		std::string m_FilePath = file_path_ + audio.m_FileName;
 		std::size_t fs = audio.m_FileName.find_last_of(".");
 		std::string filetype = audio.m_FileName.substr(fs);
@@ -142,7 +153,7 @@ namespace TRE
 				audio.m_Sound->setLoopCount(-1);
 			};
 
-			audio.m_Channel->setPaused(false);
+			//audio.m_Channel->setPaused(audio.m_Pause);
 			
 		}
 		else

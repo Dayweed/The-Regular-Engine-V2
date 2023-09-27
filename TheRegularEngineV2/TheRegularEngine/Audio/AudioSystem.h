@@ -47,6 +47,7 @@ namespace TRE
 		AudioSystem();
 		~AudioSystem() override;
 
+		void Init() override;
 		void Update() override;
 		void OnReset() override;
 		void OnDestroyGO() override;
