@@ -232,9 +232,9 @@ namespace TRE
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
 		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
 		vkDestroySampler(m_LogicalDevice->GetLogicalDevice(), m_Sampler, nullptr);
+		ImPlot::DestroyContext();
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
-		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 	}
 }

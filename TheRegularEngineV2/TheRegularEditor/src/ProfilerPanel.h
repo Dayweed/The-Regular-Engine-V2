@@ -37,16 +37,16 @@ namespace TRE
 		float m_TotalTime{};
 		float m_RenderTime{};
 		float m_PhysicsTime{};
-		float m_ImguiTime{};
-		//To be done
 		float m_ScriptTime{};
-		std::list<std::string> m_ProfilerStringList{};
+		//To activate the profiler
+		bool m_OnPlot{ false };
 		//For stoopid ImPlot
 		std::unordered_map<std::string, Timer*>m_ProfiledData;
 
-		struct ScrollingBuffer
+		//Not using scrolling buffer so I just hide it
+		/*struct ScrollingBuffer
 		{
-			ScrollingBuffer(const int size = 8000)
+			ScrollingBuffer(const int size = 2000)
 			{
 				m_MaxSize = size;
 				m_Offset = 0;
@@ -79,14 +79,14 @@ namespace TRE
 			int m_MaxSize;
 			int m_Offset;
 			ImVector<ImVec2> m_Data;
-		};
+		};*/
 
 		struct RollingBuffer
 		{
 			RollingBuffer()
 			{
 				m_Span = 10.f;
-				m_Data.reserve(8000);
+				m_Data.reserve(2000);
 			}
 
 			void AddPoint(float x, float y)

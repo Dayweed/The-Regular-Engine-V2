@@ -32,19 +32,12 @@ namespace TRE
 
 			m_TotalTime = Profiler::Instance().GetTotalTime();
 			ImGui::Text("Total Time: %.2f microseconds", m_TotalTime);
-			ImGui::Text("Percentages for each system by order its called:");
 
-			PlotRealTimeGraph();
+			ImGui::Checkbox("Show Real Time Graph", &m_OnPlot);
+			if(m_OnPlot)
+				PlotRealTimeGraph();
 
-			//const std::string str = "class TRE::";
-			//for (auto& i : m_ProfilerStringList)
-			//{
-			//	if (i.find(str) != std::string::npos)
-			//	{
-			//		i.erase(0, str.size());
-			//	}
-			//	ImGui::TextUnformatted(i.c_str());
-			//}
+			//PlotRealTimeGraph();
 		}
 		ImGui::End();
 	}
@@ -101,6 +94,7 @@ namespace TRE
 			ImPlot::SetupAxes("Time(s)", nullptr, flags, flags);
 			ImPlot::SetupAxisLimits(ImAxis_X1, 0, 10, ImGuiCond_Always);
 			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
+			ImPlot::SetupLegend(ImPlotLocation_NorthEast);
 
 			for (int i{}; i < labels.size(); ++i)
 				ImPlot::PlotLine(labels[i].data(), &m_BufferMap[labels[i]].m_Data[0].x, &m_BufferMap[labels[i]].m_Data[0].y,
