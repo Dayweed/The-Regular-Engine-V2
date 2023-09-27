@@ -96,6 +96,11 @@ namespace TRE
 
 	}
 
+	void PrefabSystem::OnReset()
+	{
+
+	}
+
 	void PrefabSystem::OnDestroyGO()
 	{
 

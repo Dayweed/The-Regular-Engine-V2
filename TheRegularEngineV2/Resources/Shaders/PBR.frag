@@ -11,14 +11,15 @@ layout(location = 0) in struct
 	vec2 TexCoord;
 } In;
 
-layout(location = 0) out vec4 outColor;
-
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
 layout(set = 0, binding = 4) uniform sampler2D AOMap;
 
-const float AMBIENT_INTENSITY = 0.5;
+layout(location = 0) out vec4 outColor;
+
+
+const float AMBIENT_INTENSITY = 0.05;
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
 void main() 
@@ -57,8 +58,6 @@ void main()
 	vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
 
 	outColor.rgb += lightModel * attenuationColor;
-
-	outColor.rgb = texture(AOMap, In.TexCoord).rgb;
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );

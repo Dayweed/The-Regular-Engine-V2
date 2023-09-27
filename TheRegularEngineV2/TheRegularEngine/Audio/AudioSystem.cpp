@@ -55,6 +55,11 @@ namespace TRE
 
 	}
 
+	void AudioSystem::OnReset()
+	{
+
+	}
+
 	void AudioSystem::OnDestroyGO()
 	{
 

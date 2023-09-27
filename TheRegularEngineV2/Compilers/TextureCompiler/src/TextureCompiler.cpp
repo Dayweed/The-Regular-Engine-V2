@@ -59,14 +59,36 @@ namespace TRE
 			return;
 		}
 
+
+
 		void* outputData = nullptr;
 		std::uint32_t outputSize = width * height * 4;
+		
+		DXGI_FORMAT loadFormat, compileFormat;
+		int vkFormat;
+
+		bool issRGB = descriptor.GetsRGB();
+		bool isTransparent = descriptor.GetTransparent();
+
+		if (issRGB)
+		{
+			loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+			vkFormat = 43; // VK_FORMAT_R8G8B8A8_SRGB
+		}
+		else
+		{
+			loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+			vkFormat = 44; // VK_FORMAT_R8G8B8A8_UNORM
+		}
+
+		compileFormat = loadFormat;
+
 		if (descriptor.GetCompress())
 		{
 			DirectX::Image image;
 			image.width = width;
 			image.height = height;
-			image.format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			image.format = loadFormat;
 			image.rowPitch = width * 4;
 			image.slicePitch = image.rowPitch * height;
 			image.pixels = pixels;
@@ -80,11 +102,42 @@ namespace TRE
 			metadata.mipLevels = 1;
 			metadata.miscFlags = 0;
 			metadata.miscFlags2 = 0;
-			metadata.format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+			metadata.format = loadFormat;
 			metadata.dimension = DirectX::TEX_DIMENSION_TEXTURE2D;
 			scratchImage.Initialize(metadata);
 
-			HRESULT hr = DirectX::Compress(image, DXGI_FORMAT_BC1_UNORM, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, scratchImage);
+			int BCn = descriptor.GetBCn();
+			switch (BCn)
+			{
+			case (1):
+				compileFormat = issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
+				if (issRGB)
+				{
+					vkFormat = isTransparent ? 134 : 132; // VK_FORMAT_BC1_RGBA_SRGB_BLOCK : VK_FORMAT_BC1_RGB_SRGB_BLOCK
+				}
+				else
+				{
+					vkFormat = isTransparent ? 133 : 131; // VK_FORMAT_BC1_RGBA_UNORM_BLOCK : VK_FORMAT_BC1_RGB_UNORM_BLOCK
+				}
+				break;
+			case (3):
+				compileFormat = issRGB ? DXGI_FORMAT_BC3_UNORM : DXGI_FORMAT_BC3_UNORM_SRGB;
+				vkFormat = issRGB ? 138 : 137; // VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_BC3_UNORM_BLOCK 
+				break;
+			case(5):
+				compileFormat = DXGI_FORMAT_BC5_UNORM;
+				vkFormat = 141; // VK_FORMAT_BC5_UNORM_BLOCK
+				break;
+			case (7):
+				compileFormat = DXGI_FORMAT_BC7_UNORM;
+				vkFormat = 145; // VK_FORMAT_BC7_UNORM_BLOCK
+				break;
+			default:
+				std::cout << "Failed to compress texture image: " << descriptor.GetAssetPath() << std::endl;
+				return;
+			}
+
+			HRESULT hr = DirectX::Compress(image, compileFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, scratchImage);
 			if (FAILED(hr))
 			{
 				std::cout << "Failed to compress texture image: " << descriptor.GetAssetPath() << std::endl;
@@ -107,14 +160,7 @@ namespace TRE
 		memcpy(m_Texture->Data, outputData, outputSize);
 		m_Texture->Width = width;
 		m_Texture->Height = height;
-		if (descriptor.GetNormalMap())
-		{
-			m_Texture->Format = descriptor.GetCompress() ? 137 : 37; //VK_FORMAT_BC3_UNORM_BLOCK  : VK_FORMAT_R8G8B8A8_UNORM  
-		}
-		else
-		{
-			m_Texture->Format = descriptor.GetCompress() ? 131 /*138*/ : 43; //VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_R8G8B8A8_SRGB 
-		}
+		m_Texture->Format = vkFormat;
 		m_Texture->Filter = descriptor.GetLinear();
 
 		delete[] fileData;

@@ -8,11 +8,17 @@ Texture Name:
 Skull_color
 
 Compress:
-0
+1
 
 GL_Linear:
 1
 
-Normal Map:
+BCn:
+1
+
+sRGB:
+1
+
+Transparent:
 0
 

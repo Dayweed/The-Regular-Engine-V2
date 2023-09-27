@@ -13,5 +13,12 @@ Compress:
 GL_Linear:
 1
 
-Normal Map:
+BCn:
+1
+
+sRGB:
 0
+
+Transparent:
+0
+

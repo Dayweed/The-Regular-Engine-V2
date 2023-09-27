@@ -227,16 +227,16 @@ namespace TRE
 		//VERY INEFFICIENT //Geom Pass
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
-			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
 			if(go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
 				continue;
+
+			PushConstant pc{};
+			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 
@@ -274,16 +274,20 @@ namespace TRE
 		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
-			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
 			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
 			if (mr.m_RenderObject == nullptr)
 				continue;
 
 			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
 				continue;
+
+			PushConstant pc{};
+			glm::mat4 model(1.f);
+			const float radius = mr.m_BoundingSphere.GetRadius();
+			model = glm::translate(model, mr.m_BoundingSphere.GetCenter());
+			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
+			pc.m_Model = model;//go_mr->GetComponent<Transform>().GetModelMatrix();
+			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			//Bind
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
