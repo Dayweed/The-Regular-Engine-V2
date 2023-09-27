@@ -17,6 +17,30 @@ namespace TRE
 			static void BindFunctions();
 			void UpdateScriptingEngine();
 			static void TestScriptingEngine();
+			static void TestAddComponent();
+
+#pragma region MonoFunctionBindings
+
+			// ECS
+			static MonoString* BindCreateEntity(MonoString* name);
+			static void BindAddComponent(MonoString* id, int componentType);
+			static void BindRemoveComponent(MonoString* id, int componentType);
+
+
+			// Transform
+
+			// Prefab
+
+			// Parenting
+
+			// Physics
+
+			// Camera
+
+			// Audio
+
+			// Mesh Renderer
+#pragma endregion
 
 		private:
 			static MonoDomain* s_RootDomain;
@@ -24,5 +48,4 @@ namespace TRE
 			static MonoAssembly* s_MonoAssembly;
 	};
 
-	static void BindCreateEntity(MonoString* name);
 }

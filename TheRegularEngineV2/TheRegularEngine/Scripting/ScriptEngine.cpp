@@ -8,6 +8,10 @@
 //Everything should be remove. This is just to test the calling of the runtime works.
 #include <fstream>
 
+#include "Audio/AudioSystem.h"
+#include "Graphics/Camera.h"
+#include "Graphics/MeshRenderer.h"
+
 namespace TRE
 {
 
@@ -105,13 +109,19 @@ namespace TRE
         s_AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
         mono_domain_set(s_AppDomain, true);
 
-        s_MonoAssembly = LoadCSharpAssembly("resources/Scripts/TRE-ScriptCore.dll");
+        s_MonoAssembly = LoadCSharpAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
         PrintAssemblyTypes(s_MonoAssembly);
 
 	}
     void ScriptEngine::BindFunctions()
     {
+        // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
+		std::cout << "CreateEntity" << std::endl;
+		mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
+		std::cout << "AddComponent" << std::endl;
+		mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
+        std::cout << "Remove Component" << std::endl;
     }
 
     void ScriptEngine::UpdateScriptingEngine()
@@ -131,18 +141,85 @@ namespace TRE
 
     }
 
+    void ScriptEngine::TestAddComponent()
+    {
+        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
+        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+
+		MonoObject* Instance = mono_object_new(s_AppDomain, testClass);
+		mono_runtime_object_init(Instance);
+
+		MonoMethod* method = mono_class_get_method_from_name(testClass, "Test", 0);
+		mono_runtime_invoke(method, Instance, nullptr, nullptr);
+    }
+
 
 #pragma endregion
 
 #pragma region FuntionBindings
-    void BindCreateEntity(MonoString* name)
+
+    MonoString* ScriptEngine::BindCreateEntity(MonoString* name)
     {
 		char* nameString = mono_string_to_utf8(name);
         std::string str(nameString);
         mono_free(nameString);
 
-		ECSManager::Instance().CreateEntity(str);
+		Entity Temp = ECSManager::Instance().CreateEntity(str);
         std::cout << "Created Entity from C#: " << str << std::endl;
+
+		MonoString* GUID = mono_string_new(s_AppDomain, Temp->GetGUID().c_str());
+        return GUID;
+	}
+
+    void ScriptEngine::BindAddComponent(MonoString* ID , int componenttype)
+    {
+		// Retrive the entity from the ID
+		Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+
+		// Use a switch case to determine which component to add
+		switch (componenttype)
+		{
+		case 0: // Mesh
+			Temp->AddComponent<MeshRenderer>();
+            std::cout << "Mesh Renderer added by C#!" << std::endl;
+			break;
+		case 1: // Camera
+			Temp->AddComponent<Camera>();
+			std::cout << "Camera added by C#!" << std::endl;
+			break;
+		case 2: // Audio
+			Temp->AddComponent<Audio>();
+			std::cout << "Audio added by C#!" << std::endl;
+            break;
+		default:
+            std::cout << "The component does not exist!" << std::endl;
+            break;
+        }
+        
+    }
+
+	void ScriptEngine::BindRemoveComponent(MonoString* id, int componenttype)
+	{
+		Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(id));
+
+        switch (componenttype)
+        {
+        case 0: // mesh
+			Temp->RemoveComponent<MeshRenderer>();
+			std::cout << "Mesh Renderer removed by C#!" << std::endl;
+			break;
+        case 1:
+			Temp->RemoveComponent<Camera>();
+			std::cout << "Camera removed by C#!" << std::endl;
+            break;
+        case 2:
+			Temp->RemoveComponent<Audio>();
+			std::cout << "Audio removed by C#!" << std::endl;
+            break;
+        default:
+			std::cout << "The component does not exist!" << std::endl;
+            break;
+        }
 	}
 
 #pragma endregion

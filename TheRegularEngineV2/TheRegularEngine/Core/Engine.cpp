@@ -257,7 +257,7 @@ namespace TRE
 
 		ScriptEngine::InitMono();
 		ScriptEngine::BindFunctions();
-		ScriptEngine::TestScriptingEngine();
+		//ScriptEngine::TestScriptingEngine();
 
 		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		m_Renderer->Initialize();

@@ -5,6 +5,7 @@
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
 #include "Utilities.h"
+#include "Scripting/ScriptEngine.h"
 
 //To Delete
 #include "Graphics/Camera.h"
@@ -178,6 +179,12 @@ namespace TRE
 		if (event._key == (int)KeyButton::E)
 		{
 			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		}
+
+		// here Testing Scripting stuff
+		if (event._key == (int)KeyButton::P)
+		{
+			ScriptEngine::TestAddComponent();
 		}
 	}
 
