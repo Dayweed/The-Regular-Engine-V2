@@ -62,7 +62,7 @@ namespace TRE
 		e1->AddComponent<SphereCollider>();
 		ConstructSphereCollider(e1);
 		*//*__________________________________________________________________________*/
-		void ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
+		bool ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
 
 		/* !
 		@function      ResizeSphereCollider
@@ -115,7 +115,7 @@ namespace TRE
 		e1->AddComponent<BoxCollider>();
 		ConstructBoxCollider(e1);
 		*//*__________________________________________________________________________*/
-		void ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
+		bool ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
 
 		/* !
 		@function      ResizeBoxCollider
@@ -165,7 +165,7 @@ namespace TRE
 		e1->AddComponent<Rigidbody>();
 		ConstructRigidbody(e1);
 		*//*__________________________________________________________________________*/
-		void ConstructRigidbody(const Entity& entity) const;
+		bool ConstructRigidbody(const Entity& entity) const;
 
 		/* !
 		@function      AddForce
@@ -234,3 +234,5 @@ namespace TRE
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 	};
 }
+
+// DISCO RGB FONT FOR EDITOR COMPONENTS?????
