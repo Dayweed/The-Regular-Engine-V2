@@ -231,6 +231,11 @@ namespace TRE
 		}
 	}
 
+	void PhysicsSystem::OnReset()
+	{
+
+	}
+
 	void PhysicsSystem::OnDestroyGO()
 	{
 		// hopefully this'll be the parameter of this function in the future!!

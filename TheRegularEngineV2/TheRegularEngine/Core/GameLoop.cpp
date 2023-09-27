@@ -20,6 +20,11 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);
 	}
 
+	void GameLoop::ClearReset()
+	{
+		m_IsResetted = false;
+	}
+
 	void GameLoop::Shutdown()
 	{
 		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
@@ -31,6 +36,11 @@ namespace TRE
 	bool GameLoop::IsGameRunning()
 	{
 		return m_GameRunning;
+	}
+
+	bool GameLoop::IsResetted()
+	{
+		return m_IsResetted;
 	}
 
 	void GameLoop::ToggleRun(bool isRunning)
@@ -50,6 +60,7 @@ namespace TRE
 		{
 			ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
 			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
+			m_IsResetted = true;
 		}
 	}
 
