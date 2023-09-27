@@ -33,8 +33,8 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable/")
-	objdir ("Executable/")
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -142,8 +142,8 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/")
-	objdir ("Executable/")
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	links 
 	{ 
