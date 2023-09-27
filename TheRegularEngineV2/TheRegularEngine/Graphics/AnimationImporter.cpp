@@ -432,7 +432,7 @@ namespace TRE
                     auto& MyBoneKeyFrame = MyAnim.m_BoneKeyFrames[iBone];
                     
                     MyBoneKeyFrame.m_Translate[iFrame] = glm::vec3(presentPosition.x, presentPosition.y, presentPosition.z);
-                    MyBoneKeyFrame.m_Rotate[iFrame] = glm::vec4(presentRotation.x, presentRotation.y, presentRotation.z, presentRotation.w);
+                    MyBoneKeyFrame.m_Rotate[iFrame] = glm::quat(presentRotation.x, presentRotation.y, presentRotation.z, presentRotation.w);
                     MyBoneKeyFrame.m_Scale[iFrame] = glm::vec3(presentScaling.x, presentScaling.y, presentScaling.z);
                 }
             }
@@ -457,7 +457,7 @@ namespace TRE
                         auto& MyBoneKeyFrame = MyAnim.m_BoneKeyFrames[i];
                         MyBoneKeyFrame.m_Translate[f] = glm::vec3(T.x, T.y, T.z);
                         MyBoneKeyFrame.m_Scale[f] = glm::vec3(S.x, S.y, S.z);
-                        MyBoneKeyFrame.m_Rotate[f] = glm::vec4(Q.x, Q.y, Q.z, Q.w);
+                        MyBoneKeyFrame.m_Rotate[f] = glm::quat(Q.x, Q.y, Q.z, Q.w);
 
                         /*
                         MyBoneKeyFrame.m_Translate.setup(T.x, T.y, T.z);
@@ -596,20 +596,42 @@ namespace TRE
         return false;
     }
 
+    template <typename T_CHAR> constexpr int ToCharUpper(const T_CHAR C) noexcept 
+    { 
+        return((C >= T_CHAR{'a'}) && (C <= T_CHAR{'z'})) ? C + (T_CHAR{ 'A' } - T_CHAR{'a'}) : C; 
+    }
+
+    template< typename T1, typename T2 >
+    static int FindStrI(const T1& Where, const T2& What)
+    {
+        int i = 0;
+        while (Where[i])
+        {
+            if (ToCharUpper(Where[i]), ToCharUpper(What[0]))
+            {
+                int j = 1;
+                while (What[j])
+                {
+                    if (ToCharUpper(Where[i + j]) != ToCharUpper(What[j])) goto continue_loop;
+                    j++;
+                }
+                return i;
+            continue_loop:;
+            }
+            i++;
+        }
+        return -1;
+    }
+
     static std::string GetMeshNameFromNode(const aiNode& Node)
     {
         for (auto pNode = &Node; pNode; pNode = pNode->mParent)
         {
             // Using the naming convention to group meshes...
-            std::string Name = pNode->mName.C_Str();
-            if (Name.find("MESH_") != 0)
+            if (FindStrI(pNode->mName.C_Str(), "MESH_") != -1)
             {
                 return pNode->mName.C_Str();
             }
-            /*if (xcore::string::FindStrI(pNode->mName.C_Str(), "MESH_") != -1)
-            {
-                return pNode->mName.C_Str();
-            }*/
         }
 
         return {};
@@ -701,7 +723,7 @@ namespace TRE
             {
                 struct tmp_weight
                 {
-                    std::uint8_t m_iBone;
+                    int m_iBone;
                     float        m_Weight{ 0 };
                 };
 
@@ -721,7 +743,7 @@ namespace TRE
                 for (auto iBone = 0u; iBone < AssimpMesh.mNumBones; iBone++)
                 {
                     const auto& AssimpBone = *AssimpMesh.mBones[iBone];
-                    const std::uint8_t   iSkeletonBone = m_pSkeleton->findBone(AssimpBone.mName.C_Str());
+                    const int iSkeletonBone = m_pSkeleton->findBone(AssimpBone.mName.C_Str());
                     assert(m_pSkeleton->findBone(AssimpBone.mName.C_Str()) != -1);
 
                     for (auto iWeight = 0u; iWeight < AssimpBone.mNumWeights; ++iWeight)
@@ -731,6 +753,10 @@ namespace TRE
 
                         MyWeight.m_Weights[MyWeight.m_Count].m_iBone = iSkeletonBone;
                         MyWeight.m_Weights[MyWeight.m_Count].m_Weight = AssimpWeight.mWeight;
+                        //std::cout << "Assimp weight: " << AssimpWeight.mWeight << std::endl;
+                        //std::cout << "Mine weight: " << MyWeight.m_Weights[MyWeight.m_Count].m_Weight << std::endl;
+                        //std::cout << "Assimp Bone: " << iSkeletonBone << std::endl;
+                        //std::cout << "Mine Bone: " << MyWeight.m_Weights[MyWeight.m_Count].m_iBone << std::endl;
 
                         // get ready for the next one
                         MyWeight.m_Count++;
@@ -773,18 +799,18 @@ namespace TRE
 
                         switch (i)
                         {
-                        case 0: V.m_BoneIndex.x = static_cast<std::uint8_t>(BW.m_iBone);
-                            V.m_BoneWeights.x = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
-                            break;
-                        case 1: V.m_BoneIndex.y = static_cast<std::uint8_t>(BW.m_iBone);
-                            V.m_BoneWeights.y = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
-                            break;
-                        case 2: V.m_BoneIndex.z = static_cast<std::uint8_t>(BW.m_iBone);
-                            V.m_BoneWeights.z = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
-                            break;
-                        case 3: V.m_BoneIndex.w = static_cast<std::uint8_t>(BW.m_iBone);
-                            V.m_BoneWeights.w = static_cast<std::uint8_t>(BW.m_Weight * 0xff);
-                            break;
+                            case 0: V.m_BoneIndex.x = BW.m_iBone;
+                                V.m_BoneWeights.x = BW.m_Weight;
+                                break;
+                            case 1: V.m_BoneIndex.y = BW.m_iBone;
+                                V.m_BoneWeights.y = BW.m_Weight;
+                                break;
+                            case 2: V.m_BoneIndex.z = BW.m_iBone;
+                                V.m_BoneWeights.z = BW.m_Weight;
+                                break;
+                            case 3: V.m_BoneIndex.w = BW.m_iBone;
+                                V.m_BoneWeights.w = BW.m_Weight;
+                                break;
                         }
                     }
                 }

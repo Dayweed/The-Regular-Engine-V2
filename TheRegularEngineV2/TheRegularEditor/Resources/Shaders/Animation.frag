@@ -15,5 +15,5 @@ layout(set = 0, binding = 5) uniform sampler2D Glossiness;
 
 void main() 
 {
-   outColor = In.Color;;// * texture(Diffuse, In.UV);
+   outColor = In.Color * texture(Diffuse, In.UV);
 }

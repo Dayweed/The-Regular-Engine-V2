@@ -67,8 +67,13 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
 		m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 
+		m_L2W = glm::identity<glm::mat4>();
+		m_L2W = glm::scale(m_L2W, glm::vec3(0.1f, 0.1f, 0.1f));
+		m_L2W = glm::translate(m_L2W, glm::vec3(0.1f, -100.f, 150.f));
 		for (int x = 0; x < 256; x++)
+		{
 			m_AnimationBuffer.L2W[x] = glm::identity<glm::mat4>();
+		}
 	}
 
 	void Renderer::Initialize()
@@ -260,6 +265,7 @@ namespace TRE
 
 		//Animation Pass
 		{
+			m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
 			m_Animation->BindPipeline(m_Commandbuffers[Index]);
 			//PushConstant pc{};
 			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();

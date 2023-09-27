@@ -43,9 +43,8 @@ namespace TRE
 
 	struct bone_keyframes
 	{
-		//std::vector<glm::mat4>  m_Transfoms;        // Vector for all the frames of the animation
 		std::vector<glm::vec3> m_Scale;
-		std::vector<glm::vec4> m_Rotate;
+		std::vector<glm::quat> m_Rotate;
 		std::vector<glm::vec3> m_Translate;
 	};
 
@@ -91,10 +90,9 @@ namespace TRE
 		glm::vec4         m_BoneWeights;
 		glm::ivec4        m_BoneIndex;
 		glm::vec3         m_Position;
-		glm::vec2         m_UV;
 		glm::vec3         m_Normal;
 		glm::vec3         m_Tangent;
-		//glm::vec3         m_Bitangent;
+		glm::vec2         m_UV;
 	};
 
 	struct submesh

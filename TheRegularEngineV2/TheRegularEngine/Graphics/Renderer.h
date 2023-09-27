@@ -77,5 +77,8 @@ namespace TRE
 			std::unique_ptr<AnimationTest> m_Animation;
 			std::shared_ptr<UniformBuffer> m_AnimationUBO;
 			AnimationUBO m_AnimationBuffer;
+
+			//Temp for animation Testing
+			glm::mat4 m_L2W;
 	};
 }

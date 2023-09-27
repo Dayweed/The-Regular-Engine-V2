@@ -3,6 +3,7 @@
 #include "Resource/ResourceManager.h"
 #include "AnimationImporter.h"
 #include "RendererContext.h"
+#include "Renderer.h"
 
 namespace TRE
 {
@@ -58,7 +59,7 @@ namespace TRE
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.VertexShader = AnimationVertShader;
 		PipelineConfig.FragmentShader = AnimationFragShader;
-
+		PipelineConfig.VertexStride = sizeof(vertex);
 		m_AnimationPipeline = std::make_unique<Pipeline>(PipelineConfig, TargetPass);
 
 		AnimationImporter Importer;
@@ -113,6 +114,12 @@ namespace TRE
 	AnimationTest::~AnimationTest()
 	{
 
+	}
+
+	void AnimationTest::UpdateAnimations(AnimationUBO& UBO, glm::mat4 L2W)
+	{
+		m_AnimationCharacter->m_AnimPlayer.Update(1.f / 60.f);
+		m_AnimationCharacter->m_AnimPlayer.ComputeMatrices(UBO.L2W, L2W);
 	}
 	
 	void AnimationTest::UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)

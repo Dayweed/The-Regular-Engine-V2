@@ -23,6 +23,7 @@ namespace TRE
 		std::shared_ptr<Shader> FragmentShader;
 		PrimitiveType Primitive;
 		float LineWidth = 1.f;
+		size_t VertexStride = 0;
 	};
 
 	class Pipeline
