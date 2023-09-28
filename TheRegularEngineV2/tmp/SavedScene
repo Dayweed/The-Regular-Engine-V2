@@ -1,0 +1,131 @@
+[
+   [
+      2,
+      0,
+      1
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "{1C4DD305-A610-41E8-85B5-E4D52715CBA5}",
+         "m_Name": "Test"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "{2EF165E9-E8CD-4E53-947F-6E85E988F810}",
+         "m_Name": "cam"
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            20.0,
+            180.0
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "b1d2057915001876",
+         "ASSET_MAT_m_MaterialInstance": "74b283e6a2bed9d8",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      1,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 100.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            100.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Pitch": 0.0,
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Right": 1.0,
+         "m_Roll": 0.0,
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ],
+         "m_Yaw": 0.0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
