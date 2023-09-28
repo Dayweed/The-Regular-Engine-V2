@@ -59,8 +59,8 @@ namespace TRE
 			bool m_IsViewportHovered = false;
 			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};
-			float m_ZoomSensitivity = 80.f;
-			float m_PanSpeed = 300.f;
-			float m_RotationSensitivity = 3.f;
+			float m_ZoomSensitivity = 200.f;
+			float m_PanSpeed = 400.f;
+			float m_RotationSensitivity = 5.f;
 	};
 }

@@ -94,7 +94,7 @@ namespace TRE
 
 	void DemoScene()
 	{
-		std::cout << Resource::GetGUIDHex(Resource::GenerateGUID()) << "\n";
+		//std::cout << Resource::GetGUIDHex(Resource::GenerateGUID()) << "\n";
 
 		auto textureHandle = Resource::GetGUIDFromHex("474d70e35d64e711"); //diffuse
 		auto textureHandle2 = Resource::GetGUIDFromHex("d3464713e4f44bee"); //normal
@@ -190,11 +190,11 @@ namespace TRE
 		auto DebugFragShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawFragHandle);
 
 		//AnimationShaders
-		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::CompileShader("Resources/Shaders/Animation.vert");
+		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::CompileShader("../Resources/Shaders/Animation.vert");
 		AnimationVert->SetHandle(AnimationVertHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 
-		std::unique_ptr<Shader> AnimationFrag = ShaderCompiler::CompileShader("Resources/Shaders/Animation.frag");
+		std::unique_ptr<Shader> AnimationFrag = ShaderCompiler::CompileShader("../Resources/Shaders/Animation.frag");
 		AnimationFrag->SetHandle(AnimationFragHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationFrag));
 

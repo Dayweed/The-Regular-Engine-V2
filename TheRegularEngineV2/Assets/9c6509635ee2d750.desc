@@ -7,14 +7,17 @@ Texture File Path:
 Texture Name:
 AnimationDiffuse
 
-Texture Name:
-AnimationDiffuse
-
 Compress:
 0
 
 GL_Linear:
-0
+1
 
-Normal Map:
+BCn:
+1
+
+sRGB:
+1
+
+Transparent:
 0

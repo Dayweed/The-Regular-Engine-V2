@@ -7,14 +7,17 @@ Texture File Path:
 Texture Name:
 DiffuseAO
 
-Texture Name:
-DiffuseAO
-
 Compress:
 0
 
 GL_Linear:
+1
+
+BCn:
+1
+
+sRGB:
 0
 
-Normal Map:
+Transparent:
 0
