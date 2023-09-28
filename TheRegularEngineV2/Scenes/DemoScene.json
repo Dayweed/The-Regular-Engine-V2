@@ -11,28 +11,28 @@
       2,
       0,
       {
-         "m_Active": true,
-         "m_GUID": "{E4232C26-B59F-44A5-A0EA-FA1F4E26F627}",
-         "m_Name": "Test"
+         "m_Children": [],
+         "m_Parent": ""
       },
       1,
       {
-         "m_Active": true,
-         "m_GUID": "{6C860A4C-DFA1-4849-83A5-3CBF95A1130F}",
-         "m_Name": "cam"
+         "m_Children": [],
+         "m_Parent": ""
       }
    ],
    [
       2,
       0,
       {
-         "m_Children": [],
-         "m_Parent": ""
+         "m_Active": true,
+         "m_GUID": "{D1B0B01B-70F8-4342-A98B-0CD14E979D5C}",
+         "m_Name": "Test"
       },
       1,
       {
-         "m_Children": [],
-         "m_Parent": ""
+         "m_Active": true,
+         "m_GUID": "{C9C8127B-B114-45E9-9C78-DB7CB83AAF9A}",
+         "m_Name": "cam"
       }
    ],
    [
@@ -41,8 +41,8 @@
       {
          "m_Position": [
             0.0,
-            0.0,
-            150.0
+            20.0,
+            180.0
          ],
          "m_Rotation": [
             0.0,
@@ -50,9 +50,9 @@
             0.0
          ],
          "m_Scale": [
-            0.5,
-            0.5,
-            0.5
+            0.20000000298023224,
+            0.20000000298023224,
+            0.20000000298023224
          ]
       },
       1,
@@ -120,6 +120,33 @@
             900.0
          ],
          "m_Yaw": 0.0
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 1.0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_IsInitialized": false,
+         "m_IsKinematic": false,
+         "m_Mass": 1.0,
+         "m_UseGravity": true
       }
    ],
    [

@@ -338,12 +338,12 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// 
-		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized
-		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");
-		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");
-		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");
-		ECSManager::Instance().RegisterComponent<Audio>("Audio");
-		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");		
+		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized, reflected
+		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// reflected
+		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// reflected
+		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");									// reflected
+		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
+		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
 		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
 

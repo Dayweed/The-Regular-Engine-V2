@@ -137,15 +137,18 @@ namespace TRE
 
 		entt::snapshot snapshot{ GetRegistry() };
 		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
-
+		
 		// Serialize all entities and components
 		snapshot.entities(arc)
 			.component<Prefabing>(arc)
-			.component<Properties>(arc)
 			.component<Parenting>(arc)
+			.component<Properties>(arc)
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<SphereCollider>(arc)
+			.component<BoxCollider>(arc)
+			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
 			;
@@ -166,11 +169,14 @@ namespace TRE
 		entt::basic_snapshot_loader loader(copy);
 		loader.entities(arc)
 			.component<Prefabing>(arc)
-			.component<Properties>(arc)
 			.component<Parenting>(arc)
+			.component<Properties>(arc)
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<SphereCollider>(arc)
+			.component<BoxCollider>(arc)
+			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
 			;

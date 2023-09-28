@@ -228,6 +228,12 @@ namespace TRE
 								// Fake example of using structs (Should remove b4 m2!)...
 								//printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
 							}
+							else if constexpr (std::is_same_v<T, glm::vec2>)
+							{
+								float pos[2]{ Value.x, Value.y };
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat2(NameField.c_str(), pos);
+								Value = { pos[0], pos[1] };
+							}
 							else if constexpr (std::is_same_v<T, glm::vec3>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
