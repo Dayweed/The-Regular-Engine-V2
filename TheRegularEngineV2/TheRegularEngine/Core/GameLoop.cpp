@@ -69,7 +69,8 @@ namespace TRE
 			m_BackUp.clear();
 
 			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
-			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
+			//std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
+			m_GameRunning = false;
 			m_IsResetted = true;
 		}
 	}
@@ -100,6 +101,5 @@ namespace TRE
 	{
 			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
 			ResetScene();
-			ToggleRun(false);
 	}
 }
