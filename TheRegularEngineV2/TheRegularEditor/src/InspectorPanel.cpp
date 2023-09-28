@@ -315,6 +315,13 @@ namespace TRE
 							}
 						}
 
+						// Force add additional components for specific components
+						if (compName == ComponentManager::Instance().GetComponentName<Camera>())
+						{
+							// Force Add AudioListener
+							ECSManager::Instance().AddCompFromName(entity, ComponentManager::Instance().GetComponentName<AudioListener>());
+						}
+
 						ECSManager::Instance().AddCompFromName(entity, compName);
 						m_SelectionManager->SelectEntity(entity);
 					}
