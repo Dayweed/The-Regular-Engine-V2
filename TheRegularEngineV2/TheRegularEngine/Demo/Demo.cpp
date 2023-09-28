@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Demo/Demo.h"
+#include "Scripting/ScriptEngine.h"
 #include "Core/Engine.h"
 
 #include <random>
@@ -36,12 +37,16 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "C# Test" + std::to_string(i++);
-		transformSystem->SetPosition(test, glm::vec3(distribution(generator), distribution(generator), distributionZ(generator)));
+		transformSystem->SetPosition(test, glm::vec3(distribution(generator), 144.0f, distributionZ(generator)));
 		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
 		transformSystem->SetRotation(test, glm::vec3(0, 180.f, 0));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+
+		//call and store demo GUID
+		ScriptEngine::SetTestGUID(test->GetGUID());
+		ScriptEngine::CreatedScriptObject = true;
 
 		std::shared_ptr<Material> allocMat = ResourceManager::Instance().GetResource<Material>(matHandle);
 		allocMat->AllocateLayouts();

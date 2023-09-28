@@ -194,7 +194,11 @@ namespace TRE
 
 		if (event._key == (int)KeyButton::O)
 		{
-			ScriptEngine::TestSpawnObject();
+			if (ScriptEngine::CreatedScriptObject == false)
+			{
+				ScriptEngine::TestSpawnObject();
+			}
+			
 		}
 	}
 

@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "ECS.h"
 #include "GameLoop.h"
+#include "Scripting/ScriptEngine.h"
 
 
 namespace TRE
@@ -64,6 +65,9 @@ namespace TRE
 			Profiler::Instance().EndTimer("OnReset");
 
 			m_GameRunning = false;
+
+			ScriptEngine::CreatedScriptObject = false;
+
 		}
 	}
 
