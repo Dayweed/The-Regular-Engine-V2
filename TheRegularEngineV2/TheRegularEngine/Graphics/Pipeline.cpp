@@ -38,7 +38,10 @@ namespace TRE
 		VkVertexInputBindingDescription VertexInputBindingDescriptions{};
 		VertexInputBindingDescriptions.binding = 0;
 		VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-		VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+		if (m_Config.VertexStride == 0)
+			VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+		else
+			VertexInputBindingDescriptions.stride = m_Config.VertexStride;
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

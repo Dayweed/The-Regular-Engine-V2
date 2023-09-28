@@ -339,7 +339,7 @@ namespace TRE
 					case SPIRType::UInt:
 						return VK_FORMAT_R32G32B32A32_UINT;
 					case SPIRType::Float:
-						return VK_FORMAT_R32G32B32A32_SFLOAT;
+						return VK_FORMAT_R32G32B32A32_SFLOAT; 
 					default:
 						return VK_FORMAT_UNDEFINED;
 				}

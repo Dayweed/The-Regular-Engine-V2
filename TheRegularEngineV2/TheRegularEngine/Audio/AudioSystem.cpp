@@ -70,6 +70,7 @@ namespace TRE
 			m_SFXChannelGroup->stop();
 			m_MusicChannelGroup->stop();
 		}
+		m_System->update();
 	}
 
 	void AudioSystem::Init()

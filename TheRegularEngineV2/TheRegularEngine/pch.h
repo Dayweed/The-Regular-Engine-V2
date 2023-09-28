@@ -35,6 +35,7 @@
 #include <fstream>
 #include <typeindex>
 #include <utility>
+#include <span>
 
 //Libaries
 #include <Properties.h>
