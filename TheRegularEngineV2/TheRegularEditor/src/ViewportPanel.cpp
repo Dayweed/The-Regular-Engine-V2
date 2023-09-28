@@ -168,17 +168,22 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
+
 		if (event._key == (int)KeyButton::Q)
 		{
-			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
+			m_GizmoOperation = -1;
 		}
 		if (event._key == (int)KeyButton::W)
 		{
-			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		}
 		if (event._key == (int)KeyButton::E)
 		{
-			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		}
+		if (event._key == (int)KeyButton::R)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
 		}
 
 		// here Testing Scripting stuff

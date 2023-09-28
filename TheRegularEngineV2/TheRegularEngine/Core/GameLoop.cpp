@@ -58,7 +58,7 @@ namespace TRE
 	{
 		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
 		{
-			ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
 			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 			m_IsResetted = true;
 		}
@@ -66,12 +66,30 @@ namespace TRE
 
 	void GameLoop::ToggleRun(ToggleRunEvent& event)
 	{
-		ToggleRun(event.m_Playing);
+		if (m_GameRunning == false && event.m_Playing == true)
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Playing Scene..." });
+			ToggleRun(event.m_Playing);
+		}
+		else if(m_GameRunning == true && event.m_Playing == true)
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Scene is already playing" });
+		}
+		else if (m_GameRunning == true && event.m_Playing == false)
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Pausing Scene..." });
+			ToggleRun(event.m_Playing);
+		}
+		else
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Scene is already paused" });
+		}
 	}
 
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
-		ToggleRun(event.m_Nth);
-		ResetScene();
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
+			ToggleRun(false);
+			ResetScene();
 	}
 }

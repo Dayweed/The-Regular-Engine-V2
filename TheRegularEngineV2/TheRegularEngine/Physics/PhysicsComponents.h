@@ -32,10 +32,13 @@ namespace TRE
 		physx::PxRigidDynamic* m_RigidDynamic = nullptr;
 		unsigned m_AttachedComponents : 6 = 0;
 		// increase bitfield size if necessary!!
+		std::string m_GUID{}; // to know which entity has this component
 	};
 
 	struct Rigidbody : property::base
 	{
+		bool m_IsInitialized = false;
+
 		float m_Mass = 1.0f;
 		float m_Drag = 0.0f;
 		float m_AngularDrag = 0.05f;
@@ -51,11 +54,13 @@ namespace TRE
 
 	struct BaseCollider
 	{
+		bool m_IsInitialized = false;
+
 		bool m_IsTrigger = false;
 		// physx::PxMaterial* m_PhysicsMaterial = nullptr;
 	};
 
-	struct SphereCollider : public BaseCollider, property::base
+	struct SphereCollider : BaseCollider, property::base
 	{
 		Vector3 m_Offset = {};
 		float m_Radius = 1.0f;
@@ -64,7 +69,7 @@ namespace TRE
 		property_vtable()
 	};
 
-	struct BoxCollider : public BaseCollider, property::base
+	struct BoxCollider : BaseCollider, property::base
 	{
 		Vector3 m_Offset = {};
 		Vector3 m_HalfExtents = Vector3(0.5f);
@@ -72,6 +77,10 @@ namespace TRE
 		// Allows the base class to get these properties  
 		property_vtable()
 	};
+
+	// inline std::tuple<Rigidbody, SphereCollider, BoxCollider> tutu;
+	// ^ definition of a global variable in a header file should have the 'inline' specifier
+
 }
 
 property_begin(TRE::Rigidbody)
@@ -96,7 +105,7 @@ property_begin(TRE::BoxCollider)
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
 	property_var(m_HalfExtents)
-	} property_vend_h(TRE::BoxCollider)
+} property_vend_h(TRE::BoxCollider)
 
 // none			- just don't have anything, please
 // collider		- make shape with 
