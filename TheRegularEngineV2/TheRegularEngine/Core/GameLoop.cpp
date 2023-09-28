@@ -31,6 +31,8 @@ namespace TRE
 		{
 			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 		}
+
+		m_BackUp.clear();
 	}
 
 	bool GameLoop::IsGameRunning()
@@ -45,19 +47,27 @@ namespace TRE
 
 	void GameLoop::ToggleRun(bool isRunning)
 	{
-		m_GameRunning = isRunning;
-
-		// If toggle to run, save scene temporarily
-		if (m_GameRunning)
+		// If toggle to run and was not running, save scene temporarily
+		if (isRunning && !m_GameRunning)
 		{
-			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			//ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+
+			// Save the registry
+			ECSManager::Instance().SaveRegistry(m_BackUp);
 		}
+
+		m_GameRunning = isRunning;
 	}
 
 	void GameLoop::ResetScene()
 	{
-		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
+		if (m_GameRunning)
 		{
+			// Copy registry and components
+			ECSManager::Instance().CopyRegistry(m_BackUp);
+			// Clear Backup
+			m_BackUp.clear();
+
 			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
 			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 			m_IsResetted = true;
@@ -89,7 +99,7 @@ namespace TRE
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
 			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
-			ToggleRun(false);
 			ResetScene();
+			ToggleRun(false);
 	}
 }
