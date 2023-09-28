@@ -47,8 +47,6 @@ namespace TRE
         {
             for (auto i = 0u, end = Node.mNumMeshes; i < end; ++i)
             {
-                aiMesh* pMesh = m_pScene->mMeshes[Node.mMeshes[i]];
-
                 m_MeshReferences[Node.mMeshes[i]].m_Nodes.push_back(&Node);
             }
 
@@ -286,7 +284,7 @@ namespace TRE
                     for (auto iBone = 0u; iBone < AssimpMesh.mNumBones; iBone++)
                     {
                         const auto& AssimpBone = *AssimpMesh.mBones[iBone];
-                        const std::uint8_t   iSkeletonBone = m_pAnimCharacter->m_Skeleton.findBone(AssimpBone.mName.C_Str());
+                        const std::uint8_t iSkeletonBone = (uint8_t)m_pAnimCharacter->m_Skeleton.findBone(AssimpBone.mName.C_Str());
                         assert(m_pAnimCharacter->m_Skeleton.findBone(AssimpBone.mName.C_Str()) != -1);
 
                         for (auto iWeight = 0u; iWeight < AssimpBone.mNumWeights; ++iWeight)
@@ -376,7 +374,7 @@ namespace TRE
                     for (const auto pN : m_MeshReferences[iMesh].m_Nodes)
                     {
                         pMyNode->m_MeshName = GetMeshNameFromNode(*pN);
-                        const std::uint8_t   iSkeletonBone = m_pAnimCharacter->m_Skeleton.findBone(pN->mName.C_Str());
+                        const std::uint8_t iSkeletonBone = (uint8_t)m_pAnimCharacter->m_Skeleton.findBone(pN->mName.C_Str());
                         for (auto iVertex = 0u; iVertex < AssimpMesh.mNumVertices; ++iVertex)
                         {
                             auto& V = pMyNode->m_Vertices[iVertex];
@@ -644,14 +642,14 @@ namespace TRE
                 //
                 // Add transforms without animations
                 //
-                for (int i = 0; i < m_pAnimCharacter->m_Skeleton.m_Bones.size(); ++i)
+                for (int j = 0; j < m_pAnimCharacter->m_Skeleton.m_Bones.size(); ++j)
                 {
-                    if (MyAnim.m_BoneKeyFrames[i].m_Scale.size() == 0)
+                    if (MyAnim.m_BoneKeyFrames[j].m_Scale.size() == 0)
                     {
-                        MyAnim.m_BoneKeyFrames[i].m_Scale.resize(FrameCount);
-                        MyAnim.m_BoneKeyFrames[i].m_Rotate.resize(FrameCount);
-                        MyAnim.m_BoneKeyFrames[i].m_Translate.resize(FrameCount);
-                        auto pNode = m_pScene->mRootNode->FindNode(m_pAnimCharacter->m_Skeleton.m_Bones[i].m_Name.c_str());
+                        MyAnim.m_BoneKeyFrames[j].m_Scale.resize(FrameCount);
+                        MyAnim.m_BoneKeyFrames[j].m_Rotate.resize(FrameCount);
+                        MyAnim.m_BoneKeyFrames[j].m_Translate.resize(FrameCount);
+                        auto pNode = m_pScene->mRootNode->FindNode(m_pAnimCharacter->m_Skeleton.m_Bones[j].m_Name.c_str());
 
                         aiQuaternion Q(0, 0, 0, 1);
                         aiVector3D   S(1, 1, 1);
@@ -660,7 +658,7 @@ namespace TRE
 
                         for (int f = 0; f < FrameCount; ++f)
                         {
-                            auto& MyBoneKeyFrame = MyAnim.m_BoneKeyFrames[i];
+                            auto& MyBoneKeyFrame = MyAnim.m_BoneKeyFrames[j];
 
                             MyBoneKeyFrame.m_Translate[f] = glm::vec3(T.x, T.y, T.z);
                             MyBoneKeyFrame.m_Rotate[f] = glm::quat(Q.w, Q.x, Q.y, Q.z);

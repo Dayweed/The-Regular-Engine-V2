@@ -260,7 +260,6 @@ namespace TRE
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
 
 			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
-			const Camera& camera = entity->GetComponent<Camera>();
 			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 			glm::mat4 proj = cameraSystem->GetProjectionMatrix(entity);
 			proj[1][1] *= -1.f;

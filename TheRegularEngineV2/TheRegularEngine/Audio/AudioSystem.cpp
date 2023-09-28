@@ -15,8 +15,8 @@ namespace TRE
 
 		m_System->init(MAX_CHANNELS, FMOD_INIT_NORMAL, nullptr);
 
-		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
-		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
+		//FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
+		//FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
 
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
@@ -292,8 +292,10 @@ namespace TRE
 
 	void AudioSystem::SetPlay(Entity& go, const bool play)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		//Audio& audio = go.get()->GetComponent<Audio>();
 		//audio.m_Play = play;
+		(void)go;
+		(void)play;
 	}
 
 	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)
@@ -379,6 +381,7 @@ namespace TRE
 
 	bool AudioSystem::GetPlay(Entity& go) const
 	{
+		(void)go;
 		return true; // go.get()->GetComponent<Audio>().m_Play;
 	}
 

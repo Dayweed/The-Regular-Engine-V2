@@ -968,7 +968,7 @@ namespace TRE
 
 	void ECSManager::STRESSTEST()
 	{
-		std::cout << "\STRESS TEST ECS\n====================================\n";
+		std::cout << "STRESS TEST ECS\n====================================\n";
 		for (int i{}; i < 2500; ++i)
 		{
 			Entity ent{ ECSManager::Instance().CreateEntity() };

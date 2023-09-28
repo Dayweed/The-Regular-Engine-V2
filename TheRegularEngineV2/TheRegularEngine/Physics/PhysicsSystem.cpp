@@ -99,10 +99,10 @@ namespace TRE
 		double sy = sin(yaw * 0.5);
 
 		PxQuat q;
-		q.w = cr * cp * cy + sr * sp * sy;
-		q.x = sr * cp * cy - cr * sp * sy;
-		q.y = cr * sp * cy + sr * cp * sy;
-		q.z = cr * cp * sy - sr * sp * cy;
+		q.w = static_cast<float>(cr * cp * cy + sr * sp * sy);
+		q.x = static_cast<float>(sr * cp * cy - cr * sp * sy);
+		q.y = static_cast<float>(cr * sp * cy + sr * cp * sy);
+		q.z = static_cast<float>(cr * cp * sy - sr * sp * cy);
 
 		return q;
 	}

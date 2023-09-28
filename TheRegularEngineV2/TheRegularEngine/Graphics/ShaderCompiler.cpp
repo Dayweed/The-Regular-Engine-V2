@@ -378,6 +378,7 @@ namespace TRE
 
 	std::unique_ptr<Shader> ShaderCompiler::CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
 	{
+		(void)EnableOptimization;
 		std::string path = ShaderPath.string();
 		size_t found = path.find_last_of("/\\");
 		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
@@ -599,7 +600,6 @@ namespace TRE
 
 			uint32_t binding = Compiler.get_decoration(resource.id, spv::DecorationBinding);
 			uint32_t descriptorset = Compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			uint32_t dimension = BaseType.image.dim;
 			uint32_t Arraysize = Type.array[0];
 
 			if (Arraysize == 0)
