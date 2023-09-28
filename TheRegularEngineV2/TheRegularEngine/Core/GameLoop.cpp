@@ -20,17 +20,9 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);
 	}
 
-	void GameLoop::ClearReset()
-	{
-		m_IsResetted = false;
-	}
-
 	void GameLoop::Shutdown()
 	{
-		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
-		{
-			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
-		}
+		m_BackUp.clear();
 	}
 
 	bool GameLoop::IsGameRunning()
@@ -38,29 +30,40 @@ namespace TRE
 		return m_GameRunning;
 	}
 
-	bool GameLoop::IsResetted()
-	{
-		return m_IsResetted;
-	}
-
 	void GameLoop::ToggleRun(bool isRunning)
 	{
-		m_GameRunning = isRunning;
-
-		// If toggle to run, save scene temporarily
-		if (m_GameRunning)
+		// If toggle to run and was not running, save scene temporarily
+		if (isRunning && !m_GameRunning)
 		{
-			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			// Destroys all undeployed entities
+			MemoryManager::Instance().ClearUndeployed();
+
+			// Save the registry
+			m_BackUp.clear();
+			ECSManager::Instance().SaveRegistry(m_BackUp);
 		}
+
+		m_GameRunning = isRunning;
 	}
 
 	void GameLoop::ResetScene()
 	{
-		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
+		if (m_GameRunning)
 		{
-			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
-			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
-			m_IsResetted = true;
+			Profiler::Instance().StartTimer("BeforeReset");
+			ECSSystemManager::Instance().BeforeReset();
+			Profiler::Instance().EndTimer("BeforeReset");
+
+			// Copy registry and components
+			ECSManager::Instance().CopyRegistry(m_BackUp);
+			// Clear Backup
+			m_BackUp.clear();
+
+			Profiler::Instance().StartTimer("OnReset");
+			ECSSystemManager::Instance().OnReset();
+			Profiler::Instance().EndTimer("OnReset");
+
+			m_GameRunning = false;
 		}
 	}
 
@@ -89,7 +92,6 @@ namespace TRE
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
 			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
-			ToggleRun(false);
 			ResetScene();
 	}
 }

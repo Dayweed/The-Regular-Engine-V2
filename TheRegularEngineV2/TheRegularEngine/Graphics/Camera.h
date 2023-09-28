@@ -20,7 +20,7 @@ namespace TRE
 		void SetViewTarget(Camera& camera, const glm::vec3& target);
 	}
 
-	class Camera
+	class Camera : property::base
 	{
 	public:
 		glm::vec3 m_Position{ 0.f, 0.f, 0.f }; // SSSS
@@ -115,6 +115,8 @@ namespace TRE
 
 			t.m_IsDirty = true;
 		}
+
+		property_vtable()
 	};
 	
 	class CameraSystem : public ECSSystem
@@ -178,3 +180,25 @@ namespace TRE
 		bool m_IsDirty{ false }; //Bool to update descriptor set
 	};
 }
+
+property_begin(TRE::Camera)
+{
+	property_var(m_Position).Name("Position"),
+		property_var(m_Rotation).Name("Rotation"),
+		property_var(m_ViewportSize).Name("Viewport Size"),
+		property_var(m_Pitch).Name("Pitch"),
+		property_var(m_Yaw).Name("Yaw"),
+		property_var(m_Roll).Name("Roll"),
+		property_var(m_Fov).Name("FOV"),
+		property_var(m_Near).Name("Near"),
+		property_var(m_Far).Name("Far"),
+		property_var(m_FocalLength).Name("Focal Length"),
+		property_var(m_FocalPoint).Name("Focal Point"),
+		property_var(m_Left).Name("Left"),
+		property_var(m_Right).Name("Right"),
+		property_var(m_Bottom).Name("Bottom"),
+		property_var(m_Top).Name("Top"),
+		property_var(m_AspectRatio).Name("Aspect Ratio"),
+		property_var(m_IsPerspective).Name("IsPerspective"),
+		property_var(m_IsMainCamera).Name("IsMainCamera")
+} property_vend_h(TRE::Camera)

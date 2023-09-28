@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Demo/Demo.h"
+#include "Core/Engine.h"
 
 #include <random>
 
@@ -7,8 +8,8 @@ namespace TRE
 {
 	static int i = 0;
 	static std::default_random_engine generator;
-	static std::uniform_real_distribution<float> distribution(-50.f, 50.f);
-	static std::uniform_real_distribution<float> distributionZ(0.f, 500.f);
+	static std::uniform_real_distribution<float> distribution(-200.f, 200.f);
+	static std::uniform_real_distribution<float> distributionZ(50.f, 700.f);
 	void Demo::SpawnObject()
 	{
 		auto textureHandle = Resource::GetGUIDFromHex("474d70e35d64e711"); //diffuse
@@ -16,7 +17,6 @@ namespace TRE
 		auto textureHandle3 = Resource::GetGUIDFromHex("8a0c8bee2a64d76b"); //roughness
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
-		//auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 		auto vertHandle = 3;
 		auto fragHandle = 4;
 		auto matHandle = Resource::GenerateGUID();
@@ -42,5 +42,8 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+
+		std::shared_ptr<Material> allocMat = ResourceManager::Instance().GetResource<Material>(matHandle);
+		allocMat->AllocateLayouts();
 	}
 }

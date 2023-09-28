@@ -50,6 +50,7 @@ namespace TRE
 
 		void Init() override;
 		void Update() override;
+		void BeforeReset() override;
 		void OnReset() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;

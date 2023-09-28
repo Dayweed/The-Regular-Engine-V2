@@ -584,6 +584,12 @@ namespace TRE
 
 		void RemCompFromName(Entity ent, std::string compName);
 
+		void SaveRegistry(entt::registry& dstRegistry);
+		void CopyRegistry(entt::registry& srcRegistry);
+
+		template<class... Components>
+		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);
+
 		// TODELETE
 		void TESTRUN();
 		void STRESSTEST();
@@ -719,6 +725,16 @@ namespace TRE
 		// Prepare map for ImGui
 		CompFunction(name, AddEntityComponent<T>, RemoveEntityComponent<T>);
 		m_CompRemovable.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(removable));
+	}
+
+	template<class... Components>
+	void ECSManager::Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity) {
+		([&] {
+			if (src.any_of<Components>(srcEntity)) {
+				if constexpr (sizeof(Components) == 1) dst.emplace<Components>(dstEntity);
+				else dst.emplace<Components>(dstEntity, src.get<Components>(srcEntity));
+			}
+			}(), ...);
 	}
 
 	template <typename T>

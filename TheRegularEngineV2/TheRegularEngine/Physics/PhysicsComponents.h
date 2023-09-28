@@ -48,6 +48,8 @@ namespace TRE
 		// collision detection modes
 		// constraints - freeze position x,y,z & rotation x, y, z
 
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Rigidbody, m_IsInitialized, m_Mass, m_Drag, m_AngularDrag, m_UseGravity, m_IsKinematic)
+
 		// Allows the base class to get these properties  
 		property_vtable()
 	};
@@ -65,6 +67,24 @@ namespace TRE
 		Vector3 m_Offset = {};
 		float m_Radius = 1.0f;
 
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const SphereCollider& t) // Serialize
+		{
+			std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
+
+			j = nlohmann::json{
+				{ "m_Offset", v_offset },
+				{ "m_Radius", t.m_Radius },
+			};
+		}
+		friend void from_json(const nlohmann::json& j, SphereCollider& t) // Deserialize
+		{
+			std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
+			float a_off[3]{ v_off[0], v_off[1], v_off[2] };
+			t.m_Offset = glm::make_vec3(a_off);
+			t.m_Radius = j.at("m_Radius").get<float>();
+		}
+
 		// Allows the base class to get these properties
 		property_vtable()
 	};
@@ -73,6 +93,27 @@ namespace TRE
 	{
 		Vector3 m_Offset = {};
 		Vector3 m_HalfExtents = Vector3(0.5f);
+
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const BoxCollider& t) // Serialize
+		{
+			std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
+			std::vector<float> v_halfEx{ t.m_HalfExtents.x, t.m_HalfExtents.y, t.m_HalfExtents.z };
+
+			j = nlohmann::json{
+				{ "m_Offset", v_offset },
+				{ "m_HalfExtents", v_halfEx },
+			};
+		}
+		friend void from_json(const nlohmann::json& j, BoxCollider& t) // Deserialize
+		{
+			std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
+			float a_off[3]{ v_off[0], v_off[1], v_off[2] };
+			t.m_Offset = glm::make_vec3(a_off);
+			std::vector<float> v_half{ j.at("m_HalfExtents").get<std::vector<float>>() };
+			float a_half[3]{ v_half[0], v_half[1], v_half[2] };
+			t.m_Offset = glm::make_vec3(a_half);
+		}
 
 		// Allows the base class to get these properties  
 		property_vtable()

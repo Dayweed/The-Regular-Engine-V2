@@ -165,13 +165,19 @@ namespace TRE
 			}
 		}
 
+		void BeforeReset()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->BeforeReset();
+			}
+		}
+
 		void OnReset()
 		{
 			for (auto& system : m_Systems)
 			{
-				Profiler::Instance().StartTimer(m_SystemsName[system.first]);
 				system.second->OnReset();
-				Profiler::Instance().EndTimer(m_SystemsName[system.first]);
 			}
 		}
 
