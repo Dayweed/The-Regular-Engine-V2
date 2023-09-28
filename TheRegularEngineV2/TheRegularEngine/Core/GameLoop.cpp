@@ -20,11 +20,6 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);
 	}
 
-	void GameLoop::ClearReset()
-	{
-		m_IsResetted = false;
-	}
-
 	void GameLoop::Shutdown()
 	{
 		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
@@ -38,11 +33,6 @@ namespace TRE
 	bool GameLoop::IsGameRunning()
 	{
 		return m_GameRunning;
-	}
-
-	bool GameLoop::IsResetted()
-	{
-		return m_IsResetted;
 	}
 
 	void GameLoop::ToggleRun(bool isRunning)
@@ -64,19 +54,20 @@ namespace TRE
 	{
 		if (m_GameRunning)
 		{
+			Profiler::Instance().StartTimer("BeforeReset");
 			ECSSystemManager::Instance().BeforeReset();
+			Profiler::Instance().EndTimer("BeforeReset");
 
 			// Copy registry and components
 			ECSManager::Instance().CopyRegistry(m_BackUp);
 			// Clear Backup
 			m_BackUp.clear();
 
+			Profiler::Instance().StartTimer("OnReset");
 			ECSSystemManager::Instance().OnReset();
+			Profiler::Instance().EndTimer("OnReset");
 
-			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
-			//std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 			m_GameRunning = false;
-			//m_IsResetted = true;
 		}
 	}
 

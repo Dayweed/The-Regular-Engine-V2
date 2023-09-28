@@ -16,11 +16,9 @@ namespace TRE
 		static GameLoop& Instance();
 
 		void Init();
-		void ClearReset();
 		void Shutdown();
 
 		bool IsGameRunning();
-		bool IsResetted();		// Reset value will go back to false after one loop
 
 		void ToggleRun(bool isRunning);
 		void ResetScene();
@@ -30,7 +28,6 @@ namespace TRE
 	private:
 		// Game Loop
 		bool m_GameRunning{ false };
-		bool m_IsResetted{ false };
 
 		entt::registry m_BackUp;
 
