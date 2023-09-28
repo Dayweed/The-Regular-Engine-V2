@@ -48,9 +48,8 @@ namespace TRE
 
 	void Texture::Serialize(const std::string& filePath, const std::unique_ptr<Texture> texture)
 	{
-		std::ofstream file(filePath, std::ios::binary);
+		std::ofstream file(filePath, std::ios::binary | std::ios::trunc);
 
-		file.write(reinterpret_cast<const char*>(texture->Name.data()), sizeof(Texture::Name));
 		file.write(reinterpret_cast<const char*>(&texture->Width), sizeof(Texture::Width));
 		file.write(reinterpret_cast<const char*>(&texture->Height), sizeof(Texture::Height));
 		file.write(reinterpret_cast<const char*>(&texture->Format), sizeof(Texture::Format));
@@ -80,9 +79,6 @@ namespace TRE
 				file.close();
 
 				std::size_t offset = 0;
-				//Name
-				memcpy(texture->Name.data(), buffer + offset, sizeof(Texture::Name));
-				offset += sizeof(Texture::Name);
 				//Width
 				texture->Width = *reinterpret_cast<std::uint32_t*>(buffer + offset);
 				offset += sizeof(std::uint32_t);
@@ -99,7 +95,7 @@ namespace TRE
 				texture->DataSize = *reinterpret_cast<std::uint32_t*>(buffer + offset);
 				offset += sizeof(std::uint32_t);
 				//Data
-				texture->Data = new char[texture->DataSize];
+				texture->Data = new void*[texture->DataSize];
 				memcpy(texture->Data, buffer + offset, texture->DataSize);
 
 				delete[] buffer;

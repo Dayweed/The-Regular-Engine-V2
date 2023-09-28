@@ -5,9 +5,6 @@
 #include "RendererContext.h"
 #include "TREIncludes.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 TRE::ResourceHandle TRE::VulkanTexture::m_DefaultTextureID{0};
 
 namespace TRE
@@ -18,11 +15,10 @@ namespace TRE
 
 		m_Type = ResourceType::Texture;
 
-		VkDeviceSize imageSize = texture->DataSize;
-		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		Buffer stagingBuffer(texture->DataSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 4);
 
 		stagingBuffer.Map();
-		stagingBuffer.WriteToBuffer(texture->Data);
+		stagingBuffer.WriteToBuffer(texture->Data, texture->DataSize);
 		stagingBuffer.Unmap();
 
 		VkImageCreateInfo imageInfo{};

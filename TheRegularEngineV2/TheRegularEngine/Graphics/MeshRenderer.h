@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/ECS.h"
 #include "Core/System.h"
-#include "Core/SystemManager.h"
 #include "RenderObject.h"
 #include "Sphere3D.h"
 #include "Material.h"
@@ -69,6 +68,7 @@ namespace TRE
 	{
 	public:
 		void Update() override;
+		void OnReset() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
 		
@@ -95,13 +95,13 @@ namespace TRE
 
 property_begin(TRE::MeshRenderer)
 {
-	property_var_fnbegin("Render Object", respurce_ref )
+	property_var_fnbegin("Render Object", resource_ref )
 	{
 		if (isRead)
 		{
 			if (Self.m_RenderObject && Self.m_MaterialInstance)
 			{
-				InOut.m_Vale = Self.m_RenderObject->GetHandle();
+				InOut.m_Value = Self.m_RenderObject->GetHandle();
 			}
 		}
 		else

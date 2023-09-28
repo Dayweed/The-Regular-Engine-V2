@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "Engine.h"
+#include "GameLoop.h"
 #include "ECS.h"
 #include "Transform.h"
 #include "SceneManager.h"
@@ -19,6 +20,8 @@
 #include "Resource/ResourceManager.h"
 #include "Graphics/ShaderCompiler.h"
 #include "TextureDescriptorFile.h"	
+
+#include "Demo/Demo.h"
 
 namespace TRE
 {
@@ -165,20 +168,20 @@ namespace TRE
 		ro->SetHandle(skullHandle);
 		ResourceManager::Instance().AddResource(std::move(ro));
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
+		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.vert");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/PBR.frag");
+		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.frag");
 		frag->SetHandle(fragHandle);
 		ResourceManager::Instance().AddResource(std::move(frag));
 
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.vert");
 		DebugDrawVert->SetHandle(DebugDrawVertHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
-		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
+		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.frag");
 		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
 
@@ -206,13 +209,14 @@ namespace TRE
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
-
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
-		/*std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
+	/*	std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
 		mat2->SetHandle(matHandle2);
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
+		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
+		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat2));*/
 
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
@@ -222,27 +226,27 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 0.f, 150.f));
+		transformSystem->SetPosition(test, glm::vec3(0.f, 20.f, 180.f));
 		transformSystem->SetScale(test, glm::vec3(0.5f, 0.5f, 0.5f));
 		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
-		//test->AddComponent<Audio>();
-		//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-		//audioSystem->SetLoop(test, true);
-		//audioSystem->SetSpatialize(test,true);
-		//audioSystem->CompileAudio(test);
-		//audioSystem->SetSourceRadius(test, 30.f, 200.f);
+		test->AddComponent<Audio>();
+		audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+		audioSystem->SetLoop(test, true);
+		audioSystem->SetSpatialize(test,true);
+		audioSystem->CompileAudio(test);
+		audioSystem->SetSourceRadius(test, 10.f, 100.f);
 
-		//Entity test2 = ECSManager::Instance().CreateEntity();
-		//test2->GetComponent<Properties>().m_Name = "Test2";
-		//transformSystem->SetPosition(test2, glm::vec3(30.f, 10.f, 100.f));
-		////transformSystem->SetScale(test2, glm::vec3(5.f, 5.f, 5.f));
-		//transformSystem->SetRotation(test2, glm::vec3(0.f, 0.f, 45.f));
-		//test2->AddComponent<MeshRenderer>();
-		//meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		//meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		/*Entity test2 = ECSManager::Instance().CreateEntity();
+		test2->GetComponent<Properties>().m_Name = "Test2";
+		transformSystem->SetPosition(test2, glm::vec3(0.f, 20.f, 180.f));
+		transformSystem->SetScale(test2, glm::vec3(0.5f, 0.5f, 0.5f));
+		transformSystem->SetRotation(test2, glm::vec3(0, 180.f, 0));
+		test2->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		meshRendererSystem->SetMaterial(test2, ResourceManager::Instance().GetResource<Material>(matHandle2));*/
 
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
@@ -262,6 +266,10 @@ namespace TRE
 
 		//SceneManager::Instance().NewScene();
 		//SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
+
+		
+		//for(int i = 0; i < 10; i++)
+		//Demo::SpawnObject();
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -296,6 +304,7 @@ namespace TRE
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
 
+		GameLoop::Instance().Init();
 		RegisterECS();
 		//DemoDeserialize();
 		DemoScene();
@@ -353,10 +362,22 @@ namespace TRE
 		{
 			m_Window->UpdateDeltaTime();
 
+			// GameLoop Refresh
+			if (GameLoop::Instance().IsResetted())
+			{
+				Profiler::Instance().StartTimer("OnReset");
+				ECSSystemManager::Instance().OnReset();
+				Profiler::Instance().EndTimer("OnReset");
+				GameLoop::Instance().ClearReset();
+			}
+
 			//Update
-			Profiler::Instance().StartTimer("Update");
-			ECSSystemManager::Instance().UpdateSystem();
-			Profiler::Instance().EndTimer("Update");
+			if (GameLoop::Instance().IsGameRunning())
+			{
+				Profiler::Instance().StartTimer("Update");
+				ECSSystemManager::Instance().UpdateSystem();
+				Profiler::Instance().EndTimer("Update");
+			}
 
 			Profiler::Instance().StartTimer("OnDestroyEntities");
 			ECSSystemManager::Instance().OnDestroyEntities();
@@ -398,5 +419,6 @@ namespace TRE
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
+		GameLoop::Instance().Shutdown();
 	}
 }

@@ -1,13 +1,15 @@
+#pragma once
 #include <variant>
 
 #include "glm/glm.hpp"
+#include "Vector3.h"
 
 #pragma once
 using string_t = std::string;
 
-struct respurce_ref
+struct resource_ref
 {
-    std::uint64_t m_Vale;
+    std::uint64_t m_Value;
 };
 
 //--------------------------------------------------------------------------------------------
@@ -144,7 +146,8 @@ namespace property
             , string_t
             , oobb
             , glm::vec3
-            , respurce_ref
+            , Vector3
+            , resource_ref
         >;
     
         //--------------------------------------------------------------------------------------------

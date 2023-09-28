@@ -1,5 +1,6 @@
 #pragma once
 #include "EventBase.h"
+#include "TREIncludes.h"
 #include <string>
 #include <chrono>
 
@@ -15,8 +16,22 @@ namespace TRE
 
 	struct SendTimeTakenEvent : Event
 	{
-		std::list<std::string> m_Str{};
+		std::unordered_map<std::string, Timer*> m_Timers{};
 		SendTimeTakenEvent() = delete;
-		SendTimeTakenEvent(std::list<std::string> str) : m_Str(str) {}
+		SendTimeTakenEvent(std::unordered_map<std::string, Timer*> timer) : m_Timers(timer) {}
+	};
+
+	struct ToggleRunEvent : Event
+	{
+		bool m_Playing{ false };
+		ToggleRunEvent() = delete;
+		ToggleRunEvent(bool playing) : m_Playing(playing) {}
+	};
+
+	struct ResetSceneEvent : Event
+	{
+		bool m_Nth{ false };
+		ResetSceneEvent() = delete;
+		ResetSceneEvent(bool nth) : m_Nth(nth) {}
 	};
 }

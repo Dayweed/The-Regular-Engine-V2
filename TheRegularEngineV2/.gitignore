@@ -3,6 +3,10 @@
 
 # Custom Ignore
 Executable/
+Executable_Debug_TheRegularEditor/
+Executable_Debug_TheRegularEngine/
+Executable_Release_TheRegularEditor/
+Executable_Release_TheRegularEngine/
 TheRegularEditor/resources/Scripts
 
 # User-specific files

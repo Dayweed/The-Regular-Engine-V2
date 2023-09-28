@@ -30,12 +30,12 @@ namespace TRE
 		return m_PipelineShaderCreateInfo;
 	}
 
-	std::unordered_map<std::string, VkWriteDescriptorSet> Shader::GetWriteDescriptorSets()
+	std::map<uint32_t, VkWriteDescriptorSet> Shader::GetWriteDescriptorSets()
 	{
 		if (m_ReflectionData.DescriptorSets.size())
 			return m_ReflectionData.DescriptorSets[0].WriteDescriptorSets;
 		else
-			return std::unordered_map<std::string, VkWriteDescriptorSet>();
+			return std::map<uint32_t, VkWriteDescriptorSet>();
 	}
 
 	Shader::Shader(const std::filesystem::path& ShaderPath) : m_ShaderPath(ShaderPath)
@@ -106,7 +106,7 @@ namespace TRE
 				layout.pImmutableSamplers = nullptr;
 				layout.binding = binding;
 
-				VkWriteDescriptorSet& Set = ShaderDescriptorSet.WriteDescriptorSets[uniformBuffer.Name];
+				VkWriteDescriptorSet& Set = ShaderDescriptorSet.WriteDescriptorSets[binding];
 				Set = {};
 				Set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET; 
 				Set.descriptorCount = 1;
@@ -123,12 +123,12 @@ namespace TRE
 				layout.pImmutableSamplers = nullptr;
 				layout.binding = binding;
 
-				VkWriteDescriptorSet& Set = ShaderDescriptorSet.WriteDescriptorSets[ImageSampler.Name];
+				VkWriteDescriptorSet& Set = ShaderDescriptorSet.WriteDescriptorSets[binding];
 				Set = {};
 				Set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 				Set.descriptorCount = ImageSampler.ArraySize;
 				Set.descriptorType = layout.descriptorType;
-				Set.dstBinding = layout.binding;
+				Set.dstBinding = binding;
 			}
 		}
 	}

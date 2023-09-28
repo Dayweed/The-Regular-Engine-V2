@@ -61,6 +61,11 @@ namespace TRE
 		//}
 	}
 
+	void TransformSystem::OnReset()
+	{
+
+	}
+
 	void TransformSystem::OnDestroyGO()
 	{
 

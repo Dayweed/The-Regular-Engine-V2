@@ -112,6 +112,11 @@ namespace TRE
 		}
 	}
 
+	void CameraSystem::OnReset()
+	{
+
+	}
+
 	void CameraSystem::OnDestroyGO()
 	{
 

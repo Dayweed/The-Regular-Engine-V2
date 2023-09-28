@@ -3,6 +3,7 @@
 #include "Imgui/imgui.h"
 #include "Utilities.h"
 #include "EditorAssetManager.h"
+#include "EventSystem/EventHandler/EventHandler.h"
 
 namespace TRE
 {
@@ -19,6 +20,7 @@ namespace TRE
 	{
 		const auto playGUID = EditorAssetManager::Instance().GetAsset("icon-play.png");
 		const auto playHexGUID = Resource::GetGUIDHex(playGUID);
+		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> playButton = std::make_unique<VulkanTexture>("../Resources/" + playHexGUID + ".DDS");
 		playButton->SetHandle(playGUID);
 		EditorAssetManager::Instance().AddAsset("icon-play.png", std::move(playButton));
@@ -27,6 +29,7 @@ namespace TRE
 
 		const auto pauseGUID = EditorAssetManager::Instance().GetAsset("icon-pause.png");
 		const auto pauseHexGUID = Resource::GetGUIDHex(pauseGUID);
+		//Texture::RunCompiler("../Assets/" + pauseHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> pauseButton = std::make_unique<VulkanTexture>("../Resources/" + pauseHexGUID + ".DDS");
 		pauseButton->SetHandle(pauseGUID);
 		EditorAssetManager::Instance().AddAsset("icon-pause.png", std::move(pauseButton));
@@ -35,6 +38,7 @@ namespace TRE
 
 		const auto stopGUID = EditorAssetManager::Instance().GetAsset("icon-stop.png");
 		const auto stopHexGUID = Resource::GetGUIDHex(stopGUID);
+		//Texture::RunCompiler("../Assets/" + stopHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> stopButton = std::make_unique<VulkanTexture>("../Resources/" + stopHexGUID + ".DDS");
 		stopButton->SetHandle(stopGUID);
 		EditorAssetManager::Instance().AddAsset("icon-stop.png", std::move(stopButton));
@@ -49,21 +53,21 @@ namespace TRE
 		
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Play Button Pressed");
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
 
 		if (ImGui::ImageButton(m_PauseID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Button Pressed");
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
 
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			TRE_CORE_INFO("Work Button Pressed");
+			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
 		}
 
 		ImGui::End();

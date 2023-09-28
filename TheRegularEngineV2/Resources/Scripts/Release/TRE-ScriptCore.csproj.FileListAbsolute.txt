@@ -1,0 +1,12 @@
+C:\MyStuff\University\Y3T1\CSD3400_Gam300_Software_Engineering\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Release\TRE-ScriptCore.csproj.AssemblyReference.cache
+C:\MyStuff\University\Y3T1\CSD3400_Gam300_Software_Engineering\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Release\TRE-ScriptCore.csproj.CoreCompileInputs.cache
+C:\MyStuff\University\Y3T1\CSD3400_Gam300_Software_Engineering\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Release\TRE-ScriptCore.dll
+C:\MyStuff\University\Y3T1\CSD3400_Gam300_Software_Engineering\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\Release\TRE-ScriptCore.pdb
+C:\MyStuff\University\Y3T1\CSD3400_Gam300_Software_Engineering\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\TRE-ScriptCore.dll
+C:\MyStuff\University\Y3T1\CSD3400_Gam300_Software_Engineering\GAM300\TheRegularEngineV2\TheRegularEditor\resources\Scripts\TRE-ScriptCore.pdb
+D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.csproj.AssemblyReference.cache
+D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.csproj.CoreCompileInputs.cache
+D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.dll
+D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.pdb
+D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.dll
+D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.pdb

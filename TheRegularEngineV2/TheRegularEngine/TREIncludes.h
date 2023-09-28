@@ -20,6 +20,7 @@
 #include "Core/MemoryManager.h"
 #include "Core/FileSystem.h"
 #include "Core/Logger.h"
+#include "Core/Profiler.h"
 
 //-----------------Physics-----------------//
 #include "Physics/PhysicsSystem.h"

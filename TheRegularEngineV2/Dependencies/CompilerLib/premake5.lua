@@ -24,7 +24,7 @@ project "CompilerLib"
 
 	links
 	{
-		"Crunch",
+		
 	}
 
 	filter "configurations:Debug"

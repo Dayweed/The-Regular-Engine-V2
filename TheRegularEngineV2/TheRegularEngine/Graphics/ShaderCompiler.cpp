@@ -481,15 +481,17 @@ namespace TRE
 		if (ShaderStage == VK_SHADER_STAGE_VERTEX_BIT)
 		{
 			//To sort stage inputs according to locations else will break, why issit not sorted tho?
-			std::map <std::uint32_t, SPIRV_CROSS_NAMESPACE::Resource> sort;
-			for (auto& resource : Resources.stage_inputs)
 			{
-				sort[Compiler.get_decoration(resource.id, spv::DecorationLocation)] = resource;
-			}
-			Resources.stage_inputs.clear();
-			for (const auto& resource : sort)
-			{
-				Resources.stage_inputs.push_back(resource.second);
+				std::map <std::uint32_t, SPIRV_CROSS_NAMESPACE::Resource> sort;
+				for (auto& resource : Resources.stage_inputs)
+				{
+					sort[Compiler.get_decoration(resource.id, spv::DecorationLocation)] = resource;
+				}
+				Resources.stage_inputs.clear();
+				for (const auto& resource : sort)
+				{
+					Resources.stage_inputs.push_back(resource.second);
+				}
 			}
 
 			TRE_CORE_INFO("Reflecting Shader Stage Inputs, Size: {0}", Resources.stage_inputs.size());
@@ -509,7 +511,7 @@ namespace TRE
 				VertexAttributeDesc.offset = OffsetStride;
 
 				m_ReflectionData.VertexInputAttributeDescriptions.push_back(VertexAttributeDesc);
-				TRE_CORE_INFO("Reflected Input Stage: Name: {0} Binding:{1} Location: {2} Offset: {3}", Name, Binding, Location, OffsetStride);
+				TRE_CORE_TRACE("Reflected Input Stage: Name: {0} Binding:{1} Location: {2} Offset: {3}", Name, Binding, Location, OffsetStride);
 
 				OffsetStride += GetStrideFromVulkanFormat(VertexAttributeDesc.format);
 				//TRE_CORE_INFO("Reflected Input Stage: Offset: {0}", OffsetStride);
@@ -576,6 +578,19 @@ namespace TRE
 		}
 
 		TRE_CORE_INFO("Reflecting Image Samplers, Size: {0}", Resources.sampled_images.size());
+		{
+			//Sort according to sampler binding
+			std::map <std::uint32_t, SPIRV_CROSS_NAMESPACE::Resource> sort;
+			for (auto& resource : Resources.sampled_images)
+			{
+				sort[Compiler.get_decoration(resource.id, spv::DecorationBinding)] = resource;
+			}
+			Resources.sampled_images.clear();
+			for (const auto& resource : sort)
+			{
+				Resources.sampled_images.push_back(resource.second);
+			}
+		}
 		for (const auto& resource : Resources.sampled_images)
 		{
 			const auto& Name = resource.name;
@@ -600,6 +615,9 @@ namespace TRE
 			ImageSampler.DescriptorSet = descriptorset;
 			ImageSampler.ShaderStage = ShaderStage;
 			ImageSampler.ArraySize = Arraysize;
+
+			TRE_CORE_TRACE("Image Sampler Name: {0}", Name);
+			TRE_CORE_TRACE("Image Sampler Binding: {0}", binding);
 		}
 	}
 

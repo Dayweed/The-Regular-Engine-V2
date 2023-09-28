@@ -12,10 +12,10 @@ namespace TRE
 		struct Vertex
 		{
 			glm::vec3 m_Position{};
-			glm::vec3 m_Color{};
 			glm::vec3 m_Normal{};
 			glm::vec3 m_Tangent{};
 			glm::vec3 m_Bitangent{};
+			glm::vec3 m_Color{};
 			glm::vec2 m_UV{};
 
 			static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();

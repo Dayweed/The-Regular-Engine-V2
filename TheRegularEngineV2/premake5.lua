@@ -20,7 +20,6 @@ group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
 -- include "Dependencies/MeshOptimizer"
--- include "Dependencies/Crunch"
 -- include "Dependencies/CompilerLib"
 -- include "Compilers/TextureCompiler"
 -- include "Compilers/GeomCompiler"
@@ -34,8 +33,8 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -100,7 +99,6 @@ project "TheRegularEngine"
 		"%{Library.Vulkan}",
 		"%{Library.Math}",
 		"%{Library.Compiler}",
-		--"%{Library.Crunch}",	
 	}
 
 	filter "configurations:Debug"
@@ -144,8 +142,8 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	links 
 	{ 
@@ -250,8 +248,8 @@ project "TRE-ScriptCore"
 	language "C#"
 	dotnetframework "4.7.2"
 
-	targetdir ("TheRegularEditor/resources/Scripts")
-	objdir ("TheRegularEditor/resources/Scripts")
+	targetdir ("Resources/Scripts")
+	objdir ("Resources/Scripts")
 
 	files 
 	{

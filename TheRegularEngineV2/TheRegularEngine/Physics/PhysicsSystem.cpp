@@ -14,7 +14,10 @@
 #include "TREIncludes.h"
 #include "PhysicsSystem.h"
 
+#pragma region Macros
+
 #define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
+#define UNUSED_PARAM(param) (void)param
 
 #pragma region PhysicsComponentAssertions
 #define PhysicsComponentConstructorAssertion(Type)														\
@@ -43,6 +46,16 @@
 	}
 #pragma endregion
 
+// not the best name... :/
+#define UpdateAllEntitiesWithComponent(Type)\
+	for (const Entity & entity : ECSManager::Instance().GetEntities<Type>()) Update##Type(entity)
+
+// this name is even worse! :_(
+#define OnEntityMismatchDestroyComponent(entity, attachedComponents, Type)\
+	if ((attachedComponents) & PhysicsComponentTypes::##Type && !(entity)->HasComponent<Type>()) Destruct##Type(entity)
+
+#pragma endregion
+
 using namespace physx;
 // to save my dwindling sanity
 
@@ -69,6 +82,29 @@ namespace TRE
 		angles.z = std::atan2(siny_cosp, cosy_cosp);
 
 		return angles;
+	}
+
+	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
+	PxQuat EulerAnglesToQuat(const PxVec3& rot)
+	{
+		const float roll = Mathf::DegToRad(rot.x);
+		const float pitch = Mathf::DegToRad(rot.y);
+		const float yaw = Mathf::DegToRad(rot.z);
+
+		double cr = cos(roll * 0.5);
+		double sr = sin(roll * 0.5);
+		double cp = cos(pitch * 0.5);
+		double sp = sin(pitch * 0.5);
+		double cy = cos(yaw * 0.5);
+		double sy = sin(yaw * 0.5);
+
+		PxQuat q;
+		q.w = cr * cp * cy + sr * sp * sy;
+		q.x = sr * cp * cy - cr * sp * sy;
+		q.y = cr * sp * cy + sr * cp * sy;
+		q.z = cr * cp * sy - sr * sp * cy;
+
+		return q;
 	}
 
 	PhysicsSystem::PhysicsSystem()
@@ -190,7 +226,7 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		m_IsReadyForUpdate || TESTUpdate();
 
-#if 1
+#if 0
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
 		if (result >= 1)
@@ -202,18 +238,31 @@ namespace TRE
 		}
 #endif
 
+		// How do I tell if a component has been removed from an entity???
+		for (auto& x : m_Actors)
+		{
+			Entity entity = ECSManager::Instance().FindEntity(x.first);
+			if (!entity) continue; // I sure hope this doesn't happen!
+
+			// if the attached comps say yes, but the entity says no...
+			// there is a mismatch. Thus, destroy that component.
+			const auto& attachedComponents = x.second.m_AttachedComponents;
+			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
+			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
+			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
+		}
+
+		UpdateAllEntitiesWithComponent(Rigidbody);
+		UpdateAllEntitiesWithComponent(SphereCollider);
+		UpdateAllEntitiesWithComponent(BoxCollider);
+
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
-
-		// auto UpdateTransform = []<typename Collider>{};
-		// because I can't do UpdateTransform< Type >() :(
-		// UpdateTransform.operator() < BoxCollider > ();
-		// UpdateTransform.operator() < SphereCollider > ();
-		// UpdateTransform.operator() < Rigidbody > ();
 
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
+			if (!entity) continue; // HERE WE ARE FOR SOME REASON??
 			const SharedData& sharedData = pair.second;
 			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, sharedData.m_RigidDynamic->getGlobalPose().p);
 
@@ -231,8 +280,16 @@ namespace TRE
 		}
 	}
 
+	void PhysicsSystem::OnReset()
+	{
+		// m_Actors.clear(); // ???
+	}
+
 	void PhysicsSystem::OnDestroyGO()
 	{
+#if 0
+		TRE_CORE_WARN("AM I EVEN HERE?!?!?!?!?");
+
 		// hopefully this'll be the parameter of this function in the future!!
 		Entity entity = ECSManager::Instance().CreateEntity("PhysicsSystem::OnDestroyGO");
 
@@ -242,6 +299,7 @@ namespace TRE
 
 		m_Actors.erase(entity->GetGUID());
 		ECSManager::Instance().DestroyEntity(entity);
+#endif
 	}
 
 	void PhysicsSystem::Shutdown()
@@ -269,7 +327,7 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	void PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const Vector3& offset) const
+	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const Vector3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(SphereCollider);
 
@@ -283,6 +341,8 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ colliderPos });
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
+
+			tempSharedData.m_GUID = entity->GetGUID();
 
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
@@ -307,11 +367,14 @@ namespace TRE
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
+		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 		sphereCollider.m_Radius = radius;
 		// TODO: assign more data here
 		// sphereCollider.m_IsTrigger = ...
+
+		return sphereCollider.m_IsInitialized = true;
 	}
 
 	void PhysicsSystem::ResizeSphereCollider(const Entity& entity, const float newRadius) const
@@ -337,6 +400,9 @@ namespace TRE
 		PhysicsComponentAssertion(SphereCollider);
 
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
+
+		sphereCollider.m_IsInitialized || ConstructSphereCollider(entity);
+
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// sphereCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
@@ -394,10 +460,10 @@ namespace TRE
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
 
-		entity->RemoveComponent<SphereCollider>();
+		// entity->RemoveComponent<SphereCollider>();
 	}
 
-	void PhysicsSystem::ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents, const Vector3& offset) const
+	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents, const Vector3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(BoxCollider);
 
@@ -411,6 +477,8 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ colliderPos });
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
+
+			tempSharedData.m_GUID = entity->GetGUID();
 
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
@@ -436,11 +504,14 @@ namespace TRE
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::BoxCollider;
+		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
 		boxCollider.m_HalfExtents = halfExtents;
 		// TODO: assign more data here
 		// boxCollider.m_IsTrigger = ...
+
+		return boxCollider.m_IsInitialized = true;
 	}
 
 	void PhysicsSystem::ResizeBoxCollider(const Entity& entity, const Vector3& newHalfExtents) const
@@ -470,6 +541,9 @@ namespace TRE
 		PhysicsComponentAssertion(BoxCollider);
 
 		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+
+		boxCollider.m_IsInitialized || ConstructBoxCollider(entity);
+
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// boxCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
@@ -527,10 +601,10 @@ namespace TRE
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
 
-		entity->RemoveComponent<BoxCollider>();
+		// entity->RemoveComponent<BoxCollider>();
 	}
 
-	void PhysicsSystem::ConstructRigidbody(const Entity& entity) const
+	bool PhysicsSystem::ConstructRigidbody(const Entity& entity) const
 	{
 		PhysicsComponentConstructorAssertion(Rigidbody);
 
@@ -539,9 +613,13 @@ namespace TRE
 		{
 			SharedData tempSharedData;
 			const Vector3& pos = entity->GetComponent<Transform>().m_Position;
+			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
+			PxTransform transform(VEC3_CAST(PxVec3, pos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
 
-			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ VEC3_CAST(PxVec3, pos) });
+			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
+
+			tempSharedData.m_GUID = entity->GetGUID();
 
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
@@ -557,6 +635,10 @@ namespace TRE
 		// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
+		// assert(entity->GetGUID() == sharedData.m_GUID);
+
+		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
+		return rigidbody.m_IsInitialized = true;
 	}
 
 	void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
@@ -570,6 +652,9 @@ namespace TRE
 		PhysicsComponentAssertion(Rigidbody);
 
 		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
+
+		rigidbody.m_IsInitialized || ConstructRigidbody(entity);
+
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		rigidbody.m_Mass = rigidDynamic->getMass();
@@ -600,7 +685,7 @@ namespace TRE
 			m_Actors.erase(entity->GetGUID());
 		}
 
-		entity->RemoveComponent<Rigidbody>();
+		// entity->RemoveComponent<Rigidbody>();
 	}
 
 	//This function creates a stack of shapes
@@ -631,7 +716,7 @@ namespace TRE
 		rigidDynamic->setRigidDynamicLockFlags(x);
 	}
 
-	// if one shape is a trigger, they're all triggers now :)
+	// if one shape on an entity is a trigger, they're all triggers now :)
 	void PhysicsSystem::ColliderToTrigger(const Entity& entity) const
 	{
 		assert(m_Actors.contains(entity->GetGUID()));
@@ -665,12 +750,12 @@ namespace TRE
 				e->GetComponent<Collider>().m_IsTrigger = true;
 		};
 
-		// because I can't do fn<Collider>() with lambdas...
+		// because I can't do MarkAsTrigger<Collider>() with lambdas...
 		MarkAsTrigger.operator() < SphereCollider > (entity);
 		MarkAsTrigger.operator() < BoxCollider > (entity);
 	}
 
-	// if one shape is a collider, they're all colliders now :)
+	// if one shape on an entity is a collider, they're all colliders now :)
 	void PhysicsSystem::TriggerToCollider(const Entity& entity) const
 	{
 		assert(m_Actors.contains(entity->GetGUID()));
@@ -698,48 +783,62 @@ namespace TRE
 			shapes[i]->setFlags(shapeFlags);
 		}
 
-		auto MarkAsTrigger = []<typename Collider>(const Entity & e)
+		auto MarkAsCollider = []<typename Collider>(const Entity & e)
 		{
 			if (e->HasComponent<Collider>())
 				e->GetComponent<Collider>().m_IsTrigger = false;
 		};
 
-		// because I can't do fn<Collider>() with lambdas...
-		MarkAsTrigger.operator() < SphereCollider > (entity);
-		MarkAsTrigger.operator() < BoxCollider > (entity);
+		// because I can't do MarkAsCollider<Collider>() with lambdas...
+		MarkAsCollider.operator() < SphereCollider > (entity);
+		MarkAsCollider.operator() < BoxCollider > (entity);
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
 	{
+		UNUSED_PARAM(bodyBuffer);
+		UNUSED_PARAM(poseBuffer);
+		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
 	}
 
 	void SimulationEventCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
 	{
+		UNUSED_PARAM(constraints);
+		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
 	}
 
 	void SimulationEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 	{
+		UNUSED_PARAM(pairHeader);
+		UNUSED_PARAM(pairs);
+		UNUSED_PARAM(nbPairs);
 		printf("|%s|\n", __FUNCTION__);
 	}
 
 	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
 	{
+		UNUSED_PARAM(actors);
+		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
 	}
 
 	void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 	{
+		UNUSED_PARAM(pairs);
+		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
 
 		if (!count) return;
-		auto& pair = pairs[count - 1];
+		// auto& pair = pairs[count - 1];
 		printf("YOOOOOOOOOOOOOOOOOOOOOOO\n");
 	}
 
 	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
 	{
+		UNUSED_PARAM(actors);
+		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
 	}
 }

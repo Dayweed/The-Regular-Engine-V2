@@ -24,7 +24,7 @@ namespace TRE
 
 		public:
 			VkPipelineShaderStageCreateInfo GetPipelineShaderInfo();
-			std::unordered_map<std::string, VkWriteDescriptorSet> GetWriteDescriptorSets();
+			std::map<uint32_t, VkWriteDescriptorSet> GetWriteDescriptorSets();
 			const std::vector<VkVertexInputAttributeDescription>& GetVertexAttributes();
 			uint32_t GetVertexStrides();
 

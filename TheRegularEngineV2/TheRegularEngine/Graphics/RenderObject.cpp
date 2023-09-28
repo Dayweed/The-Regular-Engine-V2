@@ -38,10 +38,10 @@ namespace TRE
 		for (uint32_t i = 0; i < geom->nPosition; ++i)
 		{
 			vertices[i].m_Position = geom->pPosition[i].Position;
-			vertices[i].m_Color = geom->pExtra[i].Color;
 			vertices[i].m_Normal = geom->pExtra[i].Normal;
 			vertices[i].m_Tangent = geom->pExtra[i].Tangent;
 			vertices[i].m_Bitangent = geom->pExtra[i].Bitangent;
+			vertices[i].m_Color = geom->pExtra[i].Color;
 			vertices[i].m_UV = geom->pExtra[i].UV;
 		}
 

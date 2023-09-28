@@ -78,7 +78,7 @@ namespace TRE
         time_t now = time(0);
         const tm* localTime = localtime(&now);
         std::stringstream ss{};
-        ss << "[" << (localTime->tm_hour) << ":" << std::setw(2) << std::setfill('0') << (localTime->tm_min) << ":" << (localTime->tm_sec) << "]";
+        ss << "[" << std::setw(2) << std::setfill('0') << (localTime->tm_hour) << ":" << std::setw(2) << std::setfill('0') << (localTime->tm_min) << ":" << std::setw(2) << std::setfill('0') << (localTime->tm_sec) << "]";
         m_ConsoleTimestamp.emplace_back(ss.str().c_str());
         m_ConsoleLog.emplace_back(event.m_Msg.c_str());
     }
