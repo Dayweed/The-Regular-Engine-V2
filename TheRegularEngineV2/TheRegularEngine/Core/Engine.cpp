@@ -369,15 +369,6 @@ namespace TRE
 		{
 			m_Window->UpdateDeltaTime();
 
-			// GameLoop Refresh
-			if (GameLoop::Instance().IsResetted())
-			{
-				Profiler::Instance().StartTimer("OnReset");
-				ECSSystemManager::Instance().OnReset();
-				Profiler::Instance().EndTimer("OnReset");
-				GameLoop::Instance().ClearReset();
-			}
-
 			//Update
 			if (GameLoop::Instance().IsGameRunning())
 			{

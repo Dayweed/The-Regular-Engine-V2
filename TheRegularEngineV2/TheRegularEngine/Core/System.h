@@ -20,6 +20,7 @@ namespace TRE
 			virtual ~ECSSystem() = default;
 
 			virtual void Init() {};
+			virtual void BeforeReset() {};
 			virtual void OnReset() {};
 			virtual void Update() {};
 			virtual void OnDestroyGO() {};

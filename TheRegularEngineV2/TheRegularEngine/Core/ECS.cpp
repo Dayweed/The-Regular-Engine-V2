@@ -213,6 +213,45 @@ namespace TRE
 		m_RemCompFunctions[compName](ent);
 	}
 
+	void ECSManager::SaveRegistry(entt::registry& dstRegistry)
+	{
+		dstRegistry.clear();
+
+		// Ensure it knows these components exists
+		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, FEL, FAKEFEL>();
+
+		m_Registry.each([&](entt::entity srcEntity)
+			{
+				entt::entity dstEntity = dstRegistry.create();
+
+				for (auto [id, source_storage] : m_Registry.storage())
+				{
+					auto destination_storage = dstRegistry.storage(id);
+					if (destination_storage != nullptr && source_storage.contains(srcEntity))
+					{
+						if (!destination_storage->contains(dstEntity))
+						{
+							destination_storage->emplace(dstEntity, source_storage.get(srcEntity));
+						}
+						// Overwrite m_Entity if m_Entity already contains the component
+						else
+						{
+							destination_storage->erase(dstEntity);
+							destination_storage->emplace(dstEntity, source_storage.get(srcEntity));
+						}
+					}
+				}
+			});
+	}
+
+	void ECSManager::CopyRegistry(entt::registry& srcRegistry)
+	{
+		MemoryManager::Instance().DeleteEntities();
+
+		// Copy 
+		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
+	}
+
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
 	{
 		std::vector<std::pair<std::string, property::base*>> components;
