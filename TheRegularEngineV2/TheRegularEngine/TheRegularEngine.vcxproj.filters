@@ -118,6 +118,15 @@
     <ClInclude Include="EventSystem\Events\InputEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\AnimationImporter.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AnimationStructure.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AnimationTest.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -257,6 +266,12 @@
     </ClCompile>
     <ClCompile Include="Editor\ImguiBuildBackend.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\AnimationImporter.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\AnimationTest.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Buffer.cpp">
       <Filter>Graphics</Filter>
