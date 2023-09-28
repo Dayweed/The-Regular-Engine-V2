@@ -35,7 +35,7 @@ namespace TRE
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 
 		Entity test = ECSManager::Instance().CreateEntity();
-		test->GetComponent<Properties>().m_Name = "Test " + std::to_string(i++);
+		test->GetComponent<Properties>().m_Name = "C# Test" + std::to_string(i++);
 		transformSystem->SetPosition(test, glm::vec3(distribution(generator), distribution(generator), distributionZ(generator)));
 		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
 		transformSystem->SetRotation(test, glm::vec3(0, 180.f, 0));

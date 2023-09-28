@@ -59,5 +59,17 @@ namespace TRE
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void RemoveComponent(string entityID, Components component);
     }
+
+    public class Demo
+    {
+        public Demo()
+        {
+            SpawnObject();
+        }
+
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static string SpawnObject();
+    }
 }
 

@@ -191,6 +191,11 @@ namespace TRE
 		{
 			ScriptEngine::TestAddComponent();
 		}
+
+		if (event._key == (int)KeyButton::O)
+		{
+			ScriptEngine::TestSpawnObject();
+		}
 	}
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)

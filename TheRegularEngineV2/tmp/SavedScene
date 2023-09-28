@@ -12,13 +12,13 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{766BF5CE-9700-43EA-8CD3-9C07B210D7D2}",
+         "m_GUID": "{1C4DD305-A610-41E8-85B5-E4D52715CBA5}",
          "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{11E78887-E5A1-4390-B45C-C8116654586A}",
+         "m_GUID": "{2EF165E9-E8CD-4E53-947F-6E85E988F810}",
          "m_Name": "cam"
       }
    ],

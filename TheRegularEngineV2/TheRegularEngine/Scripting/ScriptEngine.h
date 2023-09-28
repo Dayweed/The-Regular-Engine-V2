@@ -18,6 +18,7 @@ namespace TRE
 			void UpdateScriptingEngine();
 			static void TestScriptingEngine();
 			static void TestAddComponent();
+			static void TestSpawnObject();
 
 #pragma region MonoFunctionBindings
 
@@ -26,6 +27,8 @@ namespace TRE
 			static void BindAddComponent(MonoString* id, int componentType);
 			static void BindRemoveComponent(MonoString* id, int componentType);
 
+			// Test
+			static void BindTestFunction();
 
 			// Transform
 

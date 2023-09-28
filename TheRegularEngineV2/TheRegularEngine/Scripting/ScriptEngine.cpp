@@ -3,6 +3,7 @@
 #include "InputHandler/InputHandler.h"
 
 #include "Core/ECS.h"
+#include "Demo/Demo.h"
 
 
 //Everything should be remove. This is just to test the calling of the runtime works.
@@ -117,11 +118,9 @@ namespace TRE
     {
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
-		std::cout << "CreateEntity" << std::endl;
 		mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
-		std::cout << "AddComponent" << std::endl;
 		mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
-        std::cout << "Remove Component" << std::endl;
+        mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
     }
 
     void ScriptEngine::UpdateScriptingEngine()
@@ -151,6 +150,15 @@ namespace TRE
 
 		MonoMethod* method = mono_class_get_method_from_name(testClass, "Test", 0);
 		mono_runtime_invoke(method, Instance, nullptr, nullptr);
+
+    }
+
+    void ScriptEngine::TestSpawnObject()
+    {
+		MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
+		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Demo");
+        MonoObject* instance = mono_object_new(s_AppDomain, testClass);
+        mono_runtime_object_init(instance);
     }
 
 
@@ -220,6 +228,11 @@ namespace TRE
 			std::cout << "The component does not exist!" << std::endl;
             break;
         }
+	}
+
+    void ScriptEngine::BindTestFunction()
+    {
+        Demo::SpawnObject();
 	}
 
 #pragma endregion
