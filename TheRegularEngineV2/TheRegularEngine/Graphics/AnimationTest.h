@@ -11,15 +11,6 @@ namespace TRE
     struct AnimationUBO;
     struct anim_player
     {
-        //-----------------------------------------------------------------------------------------------------------
-
-        void PlayAnim(int i) noexcept
-        {
-            assert(i < m_AnimPackage.m_Animations.size());
-            m_iCurAnim = i;
-            m_Time = 0;
-        }
-
         void Update(float DT) noexcept
         {
             auto& Anim = m_AnimPackage.m_Animations[m_iCurAnim];
@@ -28,77 +19,13 @@ namespace TRE
             m_Time += DT;
             while (m_Time >= Anim.m_TimeLength) m_Time -= Anim.m_TimeLength;
         }
-
-        //-----------------------------------------------------------------------------------------------------------
-
-        static float Dot(glm::quat Start, glm::quat Q)
-        {
-            return  Start.x * Q.x +
-                    Start.y * Q.y +
-                    Start.z * Q.z +
-                    Start.w * Q.w;
-        }
-
-        template< typename T_PARENT, typename T_BASIC_TYPE >
-        struct type
-        {
-            using basic_t = T_BASIC_TYPE;
-            using self_t = type;
-            T_BASIC_TYPE m_Value;
-
-            constexpr                               type(void)                        noexcept = default;
-            constexpr explicit                      type(basic_t Value)               noexcept : m_Value{ Value } {}
-            constexpr               bool            operator == (const T_PARENT X)    const   noexcept { return m_Value == X.m_Value; }
-            constexpr               bool            operator != (const T_PARENT X)    const   noexcept { return m_Value != X.m_Value; }
-            constexpr               bool            operator >= (const T_PARENT X)    const   noexcept { return m_Value >= X.m_Value; }
-            constexpr               bool            operator <= (const T_PARENT X)    const   noexcept { return m_Value <= X.m_Value; }
-            constexpr               bool            operator >  (const T_PARENT X)    const   noexcept { return m_Value > X.m_Value; }
-            constexpr               bool            operator <  (const T_PARENT X)    const   noexcept { return m_Value < X.m_Value; }
-            auto            operator ++ (int)                         noexcept { T_PARENT temp{ *this }; m_Value += 1; return temp; }
-            auto& operator ++ (void)                        noexcept { m_Value += 1; return *static_cast<T_PARENT*>(this); }
-            auto            operator -- (int)                         noexcept { T_PARENT temp{ *this }; m_Value -= 1; return temp; }
-            auto& operator -- (void)                        noexcept { m_Value -= 1; return *this; }
-            auto& operator += (const T_PARENT X)            noexcept { m_Value += X.m_Value; return *static_cast<T_PARENT*>(this); }
-            auto& operator -= (const T_PARENT X)            noexcept { m_Value -= X.m_Value; return *static_cast<T_PARENT*>(this); }
-            auto& operator *= (const T_PARENT X)            noexcept { m_Value *= X.m_Value; return *static_cast<T_PARENT*>(this); }
-            auto& operator /= (const T_PARENT X)            noexcept { m_Value /= X.m_Value; return *static_cast<T_PARENT*>(this); }
-            template< typename = typename std::enable_if_t< std::is_signed<basic_t>::value, type > >
-            constexpr               auto            operator -  (void)               const   noexcept { return T_PARENT{ -m_Value }; }
-            constexpr               auto            operator +  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value + X.m_Value }; }
-            constexpr               auto            operator -  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value - X.m_Value }; }
-            constexpr               auto            operator *  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value * X.m_Value }; }
-            constexpr               auto            operator /  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value / X.m_Value }; }
-        };
-
-
-        struct degree : type<degree, float>
-        {
-            using type::type;
-            using type::operator =;
-            constexpr explicit                      degree(const unsigned long long    X)       noexcept : type{ static_cast<float>(X) } {}
-            constexpr explicit                      degree(const double X)                      noexcept : type{ static_cast<float>(X) } {}
-        };
-
-        struct radian : type<radian, float>
-        {
-            using type::type;
-            using type::operator =;
-            constexpr explicit                      radian(const int X)                 noexcept : type{ static_cast<float>(X) } {}
-            constexpr explicit                      radian(const long double X)         noexcept : type{ static_cast<float>(X) } {}
-            constexpr                               radian(const degree X)              noexcept : type{ X.m_Value * 0.017453292519943295769f } {}
-            constexpr degree                        getDegrees(void)                const   noexcept { return degree{ m_Value * 57.29577951308232087685f }; }
-        };
-        static float Sin(const radian X)
-        { 
-            return sinf(X.m_Value); 
-        }
-
-        glm::quat BlendAccurate(const glm::quat& Start, float T, const glm::quat& End) const
+    
+        glm::quat Blend(const glm::quat& Start, float T, const glm::quat& End) const
         {
             bool bFlip = false;
 
             // Determine if quats are further than 90 degrees
-            float Cs = Dot(Start, End);
+            float Cs = Start.x * End.x + Start.y * End.y + Start.z * End.z + Start.w * End.w;
             if (Cs < 0.0f)
             {
                 Cs = -Cs;
@@ -112,11 +39,11 @@ namespace TRE
             }
             else
             {
-                const radian Theta = radian{ acosf(Cs) };
-                const float S = 1.0f / Sin(Theta);
+                const float Theta = acosf(Cs);
+                const float S = 1.0f / sinf(Theta);
 
-                inv_T = Sin(radian{ 1.0f - T } * Theta)* S;
-                T = Sin(radian{T} * Theta)* S;
+                inv_T = sinf((1.0f - T) * Theta) * S;
+                T = sinf((T * Theta)) * S;
             }
 
             if (bFlip)
@@ -138,26 +65,16 @@ namespace TRE
             for (int i = 0; i < Anim.m_BoneKeyFrames.size(); ++i)
             {
                 auto& KeyFrame = Anim.m_BoneKeyFrames[i];
-
-                // Setup the L2W matrix for this bone, (two versions) one with inner-frame blending, the other version without it
-                //FinalL2W[i].setup(xcore::math::transform3::Blend(KeyFrame.m_Transfoms[iFrameT0], FrameTime - iFrameT0, KeyFrame.m_Transfoms[iFrameT1]));
-
                 glm::vec3 BlendedScale = KeyFrame.m_Scale[iFrameT0] + ((FrameTime - iFrameT0) * (KeyFrame.m_Scale[iFrameT1] - KeyFrame.m_Scale[iFrameT0]));
-                glm::quat BlendedRotate = BlendAccurate(KeyFrame.m_Rotate[iFrameT0], (FrameTime - iFrameT0), KeyFrame.m_Rotate[iFrameT1]);
+                glm::quat BlendedRotate = Blend(KeyFrame.m_Rotate[iFrameT0], (FrameTime - iFrameT0), KeyFrame.m_Rotate[iFrameT1]);
                 glm::vec3 BlendedTranslate = KeyFrame.m_Translate[iFrameT0] + ((FrameTime - iFrameT0) * (KeyFrame.m_Translate[iFrameT1] - KeyFrame.m_Translate[iFrameT0]));
 
-                //glm::mat4 Scale(1.f); glm::mat4 Translate(1.f);
-                //Scale = glm::scale(Scale, BlendedScale);
-                //glm::mat4 Rotate = setRotation(BlendedRotate);
-                //Translate = glm::translate(Translate, BlendedTranslate);
-
                 glm::mat4 Scale(1.f); glm::mat4 Translate(1.f);
-                Scale = glm::scale(Scale, KeyFrame.m_Scale[iFrameT0]);
-                glm::mat4 Rotate = glm::mat4_cast(KeyFrame.m_Rotate[iFrameT0]);
-                Translate = glm::translate(Translate, KeyFrame.m_Translate[iFrameT0]);
+                Scale = glm::scale(Scale, BlendedScale);
+                glm::mat4 Rotate = glm::mat4_cast(BlendedRotate);
+                Translate = glm::translate(Translate, BlendedTranslate);
 
-                //FinalL2W[i] = Translate * Rotate * Scale;
-                FinalL2W[i] = Scale * Rotate * Translate;
+                FinalL2W[i] = Translate * Rotate * Scale;
 
                 if (-1 != m_Skeleton.m_Bones[i].m_iParent)
                 {

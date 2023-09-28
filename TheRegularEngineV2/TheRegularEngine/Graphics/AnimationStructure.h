@@ -2,45 +2,6 @@
 
 namespace TRE
 {
-	struct material_instance
-	{
-		enum class shading_model : std::uint8_t
-		{
-			UNKOWN, GOURAUD, PBR, TOON, UNLIGHT
-		};
-
-		enum class address_mode : std::uint8_t
-		{
-			TILE, MIRROR, CLAMP
-		};
-
-		struct sampler
-		{
-			int                 m_iTexture = -1;
-			address_mode        m_UMode;
-			address_mode        m_VMode;
-		};
-
-		std::string             m_Name;
-		shading_model           m_ShadingModel;
-		glm::ivec4				m_DiffuseColor;
-		glm::ivec4				m_SpecularColor;
-		glm::ivec4				m_AmbientColor;
-		glm::ivec4				m_EmmisiveColor;
-		float                   m_ShininessFactor;
-		float                   m_ShininessStreanthFactor;
-		float                   m_OpacityFactor;
-		sampler                 m_DiffuseSampler;
-		sampler                 m_SpecularSampler;
-		sampler                 m_OpacitySampler;
-		sampler                 m_AmbientSampler;
-		sampler                 m_EmissiveSampler;
-		sampler                 m_ShininessSampler;
-		sampler                 m_LightmapSampler;
-		sampler                 m_NormalSampler;
-		sampler                 m_HeightSampler;
-	};
-
 	struct bone_keyframes
 	{
 		std::vector<glm::vec3> m_Scale;
@@ -112,7 +73,6 @@ namespace TRE
 	{
 		std::string                     m_FileName;
 		std::vector<mesh>               m_Mesh;
-		std::vector<material_instance>  m_MaterialInstance;
 		std::vector<std::string>        m_TexturePaths;
 	};
 }
