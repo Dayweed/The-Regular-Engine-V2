@@ -68,7 +68,6 @@ namespace TRE
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
 			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
-			TRE_CORE_INFO("Work Button Pressed");
 		}
 
 		ImGui::End();
