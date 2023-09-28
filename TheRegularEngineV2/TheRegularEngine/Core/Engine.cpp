@@ -238,7 +238,7 @@ namespace TRE
 		audioSystem->SetLoop(test, true);
 		audioSystem->SetSpatialize(test,true);
 		audioSystem->CompileAudio(test);
-		audioSystem->SetSourceRadius(test, 10.f, 100.f);
+		audioSystem->SetSourceRadius(test, 50.f, 150.f);
 
 		/*Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
@@ -253,8 +253,8 @@ namespace TRE
 		cam->GetComponent<Properties>().m_Name = "cam";
 		cam->AddComponent<Camera>();
 		cameraSystem->SetIsMainCamera(cam, true);
-		//cam->AddComponent<AudioListener>();
-		//audioSystem->SetListenerPosition(cam);
+		cam->AddComponent<AudioListener>();
+		audioSystem->SetListenerPosition(cam);
 
 		//Entity audio = ECSManager::Instance().CreateEntity();
 		//audio->AddComponent<Audio>();
@@ -270,7 +270,7 @@ namespace TRE
 
 		
 		//for(int i = 0; i < 10; i++)
-		//Demo::SpawnObject();
+			//Demo::SpawnObject();
 	}
 }
 #pragma endregion TO DELETE TEST

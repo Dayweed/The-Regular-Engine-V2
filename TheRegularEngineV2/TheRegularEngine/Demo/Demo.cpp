@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Demo/Demo.h"
+#include "Core/Engine.h"
 
 #include <random>
 
@@ -42,5 +43,8 @@ namespace TRE
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+
+		std::shared_ptr<Material> allocMat = ResourceManager::Instance().GetResource<Material>(matHandle);
+		allocMat->AllocateLayouts();
 	}
 }
