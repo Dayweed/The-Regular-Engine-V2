@@ -21,6 +21,7 @@
 #include "Resource/ResourceManager.h"
 #include "Graphics/ShaderCompiler.h"
 #include "TextureDescriptorFile.h"	
+#include "Physics/PhysicsComponents.h"
 
 #include "Demo/Demo.h"
 
@@ -228,7 +229,7 @@ namespace TRE
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
 		transformSystem->SetPosition(test, glm::vec3(0.f, 20.f, 180.f));
-		transformSystem->SetScale(test, glm::vec3(0.5f, 0.5f, 0.5f));
+		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
 		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
@@ -239,6 +240,8 @@ namespace TRE
 		audioSystem->SetSpatialize(test,true);
 		audioSystem->CompileAudio(test);
 		audioSystem->SetSourceRadius(test, 50.f, 150.f);
+		test->AddComponent<SphereCollider>();
+		test->AddComponent<Rigidbody>();
 
 		/*Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
@@ -267,10 +270,6 @@ namespace TRE
 
 		//SceneManager::Instance().NewScene();
 		//SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
-
-		
-		//for(int i = 0; i < 10; i++)
-			//Demo::SpawnObject();
 	}
 }
 #pragma endregion TO DELETE TEST
