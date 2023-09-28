@@ -4,6 +4,7 @@
 
 #include "Core/ECS.h"
 #include "Demo/Demo.h"
+#include "Core/Transform.h"
 
 
 //Everything should be remove. This is just to test the calling of the runtime works.
@@ -20,6 +21,9 @@ namespace TRE
     MonoDomain* ScriptEngine::s_RootDomain = nullptr;
     MonoDomain* ScriptEngine::s_AppDomain = nullptr;
     MonoAssembly* ScriptEngine::s_MonoAssembly = nullptr;
+    std::string ScriptEngine::TestGUID = "";
+
+    bool ScriptEngine::CreatedScriptObject = false;
 
     char* ReadBytes(const std::string& filepath, uint32_t* outSize)
     {
@@ -121,11 +125,23 @@ namespace TRE
 		mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
 		mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
         mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
+        mono_add_internal_call("TRE.Main::GetTestGUID", BindGetTestGUID);
+
+        // Tranform Bindings
+        mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
+        mono_add_internal_call("TRE.TransformSystem::SetRotation", BindSetRotation);
+        mono_add_internal_call("TRE.TransformSystem::GetPosition", BindGetPosition);
+        mono_add_internal_call("TRE.TransformSystem::GetRotation", BindGetRotation);
     }
 
     void ScriptEngine::UpdateScriptingEngine()
     {
-        
+        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
+        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+
+        MonoObject * instance = mono_object_new(s_AppDomain, testClass);
+        MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
+        mono_runtime_invoke(method, instance, nullptr, nullptr);
     }
 
     void ScriptEngine::TestScriptingEngine()
@@ -233,6 +249,56 @@ namespace TRE
     void ScriptEngine::BindTestFunction()
     {
         Demo::SpawnObject();
+	}
+
+    void ScriptEngine::BindSetPosition(MonoString* id, glm::vec3 newPos)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        // Get the transform system
+        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+        // Set the position
+        transformSystem->SetPosition(Temp, newPos);
+    }
+
+    void ScriptEngine::BindSetRotation(MonoString* id, glm::vec3 newRot)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        // find the entity 
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        // Get the transform system
+        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+        // Set the rotation
+        transformSystem->SetRotation(Temp, newRot);
+	}
+
+    void ScriptEngine::BindGetPosition(MonoString* id, glm::vec3* output)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        // Get the transform system
+        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+        // Get the position
+        *output = transformSystem->GetPosition(Temp);
+    }
+
+    void ScriptEngine::BindGetRotation(MonoString* id, glm::vec3* output)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);    
+        // Get the transform system
+        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+        // Get the rotation
+        *output = transformSystem->GetRotation(Temp);
+	}
+
+    MonoString* ScriptEngine::BindGetTestGUID()
+    {
+		MonoString* GUID = mono_string_new(s_AppDomain, TestGUID.c_str());
+		return GUID;
 	}
 
 #pragma endregion

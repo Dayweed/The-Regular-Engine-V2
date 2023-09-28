@@ -403,6 +403,12 @@ namespace TRE
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
 
+			if (ScriptEngine::CreatedScriptObject == true)
+			{
+				ScriptEngine::UpdateScriptingEngine();
+			}
+			
+
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
 		}
