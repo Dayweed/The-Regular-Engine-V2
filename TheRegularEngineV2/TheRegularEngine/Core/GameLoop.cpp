@@ -50,7 +50,7 @@ namespace TRE
 		// If toggle to run and was not running, save scene temporarily
 		if (isRunning && !m_GameRunning)
 		{
-			//ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
 
 			// Save the registry
 			ECSManager::Instance().SaveRegistry(m_BackUp);
