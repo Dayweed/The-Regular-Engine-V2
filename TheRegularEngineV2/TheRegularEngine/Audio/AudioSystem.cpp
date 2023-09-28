@@ -48,7 +48,7 @@ namespace TRE
 				//source.m_Channel->setPaused(source.m_Pause);
 			}
 
-			if (source.m_Loop)
+			else if (source.m_Loop)
 			{
 				if (!isPlaying)
 				{
@@ -57,6 +57,19 @@ namespace TRE
 			}
 		}
 
+		m_System->update();
+	}
+
+	void AudioSystem::BeforeReset()
+	{
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+			Audio& source = go->GetComponent<Audio>();
+			Play(go, false);
+			source.m_Channel->stop();
+			m_SFXChannelGroup->stop();
+			m_MusicChannelGroup->stop();
+		}
 		m_System->update();
 	}
 

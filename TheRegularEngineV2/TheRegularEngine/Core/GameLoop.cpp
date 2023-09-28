@@ -53,6 +53,7 @@ namespace TRE
 			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
 
 			// Save the registry
+			m_BackUp.clear();
 			ECSManager::Instance().SaveRegistry(m_BackUp);
 		}
 
@@ -63,15 +64,19 @@ namespace TRE
 	{
 		if (m_GameRunning)
 		{
+			ECSSystemManager::Instance().BeforeReset();
+
 			// Copy registry and components
 			ECSManager::Instance().CopyRegistry(m_BackUp);
 			// Clear Backup
 			m_BackUp.clear();
 
+			ECSSystemManager::Instance().OnReset();
+
 			//ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
 			//std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
 			m_GameRunning = false;
-			m_IsResetted = true;
+			//m_IsResetted = true;
 		}
 	}
 
