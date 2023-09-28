@@ -4,6 +4,7 @@
 #include "AnimationImporter.h"
 #include "RendererContext.h"
 #include "Renderer.h"
+#include "Core/Engine.h"
 
 namespace TRE
 {
@@ -64,7 +65,7 @@ namespace TRE
 
 		AnimationImporter Importer;
 		m_AnimationCharacter = std::make_unique<AnimationGeom>();
-		auto ImportResult = Importer.Import("../Assets/GirlAnimationWalkingTextures/GirlAnimationWalking.fbx", &m_AnimationCharacter->m_SkinGeom, &m_AnimationCharacter->m_Skeleton, &m_AnimationCharacter->m_AnimPackage);
+		auto ImportResult = Importer.Import(*m_AnimationCharacter, "../Assets/GirlAnimationWalkingTextures/GirlAnimationWalking.fbx");
 		
 		if (ImportResult == false)
 		{
@@ -118,7 +119,7 @@ namespace TRE
 
 	void AnimationTest::UpdateAnimations(AnimationUBO& UBO, glm::mat4 L2W)
 	{
-		m_AnimationCharacter->m_AnimPlayer.Update(1.f / 60.f);
+		m_AnimationCharacter->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
 		m_AnimationCharacter->m_AnimPlayer.ComputeMatrices(UBO.L2W, L2W);
 	}
 	

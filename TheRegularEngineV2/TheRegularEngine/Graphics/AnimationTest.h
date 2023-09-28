@@ -34,11 +34,65 @@ namespace TRE
         static float Dot(glm::quat Start, glm::quat Q)
         {
             return  Start.x * Q.x +
-                Start.y * Q.y +
-                Start.z * Q.z +
-                Start.w * Q.w;
+                    Start.y * Q.y +
+                    Start.z * Q.z +
+                    Start.w * Q.w;
         }
-        
+
+        template< typename T_PARENT, typename T_BASIC_TYPE >
+        struct type
+        {
+            using basic_t = T_BASIC_TYPE;
+            using self_t = type;
+            T_BASIC_TYPE m_Value;
+
+            constexpr                               type(void)                        noexcept = default;
+            constexpr explicit                      type(basic_t Value)               noexcept : m_Value{ Value } {}
+            constexpr               bool            operator == (const T_PARENT X)    const   noexcept { return m_Value == X.m_Value; }
+            constexpr               bool            operator != (const T_PARENT X)    const   noexcept { return m_Value != X.m_Value; }
+            constexpr               bool            operator >= (const T_PARENT X)    const   noexcept { return m_Value >= X.m_Value; }
+            constexpr               bool            operator <= (const T_PARENT X)    const   noexcept { return m_Value <= X.m_Value; }
+            constexpr               bool            operator >  (const T_PARENT X)    const   noexcept { return m_Value > X.m_Value; }
+            constexpr               bool            operator <  (const T_PARENT X)    const   noexcept { return m_Value < X.m_Value; }
+            auto            operator ++ (int)                         noexcept { T_PARENT temp{ *this }; m_Value += 1; return temp; }
+            auto& operator ++ (void)                        noexcept { m_Value += 1; return *static_cast<T_PARENT*>(this); }
+            auto            operator -- (int)                         noexcept { T_PARENT temp{ *this }; m_Value -= 1; return temp; }
+            auto& operator -- (void)                        noexcept { m_Value -= 1; return *this; }
+            auto& operator += (const T_PARENT X)            noexcept { m_Value += X.m_Value; return *static_cast<T_PARENT*>(this); }
+            auto& operator -= (const T_PARENT X)            noexcept { m_Value -= X.m_Value; return *static_cast<T_PARENT*>(this); }
+            auto& operator *= (const T_PARENT X)            noexcept { m_Value *= X.m_Value; return *static_cast<T_PARENT*>(this); }
+            auto& operator /= (const T_PARENT X)            noexcept { m_Value /= X.m_Value; return *static_cast<T_PARENT*>(this); }
+            template< typename = typename std::enable_if_t< std::is_signed<basic_t>::value, type > >
+            constexpr               auto            operator -  (void)               const   noexcept { return T_PARENT{ -m_Value }; }
+            constexpr               auto            operator +  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value + X.m_Value }; }
+            constexpr               auto            operator -  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value - X.m_Value }; }
+            constexpr               auto            operator *  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value * X.m_Value }; }
+            constexpr               auto            operator /  (const T_PARENT X)    const   noexcept { return T_PARENT{ m_Value / X.m_Value }; }
+        };
+
+
+        struct degree : type<degree, float>
+        {
+            using type::type;
+            using type::operator =;
+            constexpr explicit                      degree(const unsigned long long    X)       noexcept : type{ static_cast<float>(X) } {}
+            constexpr explicit                      degree(const double X)                      noexcept : type{ static_cast<float>(X) } {}
+        };
+
+        struct radian : type<radian, float>
+        {
+            using type::type;
+            using type::operator =;
+            constexpr explicit                      radian(const int X)                 noexcept : type{ static_cast<float>(X) } {}
+            constexpr explicit                      radian(const long double X)         noexcept : type{ static_cast<float>(X) } {}
+            constexpr                               radian(const degree X)              noexcept : type{ X.m_Value * 0.017453292519943295769f } {}
+            constexpr degree                        getDegrees(void)                const   noexcept { return degree{ m_Value * 57.29577951308232087685f }; }
+        };
+        static float Sin(const radian X)
+        { 
+            return sinf(X.m_Value); 
+        }
+
         glm::quat BlendAccurate(const glm::quat& Start, float T, const glm::quat& End) const
         {
             bool bFlip = false;
@@ -58,11 +112,11 @@ namespace TRE
             }
             else
             {
-                const float Theta = acos(Cs);
-                const float S = 1.0f / sin(Theta);
+                const radian Theta = radian{ acosf(Cs) };
+                const float S = 1.0f / Sin(Theta);
 
-                inv_T = sin(( 1.0f - T ) * Theta) * S;
-                T = sin(T * Theta) * S;
+                inv_T = Sin(radian{ 1.0f - T } * Theta)* S;
+                T = Sin(radian{T} * Theta)* S;
             }
 
             if (bFlip)
@@ -70,31 +124,7 @@ namespace TRE
                 T = -T;
             }
 
-            return End * T + (Start) * inv_T;
-        }
-
-        static glm::mat4 setRotation(const glm::quat& R)
-        {
-            float tx = 2.0f * R.x;   // 2x
-            float ty = 2.0f * R.y;   // 2y
-            float tz = 2.0f * R.z;   // 2z
-            float txw = tx *  R.w;   // 2x * w
-            float tyw = ty *  R.w;   // 2y * w
-            float tzw = tz *  R.w;   // 2z * w
-            float txx = tx *  R.x;   // 2x * x
-            float tyx = ty *  R.x;   // 2y * x
-            float tzx = tz *  R.x;   // 2z * x
-            float tyy = ty *  R.y;   // 2y * y
-            float tzy = tz *  R.y;   // 2z * y
-            float tzz = tz *  R.z;   // 2z * z
-
-            glm::mat4 Return = glm::identity<glm::mat4>();
-            // Fill out 3x3 rotations.
-            Return[0][0] = 1.0f - (tyy + tzz); Return[0][1] = tyx + tzw;      Return[0][2] = tzx - tyw;
-            Return[1][0] = tyx - tzw;      Return[1][1] = 1.0f - (txx + tzz); Return[1][2] = tzy + txw;
-            Return[2][0] = tzx + tyw;      Return[2][1] = tzy - txw;            Return[2][2] = 1.0f - (txx + tyy);
-            
-            return Return;
+            return End * T + (Start) *inv_T;
         }
 
         void ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W) const
@@ -112,16 +142,22 @@ namespace TRE
                 // Setup the L2W matrix for this bone, (two versions) one with inner-frame blending, the other version without it
                 //FinalL2W[i].setup(xcore::math::transform3::Blend(KeyFrame.m_Transfoms[iFrameT0], FrameTime - iFrameT0, KeyFrame.m_Transfoms[iFrameT1]));
 
-                glm::vec3 BlendedScale = KeyFrame.m_Scale[iFrameT0] + (FrameTime - iFrameT0) * (KeyFrame.m_Scale[iFrameT1] - KeyFrame.m_Scale[iFrameT0]);
+                glm::vec3 BlendedScale = KeyFrame.m_Scale[iFrameT0] + ((FrameTime - iFrameT0) * (KeyFrame.m_Scale[iFrameT1] - KeyFrame.m_Scale[iFrameT0]));
                 glm::quat BlendedRotate = BlendAccurate(KeyFrame.m_Rotate[iFrameT0], (FrameTime - iFrameT0), KeyFrame.m_Rotate[iFrameT1]);
-                glm::vec3 BlendedTranslate = KeyFrame.m_Translate[iFrameT0] + (FrameTime - iFrameT0) * (KeyFrame.m_Translate[iFrameT1] - KeyFrame.m_Translate[iFrameT0]);
+                glm::vec3 BlendedTranslate = KeyFrame.m_Translate[iFrameT0] + ((FrameTime - iFrameT0) * (KeyFrame.m_Translate[iFrameT1] - KeyFrame.m_Translate[iFrameT0]));
 
-                glm::mat4 Scale = glm::scale(BlendedScale);
-                glm::mat4 Rotate = setRotation(BlendedRotate);
-                glm::mat4 Translate = glm::translate(BlendedTranslate);
+                //glm::mat4 Scale(1.f); glm::mat4 Translate(1.f);
+                //Scale = glm::scale(Scale, BlendedScale);
+                //glm::mat4 Rotate = setRotation(BlendedRotate);
+                //Translate = glm::translate(Translate, BlendedTranslate);
 
-                FinalL2W[i] = Translate * Rotate * Scale;
-                //FinalL2W[i] = Scale * Rotate * Translate;
+                glm::mat4 Scale(1.f); glm::mat4 Translate(1.f);
+                Scale = glm::scale(Scale, KeyFrame.m_Scale[iFrameT0]);
+                glm::mat4 Rotate = glm::mat4_cast(KeyFrame.m_Rotate[iFrameT0]);
+                Translate = glm::translate(Translate, KeyFrame.m_Translate[iFrameT0]);
+
+                //FinalL2W[i] = Translate * Rotate * Scale;
+                FinalL2W[i] = Scale * Rotate * Translate;
 
                 if (-1 != m_Skeleton.m_Bones[i].m_iParent)
                 {
@@ -142,19 +178,19 @@ namespace TRE
             }
         }
 
-        const Skeleton&     m_Skeleton;
+        const Skeleton& m_Skeleton;
         const anim_package& m_AnimPackage;
         int                 m_iCurAnim{};
         float               m_Time{};
     };
 
-	struct AnimationGeom
-	{
-		geom            m_SkinGeom;
-		Skeleton        m_Skeleton;
-		anim_package    m_AnimPackage;
-		anim_player     m_AnimPlayer{ m_Skeleton, m_AnimPackage };
-	};
+    struct AnimationGeom
+    {
+        geom            m_SkinGeom;
+        Skeleton        m_Skeleton;
+        anim_package    m_AnimPackage;
+        anim_player     m_AnimPlayer{ m_Skeleton, m_AnimPackage };
+    };
 
 	class AnimationTest
 	{

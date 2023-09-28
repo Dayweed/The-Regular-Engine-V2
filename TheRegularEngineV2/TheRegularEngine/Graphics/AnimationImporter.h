@@ -3,6 +3,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include "AnimationStructure.h"
+#include "AnimationTest.h"
 
 namespace TRE
 {
@@ -23,10 +24,10 @@ namespace TRE
 				std::vector<const aiNode*> m_Nodes;
 			};
 
-			AnimationImporter();
-			~AnimationImporter();
+			AnimationImporter() = default;
+			~AnimationImporter() = default;
 
-			bool Import(std::string FileName, geom* pGeom, Skeleton* pSkeleton, anim_package* pAnimPackage);
+			bool Import(AnimationGeom& AnimCharacter, std::string FileName);
 			bool SanityCheck();
 			void ImportSkeleton();
 			void ImportAnimations();
@@ -36,9 +37,7 @@ namespace TRE
 
 		private:
 			std::vector<refs> m_MeshReferences;
-			anim_package* m_pAnimPackage = nullptr;
-			geom* m_pGeom = nullptr;
-			Skeleton* m_pSkeleton = nullptr;
+			AnimationGeom* m_pAnimCharacter;
 			const aiScene* m_pScene = nullptr;
 	};
 }

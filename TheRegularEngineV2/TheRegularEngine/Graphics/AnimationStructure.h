@@ -88,7 +88,7 @@ namespace TRE
 	struct vertex
 	{
 		glm::vec4         m_BoneWeights;
-		glm::ivec4        m_BoneIndex;
+		glm::uvec4        m_BoneIndex;
 		glm::vec3         m_Position;
 		glm::vec3         m_Normal;
 		glm::vec3         m_Tangent;

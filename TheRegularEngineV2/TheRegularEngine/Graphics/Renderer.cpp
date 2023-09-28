@@ -203,6 +203,7 @@ namespace TRE
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
 		m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+		m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
 		m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
 	}
 
@@ -265,7 +266,7 @@ namespace TRE
 
 		//Animation Pass
 		{
-			m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
+			
 			m_Animation->BindPipeline(m_Commandbuffers[Index]);
 			//PushConstant pc{};
 			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
