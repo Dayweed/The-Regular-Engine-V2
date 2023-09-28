@@ -714,13 +714,13 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<T>(name, hidden);
 
 		// Check if this is derived from property::base, used to get all inspectable components
-		if (std::is_base_of<property::base, T>::value == true)
+		if (std::is_base_of<property::base, T>::value)
 		{
 			m_PropertyBased.emplace(std::piecewise_construct, std::forward_as_tuple(entt::type_hash<T>::value()), std::forward_as_tuple(name));
 		}
 
 		// Ensure entt knows this component exist
-		m_Registry.view<T>();
+		(void) m_Registry.view<T>();
 
 		// Prepare map for ImGui
 		CompFunction(name, AddEntityComponent<T>, RemoveEntityComponent<T>);
