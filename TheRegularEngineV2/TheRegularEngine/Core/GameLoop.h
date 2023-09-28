@@ -6,8 +6,6 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 
-#define FILESYS_GAMELOOP_TEMPSAVE "../tmp/SavedScene"
-
 namespace TRE
 {
 	class GameLoop

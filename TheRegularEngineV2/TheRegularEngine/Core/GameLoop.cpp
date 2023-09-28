@@ -22,11 +22,6 @@ namespace TRE
 
 	void GameLoop::Shutdown()
 	{
-		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
-		{
-			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
-		}
-
 		m_BackUp.clear();
 	}
 
@@ -40,7 +35,8 @@ namespace TRE
 		// If toggle to run and was not running, save scene temporarily
 		if (isRunning && !m_GameRunning)
 		{
-			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			// Destroys all undeployed entities
+			MemoryManager::Instance().ClearUndeployed();
 
 			// Save the registry
 			m_BackUp.clear();
