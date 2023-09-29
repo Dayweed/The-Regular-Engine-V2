@@ -44,7 +44,6 @@ namespace TRE
 		std::vector<ShaderDescriptorSets> DescriptorSets; //One GLSL file, 2 shader stage, vert/frag
 		std::vector<PushConstants> PushConstants;
 		std::vector<VkVertexInputAttributeDescription> VertexInputAttributeDescriptions{};
-		//std::map<std::uint32_t, VkVertexInputAttributeDescription> VertexInputAttributeDescriptions{}; 
 		uint32_t VertexStride = 0;
 	};
 }

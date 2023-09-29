@@ -5,23 +5,10 @@
 #include "RendererContext.h"
 #include "Renderer.h"
 #include "Core/Engine.h"
+#include "VulkanUtilities.h"
 
 namespace TRE
 {
-	static void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-	{
-		auto logicalDevice = RendererContext::GetDevice();
-		VkCommandBuffer commandBuffer = logicalDevice->AllocateCommandBuffer(true);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;  // Optional
-		copyRegion.dstOffset = 0;  // Optional
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-		logicalDevice->SubmitCommands(commandBuffer);
-	}
-
 	VkPipelineLayout AnimationTest::GetPipelineLayout()
 	{
 		return m_AnimationPipeline->GetPipelineLayout();
@@ -92,7 +79,7 @@ namespace TRE
 		m_VertexBuffer = std::make_unique<Buffer>(vertexSize, m_VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = vertexSize * m_VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_VertexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_VertexBuffer->GetBuffer(), bufferSize);
 	}
 
 	void AnimationTest::CreateIndexBuffer(const std::vector<int>& indices)
@@ -109,7 +96,7 @@ namespace TRE
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = indexSize * m_IndexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
 	}
 
 	AnimationTest::~AnimationTest()
