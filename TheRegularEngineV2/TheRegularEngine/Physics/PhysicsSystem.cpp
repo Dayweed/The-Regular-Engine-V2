@@ -374,7 +374,7 @@ namespace TRE
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			//sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
@@ -655,6 +655,25 @@ namespace TRE
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
 		// assert(entity->GetGUID() == sharedData.m_GUID);
+
+		if (entity->HasComponent<SphereCollider>())
+		{
+			//std::cout << "Reconstructing sphere collider" << std::endl;
+			//unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
+			//std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]);
+			//nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
+			//for (unsigned i = 0; i < nbShapes; ++i)
+			//{
+			//	if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+			//	std::cout << " Found sphere shape" << std::endl;
+			//	// there should only be ONE of each physics component, so it's safe to stop looping here
+			//	sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
+			//}
+			//PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(entity->GetComponent<SphereCollider>().m_Radius), *m_DefaultMaterial);
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+
+			sharedData.m_RigidDynamic->addForce(PxVec3(0.0f, -9.8f, 0.0f));
+		}
 
 		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
 		return rigidbody.m_IsInitialized = true;
