@@ -33,7 +33,6 @@ namespace TRE
 			void ImportAnimations();
 			void ImportGeometry();
 			void ImportGeometrySkin(std::vector<myMeshPart>& MyNodes);
-			void ImportMaterials();
 
 		private:
 			std::vector<refs> m_MeshReferences;

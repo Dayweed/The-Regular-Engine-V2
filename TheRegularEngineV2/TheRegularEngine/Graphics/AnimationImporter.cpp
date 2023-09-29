@@ -5,6 +5,7 @@
 #include "assimp\postprocess.h"
 #include "AnimationImporter.h"
 #include "glm/ext.hpp"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -65,7 +66,7 @@ namespace TRE
 
             if (Refs.size() == 0u)
             {
-                printf("ERROR: I had a mesh but no reference to it in the scene... very strange\n");
+                TRE_CORE_ERROR("I had a mesh but no reference to it in the scene");
                 return true;
             }
 
@@ -73,7 +74,7 @@ namespace TRE
             {
                 if (Refs.size() > 1)
                 {
-                    printf("ERROR: I had a skin mesh (%s) that is reference in the scene %zd times. We don't support this feature.\n", AssimpMesh.mName.C_Str(), Refs.size());
+                    TRE_CORE_ERROR("I had a skin mesh {0} that is reference in the scene {1} times. We don't support this feature.", AssimpMesh.mName.C_Str(), Refs.size());
                     return true;
                 }
             }
@@ -81,7 +82,7 @@ namespace TRE
             {
                 if (Refs.size() > 1)
                 {
-                    printf("INFO: I will be duplicating mesh %s, %zd times\n", AssimpMesh.mName.C_Str(), Refs.size());
+                    TRE_CORE_INFO("I will be duplicating mesh {0}, {1} times", AssimpMesh.mName.C_Str(), Refs.size());
                 }
             }
         }
@@ -138,36 +139,36 @@ namespace TRE
     {
         if (AssimpMesh.HasPositions() == false)
         {
-            printf("WARNING: Found a mesh (%s) without position! mesh will be removed\n", AssimpMesh.mName.C_Str());
+            TRE_CORE_WARN("Found a mesh {0} without position! mesh will be removed", AssimpMesh.mName.C_Str());
             return true;
         }
 
         if (AssimpMesh.HasFaces() == false)
         {
-            printf("WARNING: Found a mesh (%s) without position! mesh will be removed\n", AssimpMesh.mName.C_Str());
+            TRE_CORE_WARN("Found a mesh {0} without position! mesh will be removed", AssimpMesh.mName.C_Str());
             return true;
         }
 
         if (AssimpMesh.HasNormals() == false)
         {
-            printf("WARNING: Found a mesh (%s) without normals! mesh will be removed\n", AssimpMesh.mName.C_Str());
+            TRE_CORE_WARN("Found a mesh {0} without normals! mesh will be removed", AssimpMesh.mName.C_Str());
             return true;
         }
 
         if (AssimpMesh.HasTangentsAndBitangents() == false)
         {
-            printf("WARNING: Found a mesh (%s) without Tangets! We will create fake tangets.. but it will look bad!\n", AssimpMesh.mName.C_Str());
+            TRE_CORE_WARN("WARNING: Found a mesh {0} without Tangets! We will create fake tangets but it will look bad!", AssimpMesh.mName.C_Str());
         }
 
         if (AssimpMesh.GetNumUVChannels() != 1)
         {
             if (AssimpMesh.GetNumUVChannels() == 0)
             {
-                printf("WARNING: Found a mesh (%s) without UVs we will assign 0,0 to all uvs\n", AssimpMesh.mName.C_Str());
+                TRE_CORE_WARN("Found a mesh {0} without UVs we will assign 0,0 to all uvs", AssimpMesh.mName.C_Str());
             }
             else
             {
-                printf("WARNING: Found a mesh (%s) without too many UV chanels we will use only one...\n", AssimpMesh.mName.C_Str());
+                TRE_CORE_WARN("WARNING: Found a mesh {0} without too many UV chanels we will use only one", AssimpMesh.mName.C_Str());
             }
         }
 
@@ -214,11 +215,7 @@ namespace TRE
                     auto L = AssimpMesh.mVertices[i];
                     L = m_MeshReferences[iMesh].m_Nodes[0]->mTransformation * L;
 
-                    Vertex.m_Position = glm::vec3
-                    (static_cast<float>(L.x)
-                        , static_cast<float>(L.y)
-                        , static_cast<float>(L.z)
-                    );
+                    Vertex.m_Position = glm::vec3(static_cast<float>(L.x), static_cast<float>(L.y), static_cast<float>(L.z));
 
                     if (iTexCordinates == -1)
                     {
@@ -226,8 +223,7 @@ namespace TRE
                     }
                     else
                     {
-                        Vertex.m_UV = glm::vec2(static_cast<float>(AssimpMesh.mTextureCoords[iTexCordinates][i].x)
-                            , static_cast<float>(AssimpMesh.mTextureCoords[iTexCordinates][i].y));
+                        Vertex.m_UV = glm::vec2(static_cast<float>(AssimpMesh.mTextureCoords[iTexCordinates][i].x), static_cast<float>(AssimpMesh.mTextureCoords[iTexCordinates][i].y));
                     }
 
                     if (AssimpMesh.HasTangentsAndBitangents())
@@ -335,19 +331,19 @@ namespace TRE
 
                             switch (i)
                             {
-                            case 0:
-                                V.m_BoneIndex.x = BW.m_iBone;
-                                V.m_BoneWeights.x = BW.m_Weight;
-                                break;
-                            case 1: V.m_BoneIndex.y = BW.m_iBone;
-                                V.m_BoneWeights.y = BW.m_Weight;
-                                break;
-                            case 2: V.m_BoneIndex.z = BW.m_iBone;
-                                V.m_BoneWeights.z = BW.m_Weight;
-                                break;
-                            case 3: V.m_BoneIndex.w = BW.m_iBone;
-                                V.m_BoneWeights.w = BW.m_Weight;
-                                break;
+                                case 0:
+                                    V.m_BoneIndex.x = BW.m_iBone;
+                                    V.m_BoneWeights.x = BW.m_Weight;
+                                    break;
+                                case 1: V.m_BoneIndex.y = BW.m_iBone;
+                                    V.m_BoneWeights.y = BW.m_Weight;
+                                    break;
+                                case 2: V.m_BoneIndex.z = BW.m_iBone;
+                                    V.m_BoneWeights.z = BW.m_Weight;
+                                    break;
+                                case 3: V.m_BoneIndex.w = BW.m_iBone;
+                                    V.m_BoneWeights.w = BW.m_Weight;
+                                    break;
                             }
                         }
                     }
@@ -360,9 +356,7 @@ namespace TRE
                 }
                 else
                 {
-                    //
                     // Set the weights and duplicate mesh if needed
-                    //
 
                     // Remember where was the base
                     int iBase = static_cast<int>(m_MeshReferences[iMesh].m_Nodes.size());
@@ -400,21 +394,18 @@ namespace TRE
         {
             std::vector<myMeshPart> MyNodes;
 
-            //
             // Import from scene
-            //
             if (m_pAnimCharacter->m_Skeleton.m_Bones.size())
             {
                 ImportGeometrySkin(MyNodes);
             }
             else
             {
+                //Shld import static geom here
                 assert(false);
             }
 
-            //
             // Remove Mesh parts with zero vertices
-            //
             for (auto i = 0u; i < MyNodes.size(); ++i)
             {
                 if (MyNodes[i].m_Vertices.size() == 0 || MyNodes[i].m_Indices.size() == 0)
@@ -424,9 +415,7 @@ namespace TRE
                 }
             }
 
-            //
             // Merge any mesh part based on Mesh and iMaterial...
-            //
             for (auto i = 0u; i < MyNodes.size(); ++i)
             {
                 for (auto j = i + 1; j < MyNodes.size(); ++j)
@@ -451,10 +440,8 @@ namespace TRE
                     }
                 }
             }
-
-            //
+            
             // Create final structure
-            //
             for (auto& E : MyNodes)
             {
                 int iFinalMesh = -1;
@@ -506,7 +493,7 @@ namespace TRE
                 std::vector<indices>    LastPositions;
 
                 // Allocate all the bones for this animation
-              //  assert( AssimpAnim.mNumChannels <= m_pAnimCharacter->m_Skeleton.m_Bones.size() );
+                // assert( AssimpAnim.mNumChannels <= m_pAnimCharacter->m_Skeleton.m_Bones.size() );
                 auto& MyAnim = m_pAnimCharacter->m_AnimPackage.m_Animations[i];
                 MyAnim.m_BoneKeyFrames.resize(m_pAnimCharacter->m_Skeleton.m_Bones.size());
                 MyAnim.m_FPS = SamplingFPS;
@@ -613,10 +600,7 @@ namespace TRE
                             }
                         }
 
-                        //
                         // Set all the computer components into our frame
-                        //
-
                         // make sure that we can find the bone                         
                         const int iBone = m_pAnimCharacter->m_Skeleton.findBone(Channel.mNodeName.C_Str());
                         if (-1 == iBone)
@@ -639,9 +623,7 @@ namespace TRE
                     }
                 }
 
-                //
                 // Add transforms without animations
-                //
                 for (int j = 0; j < m_pAnimCharacter->m_Skeleton.m_Bones.size(); ++j)
                 {
                     if (MyAnim.m_BoneKeyFrames[j].m_Scale.size() == 0)
@@ -676,9 +658,7 @@ namespace TRE
             std::unordered_map<std::string, const aiNode*> NameToNode;
             std::unordered_map<std::string, const aiBone*> NameToBone;
 
-            //
             // Add bones base on bone associated by meshes
-            // 
             for (auto iMesh = 0u; iMesh < m_pScene->mNumMeshes; ++iMesh)
             {
                 const aiMesh& Mesh = *m_pScene->mMeshes[iMesh];
@@ -694,7 +674,6 @@ namespace TRE
                 }
             }
 
-            //
             // Add bones base on the animation streams
             // This should be an option really...
             // We can throw away any node that is animated but not used by any mesh and it is not a parent to a nodes containing meshes
@@ -715,10 +694,8 @@ namespace TRE
                 }
             }
 
-            //
             // Make sure all the parent nodes are inserted in the hash table
-            // This algotithum is a bit overkill but is ok... 
-            //
+            // This algotithum is a bit overkill but is ok
             for (auto itr1 : NameToNode)
             {
                 for (auto pParentNode = NameToNode.find(itr1.first)->second->mParent; pParentNode != nullptr; pParentNode = pParentNode->mParent)
@@ -730,19 +707,15 @@ namespace TRE
                 }
             }
 
-            //
             // Check to see if we readed too many bones!
-            //
             if (NameToNode.size() > 0xff)
             {
-                printf("ERROR: This mesh has %zd Bones we can only handle up to 256\n", NameToNode.size());
+                TRE_CORE_INFO("ERROR: This mesh has {0} Bones we can only handle up to 256\n", NameToNode.size());
             }
 
-            //
             // Organize build the skeleton 
             // We want the parents to be first then the children
             // Ideally we also want to have the bones that have more children higher
-            //
             struct proto
             {
                 const aiNode* m_pAssimpNode{ nullptr };
@@ -800,9 +773,7 @@ namespace TRE
                     return (A.m_nTotalChildren > B.m_nTotalChildren);
                 });
 
-            //
             // Create all the real bones
-            //
             m_pAnimCharacter->m_Skeleton.m_Bones.resize(Proto.size());
             {
                 int i = 0;

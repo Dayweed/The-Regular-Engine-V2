@@ -2,23 +2,10 @@
 #include "DebugRenderer.h"
 #include "Resource/ResourceManager.h"
 #include "RendererContext.h"
+#include "VulkanUtilities.h"
 
 namespace TRE
 {
-	static void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-	{
-		auto logicalDevice = RendererContext::GetDevice();
-		VkCommandBuffer commandBuffer = logicalDevice->AllocateCommandBuffer(true);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;  // Optional
-		copyRegion.dstOffset = 0;  // Optional
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-		logicalDevice->SubmitCommands(commandBuffer);
-	}
-
 	const VkDescriptorSet& DebugRenderer::GetDescriptor(uint32_t index)
 	{
 		return m_DebugMaterialInstance->GetDescriptor(index);
@@ -88,7 +75,7 @@ namespace TRE
 		m_DebugAABBVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = vertexSize * VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_DebugAABBVertexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_DebugAABBVertexBuffer->GetBuffer(), bufferSize);
 
 		//Index
 		m_AABBIndexCount = (uint32_t)DebugAABBIndices.size();
@@ -103,7 +90,7 @@ namespace TRE
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize indexbufferSize = indexSize * m_AABBIndexCount;
-		CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugAABBIndexBuffer->GetBuffer(), indexbufferSize);
+		vkUtils::CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugAABBIndexBuffer->GetBuffer(), indexbufferSize);
 	}
 
 	void DebugRenderer::CreateDebugSphere()
@@ -131,7 +118,7 @@ namespace TRE
 		m_DebugSphereVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = vertexSize * VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_DebugSphereVertexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_DebugSphereVertexBuffer->GetBuffer(), bufferSize);
 
 		//Index
 		m_SphereIndexCount = (uint32_t)DebugSphereIndices.size();
@@ -146,7 +133,7 @@ namespace TRE
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize indexbufferSize = indexSize * m_SphereIndexCount;
-		CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugSphereIndexBuffer->GetBuffer(), indexbufferSize);
+		vkUtils::CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugSphereIndexBuffer->GetBuffer(), indexbufferSize);
 	}
 
 	DebugRenderer::~DebugRenderer()

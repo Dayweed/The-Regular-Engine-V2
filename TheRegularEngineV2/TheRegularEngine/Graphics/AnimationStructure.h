@@ -19,7 +19,7 @@ namespace TRE
 
 	struct anim_package
 	{
-		std::vector<animation>          m_Animations;       // A list of animation
+		std::vector<animation>          m_Animations;
 	};
 
 	struct Skeleton
