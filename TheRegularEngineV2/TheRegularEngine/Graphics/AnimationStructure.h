@@ -1,4 +1,6 @@
 #pragma once
+#include "glm/gtx/transform.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 
 namespace TRE
 {
