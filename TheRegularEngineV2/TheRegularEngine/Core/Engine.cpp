@@ -252,7 +252,7 @@ namespace TRE
 		audioSystem->CompileAudio(test);
 		audioSystem->SetSourceRadius(test, 50.f, 150.f);
 		test->AddComponent<SphereCollider>();
-		test->AddComponent<Rigidbody>();
+		//test->AddComponent<Rigidbody>();
 
 		Entity planeCollider = ECSManager::Instance().CreateEntity();
 		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";

@@ -261,7 +261,7 @@ namespace TRE
 		
 		//Debug Drawing Pass
 		{
-			//DebugDrawPass(Index);
+			DebugDrawPass(Index);
 		}
 
 		//Animation Pass

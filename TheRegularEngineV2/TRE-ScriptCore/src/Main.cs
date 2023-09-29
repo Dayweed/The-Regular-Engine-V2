@@ -122,7 +122,7 @@ namespace TRE
         {
             string id = ECSManager.CreateEntity("ScriptingTest");
             Temp = new Entity(id, "ScriptingTest");
-            Console.WriteLine($"{Temp.GetName()} has been created with ID: {Temp.GetId()}");
+            //Console.WriteLine($"{Temp.GetName()} has been created with ID: {Temp.GetId()}");
             ECSManager.AddComponent(Temp.GetId(), Components.Mesh);
 
 

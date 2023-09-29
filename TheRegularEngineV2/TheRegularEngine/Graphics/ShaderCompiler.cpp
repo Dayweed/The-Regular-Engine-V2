@@ -47,7 +47,7 @@ namespace TRE
 				return sizeof(glm::ivec4); // Need uintvec?
 			default:
 				TRE_CORE_WARN("Unsupported Format {0}", (int)format);
-				return 0;
+				//return 0;
 		}
 
 		return 0;
@@ -595,7 +595,6 @@ namespace TRE
 		for (const auto& resource : Resources.sampled_images)
 		{
 			const auto& Name = resource.name;
-			auto& BaseType = Compiler.get_type(resource.base_type_id);
 			auto& Type = Compiler.get_type(resource.type_id);
 
 			uint32_t binding = Compiler.get_decoration(resource.id, spv::DecorationBinding);

@@ -283,6 +283,8 @@ namespace TRE
 			const PxVec3 eulerAngles = QuatToEulerAngles(sharedData.m_RigidDynamic->getGlobalPose().q);
 			// WAIT THERE'S THIS: glm::eulerAngles(PxQuat());
 			entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
+
+			entity->GetComponent<Transform>().m_IsDirty = true;
 #if 0
 			printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
 			const auto& pos = entity->GetComponent<Transform>().m_Position;
@@ -295,7 +297,7 @@ namespace TRE
 
 	void PhysicsSystem::OnReset()
 	{
-		// m_Actors.clear(); // ???
+		m_Actors.clear(); // ???
 	}
 
 	void PhysicsSystem::OnDestroyGO()
