@@ -241,12 +241,25 @@ namespace TRE
 		// How do I tell if a component has been removed from an entity???
 		for (auto& x : m_Actors)
 		{
+			// NEVER ERASE ELEMENTS WHILE ITERATING THROUGH THEM.
+			// THE ITERATOR WILL ++ AND READ INVALID DATA!
+			// BEGIN & END WILL BECOME THE SAME AFTER THE ERASE (maybe)
+			// BUT THE LOOP WILL STILL ITERATE BECAUSE THE END OF THE MAP CHANGED!! (probably)
+			if (m_Actors.empty())
+			{
+				break;
+				// int x = 1; (void)x;
+				// THIS WOULD'VE WORKED IN VS2019!!!
+				// THANKS YOU VS 2022 (: (: (:
+			}
 			Entity entity = ECSManager::Instance().FindEntity(x.first);
 			if (!entity) continue; // I sure hope this doesn't happen!
 
 			// if the attached comps say yes, but the entity says no...
 			// there is a mismatch. Thus, destroy that component.
 			const auto& attachedComponents = x.second.m_AttachedComponents;
+
+			// TODO: Remove this, use PhysicsComponent destructors I BEG OF YOU
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
@@ -338,8 +351,10 @@ namespace TRE
 
 			const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
 			const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
+			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
+			const PxTransform transform(VEC3_CAST(PxVec3, colliderPos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
 
-			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ colliderPos });
+			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
 			tempSharedData.m_GUID = entity->GetGUID();
@@ -429,7 +444,7 @@ namespace TRE
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
 	{
-		PhysicsComponentDestructorAssertion(SphereCollider);
+		// PhysicsComponentDestructorAssertion(SphereCollider);
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
@@ -474,8 +489,10 @@ namespace TRE
 
 			const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
 			const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
+			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
+			const PxTransform transform(VEC3_CAST(PxVec3, colliderPos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
 
-			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(PxTransform{ colliderPos });
+			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
 			tempSharedData.m_GUID = entity->GetGUID();
@@ -570,7 +587,7 @@ namespace TRE
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
-		PhysicsComponentDestructorAssertion(BoxCollider);
+		// PhysicsComponentDestructorAssertion(BoxCollider);
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		// PxRigidDynamic* rigidDynamic = sharedComponent.m_RigidDynamic;
@@ -614,7 +631,7 @@ namespace TRE
 			SharedData tempSharedData;
 			const Vector3& pos = entity->GetComponent<Transform>().m_Position;
 			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
-			PxTransform transform(VEC3_CAST(PxVec3, pos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
+			const PxTransform transform(VEC3_CAST(PxVec3, pos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
@@ -666,7 +683,7 @@ namespace TRE
 
 	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
 	{
-		PhysicsComponentDestructorAssertion(Rigidbody);
+		// PhysicsComponentDestructorAssertion(Rigidbody);
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::Rigidbody;
