@@ -11,6 +11,7 @@ namespace TRE
 			~VulkanEditor();
 
 			void SetUpImgui();
+			void SetImguiTheme();
 
 			void BeginFrame();
 			void EndFrame();
