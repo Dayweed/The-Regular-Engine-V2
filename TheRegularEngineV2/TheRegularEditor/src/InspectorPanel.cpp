@@ -256,6 +256,16 @@ namespace TRE
 						}
 					, Data);
 
+					// Do additional stuff if values are change for cetain components
+					if (UpdatedData)
+					{
+						std::string compName{ List.first };
+						if (compName == ComponentManager::Instance().GetComponentName<Transform>())
+						{
+							// Set flag to dirty
+							entity->GetComponent<Transform>().m_IsDirty = true;
+						}
+					}
 
 					// Update Prefabing Instance data if have
 					if (UpdatedData && isPrefabInstance)
