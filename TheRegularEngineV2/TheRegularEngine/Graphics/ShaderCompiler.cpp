@@ -47,7 +47,7 @@ namespace TRE
 				return sizeof(glm::ivec4); // Need uintvec?
 			default:
 				TRE_CORE_WARN("Unsupported Format {0}", (int)format);
-				return 0;
+				//return 0;
 		}
 
 		return 0;
@@ -339,7 +339,7 @@ namespace TRE
 					case SPIRType::UInt:
 						return VK_FORMAT_R32G32B32A32_UINT;
 					case SPIRType::Float:
-						return VK_FORMAT_R32G32B32A32_SFLOAT;
+						return VK_FORMAT_R32G32B32A32_SFLOAT; 
 					default:
 						return VK_FORMAT_UNDEFINED;
 				}
@@ -376,8 +376,52 @@ namespace TRE
 		m_ShaderLanguage = ShaderLanguage::GLSL; //For the sake of allowing it to be modular in future
 	}
 
+	void ShaderCompiler::DeserializeShaderBinary(std::string FilePath)
+	{
+		if (std::filesystem::exists(FilePath))
+		{
+			std::ifstream file(FilePath, std::ios::binary);
+			if (file.is_open())
+			{
+				file.seekg(0, std::ios::end);
+				std::size_t size = file.tellg();
+				file.seekg(0, std::ios::beg);
+
+				m_SPIRVData.resize(size / sizeof(uint32_t) + (size % sizeof(uint32_t) ? 1U : 0U));
+
+				file.read((char*)m_SPIRVData.data(), size);
+				file.close();
+			}
+		}
+	}
+
+	std::unique_ptr<Shader> ShaderCompiler::DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
+	{
+		std::string path = ShaderPath.string();
+		size_t found = path.find_last_of("/\\");
+		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
+		found = name.find_last_of('.');
+		name = found != std::string::npos ? name.substr(0, found) : name;
+		std::string shaderStage = path.substr(path.find_last_of('.') + 1);
+		VkShaderStageFlagBits ShaderStage{};
+		ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;
+
+		std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
+		Compiler->DeserializeShaderBinary(path);
+		Compiler->ReflectShaderData(ShaderStage, Compiler->m_SPIRVData);
+
+		std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
+		GeneratedShader->m_ShaderName = name;
+		GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData, ShaderStage);
+		GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
+		GeneratedShader->CreateDescriptors();
+
+		return std::move(GeneratedShader);
+	}
+
 	std::unique_ptr<Shader> ShaderCompiler::CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
 	{
+		(void)EnableOptimization;
 		std::string path = ShaderPath.string();
 		size_t found = path.find_last_of("/\\");
 		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
@@ -594,12 +638,10 @@ namespace TRE
 		for (const auto& resource : Resources.sampled_images)
 		{
 			const auto& Name = resource.name;
-			auto& BaseType = Compiler.get_type(resource.base_type_id);
 			auto& Type = Compiler.get_type(resource.type_id);
 
 			uint32_t binding = Compiler.get_decoration(resource.id, spv::DecorationBinding);
 			uint32_t descriptorset = Compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			uint32_t dimension = BaseType.image.dim;
 			uint32_t Arraysize = Type.array[0];
 
 			if (Arraysize == 0)

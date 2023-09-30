@@ -7,6 +7,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Demo">
+      <UniqueIdentifier>{6A15847C-564C-850D-FF38-6B10EB4E010F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Editor">
       <UniqueIdentifier>{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}</UniqueIdentifier>
     </Filter>
@@ -93,6 +96,9 @@
     <ClInclude Include="Core\entt.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Demo\Demo.h">
+      <Filter>Demo</Filter>
+    </ClInclude>
     <ClInclude Include="Editor\ImGuizmo.h">
       <Filter>Editor</Filter>
     </ClInclude>
@@ -111,6 +117,18 @@
     </ClInclude>
     <ClInclude Include="EventSystem\Events\InputEvent.h">
       <Filter>EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AnimationImporter.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AnimationPlayer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AnimationStructure.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\AnimationTest.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
       <Filter>Graphics</Filter>
@@ -173,6 +191,9 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\VulkanTexture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanUtilities.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="InputHandler\InputHandler.h">
@@ -243,11 +264,23 @@
     <ClCompile Include="Core\Window.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Demo\Demo.cpp">
+      <Filter>Demo</Filter>
+    </ClCompile>
     <ClCompile Include="Editor\ImGuizmo.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="Editor\ImguiBuildBackend.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\AnimationImporter.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\AnimationPlayer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\AnimationTest.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Buffer.cpp">
       <Filter>Graphics</Filter>
@@ -307,6 +340,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\VulkanTexture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanUtilities.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="InputHandler\InputHandler.cpp">

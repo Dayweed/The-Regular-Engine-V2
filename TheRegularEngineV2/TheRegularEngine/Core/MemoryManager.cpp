@@ -178,7 +178,7 @@ namespace TRE
 		m_UndeployedEntityList.clear();
 	}
 
-	void MemoryManager::UpdateECSManager(entt::registry& reg)
+	void MemoryManager::UpdateECSManager(entt::registry& reg, bool flip)
 	{
 		// Update ECS Manager based on current registry
 		std::vector<entt::entity> toFlip;
@@ -187,7 +187,10 @@ namespace TRE
 			toFlip.emplace_back(srcEntity);
 		});
 
-		std::reverse(toFlip.begin(), toFlip.end());
+		if (flip)
+		{
+			std::reverse(toFlip.begin(), toFlip.end());
+		}
 
 		for (entt::entity srcEntity : toFlip)
 		{

@@ -76,7 +76,6 @@ namespace TRE
 
 	void Shader::CreateDescriptors()
 	{
-		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
 		m_Types.clear();
 
 		for (uint32_t x = 0; x < m_ReflectionData.DescriptorSets.size(); x++)

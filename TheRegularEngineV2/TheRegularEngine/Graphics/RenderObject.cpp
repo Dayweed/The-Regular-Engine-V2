@@ -3,26 +3,9 @@
 #include "RendererContext.h"
 #include "Core/Engine.h"
 #include "Resource/ResourceManager.h"
-
+#include "VulkanUtilities.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/hash.hpp"
-
-namespace TRE
-{
-	void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) 
-	{
-		auto logicalDevice = RendererContext::GetDevice();
-		VkCommandBuffer commandBuffer = logicalDevice->AllocateCommandBuffer(true);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;  // Optional
-		copyRegion.dstOffset = 0;  // Optional
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-		logicalDevice->SubmitCommands(commandBuffer);
-	}
-}
 
 namespace TRE
 {
@@ -100,7 +83,7 @@ namespace TRE
 		m_VertexBuffer = std::make_unique<Buffer>(vertexSize, m_VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = vertexSize * m_VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_VertexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_VertexBuffer->GetBuffer(), bufferSize);
 	}
 
 	void RenderObject::CreateIndexBuffer(const std::vector<std::uint32_t>& indices)
@@ -121,7 +104,7 @@ namespace TRE
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = indexSize * m_IndexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
 	}
 
 	void RenderObject::CreateBoundingSphere(const std::vector<Vertex>& vertices)

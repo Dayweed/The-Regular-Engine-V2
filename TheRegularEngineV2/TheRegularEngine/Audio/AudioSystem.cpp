@@ -15,8 +15,8 @@ namespace TRE
 
 		m_System->init(MAX_CHANNELS, FMOD_INIT_NORMAL, nullptr);
 
-		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
-		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
+		//FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
+		//FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
 
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
@@ -42,27 +42,48 @@ namespace TRE
 			bool isPlaying;
 			source.m_Channel->isPlaying(&isPlaying);
 
-			if (source.m_Play && source.m_Pause == false)
+			if (source.m_PlayOnStart && source.m_Pause)
 			{
-				source.m_Channel->setPaused(source.m_Pause);
+				Play(go, true);
+				//source.m_Channel->setPaused(source.m_Pause);
 			}
 
-			if (source.m_Loop)
+			else if (source.m_Loop)
 			{
 				if (!isPlaying)
 				{
-					Play(go);
-
+					Play(go, true);
 				}
 			}
 		}
 
 		m_System->update();
+	}
 
+	void AudioSystem::BeforeReset()
+	{
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+			Audio& source = go->GetComponent<Audio>();
+			Play(go, false);
+			source.m_Channel->stop();
+			m_SFXChannelGroup->stop();
+			m_MusicChannelGroup->stop();
+		}
+		m_System->update();
 	}
 
 	void AudioSystem::OnReset()
 	{
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+			Audio& source = go->GetComponent<Audio>();
+			Play(go, false);
+			source.m_Channel->stop();
+			m_SFXChannelGroup->stop();
+			m_MusicChannelGroup->stop();
+		}
+		m_System->update();
 	}
 
 	void AudioSystem::Init()
@@ -133,33 +154,43 @@ namespace TRE
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
 
-	void AudioSystem::Play(Entity& go)
+	void AudioSystem::Play(Entity& go, const bool shouldPlay)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-
-		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, true, &audio.m_Channel), "FMOD: playSound()");
-		SetSourcePosition(go);
-		audio.m_Channel->isPlaying(&audio.isPlaying);
-
-		if (audio.m_Play == true)
+		if (shouldPlay == true)
 		{
-			if (audio.m_Loop == false)
-			{
-				audio.m_Sound->setMode(FMOD_LOOP_OFF);
-			}
-			else
-			{
-				audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
-				audio.m_Sound->setLoopCount(-1);
-			};
-
-			//audio.m_Channel->setPaused(audio.m_Pause);
-			
+			audio.m_Channel->setPaused(false);
+			audio.m_Pause = false;
 		}
 		else
 		{
-			TogglePause(go);
+			audio.m_Channel->setPaused(true);
+			audio.m_Pause = true;
 		}
+		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
+		SetSourcePosition(go);
+		//audio.m_Channel->isPlaying(&audio.isPlaying);
+
+		if (audio.m_Loop == false)
+		{
+			audio.m_Sound->setMode(FMOD_LOOP_OFF);
+		}
+		else
+		{
+			audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
+			audio.m_Sound->setLoopCount(-1);
+		};
+
+		//if (shouldPlay == true)
+		//{
+		//	audio.m_Channel->setPaused(false);	
+		//}
+		//else
+		//{
+		//	TogglePause(go);
+		//}
+
+
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
@@ -197,7 +228,7 @@ namespace TRE
 			LoadFile(go);
 		}
 
-		Play(go);
+		Play(go, false);
 		audio.m_Channel->setVolume(audio.m_Volume);
 		audio.m_Channel->setPitch(audio.m_Pitch);
 		audio.m_Channel->setPriority(audio.m_Priority);
@@ -261,8 +292,10 @@ namespace TRE
 
 	void AudioSystem::SetPlay(Entity& go, const bool play)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Play = play;
+		//Audio& audio = go.get()->GetComponent<Audio>();
+		//audio.m_Play = play;
+		(void)go;
+		(void)play;
 	}
 
 	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)
@@ -284,7 +317,7 @@ namespace TRE
 		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetViewDirection());
 		listener.m_Up = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetUpVec());
 
-		m_System->set3DListenerAttributes(0, &listener.m_Position, nullptr, &listener.m_Forward, &listener.m_Up);
+		m_System->set3DListenerAttributes(0, &listener.m_Position, nullptr, nullptr, nullptr);
 	}
 
 	void AudioSystem::SetSourcePosition(Entity& go)
@@ -294,7 +327,7 @@ namespace TRE
 		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);		
 
 		audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
-		audiosource.m_Channel->setMode(FMOD_3D_LINEARROLLOFF);
+		audiosource.m_Channel->setMode(FMOD_3D);
 		audiosource.m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
 	}
 
@@ -348,7 +381,8 @@ namespace TRE
 
 	bool AudioSystem::GetPlay(Entity& go) const
 	{
-		return go.get()->GetComponent<Audio>().m_Play;
+		(void)go;
+		return true; // go.get()->GetComponent<Audio>().m_Play;
 	}
 
 	bool AudioSystem::GetSpatialize(Entity& go) const

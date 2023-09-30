@@ -19,7 +19,8 @@ namespace TRE
 		bool m_Pause{ false };
 		bool m_Loop{ false };
 		bool m_Mute{ false };
-		bool m_Play{ true };
+		//bool m_Play{ false };
+		bool m_PlayOnStart{ true };
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
@@ -49,6 +50,7 @@ namespace TRE
 
 		void Init() override;
 		void Update() override;
+		void BeforeReset() override;
 		void OnReset() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
@@ -57,7 +59,7 @@ namespace TRE
 		void LoadFile(Entity& go);
 		void Load3DFile(Entity& go); //-----
 		//void CreateChildChannelGroup(FMOD::ChannelGroup* child, std::string name);
-		void Play(Entity& go);
+		void Play(Entity& go, const bool shouldPlay);
 		void TogglePause(Entity& go);
 		void StopAudio(Entity& go);
 		void CompileAudio(Entity& go);

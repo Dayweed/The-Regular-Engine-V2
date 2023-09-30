@@ -40,7 +40,7 @@ namespace TRE
 
 		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
 		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		descriptorSetLayoutInfo.bindingCount = setLayoutBindings.size();
+		descriptorSetLayoutInfo.bindingCount = (uint32_t)setLayoutBindings.size();
 		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 
 		if (auto Result = vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout); Result != VK_SUCCESS)

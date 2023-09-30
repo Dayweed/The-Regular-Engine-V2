@@ -47,8 +47,6 @@ namespace TRE
 			}
 
 			static int selection_mask = 0; //nothing is selected in the beginning
-			int object_clicked = -1; //none of the objects are selected
-
 			for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
 			{
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
@@ -67,7 +65,7 @@ namespace TRE
 							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
 							if ((ImGui::Button("X") || ImGui::IsItemClicked()))
 							{
-								deleteEntity = i;
+								deleteEntity = (int)i;
 							}
 							ImGui::PopStyleColor(1);
 							ImGui::SameLine();

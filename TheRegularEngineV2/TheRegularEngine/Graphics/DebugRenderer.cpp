@@ -2,23 +2,10 @@
 #include "DebugRenderer.h"
 #include "Resource/ResourceManager.h"
 #include "RendererContext.h"
+#include "VulkanUtilities.h"
 
 namespace TRE
 {
-	static void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-	{
-		auto logicalDevice = RendererContext::GetDevice();
-		VkCommandBuffer commandBuffer = logicalDevice->AllocateCommandBuffer(true);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;  // Optional
-		copyRegion.dstOffset = 0;  // Optional
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-		logicalDevice->SubmitCommands(commandBuffer);
-	}
-
 	const VkDescriptorSet& DebugRenderer::GetDescriptor(uint32_t index)
 	{
 		return m_DebugMaterialInstance->GetDescriptor(index);
@@ -76,7 +63,7 @@ namespace TRE
 
 		std::vector<int> DebugAABBIndices = { 0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7, 0, 4 };
 
-		int VertexCount = DebugAABBVertices.size();
+		int VertexCount = (int)DebugAABBVertices.size();
 		uint32_t vertexSize = sizeof(DebugAABBVertices[0]);
 		Buffer stagingBuffer(vertexSize, VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
@@ -88,10 +75,10 @@ namespace TRE
 		m_DebugAABBVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = vertexSize * VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_DebugAABBVertexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_DebugAABBVertexBuffer->GetBuffer(), bufferSize);
 
 		//Index
-		m_AABBIndexCount = DebugAABBIndices.size();
+		m_AABBIndexCount = (uint32_t)DebugAABBIndices.size();
 
 		uint32_t indexSize = sizeof(int);
 		Buffer stagingBufferindex(indexSize, m_AABBIndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -103,7 +90,7 @@ namespace TRE
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize indexbufferSize = indexSize * m_AABBIndexCount;
-		CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugAABBIndexBuffer->GetBuffer(), indexbufferSize);
+		vkUtils::CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugAABBIndexBuffer->GetBuffer(), indexbufferSize);
 	}
 
 	void DebugRenderer::CreateDebugSphere()
@@ -118,7 +105,7 @@ namespace TRE
 		}
 		DebugSphereIndices.push_back(0); //Strip back to the first point
 
-		int VertexCount = DebugSphereVert.size();
+		int VertexCount = (int)DebugSphereVert.size();
 
 		uint32_t vertexSize = sizeof(DebugSphereVert[0]);
 		Buffer stagingBuffer(vertexSize, VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -131,10 +118,10 @@ namespace TRE
 		m_DebugSphereVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize bufferSize = vertexSize * VertexCount;
-		CopyBuffer(stagingBuffer.GetBuffer(), m_DebugSphereVertexBuffer->GetBuffer(), bufferSize);
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_DebugSphereVertexBuffer->GetBuffer(), bufferSize);
 
 		//Index
-		m_SphereIndexCount = DebugSphereIndices.size();
+		m_SphereIndexCount = (uint32_t)DebugSphereIndices.size();
 
 		uint32_t indexSize = sizeof(int);
 		Buffer stagingBufferindex(indexSize, m_SphereIndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -146,7 +133,7 @@ namespace TRE
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 		VkDeviceSize indexbufferSize = indexSize * m_SphereIndexCount;
-		CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugSphereIndexBuffer->GetBuffer(), indexbufferSize);
+		vkUtils::CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugSphereIndexBuffer->GetBuffer(), indexbufferSize);
 	}
 
 	DebugRenderer::~DebugRenderer()

@@ -30,7 +30,7 @@ namespace TRE
 			const std::string avgFpsString = "Average FPS: " + std::to_string(static_cast<int>(m_AvgFps));
 			ImGui::PlotLines("FPS", m_FpsInfo.data(), static_cast<int>(m_FpsInfo.size()), 0, avgFpsString.c_str(), 0.f, 80.f, ImVec2(300.f, 20.f));
 
-			m_TotalTime = Profiler::Instance().GetTotalTime();
+			m_TotalTime = (float)Profiler::Instance().GetTotalTime();
 			ImGui::Text("Total Time: %.2f microseconds", m_TotalTime);
 
 			ImGui::Checkbox("Show Real Time Graph", &m_OnPlot);
@@ -55,7 +55,6 @@ namespace TRE
 		m_FpsInfo[m_FpsInfoIndex++] = fps;
 
 		const int fpsSize = static_cast<int>(m_FpsInfo.size());
-		float avgFps = 0.f;
 		for (const float& i : m_FpsInfo)
 			m_AvgFps += i;
 		m_AvgFps /= static_cast<float>(fpsSize);
@@ -85,7 +84,7 @@ namespace TRE
 
 		for (auto& [key, val] : m_BufferMap)
 		{
-			m_BufferMap[key].AddPoint(t, m_ProfiledData[key]->GetTime());
+			m_BufferMap[key].AddPoint(t, (float)m_ProfiledData[key]->GetTime());
 		}
 
 		static ImPlotAxisFlags flags = ImPlotAxisFlags_AutoFit;

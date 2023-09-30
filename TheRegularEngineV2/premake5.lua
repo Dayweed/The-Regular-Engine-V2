@@ -23,6 +23,7 @@ include "Dependencies/Math"
 -- include "Dependencies/CompilerLib"
 -- include "Compilers/TextureCompiler"
 -- include "Compilers/GeomCompiler"
+-- include "Compilers/ShaderCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -199,6 +200,7 @@ project "TheRegularEditor"
 		'{COPY} "%{Binaries.PhysX_Cooking}" "%{cfg.targetdir}"',
 		-- '{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
+		'{COPY} "imgui.ini" "%{cfg.targetdir}"',
 	}
 
 	filter "configurations:Debug"

@@ -21,6 +21,7 @@ namespace TRE
 
 		TRE_CORE_ERROR("Unable to find memory type");
 		assert(false);
+		return 0;
 	}
 
 	uint32_t UniformBuffer::GetBinding() const

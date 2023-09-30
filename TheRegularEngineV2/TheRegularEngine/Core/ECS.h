@@ -584,6 +584,12 @@ namespace TRE
 
 		void RemCompFromName(Entity ent, std::string compName);
 
+		void SaveRegistry(entt::registry& dstRegistry);
+		void CopyRegistry(entt::registry& srcRegistry);
+
+		template<class... Components>
+		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);
+
 		// TODELETE
 		void TESTRUN();
 		void STRESSTEST();
@@ -708,17 +714,27 @@ namespace TRE
 		ComponentManager::Instance().RegisterComponent<T>(name, hidden);
 
 		// Check if this is derived from property::base, used to get all inspectable components
-		if (std::is_base_of<property::base, T>::value == true)
+		if (std::is_base_of<property::base, T>::value)
 		{
 			m_PropertyBased.emplace(std::piecewise_construct, std::forward_as_tuple(entt::type_hash<T>::value()), std::forward_as_tuple(name));
 		}
 
 		// Ensure entt knows this component exist
-		m_Registry.view<T>();
+		(void) m_Registry.view<T>();
 
 		// Prepare map for ImGui
 		CompFunction(name, AddEntityComponent<T>, RemoveEntityComponent<T>);
 		m_CompRemovable.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(removable));
+	}
+
+	template<class... Components>
+	void ECSManager::Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity) {
+		([&] {
+			if (src.any_of<Components>(srcEntity)) {
+				if constexpr (sizeof(Components) == 1) dst.emplace<Components>(dstEntity);
+				else dst.emplace<Components>(dstEntity, src.get<Components>(srcEntity));
+			}
+			}(), ...);
 	}
 
 	template <typename T>

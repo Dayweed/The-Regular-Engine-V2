@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "ECS.h"
 #include "GameLoop.h"
+#include "Scripting/ScriptEngine.h"
 
 
 namespace TRE
@@ -20,17 +21,9 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);
 	}
 
-	void GameLoop::ClearReset()
-	{
-		m_IsResetted = false;
-	}
-
 	void GameLoop::Shutdown()
 	{
-		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
-		{
-			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
-		}
+		m_BackUp.clear();
 	}
 
 	bool GameLoop::IsGameRunning()
@@ -38,40 +31,72 @@ namespace TRE
 		return m_GameRunning;
 	}
 
-	bool GameLoop::IsResetted()
-	{
-		return m_IsResetted;
-	}
-
 	void GameLoop::ToggleRun(bool isRunning)
 	{
-		m_GameRunning = isRunning;
-
-		// If toggle to run, save scene temporarily
-		if (m_GameRunning)
+		// If toggle to run and was not running, save scene temporarily
+		if (isRunning && !m_GameRunning)
 		{
-			ECSManager::Instance().SaveEntities(FILESYS_GAMELOOP_TEMPSAVE);
+			// Destroys all undeployed entities
+			MemoryManager::Instance().ClearUndeployed();
+
+			// Save the registry
+			m_BackUp.clear();
+			ECSManager::Instance().SaveRegistry(m_BackUp);
 		}
+
+		m_GameRunning = isRunning;
 	}
 
 	void GameLoop::ResetScene()
 	{
-		if (std::filesystem::exists(FILESYS_GAMELOOP_TEMPSAVE))
+		if (m_GameRunning)
 		{
-			ECSManager::Instance().LoadEntities(FILESYS_GAMELOOP_TEMPSAVE);
-			std::filesystem::remove(FILESYS_GAMELOOP_TEMPSAVE);
-			m_IsResetted = true;
+			Profiler::Instance().StartTimer("BeforeReset");
+			ECSSystemManager::Instance().BeforeReset();
+			Profiler::Instance().EndTimer("BeforeReset");
+
+			// Copy registry and components
+			ECSManager::Instance().CopyRegistry(m_BackUp);
+			// Clear Backup
+			m_BackUp.clear();
+
+			Profiler::Instance().StartTimer("OnReset");
+			ECSSystemManager::Instance().OnReset();
+			Profiler::Instance().EndTimer("OnReset");
+
+			m_GameRunning = false;
+
+			ScriptEngine::CreatedScriptObject = false;
+
 		}
 	}
 
 	void GameLoop::ToggleRun(ToggleRunEvent& event)
 	{
-		ToggleRun(event.m_Playing);
+		if (m_GameRunning == false && event.m_Playing == true)
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Playing Scene..." });
+			ToggleRun(event.m_Playing);
+		}
+		else if(m_GameRunning == true && event.m_Playing == true)
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Scene is already playing" });
+		}
+		else if (m_GameRunning == true && event.m_Playing == false)
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Pausing Scene..." });
+			ToggleRun(event.m_Playing);
+		}
+		else
+		{
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Scene is already paused" });
+		}
 	}
 
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
-		ToggleRun(event.m_Nth);
+		(void)event;
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
 		ResetScene();
 	}
 }

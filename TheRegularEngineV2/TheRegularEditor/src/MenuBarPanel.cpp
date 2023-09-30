@@ -4,6 +4,7 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include <EventSystem/Events/EditorEvent.h>
 #include "Core/Engine.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -135,28 +136,39 @@ namespace TRE
 
 	void MenuBarPanel::NewScene()
 	{
-		SceneManager::Instance().NewScene();
-		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "New Scene Created" });
+		// Only save and load when it is not running
+		if (!GameLoop::Instance().IsGameRunning())
+		{
+			SceneManager::Instance().NewScene();
+			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "New Scene Created" });
+		}
 	}
 
 	void MenuBarPanel::OpenScene()
 	{
-		//To do
-		//SceneManager::Instance().LoadScene();
-		const std::string path = FileExplorer::OpenFileExplorer("Scene(*.json)\0*.json\0");
-		if (!path.empty())
+		// Only save and load when it is not running
+		if (!GameLoop::Instance().IsGameRunning())
 		{
-			SceneManager::Instance().LoadScene(path);
+			//To do
+			//SceneManager::Instance().LoadScene();
+			const std::string path = FileExplorer::OpenFileExplorer("Scene(*.json)\0*.json\0");
+			if (!path.empty())
+			{
+				SceneManager::Instance().LoadScene(path);
+			}
 		}
 	}
 
 	void MenuBarPanel::SaveScene()
 	{
-		
-		const std::string path = FileExplorer::SaveFileExplorer("Scene(*.json)\0*.json\0");
-		if (!path.empty())
+		// Only save and load when it is not running
+		if (!GameLoop::Instance().IsGameRunning())
 		{
-			SceneManager::Instance().SaveSceneAs(path);
+			const std::string path = FileExplorer::SaveFileExplorer("Scene(*.json)\0*.json\0");
+			if (!path.empty())
+			{
+				SceneManager::Instance().SaveSceneAs(path);
+			}
 		}
 		return;
 	}

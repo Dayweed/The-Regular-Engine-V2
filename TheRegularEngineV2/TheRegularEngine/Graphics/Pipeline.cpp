@@ -38,7 +38,10 @@ namespace TRE
 		VkVertexInputBindingDescription VertexInputBindingDescriptions{};
 		VertexInputBindingDescriptions.binding = 0;
 		VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-		VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+		if (m_Config.VertexStride == 0)
+			VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+		else
+			VertexInputBindingDescriptions.stride = (uint32_t)m_Config.VertexStride;
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -133,9 +136,7 @@ namespace TRE
 		depthStencil.front = {};
 		depthStencil.back = {};
 
-		//Create descriptor set layout
-		uint32_t imageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
-		
+		//Create descriptor set layout		
 		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = m_Config.VertexShader->GetDescriptorBindings();
 		std::vector<VkDescriptorSetLayoutBinding>& FragLayoutBindings = m_Config.FragmentShader->GetDescriptorBindings();
 		for (int x = 0; x < FragLayoutBindings.size(); x++)
@@ -145,7 +146,7 @@ namespace TRE
 
 		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
 		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		descriptorSetLayoutInfo.bindingCount = setLayoutBindings.size();
+		descriptorSetLayoutInfo.bindingCount = (uint32_t)setLayoutBindings.size();
 		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 		
 		if (auto Result = vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout); Result != VK_SUCCESS)
@@ -182,7 +183,7 @@ namespace TRE
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
-		pipelineLayoutInfo.pushConstantRangeCount = PushConstantRanges.size();
+		pipelineLayoutInfo.pushConstantRangeCount = (uint32_t)PushConstantRanges.size();
 		pipelineLayoutInfo.pPushConstantRanges = PushConstantRanges.data();
 
 		if (auto Result = vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout); Result != VK_SUCCESS)

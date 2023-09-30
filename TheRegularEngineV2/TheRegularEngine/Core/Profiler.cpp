@@ -136,7 +136,7 @@ namespace TRE
 	void Profiler::PrintTimers()
 	{
 		std::unordered_map<std::string, Timer*> tmp{};
-		if (!debug_mode || std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_delay).count() < delay)
+		if (!debug_mode || (unsigned long long)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_delay).count() < delay)
 		{
 			return;
 		}

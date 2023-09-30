@@ -65,6 +65,15 @@ namespace TRE
 			.Build();
 
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
+		m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
+
+		m_L2W = glm::identity<glm::mat4>();
+		m_L2W = glm::scale(m_L2W, glm::vec3(0.1f, 0.1f, 0.1f));
+		m_L2W = glm::translate(m_L2W, glm::vec3(0.1f, -100.f, 150.f));
+		for (int x = 0; x < 256; x++)
+		{
+			m_AnimationBuffer.L2W[x] = glm::identity<glm::mat4>();
+		}
 	}
 
 	void Renderer::Initialize()
@@ -95,6 +104,8 @@ namespace TRE
 		}
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
+
+		m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -190,7 +201,10 @@ namespace TRE
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		ubo.m_LightPosition = mainCamera.m_Position;
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
+		m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+		m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
+		m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
 	}
 
 	void Renderer::EndFrame()
@@ -245,7 +259,20 @@ namespace TRE
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 		}
 		
-		DebugDrawPass(Index);
+		//Debug Drawing Pass
+		{
+			DebugDrawPass(Index);
+		}
+
+		//Animation Pass
+		{
+			m_Animation->BindPipeline(m_Commandbuffers[Index]);
+			m_Animation->UpdateMaterial(m_AnimationUBO, Index);
+
+			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
+			m_Animation->BindBuffers(m_Commandbuffers[Index]);
+			m_Animation->Draw(m_Commandbuffers[Index]);
+		}
 
 		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
 
@@ -286,7 +313,7 @@ namespace TRE
 			const float radius = mr.m_BoundingSphere.GetRadius();
 			model = glm::translate(model, mr.m_BoundingSphere.GetCenter());
 			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
-			pc.m_Model = model;//go_mr->GetComponent<Transform>().GetModelMatrix();
+			pc.m_Model = model;
 			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			//Bind

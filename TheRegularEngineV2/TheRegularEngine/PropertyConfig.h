@@ -145,6 +145,7 @@ namespace property
             , float
             , string_t
             , oobb
+            , glm::vec2
             , glm::vec3
             , Vector3
             , resource_ref
