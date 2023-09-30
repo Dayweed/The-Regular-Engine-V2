@@ -203,6 +203,7 @@ namespace TRE
 
 		//AnimationShaders
 		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::CompileShader("../Resources/Shaders/Animation.vert");
+		//std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
 		AnimationVert->SetHandle(AnimationVertHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 

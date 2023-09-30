@@ -23,6 +23,7 @@ include "Dependencies/Math"
 -- include "Dependencies/CompilerLib"
 -- include "Compilers/TextureCompiler"
 -- include "Compilers/GeomCompiler"
+-- include "Compilers/ShaderCompiler"
 group ""
 
 project "TheRegularEngine"

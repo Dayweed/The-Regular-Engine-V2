@@ -266,12 +266,7 @@ namespace TRE
 
 		//Animation Pass
 		{
-			
 			m_Animation->BindPipeline(m_Commandbuffers[Index]);
-			//PushConstant pc{};
-			//pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
-			//vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
 			m_Animation->UpdateMaterial(m_AnimationUBO, Index);
 
 			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
@@ -318,7 +313,7 @@ namespace TRE
 			const float radius = mr.m_BoundingSphere.GetRadius();
 			model = glm::translate(model, mr.m_BoundingSphere.GetCenter());
 			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
-			pc.m_Model = model;//go_mr->GetComponent<Transform>().GetModelMatrix();
+			pc.m_Model = model;
 			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			//Bind
