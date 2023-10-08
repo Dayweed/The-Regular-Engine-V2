@@ -2,6 +2,8 @@
 #include "SwapChain.h"
 #include "Core/Logger.h"
 #include "Core/Engine.h"
+#define GLFW_INCLUDE_VULKAN
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {

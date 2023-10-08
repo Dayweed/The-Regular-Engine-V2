@@ -1,5 +1,6 @@
 #pragma once
 #include "glm/glm.hpp"
+#include "vulkan/vulkan.h"
 
 namespace TRE::vkUtils
 {

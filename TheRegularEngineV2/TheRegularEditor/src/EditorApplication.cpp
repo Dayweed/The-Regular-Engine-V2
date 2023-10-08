@@ -1,5 +1,3 @@
-#include "pch.h"
-#include "EditorSystem.h"
 #include "TREIncludes.h"
 #include "EntryPoint.h"
 
@@ -10,7 +8,7 @@ namespace TRE
 		public:
 			EditorApplication(const EngineInfo& EngineInfo) : Engine(EngineInfo)
 			{
-				RegisterSystems<EditorSystem>();
+				
 			}
 
 		private:
