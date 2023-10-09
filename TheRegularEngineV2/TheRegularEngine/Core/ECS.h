@@ -15,7 +15,6 @@
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
 #include "pch.h"
-#include "Properties.h"
 #include "Core/Logger.h"
 #include "entt.hpp"
 #include "ComponentManager.h"

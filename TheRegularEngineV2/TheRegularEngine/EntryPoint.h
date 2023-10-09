@@ -6,7 +6,7 @@
 /* This will actually make sure to sure to show where the leak is at	*/
 #ifdef _DEBUG
 #define DEBUG_MEMLEAK new( _CLIENT_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_MEMLEAK
+#define TRE_NEW DEBUG_MEMLEAK
 #endif
 
 #include <crtdbg.h>

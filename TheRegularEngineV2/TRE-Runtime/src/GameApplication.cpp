@@ -18,7 +18,7 @@ namespace TRE
 	TRE::Engine* TRE::CreateApp()
 	{
 		EngineInfo Info;
-		Info.EnableEditor = true;
+		Info.EnableEditor = false;
 		return new RuntimeApplication(Info);
 	}
 }
