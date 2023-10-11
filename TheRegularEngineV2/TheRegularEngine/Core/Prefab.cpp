@@ -137,7 +137,6 @@ namespace TRE
 			}
 		}
 
-		// Will use m_TempPrefab if it already is a prefab with a base in m_ExistingPrefabs
 		bool validOverwrite{ !newPrefab && object->HasComponent<Prefabing>() && m_ExistingPrefabs.find(object->GetComponent<Prefabing>().m_PrefabGUID) != m_ExistingPrefabs.end() };
 		if (validOverwrite)
 		{
@@ -251,13 +250,22 @@ namespace TRE
 		{
 			GetPrefabEntity(arc.GetFilePath());
 
-			Prefabing& prefabExist{ m_TempPrefab->GetComponent<Prefabing>() };
+			for (auto prefabPair : m_TempPrefabs)
+			{
+				m_TempPrefab = prefabPair.second;
+				Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
+				std::string prefabGUID{ prefabComp.m_PrefabGUID };
+
+				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+			}
+
+			//Prefabing& prefabExist{ m_TempPrefab->GetComponent<Prefabing>() };
 
 			// Remove own self to ensure it wont get overwritten
 			//prefabExist.m_Instances.erase(object->GetGUID());
 
 			// Update all instances to match
-			UpdateAllInstances(prefabExist.m_Instances, prefabExist.m_PrefabGUID);
+			//UpdateAllInstances(prefabExist.m_Instances, prefabExist.m_PrefabGUID);
 		}
 
 		return prefabGUID;
@@ -460,8 +468,19 @@ namespace TRE
 		}
 
 		// Ensure Prefab exist
-		Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
-		std::string prefabGUID{ prefabComp.m_PrefabGUID };
+		Entity MainPrefab{ m_TempPrefab };
+
+		for (auto prefabPair : m_TempPrefabs)
+		{
+			m_TempPrefab = prefabPair.second;
+			Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
+			std::string prefabGUID{ prefabComp.m_PrefabGUID };
+
+			UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+		}
+
+		m_TempPrefab = MainPrefab;
+		std::string prefabGUID{ m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID };
 		if (m_ExistingPrefabs.empty() || m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
 		{
 			std::string funcName{ __FUNCTION__ };
@@ -469,8 +488,6 @@ namespace TRE
 			assert(!m_ExistingPrefabs.empty());
 			assert(m_ExistingPrefabs.find(prefabGUID) != m_ExistingPrefabs.end());
 		}
-
-		UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
 
 		std::string filePath{ m_ExistingPrefabs[prefabGUID] };
 
@@ -489,8 +506,6 @@ namespace TRE
 			FEL,
 			FAKEFEL
 		>();
-
-		std::cout << "Updating prefab " << m_TempPrefab->GetName() << "\n";
 
 		// Clone Prefab
 		UpdateEntityInRegistry(m_TempPrefab, tmp);
