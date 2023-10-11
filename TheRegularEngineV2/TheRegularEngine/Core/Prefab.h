@@ -13,6 +13,11 @@ namespace TRE
 {
 	struct Prefabing
 	{
+		bool m_IsMainPrefab{};																// This is to ensure it only checks this with the filepath/update main prefab
+
+		std::string m_MainPrefabGUID{};
+
+
 		std::string m_PrefabGUID{};															// Prefabing GUID to be referred to when finding the correct doc / serializing
 																							// This GUID exist as a reference to the object
 																							// (NOT Properties::m_GUID which is used intenrally in the Engine)
@@ -41,7 +46,7 @@ namespace TRE
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_PrefabGUID, m_Instances, m_RemovedComps, m_Overrides)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_IsMainPrefab, m_MainPrefabGUID, m_PrefabGUID, m_Instances, m_RemovedComps, m_Overrides)
 	};
 
 	class PrefabOutputArchive
@@ -100,7 +105,7 @@ namespace TRE
 
 		Entity CreatePrefabEntityInstance(std::string prefabGUID);								// Creates an Instance from the prefab
 
-		Entity& GetPrefabEntity(std::string prefabFilePath);									// Assign m_TempPrefab to the prefab found in prefabFilePath and returns m_TempPrefab
+		std::unordered_map<std::string, Entity> GetPrefabEntity(std::string prefabFilePath);	// Assign m_TempPrefab to the prefab found in prefabFilePath and returns m_TempPrefabs, all entities found from path
 
 		bool UpdatePrefabEntity();																// For Overwriting existing m_PrefabGUID! No param to force use m_TempPrefab
 																								// Uses m_TempPrefab to update in Inspector, does nothing if it is nullptr
@@ -109,6 +114,16 @@ namespace TRE
 		bool RevertInstance(Entity instance, std::string prefabGUID);							// Revert instance back to same data as prefab
 
 	private:
+		Entity FindEntityBasedOnPrefabGUID(Entity object, std::string mainPrefabGUID);
+
+		void SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID);
+
+		void CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
+
+		void SaveEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});		// Entity must be from the ECSManager::Instance().GetRegistry()!
+
+		void UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});	// Similar to SaveEntityInRegistry but for m_TempPrefabs
+
 		// Deserializing list in prefabs directory into m_ExistingPrefabs
 		void DeserializePrefabDirectory();														// If a prefabFilePath no longer exist while checking:
 																								// - All instances with Prefabing::m_Base == Prefabing::m_PrefabGUID will have their Prefabing Component removed
@@ -130,6 +145,7 @@ namespace TRE
 																								// filePath: The entire string to access the file
 
 		Entity m_TempPrefab;
+		std::unordered_map<std::string, Entity> m_TempPrefabs;									// GUID found inside instance, Entity
 	};
 
 

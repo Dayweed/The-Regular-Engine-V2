@@ -270,6 +270,29 @@ namespace TRE
 		cameraSystem->SetIsMainCamera(cam, true);
 		cam->AddComponent<AudioListener>();
 		audioSystem->SetListenerPosition(cam);
+
+		// Parent child prefabing test
+		Entity prefabParent = ECSManager::Instance().CreateEntity();
+		prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
+		transformSystem->SetPosition(prefabParent, glm::vec3(0.f, 50.f, 100.f));
+		transformSystem->SetScale(prefabParent, glm::vec3(0.2f, 0.2f, 0.2f));
+		transformSystem->SetRotation(prefabParent, glm::vec3(0, 180.f, 0));
+		prefabParent->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
+
+		Entity prefabChild = ECSManager::Instance().CreateEntity();
+		prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
+		transformSystem->SetPosition(prefabChild, glm::vec3(-100.f, 50.f, 100.f));
+		transformSystem->SetScale(prefabChild, glm::vec3(0.1f, 0.1f, 0.1f));
+		transformSystem->SetRotation(prefabChild, glm::vec3(0, 180.f, 0));
+		prefabChild->AddComponent<MeshRenderer>();
+		prefabChild->AddComponent<FAKEFEL>();
+		meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
+
+		prefabParent->AddComponent<Parenting>();
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
 	}
 }
 #pragma endregion TO DELETE TEST

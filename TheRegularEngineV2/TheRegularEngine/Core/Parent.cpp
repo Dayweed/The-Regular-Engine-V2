@@ -83,6 +83,11 @@ namespace TRE
 			{
 				children.emplace_back(child);
 			}
+			else
+			{
+				std::string funcName{ __FUNCTION__ };
+				TRE_WARN("[" + funcName + "] Unable to find child id (" + id + "), skipping...");
+			}
 		}
 
 		return children;
@@ -114,7 +119,16 @@ namespace TRE
 		Parenting& parenting{ parent->GetComponent<Parenting>() };
 		for (int i{ static_cast<int>(parenting.m_Children.size()) - 1 }; i >= 0; --i)
 		{
-			AbandonChild(parent, ECSManager::Instance().FindEntity(parenting.m_Children[i]));
+			Entity child{ ECSManager::Instance().FindEntity(parenting.m_Children[i]) };
+			if (child)
+			{
+				AbandonChild(parent, child);
+			}
+			else
+			{
+				std::string funcName{ __FUNCTION__ };
+				TRE_WARN("[" + funcName + "] Unable to find id " + parenting.m_Children[i] + "! Ignoring...");
+			}
 		}
 		parenting.m_Children.clear();
 	}
