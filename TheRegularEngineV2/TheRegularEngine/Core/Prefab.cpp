@@ -195,31 +195,6 @@ namespace TRE
 		// Clone Prefab
 		SaveEntityInRegistry(object, tmp);
 
-		//// Create prefab
-		//entt::entity ent = tmp.create();
-
-		//// Clone each component of the object into the prefab
-		//for (auto [id, source_storage] : ECSManager::Instance().GetRegistry().storage())
-		//{
-		//	auto destination_storage = tmp.storage(id);
-		//	if (destination_storage != nullptr && source_storage.contains(object->m_Entity))
-		//	{
-		//		if (!destination_storage->contains(ent))
-		//		{
-		//			destination_storage->emplace(ent, source_storage.get(object->m_Entity));
-		//		}
-		//		// Overwrite m_Entity if m_Entity already contains the component
-		//		else
-		//		{
-		//			destination_storage->erase(ent);
-		//			destination_storage->emplace(ent, source_storage.get(object->m_Entity));
-		//		}
-		//	}
-		//}
-
-		//// Specifically change entity properties m_GUID
-		//tmp.get<Properties>(ent).m_GUID = "";
-
 		// Set up document
 		PrefabOutputArchive arc(filePath, tmp);
 		entt::snapshot snapshot{ tmp };
@@ -258,14 +233,6 @@ namespace TRE
 
 				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
 			}
-
-			//Prefabing& prefabExist{ m_TempPrefab->GetComponent<Prefabing>() };
-
-			// Remove own self to ensure it wont get overwritten
-			//prefabExist.m_Instances.erase(object->GetGUID());
-
-			// Update all instances to match
-			//UpdateAllInstances(prefabExist.m_Instances, prefabExist.m_PrefabGUID);
 		}
 
 		return prefabGUID;
@@ -437,15 +404,6 @@ namespace TRE
 			m_TempPrefab = entity;
 		});
 
-		// Throw error if copy registry contained multiple instance
-		/*if (count != 1)
-		{
-			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] count is (" + std::to_string(count) + ") != 1!");
-			ResetTempPrefab();
-			assert(count == 1);
-		}*/
-
 		// Throw error if m_TempPrefab does not even have Prefabing
 		if (!m_TempPrefab->HasComponent<Prefabing>())
 		{
@@ -509,28 +467,6 @@ namespace TRE
 
 		// Clone Prefab
 		UpdateEntityInRegistry(m_TempPrefab, tmp);
-
-		//// Create prefab
-		//entt::entity ent = tmp.create();
-
-		//// Clone each component of the object into the prefab
-		//for (auto [id, source_storage] : ECSManager::Instance().GetRegistry().storage())
-		//{
-		//	auto destination_storage = tmp.storage(id);
-		//	if (destination_storage != nullptr && source_storage.contains(m_TempPrefab->m_Entity))
-		//	{
-		//		if (!destination_storage->contains(ent))
-		//		{
-		//			destination_storage->emplace(ent, source_storage.get(m_TempPrefab->m_Entity));
-		//		}
-		//		// Overwrite m_Entity if m_Entity already contains the component
-		//		else
-		//		{
-		//			destination_storage->erase(ent);
-		//			destination_storage->emplace(ent, source_storage.get(m_TempPrefab->m_Entity));
-		//		}
-		//	}
-		//}
 
 		// Set up document
 		PrefabOutputArchive arc(filePath, tmp);
