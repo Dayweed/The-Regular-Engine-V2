@@ -238,6 +238,14 @@ namespace TRE
 		//test->AddComponent<SphereCollider>();
 		//test->AddComponent<Rigidbody>();
 
+		Entity test2 = ECSManager::Instance().CreateEntity();
+		test2->GetComponent<Properties>().m_Name = "Test2";
+		transformSystem->SetPosition(test2, glm::vec3(50.f, 20.f, 180.f));
+		transformSystem->SetScale(test2, glm::vec3(0.2f, 0.2f, 0.2f));
+		transformSystem->SetRotation(test2, glm::vec3(0, 180.f, 0));
+		test2->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+
 		Entity planeCollider = ECSManager::Instance().CreateEntity();
 		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
 		transformSystem->SetPosition(planeCollider, glm::vec3(0.f, -35.f, 100.f));

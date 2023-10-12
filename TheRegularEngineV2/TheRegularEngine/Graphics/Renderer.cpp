@@ -241,13 +241,15 @@ namespace TRE
 		//VERY INEFFICIENT //Geom Pass
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
-			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
+			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
 			PushConstant pc{};
 			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
 			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			ResourceHandle currentMaterialHandle;
 
 			//If no material instance attached, use default PBR material
 			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
@@ -258,17 +260,28 @@ namespace TRE
 					m_DefaultPBRMaterial = ResourceManager::Instance().GetResource<Material>(PBR::GetDefaultHandle());
 					m_DefaultPBRMaterial->AllocateLayouts();
 				}
-				m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
-				vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+				currentMaterialHandle = PBR::GetDefaultHandle();
+
+				if (m_PreviousMaterial != currentMaterialHandle)
+				{
+					m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
+					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+				}
 			}
 			else
 			{
-				mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
-				vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+				currentMaterialHandle = mr.m_MaterialInstance->GetHandle();
+				if (m_PreviousMaterial != currentMaterialHandle)
+				{
+					mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+				}
 			}
 
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
+
+			m_PreviousMaterial = currentMaterialHandle;
 		}
 		
 		//Debug Drawing Pass
