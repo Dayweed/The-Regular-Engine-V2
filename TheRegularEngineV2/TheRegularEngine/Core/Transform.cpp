@@ -114,6 +114,9 @@ namespace TRE
 		{
 			glm::vec3 childRot = obj->GetComponent<Transform>().m_Rotation;
 			SetRotation(obj, childRot + rotDiff);
+			// Update Position
+			glm::vec4 localPos{ transform.m_Position - obj->GetComponent<Transform>().m_Position, 0 };
+			SetPosition(obj, obj->GetComponent<Transform>().m_Position + glm::vec3{ localPos * transform.GetModelMatrix() });
 		}
 	}
 
