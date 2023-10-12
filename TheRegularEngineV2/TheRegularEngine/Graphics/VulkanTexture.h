@@ -8,6 +8,7 @@ namespace TRE
 	class VulkanTexture : public Resource
 	{
 	public:
+		VulkanTexture();
 		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();
 
@@ -18,12 +19,11 @@ namespace TRE
 		const VkImageView& GetImageView() const { return m_ImageView; }
 		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
 
-		const ResourceHandle& GetDefaultTextureID() const { return m_DefaultTextureID; }
 		static ResourceType GetType() { return ResourceType::Texture; }
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
 
+		static const ResourceHandle& GetDefaultTextureID();
 	private:
-		void GenerateDefaultTexture();
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);
 

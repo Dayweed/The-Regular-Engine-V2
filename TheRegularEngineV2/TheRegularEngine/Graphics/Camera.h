@@ -11,6 +11,34 @@
 
 namespace TRE
 {
+	class BaseCamera
+	{
+	public:
+		glm::mat4 m_ViewMatrix{ 1.f };
+		glm::mat4 m_ProjectionMatrix{ 1.f };
+		glm::vec2 m_ViewportSize{ 1600.f, 900.f }; // SSSS
+		float m_Pitch{ 0.f }; // SSSS
+		float m_Yaw{ 0.f }; // SSSS
+		float m_Roll{ 0.f }; // SSSS
+		float m_Fov{ 60.f }; // SSSS	//Vertical fov - has to be converted to radians
+		float m_Near{ 0.1f }; // SSSS
+		float m_Far{ 1000.f }; // SSSS
+		float m_Left{ -1.f }; // SSSS
+		float m_Right{ 1.f }; // SSSS
+		float m_Bottom{ -1.f }; // SSSS
+		float m_Top{ 1.f }; // SSSS
+		float m_FocalLength{ 100.f }; // SSSS
+		glm::vec3 m_FocalPoint{ 0.f, 0.f, m_FocalLength }; // SSSS
+		float m_AspectRatio{ 16.f / 9.f }; // SSSS
+		bool m_IsPerspective{ true }; // SSSS
+	public:
+		const glm::quat GetOrientation() const;
+		const glm::vec3 GetUpVec() const;
+		const glm::vec3 GetRightVec() const;
+		const glm::vec3 GetForwardVec() const;
+		const glm::vec3 GetViewDirection() const;
+	};
+
 	class Camera;
 
 	namespace CameraHelper
@@ -21,28 +49,11 @@ namespace TRE
 		void SetViewTarget(Camera& camera, const glm::vec3& target);
 	}
 
-	class Camera : property::base
+	class Camera : property::base, public BaseCamera
 	{
 	public:
 		glm::vec3 m_Position{ 0.f, 0.f, 0.f }; // SSSS
 		glm::vec3 m_Rotation{ 0.f, 0.f, 0.f }; // SSSS
-		glm::mat4 m_ViewMatrix{ 1.f };
-		glm::mat4 m_ProjectionMatrix{ 1.f };
-		glm::vec2 m_ViewportSize{ 1600.f, 900.f }; // SSSS
-		float m_Pitch{ 0.f }; // SSSS
-		float m_Yaw{ 0.f }; // SSSS
-		float m_Roll{ 0.f }; // SSSS
-		float m_Fov{ 60.f }; // SSSS	//Vertical fov - has to be converted to radians
-		float m_Near{ 0.1f }; // SSSS
-		float m_Far{ 1000.f }; // SSSS
-		float m_FocalLength{ 100.f }; // SSSS
-		glm::vec3 m_FocalPoint{ 0.f, 0.f, m_FocalLength }; // SSSS
-		float m_Left{ -1.f }; // SSSS
-		float m_Right{ 1.f }; // SSSS
-		float m_Bottom{ -1.f }; // SSSS
-		float m_Top{ 1.f }; // SSSS
-		float m_AspectRatio{ 16.f / 9.f }; // SSSS
-		bool m_IsPerspective{ true }; // SSSS
 		bool m_IsMainCamera{ false }; // SSSS
 		bool m_IsDirty{ false };
 

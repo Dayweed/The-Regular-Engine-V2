@@ -5,7 +5,7 @@
 #include "RendererContext.h"
 #include "TREIncludes.h"
 
-TRE::ResourceHandle TRE::VulkanTexture::m_DefaultTextureID{0};
+TRE::ResourceHandle TRE::VulkanTexture::m_DefaultTextureID{ 0 };
 
 namespace TRE
 {
@@ -128,27 +128,31 @@ namespace TRE
 		return m_DescriptorImageInfo;
 	}
 
-	void VulkanTexture::GenerateDefaultTexture()
+	VulkanTexture::VulkanTexture()
 	{
+		//GenerateDefaultTexture();
 		m_Type = ResourceType::Texture;
 
+		const std::uint32_t width = 4;
+		const std::uint32_t height = 4;
 		// Create a default texture 4x4 white RGBA
-		VkDeviceSize imageSize = 4 * 4 * 4;
-		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		VkDeviceSize imageSize = width * height * 4;
 
-		std::shared_ptr<void*> data = std::make_shared<void*>(new uint8_t[imageSize]);
+		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 4);
+
+		std::unique_ptr<std::uint8_t[]> data = std::make_unique<std::uint8_t[]>(imageSize);
 		memset(data.get(), 255, imageSize);
 
 		stagingBuffer.Map();
-		stagingBuffer.WriteToBuffer(data.get());
+		stagingBuffer.WriteToBuffer(data.get(), imageSize);
 		stagingBuffer.Unmap();
 
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
 		imageInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-		imageInfo.extent.width = 4;
-		imageInfo.extent.height = 4;
+		imageInfo.extent.width = width;
+		imageInfo.extent.height = height;
 		imageInfo.extent.depth = 1;
 		imageInfo.mipLevels = 1;
 		imageInfo.arrayLayers = 1;
@@ -182,7 +186,7 @@ namespace TRE
 		}
 
 		TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		CopyBufferToImage(stagingBuffer.GetBuffer(), 4, 4);
+		CopyBufferToImage(stagingBuffer.GetBuffer(), width, height);
 		TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		VkImageViewCreateInfo viewInfo{};
@@ -328,5 +332,18 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(ro));
 
 		return std::move(ResourceManager::Instance().GetResource<VulkanTexture>(assetHandle));
+	}
+
+	const ResourceHandle& VulkanTexture::GetDefaultTextureID()
+	{
+		if (m_DefaultTextureID == 0)
+		{
+			m_DefaultTextureID = Resource::GenerateGUID();
+			std::unique_ptr<VulkanTexture> defaultTexture = std::make_unique<VulkanTexture>();
+			defaultTexture->SetHandle(m_DefaultTextureID);
+			ResourceManager::Instance().AddResource(std::move(defaultTexture));
+		}
+
+		return m_DefaultTextureID;
 	}
 }
