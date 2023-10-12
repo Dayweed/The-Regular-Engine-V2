@@ -233,6 +233,8 @@ namespace TRE
 
 				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
 			}
+
+			ResetTempPrefab();
 		}
 
 		return prefabGUID;

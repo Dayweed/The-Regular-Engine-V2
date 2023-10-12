@@ -127,7 +127,7 @@ namespace TRE
 			else
 			{
 				std::string funcName{ __FUNCTION__ };
-				TRE_WARN("[" + funcName + "] Unable to find id " + parenting.m_Children[i] + "! Ignoring...");
+				TRE_WARN("[" + funcName + "] Unable to find id " + parenting.m_Children[i] + " in parent (" + parent->GetName() + ") [" + parent->GetGUID() + "]! Ignoring...");
 			}
 		}
 		parenting.m_Children.clear();
