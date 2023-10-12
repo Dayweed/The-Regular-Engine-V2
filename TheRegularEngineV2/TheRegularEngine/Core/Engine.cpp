@@ -421,6 +421,11 @@ namespace TRE
 				Profiler::Instance().EndTimer("Imgui");
 			}
 
+			// Updateing components if needed after editor
+			Profiler::Instance().StartTimer("AfterEditor");
+			ECSSystemManager::Instance().AfterEditor();
+			Profiler::Instance().EndTimer("AfterEditor");
+
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
 			m_Window->SwapBuffers();

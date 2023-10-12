@@ -181,6 +181,14 @@ namespace TRE
 			}
 		}
 
+		void AfterEditor()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->AfterEditor();
+			}
+		}
+
 		void OnDestroyEntities()
 		{
 			for (auto& system : m_Systems)

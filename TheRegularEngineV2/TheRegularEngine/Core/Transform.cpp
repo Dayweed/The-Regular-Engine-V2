@@ -44,26 +44,32 @@ namespace TRE
 	{
 		/*if (m_IsDirty == false)
 			return;*/
-
-		//for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
-		//{
-		//	Transform& transform = go.get()->GetComponent<Transform>();
-		//	if (transform.m_IsDirty)
-		//	{
-		//		//Update model matrix or sth
-		//		//Tell mesh renderer to update bounding sphere
-		//		if (go->HasComponent<MeshRenderer>())
-		//		{
-		//			ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-		//		}
-		//		transform.m_IsDirty = false;
-		//	}
-		//}
 	}
 
 	void TransformSystem::OnReset()
 	{
 
+	}
+
+	void TransformSystem::AfterEditor()
+	{
+		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
+		{
+			Transform& transform = go.get()->GetComponent<Transform>();
+			if (transform.m_IsDirty)
+			{
+				//Update model matrix or sth (sth / sumteang/: Postions, Transforms, Rotation is set here again for the potential children)
+				SetPosition(go, transform.m_Position);
+				SetRotation(go, transform.m_Rotation);
+				SetScale(go, transform.m_Scale);
+				//Tell mesh renderer to update bounding sphere
+				if (go->HasComponent<MeshRenderer>())
+				{
+					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
+				}
+				transform.m_IsDirty = false;
+			}
+		}
 	}
 
 	void TransformSystem::OnDestroyGO()
@@ -81,8 +87,9 @@ namespace TRE
 		m_IsDirty = true;
 
 		Transform& transform = go.get()->GetComponent<Transform>();
-		glm::vec3 posDiff = position - transform.m_Position;
+		glm::vec3 posDiff = position - transform.m_OldPosition;
 		transform.m_Position = position;
+		transform.m_OldPosition = position;
 		transform.m_IsDirty = true;
 
 		// Update Children Position
@@ -97,8 +104,9 @@ namespace TRE
 	{
 		m_IsDirty = true;
 		Transform& transform = go.get()->GetComponent<Transform>();
-		glm::vec3 rotDiff = rotation - transform.m_Rotation;
+		glm::vec3 rotDiff = rotation - transform.m_OldRotation;
 		transform.m_Rotation = rotation;
+		transform.m_OldRotation = rotation;
 		transform.m_IsDirty = true;
 
 		// Update Children Rotation
@@ -114,8 +122,9 @@ namespace TRE
 		m_IsDirty = true;
 
 		Transform& transform = go.get()->GetComponent<Transform>();
-		glm::vec3 scaDiff = scale / transform.m_Scale;
+		glm::vec3 scaDiff = scale / transform.m_OldScale;
 		transform.m_Scale = scale;
+		transform.m_OldScale = scale;
 		transform.m_IsDirty = true;
 
 		// Update Children Scale

@@ -277,6 +277,9 @@ namespace TRE
 			
 			if (ImGuizmo::IsUsing())
 			{
+				std::string compName{ ComponentManager::Instance().GetComponentName<Transform>() };
+				bool needUpdatingToPrefab{ SelectedEntity->HasComponent<Prefabing>() && SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.find(compName) == SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.end() };
+
 				glm::vec3 Scale;
 				glm::vec3 Rotation;
 				glm::vec3 Translate;
@@ -286,20 +289,59 @@ namespace TRE
 					case ImGuizmo::OPERATION::SCALE:
 					{
 						XformSystem->SetScale(SelectedEntity, Scale);
+						if (needUpdatingToPrefab)
+						{
+							// See if can emplace back
+							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+							auto it{ prefab.m_Overrides.find(compName) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+							}
+							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+							// If gizmo doesn't update prefab, check Transform.h
+							prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
+						}
 						break;
 					}
 					case ImGuizmo::OPERATION::ROTATE:
 					{
 						XformSystem->SetRotation(SelectedEntity, Rotation);
+						if (needUpdatingToPrefab)
+						{
+							// See if can emplace back
+							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+							auto it{ prefab.m_Overrides.find(compName) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+							}
+							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+							// If gizmo doesn't update prefab, check Transform.h
+							prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
+						}
 						break;
 					}
 					case ImGuizmo::OPERATION::TRANSLATE:
 					{
 						XformSystem->SetPosition(SelectedEntity, Translate);
+						if (needUpdatingToPrefab)
+						{
+							// See if can emplace back
+							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+							auto it{ prefab.m_Overrides.find(compName) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+							}
+							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+							// If gizmo doesn't update prefab, check Transform.h
+							prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
+						}
 						break;
 					}
 				}
-				
+
 			}
 		}
 
