@@ -118,7 +118,7 @@ namespace TRE
 			if (transform.m_Rotation != transform.m_OldRotation)
 			{
 				glm::vec4 localPos{ childTransform.m_Position - transform.m_Position, 1 };
-				const glm::vec3 scale = {1, 1, 1};//(transform.m_Scale);
+				const glm::vec3 scale = {1, 1, 1};// (transform.m_Scale);
 				const glm::vec3 rotation = glm::radians(transform.m_Rotation);
 				const float c3 = glm::cos(rotation.z);
 				const float s3 = glm::sin(rotation.z);
@@ -148,7 +148,7 @@ namespace TRE
 					},
 					{0, 0, 0, 1.0f}
 				};
-				SetPosition(obj, transform.m_Position + glm::vec3{ localPos * rotMat });
+				SetPosition(obj, transform.m_Position + glm::vec3{ glm::inverse(rotMat) * localPos });
 			}
 		}
 
