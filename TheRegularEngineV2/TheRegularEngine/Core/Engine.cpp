@@ -233,16 +233,16 @@ namespace TRE
 		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle10));
 		ResourceManager::Instance().AddResource(std::move(mat2));
 
-		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		auto audioSystem = ECSSystemManager::Instance().GetSystem<AudioSystem>();
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 20.f, 180.f));
-		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
-		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
+		Transform& transform = test->GetComponent<Transform>();
+		transform.m_Position = glm::vec3(0.f, 20.f, 180.f);
+		transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		transform.m_Rotation = glm::vec3(0, 180.f, 0);
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
@@ -257,9 +257,10 @@ namespace TRE
 
 		Entity planeCollider = ECSManager::Instance().CreateEntity();
 		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
-		transformSystem->SetPosition(planeCollider, glm::vec3(0.f, -35.f, 100.f));
-		transformSystem->SetScale(planeCollider, glm::vec3(10.f, 10.f, 10.f));
-		transformSystem->SetRotation(planeCollider, glm::vec3(0, 0, 0));
+		Transform& transform2 = planeCollider->GetComponent<Transform>();
+		transform2.m_Position = glm::vec3(0.f, -35.f, 100.f);
+		transform2.m_Scale = glm::vec3(10.f, 10.f, 10.f);
+		transform2.m_Rotation = glm::vec3(0, 0, 0);
 		planeCollider->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
 		meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));
@@ -274,18 +275,22 @@ namespace TRE
 		// Parent child prefabing test
 		Entity prefabParent = ECSManager::Instance().CreateEntity();
 		prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
-		transformSystem->SetPosition(prefabParent, glm::vec3(0.f, 50.f, 100.f));
-		transformSystem->SetScale(prefabParent, glm::vec3(0.2f, 0.2f, 0.2f));
-		transformSystem->SetRotation(prefabParent, glm::vec3(0, 180.f, 0));
+		Transform& transform3 = prefabParent->GetComponent<Transform>();
+		transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
+		transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		transform3.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform3.m_IsDirty = true;
 		prefabParent->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
 
 		Entity prefabChild = ECSManager::Instance().CreateEntity();
 		prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
-		transformSystem->SetPosition(prefabChild, glm::vec3(-100.f, 50.f, 100.f));
-		transformSystem->SetScale(prefabChild, glm::vec3(0.1f, 0.1f, 0.1f));
-		transformSystem->SetRotation(prefabChild, glm::vec3(0, 180.f, 0));
+		Transform& transform4 = prefabChild->GetComponent<Transform>();
+		transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
+		transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+		transform4.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform4.m_IsDirty = true;
 		prefabChild->AddComponent<MeshRenderer>();
 		prefabChild->AddComponent<FAKEFEL>();
 		meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
@@ -373,11 +378,11 @@ namespace TRE
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
-		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
+		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());

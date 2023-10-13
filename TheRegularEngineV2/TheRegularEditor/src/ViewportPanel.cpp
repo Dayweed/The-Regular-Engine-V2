@@ -263,15 +263,14 @@ namespace TRE
 			float WindowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
 
-			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+			Entity camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-			glm::mat4 proj = cameraSystem->GetProjectionMatrix(entity);
+			glm::mat4 proj = cameraSystem->GetProjectionMatrix(camera);
 			proj[1][1] *= -1.f;
-			glm::mat4 View = cameraSystem->GetViewMatrix(entity);
+			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
 
-			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
-
-			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
+			Transform& transform = SelectedEntity->GetComponent<Transform>();
 
 			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
 			
@@ -288,7 +287,7 @@ namespace TRE
 				{
 					case ImGuizmo::OPERATION::SCALE:
 					{
-						XformSystem->SetScale(SelectedEntity, Scale);
+						transform.m_Scale = Scale;
 						if (needUpdatingToPrefab)
 						{
 							// See if can emplace back
@@ -306,7 +305,7 @@ namespace TRE
 					}
 					case ImGuizmo::OPERATION::ROTATE:
 					{
-						XformSystem->SetRotation(SelectedEntity, Rotation);
+						transform.m_Rotation = Rotation;
 						if (needUpdatingToPrefab)
 						{
 							// See if can emplace back
@@ -324,7 +323,7 @@ namespace TRE
 					}
 					case ImGuizmo::OPERATION::TRANSLATE:
 					{
-						XformSystem->SetPosition(SelectedEntity, Translate);
+						transform.m_Position = Translate;
 						if (needUpdatingToPrefab)
 						{
 							// See if can emplace back
@@ -341,7 +340,7 @@ namespace TRE
 						break;
 					}
 				}
-
+				transform.m_IsDirty = true;
 			}
 		}
 

@@ -15,9 +15,9 @@ namespace TRE
 		glm::vec3	m_Rotation{ 0.f,0.f,0.f };		// [m_Rotation] becomes [TRE::Trasnform/Rotation] for ImGui::Gizmo in ViewportPanel.cpp
 		glm::vec3	m_Scale{ 1.f,1.f,1.f };			// [m_Scale] becomes [TRE::Trasnform/Scale] for ImGui::Gizmo in ViewportPanel.cpp
 		// Old Variable (Since everything is reflected, this is needed to remember the prev data)
-		glm::vec3	m_OldPosition{ 0.f,0.f,0.f };
-		glm::vec3	m_OldRotation{ 0.f,0.f,0.f };
-		glm::vec3	m_OldScale{ 1.f,1.f,1.f };
+		//glm::vec3	m_OldPosition{ 0.f,0.f,0.f };
+		//glm::vec3	m_OldRotation{ 0.f,0.f,0.f };
+		//glm::vec3	m_OldScale{ 1.f,1.f,1.f };
 		bool		m_IsDirty{ false };
 		const glm::mat4 GetModelMatrix() const;
 
@@ -63,16 +63,16 @@ namespace TRE
 		void OnDestroyGO() override;
 		void Shutdown() override;
 
-		void SetPosition(Entity& go, const glm::vec3& position);
-		void SetRotation(Entity& go, const glm::vec3& rotation);
-		void SetScale(Entity& go, const glm::vec3& scale);
+		//void SetPosition(Entity& go, const glm::vec3& position);
+		//void SetRotation(Entity& go, const glm::vec3& rotation);
+		//void SetScale(Entity& go, const glm::vec3& scale);
 
-		const glm::vec3& GetPosition(const Entity& go) const;
-		const glm::vec3& GetRotation(const Entity& go) const;
-		const glm::vec3& GetScale(const Entity& go) const;
-		const glm::mat4 GetModelMatrix(const Entity& go) const;
+		//const glm::vec3& GetPosition(const Entity& go) const;
+		//const glm::vec3& GetRotation(const Entity& go) const;
+		//const glm::vec3& GetScale(const Entity& go) const;
+		//const glm::mat4 GetModelMatrix(const Entity& go) const;
 	private:
-		bool m_IsDirty{ false };
+		//bool m_IsDirty{ false };
 	};
 }
 

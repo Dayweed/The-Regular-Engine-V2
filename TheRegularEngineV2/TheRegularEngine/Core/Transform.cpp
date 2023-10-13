@@ -8,7 +8,14 @@ namespace TRE
 {
 	const glm::mat4 Transform::GetModelMatrix() const
 	{
-		const glm::vec3 rotation = glm::radians(m_Rotation);
+		glm::quat rotation = glm::quat(glm::radians(m_Rotation));
+		glm::mat4 rotationMat = glm::mat4_cast(rotation);
+		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_Scale);
+		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_Position);
+
+		return translationMat * rotationMat * scaleMat;
+
+		/*const glm::vec3 rotation = glm::radians(m_Rotation);
 
 		const float c3 = glm::cos(rotation.z);
 		const float s3 = glm::sin(rotation.z);
@@ -37,7 +44,7 @@ namespace TRE
 				0.0f,
 			},
 			{m_Position.x, m_Position.y, m_Position.z, 1.0f}
-		};
+		};*/
 	}
 
 	void TransformSystem::Update()
@@ -59,9 +66,9 @@ namespace TRE
 			if (transform.m_IsDirty)
 			{
 				//Update model matrix or sth (sth / sumteang/: Postions, Transforms, Rotation is set here again for the potential children)
-				SetPosition(go, transform.m_Position);
-				SetRotation(go, transform.m_Rotation);
-				SetScale(go, transform.m_Scale);
+				//SetPosition(go, transform.m_Position);
+				//SetRotation(go, transform.m_Rotation);
+				//SetScale(go, transform.m_Scale);
 				//Tell mesh renderer to update bounding sphere
 				if (go->HasComponent<MeshRenderer>())
 				{
@@ -82,7 +89,7 @@ namespace TRE
 
 	}
 		
-	void TransformSystem::SetPosition(Entity& go, const glm::vec3& position)
+	/*void TransformSystem::SetPosition(Entity& go, const glm::vec3& position)
 	{
 		m_IsDirty = true;
 
@@ -194,4 +201,5 @@ namespace TRE
 		(void)go;
 		return glm::mat4(1.f);
 	}
+	*/
 }
