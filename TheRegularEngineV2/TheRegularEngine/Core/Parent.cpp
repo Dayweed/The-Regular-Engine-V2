@@ -8,7 +8,7 @@ namespace TRE
 {
 	void ParentingSystem::Update()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Transform, Parenting>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
 		{
 			Transform& transform{ object->GetComponent<Transform>() };
 			if (transform.m_IsDirty)
@@ -148,11 +148,11 @@ namespace TRE
 		for (Entity& child : GetChildren(parent))
 		{
 			Transform& childTransform = child->GetComponent<Transform>();
-			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.m_LocalXform;
+			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
 			childTransform.m_IsDirty = true;
-			Parenting& deeperChild{ child->GetComponent<Parenting>() };
-			if (deeperChild.m_Children.size() > 0)
+
+			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{
 				UpdateChildTransform(child);
 			}

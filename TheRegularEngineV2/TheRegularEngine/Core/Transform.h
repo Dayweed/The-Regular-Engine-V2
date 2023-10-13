@@ -11,7 +11,7 @@ namespace TRE
 	{
 	public:
 		glm::mat4	m_WorldXform{ 1.f };
-		glm::mat4	m_LocalXform{ 1.f };
+		//glm::mat4	m_LocalXform{ 1.f };
 		// When changing the bottom three, it must be changed to a specific name for gizmo to play nice with prefab and reflection
 		glm::vec3	m_Position{ 0.f,0.f,0.f };		// [m_Position] becomes [TRE::Trasnform/Position] for ImGui::Gizmo in ViewportPanel.cpp
 		glm::vec3	m_Rotation{ 0.f,0.f,0.f };		// [m_Rotation] becomes [TRE::Trasnform/Rotation] for ImGui::Gizmo in ViewportPanel.cpp
@@ -21,12 +21,11 @@ namespace TRE
 		glm::vec3	m_LocalRotation{ 0.f,0.f,0.f };
 		glm::vec3	m_LocalScale{ 1.f,1.f,1.f };
 
-		bool		m_IsDirty{ false };
+		bool		m_IsDirty{ true };
 	public:
 		void CalculateWorldMatrix();
 		const glm::mat4 CalculateLocalMatrix();
-		void UpdateLocalData(const Transform& parent);
-		void DecomposeWorldMatrix(const glm::mat4& newWorld);
+		void DecomposeWorldMatrix(const glm::mat4 newWorld);
 		void UpdateLocalMatrix(Entity& parent);
 	public:
 		property_vtable()           // Allows the base class to get these properties  
