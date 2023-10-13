@@ -4,16 +4,19 @@
 #include "SystemManager.h"
 #include "TREIncludes.h"
 
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+
 namespace TRE
 {
-	const glm::mat4 Transform::GetModelMatrix() const
+	void Transform::CalculateWorldMatrix()
 	{
 		glm::quat rotation = glm::quat(glm::radians(m_Rotation));
 		glm::mat4 rotationMat = glm::mat4_cast(rotation);
 		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_Scale);
 		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_Position);
 
-		return translationMat * rotationMat * scaleMat;
+		m_WorldXform = translationMat * rotationMat * scaleMat;
 
 		/*const glm::vec3 rotation = glm::radians(m_Rotation);
 
@@ -47,36 +50,78 @@ namespace TRE
 		};*/
 	}
 
+	void Transform::DecomposeWorldMatrix(const glm::mat4& newWorld)
+	{
+		/*glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::quat orientation;
+		glm::decompose(newWorld, m_Scale, orientation, m_Position, skew, perspective);
+		m_Rotation = glm::eulerAngles(orientation);*/
+
+		m_WorldXform = newWorld;
+	}
+
+	const glm::mat4 Transform::CalculateLocalMatrix()
+	{
+		glm::quat rotation = glm::quat(glm::radians(m_LocalRotation));
+		glm::mat4 rotationMat = glm::mat4_cast(rotation);
+		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_LocalScale);
+		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_LocalPosition);
+
+		return translationMat * rotationMat * scaleMat;
+	}
+
+	void Transform::UpdateLocalData(const Transform& parent)
+	{
+		m_LocalScale = m_Scale / parent.m_Scale;
+		glm::quat parentRot = glm::quat(glm::radians(parent.m_Rotation));
+		glm::quat rot = glm::quat(glm::radians(m_Rotation));
+		glm::quat localRot = glm::inverse(parentRot) * rot;
+		m_LocalRotation = glm::eulerAngles(localRot);
+		m_LocalPosition = m_Position - parent.m_Position;
+		m_LocalPosition = glm::rotate(parentRot, m_LocalPosition);
+		m_LocalPosition *= m_LocalScale;
+
+		std::cout << "Local Position: " << m_LocalPosition.x << ", " << m_LocalPosition.y << ", " << m_LocalPosition.z << std::endl;
+		std::cout << "Local Rotation: " << m_LocalRotation.x << ", " << m_LocalRotation.y << ", " << m_LocalRotation.z << std::endl;
+		std::cout << "Local Scale: " << m_LocalScale.x << ", " << m_LocalScale.y << ", " << m_LocalScale.z << std::endl;
+	}
+
+	void Transform::UpdateLocalMatrix(Entity& parent)
+	{
+		//For start of scene
+		Transform& parentTransform = parent->GetComponent<Transform>();
+		parentTransform.CalculateWorldMatrix();
+		CalculateWorldMatrix();
+
+		glm::mat4 invertedParentWorldTransform = glm::affineInverse(parentTransform.m_WorldXform);
+		m_LocalXform = invertedParentWorldTransform * m_WorldXform;
+
+		m_LocalPosition = glm::vec3(m_LocalXform[3]);
+		m_LocalScale = glm::vec3(glm::length(m_LocalXform[0]), glm::length(m_LocalXform[1]), glm::length(m_LocalXform[2]));
+		m_LocalRotation = glm::eulerAngles(glm::quat(m_LocalXform));
+
+		std::cout << "Local Position: " << m_LocalPosition.x << ", " << m_LocalPosition.y << ", " << m_LocalPosition.z << std::endl;
+		std::cout << "Local Rotation: " << m_LocalRotation.x << ", " << m_LocalRotation.y << ", " << m_LocalRotation.z << std::endl;
+		std::cout << "Local Scale: " << m_LocalScale.x << ", " << m_LocalScale.y << ", " << m_LocalScale.z << std::endl;
+	}
+
 	void TransformSystem::Update()
-	{
-		/*if (m_IsDirty == false)
-			return;*/
-	}
-
-	void TransformSystem::OnReset()
-	{
-
-	}
-
-	void TransformSystem::AfterEditor()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
 		{
 			Transform& transform = go.get()->GetComponent<Transform>();
 			if (transform.m_IsDirty)
 			{
-				//Update model matrix or sth (sth / sumteang/: Postions, Transforms, Rotation is set here again for the potential children)
-				//SetPosition(go, transform.m_Position);
-				//SetRotation(go, transform.m_Rotation);
-				//SetScale(go, transform.m_Scale);
-				//Tell mesh renderer to update bounding sphere
-				if (go->HasComponent<MeshRenderer>())
-				{
-					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-				}
+				transform.CalculateWorldMatrix();
 				transform.m_IsDirty = false;
 			}
 		}
+	}
+
+	void TransformSystem::OnReset()
+	{
+
 	}
 
 	void TransformSystem::OnDestroyGO()

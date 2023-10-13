@@ -243,6 +243,7 @@ namespace TRE
 		transform.m_Position = glm::vec3(0.f, 20.f, 180.f);
 		transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 		transform.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform.m_IsDirty = true;
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
@@ -255,15 +256,16 @@ namespace TRE
 		//test->AddComponent<SphereCollider>();
 		//test->AddComponent<Rigidbody>();
 
-		Entity planeCollider = ECSManager::Instance().CreateEntity();
+	/*	Entity planeCollider = ECSManager::Instance().CreateEntity();
 		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
 		Transform& transform2 = planeCollider->GetComponent<Transform>();
 		transform2.m_Position = glm::vec3(0.f, -35.f, 100.f);
 		transform2.m_Scale = glm::vec3(10.f, 10.f, 10.f);
 		transform2.m_Rotation = glm::vec3(0, 0, 0);
+		transform2.m_IsDirty = true;
 		planeCollider->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
-		meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));*/
 
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";

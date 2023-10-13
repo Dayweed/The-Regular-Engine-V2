@@ -249,7 +249,7 @@ namespace TRE
 				continue;
 
 			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().GetModelMatrix();
+			pc.m_Model = go_mr->GetComponent<Transform>().m_WorldXform;
 			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);

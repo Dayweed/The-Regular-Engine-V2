@@ -269,7 +269,7 @@ namespace TRE
 			proj[1][1] *= -1.f;
 			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
 
-			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
+			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
 			Transform& transform = SelectedEntity->GetComponent<Transform>();
 
 			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));

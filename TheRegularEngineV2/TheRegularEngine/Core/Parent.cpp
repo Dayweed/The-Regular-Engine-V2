@@ -1,13 +1,21 @@
 #include "pch.h"
 
 #include "Parent.h"
-#include "Core/Logger.h"
+#include "Transform.h"
+#include "Logger.h"
 
 namespace TRE
 {
 	void ParentingSystem::Update()
 	{
-
+		for (Entity& object : ECSManager::Instance().GetEntities<Transform, Parenting>())
+		{
+			Transform& transform{ object->GetComponent<Transform>() };
+			if (transform.m_IsDirty)
+			{
+				UpdateChildTransform(object);
+			}
+		}
 	}
 
 	void ParentingSystem::OnReset()
@@ -45,6 +53,7 @@ namespace TRE
 		if (child->GetComponent<Parenting>().m_Parent != "" && std::find(parent->GetComponent<Parenting>().m_Children.begin(), parent->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child)) == parent->GetComponent<Parenting>().m_Children.end())
 		{
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
+			child->GetComponent<Transform>().UpdateLocalMatrix(parent);
 		}
 	}
 
@@ -131,5 +140,22 @@ namespace TRE
 			}
 		}
 		parenting.m_Children.clear();
+	}
+
+	void ParentingSystem::UpdateChildTransform(Entity parent)
+	{
+		Transform& parentTransform = parent->GetComponent<Transform>();
+		for (Entity& child : GetChildren(parent))
+		{
+			Transform& childTransform = child->GetComponent<Transform>();
+			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.m_LocalXform;
+			childTransform.DecomposeWorldMatrix(newChildXform);
+			childTransform.m_IsDirty = true;
+			Parenting& deeperChild{ child->GetComponent<Parenting>() };
+			if (deeperChild.m_Children.size() > 0)
+			{
+				UpdateChildTransform(child);
+			}
+		}
 	}
 }

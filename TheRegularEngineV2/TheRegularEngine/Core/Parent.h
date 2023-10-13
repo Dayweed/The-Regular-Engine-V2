@@ -153,5 +153,8 @@ namespace TRE
 		goParentVar->AbandonChildren();
 		*//*__________________________________________________________________________*/
 		void AbandonChildren(Entity parent);
+
+	private:
+		void UpdateChildTransform(Entity parent);
 	};
 }

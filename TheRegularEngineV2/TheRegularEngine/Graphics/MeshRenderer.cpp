@@ -21,7 +21,7 @@ namespace TRE
 			if (transform.m_IsDirty)
 			{
 				UpdateBoundingSphere(go);
-				transform.m_IsDirty = false;
+				//transform.m_IsDirty = false;
 			}
 		}
 	}
