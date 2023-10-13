@@ -112,11 +112,12 @@ namespace TRE
 		// Update Children Rotation
 		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
 		{
-			glm::vec3 childRot = obj->GetComponent<Transform>().m_Rotation;
+			Transform& childTransform{ obj->GetComponent<Transform>() };
+			glm::vec3 childRot = childTransform.m_Rotation;
 			SetRotation(obj, childRot + rotDiff);
 			// Update Position
-			glm::vec4 localPos{ transform.m_Position - obj->GetComponent<Transform>().m_Position, 0 };
-			SetPosition(obj, obj->GetComponent<Transform>().m_Position + glm::vec3{ localPos * transform.GetModelMatrix() });
+			glm::vec4 localPos{ childTransform.m_Position - transform.m_Position, 0 };
+			SetPosition(obj, transform.m_Position + glm::vec3{ transform.GetModelMatrix() * localPos });
 		}
 	}
 
