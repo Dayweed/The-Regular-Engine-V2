@@ -2,8 +2,10 @@
 
 namespace TRE
 {
-	class EditorCamera : private Camera
+	class EditorCamera : public Camera
 	{
+	public:
+		bool m_IsDirty{ false };
 	public:
 		static EditorCamera& Instance()
 		{
@@ -15,11 +17,6 @@ namespace TRE
 		void Update();
 		void Shutdown();
 
-		void SetPosition(const glm::vec3& position) { m_Position = position; }
-		void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; }
-
-		const glm::vec3& GetPosition() const { return m_Position; }
-		const glm::vec3& GetRotation() const { return m_Rotation; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 

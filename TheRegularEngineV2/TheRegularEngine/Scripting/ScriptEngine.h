@@ -1,6 +1,6 @@
 #include "mono/jit/jit.h"
 #include "mono/metadata/assembly.h"
-
+#include "glm/glm.hpp"
 //-----------------------------------------------------------------------------
 // list of engine functions to bind to the scripting engine
 //-----------------------------------------------------------------------------

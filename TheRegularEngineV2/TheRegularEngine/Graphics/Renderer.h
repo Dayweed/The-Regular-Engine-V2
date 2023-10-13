@@ -9,6 +9,7 @@
 #include "Material.h"
 #include "DebugRenderer.h"
 #include "AnimationTest.h"
+#include "MaterialTypes/PBRMaterial.h"
 
 namespace TRE
 {
@@ -57,7 +58,6 @@ namespace TRE
 		private:
 			std::shared_ptr<Device> m_Device;
 
-		private:
 			std::unique_ptr<Pipeline> m_Pipeline;
 			std::shared_ptr<RenderPass> m_RenderPass;
 
@@ -80,5 +80,8 @@ namespace TRE
 
 			//Temp for animation Testing
 			glm::mat4 m_L2W;
+
+			std::shared_ptr<Material> m_DefaultPBRMaterial;
+			ResourceHandle m_PreviousMaterial{ 0 };
 	};
 }

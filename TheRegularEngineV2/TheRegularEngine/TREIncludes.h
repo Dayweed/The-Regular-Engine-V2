@@ -28,7 +28,6 @@
 //-----------------Graphics-----------------//
 #include "Graphics/RendererContext.h"
 #include "Graphics/SwapChain.h"
-#include "Graphics/VulkanEditor.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 

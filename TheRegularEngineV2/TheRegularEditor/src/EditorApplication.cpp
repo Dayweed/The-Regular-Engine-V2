@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "EditorSystem.h"
 #include "TREIncludes.h"
 #include "EntryPoint.h"
+#include "EditorSystem.h"
 
 namespace TRE
 {
@@ -12,14 +12,12 @@ namespace TRE
 			{
 				RegisterSystems<EditorSystem>();
 			}
-
-		private:
 	};
 
 	TRE::Engine* TRE::CreateApp()
 	{
 		EngineInfo Info;
 		Info.EnableEditor = true;
-		return new EditorApplication(Info);
+		return TRE_NEW EditorApplication(Info);
 	}
 }

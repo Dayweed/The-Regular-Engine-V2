@@ -53,6 +53,7 @@ namespace TRE
 				positionOffset *= m_PanSpeed * camera.m_FocalLength / 10.f;
 				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
+
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetRightVec() * positionOffset.x);
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetUpVec() * positionOffset.y);
 			}

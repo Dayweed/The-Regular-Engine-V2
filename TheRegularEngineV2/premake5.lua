@@ -34,8 +34,8 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
-	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -143,8 +143,8 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
-	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
 
 	links 
 	{ 
@@ -201,6 +201,108 @@ project "TheRegularEditor"
 		-- '{COPY} "%{Binaries.PhysX_Device}" "%{cfg.targetdir}"',
 		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
 		'{COPY} "imgui.ini" "%{cfg.targetdir}"',
+	}
+
+	filter "configurations:Debug"
+		symbols "on"
+
+		defines
+		{
+			"DEBUG",
+			"_DEBUG",
+		}
+
+		links
+		{
+			"%{Library.FMOD_Debug}"
+		}
+
+		postbuildcommands
+		{
+			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+		}
+
+	filter "configurations:Release"
+		optimize "on"
+
+		defines
+		{
+			"NDEBUG" -- PhysX Requires This
+		}
+
+		links
+		{
+			"%{Library.FMOD_Release}"
+		}
+
+		postbuildcommands
+		{
+			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
+			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+		}
+
+
+project "TRE-Runtime"
+	location "TRE-Runtime"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "off"
+	warnings "Extra"
+	
+	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+
+	links 
+	{ 
+		"TheRegularEngine",
+		"ImGui"
+	}
+
+	defines 
+	{
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"GLM_FORCE_RADIANS",
+		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
+	}
+
+	files 
+	{ 
+		"%{prj.name}/src/**.h", 
+		"%{prj.name}/src/**.c", 
+		"%{prj.name}/src/**.hpp", 
+		"%{prj.name}/src/**.cpp", 
+	}
+
+	includedirs 
+	{
+		"TheRegularEngine",
+		"Dependencies/Math/include",
+		-- "%{IncludeDir.Assimp}",
+		"%{IncludeDir.FMOD}",
+		-- "%{IncludeDir.Freetype}",
+		-- "%{IncludeDir.GLFW}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.Mono}",
+		"%{IncludeDir.PhysX}",
+		"%{IncludeDir.VULKANSDK}",
+		-- "%{IncludeDir.Rapidjson}",
+		"%{IncludeDir.Nlohmannjson}",
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.Properties}",
+	}
+
+	postbuildcommands
+	{
+		'{COPY} "%{Binaries.PhysX_64}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Common}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Cooking}" "%{cfg.targetdir}"',
+		'{COPY} "%{Binaries.PhysX_Foundation}" "%{cfg.targetdir}"',
 	}
 
 	filter "configurations:Debug"

@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "Pipeline.h"
 #include "Buffer.h"
+#include "glm/glm.hpp"
 
 namespace TRE
 {
