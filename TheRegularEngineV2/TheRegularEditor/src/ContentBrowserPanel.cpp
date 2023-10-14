@@ -13,8 +13,7 @@ namespace TRE
 		m_SelectionManager = Selection_Manager;
 		
 		m_AssetDirectory = std::filesystem::current_path().parent_path();
-		m_AssetDirectory += "/Assets";
-		std::cout << m_AssetDirectory << "\n";
+		m_AssetDirectory += "\\Assets";
 		m_CurrentDirectory = m_AssetDirectory;
 
 		//Custom Flag Combinations
@@ -40,6 +39,7 @@ namespace TRE
 			const std::string filenameString = relativePath.filename().string();
 			if (p.is_directory())
 			{
+				//if the asset is a file
 				m_Assets.emplace_back(Asset{ true, m_TmpTexturesID ,"m_Invalid", filenameString, p.path()});
 			}
 			else
@@ -55,155 +55,132 @@ namespace TRE
 				const bool isMeta = filenameString.ends_with(".meta");
 				const bool isFont = filenameString.ends_with(".ttf");
 				const bool is3DObj = filenameString.ends_with(".fbx");
+				const bool isDesc = filenameString.ends_with(".desc");
 
 				//Determine the icon type
-				newAsset.m_TextureID = isImage ? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isAudio ? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isScene || isShader || isPrefab ? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isMeta ? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isFont ? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isImage							? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isAudio							? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isScene || isShader || isPrefab	? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isMeta							? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isFont							? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = is3DObj							? m_TmpTexturesID : newAsset.m_TextureID;
 
-				if (isImage || isAudio || isShader || isScene | isPrefab || isFont)
+				if (isImage || isAudio || isShader || isScene | isPrefab || isFont || is3DObj)
 				{
 					//Allow Dragging of these file types
-					newAsset.m_ResourceType = isImage ? "m_TextureResource" : newAsset.m_ResourceType;
-					newAsset.m_ResourceType = isAudio ? "m_AudioResource" : newAsset.m_ResourceType;
-					newAsset.m_ResourceType = isShader ? "m_ShaderResource" : newAsset.m_ResourceType;
-					newAsset.m_ResourceType = isFont ? "m_FontResource" : newAsset.m_ResourceType;
-					newAsset.m_ResourceType = isScene ? "m_Scene" : newAsset.m_ResourceType;
-					newAsset.m_ResourceType = isPrefab ? "m_Prefab" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isImage		? "m_TextureResource" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isAudio		? "m_AudioResource" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isShader		? "m_ShaderResource" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isFont		? "m_FontResource" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isScene		? "m_Scene" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isPrefab		? "m_Prefab" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = is3DObj		? "m_3DObject" : newAsset.m_ResourceType;
 				}
-
+				//Set the path and filename
 				newAsset.m_Path = path;
 				newAsset.m_FileName = filenameString;
-
-				m_Assets.emplace_back(newAsset);
+				//Add the asset to the list if not a descriptor file
+				if(!isDesc)
+					m_Assets.emplace_back(newAsset);
 			}
 		}
 	}
 
 	void ContentBrowserPanel::BrowseProjectFiles()
 	{
-		//Folder List Display
-		if(ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, ImGui::GetContentRegionAvail().y), true))
-		{
-			//Folder display
-			for (auto& p : std::filesystem::directory_iterator(m_AssetDirectory))
-			{
-				//Get the path and filename
-				const std::filesystem::path path = p.path();
-				const std::filesystem::path relativePath = std::filesystem::relative(path, m_AssetDirectory);
-				const std::string filenameString = relativePath.filename().string();
-
-				if (p.is_directory())
-				{
-					if (ImGui::Button(filenameString.c_str()))
-					{
-						//Step into folder selected
-						m_CurrentDirectory = m_AssetDirectory;
-						m_AssetDirectory /= path.filename();
-						PollItems();
-					}
-				}
-			}
-		}
-		ImGui::EndChild();
-		ImGui::SameLine();
-
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
+			ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
+			if (ImGui::Button("Open File Explorer"))
+			{
+				(void)FileExplorer::OpenFileExplorer(nullptr);
+			}
+
 			if (m_CurrentDirectory != m_AssetDirectory)
 			{
-				ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
-				if (ImGui::Button("Open File Explorer"))
+				if (ImGui::Button("Back"))
 				{
-					(void)FileExplorer::OpenFileExplorer(nullptr);
-				}
-
-				if (m_CurrentDirectory != m_AssetDirectory && m_CurrentDirectory.parent_path() != m_AssetDirectory)
-				{
-					if (ImGui::Button("Back"))
-					{
-						m_CurrentDirectory = m_CurrentDirectory.parent_path();
-						PollItems();
-					}
-				}
-				ImGui::Separator();
-
-				const float panelWidth = ImGui::GetContentRegionAvail().x;
-				int cols = static_cast<int>(panelWidth / m_CellSize);
-				if (cols < 1)
-					cols = 1;
-
-				ImGui::Columns(cols, nullptr, false);
-
-				for (int count{}; auto & item: m_Assets)
-				{
-					ImGui::PushID(count++);
-
-					if (item.m_Folder)
-					{
-						if (ImGui::ImageButton(item.m_TextureID,{m_ImgSize, m_ImgSize}, { 0,1 }, { 1,0 }))
-						{
-							//step into folder selected
-							m_CurrentDirectory /= item.m_Path.filename();
-							m_CurrentTimer = m_RefreshRate;
-						}
-						ImGui::TextWrapped("%s", item.m_FileName.c_str());
-					}
-					else
-					{
-						if (ImGui::ImageButton(item.m_TextureID, { m_ImgSize, m_ImgSize }, { 0,1 }, { 1,0 }))
-						{
-							//No Click Action
-							if (item.m_ResourceType == "_Invalid")
-							{
-								if(!m_InvalidResourcePopUp)
-									m_InvalidResourcePopUp = true;
-							}
-						}
-
-						if (ImGui::BeginDragDropSource())
-						{
-							if (item.m_ResourceType != "_Invalid")
-							{
-								const std::string tmp = item.m_Path.string();
-								const char* itemPath = tmp.c_str();
-								ImGui::SetDragDropPayload(item.m_ResourceType.c_str(), itemPath, strlen(itemPath) * sizeof(char));
-								ImGui::Text("Move %s", item.m_FileName.c_str());
-							}
-							ImGui::EndDragDropSource();
-						}
-						ImGui::TextWrapped("%s", item.m_FileName.c_str());
-					}
-					ImGui::PopID();
-					ImGui::NextColumn();
-				}
-				if (m_InvalidResourcePopUp)
-				{
-					ImGui::OpenPopup("Invalid Resource");
-					m_InvalidResourcePopUp = false;
-				}
-				//create Pop-up
-				ImGui::SetNextWindowSize(ImVec2{ 250.f,70.f });
-				ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2{ 0.5f,0.5f });
-				if (ImGui::BeginPopupModal("Invalid Resource", nullptr, m_PopUps))
-				{
-					ImGui::Text("This file type is not supported!");
-					if (ImGui::Button("Ok"))
-					{
-						ImGui::CloseCurrentPopup();
-					}
-					ImGui::EndPopup();
+					m_CurrentDirectory = m_CurrentDirectory.parent_path();
+					PollItems();
 				}
 			}
+			ImGui::Separator();
+
+			const float panelWidth = ImGui::GetContentRegionAvail().x;
+			int cols = static_cast<int>(panelWidth / m_CellSize);
+			if (cols < 1)
+				cols = 1;
+
+			ImGui::Columns(cols, nullptr, false);
+
+			for (int count{}; auto & item: m_Assets)
+			{
+				ImGui::PushID(count++);
+
+				if (item.m_Folder)
+				{
+					if (ImGui::ImageButton(item.m_TextureID,{m_ImgSize, m_ImgSize}, { 0,1 }, { 1,0 }))
+					{
+						//step into folder selected
+						m_CurrentDirectory /= item.m_Path.filename();
+						m_CurrentTimer = m_RefreshRate;
+					}
+					ImGui::TextWrapped("%s", item.m_FileName.c_str());
+				}
+				else
+				{
+					if (ImGui::ImageButton(item.m_TextureID, { m_ImgSize, m_ImgSize }, { 0,1 }, { 1,0 }))
+					{
+						//No Click Action
+						if (item.m_ResourceType == "_Invalid")
+						{
+							if(!m_InvalidResourcePopUp)
+								m_InvalidResourcePopUp = true;
+						}
+					}
+
+					if (ImGui::BeginDragDropSource())
+					{
+						if (item.m_ResourceType != "_Invalid")
+						{
+							const std::string tmp = item.m_Path.string();
+							const char* itemPath = tmp.c_str();
+							ImGui::SetDragDropPayload(item.m_ResourceType.c_str(), itemPath, strlen(itemPath) * sizeof(char));
+							ImGui::Text("Move %s", item.m_FileName.c_str());
+						}
+						ImGui::EndDragDropSource();
+					}
+					ImGui::TextWrapped("%s", item.m_FileName.c_str());
+				}
+				ImGui::PopID();
+				ImGui::NextColumn();
+			}
+			if (m_InvalidResourcePopUp)
+			{
+				ImGui::OpenPopup("Invalid Resource");
+				m_InvalidResourcePopUp = false;
+			}
+			//create Pop-up
+			ImGui::SetNextWindowSize(ImVec2{ 250.f,70.f });
+			ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2{ 0.5f,0.5f });
+			if (ImGui::BeginPopupModal("Invalid Resource", nullptr, m_PopUps))
+			{
+				ImGui::Text("This file type is not supported!");
+				if (ImGui::Button("Ok"))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+			
 		}
 			ImGui::EndChild();
 	}
 
 	void ContentBrowserPanel::Init()
 	{
+		//Load the textures for the icons
 		const auto tmpGUID = EditorAssetManager::Instance().GetAsset("icon-play.png");
 		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
 		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
