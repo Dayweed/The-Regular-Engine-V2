@@ -82,6 +82,5 @@ namespace TRE
 			glm::mat4 m_L2W;
 
 			std::shared_ptr<Material> m_DefaultPBRMaterial;
-			ResourceHandle m_PreviousMaterial{ 0 };
 	};
 }

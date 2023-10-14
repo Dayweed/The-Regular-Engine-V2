@@ -238,6 +238,8 @@ namespace TRE
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
 
+		std::set<ResourceHandle> renderedMaterials;
+
 		//VERY INEFFICIENT //Geom Pass
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
@@ -261,8 +263,8 @@ namespace TRE
 					m_DefaultPBRMaterial->AllocateLayouts();
 				}
 				currentMaterialHandle = PBR::GetDefaultHandle();
-
-				if (m_PreviousMaterial != currentMaterialHandle)
+				
+				if (renderedMaterials.contains(currentMaterialHandle) == false)
 				{
 					m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
 					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
@@ -271,7 +273,7 @@ namespace TRE
 			else
 			{
 				currentMaterialHandle = mr.m_MaterialInstance->GetHandle();
-				if (m_PreviousMaterial != currentMaterialHandle)
+				if (renderedMaterials.contains(currentMaterialHandle) == false)
 				{
 					mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
@@ -281,7 +283,7 @@ namespace TRE
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 
-			m_PreviousMaterial = currentMaterialHandle;
+			renderedMaterials.insert(currentMaterialHandle);
 		}
 		
 		//Debug Drawing Pass
