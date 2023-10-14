@@ -148,6 +148,8 @@ namespace TRE
 							const char* itemPath = tmp.c_str();
 							ImGui::SetDragDropPayload(item.m_ResourceType.c_str(), itemPath, strlen(itemPath) * sizeof(char));
 							ImGui::Text("Move %s", item.m_FileName.c_str());
+
+							//std::cout << item.m_ResourceType.c_str() << std::endl;
 						}
 						ImGui::EndDragDropSource();
 					}
@@ -181,12 +183,12 @@ namespace TRE
 	void ContentBrowserPanel::Init()
 	{
 		//Load the textures for the icons
-		const auto tmpGUID = EditorAssetManager::Instance().GetAsset("icon-play.png");
+		const auto tmpGUID = AssetManager::Instance().GetAsset("icon-play.png");
 		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
 		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");
 		tmpButton->SetHandle(tmpGUID);
-		EditorAssetManager::Instance().AddAsset("icon-play.png", std::move(tmpButton));
+		AssetManager::Instance().AddAsset("icon-play.png", std::move(tmpButton));
 		m_TmpTextures = ResourceManager::Instance().GetResource<VulkanTexture>(tmpGUID);
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 	}

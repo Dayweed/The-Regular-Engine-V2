@@ -5,11 +5,12 @@
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
 #include "Utilities.h"
-#include "Scripting/ScriptEngine.h"
+#include "EditorAssetManager.h"
 
 
 //To Delete
 #include "Graphics/Camera.h"
+#include "Scripting/ScriptEngine.h"
 namespace TRE
 {
 	ViewportPanel::ViewportPanel(const std::shared_ptr<SelectionManager>& selection_Manager)
@@ -246,10 +247,34 @@ namespace TRE
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			//For 3D Models
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_3DObject"))
 			{
 				std::string assetName = (const char*)payload->Data;
-				std::cout << "drag and dropped " << assetName << " from Content Browser Panel\n";
+				assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+				assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+				
+				//Check if asset is already compiled and loaded before
+				if (AssetManager::Instance().Contains(assetName))
+				{
+					//Spawn object at mouse location
+					Entity spawn = ECSManager::Instance().CreateEntity();
+					spawn->GetComponent<Properties>().m_Name = assetName.substr(0, assetName.find_last_of('.'));
+					Transform& transform{ spawn->GetComponent<Transform>() };
+					transform.m_Position = glm::vec3(0.f, 0.f, 180.f);
+					transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+					transform.m_Rotation = glm::vec3(0, 180.f, 0);
+					transform.m_IsDirty = true;
+					spawn->AddComponent<MeshRenderer>();
+					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
+						SetMeshRenderer(spawn, ResourceManager::Instance().GetResource<RenderObject>(AssetManager::Instance().GetAsset(assetName)));
+
+				}
+				else
+				{
+					//Compile and load asset
+					Resource::GetGUIDHex(Resource::GenerateGUID());
+				}
 			}
 
 			ImGui::EndDragDropTarget();

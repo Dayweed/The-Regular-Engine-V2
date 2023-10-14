@@ -4,7 +4,7 @@
 
 namespace TRE
 {
-	void EditorAssetManager::Initialize()
+	void AssetManager::Initialize()
 	{
 		//Go throught assets folder and link assetname to asset handle based on available descriptor files
 		std::filesystem::path assetsPath = "../Assets";
@@ -41,33 +41,33 @@ namespace TRE
 			}
 		}
 	}
-	void EditorAssetManager::Shutdown()
+	void AssetManager::Shutdown()
 	{
 		m_AssetNameToHandle.clear();
 	}
 
-	void EditorAssetManager::AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset)
+	void AssetManager::AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset)
 	{
 		m_AssetNameToHandle[assetName] = asset->GetHandle();
 		ResourceManager::Instance().AddResource(std::move(asset));
 	}
 
-	void EditorAssetManager::RemoveAsset(const std::string& assetName)
+	void AssetManager::RemoveAsset(const std::string& assetName)
 	{
 		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName]);
 	}
 
-	bool EditorAssetManager::Contains(const std::string& assetName)
+	bool AssetManager::Contains(const std::string& assetName)
 	{
 		return m_AssetNameToHandle.find(assetName) != m_AssetNameToHandle.end();
 	}
 
-	ResourceHandle EditorAssetManager::GetAsset(const std::string& assetName)
+	const ResourceHandle AssetManager::GetAsset(const std::string& assetName) const
 	{
-		return m_AssetNameToHandle[assetName];
+		return m_AssetNameToHandle.at(assetName);
 	}
 
-	std::string EditorAssetManager::GetName(const ResourceHandle resourceHandle)
+	const std::string AssetManager::GetName(const ResourceHandle resourceHandle) const
 	{
 		std::string name;
 		for (auto x : m_AssetNameToHandle)
@@ -76,5 +76,13 @@ namespace TRE
 				name = x.first;
 		}
 		return name;
+	}
+
+	void AssetManager::PrintAllAssets() const
+	{
+		for (const auto x : m_AssetNameToHandle)
+		{
+			std::cout << x.first << " " << x.second << std::endl;
+		}
 	}
 }

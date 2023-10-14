@@ -6,61 +6,56 @@ namespace TRE
 {
 	class ResourceManager
 	{
-		public:
-			static ResourceManager& Instance()
+	public:
+		static ResourceManager& Instance()
+		{
+			static ResourceManager instance;
+			return instance;
+		}
+	public:
+		void AddResource(std::unique_ptr<Resource> asset);
+		void RemoveResource(ResourceHandle Handle);
+		void UnloadUnusedResources();
+
+		ResourceType GetResourceType(ResourceHandle handle);
+
+		template <typename T>
+		std::shared_ptr<T> GetResource(ResourceHandle Handle);
+
+		template <typename T>
+		std::vector<std::shared_ptr<T>> GetResourcesOfType();
+
+		template <typename N>
+		void DestroyResourcesOfType(N type);
+
+		void DestroyAllResources()
+		{
+			m_Resources.clear();
+		}
+
+		std::size_t GetAllResourceCount()
+		{
+			return m_Resources.size();
+		}
+
+		void SerializeAll()
+		{
+			UnloadUnusedResources();
+			for (auto& asset : m_Resources)
 			{
-				static ResourceManager instance;
-				return instance;
+				if(asset.second->GetType() == ResourceType::Material)
+					asset.second->Serialize();
 			}
-		public:
-			void AddResource(std::unique_ptr<Resource> asset);
-			void RemoveResource(ResourceHandle Handle);
-			void UnloadUnusedResources();
+		}
 
-			ResourceType GetResourceType(ResourceHandle handle);
-
-			template <typename T>
-			std::shared_ptr<T> GetResource(ResourceHandle Handle);
-
-			template <typename T>
-			std::vector<std::shared_ptr<T>> GetResourcesOfType();
-
-			void DestroyResource(ResourceHandle Handle)
-			{
-				m_Resources[Handle].reset();
-			}
-
-			template <typename N>
-			void DestroyResourcesOfType(N type);
-
-			void DestroyAllResources()
-			{
-				m_Resources.clear();
-			}
-
-			std::size_t GetAllResourceCount()
-			{
-				return m_Resources.size();
-			}
-
-			void Serialize()
-			{
-				UnloadUnusedResources();
-				for (auto& asset : m_Resources)
-				{
-					if(asset.second->GetType() == ResourceType::Material)
-						asset.second->Serialize();
-				}
-			}
-
-		private:
-			ResourceManager() {};
-			~ResourceManager();
-			ResourceManager(ResourceManager const&) = delete;
-			void operator=(ResourceManager const&) = delete;
-			void* operator new(size_t) = delete;
-		private:
-			std::unordered_map<ResourceHandle, std::shared_ptr<Resource>> m_Resources;
+	private:
+		ResourceManager() {};
+		~ResourceManager();
+		ResourceManager(ResourceManager const&) = delete;
+		void operator=(ResourceManager const&) = delete;
+		void* operator new(size_t) = delete;
+	private:
+		std::unordered_map<ResourceHandle, std::shared_ptr<Resource>> m_Resources;
 	};
 
 	template <typename T>
@@ -68,9 +63,6 @@ namespace TRE
 	{
 		if (m_Resources.find(Handle) == m_Resources.end())
 		{
-			/*std::stringstream ss;
-			ss << std::hex << Handle;
-			TRE_CORE_ERROR("Couldnt find asset of handle: " + ss.str());*/
 			return nullptr;
 		}
 		return std::dynamic_pointer_cast<T>(m_Resources[Handle]);

@@ -35,7 +35,7 @@ namespace TRE
 	void SceneManager::SaveSceneAs(std::string scenePath)
 	{
 		ECSManager::Instance().SaveEntities(scenePath);
-		ResourceManager::Instance().Serialize();
+		ResourceManager::Instance().SerializeAll();
 		m_CurrentScene = scenePath;
 		m_CurrentSceneFilePath = scenePath;
 	}

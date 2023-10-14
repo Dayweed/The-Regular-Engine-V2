@@ -63,7 +63,7 @@ namespace TRE
 	{
 		m_IsDirty = true;
 
-		MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
+		MeshRenderer& meshRenderer = go->GetComponent<MeshRenderer>();
 		meshRenderer.m_RenderObject = renderObject;
 		meshRenderer.m_IsDirty = true;
 
@@ -76,7 +76,7 @@ namespace TRE
 	{
 		m_IsDirty = true;
 	
-		MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
+		MeshRenderer& meshRenderer = go->GetComponent<MeshRenderer>();
 		meshRenderer.m_MaterialInstance = material;
 		meshRenderer.m_IsDirty = true;
 	}
@@ -85,7 +85,7 @@ namespace TRE
 	{
 		m_IsDirty = true;
 
-		MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
+		MeshRenderer& meshRenderer = go->GetComponent<MeshRenderer>();
 		meshRenderer.m_IsVisible = isVisible;
 		meshRenderer.m_IsDirty = true;
 	}
@@ -94,23 +94,23 @@ namespace TRE
 	{
 		m_IsDirty = true;
 
-		MeshRenderer& meshRenderer = go.get()->GetComponent<MeshRenderer>();
+		MeshRenderer& meshRenderer = go->GetComponent<MeshRenderer>();
 		meshRenderer.m_IsCulled = isCulled;
 		meshRenderer.m_IsDirty = true;
 	}
 
 	const bool MeshRendererSystem::IsVisible(Entity& go) const
 	{
-		return go.get()->GetComponent<MeshRenderer>().m_IsVisible;
+		return go->GetComponent<MeshRenderer>().m_IsVisible;
 	}
 
 	const bool MeshRendererSystem::IsCulled(Entity& go) const
 	{
-		return go.get()->GetComponent<MeshRenderer>().m_IsCulled;
+		return go->GetComponent<MeshRenderer>().m_IsCulled;
 	}
 
 	const Collision::Sphere3D& MeshRendererSystem::GetBoundingSphere(Entity& go) const
 	{
-		return go.get()->GetComponent<MeshRenderer>().m_BoundingSphere;
+		return go->GetComponent<MeshRenderer>().m_BoundingSphere;
 	}
 }
