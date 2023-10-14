@@ -107,33 +107,10 @@ namespace TRE
 				//Offset mouse position to the middle of the viewport as if in game
 				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 				const Camera& camera = entity->GetComponent<Camera>();
-				CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 
-				ImVec2 worldSpaceMousePos = ImGui::GetMousePos();
-				worldSpaceMousePos -= m_WindowPos;
-				worldSpaceMousePos -= m_ImageOffset;
-				worldSpaceMousePos.x /= m_ImageSize.x;
-				worldSpaceMousePos.x -= 0.5f;
-				worldSpaceMousePos.x *= 2.f;
-				worldSpaceMousePos.y /= m_ImageSize.y;
-				worldSpaceMousePos.y = 1.f - worldSpaceMousePos.y;
-				worldSpaceMousePos.y -= 0.5f;
-				worldSpaceMousePos.y *= 2.f;
+				UpdateClickRay();
 
-				glm::mat4 invProjView = cameraSystem->GetInverseViewProjectionMatrix(entity);
-				glm::vec4 start = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 0.f, 1.f);
-				glm::vec4 end = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 1.f, 1.f);
-				start = invProjView * start;
-				end = invProjView * end;
-				start.x /= start.w;
-				start.y /= start.w;
-				start.z /= start.w;
-				end.x /= end.w;
-				end.y /= end.w;
-				end.z /= end.w;
-				glm::vec3 ray = end - start;
-				
-				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position, ray);
+				const Collision::Ray3D cameraRay = Collision::Ray3D(camera.m_Position, m_ClickRay);
 
 				auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
 				auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
@@ -258,9 +235,13 @@ namespace TRE
 				Entity spawn = ECSManager::Instance().CreateEntity();
 				spawn->GetComponent<Properties>().m_Name = assetName.substr(0, assetName.find_last_of('.'));
 				Transform& transform{ spawn->GetComponent<Transform>() };
-				transform.m_Position = glm::vec3(0.f, 0.f, 180.f);
-				transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-				transform.m_Rotation = glm::vec3(0, 180.f, 0);
+				//Editor Camera next time
+				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+				const Camera& camera = entity->GetComponent<Camera>();
+				UpdateClickRay();
+				transform.m_Position = camera.m_Position + m_ClickRay;
+				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
+				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
 				spawn->AddComponent<MeshRenderer>();
 				
@@ -381,6 +362,17 @@ namespace TRE
 
 	}
 
+	glm::vec2 ViewportPanel::PanSensitivity(const float viewportWidth, const float viewportHeight)
+	{
+		float x = std::min(viewportWidth / 1000.f, 2.4f); //Max is 2.4f
+		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+
+		float y = std::min(viewportHeight / 1000.f, 2.4f); //Max is 2.4f
+		float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+
+		return { xFactor, yFactor };
+	}
+
 	void ViewportPanel::UpdateViewportSize()
 	{
 		const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
@@ -402,5 +394,35 @@ namespace TRE
 		m_ImageOffset.y *= 0.5f;
 		m_ImageOffset += ImGui::GetWindowSize() - m_ViewportSize;
 		ImGui::SetCursorPos(m_ImageOffset);
+	}
+
+	void ViewportPanel::UpdateClickRay()
+	{
+		Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+		CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
+
+		ImVec2 worldSpaceMousePos = ImGui::GetMousePos();
+		worldSpaceMousePos -= m_WindowPos;
+		worldSpaceMousePos -= m_ImageOffset;
+		worldSpaceMousePos.x /= m_ImageSize.x;
+		worldSpaceMousePos.x -= 0.5f;
+		worldSpaceMousePos.x *= 2.f;
+		worldSpaceMousePos.y /= m_ImageSize.y;
+		worldSpaceMousePos.y = 1.f - worldSpaceMousePos.y;
+		worldSpaceMousePos.y -= 0.5f;
+		worldSpaceMousePos.y *= 2.f;
+
+		glm::mat4 invProjView = cameraSystem->GetInverseViewProjectionMatrix(entity);
+		glm::vec4 start = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 0.f, 1.f);
+		glm::vec4 end = glm::vec4(worldSpaceMousePos.x, -worldSpaceMousePos.y, 1.f, 1.f);
+		start = invProjView * start;
+		end = invProjView * end;
+		start.x /= start.w;
+		start.y /= start.w;
+		start.z /= start.w;
+		end.x /= end.w;
+		end.y /= end.w;
+		end.z /= end.w;
+		m_ClickRay = end - start;
 	}
 }

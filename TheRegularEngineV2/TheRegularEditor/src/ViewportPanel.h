@@ -35,18 +35,9 @@ namespace TRE
 			void OnKeyboardClick(const InputEvent& event);
 		private:
 			//Gonna rewrite in editor camera next time
-			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight)
-			{
-				float x = std::min(viewportWidth / 1000.f, 2.4f); //Max is 2.4f
-				float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
-
-				float y = std::min(viewportHeight / 1000.f, 2.4f); //Max is 2.4f
-				float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
-
-				return { xFactor, yFactor };
-			}
-
+			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);
 			void UpdateViewportSize();
+			void UpdateClickRay();
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			int m_GizmoOperation = -1; // -1 means no operation
@@ -62,5 +53,7 @@ namespace TRE
 			float m_ZoomSensitivity = 200.f;
 			float m_PanSpeed = 400.f;
 			float m_RotationSensitivity = 5.f;
+
+			glm::vec3 m_ClickRay{};
 	};
 }

@@ -467,10 +467,11 @@ namespace TRE
 	void Engine::Shutdown()
 	{
 		m_Running = false;
+		ResourceManager::Instance().DestroyAllResources();
+		GameLoop::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
-		GameLoop::Instance().Shutdown();
 	}
 }
