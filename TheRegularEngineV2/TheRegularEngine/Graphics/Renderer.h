@@ -79,9 +79,9 @@ namespace TRE
 			AnimationUBO m_AnimationBuffer;
 
 			//Temp for animation Testing
-			glm::mat4 m_L2W;
+			glm::mat4						m_L2W;
 
-			std::shared_ptr<Material> m_DefaultPBRMaterial;
-			ResourceHandle m_PreviousMaterial{ 0 };
+			std::shared_ptr<Material>		m_DefaultPBRMaterial;
+			ResourceHandle					m_PreviousMaterialHandle;
 	};
 }

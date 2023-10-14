@@ -7,111 +7,9 @@
 #include <sstream>
 #include <iostream>
 
-namespace
-{
-	std::vector<std::string> SplitString(const std::string& str, const std::string& delimiter)
-	{
-		std::vector<std::string> strings;
-		std::string::size_type pos = 0;
-		std::string::size_type prev = 0;
-		while ((pos = str.find(delimiter, prev)) != std::string::npos)
-		{
-			strings.push_back(str.substr(prev, pos - prev));
-			prev = pos + 1;
-		}
-		strings.push_back(str.substr(prev));
-		return strings;
-	}
-}
-
 namespace TRE
 {
-	void GeomDescriptorFile::Write()
-	{
-		m_DescriptorFile << "Geom File Path:\n";
-		std::string geomPath = m_AssetPath.substr(0, m_AssetPath.find_last_of("."));
-		geomPath += ".geom";
-		m_DescriptorFile << geomPath << "\n\n";
-		m_DescriptorFile << "Scale:\n";
-		m_DescriptorFile << m_Scale.x << ", " << m_Scale.y << ", " << m_Scale.z << "\n\n";
-		m_DescriptorFile << "Rotation:\n";
-		m_DescriptorFile << m_Rotation.x << ", " << m_Rotation.y << ", " << m_Rotation.z << "\n\n";
-		m_DescriptorFile << "Translation:\n";
-		m_DescriptorFile << m_Position.x << ", " << m_Position.y << ", " << m_Position.z << "\n\n";
-		//m_DescriptorFile << "Mesh rename:\n";
-		//m_DescriptorFile << (m_MeshRename ? "True" : "False") << std::endl << std::endl;
-		//m_DescriptorFile << "Mesh name:\n";
-		//m_DescriptorFile << m_MeshName << std::endl << std::endl;
-	}
-
-	void GeomDescriptorFile::Read()
-	{
-		std::string line;
-		std::getline(m_DescriptorFile, line);
-		if (line == "Geom File Path:")
-		{
-			std::getline(m_DescriptorFile, line);
-			m_GeomPath = line;
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Geom file is not valid" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Scale:")
-		{
-			std::getline(m_DescriptorFile, line);
-			std::vector<std::string> scaleContainer = SplitString(line, ", ");
-		
-			m_Scale.x = std::stof(scaleContainer[0]);
-			m_Scale.y = std::stof(scaleContainer[1]);
-			m_Scale.z = std::stof(scaleContainer[2]);
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Scale missing" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Rotation:")
-		{
-			std::getline(m_DescriptorFile, line);
-			std::vector<std::string> rotateContainer = SplitString(line, ", ");
-
-			m_Rotation.x = std::stof(rotateContainer[0]);
-			m_Rotation.y = std::stof(rotateContainer[1]);
-			m_Rotation.z = std::stof(rotateContainer[2]);
-
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Rotation missing" << std::endl;
-			return;
-		}
-		std::getline(m_DescriptorFile, line);
-		if (line == "Translation:")
-		{
-			std::getline(m_DescriptorFile, line);
-			std::vector<std::string> translationContainer = SplitString(line, ", ");
-
-			m_Position.x = std::stof(translationContainer[0]);
-			m_Position.y = std::stof(translationContainer[1]);
-			m_Position.z = std::stof(translationContainer[2]);
-
-			std::getline(m_DescriptorFile, line);
-		}
-		else
-		{
-			std::cout << "Error: Translation missing" << std::endl;
-			return;
-		}
-	}
-
-	void GeomCompiler::Compile(const std::string& filename)
+	void GeomCompiler::Compile(const GeomDescriptorFile& geomDesc)
 	{
 		Assimp::Importer importer;
 
@@ -126,11 +24,12 @@ namespace TRE
 			| aiProcess_FlipUVs                    // flip the V to match the Vulkans way of doing UVs
 			;
 
-		m_filePath = filename;
-		m_Scene = importer.ReadFile(filename, flag);
+		const std::string& filePath = geomDesc.GetAssetPath();
+		m_filePath = filePath;
+		m_Scene = importer.ReadFile(filePath, flag);
 		if (m_Scene == nullptr)
 		{
-			std::cout << "Error loading model: " << filename << std::endl;
+			std::cout << "Error loading model: " << filePath << std::endl;
 			return;
 		}
 		//assert(m_Scene != nullptr && "Error loading model");
@@ -141,7 +40,7 @@ namespace TRE
 			return;
 		}
 
-		ImportData();
+		ImportData(geomDesc);
 	}
 
 	bool GeomCompiler::SanityCheck()
@@ -196,7 +95,7 @@ namespace TRE
 		return false;
 	}
 
-	void GeomCompiler::ImportData()
+	void GeomCompiler::ImportData(const GeomDescriptorFile& geomDesc)
 	{
 		std::vector<InputMeshPart> MyNodes;
 		
@@ -204,7 +103,8 @@ namespace TRE
 
 		MergeData(MyNodes);
 
-		Optimize(MyNodes);
+		if(geomDesc.GetOptimize())
+			Optimize(MyNodes);
 
 		auto skinGeom = CreateSkinGeom(Quantize(MyNodes));
 

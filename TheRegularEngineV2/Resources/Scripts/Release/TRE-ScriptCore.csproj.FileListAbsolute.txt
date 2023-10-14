@@ -10,3 +10,9 @@ C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\Resources\Scripts\Rele
 C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.pdb
 C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.dll
 C:\Users\jerel\OneDrive\Desktop\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.pdb
+C:\PERSONAL\SCHOOL\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.csproj.AssemblyReference.cache
+C:\PERSONAL\SCHOOL\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.csproj.CoreCompileInputs.cache
+C:\PERSONAL\SCHOOL\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.dll
+C:\PERSONAL\SCHOOL\GAM300\TheRegularEngineV2\Resources\Scripts\Release\TRE-ScriptCore.pdb
+C:\PERSONAL\SCHOOL\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.dll
+C:\PERSONAL\SCHOOL\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.pdb

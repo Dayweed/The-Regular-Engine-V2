@@ -238,50 +238,63 @@ namespace TRE
 
 		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
 
-		//VERY INEFFICIENT //Geom Pass
+		//std::set<ResourceHandle> renderedMaterials;
+		std::multimap<ResourceHandle, Entity> materialSort;
+
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
-			PushConstant pc{};
-			pc.m_Model = go_mr->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			ResourceHandle materialHandle;
 
-			ResourceHandle currentMaterialHandle;
-
-			//If no material instance attached, use default PBR material
-			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
+			if (mr.m_MaterialInstance == nullptr)
 			{
-				//If no default material, create and allocate
+				materialHandle = PBR::GetDefaultHandle();
 				if (m_DefaultPBRMaterial == nullptr)
 				{
-					m_DefaultPBRMaterial = ResourceManager::Instance().GetResource<Material>(PBR::GetDefaultHandle());
+					m_DefaultPBRMaterial = ResourceManager::Instance().GetResource<Material>(materialHandle);
 					m_DefaultPBRMaterial->AllocateLayouts();
-				}
-				currentMaterialHandle = PBR::GetDefaultHandle();
-
-				if (m_PreviousMaterial != currentMaterialHandle)
-				{
-					m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
-					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 				}
 			}
 			else
 			{
-				currentMaterialHandle = mr.m_MaterialInstance->GetHandle();
-				if (m_PreviousMaterial != currentMaterialHandle)
+				materialHandle = mr.m_MaterialInstance->GetHandle();
+			}
+			materialSort.insert(std::make_pair(materialHandle, go_mr));
+		}
+
+		//Geom Pass
+		for (const auto& go_mr : materialSort)
+		{
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			ResourceHandle currentMaterialHandle = go_mr.first;
+
+			//If no material instance attached, use default PBR material
+			if (currentMaterialHandle != m_PreviousMaterialHandle)
+			{
+				if (mr.m_MaterialInstance == nullptr)
+				{
+					m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
+					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+				}
+				else
 				{
 					mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
-					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &go_mr->GetComponent<MeshRenderer>().m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}
 
 			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
 			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
 
-			m_PreviousMaterial = currentMaterialHandle;
+			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
 		
 		//Debug Drawing Pass

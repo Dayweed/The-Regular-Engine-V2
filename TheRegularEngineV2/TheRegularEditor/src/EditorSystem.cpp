@@ -19,7 +19,7 @@ namespace TRE
 	{
 		TRE_INFO("Editor Init");
 		
-		EditorAssetManager::Instance().Initialize();
+		AssetManager::Instance().Initialize();
 
 		m_PanelManager = std::make_unique<PanelManager>();
 		m_SelectionManager = std::make_shared<SelectionManager>();

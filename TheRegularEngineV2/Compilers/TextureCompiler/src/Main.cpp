@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 	}
 	descriptorFile.ReadDescriptorFile(argv[1]);
 	TRE::TextureCompiler::Instance().Compile(descriptorFile);
-	TRE::Texture::Serialize(descriptorFile.GetTexturePath(), TRE::TextureCompiler::Instance().GetTexture());
+	TRE::Texture::Serialize(descriptorFile.GetResourcePath(), TRE::TextureCompiler::Instance().GetTexture());
 	std::cout << "===Texture Compiler: Success===" << std::endl;
 	return 0;
 }

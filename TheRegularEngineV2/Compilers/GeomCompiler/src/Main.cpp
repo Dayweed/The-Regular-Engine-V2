@@ -1,5 +1,6 @@
-#include "geomcompiler.h"
-#include "geom.h"
+#include "GeomCompiler.h"
+#include "Geom.h"
+#include "Geomdescriptorfile.h"
 #include "assimp/Importer.hpp"
 #include <filesystem>
 #include <iostream>
@@ -21,8 +22,8 @@ int main(int argc, char** argv)
 		return 0;
 	}
 	descriptorFile.ReadDescriptorFile(argv[1]);
-	TRE::GeomCompiler::Instance().Compile(descriptorFile.GetAssetPath());
-	TRE::Geom::Serialize(descriptorFile.GetGeomPath(), TRE::GeomCompiler::Instance().GetGeom());
+	TRE::GeomCompiler::Instance().Compile(descriptorFile);
+	TRE::Geom::Serialize(descriptorFile.GetResourcePath(), TRE::GeomCompiler::Instance().GetGeom());
 	std::cout << "===Geom Compiler: Success===" << std::endl;
 
 	return 0;

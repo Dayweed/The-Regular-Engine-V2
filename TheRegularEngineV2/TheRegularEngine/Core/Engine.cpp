@@ -101,7 +101,6 @@ namespace TRE
 		auto textureHandle2 = Resource::GetGUIDFromHex("d3464713e4f44bee"); //normal
 		auto textureHandle3 = Resource::GetGUIDFromHex("8a0c8bee2a64d76b"); //roughness
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
-		auto textureHandle10 = Resource::GetGUIDFromHex("c8749664b7fae78b"); //white
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
 		auto vertHandle = 3;
@@ -216,81 +215,105 @@ namespace TRE
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
-		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		auto audioSystem = ECSSystemManager::Instance().GetSystem<AudioSystem>();
 
-		Entity test = ECSManager::Instance().CreateEntity();
-		test->GetComponent<Properties>().m_Name = "Test";
-		Transform& testTransform{ test->GetComponent<Transform>() };
-		testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
-		testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-		testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
-		testTransform.m_IsDirty = true;
-		test->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
-		test->AddComponent<Audio>();
-		audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-		audioSystem->SetLoop(test, true);
-		audioSystem->SetSpatialize(test,true);
-		audioSystem->CompileAudio(test);
-		audioSystem->SetSourceRadius(test, 50.f, 150.f);
-		//test->AddComponent<SphereCollider>();
-		//test->AddComponent<Rigidbody>();
+		{
+			Entity test = ECSManager::Instance().CreateEntity();
+			test->GetComponent<Properties>().m_Name = "Test";
+			Transform& testTransform{ test->GetComponent<Transform>() };
+			testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
+			testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+			testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
+			testTransform.m_IsDirty = true;
+			test->AddComponent<MeshRenderer>();
+			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+			test->AddComponent<Audio>();
+			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+			audioSystem->SetLoop(test, true);
+			audioSystem->SetSpatialize(test,true);
+			audioSystem->CompileAudio(test);
+			audioSystem->SetSourceRadius(test, 50.f, 150.f);
+			//test->AddComponent<SphereCollider>();
+			//test->AddComponent<Rigidbody>();
+		}
 
-		Entity test2 = ECSManager::Instance().CreateEntity();
-		test2->GetComponent<Properties>().m_Name = "Test2";
-		Transform& test2Transform{ test2->GetComponent<Transform>() };
-		test2Transform.m_Position = glm::vec3(50.f, 20.f, 180.f);
-		test2Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-		test2Transform.m_Rotation = glm::vec3(0, 180.f, 0);
-		test2Transform.m_IsDirty = true;
-		test2->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		{
+			Entity test2 = ECSManager::Instance().CreateEntity();
+			test2->GetComponent<Properties>().m_Name = "Test2";
+			Transform& test2Transform{ test2->GetComponent<Transform>() };
+			test2Transform.m_Position = glm::vec3(50.f, 20.f, 180.f);
+			test2Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+			test2Transform.m_Rotation = glm::vec3(0, 180.f, 0);
+			test2Transform.m_IsDirty = true;
+			test2->AddComponent<MeshRenderer>();
+			meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		}
 
-		Entity planeCollider = ECSManager::Instance().CreateEntity();
-		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
-		Transform& planeTransform{ planeCollider->GetComponent<Transform>() };
-		planeTransform.m_Position = glm::vec3(0.f, -35.f, 100.f);
-		planeTransform.m_Scale = glm::vec3(10.f, 10.f, 10.f);
-		planeTransform.m_Rotation = glm::vec3(0, 0, 0);
-		planeTransform.m_IsDirty = true;
-		planeCollider->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
-		//meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		{
+			Entity test3 = ECSManager::Instance().CreateEntity();
+			test3->GetComponent<Properties>().m_Name = "Test3";
+			Transform& test3Transform{ test3->GetComponent<Transform>() };
+			test3Transform.m_Position = glm::vec3(-50.f, 20.f, 180.f);
+			test3Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+			test3Transform.m_Rotation = glm::vec3(0, 180.f, 0);
+			test3Transform.m_IsDirty = true;
+			test3->AddComponent<MeshRenderer>();
+			meshRendererSystem->SetMeshRenderer(test3, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			meshRendererSystem->SetMaterial(test3, ResourceManager::Instance().GetResource<Material>(matHandle));
+		}
+		
 
-		Entity cam = ECSManager::Instance().CreateEntity();
-		cam->GetComponent<Properties>().m_Name = "cam";
-		cam->AddComponent<Camera>();
-		cameraSystem->SetIsMainCamera(cam, true);
-		cam->AddComponent<AudioListener>();
-		audioSystem->SetListenerPosition(cam);
+		{
+			Entity planeCollider = ECSManager::Instance().CreateEntity();
+			planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
+			Transform& planeTransform{ planeCollider->GetComponent<Transform>() };
+			planeTransform.m_Position = glm::vec3(0.f, -35.f, 100.f);
+			planeTransform.m_Scale = glm::vec3(10.f, 10.f, 10.f);
+			planeTransform.m_Rotation = glm::vec3(0, 0, 0);
+			planeTransform.m_IsDirty = true;
+			planeCollider->AddComponent<MeshRenderer>();
+			meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
+		}
 
-		// Parent child prefabing test
-		Entity prefabParent = ECSManager::Instance().CreateEntity();
-		prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
-		Transform& transform3 = prefabParent->GetComponent<Transform>();
-		transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
-		transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-		transform3.m_Rotation = glm::vec3(0, 180.f, 0);
-		transform3.m_IsDirty = true;
-		prefabParent->AddComponent<MeshRenderer>();
-		meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		{
+			Entity cam = ECSManager::Instance().CreateEntity();
+			cam->GetComponent<Properties>().m_Name = "cam";
+			cam->AddComponent<Camera>();
+			cameraSystem->SetIsMainCamera(cam, true);
+			cam->AddComponent<AudioListener>();
+			audioSystem->SetListenerPosition(cam);
+		}
 
-		Entity prefabChild = ECSManager::Instance().CreateEntity();
-		prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
-		Transform& transform4 = prefabChild->GetComponent<Transform>();
-		transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
-		transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
-		transform4.m_Rotation = glm::vec3(0, 180.f, 0);
-		transform4.m_IsDirty = true;
-		prefabChild->AddComponent<MeshRenderer>();
-		prefabChild->AddComponent<FAKEFEL>();
-		meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		{
+			//// Parent child prefabing test
+			//Entity prefabParent = ECSManager::Instance().CreateEntity();
+			//prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
+			//Transform& transform3 = prefabParent->GetComponent<Transform>();
+			//transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
+			//transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+			//transform3.m_Rotation = glm::vec3(0, 180.f, 0);
+			//transform3.m_IsDirty = true;
+			//prefabParent->AddComponent<MeshRenderer>();
+			//meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			//meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
+			//Entity prefabChild = ECSManager::Instance().CreateEntity();
+			//prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
+			//Transform& transform4 = prefabChild->GetComponent<Transform>();
+			//transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
+			//transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+			//transform4.m_Rotation = glm::vec3(0, 180.f, 0);
+			//transform4.m_IsDirty = true;
+			//prefabChild->AddComponent<MeshRenderer>();
+			//prefabChild->AddComponent<FAKEFEL>();
+			//meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			//meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
+
+			//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
+		}
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -444,10 +467,11 @@ namespace TRE
 	void Engine::Shutdown()
 	{
 		m_Running = false;
+		ResourceManager::Instance().DestroyAllResources();
+		GameLoop::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
-		GameLoop::Instance().Shutdown();
 	}
 }

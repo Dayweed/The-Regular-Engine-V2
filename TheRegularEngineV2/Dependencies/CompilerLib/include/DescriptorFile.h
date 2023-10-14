@@ -8,13 +8,15 @@ namespace TRE
 	{
 	public:
 		//Order: SetAssetPath, Generate, Close file
-		void GenerateDescriptorFile(const std::string& assetPath, const std::string& descPath);
+		void GenerateDescriptorFile();
 		void ReadDescriptorFile(const std::string& descriptorPath);
 
 		void SetAssetPath(const std::string& path) { m_AssetPath = path; }
+		void SetResourcePath(const std::string& path) { m_ResourcePath = path; }
 		void SetDescriptorPath(const std::string& path) { m_DescriptorPath = path; }
 
 		const std::string& GetAssetPath() const { return m_AssetPath; }
+		const std::string& GetResourcePath() const { return m_ResourcePath; }
 		const std::string& GetDescriptorPath() const { return m_DescriptorPath; }
 	protected:
 		virtual void Write() {};
@@ -22,6 +24,7 @@ namespace TRE
 
 	protected:
 		std::string		m_AssetPath;
+		std::string		m_ResourcePath;
 		std::string		m_DescriptorPath;
 		std::fstream	m_DescriptorFile;
 	private:

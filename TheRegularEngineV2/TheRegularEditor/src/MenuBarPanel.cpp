@@ -5,6 +5,9 @@
 #include <EventSystem/Events/EditorEvent.h>
 #include "Core/Engine.h"
 #include "Core/GameLoop.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "Imgui/imgui_internal.h"
+#include "Imgui/imgui.h"
 
 namespace TRE
 {
