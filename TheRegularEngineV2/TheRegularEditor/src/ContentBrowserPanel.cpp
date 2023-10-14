@@ -125,6 +125,16 @@ namespace TRE
 			}
 			ImGui::Separator();
 
+			//right click to open popup menu
+			if (ImGui::BeginPopupContextWindow())
+			{
+				if (ImGui::MenuItem("Create new material"))
+				{
+					//For Zr use
+					std::cout << "works" << std::endl;
+				}
+				ImGui::EndPopup();
+			}
 			const float panelWidth = ImGui::GetContentRegionAvail().x;
 			int cols = static_cast<int>(panelWidth / m_CellSize);
 			if (cols < 1)
