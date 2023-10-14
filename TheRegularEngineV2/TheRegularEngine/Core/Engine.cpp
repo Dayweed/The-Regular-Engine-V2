@@ -223,9 +223,11 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 20.f, 180.f));
-		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
-		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
+		Transform& testTransform{ test->GetComponent<Transform>() };
+		testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
+		testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
+		testTransform.m_IsDirty = true;
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
@@ -240,17 +242,21 @@ namespace TRE
 
 		Entity test2 = ECSManager::Instance().CreateEntity();
 		test2->GetComponent<Properties>().m_Name = "Test2";
-		transformSystem->SetPosition(test2, glm::vec3(50.f, 20.f, 180.f));
-		transformSystem->SetScale(test2, glm::vec3(0.2f, 0.2f, 0.2f));
-		transformSystem->SetRotation(test2, glm::vec3(0, 180.f, 0));
+		Transform& test2Transform{ test2->GetComponent<Transform>() };
+		test2Transform.m_Position = glm::vec3(50.f, 20.f, 180.f);
+		test2Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		test2Transform.m_Rotation = glm::vec3(0, 180.f, 0);
+		test2Transform.m_IsDirty = true;
 		test2->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 
 		Entity planeCollider = ECSManager::Instance().CreateEntity();
 		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
-		transformSystem->SetPosition(planeCollider, glm::vec3(0.f, -35.f, 100.f));
-		transformSystem->SetScale(planeCollider, glm::vec3(10.f, 10.f, 10.f));
-		transformSystem->SetRotation(planeCollider, glm::vec3(0, 0, 0));
+		Transform& planeTransform{ planeCollider->GetComponent<Transform>() };
+		planeTransform.m_Position = glm::vec3(0.f, -35.f, 100.f);
+		planeTransform.m_Scale = glm::vec3(10.f, 10.f, 10.f);
+		planeTransform.m_Rotation = glm::vec3(0, 0, 0);
+		planeTransform.m_IsDirty = true;
 		planeCollider->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
 		//meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));
@@ -261,6 +267,30 @@ namespace TRE
 		cameraSystem->SetIsMainCamera(cam, true);
 		cam->AddComponent<AudioListener>();
 		audioSystem->SetListenerPosition(cam);
+
+		// Parent child prefabing test
+		Entity prefabParent = ECSManager::Instance().CreateEntity();
+		prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
+		Transform& transform3 = prefabParent->GetComponent<Transform>();
+		transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
+		transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		transform3.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform3.m_IsDirty = true;
+		prefabParent->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+
+		Entity prefabChild = ECSManager::Instance().CreateEntity();
+		prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
+		Transform& transform4 = prefabChild->GetComponent<Transform>();
+		transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
+		transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+		transform4.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform4.m_IsDirty = true;
+		prefabChild->AddComponent<MeshRenderer>();
+		prefabChild->AddComponent<FAKEFEL>();
+		meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -388,6 +418,11 @@ namespace TRE
 				m_VulkanEditor->EndFrame();
 				Profiler::Instance().EndTimer("Imgui");
 			}
+
+			// After Editor (Will always run)
+			Profiler::Instance().StartTimer("AfterEditor");
+			ECSSystemManager::Instance().AfterEditor();
+			Profiler::Instance().EndTimer("AfterEditor");
 
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
