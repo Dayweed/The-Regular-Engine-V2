@@ -17,6 +17,9 @@ namespace TRE
 		m_SceneDirectory = std::filesystem::current_path().parent_path();
 		m_SceneDirectory += "\\Scenes";
 		m_CurrentDirectory = m_AssetDirectory;
+		std::cout << std::filesystem::current_path().parent_path() << std::endl;
+		std::cout << m_AssetDirectory << std::endl;
+		std::cout << m_SceneDirectory << std::endl;
 
 		//Custom Flag Combinations
 		m_PopUps |= ImGuiWindowFlags_NoResize;
@@ -115,7 +118,7 @@ namespace TRE
 				(void)FileExplorer::OpenFileExplorer(nullptr);
 			}
 
-			if (m_CurrentDirectory != m_AssetDirectory)
+			if (m_CurrentDirectory.compare(m_AssetDirectory) != 0 && m_CurrentDirectory.compare(m_SceneDirectory) != 0)
 			{
 				if (ImGui::Button("Back"))
 				{
