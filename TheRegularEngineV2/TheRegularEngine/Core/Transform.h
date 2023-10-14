@@ -66,7 +66,7 @@ namespace TRE
 	public:
 		void Update() override;
 		void OnReset() override;
-		//void AfterEditor() override;
+		void AfterEditor() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
 	};

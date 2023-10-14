@@ -55,12 +55,20 @@ namespace TRE
 
 	void TransformSystem::Update()
 	{
+
+	}
+
+	void TransformSystem::AfterEditor()
+	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
 		{
 			Transform& transform = go.get()->GetComponent<Transform>();
 			if (transform.m_IsDirty)
 			{
 				transform.CalculateWorldMatrix();
+
+
+
 				transform.m_IsDirty = false;
 			}
 		}
