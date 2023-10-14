@@ -22,6 +22,7 @@ namespace TRE
 		~ParentingSystem() = default;
 
 		void Update() override;
+		void AfterEditor() override;
 		void OnReset() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
@@ -153,5 +154,8 @@ namespace TRE
 		goParentVar->AbandonChildren();
 		*//*__________________________________________________________________________*/
 		void AbandonChildren(Entity parent);
+
+	private:
+		void UpdateChildTransform(Entity parent);
 	};
 }
