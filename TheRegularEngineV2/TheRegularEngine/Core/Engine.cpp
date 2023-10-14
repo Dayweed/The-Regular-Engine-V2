@@ -421,7 +421,7 @@ namespace TRE
 
 			// After Editor (Will always run)
 			Profiler::Instance().StartTimer("AfterEditor");
-			ECSSystemManager::Instance().AfterEditor();
+			ECSSystemManager::Instance().AfterEditorSystem();
 			Profiler::Instance().EndTimer("AfterEditor");
 
 			//Draw

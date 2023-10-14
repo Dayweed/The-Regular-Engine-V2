@@ -181,7 +181,7 @@ namespace TRE
 			}
 		}
 
-		void AfterEditor()
+		void AfterEditorSystem()
 		{
 			for (auto& system : m_Systems)
 			{
