@@ -1,40 +1,12 @@
 #pragma once
 #include "Geom.h"
-#include "DescriptorFile.h"
+#include "GeomDescriptorFile.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
 namespace TRE
 {
-	class GeomDescriptorFile : public DescriptorFile
-	{
-		public:
-			void SetGeomPath(const std::string& path) { m_GeomPath = path; }
-			void SetPosition(const glm::vec3& position) { m_Position = position; }
-			void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; }
-			void SetScale(const glm::vec3& scale) { m_Scale = scale; }
-			//void SetMeshRenameBool(const bool meshRename) { m_MeshRename = meshRename; }
-			//void SetMeshName(const std::string& meshName) { m_MeshName = meshName; }
-
-			const std::string& GetGeomPath() const { return m_GeomPath; }
-			const glm::vec3& GetPosition() const { return m_Position; }
-			const glm::vec3& GetRotation() const { return m_Rotation; }
-			const glm::vec3& GetScale() const { return m_Scale; }
-			//const bool GetMeshRenameBool() const { return m_MeshRename; }
-			//const std::string& GetMeshName() const { return m_MeshName; }
-		protected:
-			void Write() override;
-			void Read() override;
-		private:
-			std::string m_GeomPath;
-			glm::vec3 m_Position{ 0,0,0 };
-			glm::vec3 m_Rotation{ 0,0,0 };
-			glm::vec3 m_Scale{ 1,1,1 };
-			//bool m_MeshRename{ false };
-			//std::string m_MeshName;
-	};
-
 	class GeomCompiler
 	{
 		public:
@@ -44,7 +16,7 @@ namespace TRE
 				return instance;
 			}
 
-			void Compile(const std::string& filename);
+			void Compile(const GeomDescriptorFile& geomDesc);
 
 			std::unique_ptr<Geom> GetGeom() { return std::move(m_Geom); }
 		private:
@@ -95,7 +67,7 @@ namespace TRE
 			};
 		private:
 			bool SanityCheck();
-			void ImportData();
+			void ImportData(const GeomDescriptorFile& geomDesc);
 			void ImportStaticMesh(std::vector<InputMeshPart>& inputMesh);
 			bool ImportGeometryValidateMesh(const aiMesh& AssimpMesh, int& iTexture, int& iColor);
 			void MergeData(std::vector<InputMeshPart>& inputMesh);

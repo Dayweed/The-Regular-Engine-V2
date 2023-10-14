@@ -253,27 +253,29 @@ namespace TRE
 				std::string assetName = (const char*)payload->Data;
 				assetName = assetName.substr(assetName.find_last_of('\\') + 1);
 				assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+
+				//Spawn object at mouse location
+				Entity spawn = ECSManager::Instance().CreateEntity();
+				spawn->GetComponent<Properties>().m_Name = assetName.substr(0, assetName.find_last_of('.'));
+				Transform& transform{ spawn->GetComponent<Transform>() };
+				transform.m_Position = glm::vec3(0.f, 0.f, 180.f);
+				transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+				transform.m_Rotation = glm::vec3(0, 180.f, 0);
+				transform.m_IsDirty = true;
+				spawn->AddComponent<MeshRenderer>();
 				
 				//Check if asset is already compiled and loaded before
 				if (AssetManager::Instance().Contains(assetName))
 				{
-					//Spawn object at mouse location
-					Entity spawn = ECSManager::Instance().CreateEntity();
-					spawn->GetComponent<Properties>().m_Name = assetName.substr(0, assetName.find_last_of('.'));
-					Transform& transform{ spawn->GetComponent<Transform>() };
-					transform.m_Position = glm::vec3(0.f, 0.f, 180.f);
-					transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-					transform.m_Rotation = glm::vec3(0, 180.f, 0);
-					transform.m_IsDirty = true;
-					spawn->AddComponent<MeshRenderer>();
 					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
-						SetMeshRenderer(spawn, ResourceManager::Instance().GetResource<RenderObject>(AssetManager::Instance().GetAsset(assetName)));
+						SetMeshRenderer(spawn, AssetManager::Instance().GetAsset<RenderObject>(assetName));
 
 				}
 				else
 				{
 					//Compile and load asset
-					Resource::GetGUIDHex(Resource::GenerateGUID());
+					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
+						SetMeshRenderer(spawn, AssetManager::Instance().CompileAndLoad<RenderObject>(assetName));
 				}
 			}
 

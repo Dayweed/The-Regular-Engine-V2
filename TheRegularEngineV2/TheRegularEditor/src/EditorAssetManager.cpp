@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "EditorAssetManager.h"
-#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
@@ -11,10 +10,12 @@ namespace TRE
 		std::filesystem::path resourcePath = "../Resources";
 		for (const auto& entry : std::filesystem::directory_iterator(assetsPath))
 		{
+			std::string extension = entry.path().extension().string();
 			if (entry.path().extension() == ".desc")
 			{
 				std::ifstream file(entry.path());
 				std::string assetHandle = entry.path().stem().string();
+				assetHandle = assetHandle.substr(0, assetHandle.find_first_of('.'));
 				if (file.is_open())
 				{
 					std::string line;
@@ -37,10 +38,15 @@ namespace TRE
 						}
 					}
 				}
+				else
+				{
+					std::cout << "Could not open file: " << entry.path() << std::endl;
+				}
 				file.close();
 			}
 		}
 	}
+
 	void AssetManager::Shutdown()
 	{
 		m_AssetNameToHandle.clear();
@@ -57,14 +63,18 @@ namespace TRE
 		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName]);
 	}
 
-	bool AssetManager::Contains(const std::string& assetName)
+	bool AssetManager::Contains(const std::string& assetName) const
 	{
 		return m_AssetNameToHandle.find(assetName) != m_AssetNameToHandle.end();
 	}
 
-	const ResourceHandle AssetManager::GetAsset(const std::string& assetName) const
+	const ResourceHandle AssetManager::GetAssetHandle(const std::string& assetName) const
 	{
-		return m_AssetNameToHandle.at(assetName);
+		if(Contains(assetName))
+			return m_AssetNameToHandle.at(assetName);
+		
+		TRE_ERROR("AssetManager::GetAssetHandle: Asset with name {0} does not exist", assetName);
+		return 0;
 	}
 
 	const std::string AssetManager::GetName(const ResourceHandle resourceHandle) const

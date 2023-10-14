@@ -183,7 +183,7 @@ namespace TRE
 	void ContentBrowserPanel::Init()
 	{
 		//Load the textures for the icons
-		const auto tmpGUID = AssetManager::Instance().GetAsset("icon-play.png");
+		const auto tmpGUID = AssetManager::Instance().GetAssetHandle("icon-play.png");
 		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
 		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");

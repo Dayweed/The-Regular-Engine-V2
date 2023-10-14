@@ -18,7 +18,7 @@ namespace TRE
 
 	void ToolBarPanel::Init()
 	{
-		const auto playGUID = AssetManager::Instance().GetAsset("icon-play.png");
+		const auto playGUID = AssetManager::Instance().GetAssetHandle("icon-play.png");
 		const auto playHexGUID = Resource::GetGUIDHex(playGUID);
 		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> playButton = std::make_unique<VulkanTexture>("../Resources/" + playHexGUID + ".DDS");
@@ -27,7 +27,7 @@ namespace TRE
 		m_PlayButtonTexture = ResourceManager::Instance().GetResource<VulkanTexture>(playGUID);
 		m_PlayID = Util::GetTextureID(m_PlayButtonTexture->GetDescriptorImageInfo());
 
-		const auto pauseGUID = AssetManager::Instance().GetAsset("icon-pause.png");
+		const auto pauseGUID = AssetManager::Instance().GetAssetHandle("icon-pause.png");
 		const auto pauseHexGUID = Resource::GetGUIDHex(pauseGUID);
 		//Texture::RunCompiler("../Assets/" + pauseHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> pauseButton = std::make_unique<VulkanTexture>("../Resources/" + pauseHexGUID + ".DDS");
@@ -36,7 +36,7 @@ namespace TRE
 		m_PauseButtonTexture = ResourceManager::Instance().GetResource<VulkanTexture>(pauseGUID);
 		m_PauseID = Util::GetTextureID(m_PauseButtonTexture->GetDescriptorImageInfo());
 
-		const auto stopGUID = AssetManager::Instance().GetAsset("icon-stop.png");
+		const auto stopGUID = AssetManager::Instance().GetAssetHandle("icon-stop.png");
 		const auto stopHexGUID = Resource::GetGUIDHex(stopGUID);
 		//Texture::RunCompiler("../Assets/" + stopHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> stopButton = std::make_unique<VulkanTexture>("../Resources/" + stopHexGUID + ".DDS");

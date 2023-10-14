@@ -1,11 +1,8 @@
 Asset File Path:
-../Assets/icon-stop.png
+../Assets/icon-play.png
 
 Texture File Path:
-../Resources/4ab5c38a3cb60789.DDS
-
-Texture Name:
-icon-stop
+../Resources/b006d704b67c7a81.DDS
 
 Compress:
 1
@@ -21,3 +18,4 @@ sRGB:
 
 Transparent:
 1
+

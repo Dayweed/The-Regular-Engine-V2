@@ -3,11 +3,9 @@
 
 namespace TRE
 {
-	void DescriptorFile::GenerateDescriptorFile(const std::string& assetPath, const std::string& descPath)
+	void DescriptorFile::GenerateDescriptorFile()
 	{
-		std::cout << "Generating descriptor file for " << assetPath << std::endl;
-		m_DescriptorPath = descPath;
-		SetAssetPath(assetPath);
+		std::cout << "Generating descriptor file for " << m_AssetPath << std::endl;
 		WriteAssetPath();
 		Write();
 		m_DescriptorFile.close();
