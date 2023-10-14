@@ -371,11 +371,11 @@ namespace TRE
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
-		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
+		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
@@ -390,10 +390,15 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			//Update
+			Profiler::Instance().StartTimer("EditorUpdateSystem");
+			ECSSystemManager::Instance().UpdateSystem();
+			Profiler::Instance().EndTimer("EditorUpdateSystem");
+
+			// Game Running Update
 			if (GameLoop::Instance().IsGameRunning())
 			{
 				Profiler::Instance().StartTimer("Update");
-				ECSSystemManager::Instance().UpdateSystem();
+				ECSSystemManager::Instance().GameUpdateSystem();
 				Profiler::Instance().EndTimer("Update");
 			}
 
@@ -417,11 +422,6 @@ namespace TRE
 				EditorSystemManager::Instance().UpdateSystem();
 				m_VulkanEditor->EndFrame();
 				Profiler::Instance().EndTimer("Imgui");
-
-				// EditorUpdateSystem
-				Profiler::Instance().StartTimer("EditorUpdateSystem");
-				ECSSystemManager::Instance().EditorUpdateSystem();
-				Profiler::Instance().EndTimer("EditorUpdateSystem");
 			}
 
 			//Draw

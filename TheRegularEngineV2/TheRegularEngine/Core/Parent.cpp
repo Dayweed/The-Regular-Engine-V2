@@ -18,16 +18,9 @@ namespace TRE
 		}
 	}
 
-	void ParentingSystem::EditorUpdate()
+	void ParentingSystem::GameUpdate()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
-		{
-			Transform& transform{ object->GetComponent<Transform>() };
-			if (transform.m_IsDirty)
-			{
-				UpdateChildTransform(object);
-			}
-		}
+		
 	}
 
 	void ParentingSystem::OnReset()

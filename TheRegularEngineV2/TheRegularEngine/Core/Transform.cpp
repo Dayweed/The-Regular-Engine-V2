@@ -55,42 +55,20 @@ namespace TRE
 
 	void TransformSystem::Update()
 	{
-		//for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
-		//{
-		//	Transform& transform = go.get()->GetComponent<Transform>();
-		//	if (transform.m_IsDirty)
-		//	{
-		//		transform.CalculateWorldMatrix();
-
-		//		//Tell mesh renderer to update bounding sphere
-		//		if (go->HasComponent<MeshRenderer>())
-		//		{
-		//			ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-		//		}
-
-		//		transform.m_IsDirty = false;
-		//	}
-		//}
-	}
-
-	void TransformSystem::EditorUpdate()
-	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
 		{
 			Transform& transform = go.get()->GetComponent<Transform>();
 			if (transform.m_IsDirty)
 			{
 				transform.CalculateWorldMatrix();
-
-				//Tell mesh renderer to update bounding sphere
-				if (go->HasComponent<MeshRenderer>())
-				{
-					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-				}
-
 				transform.m_IsDirty = false;
 			}
 		}
+	}
+
+	void TransformSystem::GameUpdate()
+	{
+		
 	}
 
 	void TransformSystem::OnReset()
