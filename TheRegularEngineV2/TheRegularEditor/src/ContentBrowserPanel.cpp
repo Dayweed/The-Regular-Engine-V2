@@ -14,6 +14,8 @@ namespace TRE
 		
 		m_AssetDirectory = std::filesystem::current_path().parent_path();
 		m_AssetDirectory += "\\Assets";
+		m_SceneDirectory = std::filesystem::current_path().parent_path();
+		m_SceneDirectory += "\\Scenes";
 		m_CurrentDirectory = m_AssetDirectory;
 
 		//Custom Flag Combinations
@@ -50,7 +52,7 @@ namespace TRE
 				const bool isImage = filenameString.ends_with(".png");
 				const bool isAudio = filenameString.ends_with(".wav");
 				const bool isShader = filenameString.ends_with(".vert") || filenameString.ends_with(".frag");
-				const bool isScene = filenameString.ends_with(".scene");
+				const bool isScene = filenameString.ends_with(".json");
 				const bool isPrefab = filenameString.ends_with(".prefab");
 				const bool isMeta = filenameString.ends_with(".meta");
 				const bool isFont = filenameString.ends_with(".ttf");
@@ -88,6 +90,22 @@ namespace TRE
 
 	void ContentBrowserPanel::BrowseProjectFiles()
 	{
+		//Folder List Display
+		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2, ImGui::GetContentRegionAvail().y), true))
+		{
+			if (ImGui::Button(m_AssetDirectory.filename().string().c_str()))
+			{
+				m_CurrentDirectory = m_AssetDirectory;
+				PollItems();
+			}
+			if (ImGui::Button(m_SceneDirectory.filename().string().c_str()))
+			{
+				m_CurrentDirectory = m_SceneDirectory;
+				PollItems();
+			}	
+		}
+		ImGui::EndChild();
+		ImGui::SameLine();
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{

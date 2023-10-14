@@ -34,6 +34,10 @@ namespace TRE
 			std::filesystem::path m_CurrentDirectory;
 			//Asset Folder Path
 			std::filesystem::path m_AssetDirectory;
+			//Scenes Folder Path
+			std::filesystem::path m_SceneDirectory;
+			//Scripts Folder Path
+			std::filesystem::path m_ScriptDirectory;
 
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 
