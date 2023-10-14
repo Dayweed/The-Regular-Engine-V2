@@ -37,7 +37,6 @@
 #include <utility>
 #include <span>
 
-//Libaries
-#include <Properties.h>
 #include "vulkan/vulkan.h"
+#include "Properties.h"
 #include "glm/glm.hpp"

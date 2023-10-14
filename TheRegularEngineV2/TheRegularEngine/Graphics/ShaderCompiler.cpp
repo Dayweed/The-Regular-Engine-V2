@@ -4,6 +4,7 @@
 #include "Core/Logger.h"
 #include "Shader.h"
 #include "spirv_cross/spirv_glsl.hpp"
+#include "glm/glm.hpp"
 
 namespace TRE
 {

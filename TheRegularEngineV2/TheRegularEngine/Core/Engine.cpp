@@ -111,7 +111,6 @@ namespace TRE
 		auto DebugDrawVertHandle = 7;
 		auto DebugDrawFragHandle = 8;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
-		auto matHandle2 = Resource::GetGUIDFromHex("89f11168a1b5734c");
 
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
 		auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
@@ -176,11 +175,6 @@ namespace TRE
 		plane->SetHandle(planeHandle);
 		ResourceManager::Instance().AddResource(std::move(plane));
 
-		//Texture::RunCompiler("../Assets/c8749664b7fae78b.desc");
-		std::unique_ptr<VulkanTexture> vkt10 = std::make_unique<VulkanTexture>("../Resources/c8749664b7fae78b.DDS");
-		vkt10->SetHandle(textureHandle10);
-		ResourceManager::Instance().AddResource(std::move(vkt10));
-
 		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.vert");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
@@ -211,9 +205,6 @@ namespace TRE
 		AnimationFrag->SetHandle(AnimationFragHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationFrag));
 
-		auto AnimationVertShader = ResourceManager::Instance().GetResource<Shader>(AnimationVertHandle);
-		auto AnimationFragShader = ResourceManager::Instance().GetResource<Shader>(AnimationFragHandle);
-
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
 		auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
@@ -225,14 +216,6 @@ namespace TRE
 		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
-		std::unique_ptr<Material> mat2 = std::make_unique<Material>(VertShader, FragShader);
-		mat2->SetHandle(matHandle2);
-		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle10));
-		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle10));
-		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle10));
-		mat2->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle10));
-		ResourceManager::Instance().AddResource(std::move(mat2));
-
 		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
@@ -240,9 +223,11 @@ namespace TRE
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "Test";
-		transformSystem->SetPosition(test, glm::vec3(0.f, 20.f, 180.f));
-		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
-		transformSystem->SetRotation(test, glm::vec3(0,180.f,0));
+		Transform& testTransform{ test->GetComponent<Transform>() };
+		testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
+		testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
+		testTransform.m_IsDirty = true;
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
@@ -255,14 +240,26 @@ namespace TRE
 		//test->AddComponent<SphereCollider>();
 		//test->AddComponent<Rigidbody>();
 
+		Entity test2 = ECSManager::Instance().CreateEntity();
+		test2->GetComponent<Properties>().m_Name = "Test2";
+		Transform& test2Transform{ test2->GetComponent<Transform>() };
+		test2Transform.m_Position = glm::vec3(50.f, 20.f, 180.f);
+		test2Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		test2Transform.m_Rotation = glm::vec3(0, 180.f, 0);
+		test2Transform.m_IsDirty = true;
+		test2->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+
 		Entity planeCollider = ECSManager::Instance().CreateEntity();
 		planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
-		transformSystem->SetPosition(planeCollider, glm::vec3(0.f, -35.f, 100.f));
-		transformSystem->SetScale(planeCollider, glm::vec3(10.f, 10.f, 10.f));
-		transformSystem->SetRotation(planeCollider, glm::vec3(0, 0, 0));
+		Transform& planeTransform{ planeCollider->GetComponent<Transform>() };
+		planeTransform.m_Position = glm::vec3(0.f, -35.f, 100.f);
+		planeTransform.m_Scale = glm::vec3(10.f, 10.f, 10.f);
+		planeTransform.m_Rotation = glm::vec3(0, 0, 0);
+		planeTransform.m_IsDirty = true;
 		planeCollider->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
-		meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));
+		//meshRendererSystem->SetMaterial(planeCollider, ResourceManager::Instance().GetResource<Material>(matHandle2));
 
 		Entity cam = ECSManager::Instance().CreateEntity();
 		cam->GetComponent<Properties>().m_Name = "cam";
@@ -270,6 +267,30 @@ namespace TRE
 		cameraSystem->SetIsMainCamera(cam, true);
 		cam->AddComponent<AudioListener>();
 		audioSystem->SetListenerPosition(cam);
+
+		// Parent child prefabing test
+		Entity prefabParent = ECSManager::Instance().CreateEntity();
+		prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
+		Transform& transform3 = prefabParent->GetComponent<Transform>();
+		transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
+		transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		transform3.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform3.m_IsDirty = true;
+		prefabParent->AddComponent<MeshRenderer>();
+		meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+
+		Entity prefabChild = ECSManager::Instance().CreateEntity();
+		prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
+		Transform& transform4 = prefabChild->GetComponent<Transform>();
+		transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
+		transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+		transform4.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform4.m_IsDirty = true;
+		prefabChild->AddComponent<MeshRenderer>();
+		prefabChild->AddComponent<FAKEFEL>();
+		meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -350,11 +371,11 @@ namespace TRE
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
-		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
+		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
@@ -369,10 +390,15 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			//Update
+			Profiler::Instance().StartTimer("EditorUpdateSystem");
+			ECSSystemManager::Instance().UpdateSystem();
+			Profiler::Instance().EndTimer("EditorUpdateSystem");
+
+			// Game Running Update
 			if (GameLoop::Instance().IsGameRunning())
 			{
 				Profiler::Instance().StartTimer("Update");
-				ECSSystemManager::Instance().UpdateSystem();
+				ECSSystemManager::Instance().GameUpdateSystem();
 				Profiler::Instance().EndTimer("Update");
 			}
 

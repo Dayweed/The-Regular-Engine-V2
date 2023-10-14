@@ -256,10 +256,9 @@ namespace TRE
         std::string ID = mono_string_to_utf8(id);
         // find the entity
         Entity Temp = ECSManager::Instance().FindEntity(ID);
-        // Get the transform system
-        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
-        // Set the position
-        transformSystem->SetPosition(Temp, newPos);
+        Transform& transform = Temp->GetComponent<Transform>();
+        transform.m_Position = newPos;
+        transform.m_IsDirty = true;
     }
 
     void ScriptEngine::BindSetRotation(MonoString* id, glm::vec3 newRot)
@@ -267,10 +266,9 @@ namespace TRE
         std::string ID = mono_string_to_utf8(id);
         // find the entity 
         Entity Temp = ECSManager::Instance().FindEntity(ID);
-        // Get the transform system
-        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
-        // Set the rotation
-        transformSystem->SetRotation(Temp, newRot);
+        Transform& transform = Temp->GetComponent<Transform>();
+        transform.m_Rotation = newRot;
+        transform.m_IsDirty = true;
 	}
 
     void ScriptEngine::BindGetPosition(MonoString* id, glm::vec3* output)
@@ -278,10 +276,8 @@ namespace TRE
         std::string ID = mono_string_to_utf8(id);
         // find the entity
         Entity Temp = ECSManager::Instance().FindEntity(ID);
-        // Get the transform system
-        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
-        // Get the position
-        *output = transformSystem->GetPosition(Temp);
+        Transform& transform = Temp->GetComponent<Transform>();
+        *output = transform.m_Position;
     }
 
     void ScriptEngine::BindGetRotation(MonoString* id, glm::vec3* output)
@@ -289,10 +285,8 @@ namespace TRE
         std::string ID = mono_string_to_utf8(id);
         // find the entity
         Entity Temp = ECSManager::Instance().FindEntity(ID);    
-        // Get the transform system
-        TransformSystem* transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
         // Get the rotation
-        *output = transformSystem->GetRotation(Temp);
+        *output = Temp->GetComponent<Transform>().m_Rotation;
 	}
 
     MonoString* ScriptEngine::BindGetTestGUID()

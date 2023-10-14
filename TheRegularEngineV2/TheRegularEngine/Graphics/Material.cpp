@@ -20,11 +20,6 @@ namespace TRE
 		Invalidate();
 	}
 
-	/*Material::Material(std::shared_ptr<Material> CopyMaterial)
-	{
-
-	}*/
-
 	Material::~Material()
 	{
 		vkDestroyDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);

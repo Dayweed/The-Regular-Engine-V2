@@ -4,61 +4,71 @@
 #include "SystemManager.h"
 #include "TREIncludes.h"
 
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+
 namespace TRE
 {
-	const glm::mat4 Transform::GetModelMatrix() const
+	void Transform::CalculateWorldMatrix()
 	{
-		const glm::vec3 rotation = glm::radians(m_Rotation);
+		glm::quat rotation = glm::quat(glm::radians(m_Rotation));
+		glm::mat4 rotationMat = glm::mat4_cast(rotation);
+		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_Scale);
+		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_Position);
 
-		const float c3 = glm::cos(rotation.z);
-		const float s3 = glm::sin(rotation.z);
-		const float c2 = glm::cos(rotation.x);
-		const float s2 = glm::sin(rotation.x);
-		const float c1 = glm::cos(rotation.y);
-		const float s1 = glm::sin(rotation.y);
-		return glm::mat4
-		{
-			{
-				m_Scale.x * (c1 * c3 + s1 * s2 * s3),
-				m_Scale.x * (c2 * s3),
-				m_Scale.x * (c1 * s2 * s3 - c3 * s1),
-				0.0f,
-			},
-			{
-				m_Scale.y * (c3 * s1 * s2 - c1 * s3),
-				m_Scale.y * (c2 * c3),
-				m_Scale.y * (c1 * c3 * s2 + s1 * s3),
-				0.0f,
-			},
-			{
-				m_Scale.z * (c2 * s1),
-				m_Scale.z * (-s2),
-				m_Scale.z * (c1 * c2),
-				0.0f,
-			},
-			{m_Position.x, m_Position.y, m_Position.z, 1.0f}
-		};
+		m_WorldXform = translationMat * rotationMat * scaleMat;
+	}
+
+	void Transform::DecomposeWorldMatrix(const glm::mat4 newWorld)
+	{
+		m_Position = glm::vec3(newWorld[3]);
+		m_Scale = glm::vec3(glm::length(newWorld[0]), glm::length(newWorld[1]), glm::length(newWorld[2]));
+		m_Rotation = glm::degrees(glm::eulerAngles(glm::quat(newWorld)));
+
+		m_WorldXform = newWorld;
+	}
+
+	const glm::mat4 Transform::CalculateLocalMatrix()
+	{
+		glm::quat rotation = glm::quat(glm::radians(m_LocalRotation));
+		glm::mat4 rotationMat = glm::mat4_cast(rotation);
+		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_LocalScale);
+		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_LocalPosition);
+
+		return translationMat * rotationMat * scaleMat;
+	}
+
+	void Transform::UpdateLocalMatrix(Entity& parent)
+	{
+		//For start of scene
+		Transform& parentTransform = parent->GetComponent<Transform>();
+		parentTransform.CalculateWorldMatrix();
+		CalculateWorldMatrix();
+
+		glm::mat4 invertedParentWorldTransform = glm::affineInverse(parentTransform.m_WorldXform);
+		const glm::mat4 localXform = invertedParentWorldTransform * m_WorldXform;
+
+		m_LocalPosition = glm::vec3(localXform[3]);
+		m_LocalScale = glm::vec3(glm::length(localXform[0]), glm::length(localXform[1]), glm::length(localXform[2]));
+		m_LocalRotation = glm::degrees(glm::eulerAngles(glm::quat(localXform)));
 	}
 
 	void TransformSystem::Update()
 	{
-		/*if (m_IsDirty == false)
-			return;*/
+		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
+		{
+			Transform& transform = go.get()->GetComponent<Transform>();
+			if (transform.m_IsDirty)
+			{
+				transform.CalculateWorldMatrix();
+				transform.m_IsDirty = false;
+			}
+		}
+	}
 
-		//for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
-		//{
-		//	Transform& transform = go.get()->GetComponent<Transform>();
-		//	if (transform.m_IsDirty)
-		//	{
-		//		//Update model matrix or sth
-		//		//Tell mesh renderer to update bounding sphere
-		//		if (go->HasComponent<MeshRenderer>())
-		//		{
-		//			ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->UpdateBoundingSphere(go);
-		//		}
-		//		transform.m_IsDirty = false;
-		//	}
-		//}
+	void TransformSystem::GameUpdate()
+	{
+		
 	}
 
 	void TransformSystem::OnReset()
@@ -74,77 +84,5 @@ namespace TRE
 	void TransformSystem::Shutdown()
 	{
 
-	}
-		
-	void TransformSystem::SetPosition(Entity& go, const glm::vec3& position)
-	{
-		m_IsDirty = true;
-
-		Transform& transform = go.get()->GetComponent<Transform>();
-		glm::vec3 posDiff = position - transform.m_Position;
-		transform.m_Position = position;
-		transform.m_IsDirty = true;
-
-		// Update Children Position
-		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
-		{
-			glm::vec3 childPos = obj->GetComponent<Transform>().m_Position;
-			SetPosition(obj, childPos + posDiff);
-		}
-	}
-
-	void TransformSystem::SetRotation(Entity& go, const glm::vec3& rotation)
-	{
-		m_IsDirty = true;
-		Transform& transform = go.get()->GetComponent<Transform>();
-		glm::vec3 rotDiff = rotation - transform.m_Rotation;
-		transform.m_Rotation = rotation;
-		transform.m_IsDirty = true;
-
-		// Update Children Rotation
-		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
-		{
-			glm::vec3 childRot = obj->GetComponent<Transform>().m_Rotation;
-			SetRotation(obj, childRot + rotDiff);
-		}
-	}
-
-	void TransformSystem::SetScale(Entity& go, const glm::vec3& scale)
-	{
-		m_IsDirty = true;
-
-		Transform& transform = go.get()->GetComponent<Transform>();
-		glm::vec3 scaDiff = scale / transform.m_Scale;
-		transform.m_Scale = scale;
-		transform.m_IsDirty = true;
-
-		// Update Children Scale
-		for (Entity& obj : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(go))
-		{
-			glm::vec3 childSca = obj->GetComponent<Transform>().m_Scale;
-			SetScale(obj, childSca * scaDiff);
-		}
-	}
-
-	const glm::vec3& TransformSystem::GetPosition(const Entity& go) const
-	{
-		return go.get()->GetComponent<Transform>().m_Position;
-	}
-
-	const glm::vec3& TransformSystem::GetRotation(const Entity& go) const
-	{
-		return go.get()->GetComponent<Transform>().m_Rotation;
-	}
-
-	const glm::vec3& TransformSystem::GetScale(const Entity& go) const
-	{
-		return go.get()->GetComponent<Transform>().m_Scale;
-	}
-
-	const glm::mat4 TransformSystem::GetModelMatrix(const Entity& go) const
-	{
-		//Next time then i do this
-		(void)go;
-		return glm::mat4(1.f);
 	}
 }

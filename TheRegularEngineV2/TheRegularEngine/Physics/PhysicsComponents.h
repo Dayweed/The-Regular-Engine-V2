@@ -11,6 +11,7 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #pragma once
+#include "Properties.h"
 #include "PhysX/PxPhysicsAPI.h"
 #include "Vector3.h"
 
