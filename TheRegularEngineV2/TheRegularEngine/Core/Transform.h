@@ -10,12 +10,24 @@ namespace TRE
 	class Transform : property::base
 	{
 	public:
-		glm::vec3	m_Position{ 0.f,0.f,0.f };
-		glm::vec3	m_Rotation{ 0.f,0.f,0.f };
-		glm::vec3	m_Scale{ 1.f,1.f,1.f };
-		bool		m_IsDirty{ false };
-		const glm::mat4 GetModelMatrix() const;
+		glm::mat4	m_WorldXform{ 1.f };
+		//glm::mat4	m_LocalXform{ 1.f };
+		// When changing the bottom three, it must be changed to a specific name for gizmo to play nice with prefab and reflection
+		glm::vec3	m_Position{ 0.f,0.f,0.f };		// [m_Position] becomes [TRE::Trasnform/Position] for ImGui::Gizmo in ViewportPanel.cpp
+		glm::vec3	m_Rotation{ 0.f,0.f,0.f };		// [m_Rotation] becomes [TRE::Trasnform/Rotation] for ImGui::Gizmo in ViewportPanel.cpp
+		glm::vec3	m_Scale{ 1.f,1.f,1.f };			// [m_Scale] becomes [TRE::Trasnform/Scale] for ImGui::Gizmo in ViewportPanel.cpp
 
+		glm::vec3	m_LocalPosition{ 0.f,0.f,0.f };
+		glm::vec3	m_LocalRotation{ 0.f,0.f,0.f };
+		glm::vec3	m_LocalScale{ 1.f,1.f,1.f };
+
+		bool		m_IsDirty{ true };
+	public:
+		void CalculateWorldMatrix();
+		const glm::mat4 CalculateLocalMatrix();
+		void DecomposeWorldMatrix(const glm::mat4 newWorld);
+		void UpdateLocalMatrix(Entity& parent);
+	public:
 		property_vtable()           // Allows the base class to get these properties  
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
@@ -54,19 +66,9 @@ namespace TRE
 	public:
 		void Update() override;
 		void OnReset() override;
+		void AfterEditor() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;
-
-		void SetPosition(Entity& go, const glm::vec3& position);
-		void SetRotation(Entity& go, const glm::vec3& rotation);
-		void SetScale(Entity& go, const glm::vec3& scale);
-
-		const glm::vec3& GetPosition(const Entity& go) const;
-		const glm::vec3& GetRotation(const Entity& go) const;
-		const glm::vec3& GetScale(const Entity& go) const;
-		const glm::mat4 GetModelMatrix(const Entity& go) const;
-	private:
-		bool m_IsDirty{ false };
 	};
 }
 

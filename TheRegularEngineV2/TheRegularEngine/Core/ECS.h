@@ -28,6 +28,8 @@
 #define ECS_ENTITY_DEFAULT_NAME "Default_Entity_Name"
 #define ECS_CLONE_DEFAULT_NAME "Clone_Entity_Name"
 
+#define GET_VARIABLE_NAME(var) (#var)
+
 namespace TRE
 {
 	class Ent;

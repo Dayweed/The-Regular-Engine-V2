@@ -23,6 +23,7 @@ namespace TRE
 			virtual void BeforeReset() {};
 			virtual void OnReset() {};
 			virtual void Update() {};
+			virtual void AfterEditor() {};
 			virtual void OnDestroyGO() {};
 			virtual void Shutdown() {};
 	};

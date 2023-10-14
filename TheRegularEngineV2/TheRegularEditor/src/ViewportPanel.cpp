@@ -264,20 +264,22 @@ namespace TRE
 			float WindowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
 
-			Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+			Entity camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-			glm::mat4 proj = cameraSystem->GetProjectionMatrix(entity);
+			glm::mat4 proj = cameraSystem->GetProjectionMatrix(camera);
 			proj[1][1] *= -1.f;
-			glm::mat4 View = cameraSystem->GetViewMatrix(entity);
+			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
 
-			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().GetModelMatrix();
-
-			TransformSystem* XformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
+			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
+			Transform& transform = SelectedEntity->GetComponent<Transform>();
 
 			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
 			
 			if (ImGuizmo::IsUsing())
 			{
+				std::string compName{ ComponentManager::Instance().GetComponentName<Transform>() };
+				bool needUpdatingToPrefab{ SelectedEntity->HasComponent<Prefabing>() && SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.find(compName) == SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.end() };
+
 				glm::vec3 Scale;
 				glm::vec3 Rotation;
 				glm::vec3 Translate;
@@ -286,21 +288,60 @@ namespace TRE
 				{
 					case ImGuizmo::OPERATION::SCALE:
 					{
-						XformSystem->SetScale(SelectedEntity, Scale);
+						transform.m_Scale = Scale;
+						if (needUpdatingToPrefab)
+						{
+							// See if can emplace back
+							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+							auto it{ prefab.m_Overrides.find(compName) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+							}
+							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+							// If gizmo doesn't update prefab, check Transform.h
+							prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
+						}
 						break;
 					}
 					case ImGuizmo::OPERATION::ROTATE:
 					{
-						XformSystem->SetRotation(SelectedEntity, Rotation);
+						transform.m_Rotation = Rotation;
+						if (needUpdatingToPrefab)
+						{
+							// See if can emplace back
+							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+							auto it{ prefab.m_Overrides.find(compName) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+							}
+							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+							// If gizmo doesn't update prefab, check Transform.h
+							prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
+						}
 						break;
 					}
 					case ImGuizmo::OPERATION::TRANSLATE:
 					{
-						XformSystem->SetPosition(SelectedEntity, Translate);
+						transform.m_Position = Translate;
+						if (needUpdatingToPrefab)
+						{
+							// See if can emplace back
+							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+							auto it{ prefab.m_Overrides.find(compName) };
+							if (it == prefab.m_Overrides.end())
+							{
+								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+							}
+							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+							// If gizmo doesn't update prefab, check Transform.h
+							prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
+						}
 						break;
 					}
 				}
-				
+				transform.m_IsDirty = true;
 			}
 		}
 

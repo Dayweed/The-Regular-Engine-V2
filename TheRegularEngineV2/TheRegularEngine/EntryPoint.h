@@ -7,6 +7,8 @@
 #ifdef _DEBUG
 #define DEBUG_MEMLEAK new( _CLIENT_BLOCK, __FILE__, __LINE__)
 #define TRE_NEW DEBUG_MEMLEAK
+#else
+#define TRE_NEW new
 #endif
 
 #include <crtdbg.h>

@@ -32,14 +32,15 @@ namespace TRE
 		mat->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat));
 
-		auto transformSystem = ECSSystemManager::Instance().GetSystem<TransformSystem>();
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 
 		Entity test = ECSManager::Instance().CreateEntity();
 		test->GetComponent<Properties>().m_Name = "C# Test" + std::to_string(i++);
-		transformSystem->SetPosition(test, glm::vec3(distribution(generator), 144.0f, distributionZ(generator)));
-		transformSystem->SetScale(test, glm::vec3(0.2f, 0.2f, 0.2f));
-		transformSystem->SetRotation(test, glm::vec3(0, 180.f, 0));
+		Transform& transform = test->AddComponent<Transform>();
+		transform.m_Position = glm::vec3(distribution(generator), 144.0f, distributionZ(generator));
+		transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		transform.m_Rotation = glm::vec3(0, 180.f, 0);
+		transform.m_IsDirty = true;
 		test->AddComponent<MeshRenderer>();
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
