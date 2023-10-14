@@ -181,11 +181,11 @@ namespace TRE
 			}
 		}
 
-		void AfterEditorSystem()
+		void GameUpdateSystem()
 		{
 			for (auto& system : m_Systems)
 			{
-				system.second->AfterEditor();
+				system.second->GameUpdate();
 			}
 		}
 
@@ -212,7 +212,7 @@ namespace TRE
 		void operator=(ECSSystemManager const&) = delete;
 		void* operator new(size_t) = delete;
 
-		std::map<size_t, std::shared_ptr<ECSSystem>> m_Systems;
-		std::map<size_t, std::string> m_SystemsName;
+		std::unordered_map<size_t, std::shared_ptr<ECSSystem>> m_Systems;
+		std::unordered_map<size_t, std::string> m_SystemsName;
 	};
 }

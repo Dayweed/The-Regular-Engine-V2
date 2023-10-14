@@ -8,11 +8,6 @@ namespace TRE
 {
 	void ParentingSystem::Update()
 	{
-
-	}
-
-	void ParentingSystem::AfterEditor()
-	{
 		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
 		{
 			Transform& transform{ object->GetComponent<Transform>() };
@@ -21,6 +16,11 @@ namespace TRE
 				UpdateChildTransform(object);
 			}
 		}
+	}
+
+	void ParentingSystem::GameUpdate()
+	{
+		
 	}
 
 	void ParentingSystem::OnReset()
