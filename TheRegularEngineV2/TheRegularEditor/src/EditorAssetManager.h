@@ -4,6 +4,8 @@
 #include "Geom.h"
 #include "GeomDescriptorFile.h"
 #include "Graphics/RenderObject.h"
+#include "Graphics/VulkanTexture.h"
+#include "TextureDescriptorFile.h"
 
 namespace TRE
 {
@@ -21,6 +23,8 @@ namespace TRE
 
 		//Use for drag and drop
 		void AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset);
+		template <typename T>
+		void AddAsset(const std::string& assetName);
 		template<typename T>
 		std::shared_ptr<T> CompileAndLoad(const std::string& assetName);
 		void RemoveAsset(const std::string& assetName);
@@ -40,6 +44,34 @@ namespace TRE
 	private:
 		std::unordered_map<std::string, ResourceHandle> m_AssetNameToHandle;
 	};
+
+	template <typename T>
+	void AssetManager::AddAsset(const std::string& assetName)
+	{
+		const auto GUID = AssetManager::Instance().GetAssetHandle(assetName);
+		const auto hexGUID = Resource::GetGUIDHex(GUID);
+
+		const std::string assetFolderPath = "../Assets/";
+		const std::string resourceFolderPath = "../Resources/";
+		ResourceType type = T::GetType();
+		if (type == ResourceType::Mesh)
+		{
+			std::unique_ptr<T> geom = std::make_unique<T>(resourceFolderPath + hexGUID + ".geom");
+			geom->SetHandle(GUID);
+			AssetManager::Instance().AddAsset(assetName, std::move(geom));
+
+		}
+		else if (type == ResourceType::Texture)
+		{
+			std::unique_ptr<T> texture = std::make_unique<T>(resourceFolderPath + hexGUID + ".DDS");
+			texture->SetHandle(GUID);
+			AssetManager::Instance().AddAsset(assetName, std::move(texture));
+		}
+		else
+		{
+			TRE_CORE_ERROR("AssetManager::AddAsset: Unsupported type");
+		}
+	}
 
 	template<typename T>
 	std::shared_ptr<T> AssetManager::CompileAndLoad(const std::string& assetName)
@@ -74,10 +106,26 @@ namespace TRE
 
 			return ResourceManager::Instance().GetResource<T>(handle);
 		}
-		else
+		else if (type == ResourceType::Texture)
 		{
+			TextureDescriptorFile descriptorFile;
+			const std::string assetPath = assetFolderPath + assetName;
+			const std::string descPath = assetFolderPath + hex + ".texture" + ".desc";
+			const std::string resourcePath = resourceFolderPath + hex + ".DDS";
+			descriptorFile.SetAssetPath(assetPath);
+			descriptorFile.SetResourcePath(resourcePath);
+			descriptorFile.SetDescriptorPath(descPath);
+			descriptorFile.GenerateDescriptorFile();
+			//Compile
+			Texture::RunCompiler(descPath);
+			//Load
+			std::unique_ptr<VulkanTexture> texture = std::make_unique<VulkanTexture>(resourcePath);
+			texture->SetHandle(handle);
+			AddAsset(assetName, std::move(texture));
 
+			return ResourceManager::Instance().GetResource<T>(handle);
 		}
+
 
 		return nullptr;
 	}

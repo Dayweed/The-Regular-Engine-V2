@@ -82,6 +82,12 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
+	void Material::SetTexture(const int index, std::shared_ptr<VulkanTexture> textures) 
+	{
+		if (index < m_Textures.size())  
+			m_Textures[index] = textures;
+	}
+
 	void Material::Serialize()
 	{
 		std::string path = "../Resources/";

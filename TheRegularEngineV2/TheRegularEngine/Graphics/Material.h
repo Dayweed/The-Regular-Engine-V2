@@ -19,6 +19,7 @@ namespace TRE
 
 			//This should be removed eventually
 			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures.push_back(Textures); }
+			void SetTexture(const int index, std::shared_ptr<VulkanTexture> textures);
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 			std::vector<std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }

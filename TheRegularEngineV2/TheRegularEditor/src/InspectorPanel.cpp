@@ -250,7 +250,7 @@ namespace TRE
 							{
 								static char renderObject[200];
 								strcpy(renderObject, AssetManager::Instance().GetName(Value.m_Value).c_str());
-								ImGui::InputText("##", renderObject, sizeof(renderObject));			
+								ImGui::InputText("##", renderObject, sizeof(renderObject), ImGuiInputTextFlags_ReadOnly);
 							}							
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}

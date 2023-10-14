@@ -245,12 +245,23 @@ namespace TRE
 				transform.m_IsDirty = true;
 				spawn->AddComponent<MeshRenderer>();
 				
-				//Check if asset is already compiled and loaded before
+				//Check if asset is already compiled
+				//Compiled before
 				if (AssetManager::Instance().Contains(assetName))
 				{
-					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
-						SetMeshRenderer(spawn, AssetManager::Instance().GetAsset<RenderObject>(assetName));
-
+					//Load into memory
+					if (AssetManager::Instance().GetAsset<RenderObject>(assetName) == nullptr)
+					{
+						AssetManager::Instance().AddAsset<RenderObject>(assetName);
+						ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
+							SetMeshRenderer(spawn, AssetManager::Instance().GetAsset<RenderObject>(assetName));
+					}
+					//Assign directly
+					else
+					{
+						ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
+							SetMeshRenderer(spawn, AssetManager::Instance().GetAsset<RenderObject>(assetName));
+					}
 				}
 				else
 				{
