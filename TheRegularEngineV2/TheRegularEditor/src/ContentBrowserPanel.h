@@ -23,8 +23,8 @@ namespace TRE
 		public:
 			ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager);
 			~ContentBrowserPanel();
-			//void PollItems();
-			//void BrowseProjectFiles();
+			void PollItems();
+			void BrowseProjectFiles();
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
@@ -37,31 +37,36 @@ namespace TRE
 
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 
-			//Texture for icons waiting on zr to put into my descriptor set
+			//Texture for icons
+			ImTextureID m_TmpTexturesID{};
 
-			////Variables for formatting
-			//const float m_Padding = 20.f;
-			//const float m_ImgSize = 64.f;
-			//const float m_CellSize = m_ImgSize + m_Padding;
+			//Shared pointer for icons
+			std::shared_ptr<VulkanTexture> m_TmpTextures;
 
-			////Variable for limiting poll rate
-			//const float m_RefreshRate = 1.f;
-			//float m_CurrentTimer = 0.0f;
+			//Variables for formatting
+			const float m_Padding = 20.f;
+			const float m_ImgSize = 64.f;
+			const float m_CellSize = m_ImgSize + m_Padding;
 
-			//struct Asset
-			//{
-			//	bool m_Folder = false;
-			//	std::string m_ResourceType{"m_Invalid"};
-			//	std::string m_FileName{};
-			//	std::filesystem::path m_Path{};
-			//};
-			//std::vector<Asset> m_Assets;
+			//Variable for limiting poll rate
+			const float m_RefreshRate = 1.f;
+			float m_CurrentTimer = 0.0f;
 
-			////Store some ImGui Assets
-			//ImGuiConfigFlags m_PopUps;
+			struct Asset
+			{
+				bool m_Folder = false;
+				ImTextureID m_TextureID{};
+				std::string m_ResourceType{"m_Invalid"};
+				std::string m_FileName{};
+				std::filesystem::path m_Path{};
+			};
+			std::vector<Asset> m_Assets;
 
-			////PopUp for invalid resources
-			//bool m_InvalidResourcePopUp = false;
+			//Store some ImGui Assets
+			ImGuiConfigFlags m_PopUps;
+
+			//PopUp for invalid resources
+			bool m_InvalidResourcePopUp = false;
 
 	};
 }
