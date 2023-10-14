@@ -181,11 +181,11 @@ namespace TRE
 			}
 		}
 
-		void AfterEditorSystem()
+		void EditorUpdateSystem()
 		{
 			for (auto& system : m_Systems)
 			{
-				system.second->AfterEditor();
+				system.second->EditorUpdate();
 			}
 		}
 

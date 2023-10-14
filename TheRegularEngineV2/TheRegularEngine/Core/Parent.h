@@ -22,7 +22,7 @@ namespace TRE
 		~ParentingSystem() = default;
 
 		void Update() override;
-		void AfterEditor() override;
+		void EditorUpdate() override;
 		void OnReset() override;
 		void OnDestroyGO() override;
 		void Shutdown() override;

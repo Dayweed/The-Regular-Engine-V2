@@ -417,12 +417,12 @@ namespace TRE
 				EditorSystemManager::Instance().UpdateSystem();
 				m_VulkanEditor->EndFrame();
 				Profiler::Instance().EndTimer("Imgui");
-			}
 
-			// After Editor (Will always run)
-			Profiler::Instance().StartTimer("AfterEditor");
-			ECSSystemManager::Instance().AfterEditorSystem();
-			Profiler::Instance().EndTimer("AfterEditor");
+				// EditorUpdateSystem
+				Profiler::Instance().StartTimer("EditorUpdateSystem");
+				ECSSystemManager::Instance().EditorUpdateSystem();
+				Profiler::Instance().EndTimer("EditorUpdateSystem");
+			}
 
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
