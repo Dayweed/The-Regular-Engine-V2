@@ -35,11 +35,11 @@ namespace TRE
 
 		m_MaterialInstace = std::make_unique<Material>(AnimationShader);
 		m_MaterialInstace->Invalidate();
-		m_MaterialInstace->SetTextures(Texture1);
-		m_MaterialInstace->SetTextures(Texture2);
-		m_MaterialInstace->SetTextures(Texture3);
-		m_MaterialInstace->SetTextures(Texture4);
-		m_MaterialInstace->SetTextures(Texture5);
+		m_MaterialInstace->SetTexture("Temp1", Texture1);
+		m_MaterialInstace->SetTexture("Temp2", Texture2);
+		m_MaterialInstace->SetTexture("Temp3", Texture3);
+		m_MaterialInstace->SetTexture("Temp4", Texture4);
+		m_MaterialInstace->SetTexture("Temp5", Texture5);
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;

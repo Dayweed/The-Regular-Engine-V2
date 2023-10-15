@@ -36,7 +36,7 @@ namespace TRE
 				const auto& textures = material->GetTextures();
 				ImGui::Text("Diffuse");
 				static char diffuseTexture[256];
-				strcpy_s(diffuseTexture, AssetManager::Instance().GetName(textures[0]->GetHandle()).c_str());
+				//strcpy_s(diffuseTexture, AssetManager::Instance().GetName(textures.begin()->GetHandle()).c_str());
 				if (ImGui::InputText("##Diffuse", diffuseTexture, sizeof(diffuseTexture), ImGuiInputTextFlags_ReadOnly) || ImGui::IsItemHovered())
 				{
 					if (ImGui::BeginDragDropTarget())

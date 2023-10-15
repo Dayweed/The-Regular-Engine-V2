@@ -178,18 +178,10 @@ namespace TRE
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		//std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.frag");
-		//frag->SetHandle(fragHandle);
-		//ResourceManager::Instance().AddResource(std::move(frag));
-
 		//DebugDrawShaders
 		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.glsl");
 		DebugDrawVert->SetHandle(DebugDrawVertHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
-
-		//std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.frag");
-		//DebugDrawFrag->SetHandle(DebugDrawFragHandle);
-		//ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
 
 		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawVertHandle);
 
@@ -198,19 +190,15 @@ namespace TRE
 		AnimationVert->SetHandle(AnimationVertHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 
-		//std::unique_ptr<Shader> AnimationFrag = ShaderCompiler::CompileShader("../Resources/Shaders/Animation.frag");
-		//AnimationFrag->SetHandle(AnimationFragHandle);
-		//ResourceManager::Instance().AddResource(std::move(AnimationFrag));
-
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
 		//auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
 		mat1->SetHandle(matHandle);
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
+		mat1->SetTexture("Temp1", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
+		mat1->SetTexture("Temp2", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
+		mat1->SetTexture("Temp3", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
+		mat1->SetTexture("Temp4", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();

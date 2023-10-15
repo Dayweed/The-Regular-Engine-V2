@@ -15,12 +15,10 @@ namespace TRE
 			void Invalidate();
 			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
 
-			//This should be removed eventually
-			void SetTextures(std::shared_ptr<VulkanTexture> Textures) { m_Textures.push_back(Textures); }
-			void SetTexture(const int index, std::shared_ptr<VulkanTexture> textures);
+			void SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures);
+			std::map<std::string, std::shared_ptr<VulkanTexture>> GetTextures() { return m_Textures; }
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
-			std::vector<std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
 
 			static ResourceType GetType() {return ResourceType::Material;}
 
@@ -31,6 +29,6 @@ namespace TRE
 
 			std::vector<VkDescriptorSet> m_DescriptorSets;
 			std::vector<VkWriteDescriptorSet> m_WriteDescriptors;
-			std::vector<std::shared_ptr<VulkanTexture>> m_Textures;
+			std::map<std::string, std::shared_ptr<VulkanTexture>> m_Textures;
 	};
 }

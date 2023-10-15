@@ -43,7 +43,7 @@ namespace TRE
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
-				Write.pImageInfo = &m_Textures[0]->GetDescriptorImageInfo();
+				Write.pImageInfo = &m_Textures["Temp1"]->GetDescriptorImageInfo();
 			}
 			Write.dstSet = m_DescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -52,10 +52,9 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::SetTexture(const int index, std::shared_ptr<VulkanTexture> textures) 
+	void Material::SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures) 
 	{
-		if (index < m_Textures.size())  
-			m_Textures[index] = textures;
+		m_Textures[Name] = textures;
 	}
 
 	void Material::Serialize()
@@ -79,7 +78,7 @@ namespace TRE
 		file << "Shader:\n" << m_Shader->GetHandleHex() << std::endl;
 		file << "Textures:\n";
 		//For loop next time
-		for (auto texture : m_Textures)
+		for (auto [Name, texture] : m_Textures)
 		{
 			file << texture->GetHandleHex() << std::endl;
 		}
@@ -123,7 +122,7 @@ namespace TRE
 		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		mat->m_Handle = assetHandle;
 
-		mat->m_Textures.resize(textureGUIDs.size());
+		//mat->m_Textures.resize(textureGUIDs.size());
 		for (int i = 0; i < textureGUIDs.size(); ++i)
 		{	
 			std::string textureHexGUID = textureGUIDs[i];
@@ -133,7 +132,7 @@ namespace TRE
 			{
 				texture = VulkanTexture::Deserialize(textureHexGUID);
 			}
-			mat->m_Textures[i] = texture;
+			//mat->m_Textures[i] = texture;
 		}
 
 		ResourceManager::Instance().AddResource(std::move(mat));
