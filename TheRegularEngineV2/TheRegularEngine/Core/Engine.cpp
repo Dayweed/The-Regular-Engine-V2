@@ -19,7 +19,7 @@
 #include <time.h>       /* time */
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
-#include "Graphics/ShaderCompiler.h"
+#include "Graphics/ShaderReflection.h"
 #include "TextureDescriptorFile.h"	
 #include "Physics/PhysicsComponents.h"
 
@@ -76,7 +76,7 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(vert));
 
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/DebugDrawLine.TREshader");
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("Resources/DebugDrawLine.TREshader");
 		DebugDrawVert->SetHandle(DebugDrawHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 

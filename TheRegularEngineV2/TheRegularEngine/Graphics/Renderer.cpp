@@ -6,7 +6,7 @@
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "Core/Logger.h"
-#include "ShaderCompiler.h"
+#include "ShaderReflection.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
 

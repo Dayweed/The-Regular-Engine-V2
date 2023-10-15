@@ -178,7 +178,7 @@
     <ClInclude Include="Graphics\Shader.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\ShaderCompiler.h">
+    <ClInclude Include="Graphics\ShaderReflection.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\ShaderResource.h">
@@ -333,7 +333,7 @@
     <ClCompile Include="Graphics\Shader.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\ShaderCompiler.cpp">
+    <ClCompile Include="Graphics\ShaderReflection.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\SwapChain.cpp">
