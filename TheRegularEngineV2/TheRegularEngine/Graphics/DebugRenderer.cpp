@@ -19,7 +19,6 @@ namespace TRE
 	DebugRenderer::DebugRenderer(std::shared_ptr<RenderPass> TargetPass) : m_RenderPass(TargetPass)
 	{
 		auto DebugDrawShader = ResourceManager::Instance().GetResource<Shader>(7);
-		//auto DebugDrawFragShader = ResourceManager::Instance().GetResource<Shader>(8);
 
 		PipelineConfigurations DebugDrawPipelineConfig{};
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;

@@ -43,7 +43,7 @@ namespace TRE
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
-				Write.pImageInfo = &m_Textures["Temp1"]->GetDescriptorImageInfo();
+				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
 			}
 			Write.dstSet = m_DescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);

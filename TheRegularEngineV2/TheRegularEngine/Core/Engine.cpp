@@ -195,10 +195,10 @@ namespace TRE
 		//auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
 		mat1->SetHandle(matHandle);
-		mat1->SetTexture("Temp1", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
-		mat1->SetTexture("Temp2", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
-		mat1->SetTexture("Temp3", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
-		mat1->SetTexture("Temp4", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
+		mat1->SetTexture("DiffuseMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
+		mat1->SetTexture("NormalMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
+		mat1->SetTexture("RoughnessMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
+		mat1->SetTexture("AOMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();

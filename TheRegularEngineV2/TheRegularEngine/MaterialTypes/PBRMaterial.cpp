@@ -31,13 +31,13 @@ namespace TRE
 		{
 			std::string Name;
 			if (i == 0)
-				Name = "Temp1";
+				Name = "DiffuseMap";
 			if (i == 1)
-				Name = "Temp2";
+				Name = "NormalMap";
 			if (i == 2)
-				Name = "Temp3";
+				Name = "RoughnessMap";
 			if (i == 3)
-				Name = "Temp4";
+				Name = "AOMap";
 			defaultPBR->SetTexture(Name, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID()));
 		}
 
