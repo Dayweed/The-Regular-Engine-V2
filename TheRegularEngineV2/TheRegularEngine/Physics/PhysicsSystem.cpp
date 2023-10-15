@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 1
+#define USE_PHYSX_PVD 0
 #endif
 
 #pragma region Macros
@@ -622,6 +622,17 @@ namespace TRE
 		// activate gravity by default
 		bool useGravity = true; // TODO: disabling gravity
 		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
+
+		// this is necessary to allow the actor to freakin move by physics and forces and such
+		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+		
+		// wake up the sleeping beauty
+		sharedData.m_RigidDynamic->wakeUp();
+		// UNBELIEVABLE, THIS IS WHAT I WAS MISSING AFTER ALL THIS TIME.
+		// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+		// also, very lucky that I called this AFTER setting kinematic to false,
+		// wouldn't work otherwise!
 
 		// no kinematic rigidbodies for now pls thanks
 		// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
