@@ -19,8 +19,8 @@ namespace TRE
 			~ShaderCompiler() = default;
 
 			static std::unique_ptr<Shader> CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization = true);
-			//static std::unique_ptr<Shader> DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization = true); //Temp
-			//void DeserializeShaderBinary(std::string FilePath);
+			static std::unique_ptr<Shader> DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization = true); //Temp
+			void DeserializeShaderBinary(std::string FilePath);
 		
 		private:
 			int SkipBOM(std::istream& in); //Can create utilities header file if too much in future

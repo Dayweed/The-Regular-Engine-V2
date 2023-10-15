@@ -13,7 +13,8 @@ project "ShaderCompiler"
 	includedirs
     {
         "include",
-		"%{IncludeDir.Shaderc}"
+		"%{IncludeDir.Shaderc}",
+		"%{IncludeDir.VULKANSDK}"
     }
 
 	files
@@ -30,7 +31,8 @@ project "ShaderCompiler"
 
 		links
 		{
-			"%{Library.ShaderC_Debug}"
+			"%{Library.ShaderC_Debug}",
+			"%{Library.Vulkan}"
 		}
 
 	filter "configurations:Release"
@@ -40,5 +42,6 @@ project "ShaderCompiler"
 		
 		links
 		{
-			"%{Library.ShaderC_Release}"
+			"%{Library.ShaderC_Release}",
+			"%{Library.Vulkan}"
 		}

@@ -403,48 +403,67 @@ namespace TRE
 		m_ShaderLanguage = ShaderLanguage::GLSL; //For the sake of allowing it to be modular in future
 	}
 
-	//void ShaderCompiler::DeserializeShaderBinary(std::string FilePath)
-	//{
-	//	if (std::filesystem::exists(FilePath))
-	//	{
-	//		std::ifstream file(FilePath, std::ios::binary);
-	//		if (file.is_open())
-	//		{
-	//			file.seekg(0, std::ios::end);
-	//			std::size_t size = file.tellg();
-	//			file.seekg(0, std::ios::beg);
+	void ShaderCompiler::DeserializeShaderBinary(std::string FilePath)
+	{
+		if (std::filesystem::exists(FilePath))
+		{
+			std::ifstream file(FilePath, std::ios::binary);
+			if (file.is_open())
+			{
+				int NumberofIterations = 0;
+				file.read((char*)&NumberofIterations, sizeof(int));
+				std::vector<int> VectorSizes(NumberofIterations);
+				std::vector<int> ShaderStages(NumberofIterations);
 
-	//			m_SPIRVData.resize(size / sizeof(uint32_t) + (size % sizeof(uint32_t) ? 1U : 0U));
+				for (int x = 0; x < NumberofIterations; x++)
+				{
+					file.read((char*)&VectorSizes[x], sizeof(int));
+					file.read((char*)&ShaderStages[x], sizeof(int));
+				}
 
-	//			file.read((char*)m_SPIRVData.data(), size);
-	//			file.close();
-	//		}
-	//	}
-	//}
+				std::vector<VkShaderStageFlagBits> ShaderFlags;
+				for (int x = 0; x < ShaderStages.size(); x++)
+				{
+					VkShaderStageFlagBits ShaderStage = static_cast<VkShaderStageFlagBits>(ShaderStages[x]);
+					ShaderFlags.push_back(ShaderStage);
+					m_SPIRVData[ShaderStage].resize(VectorSizes[x]);
+				}
 
-	//std::unique_ptr<Shader> ShaderCompiler::DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
-	//{
-	//	std::string path = ShaderPath.string();
-	//	size_t found = path.find_last_of("/\\");
-	//	std::string name = found != std::string::npos ? path.substr(found + 1) : path;
-	//	found = name.find_last_of('.');
-	//	name = found != std::string::npos ? name.substr(0, found) : name;
-	//	std::string shaderStage = path.substr(path.find_last_of('.') + 1);
-	//	VkShaderStageFlagBits ShaderStage{};
-	//	ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;
+				for (int x = 0; x < ShaderFlags.size(); x++)
+				{
+					file.read((char*)m_SPIRVData[ShaderFlags[x]].data(), VectorSizes[x] * sizeof(uint32_t));
+				}
 
-	//	std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
-	//	Compiler->DeserializeShaderBinary(path);
-	//	Compiler->ReflectShaderData(Compiler->m_SPIRVData);
+				file.close();
+			}
+		}
+	}
 
-	//	std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
-	//	GeneratedShader->m_ShaderName = name;
-	//	GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData);
-	//	GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
-	//	GeneratedShader->CreateDescriptors();
+	std::unique_ptr<Shader> ShaderCompiler::DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
+	{
+		std::string path = ShaderPath.string();
+		size_t found = path.find_last_of("/\\");
+		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
+		found = name.find_last_of('.');
+		name = found != std::string::npos ? name.substr(0, found) : name;
+		std::string shaderStage = path.substr(path.find_last_of('.') + 1);
 
-	//	return std::move(GeneratedShader);
-	//}
+		TRE_CORE_INFO("Deserializing Shader");
+
+		std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
+		Compiler->DeserializeShaderBinary(path);
+		Compiler->ReflectShaderData(Compiler->m_SPIRVData);
+
+		std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
+		GeneratedShader->m_ShaderName = name;
+		GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData);
+		GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
+		GeneratedShader->CreateDescriptors();
+
+		TRE_CORE_INFO("Successfully Generated Shader");
+
+		return std::move(GeneratedShader);
+	}
 
 	std::unique_ptr<Shader> ShaderCompiler::CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
 	{
@@ -475,11 +494,6 @@ namespace TRE
 
 		std::string RawCode = ReadGLSLToString(m_ShaderPath.string());
 		m_ShaderSourceCode = PreProcessGLSL(RawCode);
-		
-		for (auto& [Stage, Source] : m_ShaderSourceCode)
-		{
-			std::cout << Source << "\n\n" << std::endl;
-		}
 
 		//Compile shaders
 		for (auto& [Stage, Source] : m_ShaderSourceCode)
