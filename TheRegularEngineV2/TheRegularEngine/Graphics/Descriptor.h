@@ -53,6 +53,7 @@ namespace TRE
 		DescriptorPool& operator=(const DescriptorPool&) = delete;
 
 		bool AllocateDescriptorSet(const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet& descriptor) const;
+		bool AllocateDescriptorSet(const std::vector<VkDescriptorSetLayout>& descriptorSetLayout, VkDescriptorSet& descriptor) const;
 		void FreeDescriptorSet(std::vector<VkDescriptorSet>& descriptors) const;
 
 		void ResetPool();

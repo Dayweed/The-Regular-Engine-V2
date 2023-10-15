@@ -25,8 +25,8 @@ namespace TRE
 		auto vertHandle = 3;
 		auto fragHandle = 4;
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
-		auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
-		std::unique_ptr<Material> defaultPBR = std::make_unique<Material>(VertShader, FragShader);
+		//auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
+		std::unique_ptr<Material> defaultPBR = std::make_unique<Material>(VertShader);
 		defaultPBR->SetHandle(m_DefaultHandle);
 		//For now since PBR takes in 4 textures, we will just use the same texture for all 4
 		for(int i = 0; i < 4; i++)

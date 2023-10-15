@@ -18,18 +18,17 @@ namespace TRE
 
 	DebugRenderer::DebugRenderer(std::shared_ptr<RenderPass> TargetPass) : m_RenderPass(TargetPass)
 	{
-		auto DebugDrawVertShader = ResourceManager::Instance().GetResource<Shader>(7);
-		auto DebugDrawFragShader = ResourceManager::Instance().GetResource<Shader>(8);
+		auto DebugDrawShader = ResourceManager::Instance().GetResource<Shader>(7);
+		//auto DebugDrawFragShader = ResourceManager::Instance().GetResource<Shader>(8);
 
 		PipelineConfigurations DebugDrawPipelineConfig{};
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
-		DebugDrawPipelineConfig.VertexShader = DebugDrawVertShader;
-		DebugDrawPipelineConfig.FragmentShader = DebugDrawFragShader;
+		DebugDrawPipelineConfig.Shader = DebugDrawShader;
 		DebugDrawPipelineConfig.LineWidth = 5.f;
 		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
-		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawVertShader, DebugDrawFragShader);
-		m_DebugMaterialInstance->AllocateLayouts();
+		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
+		m_DebugMaterialInstance->Invalidate();
 
 		CreateDebugSphere();
 		CreateDebugAABB();

@@ -36,6 +36,7 @@
 #include <typeindex>
 #include <utility>
 #include <span>
+#include <regex>
 
 #include "vulkan/vulkan.h"
 #include "Properties.h"

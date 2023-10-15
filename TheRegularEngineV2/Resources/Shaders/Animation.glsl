@@ -1,5 +1,7 @@
 #version 450
 
+#pragma stage : vert
+
 layout(location = 0) in vec4  inWeights;
 layout(location = 1) in ivec4 inBones;
 layout(location = 2) in vec3  inPosition;
@@ -26,4 +28,27 @@ void main()
 	Out.UV = inUV;
 	Out.Color = vec4(1);
 	gl_Position = ubo.m_ProjView * L2W * vec4(inPosition.xyz, 1.0);
+}
+
+
+#version 450
+
+#pragma stage : frag
+
+layout(location = 0) in struct 
+{
+	vec4 Color;
+	vec2 UV;
+} In;
+layout(location = 0) out vec4 outColor;
+
+layout(set = 0, binding = 1) uniform sampler2D Diffuse;
+layout(set = 0, binding = 2) uniform sampler2D DiffuseAO;
+layout(set = 0, binding = 3) uniform sampler2D NormalMap;
+layout(set = 0, binding = 4) uniform sampler2D Specular;
+layout(set = 0, binding = 5) uniform sampler2D Glossiness;
+
+void main() 
+{
+   outColor = In.Color * texture(Diffuse, In.UV);
 }

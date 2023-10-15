@@ -19,12 +19,12 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto vertHandle = 3;
-		auto fragHandle = 4;
+		//auto fragHandle = 4;
 		auto matHandle = Resource::GenerateGUID();
 
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
-		auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
-		std::unique_ptr<Material> mat = std::make_unique<Material>(VertShader, FragShader);
+		//auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
+		std::unique_ptr<Material> mat = std::make_unique<Material>(VertShader);
 		mat->SetHandle(matHandle);
 		mat->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
 		mat->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
@@ -50,6 +50,6 @@ namespace TRE
 		ScriptEngine::CreatedScriptObject = true;
 
 		std::shared_ptr<Material> allocMat = ResourceManager::Instance().GetResource<Material>(matHandle);
-		allocMat->AllocateLayouts();
+		//allocMat->AllocateLayouts();
 	}
 }

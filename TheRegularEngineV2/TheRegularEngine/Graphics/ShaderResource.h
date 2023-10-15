@@ -34,7 +34,7 @@ namespace TRE
 		std::unordered_map<uint32_t, UniformBuffer_GLSL> UniformBuffers;
 		std::map<uint32_t, ImageSampler> ImageSamplers;
 
-		std::map<uint32_t, VkWriteDescriptorSet> WriteDescriptorSets{};
+		std::map<std::string, VkWriteDescriptorSet> WriteDescriptorSets{};
 
 		operator bool() const { return !(UniformBuffers.empty() && ImageSamplers.empty()); }
 	};

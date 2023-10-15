@@ -20,6 +20,15 @@ namespace TRE
 		return {};
 	}
 
+	static VkShaderStageFlagBits ShaderTypeFromString(const std::string_view type)
+	{
+		if (type == "vert")	return VK_SHADER_STAGE_VERTEX_BIT;
+		if (type == "frag")	return VK_SHADER_STAGE_FRAGMENT_BIT;
+		if (type == "comp")	return VK_SHADER_STAGE_COMPUTE_BIT;
+
+		return VK_SHADER_STAGE_ALL;
+	}
+
 	static uint32_t GetStrideFromVulkanFormat(VkFormat format)
 	{
 		switch (format)
@@ -372,53 +381,70 @@ namespace TRE
 		}
 	}
 
+	static std::vector<std::string> SplitStringAndKeepDelims(std::string str)
+	{
+
+		const static std::regex re(R"((^\W|^\w+)|(\w+)|[:()])", std::regex_constants::optimize);
+
+		std::regex_iterator<std::string::iterator> rit(str.begin(), str.end(), re);
+		std::regex_iterator<std::string::iterator> rend;
+		std::vector<std::string> result;
+
+		while (rit != rend)
+		{
+			result.emplace_back(rit->str());
+			++rit;
+		}
+		return result;
+	}
+
 	ShaderCompiler::ShaderCompiler(const std::filesystem::path& ShaderPath, bool EnableOptimization) : m_ShaderPath(ShaderPath), m_EnableOptimization(EnableOptimization)
 	{
 		m_ShaderLanguage = ShaderLanguage::GLSL; //For the sake of allowing it to be modular in future
 	}
 
-	void ShaderCompiler::DeserializeShaderBinary(std::string FilePath)
-	{
-		if (std::filesystem::exists(FilePath))
-		{
-			std::ifstream file(FilePath, std::ios::binary);
-			if (file.is_open())
-			{
-				file.seekg(0, std::ios::end);
-				std::size_t size = file.tellg();
-				file.seekg(0, std::ios::beg);
+	//void ShaderCompiler::DeserializeShaderBinary(std::string FilePath)
+	//{
+	//	if (std::filesystem::exists(FilePath))
+	//	{
+	//		std::ifstream file(FilePath, std::ios::binary);
+	//		if (file.is_open())
+	//		{
+	//			file.seekg(0, std::ios::end);
+	//			std::size_t size = file.tellg();
+	//			file.seekg(0, std::ios::beg);
 
-				m_SPIRVData.resize(size / sizeof(uint32_t) + (size % sizeof(uint32_t) ? 1U : 0U));
+	//			m_SPIRVData.resize(size / sizeof(uint32_t) + (size % sizeof(uint32_t) ? 1U : 0U));
 
-				file.read((char*)m_SPIRVData.data(), size);
-				file.close();
-			}
-		}
-	}
+	//			file.read((char*)m_SPIRVData.data(), size);
+	//			file.close();
+	//		}
+	//	}
+	//}
 
-	std::unique_ptr<Shader> ShaderCompiler::DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
-	{
-		std::string path = ShaderPath.string();
-		size_t found = path.find_last_of("/\\");
-		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
-		found = name.find_last_of('.');
-		name = found != std::string::npos ? name.substr(0, found) : name;
-		std::string shaderStage = path.substr(path.find_last_of('.') + 1);
-		VkShaderStageFlagBits ShaderStage{};
-		ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;
+	//std::unique_ptr<Shader> ShaderCompiler::DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
+	//{
+	//	std::string path = ShaderPath.string();
+	//	size_t found = path.find_last_of("/\\");
+	//	std::string name = found != std::string::npos ? path.substr(found + 1) : path;
+	//	found = name.find_last_of('.');
+	//	name = found != std::string::npos ? name.substr(0, found) : name;
+	//	std::string shaderStage = path.substr(path.find_last_of('.') + 1);
+	//	VkShaderStageFlagBits ShaderStage{};
+	//	ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;
 
-		std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
-		Compiler->DeserializeShaderBinary(path);
-		Compiler->ReflectShaderData(ShaderStage, Compiler->m_SPIRVData);
+	//	std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
+	//	Compiler->DeserializeShaderBinary(path);
+	//	Compiler->ReflectShaderData(Compiler->m_SPIRVData);
 
-		std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
-		GeneratedShader->m_ShaderName = name;
-		GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData, ShaderStage);
-		GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
-		GeneratedShader->CreateDescriptors();
+	//	std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
+	//	GeneratedShader->m_ShaderName = name;
+	//	GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData);
+	//	GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
+	//	GeneratedShader->CreateDescriptors();
 
-		return std::move(GeneratedShader);
-	}
+	//	return std::move(GeneratedShader);
+	//}
 
 	std::unique_ptr<Shader> ShaderCompiler::CompileShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
 	{
@@ -429,73 +455,166 @@ namespace TRE
 		found = name.find_last_of('.');
 		name = found != std::string::npos ? name.substr(0, found) : name;
 		std::string shaderStage = path.substr(path.find_last_of('.') + 1);
-		VkShaderStageFlagBits ShaderStage{};
-		if (shaderStage == "vert")
-		{
-			ShaderStage = VK_SHADER_STAGE_VERTEX_BIT;
-		}
-		else if (shaderStage == "frag")
-		{
-			ShaderStage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		}
-		else
-			TRE_CORE_CRITICAL("Shader stage not supported");
 		TRE_CORE_INFO("Shader Name: {0}", name);
 
 		std::unique_ptr<ShaderCompiler> Compiler = std::make_unique<ShaderCompiler>(ShaderPath, true);
-		Compiler->Compile(ShaderStage);
+		Compiler->Compile();
 
 		std::unique_ptr<Shader> GeneratedShader = std::make_unique<Shader>(ShaderPath);
 		GeneratedShader->m_ShaderName = name;
-		GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData, ShaderStage);
+		GeneratedShader->LoadAndCreateShader(Compiler->m_SPIRVData);
 		GeneratedShader->SetReflectionData(Compiler->m_ReflectionData);
 		GeneratedShader->CreateDescriptors();
 
 		return std::move(GeneratedShader);
 	}
 
-	void ShaderCompiler::Compile(VkShaderStageFlagBits ShaderStage)
+	void ShaderCompiler::Compile()
 	{
 		m_SPIRVData.clear();
 
 		std::string RawCode = ReadGLSLToString(m_ShaderPath.string());
-		std::string PreProcessCode = PreProcess(RawCode, ShaderStage);
+		m_ShaderSourceCode = PreProcessGLSL(RawCode);
 		
-		if (auto Compiled = CompileGLSLToBinary(m_SPIRVData, PreProcessCode, ShaderStage); Compiled == false)
+		for (auto& [Stage, Source] : m_ShaderSourceCode)
 		{
-			TRE_CORE_ERROR("Failed to compile shader");
+			std::cout << Source << "\n\n" << std::endl;
+		}
+
+		//Compile shaders
+		for (auto& [Stage, Source] : m_ShaderSourceCode)
+		{
+			if (auto Compiled = CompileGLSLToBinary(m_SPIRVData[Stage], Stage); Compiled == false)
+			{
+				TRE_CORE_ERROR("Failed to compile shader");
+			}
+			else
+			{
+				std::string StageString;
+				if (Stage == VK_SHADER_STAGE_VERTEX_BIT)
+				{
+					StageString = "Vertex";
+				}
+				else if (Stage == VK_SHADER_STAGE_FRAGMENT_BIT)
+				{
+					StageString = "Fragment";
+				}
+				TRE_CORE_INFO("{0} {1} stage compiled", m_ShaderPath.string(), StageString);
+			}
+		}
+
+		ReflectShaderData(m_SPIRVData);
+	}
+
+	std::map<VkShaderStageFlagBits, std::string> ShaderCompiler::PreProcessCustom(const std::string& Source)
+	{
+		std::string NewSource = Source;
+		std::map<VkShaderStageFlagBits, std::string> ShaderSources;
+		std::vector<std::pair<VkShaderStageFlagBits, size_t>> Positions;
+		
+		size_t Start = 0;
+		size_t Pos = NewSource.find('#');
+
+		Pos = NewSource.find('#', Pos + 1);
+
+		while (Pos != std::string::npos)
+		{
+			const size_t EndOfLine = NewSource.find_first_of("\r\n", Pos) + 1;
+			size_t Index = 1;
+			std::vector<std::string> tokens = SplitStringAndKeepDelims(NewSource.substr(Pos, EndOfLine - Pos));
+
+			if (tokens[Index] == "pragma")
+			{
+				++Index;
+				if (tokens[Index] == "stage")
+				{
+					++Index; 
+					assert(tokens[Index] == ":" && "Shader stage not declared properly");
+					++Index; //Ignores ':'
+
+					const std::string_view stage = tokens[Index];
+					assert((stage == "vert" || stage == "frag" || stage == "comp") && "Shader stage not supported"); //comp = compute shader if we goes into it
+					auto ShaderStage = ShaderTypeFromString(stage);
+
+					Positions.emplace_back(ShaderStage, Start);
+				}
+			}
+			else if constexpr (true)
+			{
+				if (tokens[Index] == "version")
+				{
+					++Index;
+					Start = Pos;
+				}
+			}
+			
+			Pos = NewSource.find('#', Pos + 1);
+		}
+
+		assert(Positions.size() && "Could not load shader as no stages are found");
+
+		auto& [FirstStage, FirstPosition] = Positions[0];
+		if (Positions.size() > 1)
+		{
+			//Get first stage
+			const std::string firstStageStr = NewSource.substr(0, Positions[1].second);
+			size_t lineCount = std::count(firstStageStr.begin(), firstStageStr.end(), '\n') + 1;
+			ShaderSources[FirstStage] = firstStageStr;
+
+
+			//Get stages in the middle
+			for (size_t i = 1; i < Positions.size() - 1; ++i)
+			{
+				auto& [stage, stagePos] = Positions[i];
+				std::string stageStr = NewSource.substr(stagePos, Positions[i + 1].second - stagePos);
+				const size_t secondLinePos = stageStr.find_first_of('\n', 1) + 1;
+				stageStr.insert(secondLinePos, fmt::format("#line {}\n", lineCount));
+				ShaderSources[stage] = stageStr;
+				lineCount += std::count(stageStr.begin(), stageStr.end(), '\n') + 1;
+			}
+
+			//Get last stage
+			auto& [stage, stagePos] = Positions[Positions.size() - 1];
+			std::string lastStageStr = NewSource.substr(stagePos);
+			const size_t secondLinePos = lastStageStr.find_first_of('\n', 1) + 1;
+			lastStageStr.insert(secondLinePos, fmt::format("#line {}\n", lineCount + 1));
+			ShaderSources[stage] = lastStageStr;
 		}
 		else
 		{
-			TRE_CORE_INFO("Shader Compiled");
+			ShaderSources[FirstStage] = Source;
 		}
 
-		ReflectShaderData(ShaderStage, m_SPIRVData);
-
+		return ShaderSources;
 	}
 
-	std::string ShaderCompiler::PreProcess(const std::string& Source, VkShaderStageFlagBits ShaderStage)
+	std::map<VkShaderStageFlagBits, std::string> ShaderCompiler::PreProcessGLSL(const std::string& Source)
 	{
-		shaderc::Compiler ShaderCompiler;
-		shaderc::CompileOptions options;
-		auto PPResult = ShaderCompiler.PreprocessGlsl(Source, VulkanStageToShaderC(ShaderStage), m_ShaderPath.string().c_str(), options);
-		if (PPResult.GetCompilationStatus() != shaderc_compilation_status_success)
+		std::map<VkShaderStageFlagBits, std::string> ShaderSources = PreProcessCustom(Source);
+
+		static shaderc::Compiler ShaderCompiler;
+
+		for (auto& [Stage, Source] : ShaderSources)
 		{
-			TRE_CORE_INFO("Shader Preprocess Error: {0}", PPResult.GetErrorMessage());
-		}
-		else
-		{
-			TRE_CORE_INFO("Success Precompiled");
+			shaderc::CompileOptions options;
+			
+			const auto PreProcessResult = ShaderCompiler.PreprocessGlsl(Source, VulkanStageToShaderC(Stage), m_ShaderPath.string().c_str(), options);
+			if (PreProcessResult.GetCompilationStatus() != shaderc_compilation_status_success)
+			{
+				TRE_CORE_ERROR("Failed to preprocess {0} shader", m_ShaderPath.string());
+			}
+
+			Source = std::string(PreProcessResult.begin(), PreProcessResult.end());
 		}
 
-		std::string NewCode = { PPResult.cbegin(), PPResult.cend() };
-
-		return NewCode;
+		return ShaderSources;
 	}
 
-	bool ShaderCompiler::CompileGLSLToBinary(std::vector<uint32_t>& OutputBinary, const std::string& SourceCode, VkShaderStageFlagBits ShaderStage)
+	bool ShaderCompiler::CompileGLSLToBinary(std::vector<uint32_t>& OutputBinary, VkShaderStageFlagBits ShaderStage)
 	{
-		shaderc::Compiler ShaderCompiler;
+		static shaderc::Compiler ShaderCompiler;
+		std::string SourceCode = m_ShaderSourceCode[ShaderStage];
+
 		auto CompilationResult = ShaderCompiler.CompileGlslToSpv(SourceCode, VulkanStageToShaderC(ShaderStage), m_ShaderPath.string().c_str());
 		auto status = CompilationResult.GetCompilationStatus();
 		if (status == shaderc_compilation_status_success)
@@ -514,12 +633,20 @@ namespace TRE
 		return true;
 	}
 
-	void ShaderCompiler::ReflectShaderData(VkShaderStageFlagBits ShaderStage, const std::vector<uint32_t>& ShaderBinary)
+	void ShaderCompiler::ReflectShaderData(const std::map<VkShaderStageFlagBits, std::vector<uint32_t>>& ShaderBinary)
 	{
 		m_ReflectionData.PushConstants.clear();
 		m_ReflectionData.DescriptorSets.clear();
 		m_ReflectionData.VertexInputAttributeDescriptions.clear();
 
+		for (auto [Stage, Binary] : ShaderBinary)
+		{
+			Reflect(Stage, Binary);
+		}
+	}
+
+	void ShaderCompiler::Reflect(VkShaderStageFlagBits ShaderStage, const std::vector<uint32_t>& ShaderBinary)
+	{
 		spirv_cross::Compiler Compiler(ShaderBinary);
 		auto Resources = Compiler.get_shader_resources();
 

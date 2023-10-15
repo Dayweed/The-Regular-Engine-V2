@@ -19,8 +19,7 @@ namespace TRE
 
 	struct PipelineConfigurations
 	{
-		std::shared_ptr<Shader> VertexShader;
-		std::shared_ptr<Shader> FragmentShader;
+		std::shared_ptr<Shader> Shader;
 		PrimitiveType Primitive;
 		float LineWidth = 1.f;
 		size_t VertexStride = 0;
