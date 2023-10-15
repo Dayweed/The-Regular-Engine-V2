@@ -197,20 +197,24 @@ namespace TRE
 		{
 			Entity test = ECSManager::Instance().CreateEntity();
 			test->GetComponent<Properties>().m_Name = "Test";
+
 			Transform& testTransform{ test->GetComponent<Transform>() };
 			testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
 			testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 			testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
 			testTransform.m_IsDirty = true;
+
 			test->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+
 			test->AddComponent<Audio>();
 			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
 			audioSystem->SetLoop(test, true);
 			audioSystem->SetSpatialize(test,true);
 			audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);
+
 			//test->AddComponent<SphereCollider>();
 			//test->AddComponent<Rigidbody>();
 		}
@@ -218,11 +222,13 @@ namespace TRE
 		{
 			Entity test2 = ECSManager::Instance().CreateEntity();
 			test2->GetComponent<Properties>().m_Name = "Test2";
+
 			Transform& test2Transform{ test2->GetComponent<Transform>() };
 			test2Transform.m_Position = glm::vec3(50.f, 20.f, 180.f);
 			test2Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 			test2Transform.m_Rotation = glm::vec3(0, 180.f, 0);
 			test2Transform.m_IsDirty = true;
+
 			test2->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		}
@@ -230,25 +236,28 @@ namespace TRE
 		{
 			Entity test3 = ECSManager::Instance().CreateEntity();
 			test3->GetComponent<Properties>().m_Name = "Test3";
+
 			Transform& test3Transform{ test3->GetComponent<Transform>() };
 			test3Transform.m_Position = glm::vec3(-50.f, 20.f, 180.f);
 			test3Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 			test3Transform.m_Rotation = glm::vec3(0, 180.f, 0);
 			test3Transform.m_IsDirty = true;
+
 			test3->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(test3, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test3, ResourceManager::Instance().GetResource<Material>(matHandle));
 		}
-		
 
 		{
 			Entity planeCollider = ECSManager::Instance().CreateEntity();
 			planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
+
 			Transform& planeTransform{ planeCollider->GetComponent<Transform>() };
 			planeTransform.m_Position = glm::vec3(0.f, -35.f, 100.f);
 			planeTransform.m_Scale = glm::vec3(10.f, 10.f, 10.f);
 			planeTransform.m_Rotation = glm::vec3(0, 0, 0);
 			planeTransform.m_IsDirty = true;
+
 			planeCollider->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
 		}
@@ -258,6 +267,7 @@ namespace TRE
 			cam->GetComponent<Properties>().m_Name = "cam";
 			cam->AddComponent<Camera>();
 			cameraSystem->SetIsMainCamera(cam, true);
+
 			cam->AddComponent<AudioListener>();
 			audioSystem->SetListenerPosition(cam);
 		}

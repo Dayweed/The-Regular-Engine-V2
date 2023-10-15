@@ -16,11 +16,6 @@
 #include "Core/ECS.h"
 #include "PhysicsComponents.h"
 
-// USE_PHYSX_PVD is not defined in Release
-#ifdef _DEBUG
-#define USE_PHYSX_PVD 0
-#endif
-
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
 
 namespace TRE
@@ -62,7 +57,7 @@ namespace TRE
 		e1->AddComponent<SphereCollider>();
 		ConstructSphereCollider(e1);
 		*//*__________________________________________________________________________*/
-		bool ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const Vector3& offset = Vector3::Zero()) const;
+		bool ConstructSphereCollider(const Entity& entity, const float radius = 1.0f, const glm::vec3& offset = glm::vec3{ 0 }) const;
 
 		/* !
 		@function      ResizeSphereCollider
@@ -70,7 +65,7 @@ namespace TRE
 
 		@params        entity       The entity to create the component for.
 		@params        newRadius    The collider's new radius.
-		
+
 		@brief         Resizes the SphereCollider component for the given entity.
 
 		Example:
@@ -115,7 +110,7 @@ namespace TRE
 		e1->AddComponent<BoxCollider>();
 		ConstructBoxCollider(e1);
 		*//*__________________________________________________________________________*/
-		bool ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents = Vector3(0.5f), const Vector3& offset = Vector3::Zero()) const;
+		bool ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents = glm::vec3{ 0.5f }, const glm::vec3& offset = glm::vec3{ 0 }) const;
 
 		/* !
 		@function      ResizeBoxCollider
@@ -131,7 +126,7 @@ namespace TRE
 		e1->AddComponent<BoxCollider>(); ConstructBoxCollider(e1);
 		ResizeBoxCollider(e1, {1, 1, 1});
 		*//*__________________________________________________________________________*/
-		void ResizeBoxCollider(const Entity& entity, const Vector3& newHalfExtents) const;
+		void ResizeBoxCollider(const Entity& entity, const glm::vec3& newHalfExtents) const;
 
 		void UpdateBoxCollider(const Entity& entity) const;
 
@@ -182,7 +177,7 @@ namespace TRE
 		e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
 		AddForce(e1,{0, 80, 0});
 		*//*__________________________________________________________________________*/
-		void AddForce(const Entity& entity, Vector3 force/*, ForceMode mode = ForceMode.Force*/) const;
+		void AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
 		void UpdateRigidbody(const Entity& entity) const;
 

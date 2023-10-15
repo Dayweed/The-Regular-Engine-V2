@@ -102,8 +102,8 @@ namespace TRE
 		VkApplicationInfo Appinfo{};
 		Appinfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		Appinfo.apiVersion = VK_API_VERSION_1_3;
-		Appinfo.pEngineName = "The Reglar Engine";
-		Appinfo.pApplicationName = "The Reglar Engine";
+		Appinfo.pEngineName = "The Regular Engine";
+		Appinfo.pApplicationName = "The Regular Engine";
 
 		std::vector<const char*> Extentions =
 		{ 

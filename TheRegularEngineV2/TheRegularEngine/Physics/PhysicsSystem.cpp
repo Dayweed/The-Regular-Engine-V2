@@ -14,10 +14,16 @@
 #include "TREIncludes.h"
 #include "PhysicsSystem.h"
 
+// USE_PHYSX_PVD is not defined in Release
+#ifdef _DEBUG
+#define USE_PHYSX_PVD 1
+#endif
+
 #pragma region Macros
 
 #define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
 #define UNUSED_PARAM(param) (void)param
+#define PI 3.14159265358979323846f
 
 #pragma region PhysicsComponentAssertions
 #define PhysicsComponentConstructorAssertion(Type)														\
@@ -61,52 +67,6 @@ using namespace physx;
 
 namespace TRE
 {
-	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
-	PxVec3 QuatToEulerAngles(const PxQuat& q)
-	{
-		PxVec3 angles;
-
-		// roll (x-axis rotation)
-		float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-		float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-		angles.x = std::atan2(sinr_cosp, cosr_cosp);
-
-		// pitch (y-axis rotation)
-		float sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
-		float cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-		angles.y = 2 * std::atan2(sinp, cosp) - 3.141592653f / 2;
-
-		// yaw (z-axis rotation)
-		float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-		float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-		angles.z = std::atan2(siny_cosp, cosy_cosp);
-
-		return angles;
-	}
-
-	// thank you https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
-	PxQuat EulerAnglesToQuat(const PxVec3& rot)
-	{
-		const float roll = Mathf::DegToRad(rot.x);
-		const float pitch = Mathf::DegToRad(rot.y);
-		const float yaw = Mathf::DegToRad(rot.z);
-
-		double cr = cos(roll * 0.5);
-		double sr = sin(roll * 0.5);
-		double cp = cos(pitch * 0.5);
-		double sp = sin(pitch * 0.5);
-		double cy = cos(yaw * 0.5);
-		double sy = sin(yaw * 0.5);
-
-		PxQuat q;
-		q.w = static_cast<float>(cr * cp * cy + sr * sp * sy);
-		q.x = static_cast<float>(sr * cp * cy - cr * sp * sy);
-		q.y = static_cast<float>(cr * sp * cy + sr * cp * sy);
-		q.z = static_cast<float>(cr * cp * sy - sr * sp * cy);
-
-		return q;
-	}
-
 	PhysicsSystem::PhysicsSystem()
 	{
 		TRE_CORE_INFO("Physics System Constructor called");
@@ -204,15 +164,15 @@ namespace TRE
 #if 0
 		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
 		e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
-		e1->AddComponent<BoxCollider>();	ConstructBoxCollider(e1);
-		e1->AddComponent<Rigidbody>();		ConstructRigidbody(e1);
+		e1->AddComponent<BoxCollider>();
+		e1->AddComponent<Rigidbody>();
 #endif
 
 #if 0
 		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
 		e2->GetComponent<Transform>().m_Position = { 1,2,0 };
-		e2->AddComponent<SphereCollider>();	ConstructSphereCollider(e2);
-		// e2->AddComponent<Rigidbody>();		ConstructRigidbody(e2);
+		e2->AddComponent<SphereCollider>();
+		// e2->AddComponent<Rigidbody>();
 		// ColliderToTrigger(e2);			TriggerToCollider(e2);
 #endif
 
@@ -277,12 +237,13 @@ namespace TRE
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
 			if (!entity) continue; // HERE WE ARE FOR SOME REASON??
 			const SharedData& sharedData = pair.second;
-			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, sharedData.m_RigidDynamic->getGlobalPose().p);
 
-			// I hope this is right XO
-			const PxVec3 eulerAngles = QuatToEulerAngles(sharedData.m_RigidDynamic->getGlobalPose().q);
-			// WAIT THERE'S THIS: glm::eulerAngles(PxQuat());
-			entity->GetComponent<Transform>().m_Rotation = VEC3_CAST(glm::vec3, eulerAngles) / 3.141592654f * 180.0f;
+			const PxVec3 pos = sharedData.m_RigidDynamic->getGlobalPose().p;
+			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, pos);
+
+			const PxQuat rotQuat = sharedData.m_RigidDynamic->getGlobalPose().q;
+			const glm::vec3 eulerAnglesInRad = glm::eulerAngles(glm::quat{ rotQuat.w, rotQuat.x, rotQuat.y, rotQuat.z });
+			entity->GetComponent<Transform>().m_Rotation = eulerAnglesInRad / PI * 180.0f;
 
 			entity->GetComponent<Transform>().m_IsDirty = true;
 #if 0
@@ -342,7 +303,7 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const Vector3& offset) const
+	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(SphereCollider);
 
@@ -351,10 +312,13 @@ namespace TRE
 		{
 			SharedData tempSharedData;
 
-			const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
-			const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
-			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
-			const PxTransform transform(VEC3_CAST(PxVec3, colliderPos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
+			const glm::vec3 pos = entity->GetComponent<Transform>().m_Position + offset;
+			const PxVec3 colliderPos = VEC3_CAST(PxVec3, pos);
+
+			const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
+			const glm::quat rotQuat{ eulerAnglesInRad };
+
+			const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
@@ -374,7 +338,7 @@ namespace TRE
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			//sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
@@ -387,9 +351,10 @@ namespace TRE
 		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
-		sphereCollider.m_Radius = radius;
 		// TODO: assign more data here
 		// sphereCollider.m_IsTrigger = ...
+		sphereCollider.m_Offset = offset;
+		sphereCollider.m_Radius = radius;
 
 		return sphereCollider.m_IsInitialized = true;
 	}
@@ -480,7 +445,7 @@ namespace TRE
 		// entity->RemoveComponent<SphereCollider>();
 	}
 
-	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const Vector3& halfExtents, const Vector3& offset) const
+	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(BoxCollider);
 
@@ -489,10 +454,13 @@ namespace TRE
 		{
 			SharedData tempSharedData;
 
-			const Vector3 objPos = entity->GetComponent<Transform>().m_Position;
-			const PxVec3 colliderPos = VEC3_CAST(PxVec3, objPos) + VEC3_CAST(PxVec3, offset);
-			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
-			const PxTransform transform(VEC3_CAST(PxVec3, colliderPos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
+			const glm::vec3 pos = entity->GetComponent<Transform>().m_Position + offset;
+			const PxVec3 colliderPos = VEC3_CAST(PxVec3, pos);
+
+			const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
+			const glm::quat rotQuat{ eulerAnglesInRad };
+
+			const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
@@ -513,7 +481,7 @@ namespace TRE
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
@@ -526,14 +494,15 @@ namespace TRE
 		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
-		boxCollider.m_HalfExtents = halfExtents;
 		// TODO: assign more data here
 		// boxCollider.m_IsTrigger = ...
+		boxCollider.m_Offset = offset;
+		boxCollider.m_HalfExtents = halfExtents;
 
 		return boxCollider.m_IsInitialized = true;
 	}
 
-	void PhysicsSystem::ResizeBoxCollider(const Entity& entity, const Vector3& newHalfExtents) const
+	void PhysicsSystem::ResizeBoxCollider(const Entity& entity, const glm::vec3& newHalfExtents) const
 	{
 		PhysicsComponentAssertion(BoxCollider);
 
@@ -584,7 +553,7 @@ namespace TRE
 
 		PxBoxGeometry boxGeometry;
 		shapes[i]->getBoxGeometry(boxGeometry);
-		boxCollider.m_HalfExtents = VEC3_CAST(Vector3, boxGeometry.halfExtents);
+		boxCollider.m_HalfExtents = VEC3_CAST(glm::vec3, boxGeometry.halfExtents);
 	}
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
@@ -631,9 +600,13 @@ namespace TRE
 		if (!m_Actors.contains(entity->GetGUID()))
 		{
 			SharedData tempSharedData;
-			const Vector3& pos = entity->GetComponent<Transform>().m_Position;
-			const Vector3& rot = entity->GetComponent<Transform>().m_Rotation;
-			const PxTransform transform(VEC3_CAST(PxVec3, pos), EulerAnglesToQuat(VEC3_CAST(PxVec3, rot)));
+			const glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
+			const PxVec3 rigidbodyPos = VEC3_CAST(PxVec3, pos);
+
+			const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
+			const glm::quat rotQuat{ eulerAnglesInRad };
+
+			const PxTransform transform(rigidbodyPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
@@ -656,30 +629,11 @@ namespace TRE
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
 		// assert(entity->GetGUID() == sharedData.m_GUID);
 
-		if (entity->HasComponent<SphereCollider>())
-		{
-			//std::cout << "Reconstructing sphere collider" << std::endl;
-			//unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			//std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]);
-			//nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
-			//for (unsigned i = 0; i < nbShapes; ++i)
-			//{
-			//	if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
-			//	std::cout << " Found sphere shape" << std::endl;
-			//	// there should only be ONE of each physics component, so it's safe to stop looping here
-			//	sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
-			//}
-			//PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(entity->GetComponent<SphereCollider>().m_Radius), *m_DefaultMaterial);
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-
-			sharedData.m_RigidDynamic->addForce(PxVec3(0.0f, -9.8f, 0.0f));
-		}
-
 		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
 		return rigidbody.m_IsInitialized = true;
 	}
 
-	void PhysicsSystem::AddForce(const Entity& entity, Vector3 force) const
+	void PhysicsSystem::AddForce(const Entity& entity, glm::vec3 force) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
 		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
@@ -739,7 +693,7 @@ namespace TRE
 				entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, newPos);
 				entity->AddComponent<Rigidbody>();		ConstructRigidbody(entity);
 				entity->AddComponent<SphereCollider>();	ConstructSphereCollider(entity, halfExtent);
-				entity->AddComponent<BoxCollider>();	ConstructBoxCollider(entity, Vector3{ halfExtent });
+				entity->AddComponent<BoxCollider>();	ConstructBoxCollider(entity, glm::vec3{ halfExtent });
 			}
 		}
 	}
