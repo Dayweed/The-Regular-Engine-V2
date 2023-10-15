@@ -192,7 +192,6 @@ namespace TRE
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
-		//auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
 		mat1->SetHandle(matHandle);
 		mat1->SetTexture("DiffuseMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
