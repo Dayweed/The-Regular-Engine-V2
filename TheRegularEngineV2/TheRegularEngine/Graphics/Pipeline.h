@@ -42,8 +42,5 @@ namespace TRE
 			VkPipeline m_Pipeline;
 			VkPipelineLayout m_Layout;
 			PipelineConfigurations m_Config;
-
-			std::vector<VkDescriptorSet> m_DescriptorSets;
-			VkDescriptorSetLayout m_DescriptorSetLayout;
 	};
 }

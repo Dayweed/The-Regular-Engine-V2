@@ -20,7 +20,7 @@ namespace TRE
 
 	Material::~Material()
 	{
-		//vkDestroyDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
+
 	}
 
 	void Material::Invalidate()
@@ -76,7 +76,7 @@ namespace TRE
 			return;
 		}
 
-		file << "VertexShader:\n" << m_Shader->GetHandleHex() << std::endl;
+		file << "Shader:\n" << m_Shader->GetHandleHex() << std::endl;
 		file << "Textures:\n";
 		//For loop next time
 		for (auto texture : m_Textures)
@@ -99,19 +99,14 @@ namespace TRE
 		}
 
 		std::string line;
-		std::string vertexShaderGUID;
-		std::string fragmentShaderGUID;
+		std::string ShaderGUID;
 		std::vector<std::string> textureGUIDs;
 
 		while (std::getline(file, line))
 		{
-			if (line == "VertexShader:")
+			if (line == "Shader:")
 			{
-				std::getline(file, vertexShaderGUID);
-			}
-			else if (line == "FragmentShader:")
-			{
-				std::getline(file, fragmentShaderGUID);
+				std::getline(file, ShaderGUID);
 			}
 			else if (line == "Textures:")
 			{
@@ -122,9 +117,8 @@ namespace TRE
 			}
 		}
 
-		auto vertShader = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(vertexShaderGUID));
-		//auto fragShader = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(fragmentShaderGUID));
-		std::unique_ptr<Material> mat = std::make_unique<Material>(vertShader);
+		auto ShaderAsset = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(ShaderGUID));
+		std::unique_ptr<Material> mat = std::make_unique<Material>(ShaderAsset);
 		mat->Invalidate();
 		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		mat->m_Handle = assetHandle;

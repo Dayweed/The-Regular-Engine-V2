@@ -50,6 +50,11 @@ namespace TRE
 		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
 		for (auto& ShaderInfo : m_PipelineShaderCreateInfos)
 			vkDestroyShaderModule(Device, ShaderInfo.module, nullptr);
+
+		for (auto& DescriptorLayout : m_DescriptorSetLayouts)
+		{
+			vkDestroyDescriptorSetLayout(Device, DescriptorLayout, nullptr);
+		}
 	}
 
 	void Shader::LoadAndCreateShader(const std::map<VkShaderStageFlagBits, std::vector<uint32_t>>& ShaderBinary)

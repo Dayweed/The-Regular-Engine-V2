@@ -13,11 +13,6 @@ namespace TRE
 		return m_Config;
 	}
 
-	const std::vector<VkDescriptorSet>& Pipeline::GetDescriptorSets()
-	{
-		return m_DescriptorSets;
-	}
-
 	VkPipelineLayout Pipeline::GetPipelineLayout()
 	{
 		return m_Layout;
@@ -191,7 +186,6 @@ namespace TRE
 	Pipeline::~Pipeline()
 	{
 		auto Device = RendererContext::GetDevice();
-		vkDestroyDescriptorSetLayout(Device->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);
 	}
