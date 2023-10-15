@@ -68,27 +68,17 @@ namespace TRE
 
 	void DemoDeserialize()
 	{
-		auto vertHandle = 3;
-		auto fragHandle = 4;
-		auto DebugDrawVertHandle = 7;
-		auto DebugDrawFragHandle = 8;
+		auto PBRHandle = 3;
+		auto DebugDrawHandle = 7;
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
-		vert->SetHandle(vertHandle);
+		std::unique_ptr<Shader>vert = ShaderCompiler::DeserializeReflectShader("Resources/PBR.TREshader");
+		vert->SetHandle(PBRHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/PBR.frag");
-		frag->SetHandle(fragHandle);
-		ResourceManager::Instance().AddResource(std::move(frag));
-
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
-		DebugDrawVert->SetHandle(DebugDrawVertHandle);
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/DebugDrawLine.TREshader");
+		DebugDrawVert->SetHandle(DebugDrawHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
-
-		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
-		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
-		ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
 
 		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
@@ -174,12 +164,12 @@ namespace TRE
 		plane->SetHandle(planeHandle);
 		ResourceManager::Instance().AddResource(std::move(plane));
 
-		std::unique_ptr<Shader> vert = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.glsl");
+		std::unique_ptr<Shader> vert = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.glsl");
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("../Resources/DebugDrawLine.TREshader");
 		DebugDrawVert->SetHandle(DebugDrawVertHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
