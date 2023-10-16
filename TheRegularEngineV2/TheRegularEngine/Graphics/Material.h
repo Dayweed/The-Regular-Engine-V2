@@ -16,7 +16,8 @@ namespace TRE
 			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
 
 			void SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures);
-			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> GetTextures() { return m_Textures; }
+			const std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
+			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTexturesRef() { return m_Textures; }
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 
