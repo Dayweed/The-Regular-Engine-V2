@@ -15,6 +15,7 @@
 #include "TREIncludes.h"
 #include "Panel.h"
 #include "EventSystem/Events/InputEvent.h"
+#include "EventSystem/Events/EditorEvent.h"
 #include "SelectionManager.h"
 #include "Editor/ImGuizmo.h"
 
@@ -33,6 +34,7 @@ namespace TRE
 			void OnMouseClick(const InputEvent& event);
 			void OnMouseScroll(const MouseScrollEvent& event);
 			void OnKeyboardClick(const InputEvent& event);
+			void OnGridAndSnap(const GridAndSnapEvent& event);
 		private:
 			//Gonna rewrite in editor camera next time
 			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);
@@ -41,6 +43,10 @@ namespace TRE
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			int m_GizmoOperation = -1; // -1 means no operation
+			//Increament for grid and snap
+			float m_PosIncreament = 1.f;
+			float m_RotIncreament = 1.f;
+			float m_ScaleIncreament = 1.f;
 
 			ImVec2 m_ViewportSize;
 			ImVec2 m_ImageSize;

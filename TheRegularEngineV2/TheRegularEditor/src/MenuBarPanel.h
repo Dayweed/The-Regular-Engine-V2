@@ -15,6 +15,7 @@
 #include "TREIncludes.h"
 #include "Panel.h"
 #include "EventSystem/Events/InputEvent.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -62,6 +63,12 @@ namespace TRE
 
 			//bool for exit prompt
 			bool m_ExitPrompt = false;
+			//bool for Grid and Snap
+			bool m_GridAndSnap = false;
+			//Floats for position, rotation, and scale
+			float m_PosIncreament = 1.0f;
+			float m_RotIncreament = 1.0f;
+			float m_ScaleIncreament = 1.0f;
 
 			//Store some custom flags
 			ImGuiConfigFlags m_PopUps{};

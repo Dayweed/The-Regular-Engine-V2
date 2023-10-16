@@ -34,4 +34,13 @@ namespace TRE
 		ResetSceneEvent() = delete;
 		ResetSceneEvent(bool nth) : m_Nth(nth) {}
 	};
+
+	struct GridAndSnapEvent : Event
+	{
+		float m_PosIncreament{};
+		float m_RotIncreament{};
+		float m_ScaleIncreament{};
+		GridAndSnapEvent() = delete;
+		GridAndSnapEvent(float pos, float rot, float scale) : m_PosIncreament(pos), m_RotIncreament(rot), m_ScaleIncreament(scale) {}
+	};
 }
