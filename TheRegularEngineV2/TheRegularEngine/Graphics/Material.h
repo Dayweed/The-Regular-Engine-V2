@@ -3,9 +3,15 @@
 #include "VulkanTexture.h"
 #include "UniformBuffer.h"
 #include "Resource/Resource.h"
+#include "DescriptorFile.h"
 
 namespace TRE
 {
+	class MaterialDescriptorFile : public DescriptorFile
+	{
+		//Asset path will act as material name 
+	};
+
 	class Material : public Resource
 	{
 		public:

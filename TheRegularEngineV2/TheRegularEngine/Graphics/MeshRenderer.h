@@ -23,8 +23,8 @@ namespace TRE
 		friend void to_json(nlohmann::json& j, const MeshRenderer& t)
 		{
 			j = nlohmann::json{
-				{ "ASSET_GEOM_m_RenderObject", t.m_RenderObject->GetHandleHex()},
-				{ "ASSET_MAT_m_MaterialInstance", t.m_MaterialInstance->GetHandleHex()},
+				{ "ASSET_GEOM_m_RenderObject", t.m_RenderObject ? t.m_RenderObject->GetHandleHex() : "0" },
+				{ "ASSET_MAT_m_MaterialInstance", t.m_MaterialInstance ? t.m_MaterialInstance->GetHandleHex() : "0" },
 				{ "m_IsVisible", t.m_IsVisible },	
 			};
 		}
@@ -35,29 +35,36 @@ namespace TRE
 			std::string matString = j.at("ASSET_MAT_m_MaterialInstance").get<std::string>();
 			ResourceHandle matHandle = Resource::GetGUIDFromHex(matString);
 
-			if (auto renderObject = ResourceManager::Instance().GetResource<RenderObject>(roHandle); renderObject)
+			if (roHandle != 0)
 			{
-				t.m_RenderObject = renderObject;
-			}
-			else
-			{
-				t.m_RenderObject = RenderObject::Deserialize(roString);
+				if (auto renderObject = ResourceManager::Instance().GetResource<RenderObject>(roHandle); renderObject)
+				{
+					t.m_RenderObject = renderObject;
+				}
+				else
+				{
+					t.m_RenderObject = RenderObject::Deserialize(roString);
 
-				if(t.m_RenderObject == nullptr)
-					TRE_CORE_CRITICAL(roString + ".geom not found!");
+					if (t.m_RenderObject == nullptr)
+						TRE_CORE_CRITICAL(roString + ".geom not found!");
+				}
 			}
 
-			if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
+			if (matHandle != 0)
 			{
-				t.m_MaterialInstance = material;
-			}
-			else
-			{
-				t.m_MaterialInstance = Material::Deserialize(matString);
+				if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
+				{
+					t.m_MaterialInstance = material;
+				}
+				else
+				{
+					t.m_MaterialInstance = Material::Deserialize(matString);
 
-				if(t.m_MaterialInstance == nullptr)
-					TRE_CORE_CRITICAL(matString + ".mat not found!");
+					if (t.m_MaterialInstance == nullptr)
+						TRE_CORE_CRITICAL(matString + ".mat not found!");
+				}
 			}
+			//Else most likely default material
 
 			t.m_IsVisible = j.at("m_IsVisible").get<bool>();
 			t.m_IsDirty = true;

@@ -29,6 +29,8 @@ namespace TRE
 			void Update() override;
 			void Shutdown() override;
 
+			static ResourceHandle GetSelectedResource() { return m_SelectedResource; }
+
 		private:
 			//Current File Path
 			std::filesystem::path m_CurrentDirectory;
@@ -72,5 +74,6 @@ namespace TRE
 			//PopUp for invalid resources
 			bool m_InvalidResourcePopUp = false;
 
+			static ResourceHandle m_SelectedResource;
 	};
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MaterialPanel.h"
 #include "EditorAssetManager.h"
+#include "ContentBrowserPanel.h"
 
 namespace TRE
 {
@@ -21,7 +22,7 @@ namespace TRE
 
 	void MaterialPanel::Update()
 	{
-		if (auto entity = m_SelectionManager->GetSelectedEntity())
+		if (auto& entity = m_SelectionManager->GetSelectedEntity(); entity)
 		{
 			if (entity->HasComponent<MeshRenderer>() == false)
 				return;
@@ -29,23 +30,31 @@ namespace TRE
 			ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
 
 			MeshRenderer& meshRenderer = entity->GetComponent<MeshRenderer>();
-			std::shared_ptr<Material> material = meshRenderer.m_MaterialInstance;
-			if (material)
+			if (std::shared_ptr<Material> material = meshRenderer.m_MaterialInstance; material)
 			{
-				auto& textures = material->GetTexturesRef();
-				for (auto& texture : textures)
+				for (auto& texture : material->GetTexturesRef())
 				{
 					DrawTexture(texture);
 				}
-
-				/*for (std::pair<const std::string, std::shared_ptr<VulkanTexture>>& textures : meshRenderer.m_MaterialInstance->GetTexturesRef())
-				{
-					DrawTexture(textures);
-				}*/
 			}
 
 			ImGui::End();
 		}		
+		//For selection of material from content browser
+		else if (const ResourceHandle resource = ContentBrowserPanel::GetSelectedResource(); resource)
+		{
+			if (std::shared_ptr<Material> material = ResourceManager::Instance().GetResource<Material>(resource); material)
+			{
+				ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
+
+				for (auto& texture : material->GetTexturesRef())
+				{
+					DrawTexture(texture);
+				}
+
+				ImGui::End();
+			}
+		}
 	}
 
 	void MaterialPanel::Shutdown()
