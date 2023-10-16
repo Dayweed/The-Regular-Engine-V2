@@ -201,7 +201,7 @@ namespace TRE
 		{
 			for (auto& system : m_Systems)
 			{
-				system.second->OnDestroyGO();
+				system.second->OnDestroyEntities();
 			}
 		}
 

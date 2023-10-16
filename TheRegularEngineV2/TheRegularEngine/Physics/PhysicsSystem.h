@@ -39,7 +39,7 @@ namespace TRE
 		bool TESTUpdate();
 		void Update() override;
 		void OnReset() override;
-		void OnDestroyGO() override;
+		void OnDestroyEntities() override;
 		void Shutdown() override;
 
 		/* !

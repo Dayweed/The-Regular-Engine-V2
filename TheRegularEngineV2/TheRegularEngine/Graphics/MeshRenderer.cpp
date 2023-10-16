@@ -31,7 +31,7 @@ namespace TRE
 
 	}
 
-	void MeshRendererSystem::OnDestroyGO()
+	void MeshRendererSystem::OnDestroyEntities()
 	{
 
 	}

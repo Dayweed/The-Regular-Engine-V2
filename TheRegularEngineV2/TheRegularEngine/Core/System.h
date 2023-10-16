@@ -25,7 +25,7 @@ namespace TRE
 			virtual void LateUpdate() {};		// This is called AFTER both GameUpdate() and LateUpdate()
 			virtual void BeforeReset() {};		// This is called before the scene gets resetted in the previous loop
 			virtual void OnReset() {};			// This is called after the scene gets resetted in the previous loop
-			virtual void OnDestroyGO() {};		// This is ALWAYS called AFTER entities are deleted in the scene
+			virtual void OnDestroyEntities() {};// This is ALWAYS called AFTER entities are deleted in the scene
 			virtual void Shutdown() {};			// This is called when the engine shuts down properly
 	};
 }

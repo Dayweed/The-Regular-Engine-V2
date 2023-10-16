@@ -69,7 +69,7 @@ namespace TRE
 	public:
 		void Update() override;
 		void OnReset() override;
-		void OnDestroyGO() override;
+		void OnDestroyEntities() override;
 		void Shutdown() override;
 		
 		void UpdateBoundingSphere(Entity& go);
