@@ -14,7 +14,12 @@ namespace TRE
 		
 		m_AssetDirectory = std::filesystem::current_path().parent_path();
 		m_AssetDirectory += "\\Assets";
+		m_SceneDirectory = std::filesystem::current_path().parent_path();
+		m_SceneDirectory += "\\Scenes";
 		m_CurrentDirectory = m_AssetDirectory;
+		std::cout << std::filesystem::current_path().parent_path() << std::endl;
+		std::cout << m_AssetDirectory << std::endl;
+		std::cout << m_SceneDirectory << std::endl;
 
 		//Custom Flag Combinations
 		m_PopUps |= ImGuiWindowFlags_NoResize;
@@ -49,8 +54,8 @@ namespace TRE
 				//Determine the type of resource to drag and drop
 				const bool isImage = filenameString.ends_with(".png");
 				const bool isAudio = filenameString.ends_with(".wav");
-				const bool isShader = filenameString.ends_with(".vert") || filenameString.ends_with(".frag");
-				const bool isScene = filenameString.ends_with(".scene");
+				const bool isShader = filenameString.ends_with(".glsl") || filenameString.ends_with(".frag");
+				const bool isScene = filenameString.ends_with(".json");
 				const bool isPrefab = filenameString.ends_with(".prefab");
 				const bool isMeta = filenameString.ends_with(".meta");
 				const bool isFont = filenameString.ends_with(".ttf");
@@ -88,6 +93,22 @@ namespace TRE
 
 	void ContentBrowserPanel::BrowseProjectFiles()
 	{
+		//Folder List Display
+		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2, ImGui::GetContentRegionAvail().y), true))
+		{
+			if (ImGui::Button(m_AssetDirectory.filename().string().c_str()))
+			{
+				m_CurrentDirectory = m_AssetDirectory;
+				PollItems();
+			}
+			if (ImGui::Button(m_SceneDirectory.filename().string().c_str()))
+			{
+				m_CurrentDirectory = m_SceneDirectory;
+				PollItems();
+			}	
+		}
+		ImGui::EndChild();
+		ImGui::SameLine();
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
@@ -97,7 +118,7 @@ namespace TRE
 				(void)FileExplorer::OpenFileExplorer(nullptr);
 			}
 
-			if (m_CurrentDirectory != m_AssetDirectory)
+			if (m_CurrentDirectory.compare(m_AssetDirectory) != 0 && m_CurrentDirectory.compare(m_SceneDirectory) != 0)
 			{
 				if (ImGui::Button("Back"))
 				{
@@ -107,6 +128,16 @@ namespace TRE
 			}
 			ImGui::Separator();
 
+			//right click to open popup menu
+			if (ImGui::BeginPopupContextWindow())
+			{
+				if (ImGui::MenuItem("Create new material"))
+				{
+					//For Zr use
+					std::cout << "works" << std::endl;
+				}
+				ImGui::EndPopup();
+			}
 			const float panelWidth = ImGui::GetContentRegionAvail().x;
 			int cols = static_cast<int>(panelWidth / m_CellSize);
 			if (cols < 1)

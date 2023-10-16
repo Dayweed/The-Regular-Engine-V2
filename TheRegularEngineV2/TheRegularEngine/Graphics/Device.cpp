@@ -78,7 +78,7 @@ namespace TRE
 			std::vector<VkExtensionProperties> AvailableExtensions(ExtensionCount);
 			if (auto Result = vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &ExtensionCount, AvailableExtensions.data()); Result == VK_SUCCESS)
 			{
-				TRE_CORE_TRACE("This GPU has {0] extensions", ExtensionCount);
+				TRE_CORE_TRACE("This GPU has {0} extensions", ExtensionCount);
 				for (const auto& extension : AvailableExtensions)
 				{
 					m_SupportedExtensions.emplace(extension.extensionName);

@@ -13,11 +13,6 @@ namespace TRE
 		return m_Config;
 	}
 
-	const std::vector<VkDescriptorSet>& Pipeline::GetDescriptorSets()
-	{
-		return m_DescriptorSets;
-	}
-
 	VkPipelineLayout Pipeline::GetPipelineLayout()
 	{
 		return m_Layout;
@@ -32,14 +27,13 @@ namespace TRE
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
-		VkPipelineShaderStageCreateInfo shaderStages[] = { m_Config.VertexShader->GetPipelineShaderInfo(), m_Config.FragmentShader->GetPipelineShaderInfo() };
 
-		const auto& VertexInputAttributesDescriptions = m_Config.VertexShader->GetVertexAttributes();
+		const auto& VertexInputAttributesDescriptions = m_Config.Shader->GetVertexAttributes();
 		VkVertexInputBindingDescription VertexInputBindingDescriptions{};
 		VertexInputBindingDescriptions.binding = 0;
 		VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 		if (m_Config.VertexStride == 0)
-			VertexInputBindingDescriptions.stride = m_Config.VertexShader->GetVertexStrides();
+			VertexInputBindingDescriptions.stride = m_Config.Shader->GetVertexStrides();
 		else
 			VertexInputBindingDescriptions.stride = (uint32_t)m_Config.VertexStride;
 
@@ -136,55 +130,26 @@ namespace TRE
 		depthStencil.front = {};
 		depthStencil.back = {};
 
-		//Create descriptor set layout		
-		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = m_Config.VertexShader->GetDescriptorBindings();
-		std::vector<VkDescriptorSetLayoutBinding>& FragLayoutBindings = m_Config.FragmentShader->GetDescriptorBindings();
-		for (int x = 0; x < FragLayoutBindings.size(); x++)
-		{
-			setLayoutBindings.push_back(FragLayoutBindings[x]);
-		}
+		auto DescriptSetLayouts = m_Config.Shader->GetAllDescriptorLayout();
+		const auto& PushConstantRanges = m_Config.Shader->GetPushConstants();
 
-		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
-		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		descriptorSetLayoutInfo.bindingCount = (uint32_t)setLayoutBindings.size();
-		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
-		
-		if (auto Result = vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout); Result != VK_SUCCESS)
+		std::vector<VkPushConstantRange> VulkanPushConstantRanges(PushConstantRanges.size());
+		for (int x = 0; x < PushConstantRanges.size(); x++)
 		{
-			TRE_CORE_ERROR("Unable to create pipeline descriptor set layout");
-			assert(Result == VK_SUCCESS);
-		}
+			const auto& PushConstant = PushConstantRanges[x];
+			auto& VulkanPushConstant = VulkanPushConstantRanges[x];
 
-		m_DescriptorSets.resize(Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount());
-		for (int x = 0; x < m_DescriptorSets.size(); x++)
-			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[x]);
-
-		//Create pipeline layout
-		std::vector<VkPushConstantRange> PushConstantRanges;
-		for (auto& PushConstant : m_Config.VertexShader->GetPushConstants())
-		{
-			VkPushConstantRange PushConst{};
-			PushConst.size = PushConstant.Size;
-			PushConst.stageFlags = PushConstant.ShaderStageFlag;
-			PushConst.offset = PushConstant.Offset;
-			PushConstantRanges.push_back(PushConst);
-		}
-
-		for (auto& PushConstant : m_Config.FragmentShader->GetPushConstants())
-		{
-			VkPushConstantRange PushConst{};
-			PushConst.size = PushConstant.Size;
-			PushConst.stageFlags = PushConstant.ShaderStageFlag;
-			PushConst.offset = PushConstant.Offset;
-			PushConstantRanges.push_back(PushConst);
+			VulkanPushConstant.stageFlags = PushConstant.ShaderStageFlag;
+			VulkanPushConstant.offset = PushConstant.Offset;
+			VulkanPushConstant.size = PushConstant.Size;
 		}
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 1;
-		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
-		pipelineLayoutInfo.pushConstantRangeCount = (uint32_t)PushConstantRanges.size();
-		pipelineLayoutInfo.pPushConstantRanges = PushConstantRanges.data();
+		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(DescriptSetLayouts.size());
+		pipelineLayoutInfo.pSetLayouts = DescriptSetLayouts.data();
+		pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(VulkanPushConstantRanges.size());
+		pipelineLayoutInfo.pPushConstantRanges = VulkanPushConstantRanges.data();
 
 		if (auto Result = vkCreatePipelineLayout(Device->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &m_Layout); Result != VK_SUCCESS)
 		{
@@ -192,10 +157,12 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
+		const auto& ShaderStages = m_Config.Shader->GetPipelineShaderInfo();
+
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		pipelineInfo.stageCount = 2;
-		pipelineInfo.pStages = shaderStages;
+		pipelineInfo.stageCount = static_cast<uint32_t>(ShaderStages.size());
+		pipelineInfo.pStages = ShaderStages.data();
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &inputAssembly;
 		pipelineInfo.pViewportState = &viewportState;
@@ -219,7 +186,6 @@ namespace TRE
 	Pipeline::~Pipeline()
 	{
 		auto Device = RendererContext::GetDevice();
-		vkDestroyDescriptorSetLayout(Device->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
 		vkDestroyPipeline(Device->GetLogicalDevice(), m_Pipeline, nullptr);
 		vkDestroyPipelineLayout(Device->GetLogicalDevice(), m_Layout, nullptr);
 	}

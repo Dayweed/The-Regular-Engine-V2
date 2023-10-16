@@ -119,6 +119,23 @@ namespace TRE
 		return true;
 	}
 
+	bool DescriptorPool::AllocateDescriptorSet(const std::vector<VkDescriptorSetLayout>& descriptorSetLayout, VkDescriptorSet& descriptor) const
+	{
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = m_DescriptorPool;
+		allocInfo.pSetLayouts = descriptorSetLayout.data();
+		allocInfo.descriptorSetCount = 1;
+
+		//if pool full
+		if (vkAllocateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), &allocInfo, &descriptor) != VK_SUCCESS)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	void DescriptorPool::FreeDescriptorSet(std::vector<VkDescriptorSet>& descriptors) const
 	{
 		vkFreeDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(descriptors.size()), descriptors.data());

@@ -117,6 +117,7 @@ namespace TRE
 	VulkanTexture::~VulkanTexture()
 	{
 		auto device = RendererContext::GetDevice()->GetLogicalDevice();
+		vkDeviceWaitIdle(device); //Temp fix (by right shldnt need wait no?)
 		vkDestroySampler(device, m_Sampler, nullptr);
 		vkDestroyImageView(device, m_ImageView, nullptr);
 		vkDestroyImage(device, m_Image, nullptr);

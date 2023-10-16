@@ -6,7 +6,7 @@
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "Core/Logger.h"
-#include "ShaderCompiler.h"
+#include "ShaderReflection.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
 
@@ -89,18 +89,16 @@ namespace TRE
 
 		CreateFrameBuffer(m_RenderPass);
 
-		auto VertShader = ResourceManager::Instance().GetResource<Shader>(3);
-		auto FragShader = ResourceManager::Instance().GetResource<Shader>(4);
+		auto PBRShader = ResourceManager::Instance().GetResource<Shader>(3);
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.VertexShader = VertShader;
-		PipelineConfig.FragmentShader = FragShader;
+		PipelineConfig.Shader = PBRShader;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
 		for (auto material : ResourceManager::Instance().GetResourcesOfType<Material>())
 		{
-			material->AllocateLayouts();
+			material->Invalidate();
 		}
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
@@ -255,7 +253,7 @@ namespace TRE
 				if (m_DefaultPBRMaterial == nullptr)
 				{
 					m_DefaultPBRMaterial = ResourceManager::Instance().GetResource<Material>(materialHandle);
-					m_DefaultPBRMaterial->AllocateLayouts();
+					m_DefaultPBRMaterial->Invalidate();
 				}
 			}
 			else

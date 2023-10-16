@@ -27,10 +27,10 @@ namespace TRE
 	private:
 		int m_Format{ 43 }; //VK_FORMAT_R8G8B8A8_SRGB -- FOR SERIALIZATION ONLY
 		int m_Filter{ 0 }; 	//NEAREST -- FOR SERIALIZATION ONLY
-		int m_BCn{ 0 }; //BC1,3,5,7
+		int m_BCn{ 1 }; //BC1,3,5,7
 		bool m_Compress{ 1 }; //NONE
 		bool m_Linear{ 1 };
 		bool m_Transparent{ 0 };
-		bool m_sRGB{ 0 }; // if not RGB/RGBA THEN UNORM
+		bool m_sRGB{ 1 }; // if not RGB/RGBA THEN UNORM
 	};
 }

@@ -21,9 +21,7 @@ namespace TRE
 
 	AnimationTest::AnimationTest(const std::shared_ptr<RenderPass>& TargetPass)
 	{
-		auto AnimationVertShader = ResourceManager::Instance().GetResource<Shader>(5);
-		auto AnimationFragShader = ResourceManager::Instance().GetResource<Shader>(6);
-
+		auto AnimationShader = ResourceManager::Instance().GetResource<Shader>(5);
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
 		auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
 		auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
@@ -35,18 +33,17 @@ namespace TRE
 		auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle4);
 		auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle5);
 
-		m_MaterialInstace = std::make_unique<Material>(AnimationVertShader, AnimationFragShader);
-		m_MaterialInstace->AllocateLayouts();
-		m_MaterialInstace->SetTextures(Texture1);
-		m_MaterialInstace->SetTextures(Texture2);
-		m_MaterialInstace->SetTextures(Texture3);
-		m_MaterialInstace->SetTextures(Texture4);
-		m_MaterialInstace->SetTextures(Texture5);
+		m_MaterialInstace = std::make_unique<Material>(AnimationShader);
+		m_MaterialInstace->Invalidate();
+		m_MaterialInstace->SetTexture("Diffuse", Texture1);
+		m_MaterialInstace->SetTexture("DiffuseAO", Texture2);
+		m_MaterialInstace->SetTexture("NormalMap", Texture3);
+		m_MaterialInstace->SetTexture("Specular", Texture4);
+		m_MaterialInstace->SetTexture("Glossiness", Texture5);
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.VertexShader = AnimationVertShader;
-		PipelineConfig.FragmentShader = AnimationFragShader;
+		PipelineConfig.Shader = AnimationShader;
 		PipelineConfig.VertexStride = sizeof(vertex);
 		m_AnimationPipeline = std::make_unique<Pipeline>(PipelineConfig, TargetPass);
 

@@ -11,45 +11,23 @@ namespace TRE
 		return m_DescriptorSets[FrameIndex];
 	}
 
-	Material::Material(const std::shared_ptr<Shader>& VertexShader, const std::shared_ptr<Shader>& FragShader) : m_VertexShader(VertexShader), m_FragmentShader(FragShader)
+	Material::Material(const std::shared_ptr<Shader>& Shader) : m_Shader(Shader)
 	{
 		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
-
-		Invalidate();
 	}
 
 	Material::~Material()
 	{
-		vkDestroyDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), m_DescriptorSetLayout, nullptr);
+
 	}
 
 	void Material::Invalidate()
 	{
-		std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = m_VertexShader->GetDescriptorBindings();
-		for (const auto& Bindings : m_FragmentShader->GetDescriptorBindings())
-		{
-			setLayoutBindings.push_back(Bindings);
-		}
-
-		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
-		descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		descriptorSetLayoutInfo.bindingCount = (uint32_t)setLayoutBindings.size();
-		descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
-
-		if (auto Result = vkCreateDescriptorSetLayout(RendererContext::GetDevice()->GetLogicalDevice(), &descriptorSetLayoutInfo, nullptr, &m_DescriptorSetLayout); Result != VK_SUCCESS)
-		{
-			TRE_CORE_ERROR("Unable to create pipeline descriptor set layout");
-			assert(Result == VK_SUCCESS);
-		}
-	}
-
-	void Material::AllocateLayouts()
-	{
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_DescriptorSetLayout, m_DescriptorSets[x]);
+			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
 	}
 
@@ -57,29 +35,26 @@ namespace TRE
 	{
 		m_WriteDescriptors.clear();
 
-		for (auto x : m_VertexShader->GetWriteDescriptorSets())
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
 		{
-			x.second.pBufferInfo = &UBO->GetDescriptorBufferInfo();
-			x.second.dstSet = m_DescriptorSets[Index];
-			m_WriteDescriptors.push_back(x.second);
-		}
-		
-		if (m_FragmentShader->GetWriteDescriptorSets().size() != 0 /*&& m_FragmentShader->GetWriteDescriptorSets().size() <= m_Textures.size()*/)
-		{
-			int x = 0;
-			for (auto FragmentBindings : m_FragmentShader->GetWriteDescriptorSets())
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
 			{
-				if (FragmentBindings.second.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-				{
-					FragmentBindings.second.pImageInfo = &m_Textures[x]->GetDescriptorImageInfo();
-					FragmentBindings.second.dstSet = m_DescriptorSets[Index];
-					m_WriteDescriptors.push_back(FragmentBindings.second);
-					++x;
-				}
+				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+			}
+			Write.dstSet = m_DescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
 		}
 
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
+	void Material::SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures) 
+	{
+		m_Textures[Name] = textures;
 	}
 
 	void Material::Serialize()
@@ -100,11 +75,10 @@ namespace TRE
 			return;
 		}
 
-		file << "VertexShader:\n" << m_VertexShader->GetHandleHex() << std::endl;
-		file << "FragmentShader:\n" << m_FragmentShader->GetHandleHex() << std::endl;
+		file << "Shader:\n" << m_Shader->GetHandleHex() << std::endl;
 		file << "Textures:\n";
 		//For loop next time
-		for (auto texture : m_Textures)
+		for (auto [Name, texture] : m_Textures)
 		{
 			file << texture->GetHandleHex() << std::endl;
 		}
@@ -124,19 +98,14 @@ namespace TRE
 		}
 
 		std::string line;
-		std::string vertexShaderGUID;
-		std::string fragmentShaderGUID;
+		std::string ShaderGUID;
 		std::vector<std::string> textureGUIDs;
 
 		while (std::getline(file, line))
 		{
-			if (line == "VertexShader:")
+			if (line == "Shader:")
 			{
-				std::getline(file, vertexShaderGUID);
-			}
-			else if (line == "FragmentShader:")
-			{
-				std::getline(file, fragmentShaderGUID);
+				std::getline(file, ShaderGUID);
 			}
 			else if (line == "Textures:")
 			{
@@ -147,13 +116,13 @@ namespace TRE
 			}
 		}
 
-		auto vertShader = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(vertexShaderGUID));
-		auto fragShader = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(fragmentShaderGUID));
-		std::unique_ptr<Material> mat = std::make_unique<Material>(vertShader, fragShader);
+		auto ShaderAsset = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(ShaderGUID));
+		std::unique_ptr<Material> mat = std::make_unique<Material>(ShaderAsset);
+		mat->Invalidate();
 		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		mat->m_Handle = assetHandle;
 
-		mat->m_Textures.resize(textureGUIDs.size());
+		//mat->m_Textures.resize(textureGUIDs.size());
 		for (int i = 0; i < textureGUIDs.size(); ++i)
 		{	
 			std::string textureHexGUID = textureGUIDs[i];
@@ -163,7 +132,7 @@ namespace TRE
 			{
 				texture = VulkanTexture::Deserialize(textureHexGUID);
 			}
-			mat->m_Textures[i] = texture;
+			//mat->m_Textures[i] = texture;
 		}
 
 		ResourceManager::Instance().AddResource(std::move(mat));

@@ -26,11 +26,13 @@ namespace TRE
 			int SkipBOM(std::istream& in); //Can create utilities header file if too much in future
 			std::string ReadGLSLToString(const std::string& filename);
 
-			void Compile(VkShaderStageFlagBits ShaderStage);
-			std::string PreProcess(const std::string& Source, VkShaderStageFlagBits ShaderStage);
-			bool CompileGLSLToBinary(std::vector<uint32_t>& OutputBinary, const std::string& SourceCode, VkShaderStageFlagBits ShaderStage);
+			void Compile();
+			std::map<VkShaderStageFlagBits, std::string> PreProcessCustom(const std::string& Source);
+			std::map<VkShaderStageFlagBits, std::string> PreProcessGLSL(const std::string& Source);
+			bool CompileGLSLToBinary(std::vector<uint32_t>& OutputBinary, VkShaderStageFlagBits ShaderStage);
 
-			void ReflectShaderData(VkShaderStageFlagBits ShaderStage, const std::vector<uint32_t>& ShaderBinary);
+			void ReflectShaderData(const std::map<VkShaderStageFlagBits, std::vector<uint32_t>>& ShaderBinary);
+			void Reflect(VkShaderStageFlagBits ShaderStage, const std::vector<uint32_t>& ShaderBinary);
 			void ClearReflectionData();
 
 		private:
@@ -38,6 +40,8 @@ namespace TRE
 			bool m_EnableOptimization = true;
 			ShaderLanguage m_ShaderLanguage;
 			ShaderReflectionData m_ReflectionData;
-			std::vector<uint32_t> m_SPIRVData;
+			std::map<VkShaderStageFlagBits, std::vector<uint32_t>> m_SPIRVData;
+
+			std::map<VkShaderStageFlagBits, std::string> m_ShaderSourceCode;
 	};
 }

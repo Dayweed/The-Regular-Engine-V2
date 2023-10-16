@@ -59,8 +59,6 @@ namespace TRE
 			return;
 		}
 
-
-
 		void* outputData = nullptr;
 		std::uint32_t outputSize = width * height * 4;
 		

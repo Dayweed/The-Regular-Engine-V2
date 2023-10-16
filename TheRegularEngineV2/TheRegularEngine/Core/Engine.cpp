@@ -19,7 +19,7 @@
 #include <time.h>       /* time */
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
-#include "Graphics/ShaderCompiler.h"
+#include "Graphics/ShaderReflection.h"
 #include "TextureDescriptorFile.h"	
 #include "Physics/PhysicsComponents.h"
 
@@ -68,27 +68,17 @@ namespace TRE
 
 	void DemoDeserialize()
 	{
-		auto vertHandle = 3;
-		auto fragHandle = 4;
-		auto DebugDrawVertHandle = 7;
-		auto DebugDrawFragHandle = 8;
+		auto PBRHandle = 3;
+		auto DebugDrawHandle = 7;
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("Resources/Shaders/PBR.vert");
-		vert->SetHandle(vertHandle);
+		std::unique_ptr<Shader>vert = ShaderCompiler::DeserializeReflectShader("Resources/PBR.TREshader");
+		vert->SetHandle(PBRHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("Resources/Shaders/PBR.frag");
-		frag->SetHandle(fragHandle);
-		ResourceManager::Instance().AddResource(std::move(frag));
-
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.vert");
-		DebugDrawVert->SetHandle(DebugDrawVertHandle);
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("Resources/DebugDrawLine.TREshader");
+		DebugDrawVert->SetHandle(DebugDrawHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
-
-		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("Resources/Shaders/DebugDrawLine.frag");
-		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
-		ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
 
 		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
@@ -174,45 +164,30 @@ namespace TRE
 		plane->SetHandle(planeHandle);
 		ResourceManager::Instance().AddResource(std::move(plane));
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.vert");
+		std::unique_ptr<Shader> vert = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
 		vert->SetHandle(vertHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
-		std::unique_ptr<Shader> frag = ShaderCompiler::CompileShader("../Resources/Shaders/PBR.frag");
-		frag->SetHandle(fragHandle);
-		ResourceManager::Instance().AddResource(std::move(frag));
-
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.vert");
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("../Resources/DebugDrawLine.TREshader");
 		DebugDrawVert->SetHandle(DebugDrawVertHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
-		std::unique_ptr<Shader> DebugDrawFrag = ShaderCompiler::CompileShader("../Resources/Shaders/DebugDrawLine.frag");
-		DebugDrawFrag->SetHandle(DebugDrawFragHandle);
-		ResourceManager::Instance().AddResource(std::move(DebugDrawFrag));
-
 		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawVertHandle);
-		auto DebugFragShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawFragHandle);
 
 		//AnimationShaders
-		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::CompileShader("../Resources/Shaders/Animation.vert");
-		//std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
+		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
 		AnimationVert->SetHandle(AnimationVertHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 
-		std::unique_ptr<Shader> AnimationFrag = ShaderCompiler::CompileShader("../Resources/Shaders/Animation.frag");
-		AnimationFrag->SetHandle(AnimationFragHandle);
-		ResourceManager::Instance().AddResource(std::move(AnimationFrag));
-
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
-		auto FragShader = ResourceManager::Instance().GetResource<Shader>(fragHandle);
-		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader, FragShader);
+		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
 		mat1->SetHandle(matHandle);
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
-		mat1->SetTextures(ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
+		mat1->SetTexture("DiffuseMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
+		mat1->SetTexture("NormalMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle2));
+		mat1->SetTexture("RoughnessMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle3));
+		mat1->SetTexture("AOMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle4));
 		ResourceManager::Instance().AddResource(std::move(mat1));
 
 		auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
@@ -222,20 +197,24 @@ namespace TRE
 		{
 			Entity test = ECSManager::Instance().CreateEntity();
 			test->GetComponent<Properties>().m_Name = "Test";
+
 			Transform& testTransform{ test->GetComponent<Transform>() };
 			testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
 			testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 			testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
 			testTransform.m_IsDirty = true;
+
 			test->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+
 			test->AddComponent<Audio>();
 			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
 			audioSystem->SetLoop(test, true);
 			audioSystem->SetSpatialize(test,true);
 			audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);
+
 			//test->AddComponent<SphereCollider>();
 			//test->AddComponent<Rigidbody>();
 		}
@@ -243,11 +222,13 @@ namespace TRE
 		{
 			Entity test2 = ECSManager::Instance().CreateEntity();
 			test2->GetComponent<Properties>().m_Name = "Test2";
+
 			Transform& test2Transform{ test2->GetComponent<Transform>() };
 			test2Transform.m_Position = glm::vec3(50.f, 20.f, 180.f);
 			test2Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 			test2Transform.m_Rotation = glm::vec3(0, 180.f, 0);
 			test2Transform.m_IsDirty = true;
+
 			test2->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		}
@@ -255,25 +236,28 @@ namespace TRE
 		{
 			Entity test3 = ECSManager::Instance().CreateEntity();
 			test3->GetComponent<Properties>().m_Name = "Test3";
+
 			Transform& test3Transform{ test3->GetComponent<Transform>() };
 			test3Transform.m_Position = glm::vec3(-50.f, 20.f, 180.f);
 			test3Transform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
 			test3Transform.m_Rotation = glm::vec3(0, 180.f, 0);
 			test3Transform.m_IsDirty = true;
+
 			test3->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(test3, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test3, ResourceManager::Instance().GetResource<Material>(matHandle));
 		}
-		
 
 		{
 			Entity planeCollider = ECSManager::Instance().CreateEntity();
 			planeCollider->GetComponent<Properties>().m_Name = "Plane collider";
+
 			Transform& planeTransform{ planeCollider->GetComponent<Transform>() };
 			planeTransform.m_Position = glm::vec3(0.f, -35.f, 100.f);
 			planeTransform.m_Scale = glm::vec3(10.f, 10.f, 10.f);
 			planeTransform.m_Rotation = glm::vec3(0, 0, 0);
 			planeTransform.m_IsDirty = true;
+
 			planeCollider->AddComponent<MeshRenderer>();
 			meshRendererSystem->SetMeshRenderer(planeCollider, ResourceManager::Instance().GetResource<RenderObject>(planeHandle));
 		}
@@ -283,6 +267,7 @@ namespace TRE
 			cam->GetComponent<Properties>().m_Name = "cam";
 			cam->AddComponent<Camera>();
 			cameraSystem->SetIsMainCamera(cam, true);
+
 			cam->AddComponent<AudioListener>();
 			audioSystem->SetListenerPosition(cam);
 		}
