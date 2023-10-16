@@ -357,7 +357,16 @@
     <ClCompile Include="MaterialTypes\PBRMaterial.cpp">
       <Filter>MaterialTypes</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\BoxCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\Rigidbody.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Resource.cpp">

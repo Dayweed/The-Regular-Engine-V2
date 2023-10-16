@@ -18,6 +18,35 @@
 
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
 
+#define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
+#define PI 3.14159265358979323846f
+#pragma region PhysicsComponentAssertions
+#define PhysicsComponentConstructorAssertion(Type)														\
+	if (!entity->HasComponent<Type>())																	\
+	{																									\
+		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
+			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to construct.");					\
+		assert(entity->HasComponent<Type>());															\
+	}
+
+// this should never have to trip, but you never know...
+#define PhysicsComponentDestructorAssertion(Type)														\
+	if (!entity->HasComponent<Type>())																	\
+	{																									\
+		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
+			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to destroy.");					\
+		assert(entity->HasComponent<Type>());															\
+	}
+
+#define PhysicsComponentAssertion(Type) 																\
+	if (!entity->HasComponent<Type>())																	\
+	{																									\
+		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
+			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to perform this operation.");	\
+		assert(entity->HasComponent<Type>());															\
+	}
+#pragma endregion
+
 namespace TRE
 {
 	class SimulationEventCallback : public physx::PxSimulationEventCallback
@@ -208,8 +237,6 @@ namespace TRE
 		void TriggerToCollider(const Entity& entity) const;
 
 	private:
-
-		bool m_IsReadyForUpdate = false;
 
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
