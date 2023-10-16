@@ -165,6 +165,22 @@ namespace TRE
 			}
 		}
 
+		void GameUpdateSystem()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->GameUpdate();
+			}
+		}
+
+		void LateUpdateSystem()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->LateUpdate();
+			}
+		}
+
 		void BeforeReset()
 		{
 			for (auto& system : m_Systems)
@@ -178,14 +194,6 @@ namespace TRE
 			for (auto& system : m_Systems)
 			{
 				system.second->OnReset();
-			}
-		}
-
-		void GameUpdateSystem()
-		{
-			for (auto& system : m_Systems)
-			{
-				system.second->GameUpdate();
 			}
 		}
 

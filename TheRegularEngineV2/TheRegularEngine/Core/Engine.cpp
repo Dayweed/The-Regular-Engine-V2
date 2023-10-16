@@ -397,17 +397,39 @@ namespace TRE
 		{
 			m_Window->UpdateDeltaTime();
 
-			//Update
-			Profiler::Instance().StartTimer("EditorUpdateSystem");
+			// Update
+			Profiler::Instance().StartTimer("UpdateSystem");
 			ECSSystemManager::Instance().UpdateSystem();
-			Profiler::Instance().EndTimer("EditorUpdateSystem");
+			Profiler::Instance().EndTimer("UpdateSystem");
 
 			// Game Running Update
 			if (GameLoop::Instance().IsGameRunning())
 			{
-				Profiler::Instance().StartTimer("Update");
+				Profiler::Instance().StartTimer("GameUpdateSystem");
 				ECSSystemManager::Instance().GameUpdateSystem();
-				Profiler::Instance().EndTimer("Update");
+				Profiler::Instance().EndTimer("GameUpdateSystem");
+			}
+
+			// Late Update
+			Profiler::Instance().StartTimer("LateUpdateSystem");
+			ECSSystemManager::Instance().LateUpdateSystem();
+			Profiler::Instance().EndTimer("LateUpdateSystem");
+
+			// OnReset Scene
+			if (GameLoop::Instance().GetSceneReset())
+			{
+				Profiler::Instance().StartTimer("BeforeReset");
+				ECSSystemManager::Instance().BeforeReset();
+				Profiler::Instance().EndTimer("BeforeReset");
+
+				// Copy registry and components
+				ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
+				// Clear Backup
+				GameLoop::Instance().GetBackUpRegistry().clear();
+
+				Profiler::Instance().StartTimer("OnReset");
+				ECSSystemManager::Instance().OnReset();
+				Profiler::Instance().EndTimer("OnReset");
 			}
 
 			Profiler::Instance().StartTimer("OnDestroyEntities");
@@ -422,7 +444,7 @@ namespace TRE
 			m_Renderer->BeginFrame();
 			m_Renderer->EndFrame();
 
-			// Imgui Update
+			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
 			{
 				Profiler::Instance().StartTimer("Imgui");

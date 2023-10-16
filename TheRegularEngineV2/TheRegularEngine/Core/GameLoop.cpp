@@ -31,6 +31,21 @@ namespace TRE
 		return m_GameRunning;
 	}
 
+	bool GameLoop::GetSceneReset()
+	{
+		return m_SceneReset;
+	}
+
+	void GameLoop::SetSceneReset(bool reset)
+	{
+		m_SceneReset = reset;
+	}
+
+	entt::registry& GameLoop::GetBackUpRegistry()
+	{
+		return m_BackUp;
+	}
+
 	void GameLoop::ToggleRun(bool isRunning)
 	{
 		// If toggle to run and was not running, save scene temporarily
@@ -51,23 +66,10 @@ namespace TRE
 	{
 		if (m_GameRunning)
 		{
-			Profiler::Instance().StartTimer("BeforeReset");
-			ECSSystemManager::Instance().BeforeReset();
-			Profiler::Instance().EndTimer("BeforeReset");
-
-			// Copy registry and components
-			ECSManager::Instance().CopyRegistry(m_BackUp);
-			// Clear Backup
-			m_BackUp.clear();
-
-			Profiler::Instance().StartTimer("OnReset");
-			ECSSystemManager::Instance().OnReset();
-			Profiler::Instance().EndTimer("OnReset");
-
 			m_GameRunning = false;
+			SetSceneReset(true);
 
 			ScriptEngine::CreatedScriptObject = false;
-
 		}
 	}
 
