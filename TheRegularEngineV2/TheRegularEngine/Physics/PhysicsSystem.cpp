@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 0
+#define USE_PHYSX_PVD 1
 #endif
 
 #pragma region Macros
@@ -197,12 +197,16 @@ namespace TRE
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
+			OnEntityMismatchDestroyComponent(entity, attachedComponents, CapsuleCollider);
 		}
 
 		UpdateAllEntitiesWithComponent(Rigidbody);
 		UpdateAllEntitiesWithComponent(SphereCollider);
 		UpdateAllEntitiesWithComponent(BoxCollider);
+		UpdateAllEntitiesWithComponent(CapsuleCollider);
 
+		// Accumulator?
+		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
 
@@ -342,6 +346,7 @@ namespace TRE
 		// because I can't do MarkAsTrigger<Collider>() with lambdas...
 		MarkAsTrigger.operator() < SphereCollider > (entity);
 		MarkAsTrigger.operator() < BoxCollider > (entity);
+		MarkAsTrigger.operator() < CapsuleCollider > (entity);
 	}
 
 	// if one shape on an entity is a collider, they're all colliders now :)
@@ -381,6 +386,7 @@ namespace TRE
 		// because I can't do MarkAsCollider<Collider>() with lambdas...
 		MarkAsCollider.operator() < SphereCollider > (entity);
 		MarkAsCollider.operator() < BoxCollider > (entity);
+		MarkAsCollider.operator() < CapsuleCollider > (entity);
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)

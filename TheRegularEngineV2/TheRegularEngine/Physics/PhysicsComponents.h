@@ -23,6 +23,7 @@ namespace TRE
 			Rigidbody		= 1 << 0,
 			SphereCollider	= 1 << 1,
 			BoxCollider		= 1 << 2,
+			CapsuleCollider	= 1 << 3,
 		};
 	};
 
@@ -106,6 +107,26 @@ namespace TRE
 		property_vtable()
 	};
 
+	struct CapsuleCollider : BaseCollider, property::base
+	{
+		float m_Radius = 1.0f;
+		float m_HalfHeight = 0.5f;
+
+		// To write to / read from .json files.
+		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
+		// Variables that are struct/class can't be handled automatically.
+		// So we gotta do it ourselves!
+
+		// Serialize
+		friend void to_json(nlohmann::json& j, const SphereCollider& t);
+
+		// Deserialize
+		friend void from_json(const nlohmann::json& j, SphereCollider& t);
+
+		// Allows the base class to get these properties
+		property_vtable()
+	};
+
 	// inline std::tuple<Rigidbody, SphereCollider, BoxCollider> tutu;
 	// ^ definition of a global variable in a header file should have the 'inline' specifier
 }
@@ -132,6 +153,14 @@ property_begin(TRE::BoxCollider)
 	property_var(m_Offset),
 	property_var(m_HalfExtents)
 } property_vend_h(TRE::BoxCollider)
+
+property_begin(TRE::CapsuleCollider)
+{
+	property_var(m_IsTrigger),
+	property_var(m_Offset),
+	property_var(m_Radius),
+	property_var(m_HalfHeight)
+} property_vend_h(TRE::CapsuleCollider)
 
 // none			- just don't have anything, please
 // collider		- make shape with 

@@ -227,6 +227,14 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void DestructRigidbody(const Entity& entity) const;
 
+		bool ConstructCapsuleCollider(const Entity& entity, const float radius = 1.0f, const float halfHeight = 0.5f, const glm::vec3& offset = glm::vec3{ 0 }) const;
+
+		void ResizeCapsuleCollider(const Entity& entity, const float newRadius, const float newHalfHeight) const;
+
+		void UpdateCapsuleCollider(const Entity& entity) const;
+
+		void DestructCapsuleCollider(const Entity& entity) const;
+
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
 

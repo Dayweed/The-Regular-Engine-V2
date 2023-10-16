@@ -379,5 +379,8 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Physics\CapsuleCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
