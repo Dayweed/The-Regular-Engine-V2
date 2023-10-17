@@ -97,7 +97,7 @@ namespace TRE
 
 		m_PanelManager->Update();
 
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		ImGui::End(); //Dockspace
 	}
 

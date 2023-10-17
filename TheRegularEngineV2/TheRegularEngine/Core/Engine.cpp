@@ -297,7 +297,33 @@ namespace TRE
 			//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
 		}
 
-		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		{
+			//dont delete this
+			//testing hierarchy entities
+			Entity parent = ECSManager::Instance().CreateEntity("parent");
+			Entity child = ECSManager::Instance().CreateEntity("child");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child, parent);
+			Entity child1 = ECSManager::Instance().CreateEntity("child1");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child1, parent);
+			Entity child2 = ECSManager::Instance().CreateEntity("child2");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child2, parent);
+
+			Entity parent1 = ECSManager::Instance().CreateEntity("parent1");
+			Entity child3 = ECSManager::Instance().CreateEntity("child3");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child3, parent1);
+			Entity child4 = ECSManager::Instance().CreateEntity("child4");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child4, parent1);
+			Entity child5 = ECSManager::Instance().CreateEntity("child5");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child5, parent1);
+
+			Entity parent2 = ECSManager::Instance().CreateEntity("parent2");
+			Entity child6 = ECSManager::Instance().CreateEntity("child6");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child6, parent2);
+			Entity child7 = ECSManager::Instance().CreateEntity("child7");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child7, parent2);
+			Entity child8 = ECSManager::Instance().CreateEntity("child8");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent2);
+		}
 	}
 }
 #pragma endregion TO DELETE TEST
