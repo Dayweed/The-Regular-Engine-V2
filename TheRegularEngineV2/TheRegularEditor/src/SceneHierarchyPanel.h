@@ -27,10 +27,8 @@ namespace TRE
 			void Update() override;
 			void Shutdown() override;
 			void DisplayChildren(TRE::Entity& ParentEntity);
-			Entity& GetSelectionContext();
 
 		private:
-			Entity m_SelectionContext;
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 	};
 }
