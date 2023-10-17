@@ -247,6 +247,7 @@ namespace TRE
 
 			ResourceHandle materialHandle;
 
+			//If entity has no material, use default
 			if (mr.m_MaterialInstance == nullptr)
 			{
 				materialHandle = PBR::GetDefaultHandle();
@@ -294,6 +295,8 @@ namespace TRE
 
 			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
+
+		m_PreviousMaterialHandle = 0;
 		
 		//Debug Drawing Pass
 		{

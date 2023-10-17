@@ -92,7 +92,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);*/
 	}
 
-	void AudioSystem::OnDestroyGO()
+	void AudioSystem::OnDestroyEntities()
 	{
 
 	}

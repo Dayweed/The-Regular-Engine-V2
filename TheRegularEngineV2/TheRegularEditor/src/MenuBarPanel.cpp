@@ -89,10 +89,19 @@ namespace TRE
 				ImGui::EndMenu();
 			}
 			//Commented out till I find a use for it
-			//if (ImGui::BeginMenu("Options"))
-			//{
-			//	ImGui::EndMenu();
-			//}
+			if (ImGui::BeginMenu("Options"))
+			{
+				if (ImGui::BeginMenu("Grid and Snap"))
+				{
+					ImGui::MenuItem("Increament Snapping");
+					ImGui::InputFloat("Position", &m_PosIncreament);
+					ImGui::InputFloat("Rotation", &m_RotIncreament);
+					ImGui::InputFloat("Scale", &m_ScaleIncreament);
+					EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncreament, m_RotIncreament, m_ScaleIncreament });
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMainMenuBar();
 		}
