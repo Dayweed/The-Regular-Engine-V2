@@ -136,7 +136,7 @@ namespace TRE
 	public:
 		void Update() override;
 		void OnReset() override;
-		void OnDestroyGO() override;
+		void OnDestroyEntities() override;
 		void Shutdown() override;
 
 		void SetPosition(Entity& go, const glm::vec3& position);

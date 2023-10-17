@@ -101,7 +101,7 @@ namespace TRE
 
 	}
 
-	void PrefabSystem::OnDestroyGO()
+	void PrefabSystem::OnDestroyEntities()
 	{
 
 	}

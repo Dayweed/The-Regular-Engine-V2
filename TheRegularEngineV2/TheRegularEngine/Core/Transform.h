@@ -67,7 +67,7 @@ namespace TRE
 		void Update() override;
 		void GameUpdate() override;
 		void OnReset() override;
-		void OnDestroyGO() override;
+		void OnDestroyEntities() override;
 		void Shutdown() override;
 	};
 }

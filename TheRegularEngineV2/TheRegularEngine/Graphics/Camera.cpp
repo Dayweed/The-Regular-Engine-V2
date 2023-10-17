@@ -117,7 +117,7 @@ namespace TRE
 
 	}
 
-	void CameraSystem::OnDestroyGO()
+	void CameraSystem::OnDestroyEntities()
 	{
 
 	}

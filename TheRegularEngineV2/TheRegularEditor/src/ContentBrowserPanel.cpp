@@ -8,6 +8,8 @@
 
 namespace TRE
 {
+	ResourceHandle ContentBrowserPanel::m_SelectedResource{ 0 };
+
 	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -17,9 +19,6 @@ namespace TRE
 		m_SceneDirectory = std::filesystem::current_path().parent_path();
 		m_SceneDirectory += "\\Scenes";
 		m_CurrentDirectory = m_AssetDirectory;
-		std::cout << std::filesystem::current_path().parent_path() << std::endl;
-		std::cout << m_AssetDirectory << std::endl;
-		std::cout << m_SceneDirectory << std::endl;
 
 		//Custom Flag Combinations
 		m_PopUps |= ImGuiWindowFlags_NoResize;
@@ -70,7 +69,7 @@ namespace TRE
 				newAsset.m_TextureID = isFont							? m_TmpTexturesID : newAsset.m_TextureID;
 				newAsset.m_TextureID = is3DObj							? m_TmpTexturesID : newAsset.m_TextureID;
 
-				if (isImage || isAudio || isShader || isScene | isPrefab || isFont || is3DObj)
+				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj)
 				{
 					//Allow Dragging of these file types
 					newAsset.m_ResourceType = isImage		? "m_TextureResource" : newAsset.m_ResourceType;
@@ -88,6 +87,17 @@ namespace TRE
 				if(!isDesc)
 					m_Assets.emplace_back(newAsset);
 			}
+		}
+
+		//Add material instances in to see on content browser
+		for (const auto& mat : AssetManager::Instance().GetAssetsOfType<Material>())
+		{
+			Asset materialAsset{};
+			materialAsset.m_TextureID = m_TmpTexturesID;
+			materialAsset.m_ResourceType = "m_Material";
+			materialAsset.m_FileName = AssetManager::Instance().GetName(mat->GetHandle());
+
+			m_Assets.emplace_back(materialAsset);
 		}
 	}
 
@@ -131,13 +141,24 @@ namespace TRE
 			//right click to open popup menu
 			if (ImGui::BeginPopupContextWindow())
 			{
-				if (ImGui::MenuItem("Create new material"))
+				if (ImGui::BeginMenu("Create new material"))
 				{
-					//For Zr use
-					std::cout << "works" << std::endl;
+					if (ImGui::MenuItem("PBR"))
+					{
+						//For Zr use
+						std::cout << "works" << std::endl;
+					}
+					if (ImGui::MenuItem("Others"))
+					{
+	
+					}
+
+					ImGui::EndMenu();
 				}
 				ImGui::EndPopup();
 			}
+
+			
 			const float panelWidth = ImGui::GetContentRegionAvail().x;
 			int cols = static_cast<int>(panelWidth / m_CellSize);
 			if (cols < 1)
@@ -166,9 +187,11 @@ namespace TRE
 						//No Click Action
 						if (item.m_ResourceType == "_Invalid")
 						{
-							if(!m_InvalidResourcePopUp)
+							if (!m_InvalidResourcePopUp)
 								m_InvalidResourcePopUp = true;
 						}
+
+						m_SelectedResource = AssetManager::Instance().GetAssetHandle(item.m_FileName);
 					}
 
 					if (ImGui::BeginDragDropSource())
@@ -179,8 +202,6 @@ namespace TRE
 							const char* itemPath = tmp.c_str();
 							ImGui::SetDragDropPayload(item.m_ResourceType.c_str(), itemPath, strlen(itemPath) * sizeof(char));
 							ImGui::Text("Move %s", item.m_FileName.c_str());
-
-							//std::cout << item.m_ResourceType.c_str() << std::endl;
 						}
 						ImGui::EndDragDropSource();
 					}
@@ -226,7 +247,6 @@ namespace TRE
 	
 	void ContentBrowserPanel::Update()
 	{
-
 		if (m_CurrentTimer <= m_RefreshRate)
 		{
 			m_CurrentTimer += Engine::GetInstance().GetWindow()->GetDeltaTime();

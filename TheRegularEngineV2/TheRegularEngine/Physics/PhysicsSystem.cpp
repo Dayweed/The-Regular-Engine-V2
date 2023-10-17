@@ -239,7 +239,7 @@ namespace TRE
 		m_Actors.clear(); // ???
 	}
 
-	void PhysicsSystem::OnDestroyGO()
+	void PhysicsSystem::OnDestroyEntities()
 	{
 #if 0
 		TRE_CORE_WARN("AM I EVEN HERE?!?!?!?!?");

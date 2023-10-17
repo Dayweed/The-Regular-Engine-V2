@@ -68,6 +68,16 @@ namespace TRE
 		return m_AssetNameToHandle.find(assetName) != m_AssetNameToHandle.end();
 	}
 
+	bool AssetManager::Contains(const ResourceHandle resourceHandle) const
+	{
+		for (auto x : m_AssetNameToHandle)
+		{
+			if (x.second == resourceHandle)
+				return true;
+		}
+		return false;
+	}
+
 	const ResourceHandle AssetManager::GetAssetHandle(const std::string& assetName) const
 	{
 		if(Contains(assetName))
@@ -92,7 +102,7 @@ namespace TRE
 	{
 		for (const auto x : m_AssetNameToHandle)
 		{
-			std::cout << x.first << " " << x.second << std::endl;
+			std::cout << x.first << "| " << x.second <<"| " << Resource::GetGUIDHex(x.second) << std::endl;
 		}
 	}
 }

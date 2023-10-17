@@ -96,7 +96,7 @@ namespace TRE
 
 		void Update() override;
 		void OnReset() override;
-		void OnDestroyGO() override;
+		void OnDestroyEntities() override;
 		void Shutdown() override;
 
 		// (De)serializing Prefab

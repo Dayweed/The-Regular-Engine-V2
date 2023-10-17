@@ -30,9 +30,12 @@ namespace TRE
 		void RemoveAsset(const std::string& assetName);
 		
 		bool Contains(const std::string& assetName) const;
+		bool Contains(const ResourceHandle resourceHandle) const;
 		const ResourceHandle GetAssetHandle(const std::string& assetName) const;
 		template<typename T>
 		std::shared_ptr<T> GetAsset(const std::string& assetName);
+		template<typename T>
+		std::vector<std::shared_ptr<T>> GetAssetsOfType();
 		const std::string GetName(const ResourceHandle resourceHandle) const;
 
 		void PrintAllAssets() const;
@@ -137,5 +140,17 @@ namespace TRE
 			return ResourceManager::Instance().GetResource<T>(m_AssetNameToHandle.at(assetName));
 		
 		return nullptr;
+	}
+
+	template<typename T>
+	std::vector<std::shared_ptr<T>> AssetManager::GetAssetsOfType()
+	{
+		std::vector<std::shared_ptr<T>> assets;
+		for (auto& resource : ResourceManager::Instance().GetResourcesOfType<T>())
+		{
+			if(Contains(resource->GetHandle()))
+				assets.push_back(resource);
+		}
+		return assets;
 	}
 }

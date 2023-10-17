@@ -93,12 +93,9 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
-		auto vertHandle = 3;
-		auto fragHandle = 4;
-		auto AnimationVertHandle = 5;
-		auto AnimationFragHandle = 6;
-		auto DebugDrawVertHandle = 7;
-		auto DebugDrawFragHandle = 8;
+		auto PBRHandle = 3;
+		auto AnimationHandle = 5;
+		auto DebugDrawHandle = 7;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
@@ -165,23 +162,23 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(plane));
 
 		std::unique_ptr<Shader> vert = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
-		vert->SetHandle(vertHandle);
+		vert->SetHandle(PBRHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
 		//DebugDrawShaders
 		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("../Resources/DebugDrawLine.TREshader");
-		DebugDrawVert->SetHandle(DebugDrawVertHandle);
+		DebugDrawVert->SetHandle(DebugDrawHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
-		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawVertHandle);
+		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawHandle);
 
 		//AnimationShaders
 		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
-		AnimationVert->SetHandle(AnimationVertHandle);
+		AnimationVert->SetHandle(AnimationHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 
 		// Create a material instance
-		auto VertShader = ResourceManager::Instance().GetResource<Shader>(vertHandle);
+		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBRHandle);
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
 		mat1->SetHandle(matHandle);
 		mat1->SetTexture("DiffuseMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
@@ -299,6 +296,8 @@ namespace TRE
 
 			//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
 		}
+
+		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -398,17 +397,39 @@ namespace TRE
 		{
 			m_Window->UpdateDeltaTime();
 
-			//Update
-			Profiler::Instance().StartTimer("EditorUpdateSystem");
+			// Update
+			Profiler::Instance().StartTimer("UpdateSystem");
 			ECSSystemManager::Instance().UpdateSystem();
-			Profiler::Instance().EndTimer("EditorUpdateSystem");
+			Profiler::Instance().EndTimer("UpdateSystem");
 
 			// Game Running Update
 			if (GameLoop::Instance().IsGameRunning())
 			{
-				Profiler::Instance().StartTimer("Update");
+				Profiler::Instance().StartTimer("GameUpdateSystem");
 				ECSSystemManager::Instance().GameUpdateSystem();
-				Profiler::Instance().EndTimer("Update");
+				Profiler::Instance().EndTimer("GameUpdateSystem");
+			}
+
+			// Late Update
+			Profiler::Instance().StartTimer("LateUpdateSystem");
+			ECSSystemManager::Instance().LateUpdateSystem();
+			Profiler::Instance().EndTimer("LateUpdateSystem");
+
+			// OnReset Scene
+			if (GameLoop::Instance().GetSceneReset())
+			{
+				Profiler::Instance().StartTimer("BeforeReset");
+				ECSSystemManager::Instance().BeforeReset();
+				Profiler::Instance().EndTimer("BeforeReset");
+
+				// Copy registry and components
+				ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
+				// Clear Backup
+				GameLoop::Instance().GetBackUpRegistry().clear();
+
+				Profiler::Instance().StartTimer("OnReset");
+				ECSSystemManager::Instance().OnReset();
+				Profiler::Instance().EndTimer("OnReset");
 			}
 
 			Profiler::Instance().StartTimer("OnDestroyEntities");
@@ -423,7 +444,7 @@ namespace TRE
 			m_Renderer->BeginFrame();
 			m_Renderer->EndFrame();
 
-			// Imgui Update
+			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
 			{
 				Profiler::Instance().StartTimer("Imgui");

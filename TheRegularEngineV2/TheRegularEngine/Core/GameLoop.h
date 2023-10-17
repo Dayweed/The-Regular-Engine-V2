@@ -18,6 +18,11 @@ namespace TRE
 
 		bool IsGameRunning();
 
+		bool GetSceneReset();
+		void SetSceneReset(bool reset);
+
+		entt::registry& GetBackUpRegistry();
+
 		void ToggleRun(bool isRunning);
 		void ResetScene();
 		void ToggleRun(ToggleRunEvent& event);
@@ -26,6 +31,9 @@ namespace TRE
 	private:
 		// Game Loop
 		bool m_GameRunning{ false };
+
+		// Game Got Reseted this scene
+		bool m_SceneReset{ false };
 
 		entt::registry m_BackUp;
 

@@ -201,12 +201,20 @@ namespace TRE
 		}
 	}
 
+	void ViewportPanel::OnGridAndSnap(const GridAndSnapEvent& event)
+	{
+		m_PosIncreament = event.m_PosIncreament;
+		m_RotIncreament = event.m_RotIncreament;
+		m_ScaleIncreament = event.m_ScaleIncreament;
+	}
+
 	void ViewportPanel::Init()
 	{
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseMove);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
 	}
 
 	void ViewportPanel::Update()

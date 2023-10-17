@@ -76,7 +76,7 @@ namespace TRE
 
 	}
 
-	void TransformSystem::OnDestroyGO()
+	void TransformSystem::OnDestroyEntities()
 	{
 
 	}
