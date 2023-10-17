@@ -52,32 +52,38 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures) 
+	void Material::SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures)
 	{
 		m_Textures[Name] = textures;
 	}
 
 	void Material::Serialize()
 	{
-		std::string path = "../Resources/";
-		std::filesystem::directory_entry entry(path);
+		//Temp for my descriptorFile
+		MaterialDescriptorFile descriptorFile;
+		const std::string assetFolderPath = "../Assets/";
+		const std::string resourceFolderPath = "../Resources/";
+		const std::string resource = GetHandleHex() + ".material";
+		const std::string descPath = assetFolderPath + resource + ".desc";
+		descriptorFile.SetAssetPath("Material_Instance");
+		descriptorFile.SetDescriptorPath(descPath);
+		descriptorFile.GenerateDescriptorFile();
+
+		std::filesystem::directory_entry entry(resourceFolderPath);
 		if (!entry.exists())
 		{
-			std::filesystem::create_directory(path);
+			std::filesystem::create_directory(resourceFolderPath);
 		}
 
-		path += GetHandleHex() + ".material";
-
-		std::ofstream file(path);
+		std::ofstream file(resourceFolderPath + resource);
 		if (!file.is_open())
 		{
-			TRE_CORE_ERROR("Unable to open file {0}", path);
+			TRE_CORE_ERROR("Unable to open file {0}", resourceFolderPath + resource);
 			return;
 		}
 
 		file << "Shader:\n" << m_Shader->GetHandleHex() << std::endl;
 		file << "Textures:\n";
-		//For loop next time
 		for (auto [Name, texture] : m_Textures)
 		{
 			file << texture->GetHandleHex() << std::endl;
@@ -124,7 +130,7 @@ namespace TRE
 
 		//mat->m_Textures.resize(textureGUIDs.size());
 		for (int i = 0; i < textureGUIDs.size(); ++i)
-		{	
+		{
 			std::string textureHexGUID = textureGUIDs[i];
 			auto texture = ResourceManager::Instance().GetResource<VulkanTexture>(Resource::GetGUIDFromHex(textureHexGUID));
 			//Load into engine if not in asset manager
@@ -139,4 +145,27 @@ namespace TRE
 
 		return std::move(ResourceManager::Instance().GetResource<Material>(assetHandle));
 	}
+
+	/*void MaterialDescriptorFile::Write()
+	{
+		m_DescriptorFile << "Resource:\n";
+		m_DescriptorFile << m_ResourcePath << "\n\n";
+	}
+
+	void MaterialDescriptorFile::Read()
+	{
+		std::string line;
+		std::getline(m_DescriptorFile, line);
+		if (line == "Resource:")
+		{
+			std::getline(m_DescriptorFile, line);
+			m_ResourcePath = line;
+			std::getline(m_DescriptorFile, line);
+		}
+		else
+		{
+			std::cout << "Error: Material resource missing" << std::endl;
+			return;
+		}
+	}*/
 }

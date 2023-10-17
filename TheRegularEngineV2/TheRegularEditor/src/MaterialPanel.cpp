@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MaterialPanel.h"
 #include "EditorAssetManager.h"
+#include "ContentBrowserPanel.h"
 
 namespace TRE
 {
@@ -21,75 +22,84 @@ namespace TRE
 
 	void MaterialPanel::Update()
 	{
-		if (auto entity = m_SelectionManager->GetSelectedEntity())
+		if (auto& entity = m_SelectionManager->GetSelectedEntity(); entity)
 		{
 			if (entity->HasComponent<MeshRenderer>() == false)
 				return;
 
 			ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
-			
 
 			MeshRenderer& meshRenderer = entity->GetComponent<MeshRenderer>();
-			std::shared_ptr<Material> material = meshRenderer.m_MaterialInstance;
-			if (material)
+			if (std::shared_ptr<Material> material = meshRenderer.m_MaterialInstance; material)
 			{
-				const auto& textures = material->GetTextures();
-				ImGui::Text("Diffuse");
-				static char diffuseTexture[256];
-				//strcpy_s(diffuseTexture, AssetManager::Instance().GetName(textures.begin()->GetHandle()).c_str());
-				if (ImGui::InputText("##Diffuse", diffuseTexture, sizeof(diffuseTexture), ImGuiInputTextFlags_ReadOnly) || ImGui::IsItemHovered())
+				for (auto& texture : material->GetTexturesRef())
 				{
-					if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_TextureResource"))
-						{
-							std::string assetName = (const char*)payload->Data;
-							assetName = assetName.substr(assetName.find_last_of('\\') + 1);
-							assetName = assetName.substr(0, assetName.find_last_of(".png") + 1);
-
-							std::shared_ptr<VulkanTexture> droppedTexture;
-
-							//Check if asset is already compiled
-							//Compiled before
-							if (AssetManager::Instance().Contains(assetName))
-							{
-								//Load into memory
-								if (droppedTexture = AssetManager::Instance().GetAsset<VulkanTexture>(assetName); droppedTexture == nullptr)
-								{
-									AssetManager::Instance().AddAsset<VulkanTexture>(assetName);
-									droppedTexture = AssetManager::Instance().GetAsset<VulkanTexture>(assetName);
-								}
-							}
-							else
-							{
-								//Compile and load asset
-								droppedTexture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
-							}
-							material->SetTexture(0, droppedTexture);
-						}
-
-						ImGui::EndDragDropTarget();
-					}
+					DrawTexture(texture);
 				}
-
-				//ImGui::ColorEdit4("albedo", glm::value_ptr(meshRenderer.m_MaterialInstance->m_Albedo));
-				ImGui::Text("metallic");
-				//ImGui::SliderFloat("metallic", &meshRenderer.m_MaterialInstance->m_Metallic, 0.0f, 1.0f);
-				ImGui::Text("roughness");
-				//ImGui::SliderFloat("roughness", &meshRenderer.m_MaterialInstance->m_Roughness, 0.0f, 1.0f);
-				ImGui::Text("ao");
-				//ImGui::SliderFloat("ao", &meshRenderer.m_MaterialInstance->m_AO, 0.0f, 1.0f);
-				ImGui::Text("Normal");
-
-				
 			}
 
 			ImGui::End();
 		}		
+		//For selection of material from content browser
+		else if (const ResourceHandle resource = ContentBrowserPanel::GetSelectedResource(); resource)
+		{
+			if (std::shared_ptr<Material> material = ResourceManager::Instance().GetResource<Material>(resource); material)
+			{
+				ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
+
+				for (auto& texture : material->GetTexturesRef())
+				{
+					DrawTexture(texture);
+				}
+
+				ImGui::End();
+			}
+		}
 	}
 
 	void MaterialPanel::Shutdown()
 	{
 
+	}
+
+	void MaterialPanel::DrawTexture(std::pair<const std::string, std::shared_ptr<VulkanTexture>>& texture)
+	{
+		ImGui::Text(texture.first.c_str());
+		static char textureContent[256];
+		strcpy_s(textureContent, AssetManager::Instance().GetName(texture.second->GetHandle()).c_str());
+		if (ImGui::InputText(("##" + texture.first).c_str(), textureContent, sizeof(textureContent), ImGuiInputTextFlags_ReadOnly) || ImGui::IsItemHovered())
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_TextureResource"))
+				{
+					std::string assetName = (const char*)payload->Data;
+					assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+					assetName = assetName.substr(0, assetName.find_last_of(".png") + 1);
+
+					std::shared_ptr<VulkanTexture> droppedTexture;
+
+					//Check if asset is already compiled
+					//Compiled before
+					if (AssetManager::Instance().Contains(assetName))
+					{
+						//Load into memory
+						if (droppedTexture = AssetManager::Instance().GetAsset<VulkanTexture>(assetName); droppedTexture == nullptr)
+						{
+							AssetManager::Instance().AddAsset<VulkanTexture>(assetName);
+							droppedTexture = AssetManager::Instance().GetAsset<VulkanTexture>(assetName);
+						}
+					}
+					else
+					{
+						//Compile and load asset
+						droppedTexture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
+					}
+					texture.second = droppedTexture;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		}
 	}
 }

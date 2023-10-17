@@ -52,7 +52,7 @@ namespace TRE
 		void Update() override;
 		void BeforeReset() override;
 		void OnReset() override;
-		void OnDestroyGO() override;
+		void OnDestroyEntities() override;
 		void Shutdown() override;
 
 		//void SetAudioData(Audio* file);

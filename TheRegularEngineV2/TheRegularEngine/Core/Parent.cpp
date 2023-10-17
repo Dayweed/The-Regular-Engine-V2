@@ -28,7 +28,7 @@ namespace TRE
 
 	}
 
-	void ParentingSystem::OnDestroyGO()
+	void ParentingSystem::OnDestroyEntities()
 	{
 		for (Entity& object : ECSManager::Instance().GetEntities<Removal>())
 		{
