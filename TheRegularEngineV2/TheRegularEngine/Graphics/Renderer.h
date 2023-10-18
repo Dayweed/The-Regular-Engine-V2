@@ -10,6 +10,7 @@
 #include "DebugRenderer.h"
 #include "AnimationTest.h"
 #include "MaterialTypes/PBRMaterial.h"
+#include "CommandBuffer.h"
 
 namespace TRE
 {
@@ -42,7 +43,6 @@ namespace TRE
 			void Initialize();
 			void Create();
 			void Resize();
-			void Shutdown();
 			
 			void BeginFrame();
 			void EndFrame();
@@ -57,6 +57,7 @@ namespace TRE
 
 		private:
 			std::shared_ptr<Device> m_Device;
+			std::shared_ptr<CommandBuffer> m_CommandBuffer;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
 			std::shared_ptr<RenderPass> m_RenderPass;
@@ -66,8 +67,6 @@ namespace TRE
 			std::vector<std::unique_ptr<Image>> m_ColorImages;
 			std::vector<std::unique_ptr<Image>> m_DepthImages;
 
-			std::vector<VkCommandPool> m_CommandPool;
-			std::vector<VkCommandBuffer> m_Commandbuffers;
 			std::vector<VkFramebuffer> m_FrameBuffer;
 
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;

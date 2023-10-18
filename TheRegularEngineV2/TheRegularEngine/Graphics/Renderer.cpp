@@ -31,39 +31,13 @@ namespace TRE
 
 		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			VkCommandPoolCreateInfo CmdPoolCreateInfo{};
-			CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-			CmdPoolCreateInfo.queueFamilyIndex = SwapChain->GetQueueIndex();
-			CmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-
-			VkCommandBufferAllocateInfo CommandBufferAllocateInfo{};
-			CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-			CommandBufferAllocateInfo.commandBufferCount = 1;
-			CommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
-			m_Commandbuffers.resize(ImageCount);
-			m_CommandPool.resize(ImageCount);
-
-			for (uint32_t x = 0; x < ImageCount; x++)
-			{
-				if (VkResult Result = vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool[x]); Result != VK_SUCCESS)
-				{
-					TRE_CORE_ERROR("Unable to create a command pool");
-					assert(Result == VK_SUCCESS);
-				}
-
-				CommandBufferAllocateInfo.commandPool = m_CommandPool[x];
-				if (VkResult Result = vkAllocateCommandBuffers(m_Device->GetLogicalDevice(), &CommandBufferAllocateInfo, &m_Commandbuffers[x]); Result != VK_SUCCESS)
-				{
-					TRE_CORE_ERROR("Unable to create a command buffer");
-					assert(Result == VK_SUCCESS);
-				}
-			}
+			m_CommandBuffer = std::make_shared<CommandBuffer>("RendererCommmandBuffer");
 		}
 		else
 		{
-			m_Commandbuffers = SwapChain->GetCommandBuffers();
+			m_CommandBuffer = std::make_shared<CommandBuffer>("RendererCommmandBuffer", true);
 		}
+
 		m_DescriptorPool = DescriptorPool::Builder()
 			.SetMaxSets(100)
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
@@ -191,16 +165,10 @@ namespace TRE
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
-			vkDestroyCommandPool(m_Device->GetLogicalDevice(), m_CommandPool[x], nullptr);
 		}
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
-	}
-
-	void Renderer::Shutdown()
-	{
-
 	}
 
 	void Renderer::BeginFrame()
@@ -223,15 +191,9 @@ namespace TRE
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 		auto swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		m_CommandBuffer->Begin();
 
-		if (auto Result = vkBeginCommandBuffer(m_Commandbuffers[Index], &beginInfo); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
-
-		m_RenderPass->BeginRenderPass(m_Commandbuffers[Index], m_FrameBuffer[ImageIndex]);
+		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -240,14 +202,14 @@ namespace TRE
 		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(m_Commandbuffers[Index], 0, 1, &viewport);
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
 		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
-		vkCmdSetScissor(m_Commandbuffers[Index], 0, 1, &scissor);
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		vkCmdBindPipeline(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
+		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
 
 		//std::set<ResourceHandle> renderedMaterials;
 		std::multimap<ResourceHandle, Entity> materialSort;
@@ -284,7 +246,7 @@ namespace TRE
 
 			PushConstant pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_Commandbuffers[Index], m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			ResourceHandle currentMaterialHandle = go_mr.first;
 
@@ -294,17 +256,17 @@ namespace TRE
 				if (mr.m_MaterialInstance == nullptr)
 				{
 					m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
-					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 				}
 				else
 				{
 					mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
-					vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}
 
-			mr.m_RenderObject->Bind(m_Commandbuffers[Index]);
-			mr.m_RenderObject->Draw(m_Commandbuffers[Index]);
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 
 			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
@@ -318,38 +280,23 @@ namespace TRE
 
 		//Animation Pass
 		{
-			m_Animation->BindPipeline(m_Commandbuffers[Index]);
+			m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
 			m_Animation->UpdateMaterial(m_AnimationUBO, Index);
 
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
-			m_Animation->BindBuffers(m_Commandbuffers[Index]);
-			m_Animation->Draw(m_Commandbuffers[Index]);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
+			m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
+			m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 		}
 
-		m_RenderPass->EndRenderPass(m_Commandbuffers[Index]);
+		m_RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
 
-		if (auto Result = vkEndCommandBuffer(m_Commandbuffers[Index]); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
-
-		VkPipelineStageFlags PipelineStageFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		VkSubmitInfo SubmitInfo{};
-		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		SubmitInfo.pWaitDstStageMask = &PipelineStageFlags;
-		SubmitInfo.commandBufferCount = 1;
-		SubmitInfo.pCommandBuffers = &m_Commandbuffers[Index];
-
-		if (auto Result = vkQueueSubmit(m_Device->GetGraphicsQ(), 1, &SubmitInfo, 0); Result != VK_SUCCESS)
-		{
-			TRE_CORE_ERROR("Unable to queue submit");
-			assert(Result == VK_SUCCESS);
-		}
+		m_CommandBuffer->End();
+		m_CommandBuffer->Submit();
 	}
 
 	void Renderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
-		m_DebugRenderer->BindPipeline(m_Commandbuffers[Index]);
+		m_DebugRenderer->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
 		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
@@ -366,13 +313,13 @@ namespace TRE
 			model = glm::translate(model, mr.m_BoundingSphere.GetCenter());
 			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
 			pc.m_Model = model;
-			vkCmdPushConstants(m_Commandbuffers[Index], m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			//Bind
-			vkCmdBindDescriptorSets(m_Commandbuffers[Index], VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-			m_DebugRenderer->BindDebugSphere(m_Commandbuffers[Index]);
-			m_DebugRenderer->DrawDebugSphere(m_Commandbuffers[Index]);
+			m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
 		}
 	}
 }

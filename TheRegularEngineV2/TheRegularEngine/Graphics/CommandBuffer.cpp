@@ -5,7 +5,7 @@
 
 namespace TRE
 {
-	VkCommandBuffer CommandBuffer::GetInUseCommandBuffer(uint32_t Index)
+	VkCommandBuffer CommandBuffer::GetInUseCommandBuffer()
 	{
 		return m_InUseCommandBuffer;
 	}

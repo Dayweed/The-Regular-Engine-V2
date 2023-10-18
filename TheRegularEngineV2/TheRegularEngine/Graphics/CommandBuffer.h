@@ -13,7 +13,7 @@ namespace TRE
 			void End();
 			void Submit();
 
-			VkCommandBuffer GetInUseCommandBuffer(uint32_t Index);
+			VkCommandBuffer GetInUseCommandBuffer();
 			VkCommandBuffer GetCommandBuffer(uint32_t Index);
 
 		private:
