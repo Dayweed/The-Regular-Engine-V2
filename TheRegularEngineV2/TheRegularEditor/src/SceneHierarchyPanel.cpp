@@ -44,7 +44,7 @@ namespace TRE
 
 			//	for (size_t i{}; i < ECSManager::Instance().GetAllEntities().size(); ++i)
 			//	{
-			//		auto& currentEntity = ECSManager::Instance().GetEntities<Properties>()[i];
+			//		auto currentEntity = ECSManager::Instance().GetEntities<Properties>()[i];
 
 			//		//get all parents only
 			//		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
@@ -135,6 +135,22 @@ namespace TRE
 			ImGui::EndPopup();
 		}
 
+		//if (ImGui::BeginDragDropTarget())
+		//{
+		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
+		//	{
+		//		TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+
+		//		//if the child entity has parent
+		//		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(payload_n))
+		//		{
+		//			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(payload_n);
+		//		}
+		//	}
+
+		//	ImGui::EndDragDropTarget();
+		//}
+
 		ImGui::End();
 	}
 
@@ -146,6 +162,7 @@ namespace TRE
 	void SceneHierarchyPanel::DisplayChildren(TRE::Entity& CurrentEntity)
 	{
 		const std::string entityName = CurrentEntity->GetName();
+		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
 		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
 
 		//{
@@ -211,7 +228,7 @@ namespace TRE
 				if (ImGui::BeginDragDropSource())
 				{
 					ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
-					ImGui::Text("meeeeeeeeeeeee");
+					ImGui::Text("Dragging %s", entityName.c_str());
 					ImGui::EndDragDropSource();
 				}
 
@@ -222,6 +239,8 @@ namespace TRE
 						TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
 						
 						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
+						//std::cout << "parent: " << CurrentEntity->GetName() << "\n";
+						//std::cout << "new child: " << payload_n->GetName() << std::endl << std::endl;
 					}
 
 					ImGui::EndDragDropTarget();
@@ -230,13 +249,10 @@ namespace TRE
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 				{
 					m_SelectionManager->SelectEntity(CurrentEntity);
-
-					//std::cout << m_SelectionManager->GetSelectedEntity()->GetName() << " is clicked" << std::endl;
 				}
 
-				for (size_t i{}; i < vectorSize; ++i)
+				for (auto& entityChild : childrenVector)
 				{
-					TRE::Entity entityChild = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity)[i];
 					DisplayChildren(entityChild);
 				}
 
@@ -251,10 +267,30 @@ namespace TRE
 			
 			if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 			{
+				if (ImGui::BeginDragDropSource())
+				{
+					ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
+					ImGui::Text("Dragging %s", entityName.c_str());
+					ImGui::EndDragDropSource();
+				}
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
+					{
+						TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+
+						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
+						//std::cout << "parent: " << CurrentEntity->GetName() << "\n";
+						//std::cout << "new child: " << payload_n->GetName() << std::endl << std::endl;
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 				{
 					m_SelectionManager->SelectEntity(CurrentEntity);
-					//std::cout << m_SelectionManager->GetSelectedEntity()->GetName() << " is clicked" << std::endl;
 				}
 
 				ImGui::TreePop();
