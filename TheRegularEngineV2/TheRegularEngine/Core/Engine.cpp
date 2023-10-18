@@ -304,29 +304,40 @@ namespace TRE
 		{
 			//dont delete this
 			//testing hierarchy entities
-			Entity parent = ECSManager::Instance().CreateEntity("parent");
-			Entity child = ECSManager::Instance().CreateEntity("child");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child, parent);
-			Entity child1 = ECSManager::Instance().CreateEntity("child1");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child1, parent);
-			Entity child2 = ECSManager::Instance().CreateEntity("child2");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child2, parent);
-
+			Entity grandparent1 = ECSManager::Instance().CreateEntity("grandparent1");
 			Entity parent1 = ECSManager::Instance().CreateEntity("parent1");
-			Entity child3 = ECSManager::Instance().CreateEntity("child3");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child3, parent1);
-			Entity child4 = ECSManager::Instance().CreateEntity("child4");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child4, parent1);
-			Entity child5 = ECSManager::Instance().CreateEntity("child5");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child5, parent1);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent1, grandparent1);
 
 			Entity parent2 = ECSManager::Instance().CreateEntity("parent2");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent2, grandparent1);
+
+			Entity child1 = ECSManager::Instance().CreateEntity("child1");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child1, parent1);
+			Entity child2 = ECSManager::Instance().CreateEntity("child2");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child2, parent1);
+
+			Entity child3 = ECSManager::Instance().CreateEntity("child3");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child3, parent2);
+			Entity child4 = ECSManager::Instance().CreateEntity("child4");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child4, parent2);
+
+
+			Entity grandparent2 = ECSManager::Instance().CreateEntity("grandparent2");
+			Entity parent3 = ECSManager::Instance().CreateEntity("parent3");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent3, grandparent2);
+
+			Entity parent4 = ECSManager::Instance().CreateEntity("parent4");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent4, grandparent2);
+
+			Entity child5 = ECSManager::Instance().CreateEntity("child5");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child5, parent3);
 			Entity child6 = ECSManager::Instance().CreateEntity("child6");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child6, parent2);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child6, parent3);
+
 			Entity child7 = ECSManager::Instance().CreateEntity("child7");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child7, parent2);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child7, parent4);
 			Entity child8 = ECSManager::Instance().CreateEntity("child8");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent2);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
 		}
 
 		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
