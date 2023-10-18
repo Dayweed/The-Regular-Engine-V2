@@ -94,15 +94,17 @@ namespace TRE
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
 		auto PBRHandle = 3;
-		auto AnimationHandle = 5;
 		auto DebugDrawHandle = 7;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 
+#if 0
+		auto AnimationHandle = 5;
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
 		auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
 		auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
 		auto AnimationtextureHandle4 = Resource::GetGUIDFromHex("c076cd64a7491d7");
 		auto AnimationtextureHandle5 = Resource::GetGUIDFromHex("6b2822ce3972f53");
+#endif
 
 		//Texture::RunCompiler("../Assets/474d70e35d64e711.desc");
 		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Resources/474d70e35d64e711.DDS");
@@ -125,6 +127,7 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(vkt4));
 
 		//Animation Textures//
+#if 0
 		//Texture::RunCompiler("../Assets/9c6509635ee2d750.desc");
 		std::unique_ptr<VulkanTexture> vkt5 = std::make_unique<VulkanTexture>("../Resources/9c6509635ee2d750.DDS");
 		vkt5->SetHandle(AnimationtextureHandle1);
@@ -151,6 +154,12 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(vkt9));
 		//Animation Textures//
 
+		//AnimationShaders
+		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
+		AnimationVert->SetHandle(AnimationHandle);
+		ResourceManager::Instance().AddResource(std::move(AnimationVert));
+#endif
+
 		//Geom::RunCompiler("../Assets/b1d2057915001876.desc");
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/b1d2057915001876.geom");
 		ro->SetHandle(skullHandle);
@@ -171,11 +180,6 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
 		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawHandle);
-
-		//AnimationShaders
-		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
-		AnimationVert->SetHandle(AnimationHandle);
-		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBRHandle);
@@ -206,11 +210,11 @@ namespace TRE
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
 			test->AddComponent<Audio>();
-			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-			audioSystem->SetLoop(test, true);
-			audioSystem->SetSpatialize(test, true);
-			audioSystem->CompileAudio(test);
-			audioSystem->SetSourceRadius(test, 50.f, 150.f);
+			//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+			//audioSystem->SetLoop(test, true);
+			//audioSystem->SetSpatialize(test,true);
+			//audioSystem->CompileAudio(test);
+			//audioSystem->SetSourceRadius(test, 50.f, 150.f);
 
 			//test->AddComponent<SphereCollider>();
 			//test->AddComponent<Rigidbody>();
@@ -300,30 +304,43 @@ namespace TRE
 		{
 			//dont delete this
 			//testing hierarchy entities
-			Entity parent = ECSManager::Instance().CreateEntity("parent");
-			Entity child = ECSManager::Instance().CreateEntity("child");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child, parent);
-			Entity child1 = ECSManager::Instance().CreateEntity("child1");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child1, parent);
-			Entity child2 = ECSManager::Instance().CreateEntity("child2");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child2, parent);
-
+			Entity grandparent1 = ECSManager::Instance().CreateEntity("grandparent1");
 			Entity parent1 = ECSManager::Instance().CreateEntity("parent1");
-			Entity child3 = ECSManager::Instance().CreateEntity("child3");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child3, parent1);
-			Entity child4 = ECSManager::Instance().CreateEntity("child4");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child4, parent1);
-			Entity child5 = ECSManager::Instance().CreateEntity("child5");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child5, parent1);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent1, grandparent1);
 
 			Entity parent2 = ECSManager::Instance().CreateEntity("parent2");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent2, grandparent1);
+
+			Entity child1 = ECSManager::Instance().CreateEntity("child1");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child1, parent1);
+			Entity child2 = ECSManager::Instance().CreateEntity("child2");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child2, parent1);
+
+			Entity child3 = ECSManager::Instance().CreateEntity("child3");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child3, parent2);
+			Entity child4 = ECSManager::Instance().CreateEntity("child4");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child4, parent2);
+
+
+			Entity grandparent2 = ECSManager::Instance().CreateEntity("grandparent2");
+			Entity parent3 = ECSManager::Instance().CreateEntity("parent3");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent3, grandparent2);
+
+			Entity parent4 = ECSManager::Instance().CreateEntity("parent4");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(parent4, grandparent2);
+
+			Entity child5 = ECSManager::Instance().CreateEntity("child5");
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child5, parent3);
 			Entity child6 = ECSManager::Instance().CreateEntity("child6");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child6, parent2);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child6, parent3);
+
 			Entity child7 = ECSManager::Instance().CreateEntity("child7");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child7, parent2);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child7, parent4);
 			Entity child8 = ECSManager::Instance().CreateEntity("child8");
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent2);
+			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
 		}
+
+		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -347,11 +364,6 @@ namespace TRE
 		return *s_Instance;
 	}
 
-	const std::shared_ptr<Renderer>& Engine::GetRenderer()
-	{
-		return m_Renderer;
-	}
-
 	const std::shared_ptr<VulkanEditor>& Engine::GetVulkanImgui()
 	{
 		return m_VulkanEditor;
@@ -365,18 +377,19 @@ namespace TRE
 
 		GameLoop::Instance().Init();
 		RegisterECS();
+
 		//DemoDeserialize();
 		DemoScene();
+
+		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
+		Renderer::SetMainRenderer(m_SceneRenderer);
+		m_SceneRenderer->Initialize();
+		if (m_EngineInfo.EnableEditor)
+			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
 		ScriptEngine::InitMono();
 		ScriptEngine::BindFunctions();
 		//ScriptEngine::TestScriptingEngine();
-
-		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		m_Renderer->Initialize();
-
-		if (m_EngineInfo.EnableEditor)
-			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 	}
 
 	Engine::~Engine()
@@ -426,6 +439,9 @@ namespace TRE
 		{
 			m_Window->UpdateDeltaTime();
 
+			m_Window->BeginFrame();
+			m_SceneRenderer->BeginFrame();
+
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
 			ECSSystemManager::Instance().UpdateSystem();
@@ -469,9 +485,7 @@ namespace TRE
 			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
-			m_Window->BeginFrame();
-			m_Renderer->BeginFrame();
-			m_Renderer->EndFrame();
+			m_SceneRenderer->EndFrame();
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
@@ -481,6 +495,10 @@ namespace TRE
 				EditorSystemManager::Instance().UpdateSystem();
 				m_VulkanEditor->EndFrame();
 				Profiler::Instance().EndTimer("Imgui");
+			}
+			else //Renders straight to swapchain
+			{
+				Renderer::RenderToSwapChain();
 			}
 
 			//Draw
@@ -493,11 +511,11 @@ namespace TRE
 			{
 				ScriptEngine::UpdateScriptingEngine();
 			}
-
-
+			
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
 		}
+		Renderer::SetMainRenderer(nullptr);
 	}
 
 	void Engine::Shutdown()

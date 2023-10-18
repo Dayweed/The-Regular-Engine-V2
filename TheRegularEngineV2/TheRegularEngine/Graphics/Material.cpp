@@ -16,6 +16,8 @@ namespace TRE
 		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
+
+		AllocateTextures();
 	}
 
 	Material::~Material()
@@ -27,7 +29,7 @@ namespace TRE
 	{
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
+			Renderer::GetMainRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
 	}
 
@@ -59,15 +61,9 @@ namespace TRE
 
 	void Material::Serialize()
 	{
-		//Temp for my descriptorFile
-		MaterialDescriptorFile descriptorFile;
-		const std::string assetFolderPath = "../Assets/";
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = GetHandleHex() + ".material";
-		const std::string descPath = assetFolderPath + resource + ".desc";
-		descriptorFile.SetAssetPath("Material_Instance");
-		descriptorFile.SetDescriptorPath(descPath);
-		descriptorFile.GenerateDescriptorFile();
+		const std::string resourcePath = resourceFolderPath + resource;
 
 		std::filesystem::directory_entry entry(resourceFolderPath);
 		if (!entry.exists())
@@ -144,6 +140,36 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(mat));
 
 		return std::move(ResourceManager::Instance().GetResource<Material>(assetHandle));
+	}
+
+	void Material::AllocateTextures()
+	{
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+				m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID());
+		}
+	}
+
+	void MaterialDescriptorFile::Generate()
+	{
+		const std::string& handleHex = Resource::GetGUIDHex(Resource::GenerateGUID());
+
+		const std::string assetFolderPath = "../Assets/";
+		const std::string resourceFolderPath = "../Resources/";
+		const std::string resource = handleHex + ".material";
+		const std::string descPath = assetFolderPath + resource + ".desc";
+		const std::string resourcePath = resourceFolderPath + resource;
+		SetAssetPath("Material_Instance.material");
+		SetDescriptorPath(descPath);
+		SetResourcePath(resourcePath);
+		GenerateDescriptorFile();
+	}
+
+	void MaterialDescriptorFile::Rename(const std::string& newName)
+	{
+		SetAssetPath("Material_Instance.material");
+		GenerateDescriptorFile();
 	}
 
 	/*void MaterialDescriptorFile::Write()

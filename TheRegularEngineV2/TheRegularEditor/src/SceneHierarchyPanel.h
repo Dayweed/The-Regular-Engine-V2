@@ -26,9 +26,12 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
-			void DisplayChildren(TRE::Entity& ParentEntity);
+			void DisplayChildren(TRE::Entity& CurrentEntity);
+			void DeleteChildren(TRE::Entity& CurrentEntity);
 
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
+			std::string entityIDTodeleted;
+			bool entityTobedeletedIsParent;
 	};
 }

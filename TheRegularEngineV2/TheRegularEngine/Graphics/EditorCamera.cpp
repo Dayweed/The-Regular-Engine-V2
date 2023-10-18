@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EditorCamera.h"
 #include <iostream>
 
@@ -12,8 +13,8 @@ namespace TRE
 	{
 		//std::cout << "EditorCamera::Update()" << std::endl;
 
-		CameraHelper::UpdateViewMatrix(*this);
-		CameraHelper::UpdateProjectionMatrix(*this);
+		//CameraHelper::UpdateViewMatrix(*this);
+		//CameraHelper::UpdateProjectionMatrix(*this);
 	}
 
 	void EditorCamera::Shutdown()

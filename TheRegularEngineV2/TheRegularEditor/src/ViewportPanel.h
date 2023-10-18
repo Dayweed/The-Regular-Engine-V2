@@ -40,6 +40,7 @@ namespace TRE
 			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);
 			void UpdateViewportSize();
 			void UpdateClickRay();
+			void UpdateGizmo();
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			int m_GizmoOperation = -1; // -1 means no operation

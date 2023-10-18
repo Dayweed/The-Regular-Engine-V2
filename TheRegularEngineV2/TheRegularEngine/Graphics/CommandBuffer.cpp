@@ -5,7 +5,7 @@
 
 namespace TRE
 {
-	VkCommandBuffer CommandBuffer::GetInUseCommandBuffer(uint32_t Index)
+	VkCommandBuffer CommandBuffer::GetInUseCommandBuffer()
 	{
 		return m_InUseCommandBuffer;
 	}
@@ -69,6 +69,10 @@ namespace TRE
 
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDestroyCommandPool(Device, m_CommandPool, nullptr);
+		for (int x = 0; x < m_Fences.size(); x++)
+		{
+			vkDestroyFence(Device, m_Fences[x], nullptr);
+		}
 	}
 
 	void CommandBuffer::Begin()

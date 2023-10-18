@@ -1,8 +1,9 @@
 #pragma once
 #include "Window.h"
 #include "SystemManager.h"
-#include "Graphics/Renderer.h"
 #include "Graphics/VulkanEditor.h"
+#include "Graphics/Renderer.h"
+#include "Graphics/SceneRenderer.h"
 
 namespace TRE
 {
@@ -31,7 +32,6 @@ namespace TRE
 			}
 
 			const std::shared_ptr<Window>& GetWindow();
-			const std::shared_ptr<Renderer>& GetRenderer();
 			const std::shared_ptr<VulkanEditor>& GetVulkanImgui();
 			const EngineInfo& GetEngineInfo();
 			static Engine& GetInstance();
@@ -41,8 +41,8 @@ namespace TRE
 
 		private:
 			std::shared_ptr<Window> m_Window;
-			std::shared_ptr<Renderer> m_Renderer;
 			std::shared_ptr<VulkanEditor> m_VulkanEditor;
+			std::shared_ptr<SceneRenderer> m_SceneRenderer;
 			EngineInfo m_EngineInfo;
 			bool m_Running = true;
 

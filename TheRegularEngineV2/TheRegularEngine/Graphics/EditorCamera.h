@@ -2,7 +2,7 @@
 
 namespace TRE
 {
-	class EditorCamera : public Camera
+	class EditorCamera : public BaseCamera
 	{
 	public:
 		bool m_IsDirty{ false };
