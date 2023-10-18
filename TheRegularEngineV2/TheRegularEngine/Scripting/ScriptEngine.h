@@ -9,6 +9,16 @@
 
 namespace TRE
 {
+	class ScriptInputSystem
+	{
+	public:
+		ScriptInputSystem() = default;
+		void InitInputSystem();
+
+	private:
+		friend class ScriptEngine;
+	};
+
 	class ScriptEngine 
 	{
 		public:
@@ -24,9 +34,6 @@ namespace TRE
 			static void TestSpawnObject();
 
 			static void SetTestGUID(std::string guid) { TestGUID = guid; }
-
-
-
 
 #pragma region MonoFunctionBindings
 
@@ -53,20 +60,77 @@ namespace TRE
 			// Parenting
 
 			// Physics
+			// Colliders
+			static void BindConstructSphereCollider(MonoString* id);
+			static void BindResizeSphereCollider(MonoString* id, float s);
+			static void BindConstructBoxCollider(MonoString* id);
+			static void BindResizeBoxCollider(MonoString* id, glm::vec3 s);
 
 			// Camera
+			// Setters
+			static void BindCamSetPosition(MonoString* id, glm::vec3 newPos);
+			static void BindCamSetRotation(MonoString* id, glm::vec3 newRot);
+			static void BindCamSetViewportSize(MonoString* id, glm::vec2 newSize);
+			static void BindCamSetFocalPoint(MonoString* id, glm::vec3 focalpoint);
+			static void BindCamSetFocalLength(MonoString* id, float focalLength);
+			static void BindCamSetPitch(MonoString* id, float pitch);
+			static void BindCamSetYaw(MonoString* id, float yaw);
+			static void BindCamSetRoll(MonoString* id, float roll);
+			static void BindCamSetFOV(MonoString* id, float fov);
+			static void BindCamSetNear(MonoString* id, float n);
+			static void BindCamSetFar(MonoString* id, float f);
+			static void BindCamSetLeft(MonoString* id, float left);
+			static void BindCamSetRight(MonoString* id, float right);
+			static void BindCamSetTop(MonoString* id, float top);
+			static void BindCamSetBottom(MonoString* id, float bottom);
+			static void BindCamSetAspectRatio(MonoString* id, float aspectRatio);
+			static void BindCamSetIsPerspective(MonoString* id, bool isPerspective);
+			static void BindCamSetIsMainCamera(MonoString* id, bool isMainCamera);
+
+			// Getters
+			static void BindCamGetPosition(MonoString* id, glm::vec3* result);
+			static void BindCamGetRotation(MonoString* id, glm::vec3* result);
+			static void BindCamGetViewMatrix(MonoString* id, glm::mat4* result);
+			static void BindCamGetProjectionMatrix(MonoString* id, glm::mat4* result);
+			static void BindCamGetInverseViewMatrix(MonoString* id, glm::mat4* result);
+			static void BindCamGetInverseProjectionMatrix(MonoString* id, glm::mat4* result);
+			static void BindCamGetInverseViewProjectionMatrix(MonoString* id, glm::mat4* result);
+			static void BindCamGetViewportSize(MonoString* id, glm::vec2* result);
+			static void BindCamGetFocalPoint(MonoString* id, glm::vec3* result);
+			static void BindCamGetFocalLength(MonoString* id, float* result);
+			static void BindCamGetPitch(MonoString* id, float* result);
+			static void BindCamGetYaw(MonoString* id, float* result);
+			static void BindCamGetRoll(MonoString* id, float* result);
+			static void BindCamGetFOV(MonoString* id, float* result);
+			static void BindCamGetNear(MonoString* id, float* result);
+			static void BindCamGetFar(MonoString* id, float* result);
+			static void BindCamGetLeft(MonoString* id, float* result);
+			static void BindCamGetRight(MonoString* id, float* result);
+			static void BindCamGetTop(MonoString* id, float* result);
+			static void BindCamGetBottom(MonoString* id, float* result);
+			static void BindCamGetAspectRatio(MonoString* id, float* result);
+			static void BindCamIsPerspective(MonoString* id, bool* result);
+			static void BindCamIsMainCamera(MonoString* id, bool* result);
 
 			// Audio
 
 			// Mesh Renderer
+
+			// Input Binding
+			static bool GetKeyPressed(int key);
+			static bool GetKeyTriggered(int key);
+
+			// Logging
+			static void SendMessageToConsole(MonoString* message);
+
 #pragma endregion
 
 		private:
 			static MonoDomain* s_RootDomain;
 			static MonoDomain* s_AppDomain;
 			static MonoAssembly* s_MonoAssembly;
+			friend class ScriptInputSystem;
 
-			
 	};
 
 }
