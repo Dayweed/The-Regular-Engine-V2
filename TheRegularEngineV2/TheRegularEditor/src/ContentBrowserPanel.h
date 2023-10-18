@@ -15,21 +15,20 @@
 #include "TREIncludes.h"
 #include "Panel.h"
 #include "SelectionManager.h"
+#include "AssetSelector.h"
 
 namespace TRE
 {
 	class ContentBrowserPanel : public Panel
 	{
 		public:
-			ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager);
+			ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector);
 			~ContentBrowserPanel();
 			void PollItems();
 			void BrowseProjectFiles();
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
-
-			static ResourceHandle GetSelectedResource() { return m_SelectedResource; }
 
 		private:
 			//Current File Path
@@ -42,6 +41,7 @@ namespace TRE
 			std::filesystem::path m_ScriptDirectory;
 
 			std::shared_ptr<SelectionManager> m_SelectionManager;
+			std::shared_ptr<AssetSelector> m_AssetSelector;
 
 			//Texture for icons
 			ImTextureID m_TmpTexturesID{};
@@ -73,7 +73,6 @@ namespace TRE
 
 			//PopUp for invalid resources
 			bool m_InvalidResourcePopUp = false;
-
-			static ResourceHandle m_SelectedResource;
+			bool m_AssetClicked = false;
 	};
 }

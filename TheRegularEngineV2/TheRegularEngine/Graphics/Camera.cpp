@@ -72,27 +72,27 @@ namespace TRE
 		CameraHelper::SetViewDirection(camera, target - camera.m_Position);
 	}
 
-	const glm::quat Camera::GetOrientation() const
+	const glm::quat BaseCamera::GetOrientation() const
 	{
 		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, -m_Roll));
 	}
 
-	const glm::vec3 Camera::GetUpVec() const
+	const glm::vec3 BaseCamera::GetUpVec() const
 	{
 		return glm::rotate(GetOrientation(), glm::vec3(0.f, 1.f, 0.f));
 	}
 
-	const glm::vec3 Camera::GetRightVec() const
+	const glm::vec3 BaseCamera::GetRightVec() const
 	{
 		return glm::rotate(GetOrientation(), glm::vec3(1.f, 0.f, 0.f));
 	}
 
-	const glm::vec3 Camera::GetForwardVec() const
+	const glm::vec3 BaseCamera::GetForwardVec() const
 	{
 		return glm::rotate(GetOrientation(), glm::vec3(0.f, 0.f, -1.f));
 	}
 
-	const glm::vec3 Camera::GetViewDirection() const
+	const glm::vec3 BaseCamera::GetViewDirection() const
 	{
 		return -GetForwardVec();
 	}

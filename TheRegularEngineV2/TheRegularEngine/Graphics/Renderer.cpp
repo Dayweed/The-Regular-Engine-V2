@@ -45,6 +45,9 @@ namespace TRE
 			.Build();
 
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
+
+		//Animation testing
+#if 0
 		m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 
 		m_L2W = glm::identity<glm::mat4>();
@@ -54,6 +57,7 @@ namespace TRE
 		{
 			m_AnimationBuffer.L2W[x] = glm::identity<glm::mat4>();
 		}
+#endif
 	}
 
 	void Renderer::Initialize()
@@ -83,7 +87,9 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
+#if 0
 		m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
+#endif
 	}
 
 	void Renderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -179,10 +185,13 @@ namespace TRE
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		ubo.m_LightPosition = mainCamera.m_Position;
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
-		m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+
+#if 0
+		m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
 		m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
+#endif
 	}
 
 	void Renderer::EndFrame()
@@ -211,7 +220,6 @@ namespace TRE
 
 		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
 
-		//std::set<ResourceHandle> renderedMaterials;
 		std::multimap<ResourceHandle, Entity> materialSort;
 
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
@@ -278,6 +286,7 @@ namespace TRE
 			DebugDrawPass(Index);
 		}
 
+#if 0
 		//Animation Pass
 		{
 			m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
@@ -287,6 +296,7 @@ namespace TRE
 			m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
 			m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 		}
+#endif
 
 		m_RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
 

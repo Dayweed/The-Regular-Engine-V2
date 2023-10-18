@@ -73,12 +73,14 @@ namespace TRE
 
 			std::unique_ptr<DebugRenderer> m_DebugRenderer;
 
+			//Temp for animation Testing
+#if 0 
 			std::unique_ptr<AnimationTest> m_Animation;
 			std::shared_ptr<UniformBuffer> m_AnimationUBO;
 			AnimationUBO m_AnimationBuffer;
 
-			//Temp for animation Testing
 			glm::mat4						m_L2W;
+#endif
 
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;

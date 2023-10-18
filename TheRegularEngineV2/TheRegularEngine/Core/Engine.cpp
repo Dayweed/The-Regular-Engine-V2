@@ -94,15 +94,17 @@ namespace TRE
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
 		auto PBRHandle = 3;
-		auto AnimationHandle = 5;
 		auto DebugDrawHandle = 7;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 
+#if 0
+		auto AnimationHandle = 5;
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
 		auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
 		auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
 		auto AnimationtextureHandle4 = Resource::GetGUIDFromHex("c076cd64a7491d7");
 		auto AnimationtextureHandle5 = Resource::GetGUIDFromHex("6b2822ce3972f53");
+#endif
 
 		//Texture::RunCompiler("../Assets/474d70e35d64e711.desc");
 		std::unique_ptr<VulkanTexture> vkt1 = std::make_unique<VulkanTexture>("../Resources/474d70e35d64e711.DDS");
@@ -125,6 +127,7 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(vkt4));
 
 		//Animation Textures//
+#if 0
 		//Texture::RunCompiler("../Assets/9c6509635ee2d750.desc");
 		std::unique_ptr<VulkanTexture> vkt5 = std::make_unique<VulkanTexture>("../Resources/9c6509635ee2d750.DDS");
 		vkt5->SetHandle(AnimationtextureHandle1);
@@ -151,6 +154,12 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(vkt9));
 		//Animation Textures//
 
+		//AnimationShaders
+		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
+		AnimationVert->SetHandle(AnimationHandle);
+		ResourceManager::Instance().AddResource(std::move(AnimationVert));
+#endif
+
 		//Geom::RunCompiler("../Assets/b1d2057915001876.desc");
 		std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/b1d2057915001876.geom");
 		ro->SetHandle(skullHandle);
@@ -171,11 +180,6 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
 		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawHandle);
-
-		//AnimationShaders
-		std::unique_ptr<Shader> AnimationVert = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
-		AnimationVert->SetHandle(AnimationHandle);
-		ResourceManager::Instance().AddResource(std::move(AnimationVert));
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBRHandle);
@@ -206,11 +210,11 @@ namespace TRE
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
 			test->AddComponent<Audio>();
-			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-			audioSystem->SetLoop(test, true);
-			audioSystem->SetSpatialize(test,true);
-			audioSystem->CompileAudio(test);
-			audioSystem->SetSourceRadius(test, 50.f, 150.f);
+			//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+			//audioSystem->SetLoop(test, true);
+			//audioSystem->SetSpatialize(test,true);
+			//audioSystem->CompileAudio(test);
+			//audioSystem->SetSourceRadius(test, 50.f, 150.f);
 
 			//test->AddComponent<SphereCollider>();
 			//test->AddComponent<Rigidbody>();
@@ -324,6 +328,8 @@ namespace TRE
 			Entity child8 = ECSManager::Instance().CreateEntity("child8");
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent2);
 		}
+
+		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST

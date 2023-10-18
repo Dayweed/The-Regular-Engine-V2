@@ -28,6 +28,10 @@ namespace TRE
 		template<typename T>
 		std::shared_ptr<T> CompileAndLoad(const std::string& assetName);
 		void RemoveAsset(const std::string& assetName);
+
+		//Like dangerous
+		void RenameAsset(const std::string& oldName, const std::string& newName);
+		void RenameAsset(const ResourceHandle resourceHandle, const std::string& newName);
 		
 		bool Contains(const std::string& assetName) const;
 		bool Contains(const ResourceHandle resourceHandle) const;

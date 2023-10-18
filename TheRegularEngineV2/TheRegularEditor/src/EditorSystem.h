@@ -3,6 +3,7 @@
 #include "pch.h"
 #include "PanelManager.h"
 #include "SelectionManager.h"
+#include "AssetSelector.h"
 
 namespace TRE
 {
@@ -19,5 +20,6 @@ namespace TRE
 		private:
 			std::unique_ptr<PanelManager> m_PanelManager;
 			std::shared_ptr<SelectionManager> m_SelectionManager;
+			std::shared_ptr<AssetSelector> m_AssetSelector;
 	};
 }
