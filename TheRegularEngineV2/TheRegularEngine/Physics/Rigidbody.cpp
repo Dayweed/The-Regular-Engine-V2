@@ -61,10 +61,52 @@ namespace TRE
 		return rigidbody.m_IsInitialized = true;
 	}
 
-	void PhysicsSystem::AddForce(const Entity& entity, glm::vec3 force) const
+	void PhysicsSystem::AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
 		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
+	}
+
+	void PhysicsSystem::ConstrainPositionX(const Entity& entity, bool state) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_X, state);
+		entity->GetComponent<Rigidbody>().m_FreezePositionX = state;
+	}
+
+	void PhysicsSystem::ConstrainPositionY(const Entity& entity, bool state) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, state);
+		entity->GetComponent<Rigidbody>().m_FreezePositionY = state;
+	}
+
+	void PhysicsSystem::ConstrainPositionZ(const Entity& entity, bool state) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, state);
+		entity->GetComponent<Rigidbody>().m_FreezePositionZ = state;
+	}
+
+	void PhysicsSystem::ConstrainRotationX(const Entity& entity, bool state) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, state);
+		entity->GetComponent<Rigidbody>().m_FreezeRotationX = state;
+	}
+
+	void PhysicsSystem::ConstrainRotationY(const Entity& entity, bool state) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, state);
+		entity->GetComponent<Rigidbody>().m_FreezeRotationY = state;
+	}
+
+	void PhysicsSystem::ConstrainRotationZ(const Entity& entity, bool state) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, state);
+		entity->GetComponent<Rigidbody>().m_FreezeRotationZ = state;
 	}
 
 	void PhysicsSystem::UpdateRigidbody(const Entity& entity) const

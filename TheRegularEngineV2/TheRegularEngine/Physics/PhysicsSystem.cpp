@@ -299,16 +299,6 @@ namespace TRE
 		}
 	}
 
-	void PhysicsSystem::RigidbodyConstraintsStuff(const Entity& entity) const
-	{
-		assert(m_Actors.contains(entity->GetGUID()));
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		auto x = rigidDynamic->getRigidDynamicLockFlags();
-		x.raise(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X);
-		rigidDynamic->setRigidDynamicLockFlags(x);
-	}
-
 	// if one shape on an entity is a trigger, they're all triggers now :)
 	void PhysicsSystem::ColliderToTrigger(const Entity& entity) const
 	{
