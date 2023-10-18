@@ -325,18 +325,12 @@ namespace TRE
 				DeleteChildren(entityChild);
 			}
 
-			ECSManager::Instance().DestroyEntity(CurrentEntity);
+			ECSManager::Instance().MarkForDeletion(CurrentEntity);
 		}
 
 		else
 		{
-			//std::string GUID = ECSManager::Instance().FindEntityID(CurrentEntity);
-			ECSManager::Instance().DestroyEntity(CurrentEntity);
-
-			//if (ECSManager::Instance().FindEntity(GUID))
-			//{
-			//	std::cout << "why is it true?\n";
-			//}
+			ECSManager::Instance().MarkForDeletion(CurrentEntity);
 		}
 	}
 }
