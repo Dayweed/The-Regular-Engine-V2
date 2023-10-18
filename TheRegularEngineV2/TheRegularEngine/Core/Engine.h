@@ -33,6 +33,7 @@ namespace TRE
 			const std::shared_ptr<Window>& GetWindow();
 			const std::shared_ptr<Renderer>& GetRenderer();
 			const std::shared_ptr<VulkanEditor>& GetVulkanImgui();
+			const EngineInfo& GetEngineInfo();
 			static Engine& GetInstance();
 
 		protected:

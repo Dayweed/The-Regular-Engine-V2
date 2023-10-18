@@ -7,6 +7,11 @@
 
 namespace TRE
 {
+	VkImageView SwapChain::GetCurrentSwapChainImageView(int Index)
+	{
+		return m_SwapChainImages[Index].ImageView;
+	}
+
 	uint32_t SwapChain::GetQueueIndex()
 	{
 		return m_QueueIndex;

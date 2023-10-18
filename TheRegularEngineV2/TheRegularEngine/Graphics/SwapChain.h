@@ -48,6 +48,10 @@ namespace TRE
 			VkExtent2D GetSwapChainExtent();
 			SwapChainSettings GetSwapChainSettings();
 			uint32_t GetCurrentImageIndex();
+			VkImageView GetCurrentSwapChainImageView(int Index);
+			std::vector<VkCommandBuffer>& GetCommandBuffers() {
+				return m_Commandbuffers;
+			}
 
 		public:
 			void CreateSwapChain(uint32_t Width, uint32_t Height);

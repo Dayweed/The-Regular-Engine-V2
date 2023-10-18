@@ -337,6 +337,11 @@ namespace TRE
 		return m_Window;
 	}
 
+	const EngineInfo& Engine::GetEngineInfo()
+	{
+		return m_EngineInfo;
+	}
+
 	Engine& Engine::GetInstance()
 	{
 		return *s_Instance;
