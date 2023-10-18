@@ -1,17 +1,29 @@
 [
    [
-      5,
+      17,
       0,
       1,
       2,
       3,
-      4
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
    ],
    [
       0
    ],
    [
-      5,
+      17,
       0,
       {
          "m_Children": [],
@@ -36,43 +48,187 @@
       {
          "m_Children": [],
          "m_Parent": ""
+      },
+      5,
+      {
+         "m_Children": [
+            "{DFA5413A-421F-4688-B396-668D7576DC79}",
+            "{009CB8FE-01B7-4920-B611-5B5C22E60FAF}",
+            "{963EFED1-419E-482B-A806-98F9A86D01FD}"
+         ],
+         "m_Parent": ""
+      },
+      6,
+      {
+         "m_Children": [],
+         "m_Parent": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}"
+      },
+      7,
+      {
+         "m_Children": [],
+         "m_Parent": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}"
+      },
+      8,
+      {
+         "m_Children": [],
+         "m_Parent": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}"
+      },
+      9,
+      {
+         "m_Children": [
+            "{732C439E-044C-4712-A366-6B923A5EBE19}",
+            "{1DEACDFF-932B-4ED8-9F60-C6C165274DBF}",
+            "{7BD19847-35A5-448E-80DD-0A9068DF0745}"
+         ],
+         "m_Parent": ""
+      },
+      10,
+      {
+         "m_Children": [],
+         "m_Parent": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}"
+      },
+      11,
+      {
+         "m_Children": [],
+         "m_Parent": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}"
+      },
+      12,
+      {
+         "m_Children": [],
+         "m_Parent": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}"
+      },
+      13,
+      {
+         "m_Children": [
+            "{B0E55C28-B71A-4646-9E78-7E1A6C1C84EC}",
+            "{044E5F89-622B-4BC8-950C-09631BE6A6F5}",
+            "{D4FB8134-A628-4CA8-8CD0-CA1027331FE7}"
+         ],
+         "m_Parent": ""
+      },
+      14,
+      {
+         "m_Children": [],
+         "m_Parent": "{8F9F2089-714F-44E5-A86C-66808C35A050}"
+      },
+      15,
+      {
+         "m_Children": [],
+         "m_Parent": "{8F9F2089-714F-44E5-A86C-66808C35A050}"
+      },
+      16,
+      {
+         "m_Children": [],
+         "m_Parent": "{8F9F2089-714F-44E5-A86C-66808C35A050}"
       }
    ],
    [
-      5,
+      17,
       0,
       {
          "m_Active": true,
-         "m_GUID": "{7E20C514-F312-41B5-8078-B713F074B4D4}",
+         "m_GUID": "{F457A5F8-ACE7-4779-9DEC-BA03A55C02B5}",
          "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{6B169979-1C58-433E-9263-037345D01EA2}",
+         "m_GUID": "{15A330FB-6314-4AB0-98DF-0A8D75743E68}",
          "m_Name": "Test2"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{F5393110-C23B-4330-BA88-BFF56B2D6E00}",
+         "m_GUID": "{14DFB094-5B53-415E-98AA-EDBA7CB418AF}",
          "m_Name": "Test3"
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "{13CE64D9-2284-4569-A29D-1B0652435E33}",
+         "m_GUID": "{979DA2F8-FAA6-4DDA-ABB3-02DF96D596E9}",
          "m_Name": "Plane collider"
       },
       4,
       {
          "m_Active": true,
-         "m_GUID": "{F6DDA6F8-1C68-4C0F-A9C8-95B8C341DD24}",
+         "m_GUID": "{7F7E652C-BA16-436E-9E26-2D213022A890}",
          "m_Name": "cam"
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}",
+         "m_Name": "parent"
+      },
+      6,
+      {
+         "m_Active": true,
+         "m_GUID": "{DFA5413A-421F-4688-B396-668D7576DC79}",
+         "m_Name": "child"
+      },
+      7,
+      {
+         "m_Active": true,
+         "m_GUID": "{009CB8FE-01B7-4920-B611-5B5C22E60FAF}",
+         "m_Name": "child1"
+      },
+      8,
+      {
+         "m_Active": true,
+         "m_GUID": "{963EFED1-419E-482B-A806-98F9A86D01FD}",
+         "m_Name": "child2"
+      },
+      9,
+      {
+         "m_Active": true,
+         "m_GUID": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}",
+         "m_Name": "parent1"
+      },
+      10,
+      {
+         "m_Active": true,
+         "m_GUID": "{732C439E-044C-4712-A366-6B923A5EBE19}",
+         "m_Name": "child3"
+      },
+      11,
+      {
+         "m_Active": true,
+         "m_GUID": "{1DEACDFF-932B-4ED8-9F60-C6C165274DBF}",
+         "m_Name": "child4"
+      },
+      12,
+      {
+         "m_Active": true,
+         "m_GUID": "{7BD19847-35A5-448E-80DD-0A9068DF0745}",
+         "m_Name": "child5"
+      },
+      13,
+      {
+         "m_Active": true,
+         "m_GUID": "{8F9F2089-714F-44E5-A86C-66808C35A050}",
+         "m_Name": "parent2"
+      },
+      14,
+      {
+         "m_Active": true,
+         "m_GUID": "{B0E55C28-B71A-4646-9E78-7E1A6C1C84EC}",
+         "m_Name": "child6"
+      },
+      15,
+      {
+         "m_Active": true,
+         "m_GUID": "{044E5F89-622B-4BC8-950C-09631BE6A6F5}",
+         "m_Name": "child7"
+      },
+      16,
+      {
+         "m_Active": true,
+         "m_GUID": "{D4FB8134-A628-4CA8-8CD0-CA1027331FE7}",
+         "m_Name": "child8"
       }
    ],
    [
-      5,
+      17,
       0,
       {
          "m_Position": [
@@ -162,6 +318,222 @@
             1.0,
             1.0
          ]
+      },
+      5,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      10,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      11,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      12,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      13,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      14,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      15,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      16,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
       }
    ],
    [
@@ -210,18 +582,8 @@
          "m_Left": -1.0,
          "m_Near": 0.10000000149011612,
          "m_Pitch": 0.0,
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
          "m_Right": 1.0,
          "m_Roll": 0.0,
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
          "m_Top": 1.0,
          "m_ViewportSize": [
             1600.0,

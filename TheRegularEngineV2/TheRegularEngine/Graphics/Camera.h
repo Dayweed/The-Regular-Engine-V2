@@ -57,11 +57,11 @@ namespace TRE
 		bool m_IsMainCamera{ false }; // SSSS
 		bool m_IsDirty{ false };
 
-		const glm::quat GetOrientation() const;
-		const glm::vec3 GetUpVec() const;
-		const glm::vec3 GetRightVec() const;
-		const glm::vec3 GetForwardVec() const;
-		const glm::vec3 GetViewDirection() const;
+		//const glm::quat GetOrientation() const;
+		//const glm::vec3 GetUpVec() const;
+		//const glm::vec3 GetRightVec() const;
+		//const glm::vec3 GetForwardVec() const;
+		//const glm::vec3 GetViewDirection() const;
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
 		friend void to_json(nlohmann::json& j, const Camera& t) // Serialize
@@ -76,8 +76,6 @@ namespace TRE
 			std::vector<float> v_focal{ focal[0], focal[1], focal[2] };
 
 			j = nlohmann::json{
-				{ "m_Position", v_pos },
-				{ "m_Rotation", v_rot },
 				{ "m_ViewportSize", v_vpsize },
 				{ "m_Pitch", t.m_Pitch },
 				{ "m_Yaw", t.m_Yaw },
@@ -98,12 +96,6 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, Camera& t) // Deserialize
 		{
-			std::vector<float> v_pos{ j.at("m_Position").get<std::vector<float>>() };
-			float a_pos[3]{ v_pos[0], v_pos[1], v_pos[2] };
-			t.m_Position = glm::make_vec3(a_pos);
-			std::vector<float> v_rot{ j.at("m_Rotation").get<std::vector<float>>() };
-			float a_rot[3]{ v_rot[0], v_rot[1], v_rot[2] };
-			t.m_Rotation = glm::make_vec3(a_rot);
 			std::vector<float> v_vpsize{ j.at("m_ViewportSize").get<std::vector<float>>() };
 			float a_vpsize[2]{ v_vpsize[0], v_vpsize[1] };
 			t.m_ViewportSize = glm::make_vec2(a_vpsize);
@@ -195,7 +187,7 @@ namespace TRE
 
 property_begin(TRE::Camera)
 {
-	property_var(m_Position).Name("Position"),
+		property_var(m_Position).Name("Position"),
 		property_var(m_Rotation).Name("Rotation"),
 		property_var(m_ViewportSize).Name("Viewport Size"),
 		property_var(m_Pitch).Name("Pitch"),

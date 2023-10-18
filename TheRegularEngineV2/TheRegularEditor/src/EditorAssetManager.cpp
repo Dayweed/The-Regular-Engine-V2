@@ -26,7 +26,7 @@ namespace TRE
 						std::string assetName = line;
 						assetName = assetName.substr(line.find_last_of('/') + 1);
 						std::string resourceCheck = resourcePath.string() + "/" + assetHandle;
-						
+
 						for (const auto& rscEntry : std::filesystem::directory_iterator(resourcePath))
 						{
 							std::string rscHandle = rscEntry.path().stem().string();
@@ -61,6 +61,88 @@ namespace TRE
 	void AssetManager::RemoveAsset(const std::string& assetName)
 	{
 		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName]);
+	}
+
+	void AssetManager::RenameAsset(const std::string& oldName, const std::string& newName)
+	{
+		m_AssetNameToHandle[newName] = m_AssetNameToHandle[oldName];
+		m_AssetNameToHandle.erase(oldName);
+
+		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[newName]);
+		//Only type geom, texture and audio has physical asset file
+		if (assetType != ResourceType::Material)
+		{
+			//Rename asset file and update descriptor file
+			std::filesystem::path assetsPath = "../Assets/";
+			std::filesystem::path newAssetsPath = assetsPath;
+
+			//Update asset name
+			assetsPath += oldName;
+			newAssetsPath += newName;
+			if (std::filesystem::exists(assetsPath))
+				std::filesystem::rename(assetsPath, newAssetsPath);
+			else
+				TRE_ERROR("AssetManager::RenameAsset: Asset with name {0} does not exist", oldName);
+		}
+
+		std::filesystem::path oldDescriptorPath = "../Assets/";
+		//Update descriptor file
+		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[newName]);
+		//Check for asset type
+		if (assetType == ResourceType::Material)
+			oldDescriptorPath += ".material";
+		else if (assetType == ResourceType::Mesh)
+			oldDescriptorPath += ".geom";
+		else if (assetType == ResourceType::Texture)
+			oldDescriptorPath += ".texture";
+		else if (assetType == ResourceType::Shader)
+			oldDescriptorPath += ".shader";
+		else if(assetType == ResourceType::Audio)
+			oldDescriptorPath += ".audio";
+		else
+			TRE_ERROR("AssetManager::RenameAsset: Asset with name {0} has invalid type", oldName);
+		
+		oldDescriptorPath += ".desc";
+
+		if (std::filesystem::exists(oldDescriptorPath))
+		{
+			std::ifstream file(oldDescriptorPath);
+
+			//Create new descriptor file temporarily for copying
+			std::filesystem::path newDescriptorPath = oldDescriptorPath;
+			newDescriptorPath += ".temp";
+
+			std::ofstream newFile(newDescriptorPath);
+			std::string line;
+			while (std::getline(file, line))
+			{
+				if (line == "Asset File Path:")
+				{
+					newFile << line << std::endl;
+					std::getline(file, line);
+					line = line.substr(0, line.find_last_of('/') + 1);
+					line += newName;
+					newFile << line << std::endl;
+				}
+				else
+				{
+					newFile << line << std::endl;
+				}
+			}
+			file.close();
+			newFile.close();
+
+			//Delete old descriptor file and rename new one
+			std::filesystem::remove(oldDescriptorPath);
+			std::filesystem::rename(newDescriptorPath, oldDescriptorPath);
+		}
+		else
+			TRE_ERROR("AssetManager::RenameAsset: Asset descriptor with name {0} does not exist", oldName);
+	}
+
+	void AssetManager::RenameAsset(const ResourceHandle resourceHandle, const std::string& newName)
+	{
+		RenameAsset(GetName(resourceHandle), newName);
 	}
 
 	bool AssetManager::Contains(const std::string& assetName) const
