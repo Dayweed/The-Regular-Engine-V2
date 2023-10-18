@@ -1,6 +1,10 @@
 #pragma once
 #include "Resource.h"
 #include "Core/Asserts.h"
+#include "Graphics/RenderObject.h"
+#include "Graphics/VulkanTexture.h"
+#include "Graphics/Material.h"
+#include "Graphics/Shader.h"
 
 namespace TRE
 {
@@ -13,6 +17,8 @@ namespace TRE
 			return instance;
 		}
 	public:
+		template<typename T>
+		void LoadResource(const std::string& hexHandle);
 		void AddResource(std::unique_ptr<Resource> asset);
 		void RemoveResource(ResourceHandle Handle);
 		void UnloadUnusedResources();
@@ -58,12 +64,48 @@ namespace TRE
 		std::unordered_map<ResourceHandle, std::shared_ptr<Resource>> m_Resources;
 	};
 
+	template<typename T>
+	void ResourceManager::LoadResource(const std::string& hexHandle)
+	{
+		const auto type = T::GetType();
+		if (type == ResourceType::Texture)
+		{
+			std::unique_ptr<VulkanTexture> texture = std::make_unique<VulkanTexture>("../Resources/" + hexHandle + ".DDS");
+			texture->SetHandle(Resource::GetGUIDFromHex(hexHandle));
+			m_Resources[texture->GetHandle()] = std::move(texture);
+		}
+		else if (type == ResourceType::Mesh)
+		{
+			std::unique_ptr<RenderObject> ro = std::make_unique<RenderObject>("../Resources/" + hexHandle + ".geom");
+			ro->SetHandle(Resource::GetGUIDFromHex(hexHandle));
+			m_Resources[ro->GetHandle()] = std::move(ro);
+
+		}
+		else if (type == ResourceType::Material)
+		{
+			/*std::unique_ptr<Material> material = std::make_unique<Material>(GetResource<Shader>(3));
+			material->SetHandle(Resource::GetGUIDFromHex(hexHandle));
+			m_Resources[material->GetHandle()] = std::move(material);*/
+		}
+		else
+		{
+			TRE_CORE_INFO("Loading resource of type not supported");
+		}
+	}
+
 	template <typename T>
 	std::shared_ptr<T> ResourceManager::GetResource(ResourceHandle Handle)
 	{
 		if (m_Resources.find(Handle) == m_Resources.end())
 		{
-			return nullptr;
+			//Try loading if not found
+			LoadResource<T>(Resource::GetGUIDHex(Handle));
+
+			if (m_Resources.find(Handle) == m_Resources.end())
+			{
+				//TRE_CORE_INFO("Resource not found {0}", Resource::GetGUIDHex(Handle));
+				return nullptr;
+			}
 		}
 		return std::dynamic_pointer_cast<T>(m_Resources[Handle]);
 	}

@@ -33,7 +33,7 @@ namespace TRE
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 
-			static ResourceType GetType() {return ResourceType::Material;}
+			static ResourceType GetType() { return ResourceType::Material; }
 
 			void Serialize() override;
 			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);

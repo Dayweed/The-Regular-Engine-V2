@@ -148,7 +148,8 @@ namespace TRE
 					{
 						MaterialDescriptorFile descriptorFileMaterial;
 						descriptorFileMaterial.Generate();
-						std::cout << descriptorFileMaterial.GetAssetPath() << std::endl;
+						
+						//AssetManager::Instance().PrintAllAssets();
 						//AssetManager::Instance().AddAsset<Material>(descriptorFileMaterial.GetAssetPath());
 					}
 					if (ImGui::MenuItem("Others"))

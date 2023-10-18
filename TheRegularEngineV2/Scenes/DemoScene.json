@@ -1,6 +1,6 @@
 [
    [
-      17,
+      19,
       0,
       1,
       2,
@@ -17,13 +17,15 @@
       13,
       14,
       15,
-      16
+      16,
+      17,
+      18
    ],
    [
       0
    ],
    [
-      17,
+      19,
       0,
       {
          "m_Children": [],
@@ -52,183 +54,211 @@
       5,
       {
          "m_Children": [
-            "{DFA5413A-421F-4688-B396-668D7576DC79}",
-            "{009CB8FE-01B7-4920-B611-5B5C22E60FAF}",
-            "{963EFED1-419E-482B-A806-98F9A86D01FD}"
+            "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}",
+            "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}"
          ],
          "m_Parent": ""
       },
       6,
       {
-         "m_Children": [],
-         "m_Parent": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}"
+         "m_Children": [
+            "{B9012B89-6696-44D5-B739-9130D841AED4}",
+            "{1AFAAFC0-C631-4E62-89EE-DD67E1C29B57}"
+         ],
+         "m_Parent": "{8FCD20A3-A626-4C18-8688-FE42DB69092A}"
       },
       7,
       {
-         "m_Children": [],
-         "m_Parent": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}"
+         "m_Children": [
+            "{915E5368-D6FF-4928-9E73-00132ACC3190}",
+            "{A7DA9B56-ECE7-46BF-84FC-15B809FEE02E}"
+         ],
+         "m_Parent": "{8FCD20A3-A626-4C18-8688-FE42DB69092A}"
       },
       8,
       {
          "m_Children": [],
-         "m_Parent": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}"
+         "m_Parent": "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}"
       },
       9,
       {
-         "m_Children": [
-            "{732C439E-044C-4712-A366-6B923A5EBE19}",
-            "{1DEACDFF-932B-4ED8-9F60-C6C165274DBF}",
-            "{7BD19847-35A5-448E-80DD-0A9068DF0745}"
-         ],
-         "m_Parent": ""
+         "m_Children": [],
+         "m_Parent": "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}"
       },
       10,
       {
          "m_Children": [],
-         "m_Parent": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}"
+         "m_Parent": "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}"
       },
       11,
       {
          "m_Children": [],
-         "m_Parent": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}"
+         "m_Parent": "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}"
       },
       12,
       {
-         "m_Children": [],
-         "m_Parent": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}"
+         "m_Children": [
+            "{A7DBE37D-28C5-402D-B938-A151010747A9}",
+            "{2A584A90-F6B3-478A-B20E-A27C9400E115}"
+         ],
+         "m_Parent": ""
       },
       13,
       {
          "m_Children": [
-            "{B0E55C28-B71A-4646-9E78-7E1A6C1C84EC}",
-            "{044E5F89-622B-4BC8-950C-09631BE6A6F5}",
-            "{D4FB8134-A628-4CA8-8CD0-CA1027331FE7}"
+            "{D6F12070-2CC3-4213-A251-05CCF46FFE7F}",
+            "{43BFBCD0-E94F-471A-9409-5EBBF500E422}"
          ],
-         "m_Parent": ""
+         "m_Parent": "{A42E8C88-73B4-4174-86E9-CDF4FE050803}"
       },
       14,
       {
-         "m_Children": [],
-         "m_Parent": "{8F9F2089-714F-44E5-A86C-66808C35A050}"
+         "m_Children": [
+            "{7DFCB563-863E-413A-9300-2A9F6FA4F143}",
+            "{966D05BB-3FA4-45B7-85EB-1A00E0FD8329}"
+         ],
+         "m_Parent": "{A42E8C88-73B4-4174-86E9-CDF4FE050803}"
       },
       15,
       {
          "m_Children": [],
-         "m_Parent": "{8F9F2089-714F-44E5-A86C-66808C35A050}"
+         "m_Parent": "{A7DBE37D-28C5-402D-B938-A151010747A9}"
       },
       16,
       {
          "m_Children": [],
-         "m_Parent": "{8F9F2089-714F-44E5-A86C-66808C35A050}"
+         "m_Parent": "{A7DBE37D-28C5-402D-B938-A151010747A9}"
+      },
+      17,
+      {
+         "m_Children": [],
+         "m_Parent": "{2A584A90-F6B3-478A-B20E-A27C9400E115}"
+      },
+      18,
+      {
+         "m_Children": [],
+         "m_Parent": "{2A584A90-F6B3-478A-B20E-A27C9400E115}"
       }
    ],
    [
-      17,
+      19,
       0,
       {
          "m_Active": true,
-         "m_GUID": "{F457A5F8-ACE7-4779-9DEC-BA03A55C02B5}",
+         "m_GUID": "{4A0439A8-5642-4F3B-B082-A4F7471F4679}",
          "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{15A330FB-6314-4AB0-98DF-0A8D75743E68}",
+         "m_GUID": "{30E7E0BD-7CD7-47FD-8C54-C45FA0B879F6}",
          "m_Name": "Test2"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{14DFB094-5B53-415E-98AA-EDBA7CB418AF}",
+         "m_GUID": "{9DF3F3FA-835E-4362-AD97-DE7058022EC1}",
          "m_Name": "Test3"
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "{979DA2F8-FAA6-4DDA-ABB3-02DF96D596E9}",
+         "m_GUID": "{6F9B485E-A441-471B-BD5C-D8C5C9982A7C}",
          "m_Name": "Plane collider"
       },
       4,
       {
          "m_Active": true,
-         "m_GUID": "{7F7E652C-BA16-436E-9E26-2D213022A890}",
+         "m_GUID": "{B9DAE606-EDA5-410E-B9A4-15E7BFD77267}",
          "m_Name": "cam"
       },
       5,
       {
          "m_Active": true,
-         "m_GUID": "{991D42FF-14F4-4E33-91BD-85EC33AE412C}",
-         "m_Name": "parent"
+         "m_GUID": "{8FCD20A3-A626-4C18-8688-FE42DB69092A}",
+         "m_Name": "grandparent1"
       },
       6,
       {
          "m_Active": true,
-         "m_GUID": "{DFA5413A-421F-4688-B396-668D7576DC79}",
-         "m_Name": "child"
+         "m_GUID": "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}",
+         "m_Name": "parent1"
       },
       7,
       {
          "m_Active": true,
-         "m_GUID": "{009CB8FE-01B7-4920-B611-5B5C22E60FAF}",
-         "m_Name": "child1"
+         "m_GUID": "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}",
+         "m_Name": "parent2"
       },
       8,
       {
          "m_Active": true,
-         "m_GUID": "{963EFED1-419E-482B-A806-98F9A86D01FD}",
-         "m_Name": "child2"
+         "m_GUID": "{B9012B89-6696-44D5-B739-9130D841AED4}",
+         "m_Name": "child1"
       },
       9,
       {
          "m_Active": true,
-         "m_GUID": "{B89ED967-7C95-4CD3-8F0A-B350D2DAD314}",
-         "m_Name": "parent1"
+         "m_GUID": "{1AFAAFC0-C631-4E62-89EE-DD67E1C29B57}",
+         "m_Name": "child2"
       },
       10,
       {
          "m_Active": true,
-         "m_GUID": "{732C439E-044C-4712-A366-6B923A5EBE19}",
+         "m_GUID": "{915E5368-D6FF-4928-9E73-00132ACC3190}",
          "m_Name": "child3"
       },
       11,
       {
          "m_Active": true,
-         "m_GUID": "{1DEACDFF-932B-4ED8-9F60-C6C165274DBF}",
+         "m_GUID": "{A7DA9B56-ECE7-46BF-84FC-15B809FEE02E}",
          "m_Name": "child4"
       },
       12,
       {
          "m_Active": true,
-         "m_GUID": "{7BD19847-35A5-448E-80DD-0A9068DF0745}",
-         "m_Name": "child5"
+         "m_GUID": "{A42E8C88-73B4-4174-86E9-CDF4FE050803}",
+         "m_Name": "grandparent2"
       },
       13,
       {
          "m_Active": true,
-         "m_GUID": "{8F9F2089-714F-44E5-A86C-66808C35A050}",
-         "m_Name": "parent2"
+         "m_GUID": "{A7DBE37D-28C5-402D-B938-A151010747A9}",
+         "m_Name": "parent3"
       },
       14,
       {
          "m_Active": true,
-         "m_GUID": "{B0E55C28-B71A-4646-9E78-7E1A6C1C84EC}",
-         "m_Name": "child6"
+         "m_GUID": "{2A584A90-F6B3-478A-B20E-A27C9400E115}",
+         "m_Name": "parent4"
       },
       15,
       {
          "m_Active": true,
-         "m_GUID": "{044E5F89-622B-4BC8-950C-09631BE6A6F5}",
-         "m_Name": "child7"
+         "m_GUID": "{D6F12070-2CC3-4213-A251-05CCF46FFE7F}",
+         "m_Name": "child5"
       },
       16,
       {
          "m_Active": true,
-         "m_GUID": "{D4FB8134-A628-4CA8-8CD0-CA1027331FE7}",
+         "m_GUID": "{43BFBCD0-E94F-471A-9409-5EBBF500E422}",
+         "m_Name": "child6"
+      },
+      17,
+      {
+         "m_Active": true,
+         "m_GUID": "{7DFCB563-863E-413A-9300-2A9F6FA4F143}",
+         "m_Name": "child7"
+      },
+      18,
+      {
+         "m_Active": true,
+         "m_GUID": "{966D05BB-3FA4-45B7-85EB-1A00E0FD8329}",
          "m_Name": "child8"
       }
    ],
    [
-      17,
+      19,
       0,
       {
          "m_Position": [
@@ -518,6 +548,42 @@
          ]
       },
       16,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      17,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      18,
       {
          "m_Position": [
             0.0,
