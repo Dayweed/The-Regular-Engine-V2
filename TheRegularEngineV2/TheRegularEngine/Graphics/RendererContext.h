@@ -10,8 +10,6 @@ namespace TRE
 		static const bool EnableValidationLayer = false;
 	#endif
 
-
-
 	class RendererContext
 	{
 		public:
@@ -25,6 +23,7 @@ namespace TRE
 			VkSurfaceKHR GetSurface();
 
 			static VkInstance GetVKInstance();
+			static uint32_t GetFramesInFlight();
 			static std::shared_ptr<RendererContext> Get();
 			static std::shared_ptr<Device> GetDevice();
 			static std::shared_ptr<PhysicalDevice> GetPhysicalDevice();
@@ -37,7 +36,8 @@ namespace TRE
 			std::shared_ptr<Device> m_Device;
 
 		private:
-			static VkInstance m_instance;
+			static VkInstance s_Instance;
+			static uint32_t s_FramesInFlight;
 			VkDebugUtilsMessengerEXT m_DebugUtilsMessenger;
 			VkSurfaceKHR m_Surface;
 	};

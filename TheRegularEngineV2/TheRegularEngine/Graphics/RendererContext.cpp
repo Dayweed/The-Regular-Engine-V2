@@ -6,11 +6,17 @@
 namespace TRE
 {
 	#define VK_KHR_WIN32_EXTENSION_NAME "VK_KHR_win32_surface"
-	VkInstance RendererContext::m_instance = VK_NULL_HANDLE;
+	VkInstance RendererContext::s_Instance = VK_NULL_HANDLE;
+	uint32_t RendererContext::s_FramesInFlight = 3;
 
 	VkInstance RendererContext::GetVKInstance()
 	{
-		return m_instance;
+		return s_Instance;
+	}
+
+	uint32_t RendererContext::GetFramesInFlight()
+	{
+		return s_FramesInFlight;
 	}
 
 	std::shared_ptr<RendererContext> RendererContext::Get()
@@ -76,12 +82,12 @@ namespace TRE
 	{
 		if (EnableValidationLayer)
 		{
-			auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT");
-			vkDestroyDebugUtilsMessengerEXT(m_instance, m_DebugUtilsMessenger, nullptr);
+			auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(s_Instance, "vkDestroyDebugUtilsMessengerEXT");
+			vkDestroyDebugUtilsMessengerEXT(s_Instance, m_DebugUtilsMessenger, nullptr);
 		}
 		m_Device->Destroy();
-		vkDestroyInstance(m_instance, nullptr);
-		m_instance = nullptr;
+		vkDestroyInstance(s_Instance, nullptr);
+		s_Instance = nullptr;
 	}
 
 	void RendererContext::Initialize()
@@ -178,7 +184,7 @@ namespace TRE
 			}
 		}
 
-		if (VkResult Result = vkCreateInstance(&InstanceCreateInfo, nullptr, &m_instance); Result != VK_SUCCESS)
+		if (VkResult Result = vkCreateInstance(&InstanceCreateInfo, nullptr, &s_Instance); Result != VK_SUCCESS)
 		{
 			TRE_CORE_INFO("Failed to create vulkan instance ");
 			assert(Result == VK_SUCCESS);
@@ -186,7 +192,7 @@ namespace TRE
 
 		if (EnableValidationLayer)
 		{
-			auto CreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_instance, "vkCreateDebugUtilsMessengerEXT");
+			auto CreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(s_Instance, "vkCreateDebugUtilsMessengerEXT");
 			assert(CreateDebugUtilsMessengerEXT);
 
 			VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo{};
@@ -195,7 +201,7 @@ namespace TRE
 			DebugCreateInfo.pfnUserCallback = VulkanDebugUtilsMessengerCallback;
 			DebugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 
-			if (VkResult Result = CreateDebugUtilsMessengerEXT(m_instance, &DebugCreateInfo, nullptr, &m_DebugUtilsMessenger); Result != VK_SUCCESS)
+			if (VkResult Result = CreateDebugUtilsMessengerEXT(s_Instance, &DebugCreateInfo, nullptr, &m_DebugUtilsMessenger); Result != VK_SUCCESS)
 			{
 				TRE_CORE_INFO("Failed to create debug utils messenger");
 				assert(Result == VK_SUCCESS);

@@ -29,35 +29,41 @@ namespace TRE
 
 		Create();
 
-		VkCommandPoolCreateInfo CmdPoolCreateInfo{};
-		CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		CmdPoolCreateInfo.queueFamilyIndex = SwapChain->GetQueueIndex();
-		CmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-
-		VkCommandBufferAllocateInfo CommandBufferAllocateInfo{};
-		CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		CommandBufferAllocateInfo.commandBufferCount = 1;
-		CommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
-		m_Commandbuffers.resize(ImageCount);
-		m_CommandPool.resize(ImageCount);
-
-		for (uint32_t x = 0; x < ImageCount; x++)
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			if (VkResult Result = vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool[x]); Result != VK_SUCCESS)
-			{
-				TRE_CORE_ERROR("Unable to create a command pool");
-				assert(Result == VK_SUCCESS);
-			}
+			VkCommandPoolCreateInfo CmdPoolCreateInfo{};
+			CmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+			CmdPoolCreateInfo.queueFamilyIndex = SwapChain->GetQueueIndex();
+			CmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-			CommandBufferAllocateInfo.commandPool = m_CommandPool[x];
-			if (VkResult Result = vkAllocateCommandBuffers(m_Device->GetLogicalDevice(), &CommandBufferAllocateInfo, &m_Commandbuffers[x]); Result != VK_SUCCESS)
+			VkCommandBufferAllocateInfo CommandBufferAllocateInfo{};
+			CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+			CommandBufferAllocateInfo.commandBufferCount = 1;
+			CommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
+			m_Commandbuffers.resize(ImageCount);
+			m_CommandPool.resize(ImageCount);
+
+			for (uint32_t x = 0; x < ImageCount; x++)
 			{
-				TRE_CORE_ERROR("Unable to create a command buffer");
-				assert(Result == VK_SUCCESS);
+				if (VkResult Result = vkCreateCommandPool(m_Device->GetLogicalDevice(), &CmdPoolCreateInfo, nullptr, &m_CommandPool[x]); Result != VK_SUCCESS)
+				{
+					TRE_CORE_ERROR("Unable to create a command pool");
+					assert(Result == VK_SUCCESS);
+				}
+
+				CommandBufferAllocateInfo.commandPool = m_CommandPool[x];
+				if (VkResult Result = vkAllocateCommandBuffers(m_Device->GetLogicalDevice(), &CommandBufferAllocateInfo, &m_Commandbuffers[x]); Result != VK_SUCCESS)
+				{
+					TRE_CORE_ERROR("Unable to create a command buffer");
+					assert(Result == VK_SUCCESS);
+				}
 			}
 		}
-
+		else
+		{
+			m_Commandbuffers = SwapChain->GetCommandBuffers();
+		}
 		m_DescriptorPool = DescriptorPool::Builder()
 			.SetMaxSets(100)
 			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
@@ -116,7 +122,13 @@ namespace TRE
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			fbufCreateInfo.renderPass = renderpass->GetHandle();
-			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
+			std::array<VkImageView, 2> attachments;
+			
+			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+				attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
+			else
+				attachments = { SwapChain->GetCurrentSwapChainImageView(x), m_DepthImages[x]->GetImageView() };
+
 			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			fbufCreateInfo.pAttachments = attachments.data();
 			fbufCreateInfo.width = SwapChain->GetWidth();
@@ -142,7 +154,7 @@ namespace TRE
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
 			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(),
-				VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+				VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 
 		// Depth attachment
@@ -209,6 +221,7 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
+		auto swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
