@@ -12,6 +12,11 @@
 ************************************************************************/
 #pragma once
 #include "Properties.h"
+// warning LNK4099: PDB '' was not found with 'TheRegularEngine.lib(PxPvd.obj)' or at ''; linking object as if no debug info
+#pragma warning (disable: 4099)
+// warning LNK4006: "__declspec(dllimport) public: __cdecl physx::PxFoundation::PxFoundation(class physx::PxFoundation const &)"
+// (__imp_??0PxFoundation@physx@@QEAA@AEBV01@@Z) already defined in PhysX_64.lib(PhysX_64.dll); second definition ignored
+#pragma warning (disable: 4006)
 #include "PhysX/PxPhysicsAPI.h"
 
 namespace TRE

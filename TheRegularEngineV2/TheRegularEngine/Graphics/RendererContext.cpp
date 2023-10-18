@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
-#include "GLFW/glfw3.h"
 #include "Core/Logger.h"
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {

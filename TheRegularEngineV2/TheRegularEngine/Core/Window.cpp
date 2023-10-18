@@ -1,11 +1,10 @@
 #include "pch.h"
-#define GLFW_INCLUDE_VULKAN
-#include "GLFW/glfw3.h"
+#include <chrono>
 #include "Window.h"
 #include "Core/Logger.h"
 #include "InputHandler/InputHandler.h"
+#define GLFW_INCLUDE_VULKAN
 #include "GLFW/glfw3.h"
-#include <chrono>
 
 namespace TRE
 {
