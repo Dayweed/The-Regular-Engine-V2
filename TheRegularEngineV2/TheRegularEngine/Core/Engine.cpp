@@ -353,11 +353,6 @@ namespace TRE
 		return *s_Instance;
 	}
 
-	const std::shared_ptr<Renderer>& Engine::GetRenderer()
-	{
-		return m_Renderer;
-	}
-
 	const std::shared_ptr<VulkanEditor>& Engine::GetVulkanImgui()
 	{
 		return m_VulkanEditor;
@@ -371,18 +366,19 @@ namespace TRE
 
 		GameLoop::Instance().Init();
 		RegisterECS();
+
 		//DemoDeserialize();
 		DemoScene();
+
+		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
+		Renderer::SetMainRenderer(m_SceneRenderer);
+		m_SceneRenderer->Initialize();
+		if (m_EngineInfo.EnableEditor)
+			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
 		ScriptEngine::InitMono();
 		ScriptEngine::BindFunctions();
 		//ScriptEngine::TestScriptingEngine();
-
-		m_Renderer = std::make_shared<Renderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		m_Renderer->Initialize();
-
-		if (m_EngineInfo.EnableEditor)
-			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 	}
 
 	Engine::~Engine()
@@ -423,8 +419,6 @@ namespace TRE
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
-
-		
 	}
 
 	void Engine::Update()
@@ -432,6 +426,9 @@ namespace TRE
 		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
 			m_Window->UpdateDeltaTime();
+
+			m_Window->BeginFrame();
+			m_SceneRenderer->BeginFrame();
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -476,9 +473,7 @@ namespace TRE
 			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
-			m_Window->BeginFrame();
-			m_Renderer->BeginFrame();
-			m_Renderer->EndFrame();
+			m_SceneRenderer->EndFrame();
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
@@ -488,6 +483,10 @@ namespace TRE
 				EditorSystemManager::Instance().UpdateSystem();
 				m_VulkanEditor->EndFrame();
 				Profiler::Instance().EndTimer("Imgui");
+			}
+			else //Renders straight to swapchain
+			{
+				Renderer::RenderToSwapChain();
 			}
 
 			//Draw
@@ -501,10 +500,10 @@ namespace TRE
 				ScriptEngine::UpdateScriptingEngine();
 			}
 			
-
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
 		}
+		Renderer::SetMainRenderer(nullptr);
 	}
 
 	void Engine::Shutdown()

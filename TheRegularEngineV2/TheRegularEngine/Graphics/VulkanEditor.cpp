@@ -96,11 +96,10 @@ namespace TRE
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}
 		
-		auto Renderer = Engine::GetInstance().GetRenderer();
-		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetColorImages().size());
+		m_DescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer::GetMainRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -222,11 +221,10 @@ namespace TRE
 	void VulkanEditor::Resize()
 	{
 		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_DescriptorSets.size()), m_DescriptorSets.data());
-		auto Renderer = Engine::GetInstance().GetRenderer();
-		m_DescriptorSets.resize(Engine::GetInstance().GetRenderer()->GetColorImages().size());
+		m_DescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer::GetMainRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 

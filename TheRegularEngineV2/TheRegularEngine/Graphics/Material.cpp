@@ -29,7 +29,7 @@ namespace TRE
 	{
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			Engine::GetInstance().GetRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
+			Renderer::GetMainRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
 	}
 
