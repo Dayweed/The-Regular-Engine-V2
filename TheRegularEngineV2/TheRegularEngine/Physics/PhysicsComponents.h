@@ -38,7 +38,9 @@ namespace TRE
 	// stuff that EVERY physics component should have
 	struct PhysicsComponent
 	{
-		bool m_IsInitialized = false, m_IsDestructed = false;
+		bool m_IsInitialized = false;
+		bool m_IsDirty = false;
+		bool m_IsDestructed = false;
 	};
 
 	struct Rigidbody : PhysicsComponent, property::base

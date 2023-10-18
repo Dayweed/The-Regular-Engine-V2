@@ -366,6 +366,9 @@
     <ClCompile Include="Physics\BoxCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\CapsuleCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
@@ -385,8 +388,5 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Physics\CapsuleCollider.cpp">
-      <Filter>Physics</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

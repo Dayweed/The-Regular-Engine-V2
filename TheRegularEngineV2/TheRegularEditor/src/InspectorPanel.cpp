@@ -8,6 +8,19 @@
 
 namespace TRE
 {
+#pragma region HasIsDirty
+	// this magic is brought to you by https://stackoverflow.com/a/16000226
+	// should this struct be somewhere else? hmm......
+
+	// class/struct does NOT have member named "m_IsDirty"
+	template <typename T, typename = int>
+	struct HasIsDirty : std::false_type { };
+
+	// class/struct has member named "m_IsDirty"
+	template <typename T>
+	struct HasIsDirty <T, decltype((void)T::m_IsDirty, 0)> : std::true_type { };
+#pragma endregion
+
 	InspectorPanel::InspectorPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -171,7 +184,7 @@ namespace TRE
 					bool UpdatedData = false;
 
 					std::string NameField = "##" + entity->GetGUID() + "/" + Name;
-					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+					std::string NameStr = Name.substr(Name.find_last_of('/') + 1);
 
 					bool isEdited = false;
 					if (isPrefabInstance)
@@ -256,15 +269,28 @@ namespace TRE
 						}
 					, Data);
 
-					// Do additional stuff if values are change for cetain components
+					// Do additional stuff if values are change for certain components
 					if (UpdatedData)
 					{
+						// if only there was some way to get types from strings... :(
 						std::string compName{ List.first };
-						if (compName == ComponentManager::Instance().GetComponentName<Transform>())
+
+						// capturing compName by reference
+						auto SetIsDirty = [&compName]<typename Comp>(const Entity& e)
 						{
-							// Set flag to dirty
-							entity->GetComponent<Transform>().m_IsDirty = true;
-						}
+							if (compName == ComponentManager::Instance().GetComponentName<Comp>())
+								if (HasIsDirty<Comp>::value)
+									e->GetComponent<Comp>().m_IsDirty = true;
+						};
+
+						// because I can't do SetIsDirty<Component>(entity) :(
+						SetIsDirty.operator() < Transform > (entity);
+						SetIsDirty.operator() < Rigidbody > (entity);
+						SetIsDirty.operator() < SphereCollider > (entity);
+						SetIsDirty.operator() < BoxCollider > (entity);
+						SetIsDirty.operator() < CapsuleCollider > (entity);
+						// add more of your components here! :)
+						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
 					}
 
 					// Update Prefabing Instance data if have
@@ -309,7 +335,9 @@ namespace TRE
 
 			if (ImGui::BeginPopup("AddComponent"))
 			{
-				for (std::string& compName : ECSManager::Instance().GetAllNonAddedComponents(entity))
+				std::vector<std::string> nonAddedComponents{ ECSManager::Instance().GetAllNonAddedComponents(entity) };
+				std::ranges::sort(nonAddedComponents); // std::sort(nonAddedComponents.begin(), nonAddedComponents.end());
+				for (std::string& compName : nonAddedComponents)
 				{
 					if (ImGui::Selectable(compName.c_str()))
 					{

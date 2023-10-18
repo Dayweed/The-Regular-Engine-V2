@@ -35,7 +35,7 @@ namespace TRE
 		ab->GetComponent<Properties>().m_Name = "CARLON";
 		ab->AddComponent<FEL>().vec_i = { 4.5f, 2.f };
 		ab->GetComponent<FEL>().nestedstruct.arr_c = '{';
-	
+
 		Entity fun = ECSManager::Instance().CreateEntity();
 		fun->GetComponent<Properties>().m_Name = "fFNNN";
 		fun->AddComponent<FEL>().arr_i[1] = 1.2f;
@@ -144,7 +144,7 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt8 = std::make_unique<VulkanTexture>("../Resources/c076cd64a7491d7.DDS");
 		vkt8->SetHandle(AnimationtextureHandle4);
 		ResourceManager::Instance().AddResource(std::move(vkt8));
-		
+
 		//Texture::RunCompiler("../Assets/6b2822ce3972f53.desc");
 		std::unique_ptr<VulkanTexture> vkt9 = std::make_unique<VulkanTexture>("../Resources/6b2822ce3972f53.DDS");
 		vkt9->SetHandle(AnimationtextureHandle5);
@@ -208,7 +208,7 @@ namespace TRE
 			test->AddComponent<Audio>();
 			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
 			audioSystem->SetLoop(test, true);
-			audioSystem->SetSpatialize(test,true);
+			audioSystem->SetSpatialize(test, true);
 			audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);
 
@@ -390,22 +390,22 @@ namespace TRE
 		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);		// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);		// serialized, reflected
-		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
-		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
-		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// 
-		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized, reflected
-		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");									// reflected
-		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// reflected
-		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// reflected
-		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");								// reflected
-		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
-		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
-		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
-		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false); // ignore, ignore
+		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);       // ignore, ignore
+		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);   // ignore, ignore
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);   // serialized, reflected
+		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false); // serialized, reflected
+		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);  // serialized, reflected
+		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");         // 
+		ECSManager::Instance().RegisterComponent<Camera>("Camera");                      // serialized, reflected
+		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");                // serialized, reflected
+		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");      // serialized, reflected
+		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");            // serialized, reflected
+		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");    // serialized, reflected
+		ECSManager::Instance().RegisterComponent<Audio>("Audio");                        // 
+		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");        // 
+		ECSManager::Instance().RegisterComponent<FEL>("FEL");                            // serialized
+		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");                    // serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
@@ -418,8 +418,6 @@ namespace TRE
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
-
-		
 	}
 
 	void Engine::Update()
@@ -495,7 +493,7 @@ namespace TRE
 			{
 				ScriptEngine::UpdateScriptingEngine();
 			}
-			
+
 
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
