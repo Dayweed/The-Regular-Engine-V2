@@ -16,7 +16,7 @@ namespace TRE
 
 	void SceneHierarchyPanel::Init()
 	{
-		m_SelectionContext = nullptr;
+
 	}
 
 	void SceneHierarchyPanel::Update()
@@ -24,14 +24,6 @@ namespace TRE
 		ImGui::Begin("Hierarchy");
 
 		int deleteEntity = -1;
-		//std::cout << "size of vector: " << ECSManager::Instance().GetEntities<Properties>().size() << "\n";
-		//for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
-		//{
-		//    std::cout << i << "\twhats the name: " << currentEntity->GetComponent<Properties>().m_Name << "\n";
-		//    
-		//    std::cout << "do i have children?\t" << currentEntity->GetChildren().size() << "\n";
-		//}
-
 
 		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -46,56 +38,77 @@ namespace TRE
 				ImGui::EndDragDropTarget();
 			}
 
-			static int selection_mask = 0; //nothing is selected in the beginning
-			for (size_t i{}; i < ECSManager::Instance().GetEntities<Properties>().size(); ++i)
+			//{
+			//	//temp testing
+			//	std::vector<TRE::Entity> toDisplay;
+
+			//	for (size_t i{}; i < ECSManager::Instance().GetAllEntities().size(); ++i)
+			//	{
+			//		auto& currentEntity = ECSManager::Instance().GetEntities<Properties>()[i];
+
+			//		//get all parents only
+			//		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
+			//		{
+			//			toDisplay.push_back(currentEntity);
+			//		}
+			//	}
+
+			//	for (size_t i{}; i < toDisplay.size(); ++i)
+			//	{
+			//		DisplayChildren(toDisplay[i]);
+			//	}
+			//}
+
+			for (size_t i{}; i < ECSManager::Instance().GetAllEntities().size(); ++i)
 			{
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
 				auto currentEntity = ECSManager::Instance().GetEntities<Properties>()[i];
-				std::string entityName = currentEntity->GetName();
+				const std::string& entityName = currentEntity->GetName();
 
 				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
 				{
-					//entities without children and parent
-					if (!ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(currentEntity).size())
-					{
-						ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == currentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
+					DisplayChildren(currentEntity);
 
-						if (entityName != "cam")
-						{
-							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
-							if ((ImGui::Button("X") || ImGui::IsItemClicked()))
-							{
-								deleteEntity = (int)i;
-							}
-							ImGui::PopStyleColor(1);
-							ImGui::SameLine();
-						}
+					////entities without children and parent
+					//if (!ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(currentEntity).size())
+					//{
+					//	ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == currentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
 
-						if (ImGui::TreeNodeEx(entityName.c_str(), node_flag))
-						{
-							if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-							{
-								m_SelectionManager->SelectEntity(ECSManager::Instance().GetEntities<Properties>()[i]);
-								m_SelectionContext = currentEntity;
-							}
+					//	if (entityName != "cam")
+					//	{
+					//		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+					//		if ((ImGui::Button("X") || ImGui::IsItemClicked()))
+					//		{
+					//			deleteEntity = i;
+					//		}
+					//		ImGui::PopStyleColor(1);
+					//		ImGui::SameLine();
+					//	}
 
-							if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-							{
-								ImGui::OpenPopup("Create_New_Entity");
-								ImGui::Text("pressed with objects");
-							}
+					//	if (ImGui::TreeNodeEx(entityName.c_str(), node_flag))
+					//	{
+					//		if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+					//		{
+					//			m_SelectionManager->SelectEntity(ECSManager::Instance().GetEntities<Properties>()[i]);
+					//			m_SelectionContext = currentEntity;
+					//		}
 
-							ImGui::TreePop();
-						}
-					}
-					
-					else
-					{
-						//entities with children
-						DisplayChildren(currentEntity);
-					}
+					//		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+					//		{
+					//			ImGui::OpenPopup("Create_New_Entity");
+					//			ImGui::Text("pressed with objects");
+					//		}
+
+					//		ImGui::TreePop();
+					//	}
+					//}
+					//
+					//else
+					//{
+					//	//entities with children
+					//	DisplayChildren(currentEntity);
+					//}
 				}
-			
 			}
 
 			ImGui::TreePop();
@@ -117,11 +130,10 @@ namespace TRE
 			if (ImGui::Selectable("Create Entity"))
 			{
 				Entity GameObject = ECSManager::Instance().CreateEntity();
-				GameObject->GetComponent<Properties>().m_Name = "GameObject";
+				GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
 			}
 			ImGui::EndPopup();
 		}
-
 
 		ImGui::End();
 	}
@@ -133,24 +145,99 @@ namespace TRE
 
 	void SceneHierarchyPanel::DisplayChildren(TRE::Entity& CurrentEntity)
 	{
-		std::string entityName = CurrentEntity->GetName();
-		
+		const std::string entityName = CurrentEntity->GetName();
+		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+
+		//{
+		//  //temp testing
+		//	//there's children
+		//	if (vectorSize)
+		//	{
+		//		ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
+
+		//		if (m_SelectionManager->GetSelectedEntity() == CurrentEntity)
+		//		{
+		//			flag |= ImGuiTreeNodeFlags_Selected;
+		//		}
+
+		//		if (ImGui::TreeNodeEx(entityName.c_str(), flag))
+		//		{
+		//			//drag and drop stuff
+
+		//			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+		//			{
+		//				m_SelectionManager->SelectEntity(CurrentEntity);
+		//			}
+
+		//			for (size_t i{}; i < vectorSize; ++i)
+		//			{
+		//				TRE::Entity entityChild = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity)[i];
+		//				DisplayChildren(entityChild);
+		//			}
+
+		//			ImGui::TreePop();
+		//		}
+		//	}
+
+		//	else
+		//	{
+		//		ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanFullWidth;
+
+		//		if (m_SelectionManager->GetSelectedEntity() == CurrentEntity)
+		//		{
+		//			flag |= ImGuiTreeNodeFlags_Selected;
+		//		}
+
+		//		if (ImGui::TreeNodeEx(entityName.c_str(), flag))
+		//		{
+		//			//drag and drop stuff
+		//			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+		//			{
+		//				m_SelectionManager->SelectEntity(CurrentEntity);
+		//			}
+
+		//			ImGui::TreePop();
+		//		}
+		//	}
+		//}
+
 		//parent has children
-		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size())
+		if (vectorSize)
 		{
-			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+			ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 
 			if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 			{
-				if (ImGui::IsItemClicked())
+				if (ImGui::BeginDragDropSource())
 				{
-					m_SelectionManager->SelectEntity(CurrentEntity);
-					m_SelectionContext = CurrentEntity;
+					ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
+					ImGui::Text("meeeeeeeeeeeee");
+					ImGui::EndDragDropSource();
 				}
 
-				for (size_t i{}; i < ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size(); ++i)
+				if (ImGui::BeginDragDropTarget())
 				{
-					DisplayChildren(ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity)[i]);
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
+					{
+						TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+						
+						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+				{
+					m_SelectionManager->SelectEntity(CurrentEntity);
+
+					//std::cout << m_SelectionManager->GetSelectedEntity()->GetName() << " is clicked" << std::endl;
+				}
+
+				for (size_t i{}; i < vectorSize; ++i)
+				{
+					TRE::Entity entityChild = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity)[i];
+					DisplayChildren(entityChild);
 				}
 
 				ImGui::TreePop();
@@ -160,20 +247,18 @@ namespace TRE
 		//its a leaf node
 		else
 		{
-			ImGuiTreeNodeFlags Flags = ((m_SelectionContext == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			ImGui::TreeNodeEx(entityName.c_str(), Flags | ImGuiTreeNodeFlags_Leaf);
-			if (ImGui::IsItemClicked())
+			ImGuiTreeNodeFlags Flags = ImGuiTreeNodeFlags_Leaf | ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0);
+			
+			if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 			{
-				m_SelectionManager->SelectEntity(CurrentEntity);
-				m_SelectionContext = CurrentEntity;
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+				{
+					m_SelectionManager->SelectEntity(CurrentEntity);
+					//std::cout << m_SelectionManager->GetSelectedEntity()->GetName() << " is clicked" << std::endl;
+				}
+
+				ImGui::TreePop();
 			}
-
-			ImGui::TreePop();
 		}
-	}
-
-	Entity& SceneHierarchyPanel::GetSelectionContext()
-	{
-		return m_SelectionContext;
 	}
 }
