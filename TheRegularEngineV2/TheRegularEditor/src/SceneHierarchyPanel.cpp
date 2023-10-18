@@ -23,20 +23,35 @@ namespace TRE
 	{
 		ImGui::Begin("Hierarchy");
 
-		int deleteEntity = -1;
-
 		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
 				{
-					Entity GameObject = ECSManager::Instance().CreateEntity();
-					GameObject->GetComponent<Properties>().m_Name = (const char*)payload->Data;
+					TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+
+					//if the child entity has parent
+					if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(payload_n))
+					{
+						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(payload_n);
+					}
 				}
 
 				ImGui::EndDragDropTarget();
 			}
+
+			//theres no more drag and drop receive from content browser?
+			//if (ImGui::BeginDragDropTarget())
+			//{
+			//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
+			//	{
+			//		Entity GameObject = ECSManager::Instance().CreateEntity();
+			//		GameObject->GetComponent<Properties>().m_Name = (const char*)payload->Data;
+			//	}
+
+			//	ImGui::EndDragDropTarget();
+			//}
 
 			//{
 			//	//temp testing
@@ -69,59 +84,48 @@ namespace TRE
 				{
 					DisplayChildren(currentEntity);
 
-					////entities without children and parent
-					//if (!ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(currentEntity).size())
+					//if (entityName != "cam")
 					//{
-					//	ImGuiTreeNodeFlags node_flag = ((m_SelectionContext == currentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | node_flags | ImGuiTreeNodeFlags_Leaf;
-
-					//	if (entityName != "cam")
+					//	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+					//	if ((ImGui::Button("X") || ImGui::IsItemClicked()))
 					//	{
-					//		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
-					//		if ((ImGui::Button("X") || ImGui::IsItemClicked()))
-					//		{
-					//			deleteEntity = i;
-					//		}
-					//		ImGui::PopStyleColor(1);
-					//		ImGui::SameLine();
+					//		entityIDTodeleted = currentEntity->GetGUID();
 					//	}
-
-					//	if (ImGui::TreeNodeEx(entityName.c_str(), node_flag))
-					//	{
-					//		if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-					//		{
-					//			m_SelectionManager->SelectEntity(ECSManager::Instance().GetEntities<Properties>()[i]);
-					//			m_SelectionContext = currentEntity;
-					//		}
-
-					//		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-					//		{
-					//			ImGui::OpenPopup("Create_New_Entity");
-					//			ImGui::Text("pressed with objects");
-					//		}
-
-					//		ImGui::TreePop();
-					//	}
+					//	ImGui::PopStyleColor(1);
+					//	ImGui::SameLine();
 					//}
-					//
-					//else
-					//{
-					//	//entities with children
-					//	DisplayChildren(currentEntity);
-					//}
+
+					if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+					{
+						ImGui::OpenPopup("Create_New_Entity");
+						ImGui::Text("pressed with objects");
+					}
 				}
 			}
 
 			ImGui::TreePop();
 		}
 
-		if (deleteEntity > -1)
+		if (entityIDTodeleted != "\0")
 		{
-			Entity ent{ ECSManager::Instance().GetEntities<Properties>()[deleteEntity] };
-			ECSManager::Instance().DestroyEntity(ent);
-			deleteEntity = -1;
-			if (ent == m_SelectionManager->GetSelectedEntity())
+			if (Entity ent = ECSManager::Instance().FindEntity(entityIDTodeleted))
 			{
-				m_SelectionManager->ClearSelectedEntity();
+				//if (entityTobedeletedIsParent)
+				//{
+				//	std::cout << "is it here?\n";
+					DeleteChildren(ent);
+				//}
+
+				//else
+				//{
+				//	ECSManager::Instance().DestroyEntity(ent);
+				//}
+
+				entityIDTodeleted = {};
+				if (ent == m_SelectionManager->GetSelectedEntity())
+				{
+					m_SelectionManager->ClearSelectedEntity();
+				}
 			}
 		}
 
@@ -135,21 +139,6 @@ namespace TRE
 			ImGui::EndPopup();
 		}
 
-		//if (ImGui::BeginDragDropTarget())
-		//{
-		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
-		//	{
-		//		TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
-
-		//		//if the child entity has parent
-		//		if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(payload_n))
-		//		{
-		//			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(payload_n);
-		//		}
-		//	}
-
-		//	ImGui::EndDragDropTarget();
-		//}
 
 		ImGui::End();
 	}
@@ -245,6 +234,18 @@ namespace TRE
 
 					ImGui::EndDragDropTarget();
 				}
+				
+				if (entityName != "cam")
+				{
+					ImGui::SameLine();
+					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+					if ((ImGui::Button("X") || ImGui::IsItemClicked()))
+					{
+						entityIDTodeleted = CurrentEntity->GetGUID();
+						entityTobedeletedIsParent = true;
+					}
+					ImGui::PopStyleColor(1);
+				}
 
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 				{
@@ -287,6 +288,18 @@ namespace TRE
 
 					ImGui::EndDragDropTarget();
 				}
+				
+				if (entityName != "cam")
+				{
+					ImGui::SameLine();
+					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+					if ((ImGui::Button("X") || ImGui::IsItemClicked()))
+					{
+						entityIDTodeleted = CurrentEntity->GetGUID();
+						entityTobedeletedIsParent = false;
+					}
+					ImGui::PopStyleColor(1);
+				}
 
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 				{
@@ -295,6 +308,35 @@ namespace TRE
 
 				ImGui::TreePop();
 			}
+		}
+	}
+
+	void SceneHierarchyPanel::DeleteChildren(TRE::Entity& CurrentEntity)
+	{
+		const std::string entityName = CurrentEntity->GetName();
+		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
+		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+
+
+		if (vectorSize)
+		{
+			for (auto& entityChild : childrenVector)
+			{
+				DeleteChildren(entityChild);
+			}
+
+			ECSManager::Instance().DestroyEntity(CurrentEntity);
+		}
+
+		else
+		{
+			//std::string GUID = ECSManager::Instance().FindEntityID(CurrentEntity);
+			ECSManager::Instance().DestroyEntity(CurrentEntity);
+
+			//if (ECSManager::Instance().FindEntity(GUID))
+			//{
+			//	std::cout << "why is it true?\n";
+			//}
 		}
 	}
 }
