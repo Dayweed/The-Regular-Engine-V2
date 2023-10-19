@@ -34,6 +34,10 @@ namespace TRE
 			void DestroySwapChain();
 
 		public:
+			const std::shared_ptr<RenderPass>& GetRenderPassPointer()
+			{
+				return m_Renderpass;
+			}
 			VkRenderPass GetRenderPass();
 			uint32_t GetImageCount();
 			uint32_t GetWidth();
@@ -49,7 +53,8 @@ namespace TRE
 			SwapChainSettings GetSwapChainSettings();
 			uint32_t GetCurrentImageIndex();
 			VkImageView GetCurrentSwapChainImageView(int Index);
-			std::vector<VkCommandBuffer>& GetCommandBuffers() {
+			std::vector<VkCommandBuffer>& GetCommandBuffers() 
+			{
 				return m_Commandbuffers;
 			}
 
@@ -96,7 +101,8 @@ namespace TRE
 			uint32_t m_CurrentBufferIndex = 0;
 			uint32_t m_CurrentImageIndex = 0;
 
-			VkRenderPass m_RenderPass;
+			//VkRenderPass m_RenderPass;
+			std::shared_ptr<RenderPass> m_Renderpass;
 			std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
 			uint32_t m_QueueIndex = UINT32_MAX;
