@@ -71,12 +71,12 @@ namespace TRE
 		auto PBRHandle = 3;
 		auto DebugDrawHandle = 7;
 
-		std::unique_ptr<Shader>vert = ShaderCompiler::DeserializeReflectShader("Resources/PBR.TREshader");
+		std::unique_ptr<Shader> vert = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
 		vert->SetHandle(PBRHandle);
 		ResourceManager::Instance().AddResource(std::move(vert));
 
 		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("Resources/DebugDrawLine.TREshader");
+		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("../Resources/DebugDrawLine.TREshader");
 		DebugDrawVert->SetHandle(DebugDrawHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 

@@ -18,7 +18,7 @@ namespace TRE
 	{
 		for (auto it = m_Resources.begin(); it != m_Resources.end();)
 		{
-			if (it->second.use_count() == 1)
+			if (it->second.use_count() == 0)
 			{
 				it = m_Resources.erase(it);
 			}

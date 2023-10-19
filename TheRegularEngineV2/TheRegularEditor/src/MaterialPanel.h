@@ -17,6 +17,7 @@ namespace TRE
 		void Shutdown() override;
 	private:
 		void DrawTexture(std::pair<const std::string, std::shared_ptr<VulkanTexture>>& texture);
+		void Rename(std::shared_ptr<Material> material);
 		void OnKeyboardClick(const InputEvent& event);
 	private:
 		std::shared_ptr<SelectionManager> m_SelectionManager;

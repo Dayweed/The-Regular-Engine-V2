@@ -49,6 +49,10 @@ namespace TRE
 						TRE_CORE_CRITICAL(roString + ".geom not found!");
 				}
 			}
+			else
+			{
+				t.m_RenderObject = nullptr;
+			}
 
 			if (matHandle != 0)
 			{
@@ -65,6 +69,10 @@ namespace TRE
 				}
 			}
 			//Else most likely default material
+			else
+			{
+				t.m_MaterialInstance = nullptr;
+			}
 
 			t.m_IsVisible = j.at("m_IsVisible").get<bool>();
 			t.m_IsDirty = true;

@@ -80,9 +80,16 @@ namespace TRE
 
 		file << "Shader:\n" << m_Shader->GetHandleHex() << std::endl;
 		file << "Textures:\n";
-		for (auto [Name, texture] : m_Textures)
+
+		const ResourceHandle& defaultTextureHandle = VulkanTexture::GetDefaultTextureID();
+
+		for (const auto& [Name, texture] : m_Textures)
 		{
-			file << texture->GetHandleHex() << std::endl;
+			file << Name << " | ";
+			if(texture->GetHandle() == defaultTextureHandle)
+				file << "0" << std::endl;
+			else
+				file << texture->GetHandleHex() << std::endl;
 		}
 
 		file.close();
@@ -101,7 +108,7 @@ namespace TRE
 
 		std::string line;
 		std::string ShaderGUID;
-		std::vector<std::string> textureGUIDs;
+		std::unordered_map<std::string, std::string> textureGUIDs;
 
 		while (std::getline(file, line))
 		{
@@ -113,28 +120,36 @@ namespace TRE
 			{
 				while (std::getline(file, line))
 				{
-					textureGUIDs.push_back(line);
+					//Split line into texture name and texture GUID
+					const std::string name = line.substr(0, line.find(" | "));
+					const std::string textureGUID = line.substr(line.find(" | ") + 3);
+					textureGUIDs[name] = textureGUID;
 				}
 			}
 		}
 
 		auto ShaderAsset = ResourceManager::Instance().GetResource<Shader>(Resource::GetGUIDFromHex(ShaderGUID));
 		std::unique_ptr<Material> mat = std::make_unique<Material>(ShaderAsset);
-		mat->Invalidate();
 		ResourceHandle assetHandle = Resource::GetGUIDFromHex(assetHexGUID);
 		mat->m_Handle = assetHandle;
 
-		//mat->m_Textures.resize(textureGUIDs.size());
-		for (int i = 0; i < textureGUIDs.size(); ++i)
+		for (const auto& [Name, GUID] : textureGUIDs)
 		{
-			std::string textureHexGUID = textureGUIDs[i];
-			auto texture = ResourceManager::Instance().GetResource<VulkanTexture>(Resource::GetGUIDFromHex(textureHexGUID));
-			//Load into engine if not in asset manager
-			if (texture == nullptr)
+			if (GUID == "0")
 			{
-				texture = VulkanTexture::Deserialize(textureHexGUID);
+				mat->m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID());
 			}
-			//mat->m_Textures[i] = texture;
+			else
+			{
+				mat->m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(Resource::GetGUIDFromHex(GUID));
+			}
+		}
+
+		for (auto x : mat->m_Textures)
+		{
+			if (x.second == nullptr)
+				std::cout << "nullptr\n";
+			//std::cout << x.first << " | " << x.second->GetHandleHex() << std::endl;
 		}
 
 		ResourceManager::Instance().AddResource(std::move(mat));

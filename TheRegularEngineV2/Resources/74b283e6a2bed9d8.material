@@ -1,7 +1,7 @@
 Shader:
 3
 Textures:
-8a0c8bee2a64d76b
-474d70e35d64e711
-d3464713e4f44bee
-13392e8301ebb46
+AOMap | 13392e8301ebb46
+RoughnessMap | 8a0c8bee2a64d76b
+DiffuseMap | 474d70e35d64e711
+NormalMap | d3464713e4f44bee
