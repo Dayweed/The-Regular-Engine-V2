@@ -9,6 +9,7 @@ namespace TRE
 		VkImageLayout FinalLayout;
 		VkFormat DepthImageFormat;
 		VkImageLayout DepthFinalLayout;
+		bool DepthEnabled = false;
 	};
 
 	class RenderPass

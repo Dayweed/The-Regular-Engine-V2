@@ -26,6 +26,7 @@ namespace TRE
 
 			void Invalidate();
 			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
+			void UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo); //To be removed
 
 			void SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures);
 			const std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
