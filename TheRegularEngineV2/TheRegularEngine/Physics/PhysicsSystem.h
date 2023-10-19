@@ -60,6 +60,10 @@ namespace TRE
 		void onWake(physx::PxActor** actors, physx::PxU32 count) override;
 	};
 
+	physx::PxFilterFlags SimulationFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+		physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+		physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
+
 	class PhysicsSystem : public ECSSystem
 	{
 	public:

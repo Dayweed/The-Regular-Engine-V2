@@ -86,14 +86,16 @@ namespace TRE
 		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;
 
-		//A thread that will do collision management
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-
 		// SimulationEventCallback must inherit PxSimulationEventCallback
 		// PUBLICLY in order to work, otherwise...
 		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
 		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
 		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
+
+		//A thread that will do collision management
+
+		// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader = SimulationFilterShader;
 
 		m_Scene = m_Physics->createScene(sceneDesc);
 		assert(m_Scene);
@@ -123,6 +125,27 @@ namespace TRE
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
 
+	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+	{
+		// let triggers through
+		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlags();
+		}
+
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT
+			| PxPairFlag::eDETECT_CCD_CONTACT
+			| PxPairFlag::eNOTIFY_TOUCH_CCD
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_CONTACT_POINTS
+			| PxPairFlag::eCONTACT_EVENT_POSE;
+
+		return {};
+	}
+
 	static bool isReadyForUpdate = false;
 
 	bool PhysicsSystem::TESTUpdate()
@@ -135,18 +158,19 @@ namespace TRE
 			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
 #endif
 
-#if 0
+#if 1
 		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
-		e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
+		e1->GetComponent<Transform>().m_Position = { 0,5,0 };
 		e1->AddComponent<BoxCollider>();
-		e1->AddComponent<Rigidbody>();
+		ConstructBoxCollider(e1, { 7, 2, 7 });
+		ColliderToTrigger(e1);
 #endif
 
-#if 0
+#if 1
 		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
-		e2->GetComponent<Transform>().m_Position = { 1,2,0 };
+		e2->GetComponent<Transform>().m_Position = { 0, 15, 0 };
 		e2->AddComponent<SphereCollider>();
-		// e2->AddComponent<Rigidbody>();
+		e2->AddComponent<Rigidbody>();
 		// ColliderToTrigger(e2);			TriggerToCollider(e2);
 #endif
 
@@ -193,7 +217,6 @@ namespace TRE
 			// there is a mismatch. Thus, destroy that component.
 			const auto& attachedComponents = x.second.m_AttachedComponents;
 
-			// TODO: Remove this, use PhysicsComponent destructors I BEG OF YOU
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
@@ -400,6 +423,15 @@ namespace TRE
 		UNUSED_PARAM(pairs);
 		UNUSED_PARAM(nbPairs);
 		printf("|%s|\n", __FUNCTION__);
+
+		for (unsigned i = 0; i < nbPairs; ++i)
+		{
+			const auto& yeah = pairs[i];
+			PxShape** huh = new PxShape * [3];
+			pairHeader.actors[0]->is<PxRigidBody>()->getShapes(huh, 3);
+			auto& geom = huh[0]->getGeometry();
+		}
+
 	}
 
 	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
@@ -413,11 +445,21 @@ namespace TRE
 	{
 		UNUSED_PARAM(pairs);
 		UNUSED_PARAM(count);
-		printf("|%s|\n", __FUNCTION__);
+		// printf("|%s|\n", __FUNCTION__);
 
 		if (!count) return;
 		// auto& pair = pairs[count - 1];
-		printf("YOOOOOOOOOOOOOOOOOOOOOOO\n");
+		//printf("YOOOOOOOOOOOOOOOOOOOOOOO\n");
+		for (unsigned i = 0; i < count; ++i)
+		{
+			const auto& yeah = pairs[i];
+			if (yeah.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+				printf("Shape is entering trigger volume\n");
+			if (yeah.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
+				printf("Shape is leaving trigger volume\n");
+			if (yeah.status & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
+				printf("Shape staying in trigger volume\n");
+		}
 	}
 
 	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
@@ -427,3 +469,6 @@ namespace TRE
 		printf("|%s|\n", __FUNCTION__);
 	}
 }
+
+
+// collision layering!! -> PxSetGroupCollisionFlag()
