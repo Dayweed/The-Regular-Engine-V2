@@ -8,6 +8,11 @@
 #pragma once
 using string_t = std::string;
 
+struct audio_file_dropdown
+{
+    std::string m_File;
+};
+
 struct resource_ref
 {
     std::uint64_t m_Value;
@@ -150,6 +155,7 @@ namespace property
             , glm::vec3
             , FMOD_VECTOR
             , resource_ref
+            , audio_file_dropdown
         >;
     
         //--------------------------------------------------------------------------------------------

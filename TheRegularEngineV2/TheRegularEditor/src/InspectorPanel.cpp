@@ -245,7 +245,24 @@ namespace TRE
 								static char renderObject[200];
 								strcpy(renderObject, AssetManager::Instance().GetName(Value.m_Value).c_str());
 								ImGui::InputText("##", renderObject, sizeof(renderObject), ImGuiInputTextFlags_ReadOnly);
-							}							
+							}
+							else if constexpr (std::is_same_v<T, audio_file_dropdown>)
+							{
+								if (ImGui::BeginCombo("AudioFilePopUp", Value.m_File.c_str()))
+								{
+									// GetAllAudioFiles
+									std::vector<std::string> tempAudioFiles{"A.wav", "B.wav"};
+									for (std::string& fileName : tempAudioFiles)
+									{
+										if (ImGui::Selectable(fileName.c_str()))
+										{
+											Value.m_File = fileName;
+										}
+									}
+
+									ImGui::EndCombo();
+								}
+							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);

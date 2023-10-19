@@ -10,6 +10,7 @@ namespace TRE
 	class Audio : property::base
 	{
 	public:
+		audio_file_dropdown m_AudioFileNameToDrop;
 		std::string m_FileName{""};
 		//std::string m_FilePath{ "../Assets/Audio/ViveLeFromageBGM1.wav" };
 		FMOD::ChannelGroup* m_ChannelGroup{};
@@ -227,6 +228,7 @@ property_begin(TRE::AudioListener)
 
 property_begin(TRE::Audio)
 {
+			property_var(m_AudioFileNameToDrop),
 			property_var(m_FileName),
 			property_var(m_Play),
 			property_var(m_Volume),
