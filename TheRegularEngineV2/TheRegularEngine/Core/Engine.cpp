@@ -458,6 +458,8 @@ namespace TRE
 				Profiler::Instance().StartTimer("OnReset");
 				ECSSystemManager::Instance().OnReset();
 				Profiler::Instance().EndTimer("OnReset");
+
+				GameLoop::Instance().SetSceneReset(false);
 			}
 
 			Profiler::Instance().StartTimer("OnDestroyEntities");
