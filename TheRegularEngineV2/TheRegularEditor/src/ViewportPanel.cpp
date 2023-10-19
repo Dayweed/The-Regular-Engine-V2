@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ViewportPanel.h"
-#include "EditorCamera.h"
+#include "Graphics/EditorCamera.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
@@ -115,7 +115,7 @@ namespace TRE
 				auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
 				auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
 				std::map<float, Entity> entitiesHit;
-				for (auto mr : ent_mrs)
+				for (auto& mr : ent_mrs)
 				{
 					const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
 					float t = 0.f;
@@ -148,7 +148,6 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
-
 		if (event._key == (int)KeyButton::Q)
 		{
 			m_GizmoOperation = -1;
@@ -282,96 +281,7 @@ namespace TRE
 			ImGui::EndDragDropTarget();
 		}
 
-		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
-		if (SelectedEntity && m_GizmoOperation != -1)
-		{
-			ImGuizmo::SetOrthographic(true);
-			ImGuizmo::SetDrawlist();
-
-			float WindowWith = (float)ImGui::GetWindowWidth();
-			float WindowHeight = (float)ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
-
-			Entity camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
-			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
-			glm::mat4 proj = cameraSystem->GetProjectionMatrix(camera);
-			proj[1][1] *= -1.f;
-			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
-
-			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
-			Transform& transform = SelectedEntity->GetComponent<Transform>();
-
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
-			
-			if (ImGuizmo::IsUsing())
-			{
-				std::string compName{ ComponentManager::Instance().GetComponentName<Transform>() };
-				bool needUpdatingToPrefab{ SelectedEntity->HasComponent<Prefabing>() && SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.find(compName) == SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.end() };
-
-				glm::vec3 Scale;
-				glm::vec3 Rotation;
-				glm::vec3 Translate;
-				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(xform), glm::value_ptr(Translate), glm::value_ptr(Rotation), glm::value_ptr(Scale));
-				switch (m_GizmoOperation)
-				{
-					case ImGuizmo::OPERATION::SCALE:
-					{
-						transform.m_Scale = Scale;
-						if (needUpdatingToPrefab)
-						{
-							// See if can emplace back
-							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
-							auto it{ prefab.m_Overrides.find(compName) };
-							if (it == prefab.m_Overrides.end())
-							{
-								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
-							}
-							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-							// If gizmo doesn't update prefab, check Transform.h
-							prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
-						}
-						break;
-					}
-					case ImGuizmo::OPERATION::ROTATE:
-					{
-						transform.m_Rotation = Rotation;
-						if (needUpdatingToPrefab)
-						{
-							// See if can emplace back
-							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
-							auto it{ prefab.m_Overrides.find(compName) };
-							if (it == prefab.m_Overrides.end())
-							{
-								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
-							}
-							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-							// If gizmo doesn't update prefab, check Transform.h
-							prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
-						}
-						break;
-					}
-					case ImGuizmo::OPERATION::TRANSLATE:
-					{
-						transform.m_Position = Translate;
-						if (needUpdatingToPrefab)
-						{
-							// See if can emplace back
-							Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
-							auto it{ prefab.m_Overrides.find(compName) };
-							if (it == prefab.m_Overrides.end())
-							{
-								prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
-							}
-							// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-							// If gizmo doesn't update prefab, check Transform.h
-							prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
-						}
-						break;
-					}
-				}
-				transform.m_IsDirty = true;
-			}
-		}
+		UpdateGizmo();
 
 		ImGui::End();
 	}
@@ -443,5 +353,102 @@ namespace TRE
 		end.y /= end.w;
 		end.z /= end.w;
 		m_ClickRay = end - start;
+	}
+
+	void ViewportPanel::UpdateGizmo()
+	{
+		if (m_IsViewportFocused == false)
+			return;
+
+		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
+		if (SelectedEntity && m_GizmoOperation != -1)
+		{
+			ImGuizmo::SetOrthographic(true);
+			ImGuizmo::SetDrawlist();
+
+			float WindowWith = (float)ImGui::GetWindowWidth();
+			float WindowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
+
+			Entity camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
+			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
+			glm::mat4 proj = cameraSystem->GetProjectionMatrix(camera);
+			proj[1][1] *= -1.f;
+			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
+
+			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
+			Transform& transform = SelectedEntity->GetComponent<Transform>();
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
+
+			if (ImGuizmo::IsUsing())
+			{
+				std::string compName{ ComponentManager::Instance().GetComponentName<Transform>() };
+				bool needUpdatingToPrefab{ SelectedEntity->HasComponent<Prefabing>() && SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.find(compName) == SelectedEntity->GetComponent<Prefabing>().m_AddeddComps.end() };
+
+				glm::vec3 Scale;
+				glm::vec3 Rotation;
+				glm::vec3 Translate;
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(xform), glm::value_ptr(Translate), glm::value_ptr(Rotation), glm::value_ptr(Scale));
+				switch (m_GizmoOperation)
+				{
+				case ImGuizmo::OPERATION::SCALE:
+				{
+					transform.m_Scale = Scale;
+					if (needUpdatingToPrefab)
+					{
+						// See if can emplace back
+						Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+						auto it{ prefab.m_Overrides.find(compName) };
+						if (it == prefab.m_Overrides.end())
+						{
+							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+						}
+						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+						// If gizmo doesn't update prefab, check Transform.h
+						prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
+					}
+					break;
+				}
+				case ImGuizmo::OPERATION::ROTATE:
+				{
+					transform.m_Rotation = Rotation;
+					if (needUpdatingToPrefab)
+					{
+						// See if can emplace back
+						Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+						auto it{ prefab.m_Overrides.find(compName) };
+						if (it == prefab.m_Overrides.end())
+						{
+							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+						}
+						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+						// If gizmo doesn't update prefab, check Transform.h
+						prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
+					}
+					break;
+				}
+				case ImGuizmo::OPERATION::TRANSLATE:
+				{
+					transform.m_Position = Translate;
+					if (needUpdatingToPrefab)
+					{
+						// See if can emplace back
+						Prefabing& prefab{ SelectedEntity->GetComponent<Prefabing>() };
+						auto it{ prefab.m_Overrides.find(compName) };
+						if (it == prefab.m_Overrides.end())
+						{
+							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
+						}
+						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
+						// If gizmo doesn't update prefab, check Transform.h
+						prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
+					}
+					break;
+				}
+				}
+				transform.m_IsDirty = true;
+			}
+		}
 	}
 }

@@ -5,14 +5,14 @@
 #include "Utilities.h"
 #include "EditorAssetManager.h"
 #include "ContentBrowserPanel.h"
+#include "Graphics/Material.h"
 
 namespace TRE
 {
-	ResourceHandle ContentBrowserPanel::m_SelectedResource{ 0 };
-
-	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
+	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector)
 	{
 		m_SelectionManager = Selection_Manager;
+		m_AssetSelector = assetSelector;
 		
 		m_AssetDirectory = std::filesystem::current_path().parent_path();
 		m_AssetDirectory += "\\Assets";
@@ -96,6 +96,7 @@ namespace TRE
 			materialAsset.m_TextureID = m_TmpTexturesID;
 			materialAsset.m_ResourceType = "m_Material";
 			materialAsset.m_FileName = AssetManager::Instance().GetName(mat->GetHandle());
+			materialAsset.m_Path = "../Resources/" + mat->GetHandleHex()  + ".material";
 
 			m_Assets.emplace_back(materialAsset);
 		}
@@ -145,8 +146,11 @@ namespace TRE
 				{
 					if (ImGui::MenuItem("PBR"))
 					{
-						//For Zr use
-						std::cout << "works" << std::endl;
+						MaterialDescriptorFile descriptorFileMaterial;
+						descriptorFileMaterial.Generate();
+						
+						//AssetManager::Instance().PrintAllAssets();
+						//AssetManager::Instance().AddAsset<Material>(descriptorFileMaterial.GetAssetPath());
 					}
 					if (ImGui::MenuItem("Others"))
 					{
@@ -165,6 +169,8 @@ namespace TRE
 				cols = 1;
 
 			ImGui::Columns(cols, nullptr, false);
+
+			m_AssetClicked = false;
 
 			for (int count{}; auto & item: m_Assets)
 			{
@@ -190,8 +196,11 @@ namespace TRE
 							if (!m_InvalidResourcePopUp)
 								m_InvalidResourcePopUp = true;
 						}
-
-						m_SelectedResource = AssetManager::Instance().GetAssetHandle(item.m_FileName);
+						else
+						{
+							m_AssetSelector->SelectEntity(item.m_FileName);
+						}
+						m_AssetClicked = true;
 					}
 
 					if (ImGui::BeginDragDropSource())
@@ -215,6 +224,12 @@ namespace TRE
 				ImGui::OpenPopup("Invalid Resource");
 				m_InvalidResourcePopUp = false;
 			}
+
+			if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_AssetClicked == false)
+			{
+				m_AssetSelector->ClearSelectedAsset();
+			}
+
 			//create Pop-up
 			ImGui::SetNextWindowSize(ImVec2{ 250.f,70.f });
 			ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2{ 0.5f,0.5f });

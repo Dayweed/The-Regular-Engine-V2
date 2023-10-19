@@ -9,7 +9,13 @@ namespace TRE
 {
 	class MaterialDescriptorFile : public DescriptorFile
 	{
+	public:
 		//Asset path will act as material name 
+		void Generate();
+		void Rename(const std::string& newName);
+	protected:
+		//void Write() override;
+		//void Read() override;
 	};
 
 	class Material : public Resource
@@ -27,10 +33,12 @@ namespace TRE
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 
-			static ResourceType GetType() {return ResourceType::Material;}
+			static ResourceType GetType() { return ResourceType::Material; }
 
 			void Serialize() override;
 			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);
+		private:
+			void AllocateTextures();
 		private:
 			std::shared_ptr<Shader> m_Shader;
 
