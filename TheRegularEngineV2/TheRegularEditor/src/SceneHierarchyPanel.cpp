@@ -110,16 +110,7 @@ namespace TRE
 		{
 			if (Entity ent = ECSManager::Instance().FindEntity(entityIDTodeleted))
 			{
-				//if (entityTobedeletedIsParent)
-				//{
-				//	std::cout << "is it here?\n";
-					DeleteChildren(ent);
-				//}
-
-				//else
-				//{
-				//	ECSManager::Instance().DestroyEntity(ent);
-				//}
+				DeleteChildren(ent);
 
 				entityIDTodeleted = {};
 				if (ent == m_SelectionManager->GetSelectedEntity())
@@ -234,22 +225,21 @@ namespace TRE
 
 					ImGui::EndDragDropTarget();
 				}
-				
-				if (entityName != "cam")
-				{
-					ImGui::SameLine();
-					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
-					if ((ImGui::Button("X") || ImGui::IsItemClicked()))
-					{
-						entityIDTodeleted = CurrentEntity->GetGUID();
-						entityTobedeletedIsParent = true;
-					}
-					ImGui::PopStyleColor(1);
-				}
 
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 				{
 					m_SelectionManager->SelectEntity(CurrentEntity);
+				}
+
+				if (entityName != "cam")
+				{
+					ImGui::SameLine();
+					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
+					if (ImGui::Button("X"))
+					{
+						entityIDTodeleted = CurrentEntity->GetGUID();
+					}
+					ImGui::PopStyleColor(1);
 				}
 
 				for (auto& entityChild : childrenVector)
@@ -289,21 +279,20 @@ namespace TRE
 					ImGui::EndDragDropTarget();
 				}
 				
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+				{
+					m_SelectionManager->SelectEntity(CurrentEntity);
+				}
+
 				if (entityName != "cam")
 				{
 					ImGui::SameLine();
 					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.f));
-					if ((ImGui::Button("X") || ImGui::IsItemClicked()))
+					if (ImGui::Button("X"))
 					{
 						entityIDTodeleted = CurrentEntity->GetGUID();
-						entityTobedeletedIsParent = false;
 					}
 					ImGui::PopStyleColor(1);
-				}
-
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-				{
-					m_SelectionManager->SelectEntity(CurrentEntity);
 				}
 
 				ImGui::TreePop();

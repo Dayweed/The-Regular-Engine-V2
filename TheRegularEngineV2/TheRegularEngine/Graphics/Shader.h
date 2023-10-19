@@ -1,9 +1,19 @@
 #pragma once
 #include "ShaderResource.h"
 #include "Resource/Resource.h"
+#include "DescriptorFile.h"
 
 namespace TRE
 {
+	class ShaderDescriptorFile : public DescriptorFile
+	{
+		//Asset path will be the shader path
+	public:
+		void Load(const std::string& shaderName, const std::string& hexHandle);
+	protected:
+	private:
+	};
+
 	class Shader : public Resource
 	{
 		public:
@@ -19,9 +29,9 @@ namespace TRE
 			std::vector<VkDescriptorSetLayout> GetAllDescriptorLayout();
 			std::map<std::string, VkWriteDescriptorSet> GetWriteDescriptors();
 
-
 			static ResourceType GetType() { return ResourceType::Shader; }
-			void Serialize() override;
+
+			static void SetupShaders();
 
 		public:
 			const std::vector<VkPipelineShaderStageCreateInfo>& GetPipelineShaderInfo();

@@ -32,6 +32,7 @@ namespace TRE
 	{
 		for (Entity& object : ECSManager::Instance().GetEntities<Removal>())
 		{
+			RemoveParent(object);
 			AbandonChildren(object);
 		}
 	}
