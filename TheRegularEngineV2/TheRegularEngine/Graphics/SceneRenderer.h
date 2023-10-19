@@ -9,7 +9,7 @@
 #include "Material.h"
 #include "DebugRenderer.h"
 #include "AnimationTest.h"
-#include "MaterialTypes/PBRMaterial.h"
+#include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
 
 namespace TRE
