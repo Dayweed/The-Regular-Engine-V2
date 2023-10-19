@@ -117,7 +117,8 @@ namespace TRE
         PrintAssemblyTypes(s_MonoAssembly);
 
 	}
-    void ScriptEngine::BindFunctions()
+
+	void ScriptEngine::BindFunctions()
     {
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
@@ -681,12 +682,25 @@ namespace TRE
 #pragma endregion
 
 #pragma region InputBindings
-    void ScriptInputSystem::InitInputSystem()
-    {
-        // Register the input system to the event handler
 
+    ScriptInputHandler::ScriptInputHandler()
+    {
+        EventHandler::getEventHandlerInstance().subscribe(this, &ScriptInputHandler::GetKeyPressed);
+	}
+
+    void ScriptInputHandler::GetKeyPressed(const InputEvent& event)
+    {
+        _key = event._key;
+        _state = event._state;
     }
-	
+
+    bool ScriptEngine::BindGetKeyPressed(int key)
+    {
+        if(m_ScriptInputHandler.GetKey() == key )
+        {
+	        return true;
+        }
+    }
 
 #pragma endregion
 
@@ -704,14 +718,6 @@ namespace TRE
 
 #pragma region Physics
 
-    void ScriptEngine::BindConstructSphereCollider(MonoString* id)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructSphereCollider(Temp);
-    }
-
     void ScriptEngine::BindResizeSphereCollider(MonoString* id, float s)
     {
     	std::string ID = mono_string_to_utf8(id);
@@ -720,20 +726,20 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(Temp, s);
 	}
 
-    void ScriptEngine::BindConstructBoxCollider(MonoString* id)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		// find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructBoxCollider(Temp);
-	}
-
     void ScriptEngine::BindResizeBoxCollider(MonoString* id, glm::vec3 s)
     {
     	std::string ID = mono_string_to_utf8(id);
 		// find the entity
 		Entity Temp = ECSManager::Instance().FindEntity(ID);
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(Temp, s);
+    }
+
+    void ScriptEngine::BindAddForce(MonoString* id , glm::vec3 force)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		// find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
     }
 
 #pragma endregion
