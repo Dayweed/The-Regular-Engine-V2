@@ -22,6 +22,7 @@
 #include "Graphics/ShaderReflection.h"
 #include "TextureDescriptorFile.h"	
 #include "Physics/PhysicsComponents.h"
+#include "ShaderTypes/PBRShader.h"
 
 #include "Demo/Demo.h"
 
@@ -68,18 +69,6 @@ namespace TRE
 
 	void DemoDeserialize()
 	{
-		auto PBRHandle = 3;
-		auto DebugDrawHandle = 7;
-
-		std::unique_ptr<Shader> vert = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
-		vert->SetHandle(PBRHandle);
-		ResourceManager::Instance().AddResource(std::move(vert));
-
-		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("../Resources/DebugDrawLine.TREshader");
-		DebugDrawVert->SetHandle(DebugDrawHandle);
-		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
-
 		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
 
@@ -93,8 +82,6 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
-		auto PBRHandle = 3;
-		auto DebugDrawHandle = 7;
 		auto FinalPassShaderHandle = 4;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 
@@ -171,22 +158,13 @@ namespace TRE
 		plane->SetHandle(planeHandle);
 		ResourceManager::Instance().AddResource(std::move(plane));
 
-		std::unique_ptr<Shader> vert = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
-		vert->SetHandle(PBRHandle);
-		ResourceManager::Instance().AddResource(std::move(vert));
-
-		//DebugDrawShaders
-		std::unique_ptr<Shader> DebugDrawVert = ShaderCompiler::DeserializeReflectShader("../Resources/DebugDrawLine.TREshader");
-		DebugDrawVert->SetHandle(DebugDrawHandle);
-		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
-
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
 		FinalPassShader->SetHandle(FinalPassShaderHandle);
 		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
 
 		// Create a material instance
-		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBRHandle);
+		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBR::GetShaderHandle());
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
 		mat1->SetHandle(matHandle);
 		mat1->SetTexture("DiffuseMap", ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle));
@@ -344,7 +322,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
 		}
 
-		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -381,6 +359,7 @@ namespace TRE
 
 		GameLoop::Instance().Init();
 		RegisterECS();
+		Shader::SetupShaders();
 
 		//DemoDeserialize();
 		DemoScene();

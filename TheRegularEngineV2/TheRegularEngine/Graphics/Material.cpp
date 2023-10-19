@@ -162,13 +162,6 @@ namespace TRE
 			}
 		}
 
-		for (auto x : mat->m_Textures)
-		{
-			if (x.second == nullptr)
-				std::cout << "nullptr\n";
-			//std::cout << x.first << " | " << x.second->GetHandleHex() << std::endl;
-		}
-
 		ResourceManager::Instance().AddResource(std::move(mat));
 
 		return std::move(ResourceManager::Instance().GetResource<Material>(assetHandle));

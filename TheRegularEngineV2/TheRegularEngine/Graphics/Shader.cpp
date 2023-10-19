@@ -2,6 +2,8 @@
 #include "Shader.h"
 #include "RendererContext.h"
 #include "Core/Logger.h"
+#include "ShaderTypes/PBRShader.h"
+#include "ShaderTypes/LineShader.h"
 
 namespace TRE
 {
@@ -167,8 +169,24 @@ namespace TRE
 		m_ReflectionData = ReflectionData;
 	}
 
-	void Shader::Serialize()
+	void Shader::SetupShaders()
 	{
-		
+		std::unique_ptr<PBR> pbr = std::make_unique<PBR>("51e8150cd09be553");
+		std::unique_ptr<Line> line = std::make_unique<Line>("7");
+	}
+
+	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)
+	{
+		const std::string assetFolderPath = "../Assets/";
+		const std::string resourceFolderPath = "../Resources/";
+		const std::string resource = hexHandle + ".TREShader";
+		const std::string descPath = assetFolderPath + resource + ".desc";
+		const std::string resourcePath = resourceFolderPath + resource;
+		SetAssetPath(shaderName + ".TREShader");
+		SetDescriptorPath(descPath);
+		GenerateDescriptorFile();
+
+		//Rename the shader file from english to hex handle
+		std::filesystem::rename(resourceFolderPath + shaderName + ".TREShader", resourcePath);
 	}
 }

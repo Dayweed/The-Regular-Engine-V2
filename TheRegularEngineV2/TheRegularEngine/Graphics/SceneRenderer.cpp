@@ -24,7 +24,7 @@ namespace TRE
 
 	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		auto& SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		Create();
@@ -70,7 +70,7 @@ namespace TRE
 
 		CreateFrameBuffer(m_RenderPass);
 
-		auto PBRShader = ResourceManager::Instance().GetResource<Shader>(3);
+		auto PBRShader = ResourceManager::Instance().GetResource<Shader>(PBR::GetShaderHandle());
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
@@ -226,7 +226,7 @@ namespace TRE
 			//If entity has no material, use default
 			if (mr.m_MaterialInstance == nullptr)
 			{
-				materialHandle = PBR::GetDefaultHandle();
+				materialHandle = PBR::GetDefaultMaterial();
 				if (m_DefaultPBRMaterial == nullptr)
 				{
 					m_DefaultPBRMaterial = ResourceManager::Instance().GetResource<Material>(materialHandle);
