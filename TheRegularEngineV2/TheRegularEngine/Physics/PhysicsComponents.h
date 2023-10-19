@@ -102,7 +102,7 @@ namespace TRE
 
 	struct BoxCollider : BaseCollider, property::base
 	{
-		Vector3 m_HalfExtents = Vector3(0.5f);
+		glm::vec3 m_HalfExtents = glm::vec3(0.5f);
 
 		// To write to / read from .json files.
 		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.

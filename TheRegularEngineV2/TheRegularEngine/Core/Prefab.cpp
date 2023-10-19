@@ -189,7 +189,9 @@ namespace TRE
 			BoxCollider,
 			Rigidbody,
 			FEL,
-			FAKEFEL
+			FAKEFEL,
+			Audio,
+			AudioListener
 		>();
 
 		// Clone Prefab
@@ -211,6 +213,8 @@ namespace TRE
 			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<Audio>(arc)
+			.component<AudioListener>(arc)
 			;
 
 		arc.Close();
@@ -374,6 +378,8 @@ namespace TRE
 			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<Audio>(arc)
+			.component<AudioListener>(arc)
 			;
 
 		// Clone each component of the object into the prefab
@@ -464,7 +470,9 @@ namespace TRE
 			BoxCollider,
 			Rigidbody,
 			FEL,
-			FAKEFEL
+			FAKEFEL,
+			Audio,
+			AudioListener
 		>();
 
 		// Clone Prefab
@@ -486,6 +494,8 @@ namespace TRE
 			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<Audio>(arc)
+			.component<AudioListener>(arc)
 		;
 
 		arc.Close();

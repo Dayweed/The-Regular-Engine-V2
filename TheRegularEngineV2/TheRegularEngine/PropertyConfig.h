@@ -2,7 +2,8 @@
 #include <variant>
 
 #include "glm/glm.hpp"
-#include "Vector3.h"
+#include "FMOD/fmod.hpp"
+
 
 #pragma once
 using string_t = std::string;
@@ -147,7 +148,7 @@ namespace property
             , oobb
             , glm::vec2
             , glm::vec3
-            , Vector3
+            , FMOD_VECTOR
             , resource_ref
         >;
     

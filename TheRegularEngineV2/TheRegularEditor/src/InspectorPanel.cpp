@@ -234,13 +234,7 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat2(NameField.c_str(), pos);
 								Value = { pos[0], pos[1] };
 							}
-							else if constexpr (std::is_same_v<T, glm::vec3>)
-							{
-								float pos[3]{ Value.x, Value.y, Value.z };
-								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
-								Value = { pos[0], pos[1], pos[2] };
-							}
-							else if constexpr (std::is_same_v<T, Vector3>) // I guess this is fine too!
+							else if constexpr (std::is_same_v<T, glm::vec3> || std::is_same_v<T, FMOD_VECTOR>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);

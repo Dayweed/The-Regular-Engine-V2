@@ -151,6 +151,8 @@ namespace TRE
 			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
 			;
 
 		arc.Close();
@@ -179,6 +181,8 @@ namespace TRE
 			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
