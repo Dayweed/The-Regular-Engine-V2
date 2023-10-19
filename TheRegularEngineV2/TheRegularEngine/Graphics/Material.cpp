@@ -54,6 +54,23 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
+	void Material::UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo)
+	{
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				Write.pImageInfo = &ImageInfo;
+			}
+			Write.dstSet = m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex()];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
 	void Material::SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures)
 	{
 		m_Textures[Name] = textures;

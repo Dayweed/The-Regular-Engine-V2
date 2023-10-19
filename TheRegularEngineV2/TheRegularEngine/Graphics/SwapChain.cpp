@@ -76,8 +76,7 @@ namespace TRE
 
 	VkRenderPass SwapChain::GetRenderPass()
 	{
-		//return m_Renderpass->GetHandle();
-		return m_RenderPass;
+		return m_Renderpass->GetHandle();
 	}
 
 	VkExtent2D SwapChain::GetSwapChainExtent()
@@ -102,7 +101,6 @@ namespace TRE
 			vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores[x].PresentComplete, nullptr);
 			vkDestroySemaphore(m_LogicalDevice->GetLogicalDevice(), m_Semaphores[x].RenderComplete, nullptr);
 		}
-		vkDestroyRenderPass(m_LogicalDevice->GetLogicalDevice(), m_RenderPass, nullptr);
 		CleanSwapChain();
 		vkDestroySwapchainKHR(m_LogicalDevice->GetLogicalDevice(), m_SwapChain, nullptr);
 		vkDestroyCommandPool(m_LogicalDevice->GetLogicalDevice(), m_CommandPool, nullptr);
@@ -355,48 +353,11 @@ namespace TRE
 
 	void SwapChain::CreateRenderPass()
 	{
-		VkAttachmentDescription ColorAttachment{};
-		ColorAttachment.format = m_SwapChainSettings.m_SurfaceFormat;
-		ColorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-		ColorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; //Clear to black before drawing new frame
-		ColorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		ColorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		ColorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		ColorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		ColorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-		VkAttachmentReference ColorAttachmentReference{};
-		ColorAttachmentReference.attachment = 0;
-		ColorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-		VkSubpassDescription SubPassDescription{};
-		SubPassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		SubPassDescription.colorAttachmentCount = 1;
-		SubPassDescription.pColorAttachments = &ColorAttachmentReference;
-
-		VkSubpassDependency SubPassDependency{};
-		SubPassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-		SubPassDependency.dstSubpass = 0;
-		SubPassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		SubPassDependency.srcAccessMask = 0;
-		SubPassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		SubPassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-
-		std::array<VkAttachmentDescription, 1> attachments = { ColorAttachment };
-
-		VkRenderPassCreateInfo RenderPassCreateInfo{};
-		RenderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		RenderPassCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-		RenderPassCreateInfo.pAttachments = attachments.data();
-		RenderPassCreateInfo.subpassCount = 1;
-		RenderPassCreateInfo.pSubpasses = &SubPassDescription;
-		RenderPassCreateInfo.dependencyCount = 1;
-		RenderPassCreateInfo.pDependencies = &SubPassDependency;
-
-		if (vkCreateRenderPass(m_LogicalDevice->GetLogicalDevice(), &RenderPassCreateInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
-		{
-			assert(false);
-		}
+		RenderPassInfo Info{};
+		Info.FinalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		Info.ImageFormat = m_SwapChainSettings.m_SurfaceFormat;
+		Info.DepthEnabled = false;
+		m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, Info);
 	}
 
 	void SwapChain::CreateCommandPool()
@@ -421,7 +382,7 @@ namespace TRE
 
 			VkFramebufferCreateInfo FramebufferCreateInfo{};
 			FramebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			FramebufferCreateInfo.renderPass = m_RenderPass;
+			FramebufferCreateInfo.renderPass = m_Renderpass->GetHandle();
 			FramebufferCreateInfo.attachmentCount = static_cast<uint32_t>(Attachments.size());
 			FramebufferCreateInfo.pAttachments = Attachments.data();
 			FramebufferCreateInfo.width = m_Extent.width;

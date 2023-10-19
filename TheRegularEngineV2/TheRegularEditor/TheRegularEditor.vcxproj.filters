@@ -34,9 +34,6 @@
     <ClCompile Include="src\ViewportPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\SelectionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,6 +55,9 @@
     <ClCompile Include="src\GamePanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AssetSelector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorSystem.h">
@@ -70,9 +70,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ContentBrowserPanel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EditorCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\InspectorPanel.h">
@@ -109,6 +106,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GamePanel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AssetSelector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

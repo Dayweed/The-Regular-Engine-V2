@@ -95,6 +95,7 @@ namespace TRE
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
 		auto PBRHandle = 3;
 		auto DebugDrawHandle = 7;
+		auto FinalPassShaderHandle = 4;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 
 #if 0
@@ -179,7 +180,10 @@ namespace TRE
 		DebugDrawVert->SetHandle(DebugDrawHandle);
 		ResourceManager::Instance().AddResource(std::move(DebugDrawVert));
 
-		auto DebugVertShader = ResourceManager::Instance().GetResource<Shader>(DebugDrawHandle);
+		//FinalPassShader
+		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
+		FinalPassShader->SetHandle(FinalPassShaderHandle);
+		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBRHandle);
@@ -383,6 +387,7 @@ namespace TRE
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		Renderer::SetMainRenderer(m_SceneRenderer);
+		Renderer::Init();
 		m_SceneRenderer->Initialize();
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());

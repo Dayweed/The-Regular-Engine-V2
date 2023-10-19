@@ -65,6 +65,7 @@ namespace TRE
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
 		RenderPassCreateInfo.DepthImageFormat = SwapChain->GetDepthFormat();
 		RenderPassCreateInfo.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		RenderPassCreateInfo.DepthEnabled = true;
 		m_RenderPass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
 
 		CreateFrameBuffer(m_RenderPass);
