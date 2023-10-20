@@ -97,7 +97,7 @@ namespace TRE
 		return -GetForwardVec();
 	}
 
-	void CameraSystem::Update()
+	void CameraSystem::LateUpdate()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
@@ -395,7 +395,6 @@ namespace TRE
 				mainCamera = go;
 			}
 		}
-		assert(count == 1 && "There can only be one main camera");
 		return mainCamera;
 	}
 

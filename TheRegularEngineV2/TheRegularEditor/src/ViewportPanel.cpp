@@ -173,6 +173,8 @@ namespace TRE
 		else
 			m_IsGridAndSnap = false;
 
+
+
 		// here Testing Scripting stuff
 		if (event._key == (int)KeyButton::P)
 		{
@@ -185,7 +187,6 @@ namespace TRE
 			{
 				ScriptEngine::TestSpawnObject();
 			}
-			
 		}
 	}
 
@@ -395,8 +396,6 @@ namespace TRE
 				snapValue = m_ScaleIncreament;
 				break;
 			}
-
-			std::cout << m_IsGridAndSnap << std::endl;
 
 			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
 

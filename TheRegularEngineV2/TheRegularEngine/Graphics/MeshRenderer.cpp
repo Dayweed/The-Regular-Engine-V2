@@ -4,7 +4,7 @@
 
 namespace TRE
 {
-	void MeshRendererSystem::Update()
+	void MeshRendererSystem::LateUpdate()
 	{
 		/*if (m_IsDirty == false)
 			return;*/

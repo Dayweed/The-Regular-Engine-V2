@@ -82,7 +82,7 @@ namespace TRE
 	class MeshRendererSystem : public ECSSystem
 	{
 	public:
-		void Update() override;
+		void LateUpdate() override;
 		void OnReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
