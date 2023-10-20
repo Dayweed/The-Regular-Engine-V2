@@ -36,7 +36,7 @@ namespace TRE
 
 		[Warning]		Will delete all the entities! Remember to save first!
 		*//*__________________________________________________________________________*/
-		void NewScene();
+		void NewScene(std::string sceneName = SCENE_DEFAULT_NAME);
 
 		/* !
 		@function		LoadScene

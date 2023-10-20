@@ -41,6 +41,16 @@ namespace TRE
 		m_SceneReset = reset;
 	}
 
+	bool GameLoop::GetDisplayingPrefab()
+	{
+		return m_DisplayingPrefab;
+	}
+
+	void GameLoop::SetDisplayingPrefab(bool isDisplaying)
+	{
+		m_DisplayingPrefab = isDisplaying;
+	}
+
 	entt::registry& GameLoop::GetBackUpRegistry()
 	{
 		return m_BackUp;
@@ -51,6 +61,17 @@ namespace TRE
 		// If toggle to run and was not running, save scene temporarily
 		if (isRunning && !m_GameRunning)
 		{
+			// Restore back the scene if it was displaying prefab (Assuming if m_BackUp saved the scene before displaying prefab)
+			if (m_DisplayingPrefab)
+			{
+				// Copy registry and components
+				ECSManager::Instance().CopyRegistry(m_BackUp);
+				// Clear Backup
+				m_BackUp.clear();
+				// Auto set back to false
+				m_DisplayingPrefab = false;
+			}
+
 			// Destroys all undeployed entities
 			MemoryManager::Instance().ClearUndeployed();
 

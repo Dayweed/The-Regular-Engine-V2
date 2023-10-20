@@ -6,6 +6,8 @@
 #include "EditorAssetManager.h"
 #include "ContentBrowserPanel.h"
 #include "Graphics/Material.h"
+#include "EditorSystem.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -198,6 +200,16 @@ namespace TRE
 						{
 							if (!m_InvalidResourcePopUp)
 								m_InvalidResourcePopUp = true;
+						}
+						else if (item.m_ResourceType == "m_Prefab")
+						{
+							if (!GameLoop::Instance().IsGameRunning())
+							{
+								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
+								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
+								Entity prefabInstance = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->DisplayPrefabInNewScene(prefabGUID);
+								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+							}
 						}
 						else
 						{

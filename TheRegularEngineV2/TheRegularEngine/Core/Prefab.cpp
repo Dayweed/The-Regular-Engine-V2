@@ -4,10 +4,11 @@
 #include "Core/Logger.h"
 #include "TREIncludes.h"
 #include "Serialization.h"
+#include "GameLoop.h"
 
 namespace TRE
 {
-	PrefabOutputArchive::PrefabOutputArchive(std::string fileName, entt::registry& registry) : m_FileName(fileName), m_Registry(registry)
+	PrefabOutputArchive::PrefabOutputArchive(std::string fileName, entt::registry& registry, int noOfEntities) : m_FileName(fileName), m_Registry(registry), m_TotalEntities(noOfEntities)
 	{
 		m_Root = nlohmann::json::array();
 	}
@@ -25,7 +26,7 @@ namespace TRE
 		// First element of each array keeps the amount of elements. 
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
-			m_Current.push_back(1); // Saving only prefab
+			m_Current.push_back(m_TotalEntities); // Saving only prefab
 		}
 		else
 		{
@@ -117,6 +118,39 @@ namespace TRE
 
 	}
 
+	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
+	{
+		// Store the scene if it wasn't displaying a prefab
+		if (!GameLoop::Instance().GetDisplayingPrefab())
+		{
+			// Destroys all undeployed entities
+			MemoryManager::Instance().ClearUndeployed();
+
+			// Save the registry
+			GameLoop::Instance().GetBackUpRegistry().clear();
+			ECSManager::Instance().SaveRegistry(GameLoop::Instance().GetBackUpRegistry());
+		}
+
+		// Clear the "scene" and show the displayed prefab
+		ECSManager::Instance().DestroyAll();
+
+		// Create Mandotary Main Camera
+		Entity MainCamera = ECSManager::Instance().CreateEntity("Main Camera");
+		MainCamera->AddComponent<Camera>();
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
+
+		m_DisplayedPrefab = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID);
+
+		GameLoop::Instance().SetDisplayingPrefab(true);
+
+		return m_DisplayedPrefab;
+	}
+
+	Entity PrefabSystem::GetDisplayedPrefab()
+	{
+		return m_DisplayedPrefab;
+	}
+
 	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab, std::string assetPath)
 	{
 		std::string prefabGUID;
@@ -186,48 +220,16 @@ namespace TRE
 		// SERIALIZING PREFAB
 		//
 		entt::registry tmp;
-
-		(void) tmp.view<
-			Prefabing,
-			Parenting,
-			Properties,
-			Transform,
-			MeshRenderer,
-			Camera,
-			SphereCollider,
-			BoxCollider,
-			Rigidbody,
-			FEL,
-			FAKEFEL
-		>();
+		SetUpRegistry(tmp);
 
 		// Clone Prefab
 		SaveEntityInRegistry(object, tmp);
 
-		// Set up document
-		PrefabOutputArchive arc(filePath, tmp);
-		entt::snapshot snapshot{ tmp };
-		// Serialize all entities and components
-		snapshot.entities(arc)
-			.component<Prefabing>(arc)
-			.component<Parenting>(arc)
-			.component<Properties>(arc)
-			.component<Transform>(arc)
-			.component<MeshRenderer>(arc)
-			.component<Camera>(arc)
-			.component<SphereCollider>(arc)
-			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
-			.component<FEL>(arc)
-			.component<FAKEFEL>(arc)
-			;
+		// GetNoOfEntities
+		int noOfEntities{};
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetTotalEntities(noOfEntities, object);
 
-		arc.Close();
-
-		tmp.clear();
-
-		// Update Prefab Directory
-		UpdatePrefabDirectory(prefabGUID, arc.GetFilePath());
+		std::string arcFilePath = SerializePrefabOutputArchive(tmp, prefabGUID, filePath, noOfEntities);
 
 		// Create Prefab Asset File for accessing
 		CreatePrefabAssetFile(prefabGUID, object->GetName(), assetPath);
@@ -236,7 +238,7 @@ namespace TRE
 		// Update all instances
 		if (validOverwrite)
 		{
-			GetPrefabEntity(arc.GetFilePath());
+			GetPrefabEntity(arcFilePath);
 
 			for (auto prefabPair : m_TempPrefabs)
 			{
@@ -278,6 +280,53 @@ namespace TRE
 		}
 
 		return nullptr;
+	}
+
+	void PrefabSystem::SetUpRegistry(entt::registry& reg)
+	{
+		(void)reg.view<
+			Prefabing,
+			Parenting,
+			Properties,
+			Transform,
+			MeshRenderer,
+			Camera,
+			SphereCollider,
+			BoxCollider,
+			Rigidbody,
+			FEL,
+			FAKEFEL
+		>();
+	}
+
+	std::string PrefabSystem::SerializePrefabOutputArchive(entt::registry& reg, std::string prefabGUID, std::string filePath, int NoOfEntities)
+	{
+		// Set up document
+		PrefabOutputArchive arc(filePath, reg, NoOfEntities);
+		entt::snapshot snapshot{ reg };
+		// Serialize all entities and components
+		snapshot.entities(arc)
+			.component<Prefabing>(arc)
+			.component<Parenting>(arc)
+			.component<Properties>(arc)
+			.component<Transform>(arc)
+			.component<MeshRenderer>(arc)
+			.component<Camera>(arc)
+			.component<SphereCollider>(arc)
+			.component<BoxCollider>(arc)
+			.component<Rigidbody>(arc)
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
+			;
+
+		arc.Close();
+
+		reg.clear();
+
+		// Update Prefab Directory
+		UpdatePrefabDirectory(prefabGUID, arc.GetFilePath());
+
+		return arc.GetFilePath();
 	}
 
 	void PrefabSystem::SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID)
@@ -466,47 +515,16 @@ namespace TRE
 
 		entt::registry tmp;
 
-		(void)tmp.view<
-			Prefabing,
-			Parenting,
-			Properties,
-			Transform,
-			MeshRenderer,
-			Camera,
-			SphereCollider,
-			BoxCollider,
-			Rigidbody,
-			FEL,
-			FAKEFEL
-		>();
+		SetUpRegistry(tmp);
 
 		// Clone Prefab
 		UpdateEntityInRegistry(m_TempPrefab, tmp);
 
-		// Set up document
-		PrefabOutputArchive arc(filePath, tmp);
-		entt::snapshot snapshot{ tmp };
-		// Serialize all entities and components
-		snapshot.entities(arc)
-			.component<Prefabing>(arc)
-			.component<Parenting>(arc)
-			.component<Properties>(arc)
-			.component<Transform>(arc)
-			.component<MeshRenderer>(arc)
-			.component<Camera>(arc)
-			.component<SphereCollider>(arc)
-			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
-			.component<FEL>(arc)
-			.component<FAKEFEL>(arc)
-		;
+		// GetNoOfEntities
+		int noOfEntities{};
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetTotalEntities(noOfEntities, MainPrefab);
 
-		arc.Close();
-
-		tmp.clear();
-
-		// Update Prefab Directory
-		UpdatePrefabDirectory(prefabGUID, arc.GetFilePath());
+		SerializePrefabOutputArchive(tmp, prefabGUID, filePath, noOfEntities);
 
 		// Release m_TempPrefab
 		ResetTempPrefab();

@@ -56,7 +56,7 @@ namespace TRE
 	class PrefabOutputArchive
 	{
 	public:
-		PrefabOutputArchive(std::string fileName, entt::registry& registry);
+		PrefabOutputArchive(std::string fileName, entt::registry& registry, int noOfEntities);
 		void operator()(entt::entity ent);
 		void operator()(std::underlying_type_t<entt::entity> u);
 		template <typename T>
@@ -68,6 +68,8 @@ namespace TRE
 	private:
 		std::string m_FileName;
 		entt::registry& m_Registry;
+
+		int m_TotalEntities;
 
 		nlohmann::json m_Root;
 		nlohmann::json m_Current;
@@ -104,6 +106,11 @@ namespace TRE
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 
+		// To "take over" the scene, returns prefab instance
+		Entity DisplayPrefabInNewScene(std::string prefabGUID);
+
+		Entity GetDisplayedPrefab();
+
 		// (De)serializing Prefab
 		std::string SavePrefabEntity(Entity object, bool newPrefab = true,						// Returns true if successful
 										std::string assetPath = FILESYS_PREFABDEFFOLDER);
@@ -128,6 +135,10 @@ namespace TRE
 								std::string filePath = FILESYS_PREFABDEFFOLDER);				
 
 		Entity FindEntityBasedOnPrefabGUID(Entity object, std::string mainPrefabGUID);
+
+		void SetUpRegistry(entt::registry& reg);
+
+		std::string SerializePrefabOutputArchive(entt::registry& reg, std::string prefabGUID, std::string filePath, int NoOfEntities);	// Returns archive.filePath
 
 		void SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID);
 
@@ -156,6 +167,8 @@ namespace TRE
 
 		std::unordered_map<std::string, std::string> m_ExistingPrefabs;							// std::unordered_map<Prefabing::m_PrefabGUID, filePath>
 																								// filePath: The entire string to access the file
+
+		Entity m_DisplayedPrefab;																// This prefab is the one chosen when a .prefab is selected
 
 		Entity m_TempPrefab;
 		std::unordered_map<std::string, Entity> m_TempPrefabs;									// GUID found inside instance, Entity

@@ -97,7 +97,7 @@ namespace TRE
 			bool isPrefabInstance = false;
 
 			// Show option of prefabing possibility if have prefab
-			if (ImGui::Button("Save As Prefab"))
+			if (ImGui::Button("Save As New Prefab"))
 			{
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity);
 			}
