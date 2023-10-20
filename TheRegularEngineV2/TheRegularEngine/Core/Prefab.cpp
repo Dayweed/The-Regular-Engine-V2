@@ -152,8 +152,32 @@ namespace TRE
 		ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
 		// Clear Backup
 		GameLoop::Instance().GetBackUpRegistry().clear();
+		// Update all Prefabs
+		CheckAndUpdateInstances();
 		// Auto set back to false
 		GameLoop::Instance().SetDisplayingPrefab(false);
+	}
+
+	void PrefabSystem::CheckAndUpdateInstances()
+	{
+		DeserializePrefabDirectory();
+
+		auto rscPaths{ m_ExistingPrefabs };
+		for (auto rscPath : m_ExistingPrefabs)
+		{
+			GetPrefabEntity(rscPath.second );
+
+			for (auto prefabPair : m_TempPrefabs)
+			{
+				m_TempPrefab = prefabPair.second;
+				Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
+				std::string prefabGUID{ prefabComp.m_PrefabGUID };
+
+				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+			}
+
+			ResetTempPrefab();
+		}
 	}
 
 	Entity PrefabSystem::GetDisplayedPrefab()

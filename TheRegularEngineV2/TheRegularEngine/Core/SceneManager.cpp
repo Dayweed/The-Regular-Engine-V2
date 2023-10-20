@@ -22,6 +22,10 @@ namespace TRE
 		if (std::filesystem::exists(scenePath))
 		{
 			ECSManager::Instance().LoadEntities(scenePath);
+
+			// Update all Prefabs
+			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CheckAndUpdateInstances();
+
 			m_CurrentScene = scenePath;
 			m_CurrentSceneFilePath = scenePath;
 		}

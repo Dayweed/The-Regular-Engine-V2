@@ -110,6 +110,8 @@ namespace TRE
 		Entity DisplayPrefabInNewScene(std::string prefabGUID);
 		void ReturnToScene();
 
+		void CheckAndUpdateInstances();															// Goes through m_ExistingPrefabs and update all instances
+
 		Entity GetDisplayedPrefab();
 
 		// (De)serializing Prefab
