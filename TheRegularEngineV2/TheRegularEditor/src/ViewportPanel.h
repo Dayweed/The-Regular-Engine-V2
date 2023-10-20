@@ -45,9 +45,10 @@ namespace TRE
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			int m_GizmoOperation = -1; // -1 means no operation
 			//Increament for grid and snap
-			float m_PosIncreament = 1.f;
-			float m_RotIncreament = 1.f;
-			float m_ScaleIncreament = 1.f;
+			bool m_IsGridAndSnap = false;
+			float m_PosIncreament = 5.f;
+			float m_RotIncreament = 15.f;
+			float m_ScaleIncreament = 2.f;
 
 			ImVec2 m_ViewportSize;
 			ImVec2 m_ImageSize;

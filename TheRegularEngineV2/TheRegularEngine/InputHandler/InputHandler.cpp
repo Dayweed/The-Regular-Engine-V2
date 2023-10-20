@@ -22,6 +22,10 @@ namespace TRE
 			event.Publish(InputEvent {key, action});
 			event.Publish(TypingEvent {key, mod});
 		}
+		else if (glfwGetKey(win_ptr, key) == GLFW_RELEASE)
+		{
+			event.Publish(InputEvent {key, action});
+		}
 	}
 
 	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)

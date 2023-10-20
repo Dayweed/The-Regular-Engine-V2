@@ -35,7 +35,7 @@ namespace TRE
 		m_MousePos.y = m_MousePos.y - windowConfig.height / 2.f;
 		m_MousePos.y = -m_MousePos.y;
 
-		if (m_IsViewportFocused == false)
+		if (m_IsViewportHovered == false)
 			return;
 
 		Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
@@ -48,14 +48,15 @@ namespace TRE
 			{
 				panMouseEndPos = m_MousePos;
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
+				if(glm::length(positionOffset) < 0.1f)
+					return;
 				positionOffset = glm::normalize(positionOffset);
 				positionOffset *= -1;
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed * camera.m_FocalLength / 10.f;
+				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
 				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
-
 
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetRightVec() * positionOffset.x);
 				cameraSystem->SetFocalPoint(entity, camera.m_FocalPoint + camera.GetUpVec() * positionOffset.y);
@@ -73,6 +74,8 @@ namespace TRE
 			{
 				rotMouseEndPos = m_MousePos;
 				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
+				if (glm::length(rotationOffset) < 0.1f)
+					return;
 				rotationOffset = glm::normalize(rotationOffset);
 				rotationOffset.x *= -1;
 				rotationOffset *= m_RotationSensitivity;
@@ -91,9 +94,6 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
-		if (m_IsViewportHovered == false)
-			return;
-
 		if((event._key != (int)KeyButton::mouseButtonLeft) 
 			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
 			&& (event._key != (int)KeyButton::mouseButtonRight))
@@ -102,7 +102,7 @@ namespace TRE
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if ((event._key == (int)KeyButton::mouseButtonLeft))
+			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft))
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
@@ -141,14 +141,14 @@ namespace TRE
 		else if (event._state == (int)KeyState::keyHeld)
 		{
 		}
-		else if (event._state == (int)KeyState::keyReleased)
-		{
-			m_IsViewportFocused = false;
-		}
 	}
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
+		if (m_IsViewportHovered == false)
+			return;
+
+		//Gizmo
 		if (event._key == (int)KeyButton::Q)
 		{
 			m_GizmoOperation = -1;
@@ -166,6 +166,16 @@ namespace TRE
 			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
 		}
 
+		//Gizmo snapping
+		if ((event._key == (int)KeyButton::LeftControl || event._key == (int)KeyButton::RightControl) && event._state == (int)KeyState::keyHeld)
+		{
+			m_IsGridAndSnap = true;
+		}
+		else
+			m_IsGridAndSnap = false;
+
+
+
 		// here Testing Scripting stuff
 		if (event._key == (int)KeyButton::P)
 		{
@@ -178,7 +188,6 @@ namespace TRE
 			{
 				ScriptEngine::TestSpawnObject();
 			}
-			
 		}
 	}
 
@@ -247,7 +256,7 @@ namespace TRE
 				Entity entity = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 				const Camera& camera = entity->GetComponent<Camera>();
 				UpdateClickRay();
-				transform.m_Position = camera.m_Position + m_ClickRay;
+				transform.m_Position = camera.m_Position + m_ClickRay / 2.f;
 				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
 				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
@@ -384,18 +393,13 @@ namespace TRE
 
 	void ViewportPanel::UpdateGizmo()
 	{
-		if (m_IsViewportFocused == false)
-			return;
-
 		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
 		if (SelectedEntity && m_GizmoOperation != -1)
 		{
 			ImGuizmo::SetOrthographic(true);
 			ImGuizmo::SetDrawlist();
 
-			float WindowWith = (float)ImGui::GetWindowWidth();
-			float WindowHeight = (float)ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, WindowWith, WindowHeight);
+			ImGuizmo::SetRect(m_WindowPos.x + m_ImageOffset.x, m_WindowPos.y + m_ImageOffset.y, m_ImageSize.x, m_ImageSize.y);
 
 			Entity camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 			CameraSystem* cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
@@ -403,10 +407,24 @@ namespace TRE
 			proj[1][1] *= -1.f;
 			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
 
-			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
+			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
 			Transform& transform = SelectedEntity->GetComponent<Transform>();
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
+			float snapValue = 1.f;
+			switch (m_GizmoOperation)
+			{
+			case ImGuizmo::OPERATION::TRANSLATE:
+				snapValue = m_PosIncreament;
+				break;
+			case ImGuizmo::OPERATION::ROTATE:
+				snapValue = m_RotIncreament;
+				break;
+			case ImGuizmo::OPERATION::SCALE:
+				snapValue = m_ScaleIncreament;
+				break;
+			}
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -420,7 +438,6 @@ namespace TRE
 				switch (m_GizmoOperation)
 				{
 				case ImGuizmo::OPERATION::SCALE:
-				{
 					transform.m_Scale = Scale;
 					if (needUpdatingToPrefab)
 					{
@@ -436,9 +453,7 @@ namespace TRE
 						prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
 					}
 					break;
-				}
 				case ImGuizmo::OPERATION::ROTATE:
-				{
 					transform.m_Rotation = Rotation;
 					if (needUpdatingToPrefab)
 					{
@@ -454,9 +469,7 @@ namespace TRE
 						prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
 					}
 					break;
-				}
 				case ImGuizmo::OPERATION::TRANSLATE:
-				{
 					transform.m_Position = Translate;
 					if (needUpdatingToPrefab)
 					{
@@ -472,7 +485,6 @@ namespace TRE
 						prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
 					}
 					break;
-				}
 				}
 				transform.m_IsDirty = true;
 			}
