@@ -114,7 +114,8 @@ namespace TRE
 				ImGui::SameLine();
 				if (ImGui::Button("Clone Prefab"))
 				{
-					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID);
+					Entity instance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID) };
+					m_SelectionManager->SelectEntity(instance);
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("UnPrefab"))
