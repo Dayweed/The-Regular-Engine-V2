@@ -214,9 +214,6 @@
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialTypes\PBRMaterial.h">
-      <Filter>MaterialTypes</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\PhysicsComponents.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -235,6 +232,11 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ShaderTypes\LineShader.h" />
+    <ClInclude Include="ShaderTypes\PBRShader.h" />
+    <ClInclude Include="Core\EntityCopy.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -372,9 +374,6 @@
     <ClCompile Include="InputHandler\InputHandler.cpp">
       <Filter>InputHandler</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialTypes\PBRMaterial.cpp">
-      <Filter>MaterialTypes</Filter>
-    </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
@@ -388,5 +387,10 @@
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="ShaderTypes\LineShader.cpp" />
+    <ClCompile Include="ShaderTypes\PBRShader.cpp" />
+    <ClCompile Include="Core\EntityCopy.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

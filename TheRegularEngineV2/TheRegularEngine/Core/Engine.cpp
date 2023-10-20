@@ -507,6 +507,7 @@ namespace TRE
 	{
 		m_Running = false;
 		ResourceManager::Instance().DestroyAllResources();
+		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();

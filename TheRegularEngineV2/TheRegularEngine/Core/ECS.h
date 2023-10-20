@@ -270,6 +270,7 @@ namespace TRE
 		friend class ECSManager;
 		friend class MemoryManager;
 		friend class PrefabSystem;
+		friend class EntityCopier;
 
 		entt::entity m_Entity;
 	};
@@ -572,6 +573,7 @@ namespace TRE
 
 		void SaveRegistry(entt::registry& dstRegistry);
 		void CopyRegistry(entt::registry& srcRegistry);
+		void AddToRegistry(entt::registry& srcRegistry);
 
 		template<class... Components>
 		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);

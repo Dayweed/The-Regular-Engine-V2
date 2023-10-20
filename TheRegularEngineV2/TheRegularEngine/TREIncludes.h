@@ -13,6 +13,7 @@
 #include "Core/Engine.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
+#include "Core/EntityCopy.h"
 #include "Core/Prefab.h"
 #include "Core/Parent.h"
 #include "Core/Transform.h"
