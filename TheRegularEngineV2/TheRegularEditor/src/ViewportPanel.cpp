@@ -140,10 +140,6 @@ namespace TRE
 		else if (event._state == (int)KeyState::keyHeld)
 		{
 		}
-		else if (event._state == (int)KeyState::keyReleased)
-		{
-			m_IsViewportFocused = false;
-		}
 	}
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
@@ -357,9 +353,6 @@ namespace TRE
 
 	void ViewportPanel::UpdateGizmo()
 	{
-		if (m_IsViewportFocused == false)
-			return;
-
 		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
 		if (SelectedEntity && m_GizmoOperation != -1)
 		{
@@ -376,7 +369,7 @@ namespace TRE
 			proj[1][1] *= -1.f;
 			glm::mat4 View = cameraSystem->GetViewMatrix(camera);
 
-			static glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
+			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
 			Transform& transform = SelectedEntity->GetComponent<Transform>();
 
 			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::WORLD, glm::value_ptr(xform));
