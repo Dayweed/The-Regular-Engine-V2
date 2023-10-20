@@ -145,8 +145,7 @@ namespace TRE
 		static MonoDomain* s_RootDomain;
 		static MonoDomain* s_AppDomain;
 		static MonoAssembly* s_MonoAssembly;
-
-		static ScriptInputHandler m_ScriptInputHandler;
+		static ScriptInputHandler* m_ScriptInputHandler;
 
 	};
 

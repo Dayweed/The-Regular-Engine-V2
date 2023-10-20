@@ -21,6 +21,7 @@ namespace TRE
     MonoDomain* ScriptEngine::s_RootDomain = nullptr;
     MonoDomain* ScriptEngine::s_AppDomain = nullptr;
     MonoAssembly* ScriptEngine::s_MonoAssembly = nullptr;
+    ScriptInputHandler* ScriptEngine::m_ScriptInputHandler = nullptr;
     std::string ScriptEngine::TestGUID = "";
     bool ScriptEngine::CreatedScriptObject = false;
 
@@ -178,10 +179,9 @@ namespace TRE
         mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
 
         // Physics Bindings
-        mono_add_internal_call("TRE.PhysicsSystem::ConstructSphereCollider", BindConstructSphereCollider);
         mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
-        mono_add_internal_call("TRE.PhysicsSystem::ConstructBoxCollider", BindConstructBoxCollider);
         mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
+        mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
 
     }
 
@@ -696,7 +696,7 @@ namespace TRE
 
     bool ScriptEngine::BindGetKeyPressed(int key)
     {
-        if(m_ScriptInputHandler.GetKey() == key )
+        if(m_ScriptInputHandler->GetKey() == key )
         {
 	        return true;
         }
