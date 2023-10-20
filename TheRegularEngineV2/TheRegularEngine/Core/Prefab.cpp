@@ -946,21 +946,26 @@ namespace TRE
 	void PrefabSystem::UpdateAllInstances(std::unordered_set<std::string>& instanceGUID, std::string prefabGUID)
 	{
 		// Update all instances to match
-		std::vector<std::string> invalidInstance;
+		//std::vector<std::string> invalidInstance;
 		for (const std::string& str : instanceGUID)
 		{
 			std::string instanceID{ str };
-			if (!ECSManager::Instance().FindEntity(instanceID) || !UpdateInstance(ECSManager::Instance().FindEntity(instanceID), prefabGUID))
+			Entity instance{ ECSManager::Instance().FindEntity(instanceID) };
+			if (instance && UpdateInstance(instance, prefabGUID))
+			{
+				instance->GetComponent<Transform>().m_IsDirty = true;
+			}
+			/*if (!ECSManager::Instance().FindEntity(instanceID) || !UpdateInstance(ECSManager::Instance().FindEntity(instanceID), prefabGUID))
 			{
 				invalidInstance.emplace_back(instanceID);
-			}
+			}*/
 		}
 
-		// Erase invalid instance from prefab
-		for (std::string& instanceID : invalidInstance)
-		{
-			instanceGUID.erase(std::find(instanceGUID.begin(), instanceGUID.end(), instanceID));
-		}
+		//// Erase invalid instance from prefab
+		//for (std::string& instanceID : invalidInstance)
+		//{
+		//	instanceGUID.erase(std::find(instanceGUID.begin(), instanceGUID.end(), instanceID));
+		//}
 	}
 
 	bool PrefabSystem::UpdateInstance(Entity instance, std::string prefabGUID)
