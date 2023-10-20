@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ScriptEngine.h"
-#include "InputHandler/InputHandler.h"
+#include "EventSystem/EventHandler/EventHandler.h"
 
 #include "Core/ECS.h"
 #include "Demo/Demo.h"
@@ -21,8 +21,8 @@ namespace TRE
     MonoDomain* ScriptEngine::s_RootDomain = nullptr;
     MonoDomain* ScriptEngine::s_AppDomain = nullptr;
     MonoAssembly* ScriptEngine::s_MonoAssembly = nullptr;
+    ScriptInputHandler* ScriptEngine::m_ScriptInputHandler = nullptr;
     std::string ScriptEngine::TestGUID = "";
-
     bool ScriptEngine::CreatedScriptObject = false;
 
     char* ReadBytes(const std::string& filepath, uint32_t* outSize)
@@ -118,7 +118,8 @@ namespace TRE
         PrintAssemblyTypes(s_MonoAssembly);
 
 	}
-    void ScriptEngine::BindFunctions()
+
+	void ScriptEngine::BindFunctions()
     {
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
@@ -132,6 +133,56 @@ namespace TRE
         mono_add_internal_call("TRE.TransformSystem::SetRotation", BindSetRotation);
         mono_add_internal_call("TRE.TransformSystem::GetPosition", BindGetPosition);
         mono_add_internal_call("TRE.TransformSystem::GetRotation", BindGetRotation);
+
+        // Camera Bindings
+        mono_add_internal_call("TRE.CameraSystem::SetPosition", BindCamSetPosition);
+        mono_add_internal_call("TRE.CameraSystem::SetRotation", BindCamSetRotation);
+        mono_add_internal_call("TRE.CameraSystem::SetViewportSize", BindCamSetViewportSize);
+        mono_add_internal_call("TRE.CameraSystem::SetFocalPoint", BindCamSetFocalPoint);
+        mono_add_internal_call("TRE.CameraSystem::SetFocalLength", BindCamSetFocalLength);
+        mono_add_internal_call("TRE.CameraSystem::SetPitch", BindCamSetPitch);
+        mono_add_internal_call("TRE.CameraSystem::SetYaw", BindCamSetYaw);
+        mono_add_internal_call("TRE.CameraSystem::SetRoll", BindCamSetRoll);
+        mono_add_internal_call("TRE.CameraSystem::SetFOV", BindCamSetFOV);
+        mono_add_internal_call("TRE.CameraSystem::SetNear", BindCamSetNear);
+        mono_add_internal_call("TRE.CameraSystem::SetFar", BindCamSetFar);
+        mono_add_internal_call("TRE.CameraSystem::SetLeft", BindCamSetLeft);
+        mono_add_internal_call("TRE.CameraSystem::SetRight", BindCamSetRight);
+        mono_add_internal_call("TRE.CameraSystem::SetBottom", BindCamSetBottom);
+        mono_add_internal_call("TRE.CameraSystem::SetTop", BindCamSetTop);
+        mono_add_internal_call("TRE.CameraSystem::SetAspectRatio", BindCamSetAspectRatio);
+        mono_add_internal_call("TRE.CameraSystem::SetIsPerspective", BindCamSetIsPerspective);
+        mono_add_internal_call("TRE.CameraSystem::SetIsMainCamera", BindCamSetIsMainCamera);
+
+        mono_add_internal_call("TRE.CameraSystem::GetPosition", BindCamGetPosition);
+        mono_add_internal_call("TRE.CameraSystem::GetRotation", BindCamGetRotation);
+        mono_add_internal_call("TRE.CameraSystem::GetViewMatrix", BindCamGetViewMatrix);
+        mono_add_internal_call("TRE.CameraSystem::GetProjectionMatrix", BindCamGetProjectionMatrix);
+        mono_add_internal_call("TRE.CameraSystem::GetInverseViewMatrix", BindCamGetInverseViewMatrix);
+        mono_add_internal_call("TRE.CameraSystem::GetInverseProjectionMatrix", BindCamGetInverseProjectionMatrix);
+        mono_add_internal_call("TRE.CameraSystem::GetInverseViewProjectionMatrix", BindCamGetInverseViewProjectionMatrix);
+        mono_add_internal_call("TRE.CameraSystem::GetViewportSize", BindCamGetViewportSize);
+        mono_add_internal_call("TRE.CameraSystem::GetFocalPoint", BindCamGetFocalPoint);
+        mono_add_internal_call("TRE.CameraSystem::GetFocalLength", BindCamGetFocalLength);
+        mono_add_internal_call("TRE.CameraSystem::GetPitch", BindCamGetPitch);
+        mono_add_internal_call("TRE.CameraSystem::GetYaw", BindCamGetYaw);
+        mono_add_internal_call("TRE.CameraSystem::GetRoll", BindCamGetRoll);
+        mono_add_internal_call("TRE.CameraSystem::GetFov", BindCamGetFOV);
+        mono_add_internal_call("TRE.CameraSystem::GetNear", BindCamGetNear);
+        mono_add_internal_call("TRE.CameraSystem::GetFar", BindCamGetFar);
+        mono_add_internal_call("TRE.CameraSystem::GetLeft", BindCamGetLeft);
+        mono_add_internal_call("TRE.CameraSystem::GetRight", BindCamGetRight);
+        mono_add_internal_call("TRE.CameraSystem::GetBottom", BindCamGetBottom);
+        mono_add_internal_call("TRE.CameraSystem::GetTop", BindCamGetTop);
+        mono_add_internal_call("TRE.CameraSystem::GetAspectRatio", BindCamGetAspectRatio);
+        mono_add_internal_call("TRE.CameraSystem::IsPerspective", BindCamIsPerspective);
+        mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
+
+        // Physics Bindings
+        mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
+        mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
+        mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+
     }
 
     void ScriptEngine::UpdateScriptingEngine()
@@ -294,6 +345,404 @@ namespace TRE
 		MonoString* GUID = mono_string_new(s_AppDomain, TestGUID.c_str());
 		return GUID;
 	}
+
+
+#pragma region CameraBindings
+    void ScriptEngine::BindCamSetPosition(MonoString* id, glm::vec3 newPos)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetPosition(Temp, newPos);
+        
+    }
+
+    void ScriptEngine::BindCamSetRotation(MonoString* id, glm::vec3 newRot)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		// find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRotation(Temp, newRot);
+	}
+
+    void ScriptEngine::BindCamSetViewportSize(MonoString* id, glm::vec2 newSize)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetViewportSize(Temp, newSize);
+    }
+
+    void ScriptEngine::BindCamSetFocalPoint(MonoString* id, glm::vec3 focalpoint)
+    {
+		std::string ID = mono_string_to_utf8(id);
+		// find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(Temp, focalpoint);
+	}
+
+    void ScriptEngine::BindCamSetFocalLength(MonoString* id, float focallength)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalLength(Temp, focallength);
+    }
+
+    void ScriptEngine::BindCamSetPitch(MonoString* id, float pitch)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetPitch(Temp, pitch);
+	}
+
+    void ScriptEngine::BindCamSetYaw(MonoString* id, float yaw)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetYaw(Temp, yaw);
+    }
+
+    void ScriptEngine::BindCamSetRoll(MonoString* id, float roll)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRoll(Temp, roll);
+    }
+
+    void ScriptEngine::BindCamSetFOV(MonoString* id, float fov)
+    {
+	    std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFov(Temp, fov);
+    }
+
+	void ScriptEngine::BindCamSetNear(MonoString* id, float n)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetNear(Temp, n);
+	}
+
+    void ScriptEngine::BindCamSetFar(MonoString* id, float f)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFar(Temp, f);
+    }
+
+    void ScriptEngine::BindCamSetLeft(MonoString* id, float left)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetLeft(Temp, left);
+    }
+
+    void ScriptEngine::BindCamSetRight(MonoString* id, float right)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRight(Temp, right);
+    }
+
+    void ScriptEngine::BindCamSetTop(MonoString* id, float top)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetTop(Temp, top);
+    }
+
+	void ScriptEngine::BindCamSetBottom(MonoString* id, float bottom)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetBottom(Temp, bottom);
+	}
+
+    void ScriptEngine::BindCamSetAspectRatio(MonoString* id, float aspectRatio)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+    	//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetAspectRatio(Temp, aspectRatio);
+    }
+
+    void ScriptEngine::BindCamSetIsPerspective(MonoString* id, bool isPerspective)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsPerspective(Temp, isPerspective);
+    }
+
+    void ScriptEngine::BindCamSetIsMainCamera(MonoString* id, bool isMainCamera)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(Temp, isMainCamera);
+    }
+
+    // Getters
+
+    void ScriptEngine::BindCamGetPosition(MonoString* id, glm::vec3* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		// find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetPosition(Temp);
+	}
+
+    void ScriptEngine::BindCamGetRotation(MonoString* id, glm::vec3* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetRotation(Temp);
+    }
+
+    void ScriptEngine::BindCamGetViewMatrix(MonoString* id, glm::mat4* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewMatrix(Temp);
+    }
+
+    void ScriptEngine::BindCamGetProjectionMatrix(MonoString* id, glm::mat4* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetProjectionMatrix(Temp);
+	}
+
+    void ScriptEngine::BindCamGetInverseViewMatrix(MonoString* id, glm::mat4* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewMatrix(Temp);
+    }
+
+    void ScriptEngine::BindCamGetInverseProjectionMatrix(MonoString* id, glm::mat4* result)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseProjectionMatrix(Temp);
+    }
+
+    void ScriptEngine::BindCamGetInverseViewProjectionMatrix(MonoString* id, glm::mat4* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewProjectionMatrix(Temp);
+	}
+
+    void ScriptEngine::BindCamGetViewportSize(MonoString* id, glm::vec2* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewportSize(Temp);
+	}
+
+    void ScriptEngine::BindCamGetFocalPoint(MonoString* id, glm::vec3* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFocalPoint(Temp);
+	}
+
+    void ScriptEngine::BindCamGetFocalLength(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFocalLength(Temp);
+	}
+
+    void ScriptEngine::BindCamGetPitch(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetPitch(Temp);
+	}
+
+    void ScriptEngine::BindCamGetYaw(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetYaw(Temp);
+	}
+
+    void ScriptEngine::BindCamGetRoll(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetRoll(Temp);
+    }
+
+    void ScriptEngine::BindCamGetFOV(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+        //find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFov(Temp);
+    }
+
+    void ScriptEngine::BindCamGetNear(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetNear(Temp);
+	}
+
+    void ScriptEngine::BindCamGetFar(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFar(Temp);
+    }
+
+    void ScriptEngine::BindCamGetLeft(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetLeft(Temp);
+	}
+
+    void ScriptEngine::BindCamGetRight(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetRight(Temp);
+	}
+
+    void ScriptEngine ::BindCamGetTop(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetTop(Temp);
+	}
+
+	void ScriptEngine::BindCamGetBottom(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetBottom(Temp);
+	}
+
+	void ScriptEngine::BindCamGetAspectRatio(MonoString* id, float* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetAspectRatio(Temp);
+	}
+
+	void ScriptEngine::BindCamIsPerspective(MonoString* id, bool* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsPerspective(Temp);
+	}
+
+	void ScriptEngine::BindCamIsMainCamera(MonoString* id, bool* result)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		//find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsMainCamera(Temp);
+	}
+
+#pragma endregion
+
+#pragma region InputBindings
+
+    ScriptInputHandler::ScriptInputHandler()
+    {
+        EventHandler::getEventHandlerInstance().subscribe(this, &ScriptInputHandler::GetKeyPressed);
+	}
+
+    void ScriptInputHandler::GetKeyPressed(const InputEvent& event)
+    {
+        _key = event._key;
+        _state = event._state;
+    }
+
+    bool ScriptEngine::BindGetKeyPressed(int key)
+    {
+        if(m_ScriptInputHandler->GetKey() == key )
+        {
+	        return true;
+        }
+    }
+
+#pragma endregion
+
+#pragma region Logging
+	void ScriptEngine::SendMessageToConsole(MonoString* message)
+    {
+    	char* messageString = mono_string_to_utf8(message);
+		std::string str(messageString);
+		mono_free(messageString);
+
+		std::cout << str << std::endl;
+	}
+
+#pragma endregion
+
+#pragma region Physics
+
+    void ScriptEngine::BindResizeSphereCollider(MonoString* id, float s)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		// find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(Temp, s);
+	}
+
+    void ScriptEngine::BindResizeBoxCollider(MonoString* id, glm::vec3 s)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		// find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(Temp, s);
+    }
+
+    void ScriptEngine::BindAddForce(MonoString* id , glm::vec3 force)
+    {
+    	std::string ID = mono_string_to_utf8(id);
+		// find the entity
+		Entity Temp = ECSManager::Instance().FindEntity(ID);
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
+    }
+
+#pragma endregion
 
 #pragma endregion
 }
