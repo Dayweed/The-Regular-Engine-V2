@@ -282,11 +282,11 @@ namespace TRE
 			else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Prefab"))
 			{
 				std::string assetName = (const char*)payload->Data;
-				assetName = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
+				std::string filePath = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
 
 				// Create Prefab Instance if it is valid
 				PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
-				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(assetName) };
+				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(filePath) };
 				if (prefabGUID.empty())
 				{
 					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Prefab not found!" });

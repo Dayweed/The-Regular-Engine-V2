@@ -8,8 +8,7 @@
       0,
       {
          "m_Instances": [
-            "{12F1941B-148A-45A7-AD22-586A25A24D1D}",
-            "{FBEA972F-76D4-4E58-A44B-9937A7FA6770}"
+            "{11B1B301-69CB-4427-82D7-A48A2CE24FDE}"
          ],
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "198535ecb876aaa0",
@@ -31,7 +30,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "{8F1F52AB-6E13-4814-B61E-BCC3A5E798B8}",
+         "m_GUID": "{D4B2821C-4047-466C-A203-3C0795E0AAD7}",
          "m_Name": "Test3"
       }
    ],
