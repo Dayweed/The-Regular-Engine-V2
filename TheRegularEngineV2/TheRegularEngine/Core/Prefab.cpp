@@ -91,6 +91,12 @@ namespace TRE
 		u = static_cast<std::underlying_type_t<entt::entity>>(size);
 	}
 
+	void PrefabSystem::Init()
+	{
+		DeserializePrefabDirectory();
+		SerializePrefabDirectory();
+	}
+
 	void PrefabSystem::Update()
 	{
 
@@ -111,7 +117,7 @@ namespace TRE
 
 	}
 
-	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab)
+	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab, std::string assetPath)
 	{
 		std::string prefabGUID;
 		std::string filePath;
@@ -152,6 +158,7 @@ namespace TRE
 
 			prefabExist.m_IsMainPrefab = true;
 		}
+		// New Prefab
 		else
 		{
 			if (!newPrefab)
@@ -161,7 +168,7 @@ namespace TRE
 			}
 
 			prefabGUID = Resource::GetGUIDHex(Resource::GenerateGUID());
-			filePath = "../Resources/Prefabs/" + object->GetName() + ".json";
+			filePath = FILESYS_PREFABRSCFOLDER + object->GetName() + FILESYS_PREFABRSCTYPE;
 			object->AddComponent<Prefabing>().m_PrefabGUID = prefabGUID;
 			object->GetComponent<Prefabing>().m_MainPrefabGUID = prefabGUID;
 			// Add as GUID
@@ -176,6 +183,8 @@ namespace TRE
 			SavePrefabChild(child, newPrefab, prefabGUID);
 		}
 
+		// SERIALIZING PREFAB
+		//
 		entt::registry tmp;
 
 		(void) tmp.view<
@@ -219,6 +228,10 @@ namespace TRE
 
 		// Update Prefab Directory
 		UpdatePrefabDirectory(prefabGUID, arc.GetFilePath());
+
+		// Create Prefab Asset File for accessing
+		CreatePrefabAssetFile(prefabGUID, object->GetName(), assetPath);
+
 
 		// Update all instances
 		if (validOverwrite)
@@ -722,6 +735,51 @@ namespace TRE
 		return true;
 	}
 
+
+	void PrefabSystem::CreatePrefabAssetFile(std::string prefabGUID, std::string fileName, std::string filePath)
+	{
+		// Check if prefab exist based on latest directory
+		DeserializePrefabDirectory();
+		if (m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] prefabGUID (" + prefabGUID + ") does not exist in m_ExistingPrefabs! Ignoring command...");
+			return;
+		}
+
+		// Try opening filePath
+		std::ofstream file(filePath + fileName + FILESYS_PREFABASSTYPE);
+		file << prefabGUID;
+		file.close();
+	}
+
+	std::string PrefabSystem::ReadPrefabAssetFile(std::string filePathName)
+	{
+		// Try opening filePath
+		std::ifstream file;
+		file.open(filePathName);
+		if (!file)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] filePathName (" + filePathName + ") does not exist! Returning empty string...");
+			return "";
+		}
+
+		// Check if prefab exist based on latest directory
+		DeserializePrefabDirectory();
+		std::string GUID{};
+		std::getline(file, GUID);
+		file.close();
+		if (m_ExistingPrefabs.find(GUID) == m_ExistingPrefabs.end())
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] GUID (" + GUID + ") does not exist in m_ExistingPrefabs! Returning empty string...");
+			return "";
+		}
+
+		return GUID;
+	}
+
 	void PrefabSystem::DeserializePrefabDirectory()
 	{
 		// Prepare file name [For deserialization too]
@@ -860,7 +918,7 @@ namespace TRE
 		for (const std::string& str : instanceGUID)
 		{
 			std::string instanceID{ str };
-			if (!UpdateInstance(ECSManager::Instance().FindEntity(instanceID), prefabGUID))
+			if (!ECSManager::Instance().FindEntity(instanceID) || !UpdateInstance(ECSManager::Instance().FindEntity(instanceID), prefabGUID))
 			{
 				invalidInstance.emplace_back(instanceID);
 			}

@@ -4,10 +4,14 @@
 #include "ECS.h"
 #include "System.h"
 
-#define FILESYS_PREFABDIR		"PrefabDirectory.json"
-#define FILESYS_PREFABDIRNAME	"PrefabGUIDAndPrefabFilePath"
-#define FILESYS_PREFABDIRGUID	"m_ExistingPrefabsKey"
-#define FILESYS_PREFABDIRPATH	"m_ExistingPrefabsValue"
+#define FILESYS_PREFABDEFFOLDER "../Assets/Prefabs/"			// Prefab Assets Default Folder
+#define FILESYS_PREFABASSTYPE	".prefab"						// Prefab Assets Type		(bin/txt)
+#define FILESYS_PREFABRSCFOLDER "../Resources/Prefabs/"			// Prefab Resource Default Folder
+#define FILESYS_PREFABRSCTYPE	".json"							// Prefab Resource Type		(json)
+#define FILESYS_PREFABDIR		"PrefabDirectory.json"			// Prefab Directory File
+#define FILESYS_PREFABDIRNAME	"PrefabGUIDAndPrefabFilePath"	// Prefab Directory Name
+#define FILESYS_PREFABDIRGUID	"m_ExistingPrefabsKey"			// Prefab Directory Key		(GUID)
+#define FILESYS_PREFABDIRPATH	"m_ExistingPrefabsValue"		// Prefab Directory Value	(Path)
 
 namespace TRE
 {
@@ -94,13 +98,15 @@ namespace TRE
 		PrefabSystem() = default;
 		~PrefabSystem() = default;
 
+		void Init() override;
 		void Update() override;
 		void OnReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 
 		// (De)serializing Prefab
-		std::string SavePrefabEntity(Entity object, bool newPrefab = true);						// Returns true if successful
+		std::string SavePrefabEntity(Entity object, bool newPrefab = true,						// Returns true if successful
+										std::string assetPath = FILESYS_PREFABDEFFOLDER);
 																								// Properties::m_GUID would not matter from now
 
 		Entity CreatePrefabEntityInstance(std::string prefabGUID);								// Creates an Instance from the prefab
@@ -113,7 +119,14 @@ namespace TRE
 
 		bool RevertInstance(Entity instance, std::string prefabGUID);							// Revert instance back to same data as prefab
 
+		std::string ReadPrefabAssetFile(std::string filePathName);								// Returns GUID if file exist and GUID exist in prefab directory, else return empty string
+
 	private:
+		// Prefab Asset File
+		// - Only contains string of PrefabGUID, will be used to direct type of prefab to spawn
+		void CreatePrefabAssetFile(std::string prefabGUID, std::string fileName,				// Handles creating a Prefab Asset File based on the Resource File
+								std::string filePath = FILESYS_PREFABDEFFOLDER);				
+
 		Entity FindEntityBasedOnPrefabGUID(Entity object, std::string mainPrefabGUID);
 
 		void SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID);

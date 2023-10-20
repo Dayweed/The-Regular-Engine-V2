@@ -5,6 +5,7 @@
 #include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
 #include "Utilities.h"
+#include "EditorSystem.h"
 #include "EditorAssetManager.h"
 
 
@@ -275,6 +276,25 @@ namespace TRE
 					//Compile and load asset
 					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->
 						SetMeshRenderer(spawn, AssetManager::Instance().CompileAndLoad<RenderObject>(assetName));
+				}
+			}
+			// For prefab
+			else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Prefab"))
+			{
+				std::string assetName = (const char*)payload->Data;
+				assetName = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
+
+				// Create Prefab Instance if it is valid
+				PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
+				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(assetName) };
+				if (prefabGUID.empty())
+				{
+					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Prefab not found!" });
+				}
+				else
+				{
+					Entity prefabInstance{ prefabsystem->CreatePrefabEntityInstance(prefabGUID) };
+					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
 				}
 			}
 
