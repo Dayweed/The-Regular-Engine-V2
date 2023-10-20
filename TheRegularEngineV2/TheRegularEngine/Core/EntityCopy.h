@@ -5,6 +5,8 @@
 	@email		lim.i@digipen.edu
 	@date		20/10/2023
 	@brief		Handles copying and pasting entities
+				It can also handle copy Entities from ECSManager Registry
+				to other registries!
 
 	Copyright (C) 2023 DigiPen Institute of Technology.
 	Reproduction or disclosure of this file or its contents without the

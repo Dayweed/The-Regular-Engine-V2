@@ -147,8 +147,6 @@ namespace TRE
 
 		void CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
 
-		void SaveEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});		// Entity must be from the ECSManager::Instance().GetRegistry()!
-
 		void UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});	// Similar to SaveEntityInRegistry but for m_TempPrefabs
 
 		// Deserializing list in prefabs directory into m_ExistingPrefabs

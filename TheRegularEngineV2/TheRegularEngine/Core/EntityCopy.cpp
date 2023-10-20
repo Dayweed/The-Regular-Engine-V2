@@ -31,13 +31,11 @@ namespace TRE
 		if (srcObj == nullptr) return;
 		m_CopierRegistry.clear();
 		SaveEntityInRegistry(srcObj, m_CopierRegistry);
-		std::cout << "COPIED\n";
 	}
 
 	void EntityCopier::PasteEntities()
 	{
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
-		std::cout << "PASTE\n";
 	}
 
 	void EntityCopier::SaveEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID, entt::entity parentEnt)
