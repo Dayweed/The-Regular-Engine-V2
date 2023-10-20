@@ -64,12 +64,7 @@ namespace TRE
 			// Restore back the scene if it was displaying prefab (Assuming if m_BackUp saved the scene before displaying prefab)
 			if (m_DisplayingPrefab)
 			{
-				// Copy registry and components
-				ECSManager::Instance().CopyRegistry(m_BackUp);
-				// Clear Backup
-				m_BackUp.clear();
-				// Auto set back to false
-				m_DisplayingPrefab = false;
+				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 			}
 
 			// Destroys all undeployed entities

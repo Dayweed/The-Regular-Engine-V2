@@ -108,6 +108,7 @@ namespace TRE
 
 		// To "take over" the scene, returns prefab instance
 		Entity DisplayPrefabInNewScene(std::string prefabGUID);
+		void ReturnToScene();
 
 		Entity GetDisplayedPrefab();
 

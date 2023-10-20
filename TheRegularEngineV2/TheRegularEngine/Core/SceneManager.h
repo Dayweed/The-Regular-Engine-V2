@@ -68,6 +68,8 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void SaveScene();
 
+		std::string GetCurrentSceneName();
+
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
 		SceneManager() {};

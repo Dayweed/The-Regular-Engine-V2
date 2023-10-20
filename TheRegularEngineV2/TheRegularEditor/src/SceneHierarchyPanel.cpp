@@ -24,7 +24,16 @@ namespace TRE
 	{
 		ImGui::Begin("Hierarchy");
 
-		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
+		bool displayingPrefab{ GameLoop::Instance().GetDisplayingPrefab() };
+		std::string SceneDisplay = displayingPrefab ? "Prefab" : SceneManager::Instance().GetCurrentSceneName();
+
+		// Display button to return to scene
+		if (displayingPrefab && ImGui::Button("Return to Scene", ImVec2(-FLT_MIN, 0.0f)))
+		{
+			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+		}
+
+		if (ImGui::TreeNodeEx(SceneDisplay.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			if (ImGui::BeginDragDropTarget())
 			{

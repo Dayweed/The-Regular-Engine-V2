@@ -146,6 +146,16 @@ namespace TRE
 		return m_DisplayedPrefab;
 	}
 
+	void PrefabSystem::ReturnToScene()
+	{
+		// Copy registry and components
+		ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
+		// Clear Backup
+		GameLoop::Instance().GetBackUpRegistry().clear();
+		// Auto set back to false
+		GameLoop::Instance().SetDisplayingPrefab(false);
+	}
+
 	Entity PrefabSystem::GetDisplayedPrefab()
 	{
 		return m_DisplayedPrefab;
@@ -396,9 +406,11 @@ namespace TRE
 		Entity mainTempPrefab = m_TempPrefab;
 
 		// Do the same for the children
-		for (std::string childGUID : instance->GetComponent<Parenting>().m_Children)
+		std::vector<std::string> children{ instance->GetComponent<Parenting>().m_Children };
+		for (size_t i{}; i < children.size(); ++i) // Doing this instead cos string might be too long and cos errors :(
 		{
-			CreatePrefabChild(childGUID, instance);
+			std::string childID{ children[i] };
+			CreatePrefabChild(childID, instance);
 		}
 
 		m_TempPrefab = mainTempPrefab;
@@ -652,9 +664,11 @@ namespace TRE
 		instance->GetComponent<Parenting>().m_Parent = parent->GetGUID();
 
 		// Do the same for the children
-		for (std::string childGUID : instance->GetComponent<Parenting>().m_Children)
+		std::vector<std::string> children{ instance->GetComponent<Parenting>().m_Children };
+		for (size_t i{}; i < children.size(); ++i) // Doing this instead cos string might be too long and cos errors :(
 		{
-			CreatePrefabChild(childGUID, instance);
+			std::string childID{ children[i] };
+			CreatePrefabChild(childID, instance);
 		}
 	}
 

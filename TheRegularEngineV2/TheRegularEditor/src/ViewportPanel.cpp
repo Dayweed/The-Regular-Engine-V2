@@ -282,7 +282,8 @@ namespace TRE
 			else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Prefab"))
 			{
 				std::string assetName = (const char*)payload->Data;
-				std::string filePath = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
+				std::string filePath = assetName;
+				filePath.erase(assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
 
 				// Create Prefab Instance if it is valid
 				PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
@@ -290,6 +291,11 @@ namespace TRE
 				if (prefabGUID.empty())
 				{
 					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Prefab not found!" });
+					if (remove(filePath.c_str()))
+					{
+						std::string funcName{ __FUNCTION__ };
+						TRE_CORE_WARN("[" + funcName + "] Unable to delete filePath! (" + filePath + ")");
+					}
 				}
 				else
 				{

@@ -44,4 +44,9 @@ namespace TRE
 	{
 		SaveSceneAs(m_CurrentSceneFilePath);
 	}
+
+	std::string SceneManager::GetCurrentSceneName()
+	{
+		return m_CurrentScene;
+	}
 }
