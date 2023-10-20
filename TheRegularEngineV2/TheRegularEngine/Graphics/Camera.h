@@ -57,12 +57,6 @@ namespace TRE
 		bool m_IsMainCamera{ false }; // SSSS
 		bool m_IsDirty{ false };
 
-		//const glm::quat GetOrientation() const;
-		//const glm::vec3 GetUpVec() const;
-		//const glm::vec3 GetRightVec() const;
-		//const glm::vec3 GetForwardVec() const;
-		//const glm::vec3 GetViewDirection() const;
-
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
 		friend void to_json(nlohmann::json& j, const Camera& t) // Serialize
 		{
@@ -126,7 +120,7 @@ namespace TRE
 	class CameraSystem : public ECSSystem
 	{
 	public:
-		void Update() override;
+		void LateUpdate() override;
 		void OnReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;

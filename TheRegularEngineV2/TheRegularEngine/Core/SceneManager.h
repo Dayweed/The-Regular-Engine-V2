@@ -14,6 +14,7 @@
 #include "FileSystem.h"
 
 #define SCENE_DEFAULT_NAME "New Scene"
+#define FILESYS_SCENE_TYPE ".json"
 
 namespace TRE
 {
@@ -36,7 +37,7 @@ namespace TRE
 
 		[Warning]		Will delete all the entities! Remember to save first!
 		*//*__________________________________________________________________________*/
-		void NewScene();
+		void NewScene(std::string sceneName = SCENE_DEFAULT_NAME);
 
 		/* !
 		@function		LoadScene
@@ -68,12 +69,16 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void SaveScene();
 
+		std::string GetCurrentSceneName();
+
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
 		SceneManager() {};
 		SceneManager(SceneManager const&) = delete;
 		void operator=(SceneManager const&) = delete;
 		void* operator new(size_t) = delete;
+
+		std::string GetSceneName(std::string filePath);
 
 		//std::pair<std::string, std::string> m_CurrentScene; // Filepath, Scene Name
 		//std::map<std::string, std::string> m_Scenes; // Filepath, Scene Name

@@ -4,7 +4,7 @@
 
 namespace TRE
 {
-	void SceneManager::NewScene()
+	void SceneManager::NewScene(std::string sceneName)
 	{
 		ECSManager::Instance().DestroyAll();
 
@@ -13,8 +13,8 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
 
 		// Generate new Scene Name
-		m_CurrentScene = SCENE_DEFAULT_NAME;
-		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + SCENE_DEFAULT_NAME + GETFILE(FILESYS_SCENE);
+		m_CurrentScene = sceneName;
+		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
 	}
 
 	void SceneManager::LoadScene(std::string scenePath)
@@ -22,7 +22,11 @@ namespace TRE
 		if (std::filesystem::exists(scenePath))
 		{
 			ECSManager::Instance().LoadEntities(scenePath);
-			m_CurrentScene = scenePath;
+
+			// Update all Prefabs
+			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CheckAndUpdateInstances();
+
+			m_CurrentScene = GetSceneName(scenePath);
 			m_CurrentSceneFilePath = scenePath;
 		}
 		else
@@ -36,12 +40,24 @@ namespace TRE
 	{
 		ECSManager::Instance().SaveEntities(scenePath);
 		ResourceManager::Instance().SerializeAll();
-		m_CurrentScene = scenePath;
+		m_CurrentScene = GetSceneName(scenePath);
 		m_CurrentSceneFilePath = scenePath;
 	}
 
 	void SceneManager::SaveScene()
 	{
 		SaveSceneAs(m_CurrentSceneFilePath);
+	}
+
+	std::string SceneManager::GetCurrentSceneName()
+	{
+		return m_CurrentScene;
+	}
+
+	std::string SceneManager::GetSceneName(std::string filePath)
+	{
+		std::string sceneName = filePath.substr(filePath.find_last_of('\\') + 1);
+		sceneName.erase(sceneName.find(FILESYS_SCENE_TYPE));
+		return sceneName;
 	}
 }

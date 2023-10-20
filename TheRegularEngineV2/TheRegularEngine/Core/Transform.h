@@ -64,11 +64,7 @@ namespace TRE
 	class TransformSystem : public ECSSystem
 	{
 	public:
-		void Update() override;
-		void GameUpdate() override;
-		void OnReset() override;
-		void OnDestroyEntities() override;
-		void Shutdown() override;
+		void LateUpdate() override;
 	};
 }
 

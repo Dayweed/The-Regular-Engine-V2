@@ -106,4 +106,9 @@ namespace TRE
 		m_PanelManager->Shutdown();
 		TRE_INFO("Editor Shutdown");
 	}
+
+	std::shared_ptr<SelectionManager>& EditorSystem::GetSelectionManager()
+	{
+		return m_SelectionManager;
+	}
 }

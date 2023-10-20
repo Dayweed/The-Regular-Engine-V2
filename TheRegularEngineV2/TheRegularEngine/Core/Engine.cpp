@@ -322,7 +322,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
 		}
 
-		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -507,6 +507,7 @@ namespace TRE
 	{
 		m_Running = false;
 		ResourceManager::Instance().DestroyAllResources();
+		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();

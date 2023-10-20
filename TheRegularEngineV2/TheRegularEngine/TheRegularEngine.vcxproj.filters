@@ -28,9 +28,6 @@
     <Filter Include="InputHandler">
       <UniqueIdentifier>{7392D63B-5FF5-65E0-087B-9E96F4BC3163}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MaterialTypes">
-      <UniqueIdentifier>{091052D2-75D0-CD08-3E0B-1786AA8A12E5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Scripting">
       <UniqueIdentifier>{985A7358-04C5-27CF-4D03-D974B9AC0524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderTypes">
+      <UniqueIdentifier>{91D87BA8-FD8D-F49D-8682-EE74F236EBA1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -214,9 +214,6 @@
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialTypes\PBRMaterial.h">
-      <Filter>MaterialTypes</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\PhysicsComponents.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -233,8 +230,19 @@
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderTypes\LineShader.h">
+      <Filter>ShaderTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderTypes\PBRShader.h">
+      <Filter>ShaderTypes</Filter>
+    </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ShaderTypes\LineShader.h" />
+    <ClInclude Include="ShaderTypes\PBRShader.h" />
+    <ClInclude Include="Core\EntityCopy.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -372,9 +380,6 @@
     <ClCompile Include="InputHandler\InputHandler.cpp">
       <Filter>InputHandler</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialTypes\PBRMaterial.cpp">
-      <Filter>MaterialTypes</Filter>
-    </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
@@ -387,6 +392,17 @@
     <ClCompile Include="Scripting\ScriptEngine.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderTypes\LineShader.cpp">
+      <Filter>ShaderTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderTypes\PBRShader.cpp">
+      <Filter>ShaderTypes</Filter>
+    </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="ShaderTypes\LineShader.cpp" />
+    <ClCompile Include="ShaderTypes\PBRShader.cpp" />
+    <ClCompile Include="Core\EntityCopy.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

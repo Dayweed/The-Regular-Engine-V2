@@ -97,7 +97,15 @@ namespace TRE
 			bool isPrefabInstance = false;
 
 			// Show option of prefabing possibility if have prefab
-			if (ImGui::Button("Save As Prefab"))
+			if (entity->HasComponent<Prefabing>())
+			{
+				if (ImGui::Button("Overwrite Prefab"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
+				}
+				ImGui::SameLine();
+			}
+			if (ImGui::Button("Save As New Prefab"))
 			{
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity);
 			}
@@ -106,15 +114,12 @@ namespace TRE
 				// Is Prefab Instance
 				isPrefabInstance = true;
 				ImGui::SameLine();
-				if (ImGui::Button("Overwrite Prefab"))
-				{
-					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
-				}
 				Prefabing& pref{ entity->GetComponent<Prefabing>() };
 				ImGui::SameLine();
 				if (ImGui::Button("Clone Prefab"))
 				{
-					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID);
+					Entity instance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID) };
+					m_SelectionManager->SelectEntity(instance);
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("UnPrefab"))

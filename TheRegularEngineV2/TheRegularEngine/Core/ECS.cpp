@@ -258,6 +258,12 @@ namespace TRE
 		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
 	}
 
+	void ECSManager::AddToRegistry(entt::registry& srcRegistry)
+	{
+		// Keep adding into it 
+		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
+	}
+
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
 	{
 		std::vector<std::pair<std::string, property::base*>> components;

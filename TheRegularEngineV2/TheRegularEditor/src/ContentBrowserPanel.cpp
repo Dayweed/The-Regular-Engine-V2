@@ -6,6 +6,8 @@
 #include "EditorAssetManager.h"
 #include "ContentBrowserPanel.h"
 #include "Graphics/Material.h"
+#include "EditorSystem.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -89,16 +91,19 @@ namespace TRE
 			}
 		}
 
-		//Add material instances in to see on content browser
-		for (const auto& mat : AssetManager::Instance().GetAssetsOfType<Material>())
+		//Add material instances in to see on content browser if it is in m_AssetDirectory
+		if (m_CurrentDirectory == m_AssetDirectory)
 		{
-			Asset materialAsset{};
-			materialAsset.m_TextureID = m_TmpTexturesID;
-			materialAsset.m_ResourceType = "m_Material";
-			materialAsset.m_FileName = AssetManager::Instance().GetName(mat->GetHandle());
-			materialAsset.m_Path = "../Resources/" + mat->GetHandleHex()  + ".material";
+			for (const auto& mat : AssetManager::Instance().GetAssetsOfType<Material>())
+			{
+				Asset materialAsset{};
+				materialAsset.m_TextureID = m_TmpTexturesID;
+				materialAsset.m_ResourceType = "m_Material";
+				materialAsset.m_FileName = AssetManager::Instance().GetName(mat->GetHandle());
+				materialAsset.m_Path = "../Resources/" + mat->GetHandleHex() + ".material";
 
-			m_Assets.emplace_back(materialAsset);
+				m_Assets.emplace_back(materialAsset);
+			}
 		}
 	}
 
@@ -195,6 +200,16 @@ namespace TRE
 						{
 							if (!m_InvalidResourcePopUp)
 								m_InvalidResourcePopUp = true;
+						}
+						else if (item.m_ResourceType == "m_Prefab")
+						{
+							if (!GameLoop::Instance().IsGameRunning())
+							{
+								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
+								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
+								Entity prefabInstance = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->DisplayPrefabInNewScene(prefabGUID);
+								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+							}
 						}
 						else
 						{
