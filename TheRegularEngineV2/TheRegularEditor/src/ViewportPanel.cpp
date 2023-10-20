@@ -282,8 +282,9 @@ namespace TRE
 			else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Prefab"))
 			{
 				std::string assetName = (const char*)payload->Data;
-				std::string filePath = assetName;
-				filePath.erase(assetName.find_last_of(".prefab") + 1);
+				std::string filePath = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
+				filePath.erase(filePath.find(FILESYS_PREFABASSTYPE));	// This is to remove unneeded data at the end after ".prefab"
+				filePath += FILESYS_PREFABASSTYPE;
 
 				// Create Prefab Instance if it is valid
 				PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };

@@ -26,7 +26,7 @@ namespace TRE
 			// Update all Prefabs
 			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CheckAndUpdateInstances();
 
-			m_CurrentScene = scenePath;
+			m_CurrentScene = GetSceneName(scenePath);
 			m_CurrentSceneFilePath = scenePath;
 		}
 		else
@@ -40,7 +40,7 @@ namespace TRE
 	{
 		ECSManager::Instance().SaveEntities(scenePath);
 		ResourceManager::Instance().SerializeAll();
-		m_CurrentScene = scenePath;
+		m_CurrentScene = GetSceneName(scenePath);
 		m_CurrentSceneFilePath = scenePath;
 	}
 
@@ -52,5 +52,12 @@ namespace TRE
 	std::string SceneManager::GetCurrentSceneName()
 	{
 		return m_CurrentScene;
+	}
+
+	std::string SceneManager::GetSceneName(std::string filePath)
+	{
+		std::string sceneName = filePath.substr(filePath.find_last_of('\\') + 1);
+		sceneName.erase(sceneName.find(FILESYS_SCENE_TYPE));
+		return sceneName;
 	}
 }
