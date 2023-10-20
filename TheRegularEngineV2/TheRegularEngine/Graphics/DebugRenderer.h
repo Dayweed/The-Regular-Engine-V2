@@ -14,37 +14,44 @@ namespace TRE
 
 	class DebugRenderer
 	{
-		public:
-			DebugRenderer(std::shared_ptr<RenderPass> TargetPass);
-			~DebugRenderer();
-			void CreateDebugSphere();
-			void CreateDebugAABB();
+	public:
+		DebugRenderer(std::shared_ptr<RenderPass> TargetPass);
 
-			void UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
+		void UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
 			
-			void BindPipeline(VkCommandBuffer CommandBuffer);
-			void BindDebugSphere(VkCommandBuffer CommandBuffer);
-			void DrawDebugSphere(VkCommandBuffer CommandBuffer);
+		void BindPipeline(VkCommandBuffer CommandBuffer);
 
-			void BindDebugAABB(VkCommandBuffer CommandBuffer);
-			void DrawDebugAABB(VkCommandBuffer CommandBuffer);
+		void BindDebugSphere(VkCommandBuffer CommandBuffer);
+		void DrawDebugSphere(VkCommandBuffer CommandBuffer);
 
-		public:
-			const VkDescriptorSet& GetDescriptor(uint32_t index);
-			VkPipelineLayout GetPipelineLayout();
+		void BindDebugAABB(VkCommandBuffer CommandBuffer);
+		void DrawDebugAABB(VkCommandBuffer CommandBuffer);
 
-		private:
-			std::shared_ptr<Material> m_DebugMaterialInstance;
-			std::unique_ptr<Pipeline> m_DebugDrawPipeline;
-			
-			std::unique_ptr<Buffer> m_DebugSphereVertexBuffer;
-			std::unique_ptr<Buffer> m_DebugSphereIndexBuffer;
-			uint32_t m_SphereIndexCount;
+		void BindDebugCapsule(VkCommandBuffer CommandBuffer);
+		void DrawDebugCapsule(VkCommandBuffer CommandBuffer);
+	private:
+		void CreateDebugSphere();
+		void CreateDebugAABB();
+		void CreateDebugCapsule();
+	public:
+		const VkDescriptorSet& GetDescriptor(uint32_t index);
+		VkPipelineLayout GetPipelineLayout();
 
-			std::unique_ptr<Buffer> m_DebugAABBVertexBuffer;
-			std::unique_ptr<Buffer> m_DebugAABBIndexBuffer;
-			uint32_t m_AABBIndexCount;
+	private:
+		struct DebugType
+		{
+			std::unique_ptr<Buffer> m_VertexBuffer;
+			std::unique_ptr<Buffer> m_IndexBuffer;
+			uint32_t m_IndexCount;
+		};
+	private:
+		std::shared_ptr<Material> m_DebugMaterialInstance;
+		std::unique_ptr<Pipeline> m_DebugDrawPipeline;
 
-			std::shared_ptr<RenderPass> m_RenderPass;
+		std::unique_ptr<DebugType> m_DebugSphere;
+		std::unique_ptr<DebugType> m_DebugAABB;
+		std::unique_ptr<DebugType> m_DebugCapsule;
+
+		std::shared_ptr<RenderPass> m_RenderPass;
 	};
 }

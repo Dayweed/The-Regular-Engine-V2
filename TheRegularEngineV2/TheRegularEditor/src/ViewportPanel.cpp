@@ -90,9 +90,6 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
-		if (m_IsViewportHovered == false)
-			return;
-
 		if((event._key != (int)KeyButton::mouseButtonLeft) 
 			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
 			&& (event._key != (int)KeyButton::mouseButtonRight))
@@ -101,7 +98,7 @@ namespace TRE
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if ((event._key == (int)KeyButton::mouseButtonLeft))
+			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft))
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
@@ -144,6 +141,9 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
+		if (m_IsViewportHovered == false)
+			return;
+
 		if (event._key == (int)KeyButton::Q)
 		{
 			m_GizmoOperation = -1;
