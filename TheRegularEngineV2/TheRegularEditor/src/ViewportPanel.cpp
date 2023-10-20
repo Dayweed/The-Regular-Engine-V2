@@ -283,7 +283,7 @@ namespace TRE
 			{
 				std::string assetName = (const char*)payload->Data;
 				std::string filePath = assetName;
-				filePath.erase(assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
+				filePath.erase(assetName.find_last_of(".prefab") + 1);
 
 				// Create Prefab Instance if it is valid
 				PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
