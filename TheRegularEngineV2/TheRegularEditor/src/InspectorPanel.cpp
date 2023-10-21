@@ -253,10 +253,83 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
-								static char renderObject[200];
-								strcpy(renderObject, AssetManager::Instance().GetName(Value.m_Value).c_str());
-								ImGui::InputText("##", renderObject, sizeof(renderObject), ImGuiInputTextFlags_ReadOnly);
+								static char resourceName[200];
+								strcpy(resourceName, AssetManager::Instance().GetName(Value.m_Value).c_str());
+								std::string handle = "##" + std::to_string(Value.m_Value);
+								if (ImGui::InputText(handle.c_str(), resourceName, sizeof(resourceName), ImGuiInputTextFlags_ReadOnly) || ImGui::IsItemHovered())
+								{
+									//if (ImGui::BeginDragDropTarget())
+									//{
+									//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_TextureResource"))
+									//	{
+									//		std::string materialName = (const char*)payload->Data;
+									//		std::cout << "Material Name: " << materialName << "\n";
+									//		//std::cout << AssetManager::Instance().GetName(materialName) << "\n";
+									//		//Value.m_Value = AssetManager::Instance().GetHandle(materialName);
+									//	}
+									//	else
+									//		std::cout << "Failed to get payload\n";
+
+									//	ImGui::EndDragDropTarget();
+									//}
+								}
 							}							
+							else if constexpr (std::is_same_v<T, resource_list>)
+							{
+								std::string imguiHandle = "##" + std::to_string(Value.m_Value);
+								std::string selected = AssetManager::Instance().GetName(Value.m_Value);
+								if (ImGui::BeginCombo(imguiHandle.c_str(), selected.c_str()))
+								{
+									if (ImGui::Selectable("None", false))
+									{
+										Value.m_Value = 0;
+									}
+
+									if (Value.m_Type == "MATERIAL")
+									{
+										for (const auto& material : AssetManager::Instance().GetAssetsOfType<Material>())
+										{
+											std::string name = AssetManager::Instance().GetName(material->GetHandle());
+											ResourceHandle handle = material->GetHandle();
+											bool isSelected = (selected == name);
+											if (ImGui::Selectable(name.c_str(), isSelected))
+											{
+												selected = name;
+												Value.m_Value = handle;
+												break;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
+									else if (Value.m_Type == "TEXTURE")
+									{
+										
+									}
+									else if (Value.m_Type == "MESH")
+									{
+										for (const auto& material : AssetManager::Instance().GetAssetsOfType<RenderObject>())
+										{
+											std::string name = AssetManager::Instance().GetName(material->GetHandle());
+											ResourceHandle handle = material->GetHandle();
+											bool isSelected = (selected == name);
+											if (ImGui::Selectable(name.c_str(), isSelected))
+											{
+												selected = name;
+												Value.m_Value = handle;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
+									else
+									{
+
+									}
+
+									ImGui::EndCombo();
+								}
+							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
@@ -270,6 +343,11 @@ namespace TRE
 							// Set flag to dirty
 							entity->GetComponent<Transform>().m_IsDirty = true;
 						}
+						//if (compName == ComponentManager::Instance().GetComponentName<MeshRenderer>())
+						//{
+						//	// Set flag to dirty
+						//	entity->GetComponent<MeshRenderer>().m_IsDirty = true;
+						//}
 					}
 
 					// Update Prefabing Instance data if have

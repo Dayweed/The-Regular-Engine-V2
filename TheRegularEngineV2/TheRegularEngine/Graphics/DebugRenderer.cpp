@@ -145,11 +145,11 @@ namespace TRE
 		}
 
 		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(-0.5f, 0.25f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-		DebugCapsuleIndices.push_back(DebugCapsuleIndices.size());
+		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
 
 		//Circular rim
 		Theta = -(3.14f * 2) / slices;
-		const int rimIndex = DebugCapsuleIndices.size();
+		const int rimIndex = (int)DebugCapsuleIndices.size();
 		for (int x = 0; x < slices + 1; x++)
 		{
 			DebugCapsuleVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x) / 2.f, 0.25f, sinf(Theta * x) / 2.f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
@@ -157,10 +157,10 @@ namespace TRE
 		}
 
 		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(-0.5f, 0.25f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-		DebugCapsuleIndices.push_back(DebugCapsuleIndices.size());
+		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
 		
 		Theta = (-3.142f) / slices;
-		const int StartIndex = DebugCapsuleIndices.size();
+		const int StartIndex = (int)DebugCapsuleIndices.size();
 		//Bottom half
 		for (int x = 0; x < slices; x++)
 		{
@@ -169,7 +169,7 @@ namespace TRE
 		}
 
 		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(0.5, 0.25, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-		DebugCapsuleIndices.push_back(DebugCapsuleIndices.size());
+		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
 
 		int VertexCount = (int)DebugCapsuleVert.size();
 

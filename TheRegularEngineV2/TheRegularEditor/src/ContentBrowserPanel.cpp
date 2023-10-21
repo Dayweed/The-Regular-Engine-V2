@@ -111,7 +111,7 @@ namespace TRE
 	void ContentBrowserPanel::BrowseProjectFiles()
 	{
 		//Folder List Display
-		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2, ImGui::GetContentRegionAvail().y), true))
+		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2f, ImGui::GetContentRegionAvail().y), true))
 		{
 			if (ImGui::Button(m_AssetDirectory.filename().string().c_str()))
 			{

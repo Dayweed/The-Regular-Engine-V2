@@ -25,7 +25,6 @@ namespace TRE
 
 	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		auto& SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		Create();

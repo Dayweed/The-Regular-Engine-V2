@@ -31,17 +31,7 @@ namespace TRE
 			{
 				ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
 
-				Rename(material);
-
-				for (auto& texture : material->GetTexturesRef())
-				{
-					DrawTexture(texture);
-				}
-
-				if (ImGui::Button("Save"))
-				{
-					ResourceManager::Instance().SerializeResource<Material>(resourceHandle);
-				}
+				InternalContent(material);
 
 				ImGui::End();
 			}
@@ -53,15 +43,9 @@ namespace TRE
 
 			ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
 
-			MeshRenderer& meshRenderer = entity->GetComponent<MeshRenderer>();
-			if (std::shared_ptr<Material> material = meshRenderer.m_MaterialInstance; material)
+			if (std::shared_ptr<Material> material = entity->GetComponent<MeshRenderer>().m_MaterialInstance; material)
 			{
-				Rename(material);
-
-				for (auto& texture : material->GetTexturesRef())
-				{
-					DrawTexture(texture);
-				}
+				InternalContent(material);
 			}
 
 			ImGui::End();
@@ -140,6 +124,21 @@ namespace TRE
 		if (event._key == (int)KeyButton::Enter)
 		{
 			m_EnterPressed = true;
+		}
+	}
+
+	void MaterialPanel::InternalContent(std::shared_ptr<Material> material)
+	{
+		Rename(material);
+
+		for (auto& texture : material->GetTexturesRef())
+		{
+			DrawTexture(texture);
+		}
+
+		if (ImGui::Button("Save"))
+		{
+			ResourceManager::Instance().SerializeResource<Material>(material->GetHandle());
 		}
 	}
 }

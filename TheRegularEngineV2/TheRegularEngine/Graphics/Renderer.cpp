@@ -134,8 +134,7 @@ namespace TRE
 
 	void Renderer::RenderToSwapChain()
 	{
-		auto swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		std::array<VkClearValue, 2> clearValues{};
 		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
