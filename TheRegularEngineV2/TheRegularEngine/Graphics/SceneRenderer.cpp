@@ -300,35 +300,36 @@ namespace TRE
 	{
 		m_DebugRenderer->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
 		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
-		//for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
-		//{
-		//	MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
-		//	if (mr.m_RenderObject == nullptr)
-		//		continue;
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-		//	PushConstant pc{};
-		//	glm::mat4 model(1.f);
-		//	const float radius = mr.m_BoundingSphere.GetRadius();
-		//	model = glm::translate(model, mr.m_BoundingSphere.GetCenter());
-		//	model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
-		//	pc.m_Model = model;
-		//	vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-		//	//Bind
-		//	vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
-
-		//	m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
-		//	m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
-		//}
-
-		for (const auto& lines : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const auto& spheres : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
+			const Transform& tr = spheres->GetComponent<Transform>();
+			const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
+			PushConstant pc{};
+			glm::mat4 model(1.f);
+			model = glm::translate(model, tr.m_Position + sc.m_Offset);
+			model = model * glm::scale(glm::mat4(1.f), glm::vec3(sc.m_Radius, sc.m_Radius, sc.m_Radius));
+			pc.m_Model = model;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
+			m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
 		}
 
-		for (const auto& lines : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const auto& box : ECSManager::Instance().GetEntities<BoxCollider>())
 		{
+			const Transform& tr = box->GetComponent<Transform>();
+			const BoxCollider& bc = box->GetComponent<BoxCollider>();
+			PushConstant pc{};
+			glm::mat4 model(1.f);
+			model = glm::translate(model, tr.m_Position + bc.m_Offset);
+			model = model * glm::scale(glm::mat4(1.f), glm::vec3(bc.m_HalfExtents.x, bc.m_HalfExtents.y, bc.m_HalfExtents.z));
+			pc.m_Model = model;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
+			m_DebugRenderer->BindDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+			m_DebugRenderer->DrawDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
 		}
 
 		/*for (const auto& lines : ECSManager::Instance().GetEntities<CapsuleCollider>())
@@ -336,25 +337,24 @@ namespace TRE
 
 		}*/
 
-		for (int i = 0; i < 2; ++i)
-		{
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			const float radius = 10.f;
-			const float halfExtent = 10.f;
-			model = glm::translate(model, glm::vec3(0, 0, 0));
-			model = glm::rotate(model, glm::radians(90.f * i), glm::vec3(0, 1, 0));
-			model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(0, 0, 1));
-			model = glm::scale(model, glm::vec3(radius, radius + halfExtent, radius));
-			pc.m_Model = model;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+		//for (int i = 0; i < 2; ++i)
+		//{
+		//	PushConstant pc{};
+		//	glm::mat4 model(1.f);
+		//	const float radius = 10.f;
+		//	const float halfExtent = 10.f;
+		//	model = glm::translate(model, glm::vec3(0, 0, 0));
+		//	model = glm::rotate(model, glm::radians(90.f * i), glm::vec3(0, 1, 0));
+		//	model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(0, 0, 1));
+		//	model = glm::scale(model, glm::vec3(radius, radius + halfExtent, radius));
+		//	pc.m_Model = model;
+		//	vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-			//Bind
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+		//	//Bind
+		//	vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-			m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-		
+		//	m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
+		//	m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
+		//}
 	}
 }

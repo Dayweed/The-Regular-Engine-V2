@@ -38,6 +38,11 @@ namespace TRE
 					DrawTexture(texture);
 				}
 
+				if (ImGui::Button("Save"))
+				{
+					ResourceManager::Instance().SerializeResource<Material>(resourceHandle);
+				}
+
 				ImGui::End();
 			}
 		}
