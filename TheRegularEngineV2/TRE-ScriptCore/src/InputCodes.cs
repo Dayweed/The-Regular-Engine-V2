@@ -1,14 +1,14 @@
-#pragma once
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TRE
 {
-    /*!*****************************************************************************
-    *\brief 	Key enum of the key interaction.
-    *
-    *******************************************************************************/
-	enum class KeyButton
-	{
-		//Mouse
+    public enum InputKeys
+    {
+        //Mouse
         mouseButton1 = 0, //Left
         mouseButton2 = 1, //Right
         mouseButton3 = 2,
@@ -153,24 +153,16 @@ namespace TRE
         RightAlt = 346,
         RightSuper = 347,
         Menu = 348
+    }
 
-	};
-
-    /*!*****************************************************************************
-    *\brief 	State enum of the key interaction.
-    *
-    *******************************************************************************/
-    enum class KeyState
+    public enum InputState
     {
-        keyReleased = 0,
-        keyPressed =  1,
-        keyHeld = 2,
-    };
-    /*!*****************************************************************************
-    *\brief 	Mod enum of the key interaction.
-    *
-    *******************************************************************************/
-    enum class KeyMods
+        Press = 1,
+        Release = 0,
+        Held = 2
+    }
+
+    public enum InputMods
     {
         UNMODDED = 0,
         SHIFT = 1,
@@ -180,12 +172,5 @@ namespace TRE
         NUMLOCK_SHIFT = 33,
         NUMLOCK_CONTROL = 34,
         NUMLOCK_CAPSLOCK = 48
-    };
-
-    enum TotalKeys
-    {
-        MAXKEY = 512,
-        MAXMOUSEKEY = 32
-    };
-
+    }
 }

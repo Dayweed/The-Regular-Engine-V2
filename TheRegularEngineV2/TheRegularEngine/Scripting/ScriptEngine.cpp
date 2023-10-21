@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Demo/Demo.h"
 #include "Core/Transform.h"
+#include "Core/Logger.h"
 
 
 //Everything should be remove. This is just to test the calling of the runtime works.
@@ -167,7 +168,7 @@ namespace TRE
         mono_add_internal_call("TRE.CameraSystem::GetPitch", BindCamGetPitch);
         mono_add_internal_call("TRE.CameraSystem::GetYaw", BindCamGetYaw);
         mono_add_internal_call("TRE.CameraSystem::GetRoll", BindCamGetRoll);
-        mono_add_internal_call("TRE.CameraSystem::GetFov", BindCamGetFOV);
+        mono_add_internal_call("TRE.CameraSystem::GetFOV", BindCamGetFOV);
         mono_add_internal_call("TRE.CameraSystem::GetNear", BindCamGetNear);
         mono_add_internal_call("TRE.CameraSystem::GetFar", BindCamGetFar);
         mono_add_internal_call("TRE.CameraSystem::GetLeft", BindCamGetLeft);
@@ -182,6 +183,15 @@ namespace TRE
         mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
         mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
         mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+
+        // Input Binding
+        mono_add_internal_call("TRE.InputSystem::GetKeyPressed", BindGetKeyPressed);
+
+        // Logging
+        mono_add_internal_call("TRE.Core::Log", SendMessageToConsole);
+        mono_add_internal_call("TRE.Core::LogWarning", SendWarningToConsole);
+        mono_add_internal_call("TRE.Core::LogError", SendErrorToConsole);
+        mono_add_internal_call("TRE.Core::LogCritical", SendCriticalToConsole);
 
     }
 
@@ -296,6 +306,14 @@ namespace TRE
             break;
         }
 	}
+
+    void ScriptEngine::BindDestroyEntity(MonoString* id)
+    {
+        std::string ID = mono_string_to_utf8(id);
+        // find the entity
+        Entity Temp = ECSManager::Instance().FindEntity(ID);
+        ECSManager::Instance().MarkForDeletion(Temp);
+    }
 
     void ScriptEngine::BindTestFunction()
     {
@@ -711,8 +729,35 @@ namespace TRE
 		std::string str(messageString);
 		mono_free(messageString);
 
-		std::cout << str << std::endl;
+		TRE_INFO(str);
 	}
+
+    void ScriptEngine::SendWarningToConsole(MonoString* message)
+    {
+    	char* messageString = mono_string_to_utf8(message);
+        std::string str(messageString);
+        mono_free(messageString);
+
+        TRE_WARN(str);
+    }
+
+    void ScriptEngine::SendErrorToConsole(MonoString* message)
+    {
+    	char* messageString = mono_string_to_utf8(message);
+		std::string str(messageString);
+		mono_free(messageString);
+
+		TRE_ERROR(str);
+	}
+
+    void ScriptEngine::SendCriticalToConsole(MonoString* message)
+    {
+    	char* messageString = mono_string_to_utf8(message);
+        std::string str(messageString);
+        mono_free(messageString);
+
+        TRE_CRITICAL(str);
+    }
 
 #pragma endregion
 
