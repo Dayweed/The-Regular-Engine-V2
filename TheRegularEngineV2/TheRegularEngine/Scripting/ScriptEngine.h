@@ -58,6 +58,7 @@ namespace TRE
 		static MonoString* BindCreateEntity(MonoString* name);
 		static void BindAddComponent(MonoString* id, int componentType);
 		static void BindRemoveComponent(MonoString* id, int componentType);
+		static void BindDestroyEntity(MonoString* id);
 
 		// Test
 		static void BindTestFunction();
@@ -138,6 +139,9 @@ namespace TRE
 
 		// Logging
 		static void SendMessageToConsole(MonoString* message);
+		static void SendWarningToConsole(MonoString* message);
+		static void SendErrorToConsole(MonoString* message);
+		static void SendCriticalToConsole(MonoString* message);
 
 #pragma endregion
 
