@@ -11,6 +11,7 @@ namespace TRE
 	{
 		WindowConfig WindowConfigurations;
 		bool EnableEditor = false;
+		bool MaximizeWindow = false;
 	};
 
 	class Engine

@@ -17,7 +17,7 @@ namespace TRE
 
 	std::shared_ptr<SceneRenderer> Renderer::s_MainRenderer = nullptr;
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
-	FinalRenderData* Renderer::s_FinalRenderData;
+	FinalRenderData* Renderer::s_FinalRenderData = nullptr;
 
 	static std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
@@ -65,8 +65,7 @@ namespace TRE
 
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
-		float x = -1;
-		float y = -1;
+		float x = -1; float y = -1;
 		float width = 2, height = 2;
 
 		std::vector<QuadVertex> data(4);
@@ -142,7 +141,7 @@ namespace TRE
 
 		s_FinalRenderData->RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), swapChain->GetCurrentFrameBuffer());
 
-		VkViewport viewport = {};
+		VkViewport viewport {};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
 		viewport.height = (float)height;
@@ -151,7 +150,7 @@ namespace TRE
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
-		VkRect2D scissor = {};
+		VkRect2D scissor {};
 		scissor.extent.width = width;
 		scissor.extent.height = height;
 		scissor.offset.x = 0;

@@ -372,6 +372,12 @@ namespace TRE
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		Renderer::Init();
 		m_SceneRenderer->Initialize();
+
+		if (m_EngineInfo.MaximizeWindow)
+		{
+			m_Window->MaximizeWindow();
+		}
+
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 

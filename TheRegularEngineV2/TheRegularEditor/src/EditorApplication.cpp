@@ -17,7 +17,10 @@ namespace TRE
 	TRE::Engine* TRE::CreateApp()
 	{
 		EngineInfo Info;
+		Info.WindowConfigurations.Title = "The Regular Editor";
+		Info.WindowConfigurations.FullScreen = false;
 		Info.EnableEditor = true;
+		Info.MaximizeWindow = false;
 		return TRE_NEW EditorApplication(Info);
 	}
 }
