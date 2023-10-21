@@ -97,4 +97,44 @@ namespace TRE
 		vkDestroyImageView(device, m_ImageView, nullptr);
 		vkFreeMemory(device, m_ImageMemory, nullptr);
 	}
+
+
+	uint32_t Image2D::GetWidth() const
+	{
+		return m_Config.Width;
+	}
+
+	uint32_t Image2D::GetHeight() const
+	{
+		return m_Config.Height;
+	}
+
+	const ImageConfig& Image2D::GetImageConfig() const
+	{
+		return m_Config;
+	}
+
+	Image2D::Image2D(const ImageConfig& Config) : m_Config(Config)
+	{
+
+	}
+
+	Image2D::~Image2D()
+	{
+		if (m_Image == nullptr) 
+			return;
+
+		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+
+		vkDestroyImageView(Device, m_ImageView, nullptr);
+		vkDestroySampler(Device, m_Sampler, nullptr);
+		vkDestroyImage(Device, m_Image, nullptr);
+	}
+
+	void Image2D::Invalidate()
+	{
+		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
+
+		VkImageUsageFlags UsageFlag = VK_IMAGE_USAGE_SAMPLED_BIT;
+	}
 }

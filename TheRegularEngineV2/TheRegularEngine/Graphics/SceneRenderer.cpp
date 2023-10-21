@@ -29,20 +29,9 @@ namespace TRE
 
 		Create();
 
-		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
-		{
-			m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		}
-		else
-		{
-			m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer", true);
-		}
+		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
 
-		m_DescriptorPool = DescriptorPool::Builder()
-			.SetMaxSets(100)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
-			.Build();
+		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
 
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
 
@@ -97,12 +86,7 @@ namespace TRE
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			fbufCreateInfo.renderPass = renderpass->GetHandle();
-			std::array<VkImageView, 2> attachments;
-			
-			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
-				attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
-			else
-				attachments = { SwapChain->GetCurrentSwapChainImageView(x), m_DepthImages[x]->GetImageView() };
+			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
 
 			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			fbufCreateInfo.pAttachments = attachments.data();
@@ -128,8 +112,8 @@ namespace TRE
 		// Color attachment
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(),
-				VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(), 
+				VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 
 		// Depth attachment

@@ -9,16 +9,6 @@
 
 namespace TRE
 {
-	struct FinalRenderData
-	{
-		std::unique_ptr<Buffer> VertexBuffer;
-		std::unique_ptr<Buffer> IndexBuffer;
-		std::unique_ptr<Pipeline> Pipeline;
-		std::unique_ptr<Material> Material;
-		VkDescriptorImageInfo ImageInfo;
-		VkSampler Sampler;
-	};
-
 	struct QuadVertex
 	{
 		glm::vec3 Position;
@@ -26,7 +16,8 @@ namespace TRE
 	};
 
 	std::shared_ptr<SceneRenderer> Renderer::s_MainRenderer = nullptr;
-	static std::unique_ptr<FinalRenderData> s_FinalRenderData = std::make_unique<FinalRenderData>();
+	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
+	FinalRenderData* Renderer::s_FinalRenderData;
 
 	static std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
@@ -70,6 +61,8 @@ namespace TRE
 
 	void Renderer::Init()
 	{
+		s_FinalRenderData = new FinalRenderData;
+
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		float x = -1;
@@ -96,11 +89,13 @@ namespace TRE
 			std::vector<int> indices = { 0, 1, 2, 2, 3, 0, };
 			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
 
+			s_FinalRenderData->RenderPass = SwapChain->GetRenderPassPointer();
+
 			PipelineConfigurations PipelineConfig;
 			PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(4);
 			PipelineConfig.Primitive = PrimitiveType::Triangles;
 			PipelineConfig.VertexStride = PipelineConfig.Shader->GetVertexStrides();
-			s_FinalRenderData->Pipeline = std::make_unique<Pipeline>(PipelineConfig, SwapChain->GetRenderPassPointer());
+			s_FinalRenderData->Pipeline = std::make_unique<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
 			s_FinalRenderData->Material = std::make_unique<Material>(PipelineConfig.Shader);
 			s_FinalRenderData->Material->Invalidate();
 			
@@ -118,18 +113,18 @@ namespace TRE
 			samplerCreateInfo.maxLod = 100.0f;
 			samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 			vkCreateSampler(Device, &samplerCreateInfo, nullptr, &s_FinalRenderData->Sampler);
-
 		}
+
+		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
 	}
 
-	void Renderer::SetMainRenderer(const std::shared_ptr<SceneRenderer>& SceneRenderer)
+	void Renderer::Shutdown()
 	{
-		s_MainRenderer = SceneRenderer;
-	}
-		
-	const std::shared_ptr<SceneRenderer>& Renderer::GetMainRenderer()
-	{
-		return s_MainRenderer;
+		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
+			vkDestroySampler(Device, s_FinalRenderData->Sampler, nullptr);
+		delete s_FinalRenderData;
+		m_CommandBuffer = nullptr;
 	}
 
 	void Renderer::RenderToSwapChain()
@@ -143,30 +138,9 @@ namespace TRE
 		uint32_t width = swapChain->GetWidth();
 		uint32_t height = swapChain->GetHeight();
 
-		VkCommandBuffer TargetCommandBuffer = swapChain->GetCurrentCommandBuffer();
+		m_CommandBuffer->Begin();
 
-		VkCommandBufferBeginInfo TargetCBInfo = {};
-		TargetCBInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		TargetCBInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-		if (auto Result = vkBeginCommandBuffer(TargetCommandBuffer, &TargetCBInfo); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Failed to begin target command buffer");
-		}
-
-		VkRenderPassBeginInfo renderPassBeginInfo = {};
-		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassBeginInfo.pNext = nullptr;
-		renderPassBeginInfo.renderPass = swapChain->GetRenderPass();
-		renderPassBeginInfo.renderArea.offset.x = 0;
-		renderPassBeginInfo.renderArea.offset.y = 0;
-		renderPassBeginInfo.renderArea.extent.width = width;
-		renderPassBeginInfo.renderArea.extent.height = height;
-		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassBeginInfo.pClearValues = clearValues.data();
-		renderPassBeginInfo.framebuffer = swapChain->GetCurrentFrameBuffer();
-
-		vkCmdBeginRenderPass(TargetCommandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		s_FinalRenderData->RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), swapChain->GetCurrentFrameBuffer());
 
 		VkViewport viewport = {};
 		viewport.x = 0.0f;
@@ -175,32 +149,34 @@ namespace TRE
 		viewport.width = (float)width;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(TargetCommandBuffer, 0, 1, &viewport);
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor = {};
 		scissor.extent.width = width;
 		scissor.extent.height = height;
 		scissor.offset.x = 0;
 		scissor.offset.y = 0;
-		vkCmdSetScissor(TargetCommandBuffer, 0, 1, &scissor);
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		s_FinalRenderData->ImageInfo.imageView = s_MainRenderer->GetColorImages()[swapChain->GetCurrentBufferIndex()]->GetImageView();
+		s_FinalRenderData->ImageInfo.imageView = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetImageView();
 		s_FinalRenderData->ImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		s_FinalRenderData->ImageInfo.sampler = s_FinalRenderData->Sampler;
 
-		vkCmdBindPipeline(TargetCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipeline());
+		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipeline());
+
 		s_FinalRenderData->Material->UpdateCompsitePass(s_FinalRenderData->ImageInfo);
-		vkCmdBindDescriptorSets(TargetCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(), 0, 
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(), 0,
 			1, &s_FinalRenderData->Material->GetDescriptor(swapChain->GetCurrentBufferIndex()), 0, NULL);
+
 		VkDeviceSize offsets[] = { 0 };
 		auto Vbuffer = s_FinalRenderData->VertexBuffer->GetBuffer();
-		vkCmdBindVertexBuffers(TargetCommandBuffer, 0, 1, &Vbuffer, offsets);
+		vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &Vbuffer, offsets);
 		auto Ibuffer = s_FinalRenderData->IndexBuffer->GetBuffer();
-		vkCmdBindIndexBuffer(TargetCommandBuffer, Ibuffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), Ibuffer, 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdDrawIndexed(TargetCommandBuffer, 6, 1, 0, 0, 0);
+		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), 6, 1, 0, 0, 0);
 
-		vkCmdEndRenderPass(TargetCommandBuffer);
-		vkEndCommandBuffer(TargetCommandBuffer);
+		s_FinalRenderData->RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
+		vkEndCommandBuffer(m_CommandBuffer->GetInUseCommandBuffer());
 	}
 }

@@ -176,7 +176,7 @@ namespace TRE
 			TRE_CORE_INFO("Recreate");
 			Engine::GetInstance().GetWindow()->GetWindowConfig().resize = false;
 			RecreateSwapChain();
-			Renderer::GetMainRenderer()->Resize();
+			Engine::GetInstance().GetMainSceneRenderer()->Resize();
 			Engine::GetInstance().GetVulkanImgui()->Resize();
 		}
 

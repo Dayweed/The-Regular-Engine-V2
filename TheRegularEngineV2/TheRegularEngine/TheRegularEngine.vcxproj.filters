@@ -57,6 +57,9 @@
     <ClInclude Include="Core\Engine.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\EntityCopy.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\FileSystem.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -238,11 +241,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ShaderTypes\LineShader.h" />
-    <ClInclude Include="ShaderTypes\PBRShader.h" />
-    <ClInclude Include="Core\EntityCopy.h">
-      <Filter>Core</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -252,6 +250,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Engine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EntityCopy.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\FileSystem.cpp">
@@ -399,10 +400,5 @@
       <Filter>ShaderTypes</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="ShaderTypes\LineShader.cpp" />
-    <ClCompile Include="ShaderTypes\PBRShader.cpp" />
-    <ClCompile Include="Core\EntityCopy.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

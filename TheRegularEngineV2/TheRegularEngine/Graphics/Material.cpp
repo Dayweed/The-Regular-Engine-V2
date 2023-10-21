@@ -46,7 +46,7 @@ namespace TRE
 	{
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			Renderer::GetMainRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
+			Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
 	}
 
