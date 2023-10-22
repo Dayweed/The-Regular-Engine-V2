@@ -260,7 +260,7 @@ namespace TRE
 			Entity light = ECSManager::Instance().CreateEntity();
 			light->GetComponent<Properties>().m_Name = "Direction Light";
 			light->AddComponent<DirectionalLight>();
-			light->GetComponent<Transform>().m_Rotation.x = 0.f;
+			light->GetComponent<Transform>().m_Rotation.x = 45.f;
 			light->GetComponent<Transform>().m_IsDirty = true;
 		}
 
