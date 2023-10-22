@@ -6,31 +6,35 @@ on:
   pull_request:
     branches: [ "deployment" ]
 
-
-  workflow_dispatch:
-
 env:
   SOLUTION_FILE: TheRegularEngineV2.sln
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: windows-latest
     strategy:
       matrix:
-        configuration: [Debug]
-        platform: [Win32]
+        build-configuration: [Debug, Release]
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Use MS
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x64
 
     - name: Run Premake5
       working-directory: ${{ env.GITHUB_WORKSPACE }}
-      run: ./TheRegularEngineV2/GenerateProject.bat
+      run: |
+        cd TheRegularEngineV2
+        GenerateProject.bat
 
     - name: Test Build
       working-directory: ${{ env.GITHUB_WORKSPACE }}
-      run: msbuild /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} ${{ env.SOLUTION_FILE }}
+      run: MSBuild ${{env.SOLUTION_FILE}} /m /p:Configuration=${{matrix.build-configuration}} -fl -flp:logfile=logs/Build-${{matrix.build-configuration}}.log
+
