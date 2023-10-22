@@ -12,6 +12,9 @@
 #include "Physics/PhysicsComponents.h"
 #include "Light.h"
 
+//To be removed
+#include "EditorCamera.h"
+
 namespace TRE
 {
 	std::shared_ptr<DescriptorPool>& SceneRenderer::GetDescriptorPool()
@@ -161,10 +164,17 @@ namespace TRE
 	{
 		//UBO
 		UBO ubo{};
+#if 0
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		ubo.m_LightPosition = mainCamera.m_Position;
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
+#else
+		const auto& camera = EditorCamera::Instance();
+		ubo.m_ProjView = camera.GetViewProjectionMatrix();
+		ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
+		ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
+#endif
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{

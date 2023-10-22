@@ -309,13 +309,13 @@ namespace TRE
 	{
 		AudioListener& listener = go.get()->GetComponent<AudioListener>();
 
-		glm::vec3 pos = go.get()->GetComponent<Camera>().m_Position;
-		glm::vec3 view = go.get()->GetComponent<Camera>().GetViewDirection();
-		glm::vec3 up = go.get()->GetComponent<Camera>().GetUpVec();
+		const glm::vec3 pos = go->GetComponent<Transform>().m_Position;
+		const glm::vec3 viewVec = go->GetComponent<Camera>().m_BaseCamera.GetViewDirection();
+		const glm::vec3 upVec = go->GetComponent<Camera>().m_BaseCamera.GetUpVec();
 
-		listener.m_Position = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().m_Position);
-		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetViewDirection());
-		listener.m_Up = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetUpVec());
+		listener.m_Position = glmVec3ToFmodVector(pos);
+		listener.m_Forward = glmVec3ToFmodVector(viewVec);
+		listener.m_Up = glmVec3ToFmodVector(upVec);
 
 		m_System->set3DListenerAttributes(0, &listener.m_Position, nullptr, nullptr, nullptr);
 	}
