@@ -34,8 +34,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd TheRegularEngineV2
-        cd premake
-        ./premake5.exe vs2022
+        ./premake/premake5.exe vs2022
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
