@@ -6,18 +6,28 @@ on:
   pull_request:
     branches: [ "deployment" ]
 
+
+  workflow_dispatch:
+
+env:
+  SOLUTION_FILE_PATH: ./TheRegularEngineV2/TheRegularEngineV2.sln
+
 jobs:
   build:
-
     runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Debug]
+        platform: [Win32]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Run Premake5
+      working-directory: ${{ env.GITHUB_WORKSPACE }}
+      run: ./GenerateProject.bat
+
+    - name: Test Build
+      working-directory: ${{ env.GITHUB_WORKSPACE }}
+      run: CI_Script /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} ${{ env.SOLUTION_FILE }}
