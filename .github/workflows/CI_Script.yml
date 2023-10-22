@@ -32,7 +32,7 @@ jobs:
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       run: |
         cd TheRegularEngineV2
-        GenerateProject.bat
+        call GenerateProject.bat
 
     - name: Test Build
       working-directory: ${{ env.GITHUB_WORKSPACE }}
