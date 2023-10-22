@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  SOLUTION_FILE_PATH: ./TheRegularEngineV2/TheRegularEngineV2.sln
+  SOLUTION_FILE: ./TheRegularEngineV2/TheRegularEngineV2.sln
 
 jobs:
   build:
