@@ -24,10 +24,13 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
     - name: Run Premake5
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       run: ./TheRegularEngineV2/GenerateProject.bat
 
     - name: Test Build
       working-directory: ${{ env.GITHUB_WORKSPACE }}
-      run: CI_Script /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} ${{ env.SOLUTION_FILE }}
+      run: msbuild /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} ${{ env.SOLUTION_FILE }}
