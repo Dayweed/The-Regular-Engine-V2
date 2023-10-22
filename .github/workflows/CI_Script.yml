@@ -1,0 +1,42 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "deployment" ]
+  pull_request:
+    branches: [ "deployment" ]
+
+env:
+  SOLUTION_FILE: TheRegularEngineV2/TheRegularEngineV2.sln
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        build-configuration: [Debug, Release]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        repository: 'greed-k/GAM300'
+
+    - name: Use MS
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x64
+
+    - name: Run Premake5
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd TheRegularEngineV2
+        ./premake/premake5.exe vs2022
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: MSBuild ${{env.SOLUTION_FILE}} /m /p:Configuration=${{matrix.build-configuration}} -fl -flp:logfile=logs/Build-${{matrix.build-configuration}}.log
+

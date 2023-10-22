@@ -411,6 +411,7 @@ namespace TRE
 
 	std::unique_ptr<Shader> ShaderCompiler::DeserializeReflectShader(const std::filesystem::path& ShaderPath, bool EnableOptimization)
 	{
+		(void)EnableOptimization;
 		std::string path = ShaderPath.string();
 		size_t found = path.find_last_of("/\\");
 		std::string name = found != std::string::npos ? path.substr(found + 1) : path;

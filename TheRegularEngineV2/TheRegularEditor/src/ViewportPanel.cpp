@@ -288,9 +288,9 @@ namespace TRE
 				}
 			}
 			// For prefab
-			else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Prefab"))
+			else if (const ImGuiPayload* prefabPayload = ImGui::AcceptDragDropPayload("m_Prefab"))
 			{
-				std::string assetName = (const char*)payload->Data;
+				std::string assetName = (const char*)prefabPayload->Data;
 				std::string filePath = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
 				filePath.erase(filePath.find(FILESYS_PREFABASSTYPE));	// This is to remove unneeded data at the end after ".prefab"
 				filePath += FILESYS_PREFABASSTYPE;

@@ -331,6 +331,11 @@ namespace TRE
 {
 	Engine* Engine::s_Instance = nullptr;
 
+	const std::shared_ptr<SceneRenderer>& Engine::GetMainSceneRenderer()
+	{
+		return m_SceneRenderer;
+	}
+
 	const std::shared_ptr<Window>& Engine::GetWindow()
 	{
 		return m_Window;
@@ -365,9 +370,14 @@ namespace TRE
 		DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		Renderer::SetMainRenderer(m_SceneRenderer);
 		Renderer::Init();
 		m_SceneRenderer->Initialize();
+
+		if (m_EngineInfo.MaximizeWindow)
+		{
+			m_Window->MaximizeWindow();
+		}
+
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
@@ -500,7 +510,7 @@ namespace TRE
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
 		}
-		Renderer::SetMainRenderer(nullptr);
+		
 	}
 
 	void Engine::Shutdown()
@@ -513,5 +523,6 @@ namespace TRE
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
+		Renderer::Shutdown();
 	}
 }

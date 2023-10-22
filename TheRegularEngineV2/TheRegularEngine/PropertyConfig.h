@@ -12,6 +12,12 @@ struct resource_ref
     std::uint64_t m_Value;
 };
 
+struct resource_list
+{
+	std::uint64_t m_Value;
+	std::string m_Type;
+};
+
 //--------------------------------------------------------------------------------------------
 // Some structure to show that you can add your own atomic structures
 //--------------------------------------------------------------------------------------------
@@ -149,6 +155,7 @@ namespace property
             , glm::vec3
             , Vector3
             , resource_ref
+            , resource_list
         >;
     
         //--------------------------------------------------------------------------------------------

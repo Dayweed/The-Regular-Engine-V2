@@ -8,6 +8,7 @@
 #include "Graphics/Material.h"
 #include "EditorSystem.h"
 #include "Core/GameLoop.h"
+#include "ShaderTypes/PBRShader.h"
 
 namespace TRE
 {
@@ -110,7 +111,7 @@ namespace TRE
 	void ContentBrowserPanel::BrowseProjectFiles()
 	{
 		//Folder List Display
-		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2, ImGui::GetContentRegionAvail().y), true))
+		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2f, ImGui::GetContentRegionAvail().y), true))
 		{
 			if (ImGui::Button(m_AssetDirectory.filename().string().c_str()))
 			{
@@ -154,8 +155,10 @@ namespace TRE
 						MaterialDescriptorFile descriptorFileMaterial;
 						descriptorFileMaterial.Generate();
 						
-						//AssetManager::Instance().PrintAllAssets();
-						//AssetManager::Instance().AddAsset<Material>(descriptorFileMaterial.GetAssetPath());
+						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetShaderHandle());
+						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
+
+						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
 					}
 					if (ImGui::MenuItem("Others"))
 					{
@@ -213,7 +216,8 @@ namespace TRE
 						}
 						else
 						{
-							m_AssetSelector->SelectEntity(item.m_FileName);
+							const AssetSelector::AssetType assetType = m_AssetSelector->FindAssetType(item.m_ResourceType);
+							m_AssetSelector->SelectEntity(item.m_FileName, assetType);
 						}
 						m_AssetClicked = true;
 					}
@@ -240,7 +244,7 @@ namespace TRE
 				m_InvalidResourcePopUp = false;
 			}
 
-			if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_AssetClicked == false)
+			if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_AssetClicked == false)
 			{
 				m_AssetSelector->ClearSelectedAsset();
 			}
@@ -265,12 +269,11 @@ namespace TRE
 	void ContentBrowserPanel::Init()
 	{
 		//Load the textures for the icons
-		const auto tmpGUID = AssetManager::Instance().GetAssetHandle("icon-play.png");
+		const auto tmpGUID = AssetManager::Instance().GetAssetHandle("icon-file.png");
 		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
-		//Texture::RunCompiler("../Assets/" + playHexGUID + ".desc");
 		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");
 		tmpButton->SetHandle(tmpGUID);
-		AssetManager::Instance().AddAsset("icon-play.png", std::move(tmpButton));
+		AssetManager::Instance().AddAsset("icon-file.png", std::move(tmpButton));
 		m_TmpTextures = ResourceManager::Instance().GetResource<VulkanTexture>(tmpGUID);
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 	}

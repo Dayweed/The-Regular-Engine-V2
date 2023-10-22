@@ -14,6 +14,7 @@
 #include "MaterialPanel.h"
 #include "EditorAssetManager.h"
 #include "GamePanel.h"
+#include "TexturePanel.h"
 
 namespace TRE
 {
@@ -37,6 +38,7 @@ namespace TRE
 		m_PanelManager->InsertPanel<ToolBarPanel>("Tool Bar");
 		m_PanelManager->InsertPanel<MaterialPanel>("Material", m_SelectionManager, m_AssetSelector);
 		m_PanelManager->InsertPanel<GamePanel>("Game Panel");
+		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
 		m_PanelManager->Init();
 	}
 	
