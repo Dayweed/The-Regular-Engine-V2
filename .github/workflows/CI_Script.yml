@@ -26,7 +26,7 @@ jobs:
 
     - name: Run Premake5
       working-directory: ${{ env.GITHUB_WORKSPACE }}
-      run: ./GenerateProject.bat
+      run: ./TheRegularEngineV2/GenerateProject.bat
 
     - name: Test Build
       working-directory: ${{ env.GITHUB_WORKSPACE }}
