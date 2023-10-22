@@ -10,6 +10,7 @@
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
 #include "Physics/PhysicsComponents.h"
+#include "Light.h"
 
 namespace TRE
 {
@@ -164,6 +165,14 @@ namespace TRE
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		ubo.m_LightPosition = mainCamera.m_Position;
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
+
+		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
+		{
+			const auto& light = entity->GetComponent<DirectionalLight>();
+			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightAmbientColor = light.AmbientColor;
+		}
+
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
@@ -174,7 +183,7 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
-		auto swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		m_CommandBuffer->Begin();
 

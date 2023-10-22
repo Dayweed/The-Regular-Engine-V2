@@ -18,12 +18,9 @@ struct resource_list
 	std::string m_Type;
 };
 
-//--------------------------------------------------------------------------------------------
-// Some structure to show that you can add your own atomic structures
-//--------------------------------------------------------------------------------------------
-struct oobb
+struct Color
 {
-    float m_Min{}, m_Max{};
+	glm::vec4 m_Value;
 };
 
 //--------------------------------------------------------------------------------------------
@@ -150,10 +147,11 @@ namespace property
             , bool
             , float
             , string_t
-            , oobb
             , glm::vec2
             , glm::vec3
+            , glm::vec4
             , Vector3
+            , Color
             , resource_ref
             , resource_list
         >;

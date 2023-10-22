@@ -228,11 +228,6 @@ namespace TRE
 							{
 								UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
 							}
-							else if constexpr (std::is_same_v<T, oobb>)
-							{
-								// Fake example of using structs (Should remove b4 m2!)...
-								//printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
-							}
 							else if constexpr (std::is_same_v<T, glm::vec2>)
 							{
 								float pos[2]{ Value.x, Value.y };
@@ -244,6 +239,18 @@ namespace TRE
 								float pos[3]{ Value.x, Value.y, Value.z };
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
+							}
+							else if constexpr (std::is_same_v <T, glm::vec4>)
+							{
+								float data[4]{ Value.x, Value.y, Value.z, Value.w };
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat4(NameField.c_str(), data);
+								Value = { data[0], data[1], data[2], data[3]};
+							}
+							else if constexpr (std::is_same_v <T, Color>)
+							{
+								float color[4]{ Value.m_Value.r, Value.m_Value.g, Value.m_Value.b, Value.m_Value.a };
+								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4("Color", color);
+								Value.m_Value = { color[0], color[1], color[2], color[3] };
 							}
 							else if constexpr (std::is_same_v<T, Vector3>) // I guess this is fine too!
 							{

@@ -11,11 +11,12 @@
 #include "Audio/AudioSystem.h"
 #include "Logger.h"
 #include "Scripting/ScriptEngine.h"
+#include "Graphics/Light.h"
+#include "Graphics/MeshRenderer.h"
+#include "Graphics/Camera.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
-#include "Graphics/MeshRenderer.h"
-#include "Graphics/Camera.h"
 #include <time.h>       /* time */
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
@@ -256,6 +257,14 @@ namespace TRE
 		}
 
 		{
+			Entity light = ECSManager::Instance().CreateEntity();
+			light->GetComponent<Properties>().m_Name = "Direction Light";
+			light->AddComponent<DirectionalLight>();
+			light->GetComponent<Transform>().m_Rotation.x = 0.f;
+			light->GetComponent<Transform>().m_IsDirty = true;
+		}
+
+		{
 			//// Parent child prefabing test
 			//Entity prefabParent = ECSManager::Instance().CreateEntity();
 			//prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
@@ -412,6 +421,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
 		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
+		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");						
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
@@ -421,6 +431,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
+		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
