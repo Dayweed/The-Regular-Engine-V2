@@ -422,7 +422,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");        // 
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");                            // serialized
 		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");                    // serialized, reflected
-		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light"); // 
+		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light"); // serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();

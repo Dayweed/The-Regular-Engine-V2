@@ -50,6 +50,10 @@ namespace TRE
 			const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
+			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+#ifdef _DEBUG
+			tempSharedData.m_RigidDynamic->setName("BoxCollider");
+#endif
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
 			tempSharedData.m_GUID = entity->GetGUID();

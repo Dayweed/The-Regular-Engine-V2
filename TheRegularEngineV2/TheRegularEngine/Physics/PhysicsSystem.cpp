@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 1
+#define USE_PHYSX_PVD 0
 #endif
 
 #pragma region Macros
@@ -37,6 +37,26 @@
 using namespace physx;
 // to save my dwindling sanity
 
+#if 0
+namespace Text
+{
+	const std::string reset{ "\033[0m" };
+	const std::string red{ "\033[0;31m" };
+	const std::string green{ "\033[0;32m" };
+	const std::string blue{ "\033[0;36m" };
+	const std::string crit{ "\033[37;41m" };
+}
+#else
+namespace Text
+{
+	const std::string reset{ "" };
+	const std::string red{ "" };
+	const std::string green{ "" };
+	const std::string blue{ "" };
+	const std::string crit{ "" };
+}
+#endif
+
 namespace TRE
 {
 	PhysicsSystem::PhysicsSystem()
@@ -50,7 +70,7 @@ namespace TRE
 
 		// doesn't pass in name parameter when allocating stuff on its own now
 		// one less thing passed in, the better I guess.
-		m_Foundation->setReportAllocationNames(false);
+		m_Foundation->setReportAllocationNames(_DEBUG);
 
 		TRE_CORE_INFO("PhysX Version: {0}.{1}.{2}",
 			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
@@ -120,15 +140,24 @@ namespace TRE
 
 		//Static object creation
 		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
+#ifdef _DEBUG
+		m_GroundPlane->setName("THE PLANE");
+#endif
 		m_Scene->addActor(*m_GroundPlane);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
 
+	// largely identical to PhysX's SnippetTriggers implementation
 	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 	{
+		UNUSED_PARAM(filterData0);
+		UNUSED_PARAM(filterData1);
+		UNUSED_PARAM(constantBlock);
+		UNUSED_PARAM(constantBlockSize);
+
 		// let triggers through
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
@@ -138,10 +167,13 @@ namespace TRE
 
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT
 			| PxPairFlag::eDETECT_CCD_CONTACT
+			| PxPairFlag::eCONTACT_EVENT_POSE
 			| PxPairFlag::eNOTIFY_TOUCH_CCD
-			| PxPairFlag::eNOTIFY_TOUCH_FOUND
-			| PxPairFlag::eNOTIFY_CONTACT_POINTS
-			| PxPairFlag::eCONTACT_EVENT_POSE;
+			// | PxPairFlag::eNOTIFY_CONTACT_POINTS
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND // for OnCollisionEnter
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS // added for OnCollisionStay
+			| PxPairFlag::eNOTIFY_TOUCH_LOST // added for OnCollisionExit
+		;
 
 		return {};
 	}
@@ -158,15 +190,15 @@ namespace TRE
 			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
 #endif
 
-#if 1
+#if 0
 		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
 		e1->GetComponent<Transform>().m_Position = { 0,5,0 };
 		e1->AddComponent<BoxCollider>();
-		ConstructBoxCollider(e1, { 7, 2, 7 });
+		ConstructBoxCollider(e1, { 7, 7, 7 });
 		ColliderToTrigger(e1);
 #endif
 
-#if 1
+#if 0
 		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
 		e2->GetComponent<Transform>().m_Position = { 0, 15, 0 };
 		e2->AddComponent<SphereCollider>();
@@ -183,18 +215,6 @@ namespace TRE
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
 		isReadyForUpdate || TESTUpdate();
-
-#if 0
-		static std::time_t start_timer = std::time(nullptr);
-		const long long result = std::time(nullptr) - start_timer;
-		if (result >= 1)
-		{
-			// do a test thingy here
-
-			// reset timer
-			std::time(&start_timer);
-		}
-#endif
 
 		// How do I tell if a component has been removed from an entity???
 		for (auto& x : m_Actors)
@@ -227,6 +247,23 @@ namespace TRE
 		UpdateAllEntitiesWithComponent(SphereCollider);
 		UpdateAllEntitiesWithComponent(BoxCollider);
 		UpdateAllEntitiesWithComponent(CapsuleCollider);
+
+#if 0
+		static std::time_t start_timer = std::time(nullptr);
+		const long long result = std::time(nullptr) - start_timer;
+
+		if (result >= 5)
+		{
+			// do a test thingy here
+			auto e1 = ECSManager::Instance().GetEntities<SphereCollider>().front();
+
+			AddForce(e1, { -100, 0, 0 });
+			printf("====================================================\n");
+
+			// reset timer
+			std::time(&start_timer);
+		}
+#endif
 
 		// Accumulator?
 		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
@@ -426,12 +463,16 @@ namespace TRE
 
 		for (unsigned i = 0; i < nbPairs; ++i)
 		{
-			const auto& yeah = pairs[i];
-			PxShape** huh = new PxShape * [3];
-			pairHeader.actors[0]->is<PxRigidBody>()->getShapes(huh, 3);
-			auto& geom = huh[0]->getGeometry();
-		}
+			printf("the contact are |%s| and |%s|\n", pairHeader.actors[0]->getName(), pairHeader.actors[1]->getName());
 
+			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH)
+				printf("%sfirst kiss%s\n", Text::red.c_str(), Text::reset.c_str());
+			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)
+				printf("%sbreakup%s\n", Text::blue.c_str(), Text::reset.c_str());
+			if (!(pairs->flags & (PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH | PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)))
+				printf("%ssustained??%s\n", Text::green.c_str(), Text::reset.c_str());
+		}
+		printf("\n");
 	}
 
 	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
@@ -439,27 +480,29 @@ namespace TRE
 		UNUSED_PARAM(actors);
 		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
+		printf("oh, %s is going to sleep...\n", actors[0]->getName());
 	}
 
 	void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 	{
 		UNUSED_PARAM(pairs);
 		UNUSED_PARAM(count);
-		// printf("|%s|\n", __FUNCTION__);
+		printf("|%s|\n", __FUNCTION__);
 
 		if (!count) return;
 		// auto& pair = pairs[count - 1];
 		//printf("YOOOOOOOOOOOOOOOOOOOOOOO\n");
 		for (unsigned i = 0; i < count; ++i)
 		{
+			printf("the trigger are |%s| & |%s|\n", pairs->triggerActor->getName(), pairs->otherActor->getName());
 			const auto& yeah = pairs[i];
 			if (yeah.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 				printf("Shape is entering trigger volume\n");
 			if (yeah.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
 				printf("Shape is leaving trigger volume\n");
-			if (yeah.status & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
-				printf("Shape staying in trigger volume\n");
+			// on trigger stay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST ...
 		}
+		printf("\n");
 	}
 
 	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
@@ -467,8 +510,22 @@ namespace TRE
 		UNUSED_PARAM(actors);
 		UNUSED_PARAM(count);
 		printf("|%s|\n", __FUNCTION__);
+		printf("oh, %s woke up!\n", actors[0]->getName());
 	}
 }
 
 
 // collision layering!! -> PxSetGroupCollisionFlag()
+
+// DISCO RGB FONT FOR EDITOR COMPONENTS?????
+
+// none			- just don't have anything, please
+// collider		- make shape with 
+// rigidbody	- 
+// both			- create stuff like prior
+
+// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
+// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
+// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
+
+// WAIT I NEED THE RIGIDACTOR AN ATTACHED COMPONENTS TO BE SHARED **AT ALL TIMES**

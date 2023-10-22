@@ -177,14 +177,3 @@ property_begin(TRE::CapsuleCollider)
 	property_var(m_Radius),
 	property_var(m_HalfHeight)
 } property_vend_h(TRE::CapsuleCollider)
-
-// none			- just don't have anything, please
-// collider		- make shape with 
-// rigidbody	- 
-// both			- create stuff like prior
-
-// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
-// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
-// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
-
-// WAIT I NEED THE RIGIDACTOR AN ATTACHED COMPONENTS TO BE SHARED **AT ALL TIMES**

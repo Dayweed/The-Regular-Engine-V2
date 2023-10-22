@@ -58,6 +58,12 @@ namespace TRE
 		void onSleep(physx::PxActor** actors, physx::PxU32 count) override;
 		void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override;
 		void onWake(physx::PxActor** actors, physx::PxU32 count) override;
+
+		// keeps track of onEnter, OnStay and OnExit 'results'
+		int triggerHistory, colliderHistory;
+		// WHAT TYPE SHOULD THIS BE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+		// I want to have be like `thingy[e1][e2]` and have it return an integer/enum of some sort...
+		// ->is<PxRigidActor>()->getInternalActorIndex();
 	};
 
 	physx::PxFilterFlags SimulationFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
@@ -286,5 +292,3 @@ namespace TRE
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 	};
 }
-
-// DISCO RGB FONT FOR EDITOR COMPONENTS?????
