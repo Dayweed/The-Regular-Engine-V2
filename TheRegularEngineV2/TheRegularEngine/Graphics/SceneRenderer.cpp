@@ -145,11 +145,6 @@ namespace TRE
 	SceneRenderer::~SceneRenderer()
 	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
-		
-		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Texture);
-		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Mesh);
-		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Material);
-		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Shader);
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
@@ -160,21 +155,39 @@ namespace TRE
 		m_DepthImages.clear();
 	}
 
-	void SceneRenderer::BeginFrame()
+	void SceneRenderer::BeginEditorFrame(const EditorCamera& RenderCamera)
+	{
+		UBO ubo{};
+
+		ubo.m_ProjView = RenderCamera.GetViewProjectionMatrix();
+		ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
+		ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
+
+		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
+		{
+			const auto& light = entity->GetComponent<DirectionalLight>();
+			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightAmbientColor = light.AmbientColor;
+		}
+
+		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+	}
+
+	void SceneRenderer::BeginFrame(const Camera& RenderCamera)
 	{
 		//UBO
 		UBO ubo{};
-#if 0
-		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		ubo.m_LightPosition = mainCamera.m_Position;
-		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
-#else
-		const auto& camera = EditorCamera::Instance();
-		ubo.m_ProjView = camera.GetViewProjectionMatrix();
-		ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
-		ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
-#endif
+//#if 0
+		//const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		ubo.m_ProjView = RenderCamera.m_BaseCamera.m_ProjectionMatrix * RenderCamera.m_BaseCamera.m_ViewMatrix;
+		ubo.m_LightPosition = { 0.f, 0.f, 0.f };
+		ubo.m_CameraPosition = { 0.f, 0.f, 0.f, 0.f };
+//#else
+		//const auto& camera = EditorCamera::Instance();
+		//ubo.m_ProjView = camera.GetViewProjectionMatrix();
+		//ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
+		//ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
+//#endif
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{

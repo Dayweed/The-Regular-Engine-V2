@@ -24,6 +24,7 @@ namespace TRE
 		TRE_INFO("Editor Init");
 		
 		AssetManager::Instance().Initialize();
+		EditorCamera::Instance().Init();
 
 		m_PanelManager = std::make_unique<PanelManager>();
 		m_SelectionManager = std::make_shared<SelectionManager>();
@@ -41,8 +42,11 @@ namespace TRE
 		m_PanelManager->InsertPanel<GamePanel>("Game Panel");
 		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
 		m_PanelManager->Init();
+	}
 
-		EditorCamera::Instance().Init();
+	void EditorSystem::Init()
+	{
+
 	}
 	
 	EditorSystem::~EditorSystem()
@@ -101,9 +105,9 @@ namespace TRE
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		m_PanelManager->Update();
-
 		EditorCamera::Instance().Update();
+
+		m_PanelManager->Update();
 
 		ImGui::End(); //Dockspace
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include "Device.h"
-#include "VulkanEditor.h"
 #include "RenderObject.h"
 #include "Descriptor.h"
 #include "RenderPass.h"
@@ -11,9 +10,12 @@
 #include "AnimationTest.h"
 #include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
+//#include "EditorCamera.h"
 
 namespace TRE
 {
+	struct EditorCamera;
+	struct Camera;
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
@@ -45,7 +47,8 @@ namespace TRE
 			void Create();
 			void Resize();
 			
-			void BeginFrame();
+			void BeginFrame(const Camera& RenderCamera);
+			void BeginEditorFrame(const EditorCamera& RenderCamera);
 			void EndFrame();
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);

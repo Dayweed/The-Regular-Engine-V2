@@ -60,6 +60,14 @@ namespace TRE
 			//Can add assert here to tell user they getting a non registered system
 			return nullptr;
 		}
+		
+		void InitSystem()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->Init();
+			}
+		}
 
 		void UpdateSystem()
 		{

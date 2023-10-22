@@ -390,6 +390,8 @@ namespace TRE
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
+		EditorSystemManager::Instance().InitSystem();
+
 		ScriptEngine::InitMono();
 		ScriptEngine::BindFunctions();
 		//ScriptEngine::TestScriptingEngine();
@@ -444,7 +446,8 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
-			m_SceneRenderer->BeginFrame();
+			const auto& test = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+			m_SceneRenderer->BeginFrame(test);
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -527,6 +530,10 @@ namespace TRE
 	void Engine::Shutdown()
 	{
 		m_Running = false;
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Texture);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Mesh);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Material);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Shader);
 		ResourceManager::Instance().DestroyAllResources();
 		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
@@ -535,5 +542,6 @@ namespace TRE
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
 		Renderer::Shutdown();
+
 	}
 }

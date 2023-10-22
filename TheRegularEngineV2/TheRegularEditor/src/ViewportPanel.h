@@ -18,6 +18,7 @@
 #include "EventSystem/Events/EditorEvent.h"
 #include "SelectionManager.h"
 #include "Editor/ImGuizmo.h"
+#include "Graphics/SceneRenderer.h"
 
 namespace TRE
 {
@@ -63,5 +64,7 @@ namespace TRE
 			float m_RotationSensitivity = 5.f;
 
 			glm::vec3 m_ClickRay{};
+
+			std::shared_ptr<SceneRenderer> m_EditorSceneRenderer;
 	};
 }
