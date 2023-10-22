@@ -11,6 +11,7 @@ namespace TRE
 		uint32_t height = 900;
 		bool Vsync = true;
 		bool resize = false;
+		bool FullScreen = false;
 	};
 
 	class Window
@@ -28,6 +29,7 @@ namespace TRE
 			void BeginFrame();
 			void SwapBuffers();
 			void UpdateDeltaTime();
+			void MaximizeWindow();
 
 			GLFWwindow* GetWindowHandle() const;
 			WindowConfig& GetWindowConfig();

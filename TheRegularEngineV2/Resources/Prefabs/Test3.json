@@ -1,0 +1,87 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Instances": [
+            "{89944689-3A6C-423D-8072-02F2F206732A}",
+            "{26AA5506-8744-4965-8057-24B49F7DE289}",
+            "{F8944121-9D91-4F41-8D0F-5F9AB76D214C}"
+         ],
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "e4ffb58bb2cd1da7",
+         "m_Overrides": {},
+         "m_PrefabGUID": "e4ffb58bb2cd1da7",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "{B2D88E0F-7B96-44EA-85A1-D184678FE071}",
+         "m_Name": "Test3"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            78.0,
+            20.0,
+            180.0
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.20000000298023224,
+            0.20000000298023224,
+            0.20000000298023224
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "b1d2057915001876",
+         "ASSET_MAT_m_MaterialInstance": "74b283e6a2bed9d8",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

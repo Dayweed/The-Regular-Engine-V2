@@ -110,7 +110,15 @@ namespace TRE
 			bool isPrefabInstance = false;
 
 			// Show option of prefabing possibility if have prefab
-			if (ImGui::Button("Save As Prefab"))
+			if (entity->HasComponent<Prefabing>())
+			{
+				if (ImGui::Button("Overwrite Prefab"))
+				{
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
+				}
+				ImGui::SameLine();
+			}
+			if (ImGui::Button("Save As New Prefab"))
 			{
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity);
 			}
@@ -119,15 +127,12 @@ namespace TRE
 				// Is Prefab Instance
 				isPrefabInstance = true;
 				ImGui::SameLine();
-				if (ImGui::Button("Overwrite Prefab"))
-				{
-					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->SavePrefabEntity(entity, false);
-				}
 				Prefabing& pref{ entity->GetComponent<Prefabing>() };
 				ImGui::SameLine();
 				if (ImGui::Button("Clone Prefab"))
 				{
-					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID);
+					Entity instance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID) };
+					m_SelectionManager->SelectEntity(instance);
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("UnPrefab"))
@@ -236,11 +241,6 @@ namespace TRE
 							{
 								UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
 							}
-							else if constexpr (std::is_same_v<T, oobb>)
-							{
-								// Fake example of using structs (Should remove b4 m2!)...
-								//printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
-							}
 							else if constexpr (std::is_same_v<T, glm::vec2>)
 							{
 								float pos[2]{ Value.x, Value.y };
@@ -253,6 +253,18 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
+							else if constexpr (std::is_same_v <T, glm::vec4>)
+							{
+								float data[4]{ Value.x, Value.y, Value.z, Value.w };
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat4(NameField.c_str(), data);
+								Value = { data[0], data[1], data[2], data[3]};
+							}
+							else if constexpr (std::is_same_v <T, Color>)
+							{
+								float color[4]{ Value.m_Value.r, Value.m_Value.g, Value.m_Value.b, Value.m_Value.a };
+								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4("Color", color);
+								Value.m_Value = { color[0], color[1], color[2], color[3] };
+							}
 							else if constexpr (std::is_same_v<T, Vector3>) // I guess this is fine too!
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
@@ -261,10 +273,83 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
-								static char renderObject[200];
-								strcpy(renderObject, AssetManager::Instance().GetName(Value.m_Value).c_str());
-								ImGui::InputText("##", renderObject, sizeof(renderObject), ImGuiInputTextFlags_ReadOnly);
+								static char resourceName[200];
+								strcpy(resourceName, AssetManager::Instance().GetName(Value.m_Value).c_str());
+								std::string handle = "##" + std::to_string(Value.m_Value);
+								if (ImGui::InputText(handle.c_str(), resourceName, sizeof(resourceName), ImGuiInputTextFlags_ReadOnly) || ImGui::IsItemHovered())
+								{
+									//if (ImGui::BeginDragDropTarget())
+									//{
+									//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_TextureResource"))
+									//	{
+									//		std::string materialName = (const char*)payload->Data;
+									//		std::cout << "Material Name: " << materialName << "\n";
+									//		//std::cout << AssetManager::Instance().GetName(materialName) << "\n";
+									//		//Value.m_Value = AssetManager::Instance().GetHandle(materialName);
+									//	}
+									//	else
+									//		std::cout << "Failed to get payload\n";
+
+									//	ImGui::EndDragDropTarget();
+									//}
+								}
 							}							
+							else if constexpr (std::is_same_v<T, resource_list>)
+							{
+								std::string imguiHandle = "##" + std::to_string(Value.m_Value);
+								std::string selected = AssetManager::Instance().GetName(Value.m_Value);
+								if (ImGui::BeginCombo(imguiHandle.c_str(), selected.c_str()))
+								{
+									if (ImGui::Selectable("None", false))
+									{
+										Value.m_Value = 0;
+									}
+
+									if (Value.m_Type == "MATERIAL")
+									{
+										for (const auto& material : AssetManager::Instance().GetAssetsOfType<Material>())
+										{
+											std::string name = AssetManager::Instance().GetName(material->GetHandle());
+											ResourceHandle handle = material->GetHandle();
+											bool isSelected = (selected == name);
+											if (ImGui::Selectable(name.c_str(), isSelected))
+											{
+												selected = name;
+												Value.m_Value = handle;
+												break;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
+									else if (Value.m_Type == "TEXTURE")
+									{
+										
+									}
+									else if (Value.m_Type == "MESH")
+									{
+										for (const auto& material : AssetManager::Instance().GetAssetsOfType<RenderObject>())
+										{
+											std::string name = AssetManager::Instance().GetName(material->GetHandle());
+											ResourceHandle handle = material->GetHandle();
+											bool isSelected = (selected == name);
+											if (ImGui::Selectable(name.c_str(), isSelected))
+											{
+												selected = name;
+												Value.m_Value = handle;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
+									else
+									{
+
+									}
+
+									ImGui::EndCombo();
+								}
+							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);

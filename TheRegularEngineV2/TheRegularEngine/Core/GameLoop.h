@@ -21,6 +21,9 @@ namespace TRE
 		bool GetSceneReset();
 		void SetSceneReset(bool reset);
 
+		bool GetDisplayingPrefab();
+		void SetDisplayingPrefab(bool isDisplaying);
+
 		entt::registry& GetBackUpRegistry();
 
 		void ToggleRun(bool isRunning);
@@ -34,6 +37,11 @@ namespace TRE
 
 		// Game Got Reseted this scene
 		bool m_SceneReset{ false };
+
+		// Prefab display in the scene
+		// (This will auto be set back to false if m_GameRunning == true or the user press play)
+		// Entities are stored and cleared, if m_DisplayingPrefab == false, similar when game is running
+		bool m_DisplayingPrefab{ false };
 
 		entt::registry m_BackUp;
 

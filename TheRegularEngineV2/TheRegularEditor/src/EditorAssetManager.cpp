@@ -165,14 +165,13 @@ namespace TRE
 		if(Contains(assetName))
 			return m_AssetNameToHandle.at(assetName);
 		
-		TRE_ERROR("AssetManager::GetAssetHandle: Asset with name {0} does not exist", assetName);
 		return 0;
 	}
 
 	const std::string AssetManager::GetName(const ResourceHandle resourceHandle) const
 	{
 		std::string name;
-		for (auto x : m_AssetNameToHandle)
+		for (const auto& x : m_AssetNameToHandle)
 		{
 			if (x.second == resourceHandle)
 				name = x.first;

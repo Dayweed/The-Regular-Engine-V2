@@ -38,7 +38,20 @@ namespace TRE
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); //Default is opengl so we set to no default API since we going :eagle:
 
-		m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
+		if (m_Config.FullScreen)
+		{
+			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+
+			glfwWindowHint(GLFW_DECORATED, false);
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			m_WindowHandle = glfwCreateWindow(mode->width, mode->height, m_Config.Title.c_str(), primaryMonitor, nullptr);
+		}
+		else
+			m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
 
 		m_RenderContext = std::make_shared<RendererContext>();
 		m_RenderContext->Initialize();
@@ -107,5 +120,10 @@ namespace TRE
 	float Window::GetDeltaTime() const
 	{
 		return m_DeltaTime;
+	}
+
+	void Window::MaximizeWindow()
+	{
+		glfwMaximizeWindow(m_WindowHandle);
 	}
 }

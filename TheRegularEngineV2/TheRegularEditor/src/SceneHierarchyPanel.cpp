@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SceneHierarchyPanel.h"
+#include "Core/GameLoop.h"
 #include "Imgui/imgui.h"
 
 namespace TRE
@@ -23,7 +24,16 @@ namespace TRE
 	{
 		ImGui::Begin("Hierarchy");
 
-		if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
+		bool displayingPrefab{ GameLoop::Instance().GetDisplayingPrefab() };
+		std::string SceneDisplay = displayingPrefab ? "Prefab" : SceneManager::Instance().GetCurrentSceneName();
+
+		// Display button to return to scene
+		if (displayingPrefab && ImGui::Button("Return to Scene", ImVec2(-FLT_MIN, 0.0f)))
+		{
+			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+		}
+
+		if (ImGui::TreeNodeEx(SceneDisplay.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -74,10 +84,18 @@ namespace TRE
 			//	}
 			//}
 
-			for (size_t i{}; i < ECSManager::Instance().GetAllEntities().size(); ++i)
+			// Choose between getting all entities or just the prefab if it is displaying prefab
+			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities() };
+			if (GameLoop::Instance().GetDisplayingPrefab())
+			{
+				entities.clear();
+				entities.emplace_back(ECSSystemManager::Instance().GetSystem<PrefabSystem>()->GetDisplayedPrefab());
+			}
+
+			for (size_t i{}; i < entities.size(); ++i)
 			{
 				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
-				auto currentEntity = ECSManager::Instance().GetEntities<Properties>()[i];
+				auto currentEntity = entities[i];
 				const std::string& entityName = currentEntity->GetName();
 
 				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)

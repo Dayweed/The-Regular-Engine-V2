@@ -2,9 +2,14 @@
 
 namespace TRE
 {
-	class EditorCamera : public BaseCamera
+	class EditorCamera
 	{
 	public:
+		BaseCamera m_BaseCamera;
+	private:
+		glm::vec3 m_Position{ 0.f, 0.f, 0.f };
+		glm::vec3 m_Rotation{ 0.f, 0.f, 0.f };
+
 		bool m_IsDirty{ false };
 	public:
 		static EditorCamera& Instance()
@@ -15,10 +20,24 @@ namespace TRE
 
 		void Init();
 		void Update();
-		void Shutdown();
 
-		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
+		void SetFocalPoint(const glm::vec3& focalPoint);
+		void SetFocalDistance(const float distance);
+		void SetPitch(const float pitch);
+		void SetYaw(const float yaw);
+		void SetRoll(const float roll);
+
+		const glm::mat4& GetViewMatrix() const { return m_BaseCamera.m_ViewMatrix; }
+		const glm::mat4 GetInverseViewMatrix() const { return glm::inverse(m_BaseCamera.m_ViewMatrix); }
+		const glm::mat4& GetProjectionMatrix() const { return m_BaseCamera.m_ProjectionMatrix; }
+		const glm::mat4 GetInverseProjectionMatrix() const { return glm::inverse(m_BaseCamera.m_ProjectionMatrix); }
+		const glm::mat4 GetViewProjectionMatrix() const { return m_BaseCamera.m_ProjectionMatrix * m_BaseCamera.m_ViewMatrix; }
+		const glm::mat4 GetInverseViewProjectionMatrix() const { return glm::inverse(m_BaseCamera.m_ProjectionMatrix * m_BaseCamera.m_ViewMatrix); }
+	
+		const glm::vec3& GetPosition() const { return m_Position; }
+		const glm::vec3& GetRotation() const { return m_Rotation; }
+	private:
+		void SetPosition(const glm::vec3& position);
 
 	private:
 		EditorCamera() {};

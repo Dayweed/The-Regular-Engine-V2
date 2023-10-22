@@ -34,6 +34,26 @@ namespace TRE
 		return m_Resources[Handle]->GetType();
 	}
 
+	void ResourceManager::DestroyAllResources()
+	{
+		m_Resources.clear();
+	}
+
+	const std::size_t ResourceManager::GetAllResourceCount()
+	{
+		return m_Resources.size();
+	}
+
+	void  ResourceManager::SerializeAll()
+	{
+		UnloadUnusedResources();
+		for (auto& asset : m_Resources)
+		{
+			if (asset.second->GetType() == ResourceType::Material)
+				asset.second->Serialize();
+		}
+	}
+
 	ResourceManager::~ResourceManager()
 	{
 
