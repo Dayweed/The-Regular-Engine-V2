@@ -11,6 +11,7 @@
 #include "Audio/AudioSystem.h"
 #include "Logger.h"
 #include "Scripting/ScriptEngine.h"
+#include "Scripting/ScriptingSystem.h"
 #include "Graphics/Light.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
@@ -404,8 +405,7 @@ namespace TRE
 
 		EditorSystemManager::Instance().InitSystem();
 
-		ScriptEngine::InitMono();
-		ScriptEngine::BindFunctions();
+		ScriptEngine::Init();
 		//ScriptEngine::TestScriptingEngine();
 	}
 
@@ -446,6 +446,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
+		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
