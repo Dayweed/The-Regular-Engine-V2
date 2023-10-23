@@ -106,7 +106,7 @@ namespace TRE
 		m_System->update();
 	}
 
-	void AudioSystem::OnReset()
+	void AudioSystem::AfterReset()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
 		{

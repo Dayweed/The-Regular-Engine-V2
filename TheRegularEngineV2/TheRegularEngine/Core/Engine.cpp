@@ -494,9 +494,9 @@ namespace TRE
 				// Clear Backup
 				GameLoop::Instance().GetBackUpRegistry().clear();
 
-				Profiler::Instance().StartTimer("OnReset");
-				ECSSystemManager::Instance().OnReset();
-				Profiler::Instance().EndTimer("OnReset");
+				Profiler::Instance().StartTimer("AfterReset");
+				ECSSystemManager::Instance().AfterReset();
+				Profiler::Instance().EndTimer("AfterReset");
 
 				GameLoop::Instance().SetSceneReset(false);
 			}

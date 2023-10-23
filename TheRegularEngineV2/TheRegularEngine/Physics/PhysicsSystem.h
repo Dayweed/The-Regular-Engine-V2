@@ -40,7 +40,7 @@ namespace TRE
 		void Update() override;
 		void LateUpdate() override;
 		void BeforeReset() override;
-		void OnReset() override;
+		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 

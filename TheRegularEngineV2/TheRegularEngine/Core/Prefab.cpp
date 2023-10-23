@@ -103,7 +103,7 @@ namespace TRE
 
 	}
 
-	void PrefabSystem::OnReset()
+	void PrefabSystem::AfterReset()
 	{
 
 	}

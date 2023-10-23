@@ -26,7 +26,7 @@ namespace TRE
 		}
 	}
 
-	void MeshRendererSystem::OnReset()
+	void MeshRendererSystem::AfterReset()
 	{
 
 	}

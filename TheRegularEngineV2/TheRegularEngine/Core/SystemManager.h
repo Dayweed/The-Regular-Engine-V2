@@ -197,11 +197,11 @@ namespace TRE
 			}
 		}
 
-		void OnReset()
+		void AfterReset()
 		{
 			for (auto& system : m_Systems)
 			{
-				system.second->OnReset();
+				system.second->AfterReset();
 			}
 		}
 

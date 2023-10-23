@@ -288,7 +288,7 @@ namespace TRE
 		m_Actors.clear(); // ???
 	}
 
-	void PhysicsSystem::OnReset()
+	void PhysicsSystem::AfterReset()
 	{
 		for (Entity john : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
