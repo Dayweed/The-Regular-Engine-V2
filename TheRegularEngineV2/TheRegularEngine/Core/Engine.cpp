@@ -455,7 +455,9 @@ namespace TRE
 			m_Window->BeginFrame();
 			const auto& test = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 			m_SceneRenderer->BeginFrame(test);
-			m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
+
+			if (m_EngineInfo.EnableEditor)
+				m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -503,7 +505,9 @@ namespace TRE
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
 			m_SceneRenderer->EndFrame(false);
-			m_EditorSceneRenderer->EndFrame(true);
+			
+			if (m_EngineInfo.EnableEditor)
+				m_EditorSceneRenderer->EndFrame(true);
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
