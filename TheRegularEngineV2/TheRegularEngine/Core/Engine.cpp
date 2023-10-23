@@ -323,7 +323,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
 		}
 
-		SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
@@ -459,6 +459,8 @@ namespace TRE
 				Profiler::Instance().StartTimer("OnReset");
 				ECSSystemManager::Instance().OnReset();
 				Profiler::Instance().EndTimer("OnReset");
+
+				GameLoop::Instance().SetSceneReset(false);
 			}
 
 			Profiler::Instance().StartTimer("OnDestroyEntities");
