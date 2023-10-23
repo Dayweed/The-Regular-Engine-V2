@@ -12,6 +12,9 @@
 #include "Physics/PhysicsComponents.h"
 #include "Light.h"
 
+#include "glm/gtx/transform.hpp"
+#include "glm/gtx/quaternion.hpp"
+
 //To be removed
 #include "EditorCamera.h"
 
@@ -338,7 +341,8 @@ namespace TRE
 			PushConstant pc{};
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + sc.m_Offset);
-			model = model * glm::scale(glm::mat4(1.f), glm::vec3(sc.m_Radius, sc.m_Radius, sc.m_Radius));
+			const float radius = sc.m_Radius * 10;
+			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
 			pc.m_Model = model;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
@@ -353,7 +357,9 @@ namespace TRE
 			PushConstant pc{};
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + bc.m_Offset);
-			model = model * glm::scale(glm::mat4(1.f), glm::vec3(bc.m_HalfExtents.x, bc.m_HalfExtents.y, bc.m_HalfExtents.z));
+			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+			const glm::vec3 scale = bc.m_HalfExtents * 10.f * 2.f;
+			model = model * glm::scale(glm::mat4(1.f), scale);
 			pc.m_Model = model;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
