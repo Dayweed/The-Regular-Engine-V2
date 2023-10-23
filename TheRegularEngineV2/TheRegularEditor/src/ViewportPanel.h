@@ -64,7 +64,5 @@ namespace TRE
 			float m_RotationSensitivity = 5.f;
 
 			glm::vec3 m_ClickRay{};
-
-			std::shared_ptr<SceneRenderer> m_EditorSceneRenderer;
 	};
 }

@@ -44,6 +44,7 @@ namespace TRE
 			~SceneRenderer();
 
 			void Initialize();
+			void Shutdown();
 			void Create();
 			void Resize();
 			

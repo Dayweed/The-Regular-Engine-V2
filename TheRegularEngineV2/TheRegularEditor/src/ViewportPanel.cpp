@@ -17,7 +17,6 @@ namespace TRE
 	ViewportPanel::ViewportPanel(const std::shared_ptr<SelectionManager>& selection_Manager)
 	{
 		m_SelectionManager = selection_Manager;
-		m_EditorSceneRenderer = std::make_shared<SceneRenderer>(RendererContext::GetDevice());
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -222,16 +221,10 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
-
-		m_EditorSceneRenderer->Initialize();
-		Engine::GetInstance().GetVulkanImgui()->SetEditorSceneDescriptor(m_EditorSceneRenderer);
 	}
 
 	void ViewportPanel::Update()
 	{
-		m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
-		m_EditorSceneRenderer->EndFrame(true);
-
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();

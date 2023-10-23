@@ -120,6 +120,7 @@ namespace TRE
 	void Renderer::Shutdown()
 	{
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		vkDeviceWaitIdle(Device);
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 			vkDestroySampler(Device, s_FinalRenderData->Sampler, nullptr);
 		delete s_FinalRenderData;

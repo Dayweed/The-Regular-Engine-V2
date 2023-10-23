@@ -45,6 +45,7 @@ namespace TRE
 			std::shared_ptr<Window> m_Window;
 			std::shared_ptr<VulkanEditor> m_VulkanEditor;
 			std::shared_ptr<SceneRenderer> m_SceneRenderer;
+			std::shared_ptr<SceneRenderer> m_EditorSceneRenderer;
 			EngineInfo m_EngineInfo;
 			bool m_Running = true;
 

@@ -144,10 +144,15 @@ namespace TRE
 
 	SceneRenderer::~SceneRenderer()
 	{
+		Shutdown();
+	}
+
+	void SceneRenderer::Shutdown()
+	{
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
-		{ 
+		{
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
 		}
 

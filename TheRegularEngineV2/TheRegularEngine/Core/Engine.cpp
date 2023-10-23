@@ -14,6 +14,7 @@
 #include "Graphics/Light.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
+#include "Graphics/EditorCamera.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
@@ -388,7 +389,12 @@ namespace TRE
 		}
 
 		if (m_EngineInfo.EnableEditor)
+		{
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
+			m_EditorSceneRenderer = std::make_shared<SceneRenderer>(RendererContext::GetDevice());
+			m_EditorSceneRenderer->Initialize();
+			Engine::GetInstance().GetVulkanImgui()->SetEditorSceneDescriptor(m_EditorSceneRenderer);
+		}
 
 		EditorSystemManager::Instance().InitSystem();
 
@@ -448,6 +454,7 @@ namespace TRE
 			m_Window->BeginFrame();
 			const auto& test = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 			m_SceneRenderer->BeginFrame(test);
+			m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -495,6 +502,7 @@ namespace TRE
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
 			m_SceneRenderer->EndFrame(false);
+			m_EditorSceneRenderer->EndFrame(true);
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
