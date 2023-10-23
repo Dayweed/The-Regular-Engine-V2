@@ -68,9 +68,14 @@ namespace TRE
 		m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
 		assert(m_Foundation);
 
+#ifdef _DEBUG
 		// doesn't pass in name parameter when allocating stuff on its own now
 		// one less thing passed in, the better I guess.
 		m_Foundation->setReportAllocationNames(_DEBUG);
+#else
+		m_Foundation->setReportAllocationNames(false);
+#endif
+
 
 		TRE_CORE_INFO("PhysX Version: {0}.{1}.{2}",
 			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
