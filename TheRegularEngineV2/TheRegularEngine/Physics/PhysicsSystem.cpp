@@ -283,9 +283,24 @@ namespace TRE
 		
 	}
 
-	void PhysicsSystem::OnReset()
+	void PhysicsSystem::BeforeReset()
 	{
 		m_Actors.clear(); // ???
+	}
+
+	void PhysicsSystem::OnReset()
+	{
+		for (Entity john : ECSManager::Instance().GetEntities<SphereCollider>())
+		{
+			SphereCollider& collider{ john->GetComponent<SphereCollider>() };
+			ConstructSphereCollider(john, collider.m_Radius, collider.m_Offset);
+		}
+
+		for (Entity john : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			BoxCollider& collider{ john->GetComponent<BoxCollider>() };
+			ConstructBoxCollider(john, collider.m_HalfExtents, collider.m_Offset);
+		}
 	}
 
 	void PhysicsSystem::OnDestroyEntities()
