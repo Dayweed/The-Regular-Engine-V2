@@ -62,6 +62,7 @@ namespace TRE
 	struct BaseCollider : PhysicsComponent
 	{
 		bool m_IsTrigger = false;
+		bool m_IsDirty = false;
 		glm::vec3 m_Offset = {};
 		// physx::PxMaterial* m_PhysicsMaterial = nullptr;
 	};
@@ -69,7 +70,6 @@ namespace TRE
 	struct SphereCollider : BaseCollider, property::base
 	{
 		float m_Radius = 1.0f;
-		bool m_IsDirty = false;
 
 		// To write to / read from .json files.
 		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.

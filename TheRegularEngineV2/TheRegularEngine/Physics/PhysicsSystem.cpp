@@ -192,6 +192,17 @@ namespace TRE
 			}
 		}
 
+		// Update Box Collider if Dirty
+		for (Entity& go : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			BoxCollider& collider = go.get()->GetComponent<BoxCollider>();
+			if (collider.m_IsDirty)
+			{
+				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(go, collider.m_HalfExtents);
+				collider.m_IsDirty = false;
+			}
+		}
+
 		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D

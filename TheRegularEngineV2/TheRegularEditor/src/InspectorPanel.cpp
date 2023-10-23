@@ -355,6 +355,11 @@ namespace TRE
 							// Set flag to dirty
 							entity->GetComponent<SphereCollider>().m_IsDirty = true;
 						}
+						else if (compName == ComponentManager::Instance().GetComponentName<BoxCollider>())
+						{
+							// Set flag to dirty
+							entity->GetComponent<BoxCollider>().m_IsDirty = true;
+						}
 						//if (compName == ComponentManager::Instance().GetComponentName<MeshRenderer>())
 						//{
 						//	// Set flag to dirty
