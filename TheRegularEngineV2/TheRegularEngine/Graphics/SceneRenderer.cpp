@@ -9,6 +9,11 @@
 #include "ShaderReflection.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
+#include "Physics/PhysicsComponents.h"
+#include "Light.h"
+
+//To be removed
+#include "EditorCamera.h"
 
 namespace TRE
 {
@@ -24,25 +29,13 @@ namespace TRE
 
 	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		auto& SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		Create();
 
-		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
-		{
-			m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		}
-		else
-		{
-			m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer", true);
-		}
+		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
 
-		m_DescriptorPool = DescriptorPool::Builder()
-			.SetMaxSets(100)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100)
-			.Build();
+		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
 
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
 
@@ -97,12 +90,7 @@ namespace TRE
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			fbufCreateInfo.renderPass = renderpass->GetHandle();
-			std::array<VkImageView, 2> attachments;
-			
-			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
-				attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
-			else
-				attachments = { SwapChain->GetCurrentSwapChainImageView(x), m_DepthImages[x]->GetImageView() };
+			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
 
 			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			fbufCreateInfo.pAttachments = attachments.data();
@@ -128,8 +116,8 @@ namespace TRE
 		// Color attachment
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(),
-				VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(), 
+				VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 
 		// Depth attachment
@@ -176,10 +164,25 @@ namespace TRE
 	{
 		//UBO
 		UBO ubo{};
+#if 0
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		ubo.m_LightPosition = mainCamera.m_Position;
 		ubo.m_CameraPosition = glm::vec4(mainCamera.m_Position, 1.f);
+#else
+		const auto& camera = EditorCamera::Instance();
+		ubo.m_ProjView = camera.GetViewProjectionMatrix();
+		ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
+		ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
+#endif
+
+		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
+		{
+			const auto& light = entity->GetComponent<DirectionalLight>();
+			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightAmbientColor = light.AmbientColor;
+		}
+
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
@@ -190,7 +193,7 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
-		auto swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		m_CommandBuffer->Begin();
 
@@ -299,28 +302,61 @@ namespace TRE
 	{
 		m_DebugRenderer->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
 		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
-		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+		for (const auto& spheres : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
-			MeshRenderer& mr = (go_mr.get())->GetComponent<MeshRenderer>();
-			if (mr.m_RenderObject == nullptr)
-				continue;
-
-			if (go_mr->GetComponent<MeshRenderer>().m_MaterialInstance == nullptr)
-				continue;
-
+			const Transform& tr = spheres->GetComponent<Transform>();
+			const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
 			PushConstant pc{};
 			glm::mat4 model(1.f);
-			const float radius = mr.m_BoundingSphere.GetRadius();
-			model = glm::translate(model, mr.m_BoundingSphere.GetCenter());
-			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
+			model = glm::translate(model, tr.m_Position + sc.m_Offset);
+			model = model * glm::scale(glm::mat4(1.f), glm::vec3(sc.m_Radius, sc.m_Radius, sc.m_Radius));
 			pc.m_Model = model;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			//Bind
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
 			m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
 			m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
 		}
+
+		for (const auto& box : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			const Transform& tr = box->GetComponent<Transform>();
+			const BoxCollider& bc = box->GetComponent<BoxCollider>();
+			PushConstant pc{};
+			glm::mat4 model(1.f);
+			model = glm::translate(model, tr.m_Position + bc.m_Offset);
+			model = model * glm::scale(glm::mat4(1.f), glm::vec3(bc.m_HalfExtents.x, bc.m_HalfExtents.y, bc.m_HalfExtents.z));
+			pc.m_Model = model;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			m_DebugRenderer->BindDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+			m_DebugRenderer->DrawDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+		}
+
+		/*for (const auto& lines : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		{
+
+		}*/
+
+		//for (int i = 0; i < 2; ++i)
+		//{
+		//	PushConstant pc{};
+		//	glm::mat4 model(1.f);
+		//	const float radius = 10.f;
+		//	const float halfExtent = 10.f;
+		//	model = glm::translate(model, glm::vec3(0, 0, 0));
+		//	model = glm::rotate(model, glm::radians(90.f * i), glm::vec3(0, 1, 0));
+		//	model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(0, 0, 1));
+		//	model = glm::scale(model, glm::vec3(radius, radius + halfExtent, radius));
+		//	pc.m_Model = model;
+		//	vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+		//	//Bind
+		//	vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+		//	m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
+		//	m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
+		//}
 	}
 }

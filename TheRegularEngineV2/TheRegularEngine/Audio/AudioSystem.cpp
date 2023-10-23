@@ -42,10 +42,12 @@ namespace TRE
 			bool isPlaying;
 			source.m_Channel->isPlaying(&isPlaying);
 
-			if (source.m_PlayOnStart && source.m_Play)
+			if (source.m_PlayOnStart && source.m_Pause)
 			{
 				Play(go, true);
+				//source.m_Channel->setPaused(source.m_Pause);
 			}
+
 			else if (source.m_Loop)
 			{
 				if (!isPlaying)
@@ -53,18 +55,6 @@ namespace TRE
 					Play(go, true);
 				}
 			}
-
-			if (!source.m_Play)
-			{
-				source.m_Channel->stop();
-			}
-
-			TogglePause(go);
-			ToggleMute(go);
-			source.m_Channel->setVolume(source.m_Volume);
-			source.m_Channel->setPitch(source.m_Pitch);
-			source.m_Channel->setPriority(source.m_Priority);
-
 		}
 
 		m_System->update();
@@ -156,7 +146,7 @@ namespace TRE
 
 		std::ifstream ifs(m_FilePath);
 
-		if (!(ifs.is_open()))
+		if (!ifs.is_open())
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
@@ -167,17 +157,19 @@ namespace TRE
 	void AudioSystem::Play(Entity& go, const bool shouldPlay)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		if (shouldPlay)
+		if (shouldPlay == true)
 		{
+			audio.m_Channel->setPaused(false);
 			audio.m_Pause = false;
-			audio.m_PlayOnStart = false;
-			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		}
 		else
 		{
+			audio.m_Channel->setPaused(true);
 			audio.m_Pause = true;
 		}
+		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		SetSourcePosition(go);
+		//audio.m_Channel->isPlaying(&audio.isPlaying);
 
 		if (audio.m_Loop == false)
 		{
@@ -189,36 +181,23 @@ namespace TRE
 			audio.m_Sound->setLoopCount(-1);
 		};
 
+		//if (shouldPlay == true)
+		//{
+		//	audio.m_Channel->setPaused(false);	
+		//}
+		//else
+		//{
+		//	TogglePause(go);
+		//}
+
+
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		if (!audio.m_Pause)
-		{
-			audio.m_Channel->setPaused(false);
-			audio.m_Pause = false;
-		}
-		else
-		{
-			audio.m_Channel->setPaused(true);
-			audio.m_Pause = true;
-		}
-	}
-
-	void AudioSystem::ToggleMute(Entity& go)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		if (!audio.m_Mute)
-		{
-			audio.m_Channel->setMute(false);
-			audio.m_Mute = false;
-		}
-		else
-		{
-			audio.m_Channel->setMute(true);
-			audio.m_Mute = true;
-		}
+		audio.m_Pause = !audio.m_Pause;
+		ErrorCheck(audio.m_ChannelGroup->setPaused(audio.m_Pause), "FMOD: TogglePause()");
 	}
 
 	void AudioSystem::StopAudio(Entity& go)
@@ -313,10 +292,10 @@ namespace TRE
 
 	void AudioSystem::SetPlay(Entity& go, const bool play)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Play = play;
-		/*(void)go;
-		(void)play;*/
+		//Audio& audio = go.get()->GetComponent<Audio>();
+		//audio.m_Play = play;
+		(void)go;
+		(void)play;
 	}
 
 	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)
@@ -330,20 +309,13 @@ namespace TRE
 	{
 		AudioListener& listener = go.get()->GetComponent<AudioListener>();
 
-		if (go.get()->HasComponent<Camera>())
-		{
-			glm::vec3 pos = go.get()->GetComponent<Camera>().m_Position;
-			glm::vec3 view = go.get()->GetComponent<Camera>().GetViewDirection();
-			glm::vec3 up = go.get()->GetComponent<Camera>().GetUpVec();
-		}
-		else
-		{
-			return;
-		}
+		const glm::vec3 pos = go->GetComponent<Transform>().m_Position;
+		const glm::vec3 viewVec = go->GetComponent<Camera>().m_BaseCamera.GetViewDirection();
+		const glm::vec3 upVec = go->GetComponent<Camera>().m_BaseCamera.GetUpVec();
 
-		listener.m_Position = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().m_Position);
-		listener.m_Forward = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetViewDirection());
-		listener.m_Up = glmVec3ToFmodVector(go.get()->GetComponent<Camera>().GetUpVec());
+		listener.m_Position = glmVec3ToFmodVector(pos);
+		listener.m_Forward = glmVec3ToFmodVector(viewVec);
+		listener.m_Up = glmVec3ToFmodVector(upVec);
 
 		m_System->set3DListenerAttributes(0, &listener.m_Position, nullptr, nullptr, nullptr);
 	}
@@ -374,7 +346,7 @@ namespace TRE
 
 	float AudioSystem::GetPitch(Entity& go) const
 	{
-		return go.get()->GetComponent<Audio>().m_Pitch;
+		return go.get()->GetComponent<Audio>().m_Pause;
 	}
 
 	bool AudioSystem::GetPause(Entity& go) const
@@ -409,9 +381,8 @@ namespace TRE
 
 	bool AudioSystem::GetPlay(Entity& go) const
 	{
-		/*(void)go;
-		return true; */
-		return go.get()->GetComponent<Audio>().m_Play;
+		(void)go;
+		return true; // go.get()->GetComponent<Audio>().m_Play;
 	}
 
 	bool AudioSystem::GetSpatialize(Entity& go) const

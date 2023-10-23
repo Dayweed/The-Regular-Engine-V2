@@ -11,11 +11,12 @@
 #include "Audio/AudioSystem.h"
 #include "Logger.h"
 #include "Scripting/ScriptEngine.h"
+#include "Graphics/Light.h"
+#include "Graphics/MeshRenderer.h"
+#include "Graphics/Camera.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
-#include "Graphics/MeshRenderer.h"
-#include "Graphics/Camera.h"
 #include <time.h>       /* time */
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
@@ -193,7 +194,6 @@ namespace TRE
 
 			test->AddComponent<Audio>();
 			//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-			//audioSystem->SetPlay(test, true);
 			//audioSystem->SetLoop(test, true);
 			//audioSystem->SetSpatialize(test,true);
 			//audioSystem->CompileAudio(test);
@@ -254,6 +254,14 @@ namespace TRE
 
 			cam->AddComponent<AudioListener>();
 			audioSystem->SetListenerPosition(cam);
+		}
+
+		{
+			Entity light = ECSManager::Instance().CreateEntity();
+			light->GetComponent<Properties>().m_Name = "Direction Light";
+			light->AddComponent<DirectionalLight>();
+			light->GetComponent<Transform>().m_Rotation.x = 45.f;
+			light->GetComponent<Transform>().m_IsDirty = true;
 		}
 
 		{
@@ -332,6 +340,11 @@ namespace TRE
 {
 	Engine* Engine::s_Instance = nullptr;
 
+	const std::shared_ptr<SceneRenderer>& Engine::GetMainSceneRenderer()
+	{
+		return m_SceneRenderer;
+	}
+
 	const std::shared_ptr<Window>& Engine::GetWindow()
 	{
 		return m_Window;
@@ -366,9 +379,14 @@ namespace TRE
 		DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		Renderer::SetMainRenderer(m_SceneRenderer);
 		Renderer::Init();
 		m_SceneRenderer->Initialize();
+
+		if (m_EngineInfo.MaximizeWindow)
+		{
+			m_Window->MaximizeWindow();
+		}
+
 		if (m_EngineInfo.EnableEditor)
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
 
@@ -403,6 +421,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
 		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
+		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");						
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
@@ -412,6 +431,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
+		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
 
 		// Allocate Default Size for Memory Manager
 		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
@@ -501,17 +521,19 @@ namespace TRE
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
 		}
-		Renderer::SetMainRenderer(nullptr);
+		
 	}
 
 	void Engine::Shutdown()
 	{
 		m_Running = false;
 		ResourceManager::Instance().DestroyAllResources();
+		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
+		Renderer::Shutdown();
 	}
 }

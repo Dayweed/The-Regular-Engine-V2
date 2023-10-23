@@ -1,6 +1,6 @@
 [
    [
-      19,
+      20,
       0,
       1,
       2,
@@ -19,13 +19,14 @@
       15,
       16,
       17,
-      18
+      18,
+      19
    ],
    [
       0
    ],
    [
-      19,
+      20,
       0,
       {
          "m_Children": [],
@@ -53,212 +54,223 @@
       },
       5,
       {
-         "m_Children": [
-            "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}",
-            "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}"
-         ],
+         "m_Children": [],
          "m_Parent": ""
       },
       6,
       {
          "m_Children": [
-            "{B9012B89-6696-44D5-B739-9130D841AED4}",
-            "{1AFAAFC0-C631-4E62-89EE-DD67E1C29B57}"
+            "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}",
+            "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}"
          ],
-         "m_Parent": "{8FCD20A3-A626-4C18-8688-FE42DB69092A}"
+         "m_Parent": ""
       },
       7,
       {
          "m_Children": [
-            "{915E5368-D6FF-4928-9E73-00132ACC3190}",
-            "{A7DA9B56-ECE7-46BF-84FC-15B809FEE02E}"
+            "{3CC22AE6-88F2-489A-AD88-FF5458A977C0}",
+            "{9AE2EBB5-B409-4AAE-A028-BF584C39B6D3}"
          ],
-         "m_Parent": "{8FCD20A3-A626-4C18-8688-FE42DB69092A}"
+         "m_Parent": "{36C888D1-E204-4713-9DB8-0A1C9AB25431}"
       },
       8,
       {
-         "m_Children": [],
-         "m_Parent": "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}"
+         "m_Children": [
+            "{D836147F-A940-4E5F-9CA8-98413BE459FB}",
+            "{1E7FF80F-00D1-4264-AD31-614FCF4D5C72}"
+         ],
+         "m_Parent": "{36C888D1-E204-4713-9DB8-0A1C9AB25431}"
       },
       9,
       {
          "m_Children": [],
-         "m_Parent": "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}"
+         "m_Parent": "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}"
       },
       10,
       {
          "m_Children": [],
-         "m_Parent": "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}"
+         "m_Parent": "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}"
       },
       11,
       {
          "m_Children": [],
-         "m_Parent": "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}"
+         "m_Parent": "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}"
       },
       12,
       {
-         "m_Children": [
-            "{A7DBE37D-28C5-402D-B938-A151010747A9}",
-            "{2A584A90-F6B3-478A-B20E-A27C9400E115}"
-         ],
-         "m_Parent": ""
+         "m_Children": [],
+         "m_Parent": "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}"
       },
       13,
       {
          "m_Children": [
-            "{D6F12070-2CC3-4213-A251-05CCF46FFE7F}",
-            "{43BFBCD0-E94F-471A-9409-5EBBF500E422}"
+            "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}",
+            "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}"
          ],
-         "m_Parent": "{A42E8C88-73B4-4174-86E9-CDF4FE050803}"
+         "m_Parent": ""
       },
       14,
       {
          "m_Children": [
-            "{7DFCB563-863E-413A-9300-2A9F6FA4F143}",
-            "{966D05BB-3FA4-45B7-85EB-1A00E0FD8329}"
+            "{EF6F360A-A3A9-4F12-8A16-51676E98B7BF}",
+            "{652F3FE4-C18D-448E-AF37-38C9EF4959DF}"
          ],
-         "m_Parent": "{A42E8C88-73B4-4174-86E9-CDF4FE050803}"
+         "m_Parent": "{C31ABC88-DCB3-43AE-94B8-C37C95C8916B}"
       },
       15,
       {
-         "m_Children": [],
-         "m_Parent": "{A7DBE37D-28C5-402D-B938-A151010747A9}"
+         "m_Children": [
+            "{9CB6B0B6-E24F-43C7-AFB6-67709EEF8F93}",
+            "{E294B743-6B90-48C1-8512-689E4D875A4C}"
+         ],
+         "m_Parent": "{C31ABC88-DCB3-43AE-94B8-C37C95C8916B}"
       },
       16,
       {
          "m_Children": [],
-         "m_Parent": "{A7DBE37D-28C5-402D-B938-A151010747A9}"
+         "m_Parent": "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}"
       },
       17,
       {
          "m_Children": [],
-         "m_Parent": "{2A584A90-F6B3-478A-B20E-A27C9400E115}"
+         "m_Parent": "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}"
       },
       18,
       {
          "m_Children": [],
-         "m_Parent": "{2A584A90-F6B3-478A-B20E-A27C9400E115}"
+         "m_Parent": "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}"
+      },
+      19,
+      {
+         "m_Children": [],
+         "m_Parent": "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}"
       }
    ],
    [
-      19,
+      20,
       0,
       {
          "m_Active": true,
-         "m_GUID": "{4A0439A8-5642-4F3B-B082-A4F7471F4679}",
+         "m_GUID": "{ABCC6068-9870-421E-9666-6E7E257BA072}",
          "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{30E7E0BD-7CD7-47FD-8C54-C45FA0B879F6}",
+         "m_GUID": "{3B83A296-55B1-4DF5-8307-2BFEA3CCA5FB}",
          "m_Name": "Test2"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{9DF3F3FA-835E-4362-AD97-DE7058022EC1}",
+         "m_GUID": "{D83DFCC1-E130-4171-8A9C-5BA468917014}",
          "m_Name": "Test3"
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "{6F9B485E-A441-471B-BD5C-D8C5C9982A7C}",
+         "m_GUID": "{C7665260-4DD2-466D-8595-90FE2DF5CFDB}",
          "m_Name": "Plane collider"
       },
       4,
       {
          "m_Active": true,
-         "m_GUID": "{B9DAE606-EDA5-410E-B9A4-15E7BFD77267}",
+         "m_GUID": "{937F6393-E89D-4A2B-8ACF-E034B76262CC}",
          "m_Name": "cam"
       },
       5,
       {
          "m_Active": true,
-         "m_GUID": "{8FCD20A3-A626-4C18-8688-FE42DB69092A}",
-         "m_Name": "grandparent1"
+         "m_GUID": "{E875A4BF-16CB-4A41-AD68-CFD89992936A}",
+         "m_Name": "Direction Light"
       },
       6,
       {
          "m_Active": true,
-         "m_GUID": "{B9857C10-4254-4FE7-BC2E-168C7A2E1153}",
-         "m_Name": "parent1"
+         "m_GUID": "{36C888D1-E204-4713-9DB8-0A1C9AB25431}",
+         "m_Name": "grandparent1"
       },
       7,
       {
          "m_Active": true,
-         "m_GUID": "{992EE48A-ABB9-42CE-A73D-5050F896F5E8}",
-         "m_Name": "parent2"
+         "m_GUID": "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}",
+         "m_Name": "parent1"
       },
       8,
       {
          "m_Active": true,
-         "m_GUID": "{B9012B89-6696-44D5-B739-9130D841AED4}",
-         "m_Name": "child1"
+         "m_GUID": "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}",
+         "m_Name": "parent2"
       },
       9,
       {
          "m_Active": true,
-         "m_GUID": "{1AFAAFC0-C631-4E62-89EE-DD67E1C29B57}",
-         "m_Name": "child2"
+         "m_GUID": "{3CC22AE6-88F2-489A-AD88-FF5458A977C0}",
+         "m_Name": "child1"
       },
       10,
       {
          "m_Active": true,
-         "m_GUID": "{915E5368-D6FF-4928-9E73-00132ACC3190}",
-         "m_Name": "child3"
+         "m_GUID": "{9AE2EBB5-B409-4AAE-A028-BF584C39B6D3}",
+         "m_Name": "child2"
       },
       11,
       {
          "m_Active": true,
-         "m_GUID": "{A7DA9B56-ECE7-46BF-84FC-15B809FEE02E}",
-         "m_Name": "child4"
+         "m_GUID": "{D836147F-A940-4E5F-9CA8-98413BE459FB}",
+         "m_Name": "child3"
       },
       12,
       {
          "m_Active": true,
-         "m_GUID": "{A42E8C88-73B4-4174-86E9-CDF4FE050803}",
-         "m_Name": "grandparent2"
+         "m_GUID": "{1E7FF80F-00D1-4264-AD31-614FCF4D5C72}",
+         "m_Name": "child4"
       },
       13,
       {
          "m_Active": true,
-         "m_GUID": "{A7DBE37D-28C5-402D-B938-A151010747A9}",
-         "m_Name": "parent3"
+         "m_GUID": "{C31ABC88-DCB3-43AE-94B8-C37C95C8916B}",
+         "m_Name": "grandparent2"
       },
       14,
       {
          "m_Active": true,
-         "m_GUID": "{2A584A90-F6B3-478A-B20E-A27C9400E115}",
-         "m_Name": "parent4"
+         "m_GUID": "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}",
+         "m_Name": "parent3"
       },
       15,
       {
          "m_Active": true,
-         "m_GUID": "{D6F12070-2CC3-4213-A251-05CCF46FFE7F}",
-         "m_Name": "child5"
+         "m_GUID": "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}",
+         "m_Name": "parent4"
       },
       16,
       {
          "m_Active": true,
-         "m_GUID": "{43BFBCD0-E94F-471A-9409-5EBBF500E422}",
-         "m_Name": "child6"
+         "m_GUID": "{EF6F360A-A3A9-4F12-8A16-51676E98B7BF}",
+         "m_Name": "child5"
       },
       17,
       {
          "m_Active": true,
-         "m_GUID": "{7DFCB563-863E-413A-9300-2A9F6FA4F143}",
-         "m_Name": "child7"
+         "m_GUID": "{652F3FE4-C18D-448E-AF37-38C9EF4959DF}",
+         "m_Name": "child6"
       },
       18,
       {
          "m_Active": true,
-         "m_GUID": "{966D05BB-3FA4-45B7-85EB-1A00E0FD8329}",
+         "m_GUID": "{9CB6B0B6-E24F-43C7-AFB6-67709EEF8F93}",
+         "m_Name": "child7"
+      },
+      19,
+      {
+         "m_Active": true,
+         "m_GUID": "{E294B743-6B90-48C1-8512-689E4D875A4C}",
          "m_Name": "child8"
       }
    ],
    [
-      19,
+      20,
       0,
       {
          "m_Position": [
@@ -357,7 +369,7 @@
             0.0
          ],
          "m_Rotation": [
-            0.0,
+            45.0,
             0.0,
             0.0
          ],
@@ -600,6 +612,24 @@
             1.0,
             1.0
          ]
+      },
+      19,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
       }
    ],
    [
@@ -666,6 +696,23 @@
    ],
    [
       0
+   ],
+   [
+      1,
+      5,
+      {
+         "m_AmbientColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Direction": [
+            1.0,
+            -1.0,
+            1.0
+         ]
+      }
    ],
    [
       0

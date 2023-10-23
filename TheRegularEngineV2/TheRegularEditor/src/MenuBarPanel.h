@@ -60,6 +60,8 @@ namespace TRE
 			bool m_ShortcutNewScene = false;
 			bool m_ShortcutOpenScene = false;
 			bool m_ShortcutSaveScene = false;
+			bool m_ShortcutCopyEntity = false;
+			bool m_ShortcutPasteEntity = false;
 
 			//bool for exit prompt
 			bool m_ExitPrompt = false;

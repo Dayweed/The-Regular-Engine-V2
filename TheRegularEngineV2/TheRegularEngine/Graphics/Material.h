@@ -13,15 +13,17 @@ namespace TRE
 		//Asset path will act as material name 
 		void Generate();
 		void Rename(const std::string& newName);
+		ResourceHandle GetResourceHandle();
 	protected:
-		//void Write() override;
-		//void Read() override;
+		void Write() override;
+		void Read() override;
 	};
 
 	class Material : public Resource
 	{
 		public:
 			Material(const std::shared_ptr<Shader>& Shader);
+			Material(const ResourceHandle& handle);
 			~Material();
 
 			void Invalidate();

@@ -32,6 +32,7 @@ layout(set = 0, binding = 0) uniform UBO
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
 	vec4 m_DirectionalLight;
+	vec4 m_AmbientLight;
 }ubo;
 
 const float AMBIENT_INTENSITY = 0.05;
@@ -47,6 +48,7 @@ void main()
 	float lightIntensity = AMBIENT_INTENSITY + max(dot(normalWorldSpace, -normalize(ubo.m_DirectionalLight.xyz)), 0);
 
     Out.VertColor = lightIntensity * inColor;
+	Out.VertColor = Out.VertColor * ubo.m_AmbientLight.rgb * ubo.m_AmbientLight.a;
     Out.VertColor = pow(Out.VertColor, gamma.rrr);
 	Out.TexCoord = inTexCoord;
 
