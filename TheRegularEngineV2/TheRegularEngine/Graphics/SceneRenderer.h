@@ -49,7 +49,7 @@ namespace TRE
 			
 			void BeginFrame(const Camera& RenderCamera);
 			void BeginEditorFrame(const EditorCamera& RenderCamera);
-			void EndFrame();
+			void EndFrame(bool IsEditorScene);
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 

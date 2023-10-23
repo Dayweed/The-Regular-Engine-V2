@@ -147,7 +147,7 @@ namespace TRE
 		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
 
 		for (int x = 0; x < m_ColorImages.size(); x++)
-		{
+		{ 
 			vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_FrameBuffer[x], nullptr);
 		}
 
@@ -177,17 +177,10 @@ namespace TRE
 	{
 		//UBO
 		UBO ubo{};
-//#if 0
 		//const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.m_ProjView = RenderCamera.m_BaseCamera.m_ProjectionMatrix * RenderCamera.m_BaseCamera.m_ViewMatrix;
 		ubo.m_LightPosition = { 0.f, 0.f, 0.f };
 		ubo.m_CameraPosition = { 0.f, 0.f, 0.f, 0.f };
-//#else
-		//const auto& camera = EditorCamera::Instance();
-		//ubo.m_ProjView = camera.GetViewProjectionMatrix();
-		//ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
-		//ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
-//#endif
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
@@ -202,7 +195,7 @@ namespace TRE
 		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
 	}
 
-	void SceneRenderer::EndFrame()
+	void SceneRenderer::EndFrame(bool IsEditorScene)
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
@@ -272,13 +265,29 @@ namespace TRE
 			{
 				if (mr.m_MaterialInstance == nullptr)
 				{
-					m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+					if (IsEditorScene)
+					{
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
+					}
+					else
+					{
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+					}
 				}
 				else
 				{
-					mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+					if (IsEditorScene)
+					{
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
+					}
+					else
+					{
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+					}
 				}
 			}
 
