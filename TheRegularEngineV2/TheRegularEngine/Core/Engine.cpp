@@ -347,6 +347,11 @@ namespace TRE
 		return m_SceneRenderer;
 	}
 
+	const std::shared_ptr<SceneRenderer>& Engine::GetEditorSceneRenderer()
+	{
+		return m_EditorSceneRenderer;
+	}
+
 	const std::shared_ptr<Window>& Engine::GetWindow()
 	{
 		return m_Window;

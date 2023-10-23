@@ -37,6 +37,7 @@ namespace TRE
 			const EngineInfo& GetEngineInfo();
 			static Engine& GetInstance();
 			const std::shared_ptr<SceneRenderer>& GetMainSceneRenderer();
+			const std::shared_ptr<SceneRenderer>& GetEditorSceneRenderer();
 
 		protected:
 			Engine(const EngineInfo& EngineInfo = EngineInfo());
