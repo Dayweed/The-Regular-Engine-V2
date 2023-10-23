@@ -176,9 +176,8 @@ namespace TRE
 			TRE_CORE_INFO("Recreate");
 			Engine::GetInstance().GetWindow()->GetWindowConfig().resize = false;
 			RecreateSwapChain();
-			Engine::GetInstance().GetMainSceneRenderer()->Resize();
-			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
-				Engine::GetInstance().GetVulkanImgui()->Resize();
+			Renderer::GetMainRenderer()->Resize();
+			Engine::GetInstance().GetVulkanImgui()->Resize();
 		}
 
 		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame
@@ -248,10 +247,8 @@ namespace TRE
 			}
 			
 		}
-		
-		m_Extent = { Details.Capabilities.currentExtent.width, Details.Capabilities.currentExtent.height };
-		m_Width = m_Extent.width;
-		m_Height = m_Extent.height;
+
+		m_Extent = { m_Width, m_Height };
 		m_SwapChainSettings.m_DepthFormat = m_PhysicalDevice->GetDepthFormat();
 
 		uint32_t ImageCount = Details.Capabilities.minImageCount + 1; //Number of images in swapchain

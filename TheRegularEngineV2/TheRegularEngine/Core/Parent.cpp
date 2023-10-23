@@ -148,15 +148,6 @@ namespace TRE
 		parenting.m_Children.clear();
 	}
 
-	void ParentingSystem::GetTotalEntities(int& noOfEntities, Entity object)
-	{
-		++noOfEntities;
-		for (Entity child : GetChildren(object))
-		{
-			GetTotalEntities(noOfEntities, child);
-		}
-	}
-
 	void ParentingSystem::UpdateChildTransform(Entity parent)
 	{
 		Transform& parentTransform = parent->GetComponent<Transform>();

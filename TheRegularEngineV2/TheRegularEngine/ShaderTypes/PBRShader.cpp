@@ -13,7 +13,7 @@ namespace TRE
 	{
 		m_ShaderHandle = Resource::GetGUIDFromHex(hexHandle);
 		//Get shader path from shader descriptor file
-		std::unique_ptr<Shader> shader = ShaderCompiler::DeserializeReflectShader("../Resources/PBR.TREshader");
+		std::unique_ptr<Shader> shader = ShaderCompiler::DeserializeReflectShader("../Resources/" + hexHandle + ".TREshader");
 		shader->SetHandle(m_ShaderHandle);
 		ResourceManager::Instance().AddResource(std::move(shader));
 	}

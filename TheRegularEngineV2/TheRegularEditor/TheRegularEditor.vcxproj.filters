@@ -58,9 +58,6 @@
     <ClCompile Include="src\AssetSelector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TexturePanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorSystem.h">
@@ -112,9 +109,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetSelector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TexturePanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

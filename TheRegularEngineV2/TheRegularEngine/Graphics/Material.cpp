@@ -20,23 +20,6 @@ namespace TRE
 		AllocateTextures();
 	}
 
-	Material::Material(const ResourceHandle& handle)
-	{
-		m_Type = ResourceType::Material;
-		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
-		m_DescriptorSets.resize(ImageCont);
-
-		m_Shader = ResourceManager::Instance().GetResource<Shader>(handle);
-
-		if (m_Shader == nullptr)
-		{
-			TRE_CORE_ERROR("Material::Material(const ResourceHandle& handle) - Shader is nullptr");
-			return;
-		}
-
-		AllocateTextures();
-	}
-
 	Material::~Material()
 	{
 
@@ -46,7 +29,7 @@ namespace TRE
 	{
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
+			Renderer::GetMainRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
 	}
 
@@ -214,14 +197,7 @@ namespace TRE
 		GenerateDescriptorFile();
 	}
 
-	ResourceHandle MaterialDescriptorFile::GetResourceHandle()
-	{
-		std::string hexCode = m_ResourcePath.substr(m_ResourcePath.find_last_of('/') + 1);
-		hexCode = hexCode.substr(0, hexCode.find_last_of('.'));
-		return Resource::GetGUIDFromHex(hexCode);
-	}
-
-	void MaterialDescriptorFile::Write()
+	/*void MaterialDescriptorFile::Write()
 	{
 		m_DescriptorFile << "Resource:\n";
 		m_DescriptorFile << m_ResourcePath << "\n\n";
@@ -242,5 +218,5 @@ namespace TRE
 			std::cout << "Error: Material resource missing" << std::endl;
 			return;
 		}
-	}
+	}*/
 }

@@ -187,5 +187,4 @@ namespace TRE
         MAXKEY = 512,
         MAXMOUSEKEY = 32
     };
-
 }

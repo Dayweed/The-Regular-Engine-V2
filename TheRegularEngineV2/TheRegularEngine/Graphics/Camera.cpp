@@ -1,18 +1,17 @@
 #include "pch.h"
 #include "Camera.h"
-#include "Core/Transform.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_access.hpp"
 
 namespace TRE
 {
-	void CameraHelper::UpdateViewMatrix(BaseCamera& camera, const glm::vec3 position)
+	void CameraHelper::UpdateViewMatrix(Camera& camera)
 	{
-		camera.m_ViewMatrix = glm::translate(glm::mat4(1.f), position) * glm::toMat4(camera.GetOrientation());
+		camera.m_ViewMatrix = glm::translate(glm::mat4(1.f), camera.m_Position) * glm::toMat4(camera.GetOrientation());
 		camera.m_ViewMatrix = glm::inverse(camera.m_ViewMatrix);
 	}
 
-	void CameraHelper::UpdateProjectionMatrix(BaseCamera& camera)
+	void CameraHelper::UpdateProjectionMatrix(Camera& camera)
 	{
 		if (camera.m_IsPerspective)
 		{
@@ -46,7 +45,7 @@ namespace TRE
 		}
 	}
 
-	void CameraHelper::SetViewDirection(BaseCamera& camera, const glm::vec3& direction, const glm::vec3& position)
+	void CameraHelper::SetViewDirection(Camera& camera, const glm::vec3& direction)
 	{
 		assert(direction.length() > 0.f);
 		const glm::vec3 w{ glm::normalize(direction) };
@@ -63,21 +62,14 @@ namespace TRE
 		camera.m_ViewMatrix[0][2] = w.x;
 		camera.m_ViewMatrix[1][2] = w.y;
 		camera.m_ViewMatrix[2][2] = w.z;
-		camera.m_ViewMatrix[3][0] = -glm::dot(u, position);
-		camera.m_ViewMatrix[3][1] = -glm::dot(v, position);
-		camera.m_ViewMatrix[3][2] = -glm::dot(w, position);
+		camera.m_ViewMatrix[3][0] = -glm::dot(u, camera.m_Position);
+		camera.m_ViewMatrix[3][1] = -glm::dot(v, camera.m_Position);
+		camera.m_ViewMatrix[3][2] = -glm::dot(w, camera.m_Position);
 	}
 
-	void CameraHelper::SetViewTarget(BaseCamera& camera, const glm::vec3& target, const glm::vec3& position)
+	void CameraHelper::SetViewTarget(Camera& camera, const glm::vec3& target)
 	{
-		CameraHelper::SetViewDirection(camera, target - position, position);
-	}
-
-	void CameraHelper::CalculateQuarternions(BaseCamera& camera, const glm::vec3& rotation)
-	{
-		camera.m_Pitch = glm::radians(rotation.x);
-		camera.m_Yaw = glm::radians(rotation.y);
-		camera.m_Roll = glm::radians(rotation.z);
+		CameraHelper::SetViewDirection(camera, target - camera.m_Position);
 	}
 
 	const glm::quat BaseCamera::GetOrientation() const
@@ -105,26 +97,16 @@ namespace TRE
 		return -GetForwardVec();
 	}
 
-	void CameraSystem::LateUpdate()
+	void CameraSystem::Update()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
-			const Transform& transform = go->GetComponent<Transform>();
-			Camera& camera = go->GetComponent<Camera>();
-			if (transform.m_IsDirty)
-			{
-				//Recalculate view direction, quaternion, right, up, forward
-				CameraHelper::CalculateQuarternions(camera.m_BaseCamera, transform.m_Rotation);
-				SetFocalPoint(go, transform.m_Position + camera.m_BaseCamera.GetForwardVec() * camera.m_BaseCamera.m_FocalLength);
-				camera.m_BaseCamera.m_FocalLength = glm::distance(transform.m_Position, camera.m_BaseCamera.m_FocalPoint);
-				CameraHelper::UpdateViewMatrix(camera.m_BaseCamera, transform.m_Position);
-			}
+			Camera& camera = go.get()->GetComponent<Camera>();
 			if (camera.m_IsDirty)
 			{
-				CameraHelper::UpdateViewMatrix(camera.m_BaseCamera, transform.m_Position);
-				CameraHelper::UpdateProjectionMatrix(camera.m_BaseCamera);
+				CameraHelper::UpdateViewMatrix(camera);
+				CameraHelper::UpdateProjectionMatrix(camera);
 				camera.m_IsDirty = false;
-
 				m_IsDirty = true;	//To update descriptor set then reset back after
 			}
 		}
@@ -145,31 +127,49 @@ namespace TRE
 
 	}
 
+	void CameraSystem::SetPosition(Entity& go, const glm::vec3& position)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Position = position;
+		camera.m_IsDirty = true;
+	}
+
+	void CameraSystem::SetRotation(Entity& go, const glm::vec3& rotation)
+	{
+		Camera& camera = go.get()->GetComponent<Camera>();
+		camera.m_Rotation = rotation;
+		camera.m_IsDirty = true;
+	}
+
 	void CameraSystem::SetViewportSize(Entity& go, const glm::vec2& viewportSize)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_ViewportSize = viewportSize;
+		camera.m_ViewportSize = viewportSize;
 		camera.m_IsDirty = true;
 	}
 
 	void CameraSystem::SetFocalPoint(Entity& go, const glm::vec3& focalPoint)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_FocalPoint = focalPoint;
+		camera.m_FocalPoint = focalPoint;
 		camera.m_IsDirty = true;
+		
+		SetPosition(go, focalPoint - camera.GetViewDirection() * camera.m_FocalLength);
 	}
 
 	void CameraSystem::SetFocalLength(Entity& go, const float focalLength)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_FocalLength = focalLength;
+		camera.m_FocalLength = focalLength;
 		camera.m_IsDirty = true;
+
+		SetPosition(go, camera.m_FocalPoint - camera.GetViewDirection() * focalLength);
 	}
 
-	/*void CameraSystem::SetPitch(Entity& go, const float pitch)
+	void CameraSystem::SetPitch(Entity& go, const float pitch)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Pitch = pitch;
+		camera.m_Pitch = pitch;
 		camera.m_IsDirty = true;
 
 		camera.m_FocalPoint = camera.m_Position + camera.GetViewDirection() * camera.m_FocalLength;
@@ -191,19 +191,19 @@ namespace TRE
 		camera.m_IsDirty = true;
 		
 		camera.m_FocalPoint = camera.m_Position + camera.GetViewDirection() * camera.m_FocalLength;
-	}*/
+	}
 
 	void CameraSystem::SetFov(Entity& go, const float fov)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Fov = fov;
+		camera.m_Fov = fov;
 		camera.m_IsDirty = true;
 	}
 #undef near
 	void CameraSystem::SetNear(Entity& go, const float near)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Near = near;
+		camera.m_Near = near;
 		camera.m_IsDirty = true;
 	}
 #define near
@@ -212,7 +212,7 @@ namespace TRE
 	void CameraSystem::SetFar(Entity& go, const float far)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Far = far;
+		camera.m_Far = far;
 		camera.m_IsDirty = true;
 	}
 #define far
@@ -220,42 +220,42 @@ namespace TRE
 	void CameraSystem::SetLeft(Entity& go, const float left)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Left = left;
+		camera.m_Left = left;
 		camera.m_IsDirty = true;
 	}
 
 	void CameraSystem::SetRight(Entity& go, const float right)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Right = right;
+		camera.m_Right = right;
 		camera.m_IsDirty = true;
 	}
 
 	void CameraSystem::SetBottom(Entity& go, const float bottom)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Bottom = bottom;
+		camera.m_Bottom = bottom;
 		camera.m_IsDirty = true;
 	}
 
 	void CameraSystem::SetTop(Entity& go, const float top)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_Top = top;
+		camera.m_Top = top;
 		camera.m_IsDirty = true;
 	}
 
 	void CameraSystem::SetAspectRatio(Entity& go, const float aspectRatio)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_AspectRatio= aspectRatio;
+		camera.m_AspectRatio= aspectRatio;
 		camera.m_IsDirty = true;
 	}
 
 	void CameraSystem::SetIsPerspective(Entity& go, const bool isPerspective)
 	{
 		Camera& camera = go.get()->GetComponent<Camera>();
-		camera.m_BaseCamera.m_IsPerspective= isPerspective;
+		camera.m_IsPerspective= isPerspective;
 		camera.m_IsDirty = true;
 	}
 
@@ -266,24 +266,34 @@ namespace TRE
 		camera.m_IsDirty = true;
 	}
 
+	const glm::vec3& CameraSystem::GetPosition(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Position;
+	}
+
+	const glm::vec3& CameraSystem::GetRotation(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Rotation;
+	}
+
 	const glm::mat4& CameraSystem::GetViewMatrix(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_ViewMatrix;
+		return go.get()->GetComponent<Camera>().m_ViewMatrix;
 	}
 
 	const glm::mat4& CameraSystem::GetProjectionMatrix(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_ProjectionMatrix;
+		return go.get()->GetComponent<Camera>().m_ProjectionMatrix;
 	}
 
 	const glm::mat4 CameraSystem::GetInverseViewMatrix(const Entity& go) const
 	{
-		return glm::inverse(go.get()->GetComponent<Camera>().m_BaseCamera.m_ViewMatrix);
+		return glm::inverse(go.get()->GetComponent<Camera>().m_ViewMatrix);
 	}
 
 	const glm::mat4 CameraSystem::GetInverseProjectionMatrix(const Entity& go) const
 	{
-		return glm::inverse(go.get()->GetComponent<Camera>().m_BaseCamera.m_ProjectionMatrix);
+		return glm::inverse(go.get()->GetComponent<Camera>().m_ProjectionMatrix);
 	}
 
 	const glm::mat4 CameraSystem::GetInverseViewProjectionMatrix(const Entity& go) const
@@ -293,77 +303,77 @@ namespace TRE
 
 	const glm::vec2& CameraSystem::GetViewportSize(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_ViewportSize;
+		return go.get()->GetComponent<Camera>().m_ViewportSize;
 	}
 
-	//const glm::vec3& CameraSystem::GetFocalPoint(const Entity& go) const
-	//{
-	//	return go.get()->GetComponent<Camera>().m_BaseCamera.m_FocalPoint;
-	//}
+	const glm::vec3& CameraSystem::GetFocalPoint(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_FocalPoint;
+	}
 
-	//const float CameraSystem::GetFocalLength(const Entity& go) const
-	//{
-	//	return go.get()->GetComponent<Camera>().m_BaseCamera.m_FocalLength;
-	//}
+	const float CameraSystem::GetFocalLength(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_FocalLength;
+	}
 
-	//const float CameraSystem::GetPitch(const Entity& go) const
-	//{
-	//	return go.get()->GetComponent<Camera>().m_Pitch;
-	//}
+	const float CameraSystem::GetPitch(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Pitch;
+	}
 
-	//const float CameraSystem::GetYaw(const Entity& go) const
-	//{
-	//	return go.get()->GetComponent<Camera>().m_Yaw;
-	//}
+	const float CameraSystem::GetYaw(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Yaw;
+	}
 
-	//const float CameraSystem::GetRoll(const Entity& go) const
-	//{
-	//	return go.get()->GetComponent<Camera>().m_Roll;
-	//}
+	const float CameraSystem::GetRoll(const Entity& go) const
+	{
+		return go.get()->GetComponent<Camera>().m_Roll;
+	}
 
 	const float CameraSystem::GetFov(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Fov;
+		return go.get()->GetComponent<Camera>().m_Fov;
 	}
 
 	const float CameraSystem::GetNear(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Near;
+		return go.get()->GetComponent<Camera>().m_Near;
 	}
 
 	const float CameraSystem::GetFar(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Far;
+		return go.get()->GetComponent<Camera>().m_Far;
 	}
 
 	const float CameraSystem::GetLeft(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Left;
+		return go.get()->GetComponent<Camera>().m_Left;
 	}
 
 	const float CameraSystem::GetRight(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Right;
+		return go.get()->GetComponent<Camera>().m_Right;
 	}
 
 	const float CameraSystem::GetBottom(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Bottom;
+		return go.get()->GetComponent<Camera>().m_Bottom;
 	}
 
 	const float CameraSystem::GetTop(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_Top;
+		return go.get()->GetComponent<Camera>().m_Top;
 	}
 
 	const float CameraSystem::GetAspectRatio(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_AspectRatio;
+		return go.get()->GetComponent<Camera>().m_AspectRatio;
 	}
 
 	const bool CameraSystem::IsPerspective(const Entity& go) const
 	{
-		return go.get()->GetComponent<Camera>().m_BaseCamera.m_IsPerspective;
+		return go.get()->GetComponent<Camera>().m_IsPerspective;
 	}
 
 	const bool CameraSystem::IsMainCamera(const Entity& go) const
@@ -385,6 +395,7 @@ namespace TRE
 				mainCamera = go;
 			}
 		}
+		assert(count == 1 && "There can only be one main camera");
 		return mainCamera;
 	}
 
@@ -398,4 +409,12 @@ namespace TRE
 	{
 		return m_IsDirty;
 	}
+
+	//void CameraSystem::NormalizeOrientation(Entity& go)
+	//{
+	//	auto camera = go->GetComponent<Camera>();
+	//	camera.m_UpVec = glm::normalize(camera.m_UpVec);
+	//	camera.m_RightVec = glm::normalize(camera.m_RightVec);
+	//	camera.m_ForwardVec = glm::normalize(camera.m_ForwardVec);
+	//}
 }

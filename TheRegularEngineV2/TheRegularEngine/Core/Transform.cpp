@@ -53,7 +53,7 @@ namespace TRE
 		m_LocalRotation = glm::degrees(glm::eulerAngles(glm::quat(localXform)));
 	}
 
-	void TransformSystem::LateUpdate()
+	void TransformSystem::Update()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
 		{
@@ -64,5 +64,25 @@ namespace TRE
 				transform.m_IsDirty = false;
 			}
 		}
+	}
+
+	void TransformSystem::GameUpdate()
+	{
+		
+	}
+
+	void TransformSystem::OnReset()
+	{
+
+	}
+
+	void TransformSystem::OnDestroyEntities()
+	{
+
+	}
+	
+	void TransformSystem::Shutdown()
+	{
+
 	}
 }

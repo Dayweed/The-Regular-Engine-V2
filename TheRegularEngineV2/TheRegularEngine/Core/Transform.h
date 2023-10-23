@@ -58,15 +58,17 @@ namespace TRE
 			std::vector<float> v_sca{ j.at("m_Scale").get<std::vector<float>>() };
 			float a_sca[3]{ v_sca[0], v_sca[1], v_sca[2] };
 			t.m_Scale = glm::make_vec3(a_sca);
-
-			t.m_IsDirty = true;
 		}
 	};
 
 	class TransformSystem : public ECSSystem
 	{
 	public:
-		void LateUpdate() override;
+		void Update() override;
+		void GameUpdate() override;
+		void OnReset() override;
+		void OnDestroyEntities() override;
+		void Shutdown() override;
 	};
 }
 

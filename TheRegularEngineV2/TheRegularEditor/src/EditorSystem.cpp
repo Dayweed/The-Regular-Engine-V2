@@ -14,8 +14,6 @@
 #include "MaterialPanel.h"
 #include "EditorAssetManager.h"
 #include "GamePanel.h"
-#include "TexturePanel.h"
-#include "Graphics/EditorCamera.h"
 
 namespace TRE
 {
@@ -39,10 +37,7 @@ namespace TRE
 		m_PanelManager->InsertPanel<ToolBarPanel>("Tool Bar");
 		m_PanelManager->InsertPanel<MaterialPanel>("Material", m_SelectionManager, m_AssetSelector);
 		m_PanelManager->InsertPanel<GamePanel>("Game Panel");
-		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
 		m_PanelManager->Init();
-
-		EditorCamera::Instance().Init();
 	}
 	
 	EditorSystem::~EditorSystem()
@@ -103,8 +98,6 @@ namespace TRE
 
 		m_PanelManager->Update();
 
-		EditorCamera::Instance().Update();
-
 		ImGui::End(); //Dockspace
 	}
 
@@ -112,10 +105,5 @@ namespace TRE
 	{
 		m_PanelManager->Shutdown();
 		TRE_INFO("Editor Shutdown");
-	}
-
-	std::shared_ptr<SelectionManager>& EditorSystem::GetSelectionManager()
-	{
-		return m_SelectionManager;
 	}
 }

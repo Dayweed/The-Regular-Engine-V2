@@ -1,14 +1,6 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
-        "m_ExistingPrefabsKey": [
-            "e2674b18c0f92abf",
-            "e4ffb58bb2cd1da7",
-            "fd9ec2098f4028de"
-        ],
-        "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/grandparent1.json",
-            "../Resources/Prefabs/Test3.json",
-            "../Resources/Prefabs/Test.json"
-        ]
+        "m_ExistingPrefabsKey": [],
+        "m_ExistingPrefabsValue": []
     }
 }

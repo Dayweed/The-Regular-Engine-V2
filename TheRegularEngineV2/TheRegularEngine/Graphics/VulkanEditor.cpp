@@ -99,7 +99,7 @@ namespace TRE
 		m_DescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer::GetMainRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -224,7 +224,7 @@ namespace TRE
 		m_DescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_DescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Renderer::GetMainRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 

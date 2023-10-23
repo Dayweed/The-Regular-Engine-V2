@@ -149,10 +149,10 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<Rigidbody>(arc)
-			.component<DirectionalLight>(arc)
-
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
 			;
 
 		arc.Close();
@@ -179,10 +179,10 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<Rigidbody>(arc)
-			.component<DirectionalLight>(arc)
-
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -228,7 +228,7 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL>();
+		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, FEL, FAKEFEL>();
 
 		m_Registry.each([&](entt::entity srcEntity)
 			{
@@ -259,12 +259,6 @@ namespace TRE
 		MemoryManager::Instance().DeleteEntities();
 
 		// Copy 
-		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
-	}
-
-	void ECSManager::AddToRegistry(entt::registry& srcRegistry)
-	{
-		// Keep adding into it 
 		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
 	}
 
@@ -824,6 +818,10 @@ namespace TRE
 							// TO DELETE WE CAN CHANGE DATA THIS WAY
 							Data = "CHANGEDNAME";
 						}
+						else if constexpr (std::is_same_v<T, oobb>)
+						{
+							printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
+						}
 						else if constexpr (std::is_same_v<T, glm::vec3>)
 						{
 							printf("\t glm::vec3   (%f, %f)", Value[0], Value[1], Value[2]);
@@ -871,6 +869,10 @@ namespace TRE
 						else if constexpr (std::is_same_v<T, string_t>)
 						{
 							printf("\t string (%s)", Value.c_str());
+						}
+						else if constexpr (std::is_same_v<T, oobb>)
+						{
+							printf("\t oobb   (%f, %f)", Value.m_Min, Value.m_Max);
 						}
 						else if constexpr (std::is_same_v<T, glm::vec3>)
 						{

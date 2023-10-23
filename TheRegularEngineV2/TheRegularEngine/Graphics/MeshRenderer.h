@@ -6,8 +6,6 @@
 #include "Material.h"
 #include "Resource/ResourceManager.h"
 
-#include "Resource/Resource.h"
-
 namespace TRE
 {
 	class MeshRenderer : property::base
@@ -84,7 +82,7 @@ namespace TRE
 	class MeshRendererSystem : public ECSSystem
 	{
 	public:
-		void LateUpdate() override;
+		void Update() override;
 		void OnReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
@@ -112,46 +110,19 @@ namespace TRE
 
 property_begin(TRE::MeshRenderer)
 {
-	property_var_fnbegin("Mesh", resource_list)
+	property_var_fnbegin("Render Object", resource_ref )
 	{
-		InOut.m_Type = "MESH";
-
 		if (isRead)
 		{
-			if (Self.m_RenderObject)
+			if (Self.m_RenderObject && Self.m_MaterialInstance)
+			{
 				InOut.m_Value = Self.m_RenderObject->GetHandle();
-			else
-				InOut.m_Value = 0;
+			}
 		}
 		else
 		{
-			if(InOut.m_Value)
-				Self.m_RenderObject = TRE::ResourceManager::Instance().GetResource<TRE::RenderObject>(InOut.m_Value);
-			else
-				Self.m_RenderObject = nullptr;
+			// It does not handle writing
 		}
-
-	} property_var_fnend(),
-	property_var_fnbegin("Material Instance", resource_list)
-	{
-		InOut.m_Type = "MATERIAL";
-
-		if (isRead)
-		{
-			if (Self.m_MaterialInstance)
-				InOut.m_Value = Self.m_MaterialInstance->GetHandle();
-			else
-				InOut.m_Value = 0;
-		}
-		else
-		{
-			if(InOut.m_Value)
-				Self.m_MaterialInstance = TRE::ResourceManager::Instance().GetResource<TRE::Material>(InOut.m_Value);
-			else
-				Self.m_MaterialInstance = nullptr;
-		}
-		
-	} property_var_fnend(),
-	property_var(m_IsVisible)
+	} property_var_fnend().Help("<MESH> ")
 
 } property_vend_h(TRE::MeshRenderer)

@@ -13,7 +13,6 @@
 #include "Core/Engine.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
-#include "Core/EntityCopy.h"
 #include "Core/Prefab.h"
 #include "Core/Parent.h"
 #include "Core/Transform.h"
@@ -31,7 +30,6 @@
 #include "Graphics/SwapChain.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Light.h"
 
 //-----------------Scripting-----------------//
 

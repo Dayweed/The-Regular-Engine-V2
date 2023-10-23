@@ -109,11 +109,6 @@ namespace TRE
 
 	bool MemoryManager::DeleteEntities()
 	{
-		for (auto& objectid : m_DeployedEntityList)
-		{
-			// Remove from m_EntityList
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(m_AllEntityList[objectid]);
-		}
 		for (auto& object : m_AllEntityList)
 		{
 			// Remove from m_EntityList

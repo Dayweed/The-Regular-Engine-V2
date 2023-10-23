@@ -2,25 +2,28 @@
 #include <variant>
 
 #include "glm/glm.hpp"
-#include "Vector3.h"
+#include "FMOD/fmod.hpp"
+
 
 #pragma once
 using string_t = std::string;
+
+struct audio_file_dropdown
+{
+    std::string m_File;
+};
 
 struct resource_ref
 {
     std::uint64_t m_Value;
 };
 
-struct resource_list
+//--------------------------------------------------------------------------------------------
+// Some structure to show that you can add your own atomic structures
+//--------------------------------------------------------------------------------------------
+struct oobb
 {
-	std::uint64_t m_Value;
-	std::string m_Type;
-};
-
-struct Color
-{
-	glm::vec4 m_Value;
+    float m_Min{}, m_Max{};
 };
 
 //--------------------------------------------------------------------------------------------
@@ -147,13 +150,12 @@ namespace property
             , bool
             , float
             , string_t
+            , oobb
             , glm::vec2
             , glm::vec3
-            , glm::vec4
-            , Vector3
-            , Color
+            , FMOD_VECTOR
             , resource_ref
-            , resource_list
+            , audio_file_dropdown
         >;
     
         //--------------------------------------------------------------------------------------------

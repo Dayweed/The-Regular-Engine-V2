@@ -11,7 +11,6 @@ namespace TRE
 	{
 		WindowConfig WindowConfigurations;
 		bool EnableEditor = false;
-		bool MaximizeWindow = false;
 	};
 
 	class Engine
@@ -36,7 +35,6 @@ namespace TRE
 			const std::shared_ptr<VulkanEditor>& GetVulkanImgui();
 			const EngineInfo& GetEngineInfo();
 			static Engine& GetInstance();
-			const std::shared_ptr<SceneRenderer>& GetMainSceneRenderer();
 
 		protected:
 			Engine(const EngineInfo& EngineInfo = EngineInfo());

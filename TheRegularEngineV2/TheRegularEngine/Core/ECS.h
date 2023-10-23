@@ -270,7 +270,6 @@ namespace TRE
 		friend class ECSManager;
 		friend class MemoryManager;
 		friend class PrefabSystem;
-		friend class EntityCopier;
 
 		entt::entity m_Entity;
 	};
@@ -350,6 +349,23 @@ namespace TRE
 		Entity CreateEntity(std::string name = ECS_ENTITY_DEFAULT_NAME);
 
 		/* !
+		@function		DestroyEntity
+		@author			Isaiah Lim (lim.i@digipen.edu)
+
+		@params			object	Entity to be destroyed
+
+		@brief			Destroys Entity instantly
+
+		Example:
+		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
+
+		std::cout << goVar << std::endl; // Address of goVar
+
+		ECSManager::Instance().DestroyEntity(goVar);
+		*//*__________________________________________________________________________*/
+		void DestroyEntity(Entity& object);
+
+		/* !
 		@function		MarkForDeletion
 		@author			Isaiah Lim (lim.i@digipen.edu)
 
@@ -357,7 +373,6 @@ namespace TRE
 
 		@brief			Marks an Entity for deletion, it would run through normal
 						gameloop first before deleting
-						USE THIS FOR "DELETING" Entities in Editor!
 
 		Example:
 		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
@@ -573,7 +588,6 @@ namespace TRE
 
 		void SaveRegistry(entt::registry& dstRegistry);
 		void CopyRegistry(entt::registry& srcRegistry);
-		void AddToRegistry(entt::registry& srcRegistry);
 
 		template<class... Components>
 		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);
@@ -621,23 +635,6 @@ namespace TRE
 		{
 			std::cout << ">>>> " << typeid(T).name() << "|" << ent << "\n";
 		}*/
-
-		/* !
-		@function		DestroyEntity
-		@author			Isaiah Lim (lim.i@digipen.edu)
-
-		@params			object	Entity to be destroyed
-
-		@brief			Destroys Entity instantly
-
-		Example:
-		Entity goVar = ECSManager::Instance().CreateEntity("goVar");
-
-		std::cout << goVar << std::endl; // Address of goVar
-
-		ECSManager::Instance().DestroyEntity(goVar);
-		*//*__________________________________________________________________________*/
-		void DestroyEntity(Entity& object);
 
 		template <typename FUNCTION1, typename FUNCTION2>
 		void CompFunction(std::string name, FUNCTION1&& func1, FUNCTION2&& func2)

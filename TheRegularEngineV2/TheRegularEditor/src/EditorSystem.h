@@ -17,8 +17,6 @@ namespace TRE
 			void Update() override;
 			void Shutdown() override;
 
-			std::shared_ptr<SelectionManager>& GetSelectionManager();
-
 		private:
 			std::unique_ptr<PanelManager> m_PanelManager;
 			std::shared_ptr<SelectionManager> m_SelectionManager;

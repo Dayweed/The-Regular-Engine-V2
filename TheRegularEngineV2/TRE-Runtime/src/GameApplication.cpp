@@ -9,7 +9,7 @@ namespace TRE
 		public:
 			RuntimeApplication(const EngineInfo& EngineInfo) : Engine(EngineInfo)
 			{
-				
+			
 			}
 
 		private:
@@ -18,10 +18,7 @@ namespace TRE
 	TRE::Engine* TRE::CreateApp()
 	{
 		EngineInfo Info;
-		Info.WindowConfigurations.Title = "Holey Moley";
-		Info.WindowConfigurations.FullScreen = true;
 		Info.EnableEditor = false;
-		Info.MaximizeWindow = true;
 		return new RuntimeApplication(Info);
 	}
 }

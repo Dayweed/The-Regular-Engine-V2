@@ -24,20 +24,35 @@ namespace TRE
 		void UnloadUnusedResources();
 
 		ResourceType GetResourceType(ResourceHandle handle);
+
 		template <typename T>
 		std::shared_ptr<T> GetResource(ResourceHandle Handle);
+
 		template <typename T>
 		std::vector<std::shared_ptr<T>> GetResourcesOfType();
 
 		template <typename N>
 		void DestroyResourcesOfType(N type);
-		void DestroyAllResources();
 
-		const std::size_t GetAllResourceCount();
+		void DestroyAllResources()
+		{
+			m_Resources.clear();
+		}
 
-		template<typename T>
-		void SerializeResource(ResourceHandle handle);
-		void SerializeAll();
+		std::size_t GetAllResourceCount()
+		{
+			return m_Resources.size();
+		}
+
+		void SerializeAll()
+		{
+			UnloadUnusedResources();
+			for (auto& asset : m_Resources)
+			{
+				if(asset.second->GetType() == ResourceType::Material)
+					asset.second->Serialize();
+			}
+		}
 
 	private:
 		ResourceManager() {};
@@ -125,12 +140,5 @@ namespace TRE
 				++it;
 			}
 		}
-	}
-
-	template<typename T>
-	void ResourceManager::SerializeResource(ResourceHandle handle)
-	{
-		auto resource = GetResource<T>(handle);
-		resource->Serialize();
 	}
 }

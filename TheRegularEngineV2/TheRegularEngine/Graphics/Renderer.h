@@ -3,27 +3,16 @@
 
 namespace TRE
 {
-	struct FinalRenderData
-	{
-		std::unique_ptr<Buffer> VertexBuffer;
-		std::unique_ptr<Buffer> IndexBuffer;
-		std::unique_ptr<Pipeline> Pipeline;
-		std::unique_ptr<Material> Material;
-		std::shared_ptr<RenderPass> RenderPass;
-		VkDescriptorImageInfo ImageInfo;
-		VkSampler Sampler;
-	};
-
 	class Renderer
 	{
 		public:
 			static void Init();
-			static void Shutdown();
+
 			static void RenderToSwapChain();
+			static void SetMainRenderer(const std::shared_ptr<SceneRenderer>& SceneRenderer);
+			static const std::shared_ptr<SceneRenderer>& GetMainRenderer();
 
 		private:
 			static std::shared_ptr<SceneRenderer> s_MainRenderer;
-			static std::shared_ptr<CommandBuffer> m_CommandBuffer;
-			static FinalRenderData* s_FinalRenderData;
 	};
 }

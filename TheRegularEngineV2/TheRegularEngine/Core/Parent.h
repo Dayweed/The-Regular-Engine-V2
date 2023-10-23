@@ -155,8 +155,6 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		void AbandonChildren(Entity parent);
 
-		void GetTotalEntities(int& noOfEntities, Entity object);
-
 	private:
 		void UpdateChildTransform(Entity parent);
 	};
