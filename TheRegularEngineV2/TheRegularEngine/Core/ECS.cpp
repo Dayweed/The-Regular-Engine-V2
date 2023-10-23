@@ -150,9 +150,10 @@ namespace TRE
 			.component<BoxCollider>(arc)
 			.component<Rigidbody>(arc)
 			.component<DirectionalLight>(arc)
-
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
 			;
 
 		arc.Close();
@@ -180,9 +181,10 @@ namespace TRE
 			.component<BoxCollider>(arc)
 			.component<Rigidbody>(arc)
 			.component<DirectionalLight>(arc)
-
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
