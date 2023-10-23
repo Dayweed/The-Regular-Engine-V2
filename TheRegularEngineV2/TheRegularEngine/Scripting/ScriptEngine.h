@@ -85,14 +85,9 @@ namespace TRE
 
 		// Camera
 		// Setters
-		static void BindCamSetPosition(MonoString* id, glm::vec3 newPos);
-		static void BindCamSetRotation(MonoString* id, glm::vec3 newRot);
 		static void BindCamSetViewportSize(MonoString* id, glm::vec2 newSize);
 		static void BindCamSetFocalPoint(MonoString* id, glm::vec3 focalpoint);
 		static void BindCamSetFocalLength(MonoString* id, float focalLength);
-		static void BindCamSetPitch(MonoString* id, float pitch);
-		static void BindCamSetYaw(MonoString* id, float yaw);
-		static void BindCamSetRoll(MonoString* id, float roll);
 		static void BindCamSetFOV(MonoString* id, float fov);
 		static void BindCamSetNear(MonoString* id, float n);
 		static void BindCamSetFar(MonoString* id, float f);
@@ -105,19 +100,12 @@ namespace TRE
 		static void BindCamSetIsMainCamera(MonoString* id, bool isMainCamera);
 
 		// Getters
-		static void BindCamGetPosition(MonoString* id, glm::vec3* result);
-		static void BindCamGetRotation(MonoString* id, glm::vec3* result);
 		static void BindCamGetViewMatrix(MonoString* id, glm::mat4* result);
 		static void BindCamGetProjectionMatrix(MonoString* id, glm::mat4* result);
 		static void BindCamGetInverseViewMatrix(MonoString* id, glm::mat4* result);
 		static void BindCamGetInverseProjectionMatrix(MonoString* id, glm::mat4* result);
 		static void BindCamGetInverseViewProjectionMatrix(MonoString* id, glm::mat4* result);
 		static void BindCamGetViewportSize(MonoString* id, glm::vec2* result);
-		static void BindCamGetFocalPoint(MonoString* id, glm::vec3* result);
-		static void BindCamGetFocalLength(MonoString* id, float* result);
-		static void BindCamGetPitch(MonoString* id, float* result);
-		static void BindCamGetYaw(MonoString* id, float* result);
-		static void BindCamGetRoll(MonoString* id, float* result);
 		static void BindCamGetFOV(MonoString* id, float* result);
 		static void BindCamGetNear(MonoString* id, float* result);
 		static void BindCamGetFar(MonoString* id, float* result);

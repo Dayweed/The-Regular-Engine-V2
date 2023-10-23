@@ -25,7 +25,8 @@ namespace TRE
 		glm::vec3 m_LightPosition{ 0.f, 0.f, 0.f}; //Light position for now will be the camera in world space
 		alignas(16) glm::vec4 m_LightColor{ 1.f, 1.f, 1.f, 100.f }; //Light color, w for intensity
 		glm::vec4 m_CameraPosition{0.f, 0.f, 0.f, 1.f}; //Camera position in world space
-		glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f);
+		glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f); //Directional Light in world space
+		glm::vec4 m_LightAmbientColor{ 1.f, 0.f, 1.f, 1.f }; //Ambient color of the light
 	};
 
 	struct AnimationUBO

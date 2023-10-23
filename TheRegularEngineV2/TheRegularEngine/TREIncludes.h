@@ -31,6 +31,7 @@
 #include "Graphics/SwapChain.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
+#include "Graphics/Light.h"
 
 //-----------------Scripting-----------------//
 
