@@ -181,6 +181,17 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
+		// Update Sphere Collider if Dirty
+		for (Entity& go : ECSManager::Instance().GetEntities<SphereCollider>())
+		{
+			SphereCollider& collider = go.get()->GetComponent<SphereCollider>();
+			if (collider.m_IsDirty)
+			{
+				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(go, collider.m_Radius);
+				collider.m_IsDirty = false;
+			}
+		}
+
 		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
@@ -254,6 +265,11 @@ namespace TRE
 			printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
 #endif
 		}
+	}
+
+	void PhysicsSystem::LateUpdate()
+	{
+		
 	}
 
 	void PhysicsSystem::OnReset()

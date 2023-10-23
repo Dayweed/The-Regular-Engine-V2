@@ -69,6 +69,7 @@ namespace TRE
 	struct SphereCollider : BaseCollider, property::base
 	{
 		float m_Radius = 1.0f;
+		bool m_IsDirty = false;
 
 		// To write to / read from .json files.
 		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
