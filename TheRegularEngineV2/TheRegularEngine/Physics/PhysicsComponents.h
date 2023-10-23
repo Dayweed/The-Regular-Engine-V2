@@ -25,10 +25,10 @@ namespace TRE
 	{
 		enum Enum : short
 		{
-			Rigidbody		= 1 << 0,
-			SphereCollider	= 1 << 1,
-			BoxCollider		= 1 << 2,
-			CapsuleCollider	= 1 << 3,
+			Rigidbody       = 1 << 0,
+			SphereCollider  = 1 << 1,
+			BoxCollider     = 1 << 2,
+			CapsuleCollider = 1 << 3,
 		};
 	};
 
@@ -101,7 +101,7 @@ namespace TRE
 
 	struct BoxCollider : BaseCollider, property::base
 	{
-		Vector3 m_HalfExtents = Vector3(0.5f);
+		glm::vec3 m_HalfExtents = glm::vec3(0.5f);
 
 		// To write to / read from .json files.
 		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
@@ -110,7 +110,7 @@ namespace TRE
 
 		// Serialize
 		friend void to_json(nlohmann::json& j, const BoxCollider& t);
-		
+
 		// Deserialize
 		friend void from_json(const nlohmann::json& j, BoxCollider& t);
 

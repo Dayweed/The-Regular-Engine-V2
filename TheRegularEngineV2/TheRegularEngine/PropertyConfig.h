@@ -156,7 +156,6 @@ namespace property
             , glm::vec2
             , glm::vec3
             , glm::vec4
-            , Vector3
             , Color
             , resource_ref
             , resource_list

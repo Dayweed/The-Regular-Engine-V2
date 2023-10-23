@@ -265,12 +265,6 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4("Color", color);
 								Value.m_Value = { color[0], color[1], color[2], color[3] };
 							}
-							else if constexpr (std::is_same_v<T, Vector3>) // I guess this is fine too!
-							{
-								float pos[3]{ Value.x, Value.y, Value.z };
-								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
-								Value = { pos[0], pos[1], pos[2] };
-							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
 								static char resourceName[200];
@@ -350,7 +344,11 @@ namespace TRE
 									ImGui::EndCombo();
 								}
 							}
-							//else static_assert(always_false<T>::value, "We are not covering all the cases!");
+							else if constexpr (std::is_same_v<T, audio_file_dropdown>)
+							{
+								; // UpdatedData and stuff for audio_file_dropdown here
+							}
+							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
 

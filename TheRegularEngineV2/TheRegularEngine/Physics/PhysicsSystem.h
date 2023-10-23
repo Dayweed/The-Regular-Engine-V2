@@ -49,6 +49,21 @@
 
 namespace TRE
 {
+	typedef struct HistoryEntryEnum
+	{
+		enum Enum : char
+		{
+			Enter = 1 << 0,
+			Stay  = 1 << 1,
+			Exit  = 1 << 2
+		};
+	} CollisionHistoryEntryEnum, TriggerHistoryEntryEnum;
+
+	typedef struct HistoryEntry
+	{
+		unsigned first, second, flags;
+	} CollisionHistoryEntry, TriggerHistoryEntry;
+
 	class SimulationEventCallback : public physx::PxSimulationEventCallback
 	{
 	public:
@@ -59,8 +74,13 @@ namespace TRE
 		void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override;
 		void onWake(physx::PxActor** actors, physx::PxU32 count) override;
 
-		// keeps track of onEnter, OnStay and OnExit 'results'
-		int triggerHistory, colliderHistory;
+		// keeps track of IsCollisionEnter, IsCollisionStay and IsCollisionExit 'results'
+		std::vector<CollisionHistoryEntry> collisionHistory;
+
+		// keeps track of IsTriggerEnter, IsTriggerStay and IsTriggerExit 'results'
+		std::vector<TriggerHistoryEntry> triggerHistory;
+		// why can't physx just handle this for me? :_)
+
 		// WHAT TYPE SHOULD THIS BE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 		// I want to have be like `thingy[e1][e2]` and have it return an integer/enum of some sort...
 		// ->is<PxRigidActor>()->getInternalActorIndex();
@@ -273,6 +293,18 @@ namespace TRE
 		void ColliderToTrigger(const Entity& entity) const;
 
 		void TriggerToCollider(const Entity& entity) const;
+
+		bool IsCollisionEnter(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsCollisionStay(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsCollisionExit(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsTriggerEnter(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsTriggerStay(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsTriggerExit(const Entity& entity1, const Entity& entity2) const;
 
 	private:
 
