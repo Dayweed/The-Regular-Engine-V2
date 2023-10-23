@@ -23,7 +23,7 @@ namespace TRE
 
 		void Update() override;
 		void GameUpdate() override;
-		void OnReset() override;
+		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 

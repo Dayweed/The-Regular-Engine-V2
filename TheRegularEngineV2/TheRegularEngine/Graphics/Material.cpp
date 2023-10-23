@@ -16,6 +16,8 @@ namespace TRE
 		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			m_EditorDescriptorSets.resize(ImageCont);
 
 		AllocateTextures();
 	}
@@ -25,6 +27,8 @@ namespace TRE
 		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			m_EditorDescriptorSets.resize(ImageCont);
 
 		m_Shader = ResourceManager::Instance().GetResource<Shader>(handle);
 
@@ -48,6 +52,14 @@ namespace TRE
 		{
 			Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			for (int x = 0; x < m_EditorDescriptorSets.size(); x++)
+			{
+				Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_EditorDescriptorSets[x]);
+			}
+		}
 	}
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
@@ -65,6 +77,27 @@ namespace TRE
 				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
 			}
 			Write.dstSet = m_DescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
+	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	{
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+			{
+				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+			}
+			Write.dstSet = m_EditorDescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
 		}
 

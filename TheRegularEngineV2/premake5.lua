@@ -370,4 +370,28 @@ project "TRE-ScriptCore"
 	filter "configurations:Release"
 		optimize "On"
 		symbols "Default"
+		
+project "TRE-ScriptStorage"
+	location "TRE-ScriptStorage"
+	kind "SharedLib"
+	language "C#"
+	dotnetframework "4.7.2"
+
+	-- (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs",
+	}
+
+	filter "configurations:Debug"
+		optimize "Off"
+		symbols "Default"
+
+	filter "configurations:Release"
+		optimize "On"
+		symbols "Default"
+
 

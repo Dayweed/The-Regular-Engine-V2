@@ -102,7 +102,7 @@ namespace TRE
 
 		void Init() override;
 		void Update() override;
-		void OnReset() override;
+		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 

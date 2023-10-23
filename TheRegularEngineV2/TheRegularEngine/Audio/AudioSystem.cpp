@@ -25,7 +25,6 @@ namespace TRE
 	AudioSystem::~AudioSystem()
 	{
 		ErrorCheck(m_System->release(), "FMOD: m_System->release()");
-		//ErrorCheck(m_Sound->release(), "FMOD: m_Sound->release()");
 	}
 
 	void AudioSystem::Update()
@@ -35,29 +34,63 @@ namespace TRE
 			SetListenerPosition(go);
 		}	
 
-		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		std::vector<Entity> entitiesToRemove;
+
+		for (auto go : audioMap)
 		{
-			Audio& source = go->GetComponent<Audio>();
-
-			bool isPlaying;
-			source.m_Channel->isPlaying(&isPlaying);
-
-			if (source.m_PlayOnStart && source.m_Pause)
+			if (go->HasComponent<Audio>())
 			{
-				Play(go, true);
-				//source.m_Channel->setPaused(source.m_Pause);
-			}
+				Audio& source = go->GetComponent<Audio>();
 
-			else if (source.m_Loop)
-			{
-				if (!isPlaying)
+				bool isPlaying;
+				source.m_Channel->isPlaying(&isPlaying);
+
+				//soundMap[go] = source.m_Sound;
+
+				if (source.m_PlayOnStart && source.m_Play)
 				{
 					Play(go, true);
+
+				}
+				else if (source.m_Loop)
+				{
+					if (!isPlaying)
+					{
+						Play(go, true);
+					}
+				}
+
+				if (!source.m_Play)
+				{
+					source.m_Channel->stop();
+				}
+
+				TogglePause(go);
+				ToggleMute(go);
+				source.m_Channel->setVolume(source.m_Volume);
+				source.m_Channel->setPitch(source.m_Pitch);
+				source.m_Channel->setPriority(source.m_Priority);
+
+			}
+			else
+			{
+				entitiesToRemove.push_back(go);
+				auto it = soundToRemove.find(go);
+				if (it != soundToRemove.end())
+				{
+					it->second->release();
+					soundToRemove.erase(it);
 				}
 			}
 		}
 
+		for (const Entity go : entitiesToRemove)
+		{
+			audioMap.erase(go);
+		}
+
 		m_System->update();
+		
 	}
 
 	void AudioSystem::BeforeReset()
@@ -73,7 +106,7 @@ namespace TRE
 		m_System->update();
 	}
 
-	void AudioSystem::OnReset()
+	void AudioSystem::AfterReset()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
 		{
@@ -120,7 +153,7 @@ namespace TRE
 
 		std::ifstream ifs(m_FilePath);
 
-		if (!ifs.is_open())
+		if (!(ifs.is_open()))
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
@@ -157,17 +190,16 @@ namespace TRE
 	void AudioSystem::Play(Entity& go, const bool shouldPlay)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		if (shouldPlay == true)
+		if (shouldPlay)
 		{
-			audio.m_Channel->setPaused(false);
 			audio.m_Pause = false;
+			audio.m_PlayOnStart = false;
+			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		}
 		else
 		{
-			audio.m_Channel->setPaused(true);
 			audio.m_Pause = true;
 		}
-		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		SetSourcePosition(go);
 		//audio.m_Channel->isPlaying(&audio.isPlaying);
 
@@ -196,8 +228,31 @@ namespace TRE
 	void AudioSystem::TogglePause(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Pause = !audio.m_Pause;
-		ErrorCheck(audio.m_ChannelGroup->setPaused(audio.m_Pause), "FMOD: TogglePause()");
+		if (!audio.m_Pause)
+		{
+			audio.m_Channel->setPaused(false);
+			audio.m_Pause = false;
+		}
+		else
+		{
+			audio.m_Channel->setPaused(true);
+			audio.m_Pause = true;
+		}
+	}
+
+	void AudioSystem::ToggleMute(Entity& go)
+	{
+		Audio& audio = go.get()->GetComponent<Audio>();
+		if (!audio.m_Mute)
+		{
+			audio.m_Channel->setMute(false);
+			audio.m_Mute = false;
+		}
+		else
+		{
+			audio.m_Channel->setMute(true);
+			audio.m_Mute = true;
+		}
 	}
 
 	void AudioSystem::StopAudio(Entity& go)
@@ -227,11 +282,12 @@ namespace TRE
 		{
 			LoadFile(go);
 		}
-
-		Play(go, false);
+		audioMap.insert(go);
+		soundToRemove.insert({ go, audio.m_Sound });
+		/*Play(go, false);
 		audio.m_Channel->setVolume(audio.m_Volume);
 		audio.m_Channel->setPitch(audio.m_Pitch);
-		audio.m_Channel->setPriority(audio.m_Priority);
+		audio.m_Channel->setPriority(audio.m_Priority);*/
 	}
 
 	void AudioSystem::SetVolume(Entity& go, const float volume)
@@ -292,10 +348,10 @@ namespace TRE
 
 	void AudioSystem::SetPlay(Entity& go, const bool play)
 	{
-		//Audio& audio = go.get()->GetComponent<Audio>();
-		//audio.m_Play = play;
-		(void)go;
-		(void)play;
+		Audio& audio = go.get()->GetComponent<Audio>();
+		audio.m_Play = play;
+		/*(void)go;
+		(void)play;*/
 	}
 
 	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)

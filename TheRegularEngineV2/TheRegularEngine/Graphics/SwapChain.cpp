@@ -178,7 +178,10 @@ namespace TRE
 			RecreateSwapChain();
 			Engine::GetInstance().GetMainSceneRenderer()->Resize();
 			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			{
+				Engine::GetInstance().GetEditorSceneRenderer()->Resize();
 				Engine::GetInstance().GetVulkanImgui()->Resize();
+			}
 		}
 
 		m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % MAX_FRAMES_IN_FLIGHT; //Go to next frame

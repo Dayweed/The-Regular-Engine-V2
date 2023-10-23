@@ -15,7 +15,8 @@
 #include "MemoryManager.h"
 #include "TREIncludes.h"
 #include <combaseapi.h>
-#include <atlconv.h>
+#include <random>
+//#include <atlconv.h>
 
 namespace TRE
 {
@@ -232,12 +233,24 @@ namespace TRE
 
 	std::string MemoryManager::GenerateGUIDStr()
 	{
-		GUID guid;
+		auto currentTime = std::chrono::system_clock::now().time_since_epoch().count();
+
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<ResourceHandle> dis(0, std::numeric_limits<ResourceHandle>::max());
+		auto randomNumber = dis(gen);
+		std::string combinedString = std::to_string(currentTime) + std::to_string(randomNumber);
+		std::hash<std::string> hasher;
+		std::size_t hashedValue = hasher(combinedString);
+
+		return std::to_string(hashedValue);
+
+		/*GUID guid;
 		HRESULT result{ CoCreateGuid(&guid) };
 		LPOLESTR guidLPOLEStr;
 		result = StringFromCLSID(guid, &guidLPOLEStr);
 		USES_CONVERSION;
-		return OLE2CA(guidLPOLEStr);
+		return OLE2CA(guidLPOLEStr);*/
 	}
 
 	void MemoryManager::SetConfigSize(size_t configSize)
