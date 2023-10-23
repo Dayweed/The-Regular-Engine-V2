@@ -234,7 +234,7 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat2(NameField.c_str(), pos);
 								Value = { pos[0], pos[1] };
 							}
-							else if constexpr (std::is_same_v<T, glm::vec3>)
+							else if constexpr (std::is_same_v<T, glm::vec3> || std::is_same_v<T, FMOD_VECTOR>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
@@ -337,7 +337,7 @@ namespace TRE
 									ImGui::EndCombo();
 								}
 							}
-							else static_assert(always_false<T>::value, "We are not covering all the cases!");
+							//else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
 

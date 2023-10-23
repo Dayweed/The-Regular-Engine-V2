@@ -192,12 +192,13 @@ namespace TRE
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-			test->AddComponent<Audio>();
-			//audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-			//audioSystem->SetLoop(test, true);
-			//audioSystem->SetSpatialize(test,true);
-			//audioSystem->CompileAudio(test);
-			//audioSystem->SetSourceRadius(test, 50.f, 150.f);
+			/*test->AddComponent<Audio>();
+			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
+			audioSystem->SetPlay(test, true);
+			audioSystem->SetLoop(test, true);
+			audioSystem->SetSpatialize(test,true);
+			audioSystem->CompileAudio(test);
+			audioSystem->SetSourceRadius(test, 50.f, 150.f);*/
 
 			//test->AddComponent<SphereCollider>();
 			//test->AddComponent<Rigidbody>();
