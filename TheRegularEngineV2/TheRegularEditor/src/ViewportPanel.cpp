@@ -7,7 +7,9 @@
 #include "Utilities.h"
 #include "EditorSystem.h"
 #include "EditorAssetManager.h"
-
+#include "Graphics/VulkanEditor.h"
+#include "Core/Engine.h"
+#include "Graphics/RendererContext.h"
 //To Delete
 #include "Scripting/ScriptEngine.h"
 namespace TRE
@@ -232,7 +234,7 @@ namespace TRE
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize);
 
 		if (ImGui::BeginDragDropTarget())
 		{

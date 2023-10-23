@@ -13,6 +13,7 @@ namespace TRE
 			EditorSystem();
 			~EditorSystem();
 
+			void Init() override;
 			void RenderImgui() override;
 			void Update() override;
 			void Shutdown() override;

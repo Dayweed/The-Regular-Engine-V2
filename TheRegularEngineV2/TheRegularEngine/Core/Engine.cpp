@@ -14,6 +14,7 @@
 #include "Graphics/Light.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
+#include "Graphics/EditorCamera.h"
 
 //TO DELETE
 #pragma region TO DELETE TEST
@@ -346,6 +347,11 @@ namespace TRE
 		return m_SceneRenderer;
 	}
 
+	const std::shared_ptr<SceneRenderer>& Engine::GetEditorSceneRenderer()
+	{
+		return m_EditorSceneRenderer;
+	}
+
 	const std::shared_ptr<Window>& Engine::GetWindow()
 	{
 		return m_Window;
@@ -389,7 +395,14 @@ namespace TRE
 		}
 
 		if (m_EngineInfo.EnableEditor)
+		{
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
+			m_EditorSceneRenderer = std::make_shared<SceneRenderer>(RendererContext::GetDevice());
+			m_EditorSceneRenderer->Initialize();
+			Engine::GetInstance().GetVulkanImgui()->SetEditorSceneDescriptor(m_EditorSceneRenderer);
+		}
+
+		EditorSystemManager::Instance().InitSystem();
 
 		ScriptEngine::InitMono();
 		ScriptEngine::BindFunctions();
@@ -445,7 +458,11 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
-			m_SceneRenderer->BeginFrame();
+			const auto& test = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+			m_SceneRenderer->BeginFrame(test);
+
+			if (m_EngineInfo.EnableEditor)
+				m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -492,7 +509,10 @@ namespace TRE
 			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
-			m_SceneRenderer->EndFrame();
+			m_SceneRenderer->EndFrame(false);
+			
+			if (m_EngineInfo.EnableEditor)
+				m_EditorSceneRenderer->EndFrame(true);
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
@@ -528,6 +548,10 @@ namespace TRE
 	void Engine::Shutdown()
 	{
 		m_Running = false;
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Texture);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Mesh);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Material);
+		ResourceManager::Instance().DestroyResourcesOfType(ResourceType::Shader);
 		ResourceManager::Instance().DestroyAllResources();
 		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
@@ -536,5 +560,6 @@ namespace TRE
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
 		Renderer::Shutdown();
+
 	}
 }
