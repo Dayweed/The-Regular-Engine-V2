@@ -100,7 +100,7 @@ namespace TRE
 
 	void ScriptEngine::InitMono()
 	{
-        mono_set_assemblies_path("mono");
+        mono_set_assemblies_path("../TheRegularEditor/mono");
 
         MonoDomain* rootDomain = mono_jit_init("MyScriptRuntime");
         if (rootDomain == nullptr)

@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "../Events/EventBase.h"
+#include "EventSystem/Events/EventBase.h"
 
 namespace TRE
 {
