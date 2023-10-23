@@ -34,8 +34,12 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	--targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	--objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+
+	-- For Release Branch (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -143,8 +147,12 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	--targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	--objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+
+	-- For Release Branch (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	links 
 	{ 
@@ -253,8 +261,12 @@ project "TRE-Runtime"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	--targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	--objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+
+	-- For Release Branch (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "_%{prj.name}/")
+	objdir ("Executable_" .. outputdir .. "_%{prj.name}/")
 
 	links 
 	{ 
