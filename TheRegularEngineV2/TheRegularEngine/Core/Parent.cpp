@@ -23,7 +23,7 @@ namespace TRE
 		
 	}
 
-	void ParentingSystem::OnReset()
+	void ParentingSystem::AfterReset()
 	{
 
 	}

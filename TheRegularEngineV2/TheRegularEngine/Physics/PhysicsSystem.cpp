@@ -211,7 +211,29 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
-		//if (!isReadyForUpdate) TESTUpdate();
+		// Update Sphere Collider if Dirty
+		for (Entity& go : ECSManager::Instance().GetEntities<SphereCollider>())
+		{
+			SphereCollider& collider = go.get()->GetComponent<SphereCollider>();
+			if (collider.m_IsDirty)
+			{
+				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(go, collider.m_Radius);
+				collider.m_IsDirty = false;
+			}
+		}
+
+		// Update Box Collider if Dirty
+		for (Entity& go : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			BoxCollider& collider = go.get()->GetComponent<BoxCollider>();
+			if (collider.m_IsDirty)
+			{
+				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(go, collider.m_HalfExtents);
+				collider.m_IsDirty = false;
+			}
+		}
+
+		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
 		isReadyForUpdate || TESTUpdate();
@@ -294,9 +316,29 @@ namespace TRE
 		}
 	}
 
-	void PhysicsSystem::OnReset()
+	void PhysicsSystem::LateUpdate()
+	{
+		
+	}
+
+	void PhysicsSystem::BeforeReset()
 	{
 		m_Actors.clear(); // ???
+	}
+
+	void PhysicsSystem::AfterReset()
+	{
+		for (Entity john : ECSManager::Instance().GetEntities<SphereCollider>())
+		{
+			SphereCollider& collider{ john->GetComponent<SphereCollider>() };
+			ConstructSphereCollider(john, collider.m_Radius, collider.m_Offset);
+		}
+
+		for (Entity john : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			BoxCollider& collider{ john->GetComponent<BoxCollider>() };
+			ConstructBoxCollider(john, collider.m_HalfExtents, collider.m_Offset);
+		}
 	}
 
 	void PhysicsSystem::OnDestroyEntities()

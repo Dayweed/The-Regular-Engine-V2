@@ -77,7 +77,9 @@ namespace TRE
 
 		bool TESTUpdate();
 		void Update() override;
-		void OnReset() override;
+		void LateUpdate() override;
+		void BeforeReset() override;
+		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 

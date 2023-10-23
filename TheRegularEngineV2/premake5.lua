@@ -34,8 +34,9 @@ project "TheRegularEngine"
 	staticruntime "off"
 	warnings "Extra"
 
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	-- (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -143,8 +144,9 @@ project "TheRegularEditor"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	-- (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
 
 	links 
 	{ 
@@ -253,8 +255,9 @@ project "TRE-Runtime"
 	staticruntime "off"
 	warnings "Extra"
 	
-	targetdir ("Executable/" .. outputdir .. "/%{prj.name}/")
-	objdir ("Executable/" .. outputdir .. "/%{prj.name}/")
+	-- (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
 
 	links 
 	{ 
@@ -367,4 +370,28 @@ project "TRE-ScriptCore"
 	filter "configurations:Release"
 		optimize "On"
 		symbols "Default"
+		
+project "TRE-ScriptStorage"
+	location "TRE-ScriptStorage"
+	kind "SharedLib"
+	language "C#"
+	dotnetframework "4.7.2"
+
+	-- (DON'T DELETE THIS!)
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs",
+	}
+
+	filter "configurations:Debug"
+		optimize "Off"
+		symbols "Default"
+
+	filter "configurations:Release"
+		optimize "On"
+		symbols "Default"
+
 

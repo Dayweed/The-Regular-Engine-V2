@@ -75,6 +75,7 @@ namespace TRE
 	struct BaseCollider : PhysicsComponent
 	{
 		bool m_IsTrigger = false;
+		bool m_IsDirty = false;
 		glm::vec3 m_Offset = {};
 		// physx::PxMaterial* m_PhysicsMaterial = nullptr;
 	};

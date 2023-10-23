@@ -18,6 +18,7 @@
 #include "EventSystem/Events/EditorEvent.h"
 #include "SelectionManager.h"
 #include "Editor/ImGuizmo.h"
+#include "Graphics/SceneRenderer.h"
 
 namespace TRE
 {

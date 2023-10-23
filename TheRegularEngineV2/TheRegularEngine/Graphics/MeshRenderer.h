@@ -85,7 +85,7 @@ namespace TRE
 	{
 	public:
 		void LateUpdate() override;
-		void OnReset() override;
+		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 		
