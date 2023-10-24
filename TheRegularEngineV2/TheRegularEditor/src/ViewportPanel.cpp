@@ -171,22 +171,6 @@ namespace TRE
 		}
 		else
 			m_IsGridAndSnap = false;
-
-
-
-		// here Testing Scripting stuff
-		if (event._key == (int)KeyButton::P)
-		{
-			ScriptEngine::TestAddComponent();
-		}
-
-		if (event._key == (int)KeyButton::O)
-		{
-			if (ScriptEngine::CreatedScriptObject == false)
-			{
-				ScriptEngine::TestSpawnObject();
-			}
-		}
 	}
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)

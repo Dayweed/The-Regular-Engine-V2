@@ -6,45 +6,34 @@ using System.Runtime.CompilerServices;
 namespace TRE
 {
 
-    public class Demo
-    {
-        public Demo()
-        {
-            SpawnObject();
-        }
-
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static string SpawnObject();
-
-        
-    }
-
     public class Main
     {
-        public Entity Temp;
+
+        public Entity Temp = new Entity("Temp");
+        public Entity Test = new Entity("Test");
+        
         public Main()
         {
+            Temp.id = ECSManager.CreateEntity(Temp.name);
             Console.WriteLine("Hello World from C#!");
+
+            Test.id = ECSManager.FindIDFromName(Test.name);
+            Console.WriteLine("Test ID: " + Test.id);
         }
 
         public void Update()
         {
-            // This is the update loop for the main class;
-            if (GetTestGUID() != "")
-            {
-                TransformSystem transformSystem = new TransformSystem();
-                transformSystem.transformDemo(GetTestGUID());
-            }
+            // Move The Test Object 
+             TransformSystem.GetPosition(Test.id, out Vector3 pos);
+
+             pos.x += 0.1f;
+             pos.y += 0.1f;
+             pos.z += 0.1f;
+
+             TransformSystem.SetPosition(Test.id, pos);
+
         }
 
-        public void Test()
-        {
-            string id = ECSManager.CreateEntity("ScriptingTest");
-            Temp = new Entity(id, "ScriptingTest");
-            //Console.WriteLine($"{Temp.GetName()} has been created with ID: {Temp.GetId()}");
-            ECSManager.AddComponent(Temp.GetId(), Components.Mesh);
-        }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static string GetTestGUID();
