@@ -233,7 +233,13 @@
     <ClInclude Include="Resource\ResourceManager.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Scripting\ScriptBind.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
     <ClInclude Include="Scripting\ScriptEngine.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripting\ScriptingSystem.h">
       <Filter>Scripting</Filter>
     </ClInclude>
     <ClInclude Include="ShaderTypes\LineShader.h">
@@ -408,7 +414,13 @@
     <ClCompile Include="Resource\ResourceManager.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Scripting\ScriptBind.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
     <ClCompile Include="Scripting\ScriptEngine.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripting\ScriptingSystem.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="ShaderTypes\LineShader.cpp">
