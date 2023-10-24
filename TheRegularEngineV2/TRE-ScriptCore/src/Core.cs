@@ -38,6 +38,7 @@ namespace TRE
         Audio = 2,
     }
 
+    #region Vector3
     public struct Vector3
     {
         public float x, y, z;
@@ -109,6 +110,7 @@ namespace TRE
             }
         }
     }
+    #endregion
 
     public struct Vector2
     {
