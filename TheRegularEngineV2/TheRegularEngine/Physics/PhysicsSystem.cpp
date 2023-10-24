@@ -21,36 +21,8 @@
 
 #pragma region Macros
 
-#define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
+
 #define UNUSED_PARAM(param) (void)param
-#define PI 3.14159265358979323846f
-
-#pragma region PhysicsComponentAssertions
-#define PhysicsComponentConstructorAssertion(Type)														\
-	if (!entity->HasComponent<Type>())																	\
-	{																									\
-		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
-			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to construct.");					\
-		assert(entity->HasComponent<Type>());															\
-	}
-
-// this should never have to trip, but you never know...
-#define PhysicsComponentDestructorAssertion(Type)														\
-	if (!entity->HasComponent<Type>())																	\
-	{																									\
-		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
-			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to destroy.");					\
-		assert(entity->HasComponent<Type>());															\
-	}
-
-#define PhysicsComponentAssertion(Type) 																\
-	if (!entity->HasComponent<Type>())																	\
-	{																									\
-		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
-			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to perform this operation.");	\
-		assert(entity->HasComponent<Type>());															\
-	}
-#pragma endregion
 
 // not the best name... :/
 #define UpdateAllEntitiesWithComponent(Type)\
@@ -65,6 +37,26 @@
 using namespace physx;
 // to save my dwindling sanity
 
+#if 0
+namespace Text
+{
+	const std::string reset{ "\033[0m" };
+	const std::string red{ "\033[0;31m" };
+	const std::string green{ "\033[0;32m" };
+	const std::string blue{ "\033[0;36m" };
+	const std::string crit{ "\033[37;41m" };
+}
+#else
+namespace Text
+{
+	const std::string reset{ "" };
+	const std::string red{ "" };
+	const std::string green{ "" };
+	const std::string blue{ "" };
+	const std::string crit{ "" };
+}
+#endif
+
 namespace TRE
 {
 	PhysicsSystem::PhysicsSystem()
@@ -76,9 +68,14 @@ namespace TRE
 		m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
 		assert(m_Foundation);
 
+#ifdef _DEBUG
 		// doesn't pass in name parameter when allocating stuff on its own now
 		// one less thing passed in, the better I guess.
+		m_Foundation->setReportAllocationNames(_DEBUG);
+#else
 		m_Foundation->setReportAllocationNames(false);
+#endif
+
 
 		TRE_CORE_INFO("PhysX Version: {0}.{1}.{2}",
 			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
@@ -114,14 +111,16 @@ namespace TRE
 		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;
 
-		//A thread that will do collision management
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-
 		// SimulationEventCallback must inherit PxSimulationEventCallback
 		// PUBLICLY in order to work, otherwise...
 		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
 		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
 		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
+
+		//A thread that will do collision management
+
+		// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader = SimulationFilterShader;
 
 		m_Scene = m_Physics->createScene(sceneDesc);
 		assert(m_Scene);
@@ -146,10 +145,45 @@ namespace TRE
 
 		//Static object creation
 		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
+#ifdef _DEBUG
+		m_GroundPlane->setName("THE PLANE");
+#endif
 		m_Scene->addActor(*m_GroundPlane);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
+
+	// largely identical to PhysX's SnippetTriggers implementation
+	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+	{
+		UNUSED_PARAM(filterData0);
+		UNUSED_PARAM(filterData1);
+		UNUSED_PARAM(constantBlock);
+		UNUSED_PARAM(constantBlockSize);
+
+		// let triggers through
+		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlags();
+		}
+
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT
+			| PxPairFlag::eDETECT_CCD_CONTACT
+			| PxPairFlag::eCONTACT_EVENT_POSE
+			| PxPairFlag::eNOTIFY_TOUCH_CCD
+			// | PxPairFlag::eNOTIFY_CONTACT_POINTS
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND // for OnCollisionEnter
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS // added for OnCollisionStay
+			| PxPairFlag::eNOTIFY_TOUCH_LOST // added for OnCollisionExit
+		;
+
+		return {};
+	}
+
+	static bool isReadyForUpdate = false;
 
 	bool PhysicsSystem::TESTUpdate()
 	{
@@ -163,20 +197,21 @@ namespace TRE
 
 #if 0
 		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
-		e1->GetComponent<Transform>().m_Position = { 0, 10, 0 };
+		e1->GetComponent<Transform>().m_Position = { 0,8,0 };
 		e1->AddComponent<BoxCollider>();
-		e1->AddComponent<Rigidbody>();
+		ConstructBoxCollider(e1, { 7, 3, 7 });
+		ColliderToTrigger(e1);
 #endif
 
 #if 0
 		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
-		e2->GetComponent<Transform>().m_Position = { 1,2,0 };
+		e2->GetComponent<Transform>().m_Position = { 0, 15, 0 };
 		e2->AddComponent<SphereCollider>();
-		// e2->AddComponent<Rigidbody>();
+		e2->AddComponent<Rigidbody>();
 		// ColliderToTrigger(e2);			TriggerToCollider(e2);
 #endif
 
-		return m_IsReadyForUpdate = true;
+		return isReadyForUpdate = true;
 	}
 
 	void PhysicsSystem::Update()
@@ -206,19 +241,7 @@ namespace TRE
 		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
-		m_IsReadyForUpdate || TESTUpdate();
-
-#if 0
-		static std::time_t start_timer = std::time(nullptr);
-		const long long result = std::time(nullptr) - start_timer;
-		if (result >= 1)
-		{
-			// do a test thingy here
-
-			// reset timer
-			std::time(&start_timer);
-		}
-#endif
+		isReadyForUpdate || TESTUpdate();
 
 		// How do I tell if a component has been removed from an entity???
 		for (auto& x : m_Actors)
@@ -241,18 +264,80 @@ namespace TRE
 			// there is a mismatch. Thus, destroy that component.
 			const auto& attachedComponents = x.second.m_AttachedComponents;
 
-			// TODO: Remove this, use PhysicsComponent destructors I BEG OF YOU
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
+			OnEntityMismatchDestroyComponent(entity, attachedComponents, CapsuleCollider);
 		}
 
 		UpdateAllEntitiesWithComponent(Rigidbody);
 		UpdateAllEntitiesWithComponent(SphereCollider);
 		UpdateAllEntitiesWithComponent(BoxCollider);
+		UpdateAllEntitiesWithComponent(CapsuleCollider);
 
+#if 0
+		static std::time_t start_timer = std::time(nullptr);
+		const long long result = std::time(nullptr) - start_timer;
+
+		if (result >= 5)
+		{
+			// do a test thingy here
+			auto e1 = ECSManager::Instance().GetEntities<SphereCollider>().front();
+
+			AddForce(e1, { -100, 0, 0 });
+			printf("====================================================\n");
+
+			// reset timer
+			std::time(&start_timer);
+		}
+#endif
+		m_SimulationEventCallback.collisionHistory.clear();
+		m_SimulationEventCallback.triggerHistory.clear(); // but actually no (?)
+
+		// Accumulator?
+		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
+
+#if 0
+		for (auto& thing : m_SimulationEventCallback.triggerHistory)
+		{
+			// if there was a triggerenter previously, but no
+			// new triggerexit happened, there must still be an overlap!
+			// also, there's no need to assign stay again if it already has it...
+			if (thing.flags & TriggerHistoryEntryEnum::Enter &&
+				!(thing.flags & TriggerHistoryEntryEnum::Stay) &&
+				!(thing.flags & TriggerHistoryEntryEnum::Exit))
+				thing.flags |= TriggerHistoryEntryEnum::Stay;
+
+			// if there was a triggerexit, it must be for certain that
+			// the trigger & collider are now separate = no enter, no stay
+			if (thing.flags & TriggerHistoryEntryEnum::Exit)
+				thing.flags &= ~(TriggerHistoryEntryEnum::Enter | TriggerHistoryEntryEnum::Stay);
+		}
+#endif
+
+#if 0
+		// Is(Collision/Trigger)(Enter/Stay/Exit)() testing area
+		{
+			const Entity ball = ECSManager::Instance().GetEntities<SphereCollider>().front();
+			const Entity box = ECSManager::Instance().GetEntities<BoxCollider>().front();
+
+			if (IsCollisionEnter(ball, box))
+				printf("%sfirst kiss%s\n", Text::red.c_str(), Text::reset.c_str());
+			if (IsCollisionStay(ball, box))
+				printf("%ssustained??%s\n", Text::green.c_str(), Text::reset.c_str());
+			if (IsCollisionExit(ball, box))
+				printf("%sbreakup%s\n", Text::blue.c_str(), Text::reset.c_str());
+
+			if (IsTriggerEnter(ball, box))
+				printf("Shape is %sentering%s trigger volume\n", Text::red.c_str(), Text::reset.c_str());
+			if (IsTriggerStay(ball, box))
+				printf("%sstayingg??%s\n", Text::green.c_str(), Text::reset.c_str());
+			if (IsTriggerExit(ball, box))
+				printf("Shape is %sleaving%s trigger volume\n", Text::blue.c_str(), Text::reset.c_str());
+		}
+#endif
 
 		for (const auto& pair : m_Actors)
 		{
@@ -345,394 +430,6 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const
-	{
-		PhysicsComponentConstructorAssertion(SphereCollider);
-
-		// if there are no existing physics components on the entity
-		if (!m_Actors.contains(entity->GetGUID()))
-		{
-			SharedData tempSharedData;
-
-			const glm::vec3 pos = entity->GetComponent<Transform>().m_Position + offset;
-			const PxVec3 colliderPos = VEC3_CAST(PxVec3, pos);
-
-			const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
-			const glm::quat rotQuat{ eulerAnglesInRad };
-
-			const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-
-			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
-			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
-
-			tempSharedData.m_GUID = entity->GetGUID();
-
-			m_Actors[entity->GetGUID()] = tempSharedData;
-		}
-
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
-
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial);
-
-		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
-		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
-		{
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-
-			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
-		}
-		else
-		{
-			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
-			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-		}
-
-		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
-		// assert(entity->GetGUID() == sharedData.m_GUID);
-
-		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
-		// TODO: assign more data here
-		// sphereCollider.m_IsTrigger = ...
-		sphereCollider.m_Offset = offset;
-		sphereCollider.m_Radius = radius;
-
-		return sphereCollider.m_IsInitialized = true;
-	}
-
-	void PhysicsSystem::ResizeSphereCollider(const Entity& entity, const float newRadius) const
-	{
-		PhysicsComponentAssertion(SphereCollider);
-
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
-
-		for (unsigned i = 0; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
-
-			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius))); break;
-		}
-	}
-
-	void PhysicsSystem::UpdateSphereCollider(const Entity& entity) const
-	{
-		PhysicsComponentAssertion(SphereCollider);
-
-		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
-
-		sphereCollider.m_IsInitialized || ConstructSphereCollider(entity);
-
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// sphereCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
-
-		sphereCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
-
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
-
-		// obtain the index of the sphere shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
-
-			break;
-		}
-
-		PxSphereGeometry sphereGeometry;
-		shapes[i]->getSphereGeometry(sphereGeometry);
-		sphereCollider.m_Radius = sphereGeometry.radius;
-	}
-
-	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
-	{
-		// PhysicsComponentDestructorAssertion(SphereCollider);
-
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
-
-		// reset bit for this component
-		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::SphereCollider;
-
-		if (!sharedData.m_AttachedComponents)
-		{
-			m_Scene->removeActor(*sharedData.m_RigidDynamic);
-			sharedData.m_RigidDynamic->release();
-			m_Actors.erase(entity->GetGUID());
-		}
-		else // there's still more attached physics components
-		{
-			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
-
-			for (unsigned i = 0; i < nbShapes; ++i)
-			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
-
-				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
-			}
-
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
-		}
-
-		// entity->RemoveComponent<SphereCollider>();
-	}
-
-	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
-	{
-		PhysicsComponentConstructorAssertion(BoxCollider);
-
-		// if there are no existing physics components on the entity
-		if (!m_Actors.contains(entity->GetGUID()))
-		{
-			SharedData tempSharedData;
-
-			const glm::vec3 pos = entity->GetComponent<Transform>().m_Position + offset;
-			const PxVec3 colliderPos = VEC3_CAST(PxVec3, pos);
-
-			const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
-			const glm::quat rotQuat{ eulerAnglesInRad };
-
-			const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-
-			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
-			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
-
-			tempSharedData.m_GUID = entity->GetGUID();
-
-			m_Actors[entity->GetGUID()] = tempSharedData;
-		}
-
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
-
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_DefaultMaterial);
-		// (above))->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-
-		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
-		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
-		{
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-
-			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
-		}
-		else
-		{
-			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
-			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-		}
-
-		sharedData.m_AttachedComponents |= PhysicsComponentTypes::BoxCollider;
-		// assert(entity->GetGUID() == sharedData.m_GUID);
-
-		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
-		// TODO: assign more data here
-		// boxCollider.m_IsTrigger = ...
-		boxCollider.m_Offset = offset;
-		boxCollider.m_HalfExtents = halfExtents;
-
-		return boxCollider.m_IsInitialized = true;
-	}
-
-	void PhysicsSystem::ResizeBoxCollider(const Entity& entity, const glm::vec3& newHalfExtents) const
-	{
-		PhysicsComponentAssertion(BoxCollider);
-
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
-
-		for (unsigned i = 0; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
-
-			shapes[i]->setGeometry(PxBoxGeometry(
-				fabs(newHalfExtents.x),
-				fabs(newHalfExtents.y),
-				fabs(newHalfExtents.z)));
-			break;
-		}
-	}
-
-	void PhysicsSystem::UpdateBoxCollider(const Entity& entity) const
-	{
-		PhysicsComponentAssertion(BoxCollider);
-
-		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
-
-		boxCollider.m_IsInitialized || ConstructBoxCollider(entity);
-
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// boxCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
-
-		boxCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
-
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
-
-		// obtain the index of the box shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
-
-			break;
-		}
-
-		PxBoxGeometry boxGeometry;
-		shapes[i]->getBoxGeometry(boxGeometry);
-		boxCollider.m_HalfExtents = VEC3_CAST(glm::vec3, boxGeometry.halfExtents);
-	}
-
-	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
-	{
-		// PhysicsComponentDestructorAssertion(BoxCollider);
-
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic* rigidDynamic = sharedComponent.m_RigidDynamic;
-
-		// reset bit for this component
-		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::BoxCollider;
-
-		if (!sharedData.m_AttachedComponents)
-		{
-			m_Scene->removeActor(*sharedData.m_RigidDynamic);
-			sharedData.m_RigidDynamic->release();
-			m_Actors.erase(entity->GetGUID());
-		}
-		else // there's still more attached physics components
-		{
-			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
-
-			for (unsigned i = 0; i < nbShapes; ++i)
-			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
-
-				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
-			}
-
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
-		}
-
-		// entity->RemoveComponent<BoxCollider>();
-	}
-
-	bool PhysicsSystem::ConstructRigidbody(const Entity& entity) const
-	{
-		PhysicsComponentConstructorAssertion(Rigidbody);
-
-		// if there are no existing physics components on the entity
-		if (!m_Actors.contains(entity->GetGUID()))
-		{
-			SharedData tempSharedData;
-			const glm::vec3 pos = entity->GetComponent<Transform>().m_Position;
-			const PxVec3 rigidbodyPos = VEC3_CAST(PxVec3, pos);
-
-			const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
-			const glm::quat rotQuat{ eulerAnglesInRad };
-
-			const PxTransform transform(rigidbodyPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-
-			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
-			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
-
-			tempSharedData.m_GUID = entity->GetGUID();
-
-			m_Actors[entity->GetGUID()] = tempSharedData;
-		}
-
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-
-		// activate gravity by default
-		bool useGravity = true; // TODO: disabling gravity
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
-
-		// this is necessary to allow the actor to freakin move by physics and forces and such
-		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
-		
-		// wake up the sleeping beauty
-		sharedData.m_RigidDynamic->wakeUp();
-		// UNBELIEVABLE, THIS IS WHAT I WAS MISSING AFTER ALL THIS TIME.
-		// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-		// also, very lucky that I called this AFTER setting kinematic to false,
-		// wouldn't work otherwise!
-
-		// no kinematic rigidbodies for now pls thanks
-		// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
-
-		sharedData.m_AttachedComponents |= PhysicsComponentTypes::Rigidbody;
-		// assert(entity->GetGUID() == sharedData.m_GUID);
-
-		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
-		return rigidbody.m_IsInitialized = true;
-	}
-
-	void PhysicsSystem::AddForce(const Entity& entity, glm::vec3 force) const
-	{
-		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
-	}
-
-	void PhysicsSystem::UpdateRigidbody(const Entity& entity) const
-	{
-		PhysicsComponentAssertion(Rigidbody);
-
-		Rigidbody& rigidbody = entity->GetComponent<Rigidbody>();
-
-		rigidbody.m_IsInitialized || ConstructRigidbody(entity);
-
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		rigidbody.m_Mass = rigidDynamic->getMass();
-		// rigidbody.m_Drag = ;
-		// rigidbody.m_AngularDrag = ;
-		rigidbody.m_UseGravity = !rigidDynamic->getActorFlags().isSet(PxActorFlag::eDISABLE_GRAVITY);
-		rigidbody.m_IsKinematic = rigidDynamic->getRigidBodyFlags().isSet(PxRigidBodyFlag::eKINEMATIC);
-	}
-
-	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
-	{
-		// PhysicsComponentDestructorAssertion(Rigidbody);
-
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::Rigidbody;
-
-		// if colliders are *still* present on this entity
-		if (sharedData.m_AttachedComponents)
-		{
-			// turn the gravity off so that these colliders won't 'fall'
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-		}
-		else
-		{
-			// get rid of all things related to the actor
-			m_Scene->removeActor(*sharedData.m_RigidDynamic);
-			sharedData.m_RigidDynamic->release();
-			m_Actors.erase(entity->GetGUID());
-		}
-
-		// entity->RemoveComponent<Rigidbody>();
-	}
-
 	//This function creates a stack of shapes
 	void PhysicsSystem::CreateStack(const PxTransform& t, unsigned size, float halfExtent) const
 	{
@@ -749,16 +446,6 @@ namespace TRE
 				entity->AddComponent<BoxCollider>();	ConstructBoxCollider(entity, glm::vec3{ halfExtent });
 			}
 		}
-	}
-
-	void PhysicsSystem::RigidbodyConstraintsStuff(const Entity& entity) const
-	{
-		assert(m_Actors.contains(entity->GetGUID()));
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		auto x = rigidDynamic->getRigidDynamicLockFlags();
-		x.raise(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X);
-		rigidDynamic->setRigidDynamicLockFlags(x);
 	}
 
 	// if one shape on an entity is a trigger, they're all triggers now :)
@@ -798,6 +485,7 @@ namespace TRE
 		// because I can't do MarkAsTrigger<Collider>() with lambdas...
 		MarkAsTrigger.operator() < SphereCollider > (entity);
 		MarkAsTrigger.operator() < BoxCollider > (entity);
+		MarkAsTrigger.operator() < CapsuleCollider > (entity);
 	}
 
 	// if one shape on an entity is a collider, they're all colliders now :)
@@ -837,53 +525,294 @@ namespace TRE
 		// because I can't do MarkAsCollider<Collider>() with lambdas...
 		MarkAsCollider.operator() < SphereCollider > (entity);
 		MarkAsCollider.operator() < BoxCollider > (entity);
+		MarkAsCollider.operator() < CapsuleCollider > (entity);
+	}
+
+	bool PhysicsSystem::IsCollisionEnter(const Entity& entity1, const Entity& entity2) const
+	{
+		if (!m_Actors.contains(entity1->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			return false;
+		}
+		if (!m_Actors.contains(entity2->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			return false;
+		}
+
+		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+
+		// ensure that the first index is lesser than (<) the second index
+		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
+
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.collisionHistory)
+		{
+			if (first == actor1Index && second == actor2Index)
+			{
+				return flags & CollisionHistoryEntryEnum::Enter;
+			}
+		}
+		return false;
+	}
+
+	bool PhysicsSystem::IsCollisionStay(const Entity& entity1, const Entity& entity2) const
+	{
+		if (!m_Actors.contains(entity1->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			return false;
+		}
+		if (!m_Actors.contains(entity2->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			return false;
+		}
+
+		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+
+		// ensure that the first index is lesser than (<) the second index
+		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
+
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.collisionHistory)
+		{
+			if (first == actor1Index && second == actor2Index)
+			{
+				return flags & CollisionHistoryEntryEnum::Stay;
+			}
+		}
+		return false;
+	}
+
+	bool PhysicsSystem::IsCollisionExit(const Entity& entity1, const Entity& entity2) const
+	{
+		if (!m_Actors.contains(entity1->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			return false;
+		}
+		if (!m_Actors.contains(entity2->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			return false;
+		}
+
+		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+
+		// ensure that the first index is lesser than (<) the second index
+		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
+
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.collisionHistory)
+		{
+			if (first == actor1Index && second == actor2Index)
+			{
+				return flags & CollisionHistoryEntryEnum::Exit;
+			}
+		}
+		return false;
+	}
+
+	bool PhysicsSystem::IsTriggerEnter(const Entity& entity1, const Entity& entity2) const
+	{
+		if (!m_Actors.contains(entity1->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			return false;
+		}
+		if (!m_Actors.contains(entity2->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			return false;
+		}
+
+		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+
+		// ensure that the first index is lesser than (<) the second index
+		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
+
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.triggerHistory)
+		{
+			if (first == actor1Index && second == actor2Index)
+			{
+				return flags & TriggerHistoryEntryEnum::Enter;
+			}
+		}
+		return false;
+	}
+
+	bool PhysicsSystem::IsTriggerStay(const Entity& entity1, const Entity& entity2) const
+	{
+		UNUSED_PARAM(entity1); UNUSED_PARAM(entity2);
+		return false;
+#if 0
+		if (!m_Actors.contains(entity1->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			return false;
+		}
+		if (!m_Actors.contains(entity2->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			return false;
+		}
+
+		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+
+		// ensure that the first index is lesser than (<) the second index
+		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
+
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.triggerHistory)
+		{
+			if (first == actor1Index && second == actor2Index)
+			{
+				return flags & TriggerHistoryEntryEnum::Stay;
+			}
+		}
+		return false;
+#endif
+	}
+
+	bool PhysicsSystem::IsTriggerExit(const Entity& entity1, const Entity& entity2) const
+	{
+		if (!m_Actors.contains(entity1->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			return false;
+		}
+		if (!m_Actors.contains(entity2->GetGUID()))
+		{
+			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			return false;
+		}
+
+		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+
+		// ensure that the first index is lesser than (<) the second index
+		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
+
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.triggerHistory)
+		{
+			if (first == actor1Index && second == actor2Index)
+			{
+				return flags & TriggerHistoryEntryEnum::Exit;
+			}
+		}
+		return false;
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
 	{
-		UNUSED_PARAM(bodyBuffer);
-		UNUSED_PARAM(poseBuffer);
-		UNUSED_PARAM(count);
-		printf("|%s|\n", __FUNCTION__);
+		UNUSED_PARAM(bodyBuffer); UNUSED_PARAM(poseBuffer); UNUSED_PARAM(count);
 	}
 
 	void SimulationEventCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
 	{
-		UNUSED_PARAM(constraints);
-		UNUSED_PARAM(count);
-		printf("|%s|\n", __FUNCTION__);
+		UNUSED_PARAM(constraints); UNUSED_PARAM(count);
 	}
 
 	void SimulationEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 	{
-		UNUSED_PARAM(pairHeader);
-		UNUSED_PARAM(pairs);
-		UNUSED_PARAM(nbPairs);
-		printf("|%s|\n", __FUNCTION__);
+		if (!nbPairs) return;
+
+		for (unsigned i = 0; i < nbPairs; ++i)
+		{
+			assert(pairHeader.actors[0]->is<PxRigidActor>());
+			assert(pairHeader.actors[1]->is<PxRigidActor>());
+
+			unsigned actor0Index = pairHeader.actors[0]->is<PxRigidActor>()->getInternalActorIndex();
+			unsigned actor1Index = pairHeader.actors[1]->is<PxRigidActor>()->getInternalActorIndex();
+			unsigned flags = 0;
+
+			// ensure that actor0Index is lesser than (<) actor1Index 
+			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
+
+			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH)
+				flags |= CollisionHistoryEntryEnum::Enter;
+
+			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)
+				flags |= CollisionHistoryEntryEnum::Exit;
+
+			// if (!(pairs->flags & (PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH | PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)))  // trust...right?
+			if (pairs->events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
+				flags |= CollisionHistoryEntryEnum::Stay;
+
+			collisionHistory.emplace_back(actor0Index,actor1Index, flags);
+		}
 	}
 
 	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
 	{
-		UNUSED_PARAM(actors);
-		UNUSED_PARAM(count);
-		printf("|%s|\n", __FUNCTION__);
+		UNUSED_PARAM(actors); UNUSED_PARAM(count);
 	}
 
 	void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 	{
-		UNUSED_PARAM(pairs);
-		UNUSED_PARAM(count);
-		printf("|%s|\n", __FUNCTION__);
-
 		if (!count) return;
-		// auto& pair = pairs[count - 1];
-		printf("YOOOOOOOOOOOOOOOOOOOOOOO\n");
+
+		for (unsigned i = 0; i < count; ++i)
+		{
+			assert(pairs[i].triggerActor->is<PxRigidActor>());
+			assert(pairs[i].otherActor->is<PxRigidActor>());
+
+			unsigned actor0Index = pairs[i].triggerActor->is<PxRigidActor>()->getInternalActorIndex();
+			unsigned actor1Index = pairs[i].otherActor->is<PxRigidActor>()->getInternalActorIndex();
+			unsigned flags = 0;
+
+			// ensure that actor0Index is lesser than (<) actor1Index 
+			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
+
+			const auto& pair = pairs[i];
+			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+				flags |= TriggerHistoryEntryEnum::Enter;
+
+			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
+				flags |= TriggerHistoryEntryEnum::Exit;
+
+			// because of https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/struct_px_pair_flag.html?highlight=enotify_touch_persists#_CPPv4N10PxPairFlag4Enum22eNOTIFY_TOUCH_PERSISTSE
+			// on trigger stay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST ...
+			// hmmm...
+			;
+
+			// attempt to find an existing entry for this pair of actors
+			auto iter = std::find_if(triggerHistory.begin(), triggerHistory.end(),
+				[actor0Index, actor1Index](const TriggerHistoryEntry& entry)
+				{
+					return entry.first == actor0Index && entry.second == actor1Index;
+				});
+
+			// only if said entry does not exist, add it in
+			if (iter == triggerHistory.end())
+				triggerHistory.emplace_back(TriggerHistoryEntry{ actor0Index, actor1Index, flags });
+
+			// otherwise, overwrite existing flag variable
+			else
+				iter->flags &= flags; // probably ??
+		}
 	}
 
 	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
 	{
-		UNUSED_PARAM(actors);
-		UNUSED_PARAM(count);
-		printf("|%s|\n", __FUNCTION__);
+		UNUSED_PARAM(actors); UNUSED_PARAM(count);
 	}
 }
+
+// collision layering!! -> PxSetGroupCollisionFlag()
+
+// DISCO RGB FONT FOR EDITOR COMPONENTS?????
+
+// none			- just don't have anything, please
+// collider		- make shape with 
+// rigidbody	- 
+// both			- create stuff like prior
+
+// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
+// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
+// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
+
+// WAIT I NEED THE RIGIDACTOR AN ATTACHED COMPONENTS TO BE SHARED **AT ALL TIMES**

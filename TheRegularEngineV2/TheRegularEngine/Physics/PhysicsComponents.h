@@ -12,6 +12,11 @@
 ************************************************************************/
 #pragma once
 #include "Properties.h"
+// warning LNK4099: PDB '' was not found with 'TheRegularEngine.lib(PxPvd.obj)' or at ''; linking object as if no debug info
+#pragma warning (disable: 4099)
+// warning LNK4006: "__declspec(dllimport) public: __cdecl physx::PxFoundation::PxFoundation(class physx::PxFoundation const &)"
+// (__imp_??0PxFoundation@physx@@QEAA@AEBV01@@Z) already defined in PhysX_64.lib(PhysX_64.dll); second definition ignored
+#pragma warning (disable: 4006)
 #include "PhysX/PxPhysicsAPI.h"
 
 namespace TRE
@@ -20,9 +25,10 @@ namespace TRE
 	{
 		enum Enum : short
 		{
-			Rigidbody		= 1 << 0,
-			SphereCollider	= 1 << 1,
-			BoxCollider		= 1 << 2,
+			Rigidbody       = 1 << 0,
+			SphereCollider  = 1 << 1,
+			BoxCollider     = 1 << 2,
+			CapsuleCollider = 1 << 3,
 		};
 	};
 
@@ -37,7 +43,9 @@ namespace TRE
 	// stuff that EVERY physics component should have
 	struct PhysicsComponent
 	{
-		bool m_IsInitialized = false, m_IsDestructed = false;
+		bool m_IsInitialized = false;
+		bool m_IsDirty = false;
+		bool m_IsDestructed = false;
 	};
 
 	struct Rigidbody : PhysicsComponent, property::base
@@ -49,10 +57,15 @@ namespace TRE
 		bool m_IsKinematic = false;
 		// interpolation modes
 		// collision detection modes
+
 		// constraints - freeze position x,y,z & rotation x, y, z
+		bool m_FreezePositionX = false; bool m_FreezePositionY = false; bool m_FreezePositionZ = false;
+		bool m_FreezeRotationX = false; bool m_FreezeRotationY = false; bool m_FreezeRotationZ = false;
 
 		// to write to / read from .json files
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Rigidbody, m_Mass, m_Drag, m_AngularDrag, m_UseGravity, m_IsKinematic);
+		// for inside the class, but it's NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE for outside the class
+		// but it doesn't work for some reason... :(
 
 		// Allows the base class to get these properties  
 		property_vtable()
@@ -76,26 +89,11 @@ namespace TRE
 		// Variables that are struct/class can't be handled automatically.
 		// So we gotta do it ourselves!
 
-		friend void to_json(nlohmann::json& j, const SphereCollider& t) // Serialize
-		{
-			const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
+		// Serialize
+		friend void to_json(nlohmann::json& j, const SphereCollider& t);
 
-			j = nlohmann::json{
-				{ "m_Offset", v_offset },
-				{ "m_Radius", t.m_Radius },
-				{ "m_IsTrigger", t.m_IsTrigger }
-			};
-		}
-
-		friend void from_json(const nlohmann::json& j, SphereCollider& t) // Deserialize
-		{
-			const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-			const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-			t.m_Offset = glm::make_vec3(a_off);
-
-			t.m_Radius = j.at("m_Radius").get<float>();
-			t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
-		}
+		// Deserialize
+		friend void from_json(const nlohmann::json& j, SphereCollider& t);
 
 		// Allows the base class to get these properties
 		property_vtable()
@@ -103,39 +101,40 @@ namespace TRE
 
 	struct BoxCollider : BaseCollider, property::base
 	{
-		Vector3 m_HalfExtents = Vector3(0.5f);
+		glm::vec3 m_HalfExtents = glm::vec3(0.5f);
 
 		// To write to / read from .json files.
 		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
 		// Variables that are struct/class can't be handled automatically.
 		// So we gotta do it ourselves!
 
-		friend void to_json(nlohmann::json& j, const BoxCollider& t) // Serialize
-		{
-			const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
-			const std::vector<float> v_halfEx{ t.m_HalfExtents.x, t.m_HalfExtents.y, t.m_HalfExtents.z };
+		// Serialize
+		friend void to_json(nlohmann::json& j, const BoxCollider& t);
 
-			j = nlohmann::json{
-				{ "m_Offset", v_offset },
-				{ "m_HalfExtents", v_halfEx },
-				{ "m_IsTrigger", t.m_IsTrigger }
-			};
-		}
-
-		friend void from_json(const nlohmann::json& j, BoxCollider& t) // Deserialize
-		{
-			const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-			const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-			t.m_Offset = glm::make_vec3(a_off);
-
-			const std::vector<float> v_half{ j.at("m_HalfExtents").get<std::vector<float>>() };
-			const float a_half[3]{ v_half[0], v_half[1], v_half[2] };
-			t.m_HalfExtents = glm::make_vec3(a_half);
-
-			t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
-		}
+		// Deserialize
+		friend void from_json(const nlohmann::json& j, BoxCollider& t);
 
 		// Allows the base class to get these properties  
+		property_vtable()
+	};
+
+	struct CapsuleCollider : BaseCollider, property::base
+	{
+		float m_Radius = 1.0f;
+		float m_HalfHeight = 0.5f;
+
+		// To write to / read from .json files.
+		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
+		// Variables that are struct/class can't be handled automatically.
+		// So we gotta do it ourselves!
+
+		// Serialize
+		friend void to_json(nlohmann::json& j, const SphereCollider& t);
+
+		// Deserialize
+		friend void from_json(const nlohmann::json& j, SphereCollider& t);
+
+		// Allows the base class to get these properties
 		property_vtable()
 	};
 
@@ -149,7 +148,13 @@ property_begin(TRE::Rigidbody)
 	property_var(m_Drag),
 	property_var(m_AngularDrag),
 	property_var(m_UseGravity),
-	property_var(m_IsKinematic)
+	property_var(m_IsKinematic),
+	property_var(m_FreezePositionX),
+	property_var(m_FreezePositionY),
+	property_var(m_FreezePositionZ),
+	property_var(m_FreezeRotationX),
+	property_var(m_FreezeRotationY),
+	property_var(m_FreezeRotationZ)
 } property_vend_h(TRE::Rigidbody)
 
 property_begin(TRE::SphereCollider)
@@ -166,13 +171,10 @@ property_begin(TRE::BoxCollider)
 	property_var(m_HalfExtents)
 } property_vend_h(TRE::BoxCollider)
 
-// none			- just don't have anything, please
-// collider		- make shape with 
-// rigidbody	- 
-// both			- create stuff like prior
-
-// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
-// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
-// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
-
-// WAIT I NEED THE RIGIDACTOR AN ATTACHED COMPONENTS TO BE SHARED **AT ALL TIMES**
+property_begin(TRE::CapsuleCollider)
+{
+	property_var(m_IsTrigger),
+	property_var(m_Offset),
+	property_var(m_Radius),
+	property_var(m_HalfHeight)
+} property_vend_h(TRE::CapsuleCollider)

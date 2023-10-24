@@ -24,6 +24,7 @@
 #include "Core/Profiler.h"
 
 //-----------------Physics-----------------//
+#include "Physics/PhysicsComponents.h"
 #include "Physics/PhysicsSystem.h"
 
 //-----------------Graphics-----------------//

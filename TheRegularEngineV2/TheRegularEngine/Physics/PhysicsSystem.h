@@ -18,8 +18,52 @@
 
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
 
+#define VEC3_CAST(type, vec) (##type{(vec).x, (vec).y, (vec).z})
+#define PI 3.14159265358979323846f
+#pragma region PhysicsComponentAssertions
+#define PhysicsComponentConstructorAssertion(Type)														\
+	if (!entity->HasComponent<Type>())																	\
+	{																									\
+		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
+			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to construct.");					\
+		assert(entity->HasComponent<Type>());															\
+	}
+
+// this should never have to trip, but you never know...
+#define PhysicsComponentDestructorAssertion(Type)														\
+	if (!entity->HasComponent<Type>())																	\
+	{																									\
+		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
+			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to destroy.");					\
+		assert(entity->HasComponent<Type>());															\
+	}
+
+#define PhysicsComponentAssertion(Type) 																\
+	if (!entity->HasComponent<Type>())																	\
+	{																									\
+		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
+			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to perform this operation.");	\
+		assert(entity->HasComponent<Type>());															\
+	}
+#pragma endregion
+
 namespace TRE
 {
+	typedef struct HistoryEntryEnum
+	{
+		enum Enum : char
+		{
+			Enter = 1 << 0,
+			Stay  = 1 << 1,
+			Exit  = 1 << 2
+		};
+	} CollisionHistoryEntryEnum, TriggerHistoryEntryEnum;
+
+	typedef struct HistoryEntry
+	{
+		unsigned first, second, flags;
+	} CollisionHistoryEntry, TriggerHistoryEntry;
+
 	class SimulationEventCallback : public physx::PxSimulationEventCallback
 	{
 	public:
@@ -29,7 +73,22 @@ namespace TRE
 		void onSleep(physx::PxActor** actors, physx::PxU32 count) override;
 		void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override;
 		void onWake(physx::PxActor** actors, physx::PxU32 count) override;
+
+		// keeps track of IsCollisionEnter, IsCollisionStay and IsCollisionExit 'results'
+		std::vector<CollisionHistoryEntry> collisionHistory;
+
+		// keeps track of IsTriggerEnter, IsTriggerStay and IsTriggerExit 'results'
+		std::vector<TriggerHistoryEntry> triggerHistory;
+		// why can't physx just handle this for me? :_)
+
+		// WHAT TYPE SHOULD THIS BE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+		// I want to have be like `thingy[e1][e2]` and have it return an integer/enum of some sort...
+		// ->is<PxRigidActor>()->getInternalActorIndex();
 	};
+
+	physx::PxFilterFlags SimulationFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+		physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+		physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
 
 	class PhysicsSystem : public ECSSystem
 	{
@@ -44,6 +103,72 @@ namespace TRE
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 
+#pragma region Rigidbody Function Declarations
+		/* !
+		@function      ConstructRigidbody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity         The entity to create the component for.
+
+		@brief         Initializes the Rigidbody component for the given entity.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidbody(e1);
+		*//*__________________________________________________________________________*/
+		bool ConstructRigidbody(const Entity& entity) const;
+
+		/* !
+		@function      AddForce
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity to add force to.
+		@params        force     The force to apply.
+		@params        mode      The method of applying the given force.
+
+		@brief         Adds a given force to the given's entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("box");
+		e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
+		AddForce(e1,{0, 80, 0});
+		*//*__________________________________________________________________________*/
+		void AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const;
+
+		void ConstrainPositionX(const Entity& entity, bool state) const;
+
+		void ConstrainPositionY(const Entity& entity, bool state) const;
+
+		void ConstrainPositionZ(const Entity& entity, bool state) const;
+
+		void ConstrainRotationX(const Entity& entity, bool state) const;
+
+		void ConstrainRotationY(const Entity& entity, bool state) const;
+
+		void ConstrainRotationZ(const Entity& entity, bool state) const;
+
+		void UpdateRigidbody(const Entity& entity) const;
+
+		/* !
+		@function      DestructRigidbody
+		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+
+		@params        entity    The entity containing the Rigidbody to destroy.
+
+		@brief         Destroys an entity's Rigidbody component.
+
+		Example:
+		Entity e1 = ECSManager::Instance().CreateEntity("mass");
+		e1->AddComponent<Rigidbody>();
+		ConstructRigidbody(e1);
+		// ----- using Rigidbody here... -----
+		DestructRigidbody(e1)
+		*//*__________________________________________________________________________*/
+		void DestructRigidbody(const Entity& entity) const;
+#pragma endregion
+
+#pragma region SphereCollider Function Declarations
 		/* !
 		@function      ConstructSphereCollider
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
@@ -95,7 +220,9 @@ namespace TRE
 		DestructSphereCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructSphereCollider(const Entity& entity) const;
+#pragma endregion
 
+#pragma region BoxCollider Function Declarations
 		/* !
 		@function      ConstructBoxCollider
 		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
@@ -148,70 +275,38 @@ namespace TRE
 		DestructBoxCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructBoxCollider(const Entity& entity) const;
+#pragma endregion
 
-		/* !
-		@function      ConstructRigidbody
-		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
+#pragma region CapsuleCollider Function Declarations
+		bool ConstructCapsuleCollider(const Entity& entity, const float radius = 1.0f, const float halfHeight = 0.5f, const glm::vec3& offset = glm::vec3{ 0 }) const;
 
-		@params        entity         The entity to create the component for.
+		void ResizeCapsuleCollider(const Entity& entity, const float newRadius, const float newHalfHeight) const;
 
-		@brief         Initializes the Rigidbody component for the given entity.
+		void UpdateCapsuleCollider(const Entity& entity) const;
 
-		Example:
-		Entity e1 = ECSManager::Instance().CreateEntity("mass");
-		e1->AddComponent<Rigidbody>();
-		ConstructRigidbody(e1);
-		*//*__________________________________________________________________________*/
-		bool ConstructRigidbody(const Entity& entity) const;
-
-		/* !
-		@function      AddForce
-		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
-
-		@params        entity    The entity to add force to.
-		@params        force     The force to apply.
-		@params        mode      The method of applying the given force.
-
-		@brief         Adds a given force to the given's entity's Rigidbody component.
-
-		Example:
-		Entity e1 = ECSManager::Instance().CreateEntity("box");
-		e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
-		AddForce(e1,{0, 80, 0});
-		*//*__________________________________________________________________________*/
-		void AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const;
-
-		void UpdateRigidbody(const Entity& entity) const;
-
-		/* !
-		@function      DestructRigidbody
-		@author        Prashanth Subrahmanyam Sharma (p.sharma@digipen.edu)
-
-		@params        entity    The entity containing the Rigidbody to destroy.
-
-		@brief         Destroys an entity's Rigidbody component.
-
-		Example:
-		Entity e1 = ECSManager::Instance().CreateEntity("mass");
-		e1->AddComponent<Rigidbody>();
-		ConstructRigidbody(e1);
-		// ----- using Rigidbody here... -----
-		DestructRigidbody(e1)
-		*//*__________________________________________________________________________*/
-		void DestructRigidbody(const Entity& entity) const;
+		void DestructCapsuleCollider(const Entity& entity) const;
+#pragma endregion
 
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
-
-		void RigidbodyConstraintsStuff(const Entity& entity) const;
 
 		void ColliderToTrigger(const Entity& entity) const;
 
 		void TriggerToCollider(const Entity& entity) const;
 
-	private:
+		bool IsCollisionEnter(const Entity& entity1, const Entity& entity2) const;
 
-		bool m_IsReadyForUpdate = false;
+		bool IsCollisionStay(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsCollisionExit(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsTriggerEnter(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsTriggerStay(const Entity& entity1, const Entity& entity2) const;
+
+		bool IsTriggerExit(const Entity& entity1, const Entity& entity2) const;
+
+	private:
 
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
@@ -231,5 +326,3 @@ namespace TRE
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 	};
 }
-
-// DISCO RGB FONT FOR EDITOR COMPONENTS?????
