@@ -21,7 +21,6 @@
 
 #pragma region Macros
 
-
 #define UNUSED_PARAM(param) (void)param
 
 // not the best name... :/
@@ -36,26 +35,6 @@
 
 using namespace physx;
 // to save my dwindling sanity
-
-#if 0
-namespace Text
-{
-	const std::string reset{ "\033[0m" };
-	const std::string red{ "\033[0;31m" };
-	const std::string green{ "\033[0;32m" };
-	const std::string blue{ "\033[0;36m" };
-	const std::string crit{ "\033[37;41m" };
-}
-#else
-namespace Text
-{
-	const std::string reset{ "" };
-	const std::string red{ "" };
-	const std::string green{ "" };
-	const std::string blue{ "" };
-	const std::string crit{ "" };
-}
-#endif
 
 namespace TRE
 {
@@ -178,7 +157,7 @@ namespace TRE
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND // for OnCollisionEnter
 			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS // added for OnCollisionStay
 			| PxPairFlag::eNOTIFY_TOUCH_LOST // added for OnCollisionExit
-		;
+			;
 
 		return {};
 	}
@@ -212,6 +191,11 @@ namespace TRE
 #endif
 
 		return isReadyForUpdate = true;
+	}
+
+	void PhysicsSystem::Init()
+	{
+		// should the stuff from the constructor be here instead??
 	}
 
 	void PhysicsSystem::Update()
@@ -274,7 +258,10 @@ namespace TRE
 		UpdateAllEntitiesWithComponent(SphereCollider);
 		UpdateAllEntitiesWithComponent(BoxCollider);
 		UpdateAllEntitiesWithComponent(CapsuleCollider);
+	}
 
+	void PhysicsSystem::GameUpdate()
+	{
 #if 0
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
@@ -291,54 +278,43 @@ namespace TRE
 			std::time(&start_timer);
 		}
 #endif
-		m_SimulationEventCallback.collisionHistory.clear();
-		m_SimulationEventCallback.triggerHistory.clear(); // but actually no (?)
+
+		m_SimulationEventCallback.m_CollisionHistory.clear();
+
+		// there's previous trigger history (PTH) & (current) trigger history (CTH)
+		// step 1) replace all entries in PTH with those from CTH
+		m_SimulationEventCallback.m_PrevTriggerHistory = std::move(m_SimulationEventCallback.m_TriggerHistory);
+
+		// step 2) clear CTH
+		m_SimulationEventCallback.m_TriggerHistory = std::vector<TriggerHistoryEntry>();
 
 		// Accumulator?
 		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
+		// ^ step 3) CTH is overwritten by fetchResults()
 
-#if 0
-		for (auto& thing : m_SimulationEventCallback.triggerHistory)
+#pragma region Manual IsTriggerStay Handling
+		// Manually handling stuff for IsTriggerStay to work properly because PhysX said no :_)
+		for (const auto& prevEntry : m_SimulationEventCallback.m_PrevTriggerHistory)
 		{
-			// if there was a triggerenter previously, but no
-			// new triggerexit happened, there must still be an overlap!
-			// also, there's no need to assign stay again if it already has it...
-			if (thing.flags & TriggerHistoryEntryEnum::Enter &&
-				!(thing.flags & TriggerHistoryEntryEnum::Stay) &&
-				!(thing.flags & TriggerHistoryEntryEnum::Exit))
-				thing.flags |= TriggerHistoryEntryEnum::Stay;
+			auto& CTH = m_SimulationEventCallback.m_TriggerHistory; // current trigger history
 
-			// if there was a triggerexit, it must be for certain that
-			// the trigger & collider are now separate = no enter, no stay
-			if (thing.flags & TriggerHistoryEntryEnum::Exit)
-				thing.flags &= ~(TriggerHistoryEntryEnum::Enter | TriggerHistoryEntryEnum::Stay);
+			// const auto iter = std::find_if(CTH.begin(), CTH.end(), equalityPredicate);
+			const auto iter = std::ranges::find_if(CTH, [prevEntry](const TriggerHistoryEntry entry)
+				{
+					return entry.m_First == prevEntry.m_First && entry.m_Second == prevEntry.m_Second;
+				});
+
+			// step 4: if nothing changed (no entry/exit) AND PTH says there was an entry / stay, CTH.stay = true
+			if (iter == CTH.end() && prevEntry.m_Flags & (TriggerHistoryEntryEnum::Enter | TriggerHistoryEntryEnum::Stay))
+				CTH.emplace_back(prevEntry.m_First, prevEntry.m_Second, TriggerHistoryEntryEnum::Stay);
 		}
-#endif
+#pragma endregion
+	}
 
-#if 0
-		// Is(Collision/Trigger)(Enter/Stay/Exit)() testing area
-		{
-			const Entity ball = ECSManager::Instance().GetEntities<SphereCollider>().front();
-			const Entity box = ECSManager::Instance().GetEntities<BoxCollider>().front();
-
-			if (IsCollisionEnter(ball, box))
-				printf("%sfirst kiss%s\n", Text::red.c_str(), Text::reset.c_str());
-			if (IsCollisionStay(ball, box))
-				printf("%ssustained??%s\n", Text::green.c_str(), Text::reset.c_str());
-			if (IsCollisionExit(ball, box))
-				printf("%sbreakup%s\n", Text::blue.c_str(), Text::reset.c_str());
-
-			if (IsTriggerEnter(ball, box))
-				printf("Shape is %sentering%s trigger volume\n", Text::red.c_str(), Text::reset.c_str());
-			if (IsTriggerStay(ball, box))
-				printf("%sstayingg??%s\n", Text::green.c_str(), Text::reset.c_str());
-			if (IsTriggerExit(ball, box))
-				printf("Shape is %sleaving%s trigger volume\n", Text::blue.c_str(), Text::reset.c_str());
-		}
-#endif
-
+	void PhysicsSystem::LateUpdate()
+	{
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
@@ -353,19 +329,7 @@ namespace TRE
 			entity->GetComponent<Transform>().m_Rotation = eulerAnglesInRad / PI * 180.0f;
 
 			entity->GetComponent<Transform>().m_IsDirty = true;
-#if 0
-			printf("%s has\n", entity->GetComponent<Properties>().m_Name.c_str());
-			const auto& pos = entity->GetComponent<Transform>().m_Position;
-			const auto& rot = entity->GetComponent<Transform>().m_Rotation;
-			printf("pos: %f %f %f\n", pos.x, pos.y, pos.z);
-			printf("rot: %f %f %f\n\n", rot.x, rot.y, rot.z);
-#endif
 		}
-	}
-
-	void PhysicsSystem::LateUpdate()
-	{
-		
 	}
 
 	void PhysicsSystem::BeforeReset()
@@ -528,26 +492,26 @@ namespace TRE
 		MarkAsCollider.operator() < CapsuleCollider > (entity);
 	}
 
-	bool PhysicsSystem::IsCollisionEnter(const Entity& entity1, const Entity& entity2) const
+	bool PhysicsSystem::IsCollisionEnter(const Entity& entity_1, const Entity& entity_2) const
 	{
-		if (!m_Actors.contains(entity1->GetGUID()))
+		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
 			return false;
 		}
-		if (!m_Actors.contains(entity2->GetGUID()))
+		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
 			return false;
 		}
 
-		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
-		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor1Index = m_Actors[entity_1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity_2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
 
 		// ensure that the first index is lesser than (<) the second index
 		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
 
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.collisionHistory)
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		{
 			if (first == actor1Index && second == actor2Index)
 			{
@@ -557,26 +521,26 @@ namespace TRE
 		return false;
 	}
 
-	bool PhysicsSystem::IsCollisionStay(const Entity& entity1, const Entity& entity2) const
+	bool PhysicsSystem::IsCollisionStay(const Entity& entity_1, const Entity& entity_2) const
 	{
-		if (!m_Actors.contains(entity1->GetGUID()))
+		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
 			return false;
 		}
-		if (!m_Actors.contains(entity2->GetGUID()))
+		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
 			return false;
 		}
 
-		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
-		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor1Index = m_Actors[entity_1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity_2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
 
 		// ensure that the first index is lesser than (<) the second index
 		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
 
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.collisionHistory)
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		{
 			if (first == actor1Index && second == actor2Index)
 			{
@@ -586,26 +550,26 @@ namespace TRE
 		return false;
 	}
 
-	bool PhysicsSystem::IsCollisionExit(const Entity& entity1, const Entity& entity2) const
+	bool PhysicsSystem::IsCollisionExit(const Entity& entity_1, const Entity& entity_2) const
 	{
-		if (!m_Actors.contains(entity1->GetGUID()))
+		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
 			return false;
 		}
-		if (!m_Actors.contains(entity2->GetGUID()))
+		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
 			return false;
 		}
 
-		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
-		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor1Index = m_Actors[entity_1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity_2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
 
 		// ensure that the first index is lesser than (<) the second index
 		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
 
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.collisionHistory)
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		{
 			if (first == actor1Index && second == actor2Index)
 			{
@@ -615,26 +579,26 @@ namespace TRE
 		return false;
 	}
 
-	bool PhysicsSystem::IsTriggerEnter(const Entity& entity1, const Entity& entity2) const
+	bool PhysicsSystem::IsTriggerEnter(const Entity& entity_1, const Entity& entity_2) const
 	{
-		if (!m_Actors.contains(entity1->GetGUID()))
+		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
 			return false;
 		}
-		if (!m_Actors.contains(entity2->GetGUID()))
+		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
 			return false;
 		}
 
-		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
-		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor1Index = m_Actors[entity_1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity_2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
 
 		// ensure that the first index is lesser than (<) the second index
 		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
 
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.triggerHistory)
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_TriggerHistory)
 		{
 			if (first == actor1Index && second == actor2Index)
 			{
@@ -644,29 +608,26 @@ namespace TRE
 		return false;
 	}
 
-	bool PhysicsSystem::IsTriggerStay(const Entity& entity1, const Entity& entity2) const
+	bool PhysicsSystem::IsTriggerStay(const Entity& entity_1, const Entity& entity_2) const
 	{
-		UNUSED_PARAM(entity1); UNUSED_PARAM(entity2);
-		return false;
-#if 0
-		if (!m_Actors.contains(entity1->GetGUID()))
+		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
 			return false;
 		}
-		if (!m_Actors.contains(entity2->GetGUID()))
+		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
 			return false;
 		}
 
-		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
-		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor1Index = m_Actors[entity_1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity_2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
 
 		// ensure that the first index is lesser than (<) the second index
 		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
 
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.triggerHistory)
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_TriggerHistory)
 		{
 			if (first == actor1Index && second == actor2Index)
 			{
@@ -674,29 +635,28 @@ namespace TRE
 			}
 		}
 		return false;
-#endif
 	}
 
-	bool PhysicsSystem::IsTriggerExit(const Entity& entity1, const Entity& entity2) const
+	bool PhysicsSystem::IsTriggerExit(const Entity& entity_1, const Entity& entity_2) const
 	{
-		if (!m_Actors.contains(entity1->GetGUID()))
+		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
 			return false;
 		}
-		if (!m_Actors.contains(entity2->GetGUID()))
+		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
 			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
 			return false;
 		}
 
-		unsigned actor1Index = m_Actors[entity1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
-		unsigned actor2Index = m_Actors[entity2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor1Index = m_Actors[entity_1->GetGUID()].m_RigidDynamic->getInternalActorIndex();
+		unsigned actor2Index = m_Actors[entity_2->GetGUID()].m_RigidDynamic->getInternalActorIndex();
 
 		// ensure that the first index is lesser than (<) the second index
 		if (actor1Index > actor2Index) std::swap(actor1Index, actor2Index);
 
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.triggerHistory)
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_TriggerHistory)
 		{
 			if (first == actor1Index && second == actor2Index)
 			{
@@ -742,7 +702,7 @@ namespace TRE
 			if (pairs->events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
 				flags |= CollisionHistoryEntryEnum::Stay;
 
-			collisionHistory.emplace_back(actor0Index,actor1Index, flags);
+			m_CollisionHistory.emplace_back(actor0Index, actor1Index, flags);
 		}
 	}
 
@@ -774,25 +734,9 @@ namespace TRE
 			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
 				flags |= TriggerHistoryEntryEnum::Exit;
 
-			// because of https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/struct_px_pair_flag.html?highlight=enotify_touch_persists#_CPPv4N10PxPairFlag4Enum22eNOTIFY_TOUCH_PERSISTSE
-			// on trigger stay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST ...
-			// hmmm...
-			;
-
-			// attempt to find an existing entry for this pair of actors
-			auto iter = std::find_if(triggerHistory.begin(), triggerHistory.end(),
-				[actor0Index, actor1Index](const TriggerHistoryEntry& entry)
-				{
-					return entry.first == actor0Index && entry.second == actor1Index;
-				});
-
-			// only if said entry does not exist, add it in
-			if (iter == triggerHistory.end())
-				triggerHistory.emplace_back(TriggerHistoryEntry{ actor0Index, actor1Index, flags });
-
-			// otherwise, overwrite existing flag variable
-			else
-				iter->flags &= flags; // probably ??
+			// Because of https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/struct_px_pair_flag.html?highlight=enotify_touch_persists#_CPPv4N10PxPairFlag4Enum22eNOTIFY_TOUCH_PERSISTSE,
+			// IsTriggerStay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST, which is done in GameUpdate().
+			m_TriggerHistory.emplace_back(actor0Index, actor1Index, flags);
 		}
 	}
 
@@ -805,14 +749,3 @@ namespace TRE
 // collision layering!! -> PxSetGroupCollisionFlag()
 
 // DISCO RGB FONT FOR EDITOR COMPONENTS?????
-
-// none			- just don't have anything, please
-// collider		- make shape with 
-// rigidbody	- 
-// both			- create stuff like prior
-
-// WHAT IF A THING DIDN'T HAVE TO HAVE A SHAPE ATTACHED???
-// or what if I shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); ?
-// or maybe rb.m_RigidDynamic->setActorFlags(PxActorFlag::eDISABLE_GRAVITY);
-
-// WAIT I NEED THE RIGIDACTOR AN ATTACHED COMPONENTS TO BE SHARED **AT ALL TIMES**
