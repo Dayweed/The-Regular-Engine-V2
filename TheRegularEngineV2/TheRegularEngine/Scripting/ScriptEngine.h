@@ -12,7 +12,17 @@
 namespace TRE
 {
 
-	
+	struct ScriptEngineData
+	{
+		MonoDomain* RootDomain = nullptr;
+		MonoDomain* AppDomain = nullptr;
+
+		MonoAssembly* MonoAssembly = nullptr;
+
+		MonoObject* DemoObject = nullptr;
+	};
+
+
 
 	class ScriptEngine 
 	{
@@ -34,18 +44,15 @@ namespace TRE
 		static void UpdateScriptingEngine();
 		static void TestScriptingEngine();
 		static void TestAddComponent();
-		static void TestSpawnObject();
-		static void TestUpdataObject();
+
+		static void TestUpdateObject();
 		static void SetTestGUID(std::string guid) { TestGUID = guid; }
 
 		
 
 	private:
 
-		static MonoDomain* s_RootDomain;
-		static MonoDomain* s_AppDomain;
-		static MonoAssembly* s_MonoAssembly;
-		static MonoObject* DemoObject;
+		static ScriptEngineData* s_ScriptEngineData;
 
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
 
