@@ -9,22 +9,12 @@
 namespace TRE
 {
 
-    struct ScriptEngineData
-    {
-    	MonoDomain* RootDomain = nullptr;
-
-		MonoDomain* AppDomain= nullptr;
-		MonoAssembly* MonoAssembly= nullptr;
-        MonoImage* AssemblyImage = nullptr;
-
-        MonoObject* DemoInstance = nullptr;
-
-		ScriptInputHandler* ScriptInputHandler = nullptr;
-		
-	};
-
 #pragma region ScriptEngine
-    static ScriptEngineData* s_ScriptEngineData = nullptr;
+    MonoDomain* ScriptEngine::s_RootDomain = nullptr;
+    MonoDomain* ScriptEngine::s_AppDomain = nullptr;
+    MonoAssembly* ScriptEngine::s_MonoAssembly = nullptr;
+    MonoObject* ScriptEngine::DemoObject = nullptr;
+
     std::string ScriptEngine::TestGUID = "";
     bool ScriptEngine::CreatedScriptObject = false;
 
@@ -102,8 +92,7 @@ namespace TRE
 
     void ScriptEngine::Init()
     {
-    	s_ScriptEngineData = new ScriptEngineData();
-		
+
 		InitMono();
         ScriptBind::RegisterFunctions();
     }
@@ -120,49 +109,45 @@ namespace TRE
         }
 
         // Store the root domain pointer
-        s_ScriptEngineData-> RootDomain = rootDomain;
+        s_RootDomain = rootDomain;
 
-        s_ScriptEngineData->AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
-        mono_domain_set(s_ScriptEngineData->AppDomain, true);
+        s_AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
+        mono_domain_set(s_AppDomain, true);
 
-        s_ScriptEngineData->MonoAssembly = LoadCSharpAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
-        PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
-
-        // Get the image of the assembly
-        s_ScriptEngineData->AssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-
+        s_MonoAssembly = LoadCSharpAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
+        PrintAssemblyTypes(s_MonoAssembly);
 	}
 
 	
 
     void ScriptEngine::UpdateScriptingEngine()
     {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
         MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
 
-        MonoObject * instance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
+        MonoObject * instance = mono_object_new(s_AppDomain, testClass);
         MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
         mono_runtime_invoke(method, instance, nullptr, nullptr);
     }
 
     void ScriptEngine::TestScriptingEngine()
     {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
         MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
 
 		// creates new instance of the class
-		MonoObject* instance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
+		DemoObject = mono_object_new(s_AppDomain, testClass);
         // Run constructor of the object class
-    	mono_runtime_object_init(instance);
+    	mono_runtime_object_init(DemoObject);
 
     }
 
     void ScriptEngine::TestAddComponent()
     {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
         MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
 
-		MonoObject* Instance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
+		MonoObject* Instance = mono_object_new(s_AppDomain, testClass);
 		mono_runtime_object_init(Instance);
 
 		MonoMethod* method = mono_class_get_method_from_name(testClass, "Test", 0);
@@ -170,28 +155,13 @@ namespace TRE
 
     }
 
-    void ScriptEngine::TestSpawnObject()
+    void ScriptEngine::TestUpdataObject()
     {
-		/*MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Demo");
-        MonoObject* instance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
-        mono_runtime_object_init(instance);*/
+    	MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
+		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+        MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
+        mono_runtime_invoke(method, DemoObject, nullptr, nullptr);
     }
-
-
-    void ScriptEngine::DemoInit()
-    {
-	    MonoClass* testClass = mono_class_from_name(s_ScriptEngineData->AssemblyImage, "TRE", "Demo");
-        s_ScriptEngineData->DemoInstance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
-        mono_runtime_object_init(s_ScriptEngineData->DemoInstance);
-    }
-
-    void ScriptEngine::DemoUpdate()
-    {
-    	MonoClass* testClass = mono_class_from_name(s_ScriptEngineData->AssemblyImage, "TRE", "Demo");
-		MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
-		mono_runtime_invoke(method, s_ScriptEngineData->DemoInstance, nullptr, nullptr);
-	}
 
 
 

@@ -15,7 +15,6 @@ namespace TRE
 	{
 		if(DemoInit == true)
 		{
-			//ScriptEngine::DemoInit();
 			DemoInit = false;
 		}
 		
@@ -23,7 +22,7 @@ namespace TRE
 
 	void ScriptingSystem::GameUpdate()
 	{
-		//ScriptEngine::DemoUpdate();
+		ScriptEngine::TestUpdataObject();
 	}
 
 	void ScriptingSystem::LateUpdate()

@@ -15,6 +15,8 @@
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
 
+#include <map>
+
 namespace TRE
 {
 	std::string MonoStringToString(MonoString* monoString)
@@ -99,6 +101,41 @@ namespace TRE
         Demo::SpawnObject();
     }
 
+    static std::unordered_map<std::string, std::string> GetAllSceneObjects()
+	{
+        std::unordered_map<std::string, std::string > tempMap;
+		std::vector temp = ECSManager::Instance().GetAllEntities();
+
+        for(auto& entity : temp)
+        {
+            std::string temp1 = entity->GetName();
+            std::string temp2 = entity->GetGUID();
+            tempMap.insert(std::make_pair(temp1, temp2));
+		}
+
+		return tempMap;
+	}
+
+    static MonoString* FindIDFromName(MonoString* name)
+	{
+		std::string temp = MonoStringToString(name);
+        std::unordered_map<std::string, std::string> sceneObjects = GetAllSceneObjects();
+        // Search for the name in the map
+        if(sceneObjects.find(temp) != sceneObjects.end())
+        {
+        	// Found the name
+			std::string ID = sceneObjects[temp];
+			return mono_string_new(mono_domain_get(), ID.c_str());
+		}
+		else
+		{
+			// Did not find the name
+			return mono_string_new(mono_domain_get(), "NULL");
+		}
+	}
+
+#pragma region TransformBindings
+
     static void BindSetPosition(MonoString* id, glm::vec3 newPos)
     {
         std::string ID = MonoStringToString(id);
@@ -137,8 +174,7 @@ namespace TRE
         *output = Temp->GetComponent<Transform>().m_Rotation;
     }
 
-    
-
+#pragma endregion
 
 #pragma region CameraBindings
     static void BindCamSetViewportSize(MonoString* id, glm::vec2 newSize)
@@ -447,6 +483,7 @@ namespace TRE
         mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
         mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
         mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
+        mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
 
         // Tranform Bindings
         mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);

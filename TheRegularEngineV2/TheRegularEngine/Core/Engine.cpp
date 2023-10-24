@@ -406,7 +406,7 @@ namespace TRE
 		EditorSystemManager::Instance().InitSystem();
 
 		ScriptEngine::Init();
-		//ScriptEngine::TestScriptingEngine();
+		ScriptEngine::TestScriptingEngine();
 	}
 
 	Engine::~Engine()

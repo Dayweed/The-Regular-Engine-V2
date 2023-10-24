@@ -16,8 +16,19 @@ using System.Threading.Tasks;
  */
 namespace TRE
 {
-
     
+    public struct Entity
+    {
+        public string id;
+        public string name;
+
+        public Entity(string _name)
+        {
+            name = _name;
+            id = "0";
+        }
+
+    }
 
     // Reference to this for what components that can be added to the entity.
     public enum Components
@@ -116,6 +127,9 @@ namespace TRE
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void RemoveComponent(string entityID, Components component);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string FindIDFromName(string name);
     }
 
     public class CameraSystem
