@@ -7,29 +7,12 @@
 // list of engine functions to bind to the scripting engine
 //-----------------------------------------------------------------------------
 
-#include "EventSystem/Events/InputEvent.h"
+
 
 namespace TRE
 {
 
-	class ScriptInputHandler
-	{
-	public:
-		ScriptInputHandler();
-		~ScriptInputHandler();
-
-		void Update();
-
-		void GetKeyPressed(const InputEvent& event);
-
-		int GetKey() { return _key; }
-		int GetState() { return _state; }
-
-	private:
-
-		int _key{}, _state{};
-		friend class ScriptEngine;
-	};
+	
 
 	class ScriptEngine 
 	{

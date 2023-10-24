@@ -32,6 +32,11 @@ namespace TRE
 
              TransformSystem.SetPosition(Test.id, pos);
 
+             if (InputSystem.GetKeyDown(InputKeys.Space))
+             {
+                 Console.WriteLine("Space Pressed!");
+             }
+
         }
 
 

@@ -275,5 +275,9 @@ namespace TRE
 
     }
 
-
+    public class InputSystem
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool GetKeyDown(InputKeys keycode);
+    }
 }
