@@ -19,6 +19,18 @@
 
 namespace TRE
 {
+    ScriptInputHandler& ScriptInputHandler::Instance()
+	{
+		static ScriptInputHandler instance;
+		return instance;
+	}
+
+    void ScriptInputHandler::GetKeyPressed(const InputEvent& event)
+    {
+        _key= event._key;
+        _state = event._state;
+    }
+
 	std::string MonoStringToString(MonoString* monoString)
 	{
 		char* temp = mono_string_to_utf8(monoString);
@@ -414,6 +426,18 @@ namespace TRE
 
 #pragma region InputBindings
 
+    static bool GetKeyDown(int key)
+	{
+		
+        if(key == ScriptInputHandler::Instance().GetKey() )
+        {
+            ScriptInputHandler::Instance().ResetSystem();
+	        return true;
+        }
+        else 
+            return false;
+         
+	}
     
 
 #pragma endregion
@@ -478,6 +502,8 @@ namespace TRE
 
     void ScriptBind::RegisterFunctions()
     {
+        
+
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
         mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
@@ -529,7 +555,7 @@ namespace TRE
         mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
 
         // Input Binding
-        //mono_add_internal_call("TRE.InputSystem::GetKeyPressed", BindGetKeyPressed);
+        mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
 
         // Logging
         mono_add_internal_call("TRE.Core::Log", SendMessageToConsole);

@@ -10,6 +10,7 @@
 #include "Graphics/VulkanEditor.h"
 #include "Core/Engine.h"
 #include "Graphics/RendererContext.h"
+#include "ConsolePanel.h"
 //To Delete
 #include "Scripting/ScriptEngine.h"
 namespace TRE
@@ -280,7 +281,7 @@ namespace TRE
 				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(filePath) };
 				if (prefabGUID.empty())
 				{
-					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Prefab not found!" });
+					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "[ERROR] Prefab not found!" });
 					if (remove(filePath.c_str()))
 					{
 						std::string funcName{ __FUNCTION__ };

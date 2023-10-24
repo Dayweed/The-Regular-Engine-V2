@@ -67,6 +67,7 @@ namespace TRE
 
 	void PrefabInputArchive::operator()(entt::entity& ent)
 	{
+		// Getting ID of entity
 		uint32_t entID = m_Current[m_CurrentIdx].get<uint32_t>();
 		ent = entt::entity(entID);
 		m_CurrentIdx++;
@@ -74,13 +75,14 @@ namespace TRE
 
 	void PrefabInputArchive::operator()(std::underlying_type_t<entt::entity>& u)
 	{
+		// Getting component
 		m_RootIdx++;
 		if (m_RootIdx >= m_Root.size())
 		{
 			std::string funcName{ __FUNCTION__ };
-			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size()) };
-			TRE_CORE_ERROR(error);
-			assert(m_RootIdx < m_Root.size());
+			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size())
+				+ "! This means there is a new component! Assuming it doesn't have it..."};
+			TRE_CORE_WARN(error);
 			return;
 		}
 		m_Current = m_Root[m_RootIdx];

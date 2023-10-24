@@ -38,6 +38,7 @@ namespace TRE
         Audio = 2,
     }
 
+    #region Vector3
     public struct Vector3
     {
         public float x, y, z;
@@ -45,7 +46,71 @@ namespace TRE
         {
             this.x = x; this.y = y; this.z = z;
         }
+        public static Vector3 operator + (Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+        }
+
+        public static Vector3 operator +(Vector3 a, float b)
+        {
+            return new Vector3(a.x + b, a.y + b, a.z + b);
+        }
+
+        public static Vector3 operator -(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.x - b.x, a.y -b.y, a.z - b.z);
+        }
+
+        public static Vector3 operator -(Vector3 a, float b)
+        {
+            return new Vector3(a.x - b, a.y - b, a.z - b);
+        }
+
+        public static Vector3 operator *(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.x * b.x, a.y *b.y, a.z * b.z);
+        }
+
+        public static Vector3 operator *(Vector3 a, float b)
+        {
+            return new Vector3(a.x * b, a.y * b, a.z * b);
+        }
+
+        public static Vector3 operator /(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.x / b.x, a.y /b.y, a.z / b.z);
+        }
+
+        public static Vector3 operator /(Vector3 a, float b)
+        {
+            return new Vector3(a.x / b, a.y / b, a.z / b);
+        }
+
+        public static bool operator ==(Vector3 a, Vector3 b)
+        {
+            if (a.x == b.x && a.y == b.y && a.z == b.z)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool operator !=(Vector3 a, Vector3 b)
+        {
+            if (a.x != b.x || a.y != b.y || a.z != b.z)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
+    #endregion
 
     public struct Vector2
     {
@@ -275,5 +340,9 @@ namespace TRE
 
     }
 
-
+    public class InputSystem
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool GetKeyDown(InputKeys keycode);
+    }
 }

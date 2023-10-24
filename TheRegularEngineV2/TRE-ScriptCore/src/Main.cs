@@ -8,7 +8,7 @@ namespace TRE
 
     public class Main
     {
-
+        //create the test object and temp object not too sure if the temp object is linked in some 
         public Entity Temp = new Entity("Temp");
         public Entity Test = new Entity("Test");
         
@@ -24,14 +24,27 @@ namespace TRE
         public void Update()
         {
             // Move The Test Object 
-             TransformSystem.GetPosition(Test.id, out Vector3 pos);
+            TransformSystem.GetPosition(Test.id, out Vector3 pos);
+            //
+            Vector3 tmp = new Vector3(0, 0, 0);
 
-             pos.x += 0.1f;
-             pos.y += 0.1f;
-             pos.z += 0.1f;
+            if (InputSystem.GetKeyDown(InputKeys.W))
+            {
+                tmp.x = 60;
+                PhysicsSystem.AddForce(Test.id, tmp);
+            }
 
-             TransformSystem.SetPosition(Test.id, pos);
+            if (InputSystem.GetKeyDown(InputKeys.S))
+            {
+                tmp.x = -60;
+                PhysicsSystem.AddForce(Test.id, tmp);
+            }
 
+            if (InputSystem.GetKeyDown(InputKeys.Space))
+             {
+                 Console.WriteLine("Space Pressed!");
+             }
+             
         }
 
 
