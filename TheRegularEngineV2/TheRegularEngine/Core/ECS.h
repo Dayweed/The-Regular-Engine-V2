@@ -111,6 +111,7 @@ namespace TRE
 	struct Properties : property::base
 	{
 		std::string m_GUID{};
+		std::string m_Tag{};
 		bool m_Active{ true };		// To check if it is active
 		std::string m_Name{};		// To get the name
 
@@ -119,7 +120,7 @@ namespace TRE
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Active, m_GUID, m_Name)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Tag, m_Active, m_GUID, m_Name)
 	};
 
 	class Ent : public std::enable_shared_from_this<Ent>
@@ -886,7 +887,8 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
-	property_var(m_Active).Name("Active")
+	property_var(m_Active).Name("Active"),
+	property_var(m_Tag).Name("Tag")
 } property_vend_h(TRE::Properties)
 
 property_begin(TRE::FEL)
