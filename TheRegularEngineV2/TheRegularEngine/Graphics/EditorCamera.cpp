@@ -59,4 +59,12 @@ namespace TRE
 		m_Position = position;
 		m_IsDirty = true;
 	}
+
+	void EditorCamera::SetDirection(const glm::vec3& position)
+	{
+		glm::vec3 direction = glm::normalize(position - m_Position);
+		SetFocalDistance(glm::length(position - m_Position) > 200.f ? glm::length(position - m_Position)/2.f : 100.f);
+		SetFocalPoint(position);
+		m_IsDirty = true;
+	}
 }

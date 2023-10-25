@@ -117,6 +117,16 @@ namespace TRE
 		}
 		else
 			m_IsGridAndSnap = false;
+
+		//Look at
+		if (event._key == (int)KeyButton::F)
+		{
+			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
+			{
+				if(SelectedEntity->HasComponent<MeshRenderer>())
+					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
+			}
+		}
 	}
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
@@ -437,7 +447,7 @@ namespace TRE
 				if (glm::length(positionOffset) < 0.1f)
 					return;
 				positionOffset = glm::normalize(positionOffset);
-				positionOffset *= -1;
+				positionOffset.y *= -1;
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
@@ -463,7 +473,6 @@ namespace TRE
 				if (glm::length(rotationOffset) < 0.1f)
 					return;
 				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset.x *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
