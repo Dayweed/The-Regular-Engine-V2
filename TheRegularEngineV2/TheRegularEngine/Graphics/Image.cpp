@@ -133,8 +133,8 @@ namespace TRE
 
 	void Image2D::Invalidate()
 	{
-		VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
+		// VkDevice Device = RendererContext::GetDevice()->GetLogicalDevice();
 
-		VkImageUsageFlags UsageFlag = VK_IMAGE_USAGE_SAMPLED_BIT;
+		// VkImageUsageFlags UsageFlag = VK_IMAGE_USAGE_SAMPLED_BIT;
 	}
 }

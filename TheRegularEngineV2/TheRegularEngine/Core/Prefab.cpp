@@ -280,9 +280,8 @@ namespace TRE
 			{
 				m_TempPrefab = prefabPair.second;
 				Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
-				std::string prefabGUID{ prefabComp.m_PrefabGUID };
 
-				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+				UpdateAllInstances(prefabComp.m_Instances, prefabComp.m_PrefabGUID);
 			}
 
 			ResetTempPrefab();
@@ -396,9 +395,9 @@ namespace TRE
 		}
 
 		// Recursively Save/Update child Prefabing
-		for (Entity child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(child))
+		for (Entity kid : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(child))
 		{
-			SavePrefabChild(child, newPrefab, mainPrefabGUID);
+			SavePrefabChild(kid, newPrefab, mainPrefabGUID);
 		}
 	}
 

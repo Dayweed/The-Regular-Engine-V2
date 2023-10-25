@@ -32,7 +32,7 @@ namespace TRE
 
 	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
+		// uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 
 		Create();
 
@@ -207,7 +207,7 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
-		auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		// auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		m_CommandBuffer->Begin();
 

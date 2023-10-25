@@ -15,7 +15,7 @@
 namespace TRE
 {
 	struct EditorCamera;
-	struct Camera;
+	class Camera;
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world

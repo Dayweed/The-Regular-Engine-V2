@@ -111,6 +111,7 @@ namespace TRE
 	struct Properties : property::base
 	{
 		std::string m_GUID{};
+		std::string m_Tag{};
 		bool m_Active{ true };		// To check if it is active
 		std::string m_Name{};		// To get the name
 
@@ -119,7 +120,28 @@ namespace TRE
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Active, m_GUID, m_Name)
+		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Tag, m_Active, m_GUID, m_Name)
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const Properties& t) // Serialize
+		{
+			j = nlohmann::json{
+				{ "m_Tag", t.m_Tag },
+				{ "m_Active", t.m_Active },
+				{ "m_GUID", t.m_GUID },
+				{ "m_Name", t.m_Name }
+			};
+		}
+		friend void from_json(const nlohmann::json& j, Properties& t) // Deserialize
+		{
+			if (j.contains("m_Tag"))
+				t.m_Tag = j.at("m_Tag");
+			if (j.contains("m_Active"))
+				t.m_Active = j.at("m_Active");
+			if (j.contains("m_GUID"))
+				t.m_GUID = j.at("m_GUID");
+			if (j.contains("m_Name"))
+				t.m_Name = j.at("m_Name");
+		}
 	};
 
 	class Ent : public std::enable_shared_from_this<Ent>
@@ -460,7 +482,7 @@ namespace TRE
 		- Object3
 		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
-		std::vector<Entity> GetEntities();
+		std::vector<Entity> GetEntities(bool IncludeNonActive = false);
 
 		/* !
 		@function		GetAllEntities
@@ -468,7 +490,7 @@ namespace TRE
 
 		@brief			Returns a vector of all Entities
 		*//*__________________________________________________________________________*/
-		std::vector<Entity> GetAllEntities();
+		std::vector<Entity> GetAllEntities(bool IncludeNonActive = false);
 
 		/* !
 		@function		SaveEntities
@@ -686,7 +708,7 @@ namespace TRE
 
 
 	template <typename Comp, typename... Others>
-	std::vector<Entity> ECSManager::GetEntities()
+	std::vector<Entity> ECSManager::GetEntities(bool IncludeNonActive)
 	{
 		std::vector<Entity> objects{};
 		entt::exclude_t<Undeployed> u{};
@@ -697,7 +719,7 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end())
+			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end() && (IncludeNonActive || m_Registry.get<Properties>(obj).m_Active))
 			{
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}
@@ -886,6 +908,7 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
+	property_var(m_Tag).Name("Tag"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
 

@@ -403,6 +403,11 @@ namespace TRE
 			Engine::GetInstance().GetVulkanImgui()->SetEditorSceneDescriptor(m_EditorSceneRenderer);
 		}
 
+		// Init
+		Profiler::Instance().StartTimer("InitSystem");
+		ECSSystemManager::Instance().InitSystem();
+		Profiler::Instance().EndTimer("InitSystem");
+
 		EditorSystemManager::Instance().InitSystem();
 
 		ScriptEngine::Init();

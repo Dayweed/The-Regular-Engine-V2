@@ -51,7 +51,7 @@ namespace TRE
 {
 	typedef struct HistoryEntryEnum
 	{
-		enum Enum : char
+		enum Enum : unsigned char
 		{
 			Enter = 1 << 0,
 			Stay  = 1 << 1,
@@ -61,7 +61,8 @@ namespace TRE
 
 	typedef struct HistoryEntry
 	{
-		unsigned first, second, flags;
+		unsigned m_First : 7, m_Second : 7, m_Flags : 3;
+		// I wonder if these bitfield lengths need to be bigger...
 	} CollisionHistoryEntry, TriggerHistoryEntry;
 
 	class SimulationEventCallback : public physx::PxSimulationEventCallback
@@ -75,10 +76,10 @@ namespace TRE
 		void onWake(physx::PxActor** actors, physx::PxU32 count) override;
 
 		// keeps track of IsCollisionEnter, IsCollisionStay and IsCollisionExit 'results'
-		std::vector<CollisionHistoryEntry> collisionHistory;
+		std::vector<CollisionHistoryEntry> m_CollisionHistory;
 
 		// keeps track of IsTriggerEnter, IsTriggerStay and IsTriggerExit 'results'
-		std::vector<TriggerHistoryEntry> triggerHistory;
+		std::vector<TriggerHistoryEntry> m_TriggerHistory, m_PrevTriggerHistory;
 		// why can't physx just handle this for me? :_)
 
 		// WHAT TYPE SHOULD THIS BE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -96,7 +97,10 @@ namespace TRE
 		PhysicsSystem();
 
 		bool TESTUpdate();
+
+		void Init() override;
 		void Update() override;
+		void GameUpdate() override;
 		void LateUpdate() override;
 		void BeforeReset() override;
 		void AfterReset() override;
@@ -294,17 +298,17 @@ namespace TRE
 
 		void TriggerToCollider(const Entity& entity) const;
 
-		bool IsCollisionEnter(const Entity& entity1, const Entity& entity2) const;
+		bool IsCollisionEnter(const Entity& entity_1, const Entity& entity_2) const;
 
-		bool IsCollisionStay(const Entity& entity1, const Entity& entity2) const;
+		bool IsCollisionStay(const Entity& entity_1, const Entity& entity_2) const;
 
-		bool IsCollisionExit(const Entity& entity1, const Entity& entity2) const;
+		bool IsCollisionExit(const Entity& entity_1, const Entity& entity_2) const;
 
-		bool IsTriggerEnter(const Entity& entity1, const Entity& entity2) const;
+		bool IsTriggerEnter(const Entity& entity_1, const Entity& entity_2) const;
 
-		bool IsTriggerStay(const Entity& entity1, const Entity& entity2) const;
+		bool IsTriggerStay(const Entity& entity_1, const Entity& entity_2) const;
 
-		bool IsTriggerExit(const Entity& entity1, const Entity& entity2) const;
+		bool IsTriggerExit(const Entity& entity_1, const Entity& entity_2) const;
 
 	private:
 

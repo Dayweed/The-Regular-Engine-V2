@@ -1,6 +1,6 @@
 [
    [
-      20,
+      21,
       0,
       1,
       2,
@@ -20,13 +20,14 @@
       16,
       17,
       18,
-      19
+      19,
+      20
    ],
    [
       0
    ],
    [
-      20,
+      21,
       0,
       {
          "m_Children": [],
@@ -60,217 +61,228 @@
       6,
       {
          "m_Children": [
-            "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}",
-            "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}"
+            "18004346044953247433",
+            "2321111028693677691"
          ],
          "m_Parent": ""
       },
       7,
       {
          "m_Children": [
-            "{3CC22AE6-88F2-489A-AD88-FF5458A977C0}",
-            "{9AE2EBB5-B409-4AAE-A028-BF584C39B6D3}"
+            "17811728561642225067",
+            "11972594731663323564"
          ],
-         "m_Parent": "{36C888D1-E204-4713-9DB8-0A1C9AB25431}"
+         "m_Parent": "939735250179176098"
       },
       8,
       {
          "m_Children": [
-            "{D836147F-A940-4E5F-9CA8-98413BE459FB}",
-            "{1E7FF80F-00D1-4264-AD31-614FCF4D5C72}"
+            "10202678678700908884",
+            "6540220523762596172"
          ],
-         "m_Parent": "{36C888D1-E204-4713-9DB8-0A1C9AB25431}"
+         "m_Parent": "939735250179176098"
       },
       9,
       {
          "m_Children": [],
-         "m_Parent": "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}"
+         "m_Parent": "18004346044953247433"
       },
       10,
       {
          "m_Children": [],
-         "m_Parent": "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}"
+         "m_Parent": "18004346044953247433"
       },
       11,
       {
          "m_Children": [],
-         "m_Parent": "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}"
+         "m_Parent": "2321111028693677691"
       },
       12,
       {
          "m_Children": [],
-         "m_Parent": "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}"
+         "m_Parent": "2321111028693677691"
       },
       13,
       {
          "m_Children": [
-            "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}",
-            "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}"
+            "8378963432099047319",
+            "17143360967781328491"
          ],
          "m_Parent": ""
       },
       14,
       {
          "m_Children": [
-            "{EF6F360A-A3A9-4F12-8A16-51676E98B7BF}",
-            "{652F3FE4-C18D-448E-AF37-38C9EF4959DF}"
+            "11842515353278182416",
+            "11757100709102477306"
          ],
-         "m_Parent": "{C31ABC88-DCB3-43AE-94B8-C37C95C8916B}"
+         "m_Parent": "6205214162066139851"
       },
       15,
       {
          "m_Children": [
-            "{9CB6B0B6-E24F-43C7-AFB6-67709EEF8F93}",
-            "{E294B743-6B90-48C1-8512-689E4D875A4C}"
+            "18259857648026174614",
+            "2343603306505734531"
          ],
-         "m_Parent": "{C31ABC88-DCB3-43AE-94B8-C37C95C8916B}"
+         "m_Parent": "6205214162066139851"
       },
       16,
       {
          "m_Children": [],
-         "m_Parent": "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}"
+         "m_Parent": "8378963432099047319"
       },
       17,
       {
          "m_Children": [],
-         "m_Parent": "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}"
+         "m_Parent": "8378963432099047319"
       },
       18,
       {
          "m_Children": [],
-         "m_Parent": "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}"
+         "m_Parent": "17143360967781328491"
       },
       19,
       {
          "m_Children": [],
-         "m_Parent": "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}"
+         "m_Parent": "17143360967781328491"
+      },
+      20,
+      {
+         "m_Children": [],
+         "m_Parent": ""
       }
    ],
    [
-      20,
+      21,
       0,
       {
          "m_Active": true,
-         "m_GUID": "{ABCC6068-9870-421E-9666-6E7E257BA072}",
+         "m_GUID": "18233194696888513701",
          "m_Name": "Test"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "{3B83A296-55B1-4DF5-8307-2BFEA3CCA5FB}",
+         "m_GUID": "4377077031054455167",
          "m_Name": "Test2"
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "{D83DFCC1-E130-4171-8A9C-5BA468917014}",
+         "m_GUID": "15589880439661791818",
          "m_Name": "Test3"
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "{C7665260-4DD2-466D-8595-90FE2DF5CFDB}",
+         "m_GUID": "5095296977010417523",
          "m_Name": "Plane collider"
       },
       4,
       {
          "m_Active": true,
-         "m_GUID": "{937F6393-E89D-4A2B-8ACF-E034B76262CC}",
+         "m_GUID": "524436256313174133",
          "m_Name": "cam"
       },
       5,
       {
          "m_Active": true,
-         "m_GUID": "{E875A4BF-16CB-4A41-AD68-CFD89992936A}",
+         "m_GUID": "8914889382451821537",
          "m_Name": "Direction Light"
       },
       6,
       {
          "m_Active": true,
-         "m_GUID": "{36C888D1-E204-4713-9DB8-0A1C9AB25431}",
+         "m_GUID": "939735250179176098",
          "m_Name": "grandparent1"
       },
       7,
       {
          "m_Active": true,
-         "m_GUID": "{DAC6AE4C-0033-41D8-8B84-8CCF96B9B2B1}",
+         "m_GUID": "18004346044953247433",
          "m_Name": "parent1"
       },
       8,
       {
          "m_Active": true,
-         "m_GUID": "{A4C1FE41-8B6B-4D4F-A6F1-68E3D6481E76}",
+         "m_GUID": "2321111028693677691",
          "m_Name": "parent2"
       },
       9,
       {
          "m_Active": true,
-         "m_GUID": "{3CC22AE6-88F2-489A-AD88-FF5458A977C0}",
+         "m_GUID": "17811728561642225067",
          "m_Name": "child1"
       },
       10,
       {
          "m_Active": true,
-         "m_GUID": "{9AE2EBB5-B409-4AAE-A028-BF584C39B6D3}",
+         "m_GUID": "11972594731663323564",
          "m_Name": "child2"
       },
       11,
       {
          "m_Active": true,
-         "m_GUID": "{D836147F-A940-4E5F-9CA8-98413BE459FB}",
+         "m_GUID": "10202678678700908884",
          "m_Name": "child3"
       },
       12,
       {
          "m_Active": true,
-         "m_GUID": "{1E7FF80F-00D1-4264-AD31-614FCF4D5C72}",
+         "m_GUID": "6540220523762596172",
          "m_Name": "child4"
       },
       13,
       {
          "m_Active": true,
-         "m_GUID": "{C31ABC88-DCB3-43AE-94B8-C37C95C8916B}",
+         "m_GUID": "6205214162066139851",
          "m_Name": "grandparent2"
       },
       14,
       {
          "m_Active": true,
-         "m_GUID": "{9A7FDA54-1627-488F-8B50-2A0E5306EAAB}",
+         "m_GUID": "8378963432099047319",
          "m_Name": "parent3"
       },
       15,
       {
          "m_Active": true,
-         "m_GUID": "{5B2AC482-898F-415E-9C3E-A6F9E96B6F2C}",
+         "m_GUID": "17143360967781328491",
          "m_Name": "parent4"
       },
       16,
       {
          "m_Active": true,
-         "m_GUID": "{EF6F360A-A3A9-4F12-8A16-51676E98B7BF}",
+         "m_GUID": "11842515353278182416",
          "m_Name": "child5"
       },
       17,
       {
          "m_Active": true,
-         "m_GUID": "{652F3FE4-C18D-448E-AF37-38C9EF4959DF}",
+         "m_GUID": "11757100709102477306",
          "m_Name": "child6"
       },
       18,
       {
          "m_Active": true,
-         "m_GUID": "{9CB6B0B6-E24F-43C7-AFB6-67709EEF8F93}",
+         "m_GUID": "18259857648026174614",
          "m_Name": "child7"
       },
       19,
       {
          "m_Active": true,
-         "m_GUID": "{E294B743-6B90-48C1-8512-689E4D875A4C}",
+         "m_GUID": "2343603306505734531",
          "m_Name": "child8"
+      },
+      20,
+      {
+         "m_Active": true,
+         "m_GUID": "6744944727467513396",
+         "m_Name": "Temp"
       }
    ],
    [
-      20,
+      21,
       0,
       {
          "m_Position": [
@@ -406,7 +418,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -424,7 +436,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -442,7 +454,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -460,7 +472,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -478,7 +490,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -496,7 +508,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -532,7 +544,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -550,7 +562,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -568,7 +580,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -586,7 +598,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -604,7 +616,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -614,6 +626,24 @@
          ]
       },
       19,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      20,
       {
          "m_Position": [
             0.0,
@@ -670,22 +700,19 @@
          "m_FocalPoint": [
             0.0,
             0.0,
-            100.0
+            -100.0
          ],
          "m_Fov": 60.0,
          "m_IsMainCamera": true,
          "m_IsPerspective": true,
          "m_Left": -1.0,
          "m_Near": 0.10000000149011612,
-         "m_Pitch": 0.0,
          "m_Right": 1.0,
-         "m_Roll": 0.0,
          "m_Top": 1.0,
          "m_ViewportSize": [
             1600.0,
             900.0
-         ],
-         "m_Yaw": 0.0
+         ]
       }
    ],
    [
@@ -708,14 +735,43 @@
             1.0
          ],
          "m_Direction": [
-            1.0,
-            -1.0,
-            1.0
+            0.0,
+            -0.7071067690849304,
+            0.7071067690849304
          ]
       }
    ],
    [
       0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      4,
+      {
+         "m_Forward": [
+            -0.0,
+            -0.0,
+            1.0
+         ],
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Up": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Velocity": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
    ],
    [
       0
