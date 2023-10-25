@@ -35,61 +35,6 @@ namespace TRE
 		m_MousePos.x = m_MousePos.x - windowConfig.width / 2.f;
 		m_MousePos.y = m_MousePos.y - windowConfig.height / 2.f;
 		m_MousePos.y = -m_MousePos.y;
-
-		if (m_IsViewportHovered == false)
-			return;
-
-		EditorCamera& editorCamera = EditorCamera::Instance();
-		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
-		{
-			static glm::vec2 panMouseStartPos{};
-			static glm::vec2 panMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
-			{
-				panMouseEndPos = m_MousePos;
-				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
-				if(glm::length(positionOffset) < 0.1f)
-					return;
-				positionOffset = glm::normalize(positionOffset);
-				positionOffset *= -1;
-				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
-				positionOffset.x *= panSensitivity.x;
-				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
-				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
-
-				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
-				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetUpVec() * positionOffset.y);
-			}
-			else
-			{
-				panMouseStartPos = m_MousePos;
-			}
-		}
-
-		{
-			static glm::vec2 rotMouseStartPos{};
-			static glm::vec2 rotMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
-			{
-				rotMouseEndPos = m_MousePos;
-				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
-				if (glm::length(rotationOffset) < 0.1f)
-					return;
-				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset.x *= -1;
-				rotationOffset *= m_RotationSensitivity;
-				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
-
-				const float yawSign = baseCamera.GetUpVec().y < 0 ? -1.f : 1.f;
-				editorCamera.SetYaw(baseCamera.m_Yaw + yawSign * rotationOffset.x);
-				editorCamera.SetPitch(baseCamera.m_Pitch + rotationOffset.y);
-			}
-			else
-			{
-				rotMouseStartPos = m_MousePos;
-			}
-		}
 	}
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
@@ -219,6 +164,7 @@ namespace TRE
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
+		MouseActions();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize);
 
 		if (ImGui::BeginDragDropTarget())
@@ -468,6 +414,64 @@ namespace TRE
 					break;
 				}
 				transform.m_IsDirty = true;
+			}
+		}
+	}
+
+	void ViewportPanel::MouseActions()
+	{
+		if (m_IsViewportHovered == false)
+			return;
+
+		EditorCamera& editorCamera = EditorCamera::Instance();
+		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
+		{
+			static glm::vec2 panMouseStartPos{};
+			static glm::vec2 panMouseEndPos{};
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
+			{
+				panMouseEndPos = m_MousePos;
+				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
+				if (glm::length(positionOffset) < 0.1f)
+					return;
+				positionOffset = glm::normalize(positionOffset);
+				positionOffset *= -1;
+				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
+				positionOffset.x *= panSensitivity.x;
+				positionOffset.y *= panSensitivity.y;
+				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
+				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+
+				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
+				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetUpVec() * positionOffset.y);
+			}
+			else
+			{
+				panMouseStartPos = m_MousePos;
+			}
+		}
+
+		{
+			static glm::vec2 rotMouseStartPos{};
+			static glm::vec2 rotMouseEndPos{};
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
+			{
+				rotMouseEndPos = m_MousePos;
+				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
+				if (glm::length(rotationOffset) < 0.1f)
+					return;
+				rotationOffset = glm::normalize(rotationOffset);
+				rotationOffset.x *= -1;
+				rotationOffset *= m_RotationSensitivity;
+				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+
+				const float yawSign = baseCamera.GetUpVec().y < 0 ? -1.f : 1.f;
+				editorCamera.SetYaw(baseCamera.m_Yaw + yawSign * rotationOffset.x);
+				editorCamera.SetPitch(baseCamera.m_Pitch + rotationOffset.y);
+			}
+			else
+			{
+				rotMouseStartPos = m_MousePos;
 			}
 		}
 	}
