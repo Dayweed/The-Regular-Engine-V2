@@ -158,7 +158,7 @@ namespace TRE
 		scissor.offset.y = 0;
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		s_FinalRenderData->ImageInfo.imageView = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetImageView();
+		s_FinalRenderData->ImageInfo.imageView = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetImageData().ImageView;
 		s_FinalRenderData->ImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		s_FinalRenderData->ImageInfo.sampler = s_FinalRenderData->Sampler;
 
