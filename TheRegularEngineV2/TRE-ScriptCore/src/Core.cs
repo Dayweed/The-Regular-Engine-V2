@@ -21,12 +21,21 @@ namespace TRE
 		public string id;
 		public string name;
 
-		public Entity(string _name)
+        public Entity(string _name)
 		{
 			name = _name;
 			id = "0";
 		}
-	}
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Rename(string id, string name);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void SetActive(string id, bool active);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool GetActive(string id);
+    }
 
 	// Reference to this for what components that can be added to the entity.
 	public enum Components

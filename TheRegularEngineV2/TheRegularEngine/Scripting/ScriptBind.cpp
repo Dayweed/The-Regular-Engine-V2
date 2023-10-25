@@ -39,6 +39,27 @@ namespace TRE
         return str;
 	}
 
+    static void BindEntityRename(MonoString* ID, MonoString* name)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Temp->GetComponent<Properties>().m_Name;
+    }
+
+    static void BindEntityActive(MonoString* ID, MonoBoolean isActive)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Temp->GetComponent<Properties>().m_Active = isActive;
+    }
+
+    static bool BindEntityGetActive(MonoString* ID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        return Temp->GetComponent<Properties>().m_Active;
+    }
+
     static void BindCreateEntity(MonoString* name, MonoString* output)
     {
         char* nameString = mono_string_to_utf8(name);
@@ -510,6 +531,11 @@ namespace TRE
         mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
         mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
         mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
+
+        // Entity Bindings
+        mono_add_internal_call("TRE.Entity::Rename", BindEntityRename);
+        mono_add_internal_call("TRE.Entity::SetActive", BindEntityActive);
+        mono_add_internal_call("TRE.Entity::GetActive", BindEntityGetActive);
 
         // Tranform Bindings
         mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
