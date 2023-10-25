@@ -180,7 +180,7 @@ namespace TRE
 			else
 			{
 				InstanceCreateInfo.enabledLayerCount = 0;
-				TRE_CORE_INFO(" Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled");
+				TRE_CORE_INFO("Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled");
 			}
 		}
 
