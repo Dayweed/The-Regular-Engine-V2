@@ -243,6 +243,7 @@ namespace TRE
 
 	void MaterialDescriptorFile::Rename(const std::string& newName)
 	{
+		(void)newName;
 		SetAssetPath("Material_Instance.material");
 		GenerateDescriptorFile();
 	}

@@ -60,15 +60,15 @@ namespace TRE
 
 		friend void from_json(const nlohmann::json& j, Audio& t) //deserialize
 		{
-			t.m_Play = j.at("m_Play").get<float>();
+			t.m_Play = j.at("m_Play").get<bool>();
 			t.m_Volume = j.at("m_Volume").get<float>();
 			t.m_Pitch = j.at("m_Pitch").get<float>();
-			t.m_Priority = j.at("m_Priority").get<float>();
-			t.m_Pause = j.at("m_Pause").get<float>();
-			t.m_Loop = j.at("m_Loop").get<float>();
-			t.m_Mute = j.at("m_Mute").get<float>();
-			t.m_PlayOnStart = j.at("m_PlayOnStart").get<float>();
-			t.m_Spatialize = j.at("m_Spatialize").get<float>();
+			t.m_Priority = j.at("m_Priority").get<int>();
+			t.m_Pause = j.at("m_Pause").get<bool>();
+			t.m_Loop = j.at("m_Loop").get<bool>();
+			t.m_Mute = j.at("m_Mute").get<bool>();
+			t.m_PlayOnStart = j.at("m_PlayOnStart").get<bool>();
+			t.m_Spatialize = j.at("m_Spatialize").get<bool>();
 			t.m_MinDistance = j.at("m_MinDistance").get<float>();
 			t.m_MaxDistance = j.at("m_MaxDistance").get<float>();
 

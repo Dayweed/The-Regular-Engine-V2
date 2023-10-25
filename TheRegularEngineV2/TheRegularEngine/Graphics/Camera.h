@@ -159,7 +159,6 @@ namespace TRE
 		void SetIsDirty(const bool isDirty);
 		const bool GetIsDirty() const;
 	private:
-	private:
 		bool m_IsDirty{ false }; //Bool to update descriptor set
 	};
 }

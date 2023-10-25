@@ -40,6 +40,8 @@ namespace glm
 #		endif
 
 #		if GLM_LANG & GLM_LANG_CXXMS_FLAG
+#			pragma warning(disable: 4201)  // nonstandard extension used : nameless struct/union
+
 			union
 			{
 #				ifdef GLM_FORCE_QUAT_DATA_XYZW

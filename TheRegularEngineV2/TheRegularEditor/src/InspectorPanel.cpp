@@ -61,7 +61,7 @@ namespace TRE
 		}
 
 		//create entity
-		auto entity = m_SelectionManager->GetSelectedEntity();
+		auto& entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
 		if (entity != nullptr)
@@ -397,7 +397,7 @@ namespace TRE
 			}
 
 			// Update values into the entity itself
-			auto components = m_SelectionManager->GetSelectedEntityComponents();
+			auto& components = m_SelectionManager->GetSelectedEntityComponents();
 
 			for (size_t i{}; i < properties.size(); ++i)
 			{

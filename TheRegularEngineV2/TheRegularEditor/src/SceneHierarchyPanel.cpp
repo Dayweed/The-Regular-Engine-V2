@@ -94,9 +94,9 @@ namespace TRE
 
 			for (size_t i{}; i < entities.size(); ++i)
 			{
-				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
+				// ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
 				auto currentEntity = entities[i];
-				const std::string& entityName = currentEntity->GetName();
+				// const std::string& entityName = currentEntity->GetName();
 
 				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
 				{
@@ -161,7 +161,7 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+		const size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
 
 		//{
 		//  //temp testing
@@ -322,7 +322,7 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+		const size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
 
 
 		if (vectorSize)
