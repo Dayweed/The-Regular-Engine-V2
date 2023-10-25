@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 1
+#define USE_PHYSX_PVD 0
 #endif
 
 #pragma region Macros
@@ -347,31 +347,28 @@ namespace TRE
 
 	void PhysicsSystem::AfterReset()
 	{
-		for (Entity mr : ECSManager::Instance().GetEntities<Rigidbody>())
+		for (Entity entity : ECSManager::Instance().GetEntities<Rigidbody>())
 		{
-			Rigidbody& component{ mr->GetComponent<Rigidbody>() };
-			ConstructRigidbody(mr);
+			ConstructRigidbody(entity);
 		}
 
-		for (Entity john : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (Entity entity : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
-			SphereCollider& component{ john->GetComponent<SphereCollider>() };
-			ConstructSphereCollider(john, component.m_Radius, component.m_Offset);
+			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
+			ConstructSphereCollider(entity, component.m_Radius, component.m_Offset);
 		}
 
-		for (Entity doe : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (Entity entity : ECSManager::Instance().GetEntities<BoxCollider>())
 		{
-			BoxCollider& component{ doe->GetComponent<BoxCollider>() };
-			ConstructBoxCollider(doe, component.m_HalfExtents, component.m_Offset);
+			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
+			ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset);
 		}
 
-		for (Entity guy : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (Entity entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 		{
-			CapsuleCollider& component{ guy->GetComponent<CapsuleCollider>() };
-			ConstructCapsuleCollider(guy, component.m_Radius, component.m_HalfHeight, component.m_Offset);
+			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
+			ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset);
 		}
-
-		// for (const auto& actor : m_Actors) actor.second.m_RigidDynamic->wakeUp();
 	}
 
 	void PhysicsSystem::Shutdown()
