@@ -27,14 +27,46 @@ namespace TRE
 			id = "0";
 		}
 
+        public void Rename(string name)
+		{
+            EngineRename(id, name);
+        }
+
+        public void SetActive(bool active)
+		{
+			EngineSetActive(id, active);
+        }
+
+        public bool GetActive()
+		{
+            return EngineGetActive(id);
+        }
+
+        public void SetTag(string tag)
+		{
+            EngineSetTag(id, tag);
+        }
+
+        public bool CompareTag(string otherTag)
+		{
+            return EngineCompareTag(id, otherTag);
+        }
+
+        // Private binded calls
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Rename(string id, string name);
+        public extern static void EngineRename(string id, string name);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void SetActive(string id, bool active);
+		public extern static void EngineSetActive(string id, bool active);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool GetActive(string id);
+        public extern static bool EngineGetActive(string id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void EngineSetTag(string id, string tag);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool EngineCompareTag(string id, string otherTag);
     }
 
 	// Reference to this for what components that can be added to the entity.

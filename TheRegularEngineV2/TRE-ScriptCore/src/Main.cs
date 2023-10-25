@@ -18,10 +18,15 @@ namespace TRE
 			Test.id = ECSManager.FindIDFromName(Test.name);
 			Console.WriteLine("Test ID: " + Test.id);
 
-			Console.WriteLine("Entity: " + Entity.GetActive(Test.id));
-            Entity.SetActive(Test.id, false);
-            Console.WriteLine("Entity: " + Entity.GetActive(Test.id));
-            Entity.SetActive(Test.id, true);
+			Console.WriteLine("Entity: " + Test.GetActive());
+            Test.SetActive(false);
+            Console.WriteLine("Entity: " + Test.GetActive());
+            Test.SetActive(true);
+            Console.WriteLine("Entity: " + Test.GetActive());
+
+            Test.SetTag("UwU");
+            Console.WriteLine("Is UwU? " + Test.CompareTag("UwU"));
+            Console.WriteLine("Is OwO? " + Test.CompareTag("OwO"));
         }
 
 		public void Update()

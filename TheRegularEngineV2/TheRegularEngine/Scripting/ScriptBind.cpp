@@ -43,7 +43,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        Temp->GetComponent<Properties>().m_Name;
+        Temp->GetComponent<Properties>().m_Name = mono_string_to_utf8(name);
     }
 
     static void BindEntityActive(MonoString* ID, MonoBoolean isActive)
@@ -58,6 +58,20 @@ namespace TRE
         // Retrive the entity from the ID
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
         return Temp->GetComponent<Properties>().m_Active;
+    }
+
+    static void BindEntitySetTag(MonoString* ID, MonoString* tag)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
+    }
+
+    static bool BindEntityCompareTag(MonoString* ID, MonoString* tag)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        return Temp->GetComponent<Properties>().m_Tag == mono_string_to_utf8(tag);
     }
 
     static void BindCreateEntity(MonoString* name, MonoString* output)
@@ -533,9 +547,11 @@ namespace TRE
         mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
 
         // Entity Bindings
-        mono_add_internal_call("TRE.Entity::Rename", BindEntityRename);
-        mono_add_internal_call("TRE.Entity::SetActive", BindEntityActive);
-        mono_add_internal_call("TRE.Entity::GetActive", BindEntityGetActive);
+        mono_add_internal_call("TRE.Entity::EngineRename", BindEntityRename);
+        mono_add_internal_call("TRE.Entity::EngineSetActive", BindEntityActive);
+        mono_add_internal_call("TRE.Entity::EngineGetActive", BindEntityGetActive);
+        mono_add_internal_call("TRE.Entity::EngineSetTag", BindEntitySetTag);
+        mono_add_internal_call("TRE.Entity::EngineCompareTag", BindEntityCompareTag);
 
         // Tranform Bindings
         mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
