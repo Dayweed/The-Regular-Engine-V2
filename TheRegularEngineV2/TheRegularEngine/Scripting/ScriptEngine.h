@@ -19,7 +19,12 @@ namespace TRE
 
 		MonoAssembly* MonoAssembly = nullptr;
 
+		MonoImage* AssemblyImage = nullptr;
+
 		MonoObject* DemoObject = nullptr;
+
+		std::string MonoAssemblyPath;
+
 	};
 
 
@@ -27,8 +32,6 @@ namespace TRE
 	class ScriptEngine 
 	{
 	public:
-		ScriptEngine();
-		~ScriptEngine();
 
 		static void Init();
 		static void Shutdown();
@@ -37,10 +40,13 @@ namespace TRE
 
 		static void ReloadAssembly();
 
+		
+		
+
 		static std::string TestGUID;
 		static bool CreatedScriptObject;
-		static void InitMono();
-		static void ShutdownMono();
+		
+		
 		static void UpdateScriptingEngine();
 		static void TestScriptingEngine();
 		static void TestAddComponent();
@@ -51,12 +57,14 @@ namespace TRE
 		
 
 	private:
-
+		static void InitMono();
+		static void ShutdownMono();
 		static ScriptEngineData* s_ScriptEngineData;
 
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
 
 		friend class ScriptBind;
+		
 	};
 
 }

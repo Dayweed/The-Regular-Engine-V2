@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "ScriptBind.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -87,9 +88,11 @@ namespace TRE
 
 	            printf("%s.%s\n", nameSpace, name);
 	        }
-	    }	    
-    }
+	    }
 
+
+
+    }
 
 
     void ScriptEngine::Init()
@@ -98,7 +101,28 @@ namespace TRE
 
 		InitMono();
         ScriptBind::RegisterFunctions();
+
+		bool status = LoadAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
+		if(!status)
+		{
+			TRE_CORE_ERROR("Failed to load assembly");
+			return;
+		}
+
+		// Here we will load the project assembly when the project script and core script is separated.
+
+		// Load all the classes from the assembly
+
+		// Register all ECS components to the scripting engine
+
+
     }
+
+	void ScriptEngine::Shutdown()
+	{
+		ShutdownMono();
+		delete s_ScriptEngineData;
+	}
 
 	void ScriptEngine::InitMono()
 	{
@@ -113,12 +137,57 @@ namespace TRE
 
         // Store the root domain pointer
         s_ScriptEngineData->RootDomain = rootDomain;
+	}
 
-        s_ScriptEngineData->AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
+	void ScriptEngine::ShutdownMono()
+	{
+		//unload the root domain
+		mono_domain_set(mono_get_root_domain(), false);
+
+		// here add in unloading off app domain
+
+		mono_jit_cleanup(s_ScriptEngineData->RootDomain);
+		s_ScriptEngineData->RootDomain = nullptr;
+
+	}
+
+	bool ScriptEngine::LoadAssembly(const std::string& assemblyPath)
+	{
+		s_ScriptEngineData->AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
         mono_domain_set(s_ScriptEngineData->AppDomain, true);
 
-        s_ScriptEngineData->MonoAssembly = Tools::LoadCSharpAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
-        Tools::PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
+
+		s_ScriptEngineData->MonoAssemblyPath = assemblyPath;
+        s_ScriptEngineData->MonoAssembly = Tools::LoadCSharpAssembly(assemblyPath);
+		if(s_ScriptEngineData->MonoAssembly == nullptr)
+			return false;
+
+		// Store the assembly image
+		s_ScriptEngineData->AssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+
+		// For Debugging to check what classes are in the assembly
+        //Tools::PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
+
+		return true;
+	}
+
+	void ScriptEngine::ReloadAssembly()
+	{
+		// Unload the assembly
+		mono_domain_set(mono_get_root_domain(), false);
+
+		mono_domain_unload(s_ScriptEngineData->AppDomain);
+
+		// Load the assembly again
+		LoadAssembly(s_ScriptEngineData->MonoAssemblyPath);
+
+		// add loading application assembly when project script and core script is separated.
+		// add loading all the classes from the assembly
+
+		// Register back all the components to the scripting engine
+
+		// Retrieve and instantiate the main class
+
 	}
 
 	
