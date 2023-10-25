@@ -163,6 +163,16 @@ namespace TRE
 			return nullptr;
 		}
 
+		void InitSystem()
+		{
+			for (auto& system : m_Systems)
+			{
+				Profiler::Instance().StartTimer(m_SystemsName[system.first]);
+				system.second->Init();
+				Profiler::Instance().EndTimer(m_SystemsName[system.first]);
+			}
+		}
+
 		void UpdateSystem()
 		{
 			for (auto& system : m_Systems)
