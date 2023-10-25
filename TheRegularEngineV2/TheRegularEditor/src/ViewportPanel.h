@@ -42,6 +42,7 @@ namespace TRE
 			void UpdateViewportSize();
 			void UpdateClickRay();
 			void UpdateGizmo();
+			void MouseActions();
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			int m_GizmoOperation = -1; // -1 means no operation
