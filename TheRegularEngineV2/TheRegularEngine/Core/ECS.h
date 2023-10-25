@@ -120,7 +120,28 @@ namespace TRE
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Tag, m_Active, m_GUID, m_Name)
+		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Tag, m_Active, m_GUID, m_Name)
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const Properties& t) // Serialize
+		{
+			j = nlohmann::json{
+				{ "m_Tag", t.m_Tag },
+				{ "m_Active", t.m_Active },
+				{ "m_GUID", t.m_GUID },
+				{ "m_Name", t.m_Name }
+			};
+		}
+		friend void from_json(const nlohmann::json& j, Properties& t) // Deserialize
+		{
+			if (j.contains("m_Tag"))
+				t.m_Tag = j.at("m_Tag");
+			if (j.contains("m_Active"))
+				t.m_Active = j.at("m_Active");
+			if (j.contains("m_GUID"))
+				t.m_GUID = j.at("m_GUID");
+			if (j.contains("m_Name"))
+				t.m_Name = j.at("m_Name");
+		}
 	};
 
 	class Ent : public std::enable_shared_from_this<Ent>
@@ -887,8 +908,8 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
-	property_var(m_Active).Name("Active"),
-	property_var(m_Tag).Name("Tag")
+	property_var(m_Tag).Name("Tag"),
+	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
 
 property_begin(TRE::FEL)
