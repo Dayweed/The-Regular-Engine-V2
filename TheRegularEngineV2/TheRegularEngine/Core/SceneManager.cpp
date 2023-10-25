@@ -12,6 +12,11 @@ namespace TRE
 		MainCamera->AddComponent<Camera>();
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
 
+		Entity MainLight = ECSManager::Instance().CreateEntity("Directional Light");
+		MainLight->AddComponent<DirectionalLight>();
+		MainLight->GetComponent<Transform>().m_Rotation = glm::vec3(45.0f, 45.0f, 0.0f);
+		MainLight->GetComponent<Transform>().m_IsDirty = true;
+
 		// Generate new Scene Name
 		m_CurrentScene = sceneName;
 		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
