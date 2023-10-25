@@ -331,6 +331,8 @@ namespace TRE
 
 			const EditorCamera& camera = EditorCamera::Instance();
 			glm::mat4 proj = camera.GetProjectionMatrix();
+			//Flip back x and y axis
+			//proj[0][0] *= -1.f;
 			proj[1][1] *= -1.f;
 			glm::mat4 View = camera.GetViewMatrix();
 
