@@ -85,7 +85,7 @@ namespace TRE
 			//}
 
 			// Choose between getting all entities or just the prefab if it is displaying prefab
-			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities() };
+			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
 			if (GameLoop::Instance().GetDisplayingPrefab())
 			{
 				entities.clear();

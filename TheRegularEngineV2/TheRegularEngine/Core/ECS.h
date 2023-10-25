@@ -460,7 +460,7 @@ namespace TRE
 		- Object3
 		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
-		std::vector<Entity> GetEntities();
+		std::vector<Entity> GetEntities(bool IncludeNonActive = false);
 
 		/* !
 		@function		GetAllEntities
@@ -468,7 +468,7 @@ namespace TRE
 
 		@brief			Returns a vector of all Entities
 		*//*__________________________________________________________________________*/
-		std::vector<Entity> GetAllEntities();
+		std::vector<Entity> GetAllEntities(bool IncludeNonActive = false);
 
 		/* !
 		@function		SaveEntities
@@ -686,7 +686,7 @@ namespace TRE
 
 
 	template <typename Comp, typename... Others>
-	std::vector<Entity> ECSManager::GetEntities()
+	std::vector<Entity> ECSManager::GetEntities(bool IncludeNonActive)
 	{
 		std::vector<Entity> objects{};
 		entt::exclude_t<Undeployed> u{};
@@ -697,7 +697,7 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end())
+			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end() && (IncludeNonActive || m_Registry.get<Properties>(obj).m_Active))
 			{
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}

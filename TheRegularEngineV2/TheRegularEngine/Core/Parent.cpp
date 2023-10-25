@@ -39,7 +39,7 @@ namespace TRE
 
 	void ParentingSystem::Shutdown()
 	{
-		for (Entity& object : ECSManager::Instance().GetAllEntities())
+		for (Entity& object : ECSManager::Instance().GetAllEntities(true))
 		{
 			AbandonChildren(object);
 		}

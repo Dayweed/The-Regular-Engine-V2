@@ -113,7 +113,7 @@ namespace TRE
 	}
 
 
-	std::vector<Entity> ECSManager::GetAllEntities()
+	std::vector<Entity> ECSManager::GetAllEntities(bool IncludeNonActive)
 	{
 		std::vector<Entity> objects{};
 		objects.reserve(m_EntityList.size());
@@ -121,7 +121,10 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (auto& obj : m_EntityList)
 		{
-			objects.emplace_back(obj.second);
+			if (IncludeNonActive || m_Registry.get<Properties>(obj.second->m_Entity).m_Active)
+			{
+				objects.emplace_back(obj.second);
+			}
 		}
 
 		return objects;
