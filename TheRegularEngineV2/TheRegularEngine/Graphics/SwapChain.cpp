@@ -223,7 +223,7 @@ namespace TRE
 		VkSurfaceFormatKHR surfaceformat{};
 		for (const auto& format : SurfaceFormats)
 		{
-			if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (format.format == VK_FORMAT_R8G8B8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				m_SwapChainSettings.m_ColorSpace= format.colorSpace;
 				m_SwapChainSettings.m_SurfaceFormat = format.format;
