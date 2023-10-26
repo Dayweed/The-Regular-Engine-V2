@@ -15,9 +15,6 @@ namespace TRE
 
 		m_System->init(MAX_CHANNELS, FMOD_INIT_NORMAL, nullptr);
 
-		//FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
-		//FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
-
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
 	}
@@ -44,8 +41,6 @@ namespace TRE
 
 				bool isPlaying;
 				source.m_Channel->isPlaying(&isPlaying);
-
-				//soundMap[go] = source.m_Sound;
 
 				if (source.m_PlayOnStart && source.m_Play)
 				{
@@ -320,14 +315,14 @@ namespace TRE
 		audio.m_FileName = filename;
 	}
 
-	void AudioSystem::SetChannelGroup(Entity& go, const int channel)
+	void AudioSystem::SetChannelGroup(Entity& go, const std::string channel)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		if (channel)
+		if (channel == "Music")
 		{
 			audio.m_ChannelGroup = m_MusicChannelGroup;
 		}
-		else
+		else if(channel == "SFX")
 		{
 			audio.m_ChannelGroup = m_SFXChannelGroup;
 		}

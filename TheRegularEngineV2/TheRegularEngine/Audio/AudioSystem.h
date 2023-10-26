@@ -11,10 +11,10 @@ namespace TRE
 	{
 	public:
 
-		//audio_file_dropdown m_AudioFileNameToDrop;
+		audio_file_dropdown m_ChannelGroupName;
 		std::string m_FileName{""};
-		//std::string m_FilePath{ "../Assets/Audio/ViveLeFromageBGM1.wav" };
 		FMOD::ChannelGroup* m_ChannelGroup{};
+		//std::vector<std::string> m_ChannelGroupName{"SFX", "Music"};
 		FMOD::Channel* m_Channel{};
 		FMOD::Sound* m_Sound{};
 
@@ -39,10 +39,11 @@ namespace TRE
 		friend void to_json(nlohmann::json& j, const Audio& t) //serialize
 		{
 			std::vector<float> v_pos{ t.m_goPosition.x, t.m_goPosition.y, t.m_goPosition.z };
-
+			//std::vector<std::string> v_ch{ t.m_ChannelGroupName };
 
 			j = nlohmann::json{
-				{"Audio", t.m_FileName},
+				{"m_FileName", t.m_FileName},
+				//{"m_ChannelGroupName", v_ch},
 				{ "m_Play", t.m_Play },
 				{ "m_Volume", t.m_Volume },
 				{ "m_Pitch", t.m_Pitch },
@@ -77,6 +78,11 @@ namespace TRE
 			t.m_goPosition.x = a_pos[0];
 			t.m_goPosition.y = a_pos[1];
 			t.m_goPosition.z = a_pos[2];
+
+			//std::vector<std::string> v_ch{ j.at("m_ChannelGroupName").get<std::vector<std::string>>() };
+			//std::string a_ch[2]{ v_ch[0], v_ch[1] };
+			//t.m_ChannelGroupName.front() = a_ch[0];
+			//t.m_ChannelGroupName.back() = a_ch[1];
 
 		}
 
@@ -170,7 +176,7 @@ namespace TRE
 		void SetPause(Entity& go, const bool pause);
 		void SetLoop(Entity& go, const bool loop);
 		void SetFileName(Entity& go, const std::string filename);
-		void SetChannelGroup(Entity& go, const int channel);
+		void SetChannelGroup(Entity& go,  const std::string channel);
 		void SetPriority(Entity& go, const int priority);
 		void SetMute(Entity& go, const bool mute);
 		void SetPlay(Entity& go, const bool play);
@@ -212,13 +218,11 @@ namespace TRE
 
 		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
 		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
+		
+		//std::vector<std::string> channelGroupsMap{ "SFX", "Music" };
 
 		const int MAX_CHANNELS = 64;
-
-		//std::unordered_map<Entity, FMOD::Channel*> channelMap;
-		//std::unordered_set<FMOD::Sound*> soundMap;
-		//std::unordered_map<Entity&, FMOD::Sound*> soundMap; //doesnt work
-		//std::unordered_set<Entity> audioMap;
+		;
 		std::unordered_set<Entity> audioMap;
 		std::unordered_map<Entity,FMOD::Sound*> soundToRemove;
 
@@ -236,7 +240,7 @@ property_begin(TRE::AudioListener)
 
 property_begin(TRE::Audio)
 {
-			//property_var(m_AudioFileNameToDrop),
+			property_var(m_ChannelGroupName),
 			property_var(m_FileName),
 			property_var(m_Play),
 			property_var(m_Volume),
@@ -249,4 +253,5 @@ property_begin(TRE::Audio)
 			property_var(m_Spatialize),
 			property_var(m_MinDistance),
 			property_var(m_MaxDistance)
+
 } property_vend_h(TRE::Audio)
