@@ -114,6 +114,8 @@ namespace TRE
 
 		Entity GetDisplayedPrefab();
 
+		bool IsValidPrefabResource(std::string prefabGUID);										// Checks if the string given is valid
+
 		// (De)serializing Prefab
 		std::string SavePrefabEntity(Entity object, bool newPrefab = true,						// Returns true if successful
 										std::string assetPath = FILESYS_PREFABDEFFOLDER);
