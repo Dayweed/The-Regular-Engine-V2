@@ -29,15 +29,6 @@
 		assert(entity->HasComponent<Type>());															\
 	}
 
-// this should never have to trip, but you never know...
-#define PhysicsComponentDestructorAssertion(Type)														\
-	if (!entity->HasComponent<Type>())																	\
-	{																									\
-		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
-			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to destroy.");					\
-		assert(entity->HasComponent<Type>());															\
-	}
-
 #define PhysicsComponentAssertion(Type) 																\
 	if (!entity->HasComponent<Type>())																	\
 	{																									\
@@ -145,6 +136,10 @@ namespace TRE
 		void ConstrainRotationY(const Entity& entity, bool state) const;
 
 		void ConstrainRotationZ(const Entity& entity, bool state) const;
+
+		glm::vec3 GetLinearVelocity(const Entity& entity) const;
+
+		void SetLinearVelocity(const Entity& entity, const glm::vec3& vel) const;
 
 		void UpdateRigidbody(const Entity& entity) const;
 

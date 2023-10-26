@@ -515,19 +515,25 @@ namespace TRE
 	public class PhysicsSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static void ResizeSphereCollider(string entityid, float newradius);
+		internal extern static void ResizeSphereCollider(string entityid, float newradius);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static void ResizeBoxCollider(string entityid, Vector3 newsize);
+		internal extern static void ResizeBoxCollider(string entityid, Vector3 newsize);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static void AddForce(string entityid, Vector3 force);
+		internal extern static void AddForce(string entityid, Vector3 force);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void GetLinearVelocity(string entityid, out Vector3 output);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetLinearVelocity(string entityid, Vector3 velocity);
 	}
 
 	public class InputSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static bool GetKeyDown(InputKeys keycode);
+		internal extern static bool GetKeyDown(InputKeys keycode);
 	}
 
 	public class Random

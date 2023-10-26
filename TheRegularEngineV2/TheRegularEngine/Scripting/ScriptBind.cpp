@@ -653,6 +653,18 @@ namespace TRE
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
     }
 
+    static void BindGetLinearVelocity(MonoString* id, glm::vec3* output)
+    {
+	    const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
+    }
+
+    static void BindSetLinearVelocity(MonoString* id, glm::vec3 velocity)
+    {
+        const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
+    }
+
 #pragma endregion
 
 #pragma TimeBindings
@@ -677,8 +689,6 @@ namespace TRE
 
     void ScriptBind::RegisterFunctions()
     {
-        
-
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
         mono_add_internal_call("TRE.ECSManager::IsValidEntity", BindIsValidEntity);
@@ -749,6 +759,8 @@ namespace TRE
         mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
         mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
         mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+        mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
+        mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
 
         // Input Binding
         mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
