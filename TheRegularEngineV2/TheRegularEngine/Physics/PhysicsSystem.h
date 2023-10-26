@@ -137,6 +137,10 @@ namespace TRE
 
 		void ConstrainRotationZ(const Entity& entity, bool state) const;
 
+		glm::vec3 GetLinearVelocity(const Entity& entity) const;
+
+		void SetLinearVelocity(const Entity& entity, const glm::vec3& vel) const;
+
 		void UpdateRigidbody(const Entity& entity) const;
 
 		/* !

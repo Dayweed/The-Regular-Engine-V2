@@ -113,6 +113,19 @@ namespace TRE
 		entity->GetComponent<Rigidbody>().m_FreezeRotationZ = state;
 	}
 
+	glm::vec3 PhysicsSystem::GetLinearVelocity(const Entity& entity) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		const PxVec3 vel = m_Actors[entity->GetGUID()].m_RigidDynamic->getLinearVelocity();
+		return VEC3_CAST(glm::vec3, vel);
+	}
+
+	void PhysicsSystem::SetLinearVelocity(const Entity& entity, const glm::vec3& vel) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setLinearVelocity(VEC3_CAST(PxVec3, vel));
+	}
+
 	void PhysicsSystem::UpdateRigidbody(const Entity& entity) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
