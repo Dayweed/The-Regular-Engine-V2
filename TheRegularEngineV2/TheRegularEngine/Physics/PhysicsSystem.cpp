@@ -125,10 +125,6 @@ namespace TRE
 		m_Foundation->setReportAllocationNames(false);
 #endif
 
-
-		TRE_CORE_INFO("PhysX Version: {0}.{1}.{2}",
-			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
-
 #if USE_PHYSX_PVD
 		//PVD is like a debugger for the physics (leave off for submission)
 		m_Pvd = PxCreatePvd(*m_Foundation);
@@ -197,27 +193,7 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
-		// Update Sphere Collider if Dirty
-		for (Entity& go : ECSManager::Instance().GetEntities<SphereCollider>())
-		{
-			SphereCollider& collider = go.get()->GetComponent<SphereCollider>();
-			if (collider.m_IsDirty)
-			{
-				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(go, collider.m_Radius);
-				collider.m_IsDirty = false;
-			}
-		}
-
-		// Update Box Collider if Dirty
-		for (Entity& go : ECSManager::Instance().GetEntities<BoxCollider>())
-		{
-			BoxCollider& collider = go.get()->GetComponent<BoxCollider>();
-			if (collider.m_IsDirty)
-			{
-				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(go, collider.m_HalfExtents);
-				collider.m_IsDirty = false;
-			}
-		}
+		ResizeAllColliders();
 
 		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
@@ -350,24 +326,24 @@ namespace TRE
 
 	void PhysicsSystem::AfterReset()
 	{
-		for (Entity entity : ECSManager::Instance().GetEntities<Rigidbody>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
 		{
 			ConstructRigidbody(entity);
 		}
 
-		for (Entity entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
 			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
 			ConstructSphereCollider(entity, component.m_Radius, component.m_Offset);
 		}
 
-		for (Entity entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
 		{
 			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
 			ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset);
 		}
 
-		for (Entity entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 		{
 			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
 			ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset);
@@ -376,7 +352,6 @@ namespace TRE
 
 	void PhysicsSystem::Shutdown()
 	{
-		TRE_CORE_INFO("Physics System Shutdown");
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
@@ -675,6 +650,39 @@ namespace TRE
 			}
 		}
 		return false;
+	}
+
+	void PhysicsSystem::ResizeAllColliders() const
+	{
+		// Update Sphere Collider if Dirty
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		{
+			if (auto& collider = entity->GetComponent<SphereCollider>(); collider.m_IsDirty)
+			{
+				ResizeSphereCollider(entity, collider.m_Radius);
+				collider.m_IsDirty = false;
+			}
+		}
+
+		// Update Box Collider if Dirty
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			if (auto& collider = entity->GetComponent<BoxCollider>(); collider.m_IsDirty)
+			{
+				ResizeBoxCollider(entity, collider.m_HalfExtents);
+				collider.m_IsDirty = false;
+			}
+		}
+
+		// Update the Update if Update
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		{
+			if (auto& collider = entity->GetComponent<CapsuleCollider>(); collider.m_IsDirty)
+			{
+				ResizeCapsuleCollider(entity, collider.m_Radius, collider.m_HalfHeight);
+				collider.m_IsDirty = false;
+			}
+		}
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)

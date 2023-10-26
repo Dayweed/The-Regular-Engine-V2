@@ -9,25 +9,20 @@ namespace TRE
 {
 	void to_json(nlohmann::json& j, const CapsuleCollider& t)
 	{
-		const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
-
 		j = nlohmann::json{
-			{ "m_Offset", v_offset },
-			{ "m_Radius", t.m_Radius },
-			{ "m_HalfHeight", t.m_HalfHeight },
-			{ "m_IsTrigger", t.m_IsTrigger }
+			WriteVec3MemberToJSON(m_Offset),
+			WriteMemberToJSON(m_Radius),
+			WriteMemberToJSON(m_HalfHeight),
+			WriteMemberToJSON(m_IsTrigger),
 		};
 	}
 
 	void from_json(const nlohmann::json& j, CapsuleCollider& t)
 	{
-		const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-		const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-		t.m_Offset = glm::make_vec3(a_off);
-
-		t.m_Radius = j.at("m_Radius").get<float>();
-		t.m_HalfHeight = j.at("m_HalfHeight").get<float>();
-		t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
+		ReadVec3MemberFromJSON(m_Offset);
+		ReadMemberFromJSON(m_Radius);
+		ReadMemberFromJSON(m_HalfHeight);
+		ReadMemberFromJSON(m_IsTrigger);
 	}
 
 	bool PhysicsSystem::ConstructCapsuleCollider(const Entity& entity, const float radius, const float halfHeight, const glm::vec3& offset) const
@@ -156,7 +151,6 @@ namespace TRE
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const
 	{
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
 
 		// reset bit for this component
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::CapsuleCollider;

@@ -301,6 +301,8 @@ namespace TRE
 
 	private:
 
+		void ResizeAllColliders() const;
+
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
 		physx::PxDefaultAllocator		m_Allocator;

@@ -7,7 +7,39 @@ using namespace physx;
 
 namespace TRE
 {
-	// NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Rigidbody, m_Mass, m_Drag, m_AngularDrag, m_UseGravity, m_IsKinematic);
+	void to_json(nlohmann::json& j, const Rigidbody& t)
+	{
+		j = nlohmann::json{
+			// WriteMemberToJSON(m_IsActive),
+			WriteMemberToJSON(m_Mass),
+			WriteMemberToJSON(m_Drag),
+			WriteMemberToJSON(m_AngularDrag),
+			WriteMemberToJSON(m_UseGravity),
+			WriteMemberToJSON(m_IsKinematic),
+			WriteMemberToJSON(m_FreezePositionX),
+			WriteMemberToJSON(m_FreezePositionY),
+			WriteMemberToJSON(m_FreezePositionZ),
+			WriteMemberToJSON(m_FreezeRotationX),
+			WriteMemberToJSON(m_FreezeRotationY),
+			WriteMemberToJSON(m_FreezeRotationZ),
+		};
+	}
+
+	void from_json(const nlohmann::json& j, Rigidbody& t)
+	{
+		// ReadMemberFromJSON(m_IsActive);
+		ReadMemberFromJSON(m_Mass);
+		ReadMemberFromJSON(m_Drag);
+		ReadMemberFromJSON(m_AngularDrag);
+		ReadMemberFromJSON(m_UseGravity);
+		ReadMemberFromJSON(m_IsKinematic);
+		ReadMemberFromJSON(m_FreezePositionX);
+		ReadMemberFromJSON(m_FreezePositionY);
+		ReadMemberFromJSON(m_FreezePositionZ);
+		ReadMemberFromJSON(m_FreezeRotationX);
+		ReadMemberFromJSON(m_FreezeRotationY);
+		ReadMemberFromJSON(m_FreezeRotationZ);
+	}
 
 	bool PhysicsSystem::ConstructRigidbody(const Entity& entity) const
 	{

@@ -354,9 +354,10 @@ namespace TRE
 			Transform,
 			MeshRenderer,
 			Camera,
+			Rigidbody,
 			SphereCollider,
 			BoxCollider,
-			Rigidbody,
+			CapsuleCollider,
 			FEL,
 			FAKEFEL,
 			Audio,
@@ -379,9 +380,10 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
 			.component<Audio>(arc)
@@ -504,9 +506,10 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
 			.component<DirectionalLight>(arc)
