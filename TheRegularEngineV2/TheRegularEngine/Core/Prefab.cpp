@@ -187,6 +187,34 @@ namespace TRE
 		return m_DisplayedPrefab;
 	}
 
+	bool PrefabSystem::IsValidPrefabResource(std::string prefabGUID)
+	{
+		DeserializePrefabDirectory();
+
+		// Find if it exists in existingPrefabs
+		if (m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
+		{
+			return false;
+		}
+
+		std::string prefabID{ prefabGUID };
+		std::string prefabPath{ m_ExistingPrefabs[prefabGUID] };
+
+		// Try opening filePath
+		std::ifstream file;
+		file.open(prefabPath);
+		if (!file)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not have a valid filepath (" + prefabPath + ")! Removing from m_ExistingPrefabs...");
+			return false;
+		}
+		file.close();
+
+		// Can open file, so it is valid
+		return true;
+	}
+
 	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab, std::string assetPath)
 	{
 		std::string prefabGUID;

@@ -12,6 +12,9 @@
 #include "Graphics/MeshRenderer.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 
+// Need to find a way w/o using "../"
+#include "../TheRegularEditor/src/ConsolePanel.h"
+
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
 
@@ -39,6 +42,7 @@ namespace TRE
         return str;
 	}
 
+#pragma region ParentBindings
     static void BindEntityRename(MonoString* ID, MonoString* name)
     {
         // Retrive the entity from the ID
@@ -73,6 +77,75 @@ namespace TRE
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
         return mono_string_new(mono_domain_get(), Temp->GetComponent<Properties>().m_Tag.c_str());
     }
+#pragma endregion
+
+#pragma region PrefabBindings
+    static bool BindCheckIsPrefabResource(MonoString* ID)
+    {
+        std::string entityID{ MonoStringToString(ID) };
+        if (ECSManager::Instance().FindEntity(entityID))
+            return false;   // Return false if it is an entity in the Entity Scene
+        // Check if entityID is a prefab resource
+        return ECSSystemManager::Instance().GetSystem<PrefabSystem>()->IsValidPrefabResource(entityID);
+    }
+
+    static MonoString* BindCreatePrefabEntity(MonoString* name, glm::vec3 newPos, glm::vec3 newRot)
+    {
+        std::string prefabGUID{ MonoStringToString(name) };
+        Entity prefabInstance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID) };
+
+        Transform& transform = prefabInstance->GetComponent<Transform>();
+        transform.m_Position = newPos;
+        transform.m_Rotation = newRot;
+        transform.m_IsDirty = true;
+
+        return mono_string_new(mono_domain_get(), prefabInstance->GetGUID().c_str());
+    }
+#pragma endregion
+    
+#pragma region ParentBindings
+    static void BindParentSetParent(MonoString* ID, MonoString* parentID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity parentTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(parentID));
+        if (Temp && parentTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(Temp, parentTemp);
+        }
+    }
+    
+    static void BindParentRemoveParent(MonoString* ID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        if (Temp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
+        }
+    }
+    
+    static void BindParentAddChild(MonoString* ID, MonoString* childID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        if (Temp && childTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(Temp, childTemp);
+        }
+    }
+    
+    static void BindParentRemoveChild(MonoString* ID, MonoString* childID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        if (Temp && childTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
+        }
+    }
 
     static bool BindEntityCompareTag(MonoString* ID, MonoString* tag)
     {
@@ -80,6 +153,7 @@ namespace TRE
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
         return Temp->GetComponent<Properties>().m_Tag == mono_string_to_utf8(tag);
     }
+#pragma endregion
 
     static void BindCreateEntity(MonoString* name, MonoString* output)
     {
@@ -89,6 +163,11 @@ namespace TRE
 
         Entity Temp = ECSManager::Instance().CreateEntity(str);
         std::cout << "Created Entity from C#: " << str << std::endl;
+    }
+
+    static bool BindIsValidEntity(MonoString* id)
+    {
+        return (ECSManager::Instance().FindEntity(MonoStringToString(id)) != nullptr);
     }
 
      static void BindAddComponent(MonoString* ID, int componenttype)
@@ -237,8 +316,15 @@ namespace TRE
         std::string ID = MonoStringToString(id);
         // find the entity
         Entity Temp = ECSManager::Instance().FindEntity(ID);
-        Transform& transform = Temp->GetComponent<Transform>();
-        *output = transform.m_Position;
+        if (Temp)
+        {
+            Transform& transform = Temp->GetComponent<Transform>();
+            *output = transform.m_Position;
+        }
+        else
+        {
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "[ERROR] (Getting Position) Entity is invalid! ID: (" + ID + ")" });
+        }
     }
 
     static void BindGetRotation(MonoString* id, glm::vec3* output)
@@ -246,8 +332,15 @@ namespace TRE
         std::string ID = MonoStringToString(id);
         // find the entity
         Entity Temp = ECSManager::Instance().FindEntity(ID);
-        // Get the rotation
-        *output = Temp->GetComponent<Transform>().m_Rotation;
+        if (Temp)
+        {
+            // Get the rotation
+            *output = Temp->GetComponent<Transform>().m_Rotation;
+        }
+        else
+        {
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "[ERROR] (Getting Rotation) Entity is invalid! ID: (" + ID + ")" });
+        }
     }
 
 #pragma endregion
@@ -560,16 +653,45 @@ namespace TRE
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
     }
 
+    static void BindGetLinearVelocity(MonoString* id, glm::vec3* output)
+    {
+	    const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
+    }
+
+    static void BindSetLinearVelocity(MonoString* id, glm::vec3 velocity)
+    {
+        const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
+    }
+
 #pragma endregion
+
+#pragma TimeBindings
+    static float BindGetDeltaTime()
+    {
+        return Engine::GetInstance().GetWindow()->GetDeltaTime();
+    }
+#pragma endregion
+
+#pragma RandomBindings
+    static int BindIntRandRange(int min_incl, int max_excl)
+    {
+        return Random::RangeInt(min_incl, max_excl);
+    }
+
+    static float BindFloatRandRange(float min_incl, float max_incl)
+    {
+        return Random::RangeFloat(min_incl, max_incl);
+    }
 
 #pragma endregion
 
     void ScriptBind::RegisterFunctions()
     {
-        
-
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
+        mono_add_internal_call("TRE.ECSManager::IsValidEntity", BindIsValidEntity);
         mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
         mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
         mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
@@ -584,6 +706,16 @@ namespace TRE
         mono_add_internal_call("TRE.Entity::EngineSetTag", BindEntitySetTag);
         mono_add_internal_call("TRE.Entity::EngineGetTag", BindEntityGetTag);
         mono_add_internal_call("TRE.Entity::EngineCompareTag", BindEntityCompareTag);
+
+        // Prefab Bindings
+        mono_add_internal_call("TRE.Prefab::EngineIsPrefabResource", BindCheckIsPrefabResource);
+        mono_add_internal_call("TRE.Prefab::CreatePrefabEntity", BindCreatePrefabEntity);
+
+        // Parent Bindings
+        mono_add_internal_call("TRE.Entity::EngineParentSetParent", BindParentSetParent);
+        mono_add_internal_call("TRE.Entity::EngineParentRemoveParent", BindParentRemoveParent);
+        mono_add_internal_call("TRE.Entity::EngineParentAddChild", BindParentAddChild);
+        mono_add_internal_call("TRE.Entity::EngineParentRemoveChild", BindParentRemoveChild);
 
         // Tranform Bindings
         mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
@@ -627,6 +759,8 @@ namespace TRE
         mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
         mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
         mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+        mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
+        mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
 
         // Input Binding
         mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
@@ -637,5 +771,11 @@ namespace TRE
         mono_add_internal_call("TRE.Core::LogError", SendErrorToConsole);
         mono_add_internal_call("TRE.Core::LogCritical", SendCriticalToConsole);
 
+        // Random
+        mono_add_internal_call("TRE.Random::IntRange", BindIntRandRange);
+        mono_add_internal_call("TRE.Random::FloatRange", BindFloatRandRange);
+
+        // Time
+        mono_add_internal_call("TRE.Time::GetDeltaTime", BindGetDeltaTime);
     }
 }

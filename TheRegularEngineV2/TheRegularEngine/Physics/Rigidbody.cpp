@@ -38,17 +38,26 @@ namespace TRE
 		}
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+		// PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+
+		// SO TEMPORARY
+		PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0f);
 
 		// activate gravity by default
 		bool useGravity = true; // TODO: disabling gravity
 		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
 
 		// this is necessary to allow the actor to freakin move by physics and forces and such
-		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+		// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+
+		// SO TEMPORARY
+		sharedData.m_RigidDynamic->is<PxRigidDynamic>()->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
 
 		// wake up the sleeping beauty
-		sharedData.m_RigidDynamic->wakeUp();
+		// sharedData.m_RigidDynamic->wakeUp();
+
+		// SO TEMPORARY
+		sharedData.m_RigidDynamic->is<PxRigidDynamic>()->wakeUp();
 		// UNBELIEVABLE, THIS IS WHAT I WAS MISSING AFTER ALL THIS TIME.
 		// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
@@ -68,49 +77,89 @@ namespace TRE
 	void PhysicsSystem::AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->addForce(VEC3_CAST(PxVec3, force));
 	}
 
 	void PhysicsSystem::ConstrainPositionX(const Entity& entity, bool state) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_X, state);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_X, state);
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_X, state);
 		entity->GetComponent<Rigidbody>().m_FreezePositionX = state;
 	}
 
 	void PhysicsSystem::ConstrainPositionY(const Entity& entity, bool state) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, state);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, state);
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, state);
 		entity->GetComponent<Rigidbody>().m_FreezePositionY = state;
 	}
 
 	void PhysicsSystem::ConstrainPositionZ(const Entity& entity, bool state) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, state);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, state);
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, state);
 		entity->GetComponent<Rigidbody>().m_FreezePositionZ = state;
 	}
 
 	void PhysicsSystem::ConstrainRotationX(const Entity& entity, bool state) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, state);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, state);
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, state);
 		entity->GetComponent<Rigidbody>().m_FreezeRotationX = state;
 	}
 
 	void PhysicsSystem::ConstrainRotationY(const Entity& entity, bool state) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, state);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, state);
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, state);
 		entity->GetComponent<Rigidbody>().m_FreezeRotationY = state;
 	}
 
 	void PhysicsSystem::ConstrainRotationZ(const Entity& entity, bool state) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, state);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, state);
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, state);
 		entity->GetComponent<Rigidbody>().m_FreezeRotationZ = state;
+	}
+
+	glm::vec3 PhysicsSystem::GetLinearVelocity(const Entity& entity) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		// const PxVec3 vel = m_Actors[entity->GetGUID()].m_RigidDynamic->getLinearVelocity();
+
+		// SO TEMPORARY
+		const PxVec3 vel = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->getLinearVelocity();
+		return VEC3_CAST(glm::vec3, vel);
+	}
+
+	void PhysicsSystem::SetLinearVelocity(const Entity& entity, const glm::vec3& vel) const
+	{
+		PhysicsComponentAssertion(Rigidbody);
+		// m_Actors[entity->GetGUID()].m_RigidDynamic->setLinearVelocity(VEC3_CAST(PxVec3, vel));
+
+		// SO TEMPORARY
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->setLinearVelocity(VEC3_CAST(PxVec3, vel));
 	}
 
 	void PhysicsSystem::UpdateRigidbody(const Entity& entity) const
@@ -121,7 +170,10 @@ namespace TRE
 
 		rigidbody.m_IsInitialized || ConstructRigidbody(entity);
 
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// SO TEMPORARY
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
 		rigidbody.m_Mass = rigidDynamic->getMass();
 		// rigidbody.m_Drag = ;
@@ -132,8 +184,6 @@ namespace TRE
 
 	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
 	{
-		PhysicsComponentDestructorAssertion(Rigidbody);
-
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::Rigidbody;
 

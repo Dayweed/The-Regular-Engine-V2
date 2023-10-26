@@ -188,6 +188,7 @@ namespace TRE
 
 		// Retrieve and instantiate the main class
 
+		TestScriptingEngine();
 	}
 
 	

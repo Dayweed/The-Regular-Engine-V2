@@ -96,6 +96,16 @@ namespace TRE
 		// ColliderToTrigger(e2);			TriggerToCollider(e2);
 #endif
 
+		// this is SO TEMPORARY
+		const Entity entity = ECSManager::Instance().GetEntities<Transform>().front();
+		//Static object creation
+		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
+#ifdef _DEBUG
+		m_GroundPlane->setName("THE PLANE");
+#endif
+		m_Scene->addActor(*m_GroundPlane);
+		m_Actors[entity->GetGUID()] = SharedData{ m_GroundPlane, 0, entity->GetGUID(), false };
+
 		return isReadyForUpdate = true;
 	}
 
@@ -181,13 +191,6 @@ namespace TRE
 
 		//Create material gives the object a static, dynamic and restitution.
 		m_DefaultMaterial = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
-
-		//Static object creation
-		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
-#ifdef _DEBUG
-		m_GroundPlane->setName("THE PLANE");
-#endif
-		m_Scene->addActor(*m_GroundPlane);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
@@ -422,7 +425,10 @@ namespace TRE
 		// assert that there is at least 1 collider component on this entity
 		assert(m_Actors[entity->GetGUID()].m_AttachedComponents >> 1);
 
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// SO TEMPORARY
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
@@ -462,7 +468,10 @@ namespace TRE
 		// assert that there is at least 1 collider component on this entity
 		assert(m_Actors[entity->GetGUID()].m_AttachedComponents >> 1);
 
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// SO TEMPORARY
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
