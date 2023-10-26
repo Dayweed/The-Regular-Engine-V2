@@ -342,7 +342,7 @@ namespace TRE
 			const EditorCamera& camera = EditorCamera::Instance();
 			glm::mat4 proj = camera.GetProjectionMatrix();
 			//Flip back x and y axis
-			proj[0][0] *= -1.f;
+			//proj[0][0] *= -1.f;
 			proj[1][1] *= -1.f;
 			glm::mat4 View = camera.GetViewMatrix();
 
@@ -447,7 +447,7 @@ namespace TRE
 				if (glm::length(positionOffset) < 0.1f)
 					return;
 				positionOffset = glm::normalize(positionOffset);
-				positionOffset.y *= -1;
+				positionOffset *= -1;
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
@@ -473,6 +473,7 @@ namespace TRE
 				if (glm::length(rotationOffset) < 0.1f)
 					return;
 				rotationOffset = glm::normalize(rotationOffset);
+				rotationOffset.x *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 

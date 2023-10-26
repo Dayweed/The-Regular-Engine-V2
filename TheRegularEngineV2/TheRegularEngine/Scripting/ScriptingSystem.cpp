@@ -22,7 +22,7 @@ namespace TRE
 
 	void ScriptingSystem::GameUpdate()
 	{
-		ScriptEngine::TestUpdataObject();
+		ScriptEngine::TestUpdateObject();
 	}
 
 	void ScriptingSystem::LateUpdate()
