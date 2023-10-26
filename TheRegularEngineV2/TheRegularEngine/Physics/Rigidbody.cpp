@@ -132,8 +132,6 @@ namespace TRE
 
 	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
 	{
-		PhysicsComponentDestructorAssertion(Rigidbody);
-
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::Rigidbody;
 

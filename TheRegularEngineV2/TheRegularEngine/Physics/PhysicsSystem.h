@@ -29,15 +29,6 @@
 		assert(entity->HasComponent<Type>());															\
 	}
 
-// this should never have to trip, but you never know...
-#define PhysicsComponentDestructorAssertion(Type)														\
-	if (!entity->HasComponent<Type>())																	\
-	{																									\
-		TRE_CORE_ERROR("[" __FUNCTION__ "] "															\
-			"Entity \"" + entity->GetName() + "\" has no "+  #Type + " to destroy.");					\
-		assert(entity->HasComponent<Type>());															\
-	}
-
 #define PhysicsComponentAssertion(Type) 																\
 	if (!entity->HasComponent<Type>())																	\
 	{																									\
