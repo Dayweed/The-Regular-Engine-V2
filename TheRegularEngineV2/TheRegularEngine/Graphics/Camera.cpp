@@ -30,7 +30,7 @@ namespace TRE
 			camera.m_ProjectionMatrix[3][2] = -(camera.m_Far * camera.m_Near) / (camera.m_Far - camera.m_Near);
 			camera.m_ProjectionMatrix[3][3] = 0.f;
 			//Fip x and y axis
-			camera.m_ProjectionMatrix[0][0] *= -1.f;
+			//camera.m_ProjectionMatrix[0][0] *= -1.f;
 			camera.m_ProjectionMatrix[1][1] *= -1.f;
 		}
 		else

@@ -175,7 +175,7 @@ namespace TRE
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
 		MouseActions();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize);
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize, ImVec2(0,0), ImVec2(1, 1));
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -342,7 +342,7 @@ namespace TRE
 			const EditorCamera& camera = EditorCamera::Instance();
 			glm::mat4 proj = camera.GetProjectionMatrix();
 			//Flip back x and y axis
-			//proj[0][0] *= -1.f;
+			proj[0][0] *= -1.f;
 			proj[1][1] *= -1.f;
 			glm::mat4 View = camera.GetViewMatrix();
 

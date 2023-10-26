@@ -2,6 +2,7 @@
 #include "VulkanUtilities.h"
 #include "RendererContext.h"
 #include "glm/gtx/matrix_decompose.hpp"
+#include "Core/Engine.h"
 
 namespace TRE::vkUtils
 {
@@ -70,7 +71,7 @@ namespace TRE::vkUtils
 			case ImageFormat::RG8:				    return VK_FORMAT_R8G8_UNORM;
 			case ImageFormat::RG16F:				return VK_FORMAT_R16G16_SFLOAT;
 			case ImageFormat::RG32F:				return VK_FORMAT_R32G32_SFLOAT;
-			case ImageFormat::RGBA:					return VK_FORMAT_B8G8R8A8_UNORM;
+			case ImageFormat::RGBA:					return Engine::GetInstance().GetWindow()->GetSwapChain()->GetColorFormat();
 			case ImageFormat::RGBA16F:				return VK_FORMAT_R16G16B16A16_SFLOAT;
 			case ImageFormat::RGBA32F:				return VK_FORMAT_R32G32B32A32_SFLOAT;
 			case ImageFormat::B10R11G11UF:			return VK_FORMAT_B10G11R11_UFLOAT_PACK32;

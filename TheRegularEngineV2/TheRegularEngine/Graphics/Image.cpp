@@ -6,110 +6,17 @@
 
 namespace TRE
 {
-	Image::Image(const uint32_t width, const uint32_t height, const VkFormat format, const VkImageUsageFlags usage, const VkImageAspectFlags viewAspectFlag, const VkImageType imageType, const VkImageViewType imageViewType)
-	{
-		auto device = RendererContext::GetDevice()->GetLogicalDevice();
-		VkImageCreateInfo imageInfo{};
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageInfo.imageType = imageType;
-		imageInfo.format = format;
-		imageInfo.extent.width = width;
-		imageInfo.extent.height = height;
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
-		imageInfo.arrayLayers = 1;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-		imageInfo.usage = usage;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		imageInfo.flags = 0;
-		if (auto result = vkCreateImage(device, &imageInfo, nullptr, &m_Image); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to create image");
-		}
-
-		VkMemoryRequirements memReqs;
-		VkMemoryAllocateInfo memAlloc{};
-		memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		vkGetImageMemoryRequirements(device, m_Image, &memReqs);
-		memAlloc.allocationSize = memReqs.size;
-		memAlloc.memoryTypeIndex = RendererContext::GetDevice()->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-		if (auto result = vkAllocateMemory(device, &memAlloc, nullptr, &m_ImageMemory); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to allocate memory for image");
-		}
-		if (auto result = vkBindImageMemory(device, m_Image, m_ImageMemory, 0); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to bind image memory");
-		}
-
-		VkImageViewCreateInfo viewInfo{};
-		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewInfo.image = m_Image;
-		viewInfo.viewType = imageViewType;
-		viewInfo.format = format;
-		viewInfo.subresourceRange.aspectMask = viewAspectFlag;
-		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = 1;
-		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
-
-		if (auto result = vkCreateImageView(device, &viewInfo, nullptr, &m_ImageView); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to bind image memory");
-		}
-	}
-
-	Image::Image(const VkImageCreateInfo imageInfo, const VkImageViewCreateInfo imageViewInfo)
-	{
-		auto device = RendererContext::GetDevice()->GetLogicalDevice();
-
-		if (auto result = vkCreateImage(device, &imageInfo, nullptr, &m_Image); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to create image");
-		}
-
-		VkMemoryRequirements memReqs;
-		VkMemoryAllocateInfo memAlloc{};
-		memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		vkGetImageMemoryRequirements(device, m_Image, &memReqs);
-		memAlloc.allocationSize = memReqs.size;
-		memAlloc.memoryTypeIndex = RendererContext::GetDevice()->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-		if (auto result = vkAllocateMemory(device, &memAlloc, nullptr, &m_ImageMemory); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to allocate memory for image");
-		}
-		if (auto result = vkBindImageMemory(device, m_Image, m_ImageMemory, 0); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to bind image memory");
-		}
-
-		if (auto result = vkCreateImageView(device, &imageViewInfo, nullptr, &m_ImageView); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to bind image memory");
-		}
-	}
-
-	Image::~Image()
-	{
-		auto device = RendererContext::GetDevice()->GetLogicalDevice();
-		vkDestroyImage(device, m_Image, nullptr);
-		vkDestroyImageView(device, m_ImageView, nullptr);
-		vkFreeMemory(device, m_ImageMemory, nullptr);
-	}
-
 	const ImageConfig& Image2D::GetImageConfig() const
 	{
 		return m_Config;
 	}
 
-	const ImageData& Image2D::GetImageData()
+	ImageData Image2D::GetImageData()
 	{
 		return m_ImageData;
 	}
 
-	const VkDescriptorImageInfo& Image2D::GetImageInfo()
+	VkDescriptorImageInfo Image2D::GetDescriptorImageInfo()
 	{
 		return m_DescriptorImageInfo;
 	}
@@ -166,6 +73,8 @@ namespace TRE
 		ImageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		ImageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		ImageCreateInfo.usage = UsageFlag;
+		ImageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		ImageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
 		if (auto Result = vkCreateImage(Device, &ImageCreateInfo, nullptr, &m_ImageData.Image); Result != VK_SUCCESS)
 		{
@@ -203,6 +112,29 @@ namespace TRE
 		{
 			assert(result == VK_SUCCESS && "Failed to bind image memory");
 		}
+
+		if (m_Config.CreateSampler)
+		{
+			VkSamplerCreateInfo samplerCreateInfo = {};
+			samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+			samplerCreateInfo.maxAnisotropy = 1.0f;
+			samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
+			samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
+			samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+			samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+			samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
+			samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
+			samplerCreateInfo.mipLodBias = 0.0f;
+			samplerCreateInfo.minLod = 0.0f;
+			samplerCreateInfo.maxLod = 100.0f;
+			samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+			if (auto Result = vkCreateSampler(Device, &samplerCreateInfo, nullptr, &m_ImageData.Sampler); Result != VK_SUCCESS)
+			{
+				assert(Result == VK_SUCCESS && "Sampler cannot be created");
+			}
+		}
+
+		UpdateDescriptorInfo();
 	}
 
 	void Image2D::UpdateDescriptorInfo()
@@ -213,6 +145,8 @@ namespace TRE
 		if (m_Config.Format == ImageFormat::DEPTH24STENCIL8 || m_Config.Format == ImageFormat::DEPTH32F || m_Config.Format == ImageFormat::DEPTH32FSTENCIL8UINT)
 			m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
 		else
+		{
 			m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		}
 	}
 }

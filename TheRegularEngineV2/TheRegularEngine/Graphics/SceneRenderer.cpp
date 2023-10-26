@@ -118,7 +118,7 @@ namespace TRE
 
 		ImageConfig ImageCon{};
 		ImageCon.CreateSampler = true;
-		ImageCon.DebugName = "SceneRenderer";
+		ImageCon.DebugName = "SceneRendererColorAttachment";
 		ImageCon.Transfer = true;
 		ImageCon.Format = ImageFormat::RGBA;
 		ImageCon.Height = SwapChain->GetHeight();
@@ -129,10 +129,17 @@ namespace TRE
 			m_ColorImages[x] = std::make_unique<Image2D>(ImageCon);
 		}
 
-		ImageCon.Format = ImageFormat::DEPTH24STENCIL8;
+		ImageConfig ImageCon2{};
+		ImageCon2.CreateSampler = true;
+		ImageCon2.DebugName = "SceneRenderer";
+		ImageCon2.Transfer = true;
+		ImageCon2.Height = SwapChain->GetHeight();
+		ImageCon2.Width = SwapChain->GetWidth();
+		ImageCon2.Usage = ImageUsage::Attachment;
+		ImageCon2.Format = ImageFormat::DEPTH24STENCIL8;
 		for (int x = 0; x < m_DepthImages.size(); x++)
 		{
-			m_DepthImages[x] = std::make_unique<Image2D>(ImageCon);
+			m_DepthImages[x] = std::make_unique<Image2D>(ImageCon2);
 		}
 	}
 
