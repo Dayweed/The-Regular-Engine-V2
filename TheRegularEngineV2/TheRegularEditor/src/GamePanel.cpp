@@ -29,7 +29,7 @@ namespace TRE
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetGameSceneDescriptor(), m_ImageSize);
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetGameSceneDescriptor(), m_ImageSize, ImVec2(0, 0), ImVec2(1, 1));
 
 		ImGui::End();
 	}

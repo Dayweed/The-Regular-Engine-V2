@@ -87,7 +87,6 @@ namespace TRE
 			s_FinalRenderData->VertexBuffer = CreateVertexBuffer(data);
 			std::vector<int> indices = { 0, 1, 2, 2, 3, 0, };
 			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
-
 			s_FinalRenderData->RenderPass = SwapChain->GetRenderPassPointer();
 
 			PipelineConfigurations PipelineConfig;
@@ -97,21 +96,6 @@ namespace TRE
 			s_FinalRenderData->Pipeline = std::make_unique<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
 			s_FinalRenderData->Material = std::make_unique<Material>(PipelineConfig.Shader);
 			s_FinalRenderData->Material->Invalidate();
-			
-			VkSamplerCreateInfo samplerCreateInfo = {};
-			samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-			samplerCreateInfo.maxAnisotropy = 1.0f;
-			samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
-			samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
-			samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-			samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-			samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
-			samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
-			samplerCreateInfo.mipLodBias = 0.0f;
-			samplerCreateInfo.minLod = 0.0f;
-			samplerCreateInfo.maxLod = 100.0f;
-			samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-			vkCreateSampler(Device, &samplerCreateInfo, nullptr, &s_FinalRenderData->Sampler);
 		}
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
@@ -121,8 +105,6 @@ namespace TRE
 	{
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDeviceWaitIdle(Device);
-		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
-			vkDestroySampler(Device, s_FinalRenderData->Sampler, nullptr);
 		delete s_FinalRenderData;
 		m_CommandBuffer = nullptr;
 	}
@@ -158,15 +140,13 @@ namespace TRE
 		scissor.offset.y = 0;
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		s_FinalRenderData->ImageInfo.imageView = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetImageData().ImageView;
-		s_FinalRenderData->ImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		s_FinalRenderData->ImageInfo.sampler = s_FinalRenderData->Sampler;
-
+		s_FinalRenderData->ImageInfo = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo();
+		
 		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipeline());
 
 		s_FinalRenderData->Material->UpdateCompsitePass(s_FinalRenderData->ImageInfo);
-		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(), 0,
-			1, &s_FinalRenderData->Material->GetDescriptor(swapChain->GetCurrentBufferIndex()), 0, NULL);
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(),
+			0, 1, &s_FinalRenderData->Material->GetDescriptor(swapChain->GetCurrentBufferIndex()), 0, NULL);
 
 		VkDeviceSize offsets[] = { 0 };
 		auto Vbuffer = s_FinalRenderData->VertexBuffer->GetBuffer();

@@ -19,7 +19,7 @@ namespace TRE
 	{
 		EngineInfo Info;
 		Info.WindowConfigurations.Title = "Holey Moley";
-		Info.WindowConfigurations.FullScreen = true;
+		Info.WindowConfigurations.FullScreen = false;
 		Info.EnableEditor = false;
 		Info.MaximizeWindow = true;
 		return new RuntimeApplication(Info);

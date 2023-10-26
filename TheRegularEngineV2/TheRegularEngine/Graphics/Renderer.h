@@ -11,7 +11,6 @@ namespace TRE
 		std::unique_ptr<Material> Material;
 		std::shared_ptr<RenderPass> RenderPass;
 		VkDescriptorImageInfo ImageInfo;
-		VkSampler Sampler;
 	};
 
 	class Renderer

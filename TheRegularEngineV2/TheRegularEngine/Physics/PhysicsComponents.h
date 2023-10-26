@@ -76,6 +76,7 @@ namespace TRE
 	struct BaseCollider : PhysicsComponent
 	{
 		bool m_IsTrigger = false;
+		bool m_IsVisible = false; //For rendering of debug collider lines
 		bool m_IsDirty = false;
 		glm::vec3 m_Offset = {};
 		// physx::PxMaterial* m_PhysicsMaterial = nullptr;
@@ -162,14 +163,16 @@ property_begin(TRE::SphereCollider)
 {
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
-	property_var(m_Radius)
+	property_var(m_Radius),
+	property_var(m_IsVisible)
 } property_vend_h(TRE::SphereCollider)
 
 property_begin(TRE::BoxCollider)
 {
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
-	property_var(m_HalfExtents)
+	property_var(m_HalfExtents),
+	property_var(m_IsVisible)
 } property_vend_h(TRE::BoxCollider)
 
 property_begin(TRE::CapsuleCollider)
@@ -177,5 +180,6 @@ property_begin(TRE::CapsuleCollider)
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
 	property_var(m_Radius),
-	property_var(m_HalfHeight)
+	property_var(m_HalfHeight),
+	property_var(m_IsVisible)
 } property_vend_h(TRE::CapsuleCollider)

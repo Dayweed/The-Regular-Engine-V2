@@ -175,7 +175,7 @@ namespace TRE
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
 		MouseActions();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize);
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize, ImVec2(0,0), ImVec2(1, 1));
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -447,7 +447,7 @@ namespace TRE
 				if (glm::length(positionOffset) < 0.1f)
 					return;
 				positionOffset = glm::normalize(positionOffset);
-				positionOffset.y *= -1;
+				positionOffset *= -1;
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
@@ -473,6 +473,7 @@ namespace TRE
 				if (glm::length(rotationOffset) < 0.1f)
 					return;
 				rotationOffset = glm::normalize(rotationOffset);
+				rotationOffset.x *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 
