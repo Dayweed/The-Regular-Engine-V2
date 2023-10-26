@@ -58,7 +58,7 @@ namespace TRE
 			void DebugDrawPass(uint32_t Index);
 
 		public:
-			std::vector<std::unique_ptr<Image>>& GetColorImages();
+			std::vector<std::unique_ptr<Image2D>>& GetColorImages();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
@@ -70,8 +70,8 @@ namespace TRE
 
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
-			std::vector<std::unique_ptr<Image>> m_ColorImages;
-			std::vector<std::unique_ptr<Image>> m_DepthImages;
+			std::vector<std::unique_ptr<Image2D>> m_ColorImages;
+			std::vector<std::unique_ptr<Image2D>> m_DepthImages;
 
 			std::vector<VkFramebuffer> m_FrameBuffer;
 

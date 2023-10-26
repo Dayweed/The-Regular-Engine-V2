@@ -48,8 +48,7 @@ namespace TRE
 		None = 0,
 		Texture,
 		Attachment,
-		Storage,
-		HostRead
+		Storage
 	};
 
 	struct ImageConfig
@@ -66,24 +65,30 @@ namespace TRE
 		bool CreateSampler = true;
 	};
 
+	struct ImageData
+	{
+		VkImage Image = VK_NULL_HANDLE;
+		VkImageView ImageView = VK_NULL_HANDLE;
+		VkSampler Sampler = VK_NULL_HANDLE;
+		VkDeviceMemory ImageMemory = VK_NULL_HANDLE;
+	};
+
 	class Image2D
 	{
 		public:
-			Image2D(const ImageConfig& Config);
+			Image2D(const ImageConfig Config);
 			~Image2D();
 
 			void Invalidate();
+			void UpdateDescriptorInfo();
 
-			uint32_t GetWidth() const;
-			uint32_t GetHeight() const;
+			const VkDescriptorImageInfo& GetImageInfo();
 			const ImageConfig& GetImageConfig() const;
+			const ImageData& GetImageData();
 
 		private:
 			ImageConfig m_Config;
-
-			VkImage m_Image = VK_NULL_HANDLE;
-			VkImageView m_ImageView = VK_NULL_HANDLE;
-			VkSampler m_Sampler = VK_NULL_HANDLE;
+			ImageData m_ImageData;
 
 			VkDescriptorImageInfo m_DescriptorImageInfo{};
 	};

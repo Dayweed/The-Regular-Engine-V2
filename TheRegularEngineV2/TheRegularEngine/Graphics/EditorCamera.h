@@ -36,6 +36,8 @@ namespace TRE
 	
 		const glm::vec3& GetPosition() const { return m_Position; }
 		const glm::vec3& GetRotation() const { return m_Rotation; }
+
+		void SetDirection(const glm::vec3& position);
 	private:
 		void SetPosition(const glm::vec3& position);
 

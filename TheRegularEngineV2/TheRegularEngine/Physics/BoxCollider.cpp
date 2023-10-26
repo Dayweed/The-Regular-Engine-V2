@@ -149,10 +149,10 @@ namespace TRE
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
-		// PhysicsComponentDestructorAssertion(BoxCollider);
+		PhysicsComponentDestructorAssertion(BoxCollider);
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic* rigidDynamic = sharedComponent.m_RigidDynamic;
+		// PxRigidDynamic*& rigidDynamic = sharedComponent.m_RigidDynamic;
 
 		// reset bit for this component
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::BoxCollider;
@@ -161,7 +161,7 @@ namespace TRE
 		{
 			m_Scene->removeActor(*sharedData.m_RigidDynamic);
 			sharedData.m_RigidDynamic->release();
-			m_Actors.erase(entity->GetGUID());
+			sharedData.m_MarkForRemoval = true;
 		}
 		else // there's still more attached physics components
 		{
@@ -179,7 +179,5 @@ namespace TRE
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
-
-		// entity->RemoveComponent<BoxCollider>();
 	}
 }

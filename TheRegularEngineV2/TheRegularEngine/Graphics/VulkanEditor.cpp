@@ -14,7 +14,7 @@ namespace TRE
 		m_EditorSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_EditorSceneDescriptorSets.size(); x++)
 		{
-			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, SceneRenderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -23,7 +23,7 @@ namespace TRE
 		m_GameSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_GameSceneDescriptorSets.size(); x++)
 		{
-			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, SceneRenderer->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -246,11 +246,11 @@ namespace TRE
 		m_GameSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_GameSceneDescriptorSets.size(); x++)
 		{
-			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 		for (int x = 0; x < m_EditorSceneDescriptorSets.size(); x++)
 		{
-			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetEditorSceneRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetEditorSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 

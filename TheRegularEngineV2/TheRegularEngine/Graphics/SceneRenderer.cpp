@@ -25,7 +25,7 @@ namespace TRE
 		return m_DescriptorPool;
 	}
 
-	std::vector<std::unique_ptr<Image>>& SceneRenderer::GetColorImages()
+	std::vector<std::unique_ptr<Image2D>>& SceneRenderer::GetColorImages()
 	{
 		return m_ColorImages;
 	}
@@ -93,7 +93,7 @@ namespace TRE
 			VkFramebufferCreateInfo fbufCreateInfo{};
 			fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			fbufCreateInfo.renderPass = renderpass->GetHandle();
-			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageView(), m_DepthImages[x]->GetImageView() };
+			std::array<VkImageView, 2> attachments = { m_ColorImages[x]->GetImageData().ImageView, m_DepthImages[x]->GetImageData().ImageView };
 
 			fbufCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			fbufCreateInfo.pAttachments = attachments.data();
@@ -116,18 +116,23 @@ namespace TRE
 
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		// Color attachment
+		ImageConfig ImageCon{};
+		ImageCon.CreateSampler = true;
+		ImageCon.DebugName = "SceneRenderer";
+		ImageCon.Transfer = true;
+		ImageCon.Format = ImageFormat::RGBA;
+		ImageCon.Height = SwapChain->GetHeight();
+		ImageCon.Width = SwapChain->GetWidth();
+		ImageCon.Usage = ImageUsage::Attachment;
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			m_ColorImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetColorFormat(), 
-				VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+			m_ColorImages[x] = std::make_unique<Image2D>(ImageCon);
 		}
 
-		// Depth attachment
+		ImageCon.Format = ImageFormat::DEPTH24STENCIL8;
 		for (int x = 0; x < m_DepthImages.size(); x++)
 		{
-			m_DepthImages[x] = std::make_unique<Image>(SwapChain->GetWidth(), SwapChain->GetHeight(), SwapChain->GetDepthFormat(),
-								VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT);
+			m_DepthImages[x] = std::make_unique<Image2D>(ImageCon);
 		}
 	}
 

@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include "EditorAssetManager.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include "EditorSystem.h"
 
 namespace TRE
 {
@@ -65,6 +66,7 @@ namespace TRE
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
 			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
+			EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 		}
 
 		ImGui::End();

@@ -132,7 +132,7 @@ namespace TRE
 
 	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
 	{
-		// PhysicsComponentDestructorAssertion(Rigidbody);
+		PhysicsComponentDestructorAssertion(Rigidbody);
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::Rigidbody;
@@ -148,9 +148,7 @@ namespace TRE
 			// get rid of all things related to the actor
 			m_Scene->removeActor(*sharedData.m_RigidDynamic);
 			sharedData.m_RigidDynamic->release();
-			m_Actors.erase(entity->GetGUID());
+			sharedData.m_MarkForRemoval = true;
 		}
-
-		// entity->RemoveComponent<Rigidbody>();
 	}
 }

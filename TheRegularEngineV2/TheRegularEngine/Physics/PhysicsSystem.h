@@ -87,15 +87,9 @@ namespace TRE
 		// ->is<PxRigidActor>()->getInternalActorIndex();
 	};
 
-	physx::PxFilterFlags SimulationFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
-		physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
-		physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
-
 	class PhysicsSystem : public ECSSystem
 	{
 	public:
-		PhysicsSystem();
-
 		bool TESTUpdate();
 
 		void Init() override;
@@ -104,7 +98,7 @@ namespace TRE
 		void LateUpdate() override;
 		void BeforeReset() override;
 		void AfterReset() override;
-		void OnDestroyEntities() override;
+		// void OnDestroyEntities() override;
 		void Shutdown() override;
 
 #pragma region Rigidbody Function Declarations

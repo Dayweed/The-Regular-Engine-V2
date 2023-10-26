@@ -38,9 +38,69 @@ using namespace physx;
 
 namespace TRE
 {
-	PhysicsSystem::PhysicsSystem()
+	// largely identical to PhysX's SnippetTriggers implementation
+	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 	{
-		TRE_CORE_INFO("Physics System Constructor called");
+		UNUSED_PARAM(filterData0);
+		UNUSED_PARAM(filterData1);
+		UNUSED_PARAM(constantBlock);
+		UNUSED_PARAM(constantBlockSize);
+
+		// let triggers through
+		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlags();
+		}
+
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT
+			| PxPairFlag::eDETECT_CCD_CONTACT
+			| PxPairFlag::eCONTACT_EVENT_POSE
+			| PxPairFlag::eNOTIFY_TOUCH_CCD
+			// | PxPairFlag::eNOTIFY_CONTACT_POINTS
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND // for OnCollisionEnter
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS // added for OnCollisionStay
+			| PxPairFlag::eNOTIFY_TOUCH_LOST // added for OnCollisionExit
+			;
+
+		return {};
+	}
+
+	static bool isReadyForUpdate = false;
+
+	bool PhysicsSystem::TESTUpdate()
+	{
+#if 0
+		const float stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
+		const unsigned stackSize = 3, numOfStacks = 1;
+
+		for (PxU32 i = 0; i < numOfStacks; i++)
+			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
+#endif
+
+#if 0
+		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
+		e1->GetComponent<Transform>().m_Position = { 0,8,0 };
+		e1->AddComponent<BoxCollider>();
+		ConstructBoxCollider(e1, { 7, 3, 7 });
+		ColliderToTrigger(e1);
+#endif
+
+#if 0
+		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
+		e2->GetComponent<Transform>().m_Position = { 0, 15, 0 };
+		e2->AddComponent<SphereCollider>();
+		e2->AddComponent<Rigidbody>();
+		// ColliderToTrigger(e2);			TriggerToCollider(e2);
+#endif
+
+		return isReadyForUpdate = true;
+	}
+
+	void PhysicsSystem::Init()
+	{
 		TRE_CORE_INFO("Initializing Physics/PhysX systems...");
 
 		//Create foundation is similar to initializing the scene
@@ -132,72 +192,6 @@ namespace TRE
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
 
-	// largely identical to PhysX's SnippetTriggers implementation
-	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
-		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
-		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
-	{
-		UNUSED_PARAM(filterData0);
-		UNUSED_PARAM(filterData1);
-		UNUSED_PARAM(constantBlock);
-		UNUSED_PARAM(constantBlockSize);
-
-		// let triggers through
-		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
-		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-			return PxFilterFlags();
-		}
-
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT
-			| PxPairFlag::eDETECT_CCD_CONTACT
-			| PxPairFlag::eCONTACT_EVENT_POSE
-			| PxPairFlag::eNOTIFY_TOUCH_CCD
-			// | PxPairFlag::eNOTIFY_CONTACT_POINTS
-			| PxPairFlag::eNOTIFY_TOUCH_FOUND // for OnCollisionEnter
-			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS // added for OnCollisionStay
-			| PxPairFlag::eNOTIFY_TOUCH_LOST // added for OnCollisionExit
-			;
-
-		return {};
-	}
-
-	static bool isReadyForUpdate = false;
-
-	bool PhysicsSystem::TESTUpdate()
-	{
-#if 0
-		const float stackInitialZ = 10.0f, stackSeparation = 10.0f, shapeHalfExtent = 2.0f;
-		const unsigned stackSize = 3, numOfStacks = 1;
-
-		for (PxU32 i = 0; i < numOfStacks; i++)
-			CreateStack({ 0, 0, stackInitialZ - (stackSeparation * i) }, stackSize, shapeHalfExtent);
-#endif
-
-#if 0
-		const Entity e1 = ECSManager::Instance().CreateEntity("box 1");
-		e1->GetComponent<Transform>().m_Position = { 0,8,0 };
-		e1->AddComponent<BoxCollider>();
-		ConstructBoxCollider(e1, { 7, 3, 7 });
-		ColliderToTrigger(e1);
-#endif
-
-#if 0
-		const Entity e2 = ECSManager::Instance().CreateEntity("ball 1");
-		e2->GetComponent<Transform>().m_Position = { 0, 15, 0 };
-		e2->AddComponent<SphereCollider>();
-		e2->AddComponent<Rigidbody>();
-		// ColliderToTrigger(e2);			TriggerToCollider(e2);
-#endif
-
-		return isReadyForUpdate = true;
-	}
-
-	void PhysicsSystem::Init()
-	{
-		// should the stuff from the constructor be here instead??
-	}
-
 	void PhysicsSystem::Update()
 	{
 		// Update Sphere Collider if Dirty
@@ -230,19 +224,7 @@ namespace TRE
 		// How do I tell if a component has been removed from an entity???
 		for (auto& x : m_Actors)
 		{
-			// NEVER ERASE ELEMENTS WHILE ITERATING THROUGH THEM.
-			// THE ITERATOR WILL ++ AND READ INVALID DATA!
-			// BEGIN & END WILL BECOME THE SAME AFTER THE ERASE (maybe)
-			// BUT THE LOOP WILL STILL ITERATE BECAUSE THE END OF THE MAP CHANGED!! (probably)
-			if (m_Actors.empty())
-			{
-				break;
-				// int x = 1; (void)x;
-				// THIS WOULD'VE WORKED IN VS2019!!!
-				// THANKS YOU VS 2022 (: (: (:
-			}
 			Entity entity = ECSManager::Instance().FindEntity(x.first);
-			if (!entity) continue; // I sure hope this doesn't happen!
 
 			// if the attached comps say yes, but the entity says no...
 			// there is a mismatch. Thus, destroy that component.
@@ -252,6 +234,15 @@ namespace TRE
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
 			OnEntityMismatchDestroyComponent(entity, attachedComponents, CapsuleCollider);
+		}
+
+		// erasing elements in a map: https://stackoverflow.com/a/8234813
+		for (auto it = m_Actors.begin(); it != m_Actors.end();)
+		{
+			if (it->second.m_MarkForRemoval)
+				it = m_Actors.erase(it);
+			else
+				++it;
 		}
 
 		UpdateAllEntitiesWithComponent(Rigidbody);
@@ -334,39 +325,50 @@ namespace TRE
 
 	void PhysicsSystem::BeforeReset()
 	{
-		m_Actors.clear(); // ???
+		for (const auto& actor : m_Actors)
+		{
+			const unsigned attachedComponents = actor.second.m_AttachedComponents;
+			Entity entity = ECSManager::Instance().FindEntity(actor.first);
+
+			if (attachedComponents & PhysicsComponentTypes::Rigidbody)
+				DestructRigidbody(entity);
+
+			if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+				DestructSphereCollider(entity);
+
+			if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+				DestructBoxCollider(entity);
+
+			if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+				DestructCapsuleCollider(entity);
+		}
+		m_Actors.clear();
 	}
 
 	void PhysicsSystem::AfterReset()
 	{
-		for (Entity john : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (Entity entity : ECSManager::Instance().GetEntities<Rigidbody>())
 		{
-			SphereCollider& collider{ john->GetComponent<SphereCollider>() };
-			ConstructSphereCollider(john, collider.m_Radius, collider.m_Offset);
+			ConstructRigidbody(entity);
 		}
 
-		for (Entity john : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (Entity entity : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
-			BoxCollider& collider{ john->GetComponent<BoxCollider>() };
-			ConstructBoxCollider(john, collider.m_HalfExtents, collider.m_Offset);
+			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
+			ConstructSphereCollider(entity, component.m_Radius, component.m_Offset);
 		}
-	}
 
-	void PhysicsSystem::OnDestroyEntities()
-	{
-#if 0
-		TRE_CORE_WARN("AM I EVEN HERE?!?!?!?!?");
+		for (Entity entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
+			ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset);
+		}
 
-		// hopefully this'll be the parameter of this function in the future!!
-		Entity entity = ECSManager::Instance().CreateEntity("PhysicsSystem::OnDestroyGO");
-
-		if (entity->HasComponent<Rigidbody>())		DestructRigidbody(entity);
-		if (entity->HasComponent<SphereCollider>())	DestructSphereCollider(entity);
-		if (entity->HasComponent<BoxCollider>())	DestructBoxCollider(entity);
-
-		m_Actors.erase(entity->GetGUID());
-		ECSManager::Instance().DestroyEntity(entity);
-#endif
+		for (Entity entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		{
+			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
+			ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset);
+		}
 	}
 
 	void PhysicsSystem::Shutdown()
