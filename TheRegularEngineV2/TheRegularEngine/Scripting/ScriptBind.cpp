@@ -66,6 +66,56 @@ namespace TRE
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
         Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
     }
+    
+    static MonoString* BindEntityGetTag(MonoString* ID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        return mono_string_new(mono_domain_get(), Temp->GetComponent<Properties>().m_Tag.c_str());
+    }
+    
+    static void BindParentSetParent(MonoString* ID, MonoString* parentID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity parentTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(parentID));
+        if (Temp && parentTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(Temp, parentTemp);
+        }
+    }
+    
+    static void BindParentRemoveParent(MonoString* ID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        if (Temp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
+        }
+    }
+    
+    static void BindParentAddChild(MonoString* ID, MonoString* childID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        if (Temp && childTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(Temp, childTemp);
+        }
+    }
+    
+    static void BindParentRemoveChild(MonoString* ID, MonoString* childID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        if (Temp && childTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
+        }
+    }
 
     static bool BindEntityCompareTag(MonoString* ID, MonoString* tag)
     {
@@ -84,7 +134,7 @@ namespace TRE
         std::cout << "Created Entity from C#: " << str << std::endl;
     }
 
-     static void BindAddComponent(MonoString* ID, int componenttype)
+	static void BindAddComponent(MonoString* ID, int componenttype)
     {
         // Retrive the entity from the ID
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
@@ -151,7 +201,7 @@ namespace TRE
     static std::unordered_map<std::string, std::string> GetAllSceneObjects()
 	{
         std::unordered_map<std::string, std::string > tempMap;
-		std::vector temp = ECSManager::Instance().GetAllEntities();
+		std::vector temp = ECSManager::Instance().GetAllEntities(true);
 
         for(auto& entity : temp)
         {
@@ -179,6 +229,28 @@ namespace TRE
 			// Did not find the name
 			return mono_string_new(mono_domain_get(), "NULL");
 		}
+	}
+
+    static MonoString* FindNameFromID(MonoString* id)
+	{
+		std::string temp = MonoStringToString(id);
+        Entity tmpEntity{ ECSManager::Instance().FindEntity(temp) };
+        if (tmpEntity)
+        {
+            return  mono_string_new(mono_domain_get(), tmpEntity->GetName().c_str());
+        }
+        return  mono_string_new(mono_domain_get(), "");
+	}
+
+    static MonoString* FindParentIDFromID(MonoString* id)
+	{
+		std::string temp = MonoStringToString(id);
+        Entity tmpEntity{ ECSManager::Instance().FindEntity(temp) };
+        if (tmpEntity)
+        {
+            return  mono_string_new(mono_domain_get(), tmpEntity->GetComponent<Parenting>().m_Parent.c_str());
+        }
+        return  mono_string_new(mono_domain_get(), "");
 	}
 
 #pragma region TransformBindings
@@ -531,27 +603,46 @@ namespace TRE
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
     }
 
+    static void BindGetLinearVelocity(MonoString* id, glm::vec3* output)
+    {
+	    const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
+    }
+
+    static void BindSetLinearVelocity(MonoString* id, glm::vec3 velocity)
+    {
+        const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
+    }
+
 #pragma endregion
 
 #pragma endregion
 
     void ScriptBind::RegisterFunctions()
     {
-        
-
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
         mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
         mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
         mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
         mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
+        mono_add_internal_call("TRE.ECSManager::FindNameFromID", FindNameFromID);
+        mono_add_internal_call("TRE.ECSManager::FindParentIDFromID", FindParentIDFromID);
 
         // Entity Bindings
         mono_add_internal_call("TRE.Entity::EngineRename", BindEntityRename);
         mono_add_internal_call("TRE.Entity::EngineSetActive", BindEntityActive);
         mono_add_internal_call("TRE.Entity::EngineGetActive", BindEntityGetActive);
         mono_add_internal_call("TRE.Entity::EngineSetTag", BindEntitySetTag);
+        mono_add_internal_call("TRE.Entity::EngineGetTag", BindEntityGetTag);
         mono_add_internal_call("TRE.Entity::EngineCompareTag", BindEntityCompareTag);
+
+        // Parent Bindings
+        mono_add_internal_call("TRE.Entity::EngineParentSetParent", BindParentSetParent);
+        mono_add_internal_call("TRE.Entity::EngineParentRemoveParent", BindParentRemoveParent);
+        mono_add_internal_call("TRE.Entity::EngineParentAddChild", BindParentAddChild);
+        mono_add_internal_call("TRE.Entity::EngineParentRemoveChild", BindParentRemoveChild);
 
         // Tranform Bindings
         mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
@@ -595,6 +686,8 @@ namespace TRE
         mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
         mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
         mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+        mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
+        mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
 
         // Input Binding
         mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
@@ -604,6 +697,5 @@ namespace TRE
         mono_add_internal_call("TRE.Core::LogWarning", SendWarningToConsole);
         mono_add_internal_call("TRE.Core::LogError", SendErrorToConsole);
         mono_add_internal_call("TRE.Core::LogCritical", SendCriticalToConsole);
-
     }
 }

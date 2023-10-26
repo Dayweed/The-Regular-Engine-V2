@@ -236,6 +236,9 @@
     <ClInclude Include="Scripting\ScriptBind.h">
       <Filter>Scripting</Filter>
     </ClInclude>
+    <ClInclude Include="Scripting\ScriptComponent.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
@@ -415,6 +418,9 @@
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="Scripting\ScriptBind.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripting\ScriptComponent.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="Scripting\ScriptEngine.cpp">

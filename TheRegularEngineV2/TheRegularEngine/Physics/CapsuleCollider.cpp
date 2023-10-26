@@ -143,8 +143,6 @@ namespace TRE
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const
 	{
-		PhysicsComponentDestructorAssertion(CapsuleCollider);
-
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
 

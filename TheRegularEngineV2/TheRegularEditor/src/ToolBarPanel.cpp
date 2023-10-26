@@ -5,6 +5,7 @@
 #include "EditorAssetManager.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EditorSystem.h"
+#include "Scripting/ScriptEngine.h"
 
 namespace TRE
 {
@@ -51,6 +52,7 @@ namespace TRE
 		
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
+			//ScriptEngine::ReloadAssembly();
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 

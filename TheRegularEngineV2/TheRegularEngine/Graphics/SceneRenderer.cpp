@@ -250,6 +250,9 @@ namespace TRE
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
+			if (mr.m_IsVisible == false)
+				continue;
+
 			ResourceHandle materialHandle;
 
 			//If entity has no material, use default
@@ -350,6 +353,9 @@ namespace TRE
 		{
 			const Transform& tr = spheres->GetComponent<Transform>();
 			const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
+			if(sc.m_IsVisible == false)
+				continue;
+
 			PushConstant pc{};
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + sc.m_Offset);
@@ -366,6 +372,9 @@ namespace TRE
 		{
 			const Transform& tr = box->GetComponent<Transform>();
 			const BoxCollider& bc = box->GetComponent<BoxCollider>();
+			if (bc.m_IsVisible == false)
+				continue;
+
 			PushConstant pc{};
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + bc.m_Offset);

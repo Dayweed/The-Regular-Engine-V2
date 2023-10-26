@@ -6,8 +6,11 @@ namespace TRE
 {
 	public class Main
 	{
-		//create the test object and temp object not too sure if the temp object is linked in some 
-		public Entity Temp = new Entity("Temp");
+        // Scripting Initialization
+        HumanCentipede humanCentipedo = new HumanCentipede();
+
+        //create the test object and temp object not too sure if the temp object is linked in some 
+        public Entity Temp = new Entity("Temp");
 		public Entity Test = new Entity("Test");
 
 		public Main()
@@ -24,13 +27,18 @@ namespace TRE
             Test.SetActive(true);
             Console.WriteLine("Entity: " + Test.GetActive());
 
+            //Console.WriteLine("Tag: " + Test.GetTag());
             Test.SetTag("UwU");
+            //Console.WriteLine("Tag: " + Test.GetTag());
             Console.WriteLine("Is UwU? " + Test.CompareTag("UwU"));
             Console.WriteLine("Is OwO? " + Test.CompareTag("OwO"));
         }
 
 		public void Update()
 		{
+            // Script calling
+            humanCentipedo.Update();
+
 			// Move The Test Object 
 			TransformSystem.GetPosition(Test.id, out Vector3 pos);
 			//
