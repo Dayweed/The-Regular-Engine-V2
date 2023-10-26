@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,15 +21,19 @@ namespace TRE
 	{
 		public string id;
 		public string name;
+		public Parenting parenting;
 
-        public Entity(string _name)
+        public Entity(string _name, string _id = "")
 		{
 			name = _name;
-			id = "0";
+			id = _id;
+
+			parenting = new Parenting(id);
 		}
 
-        public void Rename(string name)
+        public void Rename(string _name)
 		{
+			name = _name;
             EngineRename(id, name);
         }
 
@@ -47,6 +52,11 @@ namespace TRE
             EngineSetTag(id, tag);
         }
 
+        public string GetTag()
+		{
+            return EngineGetTag(id);
+        }
+
         public bool CompareTag(string otherTag)
 		{
             return EngineCompareTag(id, otherTag);
@@ -54,19 +64,51 @@ namespace TRE
 
         // Private binded calls
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void EngineRename(string id, string name);
+        internal extern static void EngineRename(string id, string name);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static void EngineSetActive(string id, bool active);
+        internal extern static void EngineSetActive(string id, bool active);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool EngineGetActive(string id);
+        internal extern static bool EngineGetActive(string id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void EngineSetTag(string id, string tag);
+        internal extern static void EngineSetTag(string id, string tag);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool EngineCompareTag(string id, string otherTag);
+        internal extern static string EngineGetTag(string id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool EngineCompareTag(string id, string otherTag);
+    }
+
+	public struct Parenting
+	{
+        private string id;
+
+        public Parenting(string myID)
+		{
+			id = myID;
+        }
+
+        public Entity GetParent()
+        {
+            string parentID = ECSManager.FindParentIDFromID(id);
+            string parentName = ECSManager.FindNameFromID(parentID);
+            Entity parent = new Entity(parentName, parentID);
+            return parent;
+        }
+
+        public Entity GetChild(int _index)
+		{
+			string childID = EngineGetChildID(id, _index);
+			string childName = ECSManager.FindNameFromID(childID);
+            Entity child = new Entity(childName, childID);
+			return child;
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string EngineGetChildID(string _id, int _index);
     }
 
 	// Reference to this for what components that can be added to the entity.
@@ -230,6 +272,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string FindIDFromName(string name);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string FindNameFromID(string id);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string FindParentIDFromID(string id);
 	}
 
 	public class CameraSystem
