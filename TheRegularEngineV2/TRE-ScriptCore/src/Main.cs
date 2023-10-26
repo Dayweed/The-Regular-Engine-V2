@@ -24,9 +24,9 @@ namespace TRE
             Test.SetActive(true);
             Console.WriteLine("Entity: " + Test.GetActive());
 
-            Console.WriteLine("Tag: " + Test.GetTag());
+            //Console.WriteLine("Tag: " + Test.GetTag());
             Test.SetTag("UwU");
-            Console.WriteLine("Tag: " + Test.GetTag());
+            //Console.WriteLine("Tag: " + Test.GetTag());
             Console.WriteLine("Is UwU? " + Test.CompareTag("UwU"));
             Console.WriteLine("Is OwO? " + Test.CompareTag("OwO"));
         }
