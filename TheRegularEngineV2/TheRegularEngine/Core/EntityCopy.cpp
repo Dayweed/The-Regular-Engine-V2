@@ -17,7 +17,9 @@ namespace TRE
 			BoxCollider,
 			Rigidbody,
 			FEL,
-			FAKEFEL
+			FAKEFEL,
+			DirectionalLight,
+			ScriptComponent
 		>();
 	};
 

@@ -157,6 +157,7 @@ namespace TRE
 			.component<FAKEFEL>(arc)
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		arc.Close();
@@ -188,6 +189,7 @@ namespace TRE
 			.component<FAKEFEL>(arc)
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -233,7 +235,7 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL>();
+		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL, ScriptComponent>();
 
 		m_Registry.each([&](entt::entity srcEntity)
 			{
