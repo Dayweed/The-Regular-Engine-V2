@@ -12,8 +12,16 @@ namespace TRE
 		std::string m_ScriptPath;
 		std::string m_GUID;
 		bool m_IsDirty{ true };
+		property_vtable() 
 
-		std::string GetScriptParentGUID();
+
+		ScriptComponent();
+
+		void SetScriptPath(std::string path) {m_ScriptPath = path;}
+		std::string RetriveGUID(){ return m_ScriptPath; }
+		void SetGUID(std::string guid) { m_GUID = guid; }
+
+
 
 		friend void to_json(nlohmann::json& j, const ScriptComponent& s) // Serialize
 		{
@@ -42,4 +50,3 @@ property_begin(TRE::ScriptComponent)
 	, property_var(m_GUID)
 
 } property_vend_h(TRE::ScriptComponent)
-}

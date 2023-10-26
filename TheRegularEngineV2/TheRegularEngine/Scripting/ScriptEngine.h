@@ -27,6 +27,12 @@ namespace TRE
 
 	};
 
+	class ScriptFields
+	{
+	public:
+		std::string Name;
+	};
+
 
 
 	class ScriptEngine 
@@ -40,13 +46,9 @@ namespace TRE
 
 		static void ReloadAssembly();
 
-		
-		
-
 		static std::string TestGUID;
 		static bool CreatedScriptObject;
-		
-		
+
 		static void UpdateScriptingEngine();
 		static void TestScriptingEngine();
 		static void TestAddComponent();
