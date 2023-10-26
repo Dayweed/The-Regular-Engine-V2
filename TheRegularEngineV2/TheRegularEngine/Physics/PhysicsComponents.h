@@ -35,7 +35,10 @@ namespace TRE
 	// data that NEEDS to be shared among all physics components of an entity at all times
 	struct SharedData
 	{
-		physx::PxRigidDynamic* m_RigidDynamic = nullptr;    // pointer to the underlying PhysX actor
+		// physx::PxRigidDynamic* m_RigidDynamic = nullptr;    // pointer to the underlying PhysX actor
+
+		// THIS IS SO TEMPORARY
+		physx::PxRigidActor* m_RigidDynamic = nullptr;    // pointer to the underlying PhysX actor
 		unsigned m_AttachedComponents : 6 = 0;              // increase bitfield size if necessary!!
 		std::string m_GUID{};                               // to know which entity has this component
 		bool m_MarkForRemoval = false;                      // bool to activate when this element needs to be removed from m_Actors
