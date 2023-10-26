@@ -211,6 +211,27 @@ namespace TRE
 			}
 		}
 
+		public float Magnitude()
+		{
+			return (float)Math.Sqrt(x * x + y * y + z * z);
+		}
+
+		public void Normalize()
+		{
+			if(Magnitude() != 0)
+			{
+                this.x = this.x / Magnitude();
+                this.y = this.y / Magnitude();
+                this.z = this.z / Magnitude();
+            }
+			if(Magnitude() == 0)
+			{
+                this.x = 0;
+                this.y = 0;
+                this.z = 0;
+            }
+		}
+
 		public static bool operator !=(Vector3 a, Vector3 b)
 		{
 			if (a.x != b.x || a.y != b.y || a.z != b.z)
@@ -458,6 +479,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetLinearVelocity(string entityid, Vector3 velocity);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool IsCollisionEnter(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool IsCollisionExit(string entityid1, string entityid2);
 	}
 
 	public class InputSystem

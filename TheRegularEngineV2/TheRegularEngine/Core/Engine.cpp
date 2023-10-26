@@ -191,6 +191,8 @@ namespace TRE
 			testTransform.m_IsDirty = true;
 
 			test->AddComponent<MeshRenderer>();
+			test->AddComponent<Rigidbody>();
+			test->AddComponent<SphereCollider>();
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 

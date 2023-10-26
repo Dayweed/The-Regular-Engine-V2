@@ -614,6 +614,20 @@ namespace TRE
         const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
     }
+    static bool BindIsCollisionEnter(MonoString* id1, MonoString* id2)
+    {
+        Entity Temp1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity Temp2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionEnter(Temp1, Temp2);
+
+    }
+
+    static bool BindIsCollisionExit(MonoString* id1, MonoString* id2)
+    {
+        Entity Tmp1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity Tmp2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionExit(Tmp1, Tmp2);
+    }
 
 #pragma endregion
 
@@ -688,6 +702,8 @@ namespace TRE
         mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
         mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
         mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
+        mono_add_internal_call("TRE.PhysicsSystem::IsCollisionEnter", BindIsCollisionEnter);
+        mono_add_internal_call("TRE.PhysicsSystem::IsCollisionExit", BindIsCollisionExit);
 
         // Input Binding
         mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
