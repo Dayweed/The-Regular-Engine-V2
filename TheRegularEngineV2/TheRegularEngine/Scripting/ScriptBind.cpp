@@ -73,6 +73,49 @@ namespace TRE
         Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
         return mono_string_new(mono_domain_get(), Temp->GetComponent<Properties>().m_Tag.c_str());
     }
+    
+    static void BindParentSetParent(MonoString* ID, MonoString* parentID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity parentTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(parentID));
+        if (Temp && parentTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(Temp, parentTemp);
+        }
+    }
+    
+    static void BindParentRemoveParent(MonoString* ID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        if (Temp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
+        }
+    }
+    
+    static void BindParentAddChild(MonoString* ID, MonoString* childID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        if (Temp && childTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(Temp, childTemp);
+        }
+    }
+    
+    static void BindParentRemoveChild(MonoString* ID, MonoString* childID)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
+        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        if (Temp && childTemp)
+        {
+            ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
+        }
+    }
 
     static bool BindEntityCompareTag(MonoString* ID, MonoString* tag)
     {
@@ -584,6 +627,12 @@ namespace TRE
         mono_add_internal_call("TRE.Entity::EngineSetTag", BindEntitySetTag);
         mono_add_internal_call("TRE.Entity::EngineGetTag", BindEntityGetTag);
         mono_add_internal_call("TRE.Entity::EngineCompareTag", BindEntityCompareTag);
+
+        // Parent Bindings
+        mono_add_internal_call("TRE.Entity::EngineParentSetParent", BindParentSetParent);
+        mono_add_internal_call("TRE.Entity::EngineParentRemoveParent", BindParentRemoveParent);
+        mono_add_internal_call("TRE.Entity::EngineParentAddChild", BindParentAddChild);
+        mono_add_internal_call("TRE.Entity::EngineParentRemoveChild", BindParentRemoveChild);
 
         // Tranform Bindings
         mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);

@@ -91,6 +91,11 @@ namespace TRE
 			id = myID;
         }
 
+        public void SetParent(Entity _parent)
+        {
+			EngineParentSetParent(id, _parent.id);
+        }
+
         public Entity GetParent()
         {
             string parentID = ECSManager.FindParentIDFromID(id);
@@ -98,6 +103,21 @@ namespace TRE
             Entity parent = new Entity(parentName, parentID);
             return parent;
         }
+
+        public void RemoveParent()
+        {
+            EngineParentRemoveParent(id);
+        }
+
+		public void AddChild(Entity child)
+		{
+			EngineParentAddChild(id, child.id);
+		}
+
+		public void RemoveChild(Entity child)
+		{
+			EngineParentRemoveChild(id, child.id);
+		}
 
         public Entity GetChild(int _index)
 		{
@@ -109,6 +129,18 @@ namespace TRE
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static string EngineGetChildID(string _id, int _index);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string EngineParentSetParent(string _id, string _parent_id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string EngineParentRemoveParent(string _id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string EngineParentAddChild(string _id, string _child_id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string EngineParentRemoveChild(string _id, string _child_id);
     }
 
 	// Reference to this for what components that can be added to the entity.
