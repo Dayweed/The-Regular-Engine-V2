@@ -332,7 +332,9 @@ namespace TRE
 			FEL,
 			FAKEFEL,
 			Audio,
-			AudioListener
+			AudioListener,
+			DirectionalLight,
+			ScriptComponent
 		>();
 	}
 
@@ -356,6 +358,8 @@ namespace TRE
 			.component<FAKEFEL>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
+			.component<DirectionalLight>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		arc.Close();
@@ -477,8 +481,10 @@ namespace TRE
 			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<DirectionalLight>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		// Clone each component of the object into the prefab

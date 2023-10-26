@@ -47,6 +47,5 @@ property_begin(TRE::ScriptComponent)
 {
 	property_var(m_ScriptName)
 	, property_var(m_ScriptPath)
-	, property_var(m_GUID)
 
 } property_vend_h(TRE::ScriptComponent)

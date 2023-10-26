@@ -35,6 +35,7 @@
 #include "Graphics/Light.h"
 
 //-----------------Scripting-----------------//
+#include "Scripting/ScriptComponent.h"
 
 //-------------------Audio-------------------//
 #include "Audio/AudioSystem.h"

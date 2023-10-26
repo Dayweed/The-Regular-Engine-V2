@@ -424,6 +424,8 @@ namespace TRE
 				{
 					if (ImGui::Selectable(compName.c_str()))
 					{
+						ECSManager::Instance().AddCompFromName(entity, compName);
+
 						// Update Prefabing if have
 						if (isPrefabInstance)
 						{
@@ -442,8 +444,11 @@ namespace TRE
 							// Force Add AudioListener
 							ECSManager::Instance().AddCompFromName(entity, ComponentManager::Instance().GetComponentName<AudioListener>());
 						}
+						else if (compName == ComponentManager::Instance().GetComponentName<ScriptComponent>())
+						{
+							entity->GetComponent<ScriptComponent>().m_GUID = entity->GetGUID();
+						}
 
-						ECSManager::Instance().AddCompFromName(entity, compName);
 						m_SelectionManager->SelectEntity(entity);
 					}
 				}
