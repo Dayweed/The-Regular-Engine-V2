@@ -106,13 +106,23 @@ namespace TRE
 		return rigidbody.m_IsInitialized = true;
 	}
 
-	void PhysicsSystem::AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const
+	void PhysicsSystem::AddForce(const Entity& entity, const glm::vec3& force, const ForceMode::Enum mode) const
 	{
 		PhysicsComponentAssertion(Rigidbody);
+		PxForceMode::Enum physxForceMode;
+		switch (mode)
+		{
+		case ForceMode::Impulse:        physxForceMode = PxForceMode::eIMPULSE; break;
+		case ForceMode::VelocityChange: physxForceMode = PxForceMode::eVELOCITY_CHANGE; break;
+		case ForceMode::Acceleration:   physxForceMode = PxForceMode::eACCELERATION; break;
+		case ForceMode::Force:
+		default:                        physxForceMode = PxForceMode::eFORCE; break;
+		}
+
 		// m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
 
 		// SO TEMPORARY
-		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->addForce(VEC3_CAST(PxVec3, force));
+		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->addForce(VEC3_CAST(PxVec3, force), physxForceMode);
 	}
 
 	void PhysicsSystem::ConstrainPositionX(const Entity& entity, bool state) const

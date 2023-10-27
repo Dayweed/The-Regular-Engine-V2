@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 
 namespace TRE
 {
+	using PS = PhysicsSystem;
+
 	public class Main
 	{
 		// Scripting Initialization
@@ -62,13 +64,13 @@ namespace TRE
             if (InputSystem.GetKeyDown(InputKeys.W))
             {
                 dirVec.z += 1;
-                //PhysicsSystem.AddForce(Mole.id, dirVec);
+                //PS.AddForce(Mole.id, dirVec);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.S))
             {
                 dirVec.z += -1;
-                //PhysicsSystem.AddForce(Mole.id, dirVec);
+                //PS.AddForce(Mole.id, dirVec);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.A))
@@ -84,23 +86,24 @@ namespace TRE
             if (InputSystem.GetKeyDown(InputKeys.Space))
             {
                 // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-                isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id) || PhysicsSystem.IsCollisionStay(Test.id, Plane_collider.id);
+                isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
                 maxHeight = pos + maxJumpHeight; // this was not it, chief... :(
 
-				if (isGrounded)
-                    Jump(new Vector3(0, 13000, 0)); // uh oh beeeg number
+               if (isGrounded)
+                    Jump(new Vector3(0, 35, 0)); // ah, much better (for forcemode.velchange)
+                    // Jump(new Vector3(0, 13000, 0)); // uh oh beeeg number (for forcemode.force)
             }
 
             dirVec.Normalize();
 
             Vector3 tmp = dirVec * 60;
 
-            PhysicsSystem.AddForce(Test.id, tmp);
+            PS.AddForce(Test.id, tmp, PS.ForceMode.Force);
         }
 
         private void Jump(Vector3 maxHeight)
         {
-            PhysicsSystem.AddForce(Test.id, maxHeight);
+            PS.AddForce(Test.id, maxHeight, PS.ForceMode.VelocityChange);
         }
 	}
 }
