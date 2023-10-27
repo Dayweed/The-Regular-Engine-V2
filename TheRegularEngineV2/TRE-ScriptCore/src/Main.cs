@@ -51,7 +51,7 @@ namespace TRE
 		{
             // Script calling
             humanCentipedo.Update();
-			testingRandoFall.Update();
+			//testingRandoFall.Update();
 
 			// Move The Test Object 
 			TransformSystem.GetPosition(Test.id, out Vector3 pos);

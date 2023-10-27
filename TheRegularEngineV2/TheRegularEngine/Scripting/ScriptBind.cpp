@@ -758,6 +758,13 @@ namespace TRE
     }
 #pragma endregion
 
+#pragma MathFBindings
+    static float BindSqrt(float value)
+    {
+        return Mathf::Sqrt(value);
+    }
+#pragma endregion
+
 #pragma RandomBindings
     static int BindIntRandRange(int min_incl, int max_excl)
     {
@@ -866,6 +873,9 @@ namespace TRE
         mono_add_internal_call("TRE.Core::LogWarning", SendWarningToConsole);
         mono_add_internal_call("TRE.Core::LogError", SendErrorToConsole);
         mono_add_internal_call("TRE.Core::LogCritical", SendCriticalToConsole);
+
+        // Math
+        mono_add_internal_call("TRE.MathF::Sqrt", BindSqrt);
 
         // Random
         mono_add_internal_call("TRE.Random::IntRange", BindIntRandRange);

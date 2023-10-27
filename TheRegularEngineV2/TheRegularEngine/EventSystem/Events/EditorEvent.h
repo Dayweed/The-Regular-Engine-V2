@@ -46,4 +46,11 @@ namespace TRE
 		GridAndSnapEvent() = delete;
 		GridAndSnapEvent(float pos, float rot, float scale) : m_PosIncreament(pos), m_RotIncreament(rot), m_ScaleIncreament(scale) {}
 	};
+
+	struct LocalGloalGizmoEvent : Event
+	{
+		bool m_IsLocal{ false };
+		LocalGloalGizmoEvent() = delete;
+		LocalGloalGizmoEvent(bool local) : m_IsLocal(local) {}
+	};
 }

@@ -36,6 +36,7 @@ namespace TRE
 			void OnMouseScroll(const MouseScrollEvent& event);
 			void OnKeyboardClick(const InputEvent& event);
 			void OnGridAndSnap(const GridAndSnapEvent& event);
+			void OnGizmoLocal(const LocalGloalGizmoEvent& event);
 		private:
 			//Gonna rewrite in editor camera next time
 			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);
@@ -51,6 +52,7 @@ namespace TRE
 			float m_PosIncreament = 5.f;
 			float m_RotIncreament = 15.f;
 			float m_ScaleIncreament = 2.f;
+			bool m_IsGizmoLocal = false;
 
 			ImVec2 m_ViewportSize;
 			ImVec2 m_ImageSize;

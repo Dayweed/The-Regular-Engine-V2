@@ -168,7 +168,9 @@ namespace TRE
 	public struct Vector3
 	{
 		public float x, y, z;
-		public Vector3(float x, float y, float z)
+        public static Vector3 up = new Vector3(0, 1, 0);
+
+        public Vector3(float x, float y, float z)
 		{
 			this.x = x; this.y = y; this.z = z;
 		}
@@ -261,7 +263,7 @@ namespace TRE
 		public static float Distance(Vector3 vec1, Vector3 vec2)
 		{
 			// TO DO CALCULATE VECTOR DISTANCE :p
-			return 0.0f;
+			return vec1.Magnitude() - vec2.Magnitude();
 		}
 	}
 	#endregion
@@ -594,6 +596,12 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool GetKeyDown(InputKeys keycode);
 	}
+
+	public class MathF
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float Sqrt(float value);
+    }
 
 	public class Random
 	{
