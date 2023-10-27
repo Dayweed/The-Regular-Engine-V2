@@ -408,6 +408,9 @@ namespace TRE
 		internal extern static void RemoveComponent(string entityID, Components component);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void DestroyEntity(string entityID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string FindIDFromName(string name);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

@@ -752,7 +752,7 @@ namespace TRE
     }
 #pragma endregion
 
-#pragma region MathFBindings
+#pragma region MathfBindings
     static float BindSqrt(float value)
     {
         return Mathf::Sqrt(value);
@@ -780,6 +780,7 @@ namespace TRE
         mono_add_internal_call("TRE.ECSManager::IsValidEntity", BindIsValidEntity);
         mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
         mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
+        mono_add_internal_call("TRE.ECSManager::DestroyEntity", BindDestroyEntity);
         mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
         mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
         mono_add_internal_call("TRE.ECSManager::FindNameFromID", FindNameFromID);
