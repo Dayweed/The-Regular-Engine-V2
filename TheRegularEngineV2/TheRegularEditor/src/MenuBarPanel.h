@@ -69,9 +69,9 @@ namespace TRE
 			//Gizmo actions
 			bool m_GridAndSnap = false;
 			//Floats for position, rotation, and scale
-			float m_PosIncreament = 1.0f;
-			float m_RotIncreament = 1.0f;
-			float m_ScaleIncreament = 1.0f;
+			float m_PosIncrement = 1.0f;
+			float m_RotIncrement = 1.0f;
+			float m_ScaleIncrement = 1.0f;
 			//bool for local and global
 			bool m_LocalGizmo = false;
 
