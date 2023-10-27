@@ -379,7 +379,7 @@ namespace TRE
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + bc.m_Offset);
 			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-			const glm::vec3 scale = bc.m_HalfExtents * 10.f * 2.f;
+			const glm::vec3 scale = bc.m_HalfExtents * 2.f;
 			model = model * glm::scale(glm::mat4(1.f), scale);
 			pc.m_Model = model;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);

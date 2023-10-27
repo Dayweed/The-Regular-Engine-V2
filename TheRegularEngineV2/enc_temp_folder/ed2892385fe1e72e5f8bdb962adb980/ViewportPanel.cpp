@@ -145,6 +145,8 @@ namespace TRE
 			editorCamera.SetFocalDistance(1.f);
 			editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetViewDirection());
 		}
+
+		std::cout << baseCamera.GetViewDirection().x << " " << baseCamera.GetViewDirection().y << " " << baseCamera.GetViewDirection().z << std::endl;
 	}
 
 	void ViewportPanel::OnGridAndSnap(const GridAndSnapEvent& event)
