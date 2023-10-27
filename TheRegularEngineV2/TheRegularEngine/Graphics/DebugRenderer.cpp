@@ -25,7 +25,7 @@ namespace TRE
 		PipelineConfigurations DebugDrawPipelineConfig{};
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
 		DebugDrawPipelineConfig.Shader = DebugDrawShader;
-		DebugDrawPipelineConfig.LineWidth = 5.f;
+		DebugDrawPipelineConfig.LineWidth = 3.5f;
 		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
@@ -90,10 +90,11 @@ namespace TRE
 
 		std::vector<DebugVertex> DebugSphereVert;
 		std::vector<int> DebugSphereIndices;
-		float Theta = (3.14f * 2) / 48.f;
-		for (int x = 0; x < 48; x++)
+		const int slices = 48;
+		float Theta = (3.14f * 2) / slices;
+		for (int x = 0; x < slices; x++)
 		{
-			DebugSphereVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x), sinf((Theta * x)), 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+			DebugSphereVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x), sinf(Theta * x), 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
 			DebugSphereIndices.push_back(x);
 		}
 		DebugSphereIndices.push_back(0); //Strip back to the first point

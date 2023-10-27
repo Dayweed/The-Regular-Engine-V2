@@ -37,13 +37,14 @@ namespace TRE
 
 		public void Start()
 		{
+			humanCentipedo.Start();
 			testingRandoFall.Start();
         }
 
 		public void Update()
 		{
             // Script calling
-            //humanCentipedo.Update();
+            humanCentipedo.Update();
 			testingRandoFall.Update();
 
 			// Move The Test Object 

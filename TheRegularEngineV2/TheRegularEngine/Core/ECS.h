@@ -767,6 +767,15 @@ namespace TRE
 	template <typename T>
 	bool Ent::HasComponent()
 	{
+		// Ensure cannot get a component from a freed object and entity
+		if (this == nullptr || &m_Entity == nullptr)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] Object is no longer valid (this or entity is nullptr)");
+			assert(this != nullptr);
+			assert(&m_Entity != nullptr);
+		}
+
 		if (!ComponentManager::Instance().HasComponent<T>() && !ComponentManager::Instance().HasHiddenComponent<T>())
 		{
 			std::string funcName{ __FUNCTION__ };
