@@ -327,6 +327,11 @@ namespace TRE
 			DebugDrawPass(Index);
 		}
 
+		//Skybox Pass
+		{
+
+		}
+
 		//Animation Pass
 		{
 			//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
@@ -412,5 +417,103 @@ namespace TRE
 		//	m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
 		//	m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
 		//}
+	}
+
+	void SceneRenderer::LoadCubeMap()
+	{
+		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
+		auto Skybox2 = Resource::GetGUIDFromHex("612fbc6691dcd0bb");
+		auto Skybox3 = Resource::GetGUIDFromHex("d7317320914622e8");
+		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
+		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
+		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
+
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
+		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
+		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);
+		auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox4);
+		auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox5);
+		auto Texture6 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox6);
+
+		m_SkyboxTexture = std::make_unique<SkyboxTexture>();
+		m_SkyboxTexture->width = SwapChain->GetWidth();
+		m_SkyboxTexture->height = SwapChain->GetHeight();
+		m_SkyboxTexture->mipLevels = 1;
+		
+		VkMemoryAllocateInfo memAllocInfo{};
+		memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		memAllocInfo.allocationSize;
+		VkMemoryRequirements memReqs;
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingMemory;
+
+		VkBufferCreateInfo bufferCreateInfo{}; // This buffer is used as a transfer source for the buffer copy
+		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		bufferCreateInfo.size = 0;
+
+		if (auto Result = vkCreateBuffer(m_Device->GetLogicalDevice(), &bufferCreateInfo, nullptr, &stagingBuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create staging buffer for cubemap");
+		}
+
+		vkGetBufferMemoryRequirements(m_Device->GetLogicalDevice(), stagingBuffer, &memReqs);
+		memAllocInfo.allocationSize = memReqs.size;
+		// Get memory type index for a host visible buffer
+		memAllocInfo.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		if (auto Result = vkAllocateMemory(m_Device->GetLogicalDevice(), &memAllocInfo, nullptr, &stagingMemory); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to allocate memory for cubemap");
+		}
+
+		if (auto Result = vkBindBufferMemory(m_Device->GetLogicalDevice(), stagingBuffer, stagingMemory, 0); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to bind memory for cubemap");
+		}
+
+		uint8_t* data;
+		if (auto Result = vkMapMemory(m_Device->GetLogicalDevice(), stagingMemory, 0, memReqs.size, 0, (void**)&data); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to map memory for cubemap");
+		}
+		
+		//memcpy(data, ktxTextureData, ktxTextureSize);
+		vkUnmapMemory(m_Device->GetLogicalDevice(), stagingMemory);
+
+
+		VkImageCreateInfo ImageCreateInfo{};
+		ImageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+		ImageCreateInfo.format = SwapChain->GetColorFormat();
+		ImageCreateInfo.mipLevels = 1;
+		ImageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		ImageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		ImageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		ImageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		ImageCreateInfo.extent = { SwapChain->GetWidth(), SwapChain->GetHeight(), 1};
+		ImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		ImageCreateInfo.arrayLayers = 6;
+
+		if (auto Result = vkCreateImage(m_Device->GetLogicalDevice(), &ImageCreateInfo, nullptr, &m_CubeMapImage); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image for cubemap");
+		}
+
+		VkImageViewCreateInfo ImageViewCreateInfo{};
+		ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		ImageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
+		ImageViewCreateInfo.format = SwapChain->GetColorFormat();
+		ImageViewCreateInfo.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+		ImageViewCreateInfo.subresourceRange.layerCount = 6;
+		ImageViewCreateInfo.subresourceRange.levelCount = 1;
+		ImageViewCreateInfo.image = m_CubeMapImage;
+
+		if (auto Result = vkCreateImageView(m_Device->GetLogicalDevice(), &ImageViewCreateInfo, nullptr, &m_CubeMapImageView); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create cubemap image view");
+		}
 	}
 }

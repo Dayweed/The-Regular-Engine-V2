@@ -16,6 +16,7 @@ namespace TRE
 {
 	struct EditorCamera;
 	class Camera;
+
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
@@ -38,6 +39,19 @@ namespace TRE
 		glm::mat4 L2W[256];
 	};
 
+	struct SkyboxTexture //This should be changed to use vulkan texture after implementation is done.
+	{
+		VkImage               image;
+		VkImageLayout         imageLayout;
+		VkDeviceMemory        deviceMemory;
+		VkImageView           view;
+		uint32_t              width, height;
+		uint32_t              mipLevels;
+		uint32_t              layerCount;
+		VkDescriptorImageInfo descriptor;
+		VkSampler             sampler;
+	};
+
 	class SceneRenderer
 	{
 		public:
@@ -56,6 +70,9 @@ namespace TRE
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
 			void DebugDrawPass(uint32_t Index);
+
+			//To be reabstracted
+			void LoadCubeMap();
 
 		public:
 			std::vector<std::unique_ptr<Image2D>>& GetColorImages();
@@ -87,5 +104,9 @@ namespace TRE
 
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
+
+			std::unique_ptr<SkyboxTexture> m_SkyboxTexture;
+			VkImageView m_CubeMapImageView = VK_NULL_HANDLE;
+			VkImage		m_CubeMapImage	   = VK_NULL_HANDLE;
 	};
 }
