@@ -90,6 +90,9 @@ namespace TRE
 	{
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool EngineIsPrefabResource(string id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string CreatePrefabEntity(string prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
     }
 
 	public struct Parenting
@@ -342,7 +345,7 @@ namespace TRE
 			bool isPrefab = Prefab.EngineIsPrefabResource(entity.id);
 			if (isPrefab)
 			{
-				string id = CreatePrefabEntity(entity.id, postion, rotation);
+				string id = Prefab.CreatePrefabEntity(entity.id, postion, rotation);
 				return new Entity(FindNameFromID(id), id);
 			}
 			else if (IsValidEntity(entity.id))
@@ -359,9 +362,6 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
-
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string CreatePrefabEntity(string prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool IsValidEntity(string prefabid);
