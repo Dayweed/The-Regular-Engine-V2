@@ -183,8 +183,12 @@ namespace TRE
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_3DObject"))
 			{
 				std::string assetName = (const char*)payload->Data;
+				//assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+				//assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+
 				assetName = assetName.substr(assetName.find_last_of('\\') + 1);
-				assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+				assetName.erase(assetName.find(".fbx")); 	// This is to remove unneeded data at the end after ".fbx"
+				assetName += ".fbx";
 
 				//Spawn object at mouse location
 				Entity spawn = ECSManager::Instance().CreateEntity();

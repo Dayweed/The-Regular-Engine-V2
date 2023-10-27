@@ -1,0 +1,98 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Instances": [
+            "13780819213893325670"
+         ],
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "4faa57f0c810e0c7",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4faa57f0c810e0c7",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "13396201543611818418",
+         "m_Name": "Mole",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            20.0
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

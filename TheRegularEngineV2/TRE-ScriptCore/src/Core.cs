@@ -353,7 +353,7 @@ namespace TRE
 			else
 			{
 				// Invalid Entity!
-				return new Entity();
+				return new Entity("");
 			}
 		}
 

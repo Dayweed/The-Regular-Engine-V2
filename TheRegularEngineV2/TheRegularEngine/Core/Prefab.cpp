@@ -368,6 +368,9 @@ namespace TRE
 
 	std::string PrefabSystem::SerializePrefabOutputArchive(entt::registry& reg, std::string prefabGUID, std::string filePath, int NoOfEntities)
 	{
+		// Ensure prefab folder
+		std::filesystem::create_directory(FILESYS_PREFABDEFFOLDER);
+
 		// Set up document
 		PrefabOutputArchive arc(filePath, reg, NoOfEntities);
 		entt::snapshot snapshot{ reg };
