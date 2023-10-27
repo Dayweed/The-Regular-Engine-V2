@@ -78,14 +78,8 @@ namespace TRE
 		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
 			elem.second.remove(obj->m_Entity);
 		}
+
 		// Clone each component of the object into the clone
-		/*for (auto&& curr : m_Registry.storage())
-		{
-			if (auto& storage = curr.second; storage.contains(object->m_Entity))
-			{
-				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
-			}
-		}*/
 		for (auto [id, source_storage] : m_Registry.storage())
 		{
 			auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
@@ -103,6 +97,7 @@ namespace TRE
 				}
 			}
 		}
+
 		// Change Name
 		obj->GetComponent<Properties>().m_Name = name;
 		obj->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
