@@ -317,5 +317,6 @@ namespace TRE
 		physx::PxMaterial*				m_DefaultMaterial = nullptr;
 
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
+		physx::PxMaterial*				m_GroundPlaneMaterial = nullptr; // TEMPORARY MATERIAL
 	};
 }

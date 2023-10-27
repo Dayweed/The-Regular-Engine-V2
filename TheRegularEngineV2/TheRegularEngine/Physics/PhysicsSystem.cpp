@@ -101,8 +101,9 @@ namespace TRE
 		{
 			if (entity->GetComponent<Properties>().m_Name == "Plane collider")
 			{
+				m_GroundPlaneMaterial = m_Physics->createMaterial(1.2f, 1.1f, 0);
 				//Static object creation
-				m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
+				m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_GroundPlaneMaterial);
 #ifdef _DEBUG
 				m_GroundPlane->setName("THE PLANE");
 #endif
@@ -388,6 +389,7 @@ namespace TRE
 
 		m_Actors.clear();
 		PX_RELEASE(m_GroundPlane);
+		PX_RELEASE(m_GroundPlaneMaterial);
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Scene);
 		PxCloseExtensions();
