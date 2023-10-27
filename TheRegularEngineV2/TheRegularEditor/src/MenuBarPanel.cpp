@@ -9,6 +9,7 @@
 #include "Imgui/imgui_internal.h"
 #include "Imgui/imgui.h"
 #include "EditorSystem.h"
+#include "Graphics/EditorCamera.h"
 
 namespace TRE
 {
@@ -92,14 +93,28 @@ namespace TRE
 			//Commented out till I find a use for it
 			if (ImGui::BeginMenu("Options"))
 			{
-				if (ImGui::BeginMenu("Grid and Snap"))
+				if (ImGui::BeginMenu("Gizmo"))
 				{
-					ImGui::MenuItem("Increament Snapping");
-					ImGui::InputFloat("Position", &m_PosIncreament);
-					ImGui::InputFloat("Rotation", &m_RotIncreament);
-					ImGui::InputFloat("Scale", &m_ScaleIncreament);
-					EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncreament, m_RotIncreament, m_ScaleIncreament });
+					if (ImGui::Checkbox("Local", &m_LocalGizmo))
+					{
+						EventHandler::getEventHandlerInstance().Publish(LocalGloalGizmoEvent{ m_LocalGizmo });
+					}
+					if (ImGui::BeginMenu("Grid and Snap"))
+					{
+						ImGui::MenuItem("Increament Snapping");
+						ImGui::InputFloat("Position", &m_PosIncreament);
+						ImGui::InputFloat("Rotation", &m_RotIncreament);
+						ImGui::InputFloat("Scale", &m_ScaleIncreament);
+						EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncreament, m_RotIncreament, m_ScaleIncreament });
+						ImGui::EndMenu();
+					}
+
 					ImGui::EndMenu();
+				}
+				
+				if (ImGui::Button("Assign Editor Camera Values"))
+				{
+					EditorCamera::Instance().AssignToMainCamera();
 				}
 				ImGui::EndMenu();
 			}

@@ -43,12 +43,12 @@ namespace TRE
                         ImVec4 color;
                         bool has_color = false;
 
-                        if (m_ConsoleLog[i].starts_with(std::string_view("[ERROR]")))
+                        if (m_ConsoleLog[i].starts_with(std::string_view(CONSOLE_DEBUG_ERROR)))
                         {
                             color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
                             has_color = true;
                         }
-                        if (m_ConsoleLog[i].starts_with(std::string_view("[WARNING]")))
+                        if (m_ConsoleLog[i].starts_with(std::string_view(CONSOLE_DEBUG_WARN)))
                         {
                             color = ImVec4(0.8f, 0.8f, 0.2f, 1.0f);
                             has_color = true;

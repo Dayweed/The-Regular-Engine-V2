@@ -97,14 +97,20 @@ namespace TRE
 #endif
 
 		// this is SO TEMPORARY
-		const Entity entity = ECSManager::Instance().GetEntities<Transform>().front();
-		//Static object creation
-		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
+		for (const auto& entity : ECSManager::Instance().GetEntities<Properties>())
+		{
+			if (entity->GetComponent<Properties>().m_Name == "Plane collider")
+			{
+				m_GroundPlaneMaterial = m_Physics->createMaterial(1.2f, 1.1f, 0);
+				//Static object creation
+				m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_GroundPlaneMaterial);
 #ifdef _DEBUG
-		m_GroundPlane->setName("THE PLANE");
+				m_GroundPlane->setName("THE PLANE");
 #endif
-		m_Scene->addActor(*m_GroundPlane);
-		m_Actors[entity->GetGUID()] = SharedData{ m_GroundPlane, 0, entity->GetGUID(), false };
+				m_Scene->addActor(*m_GroundPlane);
+				m_Actors[entity->GetGUID()] = SharedData{ m_GroundPlane, 0, entity->GetGUID(), false };
+			}
+		}
 
 		return isReadyForUpdate = true;
 	}
@@ -358,6 +364,7 @@ namespace TRE
 
 		m_Actors.clear();
 		PX_RELEASE(m_GroundPlane);
+		PX_RELEASE(m_GroundPlaneMaterial);
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Scene);
 		PxCloseExtensions();
@@ -482,12 +489,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -511,12 +518,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -540,12 +547,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -569,12 +576,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -598,12 +605,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -627,12 +634,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 

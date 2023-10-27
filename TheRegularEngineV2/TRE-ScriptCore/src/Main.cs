@@ -13,13 +13,19 @@ namespace TRE
         //create the test object and temp object not too sure if the temp object is linked in some 
         public Entity Temp = new Entity("Temp");
 		public Entity Test = new Entity("Test");
+        public Entity Plane_collider = new Entity("Plane collider");
+        private bool isJumping = false;
+        private bool isGrounded = true;
+        private Vector3 maxJumpHeight = new Vector3(0, 20, 0);
+        private Vector3 maxHeight = new Vector3(0, 0, 0);
 
-		public Main()
+        public Main()
 		{
-			Temp.id = ECSManager.CreateEntity(Temp.name);
-			Console.WriteLine("Hello World from C#!");
+			//Temp.id = ECSManager.CreateEntity(Temp.name);
+			//Console.WriteLine("Hello World from C#!");
 
 			Test.id = ECSManager.FindIDFromName(Test.name);
+            Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
 			Console.WriteLine("Test ID: " + Test.id);
 
 			Console.WriteLine("Entity: " + Test.GetActive());
@@ -45,29 +51,56 @@ namespace TRE
 		{
             // Script calling
             humanCentipedo.Update();
-			testingRandoFall.Update();
+			//testingRandoFall.Update();
 
 			// Move The Test Object 
 			TransformSystem.GetPosition(Test.id, out Vector3 pos);
 			//
-			Vector3 tmp = new Vector3(0, 0, 0);
 
-			if (InputSystem.GetKeyDown(InputKeys.W))
-			{
-				tmp.x = 60;
-				PhysicsSystem.AddForce(Test.id, tmp);
-			}
+            Vector3 dirVec = new Vector3(0, 0, 0);
 
-			if (InputSystem.GetKeyDown(InputKeys.S))
-			{
-				tmp.x = -60;
-				PhysicsSystem.AddForce(Test.id, tmp);
-			}
+            if (InputSystem.GetKeyDown(InputKeys.W))
+            {
+                dirVec.z += 1;
+                //PhysicsSystem.AddForce(Mole.id, dirVec);
+            }
 
-			if (InputSystem.GetKeyDown(InputKeys.Space))
-			{
-				Console.WriteLine("Space Pressed!");
-			}
-		}
+            if (InputSystem.GetKeyDown(InputKeys.S))
+            {
+                dirVec.z += -1;
+                //PhysicsSystem.AddForce(Mole.id, dirVec);
+            }
+
+            if (InputSystem.GetKeyDown(InputKeys.A))
+            {
+                dirVec.x += -1;
+            }
+
+            if (InputSystem.GetKeyDown(InputKeys.D))
+            {
+                dirVec.x += 1;
+            }
+
+            if (InputSystem.GetKeyDown(InputKeys.Space))
+            {
+                // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
+                isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id) || PhysicsSystem.IsCollisionStay(Test.id, Plane_collider.id);
+                maxHeight = pos + maxJumpHeight; // this was not it, chief... :(
+
+				if (isGrounded)
+                    Jump(new Vector3(0, 13000, 0)); // uh oh beeeg number
+            }
+
+            dirVec.Normalize();
+
+            Vector3 tmp = dirVec * 60;
+
+            PhysicsSystem.AddForce(Test.id, tmp);
+        }
+
+        private void Jump(Vector3 maxHeight)
+        {
+            PhysicsSystem.AddForce(Test.id, maxHeight);
+        }
 	}
 }

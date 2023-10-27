@@ -3,6 +3,7 @@
 #include "Core/Engine.h"
 #include "Core/Logger.h"
 #include "Resource/ResourceManager.h"
+#include "ShaderTypes/PBRShader.h"
 
 namespace TRE
 {
@@ -128,6 +129,9 @@ namespace TRE
 
 	void Material::Serialize()
 	{
+		if (m_Handle == PBR::GetDefaultMaterial())
+			return;
+
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = GetHandleHex() + ".material";
 		const std::string resourcePath = resourceFolderPath + resource;
