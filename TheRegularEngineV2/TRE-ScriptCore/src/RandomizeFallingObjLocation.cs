@@ -7,11 +7,22 @@ using System.Threading;
 
 namespace TRE
 {
-    public class HumanCentipede
+    public class HumanCentipede : Entity
     {
+        // How to call base class constructor to access Entity-like Properties
+        public HumanCentipede() : base("Name")
+        {
+
+        }
+
+        public void Start()
+        {
+
+        }
+
         public void Update()
         {
-            Console.WriteLine("this " + this.ToString());
+            // Console.WriteLine("this " + this.transform.position.x + ", " + this.transform.position.y + ", " + this.transform.position.z);
         }
     }
 

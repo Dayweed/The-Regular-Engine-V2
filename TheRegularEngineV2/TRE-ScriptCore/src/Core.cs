@@ -17,7 +17,7 @@ using System.Threading.Tasks;
  */
 namespace TRE
 {
-	public struct Entity
+	public class Entity
 	{
 		public string id;				// Can hold id of entity or id of prefab resource
 		public string name;
