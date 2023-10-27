@@ -24,7 +24,7 @@ void main()
 layout (location = 0) in vec3 in_Position;
 layout (location = 0) out vec4 outColor;
 
-layout (set = 0, binding = 0) uniform samplerCube SamplerCubeMap;
+layout (set = 0, binding = 1) uniform samplerCube SamplerCubeMap;
 
 void main() 
 {

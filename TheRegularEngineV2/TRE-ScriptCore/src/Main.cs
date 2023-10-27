@@ -16,10 +16,17 @@ namespace TRE
         public Entity Temp = new Entity("Temp");
 		public Entity Test = new Entity("Test");
         public Entity Plane_collider = new Entity("Plane collider");
-        private bool isJumping = false;
+
+        //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
-        private Vector3 maxJumpHeight = new Vector3(0, 20, 0);
-        private Vector3 maxHeight = new Vector3(0, 0, 0);
+        //Maxium height the player can jump
+        private Vector3 maxHeight = new Vector3(0, 10000, 0);
+
+
+        //check if player used super power
+        private bool isScaled = false;
+        private float defaultScale = 1;
+        private float superScale = 50;
 
         public Main()
 		{
@@ -87,11 +94,26 @@ namespace TRE
             {
                 // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
                 isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
-                maxHeight = pos + maxJumpHeight; // this was not it, chief... :(
 
-               if (isGrounded)
-                    Jump(new Vector3(0, 35, 0)); // ah, much better (for forcemode.velchange)
-                    // Jump(new Vector3(0, 13000, 0)); // uh oh beeeg number (for forcemode.force)
+				if (isGrounded)
+                {
+                    Jump(maxHeight); // uh oh beeeg number (for forcemode.force)
+                    // Jump(new Vector3(0, 35, 0)); // ah, much better (for forcemode.velchange)
+                }
+            }
+
+            if (InputSystem.GetKeyDown(InputKeys.E))
+            {
+                if (!isScaled)
+                {
+                    PS.ResizeSphereCollider(Test.id, superScale);
+                    isScaled = true;
+                }
+                else if (isScaled)
+                {
+                    PS.ResizeSphereCollider(Test.id, defaultScale);
+                    isScaled = false;
+                }
             }
 
             dirVec.Normalize();
@@ -101,9 +123,10 @@ namespace TRE
             PS.AddForce(Test.id, tmp, PS.ForceMode.Force);
         }
 
-        private void Jump(Vector3 maxHeight)
+        private void Jump(Vector3 JumpHeight)
         {
-            PS.AddForce(Test.id, maxHeight, PS.ForceMode.VelocityChange);
+            PhysicsSystem.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
+            // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
 	}
 }
