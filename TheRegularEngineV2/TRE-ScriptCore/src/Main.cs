@@ -33,31 +33,21 @@ namespace TRE
 
 			Test.id = ECSManager.FindIDFromName(Test.name);
             Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
-			Console.WriteLine("Test ID: " + Test.id);
-
-			Console.WriteLine("Entity: " + Test.GetActive());
-            Test.SetActive(false);
-            Console.WriteLine("Entity: " + Test.GetActive());
-            Test.SetActive(true);
-            Console.WriteLine("Entity: " + Test.GetActive());
-
-            //Console.WriteLine("Tag: " + Test.GetTag());
-            Test.SetTag("UwU");
-            //Console.WriteLine("Tag: " + Test.GetTag());
-            Console.WriteLine("Is UwU? " + Test.CompareTag("UwU"));
-            Console.WriteLine("Is OwO? " + Test.CompareTag("OwO"));
+            PhysicsSystem.ConstrainRotationX(Test.id, true);
+            PhysicsSystem.ConstrainRotationY(Test.id, true);
+            //PhysicsSystem.ConstrainRotationZ(Test.id, true);
         }
 
 		public void Start()
 		{
-			humanCentipedo.Start();
-			testingRandoFall.Start();
+			//humanCentipedo.Start();
+			//testingRandoFall.Start();
         }
 
 		public void Update()
 		{
             // Script calling
-            humanCentipedo.Update();
+            //humanCentipedo.Update();
 			//testingRandoFall.Update();
 
 			// Move The Test Object 

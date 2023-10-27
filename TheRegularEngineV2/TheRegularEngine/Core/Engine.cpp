@@ -224,12 +224,12 @@ namespace TRE
 			Transform& testTransform{ test->GetComponent<Transform>() };
 			testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
 			testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-			testTransform.m_Rotation = glm::vec3(0, 180.f, 0);
+			testTransform.m_Rotation = glm::vec3(0, 180.f, 90.f);
 			testTransform.m_IsDirty = true;
 
 			test->AddComponent<MeshRenderer>();
 			test->AddComponent<Rigidbody>();
-			test->AddComponent<SphereCollider>();
+			test->AddComponent<CapsuleCollider>();
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
