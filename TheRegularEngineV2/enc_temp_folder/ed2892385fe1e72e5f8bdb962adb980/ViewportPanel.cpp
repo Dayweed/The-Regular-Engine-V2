@@ -145,6 +145,8 @@ namespace TRE
 			editorCamera.SetFocalDistance(1.f);
 			editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetViewDirection());
 		}
+
+		std::cout << baseCamera.GetViewDirection().x << " " << baseCamera.GetViewDirection().y << " " << baseCamera.GetViewDirection().z << std::endl;
 	}
 
 	void ViewportPanel::OnGridAndSnap(const GridAndSnapEvent& event)
@@ -241,9 +243,7 @@ namespace TRE
 				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(filePath) };
 				if (prefabGUID.empty())
 				{
-					std::string str{ CONSOLE_DEBUG_WARN };
-					str += "Prefab not found!";
-					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "[ERROR] Prefab not found!" });
 					if (remove(filePath.c_str()))
 					{
 						std::string funcName{ __FUNCTION__ };
