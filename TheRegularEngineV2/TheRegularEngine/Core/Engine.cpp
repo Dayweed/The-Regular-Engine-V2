@@ -85,9 +85,10 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
+		auto SkyboxPassShaderHandle = 3;
 		auto FinalPassShaderHandle = 4;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
-
+	
 #if 0
 		auto AnimationHandle = 5;
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
@@ -116,6 +117,37 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt4 = std::make_unique<VulkanTexture>("../Resources/13392e8301ebb46.DDS");
 		vkt4->SetHandle(textureHandle4);
 		ResourceManager::Instance().AddResource(std::move(vkt4));
+
+		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
+		auto Skybox2 = Resource::GetGUIDFromHex("612fbc6691dcd0bb");
+		auto Skybox3 = Resource::GetGUIDFromHex("d7317320914622e8");
+		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
+		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
+		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
+
+		std::unique_ptr<VulkanTexture> SkyboxTexture1 = std::make_unique<VulkanTexture>("../Resources/e562694e2c3833ec.DDS");
+		SkyboxTexture1->SetHandle(Skybox1);
+		ResourceManager::Instance().AddResource(std::move(SkyboxTexture1));
+
+		std::unique_ptr<VulkanTexture> SkyboxTexture2 = std::make_unique<VulkanTexture>("../Resources/612fbc6691dcd0bb.DDS");
+		SkyboxTexture2->SetHandle(Skybox2);
+		ResourceManager::Instance().AddResource(std::move(SkyboxTexture2));
+
+		std::unique_ptr<VulkanTexture> SkyboxTexture3 = std::make_unique<VulkanTexture>("../Resources/d7317320914622e8.DDS");
+		SkyboxTexture3->SetHandle(Skybox3);
+		ResourceManager::Instance().AddResource(std::move(SkyboxTexture3));
+
+		std::unique_ptr<VulkanTexture> SkyboxTexture4 = std::make_unique<VulkanTexture>("../Resources/5994bacabaa99f19.DDS");
+		SkyboxTexture4->SetHandle(Skybox4);
+		ResourceManager::Instance().AddResource(std::move(SkyboxTexture4));
+
+		std::unique_ptr<VulkanTexture> SkyboxTexture5 = std::make_unique<VulkanTexture>("../Resources/bb22164f64671a56.DDS");
+		SkyboxTexture5->SetHandle(Skybox5);
+		ResourceManager::Instance().AddResource(std::move(SkyboxTexture5));
+
+		std::unique_ptr<VulkanTexture> SkyboxTexture6 = std::make_unique<VulkanTexture>("../Resources/47335a309e5eef62.DDS");
+		SkyboxTexture6->SetHandle(Skybox6);
+		ResourceManager::Instance().AddResource(std::move(SkyboxTexture6));
 
 		//Animation Textures//
 #if 0
@@ -165,6 +197,11 @@ namespace TRE
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
 		FinalPassShader->SetHandle(FinalPassShaderHandle);
 		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
+		
+		std::unique_ptr<Shader> SkyboxPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/Skybox.TREshader");
+		SkyboxPassShader->SetHandle(SkyboxPassShaderHandle);
+		ResourceManager::Instance().AddResource(std::move(SkyboxPassShader));
+
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBR::GetShaderHandle());

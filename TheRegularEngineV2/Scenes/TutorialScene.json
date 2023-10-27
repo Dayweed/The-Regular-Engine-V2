@@ -1,0 +1,186 @@
+[
+   [
+      3,
+      0,
+      1,
+      2
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      3,
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "11431328894890367574",
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "17221122661252546450",
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "11261284745058706338",
+         "m_Name": "tutorial",
+         "m_Tag": ""
+      }
+   ],
+   [
+      3,
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            158.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            -5.0
+         ],
+         "m_Rotation": [
+            5.0,
+            -138.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "abe538e4303352c2",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 100.00052642822266,
+         "m_FocalPoint": [
+            -66.6587905883789,
+            -8.715620040893555,
+            69.0320816040039
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Right": 1.0,
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      1,
+      {
+         "m_AmbientColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Direction": [
+            0.0,
+            -0.3746066987514496,
+            -0.9271838068962097
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
