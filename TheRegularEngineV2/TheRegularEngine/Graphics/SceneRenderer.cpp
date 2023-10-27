@@ -359,8 +359,8 @@ namespace TRE
 			PushConstant pc{};
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + sc.m_Offset);
-			const float radius = sc.m_Radius * 10;
-			model = model * glm::scale(glm::mat4(1.f), glm::vec3(radius, radius, radius));
+			const float radius = sc.m_Radius;
+			model = glm::scale(model, glm::vec3(radius, radius, radius));
 			pc.m_Model = model;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 

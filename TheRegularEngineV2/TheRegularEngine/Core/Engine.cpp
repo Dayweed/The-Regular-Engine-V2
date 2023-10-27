@@ -336,6 +336,13 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
 		}
 
+		{
+			// Testing RandomizeFallingObjLocation script
+			Entity spawner = ECSManager::Instance().CreateEntity("spawner");
+			spawner->GetComponent<Transform>().m_Position = { 0, 0, 20 };
+			spawner->GetComponent<Transform>().m_IsDirty = true;
+		}
+
 		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
 	}
 }

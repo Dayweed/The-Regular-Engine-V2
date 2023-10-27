@@ -17,11 +17,12 @@ using System.Threading.Tasks;
  */
 namespace TRE
 {
-	public struct Entity
+	public class Entity
 	{
-		public string id;
+		public string id;				// Can hold id of entity or id of prefab resource
 		public string name;
 		public Parenting parenting;
+		public Transform transform;
 
         public Entity(string _name, string _id = "")
 		{
@@ -29,7 +30,10 @@ namespace TRE
 			id = _id;
 
 			parenting = new Parenting(id);
-		}
+			TransformSystem.GetPosition(id, out Vector3 pos);
+			TransformSystem.GetRotation(id, out Vector3 rot);
+            transform = new Transform(id, pos, rot, new Vector3(1,1,1));
+        }
 
         public void Rename(string _name)
 		{
@@ -80,6 +84,15 @@ namespace TRE
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool EngineCompareTag(string id, string otherTag);
+    }
+
+	public struct Prefab
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool EngineIsPrefabResource(string id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string CreatePrefabEntity(string prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
     }
 
 	public struct Parenting
@@ -243,6 +256,12 @@ namespace TRE
 				return false;
 			}
 		}
+
+		public static float Distance(Vector3 vec1, Vector3 vec2)
+		{
+			// TO DO CALCULATE VECTOR DISTANCE :p
+			return 0.0f;
+		}
 	}
 	#endregion
 
@@ -288,6 +307,34 @@ namespace TRE
 
 	}
 
+	public struct Transform
+	{
+		private string id;
+		public Vector3 position, rotation, scale;
+
+		public Transform(string _id = "", Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
+		{
+			id = _id;
+			position = _pos;
+			rotation = _rot;
+			scale = _sca;
+		}
+
+		public void SetPosition(Vector3 output)
+		{
+			position = output;
+
+            TransformSystem.SetPosition(id, output);
+		}
+
+		public void SetRotation(Vector3 output)
+		{
+			rotation = output;
+
+			TransformSystem.SetRotation(id, output);
+		}
+	}
+
 	public class TransformSystem
 	{
 		public void transformDemo(string id)
@@ -315,8 +362,31 @@ namespace TRE
 
 	public class ECSManager
 	{
+		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3())
+		{
+			bool isPrefab = Prefab.EngineIsPrefabResource(entity.id);
+			if (isPrefab)
+			{
+				string id = Prefab.CreatePrefabEntity(entity.id, postion, rotation);
+				return new Entity(FindNameFromID(id), id);
+			}
+			else if (IsValidEntity(entity.id))
+			{
+				string id = CreateEntity(entity.id, postion, rotation);
+                return new Entity(FindNameFromID(id), id);
+            }
+			else
+			{
+				// Invalid Entity!
+				return new Entity("");
+			}
+		}
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string CreateEntity(string name);
+		internal extern static string CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsValidEntity(string prefabid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void AddComponent(string entityID, Components component);
@@ -512,5 +582,32 @@ namespace TRE
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool GetKeyDown(InputKeys keycode);
+	}
+
+	public class Random
+	{
+		public static int Range(int min_inclusive, int max_exclusive)
+		{
+			return IntRange(min_inclusive, max_exclusive);
+        }
+
+		public static float Range(float min_inclusive, float max_inclusive)
+		{
+			return FloatRange(min_inclusive, max_inclusive);
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static int IntRange(int min_inclusive, int max_exclusive);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static float FloatRange(float min_inclusive, float max_inclusive);
+    }
+
+	public class Time
+	{
+		public static readonly float deltaTime = GetDeltaTime();
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float GetDeltaTime();
 	}
 }
