@@ -4,6 +4,9 @@
 #include <string>
 #include <chrono>
 
+#define CONSOLE_DEBUG_WARN	"[WARNING] "
+#define CONSOLE_DEBUG_ERROR "[ERROR] "
+
 namespace TRE
 {
 	struct ConsoleDebugEvent : Event

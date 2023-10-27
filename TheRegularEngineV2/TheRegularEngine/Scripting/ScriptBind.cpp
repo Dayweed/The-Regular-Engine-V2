@@ -155,14 +155,38 @@ namespace TRE
     }
 #pragma endregion
 
-    static void BindCreateEntity(MonoString* name, MonoString* output)
+    static void BindCreateEntity(MonoString* name, glm::vec3 pos, glm::vec3 rot, glm::vec3 sca)
     {
         char* nameString = mono_string_to_utf8(name);
         std::string str(nameString);
         mono_free(nameString);
 
         Entity Temp = ECSManager::Instance().CreateEntity(str);
+        Temp->GetComponent<Transform>().m_Position = pos;
+        Temp->GetComponent<Transform>().m_Rotation = rot;
+        Temp->GetComponent<Transform>().m_Scale = sca;
+        Temp->GetComponent<Transform>().m_IsDirty = true;
         std::cout << "Created Entity from C#: " << str << std::endl;
+    }
+
+    static void BindCloneEntity(MonoString* id, glm::vec3 pos, glm::vec3 rot, glm::vec3 sca)
+    {
+        Entity Existing{ ECSManager::Instance().FindEntity(MonoStringToString(id)) };
+
+        if (!Existing)
+        {
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "Entity ID (" + MonoStringToString(id) + ") does not exist in ECS Entities!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return;
+        }
+
+        Entity Temp = ECSManager::Instance().CloneEntity(Existing);
+        Temp->GetComponent<Transform>().m_Position = pos;
+        Temp->GetComponent<Transform>().m_Rotation = rot;
+        Temp->GetComponent<Transform>().m_Scale = sca;
+        Temp->GetComponent<Transform>().m_IsDirty = true;
+        std::cout << "Cloned Entity from C#: " << Existing->GetName() << std::endl;
     }
 
     static bool BindIsValidEntity(MonoString* id)
@@ -604,25 +628,32 @@ namespace TRE
     {
         std::string str = MonoStringToString(message);
 
-        TRE_INFO(str);
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str()});
+        //TRE_INFO(str);
     }
 
     static void SendWarningToConsole(MonoString* message)
     {
-        std::string str = MonoStringToString(message);
-        TRE_WARN(str);
+        std::string str = CONSOLE_DEBUG_WARN + MonoStringToString(message);
+
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+        //TRE_WARN(str);
     }
 
     static void SendErrorToConsole(MonoString* message)
     {
-        std::string str = MonoStringToString(message);
-        TRE_ERROR(str);
+        std::string str = CONSOLE_DEBUG_ERROR + MonoStringToString(message);
+
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+        //TRE_ERROR(str);
     }
 
     static void SendCriticalToConsole(MonoString* message)
     {
-        std::string str = MonoStringToString(message);
-        TRE_CRITICAL(str);
+        std::string str = CONSOLE_DEBUG_ERROR + MonoStringToString(message);
+
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+        //TRE_CRITICAL(str);
     }
 
 #pragma endregion
@@ -744,6 +775,7 @@ namespace TRE
     {
         // ECS Bindings
         mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
+        mono_add_internal_call("TRE.ECSManager::CloneEntity", BindCloneEntity);
         mono_add_internal_call("TRE.ECSManager::IsValidEntity", BindIsValidEntity);
         mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
         mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);

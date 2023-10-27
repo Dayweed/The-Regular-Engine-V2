@@ -241,7 +241,9 @@ namespace TRE
 				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(filePath) };
 				if (prefabGUID.empty())
 				{
-					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "[ERROR] Prefab not found!" });
+					std::string str{ CONSOLE_DEBUG_WARN };
+					str += "Prefab not found!";
+					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
 					if (remove(filePath.c_str()))
 					{
 						std::string funcName{ __FUNCTION__ };
