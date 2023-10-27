@@ -217,8 +217,8 @@ namespace TRE
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		auto audioSystem = ECSSystemManager::Instance().GetSystem<AudioSystem>();
 
+		Entity test = ECSManager::Instance().CreateEntity();
 		{
-			Entity test = ECSManager::Instance().CreateEntity();
 			test->GetComponent<Properties>().m_Name = "Test";
 
 			Transform& testTransform{ test->GetComponent<Transform>() };
@@ -243,10 +243,11 @@ namespace TRE
 
 			//test->AddComponent<SphereCollider>();
 			//test->AddComponent<Rigidbody>();
+
 		}
 
+		Entity test2 = ECSManager::Instance().CreateEntity();
 		{
-			Entity test2 = ECSManager::Instance().CreateEntity();
 			test2->GetComponent<Properties>().m_Name = "Test2";
 
 			Transform& test2Transform{ test2->GetComponent<Transform>() };
@@ -259,8 +260,8 @@ namespace TRE
 			meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		}
 
+		Entity test3 = ECSManager::Instance().CreateEntity();
 		{
-			Entity test3 = ECSManager::Instance().CreateEntity();
 			test3->GetComponent<Properties>().m_Name = "Test3";
 
 			Transform& test3Transform{ test3->GetComponent<Transform>() };
@@ -273,6 +274,9 @@ namespace TRE
 			meshRendererSystem->SetMeshRenderer(test3, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test3, ResourceManager::Instance().GetResource<Material>(matHandle));
 		}
+
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test, test2);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test2, test3);
 
 		{
 			Entity planeCollider = ECSManager::Instance().CreateEntity();
@@ -306,33 +310,33 @@ namespace TRE
 			light->GetComponent<Transform>().m_IsDirty = true;
 		}
 
-		{
-			//// Parent child prefabing test
-			//Entity prefabParent = ECSManager::Instance().CreateEntity();
-			//prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
-			//Transform& transform3 = prefabParent->GetComponent<Transform>();
-			//transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
-			//transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-			//transform3.m_Rotation = glm::vec3(0, 180.f, 0);
-			//transform3.m_IsDirty = true;
-			//prefabParent->AddComponent<MeshRenderer>();
-			//meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-			//meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
+		//{
+		//	// Parent child prefabing test
+		//	Entity prefabParent = ECSManager::Instance().CreateEntity();
+		//	prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
+		//	Transform& transform3 = prefabParent->GetComponent<Transform>();
+		//	transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
+		//	transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+		//	transform3.m_Rotation = glm::vec3(0, 180.f, 0);
+		//	transform3.m_IsDirty = true;
+		//	prefabParent->AddComponent<MeshRenderer>();
+		//	meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		//	meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-			//Entity prefabChild = ECSManager::Instance().CreateEntity();
-			//prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
-			//Transform& transform4 = prefabChild->GetComponent<Transform>();
-			//transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
-			//transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
-			//transform4.m_Rotation = glm::vec3(0, 180.f, 0);
-			//transform4.m_IsDirty = true;
-			//prefabChild->AddComponent<MeshRenderer>();
-			//prefabChild->AddComponent<FAKEFEL>();
-			//meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-			//meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
+		//	Entity prefabChild = ECSManager::Instance().CreateEntity();
+		//	prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
+		//	Transform& transform4 = prefabChild->GetComponent<Transform>();
+		//	transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
+		//	transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+		//	transform4.m_Rotation = glm::vec3(0, 180.f, 0);
+		//	transform4.m_IsDirty = true;
+		//	prefabChild->AddComponent<MeshRenderer>();
+		//	prefabChild->AddComponent<FAKEFEL>();
+		//	meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+		//	meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-			//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
-		}
+		//	ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
+		//}
 
 		{
 			//dont delete this

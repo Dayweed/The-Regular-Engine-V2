@@ -123,7 +123,7 @@ namespace TRE
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				if(SelectedEntity->HasComponent<MeshRenderer>())
+				//if(SelectedEntity->HasComponent<MeshRenderer>())
 					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
@@ -154,6 +154,11 @@ namespace TRE
 		m_ScaleIncreament = event.m_ScaleIncreament;
 	}
 
+	void ViewportPanel::OnGizmoLocal(const LocalGloalGizmoEvent& event)
+	{
+		m_IsGizmoLocal = event.m_IsLocal;
+	}
+
 	void ViewportPanel::Init()
 	{
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseMove);
@@ -161,6 +166,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoLocal);
 	}
 
 	void ViewportPanel::Update()
@@ -369,7 +375,11 @@ namespace TRE
 				break;
 			}
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
+			ImGuizmo::MODE mode = ImGuizmo::WORLD;
+			if(m_IsGizmoLocal)
+				mode = ImGuizmo::LOCAL;
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
