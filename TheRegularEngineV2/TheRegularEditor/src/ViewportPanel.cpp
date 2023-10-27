@@ -149,9 +149,9 @@ namespace TRE
 
 	void ViewportPanel::OnGridAndSnap(const GridAndSnapEvent& event)
 	{
-		m_PosIncreament = event.m_PosIncreament;
-		m_RotIncreament = event.m_RotIncreament;
-		m_ScaleIncreament = event.m_ScaleIncreament;
+		m_PosIncrement = event.m_PosIncrement;
+		m_RotIncrement = event.m_RotIncrement;
+		m_ScaleIncrement = event.m_ScaleIncrement;
 	}
 
 	void ViewportPanel::OnGizmoLocal(const LocalGloalGizmoEvent& event)
@@ -365,13 +365,13 @@ namespace TRE
 			switch (m_GizmoOperation)
 			{
 			case ImGuizmo::OPERATION::TRANSLATE:
-				snapValue = m_PosIncreament;
+				snapValue = m_PosIncrement;
 				break;
 			case ImGuizmo::OPERATION::ROTATE:
-				snapValue = m_RotIncreament;
+				snapValue = m_RotIncrement;
 				break;
 			case ImGuizmo::OPERATION::SCALE:
-				snapValue = m_ScaleIncreament;
+				snapValue = m_ScaleIncrement;
 				break;
 			}
 
