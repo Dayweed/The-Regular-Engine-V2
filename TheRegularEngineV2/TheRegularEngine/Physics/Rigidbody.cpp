@@ -232,5 +232,6 @@ namespace TRE
 			sharedData.m_RigidDynamic->release();
 			sharedData.m_MarkForRemoval = true;
 		}
+		entity->RemoveComponent<Rigidbody>();
 	}
 }

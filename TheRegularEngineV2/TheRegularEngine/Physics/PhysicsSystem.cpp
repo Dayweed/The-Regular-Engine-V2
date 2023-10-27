@@ -19,19 +19,7 @@
 #define USE_PHYSX_PVD 0
 #endif
 
-#pragma region Macros
-
 #define UNUSED_PARAM(param) (void)param
-
-// not the best name... :/
-#define UpdateAllEntitiesWithComponent(Type)\
-	for (const Entity & entity : ECSManager::Instance().GetEntities<Type>()) Update##Type(entity)
-
-// this name is even worse! :_(
-#define OnEntityMismatchDestroyComponent(entity, attachedComponents, Type)\
-	if ((attachedComponents) & PhysicsComponentTypes::##Type && !(entity)->HasComponent<Type>()) Destruct##Type(entity)
-
-#pragma endregion
 
 using namespace physx;
 // to save my dwindling sanity
@@ -206,34 +194,9 @@ namespace TRE
 		// without any if branches, using short-circuiting! :D
 		isReadyForUpdate || TESTUpdate();
 
-		// How do I tell if a component has been removed from an entity???
-		for (auto& x : m_Actors)
-		{
-			Entity entity = ECSManager::Instance().FindEntity(x.first);
+		DestroyOutdatedComponents();
 
-			// if the attached comps say yes, but the entity says no...
-			// there is a mismatch. Thus, destroy that component.
-			const auto& attachedComponents = x.second.m_AttachedComponents;
-
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, CapsuleCollider);
-		}
-
-		// erasing elements in a map: https://stackoverflow.com/a/8234813
-		for (auto it = m_Actors.begin(); it != m_Actors.end();)
-		{
-			if (it->second.m_MarkForRemoval)
-				it = m_Actors.erase(it);
-			else
-				++it;
-		}
-
-		UpdateAllEntitiesWithComponent(Rigidbody);
-		UpdateAllEntitiesWithComponent(SphereCollider);
-		UpdateAllEntitiesWithComponent(BoxCollider);
-		UpdateAllEntitiesWithComponent(CapsuleCollider);
+		UpdateAllComponents();
 	}
 
 	void PhysicsSystem::GameUpdate()
@@ -690,6 +653,94 @@ namespace TRE
 				collider.m_IsDirty = false;
 			}
 		}
+	}
+
+	void PhysicsSystem::DestroyOutdatedComponents() const
+	{
+		// Physics Component Destruction and Removal
+		for (const auto& [guid, sharedData] : m_Actors)
+		{
+			// Scenario 1: Entity with physics components was just deleted (Has the Removal component)
+			// if Has Removal component and Has physics component, destruct physics component
+			// HasRemoval && HasPhysicsComp -> Destruct()
+			// A && X
+
+			// Scenario 2: physics component was just removed from entity
+			// if attachedComps had it, but the entity doesn't, destruct physics component
+			// (attachedComps & ComponentEnum) && !HasPhysicsComp -> Destruct()
+			// B && !X
+
+			// Accounting for both scenarios..
+			// if (A && X) || (B && !X)
+
+			Entity entity = ECSManager::Instance().FindEntity(guid);
+
+			const bool hasRemovalComponent = entity->HasComponent<Removal>();
+
+			// if the attached comps say yes, but the entity says no...
+			// there is a mismatch. Thus, destroy that component.
+			const unsigned attachedComponents = sharedData.m_AttachedComponents;
+
+			// Rigidbody
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::Rigidbody;
+				const bool hasPhysicsComponent = entity->HasComponent<Rigidbody>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructRigidbody(entity);
+			}
+
+			// SphereCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::SphereCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<SphereCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructSphereCollider(entity);
+			}
+
+			// BoxCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::BoxCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<BoxCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructBoxCollider(entity);
+			}
+
+			// CapsuleCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::CapsuleCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<CapsuleCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructCapsuleCollider(entity);
+			}
+		}
+
+		// erasing elements in a map: https://stackoverflow.com/a/8234813
+		for (auto it = m_Actors.begin(); it != m_Actors.end();)
+		{
+			if (it->second.m_MarkForRemoval)
+				it = m_Actors.erase(it);
+			else
+				++it;
+		}
+
+		// The actual ECS components are also removed in the Destruct##Comp() functions above.
+		// This is because the Update components does GetEntities<Comp>(), which could
+		// include outdated comps if RemoveComponent<Comp>() was not done by this point.
+	}
+
+	void PhysicsSystem::UpdateAllComponents() const
+	{
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
+			UpdateRigidbody(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+			UpdateSphereCollider(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+			UpdateBoxCollider(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+			UpdateCapsuleCollider(entity);
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)

@@ -177,5 +177,6 @@ namespace TRE
 			// SO TEMPORARY
 			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
+		entity->RemoveComponent<SphereCollider>();
 	}
 }
