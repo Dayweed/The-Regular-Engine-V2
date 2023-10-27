@@ -4,15 +4,15 @@ using System.Runtime.CompilerServices;
 
 namespace TRE
 {
-	public class Main
-	{
-		// Scripting Initialization
-		HumanCentipede humanCentipedo = new HumanCentipede();
-		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
+    public class Main
+    {
+        // Scripting Initialization
+        HumanCentipede humanCentipedo = new HumanCentipede();
+        RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
         public Entity Temp = new Entity("Temp");
-		public Entity Test = new Entity("Test");
+        public Entity Test = new Entity("Test");
         public Entity Plane_collider = new Entity("Plane collider");
 
         //check if player is on the ground (for now , just a plane)
@@ -26,33 +26,35 @@ namespace TRE
         private float defaultScale = 1;
         private float superScale = 50;
 
+        private bool hasInitalized = false;
+
         public Main()
-		{
-			//Temp.id = ECSManager.CreateEntity(Temp.name);
-			//Console.WriteLine("Hello World from C#!");
+        {
+            //Temp.id = ECSManager.CreateEntity(Temp.name);
+            //Console.WriteLine("Hello World from C#!");
 
-			Test.id = ECSManager.FindIDFromName(Test.name);
+            Test.id = ECSManager.FindIDFromName(Test.name);
             Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
-            PhysicsSystem.ConstrainRotationX(Test.id, true);
-            PhysicsSystem.ConstrainRotationY(Test.id, true);
-            //PhysicsSystem.ConstrainRotationZ(Test.id, true);
         }
 
-		public void Start()
-		{
-			//humanCentipedo.Start();
-			//testingRandoFall.Start();
+
+        // is this even running??
+        public void Start()
+        {
+            //humanCentipedo.Start();
+            //testingRandoFall.Start();
         }
 
-		public void Update()
-		{
+        public void Update()
+        {
+            if (!hasInitalized) Initialize();
             // Script calling
             //humanCentipedo.Update();
-			//testingRandoFall.Update();
+            //testingRandoFall.Update();
 
-			// Move The Test Object 
-			TransformSystem.GetPosition(Test.id, out Vector3 pos);
-			//
+            // Move The Test Object 
+            TransformSystem.GetPosition(Test.id, out Vector3 pos);
+            //
 
             Vector3 dirVec = new Vector3(0, 0, 0);
 
@@ -83,7 +85,7 @@ namespace TRE
                 // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
                 isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id) || PhysicsSystem.IsCollisionStay(Test.id, Plane_collider.id);
 
-				if (isGrounded)
+                if (isGrounded)
                     Jump(maxHeight); // uh oh beeeg number
             }
 
@@ -112,5 +114,13 @@ namespace TRE
         {
             PhysicsSystem.AddForce(Test.id, JumpHeight);
         }
-	}
+
+        private void Initialize()
+        {
+            PhysicsSystem.ConstrainRotationX(Test.id, true);
+            PhysicsSystem.ConstrainRotationY(Test.id, true);
+            //PhysicsSystem.ConstrainRotationZ(Test.id, true);
+            hasInitalized = true;
+        }
+    }
 }
