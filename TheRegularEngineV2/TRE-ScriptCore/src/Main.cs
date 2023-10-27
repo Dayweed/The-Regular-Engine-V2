@@ -14,10 +14,17 @@ namespace TRE
         public Entity Temp = new Entity("Temp");
 		public Entity Test = new Entity("Test");
         public Entity Plane_collider = new Entity("Plane collider");
-        private bool isJumping = false;
+
+        //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
-        private Vector3 maxJumpHeight = new Vector3(0, 20, 0);
-        private Vector3 maxHeight = new Vector3(0, 0, 0);
+        //Maxium height the player can jump
+        private Vector3 maxHeight = new Vector3(0, 10000, 0);
+
+
+        //check if player used super power
+        private bool isScaled = false;
+        private float defaultScale = 1;
+        private float superScale = 50;
 
         public Main()
 		{
@@ -85,10 +92,23 @@ namespace TRE
             {
                 // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
                 isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id) || PhysicsSystem.IsCollisionStay(Test.id, Plane_collider.id);
-                maxHeight = pos + maxJumpHeight; // this was not it, chief... :(
 
 				if (isGrounded)
-                    Jump(new Vector3(0, 13000, 0)); // uh oh beeeg number
+                    Jump(maxHeight); // uh oh beeeg number
+            }
+
+            if (InputSystem.GetKeyDown(InputKeys.E))
+            {
+                if (!isScaled)
+                {
+                    PhysicsSystem.ResizeSphereCollider(Test.id, superScale);
+                    isScaled = true;
+                }
+                else if (isScaled)
+                {
+                    PhysicsSystem.ResizeSphereCollider(Test.id, defaultScale);
+                    isScaled = false;
+                }
             }
 
             dirVec.Normalize();
@@ -98,9 +118,9 @@ namespace TRE
             PhysicsSystem.AddForce(Test.id, tmp);
         }
 
-        private void Jump(Vector3 maxHeight)
+        private void Jump(Vector3 JumpHeight)
         {
-            PhysicsSystem.AddForce(Test.id, maxHeight);
+            PhysicsSystem.AddForce(Test.id, JumpHeight);
         }
 	}
 }

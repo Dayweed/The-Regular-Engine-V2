@@ -16,7 +16,7 @@ namespace TRE
 		public void Update()
 		{
 			TransformSystem.GetPosition(Mole.id, out Vector3 pos);
-			//
+
 			Vector3 dirVec = new Vector3(0, 0, 0);
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
