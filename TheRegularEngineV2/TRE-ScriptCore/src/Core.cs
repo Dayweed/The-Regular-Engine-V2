@@ -302,6 +302,7 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetPosition(string id, out Vector3 output);
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetPosition(string id, Vector3 position);
 
@@ -460,7 +461,6 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetIsMainCamera(string entityid, out bool output);
-
 	}
 
 	public class PhysicsSystem
@@ -475,16 +475,37 @@ namespace TRE
 		internal extern static void AddForce(string entityid, Vector3 force);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ConstrainRotationX(string entityid, bool state);
+		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ConstrainRotationY(string entityid, bool state);
+		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ConstrainRotationZ(string entityid, bool state);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetLinearVelocity(string entityid, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetLinearVelocity(string entityid, Vector3 velocity);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static bool IsCollisionEnter(string entityid1, string entityid2);
+		internal extern static bool IsCollisionEnter(string entityid1, string entityid2);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static bool IsCollisionExit(string entityid1, string entityid2);
+		internal extern static bool IsCollisionStay(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsCollisionExit(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsTriggerEnter(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsTriggerStay(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsTriggerExit(string entityid1, string entityid2);
 	}
 
 	public class InputSystem

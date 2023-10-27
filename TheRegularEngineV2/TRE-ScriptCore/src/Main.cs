@@ -75,11 +75,12 @@ namespace TRE
 
             if (InputSystem.GetKeyDown(InputKeys.Space))
             {
-                isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id);
-                maxHeight = pos + maxJumpHeight;
+                // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
+                isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id) || PhysicsSystem.IsCollisionStay(Test.id, Plane_collider.id);
+                maxHeight = pos + maxJumpHeight; // this was not it, chief... :(
 
-                if(isGrounded)
-                    Jump(maxHeight);
+				if (isGrounded)
+                    Jump(new Vector3(0, 13000, 0)); // uh oh beeeg number
             }
 
             dirVec.Normalize();

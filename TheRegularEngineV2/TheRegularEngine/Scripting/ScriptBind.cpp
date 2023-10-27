@@ -578,59 +578,98 @@ namespace TRE
 #pragma endregion
 
 #pragma region Physics
-
     static void BindResizeSphereCollider(MonoString* id, float s)
     {
-        std::string ID = MonoStringToString(id);
         // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(Temp, s);
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(entity, s);
     }
 
     static void BindResizeBoxCollider(MonoString* id, glm::vec3 s)
     {
-        std::string ID = MonoStringToString(id);
         // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(Temp, s);
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(entity, s);
     }
 
     static void BindAddForce(MonoString* id, glm::vec3 force)
     {
-        std::string ID = MonoStringToString(id);
         // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force);
+    }
+
+    void BindConstrainRotationX(MonoString* id, bool state)
+    {
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationX(entity, state);
+    }
+
+    void BindConstrainRotationY(MonoString* id, bool state)
+    {
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationY(entity, state);
+    }
+
+    void BindConstrainRotationZ(MonoString* id, bool state)
+    {
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationZ(entity, state);
     }
 
     static void BindGetLinearVelocity(MonoString* id, glm::vec3* output)
     {
-	    const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+	    const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
         *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
     }
 
     static void BindSetLinearVelocity(MonoString* id, glm::vec3 velocity)
     {
-        const Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
     }
+
     static bool BindIsCollisionEnter(MonoString* id1, MonoString* id2)
     {
-        Entity Temp1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-        Entity Temp2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionEnter(Temp1, Temp2);
+        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionEnter(entity1, entity2);
+    }
 
+    static bool BindIsCollisionStay(MonoString* id1, MonoString* id2)
+    {
+        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionStay(entity1, entity2);
     }
 
     static bool BindIsCollisionExit(MonoString* id1, MonoString* id2)
     {
-        Entity Tmp1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-        Entity Tmp2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionExit(Tmp1, Tmp2);
+        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionExit(entity1, entity2);
     }
 
-#pragma endregion
+    static bool BindIsTriggerEnter(MonoString* id1, MonoString* id2)
+    {
+        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerEnter(entity1, entity2);
+    }
 
+    static bool BindIsTriggerStay(MonoString* id1, MonoString* id2)
+    {
+        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerStay(entity1, entity2);
+    }
+
+    static bool BindIsTriggerExit(MonoString* id1, MonoString* id2)
+    {
+        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
+        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
+        return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerExit(entity1, entity2);
+    }
 #pragma endregion
 
     void ScriptBind::RegisterFunctions()
@@ -697,13 +736,22 @@ namespace TRE
         mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
 
         // Physics Bindings
-        mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
-        mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
-        mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
-        mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
-        mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
-        mono_add_internal_call("TRE.PhysicsSystem::IsCollisionEnter", BindIsCollisionEnter);
-        mono_add_internal_call("TRE.PhysicsSystem::IsCollisionExit", BindIsCollisionExit);
+	    {
+            mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
+            mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
+            mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+            mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationX", BindConstrainRotationX);
+            mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationY", BindConstrainRotationY);
+            mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationZ", BindConstrainRotationZ);
+            mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
+            mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
+            mono_add_internal_call("TRE.PhysicsSystem::IsCollisionEnter", BindIsCollisionEnter);
+            mono_add_internal_call("TRE.PhysicsSystem::IsCollisionStay", BindIsCollisionStay);
+            mono_add_internal_call("TRE.PhysicsSystem::IsCollisionExit", BindIsCollisionExit);
+            mono_add_internal_call("TRE.PhysicsSystem::IsTriggerEnter", BindIsTriggerEnter);
+            mono_add_internal_call("TRE.PhysicsSystem::IsTriggerStay", BindIsTriggerStay);
+            mono_add_internal_call("TRE.PhysicsSystem::IsTriggerExit", BindIsTriggerExit);
+	    }
 
         // Input Binding
         mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
