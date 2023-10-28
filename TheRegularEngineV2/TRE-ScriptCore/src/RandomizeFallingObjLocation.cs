@@ -10,7 +10,7 @@ namespace TRE
     public class HumanCentipede : Entity
     {
         // How to call base class constructor to access Entity-like Properties
-        public HumanCentipede() : base(new long(), "Name")
+        public HumanCentipede()
         {
 
         }
@@ -41,7 +41,7 @@ namespace TRE
 
         private List<Entity> itemsToSpawn = new List<Entity>();
 
-        public RandomizeFallingObjLocation() : base(ECSManager.FindIDFromName("spawner"), "spawner")
+        public RandomizeFallingObjLocation()
         {
             canSpawnObjs = true;
             // ID for prefabs are based on resource prefab GUID
@@ -58,7 +58,12 @@ namespace TRE
         // Update is called once per frame
         public void Update()
         {
-            if (this.ID == new long()) return;
+            Console.WriteLine("AHHH");
+
+            Core.Log("Update...");
+            Core.Log("My ID is " + ID);
+
+            if (ID == 0) return;
 
             if (InputSystem.GetKeyDown(InputKeys.T))
             {
@@ -70,12 +75,6 @@ namespace TRE
 
         public Vector3 SpawnObjPos()
         {
-            /*
-            Vector3 spawningPos = new Vector3(Random.Range(-size.x / 2, size.x / 2),
-                                                                            Random.Range(-size.y / 2, size.y / 2),
-                                                                                Random.Range(-size.z / 2, size.z / 2));
-            */
-            // THIS must use GetPosition instead until reflection for scripting is done
             Vector3 spawningPos = this.transform.position + new Vector3(Random.Range(-size.x / 2, size.x / 2),
                                                                             Random.Range(-size.y / 2, size.y / 2),
                                                                                 Random.Range(-size.z / 2, size.z / 2));

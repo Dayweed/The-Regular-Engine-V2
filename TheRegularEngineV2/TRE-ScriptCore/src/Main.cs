@@ -9,13 +9,15 @@ namespace TRE
 	public class Main
 	{
 		// Scripting Initialization
-		HumanCentipede humanCentipedo = new HumanCentipede();
-		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
+		//HumanCentipede humanCentipedo = new HumanCentipede();
+		//RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
+        /* Commenting out uneeded code to prevent Console Panel spam...
         //create the test object and temp object not too sure if the temp object is linked in some 
         public Entity Temp = new Entity(new long(), "Temp");
 		public Entity Test = new Entity(new long(), "Test");
         public Entity Plane_collider = new Entity(new long(), "Plane collider");
+        */
 
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
@@ -32,7 +34,8 @@ namespace TRE
 		{
 			//Temp.id = ECSManager.CreateEntity(Temp.name);
 			//Console.WriteLine("Hello World from C#!");
-
+            
+            /* Commenting out uneeded code to prevent Console Panel spam...
 			Test.ID = ECSManager.FindIDFromName(Test.name);
             Plane_collider.ID = ECSManager.FindIDFromName(Plane_collider.name);
 			Console.WriteLine("Test ID: " + Test.ID);
@@ -48,20 +51,22 @@ namespace TRE
             //Console.WriteLine("Tag: " + Test.GetTag());
             Console.WriteLine("Is UwU? " + Test.CompareTag("UwU"));
             Console.WriteLine("Is OwO? " + Test.CompareTag("OwO"));
+            */
         }
 
 		public void Start()
 		{
-			humanCentipedo.Start();
-			testingRandoFall.Start();
+			//humanCentipedo.Start();
+			//testingRandoFall.Start();
         }
 
 		public void Update()
 		{
             // Script calling
-            humanCentipedo.Update();
+            //humanCentipedo.Update();
 			//testingRandoFall.Update();
-
+            
+            /* Commenting out uneeded code to prevent Console Panel spam...
 			// Move The Test Object 
 			TransformSystem.GetPosition(Test.ID, out Vector3 pos);
 			//
@@ -121,12 +126,15 @@ namespace TRE
             Vector3 tmp = dirVec * 60;
 
             PS.AddForce(Test.ID, tmp, ForceMode.Force);
+            */
         }
 
         private void Jump(Vector3 JumpHeight)
         {
+            /* Commenting out uneeded code to prevent Console Panel spam...
             PhysicsSystem.AddForce(Test.ID, JumpHeight, ForceMode.Force);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
+            */
         }
 	}
 

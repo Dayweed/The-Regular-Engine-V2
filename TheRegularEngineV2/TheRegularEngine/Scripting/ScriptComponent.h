@@ -46,6 +46,5 @@ namespace TRE
 property_begin(TRE::ScriptComponent)
 {
 	property_var(m_StoredClass)
-	, property_var(m_IsDirty)
 
 } property_vend_h(TRE::ScriptComponent)
