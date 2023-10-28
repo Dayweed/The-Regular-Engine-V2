@@ -28,7 +28,7 @@ namespace TRE
         private float defaultScale = 1;
         private float superScale = 50;
 
-        private bool hasInitalized = false;
+        private bool hasInitalized;
 
         public Main()
         {
@@ -37,7 +37,8 @@ namespace TRE
 
             Test.id = ECSManager.FindIDFromName(Test.name);
             Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
-        }
+            hasInitalized = false;
+		}
 
 
         // is this even running??
@@ -45,7 +46,10 @@ namespace TRE
         {
             //humanCentipedo.Start();
             //testingRandoFall.Start();
-        }
+            hasInitalized = false;
+            Console.WriteLine("HELLO FROM SCRIPT-START\n");
+            // this is not running...
+		}
 
         public void Update()
         {
@@ -56,7 +60,9 @@ namespace TRE
 
             // Move The Test Object 
             TransformSystem.GetPosition(Test.id, out Vector3 pos);
-            //
+
+            // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
+            isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
 
             Vector3 dirVec = new Vector3(0, 0, 0);
 
@@ -84,9 +90,6 @@ namespace TRE
 
             if (InputSystem.GetKeyDown(InputKeys.Space))
             {
-                // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-                isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
-
                 if (isGrounded)
                     Jump(maxHeight); // uh oh beeeg number
             }
@@ -107,9 +110,17 @@ namespace TRE
 
             dirVec.Normalize();
 
-            Vector3 tmp = dirVec * 60;
-
-            PS.AddForce(Test.id, tmp, PS.ForceMode.Force);
+            // if you're on the ground and not moving
+            if (dirVec.Magnitude() == 0 && isGrounded)
+            {
+                // stop the entity from moving
+                PS.SetLinearVelocity(Test.id, Vector3.zero);
+            }
+            else
+            {
+                Vector3 tmp = dirVec * 60;
+                PS.AddForce(Test.id, tmp*2, PS.ForceMode.VelocityChange);
+            }
         }
 
         private void Jump(Vector3 JumpHeight)
