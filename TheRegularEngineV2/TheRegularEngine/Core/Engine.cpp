@@ -512,11 +512,10 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
-			const auto& test = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-			m_SceneRenderer->BeginFrame(test);
+			m_SceneRenderer->BeginFrame();
 
 			if (m_EngineInfo.EnableEditor)
-				m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
+				m_EditorSceneRenderer->BeginEditorFrame();
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");

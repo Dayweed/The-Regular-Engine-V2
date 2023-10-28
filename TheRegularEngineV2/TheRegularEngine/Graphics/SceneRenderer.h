@@ -27,7 +27,7 @@ namespace TRE
 		glm::mat4 m_ProjView{ 1.f }; //World to view to projection
 		glm::vec3 m_LightPosition{ 0.f, 0.f, 0.f}; //Light position for now will be the camera in world space
 #pragma warning (suppress: 4324) // warning C4324: 'TRE::UBO': structure was padded due to alignment specifier	
-		alignas(16) glm::vec4 m_LightColor{ 1.f, 1.f, 1.f, 100.f }; //Light color, w for intensity
+		alignas(16) glm::vec4 m_LightColor{ 1.f, 1.f, 1.f, 10.f }; //Light color, w for intensity
 		glm::vec4 m_CameraPosition{0.f, 0.f, 0.f, 1.f}; //Camera position in world space
 		glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f); //Directional Light in world space
 		glm::vec4 m_LightAmbientColor{ 1.f, 0.f, 1.f, 1.f }; //Ambient color of the light
@@ -63,8 +63,8 @@ namespace TRE
 			void Create();
 			void Resize();
 			
-			void BeginFrame(const Camera& RenderCamera);
-			void BeginEditorFrame(const EditorCamera& RenderCamera);
+			void BeginFrame();
+			void BeginEditorFrame();
 			void EndFrame(bool IsEditorScene);
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);

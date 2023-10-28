@@ -175,13 +175,15 @@ namespace TRE
 		m_DepthImages.clear();
 	}
 
-	void SceneRenderer::BeginEditorFrame(const EditorCamera& RenderCamera)
+	void SceneRenderer::BeginEditorFrame()
 	{
+		const EditorCamera& editorCamera = EditorCamera::Instance();
+		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
+		
 		UBO ubo{};
-
-		ubo.m_ProjView = RenderCamera.GetViewProjectionMatrix();
-		ubo.m_LightPosition = EditorCamera::Instance().GetPosition();
-		ubo.m_CameraPosition = glm::vec4(EditorCamera::Instance().GetPosition(), 1.f);
+		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
+		ubo.m_LightPosition = transform.m_Position;
+		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
@@ -193,14 +195,16 @@ namespace TRE
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 	}
 
-	void SceneRenderer::BeginFrame(const Camera& RenderCamera)
+	void SceneRenderer::BeginFrame()
 	{
 		//UBO
+		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		UBO ubo{};
-		//const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-		ubo.m_ProjView = RenderCamera.m_BaseCamera.m_ProjectionMatrix * RenderCamera.m_BaseCamera.m_ViewMatrix;
-		ubo.m_LightPosition = { 0.f, 0.f, 0.f };
-		ubo.m_CameraPosition = { 0.f, 0.f, 0.f, 0.f };
+		const Camera& cameraComponent = mainCamera->GetComponent<Camera>();
+		const Transform& transform = mainCamera->GetComponent<Transform>();
+		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
+		ubo.m_LightPosition = transform.m_Position;
+		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
@@ -323,6 +327,8 @@ namespace TRE
 		m_PreviousMaterialHandle = 0;
 		
 		//Debug Drawing Pass
+
+		if (IsEditorScene)
 		{
 			DebugDrawPass(Index);
 		}
@@ -420,6 +426,26 @@ namespace TRE
 				m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
 				m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
 			}
+		}
+
+		for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
+		{
+			const Transform& tr = camera->GetComponent<Transform>();
+			const Camera& cc = camera->GetComponent<Camera>();
+
+			PushConstant pc{};
+			glm::mat4 model(1.f);
+			const float scale = 100.f;/*cc.m_BaseCamera.m_Far - cc.m_BaseCamera.m_Near;*/
+			model = glm::translate(model, tr.m_Position);
+			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+			model = glm::scale(model, glm::vec3(scale, scale, scale));
+			pc.m_Model = model;
+
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+			m_DebugRenderer->BindDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
+			m_DebugRenderer->DrawDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
 		}
 	}
 

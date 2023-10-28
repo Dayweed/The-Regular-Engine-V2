@@ -63,6 +63,7 @@ namespace TRE
 				const bool isFont = filenameString.ends_with(".ttf");
 				const bool is3DObj = filenameString.ends_with(".fbx");
 				const bool isDesc = filenameString.ends_with(".desc");
+				const bool isMaterial = filenameString.ends_with(".material.desc");
 
 				//Determine the icon type
 				newAsset.m_TextureID = isImage							? m_TmpTexturesID : newAsset.m_TextureID;
@@ -71,8 +72,9 @@ namespace TRE
 				newAsset.m_TextureID = isMeta							? m_TmpTexturesID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isFont							? m_TmpTexturesID : newAsset.m_TextureID;
 				newAsset.m_TextureID = is3DObj							? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isMaterial						? m_TmpTexturesID : newAsset.m_TextureID;
 
-				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj)
+				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj || isMaterial)
 				{
 					//Allow Dragging of these file types
 					newAsset.m_ResourceType = isImage		? "m_TextureResource" : newAsset.m_ResourceType;
@@ -82,10 +84,25 @@ namespace TRE
 					newAsset.m_ResourceType = isScene		? "m_Scene" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isPrefab		? "m_Prefab" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = is3DObj		? "m_3DObject" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isMaterial	? "m_Material" : newAsset.m_ResourceType;
 				}
-				//Set the path and filename
-				newAsset.m_Path = path;
-				newAsset.m_FileName = filenameString;
+
+				if (isMaterial)
+				{
+					std::string hexHandle = filenameString.substr(0, filenameString.find_first_of('.'));
+					newAsset.m_FileName = AssetManager::Instance().GetName(hexHandle);
+					newAsset.m_Path = "../Resources/" + hexHandle + ".material";
+
+					//Because material technically is a descriptor file, we need to add it to the list
+					m_Assets.emplace_back(newAsset);
+				}
+				else
+				{
+					//Set the path and filename
+					newAsset.m_Path = path;
+					newAsset.m_FileName = filenameString;
+				}
+				
 				//Add the asset to the list if not a descriptor file
 				if(!isDesc)
 					m_Assets.emplace_back(newAsset);
@@ -93,7 +110,7 @@ namespace TRE
 		}
 
 		//Add material instances in to see on content browser if it is in m_AssetDirectory
-		if (m_CurrentDirectory == m_AssetDirectory)
+		/*if (m_CurrentDirectory == m_AssetDirectory)
 		{
 			for (const auto& mat : AssetManager::Instance().GetAssetsOfType<Material>())
 			{
@@ -105,7 +122,7 @@ namespace TRE
 
 				m_Assets.emplace_back(materialAsset);
 			}
-		}
+		}*/
 	}
 
 	void ContentBrowserPanel::BrowseProjectFiles()
@@ -217,7 +234,7 @@ namespace TRE
 						else
 						{
 							const AssetSelector::AssetType assetType = m_AssetSelector->FindAssetType(item.m_ResourceType);
-							m_AssetSelector->SelectEntity(item.m_FileName, assetType);
+							m_AssetSelector->SelectAsset(item.m_FileName, assetType);
 						}
 						m_AssetClicked = true;
 					}
