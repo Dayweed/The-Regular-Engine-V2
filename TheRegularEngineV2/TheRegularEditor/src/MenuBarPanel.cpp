@@ -41,10 +41,12 @@ namespace TRE
 			{
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 				{
+					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 					NewScene();
 				}
 				if (ImGui::MenuItem("Open", "Ctrl+O"))
 				{
+					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 					OpenScene();
 				}
 				if (ImGui::MenuItem("Save", "Ctrl+S"))
@@ -116,6 +118,25 @@ namespace TRE
 				{
 					EditorCamera::Instance().AssignToMainCamera();
 				}
+
+				if (ImGui::Checkbox("Show All Colliders", &m_ShowAllColliders))
+				{
+					for (auto& colliders : ECSManager::Instance().GetEntities<SphereCollider>())
+					{
+						colliders->GetComponent<SphereCollider>().m_IsVisible = m_ShowAllColliders;
+					}
+
+					for (auto& colliders : ECSManager::Instance().GetEntities<BoxCollider>())
+					{
+						colliders->GetComponent<BoxCollider>().m_IsVisible = m_ShowAllColliders;
+					}
+
+					for (auto& colliders : ECSManager::Instance().GetEntities<CapsuleCollider>())
+					{
+						colliders->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
+					}
+				}
+
 				ImGui::EndMenu();
 			}
 

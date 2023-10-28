@@ -75,6 +75,9 @@ namespace TRE
 			//bool for local and global
 			bool m_LocalGizmo = false;
 
+			//Bool for show all collider draws
+			bool m_ShowAllColliders = false;
+
 			//Store some custom flags
 			ImGuiConfigFlags m_PopUps{};
 			

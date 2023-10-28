@@ -373,8 +373,8 @@ namespace TRE
 						SetIsDirty.operator() < SphereCollider > (entity);
 						SetIsDirty.operator() < BoxCollider > (entity);
 						SetIsDirty.operator() < CapsuleCollider > (entity);
-						SetIsDirty.operator() < Camera > (entity);
 						SetIsDirty.operator() < ScriptComponent > (entity);
+						SetIsDirty.operator() < Camera > (entity);
 						// add more of your components here! :)
 						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
 					}

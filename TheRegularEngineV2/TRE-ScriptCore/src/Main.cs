@@ -13,9 +13,9 @@ namespace TRE
 		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
-        public Entity Temp = new Entity("Temp");
-		public Entity Test = new Entity("Test");
-        public Entity Plane_collider = new Entity("Plane collider");
+        public Entity Temp = new Entity("", "Temp");
+		public Entity Test = new Entity("", "Test");
+        public Entity Plane_collider = new Entity("", "Plane collider");
 
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
@@ -33,9 +33,9 @@ namespace TRE
 			//Temp.id = ECSManager.CreateEntity(Temp.name);
 			//Console.WriteLine("Hello World from C#!");
 
-			Test.id = ECSManager.FindIDFromName(Test.name);
-            Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
-			Console.WriteLine("Test ID: " + Test.id);
+			Test.ID = ECSManager.FindIDFromName(Test.name);
+            Plane_collider.ID = ECSManager.FindIDFromName(Plane_collider.name);
+			Console.WriteLine("Test ID: " + Test.ID);
 
 			Console.WriteLine("Entity: " + Test.GetActive());
             Test.SetActive(false);
@@ -93,7 +93,7 @@ namespace TRE
             if (InputSystem.GetKeyDown(InputKeys.Space))
             {
                 // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-                isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
+                isGrounded = PS.IsCollisionEnter(Test.ID, Plane_collider.ID) || PS.IsCollisionStay(Test.ID, Plane_collider.ID);
 
 				if (isGrounded)
                 {
@@ -106,12 +106,12 @@ namespace TRE
             {
                 if (!isScaled)
                 {
-                    PS.ResizeSphereCollider(Test.id, superScale);
+                    PS.ResizeSphereCollider(Test.ID, superScale);
                     isScaled = true;
                 }
                 else if (isScaled)
                 {
-                    PS.ResizeSphereCollider(Test.id, defaultScale);
+                    PS.ResizeSphereCollider(Test.ID, defaultScale);
                     isScaled = false;
                 }
             }
@@ -120,12 +120,12 @@ namespace TRE
 
             Vector3 tmp = dirVec * 60;
 
-            PS.AddForce(Test.id, tmp, PS.ForceMode.Force);
+            PS.AddForce(Test.ID, tmp, ForceMode.Force);
         }
 
         private void Jump(Vector3 JumpHeight)
         {
-            PhysicsSystem.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
+            PhysicsSystem.AddForce(Test.ID, JumpHeight, ForceMode.Force);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
 	}

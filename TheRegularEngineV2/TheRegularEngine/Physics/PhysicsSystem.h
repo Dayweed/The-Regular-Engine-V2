@@ -82,7 +82,6 @@ namespace TRE
 		void Init() override;
 		void Update() override;
 		void GameUpdate() override;
-		void LateUpdate() override;
 		void BeforeReset() override;
 		void AfterReset() override;
 		// void OnDestroyEntities() override;
@@ -297,7 +296,8 @@ namespace TRE
 
 	private:
 
-		void ResizeAllColliders() const;
+		void ResizeAllColliders();
+		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
 
 		void DestroyOutdatedComponents() const;
 

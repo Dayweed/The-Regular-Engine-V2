@@ -9,4 +9,5 @@ namespace TRE::vkUtils
 	glm::quat Blend(const glm::quat& Start, float T, const glm::quat& End);
 	bool IsDepthImage(const ImageFormat& Usage);
 	VkFormat VulkanImageFormat(ImageFormat format);
+	uint32_t BufferFindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 }

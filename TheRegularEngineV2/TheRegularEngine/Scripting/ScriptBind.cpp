@@ -405,6 +405,14 @@ namespace TRE
 
     static MonoString* FindIDFromName(MonoString* name)
 	{
+        if (name == nullptr)
+        {
+            std::string func{ __FUNCTION__ };
+            TRE_CORE_WARN(func + " name is nullptr");
+            // Did not find the name
+            return mono_string_new(mono_domain_get(), "");
+        }
+
 		std::string temp = MonoStringToString(name);
         std::unordered_map<std::string, std::string> sceneObjects = GetAllSceneObjects();
         // Search for the name in the map
