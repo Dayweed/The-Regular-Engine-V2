@@ -19,19 +19,7 @@
 #define USE_PHYSX_PVD 0
 #endif
 
-#pragma region Macros
-
 #define UNUSED_PARAM(param) (void)param
-
-// not the best name... :/
-#define UpdateAllEntitiesWithComponent(Type)\
-	for (const Entity & entity : ECSManager::Instance().GetEntities<Type>()) Update##Type(entity)
-
-// this name is even worse! :_(
-#define OnEntityMismatchDestroyComponent(entity, attachedComponents, Type)\
-	if ((attachedComponents) & PhysicsComponentTypes::##Type && !(entity)->HasComponent<Type>()) Destruct##Type(entity)
-
-#pragma endregion
 
 using namespace physx;
 // to save my dwindling sanity
@@ -97,14 +85,20 @@ namespace TRE
 #endif
 
 		// this is SO TEMPORARY
-		const Entity entity = ECSManager::Instance().GetEntities<Transform>().front();
-		//Static object creation
-		m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_DefaultMaterial);
+		for (const auto& entity : ECSManager::Instance().GetEntities<Properties>())
+		{
+			if (entity->GetComponent<Properties>().m_Name == "Plane collider")
+			{
+				m_GroundPlaneMaterial = m_Physics->createMaterial(1.2f, 1.1f, 0);
+				//Static object creation
+				m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_GroundPlaneMaterial);
 #ifdef _DEBUG
-		m_GroundPlane->setName("THE PLANE");
+				m_GroundPlane->setName("THE PLANE");
 #endif
-		m_Scene->addActor(*m_GroundPlane);
-		m_Actors[entity->GetGUID()] = SharedData{ m_GroundPlane, 0, entity->GetGUID(), false };
+				m_Scene->addActor(*m_GroundPlane);
+				m_Actors[entity->GetGUID()] = SharedData{ m_GroundPlane, 0, entity->GetGUID(), false };
+			}
+		}
 
 		return isReadyForUpdate = true;
 	}
@@ -124,10 +118,6 @@ namespace TRE
 #else
 		m_Foundation->setReportAllocationNames(false);
 #endif
-
-
-		TRE_CORE_INFO("PhysX Version: {0}.{1}.{2}",
-			PX_PHYSICS_VERSION_MAJOR, PX_PHYSICS_VERSION_MINOR, PX_PHYSICS_VERSION_BUGFIX);
 
 #if USE_PHYSX_PVD
 		//PVD is like a debugger for the physics (leave off for submission)
@@ -197,61 +187,16 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
-		// Update Sphere Collider if Dirty
-		for (Entity& go : ECSManager::Instance().GetEntities<SphereCollider>())
-		{
-			SphereCollider& collider = go.get()->GetComponent<SphereCollider>();
-			if (collider.m_IsDirty)
-			{
-				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(go, collider.m_Radius);
-				collider.m_IsDirty = false;
-			}
-		}
-
-		// Update Box Collider if Dirty
-		for (Entity& go : ECSManager::Instance().GetEntities<BoxCollider>())
-		{
-			BoxCollider& collider = go.get()->GetComponent<BoxCollider>();
-			if (collider.m_IsDirty)
-			{
-				ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(go, collider.m_HalfExtents);
-				collider.m_IsDirty = false;
-			}
-		}
+		ResizeAllColliders();
 
 		//if (!m_IsReadyForUpdate) TESTUpdate();
 		// makes a non-void function only run once
 		// without any if branches, using short-circuiting! :D
 		isReadyForUpdate || TESTUpdate();
 
-		// How do I tell if a component has been removed from an entity???
-		for (auto& x : m_Actors)
-		{
-			Entity entity = ECSManager::Instance().FindEntity(x.first);
+		DestroyOutdatedComponents();
 
-			// if the attached comps say yes, but the entity says no...
-			// there is a mismatch. Thus, destroy that component.
-			const auto& attachedComponents = x.second.m_AttachedComponents;
-
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, Rigidbody);
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, SphereCollider);
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, BoxCollider);
-			OnEntityMismatchDestroyComponent(entity, attachedComponents, CapsuleCollider);
-		}
-
-		// erasing elements in a map: https://stackoverflow.com/a/8234813
-		for (auto it = m_Actors.begin(); it != m_Actors.end();)
-		{
-			if (it->second.m_MarkForRemoval)
-				it = m_Actors.erase(it);
-			else
-				++it;
-		}
-
-		UpdateAllEntitiesWithComponent(Rigidbody);
-		UpdateAllEntitiesWithComponent(SphereCollider);
-		UpdateAllEntitiesWithComponent(BoxCollider);
-		UpdateAllEntitiesWithComponent(CapsuleCollider);
+		UpdateAllComponents();
 	}
 
 	void PhysicsSystem::GameUpdate()
@@ -350,24 +295,24 @@ namespace TRE
 
 	void PhysicsSystem::AfterReset()
 	{
-		for (Entity entity : ECSManager::Instance().GetEntities<Rigidbody>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
 		{
 			ConstructRigidbody(entity);
 		}
 
-		for (Entity entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
 			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
 			ConstructSphereCollider(entity, component.m_Radius, component.m_Offset);
 		}
 
-		for (Entity entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
 		{
 			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
 			ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset);
 		}
 
-		for (Entity entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 		{
 			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
 			ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset);
@@ -376,13 +321,13 @@ namespace TRE
 
 	void PhysicsSystem::Shutdown()
 	{
-		TRE_CORE_INFO("Physics System Shutdown");
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
 
 		m_Actors.clear();
 		PX_RELEASE(m_GroundPlane);
+		PX_RELEASE(m_GroundPlaneMaterial);
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Scene);
 		PxCloseExtensions();
@@ -507,12 +452,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -536,12 +481,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -565,12 +510,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -594,12 +539,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -623,12 +568,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -652,12 +597,12 @@ namespace TRE
 	{
 		if (!m_Actors.contains(entity_1->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 1 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 1 (\"" + entity_1->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 		if (!m_Actors.contains(entity_2->GetGUID()))
 		{
-			TRE_CORE_WARN("Entity 2 did not contain any physics components.");
+			TRE_CORE_WARN("[" + std::string{ __FUNCTION__ } + "] Entity 2 (\"" + entity_2->GetName() + "\") did not contain any physics components.");
 			return false;
 		}
 
@@ -675,6 +620,127 @@ namespace TRE
 			}
 		}
 		return false;
+	}
+
+	void PhysicsSystem::ResizeAllColliders() const
+	{
+		// Update Sphere Collider if Dirty
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		{
+			if (auto& collider = entity->GetComponent<SphereCollider>(); collider.m_IsDirty)
+			{
+				ResizeSphereCollider(entity, collider.m_Radius);
+				collider.m_IsDirty = false;
+			}
+		}
+
+		// Update Box Collider if Dirty
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
+			if (auto& collider = entity->GetComponent<BoxCollider>(); collider.m_IsDirty)
+			{
+				ResizeBoxCollider(entity, collider.m_HalfExtents);
+				collider.m_IsDirty = false;
+			}
+		}
+
+		// Update the Update if Update
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		{
+			if (auto& collider = entity->GetComponent<CapsuleCollider>(); collider.m_IsDirty)
+			{
+				ResizeCapsuleCollider(entity, collider.m_Radius, collider.m_HalfHeight);
+				collider.m_IsDirty = false;
+			}
+		}
+	}
+
+	void PhysicsSystem::DestroyOutdatedComponents() const
+	{
+		// Physics Component Destruction and Removal
+		for (const auto& [guid, sharedData] : m_Actors)
+		{
+			// Scenario 1: Entity with physics components was just deleted (Has the Removal component)
+			// if Has Removal component and Has physics component, destruct physics component
+			// HasRemoval && HasPhysicsComp -> Destruct()
+			// A && X
+
+			// Scenario 2: physics component was just removed from entity
+			// if attachedComps had it, but the entity doesn't, destruct physics component
+			// (attachedComps & ComponentEnum) && !HasPhysicsComp -> Destruct()
+			// B && !X
+
+			// Accounting for both scenarios..
+			// if (A && X) || (B && !X)
+
+			Entity entity = ECSManager::Instance().FindEntity(guid);
+
+			const bool hasRemovalComponent = entity->HasComponent<Removal>();
+
+			// if the attached comps say yes, but the entity says no...
+			// there is a mismatch. Thus, destroy that component.
+			const unsigned attachedComponents = sharedData.m_AttachedComponents;
+
+			// Rigidbody
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::Rigidbody;
+				const bool hasPhysicsComponent = entity->HasComponent<Rigidbody>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructRigidbody(entity);
+			}
+
+			// SphereCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::SphereCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<SphereCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructSphereCollider(entity);
+			}
+
+			// BoxCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::BoxCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<BoxCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructBoxCollider(entity);
+			}
+
+			// CapsuleCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::CapsuleCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<CapsuleCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructCapsuleCollider(entity);
+			}
+		}
+
+		// erasing elements in a map: https://stackoverflow.com/a/8234813
+		for (auto it = m_Actors.begin(); it != m_Actors.end();)
+		{
+			if (it->second.m_MarkForRemoval)
+				it = m_Actors.erase(it);
+			else
+				++it;
+		}
+
+		// The actual ECS components are also removed in the Destruct##Comp() functions above.
+		// This is because the Update components does GetEntities<Comp>(), which could
+		// include outdated comps if RemoveComponent<Comp>() was not done by this point.
+	}
+
+	void PhysicsSystem::UpdateAllComponents() const
+	{
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
+			UpdateRigidbody(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+			UpdateSphereCollider(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+			UpdateBoxCollider(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+			UpdateCapsuleCollider(entity);
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)

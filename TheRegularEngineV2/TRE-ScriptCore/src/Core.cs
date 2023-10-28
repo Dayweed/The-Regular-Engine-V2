@@ -103,6 +103,9 @@ namespace TRE
 	{
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool EngineIsPrefabResource(string id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string CreatePrefabEntity(string prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
     }
 
 	public struct Parenting
@@ -178,10 +181,13 @@ namespace TRE
 	public struct Vector3
 	{
 		public float x, y, z;
-		public Vector3(float x, float y, float z)
+        public static Vector3 up = new Vector3(0, 1, 0);
+
+        public Vector3(float x, float y, float z)
 		{
 			this.x = x; this.y = y; this.z = z;
 		}
+
 		public static Vector3 operator +(Vector3 a, Vector3 b)
 		{
 			return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -234,6 +240,27 @@ namespace TRE
 			}
 		}
 
+		public float Magnitude()
+		{
+			return (float)Math.Sqrt(x * x + y * y + z * z);
+		}
+
+		public void Normalize()
+		{
+			if(Magnitude() != 0)
+			{
+                this.x = this.x / Magnitude();
+                this.y = this.y / Magnitude();
+                this.z = this.z / Magnitude();
+            }
+			if(Magnitude() == 0)
+			{
+                this.x = 0;
+                this.y = 0;
+                this.z = 0;
+            }
+		}
+
 		public static bool operator !=(Vector3 a, Vector3 b)
 		{
 			if (a.x != b.x || a.y != b.y || a.z != b.z)
@@ -249,7 +276,7 @@ namespace TRE
 		public static float Distance(Vector3 vec1, Vector3 vec2)
 		{
 			// TO DO CALCULATE VECTOR DISTANCE :p
-			return 0.0f;
+			return vec1.Magnitude() - vec2.Magnitude();
 		}
 	}
 	#endregion
@@ -338,6 +365,7 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetPosition(string id, out Vector3 output);
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetPosition(string id, Vector3 position);
 
@@ -350,17 +378,24 @@ namespace TRE
 
 	public class ECSManager
 	{
-		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3())
+		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())
 		{
-			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
+			// Ensure scaling is not zero, since Vector3 does not allow const version currently and must compile-time const
+			if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
+			{
+				Core.LogWarning("Scaling is zero, setting the values to 1...");
+				scaling = new Vector3(1, 1, 1);
+			}
+
+			bool isPrefab = Prefab.EngineIsPrefabResource(entity.id);
 			if (isPrefab)
 			{
-				string id = CreatePrefabEntity(entity.ID, postion, rotation);
+				string id = Prefab.CreatePrefabEntity(entity.id, postion, rotation, scaling);
 				return new Entity(FindNameFromID(id), id);
 			}
 			else if (IsValidEntity(entity.ID))
 			{
-				string id = CreateEntity(entity.ID, postion, rotation);
+				string id = CloneEntity(entity.id, postion, rotation, scaling);
                 return new Entity(FindNameFromID(id), id);
             }
 			else
@@ -372,10 +407,10 @@ namespace TRE
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
+		internal extern static string CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string CreatePrefabEntity(string prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3());
+		internal extern static string CloneEntity(string id, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool IsValidEntity(string prefabid);
@@ -385,6 +420,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void RemoveComponent(string entityID, Components component);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void DestroyEntity(string entityID);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string FindIDFromName(string name);
@@ -523,25 +561,62 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetIsMainCamera(string entityid, out bool output);
-
 	}
 
 	public class PhysicsSystem
 	{
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeSphereCollider(string entityid, float newradius);
+		public enum ForceMode
+		{
+			Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
+			Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
+			VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
+			Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeBoxCollider(string entityid, Vector3 newsize);
+		internal extern static void ResizeSphereCollider(string entityid, float newRadius);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void AddForce(string entityid, Vector3 force);
+		internal extern static void ResizeBoxCollider(string entityid, Vector3 newHalfExtents);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ResizeCapsuleCollider(string entityid, float newRadius, float newHelfHeight);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void AddForce(string entityid, Vector3 force, ForceMode mode);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ConstrainRotationX(string entityid, bool state);
+		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ConstrainRotationY(string entityid, bool state);
+		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ConstrainRotationZ(string entityid, bool state);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetLinearVelocity(string entityid, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetLinearVelocity(string entityid, Vector3 velocity);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsCollisionEnter(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsCollisionStay(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsCollisionExit(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsTriggerEnter(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsTriggerStay(string entityid1, string entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool IsTriggerExit(string entityid1, string entityid2);
 	}
 
 	public class InputSystem
@@ -549,6 +624,12 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool GetKeyDown(InputKeys keycode);
 	}
+
+	public class MathF
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float Sqrt(float value);
+    }
 
 	public class Random
 	{

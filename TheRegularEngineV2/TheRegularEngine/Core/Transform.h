@@ -26,7 +26,7 @@ namespace TRE
 		void CalculateWorldMatrix();
 		const glm::mat4 CalculateLocalMatrix();
 		void DecomposeWorldMatrix(const glm::mat4 newWorld);
-		void UpdateLocalMatrix(Entity& parent);
+		void UpdateLocalData(Transform& parent);
 	public:
 		property_vtable()           // Allows the base class to get these properties  
 

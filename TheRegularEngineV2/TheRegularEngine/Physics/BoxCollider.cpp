@@ -9,27 +9,18 @@ namespace TRE
 {
 	void to_json(nlohmann::json& j, const BoxCollider& t)
 	{
-		const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
-		const std::vector<float> v_halfEx{ t.m_HalfExtents.x, t.m_HalfExtents.y, t.m_HalfExtents.z };
-
 		j = nlohmann::json{
-			{ "m_Offset", v_offset },
-			{ "m_HalfExtents", v_halfEx },
-			{ "m_IsTrigger", t.m_IsTrigger }
+			WriteVec3MemberToJSON(m_Offset),
+			WriteVec3MemberToJSON(m_HalfExtents),
+			WriteMemberToJSON(m_IsTrigger),
 		};
 	}
 
 	void from_json(const nlohmann::json& j, BoxCollider& t)
 	{
-		const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-		const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-		t.m_Offset = glm::make_vec3(a_off);
-
-		const std::vector<float> v_half{ j.at("m_HalfExtents").get<std::vector<float>>() };
-		const float a_half[3]{ v_half[0], v_half[1], v_half[2] };
-		t.m_HalfExtents = glm::make_vec3(a_half);
-
-		t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
+		ReadVec3MemberFromJSON(m_Offset);
+		ReadVec3MemberFromJSON(m_HalfExtents);
+		ReadMemberFromJSON(m_IsTrigger);
 	}
 
 	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
@@ -162,7 +153,6 @@ namespace TRE
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic*& rigidDynamic = sharedComponent.m_RigidDynamic;
 
 		// reset bit for this component
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::BoxCollider;
@@ -192,5 +182,6 @@ namespace TRE
 			// SO TEMPORARY
 			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
+		entity->RemoveComponent<BoxCollider>();
 	}
 }

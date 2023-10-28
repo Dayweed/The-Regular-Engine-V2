@@ -165,17 +165,17 @@ namespace TRE
 
 property_begin(TRE::Camera)
 {
-		property_var(m_BaseCamera.m_ViewportSize).Name("Viewport Size"),
+		//property_var(m_BaseCamera.m_ViewportSize).Name("Viewport Size"),
 		property_var(m_BaseCamera.m_Fov).Name("FOV"),
 		property_var(m_BaseCamera.m_FocalLength).Name("Focal Length"),
 		property_var(m_BaseCamera.m_FocalPoint).Name("Focal Point"),
 		property_var(m_BaseCamera.m_Near).Name("Near"),
 		property_var(m_BaseCamera.m_Far).Name("Far"),
-		property_var(m_BaseCamera.m_Left).Name("Left"),
-		property_var(m_BaseCamera.m_Right).Name("Right"),
-		property_var(m_BaseCamera.m_Bottom).Name("Bottom"),
-		property_var(m_BaseCamera.m_Top).Name("Top"),
-		property_var(m_BaseCamera.m_AspectRatio).Name("Aspect Ratio"),
+		//property_var(m_BaseCamera.m_Left).Name("Left"),
+		//property_var(m_BaseCamera.m_Right).Name("Right"),
+		//property_var(m_BaseCamera.m_Bottom).Name("Bottom"),
+		//property_var(m_BaseCamera.m_Top).Name("Top"),
+		//property_var(m_BaseCamera.m_AspectRatio).Name("Aspect Ratio"),
 		property_var(m_BaseCamera.m_IsPerspective).Name("IsPerspective"),
 		property_var(m_IsMainCamera).Name("IsMainCamera")
 } property_vend_h(TRE::Camera)

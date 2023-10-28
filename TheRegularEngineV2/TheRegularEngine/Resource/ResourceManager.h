@@ -34,14 +34,15 @@ namespace TRE
 		void DestroyAllResources();
 
 		const std::size_t GetAllResourceCount();
+		const bool IsResourceLoaded(ResourceHandle handle);
+		const bool IsResourceLoaded(const std::string& hexHandle);
 
 		template<typename T>
 		void SerializeResource(ResourceHandle handle);
 		void SerializeAll();
 
 	private:
-		ResourceManager() {};
-		~ResourceManager();
+		ResourceManager() = default;
 		ResourceManager(ResourceManager const&) = delete;
 		void operator=(ResourceManager const&) = delete;
 		void* operator new(size_t) = delete;
