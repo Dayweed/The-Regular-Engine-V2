@@ -6,6 +6,7 @@ namespace TRE
 {
 	void SceneManager::NewScene(std::string sceneName)
 	{
+		ECSSystemManager::Instance().BeforeReset();
 		ECSManager::Instance().DestroyAll();
 
 		Entity MainCamera = ECSManager::Instance().CreateEntity("Main Camera");
