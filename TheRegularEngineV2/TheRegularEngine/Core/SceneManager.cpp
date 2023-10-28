@@ -6,6 +6,7 @@ namespace TRE
 {
 	void SceneManager::NewScene(std::string sceneName)
 	{
+		ECSSystemManager::Instance().BeforeReset();
 		ECSManager::Instance().DestroyAll();
 
 		Entity MainCamera = ECSManager::Instance().CreateEntity("Main Camera");
@@ -20,6 +21,8 @@ namespace TRE
 		// Generate new Scene Name
 		m_CurrentScene = sceneName;
 		m_CurrentSceneFilePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
+
+		ECSSystemManager::Instance().AfterReset();
 	}
 
 	void SceneManager::LoadScene(std::string scenePath)

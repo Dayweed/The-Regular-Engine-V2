@@ -61,10 +61,15 @@ namespace TRE
 				Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_EditorDescriptorSets[x]);
 			}
 		}
+
+		m_IsValid = true;
 	}
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
+		if(m_IsValid == false)
+			Invalidate();
+
 		m_WriteDescriptors.clear();
 
 		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())

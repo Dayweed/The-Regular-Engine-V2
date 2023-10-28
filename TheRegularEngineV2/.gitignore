@@ -11,6 +11,7 @@ Executable_Debug_TheRegularEditor/
 Executable_Release_TheRegularEditor/
 TheRegularEditor/resources/Scripts/
 Resources/Scripts/
+EditorData/
 
 # User-specific files
 *.suo

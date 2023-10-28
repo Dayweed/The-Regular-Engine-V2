@@ -34,6 +34,7 @@ namespace TRE
 		CreateDebugSphere();
 		CreateDebugAABB();
 		CreateDebugCapsule();
+		CreateDebugCameraFrustum();
 	}
 
 	void DebugRenderer::CreateDebugAABB()
@@ -204,6 +205,56 @@ namespace TRE
 
 	}
 
+	void DebugRenderer::CreateDebugCameraFrustum()
+	{
+		m_DebugCameraFrustum = std::make_unique<DebugType>();
+
+		/*std::vector<DebugVertex> DebugFrustumVertices =
+		{
+			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f))
+		};*/
+		std::vector<DebugVertex> DebugFrustumVertices =
+		{
+			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,-0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,-0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f))
+		};
+
+		std::vector<int> DebugFrustumIndices = { 1,2,2,3,3,4,4,1,1,0,0,2,0,3,3,4,0 };
+
+		int VertexCount = (int)DebugFrustumVertices.size();
+		uint32_t vertexSize = sizeof(DebugFrustumVertices[0]);
+		Buffer stagingBuffer(vertexSize, VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+		//Create a staging buffer to copy the vertex data to
+		stagingBuffer.Map();
+		stagingBuffer.WriteToBuffer((void*)DebugFrustumVertices.data());
+
+		//Flush data from staging buffer to vertex buffer
+		m_DebugCameraFrustum->m_VertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		VkDeviceSize bufferSize = vertexSize * VertexCount;
+		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_DebugCameraFrustum->m_VertexBuffer->GetBuffer(), bufferSize);
+
+		//Index
+		m_DebugCameraFrustum->m_IndexCount = (uint32_t)DebugFrustumIndices.size();
+
+		uint32_t indexSize = sizeof(int);
+		Buffer stagingBufferindex(indexSize, m_DebugCameraFrustum->m_IndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+		stagingBufferindex.Map();
+		stagingBufferindex.WriteToBuffer((void*)DebugFrustumIndices.data());
+
+		m_DebugCameraFrustum->m_IndexBuffer = std::make_unique<Buffer>(indexSize, m_DebugCameraFrustum->m_IndexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		VkDeviceSize indexbufferSize = indexSize * m_DebugCameraFrustum->m_IndexCount;
+		vkUtils::CopyBuffer(stagingBufferindex.GetBuffer(), m_DebugCameraFrustum->m_IndexBuffer->GetBuffer(), indexbufferSize);
+	}
+
 	void DebugRenderer::UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
 		m_DebugMaterialInstance->UpdateForRendering(UBO, Index);
@@ -248,5 +299,17 @@ namespace TRE
 	void DebugRenderer::DrawDebugCapsule(VkCommandBuffer CommandBuffer)
 	{
 		vkCmdDrawIndexed(CommandBuffer, m_DebugCapsule->m_IndexCount, 1, 0, 0, 0);
+	}
+
+	void DebugRenderer::BindDebugCameraFrustum(VkCommandBuffer CommandBuffer)
+	{
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(CommandBuffer, 0, 1, &m_DebugCameraFrustum->m_VertexBuffer->GetBuffer(), offsets);
+		vkCmdBindIndexBuffer(CommandBuffer, m_DebugCameraFrustum->m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+	}
+
+	void DebugRenderer::DrawDebugCameraFrustum(VkCommandBuffer CommandBuffer)
+	{
+		vkCmdDrawIndexed(CommandBuffer, m_DebugCameraFrustum->m_IndexCount, 1, 0, 0, 0);
 	}
 }
