@@ -432,9 +432,10 @@ namespace TRE
 		m_Constructor = ScriptEngine::s_ScriptEngineData->MainClass.GetMethod(".ctor", 1);
 		m_StartMethod = scriptClass->GetMethod("OnCreate", 0);
 		m_UpdateMethod = scriptClass->GetMethod("OnUpdate", 0);
-
+		std::cout << "!!! " << entity << "\n";
+		std::cout << "!!! " << std::stoull(entity) << "\n";
     	{
-			MonoString* id = ScriptEngine::CreateMonoString(entity);
+			unsigned long long id = std::stoull(entity);
     		void* param = &id;
 			m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
     	}

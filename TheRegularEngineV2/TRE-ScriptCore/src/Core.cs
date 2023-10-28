@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace TRE
 {
 	// Using EntityID instead of EntityID in case need to change again
-	using EntityID = System.Int64;
+	using EntityID = System.UInt64;
 
     public class Entity
 	{

@@ -11,6 +11,8 @@
 
 namespace TRE
 {
+	using CSEntityID = unsigned long long;        // C# EntityID
+
 	enum class ScriptFieldTypes
 	{
 		None = 0,

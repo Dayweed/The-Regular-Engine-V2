@@ -19,8 +19,6 @@
 
 namespace TRE
 {
-    using CSEntityID = long;        // C# EntityID
-
     ScriptInputHandler& ScriptInputHandler::Instance()
 	{
 		static ScriptInputHandler instance;
@@ -46,11 +44,11 @@ namespace TRE
     static Entity ValidateEntityID(CSEntityID ID, std::string function)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(std::to_string(ID));
+        Entity Temp = ECSManager::Instance().FindEntity(EntityID_CSToEngine(ID));
         if (Temp == nullptr)
         {
             std::string str{ CONSOLE_DEBUG_ERROR };
-            str += "[" + function + "] Entity ID(" + std::to_string(ID) + ") does not exist in ECS Entities!";
+            str += "[" + function + "] Entity ID (" + EntityID_CSToEngine(ID) + ") does not exist in ECS Entities!";
             EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
             return nullptr;
         }
@@ -70,6 +68,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         Temp->GetComponent<Properties>().m_Name = mono_string_to_utf8(name);
     }
 
@@ -77,6 +76,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         Temp->GetComponent<Properties>().m_Active = isActive;
     }
 
@@ -84,6 +84,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return false;
         return Temp->GetComponent<Properties>().m_Active;
     }
 
@@ -91,6 +92,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
     }
     
@@ -98,6 +100,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return mono_string_new(mono_domain_get(), "");
 
         return mono_string_new(mono_domain_get(), Temp->GetComponent<Properties>().m_Tag.c_str());
     }
@@ -143,6 +146,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
     }
     
@@ -172,6 +176,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return false;
         return Temp->GetComponent<Properties>().m_Tag == mono_string_to_utf8(tag);
     }
 #pragma endregion
@@ -195,7 +200,7 @@ namespace TRE
     {
         Entity Existing{ VALIDATEENTITY(ID) };
 
-        if (!Existing) return;
+        if (!Existing) return CSEntityID();
 
         Entity Temp = ECSManager::Instance().CloneEntity(Existing);
         Temp->GetComponent<Transform>().m_Position = pos;
@@ -215,8 +220,7 @@ namespace TRE
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
-
-        if (Temp == nullptr) return;
+        if (!Temp) return;
 
         // Use a switch case to determine which component to add
         switch (componenttype)
@@ -243,8 +247,7 @@ namespace TRE
     static void BindRemoveComponent(CSEntityID ID, int componenttype)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
-        if (Temp == nullptr) return;
+        if (!Temp) return;
 
         switch (componenttype)
         {
@@ -270,7 +273,6 @@ namespace TRE
     {
         // find the entity
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSManager::Instance().MarkForDeletion(Temp);
@@ -325,8 +327,7 @@ namespace TRE
     static MonoString* FindNameFromID(CSEntityID ID)
 	{
         Entity Temp = VALIDATEENTITY(ID);
-
-        if (!Temp) return;
+        if (!Temp) return mono_string_new(mono_domain_get(), "");
 
         return  mono_string_new(mono_domain_get(), Temp->GetName().c_str());
 	}
@@ -334,8 +335,7 @@ namespace TRE
     static MonoString* FindParentIDFromID(CSEntityID ID)
 	{
         Entity Temp = VALIDATEENTITY(ID);
-
-        if (!Temp) return;
+        if (!Temp) return mono_string_new(mono_domain_get(), "");
 
         return  mono_string_new(mono_domain_get(), Temp->GetComponent<Parenting>().m_Parent.c_str());
 	}
@@ -345,7 +345,6 @@ namespace TRE
     static void BindSetPosition(CSEntityID ID, glm::vec3 newPos)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         Transform& transform = Temp->GetComponent<Transform>();
@@ -356,7 +355,6 @@ namespace TRE
     static void BindSetRotation(CSEntityID ID, glm::vec3 newRot)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         Transform& transform = Temp->GetComponent<Transform>();
@@ -367,7 +365,6 @@ namespace TRE
     static void BindGetPosition(CSEntityID ID, glm::vec3* output)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         Transform& transform = Temp->GetComponent<Transform>();
@@ -377,7 +374,6 @@ namespace TRE
     static void BindGetRotation(CSEntityID ID, glm::vec3* output)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         // Get the rotation
@@ -390,7 +386,6 @@ namespace TRE
     static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetViewportSize(Temp, newSize);
@@ -399,7 +394,6 @@ namespace TRE
     static void BindCamSetFocalPoint(CSEntityID ID, glm::vec3 focalpoint)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(Temp, focalpoint);
@@ -408,7 +402,6 @@ namespace TRE
     static void BindCamSetFocalLength(CSEntityID ID, float focallength)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalLength(Temp, focallength);
@@ -417,7 +410,6 @@ namespace TRE
     static void BindCamSetFOV(CSEntityID ID, float fov)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFov(Temp, fov);
@@ -426,7 +418,6 @@ namespace TRE
     static void BindCamSetNear(CSEntityID ID, float n)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetNear(Temp, n);
@@ -435,7 +426,6 @@ namespace TRE
     static void BindCamSetFar(CSEntityID ID, float f)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFar(Temp, f);
@@ -444,7 +434,6 @@ namespace TRE
     static void BindCamSetLeft(CSEntityID ID, float left)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetLeft(Temp, left);
@@ -453,7 +442,6 @@ namespace TRE
     static void BindCamSetRight(CSEntityID ID, float right)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRight(Temp, right);
@@ -462,7 +450,6 @@ namespace TRE
     static void BindCamSetTop(CSEntityID ID, float top)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetTop(Temp, top);
@@ -471,7 +458,6 @@ namespace TRE
     static void BindCamSetBottom(CSEntityID ID, float bottom)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetBottom(Temp, bottom);
@@ -480,7 +466,6 @@ namespace TRE
     static void BindCamSetAspectRatio(CSEntityID ID, float aspectRatio)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetAspectRatio(Temp, aspectRatio);
@@ -489,7 +474,6 @@ namespace TRE
     static void BindCamSetIsPerspective(CSEntityID ID, bool isPerspective)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsPerspective(Temp, isPerspective);
@@ -498,7 +482,6 @@ namespace TRE
     static void BindCamSetIsMainCamera(CSEntityID ID, bool isMainCamera)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(Temp, isMainCamera);
@@ -508,7 +491,6 @@ namespace TRE
     static void BindCamGetViewMatrix(CSEntityID ID, glm::mat4* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewMatrix(Temp);
@@ -517,7 +499,6 @@ namespace TRE
     static void BindCamGetProjectionMatrix(CSEntityID ID, glm::mat4* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetProjectionMatrix(Temp);
@@ -526,7 +507,6 @@ namespace TRE
     static void BindCamGetInverseViewMatrix(CSEntityID ID, glm::mat4* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewMatrix(Temp);
@@ -535,7 +515,6 @@ namespace TRE
     static void BindCamGetInverseProjectionMatrix(CSEntityID ID, glm::mat4* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseProjectionMatrix(Temp);
@@ -544,7 +523,6 @@ namespace TRE
     static void BindCamGetInverseViewProjectionMatrix(CSEntityID ID, glm::mat4* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewProjectionMatrix(Temp);
@@ -553,7 +531,6 @@ namespace TRE
     static void BindCamGetViewportSize(CSEntityID ID, glm::vec2* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewportSize(Temp);
@@ -562,7 +539,6 @@ namespace TRE
     static void BindCamGetFOV(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFov(Temp);
@@ -571,7 +547,6 @@ namespace TRE
     static void BindCamGetNear(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetNear(Temp);
@@ -580,7 +555,6 @@ namespace TRE
     static void BindCamGetFar(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFar(Temp);
@@ -589,7 +563,6 @@ namespace TRE
     static void BindCamGetLeft(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetLeft(Temp);
@@ -598,7 +571,6 @@ namespace TRE
     static void BindCamGetRight(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetRight(Temp);
@@ -607,7 +579,6 @@ namespace TRE
     static void BindCamGetTop(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetTop(Temp);
@@ -616,7 +587,6 @@ namespace TRE
     static void BindCamGetBottom(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetBottom(Temp);
@@ -625,7 +595,6 @@ namespace TRE
     static void BindCamGetAspectRatio(CSEntityID ID, float* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetAspectRatio(Temp);
@@ -634,7 +603,6 @@ namespace TRE
     static void BindCamIsPerspective(CSEntityID ID, bool* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsPerspective(Temp);
@@ -643,7 +611,6 @@ namespace TRE
     static void BindCamIsMainCamera(CSEntityID ID, bool* result)
     {
         Entity Temp = VALIDATEENTITY(ID);
-
         if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsMainCamera(Temp);
@@ -708,7 +675,6 @@ namespace TRE
     static void BindResizeSphereCollider(CSEntityID ID, float radius)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(entity, radius);
@@ -717,7 +683,6 @@ namespace TRE
     static void BindResizeBoxCollider(CSEntityID ID, glm::vec3 halfExtents)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(entity, halfExtents);
@@ -726,7 +691,6 @@ namespace TRE
     static void BindResizeCapsuleCollider(CSEntityID ID, float radius, float halfHeight)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCapsuleCollider(entity, radius, halfHeight);
@@ -735,7 +699,6 @@ namespace TRE
     static void BindAddForce(CSEntityID ID, glm::vec3 force, ForceMode::Enum mode)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
@@ -744,7 +707,6 @@ namespace TRE
     void BindConstrainRotationX(CSEntityID ID, bool state)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationX(entity, state);
@@ -753,7 +715,6 @@ namespace TRE
     void BindConstrainRotationY(CSEntityID ID, bool state)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationY(entity, state);
@@ -762,7 +723,6 @@ namespace TRE
     void BindConstrainRotationZ(CSEntityID ID, bool state)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationZ(entity, state);
@@ -771,7 +731,6 @@ namespace TRE
     static void BindGetLinearVelocity(CSEntityID ID, glm::vec3* output)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
@@ -780,7 +739,6 @@ namespace TRE
     static void BindSetLinearVelocity(CSEntityID ID, glm::vec3 velocity)
     {
         const Entity& entity = VALIDATEENTITY(ID);
-
         if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
@@ -790,7 +748,6 @@ namespace TRE
     {
         Entity entity1 = VALIDATEENTITY(id1);
         Entity entity2 = VALIDATEENTITY(id2);
-
         if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionEnter(entity1, entity2);
@@ -800,7 +757,6 @@ namespace TRE
     {
         Entity entity1 = VALIDATEENTITY(id1);
         Entity entity2 = VALIDATEENTITY(id2);
-
         if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionStay(entity1, entity2);
@@ -810,7 +766,6 @@ namespace TRE
     {
         Entity entity1 = VALIDATEENTITY(id1);
         Entity entity2 = VALIDATEENTITY(id2);
-
         if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionExit(entity1, entity2);
@@ -820,7 +775,6 @@ namespace TRE
     {
         Entity entity1 = VALIDATEENTITY(id1);
         Entity entity2 = VALIDATEENTITY(id2);
-
         if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerEnter(entity1, entity2);
@@ -830,7 +784,6 @@ namespace TRE
     {
         Entity entity1 = VALIDATEENTITY(id1);
         Entity entity2 = VALIDATEENTITY(id2);
-
         if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerStay(entity1, entity2);
@@ -840,7 +793,6 @@ namespace TRE
     {
         Entity entity1 = VALIDATEENTITY(id1);
         Entity entity2 = VALIDATEENTITY(id2);
-
         if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerExit(entity1, entity2);
