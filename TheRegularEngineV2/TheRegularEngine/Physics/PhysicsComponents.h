@@ -80,7 +80,7 @@ namespace TRE
 	struct PhysicsComponent
 	{
 		bool m_IsInitialized = false;
-		// bool m_IsActive = true;       // whether this component actually participates in the simulation
+		bool m_IsActive = true;       // whether this component actually participates in the simulation
 		bool m_IsDirty = false;
 		bool m_IsDestructed = false;
 	};
@@ -114,7 +114,6 @@ namespace TRE
 	{
 		bool m_IsTrigger = false;
 		bool m_IsVisible = false; //For rendering of debug collider lines
-		bool m_IsDirty = false;
 		glm::vec3 m_Offset = {};
 		// physx::PxMaterial* m_PhysicsMaterial = nullptr;
 	};

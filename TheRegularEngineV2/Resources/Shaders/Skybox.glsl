@@ -20,8 +20,9 @@ layout(location = 0) out vec3 outPosition;
 
 void main() 
 {
+	mat4 UpdatedView = mat4(mat3(ubo.m_View));
     outPosition = in_Position;
-    gl_Position = vec4(ubo.m_Proj * vec4(in_Position, 1.0)).xyww;
+    gl_Position = vec4(ubo.m_Proj * UpdatedView * vec4(in_Position, 1.0)).xyww;
 }
 
 #version 450

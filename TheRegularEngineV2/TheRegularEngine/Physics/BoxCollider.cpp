@@ -126,28 +126,28 @@ namespace TRE
 		// PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// So TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		//PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
-		// boxCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
+		//// boxCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
 
-		boxCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
+		//boxCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
 
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		//unsigned nbShapes = rigidDynamic->getNbShapes();
+		//const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		//nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
 
-		// obtain the index of the box shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
+		//// obtain the index of the box shape
+		//unsigned i = 0;
+		//for (; i < nbShapes; ++i)
+		//{
+		//	if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
 
-			break;
-		}
+		//	break;
+		//}
 
-		PxBoxGeometry boxGeometry;
-		shapes[i]->getBoxGeometry(boxGeometry);
-		boxCollider.m_HalfExtents = VEC3_CAST(glm::vec3, boxGeometry.halfExtents);
+		//PxBoxGeometry boxGeometry;
+		//shapes[i]->getBoxGeometry(boxGeometry);
+		//boxCollider.m_HalfExtents = VEC3_CAST(glm::vec3, boxGeometry.halfExtents);
 	}
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
