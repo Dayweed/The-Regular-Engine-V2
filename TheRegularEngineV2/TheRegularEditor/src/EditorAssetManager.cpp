@@ -179,6 +179,11 @@ namespace TRE
 		return name;
 	}
 
+	const std::string AssetManager::GetName(const std::string& hexHandle) const
+	{
+		return GetName(Resource::GetGUIDFromHex(hexHandle));
+	}
+
 	void AssetManager::PrintAllAssets() const
 	{
 		for (const auto x : m_AssetNameToHandle)

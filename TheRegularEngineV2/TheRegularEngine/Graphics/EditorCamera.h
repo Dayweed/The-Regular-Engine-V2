@@ -20,6 +20,7 @@ namespace TRE
 
 		void Init();
 		void Update();
+		void Shutdown();
 
 		void SetFocalPoint(const glm::vec3& focalPoint);
 		void SetFocalDistance(const float distance);
@@ -38,9 +39,12 @@ namespace TRE
 		const glm::vec3& GetRotation() const { return m_Rotation; }
 
 		void SetDirection(const glm::vec3& position);
+		void AssignToMainCamera();
+
+		void Serialize();
+		void Deserialize();
 	private:
 		void SetPosition(const glm::vec3& position);
-
 	private:
 		EditorCamera() {};
 		EditorCamera(EditorCamera const&) = delete;

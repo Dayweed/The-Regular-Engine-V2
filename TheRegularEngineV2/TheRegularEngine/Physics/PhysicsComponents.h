@@ -19,6 +19,26 @@
 #pragma warning (disable: 4006)
 #include "PhysX/PxPhysicsAPI.h"
 
+#pragma region Serialization/Deserialization Helper Macros
+
+// only for use in to_json() serialization functions
+// does NOT work with non-standard variables like glm::vec3!!
+#define WriteMemberToJSON(member) {#member, t.member}
+
+// only for use in to_json() serialization functions
+// variant specifically for glm::vec3 members
+#define WriteVec3MemberToJSON(member) {#member, std::array<float, 3>{t.member.x, t.member.y, t.member.z}}
+
+// only for use in from_json() deserialization functions
+// does NOT work with non-standard variables like glm::vec3!!
+#define ReadMemberFromJSON(member)  if (j.contains(#member)) t.member = j.at(#member).get<decltype(t.member)>()
+
+// only for use in from_json() deserialization functions
+// variant specifically for glm::vec3 members
+#define ReadVec3MemberFromJSON(member) \
+	if (j.contains(#member)) t.member = glm::make_vec3(j.at(#member).get<std::array<float, 3>>().data())
+#pragma endregion
+
 namespace TRE
 {
 	struct PhysicsComponentTypes
@@ -31,6 +51,18 @@ namespace TRE
 			CapsuleCollider = 1 << 3,
 		};
 	};
+
+	struct ForceMode
+	{
+		enum Enum : short
+		{
+			Force,				//!< parameter has unit of mass * length / time^2, i.e., a force
+			Impulse,			//!< parameter has unit of mass * length / time, i.e., force * time
+			VelocityChange,		//!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
+			Acceleration		//!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
+		};
+	};
+
 
 	// data that NEEDS to be shared among all physics components of an entity at all times
 	struct SharedData
@@ -48,6 +80,7 @@ namespace TRE
 	struct PhysicsComponent
 	{
 		bool m_IsInitialized = false;
+		// bool m_IsActive = true;       // whether this component actually participates in the simulation
 		bool m_IsDirty = false;
 		bool m_IsDestructed = false;
 	};
@@ -66,10 +99,11 @@ namespace TRE
 		bool m_FreezePositionX = false; bool m_FreezePositionY = false; bool m_FreezePositionZ = false;
 		bool m_FreezeRotationX = false; bool m_FreezeRotationY = false; bool m_FreezeRotationZ = false;
 
-		// to write to / read from .json files
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Rigidbody, m_Mass, m_Drag, m_AngularDrag, m_UseGravity, m_IsKinematic);
-		// for inside the class, but it's NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE for outside the class
-		// but it doesn't work for some reason... :(
+		// Serialize
+		friend void to_json(nlohmann::json& j, const Rigidbody& t);
+
+		// Deserialize
+		friend void from_json(const nlohmann::json& j, Rigidbody& t);
 
 		// Allows the base class to get these properties  
 		property_vtable()
@@ -89,11 +123,6 @@ namespace TRE
 	{
 		float m_Radius = 1.0f;
 
-		// To write to / read from .json files.
-		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
-		// Variables that are struct/class can't be handled automatically.
-		// So we gotta do it ourselves!
-
 		// Serialize
 		friend void to_json(nlohmann::json& j, const SphereCollider& t);
 
@@ -107,11 +136,6 @@ namespace TRE
 	struct BoxCollider : BaseCollider, property::base
 	{
 		glm::vec3 m_HalfExtents = glm::vec3(0.5f);
-
-		// To write to / read from .json files.
-		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
-		// Variables that are struct/class can't be handled automatically.
-		// So we gotta do it ourselves!
 
 		// Serialize
 		friend void to_json(nlohmann::json& j, const BoxCollider& t);
@@ -128,16 +152,11 @@ namespace TRE
 		float m_Radius = 1.0f;
 		float m_HalfHeight = 0.5f;
 
-		// To write to / read from .json files.
-		// Can't use NLOHMANN_DEFINE_TYPE_INTRUSIVE because glm::vec3 isn't a type it recognises.
-		// Variables that are struct/class can't be handled automatically.
-		// So we gotta do it ourselves!
-
 		// Serialize
-		friend void to_json(nlohmann::json& j, const SphereCollider& t);
+		friend void to_json(nlohmann::json& j, const CapsuleCollider& t);
 
 		// Deserialize
-		friend void from_json(const nlohmann::json& j, SphereCollider& t);
+		friend void from_json(const nlohmann::json& j, CapsuleCollider& t);
 
 		// Allows the base class to get these properties
 		property_vtable()
@@ -149,6 +168,7 @@ namespace TRE
 
 property_begin(TRE::Rigidbody)
 {
+	// property_var(m_IsActive),
 	property_var(m_Mass),
 	property_var(m_Drag),
 	property_var(m_AngularDrag),
@@ -164,6 +184,7 @@ property_begin(TRE::Rigidbody)
 
 property_begin(TRE::SphereCollider)
 {
+	// property_var(m_IsActive),
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
 	property_var(m_Radius),
@@ -172,6 +193,7 @@ property_begin(TRE::SphereCollider)
 
 property_begin(TRE::BoxCollider)
 {
+	// property_var(m_IsActive),
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
 	property_var(m_HalfExtents),
@@ -180,6 +202,7 @@ property_begin(TRE::BoxCollider)
 
 property_begin(TRE::CapsuleCollider)
 {
+	// property_var(m_IsActive),
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
 	property_var(m_Radius),

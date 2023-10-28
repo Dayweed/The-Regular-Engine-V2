@@ -47,7 +47,7 @@ namespace TRE
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft))
+			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft) && m_GizmoOperation == -1)
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
@@ -123,7 +123,7 @@ namespace TRE
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				if(SelectedEntity->HasComponent<MeshRenderer>())
+				//if(SelectedEntity->HasComponent<MeshRenderer>())
 					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
@@ -149,9 +149,14 @@ namespace TRE
 
 	void ViewportPanel::OnGridAndSnap(const GridAndSnapEvent& event)
 	{
-		m_PosIncreament = event.m_PosIncreament;
-		m_RotIncreament = event.m_RotIncreament;
-		m_ScaleIncreament = event.m_ScaleIncreament;
+		m_PosIncrement = event.m_PosIncrement;
+		m_RotIncrement = event.m_RotIncrement;
+		m_ScaleIncrement = event.m_ScaleIncrement;
+	}
+
+	void ViewportPanel::OnGizmoLocal(const LocalGloalGizmoEvent& event)
+	{
+		m_IsGizmoLocal = event.m_IsLocal;
 	}
 
 	void ViewportPanel::Init()
@@ -161,6 +166,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoLocal);
 	}
 
 	void ViewportPanel::Update()
@@ -183,8 +189,12 @@ namespace TRE
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_3DObject"))
 			{
 				std::string assetName = (const char*)payload->Data;
+				//assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+				//assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+
 				assetName = assetName.substr(assetName.find_last_of('\\') + 1);
-				assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+				assetName.erase(assetName.find(".fbx")); 	// This is to remove unneeded data at the end after ".fbx"
+				assetName += ".fbx";
 
 				//Spawn object at mouse location
 				Entity spawn = ECSManager::Instance().CreateEntity();
@@ -193,7 +203,7 @@ namespace TRE
 
 				const EditorCamera& camera = EditorCamera::Instance();
 				UpdateClickRay();
-				transform.m_Position = camera.GetPosition() + m_ClickRay / 2.f;
+				transform.m_Position = camera.GetPosition() + m_ClickRay / 5.f;
 				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
 				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
@@ -237,7 +247,9 @@ namespace TRE
 				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(filePath) };
 				if (prefabGUID.empty())
 				{
-					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "[ERROR] Prefab not found!" });
+					std::string str{ CONSOLE_DEBUG_WARN };
+					str += "Prefab not found!";
+					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
 					if (remove(filePath.c_str()))
 					{
 						std::string funcName{ __FUNCTION__ };
@@ -353,17 +365,21 @@ namespace TRE
 			switch (m_GizmoOperation)
 			{
 			case ImGuizmo::OPERATION::TRANSLATE:
-				snapValue = m_PosIncreament;
+				snapValue = m_PosIncrement;
 				break;
 			case ImGuizmo::OPERATION::ROTATE:
-				snapValue = m_RotIncreament;
+				snapValue = m_RotIncrement;
 				break;
 			case ImGuizmo::OPERATION::SCALE:
-				snapValue = m_ScaleIncreament;
+				snapValue = m_ScaleIncrement;
 				break;
 			}
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
+			ImGuizmo::MODE mode = ImGuizmo::WORLD;
+			if(m_IsGizmoLocal)
+				mode = ImGuizmo::LOCAL;
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -447,7 +463,7 @@ namespace TRE
 				if (glm::length(positionOffset) < 0.1f)
 					return;
 				positionOffset = glm::normalize(positionOffset);
-				positionOffset *= -1;
+				positionOffset.y *= -1;
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
@@ -473,7 +489,7 @@ namespace TRE
 				if (glm::length(rotationOffset) < 0.1f)
 					return;
 				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset.x *= -1;
+				rotationOffset *= -1;
 				rotationOffset *= m_RotationSensitivity;
 				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
 

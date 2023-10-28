@@ -85,7 +85,7 @@ namespace TRE
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
 			s_FinalRenderData->VertexBuffer = CreateVertexBuffer(data);
-			std::vector<int> indices = { 0, 1, 2, 2, 3, 0, };
+			std::vector<int> indices = { 0,1,2,2,3,0 };
 			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
 			s_FinalRenderData->RenderPass = SwapChain->GetRenderPassPointer();
 
