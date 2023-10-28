@@ -7,7 +7,7 @@ namespace TRE
 	public class MoleController
 	{
 		//Player has a TransformSystem
-		public Entity Mole = new Entity("Test", "");
+		public Entity Mole = new Entity(new long(), "Test");
 		public MoleController()
 		{
 			Mole.ID = ECSManager.FindIDFromName(Mole.name);

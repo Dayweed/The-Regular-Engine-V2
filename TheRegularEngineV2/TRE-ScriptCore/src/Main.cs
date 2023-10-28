@@ -13,9 +13,9 @@ namespace TRE
 		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
-        public Entity Temp = new Entity("", "Temp");
-		public Entity Test = new Entity("", "Test");
-        public Entity Plane_collider = new Entity("", "Plane collider");
+        public Entity Temp = new Entity(new long(), "Temp");
+		public Entity Test = new Entity(new long(), "Test");
+        public Entity Plane_collider = new Entity(new long(), "Plane collider");
 
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;

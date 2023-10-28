@@ -17,7 +17,7 @@ namespace TRE
         private MoleController playerControl;
         private PowerUpManager playerPowerUpManager;
 
-        public GetPowerUp() : base("Mole", ECSManager.FindIDFromName("Mole"))
+        public GetPowerUp() : base(ECSManager.FindIDFromName("Mole"), "Mole")
         {
 
         }

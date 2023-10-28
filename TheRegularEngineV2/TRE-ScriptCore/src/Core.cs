@@ -17,27 +17,30 @@ using System.Threading.Tasks;
  */
 namespace TRE
 {
-	public class Entity
+	// Using EntityID instead of EntityID in case need to change again
+	using EntityID = System.Int64;
+
+    public class Entity
 	{
-		public string ID;				// Can hold id of entity or id of prefab resource
+		public EntityID ID;				// Can hold id of entity or id of prefab resource
 		public string name;
 		public Parenting parenting;
 		public Transform transform;
 
         protected Entity()
         {
-			ID = "";
+			ID = new EntityID();
 			name = "";
             parenting = new Parenting();
 			transform = new Transform();
         }
 
-        public Entity(string id)
+        public Entity(EntityID id)
         {
 			ID = id;
         }
 
-        public Entity(string _id = "", string _name = "")
+        public Entity(EntityID _id = new EntityID(), string _name = "")
 		{
 			name = _name;
 			ID = _id;
@@ -81,38 +84,38 @@ namespace TRE
 
         // Private binded calls
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineRename(string id, string name);
+        internal extern static void EngineRename(EntityID id, string name);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineSetActive(string id, bool active);
+        internal extern static void EngineSetActive(EntityID id, bool active);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool EngineGetActive(string id);
+        internal extern static bool EngineGetActive(EntityID id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineSetTag(string id, string tag);
+        internal extern static void EngineSetTag(EntityID id, string tag);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineGetTag(string id);
+        internal extern static string EngineGetTag(EntityID id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool EngineCompareTag(string id, string otherTag);
+        internal extern static bool EngineCompareTag(EntityID id, string otherTag);
     }
 
 	public struct Prefab
 	{
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool EngineIsPrefabResource(string id);
+        internal extern static bool EngineIsPrefabResource(EntityID id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string CreatePrefabEntity(string prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+        internal extern static EntityID CreatePrefabEntity(EntityID prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
     }
 
 	public struct Parenting
 	{
-        private string id;
+        private EntityID id;
 
-        public Parenting(string myID)
+        public Parenting(EntityID myID)
 		{
 			id = myID;
         }
@@ -124,9 +127,9 @@ namespace TRE
 
         public Entity GetParent()
         {
-            string parentID = ECSManager.FindParentIDFromID(id);
+            EntityID parentID = ECSManager.FindParentIDFromID(id);
             string parentName = ECSManager.FindNameFromID(parentID);
-            Entity parent = new Entity(parentName, parentID);
+            Entity parent = new Entity(parentID, parentName);
             return parent;
         }
 
@@ -147,26 +150,26 @@ namespace TRE
 
         public Entity GetChild(int _index)
 		{
-			string childID = EngineGetChildID(id, _index);
+            EntityID childID = EngineGetChildID(id, _index);
 			string childName = ECSManager.FindNameFromID(childID);
-            Entity child = new Entity(childName, childID);
+            Entity child = new Entity(childID, childName);
 			return child;
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineGetChildID(string _id, int _index);
+        internal extern static EntityID EngineGetChildID(EntityID _id, int _index);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineParentSetParent(string _id, string _parent_id);
+        internal extern static void EngineParentSetParent(EntityID _id, EntityID _parent_id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineParentRemoveParent(string _id);
+        internal extern static void EngineParentRemoveParent(EntityID _id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineParentAddChild(string _id, string _child_id);
+        internal extern static void EngineParentAddChild(EntityID _id, EntityID _child_id);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineParentRemoveChild(string _id, string _child_id);
+        internal extern static void EngineParentRemoveChild(EntityID _id, EntityID _child_id);
     }
 
 	// Reference to this for what components that can be added to the entity.
@@ -325,10 +328,10 @@ namespace TRE
 
 	public struct Transform
 	{
-		private string id;
+		private EntityID id;
 		public Vector3 position, rotation, scale;
 
-		public Transform(string _id = "", Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
+		public Transform(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
 		{
 			id = _id;
 			position = _pos;
@@ -353,7 +356,7 @@ namespace TRE
 
 	public class TransformSystem
 	{
-		public void transformDemo(string id)
+		public void transformDemo(EntityID id)
 		{
 			Vector3 test = new Vector3(0, 0, 0);
 			GetRotation(id, out test);
@@ -364,16 +367,16 @@ namespace TRE
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetPosition(string id, out Vector3 output);
+		internal extern static void GetPosition(EntityID id, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPosition(string id, Vector3 position);
+		internal extern static void SetPosition(EntityID id, Vector3 position);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetRotation(string id, out Vector3 output);
+		internal extern static void GetRotation(EntityID id, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetRotation(string id, Vector3 rotation);
+		internal extern static void SetRotation(EntityID id, Vector3 rotation);
 	}
 
 	public class ECSManager
@@ -390,176 +393,176 @@ namespace TRE
 			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
 			if (isPrefab)
 			{
-				string id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
-				return new Entity(FindNameFromID(id), id);
+                EntityID id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
+				return new Entity(id, FindNameFromID(id));
 			}
 			else if (IsValidEntity(entity.ID))
 			{
-				string id = CloneEntity(entity.ID, postion, rotation, scaling);
-                return new Entity(FindNameFromID(id), id);
+                EntityID id = CloneEntity(entity.ID, postion, rotation, scaling);
+                return new Entity(id, FindNameFromID(id));
             }
 			else
 			{
 				// Invalid Entity!
-				return new Entity("");
+				return new Entity(new EntityID(), "");
 			}
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+		internal extern static EntityID CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string CloneEntity(string id, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+		internal extern static EntityID CloneEntity(EntityID id, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsValidEntity(string prefabid);
+		internal extern static bool IsValidEntity(EntityID prefabid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void AddComponent(string entityID, Components component);
+		internal extern static void AddComponent(EntityID entityID, Components component);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void RemoveComponent(string entityID, Components component);
+		internal extern static void RemoveComponent(EntityID entityID, Components component);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void DestroyEntity(string entityID);
+		internal extern static void DestroyEntity(EntityID entityID);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string FindIDFromName(string name);
+		internal extern static EntityID FindIDFromName(string name);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string FindNameFromID(string id);
+		internal extern static string FindNameFromID(EntityID id);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string FindParentIDFromID(string id);
+		internal extern static EntityID FindParentIDFromID(EntityID id);
 	}
 
 	public class CameraSystem
 	{
 		// Setters
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPosition(string entityid, Vector3 newPos);
+		internal extern static void SetPosition(EntityID entityid, Vector3 newPos);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetRotation(string entityid, Vector3 newRot);
+		internal extern static void SetRotation(EntityID entityid, Vector3 newRot);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetViewportSize(string entityid, Vector2 newSize);
+		internal extern static void SetViewportSize(EntityID entityid, Vector2 newSize);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetFocalPointA(string entityid, Vector3 newFocalPoint);
+		internal extern static void SetFocalPointA(EntityID entityid, Vector3 newFocalPoint);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetFocalLength(string entityid, float newFocalLength);
+		internal extern static void SetFocalLength(EntityID entityid, float newFocalLength);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPitch(string entityid, float newPitch);
+		internal extern static void SetPitch(EntityID entityid, float newPitch);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetYaw(string entityid, float newYaw);
+		internal extern static void SetYaw(EntityID entityid, float newYaw);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetRoll(string entityid, float newRoll);
+		internal extern static void SetRoll(EntityID entityid, float newRoll);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetFOV(string entityid, float newFOV);
+		internal extern static void SetFOV(EntityID entityid, float newFOV);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetNear(string entityid, float newNear);
+		internal extern static void SetNear(EntityID entityid, float newNear);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetFar(string entityid, float newFar);
+		internal extern static void SetFar(EntityID entityid, float newFar);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetLeft(string entityid, float newLeft);
+		internal extern static void SetLeft(EntityID entityid, float newLeft);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetRight(string entityid, float newRight);
+		internal extern static void SetRight(EntityID entityid, float newRight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetTop(string entityid, float newTop);
+		internal extern static void SetTop(EntityID entityid, float newTop);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetBottom(string entityid, float newBottom);
+		internal extern static void SetBottom(EntityID entityid, float newBottom);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetAspectRatio(string entityid, float newAspectRatio);
+		internal extern static void SetAspectRatio(EntityID entityid, float newAspectRatio);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetIsPerspective(string entityid, bool newIsPerspective);
+		internal extern static void SetIsPerspective(EntityID entityid, bool newIsPerspective);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetIsMainCamera(string entityid, bool newIsMainCamera);
+		internal extern static void SetIsMainCamera(EntityID entityid, bool newIsMainCamera);
 
 
 		// Getters
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetPosition(string entityid, out Vector3 output);
+		internal extern static void GetPosition(EntityID entityid, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetRotation(string entityid, out Vector3 output);
+		internal extern static void GetRotation(EntityID entityid, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetViewMatrix(string entityid, out Mat4x4 output);
+		internal extern static void GetViewMatrix(EntityID entityid, out Mat4x4 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetProjectionMatrix(string entityid, out Mat4x4 output);
+		internal extern static void GetProjectionMatrix(EntityID entityid, out Mat4x4 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetInverseViewMatrix(string entityid, out Mat4x4 output);
+		internal extern static void GetInverseViewMatrix(EntityID entityid, out Mat4x4 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetInverseProjectionMatrix(string entityid, out Mat4x4 output);
+		internal extern static void GetInverseProjectionMatrix(EntityID entityid, out Mat4x4 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetInverseViewProjectionMatrix(string entityid, out Mat4x4 output);
+		internal extern static void GetInverseViewProjectionMatrix(EntityID entityid, out Mat4x4 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetViewportSize(string entityid, out Vector2 output);
+		internal extern static void GetViewportSize(EntityID entityid, out Vector2 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetFocalPoint(string entityid, out Vector3 output);
+		internal extern static void GetFocalPoint(EntityID entityid, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetFocalLength(string entityid, out float output);
+		internal extern static void GetFocalLength(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetPitch(string entityid, out float output);
+		internal extern static void GetPitch(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetYaw(string entityid, out float output);
+		internal extern static void GetYaw(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetRoll(string entityid, out float output);
+		internal extern static void GetRoll(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetFOV(string entityid, out float output);
+		internal extern static void GetFOV(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetNear(string entityid, out float output);
+		internal extern static void GetNear(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetFar(string entityid, out float output);
+		internal extern static void GetFar(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetLeft(string entityid, out float output);
+		internal extern static void GetLeft(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetRight(string entityid, out float output);
+		internal extern static void GetRight(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetTop(string entityid, out float output);
+		internal extern static void GetTop(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetBottom(string entityid, out float output);
+		internal extern static void GetBottom(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetAspectRatio(string entityid, out float output);
+		internal extern static void GetAspectRatio(EntityID entityid, out float output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetIsPerspective(string entityid, out bool output);
+		internal extern static void GetIsPerspective(EntityID entityid, out bool output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetIsMainCamera(string entityid, out bool output);
+		internal extern static void GetIsMainCamera(EntityID entityid, out bool output);
 	}
 
     public enum ForceMode
@@ -573,49 +576,49 @@ namespace TRE
     public class PhysicsSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeSphereCollider(string entityid, float newRadius);
+		internal extern static void ResizeSphereCollider(EntityID entityid, float newRadius);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeBoxCollider(string entityid, Vector3 newHalfExtents);
+		internal extern static void ResizeBoxCollider(EntityID entityid, Vector3 newHalfExtents);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeCapsuleCollider(string entityid, float newRadius, float newHelfHeight);
+		internal extern static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void AddForce(string entityid, Vector3 force, ForceMode mode);
+		internal extern static void AddForce(EntityID entityid, Vector3 force, ForceMode mode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ConstrainRotationX(string entityid, bool state);
+		internal extern static void ConstrainRotationX(EntityID entityid, bool state);
 		
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ConstrainRotationY(string entityid, bool state);
+		internal extern static void ConstrainRotationY(EntityID entityid, bool state);
 		
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ConstrainRotationZ(string entityid, bool state);
+		internal extern static void ConstrainRotationZ(EntityID entityid, bool state);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void GetLinearVelocity(string entityid, out Vector3 output);
+		internal extern static void GetLinearVelocity(EntityID entityid, out Vector3 output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetLinearVelocity(string entityid, Vector3 velocity);
+		internal extern static void SetLinearVelocity(EntityID entityid, Vector3 velocity);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsCollisionEnter(string entityid1, string entityid2);
+		internal extern static bool IsCollisionEnter(EntityID entityid1, EntityID entityid2);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsCollisionStay(string entityid1, string entityid2);
+		internal extern static bool IsCollisionStay(EntityID entityid1, EntityID entityid2);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsCollisionExit(string entityid1, string entityid2);
+		internal extern static bool IsCollisionExit(EntityID entityid1, EntityID entityid2);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsTriggerEnter(string entityid1, string entityid2);
+		internal extern static bool IsTriggerEnter(EntityID entityid1, EntityID entityid2);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsTriggerStay(string entityid1, string entityid2);
+		internal extern static bool IsTriggerStay(EntityID entityid1, EntityID entityid2);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool IsTriggerExit(string entityid1, string entityid2);
+		internal extern static bool IsTriggerExit(EntityID entityid1, EntityID entityid2);
 	}
 
 	public class InputSystem

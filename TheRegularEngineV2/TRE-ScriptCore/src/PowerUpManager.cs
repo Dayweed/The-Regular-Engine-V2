@@ -17,7 +17,7 @@ namespace TRE
 
         private bool usePower = false;
 
-        public PowerUpManager() : base("spawner", ECSManager.FindIDFromName("spawner"))
+        public PowerUpManager() : base(ECSManager.FindIDFromName("spawner"), "spawner")
         {
 
         }
