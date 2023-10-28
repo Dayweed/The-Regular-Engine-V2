@@ -78,14 +78,8 @@ namespace TRE
 		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
 			elem.second.remove(obj->m_Entity);
 		}
+
 		// Clone each component of the object into the clone
-		/*for (auto&& curr : m_Registry.storage())
-		{
-			if (auto& storage = curr.second; storage.contains(object->m_Entity))
-			{
-				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
-			}
-		}*/
 		for (auto [id, source_storage] : m_Registry.storage())
 		{
 			auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
@@ -103,6 +97,7 @@ namespace TRE
 				}
 			}
 		}
+
 		// Change Name
 		obj->GetComponent<Properties>().m_Name = name;
 		obj->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
@@ -149,9 +144,10 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
@@ -181,9 +177,10 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
@@ -235,7 +232,7 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL, ScriptComponent>();
+		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, Rigidbody, SphereCollider, BoxCollider, CapsuleCollider, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL, ScriptComponent>();
 
 		m_Registry.each([&](entt::entity srcEntity)
 			{

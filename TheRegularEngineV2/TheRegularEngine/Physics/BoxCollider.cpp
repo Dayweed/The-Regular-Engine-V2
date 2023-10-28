@@ -9,27 +9,18 @@ namespace TRE
 {
 	void to_json(nlohmann::json& j, const BoxCollider& t)
 	{
-		const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
-		const std::vector<float> v_halfEx{ t.m_HalfExtents.x, t.m_HalfExtents.y, t.m_HalfExtents.z };
-
 		j = nlohmann::json{
-			{ "m_Offset", v_offset },
-			{ "m_HalfExtents", v_halfEx },
-			{ "m_IsTrigger", t.m_IsTrigger }
+			WriteVec3MemberToJSON(m_Offset),
+			WriteVec3MemberToJSON(m_HalfExtents),
+			WriteMemberToJSON(m_IsTrigger),
 		};
 	}
 
 	void from_json(const nlohmann::json& j, BoxCollider& t)
 	{
-		const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-		const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-		t.m_Offset = glm::make_vec3(a_off);
-
-		const std::vector<float> v_half{ j.at("m_HalfExtents").get<std::vector<float>>() };
-		const float a_half[3]{ v_half[0], v_half[1], v_half[2] };
-		t.m_HalfExtents = glm::make_vec3(a_half);
-
-		t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
+		ReadVec3MemberFromJSON(m_Offset);
+		ReadVec3MemberFromJSON(m_HalfExtents);
+		ReadMemberFromJSON(m_IsTrigger);
 	}
 
 	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
@@ -72,13 +63,19 @@ namespace TRE
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+
+			// SO TEMPORARY
+			sharedData.m_RigidDynamic->is<PxRigidDynamic>()->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+			// PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+
+			// SO TEMPORARY
+			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0f);
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::BoxCollider;
@@ -97,7 +94,10 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(BoxCollider);
 
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// SO TEMPORARY
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -123,7 +123,10 @@ namespace TRE
 
 		boxCollider.m_IsInitialized || ConstructBoxCollider(entity);
 
-		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		// PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+
+		// So TEMPORARY
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
 		// boxCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
 
@@ -150,7 +153,6 @@ namespace TRE
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
 	{
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic*& rigidDynamic = sharedComponent.m_RigidDynamic;
 
 		// reset bit for this component
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::BoxCollider;
@@ -175,7 +177,11 @@ namespace TRE
 				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
 			}
 
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
+			// PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
+
+			// SO TEMPORARY
+			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
+		entity->RemoveComponent<BoxCollider>();
 	}
 }

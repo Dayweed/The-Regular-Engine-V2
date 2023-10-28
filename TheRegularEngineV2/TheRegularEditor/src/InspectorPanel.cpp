@@ -226,11 +226,11 @@ namespace TRE
 
 							if constexpr (std::is_same_v<T, int>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::DragInt(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameField.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat(NameField.c_str(), &Value);
 								//std::cout << "name: " << NameStr << " value: " << Value << "\n";
 							}
 							else if constexpr (std::is_same_v<T, bool>)
@@ -385,6 +385,7 @@ namespace TRE
 						SetIsDirty.operator() < SphereCollider > (entity);
 						SetIsDirty.operator() < BoxCollider > (entity);
 						SetIsDirty.operator() < CapsuleCollider > (entity);
+						SetIsDirty.operator() < Camera > (entity);
 						// add more of your components here! :)
 						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
 					}

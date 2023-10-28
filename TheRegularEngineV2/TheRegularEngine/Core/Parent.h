@@ -159,5 +159,7 @@ namespace TRE
 
 	private:
 		void UpdateChildTransform(Entity parent);
+		void UpdateChildLocalData(Entity parent, Entity child);
+		void UpdateLocalData(Entity current);
 	};
 }
