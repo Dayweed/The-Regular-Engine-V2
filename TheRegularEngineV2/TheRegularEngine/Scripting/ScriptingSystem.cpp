@@ -56,6 +56,14 @@ namespace TRE
 
 	void ScriptingSystem::BeforeReset()
 	{
+		// Clear in case some was just added
+		m_ScriptEntities.clear();
+	}
+
+	void ScriptingSystem::AfterReset()
+	{
+		// Add back all entities with Scripting
+		InitializeScriptableObjects();
 	}
 
 	void ScriptingSystem::OnDestroyEntities()
