@@ -360,6 +360,20 @@ namespace TRE
 		}
 	}
 
+	void ScriptEngine::OnStartEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnStartInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
 	void ScriptEngine::OnUpdateEntity(Entity e)
 	{
 		std::string GUID = e->GetGUID();
@@ -430,8 +444,9 @@ namespace TRE
     	m_Instance = scriptClass->Instantiate();
 		
 		m_Constructor = ScriptEngine::s_ScriptEngineData->MainClass.GetMethod(".ctor", 1);
-		m_StartMethod = scriptClass->GetMethod("OnCreate", 0);
-		m_UpdateMethod = scriptClass->GetMethod("OnUpdate", 0);
+		m_CreateMethod = scriptClass->GetMethod("OnCreate", 0);
+		m_StartMethod = scriptClass->GetMethod("Start", 0);
+		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
 
     	{
 			unsigned long long id = std::stoull(entity);
@@ -442,9 +457,15 @@ namespace TRE
 
 	void ScriptInstance::OnCreateInvoke()
 	{
+		if(m_CreateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_CreateMethod, nullptr);
+	}
+
+	void ScriptInstance::OnStartInvoke()
+    {
 		if(m_StartMethod)
 			m_ScriptClass->InvokeMethod(m_Instance, m_StartMethod, nullptr);
-	}
+    }
 
 	void ScriptInstance::OnUpdateInvoke()
     {

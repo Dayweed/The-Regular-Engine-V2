@@ -12,6 +12,7 @@ namespace TRE
 		std::string m_StoredClass;
 		std::string m_GUID;
 		bool m_IsDirty{ false };
+		bool m_RanStart{ false };
 		property_vtable() 
 
 		ScriptComponent()= default;

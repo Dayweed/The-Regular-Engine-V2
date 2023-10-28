@@ -43,11 +43,15 @@ namespace TRE
 
         public RandomizeFallingObjLocation()
         {
-            canSpawnObjs = true;
             // ID for prefabs are based on resource prefab GUID
             fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460, "Moles") };
             maxAmountToSpawn = 2;
             timeBetweenSpawns = 2;
+        }
+
+        public void OnCreate()
+        {
+
         }
 
         public void Start()
@@ -58,11 +62,6 @@ namespace TRE
         // Update is called once per frame
         public void Update()
         {
-            Console.WriteLine("AHHH");
-
-            Core.Log("Update...");
-            Core.Log("My ID is " + ID);
-
             if (ID == 0) return;
 
             if (InputSystem.GetKeyDown(InputKeys.T))

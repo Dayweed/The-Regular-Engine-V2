@@ -147,7 +147,7 @@ namespace TRE
             Console.WriteLine($"Testing OnCreate ID - {ID}");
         }
 
-        void OnUpdate()
+        void Update()
         {
 			
         }

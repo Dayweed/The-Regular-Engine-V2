@@ -32,13 +32,23 @@ namespace TRE
 	{
 		if(m_IsRunning == true)
 		{
-			//inital Create entity instances
+			//inital Create entity instances (only works if they are created before scene starts)
 			for(auto e: m_ScriptEntities)
 			{
 				ScriptEngine::OnCreateEntity(e);
 			}
 			m_IsRunning = false;
 			
+		}
+
+		// For Scripts just created
+		for(auto e: m_ScriptEntities)
+		{
+			ScriptComponent& script{ e->GetComponent<ScriptComponent>() };
+			if (script.m_RanStart) continue;
+
+			ScriptEngine::OnStartEntity(e);
+			script.m_RanStart = true;
 		}
 
 		for(auto e: m_ScriptEntities)

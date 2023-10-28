@@ -98,6 +98,7 @@ namespace TRE
 		ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity);
 
 		void OnCreateInvoke();
+		void OnStartInvoke();
 		void OnUpdateInvoke();
 
 		std::shared_ptr<ScriptClass> GetScriptClass() { return m_ScriptClass; }
@@ -133,6 +134,7 @@ namespace TRE
 		// Store the instance of the class that is created by ScriptClass
 		MonoObject* m_Instance = nullptr;
 		MonoMethod* m_Constructor = nullptr;
+		MonoMethod* m_CreateMethod = nullptr;
 		MonoMethod* m_StartMethod = nullptr;
 		MonoMethod* m_UpdateMethod = nullptr;
 
@@ -181,6 +183,7 @@ namespace TRE
 
 		static bool EntityClassExists(const std::string& className);
 		static void OnCreateEntity(Entity e);
+		static void OnStartEntity(Entity e);
 		static void OnUpdateEntity(Entity e	);
 
 		static void CreateScriptInstance(const std::string& className,const std::string& entityGUID);
