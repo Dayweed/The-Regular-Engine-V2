@@ -15,7 +15,7 @@ namespace TRE
 
 		public void Update()
 		{
-			TransformSystem.GetPosition(Mole.id, out Vector3 pos);
+			TransformSystem.GetPosition(Mole.ID, out Vector3 pos);
 
 			Vector3 dirVec = new Vector3(0, 0, 0);
 
@@ -46,9 +46,9 @@ namespace TRE
 			Vector3 tmp = dirVec * 60;
 
 			// PhysicsSystem.AddForce(Mole.id, tmp);
-			PhysicsSystem.AddForce(Mole.id, tmp, PhysicsSystem.ForceMode.Force);
+			PhysicsSystem.AddForce(Mole.ID, tmp, PhysicsSystem.ForceMode.Force);
 
-			TransformSystem.SetPosition(Mole.id, pos);
+			TransformSystem.SetPosition(Mole.ID, pos);
 		}
 	}
 }

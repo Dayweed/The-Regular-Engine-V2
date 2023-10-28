@@ -387,15 +387,15 @@ namespace TRE
 				scaling = new Vector3(1, 1, 1);
 			}
 
-			bool isPrefab = Prefab.EngineIsPrefabResource(entity.id);
+			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
 			if (isPrefab)
 			{
-				string id = Prefab.CreatePrefabEntity(entity.id, postion, rotation, scaling);
+				string id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
 				return new Entity(FindNameFromID(id), id);
 			}
 			else if (IsValidEntity(entity.ID))
 			{
-				string id = CloneEntity(entity.id, postion, rotation, scaling);
+				string id = CloneEntity(entity.ID, postion, rotation, scaling);
                 return new Entity(FindNameFromID(id), id);
             }
 			else

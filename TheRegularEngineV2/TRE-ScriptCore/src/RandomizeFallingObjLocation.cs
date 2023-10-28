@@ -58,7 +58,7 @@ namespace TRE
         // Update is called once per frame
         public void Update()
         {
-            if (this.id == "") return;
+            if (this.ID == "") return;
 
             if (InputSystem.GetKeyDown(InputKeys.T))
             {
