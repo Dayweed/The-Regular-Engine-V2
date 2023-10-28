@@ -11,6 +11,9 @@ layout(set = 0, binding = 0) uniform UBO
 	vec4 m_CameraPosition;
 	vec4 m_DirectionalLight;
 	vec4 m_AmbientLight;
+
+	mat4 m_Proj;
+	mat4 m_View;
 }ubo;
 
 layout(location = 0) out vec3 outPosition;
@@ -18,7 +21,7 @@ layout(location = 0) out vec3 outPosition;
 void main() 
 {
     outPosition = in_Position;
-    gl_Position = vec4(ubo.m_ProjView * vec4(in_Position, 1.0)).xyww;
+    gl_Position = vec4(ubo.m_Proj * vec4(in_Position, 1.0)).xyww;
 }
 
 #version 450

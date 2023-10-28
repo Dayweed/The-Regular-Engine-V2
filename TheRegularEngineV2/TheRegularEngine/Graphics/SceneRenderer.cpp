@@ -203,6 +203,9 @@ namespace TRE
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
+		ubo.Proj = editorCamera.GetProjectionMatrix();
+		ubo.View = editorCamera.GetViewMatrix();
+
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
