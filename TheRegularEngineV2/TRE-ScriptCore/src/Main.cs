@@ -11,16 +11,16 @@ namespace TRE
 		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
-        public Entity Temp = new Entity("Temp");
-		public Entity Test = new Entity("Test");
+        public Entity Temp = new Entity("Temp", "");
+		public Entity Test = new Entity("Test", "");
 
 		public Main()
 		{
-			Temp.id = ECSManager.CreateEntity(Temp.name);
+			Temp.ID = ECSManager.CreateEntity(Temp.name);
 			Console.WriteLine("Hello World from C#!");
 
-			Test.id = ECSManager.FindIDFromName(Test.name);
-			Console.WriteLine("Test ID: " + Test.id);
+			Test.ID = ECSManager.FindIDFromName(Test.name);
+			Console.WriteLine("Test ID: " + Test.ID);
 
 			Console.WriteLine("Entity: " + Test.GetActive());
             Test.SetActive(false);
@@ -47,20 +47,20 @@ namespace TRE
 			testingRandoFall.Update();
 
 			// Move The Test Object 
-			TransformSystem.GetPosition(Test.id, out Vector3 pos);
+			TransformSystem.GetPosition(Test.ID, out Vector3 pos);
 			//
 			Vector3 tmp = new Vector3(0, 0, 0);
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				tmp.x = 60;
-				PhysicsSystem.AddForce(Test.id, tmp);
+				PhysicsSystem.AddForce(Test.ID, tmp);
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				tmp.x = -60;
-				PhysicsSystem.AddForce(Test.id, tmp);
+				PhysicsSystem.AddForce(Test.ID, tmp);
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.Space))
@@ -69,4 +69,20 @@ namespace TRE
 			}
 		}
 	}
+
+    public class Testing : Entity
+    {
+
+        void OnCreate()
+        {
+			Console.WriteLine("Testing OnCreate");
+            Console.WriteLine($"Testing OnCreate ID - {ID}");
+        }
+
+        void OnUpdate()
+        {
+			
+        }
+    }
+
 }

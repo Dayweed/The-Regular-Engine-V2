@@ -17,53 +17,66 @@ using System.Threading.Tasks;
  */
 namespace TRE
 {
-	public struct Entity
+	public class Entity
 	{
-		public string id;				// Can hold id of entity or id of prefab resource
+		public string ID;				// Can hold id of entity or id of prefab resource
 		public string name;
 		public Parenting parenting;
 		public Transform transform;
 
+        protected Entity()
+        {
+			ID = "";
+			name = "";
+            parenting = new Parenting();
+			transform = new Transform();
+        }
+
+        public Entity(string id)
+        {
+			ID = id;
+        }
+
         public Entity(string _name, string _id = "")
 		{
 			name = _name;
-			id = _id;
+			ID = _id;
 
-			parenting = new Parenting(id);
-			TransformSystem.GetPosition(id, out Vector3 pos);
-			TransformSystem.GetRotation(id, out Vector3 rot);
-            transform = new Transform(id, pos, rot, new Vector3(1,1,1));
+			parenting = new Parenting(ID);
+			TransformSystem.GetPosition(ID, out Vector3 pos);
+			TransformSystem.GetRotation(ID, out Vector3 rot);
+            transform = new Transform(ID, pos, rot, new Vector3(1,1,1));
         }
 
         public void Rename(string _name)
 		{
 			name = _name;
-            EngineRename(id, name);
+            EngineRename(ID, name);
         }
 
         public void SetActive(bool active)
 		{
-			EngineSetActive(id, active);
+			EngineSetActive(ID, active);
         }
 
         public bool GetActive()
 		{
-            return EngineGetActive(id);
+            return EngineGetActive(ID);
         }
 
         public void SetTag(string tag)
 		{
-            EngineSetTag(id, tag);
+            EngineSetTag(ID, tag);
         }
 
         public string GetTag()
 		{
-            return EngineGetTag(id);
+            return EngineGetTag(ID);
         }
 
         public bool CompareTag(string otherTag)
 		{
-            return EngineCompareTag(id, otherTag);
+            return EngineCompareTag(ID, otherTag);
         }
 
         // Private binded calls
@@ -103,7 +116,7 @@ namespace TRE
 
         public void SetParent(Entity _parent)
         {
-			EngineParentSetParent(id, _parent.id);
+			EngineParentSetParent(id, _parent.ID);
         }
 
         public Entity GetParent()
@@ -121,12 +134,12 @@ namespace TRE
 
 		public void AddChild(Entity child)
 		{
-			EngineParentAddChild(id, child.id);
+			EngineParentAddChild(id, child.ID);
 		}
 
 		public void RemoveChild(Entity child)
 		{
-			EngineParentRemoveChild(id, child.id);
+			EngineParentRemoveChild(id, child.ID);
 		}
 
         public Entity GetChild(int _index)
@@ -339,21 +352,22 @@ namespace TRE
 	{
 		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3())
 		{
-			bool isPrefab = Prefab.EngineIsPrefabResource(entity.id);
+			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
 			if (isPrefab)
 			{
-				string id = CreatePrefabEntity(entity.id, postion, rotation);
+				string id = CreatePrefabEntity(entity.ID, postion, rotation);
 				return new Entity(FindNameFromID(id), id);
 			}
-			else if (IsValidEntity(entity.id))
+			else if (IsValidEntity(entity.ID))
 			{
-				string id = CreateEntity(entity.id, postion, rotation);
+				string id = CreateEntity(entity.ID, postion, rotation);
                 return new Entity(FindNameFromID(id), id);
             }
 			else
 			{
 				// Invalid Entity!
-				return new Entity();
+				// return new Entity();
+				return null;
 			}
 		}
 

@@ -84,8 +84,6 @@ namespace TRE
 		{
 			m_GameRunning = false;
 			SetSceneReset(true);
-
-			ScriptEngine::CreatedScriptObject = false;
 		}
 	}
 

@@ -7,28 +7,28 @@ namespace TRE
 	public class MoleController
 	{
 		//Player has a TransformSystem
-		public Entity Mole = new Entity("Test");
+		public Entity Mole = new Entity("Test", "");
 		public MoleController()
 		{
-			Mole.id = ECSManager.FindIDFromName(Mole.name);
+			Mole.ID = ECSManager.FindIDFromName(Mole.name);
 		}
 
 		public void Update()
 		{
-			TransformSystem.GetPosition(Mole.id, out Vector3 pos);
+			TransformSystem.GetPosition(Mole.ID, out Vector3 pos);
 			//
 			Vector3 tmp = new Vector3(0, 0, 0);
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				tmp.x = 60;
-				PhysicsSystem.AddForce(Mole.id, tmp);
+				PhysicsSystem.AddForce(Mole.ID, tmp);
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				tmp.y = -60;
-				PhysicsSystem.AddForce(Mole.id, tmp);
+				PhysicsSystem.AddForce(Mole.ID, tmp);
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
@@ -41,7 +41,7 @@ namespace TRE
 				pos.x += 10.0f;
 			}
 
-			TransformSystem.SetPosition(Mole.id, pos);
+			TransformSystem.SetPosition(Mole.ID, pos);
 		}
 	}
 }
