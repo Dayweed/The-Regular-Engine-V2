@@ -7,6 +7,19 @@
 
 namespace TRE
 {
+	struct SkyboxTexture //This should be changed to use vulkan texture after implementation is done.
+	{
+		VkImage               image;
+		VkImageView			  imageview;
+		VkImageLayout         imageLayout;
+		VkDeviceMemory        deviceMemory;
+		uint32_t              width, height;
+		uint32_t              mipLevels;
+		uint32_t              layerCount;
+		VkDescriptorImageInfo descriptor;
+		VkSampler             sampler;
+	};
+
 	class MaterialDescriptorFile : public DescriptorFile
 	{
 	public:
@@ -32,6 +45,12 @@ namespace TRE
 			void UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo); //To be removed
 
 			void SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures);
+			
+			//To be removed
+			void SetSkyboxTexture(std::string Name, std::shared_ptr<SkyboxTexture> textures);
+			void UpdateSkyboxPass(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
+			void UpdateSkyboxPassEditor(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
+
 			const std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTexturesRef() { return m_Textures; }
 
@@ -56,5 +75,8 @@ namespace TRE
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_Textures;
 
 			bool m_IsValid = false;
+
+			//TBR
+			std::shared_ptr<SkyboxTexture> m_Skybox;
 	};
 }

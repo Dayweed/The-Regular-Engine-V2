@@ -10,7 +10,6 @@
 #include "AnimationTest.h"
 #include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
-//#include "EditorCamera.h"
 
 namespace TRE
 {
@@ -37,19 +36,6 @@ namespace TRE
 	{
 		glm::mat4 ProjView {1.f};
 		glm::mat4 L2W[256];
-	};
-
-	struct SkyboxTexture //This should be changed to use vulkan texture after implementation is done.
-	{
-		VkImage               image;
-		VkImageLayout         imageLayout;
-		VkDeviceMemory        deviceMemory;
-		VkImageView           view;
-		uint32_t              width, height;
-		uint32_t              mipLevels;
-		uint32_t              layerCount;
-		VkDescriptorImageInfo descriptor;
-		VkSampler             sampler;
 	};
 
 	class SceneRenderer
@@ -83,6 +69,7 @@ namespace TRE
 			std::shared_ptr<CommandBuffer> m_CommandBuffer;
 
 			std::unique_ptr<Pipeline> m_Pipeline;
+			std::unique_ptr<Pipeline> m_SkyboxPipeline;
 			std::shared_ptr<RenderPass> m_RenderPass;
 
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
@@ -105,8 +92,10 @@ namespace TRE
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
-			std::unique_ptr<SkyboxTexture> m_SkyboxTexture;
-			VkImageView m_CubeMapImageView = VK_NULL_HANDLE;
-			VkImage		m_CubeMapImage	   = VK_NULL_HANDLE;
+			std::shared_ptr<SkyboxTexture> m_SkyboxTexture;
+			std::unique_ptr<Material> m_SkyboxMaterial;
+			std::unique_ptr<Buffer> m_SkyboxVertexBuffer;
+			std::unique_ptr<Buffer> m_SkyboxIndexBuffer;
+			uint32_t m_SkyboxIndexCount;
 	};
 }

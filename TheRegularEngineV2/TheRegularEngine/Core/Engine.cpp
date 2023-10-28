@@ -46,7 +46,6 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
-
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 	
 #if 0
