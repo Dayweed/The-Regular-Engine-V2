@@ -11,8 +11,8 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #include "pch.h"
-#include "TREIncludes.h"
 #include "PhysicsSystem.h"
+#include "TREIncludes.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
@@ -196,7 +196,7 @@ namespace TRE
 
 		DestroyOutdatedComponents();
 
-		UpdateAllComponents();
+		//UpdateAllComponents();
 	}
 
 	void PhysicsSystem::GameUpdate()
@@ -250,18 +250,34 @@ namespace TRE
 				CTH.emplace_back(prevEntry.m_First, prevEntry.m_Second, TriggerHistoryEntryEnum::Stay);
 		}
 #pragma endregion
-	}
-
-	void PhysicsSystem::LateUpdate()
-	{
+	
+	
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
 			if (!entity) continue; // HERE WE ARE FOR SOME REASON??
 			const SharedData& sharedData = pair.second;
 
+			glm::vec3 offset{};
+			const unsigned attachedComponents = sharedData.m_AttachedComponents;
+			if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			{
+				const SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
+				offset = sphereCollider.m_Offset;
+			}
+			else if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			{
+				const BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+				offset = boxCollider.m_Offset;
+			}
+			else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			{
+				const CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
+				offset = capsuleCollider.m_Offset;
+			}
+
 			const PxVec3 pos = sharedData.m_RigidDynamic->getGlobalPose().p;
-			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, pos);
+			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, pos) - offset;
 
 			const PxQuat rotQuat = sharedData.m_RigidDynamic->getGlobalPose().q;
 			const glm::vec3 eulerAnglesInRad = glm::eulerAngles(glm::quat{ rotQuat.w, rotQuat.x, rotQuat.y, rotQuat.z });
@@ -622,35 +638,59 @@ namespace TRE
 		return false;
 	}
 
-	void PhysicsSystem::ResizeAllColliders() const
+	void PhysicsSystem::ResizeAllColliders()
 	{
 		// Update Sphere Collider if Dirty
 		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
-			if (auto& collider = entity->GetComponent<SphereCollider>(); collider.m_IsDirty)
+			auto& collider = entity->GetComponent<SphereCollider>();
+			const auto& transform = entity->GetComponent<Transform>();
+
+			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
-				ResizeSphereCollider(entity, collider.m_Radius);
-				collider.m_IsDirty = false;
+				UpdateColliderData(entity, collider.m_Offset);
+				
+				if (collider.m_IsDirty)
+				{
+					ResizeSphereCollider(entity, collider.m_Radius);
+					collider.m_IsDirty = false;
+				}
 			}
 		}
 
 		// Update Box Collider if Dirty
 		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
 		{
-			if (auto& collider = entity->GetComponent<BoxCollider>(); collider.m_IsDirty)
+			auto& collider = entity->GetComponent<BoxCollider>();
+			const auto& transform = entity->GetComponent<Transform>();
+
+			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
-				ResizeBoxCollider(entity, collider.m_HalfExtents);
-				collider.m_IsDirty = false;
+				UpdateColliderData(entity, collider.m_Offset);
+
+				if (collider.m_IsDirty)
+				{
+					ResizeBoxCollider(entity, collider.m_HalfExtents);
+					collider.m_IsDirty = false;
+				}
 			}
 		}
 
 		// Update the Update if Update
 		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 		{
-			if (auto& collider = entity->GetComponent<CapsuleCollider>(); collider.m_IsDirty)
+			auto& collider = entity->GetComponent<CapsuleCollider>();
+			const auto& transform = entity->GetComponent<Transform>();
+
+			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
-				ResizeCapsuleCollider(entity, collider.m_Radius, collider.m_HalfHeight);
-				collider.m_IsDirty = false;
+				UpdateColliderData(entity, collider.m_Offset);
+				
+				if (collider.m_IsDirty)
+				{
+					ResizeCapsuleCollider(entity, collider.m_Radius, collider.m_HalfHeight);
+					collider.m_IsDirty = false;
+				}
 			}
 		}
 	}
@@ -820,6 +860,19 @@ namespace TRE
 	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
 	{
 		UNUSED_PARAM(actors); UNUSED_PARAM(count);
+	}
+
+	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
+	{
+		if (m_Actors.contains(entity->GetGUID()) == false)
+			return;
+
+		const auto& transform = entity->GetComponent<Transform>();
+		const glm::vec3 eulerAnglesInRad = transform.m_Rotation * PI / 180.0f;
+		const glm::quat rotQuat{ eulerAnglesInRad };
+		const auto xform = PxTransform(VEC3_CAST(PxVec3, transform.m_Position + offset), PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
+		
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(xform);
 	}
 }
 

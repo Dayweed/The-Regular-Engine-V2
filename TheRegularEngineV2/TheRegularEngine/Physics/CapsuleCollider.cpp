@@ -130,7 +130,7 @@ namespace TRE
 
 		// capsuleCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
 
-		capsuleCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
+		//capsuleCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -145,9 +145,9 @@ namespace TRE
 			break;
 		}
 
-		PxCapsuleGeometry capsuleGeometry;
+		/*PxCapsuleGeometry capsuleGeometry;
 		shapes[i]->getCapsuleGeometry(capsuleGeometry);
-		capsuleCollider.m_Radius = capsuleGeometry.radius;
+		capsuleCollider.m_Radius = capsuleGeometry.radius;*/
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const
