@@ -408,6 +408,9 @@ namespace TRE
 		internal extern static void RemoveComponent(string entityID, Components component);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void DestroyEntity(string entityID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string FindIDFromName(string name);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -557,10 +560,13 @@ namespace TRE
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeSphereCollider(string entityid, float newradius);
+		internal extern static void ResizeSphereCollider(string entityid, float newRadius);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void ResizeBoxCollider(string entityid, Vector3 newsize);
+		internal extern static void ResizeBoxCollider(string entityid, Vector3 newHalfExtents);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void ResizeCapsuleCollider(string entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void AddForce(string entityid, Vector3 force, ForceMode mode);

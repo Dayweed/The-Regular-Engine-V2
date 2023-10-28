@@ -101,7 +101,7 @@ namespace TRE
 					}
 					if (ImGui::BeginMenu("Grid and Snap"))
 					{
-						ImGui::MenuItem("Increament Snapping");
+						ImGui::MenuItem("Increment Snapping");
 						ImGui::InputFloat("Position", &m_PosIncrement);
 						ImGui::InputFloat("Rotation", &m_RotIncrement);
 						ImGui::InputFloat("Scale", &m_ScaleIncrement);
