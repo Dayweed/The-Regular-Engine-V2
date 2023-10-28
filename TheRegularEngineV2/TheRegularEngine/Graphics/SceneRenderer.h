@@ -10,6 +10,7 @@
 #include "AnimationTest.h"
 #include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
+#include "VertexBuffer.h"
 
 namespace TRE
 {
@@ -97,7 +98,7 @@ namespace TRE
 
 			std::shared_ptr<SkyboxTexture> m_SkyboxTexture;
 			std::unique_ptr<Material> m_SkyboxMaterial;
-			std::unique_ptr<Buffer> m_SkyboxVertexBuffer;
+			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;
 			std::unique_ptr<Buffer> m_SkyboxIndexBuffer;
 			uint32_t m_SkyboxIndexCount;
 	};

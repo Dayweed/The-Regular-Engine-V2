@@ -6,6 +6,23 @@
 
 namespace TRE::vkUtils
 {
+	uint32_t BufferFindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	{
+		VkPhysicalDeviceMemoryProperties memProperties;
+		auto physicalDevice = RendererContext::GetDevice()->GetPhysicalDevice()->GetPhysicalDevice();
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+
+		for (uint32_t x = 0; x < memProperties.memoryTypeCount; x++)
+		{
+			if ((typeFilter & (1 << x)) && (memProperties.memoryTypes[x].propertyFlags & properties) == properties)
+			{
+				return x;
+			}
+		}
+
+		assert(false && "Unable to find a suitable buffer memory");
+	}
+
 	void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 	{
 		auto logicalDevice = RendererContext::GetDevice();

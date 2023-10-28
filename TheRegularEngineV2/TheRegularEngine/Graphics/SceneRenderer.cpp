@@ -721,20 +721,7 @@ namespace TRE
 			6, 7, 3  // Triangle 12 (top face)
 		};
 
-		int VertexCount = (int)vertices.size();
-		uint32_t vertexSize = sizeof(vertices[0]);
-		Buffer CubestagingBuffer(vertexSize, VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		//Create a staging buffer to copy the vertex data to
-		CubestagingBuffer.Map();
-		CubestagingBuffer.WriteToBuffer((void*)vertices.data());
-		CubestagingBuffer.Unmap();
-
-		//Flush data from staging buffer to vertex buffer
-		m_SkyboxVertexBuffer = std::make_unique<Buffer>(vertexSize, VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		VkDeviceSize bufferSize = vertexSize * VertexCount;
-		vkUtils::CopyBuffer(CubestagingBuffer.GetBuffer(), m_SkyboxVertexBuffer->GetBuffer(), bufferSize);
+		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(vertices[0]));
 
 		//Index
 		m_SkyboxIndexCount = (uint32_t)indices.size();
