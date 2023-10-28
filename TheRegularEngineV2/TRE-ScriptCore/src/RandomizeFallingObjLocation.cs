@@ -45,7 +45,7 @@ namespace TRE
         {
             canSpawnObjs = true;
             // ID for prefabs are based on resource prefab GUID
-            fallingObjPrefabs = new List<Entity> { new Entity( 0, "Moles") };
+            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460, "Moles") };
             maxAmountToSpawn = 2;
             timeBetweenSpawns = 2;
         }
