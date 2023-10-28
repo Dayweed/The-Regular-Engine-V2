@@ -16,7 +16,7 @@ namespace TRE
 				//Update own local data if i have a parent
 				UpdateLocalData(object);
 				//Update children local data
-				UpdateChildTransform(object);
+				//UpdateChildTransform(object);
 			}
 		}
 	}
