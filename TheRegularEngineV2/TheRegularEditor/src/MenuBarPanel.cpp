@@ -195,6 +195,7 @@ namespace TRE
 				ECSSystemManager::Instance().BeforeReset();
 				ECSManager::Instance().DestroyAll();
 				SceneManager::Instance().LoadScene(path);
+				ECSSystemManager::Instance().AfterReset();
 			}
 		}
 	}

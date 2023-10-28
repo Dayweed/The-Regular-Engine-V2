@@ -20,13 +20,13 @@ namespace TRE
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
         //Maxium height the player can jump
-        private Vector3 maxHeight = new Vector3(0, 10000, 0);
+        private Vector3 maxHeight = new Vector3(0, 240, 0);
 
 
         //check if player used super power
         private bool isScaled = false;
         private float defaultScale = 1;
-        private float superScale = 50;
+        private float superScale = 2;
 
         private bool hasInitalized;
 
@@ -80,12 +80,12 @@ namespace TRE
 
             if (InputSystem.GetKeyDown(InputKeys.A))
             {
-                dirVec.x += -1;
+                dirVec.x += 1;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.D))
             {
-                dirVec.x += 1;
+                dirVec.x += -1;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.Space))
@@ -98,12 +98,12 @@ namespace TRE
             {
                 if (!isScaled)
                 {
-                    PS.ResizeSphereCollider(Test.id, superScale);
+                    PS.ResizeCapsuleCollider(Test.id, superScale, superScale);
                     isScaled = true;
                 }
                 else if (isScaled)
                 {
-                    PS.ResizeSphereCollider(Test.id, defaultScale);
+                    PS.ResizeCapsuleCollider(Test.id, defaultScale, defaultScale);
                     isScaled = false;
                 }
             }
@@ -118,21 +118,21 @@ namespace TRE
             }
             else
             {
-                Vector3 tmp = dirVec * 60;
-                PS.AddForce(Test.id, tmp*2, PS.ForceMode.VelocityChange);
+                Vector3 tmp = dirVec * 120;
+                PS.AddForce(Test.id, tmp*2, PS.ForceMode.Impulse);
             }
         }
 
         private void Jump(Vector3 JumpHeight)
         {
-            PS.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
+            PS.AddForce(Test.id, JumpHeight, PS.ForceMode.Impulse);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
 
         private void Initialize()
         {
             PS.ConstrainRotationX(Test.id, true);
-            // PS.ConstrainRotationY(Test.id, true);
+            //PS.ConstrainRotationY(Test.id, true);
             PS.ConstrainRotationZ(Test.id, true);
             hasInitalized = true;
         }

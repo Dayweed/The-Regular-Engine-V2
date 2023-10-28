@@ -58,6 +58,8 @@ namespace TRE
         // Update is called once per frame
         public void Update()
         {
+            if (this.id == "") return;
+
             if (InputSystem.GetKeyDown(InputKeys.T))
             {
                 canSpawnObjs = !canSpawnObjs;

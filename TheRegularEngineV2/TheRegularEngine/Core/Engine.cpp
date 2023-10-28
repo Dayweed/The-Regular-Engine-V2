@@ -222,16 +222,16 @@ namespace TRE
 			test->GetComponent<Properties>().m_Name = "Test";
 
 			Transform& testTransform{ test->GetComponent<Transform>() };
-			testTransform.m_Position = glm::vec3(0.f, 20.f, 180.f);
+			testTransform.m_Position = glm::vec3(0.f, 20.f, 20.f);
 			testTransform.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-			testTransform.m_Rotation = glm::vec3(0, 180.f, 90.f);
+			testTransform.m_Rotation = glm::vec3(0, 0.f, 0.f);
 			testTransform.m_IsDirty = true;
 
-			test->AddComponent<MeshRenderer>();
+			//test->AddComponent<MeshRenderer>();
 			test->AddComponent<CapsuleCollider>();
 			test->AddComponent<Rigidbody>();
-			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
+			//meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			//meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
 			/*test->AddComponent<Audio>();
 			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
@@ -242,7 +242,7 @@ namespace TRE
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);*/
 		}
 
-		Entity test2 = ECSManager::Instance().CreateEntity();
+		/*Entity test2 = ECSManager::Instance().CreateEntity();
 		{
 			test2->GetComponent<Properties>().m_Name = "Test2";
 
@@ -272,7 +272,7 @@ namespace TRE
 		}
 
 		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test, test2);
-		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test2, test3);
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test2, test3);*/
 
 		{
 			Entity planeCollider = ECSManager::Instance().CreateEntity();
