@@ -5,20 +5,15 @@
 #include "Core/ECS.h"
 #include "Demo/Demo.h"
 #include "Core/Transform.h"
-#include "Core/Logger.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
 #include "Graphics/MeshRenderer.h"
 #include "EventSystem/EventHandler/EventHandler.h"
-
-// Need to find a way w/o using "../"
-#include "../TheRegularEditor/src/ConsolePanel.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
-
-#include <map>
 
 namespace TRE
 {
@@ -42,7 +37,7 @@ namespace TRE
         return str;
 	}
 
-#pragma region ParentBindings
+#pragma region PropertyBindings
     static void BindEntityRename(MonoString* ID, MonoString* name)
     {
         // Retrive the entity from the ID
@@ -661,23 +656,20 @@ namespace TRE
 #pragma region Physics
     static void BindResizeSphereCollider(MonoString* id, float s)
     {
-        // find the entity
         const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(entity, s);
     }
 
     static void BindResizeBoxCollider(MonoString* id, glm::vec3 s)
     {
-        // find the entity
         const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(entity, s);
     }
 
-    static void BindAddForce(MonoString* id, glm::vec3 force)
+    static void BindAddForce(MonoString* id, glm::vec3 force, ForceMode::Enum mode)
     {
-        // find the entity
         const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force);
+        ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
     }
 
     void BindConstrainRotationX(MonoString* id, bool state)
@@ -751,21 +743,23 @@ namespace TRE
         Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerExit(entity1, entity2);
     }
-#pragma TimeBindings
+#pragma endregion
+
+#pragma region TimeBindings
     static float BindGetDeltaTime()
     {
         return Engine::GetInstance().GetWindow()->GetDeltaTime();
     }
 #pragma endregion
 
-#pragma MathFBindings
+#pragma region MathFBindings
     static float BindSqrt(float value)
     {
         return Mathf::Sqrt(value);
     }
 #pragma endregion
 
-#pragma RandomBindings
+#pragma region RandomBindings
     static int BindIntRandRange(int min_incl, int max_excl)
     {
         return Random::RangeInt(min_incl, max_excl);

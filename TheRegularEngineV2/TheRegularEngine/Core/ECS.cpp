@@ -144,9 +144,10 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
@@ -176,9 +177,10 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
@@ -230,7 +232,7 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL, ScriptComponent>();
+		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, Rigidbody, SphereCollider, BoxCollider, CapsuleCollider, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL, ScriptComponent>();
 
 		m_Registry.each([&](entt::entity srcEntity)
 			{

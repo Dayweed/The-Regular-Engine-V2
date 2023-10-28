@@ -548,6 +548,14 @@ namespace TRE
 
 	public class PhysicsSystem
 	{
+		public enum ForceMode
+		{
+			Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
+			Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
+			VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
+			Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
+		}
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void ResizeSphereCollider(string entityid, float newradius);
 
@@ -555,7 +563,7 @@ namespace TRE
 		internal extern static void ResizeBoxCollider(string entityid, Vector3 newsize);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void AddForce(string entityid, Vector3 force);
+		internal extern static void AddForce(string entityid, Vector3 force, ForceMode mode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void ConstrainRotationX(string entityid, bool state);

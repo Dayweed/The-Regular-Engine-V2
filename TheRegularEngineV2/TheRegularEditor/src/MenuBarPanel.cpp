@@ -102,10 +102,10 @@ namespace TRE
 					if (ImGui::BeginMenu("Grid and Snap"))
 					{
 						ImGui::MenuItem("Increament Snapping");
-						ImGui::InputFloat("Position", &m_PosIncreament);
-						ImGui::InputFloat("Rotation", &m_RotIncreament);
-						ImGui::InputFloat("Scale", &m_ScaleIncreament);
-						EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncreament, m_RotIncreament, m_ScaleIncreament });
+						ImGui::InputFloat("Position", &m_PosIncrement);
+						ImGui::InputFloat("Rotation", &m_RotIncrement);
+						ImGui::InputFloat("Scale", &m_ScaleIncrement);
+						EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
 						ImGui::EndMenu();
 					}
 

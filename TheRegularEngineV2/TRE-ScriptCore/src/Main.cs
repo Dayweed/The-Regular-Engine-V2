@@ -4,11 +4,13 @@ using System.Runtime.CompilerServices;
 
 namespace TRE
 {
-    public class Main
-    {
-        // Scripting Initialization
-        HumanCentipede humanCentipedo = new HumanCentipede();
-        RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
+	using PS = PhysicsSystem;
+
+	public class Main
+	{
+		// Scripting Initialization
+		HumanCentipede humanCentipedo = new HumanCentipede();
+		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
         public Entity Temp = new Entity("Temp");
@@ -61,13 +63,13 @@ namespace TRE
             if (InputSystem.GetKeyDown(InputKeys.W))
             {
                 dirVec.z += 1;
-                //PhysicsSystem.AddForce(Mole.id, dirVec);
+                //PS.AddForce(Mole.id, dirVec);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.S))
             {
                 dirVec.z += -1;
-                //PhysicsSystem.AddForce(Mole.id, dirVec);
+                //PS.AddForce(Mole.id, dirVec);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.A))
@@ -83,7 +85,7 @@ namespace TRE
             if (InputSystem.GetKeyDown(InputKeys.Space))
             {
                 // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-                isGrounded = PhysicsSystem.IsCollisionEnter(Test.id, Plane_collider.id) || PhysicsSystem.IsCollisionStay(Test.id, Plane_collider.id);
+                isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
 
                 if (isGrounded)
                     Jump(maxHeight); // uh oh beeeg number
@@ -93,12 +95,12 @@ namespace TRE
             {
                 if (!isScaled)
                 {
-                    PhysicsSystem.ResizeSphereCollider(Test.id, superScale);
+                    PS.ResizeSphereCollider(Test.id, superScale);
                     isScaled = true;
                 }
                 else if (isScaled)
                 {
-                    PhysicsSystem.ResizeSphereCollider(Test.id, defaultScale);
+                    PS.ResizeSphereCollider(Test.id, defaultScale);
                     isScaled = false;
                 }
             }
@@ -107,12 +109,13 @@ namespace TRE
 
             Vector3 tmp = dirVec * 60;
 
-            PhysicsSystem.AddForce(Test.id, tmp);
+            PS.AddForce(Test.id, tmp, PS.ForceMode.Force);
         }
 
         private void Jump(Vector3 JumpHeight)
         {
-            PhysicsSystem.AddForce(Test.id, JumpHeight);
+            PhysicsSystem.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
+            // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
 
         private void Initialize()
