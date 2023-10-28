@@ -69,10 +69,25 @@ namespace TRE
 		m_SelectedAssetName = AssetManager::Instance().GetName(resourceHandle);
 	}*/
 
-	void AssetSelector::SelectEntity(const std::string& assetName, AssetType assetType)
+	void AssetSelector::SelectAsset(const std::string& assetName, AssetType assetType)
 	{
 		m_SelectedAssetName = assetName;
 		m_SelectedAssetType = assetType;
 		m_SelectedAsset = AssetManager::Instance().GetAssetHandle(assetName);
+
+		std::cout << "Selected asset: " << assetName << std::endl;
+		std::cout << "Selected asset GUID: " << Resource::GetGUIDHex(m_SelectedAsset) << std::endl;
+
+		//Check if material has been loaded for material panel to see
+		if (assetType == AssetType::Material && m_SelectedAsset)
+		{
+			const auto rscHandle = AssetManager::Instance().GetAssetHandle(assetName);
+			if (ResourceManager::Instance().IsResourceLoaded(rscHandle) == false)
+			{
+				auto material = Material::Deserialize(Resource::GetGUIDHex(rscHandle));
+				(void)material;
+			}
+			std::cout <<"Material loaded" << std::endl;
+		}
 	}
 }

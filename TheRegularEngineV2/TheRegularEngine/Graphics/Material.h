@@ -54,5 +54,7 @@ namespace TRE
 			std::vector<VkDescriptorSet> m_EditorDescriptorSets;
 			std::vector<VkWriteDescriptorSet> m_WriteDescriptors;
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_Textures;
+
+			bool m_IsValid = false;
 	};
 }

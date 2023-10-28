@@ -84,7 +84,7 @@ namespace TRE
 
 	const glm::quat BaseCamera::GetOrientation() const
 	{
-		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, -m_Roll));
+		return glm::quat(glm::vec3(m_Pitch, m_Yaw, m_Roll));
 	}
 
 	const glm::vec3 BaseCamera::GetUpVec() const
