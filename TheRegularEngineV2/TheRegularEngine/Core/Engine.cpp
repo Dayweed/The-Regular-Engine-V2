@@ -228,8 +228,8 @@ namespace TRE
 			testTransform.m_IsDirty = true;
 
 			test->AddComponent<MeshRenderer>();
+			test->AddComponent<CapsuleCollider>();
 			test->AddComponent<Rigidbody>();
-			test->AddComponent<SphereCollider>();
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
@@ -240,10 +240,6 @@ namespace TRE
 			audioSystem->SetSpatialize(test,true);
 			audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);*/
-
-			//test->AddComponent<SphereCollider>();
-			//test->AddComponent<Rigidbody>();
-
 		}
 
 		Entity test2 = ECSManager::Instance().CreateEntity();

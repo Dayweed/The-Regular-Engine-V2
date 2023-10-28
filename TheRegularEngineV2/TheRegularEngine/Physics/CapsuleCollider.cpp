@@ -56,7 +56,13 @@ namespace TRE
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial);
+		PxShape* capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial);
+
+		// making the capsule stand upright by default
+		// thank you nick!!!
+		const glm::quat localRotQuat(glm::vec3(0, 0, PI / 2));
+		const PxQuat pxLocalRotQuat(localRotQuat.x, localRotQuat.y, localRotQuat.z, localRotQuat.w);
+		capsuleShape->setLocalPose(PxTransform(pxLocalRotQuat));
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
@@ -80,7 +86,6 @@ namespace TRE
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::CapsuleCollider;
-		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 		// TODO: assign more data here
@@ -95,8 +100,6 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(CapsuleCollider);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
 		// SO TEMPORARY
 		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
@@ -110,7 +113,6 @@ namespace TRE
 
 			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight))); break;
 		}
-
 	}
 
 	void PhysicsSystem::UpdateCapsuleCollider(const Entity& entity) const
