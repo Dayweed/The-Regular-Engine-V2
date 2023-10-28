@@ -216,11 +216,11 @@ namespace TRE
 		};*/
 		std::vector<DebugVertex> DebugFrustumVertices =
 		{
-			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.5f,-0.5f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.5f,0.5f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(-0.5f,0.5f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(-0.5f,-0.5f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,-0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(0.5f,0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
+			DebugVertex(glm::vec3(-0.5f,-0.5f,1.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f))
 		};
 
 		std::vector<int> DebugFrustumIndices = { 1,2,2,3,3,4,4,1,1,0,0,2,0,3,3,4,0 };

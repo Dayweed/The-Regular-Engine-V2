@@ -35,8 +35,6 @@ namespace TRE
 
 				ImGui::End();
 			}
-			//else
-				//std::cout << "MaterialPanel::Update() - Material not found" << std::endl;
 		}
 		else if (auto& entity = m_SelectionManager->GetSelectedEntity(); entity)
 		{
