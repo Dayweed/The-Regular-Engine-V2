@@ -9,25 +9,20 @@ namespace TRE
 {
 	void to_json(nlohmann::json& j, const CapsuleCollider& t)
 	{
-		const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
-
 		j = nlohmann::json{
-			{ "m_Offset", v_offset },
-			{ "m_Radius", t.m_Radius },
-			{ "m_HalfHeight", t.m_HalfHeight },
-			{ "m_IsTrigger", t.m_IsTrigger }
+			WriteVec3MemberToJSON(m_Offset),
+			WriteMemberToJSON(m_Radius),
+			WriteMemberToJSON(m_HalfHeight),
+			WriteMemberToJSON(m_IsTrigger),
 		};
 	}
 
 	void from_json(const nlohmann::json& j, CapsuleCollider& t)
 	{
-		const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-		const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-		t.m_Offset = glm::make_vec3(a_off);
-
-		t.m_Radius = j.at("m_Radius").get<float>();
-		t.m_HalfHeight = j.at("m_HalfHeight").get<float>();
-		t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
+		ReadVec3MemberFromJSON(m_Offset);
+		ReadMemberFromJSON(m_Radius);
+		ReadMemberFromJSON(m_HalfHeight);
+		ReadMemberFromJSON(m_IsTrigger);
 	}
 
 	bool PhysicsSystem::ConstructCapsuleCollider(const Entity& entity, const float radius, const float halfHeight, const glm::vec3& offset) const
@@ -61,7 +56,13 @@ namespace TRE
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial);
+		PxShape* capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial);
+
+		// making the capsule stand upright by default
+		// thank you nick!!!
+		const glm::quat localRotQuat(glm::vec3(0, 0, PI / 2));
+		const PxQuat pxLocalRotQuat(localRotQuat.x, localRotQuat.y, localRotQuat.z, localRotQuat.w);
+		capsuleShape->setLocalPose(PxTransform(pxLocalRotQuat));
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
@@ -85,7 +86,6 @@ namespace TRE
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::CapsuleCollider;
-		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 		// TODO: assign more data here
@@ -100,8 +100,6 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(CapsuleCollider);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
 		// SO TEMPORARY
 		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
@@ -115,7 +113,6 @@ namespace TRE
 
 			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight))); break;
 		}
-
 	}
 
 	void PhysicsSystem::UpdateCapsuleCollider(const Entity& entity) const
@@ -129,34 +126,33 @@ namespace TRE
 		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// SO TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		//PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
-		// capsuleCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
+		//// capsuleCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
 
-		capsuleCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
+		//capsuleCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
 
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		//unsigned nbShapes = rigidDynamic->getNbShapes();
+		//const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		//nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
 
-		// obtain the index of the capsule shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+		//// obtain the index of the capsule shape
+		//unsigned i = 0;
+		//for (; i < nbShapes; ++i)
+		//{
+		//	if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
 
-			break;
-		}
+		//	break;
+		//}
 
-		PxCapsuleGeometry capsuleGeometry;
-		shapes[i]->getCapsuleGeometry(capsuleGeometry);
-		capsuleCollider.m_Radius = capsuleGeometry.radius;
+		//PxCapsuleGeometry capsuleGeometry;
+		//shapes[i]->getCapsuleGeometry(capsuleGeometry);
+		//capsuleCollider.m_Radius = capsuleGeometry.radius;
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const
 	{
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
 
 		// reset bit for this component
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::CapsuleCollider;
@@ -186,5 +182,6 @@ namespace TRE
 			// SO TEMPORARY
 			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
+		entity->RemoveComponent<CapsuleCollider>();
 	}
 }

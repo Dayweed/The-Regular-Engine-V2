@@ -21,6 +21,12 @@ namespace TRE
 		stagingBuffer.WriteToBuffer(texture->Data, texture->DataSize);
 		stagingBuffer.Unmap();
 
+		m_Width = texture->Width;
+		m_Height = texture->Height;
+		m_Format = VkFormat(texture->Format);
+		m_Buffer = new void* [texture->DataSize];
+		memcpy(m_Buffer, texture->Data, texture->DataSize);
+
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;

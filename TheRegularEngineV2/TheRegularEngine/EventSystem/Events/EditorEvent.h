@@ -4,6 +4,9 @@
 #include <string>
 #include <chrono>
 
+#define CONSOLE_DEBUG_WARN	"[WARNING] "
+#define CONSOLE_DEBUG_ERROR "[ERROR] "
+
 namespace TRE
 {
 	struct ConsoleDebugEvent : Event
@@ -37,10 +40,17 @@ namespace TRE
 
 	struct GridAndSnapEvent : Event
 	{
-		float m_PosIncreament{};
-		float m_RotIncreament{};
-		float m_ScaleIncreament{};
+		float m_PosIncrement{};
+		float m_RotIncrement{};
+		float m_ScaleIncrement{};
 		GridAndSnapEvent() = delete;
-		GridAndSnapEvent(float pos, float rot, float scale) : m_PosIncreament(pos), m_RotIncreament(rot), m_ScaleIncreament(scale) {}
+		GridAndSnapEvent(float pos, float rot, float scale) : m_PosIncrement(pos), m_RotIncrement(rot), m_ScaleIncrement(scale) {}
+	};
+
+	struct LocalGloalGizmoEvent : Event
+	{
+		bool m_IsLocal{ false };
+		LocalGloalGizmoEvent() = delete;
+		LocalGloalGizmoEvent(bool local) : m_IsLocal(local) {}
 	};
 }

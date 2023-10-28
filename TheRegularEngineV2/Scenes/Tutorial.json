@@ -1,0 +1,296 @@
+[
+   [
+      5,
+      2097152,
+      2097153,
+      2097154,
+      1048676,
+      1048677
+   ],
+   [
+      0
+   ],
+   [
+      5,
+      1048677,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048676,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097152,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097153,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097154,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      5,
+      1048677,
+      {
+         "m_Active": true,
+         "m_GUID": "3470811026368952328",
+         "m_Name": "Collider_Start",
+         "m_Tag": ""
+      },
+      1048676,
+      {
+         "m_Active": true,
+         "m_GUID": "7329582047841990964",
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      2097152,
+      {
+         "m_Active": true,
+         "m_GUID": "10623832150170936690",
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      2097153,
+      {
+         "m_Active": true,
+         "m_GUID": "17194665003477913516",
+         "m_Name": "GameObject (5)",
+         "m_Tag": ""
+      },
+      2097154,
+      {
+         "m_Active": true,
+         "m_GUID": "6096970256933852403",
+         "m_Name": "tutorial",
+         "m_Tag": ""
+      }
+   ],
+   [
+      5,
+      1048677,
+      {
+         "m_Position": [
+            -1.6206331253051758,
+            -13.27726936340332,
+            -12.639999389648438
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.8835425972938538,
+            1.0,
+            1.0
+         ]
+      },
+      1048676,
+      {
+         "m_Position": [
+            -2.4670562744140625,
+            7.645949363708496,
+            23.99053192138672
+         ],
+         "m_Rotation": [
+            30.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097152,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            114.0,
+            12.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097153,
+      {
+         "m_Position": [
+            0.0,
+            16.591955184936523,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097154,
+      {
+         "m_Position": [
+            43.392120361328125,
+            -12.525346755981445,
+            -80.6153335571289
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      2,
+      2097153,
+      {
+         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      2097154,
+      {
+         "ASSET_GEOM_m_RenderObject": "abe538e4303352c2",
+         "ASSET_MAT_m_MaterialInstance": "e9766d0227b43187",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      1048676,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 99.99984741210938,
+         "m_FocalPoint": [
+            -2.4670486450195313,
+            57.6458740234375,
+            110.59293365478516
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Right": 1.0,
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ]
+      }
+   ],
+   [
+      1,
+      2097153,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 5.0,
+         "m_UseGravity": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      1048677,
+      {
+         "m_HalfExtents": [
+            11.0,
+            2.5,
+            19.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      1,
+      2097153,
+      {
+         "m_HalfHeight": 1.5,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 3.0
+      }
+   ],
+   [
+      1,
+      2097152,
+      {
+         "m_AmbientColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Direction": [
+            0.20791170001029968,
+            -0.8935823440551758,
+            -0.3978484272956848
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

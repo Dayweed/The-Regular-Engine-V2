@@ -13,6 +13,9 @@ namespace TRE
 			Transform& transform{ object->GetComponent<Transform>() };
 			if (transform.m_IsDirty)
 			{
+				//Update own local data if i have a parent
+				UpdateLocalData(object);
+				//Update children local data
 				UpdateChildTransform(object);
 			}
 		}
@@ -59,7 +62,6 @@ namespace TRE
 		if (child->GetComponent<Parenting>().m_Parent != "" && std::find(parent->GetComponent<Parenting>().m_Children.begin(), parent->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child)) == parent->GetComponent<Parenting>().m_Children.end())
 		{
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
-			child->GetComponent<Transform>().UpdateLocalMatrix(parent);
 		}
 	}
 
@@ -86,6 +88,7 @@ namespace TRE
 	void ParentingSystem::AddChild(Entity parent, Entity child)
 	{
 		SetParent(child, parent);
+		UpdateChildLocalData(parent, child);
 	}
 
 	std::vector<Entity> ParentingSystem::GetChildren(Entity parent)
@@ -172,5 +175,32 @@ namespace TRE
 				UpdateChildTransform(child);
 			}
 		}
+	}
+
+	void ParentingSystem::UpdateChildLocalData(Entity parent, Entity child)
+	{
+		Transform& parentTransform = parent->GetComponent<Transform>();
+		Transform& childTransform = child->GetComponent<Transform>();
+
+		childTransform.UpdateLocalData(parentTransform);
+		childTransform.m_IsDirty = true;
+	}
+
+	void ParentingSystem::UpdateLocalData(Entity current)
+	{
+		Transform& currentTransform = current->GetComponent<Transform>();
+		//If this object has a parent, update local data
+		if (current->GetComponent<Parenting>().m_Parent != "")
+		{
+			Transform& parentTransform = ECSManager::Instance().FindEntity(current->GetComponent<Parenting>().m_Parent)->GetComponent<Transform>();
+			currentTransform.UpdateLocalData(parentTransform);
+		}
+		else
+		{
+			currentTransform.m_LocalPosition = glm::vec3(0, 0, 0);
+			currentTransform.m_LocalRotation = glm::vec3(0, 0, 0);
+			currentTransform.m_LocalScale = glm::vec3(1.0f);
+		}
+		currentTransform.m_IsDirty = true;
 	}
 }

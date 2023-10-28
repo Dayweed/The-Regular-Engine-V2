@@ -36,6 +36,7 @@ namespace TRE
 			void OnMouseScroll(const MouseScrollEvent& event);
 			void OnKeyboardClick(const InputEvent& event);
 			void OnGridAndSnap(const GridAndSnapEvent& event);
+			void OnGizmoLocal(const LocalGloalGizmoEvent& event);
 		private:
 			//Gonna rewrite in editor camera next time
 			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);
@@ -46,11 +47,12 @@ namespace TRE
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			int m_GizmoOperation = -1; // -1 means no operation
-			//Increament for grid and snap
+			//Increment for grid and snap
 			bool m_IsGridAndSnap = false;
-			float m_PosIncreament = 5.f;
-			float m_RotIncreament = 15.f;
-			float m_ScaleIncreament = 2.f;
+			float m_PosIncrement = 5.f;
+			float m_RotIncrement = 15.f;
+			float m_ScaleIncrement = 2.f;
+			bool m_IsGizmoLocal = false;
 
 			ImVec2 m_ViewportSize;
 			ImVec2 m_ImageSize;

@@ -9,23 +9,18 @@ namespace TRE
 {
 	void to_json(nlohmann::json& j, const SphereCollider& t)
 	{
-		const std::vector<float> v_offset{ t.m_Offset.x, t.m_Offset.y, t.m_Offset.z };
-
 		j = nlohmann::json{
-			{ "m_Offset", v_offset },
-			{ "m_Radius", t.m_Radius },
-			{ "m_IsTrigger", t.m_IsTrigger }
+			WriteVec3MemberToJSON(m_Offset),
+			WriteMemberToJSON(m_Radius),
+			WriteMemberToJSON(m_IsTrigger),
 		};
 	}
 
 	void from_json(const nlohmann::json& j, SphereCollider& t)
 	{
-		const std::vector<float> v_off{ j.at("m_Offset").get<std::vector<float>>() };
-		const float a_off[3]{ v_off[0], v_off[1], v_off[2] };
-		t.m_Offset = glm::make_vec3(a_off);
-
-		t.m_Radius = j.at("m_Radius").get<float>();
-		t.m_IsTrigger = j.at("m_IsTrigger").get<bool>();
+		ReadVec3MemberFromJSON(m_Offset);
+		ReadMemberFromJSON(m_IsTrigger);
+		ReadMemberFromJSON(m_Radius);
 	}
 
 	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const
@@ -126,34 +121,33 @@ namespace TRE
 		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// SO TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		//PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
-		// sphereCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
+		//// sphereCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
 
-		sphereCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
+		//sphereCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
 
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		//unsigned nbShapes = rigidDynamic->getNbShapes();
+		//const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		//nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
 
-		// obtain the index of the sphere shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+		//// obtain the index of the sphere shape
+		//unsigned i = 0;
+		//for (; i < nbShapes; ++i)
+		//{
+		//	if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
 
-			break;
-		}
+		//	break;
+		//}
 
-		PxSphereGeometry sphereGeometry;
-		shapes[i]->getSphereGeometry(sphereGeometry);
-		sphereCollider.m_Radius = sphereGeometry.radius;
+		//PxSphereGeometry sphereGeometry;
+		//shapes[i]->getSphereGeometry(sphereGeometry);
+		//sphereCollider.m_Radius = sphereGeometry.radius;
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
 	{
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
-		// PxRigidDynamic*& rigidDynamic = sharedData.m_RigidDynamic;
 
 		// reset bit for this component
 		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::SphereCollider;
@@ -183,5 +177,6 @@ namespace TRE
 			// SO TEMPORARY
 			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
+		entity->RemoveComponent<SphereCollider>();
 	}
 }
