@@ -550,10 +550,10 @@ namespace TRE
 	{
 		public enum ForceMode
 		{
-			Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
-			Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
-			VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
-			Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
+			Force,              // parameter has unit of mass * length / time^2, i.e., a force
+			Impulse,            // parameter has unit of mass * length / time, i.e., force * time
+			VelocityChange,     // parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
+			Acceleration        // parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

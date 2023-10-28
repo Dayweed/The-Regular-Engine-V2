@@ -114,15 +114,15 @@ namespace TRE
 
         private void Jump(Vector3 JumpHeight)
         {
-            PhysicsSystem.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
+            PS.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
 
         private void Initialize()
         {
-            PhysicsSystem.ConstrainRotationX(Test.id, true);
-            PhysicsSystem.ConstrainRotationY(Test.id, true);
-            //PhysicsSystem.ConstrainRotationZ(Test.id, true);
+            PS.ConstrainRotationX(Test.id, true);
+            // PS.ConstrainRotationY(Test.id, true);
+            PS.ConstrainRotationZ(Test.id, true);
             hasInitalized = true;
         }
     }
