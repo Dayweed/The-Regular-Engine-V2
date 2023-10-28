@@ -196,6 +196,8 @@ namespace TRE
 				ECSManager::Instance().DestroyAll();
 				SceneManager::Instance().LoadScene(path);
 				ECSSystemManager::Instance().AfterReset();
+
+				EditorCamera::Instance().Deserialize();
 			}
 		}
 	}

@@ -31,48 +31,9 @@
 
 namespace TRE
 {
-	void AHHH()
-	{
-		Entity test = ECSManager::Instance().CreateEntity();
-		test->GetComponent<Properties>().m_Name = "AHH";
-		Entity ab = ECSManager::Instance().CreateEntity();
-		ab->GetComponent<Properties>().m_Name = "CARLON";
-		ab->AddComponent<FEL>().vec_i = { 4.5f, 2.f };
-		ab->GetComponent<FEL>().nestedstruct.arr_c = '{';
-
-		Entity fun = ECSManager::Instance().CreateEntity();
-		fun->GetComponent<Properties>().m_Name = "fFNNN";
-		fun->AddComponent<FEL>().arr_i[1] = 1.2f;
-
-		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
-		for (Entity& obj : ECSManager::Instance().GetAllEntities())
-		{
-			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
-		}
-		std::string fileName{ "../Scenes/AHHHScene.json" };
-		SceneManager::Instance().SaveSceneAs(fileName);
-
-		std::cout << "File Name: > " << fileName << "\n";
-
-		SceneManager::Instance().LoadScene(fileName);
-		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
-		for (Entity& obj : ECSManager::Instance().GetAllEntities())
-		{
-			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
-			if (obj->HasComponent<FEL>())
-			{
-				std::cout << "== " << obj->GetComponent<FEL>().nestedstruct.arr_c << "\n";
-				for (auto v : obj->GetComponent<FEL>().vec_i)
-				{
-					std::cout << "=== " << v << "\n";
-				}
-			}
-		}
-	}
-
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
+		SceneManager::Instance().LoadScene("../Scenes/Tutorial.json");
 	}
 
 	void DemoScene()
@@ -85,8 +46,7 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
-		auto SkyboxPassShaderHandle = 3;
-		auto FinalPassShaderHandle = 4;
+
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
 	
 #if 0
@@ -192,16 +152,6 @@ namespace TRE
 		std::unique_ptr<RenderObject> plane = std::make_unique<RenderObject>("../Resources/b262c8535c88eff7.geom");
 		plane->SetHandle(planeHandle);
 		ResourceManager::Instance().AddResource(std::move(plane));
-
-		//FinalPassShader
-		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
-		FinalPassShader->SetHandle(FinalPassShaderHandle);
-		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
-		
-		std::unique_ptr<Shader> SkyboxPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/Skybox.TREshader");
-		SkyboxPassShader->SetHandle(SkyboxPassShaderHandle);
-		ResourceManager::Instance().AddResource(std::move(SkyboxPassShader));
-
 
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBR::GetShaderHandle());
@@ -429,8 +379,8 @@ namespace TRE
 		RegisterECS();
 		Shader::SetupShaders();
 
-		//DemoDeserialize();
-		DemoScene();
+		DemoDeserialize();
+		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		Renderer::Init();
@@ -608,6 +558,8 @@ namespace TRE
 		ResourceManager::Instance().DestroyAllResources();
 		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
+		if(m_EngineInfo.EnableEditor)
+			EditorCamera::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();

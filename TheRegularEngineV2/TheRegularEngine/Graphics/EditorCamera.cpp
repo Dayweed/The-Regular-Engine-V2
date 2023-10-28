@@ -2,6 +2,7 @@
 #include "EditorCamera.h"
 #include "Core/SystemManager.h"
 #include "Core/Transform.h"
+#include "Core/SceneManager.h"
 #include <iostream>
 
 namespace TRE
@@ -19,6 +20,11 @@ namespace TRE
 			CameraHelper::UpdateProjectionMatrix(m_BaseCamera);
 			m_IsDirty = false;
 		}
+	}
+
+	void EditorCamera::Shutdown()
+	{
+		Serialize();
 	}
 
 	void EditorCamera::SetFocalPoint(const glm::vec3& focalPoint)
@@ -90,5 +96,86 @@ namespace TRE
 			transform.m_Rotation = m_Rotation;
 			transform.m_IsDirty = true;
 		}
+	}
+
+	void EditorCamera::Serialize()
+	{
+		std::string finalPath = "../EditorData/";
+
+		std::filesystem::directory_entry entry(finalPath);
+		if (!entry.exists())
+		{
+			std::filesystem::create_directory(finalPath);
+		}
+
+		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
+		std::ofstream file(finalPath);
+
+		if (!file.is_open())
+		{
+			std::cout << "Failed to open file" << finalPath << std::endl;
+			return;
+		}
+
+		file << "Position: " << m_Position.x << " " << m_Position.y << " " << m_Position.z << std::endl;
+		file << "Pitch: " << m_BaseCamera.m_Pitch << std::endl;
+		file << "Yaw: " << m_BaseCamera.m_Yaw << std::endl;
+		file << "Roll: " << m_BaseCamera.m_Roll << std::endl;
+		file << "FocalPoint: " << m_BaseCamera.m_FocalPoint.x << " " << m_BaseCamera.m_FocalPoint.y << " " << m_BaseCamera.m_FocalPoint.z << std::endl;
+		file << "FocalLength: " << m_BaseCamera.m_FocalLength << std::endl;
+
+		file.close();
+	}
+
+	void EditorCamera::Deserialize()
+	{
+		std::string finalPath = "../EditorData/";
+		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
+		std::ifstream file(finalPath);
+		if (!file.is_open())
+		{
+			std::cout << "Failed to open file" << finalPath <<std::endl;
+			return;
+		}
+
+		std::string line;
+		std::getline(file, line);
+		std::istringstream iss(line);
+		std::string position;
+		iss >> position;
+		iss >> m_Position.x;
+		iss >> m_Position.y;
+		iss >> m_Position.z;
+		std::string pitch;
+		std::getline(file, line);
+		iss = std::istringstream(line);
+		iss >> pitch;
+		iss >> m_BaseCamera.m_Pitch;
+		std::string yaw;
+		std::getline(file, line);
+		iss = std::istringstream(line);
+		iss >> yaw;
+		iss >> m_BaseCamera.m_Yaw;
+		std::string roll;
+		std::getline(file, line);
+		iss = std::istringstream(line);
+		iss >> roll;
+		iss >> m_BaseCamera.m_Roll;
+		std::string focalPoint;
+		std::getline(file, line);
+		iss = std::istringstream(line);
+		iss >> focalPoint;
+		iss >> m_BaseCamera.m_FocalPoint.x;
+		iss >> m_BaseCamera.m_FocalPoint.y;
+		iss >> m_BaseCamera.m_FocalPoint.z;
+		std::string focalLength;
+		std::getline(file, line);
+		iss = std::istringstream(line);
+		iss >> focalLength;
+		iss >> m_BaseCamera.m_FocalLength;
+
+		file.close();
+
+		m_IsDirty = true;
 	}
 }

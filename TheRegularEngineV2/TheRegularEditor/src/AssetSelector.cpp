@@ -75,9 +75,6 @@ namespace TRE
 		m_SelectedAssetType = assetType;
 		m_SelectedAsset = AssetManager::Instance().GetAssetHandle(assetName);
 
-		std::cout << "Selected asset: " << assetName << std::endl;
-		std::cout << "Selected asset GUID: " << Resource::GetGUIDHex(m_SelectedAsset) << std::endl;
-
 		//Check if material has been loaded for material panel to see
 		if (assetType == AssetType::Material && m_SelectedAsset)
 		{
@@ -87,7 +84,6 @@ namespace TRE
 				auto material = Material::Deserialize(Resource::GetGUIDHex(rscHandle));
 				(void)material;
 			}
-			std::cout <<"Material loaded" << std::endl;
 		}
 	}
 }
