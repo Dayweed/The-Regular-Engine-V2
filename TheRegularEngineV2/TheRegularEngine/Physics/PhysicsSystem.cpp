@@ -187,6 +187,7 @@ namespace TRE
 
 	void PhysicsSystem::Update()
 	{
+		UpdateAllComponents();
 		ResizeAllColliders();
 
 		//if (!m_IsReadyForUpdate) TESTUpdate();
@@ -196,7 +197,6 @@ namespace TRE
 
 		DestroyOutdatedComponents();
 
-		//UpdateAllComponents();
 	}
 
 	void PhysicsSystem::GameUpdate()
@@ -276,14 +276,15 @@ namespace TRE
 				offset = capsuleCollider.m_Offset;
 			}
 
+			Transform& transform = entity->GetComponent<Transform>();
 			const PxVec3 pos = sharedData.m_RigidDynamic->getGlobalPose().p;
-			entity->GetComponent<Transform>().m_Position = VEC3_CAST(glm::vec3, pos) - offset;
+			transform.m_Position = VEC3_CAST(glm::vec3, pos) - offset;
 
 			const PxQuat rotQuat = sharedData.m_RigidDynamic->getGlobalPose().q;
 			const glm::vec3 eulerAnglesInRad = glm::eulerAngles(glm::quat{ rotQuat.w, rotQuat.x, rotQuat.y, rotQuat.z });
-			entity->GetComponent<Transform>().m_Rotation = eulerAnglesInRad / PI * 180.0f;
-
-			entity->GetComponent<Transform>().m_IsDirty = true;
+			transform.m_Rotation = eulerAnglesInRad / PI * 180.0f;
+			
+			transform.m_IsDirty = true;
 		}
 	}
 

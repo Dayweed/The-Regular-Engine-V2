@@ -126,28 +126,28 @@ namespace TRE
 		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// SO TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		//PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
-		// capsuleCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
+		//// capsuleCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
 
 		//capsuleCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
 
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		//unsigned nbShapes = rigidDynamic->getNbShapes();
+		//const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		//nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
 
-		// obtain the index of the capsule shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
-		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+		//// obtain the index of the capsule shape
+		//unsigned i = 0;
+		//for (; i < nbShapes; ++i)
+		//{
+		//	if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
 
-			break;
-		}
+		//	break;
+		//}
 
-		/*PxCapsuleGeometry capsuleGeometry;
-		shapes[i]->getCapsuleGeometry(capsuleGeometry);
-		capsuleCollider.m_Radius = capsuleGeometry.radius;*/
+		//PxCapsuleGeometry capsuleGeometry;
+		//shapes[i]->getCapsuleGeometry(capsuleGeometry);
+		//capsuleCollider.m_Radius = capsuleGeometry.radius;
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const
