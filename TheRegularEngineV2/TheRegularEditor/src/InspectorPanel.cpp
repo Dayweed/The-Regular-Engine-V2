@@ -169,7 +169,7 @@ namespace TRE
 
 				if (ECSManager::Instance().IsRemovableComponent(List.first))
 				{
-					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
+					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked())
 					{
 						// Update Prefabing if have
 						if (isPrefabInstance)
