@@ -98,6 +98,7 @@ namespace TRE
 
 			std::shared_ptr<SkyboxTexture> m_SkyboxTexture;
 			std::unique_ptr<Material> m_SkyboxMaterial;
+			
 			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;
 			std::unique_ptr<Buffer> m_SkyboxIndexBuffer;
 			uint32_t m_SkyboxIndexCount;
