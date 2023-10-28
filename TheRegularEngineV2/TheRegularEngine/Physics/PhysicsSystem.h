@@ -72,6 +72,10 @@ namespace TRE
 		// keeps track of IsTriggerEnter, IsTriggerStay and IsTriggerExit 'results'
 		std::vector<TriggerHistoryEntry> m_TriggerHistory, m_PrevTriggerHistory;
 		// why can't physx just handle this for me? :_)
+
+		// WHAT TYPE SHOULD THIS BE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+		// I want to have be like `thingy[e1][e2]` and have it return an integer/enum of some sort...
+		// ->is<PxRigidActor>()->getInternalActorIndex();
 	};
 
 	class PhysicsSystem : public ECSSystem
@@ -119,19 +123,19 @@ namespace TRE
 		e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
 		AddForce(e1,{0, 80, 0});
 		*//*__________________________________________________________________________*/
-		void AddForce(const Entity& entity, const glm::vec3& force, const ForceMode::Enum mode) const;
+		void AddForce(const Entity& entity, glm::vec3 force/*, ForceMode mode = ForceMode.Force*/) const;
 
-		void ConstrainPositionX(const Entity& entity, const bool state) const;
+		void ConstrainPositionX(const Entity& entity, bool state) const;
 
-		void ConstrainPositionY(const Entity& entity, const bool state) const;
+		void ConstrainPositionY(const Entity& entity, bool state) const;
 
-		void ConstrainPositionZ(const Entity& entity, const bool state) const;
+		void ConstrainPositionZ(const Entity& entity, bool state) const;
 
-		void ConstrainRotationX(const Entity& entity, const bool state) const;
+		void ConstrainRotationX(const Entity& entity, bool state) const;
 
-		void ConstrainRotationY(const Entity& entity, const bool state) const;
+		void ConstrainRotationY(const Entity& entity, bool state) const;
 
-		void ConstrainRotationZ(const Entity& entity, const bool state) const;
+		void ConstrainRotationZ(const Entity& entity, bool state) const;
 
 		glm::vec3 GetLinearVelocity(const Entity& entity) const;
 
@@ -297,12 +301,6 @@ namespace TRE
 
 	private:
 
-		void ResizeAllColliders() const;
-
-		void DestroyOutdatedComponents() const;
-
-		void UpdateAllComponents() const;
-
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
 		physx::PxDefaultAllocator		m_Allocator;
@@ -319,6 +317,5 @@ namespace TRE
 		physx::PxMaterial*				m_DefaultMaterial = nullptr;
 
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
-		physx::PxMaterial*				m_GroundPlaneMaterial = nullptr; // TEMPORARY MATERIAL
 	};
 }

@@ -122,9 +122,6 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
-		// Mimick Game Loop when forcing the scene to be resetted
-		ECSSystemManager::Instance().BeforeReset();
-
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
 		{
@@ -148,16 +145,11 @@ namespace TRE
 
 		GameLoop::Instance().SetDisplayingPrefab(true);
 
-		ECSSystemManager::Instance().AfterReset();
-
 		return m_DisplayedPrefab;
 	}
 
 	void PrefabSystem::ReturnToScene()
 	{
-		// Mimick Game Loop when forcing the scene to be resetted
-		ECSSystemManager::Instance().BeforeReset();
-
 		// Copy registry and components
 		ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
 		// Clear Backup
@@ -166,8 +158,6 @@ namespace TRE
 		CheckAndUpdateInstances();
 		// Auto set back to false
 		GameLoop::Instance().SetDisplayingPrefab(false);
-
-		ECSSystemManager::Instance().AfterReset();
 	}
 
 	void PrefabSystem::CheckAndUpdateInstances()
@@ -364,10 +354,9 @@ namespace TRE
 			Transform,
 			MeshRenderer,
 			Camera,
-			Rigidbody,
 			SphereCollider,
 			BoxCollider,
-			CapsuleCollider,
+			Rigidbody,
 			FEL,
 			FAKEFEL,
 			Audio,
@@ -379,9 +368,6 @@ namespace TRE
 
 	std::string PrefabSystem::SerializePrefabOutputArchive(entt::registry& reg, std::string prefabGUID, std::string filePath, int NoOfEntities)
 	{
-		// Ensure prefab folder
-		std::filesystem::create_directory(FILESYS_PREFABDEFFOLDER);
-
 		// Set up document
 		PrefabOutputArchive arc(filePath, reg, NoOfEntities);
 		entt::snapshot snapshot{ reg };
@@ -393,10 +379,9 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<CapsuleCollider>(arc)
+			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
 			.component<Audio>(arc)
@@ -519,10 +504,9 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
-			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<CapsuleCollider>(arc)
+			.component<Rigidbody>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
 			.component<DirectionalLight>(arc)

@@ -44,7 +44,7 @@ namespace TRE
 		return m_Resources.size();
 	}
 
-	void ResourceManager::SerializeAll()
+	void  ResourceManager::SerializeAll()
 	{
 		UnloadUnusedResources();
 		for (auto& asset : m_Resources)
@@ -54,13 +54,8 @@ namespace TRE
 		}
 	}
 
-	const bool ResourceManager::IsResourceLoaded(ResourceHandle handle)
+	ResourceManager::~ResourceManager()
 	{
-		return m_Resources.find(handle) != m_Resources.end();
-	}
 
-	const bool ResourceManager::IsResourceLoaded(const std::string& hexHandle)
-	{
-		return IsResourceLoaded(Resource::GetGUIDFromHex(hexHandle));
 	}
 }

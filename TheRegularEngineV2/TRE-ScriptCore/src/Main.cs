@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 
 namespace TRE
 {
-	using PS = PhysicsSystem;
-
 	public class Main
 	{
 		// Scripting Initialization
@@ -13,29 +11,16 @@ namespace TRE
 		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
-        public Entity Temp = new Entity("Temp");
-		public Entity Test = new Entity("Test");
-        public Entity Plane_collider = new Entity("Plane collider");
+        public Entity Temp = new Entity("Temp", "");
+		public Entity Test = new Entity("Test", "");
 
-        //check if player is on the ground (for now , just a plane)
-        private bool isGrounded = true;
-        //Maxium height the player can jump
-        private Vector3 maxHeight = new Vector3(0, 10000, 0);
-
-
-        //check if player used super power
-        private bool isScaled = false;
-        private float defaultScale = 1;
-        private float superScale = 50;
-
-        public Main()
+		public Main()
 		{
-			//Temp.id = ECSManager.CreateEntity(Temp.name);
-			//Console.WriteLine("Hello World from C#!");
+			Temp.ID = ECSManager.CreateEntity(Temp.name);
+			Console.WriteLine("Hello World from C#!");
 
-			Test.id = ECSManager.FindIDFromName(Test.name);
-            Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
-			Console.WriteLine("Test ID: " + Test.id);
+			Test.ID = ECSManager.FindIDFromName(Test.name);
+			Console.WriteLine("Test ID: " + Test.ID);
 
 			Console.WriteLine("Entity: " + Test.GetActive());
             Test.SetActive(false);
@@ -52,82 +37,37 @@ namespace TRE
 
 		public void Start()
 		{
-			humanCentipedo.Start();
 			testingRandoFall.Start();
         }
 
 		public void Update()
 		{
             // Script calling
-            humanCentipedo.Update();
-			//testingRandoFall.Update();
+            //humanCentipedo.Update();
+			testingRandoFall.Update();
 
 			// Move The Test Object 
 			TransformSystem.GetPosition(Test.ID, out Vector3 pos);
 			//
+			Vector3 tmp = new Vector3(0, 0, 0);
 
-            Vector3 dirVec = new Vector3(0, 0, 0);
+			if (InputSystem.GetKeyDown(InputKeys.W))
+			{
+				tmp.x = 60;
+				PhysicsSystem.AddForce(Test.ID, tmp);
+			}
 
-            if (InputSystem.GetKeyDown(InputKeys.W))
-            {
-                dirVec.z += 1;
-                //PS.AddForce(Mole.id, dirVec);
-            }
+			if (InputSystem.GetKeyDown(InputKeys.S))
+			{
+				tmp.x = -60;
+				PhysicsSystem.AddForce(Test.ID, tmp);
+			}
 
-            if (InputSystem.GetKeyDown(InputKeys.S))
-            {
-                dirVec.z += -1;
-                //PS.AddForce(Mole.id, dirVec);
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.A))
-            {
-                dirVec.x += -1;
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.D))
-            {
-                dirVec.x += 1;
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.Space))
-            {
-                // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-                isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
-
-				if (isGrounded)
-                {
-                    Jump(maxHeight); // uh oh beeeg number (for forcemode.force)
-                    // Jump(new Vector3(0, 35, 0)); // ah, much better (for forcemode.velchange)
-                }
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.E))
-            {
-                if (!isScaled)
-                {
-                    PS.ResizeSphereCollider(Test.id, superScale);
-                    isScaled = true;
-                }
-                else if (isScaled)
-                {
-                    PS.ResizeSphereCollider(Test.id, defaultScale);
-                    isScaled = false;
-                }
-            }
-
-            dirVec.Normalize();
-
-            Vector3 tmp = dirVec * 60;
-
-            PS.AddForce(Test.id, tmp, PS.ForceMode.Force);
-        }
-
-        private void Jump(Vector3 JumpHeight)
-        {
-            PhysicsSystem.AddForce(Test.id, JumpHeight, PS.ForceMode.Force);
-            // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
-        }
+			if (InputSystem.GetKeyDown(InputKeys.Space))
+			{
+				Console.WriteLine("Space Pressed!");
+			}
+		}
 	}
 
     public class Testing : Entity

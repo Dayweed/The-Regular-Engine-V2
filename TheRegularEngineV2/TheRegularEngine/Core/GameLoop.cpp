@@ -59,7 +59,7 @@ namespace TRE
 	void GameLoop::ToggleRun(bool isRunning)
 	{
 		// If toggle to run and was not running, save scene temporarily
-		if (isRunning && !m_GameRunning && m_BackUp.empty())
+		if (isRunning && !m_GameRunning)
 		{
 			// Restore back the scene if it was displaying prefab (Assuming if m_BackUp saved the scene before displaying prefab)
 			if (m_DisplayingPrefab)
@@ -71,6 +71,7 @@ namespace TRE
 			MemoryManager::Instance().ClearUndeployed();
 
 			// Save the registry
+			m_BackUp.clear();
 			ECSManager::Instance().SaveRegistry(m_BackUp);
 		}
 
@@ -79,7 +80,7 @@ namespace TRE
 
 	void GameLoop::ResetScene()
 	{
-		if (!m_BackUp.empty())
+		if (m_GameRunning)
 		{
 			m_GameRunning = false;
 			SetSceneReset(true);

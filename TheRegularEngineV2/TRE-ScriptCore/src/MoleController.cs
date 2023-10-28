@@ -15,40 +15,33 @@ namespace TRE
 
 		public void Update()
 		{
-			TransformSystem.GetPosition(Mole.id, out Vector3 pos);
-
-			Vector3 dirVec = new Vector3(0, 0, 0);
+			TransformSystem.GetPosition(Mole.ID, out Vector3 pos);
+			//
+			Vector3 tmp = new Vector3(0, 0, 0);
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
-				dirVec.z += 1;
-				//PhysicsSystem.AddForce(Mole.id, dirVec);
+				tmp.x = 60;
+				PhysicsSystem.AddForce(Mole.ID, tmp);
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
-				dirVec.z += -1;
-				//PhysicsSystem.AddForce(Mole.id, dirVec);
+				tmp.y = -60;
+				PhysicsSystem.AddForce(Mole.ID, tmp);
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
-				dirVec.x += 1;
+				pos.x -= 10.0f;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
-				dirVec.x += -1;
+				pos.x += 10.0f;
 			}
 
-			dirVec.Normalize();
-
-			Vector3 tmp = dirVec * 60;
-
-			// PhysicsSystem.AddForce(Mole.id, tmp);
-			PhysicsSystem.AddForce(Mole.id, tmp, PhysicsSystem.ForceMode.Force);
-
-			TransformSystem.SetPosition(Mole.id, pos);
+			TransformSystem.SetPosition(Mole.ID, pos);
 		}
 	}
 }

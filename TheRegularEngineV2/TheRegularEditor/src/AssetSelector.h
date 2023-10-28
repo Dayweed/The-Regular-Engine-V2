@@ -34,7 +34,7 @@ namespace TRE
 		std::shared_ptr<T> GetSelectedAsset();
 		void ClearSelectedAsset();
 		//void SelectEntity(const ResourceHandle& resourceHandle, AssetType assetType);
-		void SelectAsset(const std::string& assetName, AssetType assetType);
+		void SelectEntity(const std::string& assetName, AssetType assetType);
 
 	private:
 		ResourceHandle m_SelectedAsset{ 0 };

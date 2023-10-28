@@ -41,7 +41,6 @@ namespace TRE
 		template<typename T>
 		std::vector<std::shared_ptr<T>> GetAssetsOfType();
 		const std::string GetName(const ResourceHandle resourceHandle) const;
-		const std::string GetName(const std::string& hexHandle) const;
 
 		void PrintAllAssets() const;
 	private:
@@ -133,6 +132,7 @@ namespace TRE
 
 			return ResourceManager::Instance().GetResource<T>(handle);
 		}
+
 
 		return nullptr;
 	}

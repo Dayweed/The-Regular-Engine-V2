@@ -3,7 +3,6 @@
 #include "Core/Engine.h"
 #include "Core/Logger.h"
 #include "Resource/ResourceManager.h"
-#include "ShaderTypes/PBRShader.h"
 
 namespace TRE
 {
@@ -61,15 +60,10 @@ namespace TRE
 				Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_EditorDescriptorSets[x]);
 			}
 		}
-
-		m_IsValid = true;
 	}
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
-		if(m_IsValid == false)
-			Invalidate();
-
 		m_WriteDescriptors.clear();
 
 		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
@@ -132,58 +126,8 @@ namespace TRE
 		m_Textures[Name] = textures;
 	}
 
-	void Material::SetSkyboxTexture(std::string Name, std::shared_ptr<SkyboxTexture> textures)
-	{
-		m_Skybox = textures;
-	}
-
-	void Material::UpdateSkyboxPass(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
-	{
-		m_WriteDescriptors.clear();
-
-		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
-		{
-			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-			{
-				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
-			}
-			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-			{
-				Write.pImageInfo = &m_Skybox->descriptor;
-			}
-			Write.dstSet = m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex()];
-			m_WriteDescriptors.push_back(Write);
-		}
-
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
-	}
-
-	void Material::UpdateSkyboxPassEditor(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
-	{
-		m_WriteDescriptors.clear();
-
-		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
-		{
-			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-			{
-				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
-			}
-			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-			{
-				Write.pImageInfo = &m_Skybox->descriptor;
-			}
-			Write.dstSet = m_EditorDescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex()];
-			m_WriteDescriptors.push_back(Write);
-		}
-
-		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
-	}
-
 	void Material::Serialize()
 	{
-		if (m_Handle == PBR::GetDefaultMaterial())
-			return;
-
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = GetHandleHex() + ".material";
 		const std::string resourcePath = resourceFolderPath + resource;

@@ -4,8 +4,6 @@
 #include "Core/Logger.h"
 #include "ShaderTypes/PBRShader.h"
 #include "ShaderTypes/LineShader.h"
-#include "ShaderReflection.h"
-#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
@@ -175,18 +173,6 @@ namespace TRE
 	{
 		std::unique_ptr<PBR> pbr = std::make_unique<PBR>("51e8150cd09be553");
 		std::unique_ptr<Line> line = std::make_unique<Line>("7");
-		auto SkyboxPassShaderHandle = 3;
-		auto FinalPassShaderHandle = 4;
-
-		//FinalPassShader
-		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
-		FinalPassShader->SetHandle(FinalPassShaderHandle);
-		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
-
-		//SkyboxPassShader
-		std::unique_ptr<Shader> SkyboxPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/Skybox.TREshader");
-		SkyboxPassShader->SetHandle(SkyboxPassShaderHandle);
-		ResourceManager::Instance().AddResource(std::move(SkyboxPassShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

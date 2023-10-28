@@ -74,8 +74,7 @@ namespace TRE
 		rasterizer.lineWidth = m_Config.LineWidth;
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 		//rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
-		//rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
-		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.f;
 		rasterizer.depthBiasClamp = 0.f;
@@ -119,7 +118,7 @@ namespace TRE
 		dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
-		
+
 		VkPipelineDepthStencilStateCreateInfo depthStencil{};
 		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = VK_TRUE;

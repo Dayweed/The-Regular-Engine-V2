@@ -31,9 +31,48 @@
 
 namespace TRE
 {
+	void AHHH()
+	{
+		Entity test = ECSManager::Instance().CreateEntity();
+		test->GetComponent<Properties>().m_Name = "AHH";
+		Entity ab = ECSManager::Instance().CreateEntity();
+		ab->GetComponent<Properties>().m_Name = "CARLON";
+		ab->AddComponent<FEL>().vec_i = { 4.5f, 2.f };
+		ab->GetComponent<FEL>().nestedstruct.arr_c = '{';
+
+		Entity fun = ECSManager::Instance().CreateEntity();
+		fun->GetComponent<Properties>().m_Name = "fFNNN";
+		fun->AddComponent<FEL>().arr_i[1] = 1.2f;
+
+		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
+		}
+		std::string fileName{ "../Scenes/AHHHScene.json" };
+		SceneManager::Instance().SaveSceneAs(fileName);
+
+		std::cout << "File Name: > " << fileName << "\n";
+
+		SceneManager::Instance().LoadScene(fileName);
+		std::cout << "- " << ECSManager::Instance().GetAllEntities().size() << "\n";
+		for (Entity& obj : ECSManager::Instance().GetAllEntities())
+		{
+			std::cout << "= " << obj->GetName() << "|" << obj->HasComponent<Properties>() << "|" << obj->HasComponent<Parenting>() << "|" << obj->HasComponent<FEL>() << "\n";
+			if (obj->HasComponent<FEL>())
+			{
+				std::cout << "== " << obj->GetComponent<FEL>().nestedstruct.arr_c << "\n";
+				for (auto v : obj->GetComponent<FEL>().vec_i)
+				{
+					std::cout << "=== " << v << "\n";
+				}
+			}
+		}
+	}
+
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().LoadScene("../Scenes/Tutorial.json");
+		SceneManager::Instance().LoadScene("../Scenes/DemoScene.json");
 	}
 
 	void DemoScene()
@@ -46,8 +85,9 @@ namespace TRE
 		auto textureHandle4 = Resource::GetGUIDFromHex("13392e8301ebb46"); //AO
 		auto skullHandle = Resource::GetGUIDFromHex("b1d2057915001876"); //skull
 		auto planeHandle = Resource::GetGUIDFromHex("b262c8535c88eff7"); //plane
+		auto FinalPassShaderHandle = 4;
 		auto matHandle = Resource::GetGUIDFromHex("74b283e6a2bed9d8");
-	
+
 #if 0
 		auto AnimationHandle = 5;
 		auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
@@ -76,37 +116,6 @@ namespace TRE
 		std::unique_ptr<VulkanTexture> vkt4 = std::make_unique<VulkanTexture>("../Resources/13392e8301ebb46.DDS");
 		vkt4->SetHandle(textureHandle4);
 		ResourceManager::Instance().AddResource(std::move(vkt4));
-
-		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
-		auto Skybox2 = Resource::GetGUIDFromHex("612fbc6691dcd0bb");
-		auto Skybox3 = Resource::GetGUIDFromHex("d7317320914622e8");
-		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
-		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
-		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
-
-		std::unique_ptr<VulkanTexture> SkyboxTexture1 = std::make_unique<VulkanTexture>("../Resources/e562694e2c3833ec.DDS");
-		SkyboxTexture1->SetHandle(Skybox1);
-		ResourceManager::Instance().AddResource(std::move(SkyboxTexture1));
-
-		std::unique_ptr<VulkanTexture> SkyboxTexture2 = std::make_unique<VulkanTexture>("../Resources/612fbc6691dcd0bb.DDS");
-		SkyboxTexture2->SetHandle(Skybox2);
-		ResourceManager::Instance().AddResource(std::move(SkyboxTexture2));
-
-		std::unique_ptr<VulkanTexture> SkyboxTexture3 = std::make_unique<VulkanTexture>("../Resources/d7317320914622e8.DDS");
-		SkyboxTexture3->SetHandle(Skybox3);
-		ResourceManager::Instance().AddResource(std::move(SkyboxTexture3));
-
-		std::unique_ptr<VulkanTexture> SkyboxTexture4 = std::make_unique<VulkanTexture>("../Resources/5994bacabaa99f19.DDS");
-		SkyboxTexture4->SetHandle(Skybox4);
-		ResourceManager::Instance().AddResource(std::move(SkyboxTexture4));
-
-		std::unique_ptr<VulkanTexture> SkyboxTexture5 = std::make_unique<VulkanTexture>("../Resources/bb22164f64671a56.DDS");
-		SkyboxTexture5->SetHandle(Skybox5);
-		ResourceManager::Instance().AddResource(std::move(SkyboxTexture5));
-
-		std::unique_ptr<VulkanTexture> SkyboxTexture6 = std::make_unique<VulkanTexture>("../Resources/47335a309e5eef62.DDS");
-		SkyboxTexture6->SetHandle(Skybox6);
-		ResourceManager::Instance().AddResource(std::move(SkyboxTexture6));
 
 		//Animation Textures//
 #if 0
@@ -152,6 +161,11 @@ namespace TRE
 		plane->SetHandle(planeHandle);
 		ResourceManager::Instance().AddResource(std::move(plane));
 
+		//FinalPassShader
+		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
+		FinalPassShader->SetHandle(FinalPassShaderHandle);
+		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
+
 		// Create a material instance
 		auto VertShader = ResourceManager::Instance().GetResource<Shader>(PBR::GetShaderHandle());
 		std::unique_ptr<Material> mat1 = std::make_unique<Material>(VertShader);
@@ -166,8 +180,8 @@ namespace TRE
 		auto cameraSystem = ECSSystemManager::Instance().GetSystem<CameraSystem>();
 		auto audioSystem = ECSSystemManager::Instance().GetSystem<AudioSystem>();
 
-		Entity test = ECSManager::Instance().CreateEntity();
 		{
+			Entity test = ECSManager::Instance().CreateEntity();
 			test->GetComponent<Properties>().m_Name = "Test";
 
 			Transform& testTransform{ test->GetComponent<Transform>() };
@@ -177,8 +191,6 @@ namespace TRE
 			testTransform.m_IsDirty = true;
 
 			test->AddComponent<MeshRenderer>();
-			test->AddComponent<CapsuleCollider>();
-			test->AddComponent<Rigidbody>();
 			meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
@@ -189,10 +201,13 @@ namespace TRE
 			audioSystem->SetSpatialize(test,true);
 			audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);*/
+
+			//test->AddComponent<SphereCollider>();
+			//test->AddComponent<Rigidbody>();
 		}
 
-		Entity test2 = ECSManager::Instance().CreateEntity();
 		{
+			Entity test2 = ECSManager::Instance().CreateEntity();
 			test2->GetComponent<Properties>().m_Name = "Test2";
 
 			Transform& test2Transform{ test2->GetComponent<Transform>() };
@@ -205,8 +220,8 @@ namespace TRE
 			meshRendererSystem->SetMeshRenderer(test2, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		}
 
-		Entity test3 = ECSManager::Instance().CreateEntity();
 		{
+			Entity test3 = ECSManager::Instance().CreateEntity();
 			test3->GetComponent<Properties>().m_Name = "Test3";
 
 			Transform& test3Transform{ test3->GetComponent<Transform>() };
@@ -219,9 +234,6 @@ namespace TRE
 			meshRendererSystem->SetMeshRenderer(test3, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 			meshRendererSystem->SetMaterial(test3, ResourceManager::Instance().GetResource<Material>(matHandle));
 		}
-
-		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test, test2);
-		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(test2, test3);
 
 		{
 			Entity planeCollider = ECSManager::Instance().CreateEntity();
@@ -255,33 +267,33 @@ namespace TRE
 			light->GetComponent<Transform>().m_IsDirty = true;
 		}
 
-		//{
-		//	// Parent child prefabing test
-		//	Entity prefabParent = ECSManager::Instance().CreateEntity();
-		//	prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
-		//	Transform& transform3 = prefabParent->GetComponent<Transform>();
-		//	transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
-		//	transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-		//	transform3.m_Rotation = glm::vec3(0, 180.f, 0);
-		//	transform3.m_IsDirty = true;
-		//	prefabParent->AddComponent<MeshRenderer>();
-		//	meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		//	meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
+		{
+			//// Parent child prefabing test
+			//Entity prefabParent = ECSManager::Instance().CreateEntity();
+			//prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
+			//Transform& transform3 = prefabParent->GetComponent<Transform>();
+			//transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
+			//transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
+			//transform3.m_Rotation = glm::vec3(0, 180.f, 0);
+			//transform3.m_IsDirty = true;
+			//prefabParent->AddComponent<MeshRenderer>();
+			//meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			//meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-		//	Entity prefabChild = ECSManager::Instance().CreateEntity();
-		//	prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
-		//	Transform& transform4 = prefabChild->GetComponent<Transform>();
-		//	transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
-		//	transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
-		//	transform4.m_Rotation = glm::vec3(0, 180.f, 0);
-		//	transform4.m_IsDirty = true;
-		//	prefabChild->AddComponent<MeshRenderer>();
-		//	prefabChild->AddComponent<FAKEFEL>();
-		//	meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		//	meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
+			//Entity prefabChild = ECSManager::Instance().CreateEntity();
+			//prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
+			//Transform& transform4 = prefabChild->GetComponent<Transform>();
+			//transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
+			//transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
+			//transform4.m_Rotation = glm::vec3(0, 180.f, 0);
+			//transform4.m_IsDirty = true;
+			//prefabChild->AddComponent<MeshRenderer>();
+			//prefabChild->AddComponent<FAKEFEL>();
+			//meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
+			//meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-		//	ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
-		//}
+			//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
+		}
 
 		{
 			//dont delete this
@@ -320,13 +332,6 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child7, parent4);
 			Entity child8 = ECSManager::Instance().CreateEntity("child8");
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(child8, parent4);
-		}
-
-		{
-			// Testing RandomizeFallingObjLocation script
-			Entity spawner = ECSManager::Instance().CreateEntity("spawner");
-			spawner->GetComponent<Transform>().m_Position = { 0, 0, 20 };
-			spawner->GetComponent<Transform>().m_IsDirty = true;
 		}
 
 		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
@@ -378,8 +383,8 @@ namespace TRE
 		RegisterECS();
 		Shader::SetupShaders();
 
-		DemoDeserialize();
-		//DemoScene();
+		//DemoDeserialize();
+		DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		Renderer::Init();
@@ -461,10 +466,11 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
-			m_SceneRenderer->BeginFrame();
+			const auto& test = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+			m_SceneRenderer->BeginFrame(test);
 
 			if (m_EngineInfo.EnableEditor)
-				m_EditorSceneRenderer->BeginEditorFrame();
+				m_EditorSceneRenderer->BeginEditorFrame(EditorCamera::Instance());
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -552,8 +558,6 @@ namespace TRE
 		ResourceManager::Instance().DestroyAllResources();
 		EntityCopier::Instance().Shutdown();
 		GameLoop::Instance().Shutdown();
-		if(m_EngineInfo.EnableEditor)
-			EditorCamera::Instance().Shutdown();
 		ECSManager::Instance().DestroyAll();
 		ECSSystemManager::Instance().ShutdownSystem();
 		EditorSystemManager::Instance().ShutdownSystem();

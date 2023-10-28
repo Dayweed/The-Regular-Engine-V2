@@ -18,10 +18,6 @@ namespace TRE
 		const VkImage& GetImage() const { return m_Image; }
 		const VkImageView& GetImageView() const { return m_ImageView; }
 		const VkDeviceMemory& GetMemory() const { return m_ImageMemory; }
-		const uint32_t& GetWidth() const { return m_Width; }
-		const uint32_t& GetHeight() const { return m_Height; }
-		void* GetBuffer() { return m_Buffer; }
-		VkFormat GetFormat() { return m_Format; }
 
 		static ResourceType GetType() { return ResourceType::Texture; }
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
@@ -39,12 +35,6 @@ namespace TRE
 		VkImageView m_ImageView;
 		VkDeviceMemory m_ImageMemory;
 		VkDescriptorImageInfo m_DescriptorImageInfo;
-
-		uint32_t m_Width;
-		uint32_t m_Height;
-		VkFormat m_Format;
-
-		void* m_Buffer = nullptr;
 
 		static ResourceHandle m_DefaultTextureID;
 	};
