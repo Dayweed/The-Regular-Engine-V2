@@ -37,7 +37,7 @@ namespace TRE
 			ID = id;
         }
 
-        public Entity(string _name, string _id = "")
+        public Entity(string _id = "", string _name = "")
 		{
 			name = _name;
 			ID = _id;
@@ -562,16 +562,16 @@ namespace TRE
 		internal extern static void GetIsMainCamera(string entityid, out bool output);
 	}
 
-	public class PhysicsSystem
-	{
-		public enum ForceMode
-		{
-			Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
-			Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
-			VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
-			Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
-		}
+    public enum ForceMode
+    {
+        Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
+        Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
+        VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
+        Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
+    }
 
+    public class PhysicsSystem
+	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void ResizeSphereCollider(string entityid, float newRadius);
 

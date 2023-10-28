@@ -46,7 +46,7 @@ namespace TRE
 			Vector3 tmp = dirVec * 60;
 
 			// PhysicsSystem.AddForce(Mole.id, tmp);
-			PhysicsSystem.AddForce(Mole.ID, tmp, PhysicsSystem.ForceMode.Force);
+			PhysicsSystem.AddForce(Mole.ID, tmp, ForceMode.Force);
 
 			TransformSystem.SetPosition(Mole.ID, pos);
 		}

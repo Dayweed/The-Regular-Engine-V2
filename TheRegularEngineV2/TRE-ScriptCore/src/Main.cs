@@ -13,9 +13,9 @@ namespace TRE
 		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         //create the test object and temp object not too sure if the temp object is linked in some 
-        public Entity Temp = new Entity("Temp");
-		public Entity Test = new Entity("Test");
-        public Entity Plane_collider = new Entity("Plane collider");
+        public Entity Temp = new Entity("", "Temp");
+		public Entity Test = new Entity("", "Test");
+        public Entity Plane_collider = new Entity("", "Plane collider");
 
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
@@ -120,12 +120,12 @@ namespace TRE
 
             Vector3 tmp = dirVec * 60;
 
-            PS.AddForce(Test.ID, tmp, PS.ForceMode.Force);
+            PS.AddForce(Test.ID, tmp, ForceMode.Force);
         }
 
         private void Jump(Vector3 JumpHeight)
         {
-            PhysicsSystem.AddForce(Test.ID, JumpHeight, PS.ForceMode.Force);
+            PhysicsSystem.AddForce(Test.ID, JumpHeight, ForceMode.Force);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
 	}
