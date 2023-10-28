@@ -358,8 +358,8 @@ namespace TRE
 			proj[1][1] *= -1.f;
 			glm::mat4 View = camera.GetViewMatrix();
 
-			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
 			Transform& transform = SelectedEntity->GetComponent<Transform>();
+			glm::mat4 xform = transform.m_WorldXform;
 
 			float snapValue = 1.f;
 			switch (m_GizmoOperation)

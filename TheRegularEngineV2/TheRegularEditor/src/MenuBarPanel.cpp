@@ -41,10 +41,12 @@ namespace TRE
 			{
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 				{
+					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 					NewScene();
 				}
 				if (ImGui::MenuItem("Open", "Ctrl+O"))
 				{
+					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 					OpenScene();
 				}
 				if (ImGui::MenuItem("Save", "Ctrl+S"))

@@ -11,6 +11,7 @@
 #include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace TRE
 {
@@ -100,7 +101,6 @@ namespace TRE
 			std::unique_ptr<Material> m_SkyboxMaterial;
 			
 			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;
-			std::unique_ptr<Buffer> m_SkyboxIndexBuffer;
-			uint32_t m_SkyboxIndexCount;
+			std::unique_ptr<IndexBuffer> m_SkyboxIndexBuffer;
 	};
 }
