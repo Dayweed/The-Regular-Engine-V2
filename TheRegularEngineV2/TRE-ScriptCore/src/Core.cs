@@ -38,14 +38,15 @@ namespace TRE
         public Entity(EntityID id)
         {
 			ID = id;
+			name = ECSManager.FindNameFromID(ID);
         }
 
         public Entity(EntityID _id = new EntityID(), string _name = "")
 		{
-			name = _name;
 			ID = _id;
+            name = _name;
 
-			parenting = new Parenting(ID);
+            parenting = new Parenting(ID);
 			TransformSystem.GetPosition(ID, out Vector3 pos);
 			TransformSystem.GetRotation(ID, out Vector3 rot);
             transform = new Transform(ID, pos, rot, new Vector3(1,1,1));
@@ -381,6 +382,16 @@ namespace TRE
 
 	public class ECSManager
 	{
+		public static Entity FindEntityByName(string name)
+		{
+			Entity ent = new Entity();
+			ent.ID = FindIDFromName(name);
+			ent.name = name;
+            TransformSystem.GetPosition(ent.ID, out Vector3 pos);
+            TransformSystem.GetRotation(ent.ID, out Vector3 rot);
+            ent.transform = new Transform(ent.ID, pos, rot, new Vector3(1, 1, 1));
+			return ent;
+        }
 		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())
 		{
 			// Ensure scaling is not zero, since Vector3 does not allow const version currently and must compile-time const

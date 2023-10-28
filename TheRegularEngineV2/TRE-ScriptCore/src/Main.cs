@@ -8,16 +8,15 @@ namespace TRE
 
 	public class Main
 	{
-		// Scripting Initialization
-		//HumanCentipede humanCentipedo = new HumanCentipede();
-		//RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
+        // Scripting Initialization
+        //HumanCentipede humanCentipedo = new HumanCentipede();
+        //RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
         /* Commenting out uneeded code to prevent Console Panel spam...
         //create the test object and temp object not too sure if the temp object is linked in some 
         public Entity Temp = new Entity(new long(), "Temp");
 		public Entity Test = new Entity(new long(), "Test");
         public Entity Plane_collider = new Entity(new long(), "Plane collider");
-        */
 
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
@@ -29,6 +28,7 @@ namespace TRE
         private bool isScaled = false;
         private float defaultScale = 1;
         private float superScale = 50;
+        */
 
         public Main()
 		{

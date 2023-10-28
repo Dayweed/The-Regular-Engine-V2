@@ -302,8 +302,10 @@ namespace TRE
 	{
         if (name == nullptr)
         {
-            std::string func{ __FUNCTION__ };
-            TRE_CORE_WARN(func + " name is nullptr");
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            std::string function{ __FUNCTION__ };
+            str += "[" + function + "] Name is empty!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
             // Did not find the name
             return CSEntityID();
         }
@@ -315,11 +317,15 @@ namespace TRE
         {
         	// Found the name
 			std::string ID = sceneObjects[temp];
-			return CSEntityID();
+			return EntityID_EngineToCS(ID);
 		}
 		else
 		{
 			// Did not find the name
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            std::string function{ __FUNCTION__ };
+            str += "[" + function + "] Could not find name (" + MonoStringToString(name) + ") in ECS Entities!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
 			return CSEntityID();
 		}
 	}
