@@ -33,8 +33,12 @@ namespace TRE
 			indices[i] = geom->pIndices[i];
 		}
 
-		CreateVertexBuffer(vertices);
-		CreateIndexBuffer(indices);
+		m_VertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(Vertex));
+		if (indices.size() > 0)
+		{
+			m_IndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
+			m_HasIndexBuffer = true;
+		}
 		CreateBoundingSphere(vertices);
 	}
 
@@ -59,52 +63,12 @@ namespace TRE
 	{
 		if (m_HasIndexBuffer)
 		{
-			vkCmdDrawIndexed(commandBuffer, m_IndexCount, 1, 0, 0, 0);
+			vkCmdDrawIndexed(commandBuffer, m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
 		else
 		{
 			vkCmdDraw(commandBuffer, m_VertexCount, 1, 0, 0);
 		}
-	}
-
-	void RenderObject::CreateVertexBuffer(const std::vector<Vertex>& vertices)
-	{
-		m_VertexCount = static_cast<std::uint32_t>(vertices.size());
-		assert(m_VertexCount >= 3 && "Vertex count must be at least 3");
-
-		uint32_t vertexSize = sizeof(vertices[0]);
-		Buffer stagingBuffer(vertexSize, m_VertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		//Create a staging buffer to copy the vertex data to
-		stagingBuffer.Map();
-		stagingBuffer.WriteToBuffer((void*)vertices.data());
-
-		//Flush data from staging buffer to vertex buffer
-		m_VertexBuffer = std::make_unique<Buffer>(vertexSize, m_VertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		VkDeviceSize bufferSize = vertexSize * m_VertexCount;
-		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_VertexBuffer->GetBuffer(), bufferSize);
-	}
-
-	void RenderObject::CreateIndexBuffer(const std::vector<std::uint32_t>& indices)
-	{
-		m_IndexCount = static_cast<std::uint32_t>(indices.size());
-		m_HasIndexBuffer = m_IndexCount > 0;
-
-		if (!m_HasIndexBuffer)
-			return;
-
-		uint32_t indexSize = sizeof(indices[0]);
-		Buffer stagingBuffer(indexSize, m_IndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		stagingBuffer.Map();
-		stagingBuffer.WriteToBuffer((void*)indices.data());
-
-		m_IndexBuffer = std::make_unique<Buffer>(indexSize, m_IndexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		VkDeviceSize bufferSize = indexSize * m_IndexCount;
-		vkUtils::CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
 	}
 
 	void RenderObject::CreateBoundingSphere(const std::vector<Vertex>& vertices)

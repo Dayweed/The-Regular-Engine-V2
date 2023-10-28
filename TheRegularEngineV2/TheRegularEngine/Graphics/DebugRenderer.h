@@ -1,8 +1,9 @@
 #pragma once
 #include "Material.h"
 #include "Pipeline.h"
-#include "Buffer.h"
 #include "glm/glm.hpp"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace TRE
 {
@@ -44,9 +45,8 @@ namespace TRE
 	private:
 		struct DebugType
 		{
-			std::unique_ptr<Buffer> m_VertexBuffer;
-			std::unique_ptr<Buffer> m_IndexBuffer;
-			uint32_t m_IndexCount;
+			std::unique_ptr<VertexBuffer> m_VertexBuffer;
+			std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		};
 	private:
 		std::shared_ptr<Material> m_DebugMaterialInstance;

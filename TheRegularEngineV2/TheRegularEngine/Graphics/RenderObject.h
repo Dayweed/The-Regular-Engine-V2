@@ -1,8 +1,9 @@
 #pragma once
-#include "Buffer.h"
 #include "Geom.h"
 #include "Sphere3D.h"
 #include "Resource/Resource.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace TRE
 {
@@ -41,19 +42,16 @@ namespace TRE
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
 
 	private:
-		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
-		void CreateIndexBuffer(const std::vector<std::uint32_t>& indices);
 		void CreateBoundingSphere(const std::vector<Vertex>& vertices);
 
 		RenderObject(RenderObject&) = delete;
 		void operator=(const RenderObject&) = delete;
 	private:
-		std::unique_ptr<Buffer> m_VertexBuffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::uint32_t m_VertexCount;
 
 		bool m_HasIndexBuffer{ false };
-		std::unique_ptr<Buffer> m_IndexBuffer;
-		std::uint32_t m_IndexCount;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
 		//Ill change this next time to account for non uniform scaling
 		Collision::Sphere3D m_BoundingSphere; //Local space bounding sphere
