@@ -14,7 +14,6 @@ namespace TRE
 		private:
 			VkBuffer m_Buffer;
 			VkDeviceMemory m_BufferMemory;
-			void* m_CPUBuffer;
 			uint32_t m_BufferSize;
 	};
 }

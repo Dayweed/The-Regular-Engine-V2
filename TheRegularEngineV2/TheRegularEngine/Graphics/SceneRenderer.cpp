@@ -377,7 +377,7 @@ namespace TRE
 
 			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexCount, 1, 0, 0, 0);
+			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
 
 		//Animation Pass
@@ -722,21 +722,7 @@ namespace TRE
 		};
 
 		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(vertices[0]));
-
-		//Index
-		m_SkyboxIndexCount = (uint32_t)indices.size();
-
-		uint32_t indexSize = sizeof(int);
-		Buffer stagingBufferindex(indexSize, m_SkyboxIndexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		stagingBufferindex.Map();
-		stagingBufferindex.WriteToBuffer((void*)indices.data());
-		stagingBufferindex.Unmap();
-		m_SkyboxIndexBuffer = std::make_unique<Buffer>(indexSize, m_SkyboxIndexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		VkDeviceSize indexbufferSize = indexSize * m_SkyboxIndexCount;
-		vkUtils::CopyBuffer(stagingBufferindex.GetBuffer(), m_SkyboxIndexBuffer->GetBuffer(), indexbufferSize);
+		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
 
 		vkDestroyBuffer(m_Device->GetLogicalDevice(), stagingBuffer, nullptr);
 		vkFreeMemory(m_Device->GetLogicalDevice(), stagingMemory, nullptr);
