@@ -33,7 +33,8 @@ namespace TRE
 {
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().LoadScene("../Scenes/Tutorial.json");
+		SceneManager::Instance().NewScene();
+		//SceneManager::Instance().LoadScene("../Scenes/Tutorial.json");
 	}
 
 	void DemoScene()

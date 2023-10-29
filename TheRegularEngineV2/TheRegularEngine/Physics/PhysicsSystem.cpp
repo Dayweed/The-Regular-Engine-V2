@@ -361,6 +361,11 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
+	void PhysicsSystem::SetDrawDebug(bool draw)
+	{
+		m_DrawDebugLines = draw;
+	}
+
 	//This function creates a stack of shapes
 	void PhysicsSystem::CreateStack(const PxTransform& t, unsigned size, float halfExtent) const
 	{
@@ -775,13 +780,22 @@ namespace TRE
 			UpdateRigidbody(entity);
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
-			UpdateSphereCollider(entity);
+		{
+			UpdateSphereCollider(entity); 
+			entity->GetComponent<SphereCollider>().m_IsVisible = m_DrawDebugLines;
+		}
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		{
 			UpdateBoxCollider(entity);
+			entity->GetComponent<BoxCollider>().m_IsVisible = m_DrawDebugLines;
+		}
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		{
 			UpdateCapsuleCollider(entity);
+			entity->GetComponent<CapsuleCollider>().m_IsVisible = m_DrawDebugLines;
+		}
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)

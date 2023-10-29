@@ -87,6 +87,8 @@ namespace TRE
 		// void OnDestroyEntities() override;
 		void Shutdown() override;
 
+		void SetDrawDebug(bool draw);
+
 #pragma region Rigidbody Function Declarations
 		/* !
 		@function      ConstructRigidbody
@@ -320,5 +322,7 @@ namespace TRE
 
 		physx::PxRigidStatic*			m_GroundPlane = nullptr; // TEMPORARY PLANE
 		physx::PxMaterial*				m_GroundPlaneMaterial = nullptr; // TEMPORARY MATERIAL
+
+		bool m_DrawDebugLines = false;
 	};
 }
