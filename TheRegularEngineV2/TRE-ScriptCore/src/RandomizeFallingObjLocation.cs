@@ -15,6 +15,21 @@ namespace TRE
 
         }
 
+        public void OnEnable()
+        {
+            Core.Log("OnEnable");
+        }
+
+        public void OnDisable()
+        {
+            Core.Log("OnDisable");
+        }
+
+        public void OnDestroy()
+        {
+            Core.Log("OnDestroy");
+        }
+
         public void Start()
         {
             Core.Log("Testing on Finding Scripts");

@@ -337,6 +337,48 @@ namespace TRE
 		return s_ScriptEngineData->ScriptClasses.find(className) != s_ScriptEngineData->ScriptClasses.end();
 	}
 
+	void ScriptEngine::OnEnableEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnEnableInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
+	void ScriptEngine::OnDisableEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnDisableInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
+	void ScriptEngine::OnDestroyEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnDestroyInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
 	void ScriptEngine::OnCreateEntity(Entity entity)
 	{
 		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
@@ -482,6 +524,9 @@ namespace TRE
     	m_Instance = scriptClass->Instantiate();
 		
 		m_Constructor = ScriptEngine::s_ScriptEngineData->MainClass.GetMethod(".ctor", 1);
+		m_EnableMethod = scriptClass->GetMethod("OnEnable", 0);
+		m_DisableMethod = scriptClass->GetMethod("OnDisable", 0);
+		m_DestroyMethod = scriptClass->GetMethod("OnDestroy", 0);
 		m_CreateMethod = scriptClass->GetMethod("OnCreate", 0);
 		m_StartMethod = scriptClass->GetMethod("Start", 0);
 		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
@@ -494,6 +539,24 @@ namespace TRE
 			m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
     	}
     }
+
+	void ScriptInstance::OnEnableInvoke()
+	{
+		if(m_EnableMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_EnableMethod, nullptr);
+	}
+
+	void ScriptInstance::OnDisableInvoke()
+	{
+		if(m_DisableMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_DisableMethod, nullptr);
+	}
+
+	void ScriptInstance::OnDestroyInvoke()
+	{
+		if(m_DestroyMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_DestroyMethod, nullptr);
+	}
 
 	void ScriptInstance::OnCreateInvoke()
 	{

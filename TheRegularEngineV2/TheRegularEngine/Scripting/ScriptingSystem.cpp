@@ -44,6 +44,28 @@ namespace TRE
 			
 		}
 
+		// On Enable
+		for (auto e : m_ScriptEntities)
+		{
+			Properties& prop{ e->GetComponent<Properties>() };
+			if (prop.m_IsDirty && prop.m_Active)
+			{
+				e->GetComponent<Properties>().m_IsDirty = false;
+				ScriptEngine::OnEnableEntity(e);
+			}
+		}
+
+		// On Disable
+		for (auto e : m_ScriptEntities)
+		{
+			Properties& prop{ e->GetComponent<Properties>() };
+			if (prop.m_IsDirty && !prop.m_Active)
+			{
+				e->GetComponent<Properties>().m_IsDirty = false;
+				ScriptEngine::OnDisableEntity(e);
+			}
+		}
+
 		// For Scripts just created
 		for(auto e: m_ScriptEntities)
 		{
@@ -78,6 +100,13 @@ namespace TRE
 		for(auto e: m_ScriptEntities)
 		{
 			ScriptEngine::OnUpdateEntity(e);
+		}
+
+		// On Destroy
+		for (auto e : m_ScriptEntities)
+		{
+			if (e->HasComponent<Removal>())
+				ScriptEngine::OnDestroyEntity(e);
 		}
 
 		ScriptEngine::UpdateScriptingMain();

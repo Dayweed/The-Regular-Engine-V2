@@ -77,6 +77,7 @@ namespace TRE
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
+        Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != isActive);
         Temp->GetComponent<Properties>().m_Active = isActive;
     }
 

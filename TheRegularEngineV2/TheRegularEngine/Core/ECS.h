@@ -129,8 +129,9 @@ namespace TRE
 	{
 		std::string m_GUID{};
 		std::string m_Tag{};
-		bool m_Active{ true };		// To check if it is active
 		std::string m_Name{};		// To get the name
+		bool m_Active{ true };		// To check if it is active
+		bool m_IsDirty{ false };	// To check if active got changed (Scripting ONLY)
 
 		Properties() = default;
 		~Properties() = default;
@@ -939,7 +940,7 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
-	property_var(m_GUID).Name("GUID"),
+	//property_var(m_GUID).Name("GUID"),
 	property_var(m_Tag).Name("Tag"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)

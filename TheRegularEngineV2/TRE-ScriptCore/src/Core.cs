@@ -74,6 +74,11 @@ namespace TRE
             }
         }
 
+		public void DestroySelf()
+		{
+            ECSManager.DestroyEntity(this.ID);
+        }
+
         public void Rename(string _name)
 		{
 			name = _name;
