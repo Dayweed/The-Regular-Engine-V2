@@ -375,11 +375,17 @@ namespace TRE
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
 	{
-		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
-		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+		return{};
+
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
+		//CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+		//for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		{
-			CollisionsID.emplace_back(first, second);
+			std::cout << first << "|" << second << "\n";
+			std::pair<unsigned, unsigned> pair{ static_cast<unsigned>(first), static_cast<unsigned>(second) };
+			CollisionsID.push_back({ first, second });
+			std::cout << "DONE\n";
 		}
 
 		// Generate Entity Actor Vector
@@ -398,11 +404,13 @@ namespace TRE
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
 	{
+		return{};
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
 		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		{
-			CollisionsID.emplace_back(first, second);
+			std::pair<unsigned, unsigned> pair{ first, second };
+			CollisionsID.push_back(pair);
 		}
 
 		// Generate Entity Actor Vector
@@ -421,11 +429,13 @@ namespace TRE
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
 	{
+		return{};
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
 		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
 		{
-			CollisionsID.emplace_back(first, second);
+			std::pair<unsigned, unsigned> pair{ first, second };
+			CollisionsID.push_back(pair);
 		}
 
 		// Generate Entity Actor Vector
