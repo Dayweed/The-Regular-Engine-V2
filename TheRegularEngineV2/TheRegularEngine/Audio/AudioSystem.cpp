@@ -42,8 +42,7 @@ namespace TRE
 			{
 				Audio& source = go->GetComponent<Audio>();
 
-				bool isPlaying;
-				source.m_Channel->isPlaying(&isPlaying);
+				source.m_Channel->isPlaying(&source.m_isPlaying);
 
 				//soundMap[go] = source.m_Sound;
 
@@ -54,7 +53,7 @@ namespace TRE
 				}
 				else if (source.m_Loop)
 				{
-					if (!isPlaying)
+					if (!source.m_isPlaying)
 					{
 						Play(go, true);
 					}
@@ -192,6 +191,7 @@ namespace TRE
 		Audio& audio = go.get()->GetComponent<Audio>();
 		if (shouldPlay)
 		{
+			std::cout << "playing" << std::endl;
 			audio.m_Pause = false;
 			audio.m_PlayOnStart = false;
 			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
@@ -317,6 +317,7 @@ namespace TRE
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
+		CompileAudio(go);
 		audio.m_FileName = filename;
 	}
 
@@ -463,5 +464,10 @@ namespace TRE
 		radius.first = audioSource.m_MinDistance;
 		radius.second = audioSource.m_MaxDistance;
 		return radius;
+	}
+	bool AudioSystem::GetIsPlaying(Entity& go) const
+	{
+		Audio& source = go.get()->GetComponent<Audio>();
+		return source.m_Channel->isPlaying(&source.m_isPlaying);
 	}
 }

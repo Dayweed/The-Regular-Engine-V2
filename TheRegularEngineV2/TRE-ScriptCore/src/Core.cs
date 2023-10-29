@@ -692,4 +692,20 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float GetDeltaTime();
 	}
+
+    public class Audio
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetPlay(string entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetPause(string entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void StopAudio(string entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool GetIsPlaying(string entityid);
+    }
+
 }
