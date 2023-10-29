@@ -24,7 +24,8 @@ namespace TRE
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
         {
-
+            Entity other = new Entity(otherID);
+            Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
         }
 
         private void OnCollisionStay(System.UInt64 otherID)
@@ -63,8 +64,6 @@ namespace TRE
                     Core.LogError("Could not find playerPowerUpManager.powerUps");
                     return;
                 }
-
-                Console.WriteLine(playerPowerUpManager == null);
 
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;

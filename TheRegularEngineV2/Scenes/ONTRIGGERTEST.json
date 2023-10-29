@@ -1,11 +1,11 @@
 [
    [
       5,
+      1048671,
       1048672,
       1048673,
       1048674,
-      1048675,
-      100
+      1048675
    ],
    [
       0
@@ -15,7 +15,7 @@
       1048675,
       {
          "m_Children": [],
-         "m_Parent": ""
+         "m_Parent": "3672266117357288938"
       },
       1048674,
       {
@@ -29,53 +29,53 @@
       },
       1048672,
       {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048671,
+      {
          "m_Children": [
             "651344510156196673"
          ],
          "m_Parent": ""
-      },
-      100,
-      {
-         "m_Children": [],
-         "m_Parent": "3672266117357288938"
       }
    ],
    [
       5,
       1048675,
+      {
+         "m_Active": true,
+         "m_GUID": "651344510156196673",
+         "m_Name": "PowerManager",
+         "m_Tag": ""
+      },
+      1048674,
       {
          "m_Active": true,
          "m_GUID": "3160019635151679048",
          "m_Name": "Main Camera",
          "m_Tag": ""
       },
-      1048674,
+      1048673,
       {
          "m_Active": true,
          "m_GUID": "17591008384108422035",
          "m_Name": "Directional Light",
          "m_Tag": ""
       },
-      1048673,
+      1048672,
       {
          "m_Active": true,
          "m_GUID": "487391042155820437",
          "m_Name": "Mole",
          "m_Tag": ""
       },
-      1048672,
+      1048671,
       {
          "m_Active": true,
          "m_GUID": "3672266117357288938",
          "m_Name": "Player",
          "m_Tag": "Red"
-      },
-      100,
-      {
-         "m_Active": true,
-         "m_GUID": "651344510156196673",
-         "m_Name": "PowerManager",
-         "m_Tag": ""
       }
    ],
    [
@@ -88,6 +88,24 @@
             0.0
          ],
          "m_Rotation": [
+            -3.2568880318356586e-12,
+            9.256633761414513e-26,
+            3.2568884655165276e-12
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048674,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
             0.0,
             0.0,
             0.0
@@ -98,7 +116,7 @@
             1.0
          ]
       },
-      1048674,
+      1048673,
       {
          "m_Position": [
             0.0,
@@ -116,7 +134,7 @@
             1.0
          ]
       },
-      1048673,
+      1048672,
       {
          "m_Position": [
             0.0,
@@ -134,7 +152,7 @@
             0.5
          ]
       },
-      1048672,
+      1048671,
       {
          "m_Position": [
             0.0,
@@ -151,35 +169,17 @@
             1.0,
             1.0
          ]
-      },
-      100,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
       }
    ],
    [
       2,
-      1048673,
+      1048672,
       {
          "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       },
-      1048672,
+      1048671,
       {
          "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
          "ASSET_MAT_m_MaterialInstance": "0",
@@ -188,7 +188,7 @@
    ],
    [
       1,
-      1048675,
+      1048674,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -214,7 +214,7 @@
    ],
    [
       1,
-      1048673,
+      1048672,
       {
          "m_AngularDrag": 0.05000000074505806,
          "m_Drag": 0.0,
@@ -234,20 +234,6 @@
    ],
    [
       2,
-      1048673,
-      {
-         "m_HalfExtents": [
-            0.5,
-            0.5,
-            0.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
       1048672,
       {
          "m_HalfExtents": [
@@ -255,10 +241,24 @@
             0.5,
             0.5
          ],
-         "m_IsTrigger": true,
+         "m_IsTrigger": false,
          "m_Offset": [
             0.0,
             0.0,
+            0.0
+         ]
+      },
+      1048671,
+      {
+         "m_HalfExtents": [
+            4.0,
+            3.0,
+            3.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            5.0,
             0.0
          ]
       }
@@ -268,7 +268,7 @@
    ],
    [
       1,
-      1048674,
+      1048673,
       {
          "m_AmbientColor": [
             1.0,
@@ -303,17 +303,17 @@
    ],
    [
       3,
-      1048673,
+      1048675,
       {
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.PowerUpManager"
       },
       1048672,
       {
-         "m_StoredClass": "TRE.MoleController"
+         "m_StoredClass": "TRE.GetPowerUp"
       },
-      100,
+      1048671,
       {
-         "m_StoredClass": "TRE.PowerUpManager"
+         "m_StoredClass": "TRE.MoleController"
       }
    ]
 ]
