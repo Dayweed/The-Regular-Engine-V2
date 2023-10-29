@@ -33,7 +33,8 @@ namespace TRE
 {
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
+		SceneManager::Instance().NewScene();
+		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	void DemoScene()

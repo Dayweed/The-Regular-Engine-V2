@@ -8,6 +8,7 @@ namespace TRE
 	{
 		std::string m_Parent{};
 		std::vector<std::string> m_Children{};
+		bool m_IsDirty{ true };
 
 		Parenting() = default;
 		~Parenting() = default;
