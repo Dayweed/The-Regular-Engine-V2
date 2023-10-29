@@ -7,29 +7,58 @@ namespace TRE
 	public class CameraController : Entity
 	{
 		private Entity Player1;
-		public float distance = 50;
+		private float distance = 35;
+
+		public bool regionStart;
+		public bool region1;
+		public bool region2;
+
+		private float distanceStart = 35;
+		private float distance1 = 70;
+		private float distance2 = 100;
+
+		private float lerpTime = 0.001f;
 
 		public void Start()
 		{
 			Player1 = ECSManager.FindEntityByName("Holey");
-			Core.Log("My ID is " + this.ID);
-			Core.Log("Player1 ID is " + Player1.ID);
 		}
 
 		public void Update()
 		{
 			TransformSystem.GetPosition(Player1.ID, out Vector3 pos);
-			CameraSystem.SetMainCameraLookAt(pos, distance);
 
-			//For trigger 1
-			if (pos.x >= 40)
-			{
-				CameraSystem.TransitionMainCamera(new Vector3(100, 7, 20), new Vector3(45, 180, 0), 0.001f);
-			}
-			else
+			if(regionStart)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 7, 20), new Vector3(30, 180, 0), 0.001f);
+				distance = Lerp(distance, distanceStart, lerpTime);
 			}
+
+			if (region1)
+			{
+				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(45, 180, 0), 0.001f);
+				distance = Lerp(distance, distance1, lerpTime);
+			}
+
+			if (region2)
+			{
+				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(90, 180, 0), 0.001f);
+				distance = Lerp(distance, distance2, lerpTime);
+			}
+
+			CameraSystem.SetMainCameraLookAt(pos, distance);
+		}
+		private float Lerp(float start, float end, float t)
+		{
+			if(t > 1)
+			{
+				t = 1;
+			}
+			if(t < 0)
+			{
+				t = 0;
+			}
+			return start * (1 - t) + end * t;
 		}
 	}
 }

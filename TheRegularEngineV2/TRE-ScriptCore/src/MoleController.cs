@@ -28,15 +28,31 @@ namespace TRE
         private float superScale = 1;
         //For now the floor collision
         public Entity Plane_collider;
+        private Entity Trigger_Start;
+        private Entity Trigger_1;
+        private Entity Trigger_2;
 
-        public float elapsedTime = 0.0f;
+		private CameraController cameraController;
+
+		public float elapsedTime = 0.0f;
 
         public void Start()
         {
             Plane_collider = ECSManager.FindEntityByName("Plane collider");
             Core.Log("My ID is " + this.ID);
             Core.Log("Plane ID is " + Plane_collider.ID);
-        }
+
+            Trigger_Start = ECSManager.FindEntityByName("Trigger_Start");
+            Core.Log("Trigger_Start ID is " + Trigger_Start.ID);
+
+            Trigger_1 = ECSManager.FindEntityByName("Trigger_1");
+            Core.Log("Trigger_1 ID is " + Trigger_1.ID);
+
+            Trigger_2 = ECSManager.FindEntityByName("Trigger_2");
+            Core.Log("Trigger_2 ID is " + Trigger_2.ID);
+
+			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
+		}
 
 		public void Update()
 		{
@@ -103,7 +119,11 @@ namespace TRE
             movementVector = dirVec * 10;
             PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 output);
             PhysicsSystem.AddForce(this.ID, movementVector, ForceMode.VelocityChange);
-        }
+
+			cameraController.regionStart = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_Start.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_Start.ID); ;
+            cameraController.region1 = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_1.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_1.ID);
+			cameraController.region2 = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_2.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_2.ID);
+		}
         private void Jump(Vector3 JumpHeight)
         {
             PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Acceleration);
@@ -117,10 +137,10 @@ namespace TRE
                 t = 0;
             return start + (end - start) * t;
         }
-		private void OnTriggerStay(System.UInt64 otherID)
-		{
-			Entity other = new Entity(otherID);
-			Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
-		}
+		//private void OnTriggerStay(System.UInt64 otherID)
+		//{
+		//	Entity other = new Entity(otherID);
+		//	Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
+		//}
 	}
 }
