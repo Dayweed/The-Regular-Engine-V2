@@ -23,13 +23,13 @@ namespace TRE
         //check if player used super power
         private bool isScaled = false;
         //Default scale
-        private float defaultScale = 1;
+        private float defaultScale = 5;
         //Increase character scale
-        private float superScale = 5;
+        private float superScale = 1;
         //For now the floor collision
         public Entity Plane_collider;
 
-        //Player has a TransformSystem
+        public float elapsedTime = 0.0f;
 
         public void Start()
         {
@@ -43,6 +43,7 @@ namespace TRE
             // Move The Test Object 
             TransformSystem.GetPosition(this.ID, out Vector3 pos);
             PhysicsSystem.ConstrainRotationX(this.ID, true);
+
             PhysicsSystem.ConstrainRotationZ(this.ID, true);
 
             dirVec = new Vector3(0, 0, 0);
@@ -80,12 +81,19 @@ namespace TRE
             {
                 if (!isScaled)
                 {
-                    PhysicsSystem.ResizeCapsuleCollider(this.ID, superScale, superScale);
+                    superScale = lerp(1, 5, 0.1f);
+                    Core.Log("Super Scale: " + superScale);
+                    PhysicsSystem.ResizeCapsuleCollider(this.ID, superScale, defaultScale);
+                    superScale = 1;
                     isScaled = true;
                 }
                 else if (isScaled)
                 {
+
+                    defaultScale = lerp(5, 1, 0.1f);
+                    defaultScale -= 0.5f * Time.deltaTime;
                     PhysicsSystem.ResizeCapsuleCollider(this.ID, defaultScale, defaultScale);
+                    defaultScale = 5;
                     isScaled = false;
                 }
             }
@@ -99,6 +107,15 @@ namespace TRE
         private void Jump(Vector3 JumpHeight)
         {
             PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Acceleration);
+        }
+
+        public static float lerp(float start, float end, float t)
+        {
+            if (t > 1)
+                t = 1;
+            else if (t < 0)
+                t = 0;
+            return start + (end - start) * t;
         }
     }
 }
