@@ -171,6 +171,22 @@ namespace TRE
             ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
         }
     }
+    
+    static CSEntityID BindParentGetChildFromIndex(CSEntityID ID, int index)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = VALIDATEENTITY(ID);
+        if (index >= Temp->GetComponent<Parenting>().m_Children.size())
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] Index (" + std::to_string(index) + ") >= " + Temp->GetName() + "'s Children size (" + std::to_string(Temp->GetComponent<Parenting>().m_Children.size()) + ")!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return {};
+        }
+
+        return EntityID_EngineToCS(Temp->GetComponent<Parenting>().m_Children[index]);
+    }
 
     static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
     {
@@ -623,6 +639,16 @@ namespace TRE
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsMainCamera(Temp);
     }
 
+    static void BindCamMainSetLookAt(glm::vec3* target, float distance)
+    {
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraLookAt(*target, distance);
+    }
+
+    static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
+    {
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+    }
+
 #pragma endregion
 
 #pragma region InputBindings
@@ -707,6 +733,15 @@ namespace TRE
     {
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
+
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] There is no Rigidbody in " + entity->GetName() + "!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return;
+        }
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
     }
@@ -806,6 +841,26 @@ namespace TRE
     }
 #pragma endregion
 
+#pragma region RigidBodyBindings
+    static void BindSetKinematic(CSEntityID ID, bool enable)
+    {
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
+
+        Temp->GetComponent<Rigidbody>().m_IsKinematic = enable;
+        Temp->GetComponent<Rigidbody>().m_IsDirty = true;
+    }
+
+    static void BindSetGravity(CSEntityID ID, bool enable)
+    {
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
+
+        Temp->GetComponent<Rigidbody>().m_UseGravity = enable;
+        Temp->GetComponent<Rigidbody>().m_IsDirty = true;
+    }
+#pragma endregion
+
 #pragma region TimeBindings
     static float BindGetDeltaTime()
     {
@@ -831,6 +886,85 @@ namespace TRE
         return Random::RangeFloat(min_incl, max_incl);
     }
 
+#pragma endregion
+
+#pragma region Audio
+
+    static void BindSetPlaySound(MonoString* id)
+    {
+        Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        return ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPlay(entity, true);
+    }
+
+    static void BindTogglePauseSound(MonoString* id, bool paused)
+    {
+        Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        return ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPause(entity, paused);
+    }
+
+    static void BindSetStopSound(MonoString* id)
+    {
+        Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPlay(entity, false);
+        return ECSSystemManager::Instance().GetSystem<AudioSystem>()->StopAudio(entity);
+    }
+
+    static bool BindIsPlaying(MonoString* id)
+    {
+        Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+        return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
+    }
+
+#pragma endregion
+
+
+#pragma region ScriptBindings
+    static bool BindIsScript(MonoString* className)
+    {
+        if (!className)
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] ClassName is invalid!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return false;
+        }
+        std::string classNameStr{ MonoStringToString(className) };
+        auto classes{ ScriptEngine::s_ScriptEngineData->ScriptClasses };
+
+        return classes.find(classNameStr) != classes.end();
+    }
+
+    static bool BindHaveScript(CSEntityID ID, MonoString* className)
+    {
+        Entity Temp{ VALIDATEENTITY(ID) };
+        if (!Temp) return false;
+        if (!Temp->HasComponent<ScriptComponent>()) return false;
+
+        if (!className)
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] ClassName is invalid!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return false;
+        }
+        std::string classNameStr{ MonoStringToString(className) };
+
+        return Temp->GetComponent<ScriptComponent>().m_StoredClass == classNameStr;
+    }
+
+    static MonoObject* BindGetScript(CSEntityID ID, MonoString* className)
+    {
+        if (!BindHaveScript(ID, className)) return NULL;
+
+        std::string IDStr{ EntityID_CSToEngine(ID) };
+        std::string classNameStr{ MonoStringToString(className) };
+
+        auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
+
+        return instances[IDStr]->GetScriptObject();
+    }
 #pragma endregion
 
     void ScriptBind::RegisterFunctions()
@@ -867,10 +1001,11 @@ namespace TRE
 
         // Parent Bindings
 	    {
-		    mono_add_internal_call("TRE.Entity::EngineParentSetParent", BindParentSetParent);
-	    	mono_add_internal_call("TRE.Entity::EngineParentRemoveParent", BindParentRemoveParent);
-	    	mono_add_internal_call("TRE.Entity::EngineParentAddChild", BindParentAddChild);
-	    	mono_add_internal_call("TRE.Entity::EngineParentRemoveChild", BindParentRemoveChild);
+		    mono_add_internal_call("TRE.Parenting::EngineParentSetParent", BindParentSetParent);
+	    	mono_add_internal_call("TRE.Parenting::EngineParentRemoveParent", BindParentRemoveParent);
+	    	mono_add_internal_call("TRE.Parenting::EngineParentAddChild", BindParentAddChild);
+	    	mono_add_internal_call("TRE.Parenting::EngineParentRemoveChild", BindParentRemoveChild);
+	    	mono_add_internal_call("TRE.Parenting::EngineGetChildID", BindParentGetChildFromIndex);
 	    }
 
         // Transform Bindings
@@ -913,6 +1048,8 @@ namespace TRE
 	    	mono_add_internal_call("TRE.CameraSystem::GetAspectRatio", BindCamGetAspectRatio);
 	    	mono_add_internal_call("TRE.CameraSystem::IsPerspective", BindCamIsPerspective);
 	    	mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
+            mono_add_internal_call("TRE.CameraSystem::SetMainCameraLookAt", BindCamMainSetLookAt);
+            mono_add_internal_call("TRE.CameraSystem::TransitionMainCamera", BindTransitionMainCamera);
 	    }
 
         // Physics Bindings
@@ -932,6 +1069,12 @@ namespace TRE
             mono_add_internal_call("TRE.PhysicsSystem::IsTriggerEnter", BindIsTriggerEnter);
             mono_add_internal_call("TRE.PhysicsSystem::IsTriggerStay", BindIsTriggerStay);
             mono_add_internal_call("TRE.PhysicsSystem::IsTriggerExit", BindIsTriggerExit);
+	    }
+
+        // RigidBody Binding
+        {
+            mono_add_internal_call("TRE.RigidBodySystem::SetKinematic", BindSetKinematic);
+            mono_add_internal_call("TRE.RigidBodySystem::SetGravity", BindSetGravity);
 	    }
 
         // Input Binding
@@ -962,5 +1105,20 @@ namespace TRE
 	    {
 		    mono_add_internal_call("TRE.Time::GetDeltaTime", BindGetDeltaTime);
 	    }
+
+        //Audio
+        {
+            mono_add_internal_call("TRE.AudioSystem::SetPlay", BindSetPlaySound);
+            mono_add_internal_call("TRE.AudioSystem::SetPause", BindTogglePauseSound);
+            mono_add_internal_call("TRE.AudioSystem::StopAudio", BindSetStopSound);
+            mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
+        }
+
+        // Scripting
+        {
+            mono_add_internal_call("TRE.Script::IsScript", BindIsScript);
+            mono_add_internal_call("TRE.Script::HaveScript", BindHaveScript);
+            mono_add_internal_call("TRE.Script::GetScript", BindGetScript);
+        }
     }
 }

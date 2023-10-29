@@ -10,13 +10,27 @@ namespace TRE
 	{
 		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
 		{
-			Transform& transform{ object->GetComponent<Transform>() };
-			if (transform.m_IsDirty)
+			//For startup
+			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
+			{
+				if(parent.m_Parent != "")
+					SetParent(object, ECSManager::Instance().FindEntity(parent.m_Parent));
+				for (auto& child : parent.m_Children)
+				{
+					AddChild(object, ECSManager::Instance().FindEntity(child));
+				}		
+
+				parent.m_IsDirty = false;
+			}
+
+			//Update world data
+			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
 			{
 				//Update own local data if i have a parent
 				UpdateLocalData(object);
+
 				//Update children local data
-				//UpdateChildTransform(object);
+				UpdateChildTransform(object);
 			}
 		}
 	}
@@ -62,6 +76,7 @@ namespace TRE
 		if (child->GetComponent<Parenting>().m_Parent != "" && std::find(parent->GetComponent<Parenting>().m_Children.begin(), parent->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child)) == parent->GetComponent<Parenting>().m_Children.end())
 		{
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
+			UpdateChildLocalData(parent, child);
 		}
 	}
 
@@ -168,7 +183,7 @@ namespace TRE
 			Transform& childTransform = child->GetComponent<Transform>();
 			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
-			childTransform.m_IsDirty = true;
+			//childTransform.m_IsDirty = true;
 
 			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{
@@ -195,12 +210,7 @@ namespace TRE
 			Transform& parentTransform = ECSManager::Instance().FindEntity(current->GetComponent<Parenting>().m_Parent)->GetComponent<Transform>();
 			currentTransform.UpdateLocalData(parentTransform);
 		}
-		else
-		{
-			currentTransform.m_LocalPosition = glm::vec3(0, 0, 0);
-			currentTransform.m_LocalRotation = glm::vec3(0, 0, 0);
-			currentTransform.m_LocalScale = glm::vec3(1.0f);
-		}
+
 		currentTransform.m_IsDirty = true;
 	}
 }

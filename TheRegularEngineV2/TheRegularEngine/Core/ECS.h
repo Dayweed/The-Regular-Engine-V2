@@ -521,7 +521,7 @@ namespace TRE
 		std::cout << ECSManager::Instance().SaveEntities("TestFile.json") << "\n";
 
 		Output:
-		../Scenes/TestFile.json
+		..\\Scenes\\TestFile.json
 		*//*__________________________________________________________________________*/
 		std::string SaveEntities(std::string filePath);
 
@@ -597,6 +597,9 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		std::string FindEntityID(Entity ent);
 
+		// CAUTION THIS WILL ONLY RETURN THE FIRST ENTITY IT CAN FIND
+		Entity FindEntityName(std::string name);
+
 		template <typename T>
 		void RegisterComponent(std::string name, bool hidden = false, bool removable = true);
 
@@ -616,6 +619,8 @@ namespace TRE
 
 		template<class... Components>
 		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);
+
+		bool IsValidEntity(Entity ent);
 
 		// TODELETE
 		void TESTRUN();

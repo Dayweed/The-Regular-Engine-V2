@@ -17,12 +17,12 @@ namespace TRE
 
         private bool usePower = false;
 
-        public PowerUpManager() : base(ECSManager.FindIDFromName("spawner"), "spawner")
+        public PowerUpManager()
         {
 
         }
 
-        private void Awake()
+        private void OnCreate()
         {
             baseForm = this.parenting.GetChild(0);
             blueberryForm = this.parenting.GetChild(1);
@@ -39,7 +39,7 @@ namespace TRE
 
             if (usePower)
             {
-                //ActivatePowerUp(powerUps[0].GetComponent<GetPowerUp>()); // activating the main power up        // THIS CANT BE DONE YET
+                ActivatePowerUp(powerUps[0].GetComponent<GetPowerUp>()); // activating the main power up        // THIS CANT BE DONE YET
             }
         }
 
@@ -79,11 +79,11 @@ namespace TRE
 
             switch (thisPower.powerUpType)
             {
-                case PowerUps.Blueberry:
+                case PowerUpsType.Blueberry:
                     blueberryForm.SetActive(true);
                     strawberryForm.SetActive(false);
                     break;
-                case PowerUps.Strawberry:
+                case PowerUpsType.Strawberry:
                     blueberryForm.SetActive(false);
                     strawberryForm.SetActive(true);
                     break;
@@ -109,5 +109,15 @@ namespace TRE
             powerUps.RemoveAt(0);
         }
 
+        public void AddTopowerUps(Entity ent)
+        {
+            powerUps.Add(ent);
+        }
+
+        public int GetpowerUpsSize()
+        {
+            Console.WriteLine("6");
+            return powerUps.Count;
+        }
     }
 }

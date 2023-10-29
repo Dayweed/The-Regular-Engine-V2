@@ -251,7 +251,6 @@ namespace TRE
 		}
 #pragma endregion
 	
-	
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
@@ -359,6 +358,101 @@ namespace TRE
 		at line			: |148|
 		*/
 		PX_RELEASE(m_Foundation);
+	}
+
+	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector()
+	{
+		std::unordered_map<unsigned, Entity> vector;
+		vector.reserve(m_Actors.size());
+		for (auto actor : m_Actors)
+		{
+			vector.emplace(actor.second.m_RigidDynamic->getInternalActorIndex(), ECSManager::Instance().FindEntity(actor.first));
+		}
+
+		return vector;
+	}
+
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
+	{
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
+		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+
+		for (size_t i{}; i < m_SimulationEventCallback.m_CollisionHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
+		{
+			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
+			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+			CollisionsID.emplace_back(pair);
+		}
+
+		// Generate Entity Actor Vector
+		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
+
+		// Find Entity
+		std::vector<std::pair<Entity, Entity>> Collisions;
+		Collisions.reserve(CollisionsID.size());
+		for (auto IDs : CollisionsID)
+		{
+			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+
+		return Collisions;
+	}
+
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
+	{
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
+		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
+
+		for (size_t i{}; i < m_SimulationEventCallback.m_TriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
+		{
+			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
+			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+			CollisionsID.emplace_back(pair);
+		}
+
+		// Generate Entity Actor Vector
+		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
+
+		// Find Entity
+		std::vector<std::pair<Entity, Entity>> Collisions;
+		Collisions.reserve(CollisionsID.size());
+		for (auto IDs : CollisionsID)
+		{
+			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+
+		return Collisions;
+	}
+
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
+	{
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
+		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
+
+		for (size_t i{}; i < m_SimulationEventCallback.m_PrevTriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
+		{
+			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
+			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+			CollisionsID.emplace_back(pair);
+		}
+
+		// Generate Entity Actor Vector
+		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
+
+		// Find Entity
+		std::vector<std::pair<Entity, Entity>> Collisions;
+		Collisions.reserve(CollisionsID.size());
+		for (auto IDs : CollisionsID)
+		{
+			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+
+		return Collisions;
+	}
+
+	void PhysicsSystem::SetDrawDebug(bool draw)
+	{
+		m_DrawDebugLines = draw;
 	}
 
 	//This function creates a stack of shapes
@@ -775,7 +869,7 @@ namespace TRE
 			UpdateRigidbody(entity);
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
-			UpdateSphereCollider(entity);
+			UpdateSphereCollider(entity); 
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
 			UpdateBoxCollider(entity);

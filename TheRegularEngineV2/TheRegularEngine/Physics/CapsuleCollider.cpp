@@ -56,7 +56,13 @@ namespace TRE
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
-		PxShape* capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial);
+		PxShape* capsuleShape;
+		
+		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
+		if (capsuleCollider.m_IsTrigger)
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+		else
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		// making the capsule stand upright by default
 		// thank you nick!!!
@@ -87,11 +93,11 @@ namespace TRE
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::CapsuleCollider;
 
-		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 		// TODO: assign more data here
 		// capsuleCollider.m_IsTrigger = ...
 		capsuleCollider.m_Offset = offset;
 		capsuleCollider.m_Radius = radius;
+		capsuleCollider.m_IsVisible = m_DrawDebugLines;
 
 		return capsuleCollider.m_IsInitialized = true;
 	}
@@ -126,31 +132,7 @@ namespace TRE
 
 		capsuleCollider.m_IsInitialized || ConstructCapsuleCollider(entity);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// SO TEMPORARY
-		//PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
-
-		//// capsuleCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
-
-		//capsuleCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
-
-		//unsigned nbShapes = rigidDynamic->getNbShapes();
-		//const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		//nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
-
-		//// obtain the index of the capsule shape
-		//unsigned i = 0;
-		//for (; i < nbShapes; ++i)
-		//{
-		//	if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
-
-		//	break;
-		//}
-
-		//PxCapsuleGeometry capsuleGeometry;
-		//shapes[i]->getCapsuleGeometry(capsuleGeometry);
-		//capsuleCollider.m_Radius = capsuleGeometry.radius;
+		SetCapsuleColliderTrigger(entity, capsuleCollider.m_IsTrigger);
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const
@@ -186,5 +168,36 @@ namespace TRE
 			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
 		entity->RemoveComponent<CapsuleCollider>();
+	}
+
+	void PhysicsSystem::SetCapsuleColliderTrigger(const Entity& entity, const bool isTrigger) const
+	{
+		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+
+		capsuleCollider.m_IsTrigger = isTrigger;
+
+		unsigned nbShapes = rigidDynamic->getNbShapes();
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+
+		// obtain the index of the box shape
+		unsigned i = 0;
+		for (; i < nbShapes; ++i)
+		{
+			if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+
+			if (capsuleCollider.m_IsTrigger)
+			{
+				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+			}
+			else
+			{
+				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+			}
+			break;
+		}
 	}
 }

@@ -33,14 +33,10 @@ namespace TRE
 
 	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		// uint32_t ImageCount = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
-
 		Create();
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-
 		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
-
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
 
 		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
@@ -89,10 +85,6 @@ namespace TRE
 		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 
 		LoadCubeMap();
-
-		m_SkyboxMaterial = std::make_unique<Material>(SkyboxPipelineConfig.Shader);
-		m_SkyboxMaterial->Invalidate();
-		m_SkyboxMaterial->SetSkyboxTexture("SamplerCubeMap", m_SkyboxTexture);
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -187,11 +179,6 @@ namespace TRE
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
-
-		vkDestroyImageView(Device, m_SkyboxTexture->imageview, nullptr);
-		vkDestroyImage(Device, m_SkyboxTexture->image, nullptr);
-		vkFreeMemory(Device, m_SkyboxTexture->deviceMemory, nullptr);
-		vkDestroySampler(Device, m_SkyboxTexture->sampler, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -210,6 +197,7 @@ namespace TRE
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
 		}
 
@@ -234,6 +222,7 @@ namespace TRE
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
 		}
 
@@ -362,12 +351,12 @@ namespace TRE
 			vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipeline());
 			if (IsEditorScene)
 			{
-				m_SkyboxMaterial->UpdateSkyboxPassEditor(m_UBOBuffer, Index);
+				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
 			}
 			else
 			{
-				m_SkyboxMaterial->UpdateSkyboxPass(m_UBOBuffer, Index);
+				m_SkyboxMaterial->UpdateForRendering(m_UBOBuffer, Index);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
 			}
 
@@ -507,192 +496,15 @@ namespace TRE
 		auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox5);
 		auto Texture6 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox6);
 
-		std::vector<std::shared_ptr<VulkanTexture>> Textures
-		{
-			Texture4,
-			Texture2,
-			Texture6,
-			Texture5,
-			Texture1,
-			Texture3
-		};
-
-		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-		m_SkyboxTexture = std::make_shared<SkyboxTexture>();
-		m_SkyboxTexture->width = SwapChain->GetWidth();
-		m_SkyboxTexture->height = SwapChain->GetHeight();
-		m_SkyboxTexture->mipLevels = 1;
+		CubeMapConfig CubeConfig{};
+		CubeConfig.Filter = VK_FILTER_NEAREST;
+		CubeConfig.Format = Texture1->GetFormat();
+		CubeConfig.Height = Texture1->GetHeight();
+		CubeConfig.Width = Texture1->GetWidth();
+		CubeConfig.SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		CubeConfig.Textures = { Texture4, Texture2, Texture6, Texture5, Texture1, Texture3 };
+		m_SkyboxTexture = std::make_shared<VulkanTexture>(CubeConfig);
 		
-		VkDeviceSize ImageCubeMapSize = Texture1->GetWidth() * Texture1->GetHeight() * 4 * 6;
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingMemory;
-
-		VkBufferCreateInfo bufferCreateInfo{}; // This buffer is used as a transfer source for the buffer copy
-		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		bufferCreateInfo.size = ImageCubeMapSize;
-
-		if (auto Result = vkCreateBuffer(m_Device->GetLogicalDevice(), &bufferCreateInfo, nullptr, &stagingBuffer); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to create staging buffer for cubemap");
-		}
-
-		VkMemoryRequirements memReqs;
-		vkGetBufferMemoryRequirements(m_Device->GetLogicalDevice(), stagingBuffer, &memReqs);
-		
-		VkMemoryAllocateInfo memAllocInfo{};
-		memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		memAllocInfo.allocationSize;
-		memAllocInfo.allocationSize = memReqs.size;
-		memAllocInfo.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-		
-		if (auto Result = vkAllocateMemory(m_Device->GetLogicalDevice(), &memAllocInfo, nullptr, &stagingMemory); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to allocate memory for cubemap");
-		}
-
-		if (auto Result = vkBindBufferMemory(m_Device->GetLogicalDevice(), stagingBuffer, stagingMemory, 0); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to bind memory for cubemap");
-		}
-
-		uint8_t* data;
-		if (auto Result = vkMapMemory(m_Device->GetLogicalDevice(), stagingMemory, 0, memReqs.size, 0, (void**)&data); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to map memory for cubemap");
-		}
-		
-		VkDeviceSize layersize = ImageCubeMapSize / 6;
-		for (uint32_t x = 0; x < 6; x++)
-		{
-			memcpy(data + layersize * x, Textures[x]->GetBuffer(), layersize);
-		}
-
-		VkImageCreateInfo ImageCreateInfo{};
-		ImageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		ImageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-		ImageCreateInfo.format = Texture1->GetFormat();
-		ImageCreateInfo.mipLevels = 1;
-		ImageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		ImageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-		ImageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		ImageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		ImageCreateInfo.extent = { Texture1->GetWidth(), Texture1->GetHeight(), 1};
-		ImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-		ImageCreateInfo.arrayLayers = 6;
-		ImageCreateInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
-
-		if (auto Result = vkCreateImage(m_Device->GetLogicalDevice(), &ImageCreateInfo, nullptr, &m_SkyboxTexture->image); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to create image for cubemap");
-		}
-
-		VkMemoryRequirements ImagememReqs;
-		VkMemoryAllocateInfo ImagememAlloc{};
-		
-		ImagememAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_SkyboxTexture->image, &memReqs);
-		
-		ImagememAlloc.allocationSize = memReqs.size;
-		ImagememAlloc.memoryTypeIndex = RendererContext::GetDevice()->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-		if (auto result = vkAllocateMemory(m_Device->GetLogicalDevice(), &ImagememAlloc, nullptr, &m_SkyboxTexture->deviceMemory); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to allocate memory for image");
-		}
-		if (auto result = vkBindImageMemory(m_Device->GetLogicalDevice(), m_SkyboxTexture->image, m_SkyboxTexture->deviceMemory, 0); result != VK_SUCCESS)
-		{
-			assert(result == VK_SUCCESS && "Failed to bind image memory");
-		}
-
-		VkImageViewCreateInfo ImageViewCreateInfo{};
-		ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		ImageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
-		ImageViewCreateInfo.format = Texture1->GetFormat();;
-		ImageViewCreateInfo.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
-		ImageViewCreateInfo.subresourceRange.layerCount = 6;
-		ImageViewCreateInfo.image = m_SkyboxTexture->image;
-		ImageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
-
-		if (auto Result = vkCreateImageView(m_Device->GetLogicalDevice(), &ImageViewCreateInfo, nullptr, &m_SkyboxTexture->imageview); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to create cubemap image view");
-		}
-
-		auto cmd = m_Device->AllocateCommandBuffer(true);
-
-		VkImageSubresourceRange range;
-		range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		range.baseMipLevel = 0;
-		range.levelCount = 1;
-		range.baseArrayLayer = 0;
-		range.layerCount = 6;
-
-		std::vector<VkBufferImageCopy> bufferCopyRegions;
-		for (int x = 0; x < 6; x++)
-		{
-			VkBufferImageCopy bufferCopyRegion = {};
-			bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			bufferCopyRegion.imageSubresource.mipLevel = 0;
-			bufferCopyRegion.imageSubresource.baseArrayLayer = x;
-			bufferCopyRegion.imageSubresource.layerCount = 1;
-			bufferCopyRegion.imageExtent.width = Texture1->GetWidth();
-			bufferCopyRegion.imageExtent.height = Texture1->GetHeight();
-			bufferCopyRegion.imageExtent.depth = 1;
-			bufferCopyRegion.bufferOffset = layersize * x;
-			bufferCopyRegions.push_back(bufferCopyRegion);
-
-		}
-
-		VkImageMemoryBarrier imageBarrier_toTransfer{};
-		imageBarrier_toTransfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-		imageBarrier_toTransfer.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageBarrier_toTransfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-		imageBarrier_toTransfer.image = m_SkyboxTexture->image;
-		imageBarrier_toTransfer.subresourceRange = range;
-
-		imageBarrier_toTransfer.srcAccessMask = 0;
-		imageBarrier_toTransfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-
-		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier_toTransfer);
-
-		vkCmdCopyBufferToImage(cmd, stagingBuffer, m_SkyboxTexture->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, static_cast<uint32_t>(bufferCopyRegions.size()), bufferCopyRegions.data());
-
-		VkImageMemoryBarrier imageBarrier_toReadable = imageBarrier_toTransfer;
-		imageBarrier_toReadable.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-		imageBarrier_toReadable.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageBarrier_toReadable.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		imageBarrier_toReadable.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
-		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier_toReadable);
-
-		m_Device->SubmitCommands(cmd);
-
-		vkUnmapMemory(m_Device->GetLogicalDevice(), stagingMemory);
-
-		VkSamplerCreateInfo samplerCreateInfo = {};
-		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerCreateInfo.maxAnisotropy = 1.0f;
-		samplerCreateInfo.magFilter = VK_FILTER_NEAREST;
-		samplerCreateInfo.minFilter = VK_FILTER_NEAREST;
-		samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
-		samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
-		samplerCreateInfo.mipLodBias = 0.0f;
-		samplerCreateInfo.minLod = 0.0f;
-		samplerCreateInfo.maxLod = 1000.0f;
-		samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-		if (auto Result = vkCreateSampler(m_Device->GetLogicalDevice(), &samplerCreateInfo, nullptr, &m_SkyboxTexture->sampler); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Sampler cannot be created");
-		}
-
-		m_SkyboxTexture->descriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		m_SkyboxTexture->descriptor.imageView = m_SkyboxTexture->imageview;
-		m_SkyboxTexture->descriptor.sampler = m_SkyboxTexture->sampler;
-
 		//Backface culling
 		std::vector<glm::vec3> vertices
 		{
@@ -724,7 +536,8 @@ namespace TRE
 		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(vertices[0]));
 		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
 
-		vkDestroyBuffer(m_Device->GetLogicalDevice(), stagingBuffer, nullptr);
-		vkFreeMemory(m_Device->GetLogicalDevice(), stagingMemory, nullptr);
+		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
+		m_SkyboxMaterial->Invalidate();
+		m_SkyboxMaterial->SetTexture("SamplerCubeMap", m_SkyboxTexture);
 	}
 }

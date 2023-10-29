@@ -105,6 +105,40 @@ namespace TRE
             return EngineCompareTag(ID, otherTag);
         }
 
+        // Can only be done for Scripting for now
+        public T GetComponent<T>() where T : new()
+        {
+			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
+
+			Core.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
+			Console.WriteLine("ERROR! GetComponent is returning new type for " + typeof(T).ToString());
+
+            return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
+
+            //return GenerateComponent<T>();
+        }
+
+        // DONT USE THIS, INCOMPLETE AND UNTESTED
+		/*
+        public T AddComponent<T>() where T : new()
+        {
+            if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
+
+            return GenerateComponent<T>();
+        }
+		*/
+
+        // DONT USE THIS, INCOMPLETE AND UNTESTED
+		/*
+        private T GenerateComponent<T>() where T : new()
+		{
+			if (typeof(T).ToString() == typeof(Parenting).ToString()) return (T) Convert.ChangeType(parenting, typeof(T));
+			if (typeof(T).ToString() == typeof(Transform).ToString()) return (T) Convert.ChangeType(transform, typeof(T));
+
+            return new T();
+        }
+		*/
+
         // Private binded calls
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void EngineRename(EntityID id, string name);
@@ -603,6 +637,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetIsMainCamera(EntityID entityid, out bool output);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetMainCameraLookAt(Vector3 target, float distance);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void TransitionMainCamera(Vector3 targetPosition, Vector3 targetRotation, float speed);
 	}
 
     public enum ForceMode
@@ -661,6 +701,15 @@ namespace TRE
 		internal extern static bool IsTriggerExit(EntityID entityid1, EntityID entityid2);
 	}
 
+	public class RigidBodySystem
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetKinematic(EntityID entityid, bool enable);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetGravity(EntityID entityid, bool enable);
+    }
+
 	public class InputSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -699,4 +748,31 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float GetDeltaTime();
 	}
+
+    public class Audio
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetPlay(string entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetPause(string entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void StopAudio(string entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool GetIsPlaying(string entityid);
+    }
+
+	public class Script
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool IsScript(string ClassName);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool HaveScript(EntityID ID, string ClassName);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static T GetScript<T>(EntityID ID, string ClassName);
+    }
 }

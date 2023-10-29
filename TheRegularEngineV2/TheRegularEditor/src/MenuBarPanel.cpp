@@ -41,12 +41,10 @@ namespace TRE
 			{
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 				{
-					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 					NewScene();
 				}
 				if (ImGui::MenuItem("Open", "Ctrl+O"))
 				{
-					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 					OpenScene();
 				}
 				if (ImGui::MenuItem("Save", "Ctrl+S"))
@@ -121,20 +119,16 @@ namespace TRE
 
 				if (ImGui::Checkbox("Show All Colliders", &m_ShowAllColliders))
 				{
-					for (auto& colliders : ECSManager::Instance().GetEntities<SphereCollider>())
-					{
-						colliders->GetComponent<SphereCollider>().m_IsVisible = m_ShowAllColliders;
-					}
+					for (Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+						entity->GetComponent<SphereCollider>().m_IsVisible = m_ShowAllColliders;
 
-					for (auto& colliders : ECSManager::Instance().GetEntities<BoxCollider>())
-					{
-						colliders->GetComponent<BoxCollider>().m_IsVisible = m_ShowAllColliders;
-					}
+					for (Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+						entity->GetComponent<BoxCollider>().m_IsVisible = m_ShowAllColliders;
 
-					for (auto& colliders : ECSManager::Instance().GetEntities<CapsuleCollider>())
-					{
-						colliders->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
-					}
+					for (Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+						entity->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
+
+					ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetDrawDebug(m_ShowAllColliders);
 				}
 
 				ImGui::EndMenu();
@@ -195,6 +189,8 @@ namespace TRE
 
 	void MenuBarPanel::NewScene()
 	{
+		EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
 		{
@@ -205,6 +201,8 @@ namespace TRE
 
 	void MenuBarPanel::OpenScene()
 	{
+		EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
 		{

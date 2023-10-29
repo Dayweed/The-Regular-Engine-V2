@@ -33,7 +33,8 @@ namespace TRE
 {
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().LoadScene("../Scenes/Tutorial.json");
+		SceneManager::Instance().NewScene();
+		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	void DemoScene()
@@ -184,10 +185,10 @@ namespace TRE
 
 			/*test->AddComponent<Audio>();
 			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-			audioSystem->SetPlay(test, true);
+			audioSystem->SetPlay(test, false);
 			audioSystem->SetLoop(test, true);
 			audioSystem->SetSpatialize(test,true);
-			audioSystem->CompileAudio(test);
+			//audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);*/
 		}
 
@@ -329,7 +330,7 @@ namespace TRE
 			spawner->GetComponent<Transform>().m_IsDirty = true;
 		}
 
-		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		//SceneManager::Instance().SaveSceneAs(GETFOLDER(FILESYS_SCENE) + "DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST

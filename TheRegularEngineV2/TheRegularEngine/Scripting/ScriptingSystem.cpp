@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include "TREIncludes.h"
+
 #include"Scripting/ScriptingSystem.h"
 #include"Scripting/ScriptComponent.h"
 #include "Scripting/ScriptEngine.h"
@@ -32,6 +34,7 @@ namespace TRE
 	{
 		if(m_IsRunning == true)
 		{
+			ScriptEngine::ReloadAssembly();
 			//inital Create entity instances (only works if they are created before scene starts)
 			for(auto e: m_ScriptEntities)
 			{
@@ -51,6 +54,27 @@ namespace TRE
 			script.m_RanStart = true;
 		}
 
+		// Check for trigger
+		std::vector<std::pair<Entity, Entity>> triggerEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetTriggerHistory() };
+		for (auto e : triggerEntries)
+		{
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerStay(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerStay(e.second, e.first);
+		}
+
+		// Check for collision
+		std::vector<std::pair<Entity, Entity>> collisionEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetCollisionHistory() };
+		for (auto e : collisionEntries)
+		{
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionStay(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionStay(e.second, e.first);
+		}
+
+		// Update
 		for(auto e: m_ScriptEntities)
 		{
 			ScriptEngine::OnUpdateEntity(e);
@@ -74,6 +98,7 @@ namespace TRE
 	{
 		// Add back all entities with Scripting
 		InitializeScriptableObjects();
+		m_IsRunning = true;
 	}
 
 	void ScriptingSystem::OnDestroyEntities()
@@ -128,7 +153,7 @@ namespace TRE
 		// iterate through the vector and update the scriptable objects
 		for(auto e: m_ScriptEntities)
 		{
-			if(e->GetComponent<ScriptComponent>().m_IsDirty)
+			if(ECSManager::Instance().IsValidEntity(e) && e->GetComponent<ScriptComponent>().m_IsDirty)
 			{
 				// update the scriptable objec
 			}

@@ -22,9 +22,9 @@ namespace TRE
 		auto DebugDrawShader = ResourceManager::Instance().GetResource<Shader>(7);
 
 		PipelineConfigurations DebugDrawPipelineConfig{};
-		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
+		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
 		DebugDrawPipelineConfig.Shader = DebugDrawShader;
-		DebugDrawPipelineConfig.LineWidth = 3.5f;
+		DebugDrawPipelineConfig.LineWidth = 2.5f;
 		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
@@ -52,7 +52,7 @@ namespace TRE
 			DebugVertex(glm::vec3(0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f))
 		};
 
-		std::vector<int> DebugAABBIndices = { 0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7, 0, 4 };
+		std::vector<int> DebugAABBIndices = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 4, 4, 5, 5, 1, 1, 2, 2, 6, 6, 5, 5, 4, 4, 7, 7, 3, 7, 6 };
 
 		m_DebugAABB->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugAABBVertices.data(), sizeof(DebugAABBVertices[0]) * DebugAABBVertices.size());
 		m_DebugAABB->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugAABBIndices.data(), sizeof(int) * DebugAABBIndices.size(), DebugAABBIndices.size());

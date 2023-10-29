@@ -17,7 +17,23 @@ namespace TRE
 
         public void Start()
         {
+            Core.Log("Testing on Finding Scripts");
+            Core.Log("Found HumanCentipede in GameObject (3): " + Script.HaveScript(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation"));
+            Core.Log("Testing Getting Scripts");
+            RandomizeFallingObjLocation test = Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation");
+            Core.Log("Successfully get w/o errors, maxAmountToSpawn is " + test.maxAmountToSpawn + ", changing to 10");
+            test.maxAmountToSpawn = 10;
+            Core.Log("Changed value, maxAmountToSpawn is " + test.maxAmountToSpawn);
+            Core.Log("Checking new value by getting again to see if it is still " + Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation").maxAmountToSpawn + ".");
 
+            Core.Log("Testing GetComponent... ");
+            Entity ent = ECSManager.FindEntityByName("GameObject (3)");
+            RandomizeFallingObjLocation entget = ent.GetComponent<RandomizeFallingObjLocation>();
+            Core.Log("entget maxAmountToSpawn is " + entget.maxAmountToSpawn);
+
+            Core.Log("Testing Invalid GetComponent... ");
+            HumanCentipede failedget = ent.GetComponent<HumanCentipede>();
+            Core.Log("Invalid GetComponent HumanCentipede: " + (failedget == null));
         }
 
         public void Update()
@@ -43,10 +59,7 @@ namespace TRE
 
         public RandomizeFallingObjLocation()
         {
-            // ID for prefabs are based on resource prefab GUID
-            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
-            maxAmountToSpawn = 2;
-            timeBetweenSpawns = 2;
+
         }
 
         public void OnCreate()
@@ -56,7 +69,13 @@ namespace TRE
 
         public void Start()
         {
-            canSpawnObjs = true;
+            //canSpawnObjs = true;
+
+            // ID for prefabs are based on resource prefab GUID
+            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
+            maxAmountToSpawn = 2;
+            timeBetweenSpawns = 2;
+            canSpawnObjs = false;
         }
 
         // Update is called once per frame

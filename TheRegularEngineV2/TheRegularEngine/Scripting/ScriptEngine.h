@@ -75,6 +75,7 @@ namespace TRE
 		MonoObject* Instantiate();
 		MonoMethod* GetMethod(const std::string& name, int paramCount);
 		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params);
+		MonoClass* GetMonoClass();
 
 		std::map<std::string, ScriptField>& GetFields() { return m_Fields; }
 
@@ -100,6 +101,8 @@ namespace TRE
 		void OnCreateInvoke();
 		void OnStartInvoke();
 		void OnUpdateInvoke();
+		void OnTriggerStayInvoke(Entity other);
+		void OnCollisionStayInvoke(Entity other);
 
 		std::shared_ptr<ScriptClass> GetScriptClass() { return m_ScriptClass; }
 
@@ -137,6 +140,8 @@ namespace TRE
 		MonoMethod* m_CreateMethod = nullptr;
 		MonoMethod* m_StartMethod = nullptr;
 		MonoMethod* m_UpdateMethod = nullptr;
+		MonoMethod* m_TriggerStayMethod = nullptr;
+		MonoMethod* m_CollisionStayMethod = nullptr;
 
 		inline static char s_fieldBuffer[16];
 
@@ -185,6 +190,10 @@ namespace TRE
 		static void OnCreateEntity(Entity e);
 		static void OnStartEntity(Entity e);
 		static void OnUpdateEntity(Entity e	);
+
+		// Collision
+		static void OnTriggerStay(Entity e, Entity other);
+		static void OnCollisionStay(Entity e, Entity other);
 
 		static void CreateScriptInstance(const std::string& className,const std::string& entityGUID);
 

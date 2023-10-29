@@ -388,6 +388,34 @@ namespace TRE
 		}
 	}
 
+	void ScriptEngine::OnTriggerStay(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnTriggerStayInvoke(other);
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
+	void ScriptEngine::OnCollisionStay(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnCollisionStayInvoke(other);
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
 	MonoString* ScriptEngine::CreateMonoString(const std::string& string)
 	{
 		return mono_string_new(s_ScriptEngineData->AppDomain, string.c_str());
@@ -432,7 +460,17 @@ namespace TRE
 	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
     {
 		MonoObject* exception = nullptr;
-    	return mono_runtime_invoke(method, instance, params, &exception);
+    	MonoObject* result = mono_runtime_invoke(method, instance, params, &exception);
+		if (exception)
+		{
+			mono_print_unhandled_exception(exception);
+		}
+		return result;
+	}
+
+	MonoClass* ScriptClass::GetMonoClass()
+	{
+		return m_MonoClass;
 	}
 
 #pragma endregion
@@ -447,6 +485,8 @@ namespace TRE
 		m_CreateMethod = scriptClass->GetMethod("OnCreate", 0);
 		m_StartMethod = scriptClass->GetMethod("Start", 0);
 		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
+		m_TriggerStayMethod = scriptClass->GetMethod("OnTriggerStay", 1);
+		m_CollisionStayMethod = scriptClass->GetMethod("OnCollisionStay", 1);
 
     	{
 			unsigned long long id = std::stoull(entity);
@@ -471,6 +511,28 @@ namespace TRE
     {
 		if(m_UpdateMethod)
 			m_ScriptClass->InvokeMethod(m_Instance, m_UpdateMethod, nullptr);
+    }
+
+	void ScriptInstance::OnTriggerStayInvoke(Entity other)
+    {
+		
+		if (m_TriggerStayMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_TriggerStayMethod, &param);
+		}
+    }
+	
+
+	void ScriptInstance::OnCollisionStayInvoke(Entity other)
+    {
+		if (m_CollisionStayMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_CollisionStayMethod, &param);
+		}
     }
 
 	bool ScriptInstance::GetInternalFieldValue(const std::string& name, void* buffer)
