@@ -128,7 +128,7 @@ namespace TRE
 		// iterate through the vector and update the scriptable objects
 		for(auto e: m_ScriptEntities)
 		{
-			if(e->GetComponent<ScriptComponent>().m_IsDirty)
+			if(ECSManager::Instance().IsValidEntity(e) && e->GetComponent<ScriptComponent>().m_IsDirty)
 			{
 				// update the scriptable objec
 			}

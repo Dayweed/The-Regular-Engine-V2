@@ -29,7 +29,7 @@ namespace TRE
 
 		//std::string m_BasedGUID{};															// m_PrefabGUID of the prefab it is finding from
 
-		std::unordered_set<std::string> m_Instances{};										// Instances that are based on this Entity (Properties::m_GUID to easily get them)
+		//std::unordered_set<std::string> m_Instances{};										// Instances that are based on this Entity (Properties::m_GUID to easily get them)
 																							// This gets updated everytime an Instance is created
 																							// Automatically updates all instances if the Prefab is saved
 																							// Skips and removes instances when saving if:
@@ -50,7 +50,8 @@ namespace TRE
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_IsMainPrefab, m_MainPrefabGUID, m_PrefabGUID, m_Instances, m_RemovedComps, m_Overrides)
+		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_IsMainPrefab, m_MainPrefabGUID, m_PrefabGUID, m_Instances, m_RemovedComps, m_Overrides)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_IsMainPrefab, m_MainPrefabGUID, m_PrefabGUID, m_RemovedComps, m_Overrides)
 	};
 
 	class PrefabOutputArchive
@@ -160,7 +161,8 @@ namespace TRE
 
 		void UpdatePrefabDirectory(std::string prefabGUID, std::string prefabFilePath);			// Add prefabGUID and prefabFilePath into m_ExistingPrefabs and auto SerializeExistingPrefabs
 
-		void UpdateAllInstances(std::unordered_set<std::string>& instanceGUID, std::string prefabGUID);
+		//void UpdateAllInstances(std::unordered_set<std::string>& instanceGUID, std::string prefabGUID);
+		void UpdateAllInstances(std::string prefabGUID);
 
 		// Returns true if instance is succesfully updates
 		// Returns false if instance does not belong to prefabGUID or no longer exist
