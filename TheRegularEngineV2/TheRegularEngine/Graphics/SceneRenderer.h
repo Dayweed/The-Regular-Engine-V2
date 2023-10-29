@@ -98,7 +98,7 @@ namespace TRE
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
-			std::shared_ptr<SkyboxTexture> m_SkyboxTexture;
+			std::shared_ptr<VulkanTexture> m_SkyboxTexture;
 			std::unique_ptr<Material> m_SkyboxMaterial;
 			
 			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;

@@ -5,10 +5,22 @@
 
 namespace TRE
 {
+	struct VulkanTexture;
+	struct CubeMapConfig
+	{
+		VkFormat Format;
+		uint32_t Width = 1;
+		uint32_t Height = 1;
+		VkSamplerAddressMode SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		VkFilter Filter = VK_FILTER_NEAREST;
+		std::vector<std::shared_ptr<VulkanTexture>> Textures;
+	};
+
 	class VulkanTexture : public Resource
 	{
 	public:
 		VulkanTexture();
+		VulkanTexture(const CubeMapConfig& Config); //Only used to create cubemap for now
 		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();
 
