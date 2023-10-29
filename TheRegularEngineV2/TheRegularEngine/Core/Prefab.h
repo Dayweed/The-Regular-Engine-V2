@@ -126,7 +126,7 @@ namespace TRE
 
 		std::unordered_map<std::string, Entity> GetPrefabEntity(std::string prefabFilePath);	// Assign m_TempPrefab to the prefab found in prefabFilePath and returns m_TempPrefabs, all entities found from path
 
-		bool UpdatePrefabEntity();																// For Overwriting existing m_PrefabGUID! No param to force use m_TempPrefab
+		//bool UpdatePrefabEntity();																// For Overwriting existing m_PrefabGUID! No param to force use m_TempPrefab
 																								// Uses m_TempPrefab to update in Inspector, does nothing if it is nullptr
 																								// Returns true if m_TempPrefab exist and was successfully updated
 

@@ -1,0 +1,149 @@
+[
+   [
+      2,
+      0,
+      1
+   ],
+   [
+      2,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "3108989922243991419",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3108989922243991419",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3108989922243991419",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1fdbdbcf8a9a477b",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Children": [
+            "16327454021512873270"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "5465846420257009703"
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "5465846420257009703",
+         "m_Name": "Test2",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "16327454021512873270",
+         "m_Name": "Test",
+         "m_Tag": ""
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Position": [
+            -136.0,
+            20.0,
+            180.0
+         ],
+         "m_Rotation": [
+            8.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.20000000298023224,
+            0.20000000298023224,
+            0.20000000298023224
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            20.0,
+            180.0
+         ],
+         "m_Rotation": [
+            187.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.20000000298023224,
+            0.20000000298023224,
+            0.20000000298023224
+         ]
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "b1d2057915001876",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "b1d2057915001876",
+         "ASSET_MAT_m_MaterialInstance": "74b283e6a2bed9d8",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      1,
+      {
+         "m_StoredClass": "TRE.MoleController"
+      }
+   ]
+]

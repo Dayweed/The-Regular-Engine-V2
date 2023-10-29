@@ -493,6 +493,9 @@ namespace TRE
 
 		m_TempPrefab = mainTempPrefab;
 
+		ResetTempPrefab();
+
+		/* Don't need to update prefab rsc since no serialize instance
 		// Reserialize tempPrefab
 		bool updateSuccessful = UpdatePrefabEntity();
 
@@ -503,6 +506,7 @@ namespace TRE
 			TRE_CORE_ERROR("[" + funcName + "] Failed to update PrefabEntity (" + m_TempPrefab->GetName() + ") succesfully");
 			assert(updateSuccessful);
 		}
+		*/
 
 		return instance;
 	}
@@ -575,7 +579,7 @@ namespace TRE
 		return m_TempPrefabs;
 	}
 
-	bool PrefabSystem::UpdatePrefabEntity()
+	/*bool PrefabSystem::UpdatePrefabEntity()
 	{
 		if (!m_TempPrefab)
 		{
@@ -626,7 +630,7 @@ namespace TRE
 		ResetTempPrefab();
 
 		return true;
-	}
+	}*/
 
 	void PrefabSystem::UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID, entt::entity parentEnt)
 	{
