@@ -24,8 +24,8 @@ namespace TRE
 			// here
 		}
 
-		UpdateScriptableObjects();
 		CheckForNewScriptableObjects();
+		UpdateScriptableObjects();
 	}
 
 	void ScriptingSystem::GameUpdate()
@@ -145,6 +145,18 @@ namespace TRE
 			{
 				AddScriptableObject(e);
 			}
+
+			for (int x = 0; x < m_ScriptEntities.size(); x++)
+			{
+				//Remove script entity from scripting system since no script component
+				if (ECSManager::Instance().EntityHasComponent<ScriptComponent>(m_ScriptEntities[x]) == false)
+				{
+					if (m_ScriptEntities[x] == e)
+						m_ScriptEntities.erase(m_ScriptEntities.begin() + x);
+				}
+			}
+			
+				
 		}
 	}
 
