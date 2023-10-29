@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Threading;
 namespace TRE
 {
 	public class MoleController : Entity
@@ -10,13 +12,19 @@ namespace TRE
         private bool isGrounded = true;
         //Maxium height the player can jump
         private Vector3 maxHeight = new Vector3(0, 10000, 0);
+        //direction vector
+        private Vector3 dirVec;
+        //Wake up the mole
+        private bool isAwake = false;
 
 
         //check if player used super power
         private bool isScaled = false;
+        //Default scale
         private float defaultScale = 1;
-        private float superScale = 50;
-
+        //Increase character scale
+        private float superScale = 5;
+        //For now the floor collision
         public Entity Plane_collider;
 
         //Player has a TransformSystem
@@ -32,30 +40,29 @@ namespace TRE
 		{
             // Move The Test Object 
             TransformSystem.GetPosition(this.ID, out Vector3 pos);
-            //
+            PhysicsSystem.ConstrainRotationX(this.ID, true);
+            PhysicsSystem.ConstrainRotationZ(this.ID, true);
 
-            Vector3 dirVec = new Vector3(0, 0, 0);
+            dirVec = new Vector3(0, 0, 0);
 
             if (InputSystem.GetKeyDown(InputKeys.W))
             {
                 dirVec.z += 1;
-                //PS.AddForce(Mole.id, dirVec);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.S))
             {
                 dirVec.z += -1;
-                //PS.AddForce(Mole.id, dirVec);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.A))
             {
-                dirVec.x += -1;
+                dirVec.x += 1;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.D))
             {
-                dirVec.x += 1;
+                dirVec.x += -1;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.Space))
@@ -64,73 +71,32 @@ namespace TRE
                 isGrounded = PhysicsSystem.IsCollisionEnter(this.ID, Plane_collider.ID) || PhysicsSystem.IsCollisionStay(this.ID, Plane_collider.ID);
 
                 if (isGrounded)
-                {
-                    Jump(maxHeight); // uh oh beeeg number (for forcemode.force)
-                    // Jump(new Vector3(0, 35, 0)); // ah, much better (for forcemode.velchange)
-                }
+                    Jump(maxHeight);
             }
 
             if (InputSystem.GetKeyDown(InputKeys.E))
             {
                 if (!isScaled)
                 {
-                    PhysicsSystem.ResizeSphereCollider(this.ID, superScale);
+                    PhysicsSystem.ResizeCapsuleCollider(this.ID, superScale, superScale);
                     isScaled = true;
                 }
                 else if (isScaled)
                 {
-                    PhysicsSystem.ResizeSphereCollider(this.ID, defaultScale);
+                    PhysicsSystem.ResizeCapsuleCollider(this.ID, defaultScale, defaultScale);
                     isScaled = false;
                 }
             }
 
             dirVec.Normalize();
 
-            Vector3 tmp = dirVec * 60;
+            Vector3 tmp = dirVec * 10;
 
-            PhysicsSystem.AddForce(this.ID, tmp, ForceMode.Force);
-
-            /* NOT SURE IF THIS IS THE CORRECT ONE...
-            TransformSystem.GetPosition(this.ID, out Vector3 pos);
-
-            Vector3 dirVec = new Vector3(0, 0, 0);
-
-            if (InputSystem.GetKeyDown(InputKeys.W))
-            {
-                dirVec.z += 1;
-                //PhysicsSystem.AddForce(Mole.id, dirVec);
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.S))
-            {
-                dirVec.z += -1;
-                //PhysicsSystem.AddForce(Mole.id, dirVec);
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.A))
-            {
-                dirVec.x += 1;
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.D))
-            {
-                dirVec.x += -1;
-            }
-
-            dirVec.Normalize();
-
-            Vector3 tmp = dirVec * 60;
-
-            // PhysicsSystem.AddForce(Mole.id, tmp);
-            PhysicsSystem.AddForce(this.ID, tmp, ForceMode.Force);
-
-            TransformSystem.SetPosition(this.ID, pos);
-            */
+            PhysicsSystem.AddForce(this.ID, tmp, ForceMode.VelocityChange);
         }
         private void Jump(Vector3 JumpHeight)
         {
             PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Force);
-            // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
     }
 }
