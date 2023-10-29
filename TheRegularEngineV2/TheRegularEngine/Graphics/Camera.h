@@ -55,6 +55,11 @@ namespace TRE
 	public:
 		BaseCamera m_BaseCamera;
 		bool m_IsMainCamera{ false }; // SSSS
+		glm::vec3 m_StartPosition{};
+		glm::vec3 m_TransitionPosition{};
+		float m_InterpolationValue{};
+		float m_InterpolationSpeed{ 0.5f };
+		bool m_IsTransitioning{ false };
 		bool m_IsDirty{ false };
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
@@ -171,7 +176,10 @@ namespace TRE
 		const bool IsPerspective(const Entity& go) const;
 		const bool IsMainCamera(const Entity& go) const;
 
-		Entity GetMainCamera() const;
+		void MainCameraLookAt(const glm::vec3& target, const float distance);
+		void TransitionCamera(const glm::vec3& target, const float speed);
+
+		Entity GetMainCamera();
 
 		void SetIsDirty(const bool isDirty);
 		const bool GetIsDirty() const;

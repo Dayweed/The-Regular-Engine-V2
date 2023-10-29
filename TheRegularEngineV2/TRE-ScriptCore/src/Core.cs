@@ -627,6 +627,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetIsMainCamera(EntityID entityid, out bool output);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetMainCameraLookAt(Vector3 target, float distance);
 	}
 
     public enum ForceMode

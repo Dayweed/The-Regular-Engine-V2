@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Camera.h"
 #include "Core/Transform.h"
+#include "Core/Engine.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_access.hpp"
 
@@ -109,9 +110,25 @@ namespace TRE
 
 	void CameraSystem::LateUpdate()
 	{
+		auto entity = ECSManager::Instance().FindEntity("17194665003477913516");
+		if (entity)
+		{
+			Transform& transform = entity->GetComponent<Transform>();
+			if (transform.m_Position.x > 40)
+			{
+				//TransitionCamera(glm::vec3(100, 7, 20), 0.005f);
+			}
+			else
+			{
+				//TransitionCamera(glm::vec3(0, 7, 20), 0.005f);
+			}
+
+			//MainCameraLookAt(entity->GetComponent<Transform>().m_Position, 50.f);
+		}
+
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
-			const Transform& transform = go->GetComponent<Transform>();
+			Transform& transform = go->GetComponent<Transform>();
 			Camera& camera = go->GetComponent<Camera>();
 			if (transform.m_IsDirty)
 			{
@@ -128,6 +145,16 @@ namespace TRE
 				camera.m_IsDirty = false;
 
 				m_IsDirty = true;	//To update descriptor set then reset back after
+			}
+			if (camera.m_IsTransitioning)
+			{
+				transform.m_Position = glm::mix(camera.m_StartPosition, camera.m_TransitionPosition, camera.m_InterpolationValue);
+				camera.m_InterpolationValue += camera.m_InterpolationSpeed * Engine::GetInstance().GetWindow()->GetDeltaTime();
+				if (camera.m_InterpolationValue >= 1.f)
+				{
+					camera.m_IsTransitioning = false;
+					camera.m_InterpolationValue = 0.f;
+				}
 			}
 		}
 	}
@@ -373,7 +400,7 @@ namespace TRE
 		return go.get()->GetComponent<Camera>().m_IsMainCamera;
 	}
 
-	Entity CameraSystem::GetMainCamera() const
+	Entity CameraSystem::GetMainCamera()
 	{
 		//Can only have one main camera
 		Entity mainCamera;
@@ -390,6 +417,36 @@ namespace TRE
 		return mainCamera;
 	}
 
+	void CameraSystem::MainCameraLookAt(const glm::vec3& target, const float distance)
+	{
+		auto mainCamera = GetMainCamera();
+		if (mainCamera)
+		{
+			auto& cameraComponent = mainCamera->GetComponent<Camera>();
+			auto& cameraTransform = mainCamera->GetComponent<Transform>();
+
+			cameraComponent.m_BaseCamera.m_FocalPoint = target;
+			cameraComponent.m_BaseCamera.m_FocalLength = distance;
+			cameraComponent.m_IsDirty = true;
+			cameraTransform.m_Position = target - cameraComponent.m_BaseCamera.m_FocalLength * cameraComponent.m_BaseCamera.GetViewDirection();
+			cameraTransform.m_IsDirty = true;
+
+			std::cout << "CameraSystem::MainCameraLookAt: \n";
+		}
+	}
+
+	void CameraSystem::TransitionCamera(const glm::vec3& target, const float speed)
+	{
+		auto mainCamera = GetMainCamera();
+		if (mainCamera)
+		{
+			auto& cameraComponent = mainCamera->GetComponent<Camera>();
+			cameraComponent.m_IsTransitioning = true;
+			cameraComponent.m_StartPosition = mainCamera->GetComponent<Transform>().m_Position;
+			cameraComponent.m_TransitionPosition = target;
+			cameraComponent.m_InterpolationSpeed = speed;
+		}
+	}
 
 	void CameraSystem::SetIsDirty(const bool isDirty)
 	{
