@@ -117,5 +117,10 @@ namespace TRE
                 t = 0;
             return start + (end - start) * t;
         }
-    }
+		private void OnTriggerStay(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+			Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
+		}
+	}
 }

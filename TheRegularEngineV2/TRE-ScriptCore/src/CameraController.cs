@@ -11,7 +11,9 @@ namespace TRE
 
 		public void Start()
 		{
-			Player1 = ECSManager.FindEntityByName("Player1");
+			Player1 = ECSManager.FindEntityByName("Holey");
+			Core.Log("My ID is " + this.ID);
+			Core.Log("Player1 ID is " + Player1.ID);
 		}
 
 		public void Update()
