@@ -19,23 +19,12 @@ namespace TRE
 	{
 		bool m_IsMainPrefab{};																// This is to ensure it only checks this with the filepath/update main prefab
 
-		std::string m_MainPrefabGUID{};
-
+		std::string m_MainPrefabGUID{};														// GUID of the main prefab (the main parent of the prefab)
 
 		std::string m_PrefabGUID{};															// Prefabing GUID to be referred to when finding the correct doc / serializing
 																							// This GUID exist as a reference to the object
 																							// (NOT Properties::m_GUID which is used intenrally in the Engine)
 																							// Blank if it is only an instance
-
-		//std::string m_BasedGUID{};															// m_PrefabGUID of the prefab it is finding from
-
-		//std::unordered_set<std::string> m_Instances{};										// Instances that are based on this Entity (Properties::m_GUID to easily get them)
-																							// This gets updated everytime an Instance is created
-																							// Automatically updates all instances if the Prefab is saved
-																							// Skips and removes instances when saving if:
-																							// - Instance no longer exist
-																							// - Instance does not have Prefabing Component
-																							// - m_Base of instance does not match the m_PrefabGUID
 		
 		std::unordered_set<std::string> m_AddeddComps{};									// List of components removed
 
@@ -50,7 +39,6 @@ namespace TRE
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_IsMainPrefab, m_MainPrefabGUID, m_PrefabGUID, m_Instances, m_RemovedComps, m_Overrides)
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Prefabing, m_IsMainPrefab, m_MainPrefabGUID, m_PrefabGUID, m_RemovedComps, m_Overrides)
 	};
 
@@ -125,10 +113,6 @@ namespace TRE
 		Entity CreatePrefabEntityInstance(std::string prefabGUID);								// Creates an Instance from the prefab
 
 		std::unordered_map<std::string, Entity> GetPrefabEntity(std::string prefabFilePath);	// Assign m_TempPrefab to the prefab found in prefabFilePath and returns m_TempPrefabs, all entities found from path
-
-		//bool UpdatePrefabEntity();																// For Overwriting existing m_PrefabGUID! No param to force use m_TempPrefab
-																								// Uses m_TempPrefab to update in Inspector, does nothing if it is nullptr
-																								// Returns true if m_TempPrefab exist and was successfully updated
 
 		bool RevertInstance(Entity instance, std::string prefabGUID);							// Revert instance back to same data as prefab
 
