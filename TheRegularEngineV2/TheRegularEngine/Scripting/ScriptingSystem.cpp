@@ -54,8 +54,28 @@ namespace TRE
 			script.m_RanStart = true;
 		}
 
+		// Check for trigger
+		std::vector<std::pair<Entity, Entity>> triggerEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetTriggerHistory() };
+		for (auto e : triggerEntries)
+		{
+			std::cout << "Trigger >> " << e.first->GetName() << "|" << e.second->GetName() << "\n";
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerStay(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerStay(e.second, e.first);
+		}
+
 		// Check for collision
 		std::vector<std::pair<Entity, Entity>> collisionEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetCollisionHistory() };
+		for (auto e : collisionEntries)
+		{
+			std::cout << "Collision >> " << e.first->GetName() << "|" << e.second->GetName() << "\n";
+			std::cout << "Collision ID >> " << e.first->GetGUID() << "|" << e.second->GetGUID() << "\n";
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionStay(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionStay(e.second, e.first);
+		}
 
 		// Update
 		for(auto e: m_ScriptEntities)

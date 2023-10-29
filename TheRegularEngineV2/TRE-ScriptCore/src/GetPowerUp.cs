@@ -17,13 +17,20 @@ namespace TRE
         private MoleController playerControl;
         private PowerUpManager playerPowerUpManager;
 
-        public GetPowerUp() : base(ECSManager.FindIDFromName("Mole"), "Mole")
+        public GetPowerUp()
         {
 
         }
 
-        private void OnTriggerEnter(/*Collider*/Entity other)
+        private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
         {
+
+        }
+
+        private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+            Core.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!

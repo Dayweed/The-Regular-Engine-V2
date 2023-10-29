@@ -375,17 +375,14 @@ namespace TRE
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
 	{
-		return{};
-
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
-		//CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
-		//for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
+		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+
+		for (size_t i{}; i < m_SimulationEventCallback.m_CollisionHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			std::cout << first << "|" << second << "\n";
-			std::pair<unsigned, unsigned> pair{ static_cast<unsigned>(first), static_cast<unsigned>(second) };
-			CollisionsID.push_back({ first, second });
-			std::cout << "DONE\n";
+			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
+			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+			CollisionsID.emplace_back(pair);
 		}
 
 		// Generate Entity Actor Vector
@@ -404,13 +401,14 @@ namespace TRE
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
 	{
-		return{};
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
+
+		for (size_t i{}; i < m_SimulationEventCallback.m_TriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			std::pair<unsigned, unsigned> pair{ first, second };
-			CollisionsID.push_back(pair);
+			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
+			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+			CollisionsID.emplace_back(pair);
 		}
 
 		// Generate Entity Actor Vector
@@ -429,13 +427,14 @@ namespace TRE
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
 	{
-		return{};
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
-		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
+
+		for (size_t i{}; i < m_SimulationEventCallback.m_PrevTriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			std::pair<unsigned, unsigned> pair{ first, second };
-			CollisionsID.push_back(pair);
+			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
+			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+			CollisionsID.emplace_back(pair);
 		}
 
 		// Generate Entity Actor Vector

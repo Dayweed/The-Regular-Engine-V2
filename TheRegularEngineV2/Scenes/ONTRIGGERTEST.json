@@ -1,0 +1,278 @@
+[
+   [
+      4,
+      2097248,
+      2097249,
+      2097250,
+      2097251
+   ],
+   [
+      0
+   ],
+   [
+      4,
+      2097248,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097249,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097250,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097251,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      4,
+      2097248,
+      {
+         "m_Active": true,
+         "m_GUID": "3672266117357288938",
+         "m_Name": "MoleSolid",
+         "m_Tag": ""
+      },
+      2097249,
+      {
+         "m_Active": true,
+         "m_GUID": "487391042155820437",
+         "m_Name": "Mole",
+         "m_Tag": ""
+      },
+      2097250,
+      {
+         "m_Active": true,
+         "m_GUID": "17591008384108422035",
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      2097251,
+      {
+         "m_Active": true,
+         "m_GUID": "3160019635151679048",
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      }
+   ],
+   [
+      4,
+      2097248,
+      {
+         "m_Position": [
+            0.0,
+            -9.0,
+            20.0
+         ],
+         "m_Rotation": [
+            -179.99998474121094,
+            -5.008956577512436e-06,
+            -179.99998474121094
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097249,
+      {
+         "m_Position": [
+            0.0,
+            5.0,
+            20.0
+         ],
+         "m_Rotation": [
+            -179.99998474121094,
+            -5.008956577512436e-06,
+            -179.99998474121094
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      2097250,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097251,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      2,
+      2097248,
+      {
+         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      2097249,
+      {
+         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      2097251,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 100.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            -100.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Right": 1.0,
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ]
+      }
+   ],
+   [
+      1,
+      2097249,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 1.0,
+         "m_UseGravity": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      2097248,
+      {
+         "m_HalfExtents": [
+            0.5,
+            0.5,
+            0.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097249,
+      {
+         "m_HalfExtents": [
+            0.5,
+            0.5,
+            0.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      2097250,
+      {
+         "m_AmbientColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Direction": [
+            0.7071067690849304,
+            -0.4999999701976776,
+            0.4999999701976776
+         ],
+         "m_DirectionalColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      2097249,
+      {
+         "m_StoredClass": "TRE.GetPowerUp"
+      }
+   ]
+]
