@@ -29,8 +29,7 @@ namespace TRE
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
-
-		bool isPlaying{};
+		bool m_isPlaying{};
 
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
 
@@ -60,6 +59,7 @@ namespace TRE
 
 		friend void from_json(const nlohmann::json& j, Audio& t) //deserialize
 		{
+			t.m_FileName = j.at("m_FileName").get<std::string>();
 			t.m_Play = j.at("m_Play").get<bool>();
 			t.m_Volume = j.at("m_Volume").get<float>();
 			t.m_Pitch = j.at("m_Pitch").get<float>();
@@ -190,7 +190,7 @@ namespace TRE
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;
 		const std::pair<float, float> GetSourceRadius(Entity& go) const;
-
+		bool GetIsPlaying(Entity& go) const;
 
 		FMOD::ChannelGroup* GetChannelGroup(Entity& go);
 		std::string GetFileName(Entity& go) const;

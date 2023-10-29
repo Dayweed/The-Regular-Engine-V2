@@ -31,11 +31,11 @@ layout(set = 0, binding = 0) uniform UBO
 	vec3 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
-	vec4 m_DirectionalLight;
+	vec4 m_DirectionalLightDirection;
+	vec4 m_DirectionalLightColor;
 	vec4 m_AmbientLight;
 }ubo;
 
-const float AMBIENT_INTENSITY = 0.05;
 const float gamma = 2.2;
 
 void main() 
@@ -45,10 +45,10 @@ void main()
 	mat3 rot = mat3(push.m_Model);
 
 	vec3 normalWorldSpace = normalize(mat3(push.m_Model) * inNormal);
-	float lightIntensity = AMBIENT_INTENSITY + max(dot(normalWorldSpace, -normalize(ubo.m_DirectionalLight.xyz)), 0);
+	float lightIntensity = ubo.m_AmbientLight.a + max(dot(normalWorldSpace, -normalize(ubo.m_DirectionalLightDirection.xyz)), 0);
 
-    Out.VertColor = lightIntensity * inColor;
-	Out.VertColor = Out.VertColor * ubo.m_AmbientLight.rgb * ubo.m_AmbientLight.a;
+    Out.VertColor = lightIntensity *  ubo.m_AmbientLight.rgb * inColor;
+	Out.VertColor = Out.VertColor * ubo.m_DirectionalLightColor.rgb * ubo.m_DirectionalLightColor.a;
     Out.VertColor = pow(Out.VertColor, gamma.rrr);
 	Out.TexCoord = inTexCoord;
 

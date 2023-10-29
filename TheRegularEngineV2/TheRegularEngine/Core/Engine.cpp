@@ -185,10 +185,10 @@ namespace TRE
 
 			/*test->AddComponent<Audio>();
 			audioSystem->SetFileName(test, "ViveLeFromageBGM1.wav");
-			audioSystem->SetPlay(test, true);
+			audioSystem->SetPlay(test, false);
 			audioSystem->SetLoop(test, true);
 			audioSystem->SetSpatialize(test,true);
-			audioSystem->CompileAudio(test);
+			//audioSystem->CompileAudio(test);
 			audioSystem->SetSourceRadius(test, 50.f, 150.f);*/
 		}
 

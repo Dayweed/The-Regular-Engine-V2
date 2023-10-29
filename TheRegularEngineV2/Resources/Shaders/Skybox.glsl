@@ -9,7 +9,8 @@ layout(set = 0, binding = 0) uniform UBO
 	vec3 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
-	vec4 m_DirectionalLight;
+	vec4 m_DirectionalLightDirection;
+	vec4 m_DirectionalLightColor;
 	vec4 m_AmbientLight;
 
 	mat4 m_Proj;
