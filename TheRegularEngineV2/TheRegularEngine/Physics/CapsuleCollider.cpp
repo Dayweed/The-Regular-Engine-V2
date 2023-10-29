@@ -92,6 +92,7 @@ namespace TRE
 		// capsuleCollider.m_IsTrigger = ...
 		capsuleCollider.m_Offset = offset;
 		capsuleCollider.m_Radius = radius;
+		capsuleCollider.m_IsVisible = m_DrawDebugLines;
 
 		return capsuleCollider.m_IsInitialized = true;
 	}
