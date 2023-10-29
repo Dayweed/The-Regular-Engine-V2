@@ -105,12 +105,36 @@ namespace TRE
             return EngineCompareTag(ID, otherTag);
         }
 
-		// Can only be done for Scripting for now
-		public T GetComponent<T>()
+        // Can only be done for Scripting for now
+        public T GetComponent<T>() where T : new()
+        {
+			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
+
+            return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
+
+            //return GenerateComponent<T>();
+        }
+
+        // DONT USE THIS, INCOMPLETE AND UNTESTED
+		/*
+        public T AddComponent<T>() where T : new()
+        {
+            if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
+
+            return GenerateComponent<T>();
+        }
+		*/
+
+        // DONT USE THIS, INCOMPLETE AND UNTESTED
+		/*
+        private T GenerateComponent<T>() where T : new()
 		{
-			Console.WriteLine(typeof(T).ToString());
-			return Script.GetScript<T>(ID, typeof(T).ToString());
-		}
+			if (typeof(T).ToString() == typeof(Parenting).ToString()) return (T) Convert.ChangeType(parenting, typeof(T));
+			if (typeof(T).ToString() == typeof(Transform).ToString()) return (T) Convert.ChangeType(transform, typeof(T));
+
+            return new T();
+        }
+		*/
 
         // Private binded calls
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -717,6 +741,9 @@ namespace TRE
 
 	public class Script
 	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool IsScript(string ClassName);
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static bool HaveScript(EntityID ID, string ClassName);
 

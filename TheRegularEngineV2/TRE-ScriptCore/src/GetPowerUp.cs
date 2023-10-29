@@ -29,8 +29,8 @@ namespace TRE
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
                 playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
                 playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
-                //playerControl = playerObj.gameObject.GetComponent<MoleController>();  // THIS CANT BE DONE YET!
-                //playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();      // THIS CANT BE DONE YET!
+                playerControl = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();  // THIS CANT BE DONE YET!
+                playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();        //playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();      // THIS CANT BE DONE YET!
 
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;

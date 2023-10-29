@@ -864,6 +864,21 @@ namespace TRE
 
 
 #pragma region ScriptBindings
+    static bool BindIsScript(MonoString* className)
+    {
+        if (!className)
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] ClassName is invalid!";
+            return false;
+        }
+        std::string classNameStr{ MonoStringToString(className) };
+        auto classes{ ScriptEngine::s_ScriptEngineData->ScriptClasses };
+
+        return classes.find(classNameStr) != classes.end();
+    }
+
     static bool BindHaveScript(CSEntityID ID, MonoString* className)
     {
         Entity Temp{ VALIDATEENTITY(ID) };
@@ -888,31 +903,7 @@ namespace TRE
         std::string IDStr{ EntityID_CSToEngine(ID) };
         std::string classNameStr{ MonoStringToString(className) };
 
-        std::cout << "> " << EntityID_CSToEngine(ID) << "|" << classNameStr << "\n";
-
-        auto classes{ ScriptEngine::s_ScriptEngineData->ScriptClasses };
         auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
-
-        /*for (auto klass : classes)
-        {
-            std::cout << "- " << klass.first << "\n";
-            std::cout << "> Following fields: " << klass.second->GetFields().size() << "\n";
-            for (auto kock : klass.second->GetFields())
-            {
-                std::cout << "-- " << kock.first << "\n";
-            }
-        }
-        std::cout << "--------\n";
-        for (auto inst : instances)
-        {
-            std::cout << "- " << inst.first << "\n";
-            auto klass = inst.second->GetScriptClass();
-            std::cout << "> Following fields: " << klass->GetFields().size() << "\n";
-            for (auto kock : klass->GetFields())
-            {
-                std::cout << "-- " << kock.first << "\n";
-            }
-        }*/
 
         return instances[IDStr]->GetScriptClass()->GetMonoClass();
     }
@@ -1058,6 +1049,7 @@ namespace TRE
 
         // Scripting
         {
+            mono_add_internal_call("TRE.Script::IsScript", BindIsScript);
             mono_add_internal_call("TRE.Script::HaveScript", BindHaveScript);
             mono_add_internal_call("TRE.Script::GetScript", BindGetScript);
         }
