@@ -210,6 +210,7 @@ namespace TRE
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
 		}
 
@@ -234,6 +235,7 @@ namespace TRE
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
 		}
 
