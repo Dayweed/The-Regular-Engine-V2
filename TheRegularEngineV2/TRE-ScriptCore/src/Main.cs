@@ -31,10 +31,10 @@ namespace TRE
         */
 
         public Main()
-		{
-			//Temp.id = ECSManager.CreateEntity(Temp.name);
-			//Console.WriteLine("Hello World from C#!");
-            
+        {
+            //Temp.id = ECSManager.CreateEntity(Temp.name);
+            //Console.WriteLine("Hello World from C#!");
+
             /* Commenting out uneeded code to prevent Console Panel spam...
 			Test.ID = ECSManager.FindIDFromName(Test.name);
             Plane_collider.ID = ECSManager.FindIDFromName(Plane_collider.name);
@@ -56,8 +56,8 @@ namespace TRE
 
 		public void Start()
 		{
-			//humanCentipedo.Start();
-			//testingRandoFall.Start();
+            //humanCentipedo.Start();
+            //testingRandoFall.Start();
         }
 
 		public void Update()

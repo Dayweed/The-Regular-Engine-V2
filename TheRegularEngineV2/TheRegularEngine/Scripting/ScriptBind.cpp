@@ -833,6 +833,61 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region ScriptBindings
+    static bool BindHaveScript(CSEntityID ID, MonoString* className)
+    {
+        Entity Temp{ VALIDATEENTITY(ID) };
+        if (!Temp->HasComponent<ScriptComponent>()) return false;
+
+        if (!className)
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] ClassName is invalid!";
+            return false;
+        }
+        std::string classNameStr{ MonoStringToString(className) };
+
+        return Temp->GetComponent<ScriptComponent>().m_StoredClass == classNameStr;
+    }
+
+    static MonoClass* BindGetScript(CSEntityID ID, MonoString* className)
+    {
+        if (!BindHaveScript(ID, className)) return NULL;
+
+        std::string IDStr{ EntityID_CSToEngine(ID) };
+        std::string classNameStr{ MonoStringToString(className) };
+
+        std::cout << "> " << EntityID_CSToEngine(ID) << "|" << classNameStr << "\n";
+
+        auto classes{ ScriptEngine::s_ScriptEngineData->ScriptClasses };
+        auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
+
+        /*for (auto klass : classes)
+        {
+            std::cout << "- " << klass.first << "\n";
+            std::cout << "> Following fields: " << klass.second->GetFields().size() << "\n";
+            for (auto kock : klass.second->GetFields())
+            {
+                std::cout << "-- " << kock.first << "\n";
+            }
+        }
+        std::cout << "--------\n";
+        for (auto inst : instances)
+        {
+            std::cout << "- " << inst.first << "\n";
+            auto klass = inst.second->GetScriptClass();
+            std::cout << "> Following fields: " << klass->GetFields().size() << "\n";
+            for (auto kock : klass->GetFields())
+            {
+                std::cout << "-- " << kock.first << "\n";
+            }
+        }*/
+
+        return instances[IDStr]->GetScriptClass()->GetMonoClass();
+    }
+#pragma endregion
+
     void ScriptBind::RegisterFunctions()
     {
         // ECS Bindings
@@ -962,5 +1017,11 @@ namespace TRE
 	    {
 		    mono_add_internal_call("TRE.Time::GetDeltaTime", BindGetDeltaTime);
 	    }
+
+        // Scripting
+        {
+            mono_add_internal_call("TRE.Script::HaveScript", BindHaveScript);
+            mono_add_internal_call("TRE.Script::GetScript", BindGetScript);
+        }
     }
 }

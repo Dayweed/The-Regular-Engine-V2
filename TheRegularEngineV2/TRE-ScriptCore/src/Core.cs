@@ -105,6 +105,13 @@ namespace TRE
             return EngineCompareTag(ID, otherTag);
         }
 
+		// Can only be done for Scripting for now
+		public T GetComponent<T>()
+		{
+			Console.WriteLine(typeof(T).ToString());
+			return Script.GetScript<T>(ID, typeof(T).ToString());
+		}
+
         // Private binded calls
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void EngineRename(EntityID id, string name);
@@ -692,4 +699,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float GetDeltaTime();
 	}
+
+	public class Script
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool HaveScript(EntityID ID, string ClassName);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static T GetScript<T>(EntityID ID, string ClassName);
+    }
 }

@@ -75,6 +75,7 @@ namespace TRE
 		MonoObject* Instantiate();
 		MonoMethod* GetMethod(const std::string& name, int paramCount);
 		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params);
+		MonoClass* GetMonoClass();
 
 		std::map<std::string, ScriptField>& GetFields() { return m_Fields; }
 

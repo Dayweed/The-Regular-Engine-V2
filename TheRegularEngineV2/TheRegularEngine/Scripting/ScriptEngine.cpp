@@ -435,6 +435,11 @@ namespace TRE
     	return mono_runtime_invoke(method, instance, params, &exception);
 	}
 
+	MonoClass* ScriptClass::GetMonoClass()
+	{
+		return m_MonoClass;
+	}
+
 #pragma endregion
 
 #pragma region ScriptInstance
