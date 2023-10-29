@@ -30,6 +30,10 @@ namespace TRE
             Entity ent = ECSManager.FindEntityByName("GameObject (3)");
             RandomizeFallingObjLocation entget = ent.GetComponent<RandomizeFallingObjLocation>();
             Core.Log("entget maxAmountToSpawn is " + entget.maxAmountToSpawn);
+
+            Core.Log("Testing Invalid GetComponent... ");
+            HumanCentipede failedget = ent.GetComponent<HumanCentipede>();
+            Core.Log("Invalid GetComponent HumanCentipede: " + (failedget == null));
         }
 
         public void Update()
