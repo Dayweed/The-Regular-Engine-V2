@@ -628,6 +628,11 @@ namespace TRE
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraLookAt(*target, distance);
     }
 
+    static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
+    {
+        ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+    }
+
 #pragma endregion
 
 #pragma region InputBindings
@@ -994,7 +999,8 @@ namespace TRE
 	    	mono_add_internal_call("TRE.CameraSystem::GetAspectRatio", BindCamGetAspectRatio);
 	    	mono_add_internal_call("TRE.CameraSystem::IsPerspective", BindCamIsPerspective);
 	    	mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
-            mono_add_internal_call("TRE.CameraSystem::MainCameraLookAt", BindCamMainSetLookAt);
+            mono_add_internal_call("TRE.CameraSystem::SetMainCameraLookAt", BindCamMainSetLookAt);
+            mono_add_internal_call("TRE.CameraSystem::TransitionMainCamera", BindTransitionMainCamera);
 	    }
 
         // Physics Bindings

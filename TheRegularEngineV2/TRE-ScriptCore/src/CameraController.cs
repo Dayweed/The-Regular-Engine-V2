@@ -7,26 +7,27 @@ namespace TRE
 	public class CameraController : Entity
 	{
 		private Entity Player1;
-		private float distance = 50;
+		public float distance = 50;
 
 		public void Start()
 		{
 			Player1 = ECSManager.FindEntityByName("Player1");
-			Core.Log("My ID is " + Player1.ID);
 		}
 
 		public void Update()
 		{
 			TransformSystem.GetPosition(Player1.ID, out Vector3 pos);
-			//CameraSystem.SetMainCameraLookAt(pos, distance);
+			CameraSystem.SetMainCameraLookAt(pos, distance);
 
 			//For trigger 1
-			if (true)
+			if (pos.x >= 40)
 			{
+				CameraSystem.TransitionMainCamera(new Vector3(100, 7, 20), new Vector3(45, 180, 0), 0.001f);
 			}
-
+			else
+			{
+				CameraSystem.TransitionMainCamera(new Vector3(0, 7, 20), new Vector3(30, 180, 0), 0.001f);
+			}
 		}
-
-
 	}
 }

@@ -110,22 +110,6 @@ namespace TRE
 
 	void CameraSystem::LateUpdate()
 	{
-		auto entity = ECSManager::Instance().FindEntity("17194665003477913516");
-		if (entity)
-		{
-			Transform& transform = entity->GetComponent<Transform>();
-			if (transform.m_Position.x > 40)
-			{
-				//TransitionCamera(glm::vec3(100, 7, 20), 0.005f);
-			}
-			else
-			{
-				//TransitionCamera(glm::vec3(0, 7, 20), 0.005f);
-			}
-
-			//MainCameraLookAt(entity->GetComponent<Transform>().m_Position, 50.f);
-		}
-
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
 		{
 			Transform& transform = go->GetComponent<Transform>();
@@ -149,6 +133,7 @@ namespace TRE
 			if (camera.m_IsTransitioning)
 			{
 				transform.m_Position = glm::mix(camera.m_StartPosition, camera.m_TransitionPosition, camera.m_InterpolationValue);
+				transform.m_Rotation = glm::mix(camera.m_StartRotation, camera.m_TransitionRotation, camera.m_InterpolationValue);
 				camera.m_InterpolationValue += camera.m_InterpolationSpeed * Engine::GetInstance().GetWindow()->GetDeltaTime();
 				if (camera.m_InterpolationValue >= 1.f)
 				{
@@ -430,20 +415,21 @@ namespace TRE
 			cameraComponent.m_IsDirty = true;
 			cameraTransform.m_Position = target - cameraComponent.m_BaseCamera.m_FocalLength * cameraComponent.m_BaseCamera.GetViewDirection();
 			cameraTransform.m_IsDirty = true;
-
-			std::cout << "CameraSystem::MainCameraLookAt: \n";
 		}
 	}
 
-	void CameraSystem::TransitionCamera(const glm::vec3& target, const float speed)
+	void CameraSystem::TransitionCamera(const glm::vec3& targetPosition, const glm::vec3& targetRotation, const float speed)
 	{
 		auto mainCamera = GetMainCamera();
 		if (mainCamera)
 		{
 			auto& cameraComponent = mainCamera->GetComponent<Camera>();
+			const auto& cameraTransform = mainCamera->GetComponent<Transform>();
 			cameraComponent.m_IsTransitioning = true;
-			cameraComponent.m_StartPosition = mainCamera->GetComponent<Transform>().m_Position;
-			cameraComponent.m_TransitionPosition = target;
+			cameraComponent.m_StartPosition = cameraTransform.m_Position;
+			cameraComponent.m_TransitionPosition = targetPosition;
+			cameraComponent.m_StartRotation = cameraTransform.m_Rotation;
+			cameraComponent.m_TransitionRotation = targetRotation;
 			cameraComponent.m_InterpolationSpeed = speed;
 		}
 	}
