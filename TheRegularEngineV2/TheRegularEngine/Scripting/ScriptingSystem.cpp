@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include "TREIncludes.h"
+
 #include"Scripting/ScriptingSystem.h"
 #include"Scripting/ScriptComponent.h"
 #include "Scripting/ScriptEngine.h"
@@ -52,6 +54,10 @@ namespace TRE
 			script.m_RanStart = true;
 		}
 
+		// Check for collision
+		std::vector<std::pair<Entity, Entity>> collisionEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetCollisionHistory() };
+
+		// Update
 		for(auto e: m_ScriptEntities)
 		{
 			ScriptEngine::OnUpdateEntity(e);

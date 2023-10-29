@@ -87,6 +87,11 @@ namespace TRE
 		// void OnDestroyEntities() override;
 		void Shutdown() override;
 
+		std::unordered_map<unsigned, Entity> GenerateEntityActorVector();
+		std::vector<std::pair<Entity, Entity>> GetCollisionHistory();
+		std::vector<std::pair<Entity, Entity>> GetTriggerHistory();
+		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory();
+
 		void SetDrawDebug(bool draw);
 
 #pragma region Rigidbody Function Declarations

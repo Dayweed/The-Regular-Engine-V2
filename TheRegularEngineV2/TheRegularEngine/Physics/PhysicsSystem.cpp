@@ -361,6 +361,87 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
+	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector()
+	{
+		std::unordered_map<unsigned, Entity> vector;
+		vector.reserve(m_Actors.size());
+		for (auto actor : m_Actors)
+		{
+			vector.emplace(actor.second.m_RigidDynamic->getInternalActorIndex(), ECSManager::Instance().FindEntity(actor.first));
+		}
+
+		return vector;
+	}
+
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
+	{
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
+		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
+		{
+			CollisionsID.emplace_back(first, second);
+		}
+
+		// Generate Entity Actor Vector
+		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
+
+		// Find Entity
+		std::vector<std::pair<Entity, Entity>> Collisions;
+		Collisions.reserve(CollisionsID.size());
+		for (auto IDs : CollisionsID)
+		{
+			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+
+		return Collisions;
+	}
+
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
+	{
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
+		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
+		{
+			CollisionsID.emplace_back(first, second);
+		}
+
+		// Generate Entity Actor Vector
+		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
+
+		// Find Entity
+		std::vector<std::pair<Entity, Entity>> Collisions;
+		Collisions.reserve(CollisionsID.size());
+		for (auto IDs : CollisionsID)
+		{
+			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+
+		return Collisions;
+	}
+
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
+	{
+		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
+		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
+		for (const auto& [first, second, flags] : m_SimulationEventCallback.m_CollisionHistory)
+		{
+			CollisionsID.emplace_back(first, second);
+		}
+
+		// Generate Entity Actor Vector
+		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
+
+		// Find Entity
+		std::vector<std::pair<Entity, Entity>> Collisions;
+		Collisions.reserve(CollisionsID.size());
+		for (auto IDs : CollisionsID)
+		{
+			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+
+		return Collisions;
+	}
+
 	void PhysicsSystem::SetDrawDebug(bool draw)
 	{
 		m_DrawDebugLines = draw;
