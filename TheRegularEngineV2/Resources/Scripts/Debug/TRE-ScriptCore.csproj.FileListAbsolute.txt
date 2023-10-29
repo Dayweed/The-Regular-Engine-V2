@@ -16,3 +16,9 @@ D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV
 D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\Debug\TRE-ScriptCore.pdb
 D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.dll
 D:\Isaiah\Isaiah_Stuff\School\University\Laptop\gam-300\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.pdb
+D:\david\Documents\GAM300\TheRegularEngineV2\Resources\Scripts\Debug\TRE-ScriptCore.csproj.AssemblyReference.cache
+D:\david\Documents\GAM300\TheRegularEngineV2\Resources\Scripts\Debug\TRE-ScriptCore.csproj.CoreCompileInputs.cache
+D:\david\Documents\GAM300\TheRegularEngineV2\Resources\Scripts\Debug\TRE-ScriptCore.dll
+D:\david\Documents\GAM300\TheRegularEngineV2\Resources\Scripts\Debug\TRE-ScriptCore.pdb
+D:\david\Documents\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.dll
+D:\david\Documents\GAM300\TheRegularEngineV2\Resources\Scripts\TRE-ScriptCore.pdb

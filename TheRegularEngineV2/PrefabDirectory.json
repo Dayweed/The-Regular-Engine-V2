@@ -1,10 +1,12 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
         "m_ExistingPrefabsKey": [
-            "3233608133424215460"
+            "3233608133424215460",
+            "3741173402057846053"
         ],
         "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/Mole.json"
+            "../Resources/Prefabs/Mole.json",
+            "../Resources/Prefabs/Holey.json"
         ]
     }
 }
