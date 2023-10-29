@@ -83,23 +83,40 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, Camera& t) // Deserialize
 		{
-			std::vector<float> v_vpsize{ j.at("m_ViewportSize").get<std::vector<float>>() };
-			float a_vpsize[2]{ v_vpsize[0], v_vpsize[1] };
-			t.m_BaseCamera.m_ViewportSize = glm::make_vec2(a_vpsize);
-			t.m_BaseCamera.m_Fov = j.at("m_Fov").get<float>();
-			t.m_BaseCamera.m_Near = j.at("m_Near").get<float>();
-			t.m_BaseCamera.m_Far = j.at("m_Far").get<float>();
-			t.m_BaseCamera.m_FocalLength = j.at("m_FocalLength").get<float>();
-			std::vector<float> v_pnt{ j.at("m_FocalPoint").get<std::vector<float>>() };
-			float a_pnt[3]{ v_pnt[0], v_pnt[1], v_pnt[2] };
-			t.m_BaseCamera.m_FocalPoint = glm::make_vec3(a_pnt);
-			t.m_BaseCamera.m_Left = j.at("m_Left").get<float>();
-			t.m_BaseCamera.m_Right = j.at("m_Right").get<float>();
-			t.m_BaseCamera.m_Bottom = j.at("m_Bottom").get<float>();
-			t.m_BaseCamera.m_Top = j.at("m_Top").get<float>();
-			t.m_BaseCamera.m_AspectRatio = j.at("m_AspectRatio").get<float>();
-			t.m_BaseCamera.m_IsPerspective = j.at("m_IsPerspective").get<bool>();
-			t.m_IsMainCamera = j.at("m_IsMainCamera").get<bool>();
+			if (j.contains("m_ViewportSize"))
+			{
+				std::vector<float> v_vpsize{ j.at("m_ViewportSize").get<std::vector<float>>() };
+				float a_vpsize[2]{ v_vpsize[0], v_vpsize[1] };
+				t.m_BaseCamera.m_ViewportSize = glm::make_vec2(a_vpsize);
+			}
+			if(j.contains("m_Fov"))
+				t.m_BaseCamera.m_Fov = j.at("m_Fov").get<float>();
+			if (j.contains("m_Near"))
+				t.m_BaseCamera.m_Near = j.at("m_Near").get<float>();
+			if (j.contains("m_Far"))
+				t.m_BaseCamera.m_Far = j.at("m_Far").get<float>();
+			if (j.contains("m_FocalLength"))
+				t.m_BaseCamera.m_FocalLength = j.at("m_FocalLength").get<float>();
+			if (j.contains("m_FocalPoint"))
+			{
+				std::vector<float> v_pnt{ j.at("m_FocalPoint").get<std::vector<float>>() };
+				float a_pnt[3]{ v_pnt[0], v_pnt[1], v_pnt[2] };
+				t.m_BaseCamera.m_FocalPoint = glm::make_vec3(a_pnt);
+			}
+			if(j.contains("m_Left"))
+				t.m_BaseCamera.m_Left = j.at("m_Left").get<float>();
+			if (j.contains("m_Right"))
+						t.m_BaseCamera.m_Right = j.at("m_Right").get<float>();
+			if (j.contains("m_Bottom"))
+				t.m_BaseCamera.m_Bottom = j.at("m_Bottom").get<float>();
+			if (j.contains("m_Top"))
+				t.m_BaseCamera.m_Top = j.at("m_Top").get<float>();
+			if (j.contains("m_AspectRatio"))
+				t.m_BaseCamera.m_AspectRatio = j.at("m_AspectRatio").get<float>();
+			if (j.contains("m_IsPerspective"))
+				t.m_BaseCamera.m_IsPerspective = j.at("m_IsPerspective").get<bool>();
+			if (j.contains("m_IsMainCamera"))
+				t.m_IsMainCamera = j.at("m_IsMainCamera").get<bool>();
 
 			t.m_IsDirty = true;
 		}

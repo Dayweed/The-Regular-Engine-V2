@@ -28,13 +28,19 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, DirectionalLight& t)
 		{
-			std::vector<float> v_dir{ j.at("m_Direction").get<std::vector<float>>() };
-			float a_dir[3]{ v_dir[0], v_dir[1], v_dir[2] };
-			t.Direction = glm::make_vec3(a_dir);
+			if (j.contains("m_Direction"))
+			{
+				std::vector<float> v_dir{ j.at("m_Direction").get<std::vector<float>>() };
+				float a_dir[3]{ v_dir[0], v_dir[1], v_dir[2] };
+				t.Direction = glm::make_vec3(a_dir);
+			}
 
-			std::vector<float> v_ambientColor{ j.at("m_AmbientColor").get<std::vector<float>>() };
-			float a_ambientColor[4]{ v_ambientColor[0], v_ambientColor[1], v_ambientColor[2], v_ambientColor[3] };
-			t.AmbientColor = glm::make_vec4(a_ambientColor);
+			if (j.contains("m_AmbientColor"))
+			{
+				std::vector<float> v_ambientColor{ j.at("m_AmbientColor").get<std::vector<float>>() };
+				float a_ambientColor[4]{ v_ambientColor[0], v_ambientColor[1], v_ambientColor[2], v_ambientColor[3] };
+				t.AmbientColor = glm::make_vec4(a_ambientColor);
+			}
 		}
 	};
 
