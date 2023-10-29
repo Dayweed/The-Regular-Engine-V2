@@ -86,6 +86,7 @@ namespace TRE
 		// boxCollider.m_IsTrigger = ...
 		boxCollider.m_Offset = offset;
 		boxCollider.m_HalfExtents = halfExtents;
+		boxCollider.m_IsVisible = m_DrawDebugLines;
 
 		return boxCollider.m_IsInitialized = true;
 	}

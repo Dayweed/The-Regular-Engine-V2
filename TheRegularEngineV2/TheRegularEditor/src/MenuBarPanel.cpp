@@ -119,6 +119,15 @@ namespace TRE
 
 				if (ImGui::Checkbox("Show All Colliders", &m_ShowAllColliders))
 				{
+					for (Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+						entity->GetComponent<SphereCollider>().m_IsVisible = m_ShowAllColliders;
+
+					for (Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+						entity->GetComponent<BoxCollider>().m_IsVisible = m_ShowAllColliders;
+
+					for (Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+						entity->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
+
 					ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetDrawDebug(m_ShowAllColliders);
 				}
 

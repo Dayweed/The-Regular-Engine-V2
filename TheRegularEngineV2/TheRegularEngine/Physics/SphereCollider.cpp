@@ -85,6 +85,7 @@ namespace TRE
 		// sphereCollider.m_IsTrigger = ...
 		sphereCollider.m_Offset = offset;
 		sphereCollider.m_Radius = radius;
+		sphereCollider.m_IsVisible = m_DrawDebugLines;
 
 		return sphereCollider.m_IsInitialized = true;
 	}

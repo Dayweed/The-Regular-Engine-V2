@@ -24,7 +24,7 @@ namespace TRE
 		PipelineConfigurations DebugDrawPipelineConfig{};
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::LinesStrip;
 		DebugDrawPipelineConfig.Shader = DebugDrawShader;
-		DebugDrawPipelineConfig.LineWidth = 3.5f;
+		DebugDrawPipelineConfig.LineWidth = 2.5f;
 		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
