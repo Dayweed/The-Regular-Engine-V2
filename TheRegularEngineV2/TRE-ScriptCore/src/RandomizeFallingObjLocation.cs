@@ -24,7 +24,7 @@ namespace TRE
             Core.Log("Successfully get w/o errors, maxAmountToSpawn is " + test.maxAmountToSpawn + ", changing to 10");
             test.maxAmountToSpawn = 10;
             Core.Log("Changed value, maxAmountToSpawn is " + test.maxAmountToSpawn);
-            Core.Log("Checking new value by getting again " + Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation").maxAmountToSpawn + ", changing to 10");
+            Core.Log("Checking new value by getting again to see if it is still " + Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation").maxAmountToSpawn + ".");
 
             Core.Log("Testing GetComponent... ");
             Entity ent = ECSManager.FindEntityByName("GameObject (3)");

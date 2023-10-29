@@ -27,9 +27,6 @@ namespace TRE
             baseForm = this.parenting.GetChild(0);
             blueberryForm = this.parenting.GetChild(1);
             strawberryForm = this.parenting.GetChild(2);
-            Console.WriteLine("Checking count");
-            Console.WriteLine(powerUps.Count);
-            Console.WriteLine("End Checking count");
         }
 
         public void SwapPowerUps() //if holding 2 powerups, swap between them. if currently using a power-up, will swap into the other form

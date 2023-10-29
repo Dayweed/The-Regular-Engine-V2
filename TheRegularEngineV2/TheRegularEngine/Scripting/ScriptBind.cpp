@@ -954,7 +954,7 @@ namespace TRE
         return Temp->GetComponent<ScriptComponent>().m_StoredClass == classNameStr;
     }
 
-    static MonoClass* BindGetScript(CSEntityID ID, MonoString* className)
+    static MonoObject* BindGetScript(CSEntityID ID, MonoString* className)
     {
         if (!BindHaveScript(ID, className)) return NULL;
 
@@ -963,7 +963,7 @@ namespace TRE
 
         auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
 
-        return instances[IDStr]->GetScriptClass()->GetMonoClass();
+        return instances[IDStr]->GetScriptObject();
     }
 #pragma endregion
 
