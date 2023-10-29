@@ -460,7 +460,12 @@ namespace TRE
 	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
     {
 		MonoObject* exception = nullptr;
-    	return mono_runtime_invoke(method, instance, params, &exception);
+    	MonoObject* result = mono_runtime_invoke(method, instance, params, &exception);
+		if (exception)
+		{
+			mono_print_unhandled_exception(exception);
+		}
+		return result;
 	}
 
 	MonoClass* ScriptClass::GetMonoClass()

@@ -110,6 +110,9 @@ namespace TRE
         {
 			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
 
+			Core.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
+			Console.WriteLine("ERROR! GetComponent is returning new type for " + typeof(T).ToString());
+
             return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
 
             //return GenerateComponent<T>();
@@ -690,6 +693,15 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool IsTriggerExit(EntityID entityid1, EntityID entityid2);
 	}
+
+	public class RigidBodySystem
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetKinematic(EntityID entityid, bool enable);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void SetGravity(EntityID entityid, bool enable);
+    }
 
 	public class InputSystem
 	{

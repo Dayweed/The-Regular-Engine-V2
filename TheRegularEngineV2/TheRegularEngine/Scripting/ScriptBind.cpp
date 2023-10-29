@@ -171,6 +171,22 @@ namespace TRE
             ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
         }
     }
+    
+    static CSEntityID BindParentGetChildFromIndex(CSEntityID ID, int index)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = VALIDATEENTITY(ID);
+        if (index >= Temp->GetComponent<Parenting>().m_Children.size())
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] Index (" + std::to_string(index) + ") >= " + Temp->GetName() + "'s Children size (" + std::to_string(Temp->GetComponent<Parenting>().m_Children.size()) + ")!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return {};
+        }
+
+        return EntityID_EngineToCS(Temp->GetComponent<Parenting>().m_Children[index]);
+    }
 
     static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
     {
@@ -718,6 +734,15 @@ namespace TRE
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
 
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            std::string function{ __FUNCTION__ };
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] There is no Rigidbody in " + entity->GetName() + "!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return;
+        }
+
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
     }
 
@@ -816,6 +841,26 @@ namespace TRE
     }
 #pragma endregion
 
+#pragma region RigidBodyBindings
+    static void BindSetKinematic(CSEntityID ID, bool enable)
+    {
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
+
+        Temp->GetComponent<Rigidbody>().m_IsKinematic = enable;
+        Temp->GetComponent<Rigidbody>().m_IsDirty = true;
+    }
+
+    static void BindSetGravity(CSEntityID ID, bool enable)
+    {
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
+
+        Temp->GetComponent<Rigidbody>().m_UseGravity = enable;
+        Temp->GetComponent<Rigidbody>().m_IsDirty = true;
+    }
+#pragma endregion
+
 #pragma region TimeBindings
     static float BindGetDeltaTime()
     {
@@ -881,6 +926,7 @@ namespace TRE
             std::string function{ __FUNCTION__ };
             std::string str{ CONSOLE_DEBUG_ERROR };
             str += "[" + function + "] ClassName is invalid!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
             return false;
         }
         std::string classNameStr{ MonoStringToString(className) };
@@ -892,6 +938,7 @@ namespace TRE
     static bool BindHaveScript(CSEntityID ID, MonoString* className)
     {
         Entity Temp{ VALIDATEENTITY(ID) };
+        if (!Temp) return false;
         if (!Temp->HasComponent<ScriptComponent>()) return false;
 
         if (!className)
@@ -899,6 +946,7 @@ namespace TRE
             std::string function{ __FUNCTION__ };
             std::string str{ CONSOLE_DEBUG_ERROR };
             str += "[" + function + "] ClassName is invalid!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
             return false;
         }
         std::string classNameStr{ MonoStringToString(className) };
@@ -953,10 +1001,11 @@ namespace TRE
 
         // Parent Bindings
 	    {
-		    mono_add_internal_call("TRE.Entity::EngineParentSetParent", BindParentSetParent);
-	    	mono_add_internal_call("TRE.Entity::EngineParentRemoveParent", BindParentRemoveParent);
-	    	mono_add_internal_call("TRE.Entity::EngineParentAddChild", BindParentAddChild);
-	    	mono_add_internal_call("TRE.Entity::EngineParentRemoveChild", BindParentRemoveChild);
+		    mono_add_internal_call("TRE.Parenting::EngineParentSetParent", BindParentSetParent);
+	    	mono_add_internal_call("TRE.Parenting::EngineParentRemoveParent", BindParentRemoveParent);
+	    	mono_add_internal_call("TRE.Parenting::EngineParentAddChild", BindParentAddChild);
+	    	mono_add_internal_call("TRE.Parenting::EngineParentRemoveChild", BindParentRemoveChild);
+	    	mono_add_internal_call("TRE.Parenting::EngineGetChildID", BindParentGetChildFromIndex);
 	    }
 
         // Transform Bindings
@@ -1020,6 +1069,12 @@ namespace TRE
             mono_add_internal_call("TRE.PhysicsSystem::IsTriggerEnter", BindIsTriggerEnter);
             mono_add_internal_call("TRE.PhysicsSystem::IsTriggerStay", BindIsTriggerStay);
             mono_add_internal_call("TRE.PhysicsSystem::IsTriggerExit", BindIsTriggerExit);
+	    }
+
+        // RigidBody Binding
+        {
+            mono_add_internal_call("TRE.RigidBodySystem::SetKinematic", BindSetKinematic);
+            mono_add_internal_call("TRE.RigidBodySystem::SetGravity", BindSetGravity);
 	    }
 
         // Input Binding
