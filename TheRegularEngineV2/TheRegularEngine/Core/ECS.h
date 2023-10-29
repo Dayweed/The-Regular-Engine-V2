@@ -617,6 +617,8 @@ namespace TRE
 		template<class... Components>
 		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);
 
+		bool IsValidEntity(Entity ent);
+
 		// TODELETE
 		void TESTRUN();
 		void STRESSTEST();
