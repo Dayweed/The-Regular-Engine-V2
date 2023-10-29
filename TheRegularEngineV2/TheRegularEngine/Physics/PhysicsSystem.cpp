@@ -251,7 +251,6 @@ namespace TRE
 		}
 #pragma endregion
 	
-	
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
