@@ -211,9 +211,10 @@ namespace TRE
         return EntityID_EngineToCS(Temp->GetGUID());
     }
 
-    static bool BindIsValidEntity(CSEntityID id)
+    static bool BindIsValidEntity(CSEntityID ID)
     {
-        return (VALIDATEENTITY(id) != nullptr);
+        Entity Temp = ECSManager::Instance().FindEntity(EntityID_CSToEngine(ID));
+        return (Temp != nullptr);
     }
 
      static void BindAddComponent(CSEntityID ID, int componenttype)
