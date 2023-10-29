@@ -112,6 +112,8 @@ namespace TRE
 
 			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius))); break;
 		}
+
+		entity->GetComponent<SphereCollider>().m_Radius = fabs(newRadius);
 	}
 
 	void PhysicsSystem::UpdateSphereCollider(const Entity& entity) const

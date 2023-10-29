@@ -21,7 +21,7 @@ namespace TRE
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
         //Maxium height the player can jump
-        private Vector3 maxHeight = new Vector3(0, 10000, 0);
+        private Vector3 maxHeight = new Vector3(0, 240, 0);
 
 
         //check if player used super power
@@ -40,11 +40,6 @@ namespace TRE
             Plane_collider.ID = ECSManager.FindIDFromName(Plane_collider.name);
 			Console.WriteLine("Test ID: " + Test.ID);
 
-			Console.WriteLine("Entity: " + Test.GetActive());
-            Test.SetActive(false);
-            Console.WriteLine("Entity: " + Test.GetActive());
-            Test.SetActive(true);
-            Console.WriteLine("Entity: " + Test.GetActive());
 
             //Console.WriteLine("Tag: " + Test.GetTag());
             Test.SetTag("UwU");
@@ -87,12 +82,12 @@ namespace TRE
 
             if (InputSystem.GetKeyDown(InputKeys.A))
             {
-                dirVec.x += -1;
+                dirVec.x += 1;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.D))
             {
-                dirVec.x += 1;
+                dirVec.x += -1;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.Space))

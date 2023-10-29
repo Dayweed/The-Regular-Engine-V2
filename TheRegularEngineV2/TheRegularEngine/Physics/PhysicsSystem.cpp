@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 0
+#define USE_PHYSX_PVD 1
 #endif
 
 #define UNUSED_PARAM(param) (void)param

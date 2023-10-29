@@ -134,7 +134,6 @@ namespace TRE
 		std::ifstream file(finalPath);
 		if (!file.is_open())
 		{
-			std::cout << "Failed to open file" << finalPath <<std::endl;
 			return;
 		}
 
