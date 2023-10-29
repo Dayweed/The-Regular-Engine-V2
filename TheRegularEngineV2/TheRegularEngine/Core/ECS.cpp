@@ -682,7 +682,7 @@ namespace TRE
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		std::string file = ECSManager::Instance().SaveEntities("../Scenes/Lmao.json");
+		std::string file = ECSManager::Instance().SaveEntities(GETFOLDER(FILESYS_SCENE) + "Lmao.json");
 
 		ECSManager::Instance().DestroyAll();
 
@@ -691,7 +691,7 @@ namespace TRE
 
 		std::cout << std::endl;
 		std::cout << "- Loading from input: " << GetEntities<Properties>().size() << "...\n";
-		ECSManager::Instance().LoadEntities("../Scenes/Lmao.json");
+		ECSManager::Instance().LoadEntities(GETFOLDER(FILESYS_SCENE) + "Lmao.json");
 
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
@@ -952,8 +952,8 @@ namespace TRE
 		//std::cout << "> prefabEnt: " << prefabEnt->GetComponent<Prefabing>().m_Instances.size() << "\n";
 		//std::cout << "> prefabEntInstance: " << prefabEntInstance->GetComponent<Prefabing>().m_Instances.size() << "\n";
 
-		/*SceneManager::Instance().SaveSceneAs("../Scenes/TESTING.json");
-		SceneManager::Instance().LoadScene("../Scenes/TESTING.json");
+		/*SceneManager::Instance().SaveSceneAs(GETFOLDER(FILESYS_SCENE) + "TESTING.json");
+		SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "TESTING.json");
 
 		for (auto& ent : GetEntities<Prefabing>())
 		{

@@ -521,7 +521,7 @@ namespace TRE
 		std::cout << ECSManager::Instance().SaveEntities("TestFile.json") << "\n";
 
 		Output:
-		../Scenes/TestFile.json
+		..\\Scenes\\TestFile.json
 		*//*__________________________________________________________________________*/
 		std::string SaveEntities(std::string filePath);
 

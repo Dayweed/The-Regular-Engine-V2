@@ -47,9 +47,9 @@ namespace TRE
 
 		// Folder Name
 		ObjectBuilder folder;
-		folder.insertValue(FILESYS_SCENE, std::string("../Scenes/"), allocator);
-		folder.insertValue(FILESYS_DESC, std::string("../Assets/"), allocator);
-		folder.insertValue(FILESYS_GEOM, std::string("../Assets/"), allocator);
+		folder.insertValue(FILESYS_SCENE, std::string("..\\Scenes\\"), allocator);
+		folder.insertValue(FILESYS_DESC, std::string("..\\Assets\\"), allocator);
+		folder.insertValue(FILESYS_GEOM, std::string("..\\Assets\\"), allocator);
 		fileSerial.AddObjectToDoc(folder.getValue(), "FolderNames");
 
 		// File Name

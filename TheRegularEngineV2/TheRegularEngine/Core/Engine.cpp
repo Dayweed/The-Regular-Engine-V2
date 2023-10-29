@@ -33,7 +33,7 @@ namespace TRE
 {
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().LoadScene("../Scenes/Tutorial.json");
+		SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	void DemoScene()
@@ -329,7 +329,7 @@ namespace TRE
 			spawner->GetComponent<Transform>().m_IsDirty = true;
 		}
 
-		//SceneManager::Instance().SaveSceneAs("../Scenes/DemoScene.json");
+		//SceneManager::Instance().SaveSceneAs(GETFOLDER(FILESYS_SCENE) + "DemoScene.json");
 	}
 }
 #pragma endregion TO DELETE TEST
