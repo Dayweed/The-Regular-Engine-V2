@@ -385,6 +385,16 @@ namespace TRE
         transform.m_IsDirty = true;
     }
 
+    static void BindSetScaling(CSEntityID ID, glm::vec3 newSca)
+    {
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
+
+        Transform& transform = Temp->GetComponent<Transform>();
+        transform.m_Scale = newSca;
+        transform.m_IsDirty = true;
+    }
+
     static void BindGetPosition(CSEntityID ID, glm::vec3* output)
     {
         Entity Temp = VALIDATEENTITY(ID);
@@ -401,6 +411,15 @@ namespace TRE
 
         // Get the rotation
         *output = Temp->GetComponent<Transform>().m_Rotation;
+    }
+
+    static void BindGetScaling(CSEntityID ID, glm::vec3* output)
+    {
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
+
+        // Get the rotation
+        *output = Temp->GetComponent<Transform>().m_Scale;
     }
 
 #pragma endregion
@@ -1012,8 +1031,10 @@ namespace TRE
 	    {
 		    mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
 	    	mono_add_internal_call("TRE.TransformSystem::SetRotation", BindSetRotation);
+	    	mono_add_internal_call("TRE.TransformSystem::SetScaling", BindSetScaling);
 	    	mono_add_internal_call("TRE.TransformSystem::GetPosition", BindGetPosition);
 	    	mono_add_internal_call("TRE.TransformSystem::GetRotation", BindGetRotation);
+	    	mono_add_internal_call("TRE.TransformSystem::GetScaling", BindGetScaling);
 	    }
 
         // Camera Bindings

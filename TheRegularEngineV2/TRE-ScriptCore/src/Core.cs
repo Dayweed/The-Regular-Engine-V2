@@ -242,6 +242,7 @@ namespace TRE
 	{
 		public float x, y, z;
         public static Vector3 up = new Vector3(0, 1, 0);
+        public static Vector3 one = new Vector3(1, 1, 1);
 
         public Vector3(float x, float y, float z)
 		{
@@ -409,6 +410,13 @@ namespace TRE
 
 			TransformSystem.SetRotation(id, output);
 		}
+
+		public void SetScaling(Vector3 output)
+		{
+			scale = output;
+
+			TransformSystem.SetScaling(id, output);
+		}
 	}
 
 	public class TransformSystem
@@ -434,6 +442,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetRotation(EntityID id, Vector3 rotation);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void GetScaling(EntityID id, out Vector3 output);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetScaling(EntityID id, Vector3 rotation);
 	}
 
 	public class ECSManager
