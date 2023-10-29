@@ -31,7 +31,7 @@ namespace TRE
 		public void Update()
 		{
             // Move The Test Object 
-            TransformSystem.GetPosition(this.ID, out Vector3 pos);
+            //TransformSystem.GetPosition(this.ID, out Vector3 pos);
             //
 
             Vector3 dirVec = new Vector3(0, 0, 0);
@@ -132,5 +132,10 @@ namespace TRE
             PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Force);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
         }
-    }
+		private void OnTriggerStay(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+			Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
+		}
+	}
 }
