@@ -1,10 +1,16 @@
 #include "pch.h"
 #include "ScriptEngine.h"
 
+#include "mono/metadata/object.h"
+#include "mono/metadata/tabledefs.h"
+#include "mono/metadata/mono-debug.h"
+#include "mono/metadata/threads.h"
+
 //Everything should be remove. This is just to test the calling of the runtime works.
 #include <fstream>
 
 #include "ScriptBind.h"
+#include "ScriptComponent.h"
 #include "Core/Logger.h"
 
 namespace TRE
@@ -12,9 +18,29 @@ namespace TRE
 
 #pragma region ScriptEngine
 
-    ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
-    std::string ScriptEngine::TestGUID = "";
-    bool ScriptEngine::CreatedScriptObject = false;
+	ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
+
+    static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
+	{
+		{ "System.Single", ScriptFieldTypes::Float },
+		{ "System.Double", ScriptFieldTypes::Double },
+		{ "System.Boolean", ScriptFieldTypes::Boolean },
+		{ "System.Char", ScriptFieldTypes::Char },
+		{ "System.Int16", ScriptFieldTypes::Short },
+		{ "System.Int32", ScriptFieldTypes::Int },
+		{ "System.Int64", ScriptFieldTypes::Long },
+		{ "System.Byte", ScriptFieldTypes::Byte },
+		{ "System.UInt16", ScriptFieldTypes::UnsignedShort },
+		{ "System.UInt32", ScriptFieldTypes::UnsignedInt },
+		{ "System.UInt64", ScriptFieldTypes::UnsignedLong },
+		{ "System.String", ScriptFieldTypes::String },
+
+		{ "TRE.Vector2", ScriptFieldTypes::Vector2 },
+		{ "TRE.Vector3", ScriptFieldTypes::Vector3 },
+		{ "TRE.Vector4", ScriptFieldTypes::Vector4 },
+
+		{ "TRE.Entity", ScriptFieldTypes::Entity },
+	};
 
     namespace Tools
     { 
@@ -90,9 +116,32 @@ namespace TRE
 	        }
 	    }
 
+		ScriptFieldTypes ConvertMonoType(MonoType* monoType)
+	    {
+		    std::string typeName = mono_type_get_name(monoType);
 
+			auto it = s_ScriptFieldTypeMap.find(typeName);
+			if(it == s_ScriptFieldTypeMap.end())
+			{
+				return ScriptFieldTypes::None;
+			}
+
+			return it->second;
+	    }
+
+		void PrintAllContainers()
+	    {
+
+			for(auto& scriptInstance : ScriptEngine::s_ScriptEngineData->ScriptInstances)
+			{
+				TRE_CORE_INFO("Instance: {0} ", scriptInstance.first);
+			}
+
+			
+	    }
 
     }
+
 
 
     void ScriptEngine::Init()
@@ -106,16 +155,16 @@ namespace TRE
 		if(!status)
 		{
 			TRE_CORE_ERROR("Failed to load assembly");
-			return;
 		}
 
 		// Here we will load the project assembly when the project script and core script is separated.
 
 		// Load all the classes from the assembly
+		LoadClassesFromAssembly();
 
 		// Register all ECS components to the scripting engine
 
-
+		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
     }
 
 	void ScriptEngine::Shutdown()
@@ -171,6 +220,68 @@ namespace TRE
 		return true;
 	}
 
+	// Setup all the classes that should be linked to the scripting engine.
+	void ScriptEngine::LoadClassesFromAssembly()
+    {
+		// clear the unordered map
+		s_ScriptEngineData->ScriptClasses.clear();
+
+		// Change the AssemblyImage to AppAssemblyImage when project script and core script is separated.
+        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->AssemblyImage , MONO_TABLE_TYPEDEF);
+        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+		MonoClass* entity = mono_class_from_name(s_ScriptEngineData->AssemblyImage, "TRE", "Entity");
+
+        for (int32_t i = 0; i < numTypes; i++)
+        {
+            uint32_t cols[MONO_TYPEDEF_SIZE];
+            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+            const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+            const char* name = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAME]);
+
+			std::string className;
+
+			if(strlen(nameSpace) != 0)
+				className = nameSpace + std::string(".") + name;
+			else
+				className = name;
+
+			printf("%s.%s\n", nameSpace, name);
+
+			//Create main class called entity, Also change the assembly image to AppAssemblyImage when project script and core script is separated.
+			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->AssemblyImage, nameSpace, name);
+
+			if(monoClass == entity)
+				continue;
+
+			if(!mono_class_is_subclass_of(monoClass, entity, false))
+				continue;
+
+			TRE_CORE_INFO("Found class: {0}", className);
+			std::shared_ptr<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name);
+			s_ScriptEngineData->ScriptClasses.insert(std::make_pair(className, scriptClass));
+
+			// Load fields of each of the classes that is not the entity class
+
+			int fieldCount = mono_class_num_fields(monoClass);
+			//TRE_CORE_INFO("Field count: {0}", fieldCount);
+			void* iterator = nullptr;
+			while(MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+			{
+				const char* fieldName = mono_field_get_name(field);
+				uint32_t flags = mono_field_get_flags(field);
+				if(flags & FIELD_ATTRIBUTE_PUBLIC)
+				{
+					MonoType* fieldType = mono_field_get_type(field);
+					ScriptFieldTypes scriptFieldType = Tools::ConvertMonoType(fieldType);
+					scriptClass->m_Fields.insert({fieldName,{scriptFieldType, fieldName, field}} );
+					//TRE_CORE_INFO("Found field: {0} of type {1}", fieldName, scriptFieldType);
+				}
+			}
+            
+        }
+    }
+
 	void ScriptEngine::ReloadAssembly()
 	{
 		// Unload the assembly
@@ -184,26 +295,17 @@ namespace TRE
 		// add loading application assembly when project script and core script is separated.
 		// add loading all the classes from the assembly
 
+		LoadClassesFromAssembly();
+
 		// Register back all the components to the scripting engine
 
-		// Retrieve and instantiate the main class
+		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
 
-		TestScriptingEngine();
+		// Retrieve and instantiate the main class
+		InitScriptingMain();
 	}
 
-	
-
-    void ScriptEngine::UpdateScriptingEngine()
-    {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
-
-        MonoObject * instance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
-        MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
-        mono_runtime_invoke(method, instance, nullptr, nullptr);
-    }
-
-    void ScriptEngine::TestScriptingEngine()
+    void ScriptEngine::InitScriptingMain()
     {
         MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
         MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
@@ -215,20 +317,7 @@ namespace TRE
 
     }
 
-    void ScriptEngine::TestAddComponent()
-    {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
-
-		MonoObject* Instance = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
-		mono_runtime_object_init(Instance);
-
-		MonoMethod* method = mono_class_get_method_from_name(testClass, "Test", 0);
-		mono_runtime_invoke(method, Instance, nullptr, nullptr);
-
-    }
-
-    void ScriptEngine::TestUpdateObject()
+    void ScriptEngine::UpdateScriptingMain()
     {
     	MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
 		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
@@ -236,7 +325,178 @@ namespace TRE
         mono_runtime_invoke(method, s_ScriptEngineData->DemoObject, nullptr, nullptr);
     }
 
+	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)
+	{
+		MonoObject* instance = mono_object_new(s_ScriptEngineData->AppDomain, monoClass);
+		mono_runtime_object_init(instance);
+		return instance;
+	}
+
+	bool ScriptEngine::EntityClassExists(const std::string& className)
+	{
+		return s_ScriptEngineData->ScriptClasses.find(className) != s_ScriptEngineData->ScriptClasses.end();
+	}
+
+	void ScriptEngine::OnCreateEntity(Entity entity)
+	{
+		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		if(EntityClassExists(scriptComponent.m_StoredClass))
+		{
+			std::string GUID = entity->GetGUID();
+
+			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			s_ScriptEngineData->ScriptInstances[GUID] = instance;
+
+			if(s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			{
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for(auto& field : fieldMap)
+				{
+					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+
+			instance->OnCreateInvoke();
+		}
+	}
+
+	void ScriptEngine::OnStartEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnStartInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
+	void ScriptEngine::OnUpdateEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnUpdateInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
+	MonoString* ScriptEngine::CreateMonoString(const std::string& string)
+	{
+		return mono_string_new(s_ScriptEngineData->AppDomain, string.c_str());
+	}
+
+	void ScriptEngine::PrintAllContainersHere()
+	{
+		Tools::PrintAllContainers();
+	}
+
+	MonoObject* ScriptEngine::GetManagedInstance(std::string GUID)
+    {
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
+		{
+			return nullptr;
+		}
+		else
+		{
+			return s_ScriptEngineData->ScriptInstances[GUID]->m_Instance;
+		}
+	}
+
 #pragma endregion
 
+#pragma region ScriptClass
+
+	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className ) : m_ClassNamespace(classNamespace), m_ClassName(className)
+    {
+		m_MonoClass = mono_class_from_name(ScriptEngine::s_ScriptEngineData->AssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
+	}
+
+	MonoObject* ScriptClass::Instantiate()
+    {
+    	return ScriptEngine::InstantiateClass(m_MonoClass);
+	}
+
+	MonoMethod* ScriptClass::GetMethod(const std::string& name, int paramCount)
+	{
+		return mono_class_get_method_from_name(m_MonoClass, name.c_str(), paramCount);
+	}
+
+	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
+    {
+		MonoObject* exception = nullptr;
+    	return mono_runtime_invoke(method, instance, params, &exception);
+	}
+
+#pragma endregion
+
+#pragma region ScriptInstance
+
+	ScriptInstance::ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity) : m_ScriptClass(scriptClass)
+    {
+    	m_Instance = scriptClass->Instantiate();
+		
+		m_Constructor = ScriptEngine::s_ScriptEngineData->MainClass.GetMethod(".ctor", 1);
+		m_CreateMethod = scriptClass->GetMethod("OnCreate", 0);
+		m_StartMethod = scriptClass->GetMethod("Start", 0);
+		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
+
+    	{
+			unsigned long long id = std::stoull(entity);
+    		void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
+    	}
+    }
+
+	void ScriptInstance::OnCreateInvoke()
+	{
+		if(m_CreateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_CreateMethod, nullptr);
+	}
+
+	void ScriptInstance::OnStartInvoke()
+    {
+		if(m_StartMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_StartMethod, nullptr);
+    }
+
+	void ScriptInstance::OnUpdateInvoke()
+    {
+		if(m_UpdateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_UpdateMethod, nullptr);
+    }
+
+	bool ScriptInstance::GetInternalFieldValue(const std::string& name, void* buffer)
+    {
+    	const auto& field = m_ScriptClass->GetFields();
+		auto iter = field.find(name);
+		if (iter == field.end())
+			return false;
+
+		const ScriptField& scriptField = iter->second;
+		mono_field_get_value(m_Instance, scriptField.m_MonoField, buffer);
+		return true;
+    }
+
+	bool ScriptInstance::SetInternalFieldValue(const std::string& name, const void* buffer)
+	{
+		const auto& field = m_ScriptClass->GetFields();
+		auto iter = field.find(name);
+		if (iter == field.end())
+			return false;
+
+		const ScriptField& scriptField = iter->second;
+		mono_field_set_value(m_Instance, scriptField.m_MonoField, (void*) buffer);
+		return true;
+	}
+
+#pragma endregion
     
 }

@@ -8,44 +8,44 @@ namespace TRE
 	class ScriptComponent: property::base
 	{
 	public:
-		std::string m_ScriptName;
-		std::string m_ScriptPath;
+		
+		std::string m_StoredClass;
 		std::string m_GUID;
-		bool m_IsDirty{ true };
+		bool m_IsDirty{ false };
+		bool m_RanStart{ false };
 		property_vtable() 
 
-
-		ScriptComponent();
-
-		void SetScriptPath(std::string path) {m_ScriptPath = path;}
-		std::string RetriveGUID(){ return m_ScriptPath; }
-		void SetGUID(std::string guid) { m_GUID = guid; }
-
+		ScriptComponent()= default;
+		ScriptComponent(const std::string&);
 
 
 		friend void to_json(nlohmann::json& j, const ScriptComponent& s) // Serialize
 		{
 			j = nlohmann::json
 			{
-				{ "m_ScriptName", s.m_ScriptName },
-				{ "m_ScriptPath", s.m_ScriptPath },
-				{ "m_GUID", s.m_GUID }
+				{ "m_StoredClass", s.m_StoredClass }
 			};
 		}
 
 		friend void from_json(const nlohmann::json& j , ScriptComponent& s) // Deserialize
 		{
-			s.m_ScriptName = j.at("m_ScriptName").get<std::string>();
-			s.m_ScriptPath = j.at("m_ScriptPath").get<std::string>();
-			s.m_GUID = j.at("m_GUID").get<std::string>();
+			
+			s.m_StoredClass = j.at("m_StoredClass").get<std::string>();
 		}
+
+	private:
+
+		std::string m_NameSpace;
+		std::string m_ClassName;
+
+		std::string ExtractNameSpace(const std::string&);
+		std::string ExtractClassName(const std::string&);
 
 	};
 }
 
 property_begin(TRE::ScriptComponent)
 {
-	property_var(m_ScriptName)
-	, property_var(m_ScriptPath)
+	property_var(m_StoredClass)
 
 } property_vend_h(TRE::ScriptComponent)

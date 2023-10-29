@@ -4,6 +4,7 @@
 #include "cpp/imgui_stdlib.h"
 #include "cpp/imgui_stdlib.cpp"
 #include "TREIncludes.h"
+#include "Scripting/ScriptEngine.h"
 #include "EditorAssetManager.h"
 
 namespace TRE
@@ -372,6 +373,7 @@ namespace TRE
 						SetIsDirty.operator() < SphereCollider > (entity);
 						SetIsDirty.operator() < BoxCollider > (entity);
 						SetIsDirty.operator() < CapsuleCollider > (entity);
+						SetIsDirty.operator() < ScriptComponent > (entity);
 						SetIsDirty.operator() < Camera > (entity);
 						// add more of your components here! :)
 						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
@@ -447,7 +449,7 @@ namespace TRE
 						}
 						else if (compName == ComponentManager::Instance().GetComponentName<ScriptComponent>())
 						{
-							entity->GetComponent<ScriptComponent>().m_GUID = entity->GetGUID();
+							entity->GetComponent<ScriptComponent>().m_GUID = entity->GetGUID();;
 						}
 
 						m_SelectionManager->SelectEntity(entity);

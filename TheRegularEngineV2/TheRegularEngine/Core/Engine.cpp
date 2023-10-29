@@ -10,8 +10,8 @@
 #include "Physics/PhysicsSystem.h"
 #include "Audio/AudioSystem.h"
 #include "Logger.h"
-#include "Scripting/ScriptEngine.h"
 #include "Scripting/ScriptingSystem.h"
+#include "Scripting/ScriptEngine.h"
 #include "Graphics/Light.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
@@ -406,7 +406,7 @@ namespace TRE
 		EditorSystemManager::Instance().InitSystem();
 
 		ScriptEngine::Init();
-		ScriptEngine::TestScriptingEngine();
+		ScriptEngine::InitScriptingMain();
 	}
 
 	Engine::~Engine()
@@ -535,11 +535,6 @@ namespace TRE
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
-
-			if (ScriptEngine::CreatedScriptObject == true)
-			{
-				ScriptEngine::UpdateScriptingEngine();
-			}
 			
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();

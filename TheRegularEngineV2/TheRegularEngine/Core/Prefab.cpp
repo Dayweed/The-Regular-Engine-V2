@@ -275,7 +275,7 @@ namespace TRE
 				TRE_CORE_WARN("[" + funcName + "] object (" + object->GetName() + ") is not an existing prefab instance! Creating a new prefab instead");
 			}
 
-			prefabGUID = Resource::GetGUIDHex(Resource::GenerateGUID());
+			prefabGUID = MemoryManager::Instance().GenerateGUIDStr();
 			filePath = FILESYS_PREFABRSCFOLDER + object->GetName() + FILESYS_PREFABRSCTYPE;
 			object->AddComponent<Prefabing>().m_PrefabGUID = prefabGUID;
 			object->GetComponent<Prefabing>().m_MainPrefabGUID = prefabGUID;

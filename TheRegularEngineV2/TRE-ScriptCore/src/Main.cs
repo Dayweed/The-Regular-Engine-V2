@@ -8,14 +8,15 @@ namespace TRE
 
 	public class Main
 	{
-		// Scripting Initialization
-		HumanCentipede humanCentipedo = new HumanCentipede();
-		RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
+        // Scripting Initialization
+        //HumanCentipede humanCentipedo = new HumanCentipede();
+        //RandomizeFallingObjLocation testingRandoFall = new RandomizeFallingObjLocation();
 
+        /* Commenting out uneeded code to prevent Console Panel spam...
         //create the test object and temp object not too sure if the temp object is linked in some 
-        public Entity Temp = new Entity("Temp");
-        public Entity Test = new Entity("Test");
-        public Entity Plane_collider = new Entity("Plane collider");
+        public Entity Temp = new Entity(new long(), "Temp");
+		public Entity Test = new Entity(new long(), "Test");
+        public Entity Plane_collider = new Entity(new long(), "Plane collider");
 
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
@@ -26,43 +27,44 @@ namespace TRE
         //check if player used super power
         private bool isScaled = false;
         private float defaultScale = 1;
-        private float superScale = 2;
-
-        private bool hasInitalized;
+        private float superScale = 50;
+        */
 
         public Main()
-        {
-            //Temp.id = ECSManager.CreateEntity(Temp.name);
-            //Console.WriteLine("Hello World from C#!");
+		{
+			//Temp.id = ECSManager.CreateEntity(Temp.name);
+			//Console.WriteLine("Hello World from C#!");
+            
+            /* Commenting out uneeded code to prevent Console Panel spam...
+			Test.ID = ECSManager.FindIDFromName(Test.name);
+            Plane_collider.ID = ECSManager.FindIDFromName(Plane_collider.name);
+			Console.WriteLine("Test ID: " + Test.ID);
 
-            Test.id = ECSManager.FindIDFromName(Test.name);
-            Plane_collider.id = ECSManager.FindIDFromName(Plane_collider.name);
-            hasInitalized = false;
-		}
 
+            //Console.WriteLine("Tag: " + Test.GetTag());
+            Test.SetTag("UwU");
+            //Console.WriteLine("Tag: " + Test.GetTag());
+            Console.WriteLine("Is UwU? " + Test.CompareTag("UwU"));
+            Console.WriteLine("Is OwO? " + Test.CompareTag("OwO"));
+            */
+        }
 
-        // is this even running??
-        public void Start()
-        {
-            //humanCentipedo.Start();
-            //testingRandoFall.Start();
-            hasInitalized = false;
-            Console.WriteLine("HELLO FROM SCRIPT-START\n");
-            // this is not running...
-		}
+		public void Start()
+		{
+			//humanCentipedo.Start();
+			//testingRandoFall.Start();
+        }
 
-        public void Update()
-        {
-            if (!hasInitalized) Initialize();
+		public void Update()
+		{
             // Script calling
             //humanCentipedo.Update();
-            //testingRandoFall.Update();
-
-            // Move The Test Object 
-            TransformSystem.GetPosition(Test.id, out Vector3 pos);
-
-            // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-            isGrounded = PS.IsCollisionEnter(Test.id, Plane_collider.id) || PS.IsCollisionStay(Test.id, Plane_collider.id);
+			//testingRandoFall.Update();
+            
+            /* Commenting out uneeded code to prevent Console Panel spam...
+			// Move The Test Object 
+			TransformSystem.GetPosition(Test.ID, out Vector3 pos);
+			//
 
             Vector3 dirVec = new Vector3(0, 0, 0);
 
@@ -90,51 +92,60 @@ namespace TRE
 
             if (InputSystem.GetKeyDown(InputKeys.Space))
             {
-                if (isGrounded)
-                    Jump(maxHeight); // uh oh beeeg number
+                // if the player JUST starts to touch the ground OR has been chilling on the ground for a while
+                isGrounded = PS.IsCollisionEnter(Test.ID, Plane_collider.ID) || PS.IsCollisionStay(Test.ID, Plane_collider.ID);
+
+				if (isGrounded)
+                {
+                    Jump(maxHeight); // uh oh beeeg number (for forcemode.force)
+                    // Jump(new Vector3(0, 35, 0)); // ah, much better (for forcemode.velchange)
+                }
             }
 
             if (InputSystem.GetKeyDown(InputKeys.E))
             {
                 if (!isScaled)
                 {
-                    PS.ResizeCapsuleCollider(Test.id, superScale, superScale);
+                    PS.ResizeSphereCollider(Test.ID, superScale);
                     isScaled = true;
                 }
                 else if (isScaled)
                 {
-                    PS.ResizeCapsuleCollider(Test.id, defaultScale, defaultScale);
+                    PS.ResizeSphereCollider(Test.ID, defaultScale);
                     isScaled = false;
                 }
             }
 
             dirVec.Normalize();
 
-            // if you're on the ground and not moving
-            if (dirVec.Magnitude() == 0 && isGrounded)
-            {
-                // stop the entity from moving
-                PS.SetLinearVelocity(Test.id, Vector3.zero);
-            }
-            else
-            {
-                Vector3 tmp = dirVec * 120;
-                PS.AddForce(Test.id, tmp*2, PS.ForceMode.Impulse);
-            }
+            Vector3 tmp = dirVec * 60;
+
+            PS.AddForce(Test.ID, tmp, ForceMode.Force);
+            */
         }
 
         private void Jump(Vector3 JumpHeight)
         {
-            PS.AddForce(Test.id, JumpHeight, PS.ForceMode.Impulse);
+            /* Commenting out uneeded code to prevent Console Panel spam...
+            PhysicsSystem.AddForce(Test.ID, JumpHeight, ForceMode.Force);
             // PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
+            */
+        }
+	}
+
+    public class Testing : Entity
+    {
+
+        void OnCreate()
+        {
+			Console.WriteLine("Testing OnCreate");
+            Console.WriteLine($"Testing OnCreate ID - {ID}");
         }
 
-        private void Initialize()
+        void Update()
         {
-            PS.ConstrainRotationX(Test.id, true);
-            //PS.ConstrainRotationY(Test.id, true);
-            PS.ConstrainRotationZ(Test.id, true);
-            hasInitalized = true;
+			
         }
     }
+
 }

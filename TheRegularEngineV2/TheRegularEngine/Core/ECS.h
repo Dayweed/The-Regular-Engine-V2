@@ -92,8 +92,11 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, FEL& f) // Deserialize
 		{
+			if (j.contains("vector"))
 				f.vec_i = j.at("vector").get<std::vector<float>>();
+			if (j.contains("array"))
 				j.at("array").get_to(f.arr_i);
+			if (j.contains("nested"))
 				j.at("nested").get_to(f.nestedstruct);
 		}
 	};
@@ -105,7 +108,21 @@ namespace TRE
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FAKEFEL, fakeValue, fakeInt)
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const FAKEFEL& f) // Serialize
+		{
+			j = nlohmann::json{
+				{ "fakeValue", f.fakeValue },
+				{ "fakeInt", f.fakeInt },
+			};
+		}
+		friend void from_json(const nlohmann::json& j, FAKEFEL& f) // Deserialize
+		{
+			if (j.contains("fakeValue"))
+				f.fakeValue = j.at("fakeValue");
+			if (j.contains("nested"))
+				f.fakeInt = j.at("fakeInt");
+		}
 	};
 
 	struct Properties : property::base
@@ -917,6 +934,7 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
+	property_var(m_GUID).Name("GUID"),
 	property_var(m_Tag).Name("Tag"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)

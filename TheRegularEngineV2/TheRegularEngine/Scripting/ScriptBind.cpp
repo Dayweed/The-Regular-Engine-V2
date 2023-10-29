@@ -15,6 +15,8 @@
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
 
+#define VALIDATEENTITY(ID) ValidateEntityID(ID, __FUNCTION__)
+
 namespace TRE
 {
     ScriptInputHandler& ScriptInputHandler::Instance()
@@ -29,6 +31,30 @@ namespace TRE
         _state = event._state;
     }
 
+    static std::string EntityID_CSToEngine(CSEntityID ID)
+    {
+        return std::to_string(ID);
+    }
+
+    static CSEntityID EntityID_EngineToCS(std::string ID)
+    {
+        return std::stoull(ID);
+    }
+
+    static Entity ValidateEntityID(CSEntityID ID, std::string function)
+    {
+        // Retrive the entity from the ID
+        Entity Temp = ECSManager::Instance().FindEntity(EntityID_CSToEngine(ID));
+        if (Temp == nullptr)
+        {
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            str += "[" + function + "] Entity ID (" + EntityID_CSToEngine(ID) + ") does not exist in ECS Entities!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            return nullptr;
+        }
+        return Temp;
+    }
+
 	std::string MonoStringToString(MonoString* monoString)
 	{
 		char* temp = mono_string_to_utf8(monoString);
@@ -38,96 +64,61 @@ namespace TRE
 	}
 
 #pragma region PropertyBindings
-    static void BindEntityRename(MonoString* ID, MonoString* name)
+    static void BindEntityRename(CSEntityID ID, MonoString* name)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         Temp->GetComponent<Properties>().m_Name = mono_string_to_utf8(name);
     }
 
-    static void BindEntityActive(MonoString* ID, MonoBoolean isActive)
+    static void BindEntityActive(CSEntityID ID, MonoBoolean isActive)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         Temp->GetComponent<Properties>().m_Active = isActive;
     }
 
-    static bool BindEntityGetActive(MonoString* ID)
+    static bool BindEntityGetActive(CSEntityID ID)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return false;
         return Temp->GetComponent<Properties>().m_Active;
     }
 
-    static void BindEntitySetTag(MonoString* ID, MonoString* tag)
+    static void BindEntitySetTag(CSEntityID ID, MonoString* tag)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
     }
     
-    static MonoString* BindEntityGetTag(MonoString* ID)
+    static MonoString* BindEntityGetTag(CSEntityID ID)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return mono_string_new(mono_domain_get(), "");
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return mono_string_new(mono_domain_get(), "");
 
         return mono_string_new(mono_domain_get(), Temp->GetComponent<Properties>().m_Tag.c_str());
     }
 #pragma endregion
 
 #pragma region PrefabBindings
-    static bool BindCheckIsPrefabResource(MonoString* ID)
+    static bool BindCheckIsPrefabResource(CSEntityID ID)
     {
-        std::string entityID{ MonoStringToString(ID) };
+        std::string entityID{ EntityID_CSToEngine(ID) };
         if (ECSManager::Instance().FindEntity(entityID))
             return false;   // Return false if it is an entity in the Entity Scene
         // Check if entityID is a prefab resource
         return ECSSystemManager::Instance().GetSystem<PrefabSystem>()->IsValidPrefabResource(entityID);
     }
 
-    static MonoString* BindCreatePrefabEntity(MonoString* name, glm::vec3 newPos, glm::vec3 newRot)
+    static CSEntityID BindCreatePrefabEntity(CSEntityID prefabID, glm::vec3 newPos, glm::vec3 newRot)
     {
-        std::string prefabGUID{ MonoStringToString(name) };
+        std::string prefabGUID{ EntityID_CSToEngine(prefabID) };
         Entity prefabInstance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID) };
 
         Transform& transform = prefabInstance->GetComponent<Transform>();
@@ -135,128 +126,62 @@ namespace TRE
         transform.m_Rotation = newRot;
         transform.m_IsDirty = true;
 
-        return mono_string_new(mono_domain_get(), prefabInstance->GetGUID().c_str());
+        return EntityID_EngineToCS(prefabInstance->GetGUID());
     }
 #pragma endregion
     
 #pragma region ParentBindings
-    static void BindParentSetParent(MonoString* ID, MonoString* parentID)
+    static void BindParentSetParent(CSEntityID ID, CSEntityID parentID)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        Entity parentTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(parentID));
+        Entity Temp = VALIDATEENTITY(ID);
+        Entity parentTemp = VALIDATEENTITY(parentID);
         if (Temp && parentTemp)
         {
             ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(Temp, parentTemp);
         }
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-        }
-
-        if (parentTemp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Parent Entity ID(" + MonoStringToString(parentID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-        }
     }
     
-    static void BindParentRemoveParent(MonoString* ID)
+    static void BindParentRemoveParent(CSEntityID ID)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
-
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
         ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
     }
     
-    static void BindParentAddChild(MonoString* ID, MonoString* childID)
+    static void BindParentAddChild(CSEntityID ID, CSEntityID childID)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        Entity Temp = VALIDATEENTITY(ID);
+        Entity childTemp = VALIDATEENTITY(childID);
         if (Temp && childTemp)
         {
             ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(Temp, childTemp);
         }
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-        }
-
-        if (childTemp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Child Entity ID(" + MonoStringToString(childID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-        }
     }
     
-    static void BindParentRemoveChild(MonoString* ID, MonoString* childID)
+    static void BindParentRemoveChild(CSEntityID ID, CSEntityID childID)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-        Entity childTemp = ECSManager::Instance().FindEntity(mono_string_to_utf8(childID));
+        Entity Temp = VALIDATEENTITY(ID);
+        Entity childTemp = VALIDATEENTITY(childID);
         if (Temp && childTemp)
         {
             ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
         }
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-        }
-
-        if (childTemp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Child Entity ID(" + MonoStringToString(childID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-        }
     }
 
-    static bool BindEntityCompareTag(MonoString* ID, MonoString* tag)
+    static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return false;
         return Temp->GetComponent<Properties>().m_Tag == mono_string_to_utf8(tag);
     }
 #pragma endregion
 
-    static void BindCreateEntity(MonoString* name, glm::vec3 pos, glm::vec3 rot, glm::vec3 sca)
+    static CSEntityID BindCreateEntity(MonoString* name, glm::vec3 pos, glm::vec3 rot, glm::vec3 sca)
     {
         char* nameString = mono_string_to_utf8(name);
         std::string str(nameString);
@@ -268,20 +193,14 @@ namespace TRE
         Temp->GetComponent<Transform>().m_Scale = sca;
         Temp->GetComponent<Transform>().m_IsDirty = true;
         std::cout << "Created Entity from C#: " << str << std::endl;
+        return EntityID_EngineToCS(Temp->GetGUID());
     }
 
-    static void BindCloneEntity(MonoString* id, glm::vec3 pos, glm::vec3 rot, glm::vec3 sca)
+    static CSEntityID BindCloneEntity(CSEntityID ID, glm::vec3 pos, glm::vec3 rot, glm::vec3 sca)
     {
-        Entity Existing{ ECSManager::Instance().FindEntity(MonoStringToString(id)) };
+        Entity Existing{ VALIDATEENTITY(ID) };
 
-        if (!Existing)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        if (!Existing) return CSEntityID();
 
         Entity Temp = ECSManager::Instance().CloneEntity(Existing);
         Temp->GetComponent<Transform>().m_Position = pos;
@@ -289,26 +208,19 @@ namespace TRE
         Temp->GetComponent<Transform>().m_Scale = sca;
         Temp->GetComponent<Transform>().m_IsDirty = true;
         std::cout << "Cloned Entity from C#: " << Existing->GetName() << std::endl;
+        return EntityID_EngineToCS(Temp->GetGUID());
     }
 
-    static bool BindIsValidEntity(MonoString* id)
+    static bool BindIsValidEntity(CSEntityID id)
     {
-        return (ECSManager::Instance().FindEntity(MonoStringToString(id)) != nullptr);
+        return (VALIDATEENTITY(id) != nullptr);
     }
 
-     static void BindAddComponent(MonoString* ID, int componenttype)
+     static void BindAddComponent(CSEntityID ID, int componenttype)
     {
         // Retrive the entity from the ID
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(ID) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         // Use a switch case to determine which component to add
         switch (componenttype)
@@ -332,18 +244,10 @@ namespace TRE
 
     }
 
-    static void BindRemoveComponent(MonoString* id, int componenttype)
+    static void BindRemoveComponent(CSEntityID ID, int componenttype)
     {
-        Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(id));
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         switch (componenttype)
         {
@@ -365,20 +269,11 @@ namespace TRE
         }
     }
 
-    static void BindDestroyEntity(MonoString* id)
+    static void BindDestroyEntity(CSEntityID ID)
     {
-        std::string ID = MonoStringToString(id);
         // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSManager::Instance().MarkForDeletion(Temp);
     }
@@ -403,8 +298,18 @@ namespace TRE
 		return tempMap;
 	}
 
-    static MonoString* FindIDFromName(MonoString* name)
+    static CSEntityID FindIDFromName(MonoString* name)
 	{
+        if (name == nullptr)
+        {
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            std::string function{ __FUNCTION__ };
+            str += "[" + function + "] Name is empty!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            // Did not find the name
+            return CSEntityID();
+        }
+
 		std::string temp = MonoStringToString(name);
         std::unordered_map<std::string, std::string> sceneObjects = GetAllSceneObjects();
         // Search for the name in the map
@@ -412,124 +317,70 @@ namespace TRE
         {
         	// Found the name
 			std::string ID = sceneObjects[temp];
-			return mono_string_new(mono_domain_get(), ID.c_str());
+			return EntityID_EngineToCS(ID);
 		}
 		else
 		{
 			// Did not find the name
-			return mono_string_new(mono_domain_get(), "");
+            std::string str{ CONSOLE_DEBUG_ERROR };
+            std::string function{ __FUNCTION__ };
+            str += "[" + function + "] Could not find name (" + MonoStringToString(name) + ") in ECS Entities!";
+            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+			return CSEntityID();
 		}
 	}
 
-    static MonoString* FindNameFromID(MonoString* id)
+    static MonoString* FindNameFromID(CSEntityID ID)
 	{
-		std::string temp = MonoStringToString(id);
-        Entity tmpEntity{ ECSManager::Instance().FindEntity(temp) };
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return mono_string_new(mono_domain_get(), "");
 
-        if (tmpEntity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + temp + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return mono_string_new(mono_domain_get(), "");
-        }
-
-        return  mono_string_new(mono_domain_get(), tmpEntity->GetName().c_str());
+        return  mono_string_new(mono_domain_get(), Temp->GetName().c_str());
 	}
 
-    static MonoString* FindParentIDFromID(MonoString* id)
+    static MonoString* FindParentIDFromID(CSEntityID ID)
 	{
-		std::string temp = MonoStringToString(id);
-        Entity tmpEntity{ ECSManager::Instance().FindEntity(temp) };
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return mono_string_new(mono_domain_get(), "");
 
-        if (tmpEntity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + temp + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return mono_string_new(mono_domain_get(), "");
-        }
-
-        return  mono_string_new(mono_domain_get(), tmpEntity->GetComponent<Parenting>().m_Parent.c_str());
+        return  mono_string_new(mono_domain_get(), Temp->GetComponent<Parenting>().m_Parent.c_str());
 	}
 
 #pragma region TransformBindings
 
-    static void BindSetPosition(MonoString* id, glm::vec3 newPos)
+    static void BindSetPosition(CSEntityID ID, glm::vec3 newPos)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         Transform& transform = Temp->GetComponent<Transform>();
         transform.m_Position = newPos;
         transform.m_IsDirty = true;
     }
 
-    static void BindSetRotation(MonoString* id, glm::vec3 newRot)
+    static void BindSetRotation(CSEntityID ID, glm::vec3 newRot)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity 
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         Transform& transform = Temp->GetComponent<Transform>();
         transform.m_Rotation = newRot;
         transform.m_IsDirty = true;
     }
 
-    static void BindGetPosition(MonoString* id, glm::vec3* output)
+    static void BindGetPosition(CSEntityID ID, glm::vec3* output)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         Transform& transform = Temp->GetComponent<Transform>();
         *output = transform.m_Position;
     }
 
-    static void BindGetRotation(MonoString* id, glm::vec3* output)
+    static void BindGetRotation(CSEntityID ID, glm::vec3* output)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         // Get the rotation
         *output = Temp->GetComponent<Transform>().m_Rotation;
@@ -538,525 +389,235 @@ namespace TRE
 #pragma endregion
 
 #pragma region CameraBindings
-    static void BindCamSetViewportSize(MonoString* id, glm::vec2 newSize)
+    static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetViewportSize(Temp, newSize);
     }
 
-    static void BindCamSetFocalPoint(MonoString* id, glm::vec3 focalpoint)
+    static void BindCamSetFocalPoint(CSEntityID ID, glm::vec3 focalpoint)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(Temp, focalpoint);
     }
 
-    static void BindCamSetFocalLength(MonoString* id, float focallength)
+    static void BindCamSetFocalLength(CSEntityID ID, float focallength)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalLength(Temp, focallength);
     }
 
-    static void BindCamSetFOV(MonoString* id, float fov)
+    static void BindCamSetFOV(CSEntityID ID, float fov)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFov(Temp, fov);
     }
 
-    static void BindCamSetNear(MonoString* id, float n)
+    static void BindCamSetNear(CSEntityID ID, float n)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetNear(Temp, n);
     }
 
-    static void BindCamSetFar(MonoString* id, float f)
+    static void BindCamSetFar(CSEntityID ID, float f)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFar(Temp, f);
     }
 
-    static void BindCamSetLeft(MonoString* id, float left)
+    static void BindCamSetLeft(CSEntityID ID, float left)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetLeft(Temp, left);
     }
 
-    static void BindCamSetRight(MonoString* id, float right)
+    static void BindCamSetRight(CSEntityID ID, float right)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRight(Temp, right);
     }
 
-    static void BindCamSetTop(MonoString* id, float top)
+    static void BindCamSetTop(CSEntityID ID, float top)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetTop(Temp, top);
     }
 
-    static void BindCamSetBottom(MonoString* id, float bottom)
+    static void BindCamSetBottom(CSEntityID ID, float bottom)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetBottom(Temp, bottom);
     }
 
-    static void BindCamSetAspectRatio(MonoString* id, float aspectRatio)
+    static void BindCamSetAspectRatio(CSEntityID ID, float aspectRatio)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetAspectRatio(Temp, aspectRatio);
     }
 
-    static void BindCamSetIsPerspective(MonoString* id, bool isPerspective)
+    static void BindCamSetIsPerspective(CSEntityID ID, bool isPerspective)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsPerspective(Temp, isPerspective);
     }
 
-    static void BindCamSetIsMainCamera(MonoString* id, bool isMainCamera)
+    static void BindCamSetIsMainCamera(CSEntityID ID, bool isMainCamera)
     {
-        std::string ID = MonoStringToString(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(Temp, isMainCamera);
     }
 
     // Getters
-    static void BindCamGetViewMatrix(MonoString* id, glm::mat4* result)
+    static void BindCamGetViewMatrix(CSEntityID ID, glm::mat4* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewMatrix(Temp);
     }
 
-    static void BindCamGetProjectionMatrix(MonoString* id, glm::mat4* result)
+    static void BindCamGetProjectionMatrix(CSEntityID ID, glm::mat4* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetProjectionMatrix(Temp);
     }
 
-    static void BindCamGetInverseViewMatrix(MonoString* id, glm::mat4* result)
+    static void BindCamGetInverseViewMatrix(CSEntityID ID, glm::mat4* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewMatrix(Temp);
     }
 
-    static void BindCamGetInverseProjectionMatrix(MonoString* id, glm::mat4* result)
+    static void BindCamGetInverseProjectionMatrix(CSEntityID ID, glm::mat4* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseProjectionMatrix(Temp);
     }
 
-    static void BindCamGetInverseViewProjectionMatrix(MonoString* id, glm::mat4* result)
+    static void BindCamGetInverseViewProjectionMatrix(CSEntityID ID, glm::mat4* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewProjectionMatrix(Temp);
     }
 
-    static void BindCamGetViewportSize(MonoString* id, glm::vec2* result)
+    static void BindCamGetViewportSize(CSEntityID ID, glm::vec2* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewportSize(Temp);
     }
 
-    static void BindCamGetFOV(MonoString* id, float* result)
+    static void BindCamGetFOV(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFov(Temp);
     }
 
-    static void BindCamGetNear(MonoString* id, float* result)
+    static void BindCamGetNear(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetNear(Temp);
     }
 
-    static void BindCamGetFar(MonoString* id, float* result)
+    static void BindCamGetFar(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFar(Temp);
     }
 
-    static void BindCamGetLeft(MonoString* id, float* result)
+    static void BindCamGetLeft(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetLeft(Temp);
     }
 
-    static void BindCamGetRight(MonoString* id, float* result)
+    static void BindCamGetRight(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetRight(Temp);
     }
 
-    static void BindCamGetTop(MonoString* id, float* result)
+    static void BindCamGetTop(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetTop(Temp);
     }
 
-    static void BindCamGetBottom(MonoString* id, float* result)
+    static void BindCamGetBottom(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetBottom(Temp);
     }
 
-    static void BindCamGetAspectRatio(MonoString* id, float* result)
+    static void BindCamGetAspectRatio(CSEntityID ID, float* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetAspectRatio(Temp);
     }
 
-    static void BindCamIsPerspective(MonoString* id, bool* result)
+    static void BindCamIsPerspective(CSEntityID ID, bool* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsPerspective(Temp);
     }
 
-    static void BindCamIsMainCamera(MonoString* id, bool* result)
+    static void BindCamIsMainCamera(CSEntityID ID, bool* result)
     {
-        std::string ID = MonoStringToString(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-
-        if (Temp == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        Entity Temp = VALIDATEENTITY(ID);
+        if (!Temp) return;
 
         *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsMainCamera(Temp);
     }
@@ -1117,308 +678,128 @@ namespace TRE
 #pragma endregion
 
 #pragma region Physics
-    static void BindResizeSphereCollider(MonoString* id, float radius)
+    static void BindResizeSphereCollider(CSEntityID ID, float radius)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(entity, radius);
     }
 
-    static void BindResizeBoxCollider(MonoString* id, glm::vec3 halfExtents)
+    static void BindResizeBoxCollider(CSEntityID ID, glm::vec3 halfExtents)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(entity, halfExtents);
     }
 
-    static void BindResizeCapsuleCollider(MonoString* id, float radius, float halfHeight)
+    static void BindResizeCapsuleCollider(CSEntityID ID, float radius, float halfHeight)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCapsuleCollider(entity, radius, halfHeight);
     }
 
-    static void BindAddForce(MonoString* id, glm::vec3 force, ForceMode::Enum mode)
+    static void BindAddForce(CSEntityID ID, glm::vec3 force, ForceMode::Enum mode)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
     }
 
-    void BindConstrainRotationX(MonoString* id, bool state)
+    void BindConstrainRotationX(CSEntityID ID, bool state)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationX(entity, state);
     }
 
-    void BindConstrainRotationY(MonoString* id, bool state)
+    void BindConstrainRotationY(CSEntityID ID, bool state)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationY(entity, state);
     }
 
-    void BindConstrainRotationZ(MonoString* id, bool state)
+    void BindConstrainRotationZ(CSEntityID ID, bool state)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationZ(entity, state);
     }
 
-    static void BindGetLinearVelocity(MonoString* id, glm::vec3* output)
+    static void BindGetLinearVelocity(CSEntityID ID, glm::vec3* output)
     {
-	    const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
     }
 
-    static void BindSetLinearVelocity(MonoString* id, glm::vec3 velocity)
+    static void BindSetLinearVelocity(CSEntityID ID, glm::vec3 velocity)
     {
-        const Entity& entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-
-        if (entity == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity ID(" + MonoStringToString(id) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return;
-        }
+        const Entity& entity = VALIDATEENTITY(ID);
+        if (!entity) return;
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
     }
 
-    static bool BindIsCollisionEnter(MonoString* id1, MonoString* id2)
+    static bool BindIsCollisionEnter(CSEntityID id1, CSEntityID id2)
     {
-        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-
-        if (entity1 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 1 ID(" + MonoStringToString(id1) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
-        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-
-        if (entity2 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 2 ID(" + MonoStringToString(id2) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity entity1 = VALIDATEENTITY(id1);
+        Entity entity2 = VALIDATEENTITY(id2);
+        if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionEnter(entity1, entity2);
     }
 
-    static bool BindIsCollisionStay(MonoString* id1, MonoString* id2)
+    static bool BindIsCollisionStay(CSEntityID id1, CSEntityID id2)
     {
-        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-
-        if (entity1 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 1 ID(" + MonoStringToString(id1) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
-        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-
-        if (entity2 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 2 ID(" + MonoStringToString(id2) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity entity1 = VALIDATEENTITY(id1);
+        Entity entity2 = VALIDATEENTITY(id2);
+        if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionStay(entity1, entity2);
     }
 
-    static bool BindIsCollisionExit(MonoString* id1, MonoString* id2)
+    static bool BindIsCollisionExit(CSEntityID id1, CSEntityID id2)
     {
-        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-
-        if (entity1 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 1 ID(" + MonoStringToString(id1) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
-        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-
-        if (entity2 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 2 ID(" + MonoStringToString(id2) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity entity1 = VALIDATEENTITY(id1);
+        Entity entity2 = VALIDATEENTITY(id2);
+        if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsCollisionExit(entity1, entity2);
     }
 
-    static bool BindIsTriggerEnter(MonoString* id1, MonoString* id2)
+    static bool BindIsTriggerEnter(CSEntityID id1, CSEntityID id2)
     {
-        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-
-        if (entity1 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 1 ID(" + MonoStringToString(id1) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
-        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-
-        if (entity2 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 2 ID(" + MonoStringToString(id2) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity entity1 = VALIDATEENTITY(id1);
+        Entity entity2 = VALIDATEENTITY(id2);
+        if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerEnter(entity1, entity2);
     }
 
-    static bool BindIsTriggerStay(MonoString* id1, MonoString* id2)
+    static bool BindIsTriggerStay(CSEntityID id1, CSEntityID id2)
     {
-        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-
-        if (entity1 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 1 ID(" + MonoStringToString(id1) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
-        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-
-        if (entity2 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 2 ID(" + MonoStringToString(id2) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity entity1 = VALIDATEENTITY(id1);
+        Entity entity2 = VALIDATEENTITY(id2);
+        if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerStay(entity1, entity2);
     }
 
-    static bool BindIsTriggerExit(MonoString* id1, MonoString* id2)
+    static bool BindIsTriggerExit(CSEntityID id1, CSEntityID id2)
     {
-        Entity entity1 = ECSManager::Instance().FindEntity(MonoStringToString(id1));
-
-        if (entity1 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 1 ID(" + MonoStringToString(id1) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
-
-        Entity entity2 = ECSManager::Instance().FindEntity(MonoStringToString(id2));
-
-        if (entity2 == nullptr)
-        {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Entity 2 ID(" + MonoStringToString(id2) + ") does not exist in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
-            return false;
-        }
+        Entity entity1 = VALIDATEENTITY(id1);
+        Entity entity2 = VALIDATEENTITY(id2);
+        if (!entity1 || !entity2) return false;
 
         return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerExit(entity1, entity2);
     }

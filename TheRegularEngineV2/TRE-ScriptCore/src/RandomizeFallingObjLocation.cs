@@ -10,7 +10,7 @@ namespace TRE
     public class HumanCentipede : Entity
     {
         // How to call base class constructor to access Entity-like Properties
-        public HumanCentipede() : base("Name")
+        public HumanCentipede()
         {
 
         }
@@ -41,13 +41,17 @@ namespace TRE
 
         private List<Entity> itemsToSpawn = new List<Entity>();
 
-        public RandomizeFallingObjLocation() : base("spawner", ECSManager.FindIDFromName("spawner"))
+        public RandomizeFallingObjLocation()
         {
-            canSpawnObjs = true;
             // ID for prefabs are based on resource prefab GUID
-            fallingObjPrefabs = new List<Entity> { new Entity("Moles", "4faa57f0c810e0c7") };
+            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460, "Moles") };
             maxAmountToSpawn = 2;
             timeBetweenSpawns = 2;
+        }
+
+        public void OnCreate()
+        {
+
         }
 
         public void Start()
@@ -58,7 +62,7 @@ namespace TRE
         // Update is called once per frame
         public void Update()
         {
-            if (this.id == "") return;
+            if (ID == 0) return;
 
             if (InputSystem.GetKeyDown(InputKeys.T))
             {
@@ -70,12 +74,6 @@ namespace TRE
 
         public Vector3 SpawnObjPos()
         {
-            /*
-            Vector3 spawningPos = new Vector3(Random.Range(-size.x / 2, size.x / 2),
-                                                                            Random.Range(-size.y / 2, size.y / 2),
-                                                                                Random.Range(-size.z / 2, size.z / 2));
-            */
-            // THIS must use GetPosition instead until reflection for scripting is done
             Vector3 spawningPos = this.transform.position + new Vector3(Random.Range(-size.x / 2, size.x / 2),
                                                                             Random.Range(-size.y / 2, size.y / 2),
                                                                                 Random.Range(-size.z / 2, size.z / 2));
