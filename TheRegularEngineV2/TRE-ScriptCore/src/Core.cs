@@ -27,7 +27,7 @@ namespace TRE
 		public Parenting parenting;
 		public Transform transform;
 
-        protected Entity()
+        public Entity()
         {
 			ID = new EntityID();
 			name = "";
@@ -37,19 +37,41 @@ namespace TRE
 
         public Entity(EntityID id)
         {
-			ID = id;
-			name = ECSManager.FindNameFromID(ID);
+            ID = id;
+
+			if (ECSManager.IsValidEntity(ID))
+            {
+                name = ECSManager.FindNameFromID(ID);
+                parenting = new Parenting(ID);
+                TransformSystem.GetPosition(ID, out Vector3 pos);
+                TransformSystem.GetRotation(ID, out Vector3 rot);
+                transform = new Transform(ID, pos, rot, new Vector3(1, 1, 1));
+            }
+			else
+            {
+				name = "";
+                parenting = new Parenting();
+                transform = new Transform();
+            }
         }
 
-        public Entity(EntityID _id = new EntityID(), string _name = "")
-		{
-			ID = _id;
+        public Entity(EntityID _id, string _name)
+        {
+            ID = _id;
             name = _name;
 
-            parenting = new Parenting(ID);
-			TransformSystem.GetPosition(ID, out Vector3 pos);
-			TransformSystem.GetRotation(ID, out Vector3 rot);
-            transform = new Transform(ID, pos, rot, new Vector3(1,1,1));
+            if (ECSManager.IsValidEntity(ID))
+            {
+                parenting = new Parenting(ID);
+                TransformSystem.GetPosition(ID, out Vector3 pos);
+                TransformSystem.GetRotation(ID, out Vector3 rot);
+                transform = new Transform(ID, pos, rot, new Vector3(1, 1, 1));
+            }
+            else
+            {
+                parenting = new Parenting();
+                transform = new Transform();
+            }
         }
 
         public void Rename(string _name)

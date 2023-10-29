@@ -44,7 +44,7 @@ namespace TRE
         public RandomizeFallingObjLocation()
         {
             // ID for prefabs are based on resource prefab GUID
-            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460, "Moles") };
+            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
             maxAmountToSpawn = 2;
             timeBetweenSpawns = 2;
         }

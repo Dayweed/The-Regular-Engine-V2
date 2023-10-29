@@ -24,8 +24,8 @@ namespace TRE
 			// here
 		}
 
-		UpdateScriptableObjects();
 		CheckForNewScriptableObjects();
+		UpdateScriptableObjects();
 	}
 
 	void ScriptingSystem::GameUpdate()
@@ -138,14 +138,27 @@ namespace TRE
 	void ScriptingSystem::CheckForNewScriptableObjects()
 	{
 		// check if there are any new scriptable objects
-		std::vector<Entity> temp = ECSManager::Instance().GetAllEntities();
-		for(auto e: temp)
-		{
-			if(ECSManager::Instance().EntityHasComponent<ScriptComponent>(e))
-			{
-				AddScriptableObject(e);
-			}
-		}
+		m_ScriptEntities.clear();
+		m_ScriptEntities = ECSManager::Instance().GetEntities<ScriptComponent>(true);
+
+		//std::vector<Entity> temp = ECSManager::Instance().GetAllEntities();
+		//for(auto e: temp)
+		//{
+		//	if(ECSManager::Instance().EntityHasComponent<ScriptComponent>(e))
+		//	{
+		//		AddScriptableObject(e);
+		//	}
+
+		//	for (int x = 0; x < m_ScriptEntities.size(); x++)
+		//	{
+		//		//Remove script entity from scripting system since no script component
+		//		if (ECSManager::Instance().EntityHasComponent<ScriptComponent>(m_ScriptEntities[x]) == false)
+		//		{
+		//			if (m_ScriptEntities[x] == e)
+		//				m_ScriptEntities.erase(m_ScriptEntities.begin() + x);
+		//		}
+		//	}
+		//}
 	}
 
 
