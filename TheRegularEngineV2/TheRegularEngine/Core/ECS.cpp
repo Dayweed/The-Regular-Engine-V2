@@ -207,6 +207,16 @@ namespace TRE
 		return ent->GetComponent<Properties>().m_GUID;
 	}
 
+	Entity ECSManager::FindEntityName(std::string name)
+	{
+		for (auto ent : m_EntityList)
+		{
+			if (ent.first == name) return ent.second;
+		}
+
+		return nullptr;
+	}
+
 	bool ECSManager::IsRemovableComponent(std::string compName)
 	{
 		if (m_CompRemovable.find(compName) != m_CompRemovable.end())

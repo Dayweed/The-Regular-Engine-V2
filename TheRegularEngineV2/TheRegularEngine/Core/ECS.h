@@ -597,6 +597,9 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		std::string FindEntityID(Entity ent);
 
+		// CAUTION THIS WILL ONLY RETURN THE FIRST ENTITY IT CAN FIND
+		Entity FindEntityName(std::string name);
+
 		template <typename T>
 		void RegisterComponent(std::string name, bool hidden = false, bool removable = true);
 
