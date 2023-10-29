@@ -17,6 +17,10 @@
 
 #define VALIDATEENTITY(ID) ValidateEntityID(ID, __FUNCTION__)
 
+#define PUBLISHERROR(msg) PublishError(msg, __FUNCTION__)
+#define PUBLISHWARN(msg) PublishWarning(msg, __FUNCTION__)
+#define PUBLISHLOG(msg) PublishLog(msg, __FUNCTION__)
+
 namespace TRE
 {
     ScriptInputHandler& ScriptInputHandler::Instance()
@@ -53,6 +57,26 @@ namespace TRE
             return nullptr;
         }
         return Temp;
+    }
+
+    static void PublishError(std::string message, std::string function)
+    {
+        std::string str{ CONSOLE_DEBUG_ERROR };
+        str += "[" + function + "] " + message;
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+    }
+
+    static void PublishWarning(std::string message, std::string function)
+    {
+        std::string str{ CONSOLE_DEBUG_WARN };
+        str += "[" + function + "] " + message;
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+    }
+
+    static void PublishLog(std::string message, std::string function)
+    {
+        std::string str{ "[" + function + "] " + message };
+        EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
     }
 
 	std::string MonoStringToString(MonoString* monoString)
@@ -179,10 +203,7 @@ namespace TRE
         Entity Temp = VALIDATEENTITY(ID);
         if (index >= Temp->GetComponent<Parenting>().m_Children.size())
         {
-            std::string function{ __FUNCTION__ };
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            str += "[" + function + "] Index (" + std::to_string(index) + ") >= " + Temp->GetName() + "'s Children size (" + std::to_string(Temp->GetComponent<Parenting>().m_Children.size()) + ")!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            PUBLISHERROR("Index (" + std::to_string(index) + ") >= " + Temp->GetName() + "'s Children size (" + std::to_string(Temp->GetComponent<Parenting>().m_Children.size()) + ")!");
             return {};
         }
 
@@ -320,11 +341,8 @@ namespace TRE
 	{
         if (name == nullptr)
         {
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Name is empty!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
             // Did not find the name
+            PUBLISHERROR("Name is empty!");
             return CSEntityID();
         }
 
@@ -340,10 +358,7 @@ namespace TRE
 		else
 		{
 			// Did not find the name
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            std::string function{ __FUNCTION__ };
-            str += "[" + function + "] Could not find name (" + MonoStringToString(name) + ") in ECS Entities!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            PUBLISHERROR("Could not find name (" + MonoStringToString(name) + ") in ECS Entities!");
 			return CSEntityID();
 		}
 	}
@@ -730,6 +745,12 @@ namespace TRE
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
 
+        if (!entity->HasComponent<SphereCollider>())
+        {
+            PUBLISHERROR("There is no SphereCollider in " + entity->GetName() + "!");
+            return;
+        }
+
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(entity, radius);
     }
 
@@ -738,6 +759,12 @@ namespace TRE
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
 
+        if (!entity->HasComponent<BoxCollider>())
+        {
+            PUBLISHERROR("There is no BoxCollider in " + entity->GetName() + "!");
+            return;
+        }
+
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(entity, halfExtents);
     }
 
@@ -745,6 +772,12 @@ namespace TRE
     {
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
+
+        if (!entity->HasComponent<CapsuleCollider>())
+        {
+            PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+            return;
+        }
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCapsuleCollider(entity, radius, halfHeight);
     }
@@ -756,10 +789,7 @@ namespace TRE
 
         if (!entity->HasComponent<Rigidbody>())
         {
-            std::string function{ __FUNCTION__ };
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            str += "[" + function + "] There is no Rigidbody in " + entity->GetName() + "!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
             return;
         }
 
@@ -771,6 +801,12 @@ namespace TRE
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
 
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
+            return;
+        }
+
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationX(entity, state);
     }
 
@@ -778,6 +814,12 @@ namespace TRE
     {
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
+
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
+            return;
+        }
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationY(entity, state);
     }
@@ -787,6 +829,12 @@ namespace TRE
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
 
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
+            return;
+        }
+
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationZ(entity, state);
     }
 
@@ -795,6 +843,12 @@ namespace TRE
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
 
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
+            return;
+        }
+
         *output = ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetLinearVelocity(entity);
     }
 
@@ -802,6 +856,12 @@ namespace TRE
     {
         const Entity& entity = VALIDATEENTITY(ID);
         if (!entity) return;
+
+        if (!entity->HasComponent<Rigidbody>())
+        {
+            PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
+            return;
+        }
 
         ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetLinearVelocity(entity, velocity);
     }
@@ -943,10 +1003,7 @@ namespace TRE
     {
         if (!className)
         {
-            std::string function{ __FUNCTION__ };
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            str += "[" + function + "] ClassName is invalid!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            PUBLISHERROR("ClassName is invalid!");
             return false;
         }
         std::string classNameStr{ MonoStringToString(className) };
@@ -963,10 +1020,7 @@ namespace TRE
 
         if (!className)
         {
-            std::string function{ __FUNCTION__ };
-            std::string str{ CONSOLE_DEBUG_ERROR };
-            str += "[" + function + "] ClassName is invalid!";
-            EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+            PUBLISHERROR("ClassName is invalid!");
             return false;
         }
         std::string classNameStr{ MonoStringToString(className) };
