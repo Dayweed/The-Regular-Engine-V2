@@ -53,8 +53,12 @@ namespace TRE
 		}
 
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 
-		PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial);
+		if (sphereCollider.m_IsTrigger)
+			PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+		else
+			PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
@@ -80,7 +84,6 @@ namespace TRE
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
 		// assert(entity->GetGUID() == sharedData.m_GUID);
 
-		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 		// TODO: assign more data here
 		// sphereCollider.m_IsTrigger = ...
 		sphereCollider.m_Offset = offset;
@@ -119,31 +122,7 @@ namespace TRE
 
 		sphereCollider.m_IsInitialized || ConstructSphereCollider(entity);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// SO TEMPORARY
-		//PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
-
-		//// sphereCollider.m_IsTrigger = rigidDynamic->getSomeFlags().isSet(/*whatever the heck is used for triggers*/)
-
-		//sphereCollider.m_Offset = VEC3_CAST(glm::vec3, rigidDynamic->getGlobalPose().p) - entity->GetComponent<Transform>().m_Position;
-
-		//unsigned nbShapes = rigidDynamic->getNbShapes();
-		//const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		//nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
-
-		//// obtain the index of the sphere shape
-		//unsigned i = 0;
-		//for (; i < nbShapes; ++i)
-		//{
-		//	if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
-
-		//	break;
-		//}
-
-		//PxSphereGeometry sphereGeometry;
-		//shapes[i]->getSphereGeometry(sphereGeometry);
-		//sphereCollider.m_Radius = sphereGeometry.radius;
+		SetCapsuleColliderTrigger(entity, sphereCollider.m_IsTrigger);
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
@@ -179,5 +158,36 @@ namespace TRE
 			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
 		}
 		entity->RemoveComponent<SphereCollider>();
+	}
+
+	void PhysicsSystem::SetSphereColliderTrigger(const Entity& entity, const bool isTrigger) const
+	{
+		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+
+		sphereCollider.m_IsTrigger = isTrigger;
+
+		unsigned nbShapes = rigidDynamic->getNbShapes();
+		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
+		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+
+		// obtain the index of the box shape
+		unsigned i = 0;
+		for (; i < nbShapes; ++i)
+		{
+			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+
+			if (sphereCollider.m_IsTrigger)
+			{
+				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+			}
+			else
+			{
+				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+			}
+			break;
+		}
 	}
 }

@@ -93,7 +93,6 @@ namespace TRE
 		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory();
 
 		void SetDrawDebug(bool draw);
-
 #pragma region Rigidbody Function Declarations
 		/* !
 		@function      ConstructRigidbody
@@ -215,6 +214,8 @@ namespace TRE
 		DestructSphereCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructSphereCollider(const Entity& entity) const;
+
+		void SetSphereColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
 #pragma region BoxCollider Function Declarations
@@ -270,6 +271,8 @@ namespace TRE
 		DestructBoxCollider(e1)
 		*//*__________________________________________________________________________*/
 		void DestructBoxCollider(const Entity& entity) const;
+
+		void SetBoxColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
 #pragma region CapsuleCollider Function Declarations
@@ -280,6 +283,8 @@ namespace TRE
 		void UpdateCapsuleCollider(const Entity& entity) const;
 
 		void DestructCapsuleCollider(const Entity& entity) const;
+
+		void SetCapsuleColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
 		//This test function creates a stack of shapes
