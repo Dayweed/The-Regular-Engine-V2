@@ -11,9 +11,11 @@ namespace TRE
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
         //Maxium height the player can jump
-        private Vector3 maxHeight = new Vector3(0, 10000, 0);
+        private Vector3 maxHeight = new Vector3(0, 2000, 0);
         //direction vector
         private Vector3 dirVec;
+        //Movement Vector
+        Vector3 movementVector = Vector3.zero;
         //Wake up the mole
         private bool isAwake = false;
 
@@ -90,13 +92,13 @@ namespace TRE
 
             dirVec.Normalize();
 
-            Vector3 tmp = dirVec * 10;
-
-            PhysicsSystem.AddForce(this.ID, tmp, ForceMode.VelocityChange);
+            movementVector = dirVec * 10;
+            PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 output);
+            PhysicsSystem.AddForce(this.ID, movementVector, ForceMode.VelocityChange);
         }
         private void Jump(Vector3 JumpHeight)
         {
-            PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Force);
+            PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Acceleration);
         }
     }
 }
