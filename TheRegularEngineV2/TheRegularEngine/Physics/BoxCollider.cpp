@@ -113,6 +113,8 @@ namespace TRE
 				fabs(newHalfExtents.z)));
 			break;
 		}
+
+		entity->GetComponent<BoxCollider>().m_HalfExtents = glm::vec3(fabs(newHalfExtents.x), fabs(newHalfExtents.y), fabs(newHalfExtents.z));
 	}
 
 	void PhysicsSystem::UpdateBoxCollider(const Entity& entity) const

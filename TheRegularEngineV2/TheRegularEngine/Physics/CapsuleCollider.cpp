@@ -113,6 +113,9 @@ namespace TRE
 
 			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight))); break;
 		}
+
+		entity->GetComponent<CapsuleCollider>().m_Radius = fabs(newRadius);
+		entity->GetComponent<CapsuleCollider>().m_HalfHeight = fabs(newHalfHeight);
 	}
 
 	void PhysicsSystem::UpdateCapsuleCollider(const Entity& entity) const
