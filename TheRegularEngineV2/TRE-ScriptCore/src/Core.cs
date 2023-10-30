@@ -441,15 +441,6 @@ namespace TRE
 
 	public class TransformSystem
 	{
-		public void transformDemo(EntityID id)
-		{
-			Vector3 test = new Vector3(0, 0, 0);
-			GetRotation(id, out test);
-
-			test.x += 1;
-
-			SetRotation(id, test);
-		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void GetPosition(EntityID id, out Vector3 output);
@@ -519,10 +510,10 @@ namespace TRE
 		internal extern static bool IsValidEntity(EntityID prefabid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void AddComponent(EntityID entityID, Components component);
+		internal extern static void AddComponent(EntityID entityID, Type component);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void RemoveComponent(EntityID entityID, Components component);
+		internal extern static void RemoveComponent(EntityID entityID, Type component);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void DestroyEntity(EntityID entityID);

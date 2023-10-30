@@ -8,14 +8,49 @@ namespace TRE
 {
     public abstract class Component
     {
-        public Entity Entity { get; internal set; }
+        public Entity entity { get; internal set; }
     }
 
     public class Transform : Component
     {
-        public Vector3 Position { get; set; }
-        public Vector3 Rotation { get; set; }
-        public Vector3 Scale { get; set; }
+        public Vector3 Position
+        {
+            get
+            {
+                TransformSystem.GetPosition(entity.ID, out Vector3 pos);
+                return pos;
+            }
+            set
+            {
+                TransformSystem.SetPosition(entity.ID, value);
+            }
+        }
+
+        public Vector3 Rotation
+        {
+            get
+            {
+                TransformSystem.GetRotation(entity.ID, out Vector3 rot);
+                return rot;
+            }
+            set
+            {
+                TransformSystem.SetRotation(entity.ID, value);
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get
+            {
+                TransformSystem.GetScaling(entity.ID, out Vector3 scale);
+                return scale;
+            }
+            set
+            {
+                TransformSystem.SetScaling(entity.ID, value);
+            }
+        }
 
         public Transform()
         {
@@ -31,4 +66,32 @@ namespace TRE
             Scale = scale;
         }
     }
+
+    public class Camera : Component
+    {
+        // use transform component as template
+        // add Camera variables here
+    }
+
+    public class Rigidbody : Component
+    {
+
+    }
+
+    public class BoxCollider : Component
+    {
+
+    }
+
+    public class SphereCollider : Component
+    {
+
+    }
+
+    public class CapsuleCollider : Component
+    {
+
+    }
+
+    public class MeshRenderer
 }
