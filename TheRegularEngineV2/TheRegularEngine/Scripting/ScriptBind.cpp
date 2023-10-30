@@ -23,6 +23,46 @@
 
 namespace TRE
 {
+    enum class ComponentsID
+    {
+    	MeshRenderer = 0,
+		Camera,
+		Audio,
+		Rigidbody,
+		SphereCollider,
+		BoxCollider,
+		CapsuleCollider,
+		AudioListener,
+		Script,
+        None
+    };
+    std::unordered_map<std::string, ComponentsID> ComponentsMap
+	{
+		{"MeshRenderer", ComponentsID::MeshRenderer},
+        {"Camera", ComponentsID::Camera},
+        {"Audio", ComponentsID::Audio},
+        {"Rigidbody", ComponentsID::Rigidbody},
+		{"SphereCollider", ComponentsID::SphereCollider},
+		{"BoxCollider", ComponentsID::BoxCollider},
+		{"CapsuleCollider", ComponentsID::CapsuleCollider},
+		{"AudioListener", ComponentsID::AudioListener},
+        {"Script", ComponentsID::Script}
+    };
+
+    namespace Tools
+    {
+	    ComponentsID ConvertComponentNameToID(std::string componentName)
+	    {
+		    if(ComponentsMap.find(componentName) != ComponentsMap.end())
+		    {
+			    return ComponentsMap[componentName];
+		    }
+		    else
+		    {
+			    return ComponentsID::None;
+		    }
+	    }
+    }
     
     ScriptInputHandler& ScriptInputHandler::Instance()
 	{
@@ -260,26 +300,45 @@ namespace TRE
         return (Temp != nullptr);
     }
 
-	static void BindAddComponent(CSEntityID ID, int componenttype)
+	static void BindAddComponent(CSEntityID ID, MonoReflectionType* componenttype)
     {
         // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
 
+        MonoType* type = mono_reflection_type_get_type(componenttype);
+        ComponentsID componentID = Tools::ConvertComponentNameToID(mono_type_get_name(type));
+
         // Use a switch case to determine which component to add
-        switch (componenttype)
+        switch (componentID)
         {
-        case 0: // Mesh
+        case ComponentsID::MeshRenderer: // mesh
             Temp->AddComponent<MeshRenderer>();
-            std::cout << "Mesh Renderer added by C#!" << std::endl;
+            TRE_INFO("MeshRenderer added to {0}({1})", Temp->GetName(), Temp->GetGUID());
             break;
-        case 1: // Camera
+        case ComponentsID::Camera:
             Temp->AddComponent<Camera>();
-            std::cout << "Camera added by C#!" << std::endl;
+            TRE_INFO("Camera added to {0}({1})", Temp->GetName(), Temp->GetGUID());
             break;
-        case 2: // Audio
+        case ComponentsID::Audio:
             Temp->AddComponent<Audio>();
-            std::cout << "Audio added by C#!" << std::endl;
+            TRE_INFO("Audio added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+            break;
+        case ComponentsID::Rigidbody:
+            Temp->AddComponent<Rigidbody>();
+            TRE_INFO("Rigidbody added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+            break;
+        case ComponentsID::BoxCollider:
+			Temp->AddComponent<BoxCollider>();
+			TRE_INFO("Box Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+            break;
+        case ComponentsID::SphereCollider:
+			Temp->AddComponent<SphereCollider>();
+			TRE_INFO("Sphere Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
+        case ComponentsID::CapsuleCollider:
+            Temp->AddComponent<CapsuleCollider>();
+            TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
             break;
         default:
             std::cout << "The component does not exist!" << std::endl;
@@ -288,24 +347,43 @@ namespace TRE
 
     }
 
-    static void BindRemoveComponent(CSEntityID ID, int componenttype)
+    static void BindRemoveComponent(CSEntityID ID, MonoReflectionType* componenttype)
     {
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
 
-        switch (componenttype)
+        MonoType* componentType = mono_reflection_type_get_type(componenttype);
+        ComponentsID componentID = Tools::ConvertComponentNameToID(mono_type_get_name(componentType));
+
+        switch (componentID)
         {
-        case 0: // mesh
+        case ComponentsID::MeshRenderer: // mesh
             Temp->RemoveComponent<MeshRenderer>();
-            std::cout << "Mesh Renderer removed by C#!" << std::endl;
+            TRE_INFO("MeshRenderer Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
             break;
-        case 1:
+        case ComponentsID::Camera:
             Temp->RemoveComponent<Camera>();
-            std::cout << "Camera removed by C#!" << std::endl;
+            TRE_INFO("Camera Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
             break;
-        case 2:
+        case ComponentsID::Audio:
             Temp->RemoveComponent<Audio>();
-            std::cout << "Audio removed by C#!" << std::endl;
+            TRE_INFO("Audio Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+            break;
+        case ComponentsID::Rigidbody:
+            Temp->RemoveComponent<Rigidbody>();
+            TRE_INFO("Rigid Body Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+            break;
+        case ComponentsID::BoxCollider:
+			Temp->RemoveComponent<BoxCollider>();
+			TRE_INFO("Box Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+            break;
+        case ComponentsID::SphereCollider:
+			Temp->RemoveComponent<SphereCollider>();
+			TRE_INFO("Sphere Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
+        case ComponentsID::CapsuleCollider:
+            Temp->RemoveComponent<CapsuleCollider>();
+            TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
             break;
         default:
             std::cout << "The component does not exist!" << std::endl;
@@ -327,36 +405,28 @@ namespace TRE
 	    Entity entity = VALIDATEENTITY(ID);
 
         MonoType* monoType = mono_reflection_type_get_type(type);
-        std::string ComponentName = mono_type_get_name(monoType);
+        ComponentsID componentID = Tools::ConvertComponentNameToID(mono_type_get_name(monoType));
 
-        // for now the name of the type will be used to differentiate between components
-        /*switch(ComponentName)
+        switch(componentID)
         {
-        case"Transform":
-            return entity->HasComponent<Transform>();
-        case "MeshRenderer":
-            return entity->HasComponent<MeshRenderer>();
-        case"Camera":
-            return entity->HasComponent<Camera>();
-        case"Rigidbody":
+        case ComponentsID::MeshRenderer:
+			return entity->HasComponent<MeshRenderer>();
+		case ComponentsID::Camera:
+			return entity->HasComponent<Camera>();
+        case ComponentsID::Rigidbody:
             return entity->HasComponent<Rigidbody>();
-        case"SphereCollider":
+        case ComponentsID::BoxCollider:
+			return entity->HasComponent<BoxCollider>();
+        case ComponentsID::SphereCollider:
             return entity->HasComponent<SphereCollider>();
-        case"BoxCollider":
-            return entity->HasComponent<BoxCollider>();
-        case"CapsuleCollider":
+        case ComponentsID::CapsuleCollider:
             return entity->HasComponent<CapsuleCollider>();
-        case"Audio":
-            return entity->HasComponent<Audio>();
-        case"AudioListener":
-            return entity->HasComponent<AudioListener>();
-        case"Script":
-            return entity->HasComponent<ScriptComponent>();
+        case ComponentsID::Audio:
+
         default:
             TRE_ERROR("Component does not exist!");
             return false;
-        }*/
-        return false;
+        }
     }
 
     static void BindTestFunction()
@@ -1038,7 +1108,6 @@ namespace TRE
     }
 
 #pragma endregion
-
 
 #pragma region ScriptBindings
     static bool BindIsScript(MonoString* className)

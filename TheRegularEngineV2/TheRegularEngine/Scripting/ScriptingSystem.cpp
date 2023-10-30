@@ -21,11 +21,6 @@ namespace TRE
 			m_ScriptableUpdate = false;
 		}
 
-		if(m_IsRunning == true)
-		{
-			// here
-		}
-
 		CheckForNewScriptableObjects();
 		UpdateScriptableObjects();
 	}
