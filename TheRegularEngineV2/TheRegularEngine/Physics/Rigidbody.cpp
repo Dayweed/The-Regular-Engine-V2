@@ -217,6 +217,8 @@ namespace TRE
 		// SO TEMPORARY
 		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
 
+		UpdateActorPose(entity);
+
 		rigidbody.m_Mass = rigidDynamic->getMass();
 		// rigidbody.m_Drag = ;
 		// rigidbody.m_AngularDrag = ;

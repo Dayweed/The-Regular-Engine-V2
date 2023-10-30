@@ -878,6 +878,18 @@ namespace TRE
 			UpdateCapsuleCollider(entity);
 	}
 
+	void PhysicsSystem::UpdateActorPose(const Entity& entity, const glm::vec3& offset) const
+	{
+		const glm::vec3 pos = entity->GetComponent<Transform>().m_Position + offset;
+		const PxVec3 colliderPos = VEC3_CAST(PxVec3, pos);
+
+		const glm::vec3 eulerAnglesInRad = entity->GetComponent<Transform>().m_Rotation * PI / 180.0f;
+		const glm::quat rotQuat{ eulerAnglesInRad };
+
+		const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
+		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(transform);
+	}
+
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
 	{
 		UNUSED_PARAM(bodyBuffer); UNUSED_PARAM(poseBuffer); UNUSED_PARAM(count);

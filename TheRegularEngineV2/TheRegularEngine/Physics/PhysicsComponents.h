@@ -63,7 +63,6 @@ namespace TRE
 		};
 	};
 
-
 	// data that NEEDS to be shared among all physics components of an entity at all times
 	struct SharedData
 	{

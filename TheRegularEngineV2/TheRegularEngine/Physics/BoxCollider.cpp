@@ -123,7 +123,10 @@ namespace TRE
 		PhysicsComponentAssertion(BoxCollider);
 
 		const BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+
 		boxCollider.m_IsInitialized || ConstructBoxCollider(entity);
+
+		UpdateActorPose(entity, boxCollider.m_Offset);
 
 		SetBoxColliderTrigger(entity, boxCollider.m_IsTrigger);
 	}
