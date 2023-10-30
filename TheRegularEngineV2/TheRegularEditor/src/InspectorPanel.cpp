@@ -213,7 +213,7 @@ namespace TRE
 					}
 					if (isEdited)
 					{
-						ImGui::TextColored({ 0.5, 0.5, 1, 1 }, NameStr.c_str());
+						ImGui::TextColored({ 0, 1, 1, 1 }, NameStr.c_str());
 					}
 					else
 					{
