@@ -52,79 +52,6 @@ namespace TRE
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
 
-
-	struct NESTCOMP
-	{
-		char arr_c;
-
-		NESTCOMP() = default;
-		~NESTCOMP() = default;
-
-		// Can use NLOHMANN_DEFINE_TYPE_INTRUSIVE even with functions
-		void UselessFunction()
-		{
-			return;
-		}
-
-		// Use this if dont have struct/class variables
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(NESTCOMP, arr_c)
-	};
-
-	struct FEL : property::base
-	{
-		std::vector<float> vec_i{};
-		float arr_i[3]{};
-		NESTCOMP nestedstruct{};
-		std::string tobeignored{ "(>-<)" };
-
-		FEL() = default;
-		~FEL() = default;
-		property_vtable()           // Allows the base class to get these properties  
-
-		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		friend void to_json(nlohmann::json& j, const FEL&f) // Serialize
-		{
-			j = nlohmann::json{
-				{ "vector", f.vec_i },
-				{ "array", f.arr_i },
-				{ "nested", f.nestedstruct }
-			};
-		}
-		friend void from_json(const nlohmann::json& j, FEL& f) // Deserialize
-		{
-			if (j.contains("vector"))
-				f.vec_i = j.at("vector").get<std::vector<float>>();
-			if (j.contains("array"))
-				j.at("array").get_to(f.arr_i);
-			if (j.contains("nested"))
-				j.at("nested").get_to(f.nestedstruct);
-		}
-	};
-
-	struct FAKEFEL : property::base
-	{
-		std::string fakeValue{ "NULL" };
-		int fakeInt{ 120 };
-
-		property_vtable()           // Allows the base class to get these properties  
-
-		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		friend void to_json(nlohmann::json& j, const FAKEFEL& f) // Serialize
-		{
-			j = nlohmann::json{
-				{ "fakeValue", f.fakeValue },
-				{ "fakeInt", f.fakeInt },
-			};
-		}
-		friend void from_json(const nlohmann::json& j, FAKEFEL& f) // Deserialize
-		{
-			if (j.contains("fakeValue"))
-				f.fakeValue = j.at("fakeValue");
-			if (j.contains("nested"))
-				f.fakeInt = j.at("fakeInt");
-		}
-	};
-
 	struct Properties : property::base
 	{
 		std::string m_GUID{};
@@ -623,10 +550,6 @@ namespace TRE
 
 		bool IsValidEntity(Entity ent);
 
-		// TODELETE
-		void TESTRUN();
-		void STRESSTEST();
-
 	private:
 		friend class MemoryManager;
 		friend class GameLoop;
@@ -952,15 +875,3 @@ property_begin(TRE::Properties)
 	property_var(m_Tag).Name("Tag"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
-
-property_begin(TRE::FEL)
-{
-	property_var(vec_i).Name("vec_i"),
-	property_var(tobeignored).Name("tobeignored")
-} property_vend_h(TRE::FEL)
-
-property_begin(TRE::FAKEFEL)
-{
-	property_var(fakeValue).Name("fakeValue"),
-	property_var(fakeInt).Name("fakeInt")
-} property_vend_h(TRE::FAKEFEL)
