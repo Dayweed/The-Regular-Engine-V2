@@ -93,5 +93,8 @@ namespace TRE
 
     }
 
-    public class MeshRenderer
+    public class MeshRenderer : Component
+    {
+
+    }
 }

@@ -307,6 +307,10 @@ namespace TRE
 				DestructCapsuleCollider(entity);
 		}
 		m_Actors.clear();
+
+		m_SimulationEventCallback.m_CollisionHistory.clear();
+		m_SimulationEventCallback.m_TriggerHistory.clear();
+		m_SimulationEventCallback.m_PrevTriggerHistory.clear();
 	}
 
 	void PhysicsSystem::AfterReset()
