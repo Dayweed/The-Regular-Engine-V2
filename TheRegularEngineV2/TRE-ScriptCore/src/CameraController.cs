@@ -14,10 +14,10 @@ namespace TRE
 		public bool region2;
 
 		private float distanceStart = 35;
-		private float distance1 = 70;
-		private float distance2 = 100;
+		private float distance1 = 90;
+		private float distance2 = 25;
 
-		private float lerpTime = 0.001f;
+		private float lerpTime = 0.01f;
 
 		public void Start()
 		{
@@ -30,7 +30,7 @@ namespace TRE
 
 			if(regionStart)
 			{
-				CameraSystem.TransitionMainCamera(new Vector3(0, 7, 20), new Vector3(30, 180, 0), 0.001f);
+				CameraSystem.TransitionMainCamera(new Vector3(0, 10, 20), new Vector3(30, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceStart, lerpTime);
 			}
 
@@ -42,7 +42,7 @@ namespace TRE
 
 			if (region2)
 			{
-				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(90, 180, 0), 0.001f);
+				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(15, 180, 0), 0.001f);
 				distance = Lerp(distance, distance2, lerpTime);
 			}
 
