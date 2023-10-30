@@ -462,7 +462,7 @@ namespace TRE
 		for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
 		{
 			const Transform& tr = camera->GetComponent<Transform>();
-			const Camera& cc = camera->GetComponent<Camera>();
+			// const Camera& cc = camera->GetComponent<Camera>();
 
 			PushConstant pc{};
 			glm::mat4 model(1.f);

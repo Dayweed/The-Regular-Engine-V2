@@ -21,6 +21,7 @@ namespace TRE::vkUtils
 		}
 
 		assert(false && "Unable to find a suitable buffer memory");
+		return {};
 	}
 
 	void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)

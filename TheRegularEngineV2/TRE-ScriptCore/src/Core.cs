@@ -123,12 +123,14 @@ namespace TRE
             //return GenerateComponent<T>();
         }
 
+		/*
         public bool HasComponent<T>() where T : Component, new()
         {
 			// WIP
 
             return false;
         }
+		*/
 
         // DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*

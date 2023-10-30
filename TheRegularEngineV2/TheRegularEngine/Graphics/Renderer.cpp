@@ -64,7 +64,7 @@ namespace TRE
 		s_FinalRenderData = new FinalRenderData;
 
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		// auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		float x = -1; float y = -1;
 		float width = 2, height = 2;
 

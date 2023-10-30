@@ -80,7 +80,7 @@ namespace TRE
 			assert(Result == VK_SUCCESS && "Unable to create image for cubemap");
 		}
 
-		VkMemoryRequirements ImagememReqs;
+		// VkMemoryRequirements ImagememReqs;
 		VkMemoryAllocateInfo ImagememAlloc{};
 
 		ImagememAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
