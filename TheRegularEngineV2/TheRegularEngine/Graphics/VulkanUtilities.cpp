@@ -2,9 +2,28 @@
 #include "VulkanUtilities.h"
 #include "RendererContext.h"
 #include "glm/gtx/matrix_decompose.hpp"
+#include "Core/Engine.h"
 
 namespace TRE::vkUtils
 {
+	uint32_t BufferFindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	{
+		VkPhysicalDeviceMemoryProperties memProperties;
+		auto physicalDevice = RendererContext::GetDevice()->GetPhysicalDevice()->GetPhysicalDevice();
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+
+		for (uint32_t x = 0; x < memProperties.memoryTypeCount; x++)
+		{
+			if ((typeFilter & (1 << x)) && (memProperties.memoryTypes[x].propertyFlags & properties) == properties)
+			{
+				return x;
+			}
+		}
+
+		assert(false && "Unable to find a suitable buffer memory");
+		return {};
+	}
+
 	void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 	{
 		auto logicalDevice = RendererContext::GetDevice();
@@ -52,4 +71,32 @@ namespace TRE::vkUtils
 
         return End * T + (Start)*inv_T;
     }
+
+    bool IsDepthImage(const ImageFormat& Usage)
+    {
+        return Usage == ImageFormat::DEPTH24STENCIL8 || Usage == ImageFormat::DEPTH32F || Usage == ImageFormat::DEPTH32FSTENCIL8UINT;
+    }
+
+	VkFormat VulkanImageFormat(ImageFormat format)
+	{
+		switch (format)
+		{
+			case ImageFormat::RED8UN:               return VK_FORMAT_R8_UNORM;
+			case ImageFormat::RED8UI:               return VK_FORMAT_R8_UINT;
+			case ImageFormat::RED16UI:               return VK_FORMAT_R16_UINT;
+			case ImageFormat::RED32UI:               return VK_FORMAT_R32_UINT;
+			case ImageFormat::RED32F:				return VK_FORMAT_R32_SFLOAT;
+			case ImageFormat::RG8:				    return VK_FORMAT_R8G8_UNORM;
+			case ImageFormat::RG16F:				return VK_FORMAT_R16G16_SFLOAT;
+			case ImageFormat::RG32F:				return VK_FORMAT_R32G32_SFLOAT;
+			case ImageFormat::RGBA:					return Engine::GetInstance().GetWindow()->GetSwapChain()->GetColorFormat();
+			case ImageFormat::RGBA16F:				return VK_FORMAT_R16G16B16A16_SFLOAT;
+			case ImageFormat::RGBA32F:				return VK_FORMAT_R32G32B32A32_SFLOAT;
+			case ImageFormat::B10R11G11UF:			return VK_FORMAT_B10G11R11_UFLOAT_PACK32;
+			case ImageFormat::DEPTH32FSTENCIL8UINT: return VK_FORMAT_D32_SFLOAT_S8_UINT;
+			case ImageFormat::DEPTH32F:				return VK_FORMAT_D32_SFLOAT;
+			case ImageFormat::DEPTH24STENCIL8:		return RendererContext::GetDevice()->GetPhysicalDevice()->GetDepthFormat();
+		}
+		return VK_FORMAT_UNDEFINED;
+	}
 }

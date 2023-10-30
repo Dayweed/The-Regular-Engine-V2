@@ -13,11 +13,14 @@ namespace TRE
 			Transform,
 			MeshRenderer,
 			Camera,
+			Rigidbody,
 			SphereCollider,
 			BoxCollider,
-			Rigidbody,
+			CapsuleCollider,
 			FEL,
-			FAKEFEL
+			FAKEFEL,
+			DirectionalLight,
+			ScriptComponent
 		>();
 	};
 

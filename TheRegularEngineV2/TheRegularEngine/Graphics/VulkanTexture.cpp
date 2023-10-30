@@ -9,6 +9,185 @@ TRE::ResourceHandle TRE::VulkanTexture::m_DefaultTextureID{ 0 };
 
 namespace TRE
 {
+	VulkanTexture::VulkanTexture(const CubeMapConfig& Config)
+	{
+		assert(Config.Textures.size() == 6 && "Cubemap textures not more than 0");
+
+		auto Device = RendererContext::GetDevice();
+
+		VkDeviceSize ImageCubeMapSize = Config.Textures[0]->GetWidth() * Config.Textures[0]->GetHeight() * 4 * 6;
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingMemory;
+
+		VkBufferCreateInfo bufferCreateInfo{}; // This buffer is used as a transfer source for the buffer copy
+		bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		bufferCreateInfo.size = ImageCubeMapSize;
+
+		if (auto Result = vkCreateBuffer(Device->GetLogicalDevice(), &bufferCreateInfo, nullptr, &stagingBuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create staging buffer for cubemap");
+		}
+
+		VkMemoryRequirements memReqs;
+		vkGetBufferMemoryRequirements(Device->GetLogicalDevice(), stagingBuffer, &memReqs);
+
+		VkMemoryAllocateInfo memAllocInfo{};
+		memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		memAllocInfo.allocationSize;
+		memAllocInfo.allocationSize = memReqs.size;
+		memAllocInfo.memoryTypeIndex = Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+		if (auto Result = vkAllocateMemory(Device->GetLogicalDevice(), &memAllocInfo, nullptr, &stagingMemory); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to allocate memory for cubemap");
+		}
+
+		if (auto Result = vkBindBufferMemory(Device->GetLogicalDevice(), stagingBuffer, stagingMemory, 0); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to bind memory for cubemap");
+		}
+
+		uint8_t* data;
+		if (auto Result = vkMapMemory(Device->GetLogicalDevice(), stagingMemory, 0, memReqs.size, 0, (void**)&data); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to map memory for cubemap");
+		}
+
+		VkDeviceSize layersize = ImageCubeMapSize / 6;
+		for (uint32_t x = 0; x < 6; x++)
+		{
+			memcpy(data + layersize * x, Config.Textures[x]->GetBuffer(), layersize);
+		}
+
+		VkImageCreateInfo ImageCreateInfo{};
+		ImageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		ImageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+		ImageCreateInfo.format = Config.Format;
+		ImageCreateInfo.mipLevels = 1;
+		ImageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		ImageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		ImageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		ImageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		ImageCreateInfo.extent = { Config.Textures[0]->GetWidth(), Config.Textures[0]->GetHeight(), 1 };
+		ImageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		ImageCreateInfo.arrayLayers = 6;
+		ImageCreateInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+
+		if (auto Result = vkCreateImage(Device->GetLogicalDevice(), &ImageCreateInfo, nullptr, &m_Image); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image for cubemap");
+		}
+
+		// VkMemoryRequirements ImagememReqs;
+		VkMemoryAllocateInfo ImagememAlloc{};
+
+		ImagememAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		vkGetImageMemoryRequirements(Device->GetLogicalDevice(), m_Image, &memReqs);
+
+		ImagememAlloc.allocationSize = memReqs.size;
+		ImagememAlloc.memoryTypeIndex = RendererContext::GetDevice()->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		if (auto result = vkAllocateMemory(Device->GetLogicalDevice(), &ImagememAlloc, nullptr, &m_ImageMemory); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to allocate memory for image");
+		}
+		if (auto result = vkBindImageMemory(Device->GetLogicalDevice(), m_Image, m_ImageMemory, 0); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to bind image memory");
+		}
+
+		VkImageViewCreateInfo ImageViewCreateInfo{};
+		ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		ImageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
+		ImageViewCreateInfo.format = Config.Format;
+		ImageViewCreateInfo.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+		ImageViewCreateInfo.subresourceRange.layerCount = 6;
+		ImageViewCreateInfo.image = m_Image;
+		ImageViewCreateInfo.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
+
+		if (auto Result = vkCreateImageView(Device->GetLogicalDevice(), &ImageViewCreateInfo, nullptr, &m_ImageView); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create cubemap image view");
+		}
+
+		auto cmd = Device->AllocateCommandBuffer(true);
+
+		VkImageSubresourceRange range;
+		range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		range.baseMipLevel = 0;
+		range.levelCount = 1;
+		range.baseArrayLayer = 0;
+		range.layerCount = 6;
+
+		std::vector<VkBufferImageCopy> bufferCopyRegions;
+		for (int x = 0; x < 6; x++)
+		{
+			VkBufferImageCopy bufferCopyRegion = {};
+			bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			bufferCopyRegion.imageSubresource.mipLevel = 0;
+			bufferCopyRegion.imageSubresource.baseArrayLayer = x;
+			bufferCopyRegion.imageSubresource.layerCount = 1;
+			bufferCopyRegion.imageExtent.width = Config.Textures[0]->GetWidth();
+			bufferCopyRegion.imageExtent.height = Config.Textures[0]->GetHeight();
+			bufferCopyRegion.imageExtent.depth = 1;
+			bufferCopyRegion.bufferOffset = layersize * x;
+			bufferCopyRegions.push_back(bufferCopyRegion);
+		}
+
+		VkImageMemoryBarrier imageBarrier_toTransfer{};
+		imageBarrier_toTransfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		imageBarrier_toTransfer.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageBarrier_toTransfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		imageBarrier_toTransfer.image = m_Image;
+		imageBarrier_toTransfer.subresourceRange = range;
+
+		imageBarrier_toTransfer.srcAccessMask = 0;
+		imageBarrier_toTransfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier_toTransfer);
+
+		vkCmdCopyBufferToImage(cmd, stagingBuffer, m_Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, static_cast<uint32_t>(bufferCopyRegions.size()), bufferCopyRegions.data());
+
+		VkImageMemoryBarrier imageBarrier_toReadable = imageBarrier_toTransfer;
+		imageBarrier_toReadable.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		imageBarrier_toReadable.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageBarrier_toReadable.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		imageBarrier_toReadable.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier_toReadable);
+
+		Device->SubmitCommands(cmd);
+
+		vkUnmapMemory(Device->GetLogicalDevice(), stagingMemory);
+
+		VkSamplerCreateInfo samplerCreateInfo = {};
+		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerCreateInfo.maxAnisotropy = 1.0f;
+		samplerCreateInfo.magFilter = VK_FILTER_NEAREST;
+		samplerCreateInfo.minFilter = VK_FILTER_NEAREST;
+		samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
+		samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
+		samplerCreateInfo.mipLodBias = 0.0f;
+		samplerCreateInfo.minLod = 0.0f;
+		samplerCreateInfo.maxLod = 100.0f;
+		samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+		if (auto Result = vkCreateSampler(Device->GetLogicalDevice(), &samplerCreateInfo, nullptr, &m_Sampler); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Sampler cannot be created");
+		}
+
+		m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		m_DescriptorImageInfo.imageView= m_ImageView;
+		m_DescriptorImageInfo.sampler = m_Sampler;
+
+		vkDestroyBuffer(Device->GetLogicalDevice(), stagingBuffer, nullptr);
+		vkFreeMemory(Device->GetLogicalDevice(), stagingMemory, nullptr);
+	}
+
 	VulkanTexture::VulkanTexture(const std::string& texturePath)
 	{
 		std::unique_ptr<Texture> texture = Texture::Deserialize(texturePath);
@@ -20,6 +199,12 @@ namespace TRE
 		stagingBuffer.Map();
 		stagingBuffer.WriteToBuffer(texture->Data, texture->DataSize);
 		stagingBuffer.Unmap();
+
+		m_Width = texture->Width;
+		m_Height = texture->Height;
+		m_Format = VkFormat(texture->Format);
+		m_Buffer = new void* [texture->DataSize];
+		memcpy(m_Buffer, texture->Data, texture->DataSize);
 
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;

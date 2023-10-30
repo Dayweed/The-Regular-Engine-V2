@@ -1,8 +1,8 @@
 {
     "FolderNames": {
-        "SCENE_FOLDER": "../Scenes/",
-        "DESC_FOLDER": "../Assets/",
-        "GEOM_FOLDER": "../Assets/"
+        "SCENE_FOLDER": "..\\Scenes\\",
+        "DESC_FOLDER": "..\\Assets\\",
+        "GEOM_FOLDER": "..\\Assets\\"
     },
     "FileNames": {
         "SCENE_FOLDER": ".json",

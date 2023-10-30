@@ -7,7 +7,10 @@
 #include "Utilities.h"
 #include "EditorSystem.h"
 #include "EditorAssetManager.h"
-
+#include "Graphics/VulkanEditor.h"
+#include "Core/Engine.h"
+#include "Graphics/RendererContext.h"
+#include "ConsolePanel.h"
 //To Delete
 #include "Scripting/ScriptEngine.h"
 namespace TRE
@@ -32,61 +35,6 @@ namespace TRE
 		m_MousePos.x = m_MousePos.x - windowConfig.width / 2.f;
 		m_MousePos.y = m_MousePos.y - windowConfig.height / 2.f;
 		m_MousePos.y = -m_MousePos.y;
-
-		if (m_IsViewportHovered == false)
-			return;
-
-		EditorCamera& editorCamera = EditorCamera::Instance();
-		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
-		{
-			static glm::vec2 panMouseStartPos{};
-			static glm::vec2 panMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
-			{
-				panMouseEndPos = m_MousePos;
-				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
-				if(glm::length(positionOffset) < 0.1f)
-					return;
-				positionOffset = glm::normalize(positionOffset);
-				positionOffset *= -1;
-				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
-				positionOffset.x *= panSensitivity.x;
-				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
-				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
-
-				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
-				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetUpVec() * positionOffset.y);
-			}
-			else
-			{
-				panMouseStartPos = m_MousePos;
-			}
-		}
-
-		{
-			static glm::vec2 rotMouseStartPos{};
-			static glm::vec2 rotMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
-			{
-				rotMouseEndPos = m_MousePos;
-				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
-				if (glm::length(rotationOffset) < 0.1f)
-					return;
-				rotationOffset = glm::normalize(rotationOffset);
-				rotationOffset.x *= -1;
-				rotationOffset *= m_RotationSensitivity;
-				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
-
-				const float yawSign = baseCamera.GetUpVec().y < 0 ? -1.f : 1.f;
-				editorCamera.SetYaw(baseCamera.m_Yaw + yawSign * rotationOffset.x);
-				editorCamera.SetPitch(baseCamera.m_Pitch + rotationOffset.y);
-			}
-			else
-			{
-				rotMouseStartPos = m_MousePos;
-			}
-		}
 	}
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
@@ -99,7 +47,7 @@ namespace TRE
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft))
+			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft) && m_GizmoOperation == -1)
 			{
 				//Object picking
 				//Offset mouse position to the middle of the viewport as if in game
@@ -170,19 +118,13 @@ namespace TRE
 		else
 			m_IsGridAndSnap = false;
 
-
-
-		// here Testing Scripting stuff
-		if (event._key == (int)KeyButton::P)
+		//Look at
+		if (event._key == (int)KeyButton::F)
 		{
-			ScriptEngine::TestAddComponent();
-		}
-
-		if (event._key == (int)KeyButton::O)
-		{
-			if (ScriptEngine::CreatedScriptObject == false)
+			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				ScriptEngine::TestSpawnObject();
+				//if(SelectedEntity->HasComponent<MeshRenderer>())
+					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
 	}
@@ -207,9 +149,14 @@ namespace TRE
 
 	void ViewportPanel::OnGridAndSnap(const GridAndSnapEvent& event)
 	{
-		m_PosIncreament = event.m_PosIncreament;
-		m_RotIncreament = event.m_RotIncreament;
-		m_ScaleIncreament = event.m_ScaleIncreament;
+		m_PosIncrement = event.m_PosIncrement;
+		m_RotIncrement = event.m_RotIncrement;
+		m_ScaleIncrement = event.m_ScaleIncrement;
+	}
+
+	void ViewportPanel::OnGizmoLocal(const LocalGloalGizmoEvent& event)
+	{
+		m_IsGizmoLocal = event.m_IsLocal;
 	}
 
 	void ViewportPanel::Init()
@@ -219,6 +166,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseScroll);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoLocal);
 	}
 
 	void ViewportPanel::Update()
@@ -232,7 +180,8 @@ namespace TRE
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
-		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetDset(), m_ImageSize);
+		MouseActions();
+		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize, ImVec2(0,0), ImVec2(1, 1));
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -240,8 +189,12 @@ namespace TRE
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_3DObject"))
 			{
 				std::string assetName = (const char*)payload->Data;
+				//assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+				//assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+
 				assetName = assetName.substr(assetName.find_last_of('\\') + 1);
-				assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
+				assetName.erase(assetName.find(".fbx")); 	// This is to remove unneeded data at the end after ".fbx"
+				assetName += ".fbx";
 
 				//Spawn object at mouse location
 				Entity spawn = ECSManager::Instance().CreateEntity();
@@ -250,7 +203,7 @@ namespace TRE
 
 				const EditorCamera& camera = EditorCamera::Instance();
 				UpdateClickRay();
-				transform.m_Position = camera.GetPosition() + m_ClickRay / 2.f;
+				transform.m_Position = camera.GetPosition() + m_ClickRay / 5.f;
 				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
 				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
@@ -294,7 +247,9 @@ namespace TRE
 				std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(filePath) };
 				if (prefabGUID.empty())
 				{
-					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Prefab not found!" });
+					std::string str{ CONSOLE_DEBUG_WARN };
+					str += "Prefab not found!";
+					EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
 					if (remove(filePath.c_str()))
 					{
 						std::string funcName{ __FUNCTION__ };
@@ -398,27 +353,33 @@ namespace TRE
 
 			const EditorCamera& camera = EditorCamera::Instance();
 			glm::mat4 proj = camera.GetProjectionMatrix();
+			//Flip back x and y axis
+			//proj[0][0] *= -1.f;
 			proj[1][1] *= -1.f;
 			glm::mat4 View = camera.GetViewMatrix();
 
-			glm::mat4 xform = SelectedEntity->GetComponent<Transform>().m_WorldXform;
 			Transform& transform = SelectedEntity->GetComponent<Transform>();
+			glm::mat4 xform = transform.m_WorldXform;
 
 			float snapValue = 1.f;
 			switch (m_GizmoOperation)
 			{
 			case ImGuizmo::OPERATION::TRANSLATE:
-				snapValue = m_PosIncreament;
+				snapValue = m_PosIncrement;
 				break;
 			case ImGuizmo::OPERATION::ROTATE:
-				snapValue = m_RotIncreament;
+				snapValue = m_RotIncrement;
 				break;
 			case ImGuizmo::OPERATION::SCALE:
-				snapValue = m_ScaleIncreament;
+				snapValue = m_ScaleIncrement;
 				break;
 			}
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
+			ImGuizmo::MODE mode = ImGuizmo::WORLD;
+			if(m_IsGizmoLocal)
+				mode = ImGuizmo::LOCAL;
+
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -481,6 +442,64 @@ namespace TRE
 					break;
 				}
 				transform.m_IsDirty = true;
+			}
+		}
+	}
+
+	void ViewportPanel::MouseActions()
+	{
+		if (m_IsViewportHovered == false)
+			return;
+
+		EditorCamera& editorCamera = EditorCamera::Instance();
+		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
+		{
+			static glm::vec2 panMouseStartPos{};
+			static glm::vec2 panMouseEndPos{};
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
+			{
+				panMouseEndPos = m_MousePos;
+				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
+				if (glm::length(positionOffset) < 0.1f)
+					return;
+				positionOffset = glm::normalize(positionOffset);
+				positionOffset.y *= -1;
+				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
+				positionOffset.x *= panSensitivity.x;
+				positionOffset.y *= panSensitivity.y;
+				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
+				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+
+				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
+				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetUpVec() * positionOffset.y);
+			}
+			else
+			{
+				panMouseStartPos = m_MousePos;
+			}
+		}
+
+		{
+			static glm::vec2 rotMouseStartPos{};
+			static glm::vec2 rotMouseEndPos{};
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
+			{
+				rotMouseEndPos = m_MousePos;
+				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
+				if (glm::length(rotationOffset) < 0.1f)
+					return;
+				rotationOffset = glm::normalize(rotationOffset);
+				rotationOffset *= -1;
+				rotationOffset *= m_RotationSensitivity;
+				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+
+				const float yawSign = baseCamera.GetUpVec().y < 0 ? -1.f : 1.f;
+				editorCamera.SetYaw(baseCamera.m_Yaw + yawSign * rotationOffset.x);
+				editorCamera.SetPitch(baseCamera.m_Pitch + rotationOffset.y);
+			}
+			else
+			{
+				rotMouseStartPos = m_MousePos;
 			}
 		}
 	}

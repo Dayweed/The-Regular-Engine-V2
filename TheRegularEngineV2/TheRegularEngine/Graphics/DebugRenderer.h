@@ -1,8 +1,9 @@
 #pragma once
 #include "Material.h"
 #include "Pipeline.h"
-#include "Buffer.h"
 #include "glm/glm.hpp"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace TRE
 {
@@ -29,10 +30,14 @@ namespace TRE
 
 		void BindDebugCapsule(VkCommandBuffer CommandBuffer);
 		void DrawDebugCapsule(VkCommandBuffer CommandBuffer);
+
+		void BindDebugCameraFrustum(VkCommandBuffer CommandBuffer);
+		void DrawDebugCameraFrustum(VkCommandBuffer CommandBuffer);
 	private:
 		void CreateDebugSphere();
 		void CreateDebugAABB();
 		void CreateDebugCapsule();
+		void CreateDebugCameraFrustum();
 	public:
 		const VkDescriptorSet& GetDescriptor(uint32_t index);
 		VkPipelineLayout GetPipelineLayout();
@@ -40,9 +45,8 @@ namespace TRE
 	private:
 		struct DebugType
 		{
-			std::unique_ptr<Buffer> m_VertexBuffer;
-			std::unique_ptr<Buffer> m_IndexBuffer;
-			uint32_t m_IndexCount;
+			std::unique_ptr<VertexBuffer> m_VertexBuffer;
+			std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		};
 	private:
 		std::shared_ptr<Material> m_DebugMaterialInstance;
@@ -51,6 +55,7 @@ namespace TRE
 		std::unique_ptr<DebugType> m_DebugSphere;
 		std::unique_ptr<DebugType> m_DebugAABB;
 		std::unique_ptr<DebugType> m_DebugCapsule;
+		std::unique_ptr<DebugType> m_DebugCameraFrustum;
 
 		std::shared_ptr<RenderPass> m_RenderPass;
 	};

@@ -5,12 +5,37 @@
 #include "imgui_impl_vulkan.h"
 #include "Editor/ImGuizmo.h"
 #include "implot.h"
+#include "Image.h"
 
 namespace TRE
 {
-	VkDescriptorSet VulkanEditor::GetDset()
+	void VulkanEditor::SetEditorSceneDescriptor(const std::shared_ptr<SceneRenderer>& SceneRenderer)
 	{
-		return m_DescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex()];
+		m_EditorSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
+		for (int x = 0; x < m_EditorSceneDescriptorSets.size(); x++)
+		{
+			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(SceneRenderer->GetColorImages()[x]->GetImageData().Sampler, SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		}
+	}
+
+	void VulkanEditor::SetGameSceneDescriptor(const std::shared_ptr<SceneRenderer>& SceneRenderer)
+	{
+		m_GameSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
+		for (int x = 0; x < m_GameSceneDescriptorSets.size(); x++)
+		{
+			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(SceneRenderer->GetColorImages()[x]->GetImageData().Sampler
+				, SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		}
+	}
+
+	VkDescriptorSet VulkanEditor::GetEditorSceneDescriptor()
+	{
+		return m_EditorSceneDescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex()];
+	}
+
+	VkDescriptorSet VulkanEditor::GetGameSceneDescriptor()
+	{
+		return m_GameSceneDescriptorSets[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex()];
 	}
 
 	VulkanEditor::VulkanEditor(const std::shared_ptr<Device>& LogicalDevice)
@@ -95,12 +120,8 @@ namespace TRE
 		{
 			m_ImGuiCommandBuffers[x] = LogicalDevice->AllocateSecondaryCommandBuffer();
 		}
-		
-		m_DescriptorSets.resize(RendererContext::GetFramesInFlight());
-		for (int x = 0; x < m_DescriptorSets.size(); x++)
-		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		}
+
+		SetGameSceneDescriptor(Engine::GetInstance().GetMainSceneRenderer());
 	}
 
 	void VulkanEditor::SetUpImgui()
@@ -220,11 +241,17 @@ namespace TRE
 
 	void VulkanEditor::Resize()
 	{
-		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_DescriptorSets.size()), m_DescriptorSets.data());
-		m_DescriptorSets.resize(RendererContext::GetFramesInFlight());
-		for (int x = 0; x < m_DescriptorSets.size(); x++)
+		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_EditorSceneDescriptorSets.size()), m_EditorSceneDescriptorSets.data());
+		vkFreeDescriptorSets(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, static_cast<uint32_t>(m_GameSceneDescriptorSets.size()), m_GameSceneDescriptorSets.data());
+		m_EditorSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
+		m_GameSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
+		for (int x = 0; x < m_GameSceneDescriptorSets.size(); x++)
 		{
-			m_DescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		}
+		for (int x = 0; x < m_EditorSceneDescriptorSets.size(); x++)
+		{
+			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetEditorSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 

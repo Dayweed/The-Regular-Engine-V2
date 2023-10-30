@@ -67,6 +67,7 @@ namespace TRE
 
 	void PrefabInputArchive::operator()(entt::entity& ent)
 	{
+		// Getting ID of entity
 		uint32_t entID = m_Current[m_CurrentIdx].get<uint32_t>();
 		ent = entt::entity(entID);
 		m_CurrentIdx++;
@@ -74,13 +75,14 @@ namespace TRE
 
 	void PrefabInputArchive::operator()(std::underlying_type_t<entt::entity>& u)
 	{
+		// Getting component
 		m_RootIdx++;
 		if (m_RootIdx >= m_Root.size())
 		{
 			std::string funcName{ __FUNCTION__ };
-			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size()) };
-			TRE_CORE_ERROR(error);
-			assert(m_RootIdx < m_Root.size());
+			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size())
+				+ "! This means there is a new component! Assuming it doesn't have it..."};
+			TRE_CORE_WARN(error);
 			return;
 		}
 		m_Current = m_Root[m_RootIdx];
@@ -103,7 +105,7 @@ namespace TRE
 
 	}
 
-	void PrefabSystem::OnReset()
+	void PrefabSystem::AfterReset()
 	{
 
 	}
@@ -120,6 +122,9 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
+		// Mimick Game Loop when forcing the scene to be resetted
+		ECSSystemManager::Instance().BeforeReset();
+
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
 		{
@@ -143,11 +148,16 @@ namespace TRE
 
 		GameLoop::Instance().SetDisplayingPrefab(true);
 
+		ECSSystemManager::Instance().AfterReset();
+
 		return m_DisplayedPrefab;
 	}
 
 	void PrefabSystem::ReturnToScene()
 	{
+		// Mimick Game Loop when forcing the scene to be resetted
+		ECSSystemManager::Instance().BeforeReset();
+
 		// Copy registry and components
 		ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
 		// Clear Backup
@@ -156,6 +166,8 @@ namespace TRE
 		CheckAndUpdateInstances();
 		// Auto set back to false
 		GameLoop::Instance().SetDisplayingPrefab(false);
+
+		ECSSystemManager::Instance().AfterReset();
 	}
 
 	void PrefabSystem::CheckAndUpdateInstances()
@@ -173,7 +185,8 @@ namespace TRE
 				Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
 				std::string prefabGUID{ prefabComp.m_PrefabGUID };
 
-				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+				//UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+				UpdateAllInstances(prefabGUID);
 			}
 
 			ResetTempPrefab();
@@ -183,6 +196,34 @@ namespace TRE
 	Entity PrefabSystem::GetDisplayedPrefab()
 	{
 		return m_DisplayedPrefab;
+	}
+
+	bool PrefabSystem::IsValidPrefabResource(std::string prefabGUID)
+	{
+		DeserializePrefabDirectory();
+
+		// Find if it exists in existingPrefabs
+		if (m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
+		{
+			return false;
+		}
+
+		std::string prefabID{ prefabGUID };
+		std::string prefabPath{ m_ExistingPrefabs[prefabGUID] };
+
+		// Try opening filePath
+		std::ifstream file;
+		file.open(prefabPath);
+		if (!file)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not have a valid filepath (" + prefabPath + ")! Removing from m_ExistingPrefabs...");
+			return false;
+		}
+		file.close();
+
+		// Can open file, so it is valid
+		return true;
 	}
 
 	std::string PrefabSystem::SavePrefabEntity(Entity object, bool newPrefab, std::string assetPath)
@@ -235,12 +276,12 @@ namespace TRE
 				TRE_CORE_WARN("[" + funcName + "] object (" + object->GetName() + ") is not an existing prefab instance! Creating a new prefab instead");
 			}
 
-			prefabGUID = Resource::GetGUIDHex(Resource::GenerateGUID());
+			prefabGUID = MemoryManager::Instance().GenerateGUIDStr();
 			filePath = FILESYS_PREFABRSCFOLDER + object->GetName() + FILESYS_PREFABRSCTYPE;
 			object->AddComponent<Prefabing>().m_PrefabGUID = prefabGUID;
 			object->GetComponent<Prefabing>().m_MainPrefabGUID = prefabGUID;
 			// Add as GUID
-			object->GetComponent<Prefabing>().m_Instances.emplace(object->GetGUID());
+			//object->GetComponent<Prefabing>().m_Instances.emplace(object->GetGUID());
 
 			object->GetComponent<Prefabing>().m_IsMainPrefab = true;
 		}
@@ -278,9 +319,9 @@ namespace TRE
 			{
 				m_TempPrefab = prefabPair.second;
 				Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
-				std::string prefabGUID{ prefabComp.m_PrefabGUID };
 
-				UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
+				//UpdateAllInstances(prefabComp.m_Instances, prefabComp.m_PrefabGUID);
+				UpdateAllInstances(prefabComp.m_PrefabGUID);
 			}
 
 			ResetTempPrefab();
@@ -325,16 +366,24 @@ namespace TRE
 			Transform,
 			MeshRenderer,
 			Camera,
+			Rigidbody,
 			SphereCollider,
 			BoxCollider,
-			Rigidbody,
+			CapsuleCollider,
 			FEL,
-			FAKEFEL
+			FAKEFEL,
+			Audio,
+			AudioListener,
+			DirectionalLight,
+			ScriptComponent
 		>();
 	}
 
 	std::string PrefabSystem::SerializePrefabOutputArchive(entt::registry& reg, std::string prefabGUID, std::string filePath, int NoOfEntities)
 	{
+		// Ensure prefab folder
+		std::filesystem::create_directory(FILESYS_PREFABDEFFOLDER);
+
 		// Set up document
 		PrefabOutputArchive arc(filePath, reg, NoOfEntities);
 		entt::snapshot snapshot{ reg };
@@ -346,11 +395,16 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<Audio>(arc)
+			.component<AudioListener>(arc)
+			.component<DirectionalLight>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		arc.Close();
@@ -383,16 +437,14 @@ namespace TRE
 				TRE_CORE_WARN("[" + funcName + "] child (" + child->GetName() + ") is not an existing prefab instance! Creating a new prefab instead");
 			}
 
-			child->AddComponent<Prefabing>().m_PrefabGUID = Resource::GetGUIDHex(Resource::GenerateGUID());
+			child->AddComponent<Prefabing>().m_PrefabGUID = MemoryManager::Instance().GenerateGUIDStr();
 			child->GetComponent<Prefabing>().m_MainPrefabGUID = mainPrefabGUID;
-			// Add as GUID
-			child->GetComponent<Prefabing>().m_Instances.emplace(child->GetGUID());
 		}
 
 		// Recursively Save/Update child Prefabing
-		for (Entity child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(child))
+		for (Entity kid : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(child))
 		{
-			SavePrefabChild(child, newPrefab, mainPrefabGUID);
+			SavePrefabChild(kid, newPrefab, mainPrefabGUID);
 		}
 	}
 
@@ -417,15 +469,12 @@ namespace TRE
 		Entity instance{ ECSManager::Instance().CloneEntity(m_TempPrefab, m_TempPrefab->GetName()) };
 
 		// Increment it's instance by one and add this in
-		m_TempPrefab->GetComponent<Prefabing>().m_Instances.emplace(instance->GetGUID());
 		Prefabing& tempPrefab{ m_TempPrefab->GetComponent<Prefabing>() };
 
 		// Update the Prefab component to make sense
 		Prefabing& instPrefab{ instance->GetComponent<Prefabing>() };
 		instPrefab.m_PrefabGUID = tempPrefab.m_PrefabGUID;				// Assign it's m_PrefabGUID to m_PrefabGUID
-		//instPrefab.m_Instances.clear();									// It is an instance, it does not have any instances
 		instPrefab.m_Overrides.clear();									// It is a newborn, it does not have any overwritten
-		instPrefab.m_Instances = tempPrefab.m_Instances;				// Copy instances
 
 		Entity mainTempPrefab = m_TempPrefab;
 
@@ -439,16 +488,7 @@ namespace TRE
 
 		m_TempPrefab = mainTempPrefab;
 
-		// Reserialize tempPrefab
-		bool updateSuccessful = UpdatePrefabEntity();
-
-		if (!updateSuccessful)
-		{
-			ResetTempPrefab();
-			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] Failed to update PrefabEntity (" + m_TempPrefab->GetName() + ") succesfully");
-			assert(updateSuccessful);
-		}
+		ResetTempPrefab();
 
 		return instance;
 	}
@@ -467,11 +507,16 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<DirectionalLight>(arc)
+			.component<Audio>(arc)
+			.component<AudioListener>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		// Clone each component of the object into the prefab
@@ -514,58 +559,6 @@ namespace TRE
 		}
 
 		return m_TempPrefabs;
-	}
-
-	bool PrefabSystem::UpdatePrefabEntity()
-	{
-		if (!m_TempPrefab)
-		{
-			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] m_TempPrefab is a nullptr!");
-			return false;
-		}
-
-		// Ensure Prefab exist
-		Entity MainPrefab{ m_TempPrefab };
-
-		for (auto prefabPair : m_TempPrefabs)
-		{
-			m_TempPrefab = prefabPair.second;
-			Prefabing& prefabComp{ m_TempPrefab->GetComponent<Prefabing>() };
-			std::string prefabGUID{ prefabComp.m_PrefabGUID };
-
-			UpdateAllInstances(prefabComp.m_Instances, prefabGUID);
-		}
-
-		m_TempPrefab = MainPrefab;
-		std::string prefabGUID{ m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID };
-		if (m_ExistingPrefabs.empty() || m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
-		{
-			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] prefabGUID (" + prefabGUID + ") is invalid!");
-			assert(!m_ExistingPrefabs.empty());
-			assert(m_ExistingPrefabs.find(prefabGUID) != m_ExistingPrefabs.end());
-		}
-
-		std::string filePath{ m_ExistingPrefabs[prefabGUID] };
-
-		entt::registry tmp;
-
-		SetUpRegistry(tmp);
-
-		// Clone Prefab
-		UpdateEntityInRegistry(m_TempPrefab, tmp);
-
-		// GetNoOfEntities
-		int noOfEntities{};
-		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetTotalEntities(noOfEntities, MainPrefab);
-
-		SerializePrefabOutputArchive(tmp, prefabGUID, filePath, noOfEntities);
-
-		// Release m_TempPrefab
-		ResetTempPrefab();
-
-		return true;
 	}
 
 	void PrefabSystem::UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID, entt::entity parentEnt)
@@ -623,15 +616,12 @@ namespace TRE
 		Entity instance{ ECSManager::Instance().CloneEntity(childTemp, childTemp->GetName()) };
 
 		// Increment it's instance by one and add this in
-		childTemp->GetComponent<Prefabing>().m_Instances.emplace(instance->GetGUID());
 		Prefabing& tempPrefab{ childTemp->GetComponent<Prefabing>() };
 
 		// Update the Prefab component to make sense
 		Prefabing& instPrefab{ instance->GetComponent<Prefabing>() };
 		instPrefab.m_PrefabGUID = tempPrefab.m_PrefabGUID;				// Assign it's m_PrefabGUID to m_PrefabGUID
-		//instPrefab.m_Instances.clear();									// It is an instance, it does not have any instances
 		instPrefab.m_Overrides.clear();									// It is a newborn, it does not have any overwritten
-		instPrefab.m_Instances = tempPrefab.m_Instances;				// Copy instances
 
 		// Update parent and child relationship by assigning the correct guid
 		std::vector<std::string>& parentsChildren{ parent->GetComponent<Parenting>().m_Children };
@@ -683,7 +673,7 @@ namespace TRE
 		if (!instance->HasComponent<Prefabing>())
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") does not have Prefabing! Removing from m_TempPrefab m_Instances...");
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") does not have Prefabing! Ignoring...");
 			return false;
 		}
 
@@ -691,7 +681,7 @@ namespace TRE
 		if (instance->GetComponent<Prefabing>().m_PrefabGUID != prefabGUID)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Ignoring...");
 			return false;
 		}
 
@@ -886,6 +876,7 @@ namespace TRE
 		// Seperate maps to different parts for rapidjson
 		std::vector<std::string> m_ExistingPrefabsFirst;
 		std::vector<std::string> m_ExistingPrefabsSecond;
+
 		// std::unordered_map<Prefabing::m_PrefabGUID, filePath>
 		for (std::pair<const std::string, std::string>& prefab : m_ExistingPrefabs)
 		{
@@ -920,16 +911,14 @@ namespace TRE
 		SerializePrefabDirectory();
 	}
 
-	void PrefabSystem::UpdateAllInstances(std::unordered_set<std::string>& instanceGUID, std::string prefabGUID)
+	void PrefabSystem::UpdateAllInstances(std::string prefabGUID)
 	{
 		// Update all instances to match
-		for (const std::string& str : instanceGUID)
+		for (Entity ent : ECSManager::Instance().GetEntities<Prefabing>(true))
 		{
-			std::string instanceID{ str };
-			Entity instance{ ECSManager::Instance().FindEntity(instanceID) };
-			if (instance && UpdateInstance(instance, prefabGUID))
+			if (ent->GetComponent<Prefabing>().m_PrefabGUID == prefabGUID && UpdateInstance(ent, prefabGUID))
 			{
-				instance->GetComponent<Transform>().m_IsDirty = true;
+				ent->GetComponent<Transform>().m_IsDirty = true;
 			}
 		}
 	}
@@ -947,15 +936,23 @@ namespace TRE
 		if (m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID != prefabGUID)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] m_TempPrefab m_PrefabGUID (" + m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")!");
+			TRE_CORE_ERROR("[" + funcName + "] m_TempPrefab (" + m_TempPrefab->GetName() + ") m_PrefabGUID (" + m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")!");
 			assert(m_TempPrefab->GetComponent<Prefabing>().m_PrefabGUID == prefabGUID);
+		}
+
+		// Check if instance belongs to the scene
+		if (!ECSManager::Instance().IsValidEntity(instance))
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") does not belong to the current scene! Ignoring...");
+			return false;
 		}
 
 		// Check if instance even have Prefabing to begin with
 		if (!instance->HasComponent<Prefabing>())
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") does not have Prefabing! Removing from m_TempPrefab m_Instances...");
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") does not have Prefabing! Ignoring...");
 			return false;
 		}
 
@@ -963,7 +960,7 @@ namespace TRE
 		if (instance->GetComponent<Prefabing>().m_PrefabGUID != prefabGUID)
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Removing from m_TempPrefab m_Instances...");
+			TRE_CORE_WARN("[" + funcName + "] instance (" + instance->GetName() + ") m_PrefabGUID (" + instance->GetComponent<Prefabing>().m_PrefabGUID + ") != prefabGUID (" + prefabGUID + ")! Ignoring...");
 			return false;
 		}
 
@@ -1042,7 +1039,6 @@ namespace TRE
 
 		// Revert back to saved Values
 		instance->GetComponent<Prefabing>() = instPrefabing;
-		instance->GetComponent<Prefabing>().m_Instances = m_TempPrefab->GetComponent<Prefabing>().m_Instances;
 
 		for (size_t i{}; i < instPropTable.size(); ++i)
 		{

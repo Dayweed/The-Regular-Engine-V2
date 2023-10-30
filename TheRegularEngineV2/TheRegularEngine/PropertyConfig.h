@@ -3,6 +3,7 @@
 
 #include "glm/glm.hpp"
 #include "Vector3.h"
+#include "fmod/fmod.hpp"
 
 #pragma once
 using string_t = std::string;
@@ -16,6 +17,11 @@ struct resource_list
 {
 	std::uint64_t m_Value;
 	std::string m_Type;
+};
+
+struct audio_file_dropdown
+{
+    std::string m_File;
 };
 
 struct Color
@@ -150,10 +156,11 @@ namespace property
             , glm::vec2
             , glm::vec3
             , glm::vec4
-            , Vector3
             , Color
             , resource_ref
             , resource_list
+            , audio_file_dropdown
+            , FMOD_VECTOR
         >;
     
         //--------------------------------------------------------------------------------------------

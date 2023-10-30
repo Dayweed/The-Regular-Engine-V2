@@ -78,14 +78,8 @@ namespace TRE
 		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
 			elem.second.remove(obj->m_Entity);
 		}
+
 		// Clone each component of the object into the clone
-		/*for (auto&& curr : m_Registry.storage())
-		{
-			if (auto& storage = curr.second; storage.contains(object->m_Entity))
-			{
-				storage.emplace(obj->m_Entity, storage.get(object->m_Entity));
-			}
-		}*/
 		for (auto [id, source_storage] : m_Registry.storage())
 		{
 			auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
@@ -103,6 +97,7 @@ namespace TRE
 				}
 			}
 		}
+
 		// Change Name
 		obj->GetComponent<Properties>().m_Name = name;
 		obj->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
@@ -113,7 +108,7 @@ namespace TRE
 	}
 
 
-	std::vector<Entity> ECSManager::GetAllEntities()
+	std::vector<Entity> ECSManager::GetAllEntities(bool IncludeNonActive)
 	{
 		std::vector<Entity> objects{};
 		objects.reserve(m_EntityList.size());
@@ -121,7 +116,10 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (auto& obj : m_EntityList)
 		{
-			objects.emplace_back(obj.second);
+			if (IncludeNonActive || m_Registry.get<Properties>(obj.second->m_Entity).m_Active)
+			{
+				objects.emplace_back(obj.second);
+			}
 		}
 
 		return objects;
@@ -146,13 +144,16 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<DirectionalLight>(arc)
-
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		arc.Close();
@@ -176,13 +177,16 @@ namespace TRE
 			.component<Transform>(arc)
 			.component<MeshRenderer>(arc)
 			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
-			.component<Rigidbody>(arc)
+			.component<CapsuleCollider>(arc)
 			.component<DirectionalLight>(arc)
-
 			.component<FEL>(arc)
 			.component<FAKEFEL>(arc)
+			.component<AudioListener>(arc)
+			.component<Audio>(arc)
+			.component<ScriptComponent>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -201,6 +205,16 @@ namespace TRE
 	std::string ECSManager::FindEntityID(Entity ent)
 	{
 		return ent->GetComponent<Properties>().m_GUID;
+	}
+
+	Entity ECSManager::FindEntityName(std::string name)
+	{
+		for (auto ent : m_EntityList)
+		{
+			if (ent.first == name) return ent.second;
+		}
+
+		return nullptr;
 	}
 
 	bool ECSManager::IsRemovableComponent(std::string compName)
@@ -228,7 +242,7 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, SphereCollider, BoxCollider, Rigidbody, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL>();
+		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, Rigidbody, SphereCollider, BoxCollider, CapsuleCollider, Audio, AudioListener, DirectionalLight, FEL, FAKEFEL, ScriptComponent>();
 
 		m_Registry.each([&](entt::entity srcEntity)
 			{
@@ -266,6 +280,12 @@ namespace TRE
 	{
 		// Keep adding into it 
 		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
+	}
+
+	bool ECSManager::IsValidEntity(Entity ent)
+	{
+		// Checks if it is in the scene
+		return m_EntityList.find(ent->GetGUID()) != m_EntityList.end();
 	}
 
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
@@ -397,9 +417,9 @@ namespace TRE
 		if (m_RootIdx >= m_Root.size())
 		{
 			std::string funcName{ __FUNCTION__ };
-			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size()) };
-			TRE_CORE_ERROR(error);
-			assert(m_RootIdx < m_Root.size());
+			std::string error{ "[" + funcName + "] InputArchive have m_RootIdx " + std::to_string(m_RootIdx) + " < " + std::to_string(m_Root.size())
+				+ "! This means there is a new component! Assuming it doesn't have it..." };
+			TRE_CORE_WARN(error);
 			return;
 		}
 		m_Current = m_Root[m_RootIdx];
@@ -672,7 +692,7 @@ namespace TRE
 		}
 
 		std::cout << "- Archiving to Output: " << GetEntities<Properties>().size() << "...\n";
-		std::string file = ECSManager::Instance().SaveEntities("../Scenes/Lmao.json");
+		std::string file = ECSManager::Instance().SaveEntities(GETFOLDER(FILESYS_SCENE) + "Lmao.json");
 
 		ECSManager::Instance().DestroyAll();
 
@@ -681,7 +701,7 @@ namespace TRE
 
 		std::cout << std::endl;
 		std::cout << "- Loading from input: " << GetEntities<Properties>().size() << "...\n";
-		ECSManager::Instance().LoadEntities("../Scenes/Lmao.json");
+		ECSManager::Instance().LoadEntities(GETFOLDER(FILESYS_SCENE) + "Lmao.json");
 
 		std::cout << "\nOBJ SIZE: " << ECSManager::Instance().GetAllEntities().size() << "\n";
 		for (Entity& obj : ECSManager::Instance().GetAllEntities())
@@ -939,11 +959,11 @@ namespace TRE
 		std::cout << "- Attempting to create prefab " << prefabEnt->GetName() << " instance\n";
 		Entity prefabEntInstance = prefabSystem->CreatePrefabEntityInstance(prefabEntGUID);
 		std::cout << "-- Succesfully created prefab instance named " << prefabEntInstance->GetName() << "\n";
-		std::cout << "> prefabEnt: " << prefabEnt->GetComponent<Prefabing>().m_Instances.size() << "\n";
-		std::cout << "> prefabEntInstance: " << prefabEntInstance->GetComponent<Prefabing>().m_Instances.size() << "\n";
+		//std::cout << "> prefabEnt: " << prefabEnt->GetComponent<Prefabing>().m_Instances.size() << "\n";
+		//std::cout << "> prefabEntInstance: " << prefabEntInstance->GetComponent<Prefabing>().m_Instances.size() << "\n";
 
-		/*SceneManager::Instance().SaveSceneAs("../Scenes/TESTING.json");
-		SceneManager::Instance().LoadScene("../Scenes/TESTING.json");
+		/*SceneManager::Instance().SaveSceneAs(GETFOLDER(FILESYS_SCENE) + "TESTING.json");
+		SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "TESTING.json");
 
 		for (auto& ent : GetEntities<Prefabing>())
 		{

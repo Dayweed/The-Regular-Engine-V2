@@ -40,7 +40,7 @@ namespace TRE
 
 		// Folder Type, Names
 		std::unordered_map<std::string, std::string> m_FolderNames{
-			{FILESYS_SCENE, "../Scenes/"}
+			{FILESYS_SCENE, "..\\Scenes\\"}
 		};
 
 		// File Type, Names

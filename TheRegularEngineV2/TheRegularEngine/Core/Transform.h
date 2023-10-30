@@ -26,7 +26,7 @@ namespace TRE
 		void CalculateWorldMatrix();
 		const glm::mat4 CalculateLocalMatrix();
 		void DecomposeWorldMatrix(const glm::mat4 newWorld);
-		void UpdateLocalMatrix(Entity& parent);
+		void UpdateLocalData(Transform& parent);
 	public:
 		property_vtable()           // Allows the base class to get these properties  
 
@@ -49,15 +49,24 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, Transform& t) // Deserialize
 		{
-			std::vector<float> v_pos{ j.at("m_Position").get<std::vector<float>>() };
-			float a_pos[3]{ v_pos[0], v_pos[1], v_pos[2] };
-			t.m_Position = glm::make_vec3(a_pos);
-			std::vector<float> v_rot{ j.at("m_Rotation").get<std::vector<float>>() };
-			float a_rot[3]{ v_rot[0], v_rot[1], v_rot[2] };
-			t.m_Rotation = glm::make_vec3(a_rot);
-			std::vector<float> v_sca{ j.at("m_Scale").get<std::vector<float>>() };
-			float a_sca[3]{ v_sca[0], v_sca[1], v_sca[2] };
-			t.m_Scale = glm::make_vec3(a_sca);
+			if (j.contains("m_Position"))
+			{
+				std::vector<float> v_pos{ j.at("m_Position").get<std::vector<float>>() };
+				float a_pos[3]{ v_pos[0], v_pos[1], v_pos[2] };
+				t.m_Position = glm::make_vec3(a_pos);
+			}
+			if (j.contains("m_Rotation"))
+			{
+				std::vector<float> v_rot{ j.at("m_Rotation").get<std::vector<float>>() };
+				float a_rot[3]{ v_rot[0], v_rot[1], v_rot[2] };
+				t.m_Rotation = glm::make_vec3(a_rot);
+			}
+			if (j.contains("m_Scale"))
+			{
+				std::vector<float> v_sca{ j.at("m_Scale").get<std::vector<float>>() };
+				float a_sca[3]{ v_sca[0], v_sca[1], v_sca[2] };
+				t.m_Scale = glm::make_vec3(a_sca);
+			}
 
 			t.m_IsDirty = true;
 		}

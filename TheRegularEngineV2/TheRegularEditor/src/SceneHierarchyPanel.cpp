@@ -70,7 +70,7 @@ namespace TRE
 			//}
 
 			// Choose between getting all entities or just the prefab if it is displaying prefab
-			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities() };
+			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
 			if (GameLoop::Instance().GetDisplayingPrefab())
 			{
 				entities.clear();
@@ -79,8 +79,8 @@ namespace TRE
 
 			for (auto& currentEntity : entities)
 			{
-				ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
-				const std::string& entityName = currentEntity->GetName();
+				//ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
+				//const std::string& entityName = currentEntity->GetName();
 
 				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
 				{
@@ -103,7 +103,7 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+		const size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
 
 		//parent has children
 		if (vectorSize)
@@ -275,7 +275,7 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		const int vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+		const size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
 
 
 		if (vectorSize)

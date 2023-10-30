@@ -92,8 +92,11 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, FEL& f) // Deserialize
 		{
+			if (j.contains("vector"))
 				f.vec_i = j.at("vector").get<std::vector<float>>();
+			if (j.contains("array"))
 				j.at("array").get_to(f.arr_i);
+			if (j.contains("nested"))
 				j.at("nested").get_to(f.nestedstruct);
 		}
 	};
@@ -105,21 +108,58 @@ namespace TRE
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(FAKEFEL, fakeValue, fakeInt)
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const FAKEFEL& f) // Serialize
+		{
+			j = nlohmann::json{
+				{ "fakeValue", f.fakeValue },
+				{ "fakeInt", f.fakeInt },
+			};
+		}
+		friend void from_json(const nlohmann::json& j, FAKEFEL& f) // Deserialize
+		{
+			if (j.contains("fakeValue"))
+				f.fakeValue = j.at("fakeValue");
+			if (j.contains("nested"))
+				f.fakeInt = j.at("fakeInt");
+		}
 	};
 
 	struct Properties : property::base
 	{
 		std::string m_GUID{};
-		bool m_Active{ true };		// To check if it is active
+		std::string m_Tag{};
 		std::string m_Name{};		// To get the name
+		bool m_Active{ true };		// To check if it is active
+		bool m_IsDirty{ false };	// To check if active got changed (Scripting ONLY)
 
 		Properties() = default;
 		~Properties() = default;
 
 		property_vtable()           // Allows the base class to get these properties  
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Active, m_GUID, m_Name)
+		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Properties, m_Tag, m_Active, m_GUID, m_Name)
+		// MUST Use BOTH of this if have variables that are struct/class to serialize
+		friend void to_json(nlohmann::json& j, const Properties& t) // Serialize
+		{
+			j = nlohmann::json{
+				{ "m_Tag", t.m_Tag },
+				{ "m_Active", t.m_Active },
+				{ "m_GUID", t.m_GUID },
+				{ "m_Name", t.m_Name }
+			};
+		}
+		friend void from_json(const nlohmann::json& j, Properties& t) // Deserialize
+		{
+			if (j.contains("m_Tag"))
+				t.m_Tag = j.at("m_Tag");
+			if (j.contains("m_Active"))
+				t.m_Active = j.at("m_Active");
+			if (j.contains("m_GUID"))
+				t.m_GUID = j.at("m_GUID");
+			if (j.contains("m_Name"))
+				t.m_Name = j.at("m_Name");
+		}
 	};
 
 	class Ent : public std::enable_shared_from_this<Ent>
@@ -460,7 +500,7 @@ namespace TRE
 		- Object3
 		*//*__________________________________________________________________________*/
 		template <typename Comp, typename... Others>
-		std::vector<Entity> GetEntities();
+		std::vector<Entity> GetEntities(bool IncludeNonActive = false);
 
 		/* !
 		@function		GetAllEntities
@@ -468,7 +508,7 @@ namespace TRE
 
 		@brief			Returns a vector of all Entities
 		*//*__________________________________________________________________________*/
-		std::vector<Entity> GetAllEntities();
+		std::vector<Entity> GetAllEntities(bool IncludeNonActive = false);
 
 		/* !
 		@function		SaveEntities
@@ -482,7 +522,7 @@ namespace TRE
 		std::cout << ECSManager::Instance().SaveEntities("TestFile.json") << "\n";
 
 		Output:
-		../Scenes/TestFile.json
+		..\\Scenes\\TestFile.json
 		*//*__________________________________________________________________________*/
 		std::string SaveEntities(std::string filePath);
 
@@ -558,6 +598,9 @@ namespace TRE
 		*//*__________________________________________________________________________*/
 		std::string FindEntityID(Entity ent);
 
+		// CAUTION THIS WILL ONLY RETURN THE FIRST ENTITY IT CAN FIND
+		Entity FindEntityName(std::string name);
+
 		template <typename T>
 		void RegisterComponent(std::string name, bool hidden = false, bool removable = true);
 
@@ -577,6 +620,8 @@ namespace TRE
 
 		template<class... Components>
 		void Copy(entt::registry& src, entt::entity srcEntity, entt::registry& dst, entt::entity dstEntity);
+
+		bool IsValidEntity(Entity ent);
 
 		// TODELETE
 		void TESTRUN();
@@ -686,7 +731,7 @@ namespace TRE
 
 
 	template <typename Comp, typename... Others>
-	std::vector<Entity> ECSManager::GetEntities()
+	std::vector<Entity> ECSManager::GetEntities(bool IncludeNonActive)
 	{
 		std::vector<Entity> objects{};
 		entt::exclude_t<Undeployed> u{};
@@ -697,7 +742,7 @@ namespace TRE
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
 		{
-			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end())
+			if (m_EnttIDList.find(static_cast<ENTTID>(obj)) != m_EnttIDList.end() && (IncludeNonActive || m_Registry.get<Properties>(obj).m_Active))
 			{
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}
@@ -745,6 +790,15 @@ namespace TRE
 	template <typename T>
 	bool Ent::HasComponent()
 	{
+		// Ensure cannot get a component from a freed object and entity
+		if (this == nullptr || &m_Entity == nullptr)
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] Object is no longer valid (this or entity is nullptr)");
+			assert(this != nullptr);
+			assert(&m_Entity != nullptr);
+		}
+
 		if (!ComponentManager::Instance().HasComponent<T>() && !ComponentManager::Instance().HasHiddenComponent<T>())
 		{
 			std::string funcName{ __FUNCTION__ };
@@ -886,6 +940,8 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
+	//property_var(m_GUID).Name("GUID"),
+	property_var(m_Tag).Name("Tag"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
 

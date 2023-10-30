@@ -40,7 +40,6 @@ namespace TRE
 		void* m_Mapped{ nullptr };
 		VkBuffer m_Buffer{ VK_NULL_HANDLE };
 		VkDeviceMemory m_Memory{ VK_NULL_HANDLE };
-
 		VkDeviceSize m_BufferSize{ 0 };
 		uint32_t m_InstanceCount{ 0 };
 		VkDeviceSize m_InstanceSize{ 0 };

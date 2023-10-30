@@ -7,6 +7,7 @@
 
 namespace TRE
 {
+	/*
 	static VkShaderStageFlagBits ShaderTypeFromString(const std::string_view type)
 	{
 		if (type == "vert")	return VK_SHADER_STAGE_VERTEX_BIT;
@@ -15,6 +16,7 @@ namespace TRE
 
 		return VK_SHADER_STAGE_ALL;
 	}
+	*/
 
 	static uint32_t GetStrideFromVulkanFormat(VkFormat format)
 	{

@@ -9,6 +9,7 @@
 #include "Imgui/imgui_internal.h"
 #include "Imgui/imgui.h"
 #include "EditorSystem.h"
+#include "Graphics/EditorCamera.h"
 
 namespace TRE
 {
@@ -92,15 +93,44 @@ namespace TRE
 			//Commented out till I find a use for it
 			if (ImGui::BeginMenu("Options"))
 			{
-				if (ImGui::BeginMenu("Grid and Snap"))
+				if (ImGui::BeginMenu("Gizmo"))
 				{
-					ImGui::MenuItem("Increament Snapping");
-					ImGui::InputFloat("Position", &m_PosIncreament);
-					ImGui::InputFloat("Rotation", &m_RotIncreament);
-					ImGui::InputFloat("Scale", &m_ScaleIncreament);
-					EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncreament, m_RotIncreament, m_ScaleIncreament });
+					if (ImGui::Checkbox("Local", &m_LocalGizmo))
+					{
+						EventHandler::getEventHandlerInstance().Publish(LocalGloalGizmoEvent{ m_LocalGizmo });
+					}
+					if (ImGui::BeginMenu("Grid and Snap"))
+					{
+						ImGui::MenuItem("Increment Snapping");
+						ImGui::InputFloat("Position", &m_PosIncrement);
+						ImGui::InputFloat("Rotation", &m_RotIncrement);
+						ImGui::InputFloat("Scale", &m_ScaleIncrement);
+						EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
+						ImGui::EndMenu();
+					}
+
 					ImGui::EndMenu();
 				}
+				
+				if (ImGui::Button("Assign Editor Camera Values"))
+				{
+					EditorCamera::Instance().AssignToMainCamera();
+				}
+
+				if (ImGui::Checkbox("Show All Colliders", &m_ShowAllColliders))
+				{
+					for (Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+						entity->GetComponent<SphereCollider>().m_IsVisible = m_ShowAllColliders;
+
+					for (Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+						entity->GetComponent<BoxCollider>().m_IsVisible = m_ShowAllColliders;
+
+					for (Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+						entity->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
+
+					ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetDrawDebug(m_ShowAllColliders);
+				}
+
 				ImGui::EndMenu();
 			}
 
@@ -159,6 +189,8 @@ namespace TRE
 
 	void MenuBarPanel::NewScene()
 	{
+		EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
 		{
@@ -169,6 +201,8 @@ namespace TRE
 
 	void MenuBarPanel::OpenScene()
 	{
+		EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
 		{
@@ -177,7 +211,12 @@ namespace TRE
 			const std::string path = FileExplorer::OpenFileExplorer("Scene(*.json)\0*.json\0");
 			if (!path.empty())
 			{
+				ECSSystemManager::Instance().BeforeReset();
+				ECSManager::Instance().DestroyAll();
 				SceneManager::Instance().LoadScene(path);
+				ECSSystemManager::Instance().AfterReset();
+
+				EditorCamera::Instance().Deserialize();
 			}
 		}
 	}

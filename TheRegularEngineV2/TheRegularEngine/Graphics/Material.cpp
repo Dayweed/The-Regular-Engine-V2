@@ -3,6 +3,7 @@
 #include "Core/Engine.h"
 #include "Core/Logger.h"
 #include "Resource/ResourceManager.h"
+#include "ShaderTypes/PBRShader.h"
 
 namespace TRE
 {
@@ -16,6 +17,8 @@ namespace TRE
 		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			m_EditorDescriptorSets.resize(ImageCont);
 
 		AllocateTextures();
 	}
@@ -25,6 +28,8 @@ namespace TRE
 		m_Type = ResourceType::Material;
 		auto ImageCont = Engine::GetInstance().GetWindow()->GetSwapChain()->GetImageCount();
 		m_DescriptorSets.resize(ImageCont);
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			m_EditorDescriptorSets.resize(ImageCont);
 
 		m_Shader = ResourceManager::Instance().GetResource<Shader>(handle);
 
@@ -48,10 +53,23 @@ namespace TRE
 		{
 			Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_DescriptorSets[x]);
 		}
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			for (int x = 0; x < m_EditorDescriptorSets.size(); x++)
+			{
+				Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->AllocateDescriptorSet(m_Shader->GetAllDescriptorLayout()[0], m_EditorDescriptorSets[x]);
+			}
+		}
+
+		m_IsValid = true;
 	}
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
+		if(m_IsValid == false)
+			Invalidate();
+
 		m_WriteDescriptors.clear();
 
 		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
@@ -65,6 +83,27 @@ namespace TRE
 				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
 			}
 			Write.dstSet = m_DescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
+	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	{
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+			{
+				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+			}
+			Write.dstSet = m_EditorDescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
 		}
 
@@ -95,6 +134,9 @@ namespace TRE
 
 	void Material::Serialize()
 	{
+		if (m_Handle == PBR::GetDefaultMaterial())
+			return;
+
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = GetHandleHex() + ".material";
 		const std::string resourcePath = resourceFolderPath + resource;
@@ -210,6 +252,7 @@ namespace TRE
 
 	void MaterialDescriptorFile::Rename(const std::string& newName)
 	{
+		(void)newName;
 		SetAssetPath("Material_Instance.material");
 		GenerateDescriptorFile();
 	}

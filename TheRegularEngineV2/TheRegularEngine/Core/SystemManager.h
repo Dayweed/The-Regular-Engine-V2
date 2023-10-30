@@ -60,6 +60,14 @@ namespace TRE
 			//Can add assert here to tell user they getting a non registered system
 			return nullptr;
 		}
+		
+		void InitSystem()
+		{
+			for (auto& system : m_Systems)
+			{
+				system.second->Init();
+			}
+		}
 
 		void UpdateSystem()
 		{
@@ -155,6 +163,16 @@ namespace TRE
 			return nullptr;
 		}
 
+		void InitSystem()
+		{
+			for (auto& system : m_Systems)
+			{
+				Profiler::Instance().StartTimer(m_SystemsName[system.first]);
+				system.second->Init();
+				Profiler::Instance().EndTimer(m_SystemsName[system.first]);
+			}
+		}
+
 		void UpdateSystem()
 		{
 			for (auto& system : m_Systems)
@@ -189,11 +207,11 @@ namespace TRE
 			}
 		}
 
-		void OnReset()
+		void AfterReset()
 		{
 			for (auto& system : m_Systems)
 			{
-				system.second->OnReset();
+				system.second->AfterReset();
 			}
 		}
 

@@ -4,10 +4,24 @@
 #include "cpp/imgui_stdlib.h"
 #include "cpp/imgui_stdlib.cpp"
 #include "TREIncludes.h"
+#include "Scripting/ScriptEngine.h"
 #include "EditorAssetManager.h"
 
 namespace TRE
 {
+#pragma region HasIsDirty
+	// this magic is brought to you by https://stackoverflow.com/a/16000226
+	// should this struct be somewhere else? hmm......
+
+	// class/struct does NOT have member named "m_IsDirty"
+	template <typename T, typename = int>
+	struct HasIsDirty : std::false_type { };
+
+	// class/struct has member named "m_IsDirty"
+	template <typename T>
+	struct HasIsDirty <T, decltype((void)T::m_IsDirty, 0)> : std::true_type { };
+#pragma endregion
+
 	InspectorPanel::InspectorPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -48,7 +62,7 @@ namespace TRE
 		}
 
 		//create entity
-		auto entity = m_SelectionManager->GetSelectedEntity();
+		auto& entity = m_SelectionManager->GetSelectedEntity();
 
 		//object name
 		if (entity != nullptr)
@@ -156,7 +170,7 @@ namespace TRE
 
 				if (ECSManager::Instance().IsRemovableComponent(List.first))
 				{
-					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) || ImGui::IsItemClicked())
+					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked())
 					{
 						// Update Prefabing if have
 						if (isPrefabInstance)
@@ -176,7 +190,7 @@ namespace TRE
 					bool UpdatedData = false;
 
 					std::string NameField = "##" + entity->GetGUID() + "/" + Name;
-					std::string NameStr = Name.substr(Name.find_last_of("/") + 1);
+					std::string NameStr = Name.substr(Name.find_last_of('/') + 1);
 
 					bool isEdited = false;
 					if (isPrefabInstance)
@@ -199,7 +213,7 @@ namespace TRE
 					}
 					if (isEdited)
 					{
-						ImGui::TextColored({ 0.5, 0.5, 1, 1 }, NameStr.c_str());
+						ImGui::TextColored({ 0, 1, 1, 1 }, NameStr.c_str());
 					}
 					else
 					{
@@ -213,11 +227,11 @@ namespace TRE
 
 							if constexpr (std::is_same_v<T, int>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::DragInt(NameField.c_str(), &Value);
 							}
 							else if constexpr (std::is_same_v<T, float>)
 							{
-								UpdatedData = UpdatedData ? true : ImGui::InputFloat(NameField.c_str(), &Value);
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat(NameField.c_str(), &Value);
 								//std::cout << "name: " << NameStr << " value: " << Value << "\n";
 							}
 							else if constexpr (std::is_same_v<T, bool>)
@@ -234,7 +248,7 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat2(NameField.c_str(), pos);
 								Value = { pos[0], pos[1] };
 							}
-							else if constexpr (std::is_same_v<T, glm::vec3>)
+							else if constexpr (std::is_same_v<T, glm::vec3> || std::is_same_v<T, FMOD_VECTOR>)
 							{
 								float pos[3]{ Value.x, Value.y, Value.z };
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
@@ -249,14 +263,8 @@ namespace TRE
 							else if constexpr (std::is_same_v <T, Color>)
 							{
 								float color[4]{ Value.m_Value.r, Value.m_Value.g, Value.m_Value.b, Value.m_Value.a };
-								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4("Color", color);
+								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4(NameField.c_str(), color);
 								Value.m_Value = { color[0], color[1], color[2], color[3] };
-							}
-							else if constexpr (std::is_same_v<T, Vector3>) // I guess this is fine too!
-							{
-								float pos[3]{ Value.x, Value.y, Value.z };
-								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
-								Value = { pos[0], pos[1], pos[2] };
 							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
@@ -337,24 +345,38 @@ namespace TRE
 									ImGui::EndCombo();
 								}
 							}
+							else if constexpr (std::is_same_v<T, audio_file_dropdown>)
+							{
+								; // UpdatedData and stuff for audio_file_dropdown here
+							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);
 
-					// Do additional stuff if values are change for cetain components
+					// Do additional stuff if values are change for certain components
 					if (UpdatedData)
 					{
+						// if only there was some way to get types from strings... :(
 						std::string compName{ List.first };
-						if (compName == ComponentManager::Instance().GetComponentName<Transform>())
+
+						// capturing compName by reference
+						auto SetIsDirty = [&compName]<typename Comp>(const Entity& e)
 						{
-							// Set flag to dirty
-							entity->GetComponent<Transform>().m_IsDirty = true;
-						}
-						//if (compName == ComponentManager::Instance().GetComponentName<MeshRenderer>())
-						//{
-						//	// Set flag to dirty
-						//	entity->GetComponent<MeshRenderer>().m_IsDirty = true;
-						//}
+							if (compName == ComponentManager::Instance().GetComponentName<Comp>())
+								if (HasIsDirty<Comp>::value)
+									e->GetComponent<Comp>().m_IsDirty = true;
+						};
+
+						// because I can't do SetIsDirty<Component>(entity) :(
+						SetIsDirty.operator() < Transform > (entity);
+						SetIsDirty.operator() < Rigidbody > (entity);
+						SetIsDirty.operator() < SphereCollider > (entity);
+						SetIsDirty.operator() < BoxCollider > (entity);
+						SetIsDirty.operator() < CapsuleCollider > (entity);
+						SetIsDirty.operator() < ScriptComponent > (entity);
+						SetIsDirty.operator() < Camera > (entity);
+						// add more of your components here! :)
+						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
 					}
 
 					// Update Prefabing Instance data if have
@@ -378,7 +400,7 @@ namespace TRE
 			}
 
 			// Update values into the entity itself
-			auto components = m_SelectionManager->GetSelectedEntityComponents();
+			auto& components = m_SelectionManager->GetSelectedEntityComponents();
 
 			for (size_t i{}; i < properties.size(); ++i)
 			{
@@ -399,10 +421,14 @@ namespace TRE
 
 			if (ImGui::BeginPopup("AddComponent"))
 			{
-				for (std::string& compName : ECSManager::Instance().GetAllNonAddedComponents(entity))
+				std::vector<std::string> nonAddedComponents{ ECSManager::Instance().GetAllNonAddedComponents(entity) };
+				std::ranges::sort(nonAddedComponents); // std::sort(nonAddedComponents.begin(), nonAddedComponents.end());
+				for (std::string& compName : nonAddedComponents)
 				{
 					if (ImGui::Selectable(compName.c_str()))
 					{
+						ECSManager::Instance().AddCompFromName(entity, compName);
+
 						// Update Prefabing if have
 						if (isPrefabInstance)
 						{
@@ -421,8 +447,11 @@ namespace TRE
 							// Force Add AudioListener
 							ECSManager::Instance().AddCompFromName(entity, ComponentManager::Instance().GetComponentName<AudioListener>());
 						}
+						else if (compName == ComponentManager::Instance().GetComponentName<ScriptComponent>())
+						{
+							entity->GetComponent<ScriptComponent>().m_GUID = entity->GetGUID();;
+						}
 
-						ECSManager::Instance().AddCompFromName(entity, compName);
 						m_SelectionManager->SelectEntity(entity);
 					}
 				}

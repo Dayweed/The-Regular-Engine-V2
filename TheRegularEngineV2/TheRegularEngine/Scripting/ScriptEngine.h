@@ -7,138 +7,232 @@
 // list of engine functions to bind to the scripting engine
 //-----------------------------------------------------------------------------
 
-#include "EventSystem/Events/InputEvent.h"
-
-
+#include "Core/ECS.h"
 
 namespace TRE
 {
-	class ScriptInputHandler
+	using CSEntityID = unsigned long long;        // C# EntityID
+
+	enum class ScriptFieldTypes
 	{
-	public:
-		ScriptInputHandler();
-		~ScriptInputHandler();
+		None = 0,
+		Float, Double,
+		Boolean, Char, Byte, Short, Int, Long,
+		UnsignedChar, UnsignedShort, UnsignedInt, UnsignedLong,
+		Vector2, Vector3, Vector4,
+		Entity, String
+	};
 
-		void Update();
+	struct ScriptField
+	{
+		ScriptFieldTypes m_Type;
+		std::string m_Name;
 
-		void GetKeyPressed(const InputEvent& event);
+		MonoClassField* m_MonoField;
+	};
 
-		int GetKey() { return _key; }
-		int GetState() { return _state; }
+	struct ScriptFieldInstance
+	{
+		ScriptField m_Field;
+
+		ScriptFieldInstance()
+		{
+			memset(&m_Field, 0, sizeof(ScriptField));
+		}
+
+		template<typename T>
+		T GetValue()
+		{
+			static_assert(sizeof(T) <= 16, "Type too large!");
+			return *(T*)m_buffer;
+		}
+
+		template<typename T>
+		void SetValue(T value)
+		{
+			static_assert(sizeof(T) <= 16, "Type too large!");
+			memcpy(m_buffer, &value, sizeof(T));
+
+		}
 
 	private:
 
-		int _key{}, _state{};
+		uint8_t m_buffer[16];
+
+		friend class ScriptInstance;
 		friend class ScriptEngine;
+
+	};
+
+	using ScriptFieldMap = std::unordered_map<std::string, ScriptFieldInstance>;// Store the fields of the class
+
+	class ScriptClass
+	{
+	public:
+		ScriptClass() = default;
+		ScriptClass(const std::string& classNamespace,const std::string& className);
+
+		MonoObject* Instantiate();
+		MonoMethod* GetMethod(const std::string& name, int paramCount);
+		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params);
+		MonoClass* GetMonoClass();
+
+		std::map<std::string, ScriptField>& GetFields() { return m_Fields; }
+
+
+	private:
+		std::string m_ClassNamespace;
+		std::string m_ClassName;
+		MonoClass* m_MonoClass = nullptr;
+
+		//map of the fields in the class
+		std::map<std::string, ScriptField> m_Fields;
+
+		friend class ScriptEngine;
+
+	};
+
+	class ScriptInstance
+	{
+	public:
+
+		ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity);
+
+		void OnEnableInvoke();
+		void OnDisableInvoke();
+		void OnDestroyInvoke();
+		void OnCreateInvoke();
+		void OnStartInvoke();
+		void OnUpdateInvoke();
+		void OnLateUpdateInvoke();
+		void OnTriggerStayInvoke(Entity other);
+		void OnCollisionStayInvoke(Entity other);
+
+		std::shared_ptr<ScriptClass> GetScriptClass() { return m_ScriptClass; }
+
+		MonoObject* GetScriptObject() { return m_Instance; }
+
+		template<typename T>
+		T GetFieldValue(const std::string& name)
+		{
+			static_assert(sizeof(T) <= 16, "Type too large!");
+
+			bool success = GetInternalFieldValue(name, s_fieldBuffer);
+			if(!success)
+				return T();
+			return *(T*)s_fieldBuffer;
+		}
+
+		template<typename T>
+		void SetFieldValue(const std::string& name, T value)
+		{
+			static_assert(sizeof(T) <= 16, "Type too large!");
+
+			SetInternalFieldValue(name, &value);
+		}
+
+	private:
+
+		bool GetInternalFieldValue(const std::string& name, void* buffer);
+		bool SetInternalFieldValue(const std::string& name, const void* buffer);
+
+		// This is the class that this instance is based on
+		std::shared_ptr<ScriptClass> m_ScriptClass;
+		// Store the instance of the class that is created by ScriptClass
+		MonoObject* m_Instance = nullptr;
+		MonoMethod* m_Constructor = nullptr;
+		MonoMethod* m_EnableMethod = nullptr;
+		MonoMethod* m_DisableMethod = nullptr;
+		MonoMethod* m_DestroyMethod = nullptr;
+		MonoMethod* m_CreateMethod = nullptr;
+		MonoMethod* m_StartMethod = nullptr;
+		MonoMethod* m_UpdateMethod = nullptr;
+		MonoMethod* m_LateUpdateMethod = nullptr;
+		MonoMethod* m_TriggerStayMethod = nullptr;
+		MonoMethod* m_CollisionStayMethod = nullptr;
+
+		inline static char s_fieldBuffer[16];
+
+		friend class ScriptEngine;
+		friend struct ScriptFieldInstance;
+
+	};
+
+	struct ScriptEngineData
+	{
+		MonoDomain* RootDomain = nullptr;
+		MonoDomain* AppDomain = nullptr;
+
+		MonoAssembly* MonoAssembly = nullptr;
+		MonoImage* AssemblyImage = nullptr;
+
+		MonoObject* DemoObject = nullptr;
+
+		ScriptClass MainClass;
+
+#ifdef DEBUG
+		bool EnableDebugging = true;
+#else
+		bool EnableDebugging = false;
+#endif
+
+		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptClasses;
+		std::unordered_map<std::string, std::shared_ptr<ScriptInstance>> ScriptInstances;
+		std::unordered_map<std::string, ScriptFieldMap> EntityFieldMap;
+
+		std::string MonoAssemblyPath;
+
 	};
 
 	class ScriptEngine 
 	{
 	public:
-		ScriptEngine();
-		~ScriptEngine();
+		static ScriptEngineData* s_ScriptEngineData;
 
-		void InitScriptingEngine();
+		static void Init();
+		static void Shutdown();
 
-		static std::string TestGUID;
-		static bool CreatedScriptObject;
-		static void InitMono();
-		static void ShutdownMono();
-		static void BindFunctions();
-		static void UpdateScriptingEngine();
-		static void TestScriptingEngine();
-		static void TestAddComponent();
-		static void TestSpawnObject();
+		static bool LoadAssembly(const std::string& assemblyPath);
+		static void LoadClassesFromAssembly();
 
-		static void SetTestGUID(std::string guid) { TestGUID = guid; }
+		static void ReloadAssembly();
 
-#pragma region MonoFunctionBindings
+		static void InitScriptingMain();
+		static void UpdateScriptingMain();
 
-		// ECS
-		static MonoString* BindCreateEntity(MonoString* name);
-		static void BindAddComponent(MonoString* id, int componentType);
-		static void BindRemoveComponent(MonoString* id, int componentType);
-		static void BindDestroyEntity(MonoString* id);
+		static bool EntityClassExists(const std::string& className);
+		static void OnEnableEntity(Entity e);
+		static void OnDisableEntity(Entity e);
+		static void OnDestroyEntity(Entity e);
+		static void OnCreateEntity(Entity e);
+		static void OnStartEntity(Entity e);
+		static void OnUpdateEntity(Entity e	);
+		static void OnLateUpdateEntity(Entity e	);
 
-		// Test
-		static void BindTestFunction();
-		static MonoString* BindGetTestGUID();
+		// Collision
+		static void OnTriggerStay(Entity e, Entity other);
+		static void OnCollisionStay(Entity e, Entity other);
 
-		// Transform
+		static void CreateScriptInstance(const std::string& className,const std::string& entityGUID);
 
-		static void BindSetPosition(MonoString* id, glm::vec3 newPos);
-		static void BindSetRotation(MonoString* id, glm::vec3 newRot);
+		static void PrintAllContainersHere();
 
-		static void BindGetPosition(MonoString* id, glm::vec3* result);
-		static void BindGetRotation(MonoString* id, glm::vec3* result);
+		static MonoString* CreateMonoString(const std::string& guid);
 
+		//Getter functions to obtain data from scriptEngineData
 
-		// Prefab
-
-		// Parenting
-
-		// Physics
-		// Colliders
-		static void BindResizeSphereCollider(MonoString* id, float s);
-		static void BindResizeBoxCollider(MonoString* id, glm::vec3 s);
-		static void BindAddForce(MonoString* id, glm::vec3 force);
-
-		// Camera
-		// Setters
-		static void BindCamSetViewportSize(MonoString* id, glm::vec2 newSize);
-		static void BindCamSetFocalPoint(MonoString* id, glm::vec3 focalpoint);
-		static void BindCamSetFocalLength(MonoString* id, float focalLength);
-		static void BindCamSetFOV(MonoString* id, float fov);
-		static void BindCamSetNear(MonoString* id, float n);
-		static void BindCamSetFar(MonoString* id, float f);
-		static void BindCamSetLeft(MonoString* id, float left);
-		static void BindCamSetRight(MonoString* id, float right);
-		static void BindCamSetTop(MonoString* id, float top);
-		static void BindCamSetBottom(MonoString* id, float bottom);
-		static void BindCamSetAspectRatio(MonoString* id, float aspectRatio);
-		static void BindCamSetIsPerspective(MonoString* id, bool isPerspective);
-		static void BindCamSetIsMainCamera(MonoString* id, bool isMainCamera);
-
-		// Getters
-		static void BindCamGetViewMatrix(MonoString* id, glm::mat4* result);
-		static void BindCamGetProjectionMatrix(MonoString* id, glm::mat4* result);
-		static void BindCamGetInverseViewMatrix(MonoString* id, glm::mat4* result);
-		static void BindCamGetInverseProjectionMatrix(MonoString* id, glm::mat4* result);
-		static void BindCamGetInverseViewProjectionMatrix(MonoString* id, glm::mat4* result);
-		static void BindCamGetViewportSize(MonoString* id, glm::vec2* result);
-		static void BindCamGetFOV(MonoString* id, float* result);
-		static void BindCamGetNear(MonoString* id, float* result);
-		static void BindCamGetFar(MonoString* id, float* result);
-		static void BindCamGetLeft(MonoString* id, float* result);
-		static void BindCamGetRight(MonoString* id, float* result);
-		static void BindCamGetTop(MonoString* id, float* result);
-		static void BindCamGetBottom(MonoString* id, float* result);
-		static void BindCamGetAspectRatio(MonoString* id, float* result);
-		static void BindCamIsPerspective(MonoString* id, bool* result);
-		static void BindCamIsMainCamera(MonoString* id, bool* result);
-
-		// Audio
-
-		// Mesh Renderer
-
-		// Input Binding
-		static bool BindGetKeyPressed(int key);
-		static bool BindGetKeyTriggered(int key);
-
-		// Logging
-		static void SendMessageToConsole(MonoString* message);
-		static void SendWarningToConsole(MonoString* message);
-		static void SendErrorToConsole(MonoString* message);
-		static void SendCriticalToConsole(MonoString* message);
-
-#pragma endregion
+		static MonoObject* GetManagedInstance(std::string GUID);
 
 	private:
-		static MonoDomain* s_RootDomain;
-		static MonoDomain* s_AppDomain;
-		static MonoAssembly* s_MonoAssembly;
-		static ScriptInputHandler* m_ScriptInputHandler;
+		static void InitMono();
+		static void ShutdownMono();
 
+		static MonoObject* InstantiateClass(MonoClass* monoClass);
+
+		friend class ScriptBind;
+		friend class ScriptClass;
+		friend class ScriptComponent;
+		
 	};
 
 }

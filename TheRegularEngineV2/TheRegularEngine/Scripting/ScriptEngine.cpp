@@ -1,102 +1,177 @@
 #include "pch.h"
 #include "ScriptEngine.h"
-#include "EventSystem/EventHandler/EventHandler.h"
 
-#include "Core/ECS.h"
-#include "Demo/Demo.h"
-#include "Core/Transform.h"
-#include "Core/Logger.h"
-
+#include "mono/metadata/object.h"
+#include "mono/metadata/tabledefs.h"
+#include "mono/metadata/mono-debug.h"
+#include "mono/metadata/threads.h"
 
 //Everything should be remove. This is just to test the calling of the runtime works.
 #include <fstream>
 
-#include "Audio/AudioSystem.h"
-#include "Graphics/Camera.h"
-#include "Graphics/MeshRenderer.h"
+#include "ScriptBind.h"
+#include "ScriptComponent.h"
+#include "Core/Logger.h"
 
 namespace TRE
 {
 
 #pragma region ScriptEngine
-    MonoDomain* ScriptEngine::s_RootDomain = nullptr;
-    MonoDomain* ScriptEngine::s_AppDomain = nullptr;
-    MonoAssembly* ScriptEngine::s_MonoAssembly = nullptr;
-    ScriptInputHandler* ScriptEngine::m_ScriptInputHandler = nullptr;
-    std::string ScriptEngine::TestGUID = "";
-    bool ScriptEngine::CreatedScriptObject = false;
 
-    char* ReadBytes(const std::string& filepath, uint32_t* outSize)
-    {
-        std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
+	ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
 
-        if (!stream)
-        {
-            // Failed to open the file
-            return nullptr;
-        }
+    static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
+	{
+		{ "System.Single", ScriptFieldTypes::Float },
+		{ "System.Double", ScriptFieldTypes::Double },
+		{ "System.Boolean", ScriptFieldTypes::Boolean },
+		{ "System.Char", ScriptFieldTypes::Char },
+		{ "System.Int16", ScriptFieldTypes::Short },
+		{ "System.Int32", ScriptFieldTypes::Int },
+		{ "System.Int64", ScriptFieldTypes::Long },
+		{ "System.Byte", ScriptFieldTypes::Byte },
+		{ "System.UInt16", ScriptFieldTypes::UnsignedShort },
+		{ "System.UInt32", ScriptFieldTypes::UnsignedInt },
+		{ "System.UInt64", ScriptFieldTypes::UnsignedLong },
+		{ "System.String", ScriptFieldTypes::String },
 
-        std::streampos end = stream.tellg();
-        stream.seekg(0, std::ios::beg);
-        uint32_t size = static_cast<uint32_t>(end - stream.tellg());
+		{ "TRE.Vector2", ScriptFieldTypes::Vector2 },
+		{ "TRE.Vector3", ScriptFieldTypes::Vector3 },
+		{ "TRE.Vector4", ScriptFieldTypes::Vector4 },
 
-        if (size == 0)
-        {
-            // File is empty
-            return nullptr;
-        }
+		{ "TRE.Entity", ScriptFieldTypes::Entity },
+	};
 
-        char* buffer = new char[size];
-        stream.read((char*)buffer, size);
-        stream.close();
+    namespace Tools
+    { 
+	    char* ReadBytes(const std::string& filepath, uint32_t* outSize)
+	    {
+	        std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
-        *outSize = size;
-        return buffer;
+	        if (!stream)
+	        {
+	            // Failed to open the file
+	            return nullptr;
+	        }
+
+	        std::streampos end = stream.tellg();
+	        stream.seekg(0, std::ios::beg);
+	        uint32_t size = static_cast<uint32_t>(end - stream.tellg());
+
+	        if (size == 0)
+	        {
+	            // File is empty
+	            return nullptr;
+	        }
+
+	        char* buffer = new char[size];
+	        stream.read((char*)buffer, size);
+	        stream.close();
+
+	        *outSize = size;
+	        return buffer;
+	    }
+
+	    MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath)
+	    {
+	        uint32_t fileSize = 0;
+	        char* fileData = ReadBytes(assemblyPath, &fileSize);
+
+	        // NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
+	        MonoImageOpenStatus status;
+	        MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
+
+	        if (status != MONO_IMAGE_OK)
+	        {
+	            const char* errorMessage = mono_image_strerror(status);
+	            (void)errorMessage;
+	            // Log some error message using the errorMessage data
+	            return nullptr;
+	        }
+
+	        MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblyPath.c_str(), &status, 0);
+	        mono_image_close(image);
+
+	        // Don't forget to free the file data
+	        delete[] fileData;
+
+	        return assembly;
+	    }
+
+	    void PrintAssemblyTypes(MonoAssembly* assembly)
+	    {
+	        MonoImage* image = mono_assembly_get_image(assembly);
+	        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+	        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+
+	        for (int32_t i = 0; i < numTypes; i++)
+	        {
+	            uint32_t cols[MONO_TYPEDEF_SIZE];
+	            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+	            const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+	            const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+	            printf("%s.%s\n", nameSpace, name);
+	        }
+	    }
+
+		ScriptFieldTypes ConvertMonoType(MonoType* monoType)
+	    {
+		    std::string typeName = mono_type_get_name(monoType);
+
+			auto it = s_ScriptFieldTypeMap.find(typeName);
+			if(it == s_ScriptFieldTypeMap.end())
+			{
+				return ScriptFieldTypes::None;
+			}
+
+			return it->second;
+	    }
+
+		void PrintAllContainers()
+	    {
+
+			for(auto& scriptInstance : ScriptEngine::s_ScriptEngineData->ScriptInstances)
+			{
+				TRE_CORE_INFO("Instance: {0} ", scriptInstance.first);
+			}
+
+			
+	    }
+
     }
 
-    MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath)
+
+
+    void ScriptEngine::Init()
     {
-        uint32_t fileSize = 0;
-        char* fileData = ReadBytes(assemblyPath, &fileSize);
+		s_ScriptEngineData = new ScriptEngineData();
 
-        // NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
-        MonoImageOpenStatus status;
-        MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
+		InitMono();
+        ScriptBind::RegisterFunctions();
 
-        if (status != MONO_IMAGE_OK)
-        {
-            const char* errorMessage = mono_image_strerror(status);
-            (void)errorMessage;
-            // Log some error message using the errorMessage data
-            return nullptr;
-        }
+		bool status = LoadAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
+		if(!status)
+		{
+			TRE_CORE_ERROR("Failed to load assembly");
+		}
 
-        MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblyPath.c_str(), &status, 0);
-        mono_image_close(image);
+		// Here we will load the project assembly when the project script and core script is separated.
 
-        // Don't forget to free the file data
-        delete[] fileData;
+		// Load all the classes from the assembly
+		LoadClassesFromAssembly();
 
-        return assembly;
+		// Register all ECS components to the scripting engine
+
+		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
     }
 
-    void PrintAssemblyTypes(MonoAssembly* assembly)
-    {
-        MonoImage* image = mono_assembly_get_image(assembly);
-        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
-        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
-
-        for (int32_t i = 0; i < numTypes; i++)
-        {
-            uint32_t cols[MONO_TYPEDEF_SIZE];
-            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
-
-            const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-            const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
-
-            printf("%s.%s\n", nameSpace, name);
-        }
-    }
+	void ScriptEngine::Shutdown()
+	{
+		ShutdownMono();
+		delete s_ScriptEngineData;
+	}
 
 	void ScriptEngine::InitMono()
 	{
@@ -110,574 +185,464 @@ namespace TRE
         }
 
         // Store the root domain pointer
-        s_RootDomain = rootDomain;
+        s_ScriptEngineData->RootDomain = rootDomain;
+	}
 
-        s_AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
-        mono_domain_set(s_AppDomain, true);
+	void ScriptEngine::ShutdownMono()
+	{
+		//unload the root domain
+		mono_domain_set(mono_get_root_domain(), false);
 
-        s_MonoAssembly = LoadCSharpAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
-        PrintAssemblyTypes(s_MonoAssembly);
+		// here add in unloading off app domain
+
+		mono_jit_cleanup(s_ScriptEngineData->RootDomain);
+		s_ScriptEngineData->RootDomain = nullptr;
 
 	}
 
-	void ScriptEngine::BindFunctions()
+	bool ScriptEngine::LoadAssembly(const std::string& assemblyPath)
+	{
+		s_ScriptEngineData->AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
+        mono_domain_set(s_ScriptEngineData->AppDomain, true);
+
+
+		s_ScriptEngineData->MonoAssemblyPath = assemblyPath;
+        s_ScriptEngineData->MonoAssembly = Tools::LoadCSharpAssembly(assemblyPath);
+		if(s_ScriptEngineData->MonoAssembly == nullptr)
+			return false;
+
+		// Store the assembly image
+		s_ScriptEngineData->AssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+
+		// For Debugging to check what classes are in the assembly
+        //Tools::PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
+
+		return true;
+	}
+
+	// Setup all the classes that should be linked to the scripting engine.
+	void ScriptEngine::LoadClassesFromAssembly()
     {
-        // ECS Bindings
-        mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
-		mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
-		mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
-        mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
-        mono_add_internal_call("TRE.Main::GetTestGUID", BindGetTestGUID);
+		// clear the unordered map
+		s_ScriptEngineData->ScriptClasses.clear();
 
-        // Tranform Bindings
-        mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
-        mono_add_internal_call("TRE.TransformSystem::SetRotation", BindSetRotation);
-        mono_add_internal_call("TRE.TransformSystem::GetPosition", BindGetPosition);
-        mono_add_internal_call("TRE.TransformSystem::GetRotation", BindGetRotation);
+		// Change the AssemblyImage to AppAssemblyImage when project script and core script is separated.
+        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->AssemblyImage , MONO_TABLE_TYPEDEF);
+        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+		MonoClass* entity = mono_class_from_name(s_ScriptEngineData->AssemblyImage, "TRE", "Entity");
 
-        // Camera Bindings
-        mono_add_internal_call("TRE.CameraSystem::SetViewportSize", BindCamSetViewportSize);
-        mono_add_internal_call("TRE.CameraSystem::SetFocalPoint", BindCamSetFocalPoint);
-        mono_add_internal_call("TRE.CameraSystem::SetFocalLength", BindCamSetFocalLength);
-        mono_add_internal_call("TRE.CameraSystem::SetFOV", BindCamSetFOV);
-        mono_add_internal_call("TRE.CameraSystem::SetNear", BindCamSetNear);
-        mono_add_internal_call("TRE.CameraSystem::SetFar", BindCamSetFar);
-        mono_add_internal_call("TRE.CameraSystem::SetLeft", BindCamSetLeft);
-        mono_add_internal_call("TRE.CameraSystem::SetRight", BindCamSetRight);
-        mono_add_internal_call("TRE.CameraSystem::SetBottom", BindCamSetBottom);
-        mono_add_internal_call("TRE.CameraSystem::SetTop", BindCamSetTop);
-        mono_add_internal_call("TRE.CameraSystem::SetAspectRatio", BindCamSetAspectRatio);
-        mono_add_internal_call("TRE.CameraSystem::SetIsPerspective", BindCamSetIsPerspective);
-        mono_add_internal_call("TRE.CameraSystem::SetIsMainCamera", BindCamSetIsMainCamera);
+        for (int32_t i = 0; i < numTypes; i++)
+        {
+            uint32_t cols[MONO_TYPEDEF_SIZE];
+            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-        mono_add_internal_call("TRE.CameraSystem::GetViewMatrix", BindCamGetViewMatrix);
-        mono_add_internal_call("TRE.CameraSystem::GetProjectionMatrix", BindCamGetProjectionMatrix);
-        mono_add_internal_call("TRE.CameraSystem::GetInverseViewMatrix", BindCamGetInverseViewMatrix);
-        mono_add_internal_call("TRE.CameraSystem::GetInverseProjectionMatrix", BindCamGetInverseProjectionMatrix);
-        mono_add_internal_call("TRE.CameraSystem::GetInverseViewProjectionMatrix", BindCamGetInverseViewProjectionMatrix);
-        mono_add_internal_call("TRE.CameraSystem::GetViewportSize", BindCamGetViewportSize);
-        mono_add_internal_call("TRE.CameraSystem::GetFOV", BindCamGetFOV);
-        mono_add_internal_call("TRE.CameraSystem::GetNear", BindCamGetNear);
-        mono_add_internal_call("TRE.CameraSystem::GetFar", BindCamGetFar);
-        mono_add_internal_call("TRE.CameraSystem::GetLeft", BindCamGetLeft);
-        mono_add_internal_call("TRE.CameraSystem::GetRight", BindCamGetRight);
-        mono_add_internal_call("TRE.CameraSystem::GetBottom", BindCamGetBottom);
-        mono_add_internal_call("TRE.CameraSystem::GetTop", BindCamGetTop);
-        mono_add_internal_call("TRE.CameraSystem::GetAspectRatio", BindCamGetAspectRatio);
-        mono_add_internal_call("TRE.CameraSystem::IsPerspective", BindCamIsPerspective);
-        mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
+            const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+            const char* name = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
-        // Physics Bindings
-        mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
-        mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
-        mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
+			std::string className;
 
-        // Input Binding
-        mono_add_internal_call("TRE.InputSystem::GetKeyPressed", BindGetKeyPressed);
+			if(strlen(nameSpace) != 0)
+				className = nameSpace + std::string(".") + name;
+			else
+				className = name;
 
-        // Logging
-        mono_add_internal_call("TRE.Core::Log", SendMessageToConsole);
-        mono_add_internal_call("TRE.Core::LogWarning", SendWarningToConsole);
-        mono_add_internal_call("TRE.Core::LogError", SendErrorToConsole);
-        mono_add_internal_call("TRE.Core::LogCritical", SendCriticalToConsole);
+			printf("%s.%s\n", nameSpace, name);
 
+			//Create main class called entity, Also change the assembly image to AppAssemblyImage when project script and core script is separated.
+			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->AssemblyImage, nameSpace, name);
+
+			if(monoClass == entity)
+				continue;
+
+			if(!mono_class_is_subclass_of(monoClass, entity, false))
+				continue;
+
+			TRE_CORE_INFO("Found class: {0}", className);
+			std::shared_ptr<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name);
+			s_ScriptEngineData->ScriptClasses.insert(std::make_pair(className, scriptClass));
+
+			// Load fields of each of the classes that is not the entity class
+
+			// int fieldCount = mono_class_num_fields(monoClass);
+			//TRE_CORE_INFO("Field count: {0}", fieldCount);
+			void* iterator = nullptr;
+			while(MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+			{
+				const char* fieldName = mono_field_get_name(field);
+				uint32_t flags = mono_field_get_flags(field);
+				if(flags & FIELD_ATTRIBUTE_PUBLIC)
+				{
+					MonoType* fieldType = mono_field_get_type(field);
+					ScriptFieldTypes scriptFieldType = Tools::ConvertMonoType(fieldType);
+					scriptClass->m_Fields.insert({fieldName,{scriptFieldType, fieldName, field}} );
+					//TRE_CORE_INFO("Found field: {0} of type {1}", fieldName, scriptFieldType);
+				}
+			}
+            
+        }
     }
 
-    void ScriptEngine::UpdateScriptingEngine()
-    {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
-        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+	void ScriptEngine::ReloadAssembly()
+	{
+		// Unload the assembly
+		mono_domain_set(mono_get_root_domain(), false);
 
-        MonoObject * instance = mono_object_new(s_AppDomain, testClass);
-        MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
-        mono_runtime_invoke(method, instance, nullptr, nullptr);
-    }
+		mono_domain_unload(s_ScriptEngineData->AppDomain);
 
-    void ScriptEngine::TestScriptingEngine()
+		// Load the assembly again
+		LoadAssembly(s_ScriptEngineData->MonoAssemblyPath);
+
+		// add loading application assembly when project script and core script is separated.
+		// add loading all the classes from the assembly
+
+		LoadClassesFromAssembly();
+
+		// Register back all the components to the scripting engine
+
+		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
+
+		// Retrieve and instantiate the main class
+		InitScriptingMain();
+	}
+
+    void ScriptEngine::InitScriptingMain()
     {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
+        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
         MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
 
 		// creates new instance of the class
-		MonoObject* instance = mono_object_new(s_AppDomain, testClass);
+		s_ScriptEngineData->DemoObject = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
         // Run constructor of the object class
-    	mono_runtime_object_init(instance);
+    	mono_runtime_object_init(s_ScriptEngineData->DemoObject);
 
     }
 
-    void ScriptEngine::TestAddComponent()
+    void ScriptEngine::UpdateScriptingMain()
     {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
-        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
-
-		MonoObject* Instance = mono_object_new(s_AppDomain, testClass);
-		mono_runtime_object_init(Instance);
-
-		MonoMethod* method = mono_class_get_method_from_name(testClass, "Test", 0);
-		mono_runtime_invoke(method, Instance, nullptr, nullptr);
-
+    	MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+        MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
+        mono_runtime_invoke(method, s_ScriptEngineData->DemoObject, nullptr, nullptr);
     }
 
-    void ScriptEngine::TestSpawnObject()
-    {
-		MonoImage* assemblyImage = mono_assembly_get_image(s_MonoAssembly);
-		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Demo");
-        MonoObject* instance = mono_object_new(s_AppDomain, testClass);
-        mono_runtime_object_init(instance);
-    }
-
-
-#pragma endregion
-
-#pragma region FuntionBindings
-
-    MonoString* ScriptEngine::BindCreateEntity(MonoString* name)
-    {
-		char* nameString = mono_string_to_utf8(name);
-        std::string str(nameString);
-        mono_free(nameString);
-
-		Entity Temp = ECSManager::Instance().CreateEntity(str);
-        std::cout << "Created Entity from C#: " << str << std::endl;
-
-		MonoString* GUID = mono_string_new(s_AppDomain, Temp->GetGUID().c_str());
-        return GUID;
-	}
-
-    void ScriptEngine::BindAddComponent(MonoString* ID , int componenttype)
-    {
-		// Retrive the entity from the ID
-		Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(ID));
-
-		// Use a switch case to determine which component to add
-		switch (componenttype)
-		{
-		case 0: // Mesh
-			Temp->AddComponent<MeshRenderer>();
-            std::cout << "Mesh Renderer added by C#!" << std::endl;
-			break;
-		case 1: // Camera
-			Temp->AddComponent<Camera>();
-			std::cout << "Camera added by C#!" << std::endl;
-			break;
-		case 2: // Audio
-			Temp->AddComponent<Audio>();
-			std::cout << "Audio added by C#!" << std::endl;
-            break;
-		default:
-            std::cout << "The component does not exist!" << std::endl;
-            break;
-        }
-        
-    }
-
-	void ScriptEngine::BindRemoveComponent(MonoString* id, int componenttype)
+	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)
 	{
-		Entity Temp = ECSManager::Instance().FindEntity(mono_string_to_utf8(id));
-
-        switch (componenttype)
-        {
-        case 0: // mesh
-			Temp->RemoveComponent<MeshRenderer>();
-			std::cout << "Mesh Renderer removed by C#!" << std::endl;
-			break;
-        case 1:
-			Temp->RemoveComponent<Camera>();
-			std::cout << "Camera removed by C#!" << std::endl;
-            break;
-        case 2:
-			Temp->RemoveComponent<Audio>();
-			std::cout << "Audio removed by C#!" << std::endl;
-            break;
-        default:
-			std::cout << "The component does not exist!" << std::endl;
-            break;
-        }
+		MonoObject* instance = mono_object_new(s_ScriptEngineData->AppDomain, monoClass);
+		mono_runtime_object_init(instance);
+		return instance;
 	}
 
-    void ScriptEngine::BindDestroyEntity(MonoString* id)
-    {
-        std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSManager::Instance().MarkForDeletion(Temp);
-    }
-
-    void ScriptEngine::BindTestFunction()
-    {
-        Demo::SpawnObject();
+	bool ScriptEngine::EntityClassExists(const std::string& className)
+	{
+		return s_ScriptEngineData->ScriptClasses.find(className) != s_ScriptEngineData->ScriptClasses.end();
 	}
 
-    void ScriptEngine::BindSetPosition(MonoString* id, glm::vec3 newPos)
-    {
-        std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        Transform& transform = Temp->GetComponent<Transform>();
-        transform.m_Position = newPos;
-        transform.m_IsDirty = true;
-    }
-
-    void ScriptEngine::BindSetRotation(MonoString* id, glm::vec3 newRot)
-    {
-        std::string ID = mono_string_to_utf8(id);
-        // find the entity 
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        Transform& transform = Temp->GetComponent<Transform>();
-        transform.m_Rotation = newRot;
-        transform.m_IsDirty = true;
+	void ScriptEngine::OnEnableEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnEnableInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    void ScriptEngine::BindGetPosition(MonoString* id, glm::vec3* output)
-    {
-        std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        Transform& transform = Temp->GetComponent<Transform>();
-        *output = transform.m_Position;
-    }
-
-    void ScriptEngine::BindGetRotation(MonoString* id, glm::vec3* output)
-    {
-        std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);    
-        // Get the rotation
-        *output = Temp->GetComponent<Transform>().m_Rotation;
+	void ScriptEngine::OnDisableEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnDisableInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    MonoString* ScriptEngine::BindGetTestGUID()
-    {
-		MonoString* GUID = mono_string_new(s_AppDomain, TestGUID.c_str());
-		return GUID;
+	void ScriptEngine::OnDestroyEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnDestroyInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
+	void ScriptEngine::OnCreateEntity(Entity entity)
+	{
+		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		if(EntityClassExists(scriptComponent.m_StoredClass))
+		{
+			std::string GUID = entity->GetGUID();
 
-#pragma region CameraBindings
-    void ScriptEngine::BindCamSetViewportSize(MonoString* id, glm::vec2 newSize)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetViewportSize(Temp, newSize);
-    }
+			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
-    void ScriptEngine::BindCamSetFocalPoint(MonoString* id, glm::vec3 focalpoint)
-    {
-		std::string ID = mono_string_to_utf8(id);
-		// find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalPoint(Temp, focalpoint);
+			if(s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			{
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for(auto& field : fieldMap)
+				{
+					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+
+			instance->OnCreateInvoke();
+		}
 	}
 
-    void ScriptEngine::BindCamSetFocalLength(MonoString* id, float focallength)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFocalLength(Temp, focallength);
-    }
-
-    void ScriptEngine::BindCamSetFOV(MonoString* id, float fov)
-    {
-	    std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFov(Temp, fov);
-    }
-
-	void ScriptEngine::BindCamSetNear(MonoString* id, float n)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetNear(Temp, n);
+	void ScriptEngine::OnStartEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnStartInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    void ScriptEngine::BindCamSetFar(MonoString* id, float f)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetFar(Temp, f);
-    }
-
-    void ScriptEngine::BindCamSetLeft(MonoString* id, float left)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetLeft(Temp, left);
-    }
-
-    void ScriptEngine::BindCamSetRight(MonoString* id, float right)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetRight(Temp, right);
-    }
-
-    void ScriptEngine::BindCamSetTop(MonoString* id, float top)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetTop(Temp, top);
-    }
-
-	void ScriptEngine::BindCamSetBottom(MonoString* id, float bottom)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetBottom(Temp, bottom);
+	void ScriptEngine::OnUpdateEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnUpdateInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    void ScriptEngine::BindCamSetAspectRatio(MonoString* id, float aspectRatio)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-    	//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetAspectRatio(Temp, aspectRatio);
-    }
-
-    void ScriptEngine::BindCamSetIsPerspective(MonoString* id, bool isPerspective)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsPerspective(Temp, isPerspective);
-    }
-
-    void ScriptEngine::BindCamSetIsMainCamera(MonoString* id, bool isMainCamera)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        // find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(Temp, isMainCamera);
-    }
-
-    // Getters
-    void ScriptEngine::BindCamGetViewMatrix(MonoString* id, glm::mat4* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewMatrix(Temp);
-    }
-
-    void ScriptEngine::BindCamGetProjectionMatrix(MonoString* id, glm::mat4* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetProjectionMatrix(Temp);
+	void ScriptEngine::OnLateUpdateEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnLateUpdateInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    void ScriptEngine::BindCamGetInverseViewMatrix(MonoString* id, glm::mat4* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewMatrix(Temp);
-    }
-
-    void ScriptEngine::BindCamGetInverseProjectionMatrix(MonoString* id, glm::mat4* result)
-    {
-        std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseProjectionMatrix(Temp);
-    }
-
-    void ScriptEngine::BindCamGetInverseViewProjectionMatrix(MonoString* id, glm::mat4* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetInverseViewProjectionMatrix(Temp);
+	void ScriptEngine::OnTriggerStay(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnTriggerStayInvoke(other);
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    void ScriptEngine::BindCamGetViewportSize(MonoString* id, glm::vec2* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetViewportSize(Temp);
+	void ScriptEngine::OnCollisionStay(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnCollisionStayInvoke(other);
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
 	}
 
-    void ScriptEngine::BindCamGetFOV(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-        //find the entity
-        Entity Temp = ECSManager::Instance().FindEntity(ID);
-        *result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFov(Temp);
-    }
-
-    void ScriptEngine::BindCamGetNear(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetNear(Temp);
+	MonoString* ScriptEngine::CreateMonoString(const std::string& string)
+	{
+		return mono_string_new(s_ScriptEngineData->AppDomain, string.c_str());
 	}
 
-    void ScriptEngine::BindCamGetFar(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetFar(Temp);
-    }
-
-    void ScriptEngine::BindCamGetLeft(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetLeft(Temp);
+	void ScriptEngine::PrintAllContainersHere()
+	{
+		Tools::PrintAllContainers();
 	}
 
-    void ScriptEngine::BindCamGetRight(MonoString* id, float* result)
+	MonoObject* ScriptEngine::GetManagedInstance(std::string GUID)
     {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetRight(Temp);
-	}
-
-    void ScriptEngine ::BindCamGetTop(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetTop(Temp);
-	}
-
-	void ScriptEngine::BindCamGetBottom(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetBottom(Temp);
-	}
-
-	void ScriptEngine::BindCamGetAspectRatio(MonoString* id, float* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetAspectRatio(Temp);
-	}
-
-	void ScriptEngine::BindCamIsPerspective(MonoString* id, bool* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsPerspective(Temp);
-	}
-
-	void ScriptEngine::BindCamIsMainCamera(MonoString* id, bool* result)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		//find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsMainCamera(Temp);
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
+		{
+			return nullptr;
+		}
+		else
+		{
+			return s_ScriptEngineData->ScriptInstances[GUID]->m_Instance;
+		}
 	}
 
 #pragma endregion
 
-#pragma region InputBindings
+#pragma region ScriptClass
 
-    ScriptInputHandler::ScriptInputHandler()
+	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className ) : m_ClassNamespace(classNamespace), m_ClassName(className)
     {
-        EventHandler::getEventHandlerInstance().subscribe(this, &ScriptInputHandler::GetKeyPressed);
+		m_MonoClass = mono_class_from_name(ScriptEngine::s_ScriptEngineData->AssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
 	}
 
-    void ScriptInputHandler::GetKeyPressed(const InputEvent& event)
+	MonoObject* ScriptClass::Instantiate()
     {
-        _key = event._key;
-        _state = event._state;
-    }
+    	return ScriptEngine::InstantiateClass(m_MonoClass);
+	}
 
-    bool ScriptEngine::BindGetKeyPressed(int key)
+	MonoMethod* ScriptClass::GetMethod(const std::string& name, int paramCount)
+	{
+		return mono_class_get_method_from_name(m_MonoClass, name.c_str(), paramCount);
+	}
+
+	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
     {
-        if(m_ScriptInputHandler->GetKey() == key )
-        {
-	        return true;
-        }
-    }
+		MonoObject* exception = nullptr;
+    	MonoObject* result = mono_runtime_invoke(method, instance, params, &exception);
+		if (exception)
+		{
+			mono_print_unhandled_exception(exception);
+		}
+		return result;
+	}
+
+	MonoClass* ScriptClass::GetMonoClass()
+	{
+		return m_MonoClass;
+	}
 
 #pragma endregion
 
-#pragma region Logging
-	void ScriptEngine::SendMessageToConsole(MonoString* message)
-    {
-    	char* messageString = mono_string_to_utf8(message);
-		std::string str(messageString);
-		mono_free(messageString);
+#pragma region ScriptInstance
 
-		TRE_INFO(str);
+	ScriptInstance::ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity) : m_ScriptClass(scriptClass)
+    {
+    	m_Instance = scriptClass->Instantiate();
+		
+		m_Constructor = ScriptEngine::s_ScriptEngineData->MainClass.GetMethod(".ctor", 1);
+		m_EnableMethod = scriptClass->GetMethod("OnEnable", 0);
+		m_DisableMethod = scriptClass->GetMethod("OnDisable", 0);
+		m_DestroyMethod = scriptClass->GetMethod("OnDestroy", 0);
+		m_CreateMethod = scriptClass->GetMethod("OnCreate", 0);
+		m_StartMethod = scriptClass->GetMethod("Start", 0);
+		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
+		m_LateUpdateMethod = scriptClass->GetMethod("LateUpdate", 0);
+		m_TriggerStayMethod = scriptClass->GetMethod("OnTriggerStay", 1);
+		m_CollisionStayMethod = scriptClass->GetMethod("OnCollisionStay", 1);
+
+    	{
+			unsigned long long id = std::stoull(entity);
+    		void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
+    	}
+    }
+
+	void ScriptInstance::OnEnableInvoke()
+	{
+		if(m_EnableMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_EnableMethod, nullptr);
 	}
 
-    void ScriptEngine::SendWarningToConsole(MonoString* message)
-    {
-    	char* messageString = mono_string_to_utf8(message);
-        std::string str(messageString);
-        mono_free(messageString);
-
-        TRE_WARN(str);
-    }
-
-    void ScriptEngine::SendErrorToConsole(MonoString* message)
-    {
-    	char* messageString = mono_string_to_utf8(message);
-		std::string str(messageString);
-		mono_free(messageString);
-
-		TRE_ERROR(str);
+	void ScriptInstance::OnDisableInvoke()
+	{
+		if(m_DisableMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_DisableMethod, nullptr);
 	}
 
-    void ScriptEngine::SendCriticalToConsole(MonoString* message)
-    {
-    	char* messageString = mono_string_to_utf8(message);
-        std::string str(messageString);
-        mono_free(messageString);
-
-        TRE_CRITICAL(str);
-    }
-
-#pragma endregion
-
-#pragma region Physics
-
-    void ScriptEngine::BindResizeSphereCollider(MonoString* id, float s)
-    {
-    	std::string ID = mono_string_to_utf8(id);
-		// find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(Temp, s);
+	void ScriptInstance::OnDestroyInvoke()
+	{
+		if(m_DestroyMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_DestroyMethod, nullptr);
 	}
 
-    void ScriptEngine::BindResizeBoxCollider(MonoString* id, glm::vec3 s)
+	void ScriptInstance::OnCreateInvoke()
+	{
+		if(m_CreateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_CreateMethod, nullptr);
+	}
+
+	void ScriptInstance::OnStartInvoke()
     {
-    	std::string ID = mono_string_to_utf8(id);
-		// find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(Temp, s);
+		if(m_StartMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_StartMethod, nullptr);
     }
 
-    void ScriptEngine::BindAddForce(MonoString* id , glm::vec3 force)
+	void ScriptInstance::OnUpdateInvoke()
     {
-    	std::string ID = mono_string_to_utf8(id);
-		// find the entity
-		Entity Temp = ECSManager::Instance().FindEntity(ID);
-		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(Temp, force);
+		if(m_UpdateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_UpdateMethod, nullptr);
     }
 
-#pragma endregion
+	void ScriptInstance::OnLateUpdateInvoke()
+    {
+		if(m_LateUpdateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_LateUpdateMethod, nullptr);
+    }
+
+	void ScriptInstance::OnTriggerStayInvoke(Entity other)
+    {
+		
+		if (m_TriggerStayMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_TriggerStayMethod, &param);
+		}
+    }
+	
+
+	void ScriptInstance::OnCollisionStayInvoke(Entity other)
+    {
+		if (m_CollisionStayMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_CollisionStayMethod, &param);
+		}
+    }
+
+	bool ScriptInstance::GetInternalFieldValue(const std::string& name, void* buffer)
+    {
+    	const auto& field = m_ScriptClass->GetFields();
+		auto iter = field.find(name);
+		if (iter == field.end())
+			return false;
+
+		const ScriptField& scriptField = iter->second;
+		mono_field_get_value(m_Instance, scriptField.m_MonoField, buffer);
+		return true;
+    }
+
+	bool ScriptInstance::SetInternalFieldValue(const std::string& name, const void* buffer)
+	{
+		const auto& field = m_ScriptClass->GetFields();
+		auto iter = field.find(name);
+		if (iter == field.end())
+			return false;
+
+		const ScriptField& scriptField = iter->second;
+		mono_field_set_value(m_Instance, scriptField.m_MonoField, (void*) buffer);
+		return true;
+	}
 
 #pragma endregion
+    
 }

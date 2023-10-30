@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "GLFW/glfw3.h"
 #include "Core/Logger.h"
 #include "InputHandler.h"
 #include "EventSystem/Events/InputEvent.h"
 #include "EventSystem/Events/EditorEvent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include "GLFW/glfw3.h"
 
 #define DEBUG 1
 namespace TRE
@@ -24,7 +24,7 @@ namespace TRE
 		}
 		else if (glfwGetKey(win_ptr, key) == GLFW_RELEASE)
 		{
-			event.Publish(InputEvent {key, action});
+			//event.Publish(InputEvent {key, action});
 		}
 	}
 
@@ -41,7 +41,7 @@ namespace TRE
 		else if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
 		{
 			//TRE_CORE_INFO("Mouse Released:x {0}", key);
-			event.Publish(InputEvent {button, action});
+			//event.Publish(InputEvent {button, action});
 		}
 	}
 

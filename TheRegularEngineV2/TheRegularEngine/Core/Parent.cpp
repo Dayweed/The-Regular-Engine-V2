@@ -10,9 +10,26 @@ namespace TRE
 	{
 		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
 		{
-			Transform& transform{ object->GetComponent<Transform>() };
-			if (transform.m_IsDirty)
+			//For startup
+			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
 			{
+				if(parent.m_Parent != "")
+					SetParent(object, ECSManager::Instance().FindEntity(parent.m_Parent));
+				for (auto& child : parent.m_Children)
+				{
+					AddChild(object, ECSManager::Instance().FindEntity(child));
+				}		
+
+				parent.m_IsDirty = false;
+			}
+
+			//Update world data
+			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
+			{
+				//Update own local data if i have a parent
+				UpdateLocalData(object);
+
+				//Update children local data
 				UpdateChildTransform(object);
 			}
 		}
@@ -23,7 +40,7 @@ namespace TRE
 		
 	}
 
-	void ParentingSystem::OnReset()
+	void ParentingSystem::AfterReset()
 	{
 
 	}
@@ -39,7 +56,7 @@ namespace TRE
 
 	void ParentingSystem::Shutdown()
 	{
-		for (Entity& object : ECSManager::Instance().GetAllEntities())
+		for (Entity& object : ECSManager::Instance().GetAllEntities(true))
 		{
 			AbandonChildren(object);
 		}
@@ -59,7 +76,7 @@ namespace TRE
 		if (child->GetComponent<Parenting>().m_Parent != "" && std::find(parent->GetComponent<Parenting>().m_Children.begin(), parent->GetComponent<Parenting>().m_Children.end(), ECSManager::Instance().FindEntityID(child)) == parent->GetComponent<Parenting>().m_Children.end())
 		{
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
-			child->GetComponent<Transform>().UpdateLocalMatrix(parent);
+			UpdateChildLocalData(parent, child);
 		}
 	}
 
@@ -86,6 +103,7 @@ namespace TRE
 	void ParentingSystem::AddChild(Entity parent, Entity child)
 	{
 		SetParent(child, parent);
+		UpdateChildLocalData(parent, child);
 	}
 
 	std::vector<Entity> ParentingSystem::GetChildren(Entity parent)
@@ -165,12 +183,34 @@ namespace TRE
 			Transform& childTransform = child->GetComponent<Transform>();
 			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
-			childTransform.m_IsDirty = true;
+			//childTransform.m_IsDirty = true;
 
 			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{
 				UpdateChildTransform(child);
 			}
 		}
+	}
+
+	void ParentingSystem::UpdateChildLocalData(Entity parent, Entity child)
+	{
+		Transform& parentTransform = parent->GetComponent<Transform>();
+		Transform& childTransform = child->GetComponent<Transform>();
+
+		childTransform.UpdateLocalData(parentTransform);
+		childTransform.m_IsDirty = true;
+	}
+
+	void ParentingSystem::UpdateLocalData(Entity current)
+	{
+		Transform& currentTransform = current->GetComponent<Transform>();
+		//If this object has a parent, update local data
+		if (current->GetComponent<Parenting>().m_Parent != "")
+		{
+			Transform& parentTransform = ECSManager::Instance().FindEntity(current->GetComponent<Parenting>().m_Parent)->GetComponent<Transform>();
+			currentTransform.UpdateLocalData(parentTransform);
+		}
+
+		currentTransform.m_IsDirty = true;
 	}
 }

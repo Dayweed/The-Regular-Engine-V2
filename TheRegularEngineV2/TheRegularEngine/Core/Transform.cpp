@@ -23,7 +23,7 @@ namespace TRE
 	{
 		m_Position = glm::vec3(newWorld[3]);
 		m_Scale = glm::vec3(glm::length(newWorld[0]), glm::length(newWorld[1]), glm::length(newWorld[2]));
-		m_Rotation = glm::degrees(glm::eulerAngles(glm::quat(newWorld)));
+		m_Rotation = glm::degrees(glm::eulerAngles(glm::quat(glm::mat3(newWorld))));
 
 		m_WorldXform = newWorld;
 	}
@@ -38,15 +38,14 @@ namespace TRE
 		return translationMat * rotationMat * scaleMat;
 	}
 
-	void Transform::UpdateLocalMatrix(Entity& parent)
+	void Transform::UpdateLocalData(Transform& parent)
 	{
 		//For start of scene
-		Transform& parentTransform = parent->GetComponent<Transform>();
-		parentTransform.CalculateWorldMatrix();
+		parent.CalculateWorldMatrix();
 		CalculateWorldMatrix();
 
-		glm::mat4 invertedParentWorldTransform = glm::affineInverse(parentTransform.m_WorldXform);
-		const glm::mat4 localXform = invertedParentWorldTransform * m_WorldXform;
+		glm::mat4 inverseParentWorldTransform = glm::affineInverse(parent.m_WorldXform);
+		const glm::mat4 localXform = m_WorldXform * inverseParentWorldTransform;
 
 		m_LocalPosition = glm::vec3(localXform[3]);
 		m_LocalScale = glm::vec3(glm::length(localXform[0]), glm::length(localXform[1]), glm::length(localXform[2]));

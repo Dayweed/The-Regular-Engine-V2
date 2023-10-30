@@ -163,6 +163,9 @@
     <ClInclude Include="Graphics\Image.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\IndexBuffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Light.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -205,6 +208,9 @@
     <ClInclude Include="Graphics\UniformBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\VertexBuffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\VulkanEditor.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -233,7 +239,16 @@
     <ClInclude Include="Resource\ResourceManager.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Scripting\ScriptBind.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripting\ScriptComponent.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
     <ClInclude Include="Scripting\ScriptEngine.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripting\ScriptingSystem.h">
       <Filter>Scripting</Filter>
     </ClInclude>
     <ClInclude Include="ShaderTypes\LineShader.h">
@@ -336,6 +351,9 @@
     <ClCompile Include="Graphics\Image.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\IndexBuffer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\Light.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -375,6 +393,9 @@
     <ClCompile Include="Graphics\UniformBuffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\VertexBuffer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\VulkanEditor.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -387,7 +408,19 @@
     <ClCompile Include="InputHandler\InputHandler.cpp">
       <Filter>InputHandler</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\BoxCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\CapsuleCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\Rigidbody.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Resource.cpp">
@@ -396,7 +429,16 @@
     <ClCompile Include="Resource\ResourceManager.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Scripting\ScriptBind.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripting\ScriptComponent.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
     <ClCompile Include="Scripting\ScriptEngine.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripting\ScriptingSystem.cpp">
       <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="ShaderTypes\LineShader.cpp">

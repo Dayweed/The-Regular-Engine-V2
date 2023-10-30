@@ -60,6 +60,7 @@ namespace TRE
 	//We don't have to create command pool or allocate any commandbuffers here since we are using the ones from swapchain directly
 	CommandBuffer::CommandBuffer(std::string DebugName, bool SwapChain) : m_DebugName(std::move(DebugName)), m_SwapChainCB(true)
 	{
+		(void)SwapChain;
 	}
 
 	CommandBuffer::~CommandBuffer()

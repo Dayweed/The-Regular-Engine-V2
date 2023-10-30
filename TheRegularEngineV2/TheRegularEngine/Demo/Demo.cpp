@@ -45,9 +45,7 @@ namespace TRE
 		meshRendererSystem->SetMeshRenderer(test, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
 		meshRendererSystem->SetMaterial(test, ResourceManager::Instance().GetResource<Material>(matHandle));
 
-		//call and store demo GUID
-		ScriptEngine::SetTestGUID(test->GetGUID());
-		ScriptEngine::CreatedScriptObject = true;
+		
 
 		std::shared_ptr<Material> allocMat = ResourceManager::Instance().GetResource<Material>(matHandle);
 		//allocMat->AllocateLayouts();

@@ -32,51 +32,58 @@ namespace TRE
 		}
 		friend void from_json(const nlohmann::json& j, MeshRenderer& t)
 		{
-			std::string roString = j.at("ASSET_GEOM_m_RenderObject").get<std::string>();
-			ResourceHandle roHandle = Resource::GetGUIDFromHex(roString);
-			std::string matString = j.at("ASSET_MAT_m_MaterialInstance").get<std::string>();
-			ResourceHandle matHandle = Resource::GetGUIDFromHex(matString);
-
-			if (roHandle != 0)
+			if (j.contains("ASSET_GEOM_m_RenderObject"))
 			{
-				if (auto renderObject = ResourceManager::Instance().GetResource<RenderObject>(roHandle); renderObject)
+				std::string roString = j.at("ASSET_GEOM_m_RenderObject").get<std::string>();
+				ResourceHandle roHandle = Resource::GetGUIDFromHex(roString);
+
+				if (roHandle != 0)
 				{
-					t.m_RenderObject = renderObject;
+					if (auto renderObject = ResourceManager::Instance().GetResource<RenderObject>(roHandle); renderObject)
+					{
+						t.m_RenderObject = renderObject;
+					}
+					else
+					{
+						t.m_RenderObject = RenderObject::Deserialize(roString);
+
+						if (t.m_RenderObject == nullptr)
+							TRE_CORE_CRITICAL(roString + ".geom not found!");
+					}
 				}
 				else
 				{
-					t.m_RenderObject = RenderObject::Deserialize(roString);
-
-					if (t.m_RenderObject == nullptr)
-						TRE_CORE_CRITICAL(roString + ".geom not found!");
+					t.m_RenderObject = nullptr;
 				}
 			}
-			else
+			if (j.contains("ASSET_MAT_m_MaterialInstance"))
 			{
-				t.m_RenderObject = nullptr;
-			}
+				std::string matString = j.at("ASSET_MAT_m_MaterialInstance").get<std::string>();
+				ResourceHandle matHandle = Resource::GetGUIDFromHex(matString);
 
-			if (matHandle != 0)
-			{
-				if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
+				if (matHandle != 0)
 				{
-					t.m_MaterialInstance = material;
+					if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
+					{
+						t.m_MaterialInstance = material;
+					}
+					else
+					{
+						t.m_MaterialInstance = Material::Deserialize(matString);
+
+						if (t.m_MaterialInstance == nullptr)
+							TRE_CORE_CRITICAL(matString + ".mat not found!");
+					}
 				}
+				//Else most likely default material
 				else
 				{
-					t.m_MaterialInstance = Material::Deserialize(matString);
-
-					if (t.m_MaterialInstance == nullptr)
-						TRE_CORE_CRITICAL(matString + ".mat not found!");
+					t.m_MaterialInstance = nullptr;
 				}
 			}
-			//Else most likely default material
-			else
-			{
-				t.m_MaterialInstance = nullptr;
-			}
 
-			t.m_IsVisible = j.at("m_IsVisible").get<bool>();
+			if(j.contains("m_IsVisible"))
+				t.m_IsVisible = j.at("m_IsVisible").get<bool>();
 			t.m_IsDirty = true;
 		}
 	};
@@ -85,7 +92,7 @@ namespace TRE
 	{
 	public:
 		void LateUpdate() override;
-		void OnReset() override;
+		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 		

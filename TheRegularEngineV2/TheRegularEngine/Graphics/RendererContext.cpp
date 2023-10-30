@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
-#include "GLFW/glfw3.h"
 #include "Core/Logger.h"
+#include "GLFW/glfw3.h"
 
 namespace TRE
 {
@@ -180,7 +180,7 @@ namespace TRE
 			else
 			{
 				InstanceCreateInfo.enabledLayerCount = 0;
-				TRE_CORE_INFO(" Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled");
+				TRE_CORE_INFO("Validation Layer VK_LAYER_KHRONOS_validation not here, validation automatically disabled");
 			}
 		}
 
