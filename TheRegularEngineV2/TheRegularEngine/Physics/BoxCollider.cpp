@@ -67,19 +67,13 @@ namespace TRE
 			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			// sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
-
-			// SO TEMPORARY
-			sharedData.m_RigidDynamic->is<PxRigidDynamic>()->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			// PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-
-			// SO TEMPORARY
-			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0f);
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::BoxCollider;
@@ -95,10 +89,7 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(BoxCollider);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// SO TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -158,10 +149,7 @@ namespace TRE
 				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
 			}
 
-			// PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
-
-			// SO TEMPORARY
-			PxRigidBodyExt::updateMassAndInertia(*(sharedData.m_RigidDynamic->is<PxRigidDynamic>()), 1.0);
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
 		entity->RemoveComponent<BoxCollider>();
 	}
@@ -169,7 +157,7 @@ namespace TRE
 	void PhysicsSystem::SetBoxColliderTrigger(const Entity& entity, const bool isTrigger) const
 	{
 		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		boxCollider.m_IsTrigger = isTrigger;
 

@@ -28,7 +28,7 @@ namespace TRE
 	void ScriptingSystem::GameUpdate()
 	{
 		if(m_IsRunning == true)
-		{
+		{	
 			ScriptEngine::ReloadAssembly();
 			//inital Create entity instances (only works if they are created before scene starts)
 			for(auto e: m_ScriptEntities)

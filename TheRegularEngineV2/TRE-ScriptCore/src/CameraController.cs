@@ -47,6 +47,10 @@ namespace TRE
 			}
 
 			CameraSystem.SetMainCameraLookAt(pos, distance);
+
+			Debug.Log("Region Start " + regionStart);
+			Debug.Log("Region 1 " + region1);
+			Debug.Log("Region 2 " + region2);
 		}
 		private float Lerp(float start, float end, float t)
 		{

@@ -25,14 +25,16 @@ namespace TRE
 		public EntityID ID;				// Can hold id of entity or id of prefab resource
 		public string name;
 		public Parenting parenting;
-		public TransformS transform;
+		public Transform transform;
+
+
 
         public Entity()
         {
 			ID = new EntityID();
 			name = "";
             parenting = new Parenting();
-			transform = new TransformS();
+			transform = null;
         }
 
         public Entity(EntityID id)
@@ -43,15 +45,13 @@ namespace TRE
             {
                 name = ECSManager.FindNameFromID(ID);
                 parenting = new Parenting(ID);
-                TransformSystem.GetPosition(ID, out Vector3 pos);
-                TransformSystem.GetRotation(ID, out Vector3 rot);
-                transform = new TransformS(ID, pos, rot, new Vector3(1, 1, 1));
+                transform = new Transform(this);
             }
 			else
             {
 				name = "";
                 parenting = new Parenting();
-                transform = new TransformS();
+                transform = null;
             }
         }
 
@@ -63,14 +63,12 @@ namespace TRE
             if (ECSManager.IsValidEntity(ID))
             {
                 parenting = new Parenting(ID);
-                TransformSystem.GetPosition(ID, out Vector3 pos);
-                TransformSystem.GetRotation(ID, out Vector3 rot);
-                transform = new TransformS(ID, pos, rot, new Vector3(1, 1, 1));
+                transform = new Transform(this);
             }
             else
             {
                 parenting = new Parenting();
-                transform = new TransformS();
+                transform = null;
             }
         }
 
@@ -111,6 +109,12 @@ namespace TRE
         }
 
         // Can only be done for Scripting for now
+
+        public bool HasComponent<T>() where T : Component, new()
+        {
+            return ECSManager.HasComponent(ID, typeof(T));
+        }
+
         public T GetComponent<T>() where T : new()
         {
 			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
@@ -120,19 +124,33 @@ namespace TRE
 
             return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
 
-            //return GenerateComponent<T>();
         }
 
-		/*
-        public bool HasComponent<T>() where T : Component, new()
+        public T GetCoreComponent<T>() where T : Component, new()
         {
-			// WIP
+            if (!HasComponent<T>())
+            {
+                return null;
+            }
 
-            return false;
+			T component = new T() {entity = this};
+			return component;
         }
-		*/
 
-        // DONT USE THIS, INCOMPLETE AND UNTESTED
+
+        public T AddComponent<T>() where T : Component, new()
+        {
+            if (ECSManager.HasComponent(ID, typeof(T)) == true)
+            {
+                Debug.LogWarning("Component already exists, returning...");
+                return GetCoreComponent<T>();
+            }
+			ECSManager.AddComponent(ID, typeof(T));
+			return GetCoreComponent<T>();
+        }
+
+
+		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
         public T AddComponent<T>() where T : new()
         {
@@ -142,7 +160,7 @@ namespace TRE
         }
 		*/
 
-        // DONT USE THIS, INCOMPLETE AND UNTESTED
+		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
         private T GenerateComponent<T>() where T : new()
 		{
@@ -153,8 +171,8 @@ namespace TRE
         }
 		*/
 
-        // Private binded calls
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		// Private binded calls
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void EngineRename(EntityID id, string name);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -465,12 +483,7 @@ namespace TRE
 	{
 		public static Entity FindEntityByName(string name)
 		{
-			Entity ent = new Entity();
-			ent.ID = FindIDFromName(name);
-			ent.name = name;
-            TransformSystem.GetPosition(ent.ID, out Vector3 pos);
-            TransformSystem.GetRotation(ent.ID, out Vector3 rot);
-            ent.transform = new TransformS(ent.ID, pos, rot, new Vector3(1, 1, 1));
+			Entity ent = new Entity(FindIDFromName(name));
 			return ent;
         }
 		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())

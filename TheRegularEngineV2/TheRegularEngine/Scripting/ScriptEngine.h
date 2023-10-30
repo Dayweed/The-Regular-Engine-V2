@@ -170,6 +170,12 @@ namespace TRE
 
 		ScriptClass MainClass;
 
+#ifdef DEBUG
+		bool EnableDebugging = true;
+#else
+		bool EnableDebugging = false;
+#endif
+
 		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptClasses;
 		std::unordered_map<std::string, std::shared_ptr<ScriptInstance>> ScriptInstances;
 		std::unordered_map<std::string, ScriptFieldMap> EntityFieldMap;
