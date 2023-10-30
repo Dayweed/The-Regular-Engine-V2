@@ -81,22 +81,22 @@ namespace TRE
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
-				dirVec.z += 1;
+				dirVec.z += -1;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
-				dirVec.z += -1;
+				dirVec.z += 1;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
-				dirVec.x += 1;
+				dirVec.x += -1;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
-				dirVec.x += -1;
+				dirVec.x += 1;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.Space))
@@ -129,18 +129,19 @@ namespace TRE
 
             if (dirVec != Vector3.zero)
             {
-                Debug.Log(dirVec.x + " " + dirVec.z);
-                if (currVelocity.Magnitude() < maxVelocity)
+                //Debug.Log(dirVec.x + " " + dirVec.z);
+                if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
                 {
                     finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-                    //Debug.Log("current velocity is:" +currVelocity.x + currVelocity.y + currVelocity.z);
+                    Debug.Log("current velocity is:" +currVelocity.x + currVelocity.y + currVelocity.z);
                 }
                 else
                 {
-                    finalVelocity = dirVec * maxVelocity;
+					Vector3 tmp = dirVec * maxVelocity;
+					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-                    //Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
+                    Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
                 }
             }
 
