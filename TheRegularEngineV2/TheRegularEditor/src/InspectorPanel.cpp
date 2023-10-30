@@ -401,6 +401,10 @@ namespace TRE
 #pragma region Script Component
 					if (List.first == ComponentManager::Instance().GetComponentName<ScriptComponent>())
 					{
+						for (auto e : ScriptEngine::s_ScriptEngineData->EntityFieldMap)
+						{
+							std::cout << "! " << e.first << "\n";
+						}
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
 							// Display all the data in that script (GUID, ScriptFieldMap)
