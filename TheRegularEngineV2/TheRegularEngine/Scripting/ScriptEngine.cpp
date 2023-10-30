@@ -20,7 +20,7 @@ namespace TRE
 
 	ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
 
-    static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
+	static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
 	{
 		{ "System.Single", ScriptFieldTypes::Float },
 		{ "System.Double", ScriptFieldTypes::Double },
@@ -42,83 +42,83 @@ namespace TRE
 		{ "TRE.Entity", ScriptFieldTypes::Entity },
 	};
 
-    namespace Tools
-    { 
-	    char* ReadBytes(const std::string& filepath, uint32_t* outSize)
-	    {
-	        std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
+	namespace Tools
+	{ 
+		char* ReadBytes(const std::string& filepath, uint32_t* outSize)
+		{
+			std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
-	        if (!stream)
-	        {
-	            // Failed to open the file
-	            return nullptr;
-	        }
+			if (!stream)
+			{
+				// Failed to open the file
+				return nullptr;
+			}
 
-	        std::streampos end = stream.tellg();
-	        stream.seekg(0, std::ios::beg);
-	        uint32_t size = static_cast<uint32_t>(end - stream.tellg());
+			std::streampos end = stream.tellg();
+			stream.seekg(0, std::ios::beg);
+			uint32_t size = static_cast<uint32_t>(end - stream.tellg());
 
-	        if (size == 0)
-	        {
-	            // File is empty
-	            return nullptr;
-	        }
+			if (size == 0)
+			{
+				// File is empty
+				return nullptr;
+			}
 
-	        char* buffer = new char[size];
-	        stream.read((char*)buffer, size);
-	        stream.close();
+			char* buffer = new char[size];
+			stream.read((char*)buffer, size);
+			stream.close();
 
-	        *outSize = size;
-	        return buffer;
-	    }
+			*outSize = size;
+			return buffer;
+		}
 
-	    MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath)
-	    {
-	        uint32_t fileSize = 0;
-	        char* fileData = ReadBytes(assemblyPath, &fileSize);
+		MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath)
+		{
+			uint32_t fileSize = 0;
+			char* fileData = ReadBytes(assemblyPath, &fileSize);
 
-	        // NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
-	        MonoImageOpenStatus status;
-	        MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
+			// NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
+			MonoImageOpenStatus status;
+			MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
 
-	        if (status != MONO_IMAGE_OK)
-	        {
-	            const char* errorMessage = mono_image_strerror(status);
-	            (void)errorMessage;
-	            // Log some error message using the errorMessage data
-	            return nullptr;
-	        }
+			if (status != MONO_IMAGE_OK)
+			{
+				const char* errorMessage = mono_image_strerror(status);
+				(void)errorMessage;
+				// Log some error message using the errorMessage data
+				return nullptr;
+			}
 
-	        MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblyPath.c_str(), &status, 0);
-	        mono_image_close(image);
+			MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblyPath.c_str(), &status, 0);
+			mono_image_close(image);
 
-	        // Don't forget to free the file data
-	        delete[] fileData;
+			// Don't forget to free the file data
+			delete[] fileData;
 
-	        return assembly;
-	    }
+			return assembly;
+		}
 
-	    void PrintAssemblyTypes(MonoAssembly* assembly)
-	    {
-	        MonoImage* image = mono_assembly_get_image(assembly);
-	        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
-	        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+		void PrintAssemblyTypes(MonoAssembly* assembly)
+		{
+			MonoImage* image = mono_assembly_get_image(assembly);
+			const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+			int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 
-	        for (int32_t i = 0; i < numTypes; i++)
-	        {
-	            uint32_t cols[MONO_TYPEDEF_SIZE];
-	            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+			for (int32_t i = 0; i < numTypes; i++)
+			{
+				uint32_t cols[MONO_TYPEDEF_SIZE];
+				mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-	            const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-	            const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+				const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+				const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
-	            printf("%s.%s\n", nameSpace, name);
-	        }
-	    }
+				printf("%s.%s\n", nameSpace, name);
+			}
+		}
 
 		ScriptFieldTypes ConvertMonoType(MonoType* monoType)
-	    {
-		    std::string typeName = mono_type_get_name(monoType);
+		{
+			std::string typeName = mono_type_get_name(monoType);
 
 			auto it = s_ScriptFieldTypeMap.find(typeName);
 			if(it == s_ScriptFieldTypeMap.end())
@@ -127,10 +127,10 @@ namespace TRE
 			}
 
 			return it->second;
-	    }
+		}
 
 		void PrintAllContainers()
-	    {
+		{
 
 			for(auto& scriptInstance : ScriptEngine::s_ScriptEngineData->ScriptInstances)
 			{
@@ -138,18 +138,18 @@ namespace TRE
 			}
 
 			
-	    }
+		}
 
-    }
+	}
 
 
 
-    void ScriptEngine::Init()
-    {
+	void ScriptEngine::Init()
+	{
 		s_ScriptEngineData = new ScriptEngineData();
 
 		InitMono();
-        ScriptBind::RegisterFunctions();
+		ScriptBind::RegisterFunctions();
 
 		bool status = LoadAssembly("../Resources/Scripts/TRE-ScriptCore.dll");
 		if(!status)
@@ -165,7 +165,7 @@ namespace TRE
 		// Register all ECS components to the scripting engine
 
 		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
-    }
+	}
 
 	void ScriptEngine::Shutdown()
 	{
@@ -175,17 +175,17 @@ namespace TRE
 
 	void ScriptEngine::InitMono()
 	{
-        mono_set_assemblies_path("../TheRegularEditor/mono");
+		mono_set_assemblies_path("../TheRegularEditor/mono");
 
-        MonoDomain* rootDomain = mono_jit_init("MyScriptRuntime");
-        if (rootDomain == nullptr)
-        {
-            // Maybe log some error here
-            return;
-        }
+		MonoDomain* rootDomain = mono_jit_init("MyScriptRuntime");
+		if (rootDomain == nullptr)
+		{
+			// Maybe log some error here
+			return;
+		}
 
-        // Store the root domain pointer
-        s_ScriptEngineData->RootDomain = rootDomain;
+		// Store the root domain pointer
+		s_ScriptEngineData->RootDomain = rootDomain;
 	}
 
 	void ScriptEngine::ShutdownMono()
@@ -203,11 +203,11 @@ namespace TRE
 	bool ScriptEngine::LoadAssembly(const std::string& assemblyPath)
 	{
 		s_ScriptEngineData->AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
-        mono_domain_set(s_ScriptEngineData->AppDomain, true);
+		mono_domain_set(s_ScriptEngineData->AppDomain, true);
 
 
 		s_ScriptEngineData->MonoAssemblyPath = assemblyPath;
-        s_ScriptEngineData->MonoAssembly = Tools::LoadCSharpAssembly(assemblyPath);
+		s_ScriptEngineData->MonoAssembly = Tools::LoadCSharpAssembly(assemblyPath);
 		if(s_ScriptEngineData->MonoAssembly == nullptr)
 			return false;
 
@@ -215,29 +215,29 @@ namespace TRE
 		s_ScriptEngineData->AssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
 
 		// For Debugging to check what classes are in the assembly
-        //Tools::PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
+		//Tools::PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
 
 		return true;
 	}
 
 	// Setup all the classes that should be linked to the scripting engine.
 	void ScriptEngine::LoadClassesFromAssembly()
-    {
+	{
 		// clear the unordered map
 		s_ScriptEngineData->ScriptClasses.clear();
 
 		// Change the AssemblyImage to AppAssemblyImage when project script and core script is separated.
-        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->AssemblyImage , MONO_TABLE_TYPEDEF);
-        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->AssemblyImage , MONO_TABLE_TYPEDEF);
+		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 		MonoClass* entity = mono_class_from_name(s_ScriptEngineData->AssemblyImage, "TRE", "Entity");
 
-        for (int32_t i = 0; i < numTypes; i++)
-        {
-            uint32_t cols[MONO_TYPEDEF_SIZE];
-            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+		for (int32_t i = 0; i < numTypes; i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-            const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
-            const char* name = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string className;
 
@@ -278,9 +278,9 @@ namespace TRE
 					//TRE_CORE_INFO("Found field: {0} of type {1}", fieldName, scriptFieldType);
 				}
 			}
-            
-        }
-    }
+			
+		}
+	}
 
 	void ScriptEngine::ReloadAssembly()
 	{
@@ -305,25 +305,25 @@ namespace TRE
 		InitScriptingMain();
 	}
 
-    void ScriptEngine::InitScriptingMain()
-    {
-        MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-        MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+	void ScriptEngine::InitScriptingMain()
+	{
+		MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
 
 		// creates new instance of the class
 		s_ScriptEngineData->DemoObject = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
-        // Run constructor of the object class
-    	mono_runtime_object_init(s_ScriptEngineData->DemoObject);
+		// Run constructor of the object class
+		mono_runtime_object_init(s_ScriptEngineData->DemoObject);
 
-    }
+	}
 
-    void ScriptEngine::UpdateScriptingMain()
-    {
-    	MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+	void ScriptEngine::UpdateScriptingMain()
+	{
+		MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
 		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
-        MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
-        mono_runtime_invoke(method, s_ScriptEngineData->DemoObject, nullptr, nullptr);
-    }
+		MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
+		mono_runtime_invoke(method, s_ScriptEngineData->DemoObject, nullptr, nullptr);
+	}
 
 	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)
 	{
@@ -483,7 +483,7 @@ namespace TRE
 	}
 
 	MonoObject* ScriptEngine::GetManagedInstance(std::string GUID)
-    {
+	{
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
 		{
 			return nullptr;
@@ -499,13 +499,13 @@ namespace TRE
 #pragma region ScriptClass
 
 	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className ) : m_ClassNamespace(classNamespace), m_ClassName(className)
-    {
+	{
 		m_MonoClass = mono_class_from_name(ScriptEngine::s_ScriptEngineData->AssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
 	}
 
 	MonoObject* ScriptClass::Instantiate()
-    {
-    	return ScriptEngine::InstantiateClass(m_MonoClass);
+	{
+		return ScriptEngine::InstantiateClass(m_MonoClass);
 	}
 
 	MonoMethod* ScriptClass::GetMethod(const std::string& name, int paramCount)
@@ -514,9 +514,9 @@ namespace TRE
 	}
 
 	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
-    {
+	{
 		MonoObject* exception = nullptr;
-    	MonoObject* result = mono_runtime_invoke(method, instance, params, &exception);
+		MonoObject* result = mono_runtime_invoke(method, instance, params, &exception);
 		if (exception)
 		{
 			mono_print_unhandled_exception(exception);
@@ -534,8 +534,8 @@ namespace TRE
 #pragma region ScriptInstance
 
 	ScriptInstance::ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity) : m_ScriptClass(scriptClass)
-    {
-    	m_Instance = scriptClass->Instantiate();
+	{
+		m_Instance = scriptClass->Instantiate();
 		
 		m_Constructor = ScriptEngine::s_ScriptEngineData->MainClass.GetMethod(".ctor", 1);
 		m_EnableMethod = scriptClass->GetMethod("OnEnable", 0);
@@ -548,12 +548,12 @@ namespace TRE
 		m_TriggerStayMethod = scriptClass->GetMethod("OnTriggerStay", 1);
 		m_CollisionStayMethod = scriptClass->GetMethod("OnCollisionStay", 1);
 
-    	{
+		{
 			unsigned long long id = std::stoull(entity);
-    		void* param = &id;
+			void* param = &id;
 			m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
-    	}
-    }
+		}
+	}
 
 	void ScriptInstance::OnEnableInvoke()
 	{
@@ -580,25 +580,25 @@ namespace TRE
 	}
 
 	void ScriptInstance::OnStartInvoke()
-    {
+	{
 		if(m_StartMethod)
 			m_ScriptClass->InvokeMethod(m_Instance, m_StartMethod, nullptr);
-    }
+	}
 
 	void ScriptInstance::OnUpdateInvoke()
-    {
+	{
 		if(m_UpdateMethod)
 			m_ScriptClass->InvokeMethod(m_Instance, m_UpdateMethod, nullptr);
-    }
+	}
 
 	void ScriptInstance::OnLateUpdateInvoke()
-    {
+	{
 		if(m_LateUpdateMethod)
 			m_ScriptClass->InvokeMethod(m_Instance, m_LateUpdateMethod, nullptr);
-    }
+	}
 
 	void ScriptInstance::OnTriggerStayInvoke(Entity other)
-    {
+	{
 		
 		if (m_TriggerStayMethod)
 		{
@@ -606,22 +606,22 @@ namespace TRE
 			void* param = &id;
 			m_ScriptClass->InvokeMethod(m_Instance, m_TriggerStayMethod, &param);
 		}
-    }
+	}
 	
 
 	void ScriptInstance::OnCollisionStayInvoke(Entity other)
-    {
+	{
 		if (m_CollisionStayMethod)
 		{
 			unsigned long long id = std::stoull(other->GetGUID());
 			void* param = &id;
 			m_ScriptClass->InvokeMethod(m_Instance, m_CollisionStayMethod, &param);
 		}
-    }
+	}
 
 	bool ScriptInstance::GetInternalFieldValue(const std::string& name, void* buffer)
-    {
-    	const auto& field = m_ScriptClass->GetFields();
+	{
+		const auto& field = m_ScriptClass->GetFields();
 		auto iter = field.find(name);
 		if (iter == field.end())
 			return false;
@@ -629,7 +629,7 @@ namespace TRE
 		const ScriptField& scriptField = iter->second;
 		mono_field_get_value(m_Instance, scriptField.m_MonoField, buffer);
 		return true;
-    }
+	}
 
 	bool ScriptInstance::SetInternalFieldValue(const std::string& name, const void* buffer)
 	{
@@ -644,5 +644,5 @@ namespace TRE
 	}
 
 #pragma endregion
-    
+	
 }

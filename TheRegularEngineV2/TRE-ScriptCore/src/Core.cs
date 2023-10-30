@@ -20,7 +20,7 @@ namespace TRE
 	// Using EntityID instead of EntityID in case need to change again
 	using EntityID = System.UInt64;		// Unsigned long long
 
-    public class Entity
+	public class Entity
 	{
 		public EntityID ID;				// Can hold id of entity or id of prefab resource
 		public string name;
@@ -29,203 +29,203 @@ namespace TRE
 
 
 
-        public Entity()
-        {
+		public Entity()
+		{
 			ID = new EntityID();
 			name = "";
-            parenting = new Parenting();
+			parenting = new Parenting();
 			transform = null;
-        }
+		}
 
-        public Entity(EntityID id)
-        {
-            ID = id;
+		public Entity(EntityID id)
+		{
+			ID = id;
 
 			if (ECSManager.IsValidEntity(ID))
-            {
-                name = ECSManager.FindNameFromID(ID);
-                parenting = new Parenting(ID);
-                transform = new Transform(this);
-            }
+			{
+				name = ECSManager.FindNameFromID(ID);
+				parenting = new Parenting(ID);
+				transform = new Transform(this);
+			}
 			else
-            {
+			{
 				name = "";
-                parenting = new Parenting();
-                transform = null;
-            }
-        }
+				parenting = new Parenting();
+				transform = null;
+			}
+		}
 
-        public Entity(EntityID _id, string _name)
-        {
-            ID = _id;
-            name = _name;
+		public Entity(EntityID _id, string _name)
+		{
+			ID = _id;
+			name = _name;
 
-            if (ECSManager.IsValidEntity(ID))
-            {
-                parenting = new Parenting(ID);
-                transform = new Transform(this);
-            }
-            else
-            {
-                parenting = new Parenting();
-                transform = null;
-            }
-        }
+			if (ECSManager.IsValidEntity(ID))
+			{
+				parenting = new Parenting(ID);
+				transform = new Transform(this);
+			}
+			else
+			{
+				parenting = new Parenting();
+				transform = null;
+			}
+		}
 
 		public void DestroySelf()
 		{
-            ECSManager.DestroyEntity(this.ID);
-        }
+			ECSManager.DestroyEntity(this.ID);
+		}
 
-        public void Rename(string _name)
+		public void Rename(string _name)
 		{
 			name = _name;
-            EngineRename(ID, name);
-        }
+			EngineRename(ID, name);
+		}
 
-        public void SetActive(bool active)
+		public void SetActive(bool active)
 		{
 			EngineSetActive(ID, active);
-        }
+		}
 
-        public bool GetActive()
+		public bool GetActive()
 		{
-            return EngineGetActive(ID);
-        }
+			return EngineGetActive(ID);
+		}
 
-        public void SetTag(string tag)
+		public void SetTag(string tag)
 		{
-            EngineSetTag(ID, tag);
-        }
+			EngineSetTag(ID, tag);
+		}
 
-        public string GetTag()
+		public string GetTag()
 		{
-            return EngineGetTag(ID);
-        }
+			return EngineGetTag(ID);
+		}
 
-        public bool CompareTag(string otherTag)
+		public bool CompareTag(string otherTag)
 		{
-            return EngineCompareTag(ID, otherTag);
-        }
+			return EngineCompareTag(ID, otherTag);
+		}
 
-        // Can only be done for Scripting for now
+		// Can only be done for Scripting for now
 
-        public bool HasComponent<T>() where T : Component, new()
-        {
-            return ECSManager.HasComponent(ID, typeof(T));
-        }
+		public bool HasComponent<T>() where T : Component, new()
+		{
+			return ECSManager.HasComponent(ID, typeof(T));
+		}
 
-        public T GetComponent<T>() where T : new()
-        {
+		public T GetComponent<T>() where T : new()
+		{
 			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
 
-            Debug.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
+			Debug.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
 			Console.WriteLine("ERROR! GetComponent is returning new type for " + typeof(T).ToString());
 
-            return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
+			return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
 
-        }
+		}
 
-        public T GetCoreComponent<T>() where T : Component, new()
-        {
-            if (!HasComponent<T>())
-            {
-                return null;
-            }
+		public T GetCoreComponent<T>() where T : Component, new()
+		{
+			if (!HasComponent<T>())
+			{
+				return null;
+			}
 
 			T component = new T() {entity = this};
 			return component;
-        }
+		}
 
 
-        public T AddComponent<T>() where T : Component, new()
-        {
-            if (ECSManager.HasComponent(ID, typeof(T)) == true)
-            {
-                Debug.LogWarning("Component already exists, returning...");
-                return GetCoreComponent<T>();
-            }
+		public T AddComponent<T>() where T : Component, new()
+		{
+			if (ECSManager.HasComponent(ID, typeof(T)) == true)
+			{
+				Debug.LogWarning("Component already exists, returning...");
+				return GetCoreComponent<T>();
+			}
 			ECSManager.AddComponent(ID, typeof(T));
 			return GetCoreComponent<T>();
-        }
+		}
 
 
 		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
-        public T AddComponent<T>() where T : new()
-        {
-            if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
+		public T AddComponent<T>() where T : new()
+		{
+			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
 
-            return GenerateComponent<T>();
-        }
+			return GenerateComponent<T>();
+		}
 		*/
 
 		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
-        private T GenerateComponent<T>() where T : new()
+		private T GenerateComponent<T>() where T : new()
 		{
 			if (typeof(T).ToString() == typeof(Parenting).ToString()) return (T) Convert.ChangeType(parenting, typeof(T));
 			if (typeof(T).ToString() == typeof(Transform).ToString()) return (T) Convert.ChangeType(transform, typeof(T));
 
-            return new T();
-        }
+			return new T();
+		}
 		*/
 
 		// Private binded calls
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineRename(EntityID id, string name);
+		internal extern static void EngineRename(EntityID id, string name);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineSetActive(EntityID id, bool active);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void EngineSetActive(EntityID id, bool active);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool EngineGetActive(EntityID id);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool EngineGetActive(EntityID id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineSetTag(EntityID id, string tag);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void EngineSetTag(EntityID id, string tag);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string EngineGetTag(EntityID id);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string EngineGetTag(EntityID id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool EngineCompareTag(EntityID id, string otherTag);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool EngineCompareTag(EntityID id, string otherTag);
+	}
 
 	public struct Prefab
 	{
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool EngineIsPrefabResource(EntityID id);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool EngineIsPrefabResource(EntityID id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static EntityID CreatePrefabEntity(EntityID prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static EntityID CreatePrefabEntity(EntityID prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+	}
 
 	public struct Parenting
 	{
-        private EntityID id;
+		private EntityID id;
 
-        public Parenting(EntityID myID)
+		public Parenting(EntityID myID)
 		{
 			id = myID;
-        }
+		}
 
-        public void SetParent(Entity _parent)
-        {
+		public void SetParent(Entity _parent)
+		{
 			EngineParentSetParent(id, _parent.ID);
-        }
+		}
 
-        public Entity GetParent()
-        {
-            EntityID parentID = ECSManager.FindParentIDFromID(id);
-            string parentName = ECSManager.FindNameFromID(parentID);
-            Entity parent = new Entity(parentID, parentName);
-            return parent;
-        }
+		public Entity GetParent()
+		{
+			EntityID parentID = ECSManager.FindParentIDFromID(id);
+			string parentName = ECSManager.FindNameFromID(parentID);
+			Entity parent = new Entity(parentID, parentName);
+			return parent;
+		}
 
-        public void RemoveParent()
-        {
-            EngineParentRemoveParent(id);
-        }
+		public void RemoveParent()
+		{
+			EngineParentRemoveParent(id);
+		}
 
 		public void AddChild(Entity child)
 		{
@@ -237,29 +237,29 @@ namespace TRE
 			EngineParentRemoveChild(id, child.ID);
 		}
 
-        public Entity GetChild(int _index)
+		public Entity GetChild(int _index)
 		{
-            EntityID childID = EngineGetChildID(id, _index);
+			EntityID childID = EngineGetChildID(id, _index);
 			string childName = ECSManager.FindNameFromID(childID);
-            Entity child = new Entity(childID, childName);
+			Entity child = new Entity(childID, childName);
 			return child;
-        }
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static EntityID EngineGetChildID(EntityID _id, int _index);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static EntityID EngineGetChildID(EntityID _id, int _index);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineParentSetParent(EntityID _id, EntityID _parent_id);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void EngineParentSetParent(EntityID _id, EntityID _parent_id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineParentRemoveParent(EntityID _id);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void EngineParentRemoveParent(EntityID _id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineParentAddChild(EntityID _id, EntityID _child_id);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void EngineParentAddChild(EntityID _id, EntityID _child_id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void EngineParentRemoveChild(EntityID _id, EntityID _child_id);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void EngineParentRemoveChild(EntityID _id, EntityID _child_id);
+	}
 
 	// Reference to this for what components that can be added to the entity.
 	public enum Components
@@ -273,16 +273,16 @@ namespace TRE
 	public struct Vector3
 	{
 		public float x, y, z;
-        public static Vector3 left = new Vector3(-1, 0, 0);
-        public static Vector3 right = new Vector3(1, 0, 0);
-        public static Vector3 down = new Vector3(0, -1, 0);
-        public static Vector3 up = new Vector3(0, 1, 0);
-        public static Vector3 back = new Vector3(0, 0, -1);
-        public static Vector3 forward = new Vector3(0, 0, 1);
-        public static Vector3 zero = new Vector3(0, 0, 0);
-        public static Vector3 one = new Vector3(1, 1, 1);
+		public static Vector3 left = new Vector3(-1, 0, 0);
+		public static Vector3 right = new Vector3(1, 0, 0);
+		public static Vector3 down = new Vector3(0, -1, 0);
+		public static Vector3 up = new Vector3(0, 1, 0);
+		public static Vector3 back = new Vector3(0, 0, -1);
+		public static Vector3 forward = new Vector3(0, 0, 1);
+		public static Vector3 zero = new Vector3(0, 0, 0);
+		public static Vector3 one = new Vector3(1, 1, 1);
 
-        public Vector3(float x, float y, float z)
+		public Vector3(float x, float y, float z)
 		{
 			this.x = x; this.y = y; this.z = z;
 		}
@@ -348,16 +348,16 @@ namespace TRE
 		{
 			if(Magnitude() != 0)
 			{
-                this.x = this.x / Magnitude();
-                this.y = this.y / Magnitude();
-                this.z = this.z / Magnitude();
-            }
+				this.x = this.x / Magnitude();
+				this.y = this.y / Magnitude();
+				this.z = this.z / Magnitude();
+			}
 			if(Magnitude() == 0)
 			{
-                this.x = 0;
-                this.y = 0;
-                this.z = 0;
-            }
+				this.x = 0;
+				this.y = 0;
+				this.z = 0;
+			}
 		}
 
 		public static bool operator !=(Vector3 a, Vector3 b)
@@ -439,7 +439,7 @@ namespace TRE
 		{
 			position = output;
 
-            TransformSystem.SetPosition(id, output);
+			TransformSystem.SetPosition(id, output);
 		}
 
 		public void SetRotation(Vector3 output)
@@ -485,27 +485,27 @@ namespace TRE
 		{
 			Entity ent = new Entity(FindIDFromName(name));
 			return ent;
-        }
+		}
 		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())
 		{
 			// Ensure scaling is not zero, since Vector3 does not allow const version currently and must compile-time const
 			if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
 			{
-                Debug.LogWarning("Scaling is zero, setting the values to 1...");
+				Debug.LogWarning("Scaling is zero, setting the values to 1...");
 				scaling = new Vector3(1, 1, 1);
 			}
 
 			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
 			if (isPrefab)
 			{
-                EntityID id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
+				EntityID id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
 				return new Entity(id, FindNameFromID(id));
 			}
 			else if (IsValidEntity(entity.ID))
 			{
-                EntityID id = CloneEntity(entity.ID, postion, rotation, scaling);
-                return new Entity(id, FindNameFromID(id));
-            }
+				EntityID id = CloneEntity(entity.ID, postion, rotation, scaling);
+				return new Entity(id, FindNameFromID(id));
+			}
 			else
 			{
 				// Invalid Entity!
@@ -679,15 +679,15 @@ namespace TRE
 		internal extern static void TransitionMainCamera(Vector3 targetPosition, Vector3 targetRotation, float speed);
 	}
 
-    public enum ForceMode
-    {
-        Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
-        Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
-        VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
-        Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
-    }
+	public enum ForceMode
+	{
+		Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
+		Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
+		VelocityChange,     //!< parameter has unit of length / time, i.e., the effect is mass independent: a velocity change.
+		Acceleration        //!< parameter has unit of length/ time^2, i.e., an acceleration. It gets treated just like a force except the mass is not divided out before integration.
+	}
 
-    public class PhysicsSystem
+	public class PhysicsSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void ResizeSphereCollider(EntityID entityid, float newRadius);
@@ -736,13 +736,13 @@ namespace TRE
 	}
 
 	public class RigidBodySystem
-    {
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void SetKinematic(EntityID entityid, bool enable);
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetKinematic(EntityID entityid, bool enable);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void SetGravity(EntityID entityid, bool enable);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetGravity(EntityID entityid, bool enable);
+	}
 
 	public class InputSystem
 	{
@@ -751,29 +751,29 @@ namespace TRE
 	}
 
 	public class MathF
-    {
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static float Sqrt(float value);
-    }
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Sqrt(float value);
+	}
 
 	public class Random
 	{
 		public static int Range(int min_inclusive, int max_exclusive)
 		{
 			return IntRange(min_inclusive, max_exclusive);
-        }
+		}
 
 		public static float Range(float min_inclusive, float max_inclusive)
 		{
 			return FloatRange(min_inclusive, max_inclusive);
-        }
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int IntRange(int min_inclusive, int max_exclusive);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static int IntRange(int min_inclusive, int max_exclusive);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static float FloatRange(float min_inclusive, float max_inclusive);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float FloatRange(float min_inclusive, float max_inclusive);
+	}
 
 	public class Time
 	{
@@ -783,30 +783,30 @@ namespace TRE
 		public extern static float GetDeltaTime();
 	}
 
-    public class Audio
-    {
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void SetPlay(string entityid);
+	public class Audio
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetPlay(string entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void SetPause(string entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void SetPause(string entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void StopAudio(string entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void StopAudio(string entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool GetIsPlaying(string entityid);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetIsPlaying(string entityid);
+	}
 
 	public class Script
 	{
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool IsScript(string ClassName);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool IsScript(string ClassName);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool HaveScript(EntityID ID, string ClassName);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool HaveScript(EntityID ID, string ClassName);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static T GetScript<T>(EntityID ID, string ClassName);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static T GetScript<T>(EntityID ID, string ClassName);
+	}
 }
