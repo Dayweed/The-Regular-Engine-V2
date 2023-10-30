@@ -119,10 +119,7 @@ namespace TRE
 		default:                        physxForceMode = PxForceMode::eFORCE; break;
 		}
 
-		// m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force));
-
-		// SO TEMPORARY
-		m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>()->addForce(VEC3_CAST(PxVec3, force), physxForceMode);
+		m_Actors[entity->GetGUID()].m_RigidDynamic->addForce(VEC3_CAST(PxVec3, force), physxForceMode);
 	}
 
 	void PhysicsSystem::ConstrainPositionX(const Entity& entity, bool state) const
