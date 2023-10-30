@@ -25,14 +25,14 @@ namespace TRE
 		public EntityID ID;				// Can hold id of entity or id of prefab resource
 		public string name;
 		public Parenting parenting;
-		public Transform transform;
+		public TransformS transform;
 
         public Entity()
         {
 			ID = new EntityID();
 			name = "";
             parenting = new Parenting();
-			transform = new Transform();
+			transform = new TransformS();
         }
 
         public Entity(EntityID id)
@@ -121,6 +121,13 @@ namespace TRE
             return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
 
             //return GenerateComponent<T>();
+        }
+
+        public bool HasComponent<T>() where T : Component, new()
+        {
+			// WIP
+
+            return false;
         }
 
         // DONT USE THIS, INCOMPLETE AND UNTESTED
@@ -395,7 +402,7 @@ namespace TRE
 
 	}
 
-	public struct Transform
+	public struct TransformS
 	{
 		private EntityID id;
 		public Vector3 position, rotation, scale;
@@ -470,7 +477,7 @@ namespace TRE
 			ent.name = name;
             TransformSystem.GetPosition(ent.ID, out Vector3 pos);
             TransformSystem.GetRotation(ent.ID, out Vector3 rot);
-            ent.transform = new Transform(ent.ID, pos, rot, new Vector3(1, 1, 1));
+            ent.transform = new TransformS(ent.ID, pos, rot, new Vector3(1, 1, 1));
 			return ent;
         }
 		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())
@@ -526,6 +533,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static EntityID FindParentIDFromID(EntityID id);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool HasComponent(EntityID id , Type component);
 	}
 
 	public class CameraSystem

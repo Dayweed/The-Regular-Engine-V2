@@ -23,6 +23,7 @@
 
 namespace TRE
 {
+    
     ScriptInputHandler& ScriptInputHandler::Instance()
 	{
 		static ScriptInputHandler instance;
@@ -255,7 +256,7 @@ namespace TRE
         return (Temp != nullptr);
     }
 
-     static void BindAddComponent(CSEntityID ID, int componenttype)
+	static void BindAddComponent(CSEntityID ID, int componenttype)
     {
         // Retrive the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
@@ -315,6 +316,42 @@ namespace TRE
         if (!Temp) return;
 
         ECSManager::Instance().MarkForDeletion(Temp);
+    }
+
+    static bool BindHasComponent(CSEntityID ID, MonoReflectionType* type)
+    {
+	    Entity entity = VALIDATEENTITY(ID);
+
+        MonoType* monoType = mono_reflection_type_get_type(type);
+        std::string ComponentName = mono_type_get_name(monoType);
+
+        // for now the name of the type will be used to differentiate between components
+        switch(ComponentName)
+        {
+        case"Transform":
+            return entity->HasComponent<Transform>();
+        case "MeshRenderer":
+            return entity->HasComponent<MeshRenderer>();
+        case"Camera":
+            return entity->HasComponent<Camera>();
+        case"Rigidbody":
+            return entity->HasComponent<Rigidbody>();
+        case"SphereCollider":
+            return entity->HasComponent<SphereCollider>();
+        case"BoxCollider":
+            return entity->HasComponent<BoxCollider>();
+        case"CapsuleCollider":
+            return entity->HasComponent<CapsuleCollider>();
+        case"Audio":
+            return entity->HasComponent<Audio>();
+        case"AudioListener":
+            return entity->HasComponent<AudioListener>();
+        case"Script":
+            return entity->HasComponent<ScriptComponent>();
+        default:
+            TRE_ERROR("Component does not exist!");
+            return false;
+        }
     }
 
     static void BindTestFunction()
@@ -1055,6 +1092,7 @@ namespace TRE
 	    	mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
 	    	mono_add_internal_call("TRE.ECSManager::FindNameFromID", FindNameFromID);
 	    	mono_add_internal_call("TRE.ECSManager::FindParentIDFromID", FindParentIDFromID);
+            mono_add_internal_call("TRE.ECSManager::HasComponent",BindHasComponent);
 	    }
 
         // Entity Bindings
