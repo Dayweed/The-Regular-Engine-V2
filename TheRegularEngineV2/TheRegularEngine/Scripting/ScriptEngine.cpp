@@ -263,7 +263,7 @@ namespace TRE
 
 			// Load fields of each of the classes that is not the entity class
 
-			int fieldCount = mono_class_num_fields(monoClass);
+			// int fieldCount = mono_class_num_fields(monoClass);
 			//TRE_CORE_INFO("Field count: {0}", fieldCount);
 			void* iterator = nullptr;
 			while(MonoClassField* field = mono_class_get_fields(monoClass, &iterator))

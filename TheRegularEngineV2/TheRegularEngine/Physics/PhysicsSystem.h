@@ -315,6 +315,8 @@ namespace TRE
 
 		void UpdateAllComponents() const;
 
+		void UpdateActorPose(const Entity& entity, const glm::vec3& offset = glm::vec3{ 0 }) const;
+
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
 		physx::PxDefaultAllocator		m_Allocator;

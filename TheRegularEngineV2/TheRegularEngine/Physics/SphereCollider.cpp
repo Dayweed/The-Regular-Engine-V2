@@ -124,6 +124,8 @@ namespace TRE
 
 		sphereCollider.m_IsInitialized || ConstructSphereCollider(entity);
 
+		UpdateActorPose(entity, sphereCollider.m_Offset);
+
 		SetCapsuleColliderTrigger(entity, sphereCollider.m_IsTrigger);
 	}
 

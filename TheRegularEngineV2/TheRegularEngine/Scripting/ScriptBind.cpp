@@ -48,7 +48,7 @@ namespace TRE
 
     static Entity ValidateEntityID(CSEntityID ID, std::string function)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = ECSManager::Instance().FindEntity(EntityID_CSToEngine(ID));
         if (Temp == nullptr)
         {
@@ -67,18 +67,22 @@ namespace TRE
         EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
     }
 
+    /*
     static void PublishWarning(std::string message, std::string function)
     {
         std::string str{ CONSOLE_DEBUG_WARN };
         str += "[" + function + "] " + message;
         EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
     }
+    */
 
+    /*
     static void PublishLog(std::string message, std::string function)
     {
         std::string str{ "[" + function + "] " + message };
         EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
     }
+    */
 
 	std::string MonoStringToString(MonoString* monoString)
 	{
@@ -91,7 +95,7 @@ namespace TRE
 #pragma region PropertyBindings
     static void BindEntityRename(CSEntityID ID, MonoString* name)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
         Temp->GetComponent<Properties>().m_Name = mono_string_to_utf8(name);
@@ -99,7 +103,7 @@ namespace TRE
 
     static void BindEntityActive(CSEntityID ID, MonoBoolean isActive)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
         Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != isActive);
@@ -108,7 +112,7 @@ namespace TRE
 
     static bool BindEntityGetActive(CSEntityID ID)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return false;
         return Temp->GetComponent<Properties>().m_Active;
@@ -116,7 +120,7 @@ namespace TRE
 
     static void BindEntitySetTag(CSEntityID ID, MonoString* tag)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
         Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
@@ -124,7 +128,7 @@ namespace TRE
     
     static MonoString* BindEntityGetTag(CSEntityID ID)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return mono_string_new(mono_domain_get(), "");
 
@@ -159,7 +163,7 @@ namespace TRE
 #pragma region ParentBindings
     static void BindParentSetParent(CSEntityID ID, CSEntityID parentID)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         Entity parentTemp = VALIDATEENTITY(parentID);
         if (Temp && parentTemp)
@@ -170,7 +174,7 @@ namespace TRE
     
     static void BindParentRemoveParent(CSEntityID ID)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
         ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
@@ -178,7 +182,7 @@ namespace TRE
     
     static void BindParentAddChild(CSEntityID ID, CSEntityID childID)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         Entity childTemp = VALIDATEENTITY(childID);
         if (Temp && childTemp)
@@ -189,7 +193,7 @@ namespace TRE
     
     static void BindParentRemoveChild(CSEntityID ID, CSEntityID childID)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         Entity childTemp = VALIDATEENTITY(childID);
         if (Temp && childTemp)
@@ -200,7 +204,7 @@ namespace TRE
     
     static CSEntityID BindParentGetChildFromIndex(CSEntityID ID, int index)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (index >= Temp->GetComponent<Parenting>().m_Children.size())
         {
@@ -213,7 +217,7 @@ namespace TRE
 
     static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return false;
         return Temp->GetComponent<Properties>().m_Tag == mono_string_to_utf8(tag);
@@ -258,7 +262,7 @@ namespace TRE
 
 	static void BindAddComponent(CSEntityID ID, int componenttype)
     {
-        // Retrive the entity from the ID
+        // Retrieve the entity from the ID
         Entity Temp = VALIDATEENTITY(ID);
         if (!Temp) return;
 

@@ -132,6 +132,8 @@ namespace TRE
 
 		capsuleCollider.m_IsInitialized || ConstructCapsuleCollider(entity);
 
+		UpdateActorPose(entity, capsuleCollider.m_Offset);
+
 		SetCapsuleColliderTrigger(entity, capsuleCollider.m_IsTrigger);
 	}
 

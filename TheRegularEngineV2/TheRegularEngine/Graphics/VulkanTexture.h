@@ -5,7 +5,7 @@
 
 namespace TRE
 {
-	struct VulkanTexture;
+	class VulkanTexture;
 	struct CubeMapConfig
 	{
 		VkFormat Format;
