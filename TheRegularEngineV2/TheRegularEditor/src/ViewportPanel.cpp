@@ -171,7 +171,7 @@ namespace TRE
 
 	void ViewportPanel::Update()
 	{
-		ImGui::GetIO().DeltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime() * 5;
+		ImGui::GetIO().DeltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
