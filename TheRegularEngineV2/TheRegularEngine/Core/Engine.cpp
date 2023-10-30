@@ -435,8 +435,6 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
-		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
-		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 
