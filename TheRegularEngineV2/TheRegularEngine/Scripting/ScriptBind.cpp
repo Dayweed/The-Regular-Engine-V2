@@ -326,7 +326,7 @@ namespace TRE
         std::string ComponentName = mono_type_get_name(monoType);
 
         // for now the name of the type will be used to differentiate between components
-        switch(ComponentName)
+        /*switch(ComponentName)
         {
         case"Transform":
             return entity->HasComponent<Transform>();
@@ -351,7 +351,8 @@ namespace TRE
         default:
             TRE_ERROR("Component does not exist!");
             return false;
-        }
+        }*/
+        return false;
     }
 
     static void BindTestFunction()

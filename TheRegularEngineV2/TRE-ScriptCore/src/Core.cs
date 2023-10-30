@@ -45,13 +45,13 @@ namespace TRE
                 parenting = new Parenting(ID);
                 TransformSystem.GetPosition(ID, out Vector3 pos);
                 TransformSystem.GetRotation(ID, out Vector3 rot);
-                transform = new Transform(ID, pos, rot, new Vector3(1, 1, 1));
+                transform = new TransformS(ID, pos, rot, new Vector3(1, 1, 1));
             }
 			else
             {
 				name = "";
                 parenting = new Parenting();
-                transform = new Transform();
+                transform = new TransformS();
             }
         }
 
@@ -65,12 +65,12 @@ namespace TRE
                 parenting = new Parenting(ID);
                 TransformSystem.GetPosition(ID, out Vector3 pos);
                 TransformSystem.GetRotation(ID, out Vector3 rot);
-                transform = new Transform(ID, pos, rot, new Vector3(1, 1, 1));
+                transform = new TransformS(ID, pos, rot, new Vector3(1, 1, 1));
             }
             else
             {
                 parenting = new Parenting();
-                transform = new Transform();
+                transform = new TransformS();
             }
         }
 
@@ -407,7 +407,7 @@ namespace TRE
 		private EntityID id;
 		public Vector3 position, rotation, scale;
 
-		public Transform(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
+		public TransformS(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
 		{
 			id = _id;
 			position = _pos;
