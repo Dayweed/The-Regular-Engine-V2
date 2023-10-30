@@ -196,11 +196,17 @@ namespace TRE
 		isReadyForUpdate || TESTUpdate();
 
 		DestroyOutdatedComponents();
-
 	}
 
 	void PhysicsSystem::GameUpdate()
 	{
+		// Accumulator, courtesy of 
+		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
+		static float accumulator = 0.0f;
+		constexpr float step = 1.0f / 60.0f;
+		accumulator += Engine::GetInstance().GetWindow()->GetDeltaTime();
+		if (accumulator < step) return;
+
 #if 0
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
@@ -227,8 +233,7 @@ namespace TRE
 		// step 2) clear CTH
 		m_SimulationEventCallback.m_TriggerHistory = std::vector<TriggerHistoryEntry>();
 
-		// Accumulator?
-		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
+		accumulator -= step;
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
 		// ^ step 3) CTH is overwritten by fetchResults()
