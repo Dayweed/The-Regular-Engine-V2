@@ -448,6 +448,8 @@ namespace TRE
 
 	void ViewportPanel::MouseActions()
 	{
+		ImGui::GetIO().DeltaTime = 1 / Engine::GetInstance().GetWindow()->GetDeltaTime();
+
 		if (m_IsViewportHovered == false)
 			return;
 
