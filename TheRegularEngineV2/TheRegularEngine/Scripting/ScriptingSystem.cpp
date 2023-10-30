@@ -161,6 +161,7 @@ namespace TRE
 			if(ECSManager::Instance().EntityHasComponent<ScriptComponent>(e))
 			{
 				AddScriptableObject(e);
+				ScriptEngine::CreateCSEntityData(e);
 			}
 		}
 	}

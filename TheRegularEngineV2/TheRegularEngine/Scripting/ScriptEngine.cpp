@@ -312,18 +312,23 @@ namespace TRE
 		{
 			std::string GUID = entity->GetGUID();
 
-			if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end()) return;
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
+				return;
+			}
 
 			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
-			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			s_ScriptEngineData->EntityFieldMap[GUID];
+
+			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+			
+			for (auto& field : fieldMap)
 			{
-				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-				for (auto& field : fieldMap)
-				{
-					instance->GetInternalFieldValue(field.first, field.second.m_buffer);
-				}
+				instance->SetInternalFieldValue(field.first, field.second.m_buffer);
 			}
 		}
 	}
@@ -338,10 +343,18 @@ namespace TRE
 
 			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
 
-			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-			for (auto& field : fieldMap)
+			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
 			{
-				instance->GetInternalFieldValue(field.first, field.second.m_buffer);
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for (auto& field : fieldMap)
+				{
+					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+			else
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
 			}
 		}
 	}
@@ -357,10 +370,18 @@ namespace TRE
 
 			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
 
-			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-			for (auto& field : fieldMap)
+			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
 			{
-				instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for (auto& field : fieldMap)
+				{
+					instance->GetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+			else
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
 			}
 		}
 	}
