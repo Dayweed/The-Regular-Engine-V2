@@ -941,6 +941,14 @@ property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
 	//property_var(m_GUID).Name("GUID"),
+	property_var_fnbegin("GUID", std::string)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_GUID;
+		}
+
+	} property_var_fnend(),
 	property_var(m_Tag).Name("Tag"),
 	property_var(m_Active).Name("Active")
 } property_vend_h(TRE::Properties)
