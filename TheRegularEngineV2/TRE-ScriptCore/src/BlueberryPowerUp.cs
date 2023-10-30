@@ -50,7 +50,7 @@ namespace TRE
             if (!changeSize)
             {
                 Debug.Log("changing size");
-                this.transform.SetScaling(changeToThisSize);  //change the way it looks
+                this.transform.Scale=changeToThisSize;  //change the way it looks
                                                               //change the collider size
                                                               //this.transform.parent.GetComponent<CapsuleCollider>().radius = colliderRadius;
 
@@ -72,7 +72,7 @@ namespace TRE
 
         public void ChangeToDefault()
         {
-            this.transform.SetScaling(Vector3.one);
+            this.transform.Scale = Vector3.one;
 
             //change back collider size
             PhysicsSystem.ResizeCapsuleCollider(this.ID, colliderRadius, 2); //this.parenting.GetParent().GetComponent<CapsuleCollider>().height = 2;    // THIS CANT BE DONE YET

@@ -77,7 +77,7 @@ namespace TRE
             //move the power up gameobj to the player's position
             parenting.SetParent(playerObj);                                     // this.transform.parent = playerObj;
 
-            transform.SetPosition(new Vector3(0, transform.position.y, 0));     // this.transform.localPosition = new Vector3(0, this.transform.localPosition.y, 0);
+            this.transform.Position =  new Vector3(0, this.transform.Position.y, 0);     // this.transform.localPosition = new Vector3(0, this.transform.localPosition.y, 0);
 
             playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 

@@ -34,19 +34,21 @@ namespace TRE
 		CapsuleCollider,
 		AudioListener,
 		Script,
+        Transform,
         None
     };
     std::unordered_map<std::string, ComponentsID> ComponentsMap
 	{
-		{"MeshRenderer", ComponentsID::MeshRenderer},
-        {"Camera", ComponentsID::Camera},
-        {"Audio", ComponentsID::Audio},
-        {"Rigidbody", ComponentsID::Rigidbody},
-		{"SphereCollider", ComponentsID::SphereCollider},
-		{"BoxCollider", ComponentsID::BoxCollider},
-		{"CapsuleCollider", ComponentsID::CapsuleCollider},
-		{"AudioListener", ComponentsID::AudioListener},
-        {"Script", ComponentsID::Script}
+        {"TRE.Transform", ComponentsID::Transform},
+		{"TRE.MeshRenderer", ComponentsID::MeshRenderer},
+        {"TRE.Camera", ComponentsID::Camera},
+        {"TRE.Audio", ComponentsID::Audio},
+        {"TRE.Rigidbody", ComponentsID::Rigidbody},
+		{"TRE.SphereCollider", ComponentsID::SphereCollider},
+		{"TRE.BoxCollider", ComponentsID::BoxCollider},
+		{"TRE.CapsuleCollider", ComponentsID::CapsuleCollider},
+		{"TRE.AudioListener", ComponentsID::AudioListener},
+        {"TRE.Script", ComponentsID::Script}
     };
 
     namespace Tools
@@ -422,7 +424,9 @@ namespace TRE
         case ComponentsID::CapsuleCollider:
             return entity->HasComponent<CapsuleCollider>();
         case ComponentsID::Audio:
-
+			return entity->HasComponent<Audio>();
+        case ComponentsID::Transform:
+			return entity->HasComponent<Transform>();
         default:
             TRE_ERROR("Component does not exist!");
             return false;

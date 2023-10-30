@@ -113,7 +113,7 @@ namespace TRE
 
         public Vector3 SpawnObjPos()
         {
-            Vector3 spawningPos = this.transform.position + new Vector3(Random.Range(-size.x / 2, size.x / 2),
+            Vector3 spawningPos = this.transform.Position + new Vector3(Random.Range(-size.x / 2, size.x / 2),
                                                                             Random.Range(-size.y / 2, size.y / 2),
                                                                                 Random.Range(-size.z / 2, size.z / 2));
             
@@ -155,7 +155,7 @@ namespace TRE
         {
             foreach (Entity item in itemsToSpawn)
             {
-                if (Vector3.Distance(position, item.transform.position) < minRange)
+                if (Vector3.Distance(position, item.transform.Position) < minRange)
                 {
                     return false;
                 }
