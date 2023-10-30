@@ -39,17 +39,17 @@ namespace TRE
         public void Start()
         {
             Plane_collider = ECSManager.FindEntityByName("Plane collider");
-            Core.Log("My ID is " + this.ID);
-            Core.Log("Plane ID is " + Plane_collider.ID);
+            Debug.Log("My ID is " + this.ID);
+            Debug.Log("Plane ID is " + Plane_collider.ID);
 
             Trigger_Start = ECSManager.FindEntityByName("Trigger_Start");
-            Core.Log("Trigger_Start ID is " + Trigger_Start.ID);
+            Debug.Log("Trigger_Start ID is " + Trigger_Start.ID);
 
             Trigger_1 = ECSManager.FindEntityByName("Trigger_1");
-            Core.Log("Trigger_1 ID is " + Trigger_1.ID);
+            Debug.Log("Trigger_1 ID is " + Trigger_1.ID);
 
             Trigger_2 = ECSManager.FindEntityByName("Trigger_2");
-            Core.Log("Trigger_2 ID is " + Trigger_2.ID);
+            Debug.Log("Trigger_2 ID is " + Trigger_2.ID);
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 		}
@@ -98,7 +98,7 @@ namespace TRE
                 if (!isScaled)
                 {
                     superScale = lerp(1, 5, 0.1f);
-                    Core.Log("Super Scale: " + superScale);
+                    Debug.Log("Super Scale: " + superScale);
                     PhysicsSystem.ResizeCapsuleCollider(this.ID, superScale, defaultScale);
                     superScale = 1;
                     isScaled = true;

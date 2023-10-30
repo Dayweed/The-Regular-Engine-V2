@@ -430,6 +430,20 @@ namespace TRE
 		}
 	}
 
+	void ScriptEngine::OnLateUpdateEntity(Entity e)
+	{
+		std::string GUID = e->GetGUID();
+		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnLateUpdateInvoke();
+		}
+		else
+		{
+			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+		}
+	}
+
 	void ScriptEngine::OnTriggerStay(Entity e, Entity other)
 	{
 		std::string GUID = e->GetGUID();
@@ -530,6 +544,7 @@ namespace TRE
 		m_CreateMethod = scriptClass->GetMethod("OnCreate", 0);
 		m_StartMethod = scriptClass->GetMethod("Start", 0);
 		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
+		m_LateUpdateMethod = scriptClass->GetMethod("LateUpdate", 0);
 		m_TriggerStayMethod = scriptClass->GetMethod("OnTriggerStay", 1);
 		m_CollisionStayMethod = scriptClass->GetMethod("OnCollisionStay", 1);
 
@@ -574,6 +589,12 @@ namespace TRE
     {
 		if(m_UpdateMethod)
 			m_ScriptClass->InvokeMethod(m_Instance, m_UpdateMethod, nullptr);
+    }
+
+	void ScriptInstance::OnLateUpdateInvoke()
+    {
+		if(m_LateUpdateMethod)
+			m_ScriptClass->InvokeMethod(m_Instance, m_LateUpdateMethod, nullptr);
     }
 
 	void ScriptInstance::OnTriggerStayInvoke(Entity other)

@@ -17,41 +17,46 @@ namespace TRE
 
         public void OnEnable()
         {
-            Core.Log("OnEnable");
+            Debug.Log("OnEnable");
         }
 
         public void OnDisable()
         {
-            Core.Log("OnDisable");
+            Debug.Log("OnDisable");
         }
 
         public void OnDestroy()
         {
-            Core.Log("OnDestroy");
+            Debug.Log("OnDestroy");
         }
 
         public void Start()
         {
-            Core.Log("Testing on Finding Scripts");
-            Core.Log("Found HumanCentipede in GameObject (3): " + Script.HaveScript(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation"));
-            Core.Log("Testing Getting Scripts");
+            Debug.Log("Testing on Finding Scripts");
+            Debug.Log("Found HumanCentipede in GameObject (3): " + Script.HaveScript(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation"));
+            Debug.Log("Testing Getting Scripts");
             RandomizeFallingObjLocation test = Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation");
-            Core.Log("Successfully get w/o errors, maxAmountToSpawn is " + test.maxAmountToSpawn + ", changing to 10");
+            Debug.Log("Successfully get w/o errors, maxAmountToSpawn is " + test.maxAmountToSpawn + ", changing to 10");
             test.maxAmountToSpawn = 10;
-            Core.Log("Changed value, maxAmountToSpawn is " + test.maxAmountToSpawn);
-            Core.Log("Checking new value by getting again to see if it is still " + Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation").maxAmountToSpawn + ".");
+            Debug.Log("Changed value, maxAmountToSpawn is " + test.maxAmountToSpawn);
+            Debug.Log("Checking new value by getting again to see if it is still " + Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation").maxAmountToSpawn + ".");
 
-            Core.Log("Testing GetComponent... ");
+            Debug.Log("Testing GetComponent... ");
             Entity ent = ECSManager.FindEntityByName("GameObject (3)");
             RandomizeFallingObjLocation entget = ent.GetComponent<RandomizeFallingObjLocation>();
-            Core.Log("entget maxAmountToSpawn is " + entget.maxAmountToSpawn);
+            Debug.Log("entget maxAmountToSpawn is " + entget.maxAmountToSpawn);
 
-            Core.Log("Testing Invalid GetComponent... ");
+            Debug.Log("Testing Invalid GetComponent... ");
             HumanCentipede failedget = ent.GetComponent<HumanCentipede>();
-            Core.Log("Invalid GetComponent HumanCentipede: " + (failedget == null));
+            Debug.Log("Invalid GetComponent HumanCentipede: " + (failedget == null));
         }
 
         public void Update()
+        {
+            // Console.WriteLine("this " + this.transform.position.x + ", " + this.transform.position.y + ", " + this.transform.position.z);
+        }
+
+        public void LateUpdate()
         {
             // Console.WriteLine("this " + this.transform.position.x + ", " + this.transform.position.y + ", " + this.transform.position.z);
         }

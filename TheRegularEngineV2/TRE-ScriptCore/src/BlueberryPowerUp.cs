@@ -21,7 +21,7 @@ namespace TRE
 
         private void Start()
         {
-            Core.Log(this.name + "finding blueberry");
+            Debug.Log(this.name + "finding blueberry");
         }
 
         private void OnCreate()
@@ -49,7 +49,7 @@ namespace TRE
         {
             if (!changeSize)
             {
-                Core.Log("changing size");
+                Debug.Log("changing size");
                 this.transform.SetScaling(changeToThisSize);  //change the way it looks
                                                               //change the collider size
                                                               //this.transform.parent.GetComponent<CapsuleCollider>().radius = colliderRadius;
@@ -60,7 +60,7 @@ namespace TRE
             }
             else
             {
-                Core.Log("changing back");
+                Debug.Log("changing back");
                 ChangeToDefault();
             }
         }

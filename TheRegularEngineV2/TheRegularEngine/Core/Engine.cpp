@@ -421,24 +421,24 @@ namespace TRE
 		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false); // ignore, ignore
-		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);       // ignore, ignore
-		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);   // ignore, ignore
-		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);   // serialized, reflected
-		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false); // serialized, reflected
-		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);  // serialized, reflected
-		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");         // 
-		ECSManager::Instance().RegisterComponent<Camera>("Camera");                      // serialized, reflected
-		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");                // serialized, reflected
-		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");      // serialized, reflected
-		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");            // serialized, reflected
-		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");    // serialized, reflected
-		ECSManager::Instance().RegisterComponent<Audio>("Audio");                        // 
-		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");        // 
-		ECSManager::Instance().RegisterComponent<FEL>("FEL");                            // serialized
-		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");                    // serialized, reflected
-		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light"); // serialized, reflected
-		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");			 // 
+		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);		// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// 
+		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");									// serialized, reflected
+		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// serialized, reflected
+		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// serialized, reflected
+		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
+		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
+		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
+		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
+		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
+		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();

@@ -102,6 +102,12 @@ namespace TRE
 			ScriptEngine::OnUpdateEntity(e);
 		}
 
+		// Late Update
+		for(auto e: m_ScriptEntities)
+		{
+			ScriptEngine::OnLateUpdateEntity(e);
+		}
+
 		// On Destroy
 		for (auto e : m_ScriptEntities)
 		{

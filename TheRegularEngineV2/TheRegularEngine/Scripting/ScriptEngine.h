@@ -104,6 +104,7 @@ namespace TRE
 		void OnCreateInvoke();
 		void OnStartInvoke();
 		void OnUpdateInvoke();
+		void OnLateUpdateInvoke();
 		void OnTriggerStayInvoke(Entity other);
 		void OnCollisionStayInvoke(Entity other);
 
@@ -146,6 +147,7 @@ namespace TRE
 		MonoMethod* m_CreateMethod = nullptr;
 		MonoMethod* m_StartMethod = nullptr;
 		MonoMethod* m_UpdateMethod = nullptr;
+		MonoMethod* m_LateUpdateMethod = nullptr;
 		MonoMethod* m_TriggerStayMethod = nullptr;
 		MonoMethod* m_CollisionStayMethod = nullptr;
 
@@ -199,6 +201,7 @@ namespace TRE
 		static void OnCreateEntity(Entity e);
 		static void OnStartEntity(Entity e);
 		static void OnUpdateEntity(Entity e	);
+		static void OnLateUpdateEntity(Entity e	);
 
 		// Collision
 		static void OnTriggerStay(Entity e, Entity other);

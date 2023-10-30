@@ -25,13 +25,13 @@ namespace TRE
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
-            Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
+            Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
         }
 
         private void OnCollisionStay(System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
-            Core.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+            Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
 
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
@@ -44,24 +44,24 @@ namespace TRE
                 
                 if (!ECSManager.IsValidEntity(playerObj.parenting.GetChild(0).ID))
                 {
-                    Core.LogError("Could not find player child (" + playerObj.parenting.GetChild(0).ID + ")");
+                    Debug.LogError("Could not find player child (" + playerObj.parenting.GetChild(0).ID + ")");
                     return;
                 }
                 playerPowerUpManager = playerObj.parenting.GetChild(0).GetComponent<PowerUpManager>();        //playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();      // THIS CANT BE DONE YET!
 
                 if (playerControl == null)
                 {
-                    Core.LogError("Could not find playerControl");
+                    Debug.LogError("Could not find playerControl");
                     return;
                 }
                 if (playerPowerUpManager == null)
                 {
-                    Core.LogError("Could not find playerPowerUpManager");
+                    Debug.LogError("Could not find playerPowerUpManager");
                     return;
                 }
                 if (playerPowerUpManager.powerUps == null)
                 {
-                    Core.LogError("Could not find playerPowerUpManager.powerUps");
+                    Debug.LogError("Could not find playerPowerUpManager.powerUps");
                     return;
                 }
 

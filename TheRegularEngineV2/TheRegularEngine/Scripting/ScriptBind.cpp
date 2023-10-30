@@ -1160,10 +1160,10 @@ namespace TRE
 
         // Logging
 	    {
-		    mono_add_internal_call("TRE.Core::Log", SendMessageToConsole);
-	    	mono_add_internal_call("TRE.Core::LogWarning", SendWarningToConsole);
-	    	mono_add_internal_call("TRE.Core::LogError", SendErrorToConsole);
-	    	mono_add_internal_call("TRE.Core::LogCritical", SendCriticalToConsole);
+		    mono_add_internal_call("TRE.Debug::Log", SendMessageToConsole);
+	    	mono_add_internal_call("TRE.Debug::LogWarning", SendWarningToConsole);
+	    	mono_add_internal_call("TRE.Debug::LogError", SendErrorToConsole);
+	    	mono_add_internal_call("TRE.Debug::LogCritical", SendCriticalToConsole);
 	    }
 
         // Math

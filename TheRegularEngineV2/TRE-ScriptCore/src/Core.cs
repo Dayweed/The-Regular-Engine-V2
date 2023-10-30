@@ -115,7 +115,7 @@ namespace TRE
         {
 			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
 
-			Core.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
+            Debug.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
 			Console.WriteLine("ERROR! GetComponent is returning new type for " + typeof(T).ToString());
 
             return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
@@ -374,7 +374,7 @@ namespace TRE
 		}
 	}
 
-	public class Core
+	public class Debug
 	{
 		// Logging Functions
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -478,7 +478,7 @@ namespace TRE
 			// Ensure scaling is not zero, since Vector3 does not allow const version currently and must compile-time const
 			if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
 			{
-				Core.LogWarning("Scaling is zero, setting the values to 1...");
+                Debug.LogWarning("Scaling is zero, setting the values to 1...");
 				scaling = new Vector3(1, 1, 1);
 			}
 
