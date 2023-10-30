@@ -921,7 +921,7 @@
       },
       1048657,
       {
-         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
+         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
@@ -1221,7 +1221,7 @@
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
-            4.800000190734863,
+            0.0,
             0.0
          ],
          "m_Radius": 3.0

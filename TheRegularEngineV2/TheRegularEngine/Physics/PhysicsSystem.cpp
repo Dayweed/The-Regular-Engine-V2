@@ -84,22 +84,6 @@ namespace TRE
 		// ColliderToTrigger(e2);			TriggerToCollider(e2);
 #endif
 
-		// this is SO TEMPORARY
-		for (const auto& entity : ECSManager::Instance().GetEntities<Properties>())
-		{
-			if (entity->GetComponent<Properties>().m_Name == "Plane collider")
-			{
-				m_GroundPlaneMaterial = m_Physics->createMaterial(1.2f, 1.1f, 0);
-				//Static object creation
-				m_GroundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0.5), *m_GroundPlaneMaterial);
-#ifdef _DEBUG
-				m_GroundPlane->setName("THE PLANE");
-#endif
-				m_Scene->addActor(*m_GroundPlane);
-				m_Actors[entity->GetGUID()] = SharedData{ m_GroundPlane, 0, entity->GetGUID(), false };
-			}
-		}
-
 		return isReadyForUpdate = true;
 	}
 
@@ -180,7 +164,7 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
+		m_DefaultMaterial = m_Physics->createMaterial(0.5f, 0.5f, 0);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
@@ -196,11 +180,17 @@ namespace TRE
 		isReadyForUpdate || TESTUpdate();
 
 		DestroyOutdatedComponents();
-
 	}
 
 	void PhysicsSystem::GameUpdate()
 	{
+		// Accumulator, courtesy of 
+		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
+		static float accumulator = 0.0f;
+		constexpr float step = 1.0f / 60.0f;
+		accumulator += Engine::GetInstance().GetWindow()->GetDeltaTime();
+		if (accumulator < step) return;
+
 #if 0
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
@@ -227,8 +217,7 @@ namespace TRE
 		// step 2) clear CTH
 		m_SimulationEventCallback.m_TriggerHistory = std::vector<TriggerHistoryEntry>();
 
-		// Accumulator?
-		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
+		accumulator -= step;
 		m_Scene->simulate(1.0f / 60.0f);
 		m_Scene->fetchResults(true);
 		// ^ step 3) CTH is overwritten by fetchResults()
@@ -307,6 +296,10 @@ namespace TRE
 				DestructCapsuleCollider(entity);
 		}
 		m_Actors.clear();
+
+		m_SimulationEventCallback.m_CollisionHistory.clear();
+		m_SimulationEventCallback.m_TriggerHistory.clear();
+		m_SimulationEventCallback.m_PrevTriggerHistory.clear();
 	}
 
 	void PhysicsSystem::AfterReset()
@@ -342,8 +335,6 @@ namespace TRE
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
 
 		m_Actors.clear();
-		PX_RELEASE(m_GroundPlane);
-		PX_RELEASE(m_GroundPlaneMaterial);
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Scene);
 		PxCloseExtensions();
@@ -481,10 +472,7 @@ namespace TRE
 		// assert that there is at least 1 collider component on this entity
 		assert(m_Actors[entity->GetGUID()].m_AttachedComponents >> 1);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// SO TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
@@ -524,10 +512,7 @@ namespace TRE
 		// assert that there is at least 1 collider component on this entity
 		assert(m_Actors[entity->GetGUID()].m_AttachedComponents >> 1);
 
-		// PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
-
-		// SO TEMPORARY
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
@@ -906,9 +891,6 @@ namespace TRE
 
 		for (unsigned i = 0; i < nbPairs; ++i)
 		{
-			assert(pairHeader.actors[0]->is<PxRigidActor>());
-			assert(pairHeader.actors[1]->is<PxRigidActor>());
-
 			unsigned actor0Index = pairHeader.actors[0]->is<PxRigidActor>()->getInternalActorIndex();
 			unsigned actor1Index = pairHeader.actors[1]->is<PxRigidActor>()->getInternalActorIndex();
 			unsigned flags = 0;
