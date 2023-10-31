@@ -27,6 +27,9 @@ namespace TRE
 
 	void SceneManager::LoadScene(std::string scenePath)
 	{
+		ECSSystemManager::Instance().BeforeReset();
+		ECSManager::Instance().DestroyAll();
+
 		if (std::filesystem::exists(scenePath))
 		{
 			ECSManager::Instance().LoadEntities(scenePath);
@@ -42,6 +45,8 @@ namespace TRE
 			TRE_CORE_CRITICAL("Scene file not found!");
 			return;
 		}
+
+		ECSSystemManager::Instance().AfterReset();
 	}
 
 	void SceneManager::SaveSceneAs(std::string scenePath)

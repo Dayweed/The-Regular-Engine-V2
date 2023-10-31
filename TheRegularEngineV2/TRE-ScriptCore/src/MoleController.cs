@@ -43,6 +43,8 @@ namespace TRE
 		//Return width back to 0
 		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
 
+		private Vector3 playerDirection = new Vector3(0,0,1);
+
 		//For camera controller
 		private Entity Trigger_A;
 		private Entity Trigger_B;
@@ -84,6 +86,8 @@ namespace TRE
 
 			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
 			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
+
+			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 		}
 
 		public void Update()
@@ -91,7 +95,9 @@ namespace TRE
             // Move The Test Object 
             TransformSystem.GetPosition(this.ID, out Vector3 pos);
             PhysicsSystem.ConstrainRotationX(this.ID, true);
-            PhysicsSystem.ConstrainRotationZ(this.ID, true);
+			PhysicsSystem.ConstrainRotationY(this.ID, true);
+			PhysicsSystem.ConstrainRotationZ(this.ID, true);
+
 
             //Movement Related stuff
             PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
@@ -102,25 +108,49 @@ namespace TRE
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				dirVec.z += -1;
-				debugKeys += 1000;
-            }
+				playerDirection.y = 180;
+			}
 
             if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
-				debugKeys += 100;
+				playerDirection.y = 0;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
 				dirVec.x += -1;
-				debugKeys += 10;
+				playerDirection.y = 270;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
-				debugKeys += 1;
+				playerDirection.y = 90;
+			}
+
+			if(InputSystem.GetKeyDown(InputKeys.W))
+			{
+				if (InputSystem.GetKeyDown(InputKeys.D))
+				{
+					playerDirection.y = 135;
+				}
+				if (InputSystem.GetKeyDown(InputKeys.A))
+				{
+					playerDirection.y = 225;
+				}
+			}
+
+			if (InputSystem.GetKeyDown(InputKeys.S))
+			{
+				if (InputSystem.GetKeyDown(InputKeys.D))
+				{
+					playerDirection.y = 45;
+				}
+				if (InputSystem.GetKeyDown(InputKeys.A))
+				{
+					playerDirection.y = 315;
+				}
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.Space))
@@ -172,6 +202,8 @@ namespace TRE
                 }
                 //Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
+
+			TransformSystem.SetRotation(this.ID, playerDirection);
 
 			regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
 			regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
