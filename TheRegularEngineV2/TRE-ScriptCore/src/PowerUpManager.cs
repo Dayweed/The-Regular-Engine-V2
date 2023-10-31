@@ -108,16 +108,5 @@ namespace TRE
             DeactivatePowerUps();
             powerUps.RemoveAt(0);
         }
-
-        public void AddTopowerUps(Entity ent)
-        {
-            powerUps.Add(ent);
-        }
-
-        public int GetpowerUpsSize()
-        {
-            Console.WriteLine("6");
-            return powerUps.Count;
-        }
     }
 }

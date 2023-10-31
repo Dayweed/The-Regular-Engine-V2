@@ -354,32 +354,6 @@ namespace TRE
 						}
 					, Data);
 
-					// Do additional stuff if values are change for certain components
-					if (UpdatedData)
-					{
-						// if only there was some way to get types from strings... :(
-						std::string compName{ List.first };
-
-						// capturing compName by reference
-						auto SetIsDirty = [&compName]<typename Comp>(const Entity& e)
-						{
-							if (compName == ComponentManager::Instance().GetComponentName<Comp>())
-								if (HasIsDirty<Comp>::value)
-									e->GetComponent<Comp>().m_IsDirty = true;
-						};
-
-						// because I can't do SetIsDirty<Component>(entity) :(
-						SetIsDirty.operator() < Transform > (entity);
-						SetIsDirty.operator() < Rigidbody > (entity);
-						SetIsDirty.operator() < SphereCollider > (entity);
-						SetIsDirty.operator() < BoxCollider > (entity);
-						SetIsDirty.operator() < CapsuleCollider > (entity);
-						SetIsDirty.operator() < ScriptComponent > (entity);
-						SetIsDirty.operator() < Camera > (entity);
-						// add more of your components here! :)
-						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
-					}
-
 					// Update Prefabing Instance data if have
 					if (UpdatedData && isPrefabInstance)
 					{
@@ -404,15 +378,142 @@ namespace TRE
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
 							// Display all the data in that script (GUID, ScriptFieldMap)
-							ScriptFieldMap& map{ ScriptEngine::s_ScriptEngineData->EntityFieldMap[entity->GetGUID()] };
-							//std::cout << "> " << &map << ": " << map.size() << "\n";
-							for (auto& inst : map)
+							ScriptFieldMap& fieldMap{ ScriptEngine::s_ScriptEngineData->EntityFieldMap[entity->GetGUID()] };
+							auto& instance{ ScriptEngine::s_ScriptEngineData->ScriptInstances[entity->GetGUID()] };
+
+							for (const auto& [name, inst] : fieldMap)
 							{
-								std::cout << inst.first << "\n";
+								ImGui::Text(name.c_str());
+								ImGui::SameLine();
+
+								ScriptField field{ inst.m_Field };
+								if (field.m_Type == ScriptFieldTypes::None)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
+								}
+								else if (field.m_Type == ScriptFieldTypes::Float)
+								{
+									float Value = instance->GetFieldValue<float>(name);
+									UpdatedData = UpdatedData ? true : ImGui::DragFloat(NameField.c_str(), &Value);
+									instance->SetFieldValue<float>(name, Value);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Double)
+								{
+									double Value = instance->GetFieldValue<double>(name);
+									UpdatedData = UpdatedData ? true : ImGui::InputDouble(NameField.c_str(), &Value);
+									instance->SetFieldValue<double>(name, Value);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Boolean)
+								{
+									bool Value = instance->GetFieldValue<bool>(name);
+									UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameField.c_str(), &Value);
+									instance->SetFieldValue<bool>(name, Value);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Char)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Char");
+								}
+								else if (field.m_Type == ScriptFieldTypes::Byte)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Byte");
+								}
+								else if (field.m_Type == ScriptFieldTypes::Short)
+								{
+									short data = instance->GetFieldValue<short>(name);
+									int Value = static_cast<int>(data);
+									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+									instance->SetFieldValue<short>(name, static_cast<short>(Value));
+								}
+								else if (field.m_Type == ScriptFieldTypes::Int)
+								{
+									int Value = instance->GetFieldValue<int>(name);
+									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+									instance->SetFieldValue<int>(name, Value);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Long)
+								{
+									long data = instance->GetFieldValue<long>(name);
+									int Value = static_cast<int>(data);
+									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+									instance->SetFieldValue<long>(name, static_cast<long>(Value));
+								}
+								else if (field.m_Type == ScriptFieldTypes::UnsignedChar)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
+								}
+								else if (field.m_Type == ScriptFieldTypes::UnsignedInt)
+								{
+									unsigned int data = instance->GetFieldValue<unsigned int>(name);
+									int Value = static_cast<int>(data);
+									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+									instance->SetFieldValue<unsigned int>(name, static_cast<unsigned int>(Value));
+								}
+								else if (field.m_Type == ScriptFieldTypes::UnsignedLong)
+								{
+									unsigned long data = instance->GetFieldValue<unsigned long>(name);
+									int Value = static_cast<int>(data);
+									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+									instance->SetFieldValue<unsigned long>(name, static_cast<unsigned long>(Value));
+								}
+								else if (field.m_Type == ScriptFieldTypes::Vector2)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector2");
+								}
+								else if (field.m_Type == ScriptFieldTypes::Vector3)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector3");
+								}
+								else if (field.m_Type == ScriptFieldTypes::Vector4)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector4");
+								}
+								else if (field.m_Type == ScriptFieldTypes::Entity)
+								{
+									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Entity");
+								}
+								else if (field.m_Type == ScriptFieldTypes::String)
+								{
+									MonoString* data = instance->GetFieldValue<MonoString*>(name);
+									std::string Value = mono_string_to_utf8(data);
+									UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
+									instance->SetFieldValue<MonoString*>(name, mono_string_new(mono_domain_get(), Value.c_str()));
+								}
+								else
+								{
+									std::string function{ __FUNCTION__ };
+									TRE_ERROR("[" + function + "] Not all ScriptFieldTypes is accounted!");
+									assert(false && "Refer to Error above");
+								}
 							}
 						}
 					}
 #pragma endregion
+
+					// Do additional stuff if values are change for certain components
+					if (UpdatedData)
+					{
+						// if only there was some way to get types from strings... :(
+						std::string compName{ List.first };
+
+						// capturing compName by reference
+						auto SetIsDirty = [&compName]<typename Comp>(const Entity & e)
+						{
+							if (compName == ComponentManager::Instance().GetComponentName<Comp>())
+								if (HasIsDirty<Comp>::value)
+									e->GetComponent<Comp>().m_IsDirty = true;
+						};
+
+						// because I can't do SetIsDirty<Component>(entity) :(
+						SetIsDirty.operator() < Transform > (entity);
+						SetIsDirty.operator() < Rigidbody > (entity);
+						SetIsDirty.operator() < SphereCollider > (entity);
+						SetIsDirty.operator() < BoxCollider > (entity);
+						SetIsDirty.operator() < CapsuleCollider > (entity);
+						SetIsDirty.operator() < ScriptComponent > (entity);
+						SetIsDirty.operator() < Camera > (entity);
+						// add more of your components here! :)
+						// my HasIsDirty<> will even check for the dirty bit on your behalf!:D
+					}
 				}
 				ImGui::Separator();
 			}

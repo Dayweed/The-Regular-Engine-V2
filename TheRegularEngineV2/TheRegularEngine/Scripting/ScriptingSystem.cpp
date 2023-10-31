@@ -28,7 +28,8 @@ namespace TRE
 	void ScriptingSystem::GameUpdate()
 	{
 		if(m_IsRunning == true)
-		{	
+		{
+			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
 			//inital Create entity instances (only works if they are created before scene starts)
 			for(auto e: m_ScriptEntities)
@@ -127,6 +128,7 @@ namespace TRE
 	void ScriptingSystem::AfterReset()
 	{
 		// Add back all entities with Scripting
+		ScriptEngine::ReloadAssembly();
 		InitializeScriptableObjects();
 		m_IsRunning = true;
 	}
