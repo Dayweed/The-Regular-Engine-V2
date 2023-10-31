@@ -19,7 +19,7 @@ namespace TRE
         //Max Velocity vector
         private float maxVelocity = 5f;
         //Acceleration
-        private float acceleration = 1000f;
+        private float acceleration = 300f;
         //Deceleration
         private float deceleration = -10f;
         //velocity in the air
@@ -127,7 +127,7 @@ namespace TRE
             {
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(currVelocity.x, 10, currVelocity.z);
+					Vector3 maxHeight = new Vector3(currVelocity.x, 1000, currVelocity.z);
 					Jump(maxHeight);
 				}
 			}
@@ -183,8 +183,8 @@ namespace TRE
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
-			PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
-			//PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
+			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
+			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
 		}
 
 		public static float lerp(float start, float end, float t)
