@@ -478,6 +478,25 @@ namespace TRE
 			m_DebugRenderer->BindDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
 			m_DebugRenderer->DrawDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
 		}
+
+		for (const auto& directionalLight : ECSManager::Instance().GetEntities<DirectionalLight>())
+		{
+			const Transform& tr = directionalLight->GetComponent<Transform>();
+			
+			PushConstant pc{};
+			glm::mat4 model(1.f);
+			const float scale = 10.f;
+			model = glm::translate(model, tr.m_Position);
+			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+			model = glm::scale(model, glm::vec3(scale, scale, scale));
+			pc.m_Model = model;
+
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+			m_DebugRenderer->BindDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+			m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+		}
 	}
 
 	void SceneRenderer::LoadCubeMap()
