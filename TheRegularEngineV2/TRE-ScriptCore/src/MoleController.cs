@@ -177,7 +177,7 @@ namespace TRE
 				}
 			}
 
-			TransformSystem.SetRotation(this.ID, playerDirection);
+            TransformSystem.SetRotation(this.ID, playerDirection);
 
 			regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
 			regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
@@ -200,13 +200,23 @@ namespace TRE
 			Entity other = new Entity(otherID);
 			if(PhysicsSystem.IsCollisionStay(this.ID, otherID))
 			{
-				if(EngineGetTag(otherID) == "Ground")
+				if(EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Player")
 				{
 					isGrounded = true;
 				}
 				else
 				{
 					isGrounded = false;
+				}
+			}
+			if(PhysicsSystem.IsCollisionExit(this.ID, otherID))
+			{
+				if(EngineGetTag(otherID) == "Player")
+				{
+					PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 output);
+					if (output.y > maxVelocity)
+						output.y = maxVelocity;
+					PhysicsSystem.SetLinearVelocity(this.ID, output);
 				}
 			}
 		}
