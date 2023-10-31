@@ -2,6 +2,7 @@
 #include "SceneHierarchyPanel.h"
 #include "Core/GameLoop.h"
 #include "Imgui/imgui.h"
+#include "Core/Parent.h"
 
 namespace TRE
 {
@@ -35,6 +36,7 @@ namespace TRE
 
 		if (ImGui::TreeNodeEx(SceneDisplay.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			//create new entities individually
 			if (ImGui::Button("Create Entity"))
 			{
 				Entity GameObject = ECSManager::Instance().CreateEntity();
@@ -77,11 +79,51 @@ namespace TRE
 				entities.emplace_back(ECSSystemManager::Instance().GetSystem<PrefabSystem>()->GetDisplayedPrefab());
 			}
 
+			if (m_SelectionManager->GetSelectedEntity())
+			{
+				if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
+				{
+					//create and delete entity
+					if (ImGui::BeginPopupContextWindow())
+					{
+						//create new entities as entity's children
+						if (ImGui::Selectable("Create Entity"))
+						{
+							Entity entityChild = ECSManager::Instance().CreateEntity();
+							entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
+							ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
+							m_SelectionManager->ClearSelectedEntity();
+						}
+
+						if (ImGui::Selectable("Delete Entity"))
+						{
+							TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
+							DeleteChildren(entityToDelete);
+							m_SelectionManager->ClearSelectedEntity();
+						}
+						ImGui::EndPopup();
+					}
+				}
+
+				else
+				{
+					if (ImGui::BeginPopupContextWindow(/*"Popup"*/))
+					{
+						//create new entities as entity's children
+						if (ImGui::Selectable("Create Entity"))
+						{
+							Entity entityChild = ECSManager::Instance().CreateEntity();
+							entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
+							ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
+							m_SelectionManager->ClearSelectedEntity();
+						}
+						ImGui::EndPopup();
+					}
+				}
+			}
+
 			for (auto& currentEntity : entities)
 			{
-				//ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow;
-				//const std::string& entityName = currentEntity->GetName();
-
 				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
 				{
 					DisplayChildren(currentEntity);
@@ -101,173 +143,48 @@ namespace TRE
 
 	void SceneHierarchyPanel::DisplayChildren(TRE::Entity& CurrentEntity)
 	{
-		const std::string entityName = CurrentEntity->GetName();
+		const std::string entityName = CurrentEntity->GetName() + "##" + CurrentEntity->GetGUID();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		const size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
-
-		//parent has children
-		if (vectorSize)
+		size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
+		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | (vectorSize ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
+		 
+		if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 		{
-			ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-
-			if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
+			if (ImGui::BeginDragDropSource())
 			{
-				if (ImGui::BeginDragDropSource())
-				{
-					ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
-					ImGui::Text("Dragging %s", entityName.c_str());
-					ImGui::EndDragDropSource();
-				}
+				ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
+				ImGui::Text("Dragging %s", entityName.c_str());
+				ImGui::EndDragDropSource();
+			}
 
-				if (ImGui::BeginDragDropTarget())
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
 				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
-					{
-						TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+					TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
 						
-						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
-					}
-
-					ImGui::EndDragDropTarget();
+					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
 				}
 
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-				{
-					m_SelectionManager->SelectEntity(CurrentEntity);
-				}
-
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-				{
-					m_SelectionManager->SelectEntity(CurrentEntity);
-				}
-
-				if (m_SelectionManager->GetSelectedEntity())
-				{
-					if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
-					{
-						//ImGui::OpenPopup("Popup_without_cam");
-						//create and delete entity
-						if (ImGui::BeginPopupContextWindow(/*"Popup_without_cam"*/))
-						{
-							if (ImGui::Selectable("Create Entity"))
-							{
-								Entity GameObject = ECSManager::Instance().CreateEntity();
-								GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
-							}
-
-							if (ImGui::Selectable("Delete Entity"))
-							{
-								TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
-								DeleteChildren(entityToDelete);
-								m_SelectionManager->ClearSelectedEntity();
-							}
-							ImGui::EndPopup();
-						}
-					}
-
-					else
-					{
-						//ImGui::OpenPopup("Popup");
-
-						if (ImGui::BeginPopupContextWindow(/*"Popup"*/))
-						{
-							if (ImGui::Selectable("Create Entity"))
-							{
-								Entity GameObject = ECSManager::Instance().CreateEntity();
-								GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
-							}
-							ImGui::EndPopup();
-						}
-					}
-				}
-
-				for (auto& entityChild : childrenVector)
-				{
-					DisplayChildren(entityChild);
-				}
-
-				ImGui::TreePop();
+				ImGui::EndDragDropTarget();
 			}
-		}
 
-		//its a leaf node
-		else
-		{
-			ImGuiTreeNodeFlags Flags = ImGuiTreeNodeFlags_Leaf | ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0);
-			
-			if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 			{
-				if (ImGui::BeginDragDropSource())
-				{
-					ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
-					ImGui::Text("Dragging %s", entityName.c_str());
-					ImGui::EndDragDropSource();
-				}
-
-				if (ImGui::BeginDragDropTarget())
-				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
-					{
-						TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
-
-						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
-					}
-
-					ImGui::EndDragDropTarget();
-				}
-				
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-				{
-					m_SelectionManager->SelectEntity(CurrentEntity);
-				}
-
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-				{
-					m_SelectionManager->SelectEntity(CurrentEntity);
-				}
-
-				if (m_SelectionManager->GetSelectedEntity())
-				{
-					if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
-					{
-						//ImGui::OpenPopup("Popup_without_cam");
-						//create and delete entity
-						if (ImGui::BeginPopupContextWindow(/*"Popup_without_cam"*/))
-						{
-							if (ImGui::Selectable("Create Entity"))
-							{
-								Entity GameObject = ECSManager::Instance().CreateEntity();
-								GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
-							}
-
-							if (ImGui::Selectable("Delete Entity"))
-							{
-								TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
-								DeleteChildren(entityToDelete);
-								m_SelectionManager->ClearSelectedEntity();
-							}
-							ImGui::EndPopup();
-						}
-					}
-
-					else
-					{
-						//ImGui::OpenPopup("Popup");
-
-						if (ImGui::BeginPopupContextWindow(/*"Popup"*/))
-						{
-							if (ImGui::Selectable("Create Entity"))
-							{
-								Entity GameObject = ECSManager::Instance().CreateEntity();
-								GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
-							}
-							ImGui::EndPopup();
-						}
-					}
-				}
-
-				ImGui::TreePop();
+				m_SelectionManager->SelectEntity(CurrentEntity);
 			}
+
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+			{
+				m_SelectionManager->SelectEntity(CurrentEntity);
+			}
+
+			for (auto& entityChild : childrenVector)
+			{
+				DisplayChildren(entityChild);
+			}
+
+			ImGui::TreePop();
 		}
 	}
 

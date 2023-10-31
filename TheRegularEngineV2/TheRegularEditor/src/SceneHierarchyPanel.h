@@ -31,6 +31,5 @@ namespace TRE
 
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
-			std::string entityIDTodeleted;
 	};
 }
