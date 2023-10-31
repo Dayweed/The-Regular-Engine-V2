@@ -10,7 +10,7 @@ namespace TRE
     public class HumanCentipede : Entity
     {
         public int blueBridge;
-        //public Entity Royce;
+        public Entity Royce;
 
         // How to call base class constructor to access Entity-like Properties
         public HumanCentipede()
@@ -75,6 +75,9 @@ namespace TRE
 
         public int maxAmountToSpawn;
         public int timeBetweenSpawns;
+        public int noOfObjects;
+        public int maxObjects;
+
         private float currentTimeBetweenSpawns;
         private bool canSpawnObjs = false;
 
@@ -100,7 +103,9 @@ namespace TRE
             fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
             maxAmountToSpawn = 2;
             timeBetweenSpawns = 2;
-            canSpawnObjs = false;
+            size = new Vector3(50, 50, 50);
+            canSpawnObjs = true;
+            maxObjects = 6;
         }
 
         // Update is called once per frame
@@ -148,7 +153,7 @@ namespace TRE
                     if (IsPosEmpty(itemToSpawnPos))
                     {
                         //yes, so add to list
-                        itemsToSpawn.Add(ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()], itemToSpawnPos));
+                        itemsToSpawn.Add(ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()], itemToSpawnPos, default, Vector3.one));
 
                         break;
                     }
@@ -188,7 +193,11 @@ namespace TRE
             {
                 for (int i = 0; i < maxAmountToSpawn; i++)
                 {
-                    CreateItems(maxAmountToSpawn);
+                    if (noOfObjects < maxObjects)
+                    {
+                        CreateItems(maxAmountToSpawn);
+                        ++noOfObjects;
+                    }
                 }
 
                 currentTimeBetweenSpawns = timeBetweenSpawns;

@@ -283,6 +283,12 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+
+		if (Temp->HasComponent<ScriptComponent>())
+		{
+			ScriptEngine::CreateCSEntityData(Temp);
+		}
+
 		std::cout << "Created Entity from C#: " << str << std::endl;
 		return EntityID_EngineToCS(Temp->GetGUID());
 	}
@@ -298,6 +304,12 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+
+		if (Temp->HasComponent<ScriptComponent>())
+		{
+			ScriptEngine::CreateCSEntityData(Temp);
+		}
+
 		std::cout << "Cloned Entity from C#: " << Existing->GetName() << std::endl;
 		return EntityID_EngineToCS(Temp->GetGUID());
 	}

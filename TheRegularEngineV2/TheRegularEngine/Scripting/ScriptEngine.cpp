@@ -409,7 +409,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -423,7 +424,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -437,7 +439,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -468,11 +471,22 @@ namespace TRE
 			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
 			s_ScriptEngineData->ScriptInstances[GUID]->OnCreateInvoke();
 		}
+		else
+		{
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("["+ function+"] Cannot find EntityClass for entity {}", entity->GetName());
+		}
 	}
 
 	void ScriptEngine::OnStartEntity(Entity e)
 	{
 		std::string GUID = e->GetGUID();
+
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
+		{
+			CreateCSEntityData(e);
+		}
+
 		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
 			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
@@ -480,7 +494,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -494,7 +509,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -508,7 +524,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -522,7 +539,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
@@ -536,7 +554,8 @@ namespace TRE
 		}
 		else
 		{
-			TRE_CORE_ERROR("Cannot find ScriptInstance for entity {}", GUID);
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
 
