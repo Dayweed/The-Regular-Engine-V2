@@ -33,21 +33,24 @@ namespace TRE
         private bool isAwake = false;
 
 
-        //check if player used super power
-        private bool isScaled = false;
-        //Default scale
-        private float defaultScale = 1;
-        //Increase character scale
-        private float superScale = 5;
-        //Increase player width
+		//check if player used super power
+		private bool isScaled = false;
+		//Default scale
+		private float defaultScale = 5;
+		//Increase character scale
+		private float superScale = 1;
         private Vector3 fat = new Vector3(3f, 2f, 3f);
 		//Return width back to 0
 		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
-        //For now the floor collision
-        public Entity Collider;
-        private Entity Trigger_Start;
-        private Entity Trigger_1;
-        private Entity Trigger_2;
+
+		//For camera controller
+		private Entity Trigger_A;
+		private Entity Trigger_B;
+		private Entity Trigger_C;
+		private Entity Trigger_D;
+		private Entity Trigger_E;
+		private Entity Trigger_F;
+		private Entity Trigger_G;
 
         private CameraController cameraController;
 
@@ -55,14 +58,26 @@ namespace TRE
 
 		public void Start()
 		{
-			Trigger_Start = ECSManager.FindEntityByName("Trigger_Start");
-			Debug.Log("Trigger_Start ID is " + Trigger_Start.ID);
+			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
+			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
 
-			Trigger_1 = ECSManager.FindEntityByName("Trigger_1");
-			Debug.Log("Trigger_1 ID is " + Trigger_1.ID);
+			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
+			Debug.Log("Trigger_B ID is " + Trigger_B.ID);
 
-			Trigger_2 = ECSManager.FindEntityByName("Trigger_2");
-			Debug.Log("Trigger_2 ID is " + Trigger_2.ID);
+			Trigger_C = ECSManager.FindEntityByName("Trigger_C");
+			Debug.Log("Trigger_C ID is " + Trigger_C.ID);
+
+			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
+			Debug.Log("Trigger_D ID is " + Trigger_D.ID);
+
+			Trigger_E = ECSManager.FindEntityByName("Trigger_E");
+			Debug.Log("Trigger_E ID is " + Trigger_E.ID);
+
+			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
+			Debug.Log("Trigger_F ID is " + Trigger_F.ID);
+
+			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
+			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 		}
@@ -145,9 +160,13 @@ namespace TRE
                 }
             }
 
-            cameraController.regionStart = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_Start.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_Start.ID); ;
-			cameraController.region1 = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_1.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_1.ID);
-			cameraController.region2 = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_2.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_2.ID);
+			cameraController.regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
+			cameraController.regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
+			cameraController.regionC = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_C.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_C.ID);
+			cameraController.regionD = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_D.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_D.ID);
+			cameraController.regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
+			cameraController.regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
+			cameraController.regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
