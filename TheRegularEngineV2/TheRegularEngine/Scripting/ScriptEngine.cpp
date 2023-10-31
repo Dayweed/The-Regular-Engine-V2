@@ -132,10 +132,11 @@ namespace TRE
 		void PrintAllContainers()
 		{
 
-			for(auto e : ScriptEngine::s_ScriptEngineData->EntityFieldMap)
+			for(auto& scriptInstance : ScriptEngine::s_ScriptEngineData->ScriptInstances)
 			{
-				TRE_CORE_INFO("Entity: {0}", e.first);
+				TRE_CORE_INFO("Instance: {0} ", scriptInstance.first);
 			}
+
 			
 		}
 
@@ -302,84 +303,6 @@ namespace TRE
 
 		// Retrieve and instantiate the main class
 		InitScriptingMain();
-	}
-
-	void ScriptEngine::CreateCSEntityData(Entity entity)
-	{
-		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
-		if (EntityClassExists(scriptComponent.m_StoredClass))
-		{
-			std::string GUID = entity->GetGUID();
-
-			if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
-			{
-				std::string function{ __FUNCTION__ };
-				TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
-				return;
-			}
-
-			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
-			s_ScriptEngineData->ScriptInstances[GUID] = instance;
-
-			s_ScriptEngineData->EntityFieldMap[GUID];
-
-			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-			
-			for (auto& field : fieldMap)
-			{
-				instance->SetInternalFieldValue(field.first, field.second.m_buffer);
-			}
-		}
-	}
-	void ScriptEngine::GetCSEntityData(Entity entity)
-	{
-		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
-		if (EntityClassExists(scriptComponent.m_StoredClass))
-		{
-			std::string GUID = entity->GetGUID();
-			std::shared_ptr<ScriptInstance> instance = GetScriptInstance(GUID);
-			if(instance)
-			{
-				const auto& fields = instance->GetScriptClass()->GetFields();
-				for(const auto& [name, field] : fields)
-				{
-					if(field.m_Type == ScriptFieldTypes::Float)
-					{
-						float data = instance->GetFieldValue<float>(name);
-						TRE_INFO("Field: {0} Data: {1}", name, data);
-					}
-				}
-			}
-
-			
-		}
-	}
-
-	void ScriptEngine::UpdateCSEntityData(Entity entity)
-	{
-		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
-		if (EntityClassExists(scriptComponent.m_StoredClass))
-		{
-			std::string GUID = entity->GetGUID();
-
-			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end()) CreateCSEntityData(entity);
-
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-
-			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
-			{
-				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-				for (auto& field : fieldMap)
-				{
-					instance->GetInternalFieldValue(field.first, field.second.m_buffer);
-				}
-			}
-			else
-			{
-				std::string function{ __FUNCTION__ };
-				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
-			}
-		}
 	}
 
 	void ScriptEngine::InitScriptingMain()
@@ -568,41 +491,6 @@ namespace TRE
 		else
 		{
 			return s_ScriptEngineData->ScriptInstances[GUID]->m_Instance;
-		}
-	}
-
-	std::shared_ptr<ScriptClass> ScriptEngine::GetEntityClass(const std::string& className)
-	{
-		if(s_ScriptEngineData->ScriptClasses.find(className) == s_ScriptEngineData->ScriptClasses.end())
-		{
-			return nullptr;
-		}
-		else
-		{
-			return s_ScriptEngineData->ScriptClasses[className];
-		}
-	}
-
-	std::unordered_map<std::string , std::shared_ptr<ScriptClass>>& ScriptEngine::GetScriptClasses()
-	{
-		return s_ScriptEngineData->ScriptClasses;
-	}
-
-	ScriptFieldMap& ScriptEngine::GetScriptFieldMap(const std::string& guid)
-	{
-		return s_ScriptEngineData->EntityFieldMap[guid];
-	}
-
-	std::shared_ptr<ScriptInstance> ScriptEngine::GetScriptInstance(const std::string& guid)
-	{
-		auto iter = s_ScriptEngineData->ScriptInstances.find(guid);
-		if(iter == s_ScriptEngineData->ScriptInstances.end())
-		{
-			return nullptr;
-		}
-		else
-		{
-			return iter->second;
 		}
 	}
 
