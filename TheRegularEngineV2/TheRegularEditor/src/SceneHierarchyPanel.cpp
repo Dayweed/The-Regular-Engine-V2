@@ -79,45 +79,48 @@ namespace TRE
 				entities.emplace_back(ECSSystemManager::Instance().GetSystem<PrefabSystem>()->GetDisplayedPrefab());
 			}
 
-			if (m_SelectionManager->GetSelectedEntity())
+			if (ImGui::IsWindowFocused())
 			{
-				if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
+				if (m_SelectionManager->GetSelectedEntity())
 				{
-					//create and delete entity
-					if (ImGui::BeginPopupContextWindow())
+					if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
 					{
-						//create new entities as entity's children
-						if (ImGui::Selectable("Create Entity"))
+						//create and delete entity
+						if (ImGui::BeginPopupContextWindow())
 						{
-							Entity entityChild = ECSManager::Instance().CreateEntity();
-							entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
-							ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
-							m_SelectionManager->ClearSelectedEntity();
-						}
+							//create new entities as entity's children
+							if (ImGui::Selectable("Create Entity"))
+							{
+								Entity entityChild = ECSManager::Instance().CreateEntity();
+								entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
+								ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
+								m_SelectionManager->ClearSelectedEntity();
+							}
 
-						if (ImGui::Selectable("Delete Entity"))
-						{
-							TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
-							DeleteChildren(entityToDelete);
-							m_SelectionManager->ClearSelectedEntity();
+							if (ImGui::Selectable("Delete Entity"))
+							{
+								TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
+								DeleteChildren(entityToDelete);
+								m_SelectionManager->ClearSelectedEntity();
+							}
+							ImGui::EndPopup();
 						}
-						ImGui::EndPopup();
 					}
-				}
 
-				else
-				{
-					if (ImGui::BeginPopupContextWindow(/*"Popup"*/))
+					else
 					{
-						//create new entities as entity's children
-						if (ImGui::Selectable("Create Entity"))
+						if (ImGui::BeginPopupContextWindow(/*"Popup"*/))
 						{
-							Entity entityChild = ECSManager::Instance().CreateEntity();
-							entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
-							ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
-							m_SelectionManager->ClearSelectedEntity();
+							//create new entities as entity's children
+							if (ImGui::Selectable("Create Entity"))
+							{
+								Entity entityChild = ECSManager::Instance().CreateEntity();
+								entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
+								ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
+								m_SelectionManager->ClearSelectedEntity();
+							}
+							ImGui::EndPopup();
 						}
-						ImGui::EndPopup();
 					}
 				}
 			}
