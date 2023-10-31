@@ -102,7 +102,11 @@ namespace TRE
 			if (InputSystem.GetKeyDown(InputKeys.Space))
             {
 				if (isGrounded)
+				{
+					Vector3 maxHeight = new Vector3(currVelocity.x, 10000, currVelocity.z);
 					Jump(maxHeight);
+					Debug.Log("Jumping" + currVelocity.y);
+				}
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.E))
@@ -143,7 +147,7 @@ namespace TRE
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
                     //Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
                 }
-                Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
+                //Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
 
             cameraController.regionStart = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_Start.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_Start.ID); ;
@@ -152,7 +156,7 @@ namespace TRE
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Acceleration);
+			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
 		}
 
 		public static float lerp(float start, float end, float t)
@@ -167,10 +171,8 @@ namespace TRE
 		private void OnTriggerStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
-            if (PhysicsSystem.IsCollisionStay(this.ID, otherID) == true)
-                isGrounded = true;
-			else
-				isGrounded = false;
+			isGrounded = PhysicsSystem.IsCollisionStay(this.ID, otherID);
+			Debug.Log("is it " + isGrounded);
 
         }
 	}
