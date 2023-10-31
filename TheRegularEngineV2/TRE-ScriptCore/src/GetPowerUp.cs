@@ -10,6 +10,7 @@ namespace TRE
     public class GetPowerUp : Entity
     {
         public PowerUpsType powerUpType;
+        public Entity PowerUpManagerObj;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
@@ -20,6 +21,11 @@ namespace TRE
         public GetPowerUp()
         {
 
+        }
+
+        public void OnCreate()
+        {
+            PowerUpManagerObj = ECSManager.FindEntityByName("Power Manager");
         }
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
@@ -41,14 +47,14 @@ namespace TRE
                 //playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
                 playerObj = other;
 
-                playerControl = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();  // THIS CANT BE DONE YET!
+                playerControl = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
                 
-                if (!ECSManager.IsValidEntity(playerObj.parenting.GetChild(0).ID))
+                if (!ECSManager.IsValidEntity(PowerUpManagerObj.ID))
                 {
-                    Debug.LogError("Could not find player child (" + playerObj.parenting.GetChild(0).ID + ")");
+                    Debug.LogError("Could not find PowerUpManagerObj (" + PowerUpManagerObj.ID + ")");
                     return;
                 }
-                playerPowerUpManager = playerObj.parenting.GetChild(0).GetComponent<PowerUpManager>();        //playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();      // THIS CANT BE DONE YET!
+                playerPowerUpManager = PowerUpManagerObj.GetComponent<PowerUpManager>();        //playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();
 
                 if (playerControl == null)
                 {
@@ -82,18 +88,19 @@ namespace TRE
 
             playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
-            RigidBodySystem.SetKinematic(ID, true);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
+            RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<Collider>().enabled = false;         // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<RotateObj>().enabled = false;        // THIS CANT BE DONE YET!
-            parenting.GetChild(1).SetActive(false);                             //this.transform.GetChild(1).gameObject.SetActive(false);
+            SetActive(false);                                                   //this.transform.GetChild(1).gameObject.SetActive(false);
         }
 
         public void TurnOnVisuals()
         {
-            parenting.RemoveParent();                                           //this.transform.parent = null;
-            parenting.GetChild(1).SetActive(true);                              //this.transform.GetChild(1).gameObject.SetActive(true);
+            // No clue what this does yet
+            //parenting.RemoveParent();                                           //this.transform.parent = null;
+            //parenting.GetChild(1).SetActive(true);                              //this.transform.GetChild(1).gameObject.SetActive(true);
 
-            TurnOnCollider();//Invoke(nameof(TurnOnCollider), 0.5f);            // THIS CANT BE DONE YET!
+            //TurnOnCollider();//Invoke(nameof(TurnOnCollider), 0.5f);            // THIS CANT BE DONE YET!
         }
 
         public void TurnOnCollider()
