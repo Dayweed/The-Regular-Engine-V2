@@ -361,8 +361,8 @@ namespace TRE
 		// First element of each array keeps the amount of elements. 
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
-			m_Current.push_back(1);
-			//m_Current.push_back(ECSManager::Instance().GetAllEntities().size()); 	// This somehows kills the entt if too fat
+			//m_Current.push_back(1);
+			m_Current.push_back(ECSManager::Instance().GetAllEntities().size()); 	// This somehows kills the entt if too fat
 		}
 		else
 		{
