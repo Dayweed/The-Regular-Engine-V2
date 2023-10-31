@@ -19,6 +19,9 @@ namespace TRE
 #pragma region ScriptEngine
 
 	ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
+	static void GetCSEntityData(Entity entity);
+	static void UpdateCSEntityData(Entity entity);
+	static void CreateCSEntityData(Entity entity);
 
 	static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
 	{

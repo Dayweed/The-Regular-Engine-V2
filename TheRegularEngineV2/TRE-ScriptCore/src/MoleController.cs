@@ -134,6 +134,7 @@ namespace TRE
                 {
                     finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+
                 }
                 else
                 {
