@@ -19,7 +19,7 @@ namespace TRE
         //Max Velocity vector
         private float maxVelocity = 5f;
         //Acceleration
-        private float acceleration = 2000f;
+        private float acceleration = 100f;
         //Deceleration
         private float deceleration = -10f;
         //velocity in the air
@@ -134,15 +134,15 @@ namespace TRE
                 {
                     finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-                    Debug.Log("current velocity is:" +currVelocity.x + currVelocity.y + currVelocity.z);
                 }
                 else
                 {
 					Vector3 tmp = dirVec * maxVelocity;
 					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-                    Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
+                    //Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
                 }
+                Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
 
             cameraController.regionStart = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_Start.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_Start.ID); ;
@@ -168,6 +168,8 @@ namespace TRE
 			Entity other = new Entity(otherID);
             if (PhysicsSystem.IsCollisionStay(this.ID, otherID) == true)
                 isGrounded = true;
+			else
+				isGrounded = false;
 
         }
 	}
