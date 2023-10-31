@@ -35,6 +35,7 @@ namespace TRE
 
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
+                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
                 //playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
                 //playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
