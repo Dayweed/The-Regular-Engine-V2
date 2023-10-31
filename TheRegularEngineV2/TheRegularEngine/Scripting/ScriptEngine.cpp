@@ -170,6 +170,8 @@ namespace TRE
 		// Register all ECS components to the scripting engine
 
 		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
+
+		ReloadAssembly();
 	}
 
 	void ScriptEngine::Shutdown()
@@ -323,7 +325,6 @@ namespace TRE
 				TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
 				return;
 			}
-
 			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
@@ -401,6 +402,15 @@ namespace TRE
 		// Run constructor of the object class
 		mono_runtime_object_init(s_ScriptEngineData->DemoObject);
 
+		// Take Care of creating the data
+		s_ScriptEngineData->ScriptInstances.clear();
+		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
+		{
+			if (s_ScriptEngineData->ScriptInstances.find(entity->GetGUID()) == s_ScriptEngineData->ScriptInstances.end())
+			{
+				CreateCSEntityData(entity);
+			}
+		}
 	}
 
 	void ScriptEngine::UpdateScriptingMain()
@@ -472,7 +482,12 @@ namespace TRE
 		{
 			std::string GUID = entity->GetGUID();
 
-			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
+			{
+				CreateCSEntityData(entity);
+			}
+
+			/*std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
 			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
@@ -482,9 +497,10 @@ namespace TRE
 				{
 					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
 				}
-			}
+			}*/
 
-			instance->OnCreateInvoke();
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			s_ScriptEngineData->ScriptInstances[GUID]->OnCreateInvoke();
 		}
 	}
 

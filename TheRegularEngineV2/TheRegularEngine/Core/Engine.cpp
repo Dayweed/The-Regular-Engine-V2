@@ -351,7 +351,7 @@ namespace TRE
 		RegisterECS();
 		Shader::SetupShaders();
 
-		DemoDeserialize();
+		//DemoDeserialize();
 		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
@@ -380,6 +380,8 @@ namespace TRE
 
 		ScriptEngine::Init();
 		ScriptEngine::InitScriptingMain();
+
+		SceneManager::Instance().NewScene();
 	}
 
 	Engine::~Engine()
