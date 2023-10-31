@@ -328,44 +328,119 @@ namespace TRE
 			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
-			s_ScriptEngineData->EntityFieldMap[GUID];
-
 			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-			
+
+			const auto& fields{ instance->GetScriptClass()->GetFields() };
+			std::cout << "BAH " << fields.size() << "\n";
+			for (const auto& [name, field] : fields)
+			{
+				fieldMap[name].m_Field.m_Name = name;
+				fieldMap[name].m_Field.m_Type = field.m_Type;
+				if (field.m_Type == ScriptFieldTypes::None)
+				{
+					TRE_INFO("None\t Field {0} Data is None", name);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Float)
+				{
+					float data = instance->GetFieldValue<float>(name);
+					TRE_INFO("Float\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Double)
+				{
+					double data = instance->GetFieldValue<double>(name);
+					TRE_INFO("Double\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Boolean)
+				{
+					bool data = instance->GetFieldValue<bool>(name);
+					TRE_INFO("Boolean\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Char)
+				{
+					char data = instance->GetFieldValue<char>(name);
+					TRE_INFO("Char\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Byte)
+				{
+					BYTE data = instance->GetFieldValue<BYTE>(name);
+					TRE_INFO("Byte\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Short)
+				{
+					short data = instance->GetFieldValue<short>(name);
+					TRE_INFO("Short\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Int)
+				{
+					int data = instance->GetFieldValue<int>(name);
+					TRE_INFO("Int\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Long)
+				{
+					long data = instance->GetFieldValue<long>(name);
+					TRE_INFO("Long\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::UnsignedChar)
+				{
+					unsigned char data = instance->GetFieldValue<unsigned char>(name);
+					TRE_INFO("UnsignedChar\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::UnsignedInt)
+				{
+					unsigned int data = instance->GetFieldValue<unsigned int>(name);
+					TRE_INFO("UnsignedInt\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::UnsignedLong)
+				{
+					unsigned long data = instance->GetFieldValue<unsigned long>(name);
+					TRE_INFO("UnsignedLong\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Vector2)
+				{
+					//glm::vec2 data = instance->GetFieldValue<glm::vec2>(name);
+					//TRE_INFO("Vector2\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Vector3)
+				{
+					//glm::vec3 data = instance->GetFieldValue<glm::vec3>(name);
+					//TRE_INFO("Vector3\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Vector4)
+				{
+					//glm::vec4 data = instance->GetFieldValue<glm::vec4>(name);
+					//TRE_INFO("Vector4\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::Entity)
+				{
+					CSEntityID rawdata = instance->GetFieldValue<CSEntityID>(name);
+					//MonoString* monostr = mono_object_to_string(rawdata, nullptr);
+					//std::cout << "+++++++++++++++++++++\n";
+					//std::cout << mono_string_to_utf8(monostr) << "\n";
+					//std::cout << "+++++++++++++++++++++\n";
+					//rawdata->vtable;
+					Entity data;
+					TRE_INFO("Entity\t Field {0} Data {1}", name, data);
+				}
+				else if (field.m_Type == ScriptFieldTypes::String)
+				{
+					std::string data = mono_string_to_utf8(instance->GetFieldValue<MonoString*>(name));
+					TRE_INFO("String\t Field {0} Data {1}", name, data);
+				}
+				else
+				{
+					std::string function{ __FUNCTION__ };
+					TRE_ERROR("[" + function + "] Not all ScriptFieldTypes is accounted!");
+					assert(false);
+				}
+			}
+		
 			for (auto& field : fieldMap)
 			{
-				instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				instance->GetInternalFieldValue(field.first, field.second.m_buffer);
 			}
 		}
 	}
 	void ScriptEngine::GetCSEntityData(Entity entity)
-	{
-		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
-		if (EntityClassExists(scriptComponent.m_StoredClass))
-		{
-			std::string GUID = entity->GetGUID();
-
-			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end()) CreateCSEntityData(entity);
-
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-
-			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
-			{
-				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-				for (auto& field : fieldMap)
-				{
-					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
-				}
-			}
-			else
-			{
-				std::string function{ __FUNCTION__ };
-				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
-			}
-		}
-	}
-
-	void ScriptEngine::UpdateCSEntityData(Entity entity)
 	{
 		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
 		if (EntityClassExists(scriptComponent.m_StoredClass))
@@ -392,6 +467,33 @@ namespace TRE
 		}
 	}
 
+	void ScriptEngine::UpdateCSEntityData(Entity entity)
+	{
+		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		if (EntityClassExists(scriptComponent.m_StoredClass))
+		{
+			std::string GUID = entity->GetGUID();
+
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end()) CreateCSEntityData(entity);
+
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+
+			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			{
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for (auto& field : fieldMap)
+				{
+					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+			else
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
+			}
+		}
+	}
+
 	void ScriptEngine::InitScriptingMain()
 	{
 		MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
@@ -406,10 +508,7 @@ namespace TRE
 		s_ScriptEngineData->ScriptInstances.clear();
 		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
 		{
-			if (s_ScriptEngineData->ScriptInstances.find(entity->GetGUID()) == s_ScriptEngineData->ScriptInstances.end())
-			{
-				CreateCSEntityData(entity);
-			}
+			CreateCSEntityData(entity);
 		}
 	}
 

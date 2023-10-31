@@ -404,11 +404,95 @@ namespace TRE
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
 							// Display all the data in that script (GUID, ScriptFieldMap)
-							ScriptFieldMap& map{ ScriptEngine::s_ScriptEngineData->EntityFieldMap[entity->GetGUID()] };
+							ScriptFieldMap& fieldMap{ ScriptEngine::s_ScriptEngineData->EntityFieldMap[entity->GetGUID()] };
+							auto& instance{ ScriptEngine::s_ScriptEngineData->ScriptInstances[entity->GetGUID()] };
+
 							//std::cout << "> " << &map << ": " << map.size() << "\n";
-							for (auto& inst : map)
+							for (const auto& [name, inst] : fieldMap)
 							{
-								std::cout << inst.first << "\n";
+								ScriptField field{ inst.m_Field };
+								bool data;
+								if (field.m_Type == ScriptFieldTypes::None)
+								{
+									TRE_INFO("None\t Field {0} Data is None", name);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Float)
+								{
+									TRE_INFO("Float\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Double)
+								{
+									TRE_INFO("Double\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Boolean)
+								{
+									TRE_INFO("Boolean\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Char)
+								{
+									TRE_INFO("Char\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Byte)
+								{
+									TRE_INFO("Byte\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Short)
+								{
+									TRE_INFO("Short\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Int)
+								{
+									int data = instance->GetFieldValue<int>(name);
+									std::cout << "Value: " << data << "\n";
+									data = 69;
+									instance->SetFieldValue<int>(name, data);
+									std::cout << "New Value: " << instance->GetFieldValue<int>(name) << "\n";
+								}
+								else if (field.m_Type == ScriptFieldTypes::Long)
+								{
+									TRE_INFO("Long\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::UnsignedChar)
+								{
+									TRE_INFO("UnsignedChar\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::UnsignedInt)
+								{
+									TRE_INFO("UnsignedInt\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::UnsignedLong)
+								{
+									TRE_INFO("UnsignedLong\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Vector2)
+								{
+									//glm::vec2 data = instance->GetFieldValue<glm::vec2>(name);
+									//TRE_INFO("Vector2\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Vector3)
+								{
+									//glm::vec3 data = instance->GetFieldValue<glm::vec3>(name);
+									//TRE_INFO("Vector3\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Vector4)
+								{
+									//glm::vec4 data = instance->GetFieldValue<glm::vec4>(name);
+									//TRE_INFO("Vector4\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::Entity)
+								{
+									TRE_INFO("Entity\t Field {0} Data {1}", name, data);
+								}
+								else if (field.m_Type == ScriptFieldTypes::String)
+								{
+									TRE_INFO("String\t Field {0} Data {1}", name, data);
+								}
+								else
+								{
+									std::string function{ __FUNCTION__ };
+									TRE_ERROR("[" + function + "] Not all ScriptFieldTypes is accounted!");
+									assert(false);
+								}
 							}
 						}
 					}
