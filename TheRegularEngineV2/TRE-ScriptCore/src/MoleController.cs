@@ -11,7 +11,7 @@ namespace TRE
         //check if player is on the ground (for now , just a plane)
         private bool isGrounded = true;
         //Maxium height the player can jump
-        private Vector3 maxHeight = new Vector3(0, 1000, 0);
+        private Vector3 maxHeight = new Vector3(0, 10000, 0);
         //direction vector
         private Vector3 dirVec;
         //Movement Vector
@@ -103,9 +103,8 @@ namespace TRE
             {
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(currVelocity.x, 1000, currVelocity.z);
+					Vector3 maxHeight = new Vector3(currVelocity.x, 10, currVelocity.z);
 					Jump(maxHeight);
-					Debug.Log("Jumping" + currVelocity.y);
 				}
 			}
 
@@ -156,7 +155,8 @@ namespace TRE
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
+			PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
+			//PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
 		}
 
 		public static float lerp(float start, float end, float t)
@@ -168,20 +168,10 @@ namespace TRE
 			return start + (end - start) * t;
 		}
 
-		//private void OnTriggerStay(System.UInt64 otherID)
-		//{
-		//	Entity other = new Entity(otherID);
-		//	isGrounded = PhysicsSystem.IsCollisionStay(this.ID, otherID);
-		//	Debug.Log("is it " + isGrounded);
-
-  //      }
-
 		private void OnCollisionStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			isGrounded = PhysicsSystem.IsCollisionStay(this.ID, otherID);
-			Debug.Log("Colliding with " + ECSManager.FindNameFromID(otherID));
-			Debug.Log("is it " + isGrounded);
 		}
 	}
 }
