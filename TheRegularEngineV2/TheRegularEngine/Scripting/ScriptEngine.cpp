@@ -12,6 +12,8 @@
 #include "ScriptBind.h"
 #include "ScriptComponent.h"
 #include "Core/Logger.h"
+#include "Core/Engine.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -168,6 +170,8 @@ namespace TRE
 		// Register all ECS components to the scripting engine
 
 		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
+
+		ReloadAssembly();
 	}
 
 	void ScriptEngine::Shutdown()
@@ -308,6 +312,86 @@ namespace TRE
 		InitScriptingMain();
 	}
 
+	void ScriptEngine::CreateCSEntityData(Entity entity)
+	{
+		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		if (EntityClassExists(scriptComponent.m_StoredClass))
+		{
+			std::string GUID = entity->GetGUID();
+
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
+				return;
+			}
+			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			s_ScriptEngineData->ScriptInstances[GUID] = instance;
+
+			s_ScriptEngineData->EntityFieldMap[GUID];
+
+			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+			
+			for (auto& field : fieldMap)
+			{
+				instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+			}
+		}
+	}
+	void ScriptEngine::GetCSEntityData(Entity entity)
+	{
+		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		if (EntityClassExists(scriptComponent.m_StoredClass))
+		{
+			std::string GUID = entity->GetGUID();
+
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end()) CreateCSEntityData(entity);
+
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+
+			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			{
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for (auto& field : fieldMap)
+				{
+					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+			else
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
+			}
+		}
+	}
+
+	void ScriptEngine::UpdateCSEntityData(Entity entity)
+	{
+		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		if (EntityClassExists(scriptComponent.m_StoredClass))
+		{
+			std::string GUID = entity->GetGUID();
+
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end()) CreateCSEntityData(entity);
+
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+
+			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			{
+				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
+				for (auto& field : fieldMap)
+				{
+					instance->GetInternalFieldValue(field.first, field.second.m_buffer);
+				}
+			}
+			else
+			{
+				std::string function{ __FUNCTION__ };
+				TRE_CORE_ERROR("[" + function + "] Can't find " + entity->GetName() + " in s_ScriptEngineData->EntityFieldMap!\n");
+			}
+		}
+	}
+
 	void ScriptEngine::InitScriptingMain()
 	{
 		MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
@@ -318,6 +402,15 @@ namespace TRE
 		// Run constructor of the object class
 		mono_runtime_object_init(s_ScriptEngineData->DemoObject);
 
+		// Take Care of creating the data
+		s_ScriptEngineData->ScriptInstances.clear();
+		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
+		{
+			if (s_ScriptEngineData->ScriptInstances.find(entity->GetGUID()) == s_ScriptEngineData->ScriptInstances.end())
+			{
+				CreateCSEntityData(entity);
+			}
+		}
 	}
 
 	void ScriptEngine::UpdateScriptingMain()
@@ -389,19 +482,25 @@ namespace TRE
 		{
 			std::string GUID = entity->GetGUID();
 
-			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
+			{
+				CreateCSEntityData(entity);
+			}
+
+			/*std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
-			if(s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
+			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
 			{
 				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-				for(auto& field : fieldMap)
+				for (auto& field : fieldMap)
 				{
 					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
 				}
-			}
+			}*/
 
-			instance->OnCreateInvoke();
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			s_ScriptEngineData->ScriptInstances[GUID]->OnCreateInvoke();
 		}
 	}
 
@@ -523,6 +622,13 @@ namespace TRE
 		if (exception)
 		{
 			mono_print_unhandled_exception(exception);
+			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			{
+				MonoString* monostr = mono_object_to_string(exception, nullptr);
+				std::string str{ CONSOLE_DEBUG_ERROR };
+				str += mono_string_to_utf8(monostr);
+				EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+			}
 		}
 		return result;
 	}

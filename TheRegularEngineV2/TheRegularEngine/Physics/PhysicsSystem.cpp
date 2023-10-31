@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 1
+#define USE_PHYSX_PVD 0
 #endif
 
 #define UNUSED_PARAM(param) (void)param
@@ -126,27 +126,7 @@ namespace TRE
 
 		PxInitExtensions(*m_Physics, m_Pvd);
 
-		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-
-		//A cpu thread for the scene
-		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
-		assert(m_Dispatcher);
-		sceneDesc.cpuDispatcher = m_Dispatcher;
-
-		// SimulationEventCallback must inherit PxSimulationEventCallback
-		// PUBLICLY in order to work, otherwise...
-		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
-		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
-		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
-
-		//A thread that will do collision management
-
-		// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-		sceneDesc.filterShader = SimulationFilterShader;
-
-		m_Scene = m_Physics->createScene(sceneDesc);
-		assert(m_Scene);
+		CreatePhysXScene();
 
 #if USE_PHYSX_PVD
 		if (PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
@@ -164,7 +144,7 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(0.5f, 0.5f, 0);
+		m_DefaultMaterial = m_Physics->createMaterial(10.f, 10.f, 0.f);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
@@ -296,6 +276,7 @@ namespace TRE
 				DestructCapsuleCollider(entity);
 		}
 		m_Actors.clear();
+		PX_RELEASE(m_Scene);
 
 		m_SimulationEventCallback.m_CollisionHistory.clear();
 		m_SimulationEventCallback.m_TriggerHistory.clear();
@@ -304,6 +285,8 @@ namespace TRE
 
 	void PhysicsSystem::AfterReset()
 	{
+		CreatePhysXScene();
+
 		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
 		{
 			ConstructRigidbody(entity);
@@ -873,6 +856,33 @@ namespace TRE
 
 		const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
 		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(transform);
+	}
+
+	void PhysicsSystem::CreatePhysXScene()
+	{
+		PX_RELEASE(m_Scene);
+
+		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+
+		//A cpu thread for the scene
+		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
+		assert(m_Dispatcher);
+		sceneDesc.cpuDispatcher = m_Dispatcher;
+
+		// SimulationEventCallback must inherit PxSimulationEventCallback
+		// PUBLICLY in order to work, otherwise...
+		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
+		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
+		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
+
+		//A thread that will do collision management
+
+		// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader = SimulationFilterShader;
+
+		m_Scene = m_Physics->createScene(sceneDesc);
+		assert(m_Scene);
 	}
 
 	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)

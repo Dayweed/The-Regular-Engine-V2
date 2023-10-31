@@ -155,14 +155,20 @@ namespace TRE
 
 	void ScriptingSystem::InitializeScriptableObjects()
 	{
-		std::vector<Entity> temp = ECSManager::Instance().GetAllEntities();
-		for(auto e: temp)
-		{
-			if(ECSManager::Instance().EntityHasComponent<ScriptComponent>(e))
-			{
-				AddScriptableObject(e);
-			}
-		}
+		//std::vector<Entity> temp = ECSManager::Instance().GetAllEntities(true);
+		//for(auto e: temp)
+		//{
+		//	if(ECSManager::Instance().EntityHasComponent<ScriptComponent>(e))
+		//	{
+		//		AddScriptableObject(e);
+		//		//ScriptEngine::CreateCSEntityData(e);
+		//	}
+		//}
+
+		m_ScriptEntities.clear();
+		m_ScriptEntities = ECSManager::Instance().GetEntities<ScriptComponent>(true);
+
+		
 	}
 
 	void ScriptingSystem::RemoveScriptableObject(Entity entity)

@@ -197,6 +197,10 @@ namespace TRE
 
 		static void ReloadAssembly();
 
+		static void CreateCSEntityData(Entity e);
+		static void GetCSEntityData(Entity e);
+		static void UpdateCSEntityData(Entity e);
+
 		static void InitScriptingMain();
 		static void UpdateScriptingMain();
 
@@ -208,9 +212,6 @@ namespace TRE
 		static void OnStartEntity(Entity e);
 		static void OnUpdateEntity(Entity e	);
 		static void OnLateUpdateEntity(Entity e	);
-		static void GetCSEntityData(Entity entity);
-		static void UpdateCSEntityData(Entity entity);
-		static void CreateCSEntityData(Entity entity);
 
 		// Collision
 		static void OnTriggerStay(Entity e, Entity other);

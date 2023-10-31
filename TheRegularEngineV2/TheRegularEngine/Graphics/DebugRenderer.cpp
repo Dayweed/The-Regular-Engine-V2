@@ -150,10 +150,13 @@ namespace TRE
 		std::vector<DebugVertex> DebugLightDirectionVertices =
 		{
 			DebugVertex(glm::vec3(0.f,0.f,-0.5f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.f,0.f,0.5f), glm::vec4(1.f, 1.f, 0.f, 1.f))
+			DebugVertex(glm::vec3(0.f,0.f,0.25f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.25f,0.25f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.f,0.5f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,-0.25f,0.25f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
 		};
 
-		std::vector<int> DebugLightDirectionIndices = { 0,1 };
+		std::vector<int> DebugLightDirectionIndices = { 0,1,2,3,4,2 };
 
 		m_DebugLightDirection->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugLightDirectionVertices.data(), DebugLightDirectionVertices.size() * sizeof(DebugVertex));
 		m_DebugLightDirection->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugLightDirectionIndices.data(), DebugLightDirectionIndices.size() * sizeof(int), DebugLightDirectionIndices.size());

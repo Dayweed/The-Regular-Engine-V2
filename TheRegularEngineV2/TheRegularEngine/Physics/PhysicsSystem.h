@@ -309,6 +309,7 @@ namespace TRE
 	private:
 
 		void ResizeAllColliders();
+
 		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
 
 		void DestroyOutdatedComponents() const;
@@ -316,6 +317,8 @@ namespace TRE
 		void UpdateAllComponents() const;
 
 		void UpdateActorPose(const Entity& entity, const glm::vec3& offset = glm::vec3{ 0 }) const;
+
+		void CreatePhysXScene();
 
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 

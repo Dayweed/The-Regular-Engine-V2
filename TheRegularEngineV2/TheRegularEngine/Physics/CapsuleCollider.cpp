@@ -44,6 +44,7 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+
 #ifdef _DEBUG
 			tempSharedData.m_RigidDynamic->setName("CapsuleCollider");
 #endif
