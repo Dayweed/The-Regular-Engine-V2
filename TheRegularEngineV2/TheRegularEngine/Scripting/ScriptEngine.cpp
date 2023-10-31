@@ -12,6 +12,8 @@
 #include "ScriptBind.h"
 #include "ScriptComponent.h"
 #include "Core/Logger.h"
+#include "Core/Engine.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -632,7 +634,13 @@ namespace TRE
 		if (exception)
 		{
 			mono_print_unhandled_exception(exception);
-			exception->synchronisation;
+			if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+			{
+				MonoString* monostr = mono_object_to_string(exception, nullptr);
+				std::string str{ CONSOLE_DEBUG_ERROR };
+				str += mono_string_to_utf8(monostr);
+				EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
+			}
 		}
 		return result;
 	}

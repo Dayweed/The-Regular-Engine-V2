@@ -36,7 +36,9 @@ namespace TRE
 
 	void EntityCopier::PasteEntities()
 	{
+		ECSSystemManager::Instance().BeforeReset();
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
+		ECSSystemManager::Instance().AfterReset();
 	}
 
 	void EntityCopier::SaveEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID, entt::entity parentEnt)
@@ -69,9 +71,9 @@ namespace TRE
 		dstReg.get<Properties>(ent).m_GUID = entGUID;
 
 		// Update it's parenting, if it have to update their parent guid
+		dstReg.get<Parenting>(ent).m_Parent = parentGUID;
 		if (parentGUID != "")
 		{
-			dstReg.get<Parenting>(ent).m_Parent = parentGUID;
 			// Remove previous GUID string and add new id
 			std::vector<std::string>& children{ dstReg.get<Parenting>(parentEnt).m_Children };
 			auto it = std::find(children.begin(), children.end(), prevGUID);

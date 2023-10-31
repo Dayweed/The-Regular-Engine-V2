@@ -1,96 +1,109 @@
 [
    [
-      5,
-      1048671,
-      1048672,
-      1048673,
-      1048674,
-      1048675
+      1,
+      9437246,
+      8388730,
+      8388731,
+      8388732,
+      8388733,
+      8388734
    ],
    [
       0
    ],
    [
-      5,
-      1048675,
-      {
-         "m_Children": [],
-         "m_Parent": "3672266117357288938"
-      },
-      1048674,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      1048673,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      1048672,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      1048671,
+      6,
+      9437246,
       {
          "m_Children": [
             "651344510156196673"
          ],
          "m_Parent": ""
+      },
+      8388730,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      8388731,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      8388732,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      8388733,
+      {
+         "m_Children": [],
+         "m_Parent": "3672266117357288938"
+      },
+      8388734,
+      {
+         "m_Children": [],
+         "m_Parent": ""
       }
    ],
    [
-      5,
-      1048675,
+      6,
+      9437246,
       {
          "m_Active": true,
-         "m_GUID": "651344510156196673",
-         "m_Name": "PowerManager",
-         "m_Tag": ""
+         "m_GUID": "3672266117357288938",
+         "m_Name": "Player",
+         "m_Tag": "Red"
       },
-      1048674,
+      8388730,
       {
          "m_Active": true,
-         "m_GUID": "3160019635151679048",
-         "m_Name": "Main Camera",
+         "m_GUID": "487391042155820437",
+         "m_Name": "PowerUp",
          "m_Tag": ""
       },
-      1048673,
+      8388731,
       {
          "m_Active": true,
          "m_GUID": "17591008384108422035",
          "m_Name": "Directional Light",
          "m_Tag": ""
       },
-      1048672,
+      8388732,
       {
          "m_Active": true,
-         "m_GUID": "487391042155820437",
-         "m_Name": "Mole",
+         "m_GUID": "3160019635151679048",
+         "m_Name": "Main Camera",
          "m_Tag": ""
       },
-      1048671,
+      8388733,
       {
          "m_Active": true,
-         "m_GUID": "3672266117357288938",
-         "m_Name": "Player",
-         "m_Tag": "Red"
+         "m_GUID": "651344510156196673",
+         "m_Name": "PowerManager",
+         "m_Tag": ""
+      },
+      8388734,
+      {
+         "m_Active": true,
+         "m_GUID": "12832397446598642775",
+         "m_Name": "Box",
+         "m_Tag": ""
       }
    ],
    [
-      5,
-      1048675,
+      6,
+      9437246,
       {
          "m_Position": [
             0.0,
-            0.0,
-            0.0
+            1.0,
+            20.0
          ],
          "m_Rotation": [
-            -3.2568880318356586e-12,
-            9.256633761414513e-26,
-            3.2568884655165276e-12
+            -179.99998474121094,
+            -5.008956577512436e-06,
+            -179.99998474121094
          ],
          "m_Scale": [
             1.0,
@@ -98,47 +111,11 @@
             1.0
          ]
       },
-      1048674,
+      8388730,
       {
          "m_Position": [
             0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048673,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            45.0,
-            45.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048672,
-      {
-         "m_Position": [
-            0.0,
-            5.0,
+            10.0,
             20.0
          ],
          "m_Rotation": [
@@ -152,17 +129,71 @@
             0.5
          ]
       },
-      1048671,
+      8388731,
       {
          "m_Position": [
             0.0,
-            -9.0,
-            20.0
+            0.0,
+            0.0
          ],
          "m_Rotation": [
-            -179.99998474121094,
-            -5.008956577512436e-06,
-            -179.99998474121094
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8388732,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8388733,
+      {
+         "m_Position": [
+            9.094947017729282e-13,
+            11.0,
+            0.0
+         ],
+         "m_Rotation": [
+            -3.2568880318356586e-12,
+            9.256633761414513e-26,
+            3.2568884655165276e-12
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8388734,
+      {
+         "m_Position": [
+            0.0,
+            -10.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
          ],
          "m_Scale": [
             1.0,
@@ -173,13 +204,13 @@
    ],
    [
       2,
-      1048672,
+      9437246,
       {
          "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       },
-      1048671,
+      8388730,
       {
          "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
          "ASSET_MAT_m_MaterialInstance": "0",
@@ -188,7 +219,7 @@
    ],
    [
       1,
-      1048674,
+      8388732,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -213,8 +244,22 @@
       }
    ],
    [
-      1,
-      1048672,
+      2,
+      9437246,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 159.17404174804688,
+         "m_UseGravity": true
+      },
+      8388730,
       {
          "m_AngularDrag": 0.05000000074505806,
          "m_Drag": 0.0,
@@ -233,42 +278,50 @@
       0
    ],
    [
-      2,
-      1048672,
+      1,
+      8388734,
       {
          "m_HalfExtents": [
-            0.5,
-            0.5,
-            0.5
+            36.5,
+            1.0,
+            21.5
          ],
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
             0.0,
-            0.0
-         ]
-      },
-      1048671,
-      {
-         "m_HalfExtents": [
-            4.0,
-            3.0,
-            3.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            5.0,
             0.0
          ]
       }
    ],
    [
-      0
+      2,
+      9437246,
+      {
+         "m_HalfHeight": 5.0,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 2.0
+      },
+      8388730,
+      {
+         "m_HalfHeight": 1.0,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 2.0
+      }
    ],
    [
       1,
-      1048673,
+      8388731,
       {
          "m_AmbientColor": [
             1.0,
@@ -297,17 +350,17 @@
    ],
    [
       3,
-      1048675,
+      9437246,
       {
-         "m_StoredClass": "TRE.PowerUpManager"
+         "m_StoredClass": "TRE.MoleController"
       },
-      1048672,
+      8388730,
       {
          "m_StoredClass": "TRE.GetPowerUp"
       },
-      1048671,
+      8388733,
       {
-         "m_StoredClass": "TRE.MoleController"
+         "m_StoredClass": "TRE.PowerUpManager"
       }
    ]
 ]
