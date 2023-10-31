@@ -157,7 +157,7 @@ namespace TRE
             {
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(currVelocity.x, 1000, currVelocity.z);
+					Vector3 maxHeight = new Vector3(currVelocity.x, 5, currVelocity.z);
 					Jump(maxHeight);
 				}
 			}
@@ -216,7 +216,7 @@ namespace TRE
 		private void Jump(Vector3 JumpHeight)
 		{
 			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
+			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
 		public static float lerp(float start, float end, float t)
