@@ -17,6 +17,8 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
+			FEL,
+			FAKEFEL,
 			DirectionalLight,
 			ScriptComponent
 		>();

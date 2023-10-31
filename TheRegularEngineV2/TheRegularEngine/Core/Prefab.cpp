@@ -370,6 +370,8 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
+			FEL,
+			FAKEFEL,
 			Audio,
 			AudioListener,
 			DirectionalLight,
@@ -397,6 +399,8 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)
@@ -507,6 +511,8 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
+			.component<FEL>(arc)
+			.component<FAKEFEL>(arc)
 			.component<DirectionalLight>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
