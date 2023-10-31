@@ -378,100 +378,101 @@ namespace TRE
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
 							// Display all the data in that script (GUID, ScriptFieldMap)
-							ScriptFieldMap& fieldMap{ ScriptEngine::s_ScriptEngineData->EntityFieldMap[entity->GetGUID()] };
-							auto& instance{ ScriptEngine::s_ScriptEngineData->ScriptInstances[entity->GetGUID()] };
+							std::shared_ptr<ScriptInstance> instance = ScriptEngine::GetEntityInstance(entity->GetGUID());
 
-							for (const auto& [name, inst] : fieldMap)
+							if(instance )
 							{
+								const auto& fields = instance->GetScriptClass()->GetFields();
+								for (const auto& [name, inst] : fields)
+								{
 								ImGui::Text(name.c_str());
 								ImGui::SameLine();
 
-								ScriptField field{ inst.m_Field };
-								if (field.m_Type == ScriptFieldTypes::None)
+								if (inst.m_Type == ScriptFieldTypes::None)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
 								}
-								else if (field.m_Type == ScriptFieldTypes::Float)
+								else if (inst.m_Type == ScriptFieldTypes::Float)
 								{
 									float Value = instance->GetFieldValue<float>(name);
 									UpdatedData = UpdatedData ? true : ImGui::DragFloat(NameField.c_str(), &Value);
 									instance->SetFieldValue<float>(name, Value);
 								}
-								else if (field.m_Type == ScriptFieldTypes::Double)
+								else if (inst.m_Type == ScriptFieldTypes::Double)
 								{
 									double Value = instance->GetFieldValue<double>(name);
 									UpdatedData = UpdatedData ? true : ImGui::InputDouble(NameField.c_str(), &Value);
 									instance->SetFieldValue<double>(name, Value);
 								}
-								else if (field.m_Type == ScriptFieldTypes::Boolean)
+								else if (inst.m_Type == ScriptFieldTypes::Boolean)
 								{
 									bool Value = instance->GetFieldValue<bool>(name);
 									UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameField.c_str(), &Value);
 									instance->SetFieldValue<bool>(name, Value);
 								}
-								else if (field.m_Type == ScriptFieldTypes::Char)
+								else if (inst.m_Type == ScriptFieldTypes::Char)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Char");
 								}
-								else if (field.m_Type == ScriptFieldTypes::Byte)
+								else if (inst.m_Type == ScriptFieldTypes::Byte)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Byte");
 								}
-								else if (field.m_Type == ScriptFieldTypes::Short)
+								else if (inst.m_Type == ScriptFieldTypes::Short)
 								{
 									short data = instance->GetFieldValue<short>(name);
 									int Value = static_cast<int>(data);
 									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 									instance->SetFieldValue<short>(name, static_cast<short>(Value));
 								}
-								else if (field.m_Type == ScriptFieldTypes::Int)
+								else if (inst.m_Type == ScriptFieldTypes::Int)
 								{
 									int Value = instance->GetFieldValue<int>(name);
 									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 									instance->SetFieldValue<int>(name, Value);
 								}
-								else if (field.m_Type == ScriptFieldTypes::Long)
+								else if (inst.m_Type == ScriptFieldTypes::Long)
 								{
 									long data = instance->GetFieldValue<long>(name);
 									int Value = static_cast<int>(data);
 									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 									instance->SetFieldValue<long>(name, static_cast<long>(Value));
 								}
-								else if (field.m_Type == ScriptFieldTypes::UnsignedChar)
+								else if (inst.m_Type == ScriptFieldTypes::UnsignedChar)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
 								}
-								else if (field.m_Type == ScriptFieldTypes::UnsignedInt)
+								else if (inst.m_Type == ScriptFieldTypes::UnsignedInt)
 								{
 									unsigned int data = instance->GetFieldValue<unsigned int>(name);
 									int Value = static_cast<int>(data);
 									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 									instance->SetFieldValue<unsigned int>(name, static_cast<unsigned int>(Value));
 								}
-								else if (field.m_Type == ScriptFieldTypes::UnsignedLong)
+								else if (inst.m_Type == ScriptFieldTypes::UnsignedLong)
 								{
 									unsigned long data = instance->GetFieldValue<unsigned long>(name);
 									int Value = static_cast<int>(data);
 									UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
 									instance->SetFieldValue<unsigned long>(name, static_cast<unsigned long>(Value));
 								}
-								else if (field.m_Type == ScriptFieldTypes::Vector2)
+								else if (inst.m_Type == ScriptFieldTypes::Vector2)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector2");
 								}
-								else if (field.m_Type == ScriptFieldTypes::Vector3)
+								else if (inst.m_Type == ScriptFieldTypes::Vector3)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector3");
 								}
-								else if (field.m_Type == ScriptFieldTypes::Vector4)
+								else if (inst.m_Type == ScriptFieldTypes::Vector4)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector4");
 								}
-								else if (field.m_Type == ScriptFieldTypes::Entity)
+								else if (inst.m_Type == ScriptFieldTypes::Entity)
 								{
 									ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Entity");
 								}
-								else if (field.m_Type == ScriptFieldTypes::String)
+								else if (inst.m_Type == ScriptFieldTypes::String)
 								{
 									MonoString* data = instance->GetFieldValue<MonoString*>(name);
 									std::string Value = mono_string_to_utf8(data);
@@ -485,6 +486,8 @@ namespace TRE
 									assert(false && "Refer to Error above");
 								}
 							}
+							}
+
 						}
 					}
 #pragma endregion

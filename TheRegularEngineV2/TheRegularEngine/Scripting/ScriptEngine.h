@@ -216,8 +216,6 @@ namespace TRE
 		static void OnTriggerStay(Entity e, Entity other);
 		static void OnCollisionStay(Entity e, Entity other);
 
-		static void CreateScriptInstance(const std::string& className,const std::string& entityGUID);
-
 		static void PrintAllContainersHere();
 
 		static MonoString* CreateMonoString(const std::string& guid);
@@ -225,6 +223,9 @@ namespace TRE
 		//Getter functions to obtain data from scriptEngineData
 
 		static MonoObject* GetManagedInstance(std::string GUID);
+
+		static std::shared_ptr<ScriptInstance> GetEntityInstance(std::string GUID);
+
 
 	private:
 		static void InitMono();

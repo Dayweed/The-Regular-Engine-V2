@@ -135,6 +135,10 @@ namespace TRE
 
 	public class Testing : Entity
 	{
+
+		public float speed = 0;
+		public float gravity = 0;
+
 		void OnCreate()
 		{
 			Console.WriteLine("Testing OnCreate");
@@ -143,10 +147,8 @@ namespace TRE
 
 		void Update()
 		{
-            Console.WriteLine("Testing Update");		
-			Console.WriteLine($"Testing Update ID - {ID}");
-			Console.WriteLine($"Testing Update Position - {transform.Position.x} , {transform.Position.y} ");
-            Console.WriteLine("Here is more lines for testing");
+            Console.WriteLine("Speed - {0}", speed);
+			Console.WriteLine("Gravity - {0}", gravity);
 		}
 	}
 

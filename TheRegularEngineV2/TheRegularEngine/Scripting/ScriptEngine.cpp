@@ -581,6 +581,17 @@ namespace TRE
 		}
 	}
 
+	std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityInstance(std::string GUID)
+	{
+		auto it = s_ScriptEngineData->ScriptInstances.find(GUID);
+		if(it == s_ScriptEngineData->ScriptInstances.end())
+		{
+			return nullptr;
+		}
+
+		return it->second;
+	}
+
 #pragma endregion
 
 #pragma region ScriptClass
