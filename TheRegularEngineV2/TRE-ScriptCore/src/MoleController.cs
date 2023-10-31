@@ -17,7 +17,7 @@ namespace TRE
         //Movement Vector
         Vector3 movementVector = Vector3.zero;
         //Max Velocity vector
-        private float maxVelocity = 5f;
+        private float maxVelocity = 15f;
         //Acceleration
         private float acceleration = 300f;
         //Deceleration
@@ -103,7 +103,6 @@ namespace TRE
             PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
             dirVec = new Vector3(0, 0, 0);
-			int debugKeys = 0;
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
@@ -186,13 +185,10 @@ namespace TRE
 
             if (dirVec != Vector3.zero)
             {
-				Debug.Log(" " + debugKeys);
-                //Debug.Log(dirVec.x + " " + dirVec.z);
                 if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
                 {
                     finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-
                 }
                 else
                 {
@@ -200,7 +196,6 @@ namespace TRE
 					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
                 }
-                //Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
 
 			TransformSystem.SetRotation(this.ID, playerDirection);
