@@ -212,9 +212,9 @@ namespace TRE
 		static void OnStartEntity(Entity e);
 		static void OnUpdateEntity(Entity e	);
 		static void OnLateUpdateEntity(Entity e	);
-		static void GetCSEntityData(Entity entity);
-		static void UpdateCSEntityData(Entity entity);
-		static void CreateCSEntityData(Entity entity);
+		//static void GetCSEntityData(Entity entity);
+		//static void UpdateCSEntityData(Entity entity);
+		//static void CreateCSEntityData(Entity entity);
 
 		// Collision
 		static void OnTriggerStay(Entity e, Entity other);
