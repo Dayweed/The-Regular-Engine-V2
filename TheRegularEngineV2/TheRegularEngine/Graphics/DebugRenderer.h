@@ -33,11 +33,15 @@ namespace TRE
 
 		void BindDebugCameraFrustum(VkCommandBuffer CommandBuffer);
 		void DrawDebugCameraFrustum(VkCommandBuffer CommandBuffer);
+
+		void BindDebugDirectionalLight(VkCommandBuffer CommandBuffer);
+		void DrawDebugDirectionalLight(VkCommandBuffer CommandBuffer);
 	private:
 		void CreateDebugSphere();
 		void CreateDebugAABB();
 		void CreateDebugCapsule();
 		void CreateDebugCameraFrustum();
+		void CreateDebugDirectionalLight();
 	public:
 		const VkDescriptorSet& GetDescriptor(uint32_t index);
 		VkPipelineLayout GetPipelineLayout();
@@ -56,6 +60,7 @@ namespace TRE
 		std::unique_ptr<DebugType> m_DebugAABB;
 		std::unique_ptr<DebugType> m_DebugCapsule;
 		std::unique_ptr<DebugType> m_DebugCameraFrustum;
+		std::unique_ptr<DebugType> m_DebugLightDirection;
 
 		std::shared_ptr<RenderPass> m_RenderPass;
 	};

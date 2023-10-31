@@ -256,34 +256,6 @@ namespace TRE
 			light->GetComponent<Transform>().m_IsDirty = true;
 		}
 
-		//{
-		//	// Parent child prefabing test
-		//	Entity prefabParent = ECSManager::Instance().CreateEntity();
-		//	prefabParent->GetComponent<Properties>().m_Name = "prefabParent";
-		//	Transform& transform3 = prefabParent->GetComponent<Transform>();
-		//	transform3.m_Position = glm::vec3(0.f, 50.f, 100.f);
-		//	transform3.m_Scale = glm::vec3(0.2f, 0.2f, 0.2f);
-		//	transform3.m_Rotation = glm::vec3(0, 180.f, 0);
-		//	transform3.m_IsDirty = true;
-		//	prefabParent->AddComponent<MeshRenderer>();
-		//	meshRendererSystem->SetMeshRenderer(prefabParent, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		//	meshRendererSystem->SetMaterial(prefabParent, ResourceManager::Instance().GetResource<Material>(matHandle));
-
-		//	Entity prefabChild = ECSManager::Instance().CreateEntity();
-		//	prefabChild->GetComponent<Properties>().m_Name = "prefabChild";
-		//	Transform& transform4 = prefabChild->GetComponent<Transform>();
-		//	transform4.m_Position = glm::vec3(-100.f, 50.f, 100.f);
-		//	transform4.m_Scale = glm::vec3(0.1f, 0.1f, 0.1f);
-		//	transform4.m_Rotation = glm::vec3(0, 180.f, 0);
-		//	transform4.m_IsDirty = true;
-		//	prefabChild->AddComponent<MeshRenderer>();
-		//	prefabChild->AddComponent<FAKEFEL>();
-		//	meshRendererSystem->SetMeshRenderer(prefabChild, ResourceManager::Instance().GetResource<RenderObject>(skullHandle));
-		//	meshRendererSystem->SetMaterial(prefabChild, ResourceManager::Instance().GetResource<Material>(matHandle));
-
-		//	ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(prefabParent, prefabChild);
-		//}
-
 		{
 			//dont delete this
 			//testing hierarchy entities
@@ -379,7 +351,7 @@ namespace TRE
 		RegisterECS();
 		Shader::SetupShaders();
 
-		DemoDeserialize();
+		//DemoDeserialize();
 		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
@@ -408,6 +380,8 @@ namespace TRE
 
 		ScriptEngine::Init();
 		ScriptEngine::InitScriptingMain();
+
+		SceneManager::Instance().NewScene();
 	}
 
 	Engine::~Engine()
@@ -435,8 +409,6 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
-		ECSManager::Instance().RegisterComponent<FEL>("FEL");												// serialized
-		ECSManager::Instance().RegisterComponent<FAKEFEL>("FAKEFEL");										// serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 

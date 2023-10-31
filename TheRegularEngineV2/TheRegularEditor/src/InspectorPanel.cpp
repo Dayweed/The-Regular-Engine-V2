@@ -187,6 +187,7 @@ namespace TRE
 				ImGui::NewLine();
 				for (auto& [Name, Data] : List.second)
 				{
+#pragma region Normal Components
 					bool UpdatedData = false;
 
 					std::string NameField = "##" + entity->GetGUID() + "/" + Name;
@@ -395,6 +396,23 @@ namespace TRE
 							prefab.m_Overrides[List.first].emplace(Name);
 						}
 					}
+#pragma endregion
+
+#pragma region Script Component
+					if (List.first == ComponentManager::Instance().GetComponentName<ScriptComponent>())
+					{
+						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
+						{
+							// Display all the data in that script (GUID, ScriptFieldMap)
+							ScriptFieldMap& map{ ScriptEngine::s_ScriptEngineData->EntityFieldMap[entity->GetGUID()] };
+							//std::cout << "> " << &map << ": " << map.size() << "\n";
+							for (auto& inst : map)
+							{
+								std::cout << inst.first << "\n";
+							}
+						}
+					}
+#pragma endregion
 				}
 				ImGui::Separator();
 			}

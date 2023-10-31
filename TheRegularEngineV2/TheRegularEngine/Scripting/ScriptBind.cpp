@@ -12,6 +12,8 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 
+#include "InputHandler/InputHandler.h"
+
 #include "mono/metadata/object.h"
 #include "mono/metadata/reflection.h"
 
@@ -64,18 +66,6 @@ namespace TRE
 				return ComponentsID::None;
 			}
 		}
-	}
-	
-	ScriptInputHandler& ScriptInputHandler::Instance()
-	{
-		static ScriptInputHandler instance;
-		return instance;
-	}
-
-	void ScriptInputHandler::GetKeyPressed(const InputEvent& event)
-	{
-		_key= event._key;
-		_state = event._state;
 	}
 
 	static std::string EntityID_CSToEngine(CSEntityID ID)
@@ -804,17 +794,21 @@ namespace TRE
 
 #pragma region InputBindings
 
+	ScriptInputHandler& ScriptInputHandler::Instance()
+	{
+		static ScriptInputHandler instance;
+		return instance;
+	}
+
+	void ScriptInputHandler::GetKeyPressed(const InputEvent& event)
+	{
+		_key = event._key;
+		_state = event._state;
+	}
+
 	static bool GetKeyDown(int key)
 	{
-		
-		if(key == ScriptInputHandler::Instance().GetKey() )
-		{
-			ScriptInputHandler::Instance().ResetSystem();
-			return true;
-		}
-		else 
-			return false;
-		 
+		return InputHandler::GetKeyState(key);
 	}
 	
 

@@ -34,6 +34,7 @@ namespace TRE
 		CreateDebugAABB();
 		CreateDebugCapsule();
 		CreateDebugCameraFrustum();
+		CreateDebugDirectionalLight();
 	}
 
 	void DebugRenderer::CreateDebugAABB()
@@ -127,11 +128,6 @@ namespace TRE
 	{
 		m_DebugCameraFrustum = std::make_unique<DebugType>();
 
-		/*std::vector<DebugVertex> DebugFrustumVertices =
-		{
-			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.f,0.f,1.f), glm::vec4(0.f, 1.f, 0.f, 1.f))
-		};*/
 		std::vector<DebugVertex> DebugFrustumVertices =
 		{
 			DebugVertex(glm::vec3(0.f,0.f,0.f), glm::vec4(0.2f, 0.2f, 0.2f, 1.f)),
@@ -145,6 +141,25 @@ namespace TRE
 		
 		m_DebugCameraFrustum->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugFrustumVertices.data(), DebugFrustumVertices.size() * sizeof(DebugVertex));
 		m_DebugCameraFrustum->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugFrustumIndices.data(), DebugFrustumIndices.size() * sizeof(int), DebugFrustumIndices.size());
+	}
+
+	void DebugRenderer::CreateDebugDirectionalLight()
+	{
+		m_DebugLightDirection = std::make_unique<DebugType>();
+
+		std::vector<DebugVertex> DebugLightDirectionVertices =
+		{
+			DebugVertex(glm::vec3(0.f,0.f,-0.5f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.f,0.25f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.25f,0.25f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,0.f,0.5f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+			DebugVertex(glm::vec3(0.f,-0.25f,0.25f), glm::vec4(1.f, 1.f, 0.f, 1.f)),
+		};
+
+		std::vector<int> DebugLightDirectionIndices = { 0,1,2,3,4,2 };
+
+		m_DebugLightDirection->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugLightDirectionVertices.data(), DebugLightDirectionVertices.size() * sizeof(DebugVertex));
+		m_DebugLightDirection->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugLightDirectionIndices.data(), DebugLightDirectionIndices.size() * sizeof(int), DebugLightDirectionIndices.size());
 	}
 
 	void DebugRenderer::UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
@@ -207,5 +222,18 @@ namespace TRE
 	void DebugRenderer::DrawDebugCameraFrustum(VkCommandBuffer CommandBuffer)
 	{
 		vkCmdDrawIndexed(CommandBuffer, m_DebugCameraFrustum->m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+	}
+
+	void DebugRenderer::BindDebugDirectionalLight(VkCommandBuffer CommandBuffer)
+	{
+		VkDeviceSize offsets[] = { 0 };
+		VkBuffer VertexBuffer = m_DebugLightDirection->m_VertexBuffer->GetBuffer();
+		vkCmdBindVertexBuffers(CommandBuffer, 0, 1, &VertexBuffer, offsets);
+		vkCmdBindIndexBuffer(CommandBuffer, m_DebugLightDirection->m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+	}
+
+	void DebugRenderer::DrawDebugDirectionalLight(VkCommandBuffer CommandBuffer)
+	{
+		vkCmdDrawIndexed(CommandBuffer, m_DebugLightDirection->m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 	}
 }

@@ -8,16 +8,29 @@ namespace TRE
 {
 	public class MoleController : Entity
 	{
-		//check if player is on the ground (for now , just a plane)
-		private bool isGrounded = true;
-		//Maxium height the player can jump
-		private Vector3 maxHeight = new Vector3(0, 2000, 0);
-		//direction vector
-		private Vector3 dirVec;
-		//Movement Vector
-		Vector3 movementVector = Vector3.zero;
-		//Wake up the mole
-		private bool isAwake = false;
+        //check if player is on the ground (for now , just a plane)
+        private bool isGrounded = true;
+        //Maxium height the player can jump
+        private Vector3 maxHeight = new Vector3(0, 10000, 0);
+        //direction vector
+        private Vector3 dirVec;
+        //Movement Vector
+        Vector3 movementVector = Vector3.zero;
+        //Max Velocity vector
+        private float maxVelocity = 15f;
+        //Acceleration
+        private float acceleration = 300f;
+        //Deceleration
+        private float deceleration = -10f;
+        //velocity in the air
+        private float airVelocity = 8f;
+        //force direction
+        private Vector3 forceDirection = Vector3.zero;
+        //final velocity
+        private Vector3 finalVelocity = Vector3.zero;
+
+        //Wake up the mole
+        private bool isAwake = false;
 
 
 		//check if player used super power
@@ -26,107 +39,179 @@ namespace TRE
 		private float defaultScale = 5;
 		//Increase character scale
 		private float superScale = 1;
-		//For now the floor collision
-		public Entity Plane_collider;
-		private Entity Trigger_Start;
-		private Entity Trigger_1;
-		private Entity Trigger_2;
+        private Vector3 fat = new Vector3(3f, 2f, 3f);
+		//Return width back to 0
+		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
 
-		private CameraController cameraController;
+		private Vector3 playerDirection = new Vector3(0,0,1);
+
+		//For camera controller
+		private Entity Trigger_A;
+		private Entity Trigger_B;
+		private Entity Trigger_C;
+		private Entity Trigger_D;
+		private Entity Trigger_E;
+		private Entity Trigger_F;
+		private Entity Trigger_G;
+
+		public bool regionA;
+		public bool regionB;
+		public bool regionC;
+		public bool regionD;
+		public bool regionE;
+		public bool regionF;
+		public bool regionG;
 
 		public float elapsedTime = 0.0f;
 
 		public void Start()
 		{
-			Plane_collider = ECSManager.FindEntityByName("Plane collider");
-			Debug.Log("My ID is " + this.ID);
-			Debug.Log("Plane ID is " + Plane_collider.ID);
+			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
+			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
 
-			Trigger_Start = ECSManager.FindEntityByName("Trigger_Start");
-			Debug.Log("Trigger_Start ID is " + Trigger_Start.ID);
+			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
+			Debug.Log("Trigger_B ID is " + Trigger_B.ID);
 
-			Trigger_1 = ECSManager.FindEntityByName("Trigger_1");
-			Debug.Log("Trigger_1 ID is " + Trigger_1.ID);
+			Trigger_C = ECSManager.FindEntityByName("Trigger_C");
+			Debug.Log("Trigger_C ID is " + Trigger_C.ID);
 
-			Trigger_2 = ECSManager.FindEntityByName("Trigger_2");
-			Debug.Log("Trigger_2 ID is " + Trigger_2.ID);
+			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
+			Debug.Log("Trigger_D ID is " + Trigger_D.ID);
 
-			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
+			Trigger_E = ECSManager.FindEntityByName("Trigger_E");
+			Debug.Log("Trigger_E ID is " + Trigger_E.ID);
+
+			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
+			Debug.Log("Trigger_F ID is " + Trigger_F.ID);
+
+			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
+			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
+
+			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 		}
 
 		public void Update()
 		{
-			// Move The Test Object 
-			TransformSystem.GetPosition(this.ID, out Vector3 pos);
-			PhysicsSystem.ConstrainRotationX(this.ID, true);
-
+            // Move The Test Object 
+            TransformSystem.GetPosition(this.ID, out Vector3 pos);
+            PhysicsSystem.ConstrainRotationX(this.ID, true);
+			PhysicsSystem.ConstrainRotationY(this.ID, true);
 			PhysicsSystem.ConstrainRotationZ(this.ID, true);
 
-			dirVec = new Vector3(0, 0, 0);
+
+            //Movement Related stuff
+            PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
+
+            dirVec = new Vector3(0, 0, 0);
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
-				dirVec.z += 1;
+				dirVec.z += -1;
+				playerDirection.y = 180;
 			}
 
-			if (InputSystem.GetKeyDown(InputKeys.S))
+            if (InputSystem.GetKeyDown(InputKeys.S))
 			{
-				dirVec.z += -1;
+				dirVec.z += 1;
+				playerDirection.y = 0;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
-				dirVec.x += 1;
+				dirVec.x += -1;
+				playerDirection.y = 270;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
-				dirVec.x += -1;
+				dirVec.x += 1;
+				playerDirection.y = 90;
+			}
+
+			if(InputSystem.GetKeyDown(InputKeys.W))
+			{
+				if (InputSystem.GetKeyDown(InputKeys.D))
+				{
+					playerDirection.y = 135;
+				}
+				if (InputSystem.GetKeyDown(InputKeys.A))
+				{
+					playerDirection.y = 225;
+				}
+			}
+
+			if (InputSystem.GetKeyDown(InputKeys.S))
+			{
+				if (InputSystem.GetKeyDown(InputKeys.D))
+				{
+					playerDirection.y = 45;
+				}
+				if (InputSystem.GetKeyDown(InputKeys.A))
+				{
+					playerDirection.y = 315;
+				}
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.Space))
-			{
-				// if the player JUST starts to touch the ground OR has been chilling on the ground for a while
-				isGrounded = PhysicsSystem.IsCollisionEnter(this.ID, Plane_collider.ID) || PhysicsSystem.IsCollisionStay(this.ID, Plane_collider.ID);
-
+            {
 				if (isGrounded)
+				{
+					Vector3 maxHeight = new Vector3(currVelocity.x, 5, currVelocity.z);
 					Jump(maxHeight);
+				}
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.E))
 			{
 				if (!isScaled)
 				{
-					superScale = lerp(1, 5, 0.1f);
-					Debug.Log("Super Scale: " + superScale);
-					PhysicsSystem.ResizeCapsuleCollider(this.ID, superScale, defaultScale);
-					superScale = 1;
+					//for fat boi
+					PhysicsSystem.ResizeBoxCollider(this.ID, fat);
+					//tall boi
+					//PhysicsSystem.ResizeCapsuleCollider(this.ID, defaultScale, superScale);
 					isScaled = true;
 				}
 				else if (isScaled)
 				{
-
-					defaultScale = lerp(5, 1, 0.1f);
-					defaultScale -= 0.5f * Time.deltaTime;
-					PhysicsSystem.ResizeCapsuleCollider(this.ID, defaultScale, defaultScale);
-					defaultScale = 5;
+					//for fat boi
+                    PhysicsSystem.ResizeBoxCollider(this.ID, thin);
+					//for tall boi
+                    //PhysicsSystem.ResizeCapsuleCollider(this.ID, 3, 2);
 					isScaled = false;
 				}
 			}
 
 			dirVec.Normalize();
 
-			movementVector = dirVec * 10;
-			PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 output);
-			PhysicsSystem.AddForce(this.ID, movementVector, ForceMode.VelocityChange);
+            if (dirVec != Vector3.zero)
+            {
+                if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
+                {
+                    finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
+                    PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+                }
+                else
+                {
+					Vector3 tmp = dirVec * maxVelocity;
+					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
+                    PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+                }
+            }
 
-			cameraController.regionStart = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_Start.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_Start.ID); ;
-			cameraController.region1 = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_1.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_1.ID);
-			cameraController.region2 = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_2.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_2.ID);
+			TransformSystem.SetRotation(this.ID, playerDirection);
+
+			regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
+			regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
+			regionC = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_C.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_C.ID);
+			regionD = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_D.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_D.ID);
+			regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
+			regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
+			regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Acceleration);
+			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
+			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
 		public static float lerp(float start, float end, float t)
@@ -137,10 +222,23 @@ namespace TRE
 				t = 0;
 			return start + (end - start) * t;
 		}
-		//private void OnTriggerStay(System.UInt64 otherID)
-		//{
-		//	Entity other = new Entity(otherID);
-		//	Core.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
-		//}
+
+		private void OnCollisionStay(System.UInt64 otherID)
+		{
+			isGrounded = false;
+
+			Entity other = new Entity(otherID);
+			if(PhysicsSystem.IsCollisionStay(this.ID, otherID))
+			{
+				if(EngineGetTag(otherID) == "Ground")
+				{
+					isGrounded = true;
+				}
+				else
+				{
+					isGrounded = false;
+				}
+			}
+		}
 	}
 }
