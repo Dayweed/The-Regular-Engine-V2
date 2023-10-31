@@ -25,13 +25,13 @@ namespace TRE
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
-            Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
+            //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
         }
 
         private void OnCollisionStay(System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
-            Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+            //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
 
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
