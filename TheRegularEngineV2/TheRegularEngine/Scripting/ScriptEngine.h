@@ -195,6 +195,7 @@ namespace TRE
 		static bool LoadAssembly(const std::string& assemblyPath);
 		static void LoadClassesFromAssembly();
 
+		static bool RecompileScripts();
 		static void ReloadAssembly();
 
 		static void CreateCSEntityData(Entity e);
