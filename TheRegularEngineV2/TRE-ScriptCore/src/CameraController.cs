@@ -34,58 +34,46 @@ namespace TRE
 			if(moleController.regionA)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 10, 20), new Vector3(30, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceA, lerpTime);
+				distance = MathF.Lerp(distance, distanceA, lerpTime);
 			}
 
 			if (moleController.regionB)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 35, 50), new Vector3(45, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceB, lerpTime);
+				distance = MathF.Lerp(distance, distanceB, lerpTime);
 			}
 
 			if (moleController.regionC)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(15, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceC, lerpTime);
+				distance = MathF.Lerp(distance, distanceC, lerpTime);
 			}
 
 			if(moleController.regionD) 
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(45, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceD, lerpTime);
+				distance = MathF.Lerp(distance, distanceD, lerpTime);
 			}
 
 			if (moleController.regionE)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(30, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceE, lerpTime);
+				distance = MathF.Lerp(distance, distanceE, lerpTime);
 			}
 
 			if (moleController.regionF)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(45, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceF, lerpTime);
+				distance = MathF.Lerp(distance, distanceF, lerpTime);
 			}
 
 			if (moleController.regionG)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(15, 180, 0), 0.001f);
-				distance = Lerp(distance, distanceG, lerpTime);
+				distance = MathF.Lerp(distance, distanceG, lerpTime);
 			}
 
 			CameraSystem.SetMainCameraLookAt(pos, distance);
-		}
-		private float Lerp(float start, float end, float t)
-		{
-			if(t > 1)
-			{
-				t = 1;
-			}
-			if(t < 0)
-			{
-				t = 0;
-			}
-			return start * (1 - t) + end * t;
 		}
 	}
 }
