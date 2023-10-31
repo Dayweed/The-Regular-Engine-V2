@@ -83,6 +83,9 @@ namespace TRE
 			{
 				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
 					ImGui::SetWindowFocus();
+
+				if (ImGui::IsMouseClicked(0))
+					m_SelectionManager->ClearSelectedEntity();
 			}
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
