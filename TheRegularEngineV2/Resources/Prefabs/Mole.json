@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "637353580180726695",
+         "m_GUID": "11975413283938616507",
          "m_Name": "Mole",
          "m_Tag": ""
       }
@@ -57,7 +57,7 @@
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
+         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
@@ -87,12 +87,6 @@
             0.0
          ]
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       0

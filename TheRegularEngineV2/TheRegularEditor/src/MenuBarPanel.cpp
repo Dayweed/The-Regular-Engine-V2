@@ -211,10 +211,7 @@ namespace TRE
 			const std::string path = FileExplorer::OpenFileExplorer("Scene(*.json)\0*.json\0");
 			if (!path.empty())
 			{
-				ECSSystemManager::Instance().BeforeReset();
-				ECSManager::Instance().DestroyAll();
 				SceneManager::Instance().LoadScene(path);
-				ECSSystemManager::Instance().AfterReset();
 
 				EditorCamera::Instance().Deserialize();
 			}

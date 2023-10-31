@@ -9,6 +9,8 @@ namespace TRE
 {
     public class HumanCentipede : Entity
     {
+        public bool isRoyce;
+
         // How to call base class constructor to access Entity-like Properties
         public HumanCentipede()
         {
