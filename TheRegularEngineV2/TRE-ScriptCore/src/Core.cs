@@ -245,8 +245,19 @@ namespace TRE
 			return child;
 		}
 
+		public Entity GetChildFromName(string name)
+		{
+			EntityID childID = EngineGetChildIDFromName(id, name);
+			string childName = ECSManager.FindNameFromID(childID);
+			Entity child = new Entity(childID, childName);
+			return child;
+		}
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static EntityID EngineGetChildID(EntityID _id, int _index);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static EntityID EngineGetChildIDFromName(EntityID _id, string name);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void EngineParentSetParent(EntityID _id, EntityID _parent_id);

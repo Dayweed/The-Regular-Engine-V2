@@ -31,6 +31,7 @@ namespace TRE
 		{
 			
 			s.m_StoredClass = j.at("m_StoredClass").get<std::string>();
+			s.m_IsDirty = true;
 		}
 
 	private:
