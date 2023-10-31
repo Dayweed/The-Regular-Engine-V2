@@ -17,7 +17,7 @@ namespace TRE
         //Movement Vector
         Vector3 movementVector = Vector3.zero;
         //Max Velocity vector
-        private float maxVelocity = 20f;
+        private float maxVelocity = 5f;
         //Acceleration
         private float acceleration = 300f;
         //Deceleration
@@ -103,6 +103,7 @@ namespace TRE
             PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
             dirVec = new Vector3(0, 0, 0);
+			int debugKeys = 0;
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
@@ -110,7 +111,7 @@ namespace TRE
 				playerDirection.y = 180;
 			}
 
-			if (InputSystem.GetKeyDown(InputKeys.S))
+            if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
@@ -156,7 +157,7 @@ namespace TRE
             {
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(currVelocity.x, 1000, currVelocity.z);
+					Vector3 maxHeight = new Vector3(currVelocity.x, 5, currVelocity.z);
 					Jump(maxHeight);
 				}
 			}
@@ -185,6 +186,7 @@ namespace TRE
 
             if (dirVec != Vector3.zero)
             {
+				Debug.Log(" " + debugKeys);
                 //Debug.Log(dirVec.x + " " + dirVec.z);
                 if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
                 {
@@ -197,7 +199,6 @@ namespace TRE
 					Vector3 tmp = dirVec * maxVelocity;
 					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-                    //Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
                 }
                 //Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
@@ -215,7 +216,7 @@ namespace TRE
 		private void Jump(Vector3 JumpHeight)
 		{
 			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.Impulse);
+			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
 		public static float lerp(float start, float end, float t)
