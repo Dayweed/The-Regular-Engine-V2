@@ -768,6 +768,12 @@ namespace TRE
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Sqrt(float value);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Lerp(float start, float end, float t);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static Vector3 Vec3Lerp(Vector3 start, Vector3 end, float t);
 	}
 
 	public class Random
