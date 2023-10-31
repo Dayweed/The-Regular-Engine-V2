@@ -8,9 +8,11 @@
 
 //Everything should be remove. This is just to test the calling of the runtime works.
 #include <fstream>
+#include <shellapi.h>
 
 #include "ScriptBind.h"
 #include "ScriptComponent.h"
+#include "Core/Asserts.h"
 #include "Core/Logger.h"
 #include "Core/Engine.h"
 #include "EventSystem/Events/EditorEvent.h"
@@ -287,6 +289,26 @@ namespace TRE
 			}
 			
 		}
+	}
+
+	bool ScriptEngine::RecompileScripts()
+	{
+		//Get path to scriptCore
+		std::fstream batch;
+		batch.open("ScriptCompiler.bat", std::ios::out);
+
+		batch << "@echo OFF" << std::endl;
+		batch << "cd " + std::filesystem::current_path().parent_path().string() + "/TRE-ScriptCore" << std::endl;
+		batch << "dotnet build TRE-ScriptCore.csproj" << std::endl;
+
+		batch.close();
+
+		std::system("ScriptCompiler.bat");
+
+		// remove the batch file
+		std::filesystem::remove("ScriptCompiler.bat");
+
+		return true;
 	}
 
 	void ScriptEngine::ReloadAssembly()
