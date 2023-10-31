@@ -103,7 +103,7 @@ namespace TRE
             fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
             maxAmountToSpawn = 2;
             timeBetweenSpawns = 2;
-            size = new Vector3(50, 50, 50);
+            size = new Vector3(25, 0, 25);
             canSpawnObjs = true;
             maxObjects = 6;
         }
