@@ -175,13 +175,13 @@
       2,
       1048672,
       {
-         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
+         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       },
       1048671,
       {
-         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
+         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
@@ -288,6 +288,12 @@
             1.0
          ]
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

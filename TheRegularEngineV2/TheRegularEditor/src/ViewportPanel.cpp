@@ -171,8 +171,6 @@ namespace TRE
 
 	void ViewportPanel::Update()
 	{
-		ImGui::GetIO().DeltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
-
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();
@@ -450,6 +448,8 @@ namespace TRE
 
 	void ViewportPanel::MouseActions()
 	{
+		ImGui::GetIO().DeltaTime = 1 / Engine::GetInstance().GetWindow()->GetDeltaTime();
+
 		if (m_IsViewportHovered == false)
 			return;
 
