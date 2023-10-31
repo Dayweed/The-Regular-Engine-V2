@@ -863,7 +863,7 @@ namespace TRE
 		PX_RELEASE(m_Scene);
 
 		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 6, 0.0f);
 
 		//A cpu thread for the scene
 		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
