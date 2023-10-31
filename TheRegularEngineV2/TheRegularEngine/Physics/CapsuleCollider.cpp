@@ -44,6 +44,14 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+
+			/*PxPrismaticJoint *joint = PxPrismaticJointCreate(*m_Physics, nullptr, PxTransform(PxIdentity), tempSharedData.m_RigidDynamic, PxTransform(PxIdentity));
+			joint->setPrismaticJointFlag(PxPrismaticJointFlag::eLIMIT_ENABLED, true);
+			PxTolerancesScale scale;
+			scale.length = 0.1f;
+			scale.speed = 0.1f;	*/
+
+			//tempSharedData.m_RigidDynamic->set
 #ifdef _DEBUG
 			tempSharedData.m_RigidDynamic->setName("CapsuleCollider");
 #endif
