@@ -198,8 +198,20 @@ namespace TRE
 
 		private void OnCollisionStay(System.UInt64 otherID)
 		{
+			isGrounded = false;
+
 			Entity other = new Entity(otherID);
-			isGrounded = PhysicsSystem.IsCollisionStay(this.ID, otherID);
+			if(PhysicsSystem.IsCollisionStay(this.ID, otherID))
+			{
+				if(EngineGetTag(otherID) == "Ground")
+				{
+					isGrounded = true;
+				}
+				else
+				{
+					isGrounded = false;
+				}
+			}
 		}
 	}
 }
