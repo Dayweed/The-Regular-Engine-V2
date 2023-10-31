@@ -23,9 +23,6 @@ namespace TRE
 #pragma region ScriptEngine
 
 	ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
-	static void GetCSEntityData(Entity entity);
-	static void UpdateCSEntityData(Entity entity);
-	static void CreateCSEntityData(Entity entity);
 
 	static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
 	{
@@ -348,6 +345,7 @@ namespace TRE
 				return;
 			}
 			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
 			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
@@ -358,6 +356,8 @@ namespace TRE
 				fieldMap[name].m_Field.m_Name = name;
 				fieldMap[name].m_Field.m_Type = field.m_Type;
 			}
+
+
 		}
 	}
 
@@ -474,7 +474,7 @@ namespace TRE
 		else
 		{
 			std::string function{ __FUNCTION__ };
-			TRE_CORE_ERROR("["+ function+"] Cannot find EntityClass for entity {}", entity->GetName());
+			TRE_CORE_ERROR("[" + function + "] Cannot find EntityClass for entity {}", entity->GetName());
 		}
 	}
 
@@ -693,7 +693,6 @@ namespace TRE
 
 	void ScriptInstance::OnTriggerStayInvoke(Entity other)
 	{
-		
 		if (m_TriggerStayMethod)
 		{
 			unsigned long long id = std::stoull(other->GetGUID());
@@ -735,6 +734,11 @@ namespace TRE
 		const ScriptField& scriptField = iter->second;
 		mono_field_set_value(m_Instance, scriptField.m_MonoField, (void*) buffer);
 		return true;
+	}
+
+	ScriptInstance::~ScriptInstance()
+	{
+		mono_gchandle_free(m_GCHandle);
 	}
 
 #pragma endregion

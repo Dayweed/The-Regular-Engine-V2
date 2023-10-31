@@ -83,6 +83,9 @@ namespace TRE
 			{
 				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
 					ImGui::SetWindowFocus();
+
+				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
+					m_SelectionManager->ClearSelectedEntity();
 			}
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
@@ -100,7 +103,7 @@ namespace TRE
 								Entity entityChild = ECSManager::Instance().CreateEntity();
 								entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
 								ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
-								m_SelectionManager->ClearSelectedEntity();
+								m_SelectionManager->SelectEntity(entityChild);
 							}
 
 							if (ImGui::Selectable("Delete Entity"))
@@ -124,7 +127,6 @@ namespace TRE
 							entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
 							m_SelectionManager->SelectEntity(entityChild);
 							//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
-							m_SelectionManager->ClearSelectedEntity();
 						}
 						ImGui::EndPopup();
 					}

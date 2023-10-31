@@ -97,6 +97,7 @@ namespace TRE
 	public:
 
 		ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity);
+		~ScriptInstance();
 
 		void OnEnableInvoke();
 		void OnDisableInvoke();
@@ -150,6 +151,8 @@ namespace TRE
 		MonoMethod* m_LateUpdateMethod = nullptr;
 		MonoMethod* m_TriggerStayMethod = nullptr;
 		MonoMethod* m_CollisionStayMethod = nullptr;
+
+		std::uint32_t m_GCHandle{};
 
 		inline static char s_fieldBuffer[16];
 

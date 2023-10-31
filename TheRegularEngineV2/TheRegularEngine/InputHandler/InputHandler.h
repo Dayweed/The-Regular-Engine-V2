@@ -65,8 +65,11 @@ namespace TRE
 		*******************************************************************************/
 		static void CheckMouseEvent(GLFWwindow* win_ptr, int button, int action);
 
-		static bool GetKeyState(int key);
+		static bool GetKeyPress(int key);
+		static bool GetKeyTrigger(int key);
 	private:
 		static std::unordered_map<int, int> m_keyMap;
+		//static std::unordered_map<int, int> m_keyTriggerMap;
+		static std::unordered_map<int, int> m_keyPreviousPress;
 	};
 }
