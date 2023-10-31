@@ -9,7 +9,7 @@ namespace TRE
 {
     public class HumanCentipede : Entity
     {
-        public int blueBridge = 420;
+        public int blueBridge;
         //public Entity Royce;
 
         // How to call base class constructor to access Entity-like Properties
