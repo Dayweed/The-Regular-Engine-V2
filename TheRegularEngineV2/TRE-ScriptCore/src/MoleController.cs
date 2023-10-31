@@ -177,7 +177,7 @@ namespace TRE
 				}
 			}
 
-            TransformSystem.SetRotation(this.ID, playerDirection);
+			TransformSystem.SetRotation(this.ID, playerDirection);
 
 			regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
 			regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);

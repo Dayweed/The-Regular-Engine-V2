@@ -280,7 +280,6 @@ namespace TRE
 		Audio = 2,
 	}
 
-	#region Vector3
 	public struct Vector3
 	{
 		public float x, y, z;
@@ -389,7 +388,6 @@ namespace TRE
 			return vec1.Magnitude() - vec2.Magnitude();
 		}
 	}
-	#endregion
 
 	public struct Vector2
 	{

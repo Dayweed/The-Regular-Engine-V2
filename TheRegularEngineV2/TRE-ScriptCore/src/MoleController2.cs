@@ -103,9 +103,9 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-                    Vector3 maxHeight = new Vector3(0, 30, 0);
-                    Jump(maxHeight);
-                }
+					Vector3 maxHeight = new Vector3(0, 30, 0);
+					Jump(maxHeight);
+				}
 			}
 
 			if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
@@ -145,8 +145,8 @@ namespace TRE
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
-            PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
-        }
+			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
+		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
 		{

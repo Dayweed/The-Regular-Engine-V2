@@ -474,7 +474,7 @@ namespace TRE
 		else
 		{
 			std::string function{ __FUNCTION__ };
-			TRE_CORE_ERROR("["+ function+"] Cannot find EntityClass for entity {}", entity->GetName());
+			TRE_CORE_ERROR("[" + function + "] Cannot find EntityClass for entity {}", entity->GetName());
 		}
 	}
 
