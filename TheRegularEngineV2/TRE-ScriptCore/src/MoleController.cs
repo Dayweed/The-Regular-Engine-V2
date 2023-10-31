@@ -103,7 +103,7 @@ namespace TRE
             {
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(currVelocity.x, 10000, currVelocity.z);
+					Vector3 maxHeight = new Vector3(currVelocity.x, 1000, currVelocity.z);
 					Jump(maxHeight);
 					Debug.Log("Jumping" + currVelocity.y);
 				}
@@ -168,12 +168,20 @@ namespace TRE
 			return start + (end - start) * t;
 		}
 
-		private void OnTriggerStay(System.UInt64 otherID)
+		//private void OnTriggerStay(System.UInt64 otherID)
+		//{
+		//	Entity other = new Entity(otherID);
+		//	isGrounded = PhysicsSystem.IsCollisionStay(this.ID, otherID);
+		//	Debug.Log("is it " + isGrounded);
+
+  //      }
+
+		private void OnCollisionStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			isGrounded = PhysicsSystem.IsCollisionStay(this.ID, otherID);
+			Debug.Log("Colliding with " + ECSManager.FindNameFromID(otherID));
 			Debug.Log("is it " + isGrounded);
-
-        }
+		}
 	}
 }
