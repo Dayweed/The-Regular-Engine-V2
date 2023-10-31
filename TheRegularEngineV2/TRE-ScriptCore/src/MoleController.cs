@@ -17,9 +17,9 @@ namespace TRE
         //Movement Vector
         Vector3 movementVector = Vector3.zero;
         //Max Velocity vector
-        private float maxVelocity = 20f;
+        private float maxVelocity = 5f;
         //Acceleration
-        private float acceleration = 100f;
+        private float acceleration = 1000f;
         //Deceleration
         private float deceleration = -10f;
         //velocity in the air
@@ -97,25 +97,30 @@ namespace TRE
             PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
             dirVec = new Vector3(0, 0, 0);
+			int debugKeys = 0;
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				dirVec.z += -1;
-			}
+				debugKeys += 1000;
+            }
 
-			if (InputSystem.GetKeyDown(InputKeys.S))
+            if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
+				debugKeys += 100;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
 				dirVec.x += -1;
+				debugKeys += 10;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
+				debugKeys += 1;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.Space))
@@ -151,6 +156,7 @@ namespace TRE
 
             if (dirVec != Vector3.zero)
             {
+				Debug.Log(" " + debugKeys);
                 //Debug.Log(dirVec.x + " " + dirVec.z);
                 if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
                 {
@@ -163,7 +169,6 @@ namespace TRE
 					Vector3 tmp = dirVec * maxVelocity;
 					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
                     PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
-                    //Debug.Log("Max velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
                 }
                 //Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
