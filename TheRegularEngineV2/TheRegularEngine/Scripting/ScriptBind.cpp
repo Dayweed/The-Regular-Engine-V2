@@ -836,9 +836,13 @@ namespace TRE
 
 	static bool GetKeyDown(int key)
 	{
-		return InputHandler::GetKeyState(key);
+		return InputHandler::GetKeyPress(key);
 	}
-	
+
+	static bool GetKeyTrigger(int key)
+	{
+		return InputHandler::GetKeyTrigger(key);
+	}
 
 #pragma endregion
 
@@ -1295,6 +1299,7 @@ namespace TRE
 		// Input Binding
 		{
 			mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
+			mono_add_internal_call("TRE.InputSystem::GetKeyTrigger", GetKeyTrigger);
 		}
 
 		// Logging

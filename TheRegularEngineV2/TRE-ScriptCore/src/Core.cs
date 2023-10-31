@@ -759,6 +759,9 @@ namespace TRE
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool GetKeyDown(InputKeys keycode);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetKeyTrigger(InputKeys keycode);
 	}
 
 	public class MathF

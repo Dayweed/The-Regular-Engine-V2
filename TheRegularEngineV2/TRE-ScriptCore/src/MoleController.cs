@@ -160,7 +160,7 @@ namespace TRE
 				}
 			}
 
-			if (InputSystem.GetKeyDown(InputKeys.E))
+			if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
 				if (!isScaled)
 				{
