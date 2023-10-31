@@ -36,7 +36,6 @@ namespace TRE
 
 	void EntityCopier::PasteEntities()
 	{
-		ECSSystemManager::Instance().BeforeReset();
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
 		ECSSystemManager::Instance().AfterReset();
 	}
