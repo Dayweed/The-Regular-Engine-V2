@@ -809,15 +809,6 @@ namespace TRE
 	static bool GetKeyDown(int key)
 	{
 		return InputHandler::GetKeyState(key);
-		//if(key == ScriptInputHandler::Instance().GetKey() )
-		//{
-		//	return ScriptInputHandler::Instance().GetState();
-		//	//ScriptInputHandler::Instance().ResetSystem();
-		//	//return true;
-		//}
-		//else 
-		//	return false;
-		 
 	}
 	
 
