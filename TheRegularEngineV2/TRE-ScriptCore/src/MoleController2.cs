@@ -38,31 +38,14 @@ namespace TRE
         //check if player used super power
         private bool isScaled = false;
         //Default scale
-        private float defaultScale = 5;
+        private float defaultScale = 1;
         //Increase character scale
-        private float superScale = 1;
-        private Vector3 fat = new Vector3(3f, 2f, 3f);
-        //Return width back to 0
-        private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
+        private float superScale = 5;
+        //Lerp time
+        private float lerpTime = 0.0001f;
 
         private Vector3 playerDirection = new Vector3(0, 0, 1);
-
-        //For camera controller
-        private Entity Trigger_A;
-        private Entity Trigger_B;
-        private Entity Trigger_C;
-        private Entity Trigger_D;
-        private Entity Trigger_E;
-        private Entity Trigger_F;
-        private Entity Trigger_G;
-
-        public bool regionA;
-        public bool regionB;
-        public bool regionC;
-        public bool regionD;
-        public bool regionE;
-        public bool regionF;
-        public bool regionG;
+        
 
         public void Start()
         {
@@ -139,18 +122,18 @@ namespace TRE
 
             if (InputSystem.GetKeyDown(InputKeys.Backspace))
             {
-                if (!isScaled)
-                {
-                    //tall boi
-                    PhysicsSystem.ResizeCapsuleCollider(this.ID, defaultScale, superScale);
-                    isScaled = true;
-                }
-                else if (isScaled)
-                {
-                    //for tall boi
-                    PhysicsSystem.ResizeCapsuleCollider(this.ID, 3, 2);
-                    isScaled = false;
-                }
+                isScaled = !isScaled;
+            }
+
+            switch(isScaled)
+            {
+                case true:
+                    PhysicsSystem.ResizeCapsuleCollider(this.ID, 2, lerp(defaultScale, superScale, lerpTime));
+                    break;
+                case false:
+                    PhysicsSystem.ResizeCapsuleCollider(this.ID, 2, lerp(superScale, 1, lerpTime));
+                    break;
+
             }
 
             dirVec.Normalize();
@@ -178,13 +161,13 @@ namespace TRE
             PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
         }
 
-        public static float lerp(float start, float end, float t)
+        private float lerp(float start, float end, float t)
         {
             if (t > 1)
                 t = 1;
             else if (t < 0)
                 t = 0;
-            return start + (end - start) * t;
+            return start * (1 - t) + end * t;
         }
 
         private void OnCollisionStay(System.UInt64 otherID)
