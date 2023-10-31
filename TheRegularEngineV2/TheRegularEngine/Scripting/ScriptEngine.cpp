@@ -520,6 +520,7 @@ namespace TRE
 		if (exception)
 		{
 			mono_print_unhandled_exception(exception);
+			exception->synchronisation;
 		}
 		return result;
 	}
