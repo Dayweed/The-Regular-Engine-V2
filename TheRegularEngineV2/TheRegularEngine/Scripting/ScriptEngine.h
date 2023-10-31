@@ -213,7 +213,11 @@ namespace TRE
 		static void OnTriggerStay(Entity e, Entity other);
 		static void OnCollisionStay(Entity e, Entity other);
 
-		static void CreateScriptInstance(const std::string& className,const std::string& entityGUID);
+		static std::shared_ptr<ScriptClass> GetEntityClass(const std::string& className);
+		static std::unordered_map<std::string, std::shared_ptr<ScriptClass>>& GetScriptClasses();
+		static ScriptFieldMap& GetScriptFieldMap(const std::string& guid);
+		static std::shared_ptr<ScriptInstance> GetScriptInstance(const std::string& guid);
+
 
 		static void PrintAllContainersHere();
 

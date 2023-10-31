@@ -135,6 +135,8 @@ namespace TRE
 
 	public class Testing : Entity
 	{
+		public float test = 0.0f;
+		public bool test2 = false;
 		void OnCreate()
 		{
 			Console.WriteLine("Testing OnCreate");
