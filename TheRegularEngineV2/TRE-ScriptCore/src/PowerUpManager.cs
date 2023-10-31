@@ -11,9 +11,9 @@ namespace TRE
     {
         public List<Entity> powerUps = new List<Entity>();
 
-        private Entity baseForm;
-        private Entity blueberryForm;
-        private Entity strawberryForm;
+        //private Entity baseForm;
+        //private Entity blueberryForm;
+        //private Entity strawberryForm;
 
         private bool usePower = false;
 
@@ -24,9 +24,9 @@ namespace TRE
 
         private void OnCreate()
         {
-            baseForm = this.parenting.GetChild(0);
-            blueberryForm = this.parenting.GetChild(1);
-            strawberryForm = this.parenting.GetChild(2);
+            //baseForm = this.parenting.GetChild(0);
+            //blueberryForm = this.parenting.GetChild(1);
+            //strawberryForm = this.parenting.GetChild(2);
         }
 
         public void SwapPowerUps() //if holding 2 powerups, swap between them. if currently using a power-up, will swap into the other form
@@ -75,17 +75,17 @@ namespace TRE
 
         private void ActivatePowerUp(GetPowerUp thisPower) //change to the model that represents the powerup
         {
-            baseForm.SetActive(false);
+            //baseForm.SetActive(false);
 
             switch (thisPower.powerUpType)
             {
                 case PowerUpsType.Blueberry:
-                    blueberryForm.SetActive(true);
-                    strawberryForm.SetActive(false);
+                    //blueberryForm.SetActive(true);
+                    //strawberryForm.SetActive(false);
                     break;
                 case PowerUpsType.Strawberry:
-                    blueberryForm.SetActive(false);
-                    strawberryForm.SetActive(true);
+                    //blueberryForm.SetActive(false);
+                    //strawberryForm.SetActive(true);
                     break;
                 default:
                     break;
@@ -96,9 +96,9 @@ namespace TRE
 
         private void DeactivatePowerUps() //turn back to base model
         {
-            baseForm.SetActive(true);
-            blueberryForm.SetActive(false);
-            strawberryForm.SetActive(false);
+            //baseForm.SetActive(true);
+            //blueberryForm.SetActive(false);
+            //strawberryForm.SetActive(false);
 
             usePower = false;
         }
@@ -107,17 +107,6 @@ namespace TRE
         {
             DeactivatePowerUps();
             powerUps.RemoveAt(0);
-        }
-
-        public void AddTopowerUps(Entity ent)
-        {
-            powerUps.Add(ent);
-        }
-
-        public int GetpowerUpsSize()
-        {
-            Console.WriteLine("6");
-            return powerUps.Count;
         }
     }
 }

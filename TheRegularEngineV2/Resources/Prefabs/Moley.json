@@ -8,10 +8,20 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3233608133424215460",
-         "m_Overrides": {},
-         "m_PrefabGUID": "3233608133424215460",
-         "m_RemovedComps": []
+         "m_MainPrefabGUID": "2190832989083742842",
+         "m_Overrides": {
+            "CapsuleCollider": [
+               "TRE::CapsuleCollider/Radius"
+            ],
+            "Properties": [
+               "TRE::Properties/Tag",
+               "TRE::Properties/Name"
+            ]
+         },
+         "m_PrefabGUID": "2190832989083742842",
+         "m_RemovedComps": [
+            "BoxCollider"
+         ]
       }
    ],
    [
@@ -27,9 +37,9 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "13254852139684527656",
-         "m_Name": "FallingObject",
-         "m_Tag": ""
+         "m_GUID": "8574783488209516700",
+         "m_Name": "Moley",
+         "m_Tag": "Player"
       }
    ],
    [
@@ -37,19 +47,19 @@
       0,
       {
          "m_Position": [
-            0.0,
-            0.0,
-            20.0
+            5.728992938995361,
+            -6.974639892578125,
+            -13.981051445007324
          ],
          "m_Rotation": [
-            -179.99998474121094,
-            -5.008956577512436e-06,
-            -179.99998474121094
+            0.0,
+            0.0005472316988743842,
+            0.0
          ],
          "m_Scale": [
-            1.0,
-            1.0,
-            1.0
+            0.75,
+            0.75,
+            0.75
          ]
       }
    ],
@@ -74,9 +84,9 @@
          "m_FreezePositionX": false,
          "m_FreezePositionY": false,
          "m_FreezePositionZ": false,
-         "m_FreezeRotationX": false,
+         "m_FreezeRotationX": true,
          "m_FreezeRotationY": false,
-         "m_FreezeRotationZ": false,
+         "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
          "m_Mass": 7.330382823944092,
          "m_UseGravity": true
@@ -92,7 +102,7 @@
       1,
       0,
       {
-         "m_HalfHeight": 5.0,
+         "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -115,7 +125,7 @@
       1,
       0,
       {
-         "m_StoredClass": "TRE.FallingObj"
+         "m_StoredClass": "TRE.MoleController2"
       }
    ]
 ]

@@ -88,16 +88,15 @@ namespace TRE
 			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
 
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
+			PhysicsSystem.ConstrainRotationX(this.ID, true);
+			PhysicsSystem.ConstrainRotationY(this.ID, true);
+			PhysicsSystem.ConstrainRotationZ(this.ID, true);
 		}
 
 		public void Update()
 		{
             // Move The Test Object 
             TransformSystem.GetPosition(this.ID, out Vector3 pos);
-            PhysicsSystem.ConstrainRotationX(this.ID, true);
-			PhysicsSystem.ConstrainRotationY(this.ID, true);
-			PhysicsSystem.ConstrainRotationZ(this.ID, true);
-
 
             //Movement Related stuff
             PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
@@ -156,7 +155,7 @@ namespace TRE
             {
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(currVelocity.x, 5, currVelocity.z);
+					Vector3 maxHeight = new Vector3(0, 20, 0);
 					Jump(maxHeight);
 				}
 			}

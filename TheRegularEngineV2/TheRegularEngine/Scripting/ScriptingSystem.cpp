@@ -128,6 +128,7 @@ namespace TRE
 	void ScriptingSystem::AfterReset()
 	{
 		// Add back all entities with Scripting
+		ScriptEngine::ReloadAssembly();
 		InitializeScriptableObjects();
 		m_IsRunning = true;
 	}

@@ -246,6 +246,22 @@ namespace TRE
 
 		return EntityID_EngineToCS(Temp->GetComponent<Parenting>().m_Children[index]);
 	}
+	
+	static CSEntityID BindParentGetChildFromName(CSEntityID ID, MonoString* name)
+	{
+		// Retrieve the entity from the ID
+		Entity Temp = VALIDATEENTITY(ID);
+		std::string searchID = mono_string_to_utf8(name);
+
+		for (std::string childID : Temp->GetComponent<Parenting>().m_Children)
+		{
+			std::string childName{ ECSManager::Instance().FindEntity(childID)->GetName() };
+			if (childName == searchID) return EntityID_EngineToCS(childID);
+		}
+
+		PUBLISHERROR("ID (" + searchID + ") is not found in " + Temp->GetName() + "!");
+		return {};
+	}
 
 	static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
 	{
@@ -267,6 +283,12 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+
+		if (Temp->HasComponent<ScriptComponent>())
+		{
+			ScriptEngine::CreateCSEntityData(Temp);
+		}
+
 		std::cout << "Created Entity from C#: " << str << std::endl;
 		return EntityID_EngineToCS(Temp->GetGUID());
 	}
@@ -282,6 +304,12 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+
+		if (Temp->HasComponent<ScriptComponent>())
+		{
+			ScriptEngine::CreateCSEntityData(Temp);
+		}
+
 		std::cout << "Cloned Entity from C#: " << Existing->GetName() << std::endl;
 		return EntityID_EngineToCS(Temp->GetGUID());
 	}
@@ -1190,6 +1218,7 @@ namespace TRE
 			mono_add_internal_call("TRE.Parenting::EngineParentAddChild", BindParentAddChild);
 			mono_add_internal_call("TRE.Parenting::EngineParentRemoveChild", BindParentRemoveChild);
 			mono_add_internal_call("TRE.Parenting::EngineGetChildID", BindParentGetChildFromIndex);
+			mono_add_internal_call("TRE.Parenting::EngineGetChildIDFromName", BindParentGetChildFromName);
 		}
 
 		// Transform Bindings

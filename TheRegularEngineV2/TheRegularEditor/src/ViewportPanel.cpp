@@ -205,7 +205,7 @@ namespace TRE
 
 				const EditorCamera& camera = EditorCamera::Instance();
 				UpdateClickRay();
-				transform.m_Position = camera.GetPosition() + m_ClickRay / 5.f;
+				transform.m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
 				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
 				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
