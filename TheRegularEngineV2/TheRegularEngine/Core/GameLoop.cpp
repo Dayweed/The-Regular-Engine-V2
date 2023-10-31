@@ -68,7 +68,7 @@ namespace TRE
 			}
 
 			// Destroys all undeployed entities
-			MemoryManager::Instance().ClearUndeployed();
+			//MemoryManager::Instance().ClearUndeployed();
 
 			// Save the registry
 			ECSManager::Instance().SaveRegistry(m_BackUp);
