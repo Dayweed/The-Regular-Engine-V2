@@ -17,7 +17,7 @@ namespace TRE
         //Movement Vector
         Vector3 movementVector = Vector3.zero;
         //Max Velocity vector
-        private float maxVelocity = 5f;
+        private float maxVelocity = 20f;
         //Acceleration
         private float acceleration = 100f;
         //Deceleration
@@ -52,7 +52,13 @@ namespace TRE
 		private Entity Trigger_F;
 		private Entity Trigger_G;
 
-        private CameraController cameraController;
+		public bool regionA;
+		public bool regionB;
+		public bool regionC;
+		public bool regionD;
+		public bool regionE;
+		public bool regionF;
+		public bool regionG;
 
 		public float elapsedTime = 0.0f;
 
@@ -78,8 +84,6 @@ namespace TRE
 
 			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
 			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
-
-			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 		}
 
 		public void Update()
@@ -164,13 +168,13 @@ namespace TRE
                 //Debug.Log("current velocity is:" + currVelocity.x + currVelocity.y + currVelocity.z);
             }
 
-			cameraController.regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
-			cameraController.regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
-			cameraController.regionC = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_C.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_C.ID);
-			cameraController.regionD = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_D.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_D.ID);
-			cameraController.regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
-			cameraController.regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
-			cameraController.regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
+			regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
+			regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
+			regionC = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_C.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_C.ID);
+			regionD = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_D.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_D.ID);
+			regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
+			regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
+			regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
 		}
 		private void Jump(Vector3 JumpHeight)
 		{

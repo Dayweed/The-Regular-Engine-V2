@@ -7,15 +7,9 @@ namespace TRE
 	public class CameraController : Entity
 	{
 		private Entity Player1;
-		private float distance = 35;
 
-		public bool regionA;
-		public bool regionB;
-		public bool regionC;
-		public bool regionD;
-		public bool regionE;
-		public bool regionF;
-		public bool regionG;
+		private MoleController moleController;
+		private float distance = 35;
 
 		private float distanceA = 35;
 		private float distanceB = 50;
@@ -30,49 +24,50 @@ namespace TRE
 		public void Start()
 		{
 			Player1 = ECSManager.FindEntityByName("Holey");
+			moleController = Player1.GetComponent<MoleController>();
 		}
 
 		public void Update()
 		{
 			TransformSystem.GetPosition(Player1.ID, out Vector3 pos);
 
-			if(regionA)
+			if(moleController.regionA)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 10, 20), new Vector3(30, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceA, lerpTime);
 			}
 
-			if (regionB)
+			if (moleController.regionB)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 35, 50), new Vector3(45, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceB, lerpTime);
 			}
 
-			if (regionC)
+			if (moleController.regionC)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(15, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceC, lerpTime);
 			}
 
-			if(regionD) 
+			if(moleController.regionD) 
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(45, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceD, lerpTime);
 			}
 
-			if (regionE)
+			if (moleController.regionE)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(30, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceE, lerpTime);
 			}
 
-			if (regionF)
+			if (moleController.regionF)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(45, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceF, lerpTime);
 			}
 
-			if (regionG)
+			if (moleController.regionG)
 			{
 				CameraSystem.TransitionMainCamera(new Vector3(0, 40, 50), new Vector3(15, 180, 0), 0.001f);
 				distance = Lerp(distance, distanceG, lerpTime);
