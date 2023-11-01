@@ -13,7 +13,7 @@ namespace TRE
         public Entity PowerUpManagerObj;
 
         public string mole1tag = "Red";
-        public string mole2tag = "Player";
+        public string mole2tag = "Blue";
 
         private bool collected;
         private int collectedIndex;
@@ -49,6 +49,7 @@ namespace TRE
                 //Debug.Log("LAND BRO");
                 //RemoveComponent<Rigidbody>();
                 GetComponent<Rigidbody>().useGravity = false;
+                PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
                 cooldownCurrent = 0;
                 return;
             }
@@ -138,7 +139,7 @@ namespace TRE
                     collected = true;
                 }
 
-                //ReleasePowerUp();
+                ReleasePowerUp();
             }
         }
 
