@@ -26,7 +26,7 @@ namespace TRE
 		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
 		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
-		private Vector3 fat = new Vector3(6f, 5f, 5.5f);
+		private Vector3 fat = new Vector3(5.5f, 4, 5);
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
@@ -172,14 +172,14 @@ namespace TRE
 			if (isScaled == false || !haveBlueberry)
 			{
 				//for fat boi
-				current = MathF.Vec3Lerp(current, thin, 0.2f);
+				current = MathF.Vec3Lerp(current, thin, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, defaultXform);
 			}
 			else
 			{
 				//for fat boi
-				current = MathF.Vec3Lerp(current, fat, 0.2f);
+				current = MathF.Vec3Lerp(current, fat, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
