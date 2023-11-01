@@ -24,7 +24,7 @@ namespace TRE
 		ErrorCheck(m_System->release(), "FMOD: m_System->release()");
 	}
 
-	void AudioSystem::Update()
+	void AudioSystem::GameUpdate()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<AudioListener>())
 		{
@@ -38,7 +38,11 @@ namespace TRE
 			Audio& source = go->GetComponent<Audio>();
 			//GetFileName(go);
 
-			CompileAudio(go);
+			if (!source.m_HasCompiled)
+			{
+				CompileAudio(go);
+				source.m_HasCompiled = true;
+			}
 			source.m_Channel->isPlaying(&source.m_isPlaying);
 
 			if (source.m_PlayOnStart && source.m_Play)
@@ -124,6 +128,13 @@ namespace TRE
 			m_MusicChannelGroup->stop();
 		}
 		m_System->update();
+
+
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+			Audio& source = go->GetComponent<Audio>();
+			source.m_HasCompiled = false;
+		}
 	}
 
 	void AudioSystem::Init()

@@ -28,6 +28,8 @@ namespace TRE
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
+
+		bool m_HasCompiled{ false };
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
 		property_vtable()
 			//std::map<int, std::string> channelIndex{};
@@ -145,7 +147,7 @@ namespace TRE
 		~AudioSystem() override;
 
 		void Init() override;
-		void Update() override;
+		void GameUpdate() override;
 		void BeforeReset() override;
 		void AfterReset() override;
 		void OnDestroyEntities() override;
