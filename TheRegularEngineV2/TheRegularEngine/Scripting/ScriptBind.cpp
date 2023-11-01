@@ -138,8 +138,8 @@ namespace TRE
 		// Retrieve the entity from the ID
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return;
-		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != isActive);
-		Temp->GetComponent<Properties>().m_Active = isActive;
+		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != (bool)isActive);
+		Temp->GetComponent<Properties>().m_Active = (bool)isActive;
 	}
 
 	static bool BindEntityGetActive(CSEntityID ID)
@@ -1105,7 +1105,7 @@ namespace TRE
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
 	}
 
-	static bool BindGetGravity(CSEntityID ID, bool enable)
+	static bool BindGetGravity(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return false;
@@ -1156,27 +1156,26 @@ namespace TRE
 	static void BindSetPlaySound(MonoString* id)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPlay(entity, true);
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
 	}
 
 	static void BindTogglePauseSound(MonoString* id, bool paused)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPause(entity, paused);
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
 	}
 
 	static void BindSetStopSound(MonoString* id)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPlay(entity, false);
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->StopAudio(entity);
 	}
 
-	static bool BindIsPlaying(MonoString* id)
+	/*static bool BindIsPlaying(MonoString* id)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
-	}
+	}*/
 
 #pragma endregion
 
@@ -1377,7 +1376,7 @@ namespace TRE
 			mono_add_internal_call("TRE.AudioSystem::SetPlay", BindSetPlaySound);
 			mono_add_internal_call("TRE.AudioSystem::SetPause", BindTogglePauseSound);
 			mono_add_internal_call("TRE.AudioSystem::StopAudio", BindSetStopSound);
-			mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
+			//mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
 		}
 
 		// Scripting
