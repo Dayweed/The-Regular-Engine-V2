@@ -18,7 +18,9 @@ namespace TRE
 			BoxCollider,
 			CapsuleCollider,
 			DirectionalLight,
-			ScriptComponent
+			ScriptComponent,
+			Audio,
+			AudioListener
 		>();
 	};
 

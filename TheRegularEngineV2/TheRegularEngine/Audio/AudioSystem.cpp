@@ -15,9 +15,6 @@ namespace TRE
 
 		m_System->init(MAX_CHANNELS, FMOD_INIT_NORMAL, nullptr);
 
-		//FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
-		//FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
-
 		m_System->createChannelGroup("SFX", &m_SFXChannelGroup);
 		m_System->createChannelGroup("Music", &m_MusicChannelGroup);
 	}
@@ -32,43 +29,40 @@ namespace TRE
 		for (Entity& go : ECSManager::Instance().GetEntities<AudioListener>())
 		{
 			SetListenerPosition(go);
-		}	
+		}
 
 		std::vector<Entity> entitiesToRemove;
 
-		for (auto go : audioMap)
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
 		{
-			if (go->HasComponent<Audio>())
+			Audio& source = go->GetComponent<Audio>();
+			//GetFileName(go);
+
+			CompileAudio(go);
+			source.m_Channel->isPlaying(&source.m_isPlaying);
+
+			if (source.m_PlayOnStart && source.m_Play)
 			{
-				Audio& source = go->GetComponent<Audio>();
+				Play(go, true);
 
-				source.m_Channel->isPlaying(&source.m_isPlaying);
-
-				//soundMap[go] = source.m_Sound;
-
-				if (source.m_PlayOnStart && source.m_Play)
+			}
+			else if (source.m_Loop)
+			{
+				if (!source.m_isPlaying)
 				{
 					Play(go, true);
-
 				}
-				else if (source.m_Loop)
-				{
-					if (!source.m_isPlaying)
-					{
-						Play(go, true);
-					}
-				}
+			}
+			else
+			{
 
-				if (!source.m_Play)
+			}
+
+			if (!source.m_Play)
+			{
 				{
 					source.m_Channel->stop();
 				}
-
-				TogglePause(go);
-				ToggleMute(go);
-				source.m_Channel->setVolume(source.m_Volume);
-				source.m_Channel->setPitch(source.m_Pitch);
-				source.m_Channel->setPriority(source.m_Priority);
 
 			}
 			else
@@ -81,6 +75,20 @@ namespace TRE
 					soundToRemove.erase(it);
 				}
 			}
+
+			TogglePause(go);
+			ToggleMute(go);
+			source.m_Channel->setVolume(source.m_Volume);
+			source.m_Channel->setPitch(source.m_Pitch);
+			source.m_Channel->setPriority(source.m_Priority);
+
+
+			/*for (auto go : audioMap)
+			{
+				if (go->HasComponent<Audio>())
+				{
+				}
+			}*/
 		}
 
 		for (const Entity go : entitiesToRemove)
@@ -89,7 +97,7 @@ namespace TRE
 		}
 
 		m_System->update();
-		
+
 	}
 
 	void AudioSystem::BeforeReset()
@@ -122,6 +130,7 @@ namespace TRE
 	{
 		/*EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::ToggleRun);
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);*/
+
 	}
 
 	void AudioSystem::OnDestroyEntities()
@@ -144,9 +153,8 @@ namespace TRE
 		std::string filetype = audio.m_FileName.substr(fs);
 
 		if (filetype != ".wav")
-		{ 
+		{
 			TRE_CORE_ERROR("FMOD: Invalid File Type! Audio file is not a .wav file. File not loaded");
-			std::cout << "filetype" << filetype << "_" << std::endl;
 			return;
 		}
 
@@ -156,6 +164,8 @@ namespace TRE
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
+
+		audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
 
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_DEFAULT, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
@@ -172,7 +182,6 @@ namespace TRE
 		if (filetype != ".wav")
 		{
 			TRE_CORE_ERROR("FMOD: Invalid File Type! Audio file is not a .wav file. File not loaded");
-			std::cout << "filetype" << filetype << "_" << std::endl;
 			return;
 		}
 
@@ -183,6 +192,8 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
 
+		audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
+
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
 
@@ -191,7 +202,6 @@ namespace TRE
 		Audio& audio = go.get()->GetComponent<Audio>();
 		if (shouldPlay)
 		{
-			std::cout << "playing" << std::endl;
 			audio.m_Pause = false;
 			audio.m_PlayOnStart = false;
 			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
@@ -201,7 +211,6 @@ namespace TRE
 			audio.m_Pause = true;
 		}
 		SetSourcePosition(go);
-		//audio.m_Channel->isPlaying(&audio.isPlaying);
 
 		if (audio.m_Loop == false)
 		{
@@ -213,21 +222,12 @@ namespace TRE
 			audio.m_Sound->setLoopCount(-1);
 		};
 
-		//if (shouldPlay == true)
-		//{
-		//	audio.m_Channel->setPaused(false);	
-		//}
-		//else
-		//{
-		//	TogglePause(go);
-		//}
-
-
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
+
 		if (!audio.m_Pause)
 		{
 			audio.m_Channel->setPaused(false);
@@ -273,8 +273,13 @@ namespace TRE
 
 	void AudioSystem::CompileAudio(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();	
-		if (audio.m_Spatialize)
+		Audio& audio = go.get()->GetComponent<Audio>();
+
+		if (audio.m_FileName == "") {
+			TRE_CORE_WARN("Audio filename is not set. Skipping audio compilation.");
+			return;
+		}
+		else if (audio.m_Spatialize)
 		{
 			Load3DFile(go);
 		}
@@ -282,84 +287,29 @@ namespace TRE
 		{
 			LoadFile(go);
 		}
-		audioMap.insert(go);
-		soundToRemove.insert({ go, audio.m_Sound });
-		/*Play(go, false);
-		audio.m_Channel->setVolume(audio.m_Volume);
-		audio.m_Channel->setPitch(audio.m_Pitch);
-		audio.m_Channel->setPriority(audio.m_Priority);*/
-	}
 
-	void AudioSystem::SetVolume(Entity& go, const float volume)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Volume = volume;
-	}
-
-	void AudioSystem::SetPitch(Entity& go, const float pitch)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Pitch = pitch;
-	}
-
-	void AudioSystem::SetPause(Entity& go, const bool pause)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Pause = pause;
-	}
-
-	void AudioSystem::SetLoop(Entity& go, const bool loop)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Loop = loop;
+		//audioMap.insert(go);
+		//soundToRemove.insert({ go, audio.m_Sound });
 	}
 
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		CompileAudio(go);
 		audio.m_FileName = filename;
 	}
 
-	void AudioSystem::SetChannelGroup(Entity& go, const int channel)
+	void AudioSystem::SetChannelGroup(Entity& go, const std::string channel)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		if (channel)
+		if (channel == "Music")
 		{
 			audio.m_ChannelGroup = m_MusicChannelGroup;
 		}
-		else
+		else if (channel == "SFX")
 		{
 			audio.m_ChannelGroup = m_SFXChannelGroup;
 		}
-		
-	}
 
-	void AudioSystem::SetPriority(Entity& go, const int priority)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Priority = priority;
-	}
-
-	void AudioSystem::SetMute(Entity& go, const bool mute)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Mute = mute;
-	}
-
-	void AudioSystem::SetPlay(Entity& go, const bool play)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Play = play;
-		/*(void)go;
-		(void)play;*/
-	}
-
-	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)
-	{
-		Audio& audiosource = go.get()->GetComponent<Audio>();
-		
-		audiosource.m_Spatialize = spatialize;
 	}
 
 	void AudioSystem::SetListenerPosition(Entity& go)
@@ -381,7 +331,7 @@ namespace TRE
 	{
 		Transform& sourceposition = go.get()->GetComponent<Transform>();
 		Audio& audiosource = go.get()->GetComponent<Audio>();
-		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);		
+		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
 
 		audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
 		audiosource.m_Channel->setMode(FMOD_3D);
@@ -396,26 +346,6 @@ namespace TRE
 		audiosource.m_MaxDistance = max;
 	}
 
-	float AudioSystem::GetVolume(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Volume;
-	}
-
-	float AudioSystem::GetPitch(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Pause;
-	}
-
-	bool AudioSystem::GetPause(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Pause;
-	}
-
-	bool AudioSystem::GetLoop(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Loop;
-	}
-
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_ChannelGroup;
@@ -423,28 +353,13 @@ namespace TRE
 
 	std::string AudioSystem::GetFileName(Entity& go) const
 	{
-		return go.get()->GetComponent<Audio>().m_FileName;
-	}
+		Audio& audio = go.get()->GetComponent<Audio>();
 
-	int AudioSystem::GetPriority(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Priority;
-	}
-
-	bool AudioSystem::GetMute(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Mute;
-	}
-
-	bool AudioSystem::GetPlay(Entity& go) const
-	{
-		(void)go;
-		return true; // go.get()->GetComponent<Audio>().m_Play;
-	}
-
-	bool AudioSystem::GetSpatialize(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Spatialize;
+		for (const auto& entry : std::filesystem::directory_iterator("../Resources/Audio/")) {
+			std::string filename = entry.path().filename().string();
+			audio.m_audioFiles.push_back(filename);
+			return audio.m_FileName = filename;
+		}
 	}
 
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
@@ -464,10 +379,5 @@ namespace TRE
 		radius.first = audioSource.m_MinDistance;
 		radius.second = audioSource.m_MaxDistance;
 		return radius;
-	}
-	bool AudioSystem::GetIsPlaying(Entity& go) const
-	{
-		Audio& source = go.get()->GetComponent<Audio>();
-		return source.m_Channel->isPlaying(&source.m_isPlaying);
 	}
 }
