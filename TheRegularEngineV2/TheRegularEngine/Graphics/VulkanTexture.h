@@ -20,7 +20,7 @@ namespace TRE
 	{
 	public:
 		VulkanTexture();
-		VulkanTexture(const CubeMapConfig& Config); //Only used to create cubemap for now
+		VulkanTexture(CubeMapConfig& Config); //Only used to create cubemap for now
 		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();
 

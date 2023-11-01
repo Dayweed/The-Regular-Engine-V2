@@ -529,6 +529,7 @@ namespace TRE
 		CubeConfig.Width = Texture1->GetWidth();
 		CubeConfig.SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 		CubeConfig.Textures = { Texture4, Texture2, Texture6, Texture5, Texture1, Texture3 };
+
 		m_SkyboxTexture = std::make_shared<VulkanTexture>(CubeConfig);
 		
 		//Backface culling
