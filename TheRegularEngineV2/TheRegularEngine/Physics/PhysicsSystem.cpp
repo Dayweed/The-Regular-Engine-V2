@@ -316,12 +316,12 @@ namespace TRE
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
-
+		
 		m_Actors.clear();
 		PX_RELEASE(m_DefaultMaterial);
+		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Scene);
 		PxCloseExtensions();
-		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Physics);
 		PX_RELEASE(m_Transport);
 		PX_RELEASE(m_Pvd);
@@ -860,12 +860,16 @@ namespace TRE
 
 	void PhysicsSystem::CreatePhysXScene()
 	{
-		PX_RELEASE(m_Scene);
+		if (m_Scene)
+			PX_RELEASE(m_Scene);
 
 		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 6, 0.0f);
 
 		//A cpu thread for the scene
+		if (m_Dispatcher)
+			PX_RELEASE(m_Dispatcher);
+			
 		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
 		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;
