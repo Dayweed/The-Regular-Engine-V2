@@ -77,6 +77,7 @@ namespace TRE
         public int timeBetweenSpawns;
         public int noOfObjects;
         public int maxObjects;
+        public float dropDuration;
 
         private float currentTimeBetweenSpawns;
         private bool canSpawnObjs = false;
@@ -84,6 +85,7 @@ namespace TRE
         private float minRange = 5f;
 
         private List<Entity> itemsToSpawn = new List<Entity>();
+        private List<float> itemsTimer = new List<float>();
 
         public RandomizeFallingObjLocation()
         {
@@ -101,11 +103,12 @@ namespace TRE
 
             // ID for prefabs are based on resource prefab GUID
             fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
-            maxAmountToSpawn = 2;
+            maxAmountToSpawn = 6;
             timeBetweenSpawns = 2;
             size = new Vector3(25, 0, 25);
             canSpawnObjs = true;
             maxObjects = 6;
+            dropDuration = 5.0f;
         }
 
         // Update is called once per frame
@@ -186,7 +189,7 @@ namespace TRE
 
             if (currentTimeBetweenSpawns > 0)
             {
-                itemsToSpawn.Clear();
+                //itemsToSpawn.Clear();
                 currentTimeBetweenSpawns -= Time.deltaTime;
             }
             else
