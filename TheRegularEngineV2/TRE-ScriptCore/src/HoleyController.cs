@@ -8,7 +8,7 @@ namespace TRE
 {
 	using PS = PhysicsSystem;
 
-	public class MoleController : Entity
+	public class HoleyController : Entity
 	{
 		public PowerUpManager MyPowerManager;
 
@@ -175,6 +175,12 @@ namespace TRE
 
 			#region Ability
 			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
+			if (isScaled && !mainBlueberry && !mainStrawberry)
+			{
+				isScaled = false;
+            }
+
             // Check if can trigger ability
             if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
@@ -203,7 +209,7 @@ namespace TRE
 
             #region Drop
             // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.Q))
+            if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
             {
 				MyPowerManager.DropMain();
             }
@@ -258,7 +264,7 @@ namespace TRE
 			Entity other = new Entity(otherID);
 			if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Blue")
 				{
 					isGrounded = true;
 				}

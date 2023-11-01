@@ -9,10 +9,12 @@ using System.Diagnostics.Eventing.Reader;
 namespace TRE
 {
 	using PS = PhysicsSystem;
-	class MoleController2 : Entity
-	{
-		//Check if player is on the ground
-		private bool isGrounded = true;
+	class MoleyController : Entity
+    {
+        public PowerUpManager MyPowerManager;
+
+        //Check if player is on the ground
+        private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max velocity
@@ -25,9 +27,8 @@ namespace TRE
 		private float lerpSpeed = 0.05f;
 
         //Capsule Collider
-        public List<Entity> pickedPowerUps;	// For dropping
-        public bool haveBlueberry = false;  // Scaling
-        public bool haveStrawberry = false; // Shape
+        public bool mainBlueberry = false;  // Scaling
+        public bool mainStrawberry = false; // Shape
         private bool isScaled = false;
 		private float defaultRadius = 2f;
 		private float superRadius = 4.8f;
@@ -42,8 +43,10 @@ namespace TRE
         private Vector3 playerDirection = new Vector3(0, 0, 1);
 
 		public void Start()
-		{
-			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
+        {
+            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+
+            TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
@@ -117,15 +120,21 @@ namespace TRE
             #endregion
 
             #region Abilities
+            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+            mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
+            if (isScaled && !mainBlueberry && !mainStrawberry)
+            {
+                isScaled = false;
+            }
             if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
             {
-                if (haveBlueberry)
+                if (mainBlueberry)
                 {
                     isScaled = !isScaled;
                 }
             }
 
-			if ((isScaled == false || !haveBlueberry))
+			if ((isScaled == false || !mainBlueberry))
 			{
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
@@ -139,6 +148,14 @@ namespace TRE
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
+            #endregion
+
+            #region Drop
+            // Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
+            {
+                MyPowerManager.DropMain();
+            }
             #endregion
 
             dirVec.Normalize();
@@ -172,7 +189,7 @@ namespace TRE
 			Entity other = new Entity(otherID);
 			if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Red")
 				{
 					isGrounded = true;
 				}

@@ -3509,11 +3509,11 @@
       },
       5242914,
       {
-         "m_StoredClass": "TRE.MoleController2"
+         "m_StoredClass": "TRE.MoleyController"
       },
       5242905,
       {
-         "m_StoredClass": "TRE.MoleController"
+         "m_StoredClass": "TRE.HoleyController"
       },
       5242890,
       {
