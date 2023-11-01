@@ -414,8 +414,8 @@ namespace TRE
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
-		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
+		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
@@ -431,7 +431,6 @@ namespace TRE
 	{
 		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
-			std::cout << "++++++++++++++++++++++++++++++++\n";
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
@@ -512,7 +511,6 @@ namespace TRE
 			
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
-			std::cout << "--------------------------------\n";
 		}
 		
 	}

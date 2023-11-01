@@ -11,6 +11,7 @@ namespace TRE
     {
         public PowerUpsType powerUpType;
         public Entity PowerUpManagerObj;
+        bool collected;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
@@ -26,18 +27,15 @@ namespace TRE
         public void OnCreate()
         {
             PowerUpManagerObj = ECSManager.FindEntityByName("Power Manager");
+            collected = false;
         }
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
             //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
-        }
 
-        private void OnCollisionStay(System.UInt64 otherID)
-        {
-            Entity other = new Entity(otherID);
-            //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+            if (collected) return;
 
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
@@ -48,7 +46,7 @@ namespace TRE
                 playerObj = other;
 
                 playerControl = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-                
+
                 if (!ECSManager.IsValidEntity(PowerUpManagerObj.ID))
                 {
                     Debug.LogError("Could not find PowerUpManagerObj (" + PowerUpManagerObj.ID + ")");
@@ -76,7 +74,15 @@ namespace TRE
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
                 SetToPlayer(other);
+
+                collected = true;
             }
+        }
+
+        private void OnCollisionStay(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+            //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
         }
 
         private void SetToPlayer(Entity other)
@@ -84,7 +90,7 @@ namespace TRE
             //move the power up gameobj to the player's position
             parenting.SetParent(playerObj);                                     // this.transform.parent = playerObj;
 
-            this.transform.Position =  new Vector3(0, this.transform.Position.y, 0);     // this.transform.localPosition = new Vector3(0, this.transform.localPosition.y, 0);
+            //this.transform.Position =  new Vector3(0, this.transform.Position.y, 0);     // this.transform.localPosition = new Vector3(0, this.transform.localPosition.y, 0);
 
             playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 

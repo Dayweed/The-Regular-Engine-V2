@@ -183,7 +183,6 @@ namespace TRE
 		{
 			for (auto& hashcode : m_SystemsOrder)
 			{
-				std::cout << "Update " << m_SystemsName[hashcode] << "\n";
 				Profiler::Instance().StartTimer(m_SystemsName[hashcode]);
 				m_Systems[hashcode]->Update();
 				Profiler::Instance().EndTimer(m_SystemsName[hashcode]);
@@ -194,7 +193,6 @@ namespace TRE
 		{
 			for (auto& hashcode : m_SystemsOrder)
 			{
-				std::cout << "Game Update " << m_SystemsName[hashcode] << "\n";
 				m_Systems[hashcode]->GameUpdate();
 			}
 		}
@@ -203,7 +201,6 @@ namespace TRE
 		{
 			for (auto& hashcode : m_SystemsOrder)
 			{
-				std::cout << "Late Update " << m_SystemsName[hashcode] << "\n";
 				m_Systems[hashcode]->LateUpdate();
 			}
 		}
