@@ -135,6 +135,10 @@ namespace TRE
 
 	public class Testing : Entity
 	{
+
+		public float speed = 0;
+		public float gravity = 0;
+
 		void OnCreate()
 		{
 			Console.WriteLine("Testing OnCreate");
