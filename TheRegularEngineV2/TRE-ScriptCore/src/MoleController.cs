@@ -34,6 +34,8 @@ namespace TRE
 
 		private Vector3 playerDirection = new Vector3(0,0,1);
 
+		private bool NeedResize = false;
+
 		//For camera controller
 		private Entity Trigger_A;
 		private Entity Trigger_B;
@@ -170,23 +172,29 @@ namespace TRE
 				if (haveBlueberry)
 				{
 					isScaled = !isScaled;
-				}
+					NeedResize = true;
+
+                }
 			}
 
-			if (isScaled == false || !haveBlueberry)
-			{
+			if ((isScaled == false || !haveBlueberry) && NeedResize)
+            {
 				//for fat boi
 				current = MathF.Vec3Lerp(current, thin, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, defaultXform);
-			}
-			else
+                NeedResize = false;
+				Debug.Log("Resize");
+            }
+			else if (NeedResize)
 			{
 				//for fat boi
 				current = MathF.Vec3Lerp(current, fat, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, scaledXform);
-			}
+				NeedResize = false;
+                Debug.Log("Resize");
+            }
             #endregion
 
             dirVec.Normalize();

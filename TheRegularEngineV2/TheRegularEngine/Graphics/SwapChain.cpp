@@ -7,6 +7,11 @@
 
 namespace TRE
 {
+	const std::shared_ptr<RenderPass>& SwapChain::GetRenderPass()
+	{
+		return m_Renderpass;
+	}
+
 	VkImageView SwapChain::GetCurrentSwapChainImageView(int Index)
 	{
 		return m_SwapChainImages[Index].ImageView;
@@ -72,11 +77,6 @@ namespace TRE
 	VkSemaphore SwapChain::GetRenderComplete()
 	{
 		return m_Semaphores[m_CurrentBufferIndex].RenderComplete;
-	}
-
-	VkRenderPass SwapChain::GetRenderPass()
-	{
-		return m_Renderpass->GetHandle();
 	}
 
 	VkExtent2D SwapChain::GetSwapChainExtent()

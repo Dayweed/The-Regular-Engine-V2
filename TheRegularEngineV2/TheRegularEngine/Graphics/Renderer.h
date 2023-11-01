@@ -20,6 +20,12 @@ namespace TRE
 			static void Shutdown();
 			static void RenderToSwapChain();
 
+		public:
+			static void BeginRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<RenderPass>& Renderpass);
+			static void EndRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer);
+			static void BeginFrame();
+			static void EndFrame();
+
 		private:
 			static std::shared_ptr<SceneRenderer> s_MainRenderer;
 			static std::shared_ptr<CommandBuffer> m_CommandBuffer;
