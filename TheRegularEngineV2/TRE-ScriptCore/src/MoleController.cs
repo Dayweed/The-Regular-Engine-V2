@@ -20,6 +20,8 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 
 		//check if player used super power
+		public bool haveBlueberry = false;	// Scaling
+		public bool haveStrawberry = false;	// Shape
 		private bool isScaled = false;
 		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
@@ -161,12 +163,13 @@ namespace TRE
             #endregion
 
             #region Ability
-            if (InputSystem.GetKeyTrigger(InputKeys.E))
+			// Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.E) && (haveBlueberry || haveStrawberry))
 			{
 				isScaled = !isScaled;
 			}
 
-			if (isScaled == false)
+			if (isScaled == false || !haveBlueberry)
 			{
 				//for fat boi
 				current = MathF.Vec3Lerp(current, thin, 0.2f);
