@@ -20,10 +20,17 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 
 		//check if player used super power
+		public List<Entity> pickedPowerUps;	// For dropping
+		public bool haveBlueberry = false;	// Scaling
+		public bool haveStrawberry = false;	// Shape
 		private bool isScaled = false;
-		private Vector3 fat = new Vector3(3f, 2f, 3f);
-		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
+		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
+		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
+		private Vector3 fat = new Vector3(5.5f, 4, 5);
+		//Player Scallings
+		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
+		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
 
 		private Vector3 playerDirection = new Vector3(0,0,1);
 
@@ -35,6 +42,9 @@ namespace TRE
 		private Entity Trigger_E;
 		private Entity Trigger_F;
 		private Entity Trigger_G;
+		private Entity Trigger_H;
+		private Entity Key;
+		private Entity FinalPlatform;
 
 		public bool regionA;
 		public bool regionB;
@@ -43,6 +53,7 @@ namespace TRE
 		public bool regionE;
 		public bool regionF;
 		public bool regionG;
+		public bool regionH;
 
 		public float elapsedTime = 0.0f;
 
@@ -69,6 +80,15 @@ namespace TRE
 			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
 			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
 
+			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
+			Debug.Log("Trigger_H ID is " + Trigger_H.ID);
+
+			Key = ECSManager.FindEntityByName("Key");
+			Debug.Log("Key ID is " + Key.ID);
+
+			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
+			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
+
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 			PhysicsSystem.ConstrainRotationX(this.ID, true);
 			PhysicsSystem.ConstrainRotationY(this.ID, true);
@@ -84,7 +104,7 @@ namespace TRE
 			PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			dirVec = new Vector3(0, 0, 0);
-
+			#region Movement
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				dirVec.z += -1;
@@ -137,30 +157,39 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 30, 0);
+					Vector3 maxHeight = new Vector3(0, 35, 0);
 					Jump(maxHeight);
 				}
 			}
+            #endregion
 
-			if (InputSystem.GetKeyTrigger(InputKeys.E))
+            #region Ability
+			// Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
-				isScaled = !isScaled;
+				if (haveBlueberry)
+				{
+					isScaled = !isScaled;
+				}
 			}
 
-			if (isScaled == false)
+			if (isScaled == false || !haveBlueberry)
 			{
 				//for fat boi
-				current = MathF.Vec3Lerp(current, thin, 0.2f);
+				current = MathF.Vec3Lerp(current, thin, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
+				TransformSystem.SetScaling(this.ID, defaultXform);
 			}
 			else
 			{
 				//for fat boi
-				current = MathF.Vec3Lerp(current, fat, 0.2f);
+				current = MathF.Vec3Lerp(current, fat, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
+				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
+            #endregion
 
-			dirVec.Normalize();
+            dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{
@@ -186,6 +215,14 @@ namespace TRE
 			regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
 			regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
 			regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
+			regionH = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_H.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_H.ID);
+
+			if(PhysicsSystem.IsTriggerEnter(this.ID, Key.ID))
+			{
+				Key.SetActive(false);
+				TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9 ,-302));
+				Debug.Log("Key Collected");
+			}
 		}
 		private void Jump(Vector3 JumpHeight)
 		{

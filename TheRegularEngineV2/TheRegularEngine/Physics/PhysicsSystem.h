@@ -272,12 +272,11 @@ namespace TRE
 		bool IsTriggerStay(const Entity& entity_1, const Entity& entity_2) const;
 
 		bool IsTriggerExit(const Entity& entity_1, const Entity& entity_2) const;
-
+		
+		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
 	private:
 
 		void ResizeAllColliders();
-
-		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
 
 		void DestroyOutdatedComponents() const;
 

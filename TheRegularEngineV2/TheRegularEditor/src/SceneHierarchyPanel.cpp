@@ -31,6 +31,7 @@ namespace TRE
 		// Display button to return to scene
 		if (displayingPrefab && ImGui::Button("Return to Scene", ImVec2(-FLT_MIN, 0.0f)))
 		{
+			m_SelectionManager->ClearSelectedEntity();
 			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 		}
 
@@ -81,10 +82,10 @@ namespace TRE
 
 			if (ImGui::IsWindowHovered())
 			{
-				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 					ImGui::SetWindowFocus();
 
-				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 					m_SelectionManager->ClearSelectedEntity();
 			}
 
@@ -116,6 +117,7 @@ namespace TRE
 						}
 					}
 				}
+
 				else
 				{
 					if (ImGui::BeginPopupContextWindow())

@@ -29,6 +29,7 @@ namespace TRE
 		for (Entity& object : GetEntities<Removal>())
 		{
 			// Remove from m_EntityList
+			m_EntityOrder.erase(std::find(m_EntityOrder.begin(), m_EntityOrder.end(), object->GetComponent<Properties>().m_GUID));
 			m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
 			m_EnttIDList.erase(m_EnttIDList.find(static_cast<ENTTID>(object->m_Entity)));
 			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
@@ -48,6 +49,7 @@ namespace TRE
 	Entity ECSManager::CreateEntity(std::string name)
 	{
 		Entity obj{ MemoryManager::Instance().GetUndeployedEntity() };
+		m_EntityOrder.emplace_back(obj->GetComponent<Properties>().m_GUID);
 		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
 		obj->GetComponent<Properties>().m_Name = name;
@@ -57,6 +59,7 @@ namespace TRE
 	void ECSManager::DestroyEntity(Entity& object)
 	{
 		// Remove from m_EntityList
+		m_EntityOrder.erase(std::find(m_EntityOrder.begin(), m_EntityOrder.end(), object->GetComponent<Properties>().m_GUID));
 		m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
 		m_EnttIDList.erase(m_EnttIDList.find(static_cast<ENTTID>(object->m_Entity)));
 		MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
@@ -101,6 +104,7 @@ namespace TRE
 		// Change Name
 		obj->GetComponent<Properties>().m_Name = name;
 		obj->GetComponent<Properties>().m_GUID = MemoryManager::Instance().GenerateGUIDStr();
+		m_EntityOrder.emplace_back(obj->GetComponent<Properties>().m_GUID);
 		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
 		// Return clone
@@ -111,14 +115,14 @@ namespace TRE
 	std::vector<Entity> ECSManager::GetAllEntities(bool IncludeNonActive)
 	{
 		std::vector<Entity> objects{};
-		objects.reserve(m_EntityList.size());
+		objects.reserve(m_EntityOrder.size());
 
 		// Get all Entity owning the entities
-		for (auto& obj : m_EntityList)
+		for (std::string& id : m_EntityOrder)
 		{
-			if (IncludeNonActive || m_Registry.get<Properties>(obj.second->m_Entity).m_Active)
+			if (IncludeNonActive || m_Registry.get<Properties>(m_EntityList[id]->m_Entity).m_Active)
 			{
-				objects.emplace_back(obj.second);
+				objects.emplace_back(m_EntityList[id]);
 			}
 		}
 
@@ -281,7 +285,7 @@ namespace TRE
 	bool ECSManager::IsValidEntity(Entity ent)
 	{
 		// Checks if it is in the scene
-		return m_EntityList.find(ent->GetGUID()) != m_EntityList.end();
+		return m_EntityList.find(ent->GetGUID()) != m_EntityList.end() && std::find(m_EntityOrder.begin(), m_EntityOrder.end(), ent->GetGUID()) != m_EntityOrder.end();
 	}
 
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
@@ -350,10 +354,11 @@ namespace TRE
 
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
-		if (ECSManager::Instance().GetRegistry().valid(ent))
+		m_Current.push_back(static_cast<uint32_t>(ent));
+		/*if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
 			m_Current.push_back(static_cast<uint32_t>(ent));
-		}
+		}*/
 	}
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
@@ -362,13 +367,15 @@ namespace TRE
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
 			//m_Current.push_back(1);
-			m_Current.push_back(ECSManager::Instance().GetAllEntities().size()); 	// This somehows kills the entt if too fat
+			//m_Current.push_back(ECSManager::Instance().GetAllEntities(true).size()); 	// This somehows kills the entt if too fat
+			m_Current.push_back(u);
 		}
 		else
 		{
 			m_Root.push_back(m_Current);
 			m_Current = nlohmann::json::array();
 			m_Current.push_back(u);
+			//m_Current.push_back(m_EntityNo++);
 		}
 	}
 

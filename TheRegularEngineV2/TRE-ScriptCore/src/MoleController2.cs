@@ -23,16 +23,19 @@ namespace TRE
 		//Max height
 		private Vector3 maxHeight = new Vector3(0, 5, 0);
 
-		//check if player used super power
-		private bool isScaled = false;
-		//Default scale
-		private float defaultScale = 0.5f;
-		//Increase character scale
-		private float superScale = 5;
-		//Current scale
-		private float currentScale = 1;
+        //Capsule Collider
+        public List<Entity> pickedPowerUps;	// For dropping
+        public bool haveBlueberry = false;  // Scaling
+        public bool haveStrawberry = false; // Shape
+        private bool isScaled = false;
+		private float defaultScale = 1f;
+		private float superScale = 4.8f;
+		private float currentScale = 1f;
+		//Transform Scale
+        private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
+		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
 
-		private Vector3 playerDirection = new Vector3(0, 0, 1);
+        private Vector3 playerDirection = new Vector3(0, 0, 1);
 
 		public void Start()
 		{
@@ -50,8 +53,8 @@ namespace TRE
 			PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			dirVec = new Vector3(0, 0, 0);
-
-			if (InputSystem.GetKeyDown(InputKeys.I))
+            #region Movement
+            if (InputSystem.GetKeyDown(InputKeys.I))
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
@@ -98,33 +101,41 @@ namespace TRE
 					playerDirection.y = 315;
 				}
 			}
-
-			if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+            
+            if (InputSystem.GetKeyTrigger(InputKeys.Enter))
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 30, 0);
+					Vector3 maxHeight = new Vector3(0, 35, 0);
 					Jump(maxHeight);
 				}
 			}
+            #endregion
 
-			if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
-			{
-				isScaled = !isScaled;
-			}
+            #region Abilities
+            if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
+            {
+                if (haveBlueberry)
+                {
+                    isScaled = !isScaled;
+                }
+            }
 
 			if(isScaled == false)
 			{
 				currentScale = MathF.Lerp(currentScale, defaultScale, 0.2f);
 				PhysicsSystem.ResizeCapsuleCollider(this.ID, 2, currentScale);
+				TransformSystem.SetScaling(this.ID, defaultXform);
 			}
 			else
 			{
 				currentScale = MathF.Lerp(currentScale, superScale, 0.2f);
-				PhysicsSystem.ResizeCapsuleCollider(this.ID, 2, currentScale);
+				PhysicsSystem.ResizeCapsuleCollider(this.ID, 4.2f, currentScale);
+				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
+            #endregion
 
-			dirVec.Normalize();
+            dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{

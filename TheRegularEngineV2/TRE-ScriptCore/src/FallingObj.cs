@@ -16,20 +16,20 @@ namespace TRE
 
         public void Start()
         {
-            Duration = 7.0f;
+            Duration = 5.0f;
             CurrentTime = Duration;
             currentPos = transform.Position;
         }
 
         public void Update()
         {
-            CurrentTime -= Time.deltaTime;
+            //CurrentTime -= Time.deltaTime;
 
-            if (CurrentTime <= 0)
-            {
-                TransformSystem.SetPosition(ID, currentPos);
-                CurrentTime = Duration;
-            }
+            //if (CurrentTime <= 0)
+            //{
+            //    TransformSystem.SetPosition(ID, currentPos);
+            //    CurrentTime = Duration;
+            //}
         }
     }
 }

@@ -20,7 +20,7 @@ namespace TRE
 	// Using EntityID instead of EntityID in case need to change again
 	using EntityID = System.UInt64;		// Unsigned long long
 
-	public class Entity
+	public class Entity : Component
 	{
 		public EntityID ID;				// Can hold id of entity or id of prefab resource
 		public string name;
@@ -45,7 +45,7 @@ namespace TRE
 			{
 				name = ECSManager.FindNameFromID(ID);
 				parenting = new Parenting(ID);
-				transform = new Transform(this);
+				transform = GetComponent<Transform>();
 			}
 			else
 			{
@@ -63,8 +63,8 @@ namespace TRE
 			if (ECSManager.IsValidEntity(ID))
 			{
 				parenting = new Parenting(ID);
-				transform = new Transform(this);
-			}
+                transform = GetComponent<Transform>();
+            }
 			else
 			{
 				parenting = new Parenting();
@@ -115,18 +115,15 @@ namespace TRE
 			return ECSManager.HasComponent(ID, typeof(T));
 		}
 
-		public T GetComponent<T>() where T : new()
+		public T GetComponent<T>() where T : Component, new()
 		{
 			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
 
-			Debug.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
-			Console.WriteLine("ERROR! GetComponent is returning new type for " + typeof(T).ToString());
-
-			return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
+			return GetCoreComponent<T>();	// To change for getting directly
 
 		}
 
-		public T GetCoreComponent<T>() where T : Component, new()
+		private T GetCoreComponent<T>() where T : Component, new()
 		{
 			if (!HasComponent<T>())
 			{
@@ -385,7 +382,7 @@ namespace TRE
 		public static float Distance(Vector3 vec1, Vector3 vec2)
 		{
 			// TO DO CALCULATE VECTOR DISTANCE :p
-			return vec1.Magnitude() - vec2.Magnitude();
+			return Math.Abs(vec1.Magnitude() - vec2.Magnitude());
 		}
 	}
 
@@ -431,40 +428,40 @@ namespace TRE
 
 	}
 
-	public struct TransformS
-	{
-		private EntityID id;
-		public Vector3 position, rotation, scale;
+	//public struct TransformS
+	//{
+	//	private EntityID id;
+	//	public Vector3 position, rotation, scale;
 
-		public TransformS(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
-		{
-			id = _id;
-			position = _pos;
-			rotation = _rot;
-			scale = _sca;
-		}
+	//	public TransformS(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
+	//	{
+	//		id = _id;
+	//		position = _pos;
+	//		rotation = _rot;
+	//		scale = _sca;
+	//	}
 
-		public void SetPosition(Vector3 output)
-		{
-			position = output;
+	//	public void SetPosition(Vector3 output)
+	//	{
+	//		position = output;
 
-			TransformSystem.SetPosition(id, output);
-		}
+	//		TransformSystem.SetPosition(id, output);
+	//	}
 
-		public void SetRotation(Vector3 output)
-		{
-			rotation = output;
+	//	public void SetRotation(Vector3 output)
+	//	{
+	//		rotation = output;
 
-			TransformSystem.SetRotation(id, output);
-		}
+	//		TransformSystem.SetRotation(id, output);
+	//	}
 
-		public void SetScaling(Vector3 output)
-		{
-			scale = output;
+	//	public void SetScaling(Vector3 output)
+	//	{
+	//		scale = output;
 
-			TransformSystem.SetScaling(id, output);
-		}
-	}
+	//		TransformSystem.SetScaling(id, output);
+	//	}
+	//}
 
 	public class TransformSystem
 	{
@@ -706,6 +703,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void UpdateColliderOffset(EntityID entityid, Vector3 offset);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void AddForce(EntityID entityid, Vector3 force, ForceMode mode);

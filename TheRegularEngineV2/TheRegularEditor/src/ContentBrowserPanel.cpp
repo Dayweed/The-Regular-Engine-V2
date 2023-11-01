@@ -130,6 +130,13 @@ namespace TRE
 		//Folder List Display
 		if (ImGui::BeginChild("Folder List", ImVec2(ImGui::GetContentRegionAvail().x * 0.2f, ImGui::GetContentRegionAvail().y), true))
 		{
+			if (ImGui::IsWindowHovered())
+			{
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					ImGui::SetWindowFocus();
+				}
+			}
 			if (ImGui::Button(m_AssetDirectory.filename().string().c_str()))
 			{
 				m_CurrentDirectory = m_AssetDirectory;
@@ -139,13 +146,21 @@ namespace TRE
 			{
 				m_CurrentDirectory = m_SceneDirectory;
 				PollItems();
-			}	
+			}
 		}
 		ImGui::EndChild();
 		ImGui::SameLine();
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
+			if (ImGui::IsWindowHovered())
+			{
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					ImGui::SetWindowFocus();
+				}
+			}
+
 			ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
 			if (ImGui::Button("Open File Explorer"))
 			{
@@ -174,6 +189,7 @@ namespace TRE
 						
 						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetShaderHandle());
 						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
+						newMaterial->Invalidate();
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
 					}

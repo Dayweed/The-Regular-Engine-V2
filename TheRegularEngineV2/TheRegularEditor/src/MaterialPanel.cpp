@@ -32,6 +32,7 @@ namespace TRE
 				ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
 
 				InternalContent(material);
+				//Theres a chance that this is not attached to any entity, so dont update the UBO
 
 				ImGui::End();
 			}
@@ -46,6 +47,7 @@ namespace TRE
 			if (std::shared_ptr<Material> material = entity->GetComponent<MeshRenderer>().m_MaterialInstance; material)
 			{
 				InternalContent(material);
+				material->SetMaterialUBO();
 			}
 
 			ImGui::End();
@@ -135,6 +137,12 @@ namespace TRE
 		{
 			DrawTexture(texture);
 		}
+
+		ImGui::Text("Color");
+		auto& materialData = material->GetMaterialUBO();
+		float data[4]{ materialData.m_Color.x, materialData.m_Color.y, materialData.m_Color.z, materialData.m_Color.w };
+		ImGui::ColorEdit4(("##" + material->GetHandleHex()).c_str(), data);
+		materialData.m_Color = { data[0], data[1], data[2], data[3] };
 
 		if (ImGui::Button("Save"))
 		{
