@@ -563,6 +563,7 @@ namespace TRE
 		// EnTT stuff
 		entt::registry m_Registry;
 
+		std::vector<std::string> m_EntityOrder;
 		std::unordered_map<std::string, Entity> m_EntityList;
 		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 
@@ -661,7 +662,7 @@ namespace TRE
 		entt::exclude_t<Undeployed> u{};
 
 		auto view = m_Registry.view<Comp, Others...>(u);
-		objects.reserve(m_EntityList.size());
+		objects.reserve(m_EntityOrder.size());
 
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
@@ -671,6 +672,8 @@ namespace TRE
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}
 		}
+
+		std::reverse(objects.begin(), objects.end());
 
 		return objects;
 	}
