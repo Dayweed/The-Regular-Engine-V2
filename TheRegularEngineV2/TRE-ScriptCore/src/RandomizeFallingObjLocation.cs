@@ -103,7 +103,7 @@ namespace TRE
             //canSpawnObjs = true;
 
             // ID for prefabs are based on resource prefab GUID
-            fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
+            fallingObjPrefabs = new List<Entity> { new Entity(11822093139939255162), new Entity(8829880216004354162) };
             maxAmountToSpawn = 3;
             maxObjects = 3;
             timeBetweenSpawns = 2;

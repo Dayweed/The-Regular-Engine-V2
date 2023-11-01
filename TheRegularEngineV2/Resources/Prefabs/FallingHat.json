@@ -8,9 +8,9 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3233608133424215460",
+         "m_MainPrefabGUID": "8829880216004354162",
          "m_Overrides": {},
-         "m_PrefabGUID": "3233608133424215460",
+         "m_PrefabGUID": "8829880216004354162",
          "m_RemovedComps": []
       }
    ],
@@ -27,8 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "12357392241950126950",
-         "m_Name": "FallingObject",
+         "m_GUID": "16015804216437605482",
+         "m_Name": "FallingHat",
          "m_Tag": ""
       }
    ],
@@ -47,9 +47,9 @@
             -179.99998474121094
          ],
          "m_Scale": [
-            1.0,
-            1.0,
-            1.0
+            2.0,
+            2.0,
+            2.0
          ]
       }
    ],
@@ -57,7 +57,7 @@
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
@@ -78,7 +78,7 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": false,
          "m_IsKinematic": false,
-         "m_Mass": 1.0,
+         "m_Mass": 8.0,
          "m_UseGravity": true
       }
    ],

@@ -783,7 +783,7 @@ namespace TRE
 			std::string compName{ typeid(T).name() };
 			if (typeid(T) == typeid(Properties))
 			{
-				TRE_CORE_ERROR("[" + funcName + "] Object does not have the component " + compName);
+				TRE_CORE_ERROR("[" + funcName + "] Object (ID " + std::to_string(static_cast<ENTTID>(m_Entity)) + ") does not have the component " + compName);
 			}
 			else
 			{

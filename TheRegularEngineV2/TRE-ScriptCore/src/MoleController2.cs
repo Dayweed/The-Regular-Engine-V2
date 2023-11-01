@@ -23,8 +23,11 @@ namespace TRE
 		//Max height
 		private Vector3 maxHeight = new Vector3(0, 5, 0);
 
-		//Capsule Collider
-		private bool isScaled = false;
+        //Capsule Collider
+        public List<Entity> pickedPowerUps;	// For dropping
+        public bool haveBlueberry = false;  // Scaling
+        public bool haveStrawberry = false; // Shape
+        private bool isScaled = false;
 		private float defaultScale = 1f;
 		private float superScale = 4.8f;
 		private float currentScale = 1f;
@@ -111,9 +114,12 @@ namespace TRE
 
             #region Abilities
             if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
-			{
-				isScaled = !isScaled;
-			}
+            {
+                if (haveBlueberry)
+                {
+                    isScaled = !isScaled;
+                }
+            }
 
 			if(isScaled == false)
 			{
