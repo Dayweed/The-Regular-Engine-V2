@@ -131,7 +131,7 @@ namespace TRE
 		ECSOutputArchive arc(filePath);
 
 		// Destroys all undeployed entities
-		MemoryManager::Instance().ClearUndeployed();
+		//MemoryManager::Instance().ClearUndeployed();
 
 		entt::snapshot snapshot{ GetRegistry() };
 		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
@@ -350,10 +350,11 @@ namespace TRE
 
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
-		if (ECSManager::Instance().GetRegistry().valid(ent))
+		m_Current.push_back(static_cast<uint32_t>(ent));
+		/*if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
 			m_Current.push_back(static_cast<uint32_t>(ent));
-		}
+		}*/
 	}
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
@@ -362,13 +363,15 @@ namespace TRE
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
 			//m_Current.push_back(1);
-			m_Current.push_back(ECSManager::Instance().GetAllEntities().size()); 	// This somehows kills the entt if too fat
+			//m_Current.push_back(ECSManager::Instance().GetAllEntities(true).size()); 	// This somehows kills the entt if too fat
+			m_Current.push_back(u);
 		}
 		else
 		{
 			m_Root.push_back(m_Current);
 			m_Current = nlohmann::json::array();
 			m_Current.push_back(u);
+			//m_Current.push_back(m_EntityNo++);
 		}
 	}
 

@@ -94,8 +94,6 @@ namespace TRE
             Rotation = rotation;
             Scale = scale;
         }
-
-
     }
 
     public class Camera : Component

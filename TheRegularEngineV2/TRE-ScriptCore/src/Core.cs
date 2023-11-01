@@ -280,7 +280,6 @@ namespace TRE
 		Audio = 2,
 	}
 
-	#region Vector3
 	public struct Vector3
 	{
 		public float x, y, z;
@@ -386,10 +385,9 @@ namespace TRE
 		public static float Distance(Vector3 vec1, Vector3 vec2)
 		{
 			// TO DO CALCULATE VECTOR DISTANCE :p
-			return vec1.Magnitude() - vec2.Magnitude();
+			return Math.Abs(vec1.Magnitude() - vec2.Magnitude());
 		}
 	}
-	#endregion
 
 	public struct Vector2
 	{

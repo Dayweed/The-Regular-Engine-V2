@@ -136,6 +136,13 @@ namespace TRE
 			DrawTexture(texture);
 		}
 
+		ImGui::Text("Color");
+		auto& Test = material->GetMaterialUBO();
+		float data[4]{ Test.m_Color.x, Test.m_Color.y, Test.m_Color.z, Test.m_Color.w };
+		ImGui::DragFloat4("", data, 1.f);
+		Test.m_Color = { data[0], data[1], data[2], data[3] };
+		material->SetMaterialUBO();
+
 		if (ImGui::Button("Save"))
 		{
 			ResourceManager::Instance().SerializeResource<Material>(material->GetHandle());

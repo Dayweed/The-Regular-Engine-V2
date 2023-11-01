@@ -380,7 +380,10 @@ project "TRE-ScriptStorage"
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
-
+	
+	libdirs "../Resources/Scripts"
+	links "TRE-ScriptCore.dll"
+	
 	files 
 	{
 		"%{prj.name}/src/**.cs",

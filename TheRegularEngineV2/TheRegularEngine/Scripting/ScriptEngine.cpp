@@ -23,9 +23,6 @@ namespace TRE
 #pragma region ScriptEngine
 
 	ScriptEngineData* ScriptEngine::s_ScriptEngineData = nullptr;
-	static void GetCSEntityData(Entity entity);
-	static void UpdateCSEntityData(Entity entity);
-	static void CreateCSEntityData(Entity entity);
 
 	static std::unordered_map<std::string, ScriptFieldTypes> s_ScriptFieldTypeMap =
 	{
@@ -143,7 +140,6 @@ namespace TRE
 			{
 				TRE_CORE_INFO("Instance: {0} ", scriptInstance.first);
 			}
-
 			
 		}
 
@@ -165,6 +161,12 @@ namespace TRE
 		}
 
 		// Here we will load the project assembly when the project script and core script is separated.
+
+		status = LoadProjectAssembly("../Resources/Scripts/TRE-ScriptProject.dll");
+		if(!status)
+		{
+			TRE_CORE_ERROR("Failed to load project assembly");
+		}
 
 		// Load all the classes from the assembly
 		LoadClassesFromAssembly();
@@ -214,18 +216,28 @@ namespace TRE
 		s_ScriptEngineData->AppDomain = mono_domain_create_appdomain(const_cast<char*>("TREScriptRuntime"), nullptr);
 		mono_domain_set(s_ScriptEngineData->AppDomain, true);
 
-
 		s_ScriptEngineData->MonoAssemblyPath = assemblyPath;
-		s_ScriptEngineData->MonoAssembly = Tools::LoadCSharpAssembly(assemblyPath);
-		if(s_ScriptEngineData->MonoAssembly == nullptr)
+		s_ScriptEngineData->MonoCoreAssembly = Tools::LoadCSharpAssembly(assemblyPath);
+		if(s_ScriptEngineData->MonoCoreAssembly == nullptr)
 			return false;
 
 		// Store the assembly image
-		s_ScriptEngineData->AssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
+		s_ScriptEngineData->CoreAssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoCoreAssembly);
 
 		// For Debugging to check what classes are in the assembly
 		//Tools::PrintAssemblyTypes(s_ScriptEngineData->MonoAssembly);
 
+		return true;
+	}
+
+	bool ScriptEngine::LoadProjectAssembly(const std::string& projectPath)
+	{
+		s_ScriptEngineData->MonoProjectPath = projectPath;
+		s_ScriptEngineData->MonoProjectAssembly = Tools::LoadCSharpAssembly(projectPath);
+		if(s_ScriptEngineData->MonoProjectAssembly == nullptr)
+			return false;
+
+		s_ScriptEngineData->ProjectAssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoProjectAssembly);
 		return true;
 	}
 
@@ -235,18 +247,18 @@ namespace TRE
 		// clear the unordered map
 		s_ScriptEngineData->ScriptClasses.clear();
 
-		// Change the AssemblyImage to AppAssemblyImage when project script and core script is separated.
-		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->AssemblyImage , MONO_TABLE_TYPEDEF);
+		// Change the CoreAssemblyImage to AppCoreAssemblyImage when project script and core script is separated.
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->CoreAssemblyImage , MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
-		MonoClass* entity = mono_class_from_name(s_ScriptEngineData->AssemblyImage, "TRE", "Entity");
+		MonoClass* entity = mono_class_from_name(s_ScriptEngineData->CoreAssemblyImage, "TRE", "Entity");
 
 		for (int32_t i = 0; i < numTypes; i++)
 		{
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-			const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
-			const char* name = mono_metadata_string_heap(s_ScriptEngineData->AssemblyImage, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->CoreAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(s_ScriptEngineData->CoreAssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string className;
 
@@ -257,8 +269,8 @@ namespace TRE
 
 			printf("%s.%s\n", nameSpace, name);
 
-			//Create main class called entity, Also change the assembly image to AppAssemblyImage when project script and core script is separated.
-			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->AssemblyImage, nameSpace, name);
+			//Create main class called entity, Also change the assembly image to AppCoreAssemblyImage when project script and core script is separated.
+			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->CoreAssemblyImage, nameSpace, name);
 
 			if(monoClass == entity)
 				continue;
@@ -323,6 +335,7 @@ namespace TRE
 
 		// add loading application assembly when project script and core script is separated.
 		// add loading all the classes from the assembly
+		LoadProjectAssembly(s_ScriptEngineData->MonoProjectPath);
 
 		LoadClassesFromAssembly();
 
@@ -331,7 +344,7 @@ namespace TRE
 		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
 
 		// Retrieve and instantiate the main class
-		InitScriptingMain();
+		//InitScriptingMain();
 	}
 
 	void ScriptEngine::CreateCSEntityData(Entity entity)
@@ -348,6 +361,7 @@ namespace TRE
 				return;
 			}
 			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
+			instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
 			s_ScriptEngineData->ScriptInstances[GUID] = instance;
 
 			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
@@ -358,13 +372,15 @@ namespace TRE
 				fieldMap[name].m_Field.m_Name = name;
 				fieldMap[name].m_Field.m_Type = field.m_Type;
 			}
+
+
 		}
 	}
 
 	void ScriptEngine::InitScriptingMain()
 	{
-		MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+		MonoImage* CoreAssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoCoreAssembly);
+		MonoClass* testClass = mono_class_from_name(CoreAssemblyImage, "TRE", "Main");
 
 		// creates new instance of the class
 		s_ScriptEngineData->DemoObject = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
@@ -381,8 +397,8 @@ namespace TRE
 
 	void ScriptEngine::UpdateScriptingMain()
 	{
-		MonoImage* assemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoAssembly);
-		MonoClass* testClass = mono_class_from_name(assemblyImage, "TRE", "Main");
+		MonoImage* CoreAssemblyImage = mono_assembly_get_image(s_ScriptEngineData->MonoCoreAssembly);
+		MonoClass* testClass = mono_class_from_name(CoreAssemblyImage, "TRE", "Main");
 		MonoMethod* method = mono_class_get_method_from_name(testClass, "Update", 0);
 		mono_runtime_invoke(method, s_ScriptEngineData->DemoObject, nullptr, nullptr);
 	}
@@ -456,25 +472,13 @@ namespace TRE
 				CreateCSEntityData(entity);
 			}
 
-			/*std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
-			s_ScriptEngineData->ScriptInstances[GUID] = instance;
-
-			if (s_ScriptEngineData->EntityFieldMap.find(GUID) != s_ScriptEngineData->EntityFieldMap.end())
-			{
-				ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-				for (auto& field : fieldMap)
-				{
-					instance->SetInternalFieldValue(field.first, field.second.m_buffer);
-				}
-			}*/
-
 			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
 			s_ScriptEngineData->ScriptInstances[GUID]->OnCreateInvoke();
 		}
 		else
 		{
 			std::string function{ __FUNCTION__ };
-			TRE_CORE_ERROR("["+ function+"] Cannot find EntityClass for entity {}", entity->GetName());
+			TRE_CORE_ERROR("[" + function + "] Cannot find EntityClass for entity {}", entity->GetName());
 		}
 	}
 
@@ -581,13 +585,24 @@ namespace TRE
 		}
 	}
 
+	std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityInstance(std::string GUID)
+	{
+		auto it = s_ScriptEngineData->ScriptInstances.find(GUID);
+		if(it == s_ScriptEngineData->ScriptInstances.end())
+		{
+			return nullptr;
+		}
+
+		return it->second;
+	}
+
 #pragma endregion
 
 #pragma region ScriptClass
 
 	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className ) : m_ClassNamespace(classNamespace), m_ClassName(className)
 	{
-		m_MonoClass = mono_class_from_name(ScriptEngine::s_ScriptEngineData->AssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
+		m_MonoClass = mono_class_from_name(ScriptEngine::s_ScriptEngineData->CoreAssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
 	}
 
 	MonoObject* ScriptClass::Instantiate()
@@ -693,7 +708,6 @@ namespace TRE
 
 	void ScriptInstance::OnTriggerStayInvoke(Entity other)
 	{
-		
 		if (m_TriggerStayMethod)
 		{
 			unsigned long long id = std::stoull(other->GetGUID());
@@ -735,6 +749,11 @@ namespace TRE
 		const ScriptField& scriptField = iter->second;
 		mono_field_set_value(m_Instance, scriptField.m_MonoField, (void*) buffer);
 		return true;
+	}
+
+	ScriptInstance::~ScriptInstance()
+	{
+		mono_gchandle_free(m_GCHandle);
 	}
 
 #pragma endregion

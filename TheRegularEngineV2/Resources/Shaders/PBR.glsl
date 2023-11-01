@@ -18,6 +18,7 @@ layout(location = 0) out struct
 	vec3 LightPosWorld;
 	vec3 VertColor;
 	vec2 TexCoord;
+	vec4 Color;
 } Out;
 
 layout(push_constant) uniform Push
@@ -34,7 +35,12 @@ layout(set = 0, binding = 0) uniform UBO
 	vec4 m_DirectionalLightDirection;
 	vec4 m_DirectionalLightColor;
 	vec4 m_AmbientLight;
-}ubo;
+} ubo;
+
+layout(set = 0, binding = 6) uniform MaterialColor
+{
+	vec4 m_Color;
+} MaterialUBO;
 
 const float gamma = 2.2;
 
@@ -62,6 +68,7 @@ void main()
 	Out.PosWorld.w = gamma;
 	Out.LightColor = ubo.m_LightColor;
 	Out.CamearPos = ubo.m_CameraPosition;
+	Out.Color = MaterialUBO.m_Color;
 }
 
 
@@ -78,15 +85,16 @@ layout(location = 0) in struct
 	vec3 LightPosWorld;
 	vec3 VertColor;
 	vec2 TexCoord;
+	vec4 Color;
 } In;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
 layout(set = 0, binding = 4) uniform sampler2D AOMap;
+layout(set = 0, binding = 5) uniform sampler2D Metalness;
 
 layout(location = 0) out vec4 outColor;
-
 
 const float AMBIENT_INTENSITY = 0.05;
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);

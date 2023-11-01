@@ -219,7 +219,7 @@ namespace TRE
 				CTH.emplace_back(prevEntry.m_First, prevEntry.m_Second, TriggerHistoryEntryEnum::Stay);
 		}
 #pragma endregion
-	
+
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
@@ -251,7 +251,7 @@ namespace TRE
 			const PxQuat rotQuat = sharedData.m_RigidDynamic->getGlobalPose().q;
 			const glm::vec3 eulerAnglesInRad = glm::eulerAngles(glm::quat{ rotQuat.w, rotQuat.x, rotQuat.y, rotQuat.z });
 			transform.m_Rotation = eulerAnglesInRad / PI * 180.0f;
-			
+
 			transform.m_IsDirty = true;
 		}
 	}
@@ -712,7 +712,7 @@ namespace TRE
 			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
 				UpdateColliderData(entity, collider.m_Offset);
-				
+
 				if (collider.m_IsDirty)
 				{
 					ResizeSphereCollider(entity, collider.m_Radius);
@@ -748,7 +748,7 @@ namespace TRE
 			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
 				UpdateColliderData(entity, collider.m_Offset);
-				
+
 				if (collider.m_IsDirty)
 				{
 					ResizeCapsuleCollider(entity, collider.m_Radius, collider.m_HalfHeight);
@@ -837,7 +837,7 @@ namespace TRE
 			UpdateRigidbody(entity);
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
-			UpdateSphereCollider(entity); 
+			UpdateSphereCollider(entity);
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
 			UpdateBoxCollider(entity);
@@ -901,6 +901,14 @@ namespace TRE
 
 		for (unsigned i = 0; i < nbPairs; ++i)
 		{
+			const PxContactPair& pair = pairs[i];
+
+			// I sure hope these are equivalent!!!
+			// pairHeader.flags & PxContactPairHeaderFlag::eREMOVED_ACTOR_0;
+			// pairs[0].flags & PxContactPairFlag::eREMOVED_SHAPE_0;
+			if (pairHeader.flags & (PxContactPairHeaderFlag::eREMOVED_ACTOR_0 | PxContactPairHeaderFlag::eREMOVED_ACTOR_1))
+				continue;
+
 			unsigned actor0Index = pairHeader.actors[0]->is<PxRigidActor>()->getInternalActorIndex();
 			unsigned actor1Index = pairHeader.actors[1]->is<PxRigidActor>()->getInternalActorIndex();
 			unsigned flags = 0;
@@ -908,14 +916,14 @@ namespace TRE
 			// ensure that actor0Index is lesser than (<) actor1Index 
 			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
 
-			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH)
+			if (pair.flags & PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH)
 				flags |= CollisionHistoryEntryEnum::Enter;
 
-			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)
+			if (pair.flags & PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)
 				flags |= CollisionHistoryEntryEnum::Exit;
 
-			// if (!(pairs->flags & (PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH | PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)))  // trust...right?
-			if (pairs->events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
+			// if (!(pair.flags & (PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH | PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)))  // trust...right?
+			if (pair.events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
 				flags |= CollisionHistoryEntryEnum::Stay;
 
 			m_CollisionHistory.emplace_back(actor0Index, actor1Index, flags);
@@ -933,17 +941,22 @@ namespace TRE
 
 		for (unsigned i = 0; i < count; ++i)
 		{
-			assert(pairs[i].triggerActor->is<PxRigidActor>());
-			assert(pairs[i].otherActor->is<PxRigidActor>());
+			const PxTriggerPair& pair = pairs[i];
 
-			unsigned actor0Index = pairs[i].triggerActor->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned actor1Index = pairs[i].otherActor->is<PxRigidActor>()->getInternalActorIndex();
+			// OH. MY. GOD. WTF.
+			if (pair.flags & (PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+				continue;
+
+			assert(pair.triggerActor->is<PxRigidActor>());
+			assert(pair.otherActor->is<PxRigidActor>());
+
+			unsigned actor0Index = pair.triggerActor->is<PxRigidDynamic>()->getInternalActorIndex();
+			unsigned actor1Index = pair.otherActor->is<PxRigidDynamic>()->getInternalActorIndex();
 			unsigned flags = 0;
 
 			// ensure that actor0Index is lesser than (<) actor1Index 
 			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
 
-			const auto& pair = pairs[i];
 			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 				flags |= TriggerHistoryEntryEnum::Enter;
 
@@ -970,7 +983,7 @@ namespace TRE
 		const glm::vec3 eulerAnglesInRad = transform.m_Rotation * PI / 180.0f;
 		const glm::quat rotQuat{ eulerAnglesInRad };
 		const auto xform = PxTransform(VEC3_CAST(PxVec3, transform.m_Position + offset), PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-		
+
 		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(xform);
 	}
 }

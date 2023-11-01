@@ -77,13 +77,16 @@ namespace TRE
         public int timeBetweenSpawns;
         public int noOfObjects;
         public int maxObjects;
+        public float dropDuration;
 
         private float currentTimeBetweenSpawns;
         private bool canSpawnObjs = false;
 
-        private float minRange = 5f;
+        private float minRange;
 
         private List<Entity> itemsToSpawn = new List<Entity>();
+        private List<float> itemsTimer = new List<float>();
+        private List<Vector3> itemsPos = new List<Vector3>();
 
         public RandomizeFallingObjLocation()
         {
@@ -101,11 +104,13 @@ namespace TRE
 
             // ID for prefabs are based on resource prefab GUID
             fallingObjPrefabs = new List<Entity> { new Entity(3233608133424215460) };
-            maxAmountToSpawn = 2;
+            maxAmountToSpawn = 3;
+            maxObjects = 3;
             timeBetweenSpawns = 2;
-            size = new Vector3(25, 0, 25);
+            size = new Vector3(30, 0, 50);
             canSpawnObjs = true;
-            maxObjects = 6;
+            dropDuration = 5.0f;
+            minRange = 5.5f;
         }
 
         // Update is called once per frame
@@ -119,6 +124,7 @@ namespace TRE
             }
 
             StartTimer();
+            UpdateItems();
         }
 
         public Vector3 SpawnObjPos()
@@ -141,31 +147,45 @@ namespace TRE
         {
             for (int i = 0; i < itemQuantity; ++i)
             {
-                int searchCount = maxAmountToSpawn * 2;
-
-                //search till limit for place to spawn
-                while (searchCount-- > 0)
+                if (noOfObjects < maxObjects)
                 {
-                    //choose random position
-                    Vector3 itemToSpawnPos = SpawnObjPos();
+                    int searchCount = maxAmountToSpawn * 2;
 
-                    //is this pos empty
-                    if (IsPosEmpty(itemToSpawnPos))
+                    //search till limit for place to spawn
+                    while (searchCount-- > 0)
                     {
-                        //yes, so add to list
-                        itemsToSpawn.Add(ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()], itemToSpawnPos, default, Vector3.one));
+                        //choose random position
+                        Vector3 itemToSpawnPos = SpawnObjPos();
 
-                        break;
+                        //is this pos empty
+                        if (IsPosEmpty(itemToSpawnPos))
+                        {
+                            //yes, so add to list
+                            itemsToSpawn.Add(ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()], itemToSpawnPos, default, Vector3.one));
+                            itemsTimer.Add(dropDuration);
+                            itemsPos.Add(itemToSpawnPos);
+                            break;
+                        }
                     }
+                    ++noOfObjects;
                 }
             }
         }
 
         private bool IsPosEmpty(Vector3 position)
         {
-            foreach (Entity item in itemsToSpawn)
+            //foreach (Entity item in itemsToSpawn)
+            //{
+            //    Debug.Log("E " + Vector3.Distance(position, item.transform.Position));
+            //    if (Vector3.Distance(position, item.transform.Position) < minRange)
+            //    {
+            //        return false;
+            //    }
+            //}
+            foreach (Vector3 pos in itemsPos)
             {
-                if (Vector3.Distance(position, item.transform.Position) < minRange)
+                Vector3 checkPos = new Vector3(pos.x, position.y, pos.z);
+                if (Vector3.Distance(position, checkPos) < minRange)
                 {
                     return false;
                 }
@@ -186,21 +206,53 @@ namespace TRE
 
             if (currentTimeBetweenSpawns > 0)
             {
-                itemsToSpawn.Clear();
+                //itemsToSpawn.Clear();
                 currentTimeBetweenSpawns -= Time.deltaTime;
             }
             else
             {
                 for (int i = 0; i < maxAmountToSpawn; i++)
                 {
-                    if (noOfObjects < maxObjects)
-                    {
-                        CreateItems(maxAmountToSpawn);
-                        ++noOfObjects;
-                    }
+                    CreateItems(maxAmountToSpawn);
                 }
 
                 currentTimeBetweenSpawns = timeBetweenSpawns;
+            }
+        }
+
+        public void UpdateItems()
+        {
+            for (int i = 0; i < itemsTimer.Count; ++i)
+            {
+                itemsTimer[i] -= Time.deltaTime;
+                if (itemsTimer[i] < 0)
+                {
+
+                    //is this pos empty
+                    int searchCount = maxAmountToSpawn * 5;
+
+                    while (searchCount-- > 0)
+                    {
+                        //choose random position
+                        Vector3 itemToSpawnPos = SpawnObjPos();
+
+                        if (IsPosEmpty(itemToSpawnPos))
+                        {
+                            //choose random position
+                            Vector3 itemPos = SpawnObjPos();
+
+                            //is this pos empty
+                            if (IsPosEmpty(itemPos))
+                            {
+                                TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
+                                TransformSystem.SetRotation(itemsToSpawn[i].ID, Vector3.zero);
+                                itemsPos[i] = itemPos;
+
+                                itemsTimer[i] = dropDuration;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
