@@ -346,20 +346,20 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, audio_file_dropdown>)
 							{
-								if (ImGui::BeginCombo("AudioFilePopUp", Value.m_File.c_str()))
-								{
-									// GetAllAudioFiles
-									std::vector<std::string> tempAudioFiles{ "SFX", "Music" };
-									for (std::string& fileName : tempAudioFiles)
-									{
-										if (ImGui::Selectable(fileName.c_str()))
-										{
-											Value.m_File = fileName;
-										}
-									}
+								//if (ImGui::BeginCombo("AudioFilePopUp", Value.m_File.c_str()))
+								//{
+								//	// GetAllAudioFiles
+								//	std::vector<std::string> tempAudioFiles{ "SFX", "Music" };
+								//	for (std::string& fileName : tempAudioFiles)
+								//	{
+								//		if (ImGui::Selectable(fileName.c_str()))
+								//		{
+								//			Value.m_File = fileName;
+								//		}
+								//	}
 
-									ImGui::EndCombo();
-								}
+								//	ImGui::EndCombo();
+								//}
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}

@@ -11,13 +11,12 @@ namespace TRE
 	{
 	public:
 
-		audio_file_dropdown m_ChannelGroupName;
-		std::string m_FileName{""};
 		FMOD::ChannelGroup* m_ChannelGroup{};
-		//std::vector<std::string> m_ChannelGroupName{"SFX", "Music"};
 		FMOD::Channel* m_Channel{};
 		FMOD::Sound* m_Sound{};
 
+		std::string m_FileName{ "" };
+		std::vector<std::string> m_audioFiles;
 		float m_Volume{ 1.f };
 		float m_Pitch{ 1.f };
 		int m_Priority{ 0 };
@@ -29,21 +28,18 @@ namespace TRE
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
-
-		bool isPlaying{};
-
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
-
-		std::map<int, std::string> channelIndex{};
+		property_vtable()
+		//std::map<int, std::string> channelIndex{};
+		
+		bool m_isPlaying{};
 
 		friend void to_json(nlohmann::json& j, const Audio& t) //serialize
 		{
 			std::vector<float> v_pos{ t.m_goPosition.x, t.m_goPosition.y, t.m_goPosition.z };
-			//std::vector<std::string> v_ch{ t.m_ChannelGroupName };
 
 			j = nlohmann::json{
 				{"m_FileName", t.m_FileName},
-				//{"m_ChannelGroupName", v_ch},
 				{ "m_Play", t.m_Play },
 				{ "m_Volume", t.m_Volume },
 				{ "m_Pitch", t.m_Pitch },
@@ -61,6 +57,7 @@ namespace TRE
 
 		friend void from_json(const nlohmann::json& j, Audio& t) //deserialize
 		{
+			t.m_FileName = j.at("m_FileName").get<std::string>();
 			t.m_Play = j.at("m_Play").get<bool>();
 			t.m_Volume = j.at("m_Volume").get<float>();
 			t.m_Pitch = j.at("m_Pitch").get<float>();
@@ -79,14 +76,9 @@ namespace TRE
 			t.m_goPosition.y = a_pos[1];
 			t.m_goPosition.z = a_pos[2];
 
-			//std::vector<std::string> v_ch{ j.at("m_ChannelGroupName").get<std::vector<std::string>>() };
-			//std::string a_ch[2]{ v_ch[0], v_ch[1] };
-			//t.m_ChannelGroupName.front() = a_ch[0];
-			//t.m_ChannelGroupName.back() = a_ch[1];
-
 		}
 
-		property_vtable()	
+		
 
 	};
 	
@@ -212,14 +204,10 @@ namespace TRE
 		}
 
 	private:
-		FMOD::System* m_System = nullptr;
-		//FMOD::Sound* m_Sound = nullptr; 
-		//FMOD::Channel* m_Channel = nullptr;       
+		FMOD::System* m_System = nullptr;      
 
 		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
 		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
-		
-		//std::vector<std::string> channelGroupsMap{ "SFX", "Music" };
 
 		const int MAX_CHANNELS = 64;
 		;
@@ -240,7 +228,6 @@ property_begin(TRE::AudioListener)
 
 property_begin(TRE::Audio)
 {
-			property_var(m_ChannelGroupName),
 			property_var(m_FileName),
 			property_var(m_Play),
 			property_var(m_Volume),
@@ -252,6 +239,6 @@ property_begin(TRE::Audio)
 			property_var(m_PlayOnStart),
 			property_var(m_Spatialize),
 			property_var(m_MinDistance),
-			property_var(m_MaxDistance)
-
+			property_var(m_MaxDistance),
+			property_var(m_goPosition)
 } property_vend_h(TRE::Audio)

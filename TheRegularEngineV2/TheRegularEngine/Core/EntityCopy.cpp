@@ -19,6 +19,8 @@ namespace TRE
 			CapsuleCollider,
 			FEL,
 			FAKEFEL,
+			Audio,
+			AudioListener,
 			DirectionalLight,
 			ScriptComponent
 		>();

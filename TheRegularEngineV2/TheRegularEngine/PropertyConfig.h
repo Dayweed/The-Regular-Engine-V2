@@ -21,7 +21,8 @@ struct resource_list
 
 struct audio_file_dropdown
 {
-    std::string m_File;
+    std::string m_Type;
+    std::vector<std::string> m_File;
 };
 
 struct Color

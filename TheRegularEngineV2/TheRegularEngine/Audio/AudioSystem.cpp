@@ -33,39 +33,37 @@ namespace TRE
 
 		std::vector<Entity> entitiesToRemove;
 
-		for (auto go : audioMap)
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
 		{
-			if (go->HasComponent<Audio>())
+			Audio& source = go->GetComponent<Audio>();
+			//GetFileName(go);
+
+			CompileAudio(go);
+			source.m_Channel->isPlaying(&source.m_isPlaying);
+
+			if (source.m_PlayOnStart && source.m_Play)
 			{
-				Audio& source = go->GetComponent<Audio>();
-
-				bool isPlaying;
-				source.m_Channel->isPlaying(&isPlaying);
-
-				if (source.m_PlayOnStart && source.m_Play)
+				Play(go, true);
+				
+			}
+			else if (source.m_Loop)
+			{
+				if (!source.m_isPlaying)
 				{
 					Play(go, true);
-
 				}
-				else if (source.m_Loop)
-				{
-					if (!isPlaying)
-					{
-						Play(go, true);
-					}
-				}
+			}
+			else
+			{
+				
+			}
 
-				if (!source.m_Play)
+			if (!source.m_Play)
+			{
 				{
 					source.m_Channel->stop();
 				}
-
-				TogglePause(go);
-				ToggleMute(go);
-				source.m_Channel->setVolume(source.m_Volume);
-				source.m_Channel->setPitch(source.m_Pitch);
-				source.m_Channel->setPriority(source.m_Priority);
-
+				
 			}
 			else
 			{
@@ -77,6 +75,20 @@ namespace TRE
 					soundToRemove.erase(it);
 				}
 			}
+
+			TogglePause(go);
+			ToggleMute(go);
+			source.m_Channel->setVolume(source.m_Volume);
+			source.m_Channel->setPitch(source.m_Pitch);
+			source.m_Channel->setPriority(source.m_Priority);
+			
+
+			/*for (auto go : audioMap)
+			{
+				if (go->HasComponent<Audio>())
+				{
+				}
+			}*/
 		}
 
 		for (const Entity go : entitiesToRemove)
@@ -118,6 +130,7 @@ namespace TRE
 	{
 		/*EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::ToggleRun);
 		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);*/
+
 	}
 
 	void AudioSystem::OnDestroyEntities()
@@ -142,7 +155,6 @@ namespace TRE
 		if (filetype != ".wav")
 		{ 
 			TRE_CORE_ERROR("FMOD: Invalid File Type! Audio file is not a .wav file. File not loaded");
-			std::cout << "filetype" << filetype << "_" << std::endl;
 			return;
 		}
 
@@ -152,6 +164,8 @@ namespace TRE
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
+
+		audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
 
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_DEFAULT, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
@@ -168,7 +182,6 @@ namespace TRE
 		if (filetype != ".wav")
 		{
 			TRE_CORE_ERROR("FMOD: Invalid File Type! Audio file is not a .wav file. File not loaded");
-			std::cout << "filetype" << filetype << "_" << std::endl;
 			return;
 		}
 
@@ -178,6 +191,8 @@ namespace TRE
 		{
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
+
+		audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
 
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
@@ -196,7 +211,6 @@ namespace TRE
 			audio.m_Pause = true;
 		}
 		SetSourcePosition(go);
-		//audio.m_Channel->isPlaying(&audio.isPlaying);
 
 		if (audio.m_Loop == false)
 		{
@@ -208,21 +222,12 @@ namespace TRE
 			audio.m_Sound->setLoopCount(-1);
 		};
 
-		//if (shouldPlay == true)
-		//{
-		//	audio.m_Channel->setPaused(false);	
-		//}
-		//else
-		//{
-		//	TogglePause(go);
-		//}
-
-
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
+		
 		if (!audio.m_Pause)
 		{
 			audio.m_Channel->setPaused(false);
@@ -269,7 +274,12 @@ namespace TRE
 	void AudioSystem::CompileAudio(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();	
-		if (audio.m_Spatialize)
+
+		if (audio.m_FileName == "") {
+			TRE_CORE_WARN("Audio filename is not set. Skipping audio compilation.");
+			return;
+		}
+		else if (audio.m_Spatialize)
 		{
 			Load3DFile(go);
 		}
@@ -277,12 +287,9 @@ namespace TRE
 		{
 			LoadFile(go);
 		}
-		audioMap.insert(go);
-		soundToRemove.insert({ go, audio.m_Sound });
-		/*Play(go, false);
-		audio.m_Channel->setVolume(audio.m_Volume);
-		audio.m_Channel->setPitch(audio.m_Pitch);
-		audio.m_Channel->setPriority(audio.m_Priority);*/
+
+		//audioMap.insert(go);
+		//soundToRemove.insert({ go, audio.m_Sound });
 	}
 
 	void AudioSystem::SetVolume(Entity& go, const float volume)
@@ -417,7 +424,13 @@ namespace TRE
 
 	std::string AudioSystem::GetFileName(Entity& go) const
 	{
-		return go.get()->GetComponent<Audio>().m_FileName;
+		Audio& audio = go.get()->GetComponent<Audio>();
+
+		for (const auto& entry : std::filesystem::directory_iterator("../Resources/Audio/")) {
+				std::string filename = entry.path().filename().string(); 
+				audio.m_audioFiles.push_back(filename);
+				return audio.m_FileName = filename;
+		}
 	}
 
 	int AudioSystem::GetPriority(Entity& go) const
