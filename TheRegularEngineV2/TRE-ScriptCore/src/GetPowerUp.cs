@@ -22,7 +22,7 @@ namespace TRE
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
-        private Entity playerModel;                     // private Transform playerModel;
+        // private Entity playerModel;                  // private Transform playerModel;
 
         private PowerUpManager playerPowerUpManager;
 

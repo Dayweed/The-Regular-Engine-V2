@@ -360,6 +360,8 @@ namespace TRE
 			audio.m_audioFiles.push_back(filename);
 			return audio.m_FileName = filename;
 		}
+
+		return {};
 	}
 
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
