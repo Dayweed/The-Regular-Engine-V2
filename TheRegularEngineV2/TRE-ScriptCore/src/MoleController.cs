@@ -216,7 +216,8 @@ namespace TRE
 			if(PhysicsSystem.IsTriggerEnter(this.ID, Key.ID))
 			{
 				Key.SetActive(false);
-				FinalPlatform.SetActive(true);
+				TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9 ,-302));
+				Debug.Log("Key Collected");
 			}
 		}
 		private void Jump(Vector3 JumpHeight)

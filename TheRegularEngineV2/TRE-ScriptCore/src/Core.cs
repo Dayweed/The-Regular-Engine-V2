@@ -705,6 +705,9 @@ namespace TRE
 		internal extern static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void UpdateColliderOffset(EntityID entityid, Vector3 offset);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void AddForce(EntityID entityid, Vector3 force, ForceMode mode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
