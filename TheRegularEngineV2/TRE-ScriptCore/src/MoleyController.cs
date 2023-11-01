@@ -134,8 +134,8 @@ namespace TRE
 			}
 			else
 			{
-				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
-				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
+				currentHeight = MathF.Lerp(currentHeight, superHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, superRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
