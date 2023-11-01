@@ -44,9 +44,11 @@ namespace TRE
             Entity other = new Entity(otherID);
             //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
 
-            if (other.CompareTag("Ground") && HasComponent<Rigidbody>())
+            if (other.CompareTag("Ground"))
             {
+                //Debug.Log("LAND BRO");
                 //RemoveComponent<Rigidbody>();
+                GetComponent<Rigidbody>().useGravity = false;
                 cooldownCurrent = 0;
                 return;
             }
@@ -83,7 +85,7 @@ namespace TRE
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
-                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+                //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 collectedIndex = playerPowerUpManager.powerUps.Count;
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
@@ -136,7 +138,7 @@ namespace TRE
                     collected = true;
                 }
 
-                ReleasePowerUp();
+                //ReleasePowerUp();
             }
         }
 
@@ -176,7 +178,7 @@ namespace TRE
         {
             playerObj = null;
             collected = false;
-            AddComponent<Rigidbody>();
+            GetComponent<Rigidbody>().useGravity = true;
             PhysicsSystem.AddForce(this.ID, new Vector3(0, 35, 0), ForceMode.VelocityChange);
             cooldownCurrent = cooldownDuration;
         }

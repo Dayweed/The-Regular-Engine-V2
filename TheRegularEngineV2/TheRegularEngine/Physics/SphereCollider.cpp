@@ -73,6 +73,7 @@ namespace TRE
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
@@ -117,7 +118,7 @@ namespace TRE
 
 		UpdateActorPose(entity, sphereCollider.m_Offset);
 
-		SetCapsuleColliderTrigger(entity, sphereCollider.m_IsTrigger);
+		SetSphereColliderTrigger(entity, sphereCollider.m_IsTrigger);
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const

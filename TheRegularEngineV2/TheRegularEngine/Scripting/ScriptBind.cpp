@@ -1087,6 +1087,14 @@ namespace TRE
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
 	}
 
+	static bool BindGetKinematic(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		return Temp->GetComponent<Rigidbody>().m_IsKinematic;
+	}
+
 	static void BindSetGravity(CSEntityID ID, bool enable)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
@@ -1094,6 +1102,14 @@ namespace TRE
 
 		Temp->GetComponent<Rigidbody>().m_UseGravity = enable;
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
+	}
+
+	static bool BindGetGravity(CSEntityID ID, bool enable)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		return Temp->GetComponent<Rigidbody>().m_UseGravity;
 	}
 #pragma endregion
 
@@ -1318,7 +1334,9 @@ namespace TRE
 		// RigidBody Binding
 		{
 			mono_add_internal_call("TRE.RigidBodySystem::SetKinematic", BindSetKinematic);
+			mono_add_internal_call("TRE.RigidBodySystem::GetKinematic", BindGetKinematic);
 			mono_add_internal_call("TRE.RigidBodySystem::SetGravity", BindSetGravity);
+			mono_add_internal_call("TRE.RigidBodySystem::GetGravity", BindGetGravity);
 		}
 
 		// Input Binding

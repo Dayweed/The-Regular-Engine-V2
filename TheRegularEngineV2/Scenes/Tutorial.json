@@ -1,8 +1,8 @@
 [
    [
-      79,
-      4294967295,
-      6291456,
+      80,
+      4293918798,
+      5242880,
       1048577,
       2,
       3,
@@ -79,7 +79,8 @@
       74,
       75,
       76,
-      10485837
+      77,
+      9437183
    ],
    [
       1,
@@ -104,12 +105,12 @@
    ],
    [
       78,
-      1048577,
+      5242880,
       {
          "m_Children": [],
          "m_Parent": "12808683192309642390"
       },
-      6291456,
+      1048577,
       {
          "m_Children": [],
          "m_Parent": "7336208331961936027"
@@ -565,7 +566,7 @@
          "m_Children": [],
          "m_Parent": ""
       },
-      10485837,
+      77,
       {
          "m_Children": [],
          "m_Parent": "8300737754608148524"
@@ -573,14 +574,14 @@
    ],
    [
       78,
-      1048577,
+      5242880,
       {
          "m_Active": true,
          "m_GUID": "1763478461872210800",
          "m_Name": "Boundary_7",
          "m_Tag": ""
       },
-      6291456,
+      1048577,
       {
          "m_Active": true,
          "m_GUID": "16440336290473973888",
@@ -1112,7 +1113,7 @@
          "m_Name": "Key",
          "m_Tag": "Key"
       },
-      10485837,
+      77,
       {
          "m_Active": true,
          "m_GUID": "18384938070217462521",
@@ -1122,7 +1123,7 @@
    ],
    [
       78,
-      1048577,
+      5242880,
       {
          "m_Position": [
             49.0865592956543,
@@ -1140,7 +1141,7 @@
             1.0
          ]
       },
-      6291456,
+      1048577,
       {
          "m_Position": [
             47.060482025146484,
@@ -1431,8 +1432,8 @@
       17,
       {
          "m_Position": [
-            71.31723022460938,
-            -6.908157825469971,
+            73.37490844726563,
+            -7.708158016204834,
             -44.67452621459961
          ],
          "m_Rotation": [
@@ -1683,8 +1684,8 @@
       31,
       {
          "m_Position": [
-            71.31723022460938,
-            -6.908157825469971,
+            73.37490844726563,
+            -7.708158016204834,
             -30.178180694580078
          ],
          "m_Rotation": [
@@ -2508,7 +2509,7 @@
             2.0
          ]
       },
-      10485837,
+      77,
       {
          "m_Position": [
             -6.345926284790039,
@@ -2647,7 +2648,21 @@
       }
    ],
    [
-      2,
+      4,
+      8,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 4.188790321350098,
+         "m_UseGravity": false
+      },
       19,
       {
          "m_AngularDrag": 0.5,
@@ -2659,7 +2674,7 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": false,
          "m_IsKinematic": false,
-         "m_Mass": 117.28612518310547,
+         "m_Mass": 58.643062591552734,
          "m_UseGravity": true
       },
       28,
@@ -2673,16 +2688,50 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 117.28612518310547,
+         "m_Mass": 58.643062591552734,
          "m_UseGravity": true
+      },
+      67,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 4.188790321350098,
+         "m_UseGravity": false
       }
    ],
    [
-      0
+      2,
+      67,
+      {
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 1.0
+      },
+      8,
+      {
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 1.0
+      }
    ],
    [
-      53,
-      1048577,
+      51,
+      5242880,
       {
          "m_HalfExtents": [
             21.5,
@@ -2696,7 +2745,7 @@
             0.0
          ]
       },
-      6291456,
+      1048577,
       {
          "m_HalfExtents": [
             5.5,
@@ -2766,14 +2815,14 @@
             0.0
          ]
       },
-      8,
+      74,
       {
          "m_HalfExtents": [
-            1.5,
-            1.5,
-            1.5
+            21.5,
+            21.5,
+            62.5
          ],
-         "m_IsTrigger": true,
+         "m_IsTrigger": false,
          "m_Offset": [
             0.0,
             0.0,
@@ -3326,12 +3375,12 @@
             0.0
          ]
       },
-      67,
+      76,
       {
          "m_HalfExtents": [
-            1.5,
-            1.5,
-            1.5
+            1.0,
+            1.0,
+            1.0
          ],
          "m_IsTrigger": true,
          "m_Offset": [
@@ -3390,34 +3439,6 @@
             5.0
          ],
          "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      74,
-      {
-         "m_HalfExtents": [
-            21.5,
-            21.5,
-            62.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      76,
-      {
-         "m_HalfExtents": [
-            1.0,
-            1.0,
-            1.0
-         ],
-         "m_IsTrigger": true,
          "m_Offset": [
             0.0,
             0.0,
@@ -3509,7 +3530,7 @@
       {
          "m_StoredClass": "TRE.GetPowerUp"
       },
-      10485837,
+      77,
       {
          "m_StoredClass": "TRE.PowerUpManager"
       }

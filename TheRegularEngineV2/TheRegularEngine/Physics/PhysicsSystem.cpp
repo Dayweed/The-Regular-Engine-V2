@@ -461,7 +461,7 @@ namespace TRE
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
 
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -501,7 +501,7 @@ namespace TRE
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
 
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
