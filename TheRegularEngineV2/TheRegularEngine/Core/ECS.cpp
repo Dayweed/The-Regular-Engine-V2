@@ -363,7 +363,8 @@ namespace TRE
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
 			//m_Current.push_back(1);
-			m_Current.push_back(ECSManager::Instance().GetAllEntities(true).size()); 	// This somehows kills the entt if too fat
+			//m_Current.push_back(ECSManager::Instance().GetAllEntities(true).size()); 	// This somehows kills the entt if too fat
+			m_Current.push_back(u);
 		}
 		else
 		{
