@@ -65,7 +65,7 @@ namespace TRE
 		m_IsValid = true;
 
 		if (!m_MaterialUBO)
-			m_MaterialUBO = std::make_shared<UniformBuffer>(sizeof(MaterialUBO), 1);
+			m_MaterialUBO = std::make_shared<UniformBuffer>(static_cast<uint32_t>(sizeof(MaterialUBO)), 1);
 
 		m_UBO.m_Color = { 1.f, 1.f, 1.f, 1.f };
 		m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO));

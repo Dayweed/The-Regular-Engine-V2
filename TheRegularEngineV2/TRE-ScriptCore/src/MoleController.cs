@@ -6,6 +6,8 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
 namespace TRE
 {
+	using PS = PhysicsSystem;
+
 	public class MoleController : Entity
 	{
 		//check if player is on the ground (for now , just a plane)
@@ -20,9 +22,9 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 
 		//check if player used super power
-		public List<Entity> pickedPowerUps;	// For dropping
-		public bool haveBlueberry = false;	// Scaling
-		public bool haveStrawberry = false;	// Shape
+		public List<Entity> pickedPowerUps; // For dropping
+		public bool haveBlueberry = false;  // Scaling
+		public bool haveStrawberry = false; // Shape
 		private bool isScaled = false;
 		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
@@ -32,7 +34,7 @@ namespace TRE
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
 
-		private Vector3 playerDirection = new Vector3(0,0,1);
+		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
 		private bool NeedResize = false;
 
@@ -92,9 +94,9 @@ namespace TRE
 			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
 
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
-			PhysicsSystem.ConstrainRotationX(this.ID, true);
-			PhysicsSystem.ConstrainRotationY(this.ID, true);
-			PhysicsSystem.ConstrainRotationZ(this.ID, true);
+			PS.ConstrainRotationX(this.ID, true);
+			PS.ConstrainRotationY(this.ID, true);
+			PS.ConstrainRotationZ(this.ID, true);
 		}
 
 		public void Update()
@@ -103,7 +105,7 @@ namespace TRE
 			TransformSystem.GetPosition(this.ID, out Vector3 pos);
 
 			//Movement Related stuff
-			PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
+			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			dirVec = new Vector3(0, 0, 0);
 			#region Movement
@@ -131,7 +133,7 @@ namespace TRE
 				playerDirection.y = 90;
 			}
 
-			if(InputSystem.GetKeyDown(InputKeys.W))
+			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				if (InputSystem.GetKeyDown(InputKeys.D))
 				{
@@ -163,79 +165,80 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
-            #endregion
+			#endregion
 
-            #region Ability
+			#region Ability
 			// Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.E))
+			if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
 				if (haveBlueberry)
 				{
 					isScaled = !isScaled;
 					NeedResize = true;
 
-                }
+				}
 			}
 
 			if ((isScaled == false || !haveBlueberry) && NeedResize)
-            {
+			{
 				//for fat boi
 				current = MathF.Vec3Lerp(current, thin, 0.05f);
-				PhysicsSystem.ResizeBoxCollider(this.ID, current);
+				PS.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, defaultXform);
-                NeedResize = false;
+				NeedResize = false;
 				Debug.Log("Resize");
-            }
+			}
 			else if (NeedResize)
 			{
 				//for fat boi
 				current = MathF.Vec3Lerp(current, fat, 0.05f);
-				PhysicsSystem.ResizeBoxCollider(this.ID, current);
+				PS.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 				NeedResize = false;
-                Debug.Log("Resize");
-            }
-            #endregion
+				Debug.Log("Resize");
+			}
+			#endregion
 
-            dirVec.Normalize();
+			dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{
 				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
 				{
 					finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
-					PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 				else
 				{
 					Vector3 tmp = dirVec * maxVelocity;
 					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
-					PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 			}
 
 			TransformSystem.SetRotation(this.ID, playerDirection);
 
-			regionA = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_A.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_A.ID);
-			regionB = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_B.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_B.ID);
-			regionC = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_C.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_C.ID);
-			regionD = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_D.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_D.ID);
-			regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
-			regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
-			regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
-			regionH = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_H.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_H.ID);
+			regionA = IsInsideTrigger(Trigger_A);
+			regionB = IsInsideTrigger(Trigger_B);
+			regionC = IsInsideTrigger(Trigger_C);
+			regionD = IsInsideTrigger(Trigger_D);
+			regionE = IsInsideTrigger(Trigger_E);
+			regionF = IsInsideTrigger(Trigger_F);
+			regionG = IsInsideTrigger(Trigger_G);
+			regionH = IsInsideTrigger(Trigger_H);
 
-			if(PhysicsSystem.IsTriggerEnter(this.ID, Key.ID))
+			if (PS.IsTriggerEnter(this.ID, Key.ID))
 			{
 				Key.SetActive(false);
-				TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9 ,-302));
+				TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9, -302));
 				Debug.Log("Key Collected");
 			}
 		}
+
 		private void Jump(Vector3 JumpHeight)
 		{
 			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
+			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
@@ -243,9 +246,9 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
-			if(PhysicsSystem.IsCollisionStay(this.ID, otherID))
+			if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if(EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Player")
 				{
 					isGrounded = true;
 				}
@@ -254,16 +257,21 @@ namespace TRE
 					isGrounded = false;
 				}
 			}
-			if(PhysicsSystem.IsCollisionExit(this.ID, otherID))
+			if (PS.IsCollisionExit(this.ID, otherID))
 			{
-				if(EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Player")
 				{
-					PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 output);
+					PS.GetLinearVelocity(this.ID, out Vector3 output);
 					if (output.y > maxVelocity)
 						output.y = maxVelocity;
-					PhysicsSystem.SetLinearVelocity(this.ID, output);
+					PS.SetLinearVelocity(this.ID, output);
 				}
 			}
+		}
+
+		private bool IsInsideTrigger(Entity entity)
+		{
+			return PS.IsTriggerEnter(this.ID, entity.ID) || PS.IsTriggerStay(this.ID, entity.ID);
 		}
 	}
 }
