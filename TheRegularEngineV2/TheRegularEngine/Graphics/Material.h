@@ -7,6 +7,11 @@
 
 namespace TRE
 {
+	struct MaterialUBO
+	{
+		glm::vec4 m_Color;
+	};
+
 	class MaterialDescriptorFile : public DescriptorFile
 	{
 	public:
@@ -37,10 +42,10 @@ namespace TRE
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTexturesRef() { return m_Textures; }
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
-			const VkDescriptorSet& GetEditorDescriptor(uint32_t FrameIndex)
-			{
-				return m_EditorDescriptorSets[FrameIndex];
-			}
+			const VkDescriptorSet& GetEditorDescriptor(uint32_t FrameIndex) { return m_EditorDescriptorSets[FrameIndex]; }
+
+			MaterialUBO& GetMaterialUBO() { return m_UBO; }
+			void SetMaterialUBO() { m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO)); }
 
 			static ResourceType GetType() { return ResourceType::Material; }
 
@@ -55,6 +60,9 @@ namespace TRE
 			std::vector<VkDescriptorSet> m_EditorDescriptorSets;
 			std::vector<VkWriteDescriptorSet> m_WriteDescriptors;
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_Textures;
+
+			std::shared_ptr<UniformBuffer> m_MaterialUBO;
+			MaterialUBO m_UBO;
 
 			bool m_IsValid = false;
 	};

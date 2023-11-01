@@ -31,6 +31,7 @@ namespace TRE
 		// Display button to return to scene
 		if (displayingPrefab && ImGui::Button("Return to Scene", ImVec2(-FLT_MIN, 0.0f)))
 		{
+			m_SelectionManager->ClearSelectedEntity();
 			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 		}
 

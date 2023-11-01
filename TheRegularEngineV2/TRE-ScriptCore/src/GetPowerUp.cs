@@ -88,7 +88,7 @@ namespace TRE
 
             playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
-            RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
+            //RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<Collider>().enabled = false;         // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<RotateObj>().enabled = false;        // THIS CANT BE DONE YET!
             SetActive(false);                                                   //this.transform.GetChild(1).gameObject.SetActive(false);
