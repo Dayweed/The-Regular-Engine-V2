@@ -301,13 +301,7 @@ namespace TRE
 
 	void ContentBrowserPanel::Init()
 	{
-		//Load the textures for the icons
-		const auto tmpGUID = AssetManager::Instance().GetAssetHandle("icon-file.png");
-		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
-		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");
-		tmpButton->SetHandle(tmpGUID);
-		AssetManager::Instance().AddAsset("icon-file.png", std::move(tmpButton));
-		m_TmpTextures = ResourceManager::Instance().GetResource<VulkanTexture>(tmpGUID);
+		m_TmpTextures = Util::CreateIcon("icon-file.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 	}
 	

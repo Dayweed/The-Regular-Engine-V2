@@ -58,7 +58,7 @@ namespace TRE
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
 		PxShape* capsuleShape;
-		
+
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 		if (capsuleCollider.m_IsTrigger)
 			capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);

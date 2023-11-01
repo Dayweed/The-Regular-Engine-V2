@@ -3,6 +3,17 @@
 
 namespace TRE::Util
 {
+	std::shared_ptr<VulkanTexture> CreateIcon(std::string PNG_name)
+	{
+		const auto tmpGUID = AssetManager::Instance().GetAssetHandle(PNG_name);
+		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
+		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");
+		tmpButton->SetHandle(tmpGUID);
+		AssetManager::Instance().AddAsset(PNG_name, std::move(tmpButton));
+		std::shared_ptr<VulkanTexture> Icon = ResourceManager::Instance().GetResource<VulkanTexture>(tmpGUID);
+		return Icon;
+	}
+
 	ImTextureID GetTextureID(const VkDescriptorImageInfo& ImageInfo)
 	{
 		if (!ImageInfo.imageView)
