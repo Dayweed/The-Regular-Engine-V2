@@ -15,9 +15,11 @@ namespace TRE
         public string mole1tag = "Red";
         public string mole2tag = "Player";
 
-        public bool drop;
         private bool collected;
         private int collectedIndex;
+
+        private float cooldownDuration;
+        private float cooldownCurrent;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
@@ -32,8 +34,9 @@ namespace TRE
 
         public void OnCreate()
         {
-            drop = false;
             collected = false;
+            cooldownDuration = 5f;
+            cooldownCurrent = 0f;
         }
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
@@ -41,11 +44,17 @@ namespace TRE
             Entity other = new Entity(otherID);
             //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
 
-            if (collected) return;
+            if (other.CompareTag("Ground") && HasComponent<Rigidbody>())
+            {
+                //RemoveComponent<Rigidbody>();
+                cooldownCurrent = 0;
+                return;
+            }
+
+            if (collected || cooldownCurrent > 0) return;
 
             if (other.CompareTag(mole1tag) || other.CompareTag(mole2tag))
             {
-                //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
                 //playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
                 //playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
@@ -126,6 +135,8 @@ namespace TRE
 
                     collected = true;
                 }
+
+                ReleasePowerUp();
             }
         }
 
@@ -137,6 +148,7 @@ namespace TRE
 
         public void Update()
         {
+            cooldownCurrent -= Time.deltaTime;
             SetToPlayer();
         }
 
@@ -151,13 +163,22 @@ namespace TRE
 
             Vector3 newPos = playerObj.transform.Position;
             newPos.y += playerObj.transform.Scale.y * 5 * (collectedIndex + 1);
-            GetComponent<Transform>().Position = newPos;
+            transform.Position = newPos;
             //transform.Position = newPos;
 
             //RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<Collider>().enabled = false;         // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<RotateObj>().enabled = false;        // THIS CANT BE DONE YET!
             //SetActive(false);                                                   //this.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
+        public void ReleasePowerUp()
+        {
+            playerObj = null;
+            collected = false;
+            AddComponent<Rigidbody>();
+            PhysicsSystem.AddForce(this.ID, new Vector3(0, 35, 0), ForceMode.VelocityChange);
+            cooldownCurrent = cooldownDuration;
         }
 
         public void TurnOnVisuals()

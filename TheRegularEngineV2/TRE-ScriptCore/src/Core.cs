@@ -146,6 +146,14 @@ namespace TRE
 			return GetCoreComponent<T>();
 		}
 
+		public void RemoveComponent<T>() where T : Component, new()
+        {
+            if (HasComponent<T>())
+            {
+                ECSManager.RemoveComponent(ID, typeof(T));
+            }
+		}
+
 
 		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
