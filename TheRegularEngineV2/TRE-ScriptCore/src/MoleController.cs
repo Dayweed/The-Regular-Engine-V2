@@ -27,16 +27,19 @@ namespace TRE
 		public bool haveStrawberry = false; // Shape
 		private bool isScaled = false;
 		//Box Collider
-		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
-		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
-		private Vector3 fat = new Vector3(5.5f, 4, 5);
+		private float defaultRadius = 2f;
+		private float superRadius = 3.5f;
+		private float currentRadius = 2f;
+		private float defaultHeight = 1f;
+		private float superHeight = 0.1f;
+		private float currentHeight = 1f;
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
 
 		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
-		private bool NeedResize = false;
+		private float lerpSpeed = 0.05f;
 
 		//For camera controller
 		private Entity Trigger_A;
@@ -174,28 +177,23 @@ namespace TRE
 				if (haveBlueberry)
 				{
 					isScaled = !isScaled;
-					NeedResize = true;
-
 				}
 			}
 
-			if ((isScaled == false || !haveBlueberry) && NeedResize)
+			if ((isScaled == false || !haveBlueberry))
 			{
-				//for fat boi
-				current = MathF.Vec3Lerp(current, thin, 0.05f);
-				PS.ResizeBoxCollider(this.ID, current);
+				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
+				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, defaultXform);
-				NeedResize = false;
-				Debug.Log("Resize");
 			}
-			else if (NeedResize)
+			else
 			{
 				//for fat boi
-				current = MathF.Vec3Lerp(current, fat, 0.05f);
-				PS.ResizeBoxCollider(this.ID, current);
+				currentHeight = MathF.Lerp(currentHeight, superHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, superRadius, lerpSpeed);
+				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
-				NeedResize = false;
-				Debug.Log("Resize");
 			}
 			#endregion
 
