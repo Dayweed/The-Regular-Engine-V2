@@ -91,7 +91,7 @@ namespace TRE
             //RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<Collider>().enabled = false;         // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<RotateObj>().enabled = false;        // THIS CANT BE DONE YET!
-            SetActive(false);                                                   //this.transform.GetChild(1).gameObject.SetActive(false);
+            //SetActive(false);                                                   //this.transform.GetChild(1).gameObject.SetActive(false);
         }
 
         public void TurnOnVisuals()
