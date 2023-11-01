@@ -163,28 +163,12 @@ namespace TRE
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
 
-		void SetVolume(Entity& go, const float volume);
-		void SetPitch(Entity& go, const float pitch);
-		void SetPause(Entity& go, const bool pause);
-		void SetLoop(Entity& go, const bool loop);
 		void SetFileName(Entity& go, const std::string filename);
 		void SetChannelGroup(Entity& go,  const std::string channel);
-		void SetPriority(Entity& go, const int priority);
-		void SetMute(Entity& go, const bool mute);
-		void SetPlay(Entity& go, const bool play);
-		void SetSpatialize(Entity& go, const bool spatialize);
 		void SetListenerPosition(Entity& go);
 		void SetSourcePosition(Entity& go);
 		void SetSourceRadius(Entity& go, const float min, const float max);
 		
-		float GetVolume(Entity& go) const;
-		float GetPitch(Entity& go) const;
-		bool GetPause(Entity& go) const;
-		bool GetLoop(Entity& go) const;
-		int GetPriority(Entity& go) const;
-		bool GetMute(Entity& go) const;
-		bool GetPlay(Entity& go) const;
-		bool GetSpatialize(Entity& go) const;
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;
 		const std::pair<float, float> GetSourceRadius(Entity& go) const;

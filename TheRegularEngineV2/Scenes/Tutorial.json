@@ -217,14 +217,14 @@
       {
          "m_FileName": "Holie Molie_Tutorial_Latin Salsa_250bpm_LOOP.wav",
          "m_Loop": true,
-         "m_MaxDistance": 300.0,
+         "m_MaxDistance": 50.0,
          "m_MinDistance": 1.0,
          "m_Mute": false,
          "m_Pause": false,
          "m_Pitch": 1.0,
          "m_Play": false,
          "m_PlayOnStart": false,
-         "m_Priority": 0,
+         "m_Priority": 1,
          "m_Spatialize": false,
          "m_Volume": 1.0,
          "m_goPosition": [

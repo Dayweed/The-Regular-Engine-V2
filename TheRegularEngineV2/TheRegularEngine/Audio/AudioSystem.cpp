@@ -292,30 +292,6 @@ namespace TRE
 		//soundToRemove.insert({ go, audio.m_Sound });
 	}
 
-	void AudioSystem::SetVolume(Entity& go, const float volume)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Volume = volume;
-	}
-
-	void AudioSystem::SetPitch(Entity& go, const float pitch)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Pitch = pitch;
-	}
-
-	void AudioSystem::SetPause(Entity& go, const bool pause)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Pause = pause;
-	}
-
-	void AudioSystem::SetLoop(Entity& go, const bool loop)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Loop = loop;
-	}
-
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
@@ -334,33 +310,6 @@ namespace TRE
 			audio.m_ChannelGroup = m_SFXChannelGroup;
 		}
 		
-	}
-
-	void AudioSystem::SetPriority(Entity& go, const int priority)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Priority = priority;
-	}
-
-	void AudioSystem::SetMute(Entity& go, const bool mute)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Mute = mute;
-	}
-
-	void AudioSystem::SetPlay(Entity& go, const bool play)
-	{
-		Audio& audio = go.get()->GetComponent<Audio>();
-		audio.m_Play = play;
-		/*(void)go;
-		(void)play;*/
-	}
-
-	void AudioSystem::SetSpatialize(Entity& go,const bool spatialize)
-	{
-		Audio& audiosource = go.get()->GetComponent<Audio>();
-		
-		audiosource.m_Spatialize = spatialize;
 	}
 
 	void AudioSystem::SetListenerPosition(Entity& go)
@@ -397,26 +346,6 @@ namespace TRE
 		audiosource.m_MaxDistance = max;
 	}
 
-	float AudioSystem::GetVolume(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Volume;
-	}
-
-	float AudioSystem::GetPitch(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Pause;
-	}
-
-	bool AudioSystem::GetPause(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Pause;
-	}
-
-	bool AudioSystem::GetLoop(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Loop;
-	}
-
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
 	{
 		return go.get()->GetComponent<Audio>().m_ChannelGroup;
@@ -431,27 +360,6 @@ namespace TRE
 				audio.m_audioFiles.push_back(filename);
 				return audio.m_FileName = filename;
 		}
-	}
-
-	int AudioSystem::GetPriority(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Priority;
-	}
-
-	bool AudioSystem::GetMute(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Mute;
-	}
-
-	bool AudioSystem::GetPlay(Entity& go) const
-	{
-		(void)go;
-		return true; // go.get()->GetComponent<Audio>().m_Play;
-	}
-
-	bool AudioSystem::GetSpatialize(Entity& go) const
-	{
-		return go.get()->GetComponent<Audio>().m_Spatialize;
 	}
 
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
