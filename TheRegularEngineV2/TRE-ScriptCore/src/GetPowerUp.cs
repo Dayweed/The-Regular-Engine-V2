@@ -15,7 +15,9 @@ namespace TRE
         public string mole1tag = "Red";
         public string mole2tag = "Player";
 
+        public bool drop;
         private bool collected;
+        private int collectedIndex;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
@@ -30,6 +32,7 @@ namespace TRE
 
         public void OnCreate()
         {
+            drop = false;
             collected = false;
         }
 
@@ -72,6 +75,7 @@ namespace TRE
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
                 Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+                collectedIndex = playerPowerUpManager.powerUps.Count;
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
                 SetToPlayer();
@@ -146,7 +150,7 @@ namespace TRE
             if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
             Vector3 newPos = playerObj.transform.Position;
-            newPos.y += playerObj.transform.Scale.y * 5;// * playerPowerUpManager.powerUps.Count;
+            newPos.y += playerObj.transform.Scale.y * 5 * (collectedIndex + 1);
             GetComponent<Transform>().Position = newPos;
             //transform.Position = newPos;
 
