@@ -178,15 +178,15 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<PrefabSystem>()->IsValidPrefabResource(entityID);
 	}
 
-	static CSEntityID BindCreatePrefabEntity(CSEntityID prefabID, glm::vec3 newPos, glm::vec3 newRot)
+	static CSEntityID BindCreatePrefabEntity(CSEntityID prefabID/*, glm::vec3 newPos, glm::vec3 newRot*/)
 	{
 		std::string prefabGUID{ EntityID_CSToEngine(prefabID) };
 		Entity prefabInstance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID) };
 
-		Transform& transform = prefabInstance->GetComponent<Transform>();
+		/*Transform& transform = prefabInstance->GetComponent<Transform>();
 		transform.m_Position = newPos;
 		transform.m_Rotation = newRot;
-		transform.m_IsDirty = true;
+		transform.m_IsDirty = true;*/
 
 		return EntityID_EngineToCS(prefabInstance->GetGUID());
 	}

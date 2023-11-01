@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "16015804216437605482",
+         "m_GUID": "12814471206294069586",
          "m_Name": "FallingHat",
          "m_Tag": ""
       }
@@ -58,7 +58,7 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       }
    ],
