@@ -42,7 +42,7 @@ namespace TRE
 			m_Root.push_back(m_Current);
 		}
 
-		std::filesystem::path path{ m_FileName };
+		const std::filesystem::path path{ m_FileName };
 		std::filesystem::create_directories(path.parent_path());
 		std::ofstream file(path);
 		file << m_Root.dump(3);
@@ -702,9 +702,9 @@ namespace TRE
 				{
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
-					List.push_back(property::entry { PropertyName, Data });
+					List.emplace_back(PropertyName, Data);
 				});
-			instPropTable.push_back({ instInspectableComp[i].first, List });
+			instPropTable.emplace_back(instInspectableComp[i].first, List);
 		}
 
 		// Remove all components in one entity
@@ -975,9 +975,9 @@ namespace TRE
 				{
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
-					List.push_back(property::entry { PropertyName, Data });
+					List.emplace_back(PropertyName, Data);
 				});
-			instPropTable.push_back({ instInspectableComp[i].first, List });
+			instPropTable.emplace_back(instInspectableComp[i].first, List);
 		}
 
 		// Copy tempPrefab Stuff
@@ -991,9 +991,9 @@ namespace TRE
 				{
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
-					List.push_back(property::entry { PropertyName, Data });
+					List.emplace_back(PropertyName, Data);
 				});
-			prefPropTable.push_back({ prefInspectableComp[i].first, List });
+			prefPropTable.emplace_back(prefInspectableComp[i].first, List);
 		}
 
 		// Add components marked as to be added into instance

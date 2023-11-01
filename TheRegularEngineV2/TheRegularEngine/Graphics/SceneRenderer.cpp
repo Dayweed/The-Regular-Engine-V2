@@ -37,7 +37,7 @@ namespace TRE
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
 		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
-		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
+		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 
 		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 		//m_L2W = glm::identity<glm::mat4>();
@@ -553,8 +553,12 @@ namespace TRE
 			6, 7, 3  // Triangle 12 (top face)
 		};
 
-		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(vertices[0]));
-		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
+		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()),
+			UINT32_T_CAST(vertices.size() * sizeof(vertices[0])));
+
+		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(indices.size() * sizeof(uint32_t)),
+			UINT32_T_CAST(indices.size()));
 
 		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
 		m_SkyboxMaterial->Invalidate();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TRE
 {
 
-    using EntityID = System.UInt64;
+    // using EntityID = System.UInt64;
 
     public abstract class Component
     {
