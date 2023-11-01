@@ -82,16 +82,16 @@ namespace TRE
 
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			s_FinalRenderData->VertexBuffer = CreateVertexBuffer(data);
+			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>((void*)data.data(), sizeof(QuadVertex) * data.size());
 			std::vector<int> indices = { 0,1,2,2,3,0 };
-			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
+			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
 			s_FinalRenderData->RenderPass = SwapChain->GetRenderPass();
 
 			PipelineConfigurations PipelineConfig;
 			PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(4);
 			PipelineConfig.Primitive = PrimitiveType::Triangles;
 			PipelineConfig.VertexStride = PipelineConfig.Shader->GetVertexStrides();
-			s_FinalRenderData->Pipeline = std::make_unique<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
+			s_FinalRenderData->Pipeline = std::make_shared<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
 			s_FinalRenderData->Material = std::make_unique<Material>(PipelineConfig.Shader);
 			s_FinalRenderData->Material->Invalidate();
 		}
@@ -138,11 +138,9 @@ namespace TRE
 		scissor.offset.y = 0;
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		s_FinalRenderData->ImageInfo = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo();
-		
-		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipeline());
+		Renderer::BindPipeline(m_CommandBuffer, s_FinalRenderData->Pipeline);
 
-		s_FinalRenderData->Material->UpdateCompsitePass(s_FinalRenderData->ImageInfo);
+		s_FinalRenderData->Material->UpdateCompsitePass(Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo());
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(),
 			0, 1, &s_FinalRenderData->Material->GetDescriptor(swapChain->GetCurrentBufferIndex()), 0, NULL);
 
@@ -187,5 +185,13 @@ namespace TRE
 		{
 			Engine::GetInstance().GetEditorSceneRenderer()->EndFrame(true);
 		}
+	}
+
+	void Renderer::BindPipeline(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<Pipeline>& Pipeline, bool IsCompute)
+	{
+		if (!IsCompute)
+			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline->GetPipeline());
+		else
+			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, Pipeline->GetPipeline());
 	}
 }

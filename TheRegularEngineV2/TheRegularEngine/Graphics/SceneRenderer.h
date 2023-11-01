@@ -71,23 +71,21 @@ namespace TRE
 			void LoadCubeMap();
 
 		public:
-			std::vector<std::unique_ptr<Image2D>>& GetColorImages();
+			std::vector<std::shared_ptr<Image2D>> GetColorImages();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
 			std::shared_ptr<Device> m_Device;
 			std::shared_ptr<CommandBuffer> m_CommandBuffer;
 
-			std::unique_ptr<Pipeline> m_Pipeline;
-			std::unique_ptr<Pipeline> m_SkyboxPipeline;
+			std::vector<VkFramebuffer> m_FrameBuffer;
 			std::shared_ptr<RenderPass> m_RenderPass;
-
+			std::shared_ptr<Pipeline> m_Pipeline;
+			
 			std::shared_ptr<DescriptorPool> m_DescriptorPool;
 
-			std::vector<std::unique_ptr<Image2D>> m_ColorImages;
+			std::vector<std::shared_ptr<Image2D>> m_ColorImages;
 			std::vector<std::unique_ptr<Image2D>> m_DepthImages;
-
-			std::vector<VkFramebuffer> m_FrameBuffer;
 
 			std::shared_ptr<UniformBuffer> m_UBOBuffer;
 
@@ -102,6 +100,7 @@ namespace TRE
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
+			std::shared_ptr<Pipeline> m_SkyboxPipeline;
 			std::shared_ptr<VulkanTexture> m_SkyboxTexture;
 			std::unique_ptr<Material> m_SkyboxMaterial;
 			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;
