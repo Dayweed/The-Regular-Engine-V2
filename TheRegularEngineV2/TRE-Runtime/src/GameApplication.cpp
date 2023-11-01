@@ -22,6 +22,7 @@ namespace TRE
 		Info.WindowConfigurations.FullScreen = false;
 		Info.EnableEditor = false;
 		Info.MaximizeWindow = true;
+		Info.EnableGame = true;
 		return new RuntimeApplication(Info);
 	}
 }

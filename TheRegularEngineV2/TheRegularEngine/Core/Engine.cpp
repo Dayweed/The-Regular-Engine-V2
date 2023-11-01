@@ -33,8 +33,8 @@ namespace TRE
 {
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().NewScene();
-		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
+		//SceneManager::Instance().NewScene();
+		SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	void DemoScene()
@@ -356,7 +356,7 @@ namespace TRE
 		RegisterECS();
 		Shader::SetupShaders();
 
-		//DemoDeserialize();
+
 		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
@@ -381,7 +381,13 @@ namespace TRE
 		ScriptEngine::Init();
 		ScriptEngine::InitScriptingMain();
 
-		SceneManager::Instance().NewScene();
+		if (m_EngineInfo.EnableGame)
+		{
+			DemoDeserialize();
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+		}
+		else
+			SceneManager::Instance().NewScene();
 	}
 
 	Engine::~Engine()
