@@ -82,9 +82,14 @@ namespace TRE
 
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>((void*)data.data(), sizeof(QuadVertex) * data.size());
+			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(data.data()),
+				UINT32_T_CAST(sizeof(QuadVertex) * data.size()));
+
 			std::vector<int> indices = { 0,1,2,2,3,0 };
-			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
+			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+				UINT32_T_CAST(sizeof(int) * indices.size()),
+				UINT32_T_CAST(indices.size()));
+
 			s_FinalRenderData->RenderPass = SwapChain->GetRenderPass();
 
 			PipelineConfigurations PipelineConfig;

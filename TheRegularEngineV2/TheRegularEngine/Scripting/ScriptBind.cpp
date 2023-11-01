@@ -1161,6 +1161,7 @@ namespace TRE
 
 	static void BindTogglePauseSound(MonoString* id, bool paused)
 	{
+		(void)paused;
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
 	}
