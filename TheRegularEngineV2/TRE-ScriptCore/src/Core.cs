@@ -146,6 +146,14 @@ namespace TRE
 			return GetCoreComponent<T>();
 		}
 
+		public void RemoveComponent<T>() where T : Component, new()
+        {
+            if (HasComponent<T>())
+            {
+                ECSManager.RemoveComponent(ID, typeof(T));
+            }
+		}
+
 
 		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
@@ -749,8 +757,14 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetKinematic(EntityID entityid, bool enable);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool GetKinematic(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetGravity(EntityID entityid, bool enable);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetGravity(EntityID entityid);
 	}
 
 	public class InputSystem

@@ -336,6 +336,7 @@ namespace TRE
 					}
 #pragma endregion
 
+#if true
 #pragma region Script Component
 					if (List.first == ComponentManager::Instance().GetComponentName<ScriptComponent>())
 					{
@@ -461,6 +462,7 @@ namespace TRE
 						}
 					}
 #pragma endregion
+#endif
 
 					// Do additional stuff if values are change for certain components
 					if (UpdatedData)

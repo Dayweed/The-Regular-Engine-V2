@@ -101,7 +101,32 @@ namespace TRE
 
     public class Rigidbody : Component
     {
-
+        public Rigidbody()
+        {
+            // LEAVE AS BLANK!
+        }
+        public bool useGravity
+        {
+            get
+            {                
+                return RigidBodySystem.GetGravity(entity.ID);
+            }
+            set
+            {
+                RigidBodySystem.SetGravity(entity.ID, value);
+            }
+        }
+        public bool isKinematic
+        {
+            get
+            {                
+                return RigidBodySystem.GetKinematic(entity.ID);
+            }
+            set
+            {
+                RigidBodySystem.SetKinematic(entity.ID, value);
+            }
+        }
     }
 
     public class BoxCollider : Component
