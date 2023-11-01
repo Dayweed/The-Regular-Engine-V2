@@ -10,8 +10,10 @@ namespace TRE
 
 	public class MoleController : Entity
 	{
-		//check if player is on the ground (for now , just a plane)
-		private bool isGrounded = true;
+		public PowerUpManager MyPowerManager;
+
+        //check if player is on the ground (for now , just a plane)
+        private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max Velocity vector
@@ -22,9 +24,8 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 
 		//check if player used super power
-		public List<Entity> pickedPowerUps; // For dropping
-		public bool haveBlueberry = false;  // Scaling
-		public bool haveStrawberry = false; // Shape
+		public bool mainBlueberry = false;  // Scaling
+		public bool mainStrawberry = false; // Shape
 		private bool isScaled = false;
 		//Box Collider
 		private float defaultRadius = 2f;
@@ -66,7 +67,9 @@ namespace TRE
 
 		public void Start()
 		{
-			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
+            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+
+            Trigger_A = ECSManager.FindEntityByName("Trigger_A");
 			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
 
 			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
@@ -171,16 +174,17 @@ namespace TRE
 			#endregion
 
 			#region Ability
-			// Check if can trigger ability
-			if (InputSystem.GetKeyTrigger(InputKeys.E))
+			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+            // Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
-				if (haveBlueberry)
+				if (mainBlueberry)
 				{
 					isScaled = !isScaled;
 				}
 			}
 
-			if ((isScaled == false || !haveBlueberry))
+			if ((isScaled == false || !mainBlueberry))
 			{
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
@@ -195,9 +199,17 @@ namespace TRE
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
-			#endregion
+            #endregion
 
-			dirVec.Normalize();
+            #region Drop
+            // Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.Q))
+            {
+				MyPowerManager.DropMain();
+            }
+            #endregion
+
+            dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{

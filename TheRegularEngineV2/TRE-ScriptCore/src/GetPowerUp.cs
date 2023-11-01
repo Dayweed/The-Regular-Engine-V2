@@ -92,54 +92,7 @@ namespace TRE
 
                 SetToPlayer();
 
-                // Is Mole 1
-                if (playerObj.CompareTag(mole1tag))
-                {
-                    MoleController controller = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-
-                    if (controller == null)
-                    {
-                        Debug.LogError("Could not find playerControl");
-                        return;
-                    }
-
-                    // Check what type of powerup it is (Default Blueberry for now)
-                    if (CompareTag("Strawberry"))
-                    {
-                        controller.haveStrawberry = true;
-                    }
-                    else if (CompareTag("Blueberry"))
-                    {
-                        controller.haveBlueberry = true;
-                    }
-
-                    collected = true;
-                }
-                // Is Mole 2
-                else if (playerObj.CompareTag(mole2tag))
-                {
-                    MoleController2 controller = playerObj.GetComponent<MoleController2>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-
-                    if (controller == null)
-                    {
-                        Debug.LogError("Could not find playerControl");
-                        return;
-                    }
-
-                    // Check what type of powerup it is (Default Blueberry for now)
-                    if (CompareTag("Strawberry"))
-                    {
-                        controller.haveStrawberry = true;
-                    }
-                    else if (CompareTag("Blueberry"))
-                    {
-                        controller.haveBlueberry = true;
-                    }
-
-                    collected = true;
-                }
-
-                ReleasePowerUp();
+                collected = true;
             }
         }
 
