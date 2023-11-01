@@ -45,6 +45,7 @@ namespace TRE
 	public:
 		const VkDescriptorSet& GetDescriptor(uint32_t index);
 		VkPipelineLayout GetPipelineLayout();
+		const std::shared_ptr<Pipeline>& GetPipeline() const;
 
 	private:
 		struct DebugType
@@ -54,7 +55,7 @@ namespace TRE
 		};
 	private:
 		std::shared_ptr<Material> m_DebugMaterialInstance;
-		std::unique_ptr<Pipeline> m_DebugDrawPipeline;
+		std::shared_ptr<Pipeline> m_DebugDrawPipeline;
 
 		std::unique_ptr<DebugType> m_DebugSphere;
 		std::unique_ptr<DebugType> m_DebugAABB;

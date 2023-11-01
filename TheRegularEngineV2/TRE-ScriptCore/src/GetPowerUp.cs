@@ -16,7 +16,6 @@ namespace TRE
         public string mole2tag = "Blue";
 
         private bool collected;
-        private int collectedIndex;
 
         private float cooldownDuration;
         private float cooldownCurrent;
@@ -49,7 +48,7 @@ namespace TRE
                 //Debug.Log("LAND BRO");
                 //RemoveComponent<Rigidbody>();
                 GetComponent<Rigidbody>().useGravity = false;
-                PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
+                //PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
                 cooldownCurrent = 0;
                 return;
             }
@@ -87,59 +86,11 @@ namespace TRE
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
                 //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
-                collectedIndex = playerPowerUpManager.powerUps.Count;
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
                 SetToPlayer();
 
-                // Is Mole 1
-                if (playerObj.CompareTag(mole1tag))
-                {
-                    MoleController controller = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-
-                    if (controller == null)
-                    {
-                        Debug.LogError("Could not find playerControl");
-                        return;
-                    }
-
-                    // Check what type of powerup it is (Default Blueberry for now)
-                    if (CompareTag("Strawberry"))
-                    {
-                        controller.haveStrawberry = true;
-                    }
-                    else if (CompareTag("Blueberry"))
-                    {
-                        controller.haveBlueberry = true;
-                    }
-
-                    collected = true;
-                }
-                // Is Mole 2
-                else if (playerObj.CompareTag(mole2tag))
-                {
-                    MoleController2 controller = playerObj.GetComponent<MoleController2>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-
-                    if (controller == null)
-                    {
-                        Debug.LogError("Could not find playerControl");
-                        return;
-                    }
-
-                    // Check what type of powerup it is (Default Blueberry for now)
-                    if (CompareTag("Strawberry"))
-                    {
-                        controller.haveStrawberry = true;
-                    }
-                    else if (CompareTag("Blueberry"))
-                    {
-                        controller.haveBlueberry = true;
-                    }
-
-                    collected = true;
-                }
-
-                ReleasePowerUp();
+                collected = true;
             }
         }
 
@@ -165,7 +116,8 @@ namespace TRE
             if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
             Vector3 newPos = playerObj.transform.Position;
-            newPos.y += playerObj.transform.Scale.y * 5 * (collectedIndex + 1);
+            int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
+            newPos.y += playerObj.transform.Scale.y * 4 * collectedIndex;
             transform.Position = newPos;
             //transform.Position = newPos;
 

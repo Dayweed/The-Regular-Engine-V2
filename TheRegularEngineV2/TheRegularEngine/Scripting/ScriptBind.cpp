@@ -1101,6 +1101,7 @@ namespace TRE
 		if (!Temp) return;
 
 		Temp->GetComponent<Rigidbody>().m_UseGravity = enable;
+		if (!enable) BindSetLinearVelocity(ID, {});
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
 	}
 
