@@ -424,7 +424,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
 
 		// Allocate Default Size for Memory Manager
-		MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
+		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
 	}
 
 	void Engine::Update()
