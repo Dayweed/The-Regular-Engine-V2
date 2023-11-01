@@ -385,7 +385,7 @@ namespace TRE
 		public static float Distance(Vector3 vec1, Vector3 vec2)
 		{
 			// TO DO CALCULATE VECTOR DISTANCE :p
-			return vec1.Magnitude() - vec2.Magnitude();
+			return Math.Abs(vec1.Magnitude() - vec2.Magnitude());
 		}
 	}
 
