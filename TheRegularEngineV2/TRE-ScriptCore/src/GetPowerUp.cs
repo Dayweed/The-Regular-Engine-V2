@@ -34,7 +34,7 @@ namespace TRE
         public void OnCreate()
         {
             collected = false;
-            cooldownDuration = 5f;
+            cooldownDuration = 0.5f;
             cooldownCurrent = 0f;
         }
 
@@ -91,6 +91,8 @@ namespace TRE
                 SetToPlayer();
 
                 collected = true;
+
+                GetComponent<Rigidbody>().useGravity = false;
             }
         }
 
