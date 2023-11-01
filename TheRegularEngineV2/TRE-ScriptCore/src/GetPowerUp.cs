@@ -11,12 +11,16 @@ namespace TRE
     {
         public PowerUpsType powerUpType;
         public Entity PowerUpManagerObj;
-        bool collected;
+
+        public string mole1tag = "Red";
+        public string mole2tag = "Player";
+
+        private bool collected;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
         private Entity playerModel;                     // private Transform playerModel;
-        private MoleController playerControl;
+
         private PowerUpManager playerPowerUpManager;
 
         public GetPowerUp()
@@ -26,7 +30,6 @@ namespace TRE
 
         public void OnCreate()
         {
-            PowerUpManagerObj = ECSManager.FindEntityByName("Power Manager");
             collected = false;
         }
 
@@ -37,13 +40,15 @@ namespace TRE
 
             if (collected) return;
 
-            if (other.CompareTag("Red") || other.CompareTag("Blue"))
+            if (other.CompareTag(mole1tag) || other.CompareTag(mole2tag))
             {
-                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+                //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
                 //playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
                 //playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
+                
                 playerObj = other;
+                PowerUpManagerObj = playerObj.parenting.GetChildFromName("Power Manager");
 
                 if (!ECSManager.IsValidEntity(PowerUpManagerObj.ID))
                 {
@@ -66,30 +71,57 @@ namespace TRE
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
+                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
                 SetToPlayer();
 
                 // Is Mole 1
-                playerControl = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-
-                if (playerControl == null)
+                if (playerObj.CompareTag(mole1tag))
                 {
-                    Debug.LogError("Could not find playerControl");
-                    return;
-                }
+                    MoleController controller = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
 
-                // Check what type of powerup it is (Default Blueberry for now)
-                if (CompareTag("Strawberry"))
-                {
-                    playerControl.haveStrawberry = true;
-                }
-                else
-                {
-                    playerControl.haveBlueberry = true;
-                }
+                    if (controller == null)
+                    {
+                        Debug.LogError("Could not find playerControl");
+                        return;
+                    }
 
-                collected = true;
+                    // Check what type of powerup it is (Default Blueberry for now)
+                    if (CompareTag("Strawberry"))
+                    {
+                        controller.haveStrawberry = true;
+                    }
+                    else if (CompareTag("Blueberry"))
+                    {
+                        controller.haveBlueberry = true;
+                    }
+
+                    collected = true;
+                }
+                // Is Mole 2
+                else if (playerObj.CompareTag(mole2tag))
+                {
+                    MoleController2 controller = playerObj.GetComponent<MoleController2>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
+
+                    if (controller == null)
+                    {
+                        Debug.LogError("Could not find playerControl");
+                        return;
+                    }
+
+                    // Check what type of powerup it is (Default Blueberry for now)
+                    if (CompareTag("Strawberry"))
+                    {
+                        controller.haveStrawberry = true;
+                    }
+                    else if (CompareTag("Blueberry"))
+                    {
+                        controller.haveBlueberry = true;
+                    }
+
+                    collected = true;
+                }
             }
         }
 

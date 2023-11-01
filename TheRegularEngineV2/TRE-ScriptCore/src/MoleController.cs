@@ -20,6 +20,7 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 
 		//check if player used super power
+		public List<Entity> pickedPowerUps;	// For dropping
 		public bool haveBlueberry = false;	// Scaling
 		public bool haveStrawberry = false;	// Shape
 		private bool isScaled = false;
@@ -164,9 +165,12 @@ namespace TRE
 
             #region Ability
 			// Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.E) && (haveBlueberry || haveStrawberry))
+            if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
-				isScaled = !isScaled;
+				if (haveBlueberry)
+				{
+					isScaled = !isScaled;
+				}
 			}
 
 			if (isScaled == false || !haveBlueberry)
