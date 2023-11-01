@@ -146,7 +146,7 @@ namespace TRE
             if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
             Vector3 newPos = playerObj.transform.Position;
-            newPos.y += playerObj.transform.Scale.y * 5;
+            newPos.y += playerObj.transform.Scale.y * 5;// * playerPowerUpManager.powerUps.Count;
             GetComponent<Transform>().Position = newPos;
             //transform.Position = newPos;
 
