@@ -16,7 +16,7 @@ namespace TRE
 
         public void Start()
         {
-            Duration = 7.0f;
+            Duration = 5.0f;
             CurrentTime = Duration;
             currentPos = transform.Position;
         }
