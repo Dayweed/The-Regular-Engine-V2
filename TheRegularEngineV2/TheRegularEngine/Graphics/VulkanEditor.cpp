@@ -89,7 +89,7 @@ namespace TRE
 		ImguiVulkanInitInfo.ImageCount = ImageCount;
 		ImguiVulkanInitInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
-		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain()->GetRenderPass());
+		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain()->GetRenderPass()->GetHandle());
 
 		auto cmdbuffer = LogicalDevice->AllocateCommandBuffer(true);
 		ImGui_ImplVulkan_CreateFontsTexture(cmdbuffer);
@@ -158,7 +158,7 @@ namespace TRE
 		VkRenderPassBeginInfo renderPassBeginInfo = {};
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassBeginInfo.pNext = nullptr;
-		renderPassBeginInfo.renderPass = swapChain->GetRenderPass();
+		renderPassBeginInfo.renderPass = swapChain->GetRenderPass()->GetHandle();
 		renderPassBeginInfo.renderArea.offset.x = 0;
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = width;
@@ -171,7 +171,7 @@ namespace TRE
 
 		VkCommandBufferInheritanceInfo inheritanceInfo = {};
 		inheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-		inheritanceInfo.renderPass = swapChain->GetRenderPass();
+		inheritanceInfo.renderPass = swapChain->GetRenderPass()->GetHandle();
 		inheritanceInfo.framebuffer = swapChain->GetCurrentFrameBuffer();
 
 		VkCommandBufferBeginInfo cmdBufInfo = {};

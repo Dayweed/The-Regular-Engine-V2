@@ -47,9 +47,11 @@ namespace TRE
 
 	void ToolBarPanel::Update()
 	{
-		ImGui::Begin("Tool Bar");
+		ImGui::Begin("Tool Bar", 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x/2 - 25);
 		
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F5))
 		{
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
@@ -69,6 +71,8 @@ namespace TRE
 			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
 			EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 		}
+
+		ImGui::PopStyleColor(2);
 
 		ImGui::End();
 	}
