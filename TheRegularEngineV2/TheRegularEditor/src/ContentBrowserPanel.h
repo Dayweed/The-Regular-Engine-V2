@@ -45,9 +45,11 @@ namespace TRE
 
 			//Texture for icons
 			ImTextureID m_TmpTexturesID{};
+			ImTextureID m_ImageIconID{};
 
 			//Shared pointer for icons
 			std::shared_ptr<VulkanTexture> m_TmpTextures;
+			std::shared_ptr<VulkanTexture> m_ImageIcon;
 
 			//Variables for formatting
 			const float m_Padding = 20.f;
