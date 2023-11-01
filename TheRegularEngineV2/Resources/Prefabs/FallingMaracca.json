@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "3982867649016985586",
+         "m_GUID": "16127539437416611749",
          "m_Name": "FallingMaracca",
          "m_Tag": ""
       }
@@ -42,9 +42,9 @@
             20.0
          ],
          "m_Rotation": [
-            -179.99998474121094,
-            -5.008956577512436e-06,
-            -179.99998474121094
+            0.0,
+            0.0,
+            180.0
          ],
          "m_Scale": [
             2.0,
@@ -58,7 +58,7 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "cb47d70f41fd3257",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       }
    ],

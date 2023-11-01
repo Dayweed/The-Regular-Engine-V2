@@ -137,9 +137,10 @@ namespace TRE
 		void UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});	// Similar to SaveEntityInRegistry but for m_TempPrefabs
 
 		// Deserializing list in prefabs directory into m_ExistingPrefabs
-		void DeserializePrefabDirectory();														// If a prefabFilePath no longer exist while checking:
+		bool DeserializePrefabDirectory();														// If a prefabFilePath no longer exist while checking:
 																								// - All instances with Prefabing::m_Base == Prefabing::m_PrefabGUID will have their Prefabing Component removed
 																								// - Remove Prefabing::m_PrefabGUID and prefabFilePath from the directory and reserialize immediately
+																								// Returns true if it needs to serialize again
 
 		void SerializePrefabDirectory();														// Auto serialize m_ExistingPrefabs into PrefabDirectory
 

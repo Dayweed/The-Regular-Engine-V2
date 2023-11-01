@@ -131,7 +131,7 @@ void main()
 	//Diffuse color
 	vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord);
 
-	outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a * diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb;
+	outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a * diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
 
 	vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
 

@@ -19,7 +19,7 @@ namespace TRE
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
 	FinalRenderData* Renderer::s_FinalRenderData = nullptr;
 
-	static std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
+	std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
 		uint32_t m_VertexCount = static_cast<std::uint32_t>(vertices.size());
 		assert(m_VertexCount >= 3 && "Vertex count must be at least 3");
@@ -40,7 +40,7 @@ namespace TRE
 		return Vbuffer;
 	}
 
-	static std::unique_ptr<Buffer> CreateIndexBuffer(const std::vector<int>& indices)
+	std::unique_ptr<Buffer> CreateIndexBuffer(const std::vector<int>& indices)
 	{
 		uint32_t m_IndexCount = static_cast<std::uint32_t>(indices.size());
 
@@ -82,9 +82,14 @@ namespace TRE
 
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>((void*)data.data(), sizeof(QuadVertex) * data.size());
+			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(data.data()),
+				UINT32_T_CAST(sizeof(QuadVertex) * data.size()));
+
 			std::vector<int> indices = { 0,1,2,2,3,0 };
-			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
+			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+				UINT32_T_CAST(sizeof(int) * indices.size()),
+				UINT32_T_CAST(indices.size()));
+
 			s_FinalRenderData->RenderPass = SwapChain->GetRenderPass();
 
 			PipelineConfigurations PipelineConfig;
@@ -159,7 +164,8 @@ namespace TRE
 	//To be implemented after framebuffer/renderpass abstraction
 	void Renderer::BeginRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<RenderPass>& Renderpass)
 	{
-		
+		(void)CommandBuffer;
+		(void)Renderpass;
 	}
 
 	void Renderer::EndRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer)

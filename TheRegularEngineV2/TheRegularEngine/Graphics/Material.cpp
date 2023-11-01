@@ -201,7 +201,7 @@ namespace TRE
 		std::string line;
 		std::string ShaderGUID;
 		std::unordered_map<std::string, std::string> textureGUIDs;
-		glm::vec4 Color;
+		glm::vec4 Color{};
 		bool HasColor = false;
 
 		while (std::getline(file, line))

@@ -47,7 +47,6 @@ namespace TRE
 			if (std::shared_ptr<Material> material = entity->GetComponent<MeshRenderer>().m_MaterialInstance; material)
 			{
 				InternalContent(material);
-				material->SetMaterialUBO();
 			}
 
 			ImGui::End();
@@ -148,5 +147,9 @@ namespace TRE
 		{
 			ResourceManager::Instance().SerializeResource<Material>(material->GetHandle());
 		}
+
+		if (material->IsValid() == false)
+			material->Invalidate();
+		material->SetMaterialUBO();
 	}
 }

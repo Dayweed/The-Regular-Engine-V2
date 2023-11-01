@@ -52,6 +52,8 @@ namespace TRE
 
 			void Serialize() override;
 			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);
+
+			bool IsValid() { return m_IsValid; }
 		private:
 			void AllocateTextures();
 		private:

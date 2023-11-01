@@ -202,7 +202,7 @@ namespace TRE
 		internal extern static bool EngineIsPrefabResource(EntityID id);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static EntityID CreatePrefabEntity(EntityID prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+		internal extern static EntityID CreatePrefabEntity(EntityID prefabid/*, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3()*/);
 	}
 
 	public struct Parenting
@@ -392,6 +392,25 @@ namespace TRE
 			// TO DO CALCULATE VECTOR DISTANCE :p
 			return Math.Abs(vec1.Magnitude() - vec2.Magnitude());
 		}
+
+		// uhhhhhhhhh, trust?
+		public override bool Equals(object obj)
+		{
+			return obj is Vector3 vector &&
+				   x == vector.x &&
+				   y == vector.y &&
+				   z == vector.z;
+		}
+
+		// uhhhhhhhhh, trust?
+		public override int GetHashCode()
+		{
+			int hashCode = 373119288;
+			hashCode = hashCode * -1521134295 + x.GetHashCode();
+			hashCode = hashCode * -1521134295 + y.GetHashCode();
+			hashCode = hashCode * -1521134295 + z.GetHashCode();
+			return hashCode;
+		}
 	}
 
 	public struct Vector2
@@ -500,24 +519,24 @@ namespace TRE
 			Entity ent = new Entity(FindIDFromName(name));
 			return ent;
 		}
-		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())
+		public static Entity Instantiate(Entity entity/*, Vector3 postion = new Vector3(), Vector3 scaling = new Vector3(), Vector3 rotation = new Vector3()*/)
 		{
 			// Ensure scaling is not zero, since Vector3 does not allow const version currently and must compile-time const
-			if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
-			{
-				Debug.LogWarning("Scaling is zero, setting the values to 1...");
-				scaling = new Vector3(1, 1, 1);
-			}
+			//if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
+			//{
+			//	Debug.LogWarning("Scaling is zero, setting the values to 1...");
+			//	scaling = new Vector3(1, 1, 1);
+			//}
 
 			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
 			if (isPrefab)
 			{
-				EntityID id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
+				EntityID id = Prefab.CreatePrefabEntity(entity.ID/*, postion, rotation, scaling*/);
 				return new Entity(id, FindNameFromID(id));
 			}
 			else if (IsValidEntity(entity.ID))
 			{
-				EntityID id = CloneEntity(entity.ID, postion, rotation, scaling);
+				EntityID id = CloneEntity(entity.ID/*, postion, rotation, scaling*/);
 				return new Entity(id, FindNameFromID(id));
 			}
 			else
@@ -531,7 +550,7 @@ namespace TRE
 		internal extern static EntityID CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static EntityID CloneEntity(EntityID id, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+		internal extern static EntityID CloneEntity(EntityID id/*, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3()*/);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool IsValidEntity(EntityID prefabid);
