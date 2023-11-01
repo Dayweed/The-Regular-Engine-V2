@@ -924,6 +924,20 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCapsuleCollider(entity, radius, halfHeight);
 	}
 
+	static void BindOffsetCollider(CSEntityID ID, Vector3 offset)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CapsuleCollider>() && !entity->HasComponent<SphereCollider>() && !entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no Collider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->UpdateColliderData(entity, offset);
+	}
+
 	static void BindAddForce(CSEntityID ID, glm::vec3 force, ForceMode::Enum mode)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -1286,6 +1300,7 @@ namespace TRE
 			mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::ResizeCapsuleCollider", BindResizeCapsuleCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::UpdateColliderOffset", BindOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
 			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationX", BindConstrainRotationX);
 			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationY", BindConstrainRotationY);
