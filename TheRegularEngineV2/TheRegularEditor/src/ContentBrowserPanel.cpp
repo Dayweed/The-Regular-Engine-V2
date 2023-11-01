@@ -189,6 +189,7 @@ namespace TRE
 						
 						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetShaderHandle());
 						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
+						newMaterial->Invalidate();
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
 					}
@@ -300,13 +301,7 @@ namespace TRE
 
 	void ContentBrowserPanel::Init()
 	{
-		//Load the textures for the icons
-		const auto tmpGUID = AssetManager::Instance().GetAssetHandle("icon-file.png");
-		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
-		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");
-		tmpButton->SetHandle(tmpGUID);
-		AssetManager::Instance().AddAsset("icon-file.png", std::move(tmpButton));
-		m_TmpTextures = ResourceManager::Instance().GetResource<VulkanTexture>(tmpGUID);
+		m_TmpTextures = Util::CreateIcon("icon-file.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
 		//const auto tmpGUID = AssetManager::Instance().GetAssetHandle("fbx_icon.png");

@@ -233,7 +233,7 @@ namespace TRE
 		for (entt::entity srcEntity : toFlip)
 		{
 			// Only accept valid entities that are not orphan/deleted
-			if (!reg.orphan(srcEntity))
+			if (reg.valid(srcEntity) && !reg.orphan(srcEntity) && reg.any_of<Properties>(srcEntity))
 			{
 				Entity obj{ std::make_shared<Ent>() };
 				obj->m_Entity = ECSManager::Instance().GetRegistry().create();

@@ -3,6 +3,8 @@
 #include "vulkan/vulkan.h"
 #include "Image.h"
 
+#define UINT32_T_CAST(n) static_cast<uint32_t>((n))
+
 namespace TRE::vkUtils
 {
 	void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);

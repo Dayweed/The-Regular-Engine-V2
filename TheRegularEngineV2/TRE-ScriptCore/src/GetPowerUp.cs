@@ -11,12 +11,18 @@ namespace TRE
     {
         public PowerUpsType powerUpType;
         public Entity PowerUpManagerObj;
-        bool collected;
+
+        public string mole1tag = "Red";
+        public string mole2tag = "Player";
+
+        public bool drop;
+        private bool collected;
+        private int collectedIndex;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
         private Entity playerModel;                     // private Transform playerModel;
-        private MoleController playerControl;
+
         private PowerUpManager playerPowerUpManager;
 
         public GetPowerUp()
@@ -26,7 +32,7 @@ namespace TRE
 
         public void OnCreate()
         {
-            PowerUpManagerObj = ECSManager.FindEntityByName("Power Manager");
+            drop = false;
             collected = false;
         }
 
@@ -37,15 +43,15 @@ namespace TRE
 
             if (collected) return;
 
-            if (other.CompareTag("Red") || other.CompareTag("Blue"))
+            if (other.CompareTag(mole1tag) || other.CompareTag(mole2tag))
             {
-                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+                //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
                 //playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
                 //playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
+                
                 playerObj = other;
-
-                playerControl = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
+                PowerUpManagerObj = playerObj.parenting.GetChildFromName("Power Manager");
 
                 if (!ECSManager.IsValidEntity(PowerUpManagerObj.ID))
                 {
@@ -54,11 +60,6 @@ namespace TRE
                 }
                 playerPowerUpManager = PowerUpManagerObj.GetComponent<PowerUpManager>();        //playerPowerUpManager = playerObj.GetComponent<PowerUpManager>();
 
-                if (playerControl == null)
-                {
-                    Debug.LogError("Could not find playerControl");
-                    return;
-                }
                 if (playerPowerUpManager == null)
                 {
                     Debug.LogError("Could not find playerPowerUpManager");
@@ -73,9 +74,58 @@ namespace TRE
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
-                SetToPlayer(other);
+                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
+                collectedIndex = playerPowerUpManager.powerUps.Count;
+                playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
-                collected = true;
+                SetToPlayer();
+
+                // Is Mole 1
+                if (playerObj.CompareTag(mole1tag))
+                {
+                    MoleController controller = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
+
+                    if (controller == null)
+                    {
+                        Debug.LogError("Could not find playerControl");
+                        return;
+                    }
+
+                    // Check what type of powerup it is (Default Blueberry for now)
+                    if (CompareTag("Strawberry"))
+                    {
+                        controller.haveStrawberry = true;
+                    }
+                    else if (CompareTag("Blueberry"))
+                    {
+                        controller.haveBlueberry = true;
+                    }
+
+                    collected = true;
+                }
+                // Is Mole 2
+                else if (playerObj.CompareTag(mole2tag))
+                {
+                    MoleController2 controller = playerObj.GetComponent<MoleController2>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
+
+                    if (controller == null)
+                    {
+                        Debug.LogError("Could not find playerControl");
+                        return;
+                    }
+
+                    // Check what type of powerup it is (Default Blueberry for now)
+                    if (CompareTag("Strawberry"))
+                    {
+                        controller.haveStrawberry = true;
+                    }
+                    else if (CompareTag("Blueberry"))
+                    {
+                        controller.haveBlueberry = true;
+                    }
+
+                    collected = true;
+                }
             }
         }
 
@@ -85,14 +135,24 @@ namespace TRE
             //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
         }
 
-        private void SetToPlayer(Entity other)
+        public void Update()
+        {
+            SetToPlayer();
+        }
+
+        private void SetToPlayer()
         {
             //move the power up gameobj to the player's position
-            parenting.SetParent(playerObj);                                     // this.transform.parent = playerObj;
+            //parenting.SetParent(playerObj);                                     // this.transform.parent = playerObj;
 
             //this.transform.Position =  new Vector3(0, this.transform.Position.y, 0);     // this.transform.localPosition = new Vector3(0, this.transform.localPosition.y, 0);
 
-            playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
+            if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
+
+            Vector3 newPos = playerObj.transform.Position;
+            newPos.y += playerObj.transform.Scale.y * 5 * (collectedIndex + 1);
+            GetComponent<Transform>().Position = newPos;
+            //transform.Position = newPos;
 
             //RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<Collider>().enabled = false;         // THIS CANT BE DONE YET!

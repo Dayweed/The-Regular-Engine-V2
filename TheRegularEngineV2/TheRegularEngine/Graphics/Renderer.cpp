@@ -62,12 +62,10 @@ namespace TRE
 	void Renderer::Init()
 	{
 		s_FinalRenderData = new FinalRenderData;
-
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-		// auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		
 		float x = -1; float y = -1;
 		float width = 2, height = 2;
-
 		std::vector<QuadVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
@@ -87,7 +85,7 @@ namespace TRE
 			s_FinalRenderData->VertexBuffer = CreateVertexBuffer(data);
 			std::vector<int> indices = { 0,1,2,2,3,0 };
 			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
-			s_FinalRenderData->RenderPass = SwapChain->GetRenderPassPointer();
+			s_FinalRenderData->RenderPass = SwapChain->GetRenderPass();
 
 			PipelineConfigurations PipelineConfig;
 			PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(4);
@@ -156,7 +154,38 @@ namespace TRE
 
 		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), 6, 1, 0, 0, 0);
 
-		s_FinalRenderData->RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
-		vkEndCommandBuffer(m_CommandBuffer->GetInUseCommandBuffer());
+		EndRenderPass(m_CommandBuffer);
+		m_CommandBuffer->End();
+	}
+
+	//To be implemented after framebuffer/renderpass abstraction
+	void Renderer::BeginRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<RenderPass>& Renderpass)
+	{
+		
+	}
+
+	void Renderer::EndRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer)
+	{
+		vkCmdEndRenderPass(CommandBuffer->GetInUseCommandBuffer());
+	}
+
+	void Renderer::BeginFrame()
+	{
+		Engine::GetInstance().GetMainSceneRenderer()->BeginFrame();
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			Engine::GetInstance().GetEditorSceneRenderer()->BeginEditorFrame();
+		}
+	}
+	
+	void Renderer::EndFrame()
+	{
+		Engine::GetInstance().GetMainSceneRenderer()->EndFrame(false);
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			Engine::GetInstance().GetEditorSceneRenderer()->EndFrame(true);
+		}
 	}
 }

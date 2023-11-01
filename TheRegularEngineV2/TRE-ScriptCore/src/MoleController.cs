@@ -20,16 +20,21 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 
 		//check if player used super power
+		public List<Entity> pickedPowerUps;	// For dropping
+		public bool haveBlueberry = false;	// Scaling
+		public bool haveStrawberry = false;	// Shape
 		private bool isScaled = false;
 		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
 		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
-		private Vector3 fat = new Vector3(6f, 5f, 5.5f);
+		private Vector3 fat = new Vector3(5.5f, 4, 5);
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
 
 		private Vector3 playerDirection = new Vector3(0,0,1);
+
+		private bool NeedResize = false;
 
 		//For camera controller
 		private Entity Trigger_A;
@@ -161,25 +166,35 @@ namespace TRE
             #endregion
 
             #region Ability
+			// Check if can trigger ability
             if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
-				isScaled = !isScaled;
+				if (haveBlueberry)
+				{
+					isScaled = !isScaled;
+					NeedResize = true;
+
+                }
 			}
 
-			if (isScaled == false)
-			{
+			if ((isScaled == false || !haveBlueberry) && NeedResize)
+            {
 				//for fat boi
-				current = MathF.Vec3Lerp(current, thin, 0.2f);
+				current = MathF.Vec3Lerp(current, thin, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, defaultXform);
-			}
-			else
+                NeedResize = false;
+				Debug.Log("Resize");
+            }
+			else if (NeedResize)
 			{
 				//for fat boi
-				current = MathF.Vec3Lerp(current, fat, 0.2f);
+				current = MathF.Vec3Lerp(current, fat, 0.05f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
 				TransformSystem.SetScaling(this.ID, scaledXform);
-			}
+				NeedResize = false;
+                Debug.Log("Resize");
+            }
             #endregion
 
             dirVec.Normalize();

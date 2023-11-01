@@ -4,6 +4,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include "glm/glm.hpp"
 #include "imgui_impl_vulkan.h"
+#include "EditorAssetManager.h"
 
 namespace TRE::Util
 {
@@ -12,4 +13,6 @@ namespace TRE::Util
 	glm::vec3 Scale(const glm::vec3& v, float desiredLength);
 
 	bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm::quat& rotation, glm::vec3& scale);
+
+	std::shared_ptr<VulkanTexture> CreateIcon(std::string PNG_name);
 }

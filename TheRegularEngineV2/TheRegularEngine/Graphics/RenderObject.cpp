@@ -33,10 +33,14 @@ namespace TRE
 			indices[i] = geom->pIndices[i];
 		}
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(Vertex));
-		if (indices.size() > 0)
+		m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()),
+			UINT32_T_CAST(vertices.size() * sizeof(Vertex)));
+
+		if (!indices.empty())
 		{
-			m_IndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
+			m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+				UINT32_T_CAST(indices.size() * sizeof(uint32_t)),
+				UINT32_T_CAST(indices.size()));
 			m_HasIndexBuffer = true;
 		}
 		CreateBoundingSphere(vertices);
@@ -74,7 +78,7 @@ namespace TRE
 	void RenderObject::CreateBoundingSphere(const std::vector<Vertex>& vertices)
 	{
 		std::vector<glm::vec3> positions(vertices.size());
-		for (int i = 0; i < vertices.size(); ++i)
+		for (unsigned i = 0; i < vertices.size(); ++i)
 		{
 			positions[i] = vertices[i].m_Position;
 		}
