@@ -38,7 +38,8 @@ namespace TRE
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
 		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
-
+		m_UBOSkybox = std::make_shared<UniformBuffer>(sizeof(SkyBoxUBO), 0);
+		
 		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 		//m_L2W = glm::identity<glm::mat4>();
 		//m_L2W = glm::scale(m_L2W, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -190,8 +191,11 @@ namespace TRE
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
-		ubo.Proj = editorCamera.GetProjectionMatrix();
-		ubo.View = editorCamera.GetViewMatrix();
+		ubo.m_Color = { 1.f, 1.f, 1.f, 1.f }; //Color requested set here
+
+		SkyBoxUBO UBO_SkyBox;
+		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
+		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
@@ -202,6 +206,7 @@ namespace TRE
 		}
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -214,9 +219,11 @@ namespace TRE
 		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
-
-		ubo.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
-		ubo.View = cameraComponent.m_BaseCamera.m_ViewMatrix;
+		ubo.m_Color = { 1.f, 1.f, 1.f, 1.f }; //Color requested set here
+		
+		SkyBoxUBO UBO_SkyBox;
+		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
+		UBO_SkyBox.View = cameraComponent.m_BaseCamera.m_ViewMatrix;
 
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
@@ -227,6 +234,7 @@ namespace TRE
 		}
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
 		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
@@ -351,12 +359,12 @@ namespace TRE
 			vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipeline());
 			if (IsEditorScene)
 			{
-				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
 			}
 			else
 			{
-				m_SkyboxMaterial->UpdateForRendering(m_UBOBuffer, Index);
+				m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
 			}
 
