@@ -147,8 +147,10 @@ namespace TRE
 
 		void Update()
 		{
-            Console.WriteLine("Speed - {0}", speed);
-			Console.WriteLine("Gravity - {0}", gravity);
+			Console.WriteLine("Testing Update");		
+			Console.WriteLine($"Testing Update ID - {ID}");
+			Console.WriteLine($"Testing Update Position - {transform.Position.x} , {transform.Position.y} ");
+			Console.WriteLine("Here is more lines for testing");
 		}
 	}
 

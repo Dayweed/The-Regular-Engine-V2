@@ -280,7 +280,6 @@ namespace TRE
 		Audio = 2,
 	}
 
-	#region Vector3
 	public struct Vector3
 	{
 		public float x, y, z;
@@ -389,7 +388,6 @@ namespace TRE
 			return vec1.Magnitude() - vec2.Magnitude();
 		}
 	}
-	#endregion
 
 	public struct Vector2
 	{
@@ -759,12 +757,21 @@ namespace TRE
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool GetKeyDown(InputKeys keycode);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetKeyTrigger(InputKeys keycode);
 	}
 
 	public class MathF
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Sqrt(float value);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Lerp(float start, float end, float t);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static Vector3 Vec3Lerp(Vector3 start, Vector3 end, float t);
 	}
 
 	public class Random

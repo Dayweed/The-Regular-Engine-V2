@@ -129,7 +129,7 @@ namespace TRE
 		if (!GameLoop::Instance().GetDisplayingPrefab())
 		{
 			// Destroys all undeployed entities
-			MemoryManager::Instance().ClearUndeployed();
+			//MemoryManager::Instance().ClearUndeployed();
 
 			// Save the registry
 			GameLoop::Instance().GetBackUpRegistry().clear();

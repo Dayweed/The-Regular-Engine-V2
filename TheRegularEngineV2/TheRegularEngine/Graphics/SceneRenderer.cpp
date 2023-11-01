@@ -482,7 +482,7 @@ namespace TRE
 		for (const auto& directionalLight : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const Transform& tr = directionalLight->GetComponent<Transform>();
-			const DirectionalLight& dl = directionalLight->GetComponent<DirectionalLight>();
+			// const DirectionalLight& dl = directionalLight->GetComponent<DirectionalLight>();
 			
 			PushConstant pc{};
 			glm::mat4 model(1.f);

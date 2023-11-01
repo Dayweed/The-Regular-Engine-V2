@@ -131,7 +131,7 @@ namespace TRE
 		ECSOutputArchive arc(filePath);
 
 		// Destroys all undeployed entities
-		MemoryManager::Instance().ClearUndeployed();
+		//MemoryManager::Instance().ClearUndeployed();
 
 		entt::snapshot snapshot{ GetRegistry() };
 		// REMEMBER TO UPDATE Prefab.cpp TOO!!!

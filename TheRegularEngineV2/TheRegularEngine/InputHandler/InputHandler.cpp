@@ -10,6 +10,8 @@
 namespace TRE
 {
 	std::unordered_map<int, int> InputHandler::m_keyMap;
+	//std::unordered_map<int, int> InputHandler::m_keyTriggerMap;
+	std::unordered_map<int, int> InputHandler::m_keyPreviousPress;
 
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
@@ -80,8 +82,23 @@ namespace TRE
 		}
 	}
 
-	bool InputHandler::GetKeyState(int key)
+	bool InputHandler::GetKeyPress(int key)
 	{
 		return m_keyMap[key];
+	}
+
+	bool InputHandler::GetKeyTrigger(int key)
+	{
+		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE)
+		{
+			m_keyPreviousPress[key] = 0;
+		}
+		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS && m_keyPreviousPress[key] == false)
+		{
+			m_keyPreviousPress[key] = 1;
+			return true;
+		}
+
+		return false;
 	}
 }

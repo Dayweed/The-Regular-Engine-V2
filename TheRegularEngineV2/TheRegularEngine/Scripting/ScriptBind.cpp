@@ -836,9 +836,13 @@ namespace TRE
 
 	static bool GetKeyDown(int key)
 	{
-		return InputHandler::GetKeyState(key);
+		return InputHandler::GetKeyPress(key);
 	}
-	
+
+	static bool GetKeyTrigger(int key)
+	{
+		return InputHandler::GetKeyTrigger(key);
+	}
 
 #pragma endregion
 
@@ -1091,6 +1095,16 @@ namespace TRE
 	{
 		return Mathf::Sqrt(value);
 	}
+
+	static float BindLerp(float a, float b, float t)
+	{
+		return Mathf::LerpUnclamped(a, b, t);
+	}
+
+	static Vector3 BindLerpVec3(Vector3 a, Vector3 b, float t)
+	{
+		return Vector3(Mathf::LerpUnclamped(a.x, b.x, t), Mathf::LerpUnclamped(a.y, b.y, t), Mathf::LerpUnclamped(a.z, b.z, t));
+	}
 #pragma endregion
 
 #pragma region RandomBindings
@@ -1295,6 +1309,7 @@ namespace TRE
 		// Input Binding
 		{
 			mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
+			mono_add_internal_call("TRE.InputSystem::GetKeyTrigger", GetKeyTrigger);
 		}
 
 		// Logging
@@ -1308,6 +1323,8 @@ namespace TRE
 		// Math
 		{
 			mono_add_internal_call("TRE.MathF::Sqrt", BindSqrt);
+			mono_add_internal_call("TRE.MathF::Lerp", BindLerp);
+			mono_add_internal_call("TRE.MathF::Vec3Lerp", BindLerpVec3);
 		}
 
 		// Random
