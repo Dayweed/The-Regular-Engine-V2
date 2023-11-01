@@ -242,7 +242,24 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, Rigidbody, SphereCollider, BoxCollider, CapsuleCollider, Audio, AudioListener, DirectionalLight, ScriptComponent>();
+		//(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, Rigidbody, SphereCollider, BoxCollider, CapsuleCollider, Audio, AudioListener, DirectionalLight, ScriptComponent>();
+
+		(void)dstRegistry.view<
+			Prefabing,
+			Parenting,
+			Properties,
+			Transform,
+			MeshRenderer,
+			Camera,
+			Rigidbody,
+			SphereCollider,
+			BoxCollider,
+			CapsuleCollider,
+			Audio,
+			AudioListener,
+			DirectionalLight,
+			ScriptComponent
+		>();
 
 		m_Registry.each([&](entt::entity srcEntity)
 			{

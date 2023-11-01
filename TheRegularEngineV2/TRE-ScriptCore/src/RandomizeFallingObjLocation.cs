@@ -70,6 +70,7 @@ namespace TRE
     public class RandomizeFallingObjLocation : Entity
     {
         public List<Entity> fallingObjPrefabs;
+        public List<Entity> fallingObjRNG;
 
         public Vector3 size;
 
@@ -105,10 +106,11 @@ namespace TRE
 
             // ID for prefabs are based on resource prefab GUID
             fallingObjPrefabs = new List<Entity> { new Entity(11822093139939255162), new Entity(8829880216004354162) };
+            fallingObjRNG = new List<Entity>(fallingObjPrefabs);
             maxAmountToSpawn = 3;
             maxObjects = 3;
             timeBetweenSpawns = 2;
-            size = new Vector3(30, 0, 50);
+            size = new Vector3(20, 0, 50);
             canSpawnObjs = true;
             dropDuration = 5.0f;
             minRange = 5.5f;
@@ -140,7 +142,12 @@ namespace TRE
 
         public int RandomSpawnObj()
         {
-            int spawnObj = Random.Range(0, fallingObjPrefabs.Count);
+            if (fallingObjRNG.Count == 0)
+            {
+                fallingObjRNG = new List<Entity>(fallingObjPrefabs);
+            }
+            int spawnObj = Random.Range(0, fallingObjRNG.Count);
+            fallingObjRNG.RemoveAt(spawnObj);
             return spawnObj;
         }
 
@@ -248,6 +255,7 @@ namespace TRE
                             //is this pos empty
                             if (IsPosEmpty(itemPos))
                             {
+                                PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, Vector3.zero);
                                 TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
                                 TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
                                 itemsPos[i] = itemPos;

@@ -122,8 +122,6 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
-		// Mimick Game Loop when forcing the scene to be resetted
-		ECSSystemManager::Instance().BeforeReset();
 
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
@@ -135,6 +133,9 @@ namespace TRE
 			GameLoop::Instance().GetBackUpRegistry().clear();
 			ECSManager::Instance().SaveRegistry(GameLoop::Instance().GetBackUpRegistry());
 		}
+
+		// Mimick Game Loop when forcing the scene to be resetted
+		ECSSystemManager::Instance().BeforeReset();
 
 		// Clear the "scene" and show the displayed prefab
 		ECSManager::Instance().DestroyAll();
