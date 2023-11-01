@@ -40,6 +40,8 @@ namespace TRE
 		private Entity Trigger_F;
 		private Entity Trigger_G;
 		private Entity Trigger_H;
+		private Entity Key;
+		private Entity FinalPlatform;
 
 		public bool regionA;
 		public bool regionB;
@@ -77,6 +79,12 @@ namespace TRE
 
 			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
 			Debug.Log("Trigger_H ID is " + Trigger_H.ID);
+
+			Key = ECSManager.FindEntityByName("Key");
+			Debug.Log("Key ID is " + Key.ID);
+
+			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
+			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
 
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 			PhysicsSystem.ConstrainRotationX(this.ID, true);
@@ -201,6 +209,12 @@ namespace TRE
 			regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
 			regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
 			regionH = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_H.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_H.ID);
+
+			if(PhysicsSystem.IsTriggerEnter(this.ID, Key.ID))
+			{
+				Key.SetActive(false);
+				FinalPlatform.SetActive(true);
+			}
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
