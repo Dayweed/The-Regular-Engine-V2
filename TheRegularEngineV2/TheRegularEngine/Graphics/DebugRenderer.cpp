@@ -17,6 +17,11 @@ namespace TRE
 		return m_DebugDrawPipeline->GetPipelineLayout();
 	}
 
+	const std::shared_ptr<Pipeline>& DebugRenderer::GetPipeline() const
+	{
+		return m_DebugDrawPipeline;
+	}
+
 	DebugRenderer::DebugRenderer(std::shared_ptr<RenderPass> TargetPass) : m_RenderPass(TargetPass)
 	{
 		auto DebugDrawShader = ResourceManager::Instance().GetResource<Shader>(7);
@@ -25,7 +30,7 @@ namespace TRE
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
 		DebugDrawPipelineConfig.Shader = DebugDrawShader;
 		DebugDrawPipelineConfig.LineWidth = 2.5f;
-		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
+		m_DebugDrawPipeline = std::make_shared<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
 		m_DebugMaterialInstance->Invalidate();

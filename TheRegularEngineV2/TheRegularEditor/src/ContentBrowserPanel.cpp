@@ -56,7 +56,7 @@ namespace TRE
 				//Determine the type of resource to drag and drop
 				const bool isImage = filenameString.ends_with(".png");
 				const bool isAudio = filenameString.ends_with(".wav");
-				const bool isShader = filenameString.ends_with(".glsl") || filenameString.ends_with(".frag");
+				const bool isShader = filenameString.ends_with(".glsl");
 				const bool isScene = filenameString.ends_with(".json");
 				const bool isPrefab = filenameString.ends_with(".prefab");
 				const bool isMeta = filenameString.ends_with(".meta");
@@ -219,7 +219,7 @@ namespace TRE
 
 				if (item.m_Folder)
 				{
-					if (ImGui::ImageButton(item.m_TextureID,{m_ImgSize, m_ImgSize}, { 0,1 }, { 1,0 }))
+					if (ImGui::ImageButton(item.m_TextureID,{m_ImgSize, m_ImgSize}, { 0,0 }, { 1,1 }))
 					{
 						//step into folder selected
 						m_CurrentDirectory /= item.m_Path.filename();
@@ -229,7 +229,7 @@ namespace TRE
 				}
 				else
 				{
-					if (ImGui::ImageButton(item.m_TextureID, { m_ImgSize, m_ImgSize }, { 0,1 }, { 1,0 }))
+					if (ImGui::ImageButton(item.m_TextureID, { m_ImgSize, m_ImgSize }, { 0,0 }, { 1,1 }))
 					{
 						//No Click Action
 						if (item.m_ResourceType == "_Invalid")

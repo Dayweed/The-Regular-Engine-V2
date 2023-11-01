@@ -360,8 +360,8 @@ namespace TRE
 		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		Renderer::Init();
 		m_SceneRenderer->Initialize();
+		Renderer::Init();
 
 		if (m_EngineInfo.EnableEditor)
 		{
@@ -440,6 +440,7 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
+			
 			Renderer::BeginFrame();
 
 			// Update
