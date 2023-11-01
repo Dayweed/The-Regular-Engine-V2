@@ -30,7 +30,6 @@ namespace TRE
 			std::shared_ptr<Device> m_LogicalDevice;
 			std::vector<VkCommandBuffer> m_ImGuiCommandBuffers;
 			VkDescriptorPool m_DescriptorPool;
-			VkSampler m_Sampler;
 			
 			std::vector<VkDescriptorSet> m_EditorSceneDescriptorSets;
 			std::vector<VkDescriptorSet> m_GameSceneDescriptorSets;
