@@ -138,8 +138,8 @@ namespace TRE
 		// Retrieve the entity from the ID
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return;
-		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != isActive);
-		Temp->GetComponent<Properties>().m_Active = isActive;
+		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != (bool)isActive);
+		Temp->GetComponent<Properties>().m_Active = (bool)isActive;
 	}
 
 	static bool BindEntityGetActive(CSEntityID ID)
@@ -1105,7 +1105,7 @@ namespace TRE
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
 	}
 
-	static bool BindGetGravity(CSEntityID ID, bool enable)
+	static bool BindGetGravity(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return false;

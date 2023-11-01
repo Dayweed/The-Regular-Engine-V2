@@ -458,7 +458,7 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
 		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
@@ -498,7 +498,7 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
 		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 

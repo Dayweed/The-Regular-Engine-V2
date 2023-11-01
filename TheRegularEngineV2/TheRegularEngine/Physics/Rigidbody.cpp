@@ -74,6 +74,7 @@ namespace TRE
 
 		// activate gravity by default
 		bool useGravity = entity->GetComponent<Rigidbody>().m_UseGravity; // TODO: disabling gravity
+		(void)useGravity;
 		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		// this is necessary to allow the actor to freakin move by physics and forces and such
