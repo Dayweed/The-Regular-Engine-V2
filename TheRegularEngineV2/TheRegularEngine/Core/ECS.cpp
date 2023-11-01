@@ -346,7 +346,6 @@ namespace TRE
 	ECSOutputArchive::ECSOutputArchive(std::string fileName) : m_FileName(fileName)
 	{
 		m_Root = nlohmann::json::array();
-		m_EntityNo = 0;
 	}
 
 	void ECSOutputArchive::operator()(entt::entity ent)
@@ -364,7 +363,7 @@ namespace TRE
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
 			//m_Current.push_back(1);
-			m_Current.push_back(ECSManager::Instance().GetAllEntities().size()); 	// This somehows kills the entt if too fat
+			m_Current.push_back(ECSManager::Instance().GetAllEntities(true).size()); 	// This somehows kills the entt if too fat
 		}
 		else
 		{
