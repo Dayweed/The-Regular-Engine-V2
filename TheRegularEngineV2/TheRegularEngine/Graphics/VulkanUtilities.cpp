@@ -6,6 +6,20 @@
 
 namespace TRE::vkUtils
 {
+	VkBool32 formatIsFilterable(VkPhysicalDevice physicalDevice, VkFormat format, VkImageTiling tiling)
+	{
+		VkFormatProperties formatProps;
+		vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &formatProps);
+
+		if (tiling == VK_IMAGE_TILING_OPTIMAL)
+			return formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+
+		if (tiling == VK_IMAGE_TILING_LINEAR)
+			return formatProps.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+
+		return false;
+	}
+
 	uint32_t BufferFindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;

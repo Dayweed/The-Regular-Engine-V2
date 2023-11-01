@@ -42,6 +42,11 @@ namespace TRE
 		glm::mat4 View{ 1.f };
 	};
 
+	struct ShadowUBO
+	{
+		glm::mat4 depthMVP;
+	};
+
 	struct AnimationUBO
 	{
 		glm::mat4 ProjView {1.f};
@@ -100,11 +105,37 @@ namespace TRE
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
+			//Skybox
 			std::shared_ptr<Pipeline> m_SkyboxPipeline;
 			std::shared_ptr<VulkanTexture> m_SkyboxTexture;
 			std::unique_ptr<Material> m_SkyboxMaterial;
 			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;
 			std::unique_ptr<IndexBuffer> m_SkyboxIndexBuffer;
 			std::shared_ptr<UniformBuffer> m_UBOSkybox;
+			//Skybox
+
+			//Shadow
+			float zNear = 1.f;
+			float zFar = 96.f;
+			float depthBiasConstant = 1.25f;
+			float depthBiasSlope = 1.75f;
+			std::shared_ptr<RenderPass> m_ShadowRenderPass;
+			VkDescriptorImageInfo m_ShadowDescriptInfo;
+			std::shared_ptr<Pipeline> m_ShadowPipeline;
+			std::shared_ptr<Material> m_ShadowMaterial;
+			std::shared_ptr<UniformBuffer> m_ShadowUBO;
+			uint32_t m_ShadowMapWidth = 2048;
+			uint32_t m_ShadowMapHeight = 2048;
+			VkFramebuffer m_ShadowFramebuffer;
+			struct
+			{
+				VkImage image;
+				VkImageView imageview;
+				VkDeviceMemory devicememory;
+				VkSampler sampler;
+			} m_Depth;
+
+			void ShadowPassInit();
+			//Shadow
 	};
 }

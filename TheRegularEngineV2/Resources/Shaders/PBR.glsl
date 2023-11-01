@@ -20,6 +20,7 @@ layout(location = 0) out struct
 	vec2 TexCoord;
 	vec4 Color;
 	vec4 AmbientColor;
+	vec4 outShadowCoord;
 } Out;
 
 layout(push_constant) uniform Push
@@ -44,6 +45,12 @@ layout(set = 0, binding = 6) uniform MaterialColor
 } MaterialUBO;
 
 const float gamma = 2.2;
+
+const mat4 biasMat = mat4( 
+	0.5, 0.0, 0.0, 0.0,
+	0.0, 0.5, 0.0, 0.0,
+	0.0, 0.0, 1.0, 0.0,
+	0.5, 0.5, 0.0, 1.0 );
 
 void main() 
 {
@@ -71,6 +78,8 @@ void main()
 	Out.CamearPos = ubo.m_CameraPosition;
 	Out.Color = MaterialUBO.m_Color;
 	Out.AmbientColor = ubo.m_AmbientLight;
+
+	Out.outShadowCoord = ( biasMat * vec4(ubo.m_LightPosition, 1.f) * push.m_Model ) * vec4(inPosition, 1.0);
 }
 
 #version 450
@@ -88,6 +97,7 @@ layout(location = 0) in struct
 	vec2 TexCoord;
 	vec4 Color;
 	vec4 AmbientColor;
+	vec4 ShadowCoord;
 } In;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
@@ -95,13 +105,53 @@ layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
 layout(set = 0, binding = 4) uniform sampler2D AOMap;
 layout(set = 0, binding = 5) uniform sampler2D Metalness;
+layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
+float textureProj(vec4 shadowCoord, vec2 off)
+{
+	float shadow = 1.0;
+	if ( shadowCoord.z > -1.0 && shadowCoord.z < 1.0 ) 
+	{
+		float dist = texture( shadowMap, shadowCoord.st + off ).r;
+		if ( shadowCoord.w > 0.0 && dist < shadowCoord.z ) 
+		{
+			shadow = 0.1;
+		}
+	}
+	return shadow;
+}
+
+float filterPCF(vec4 sc)
+{
+	ivec2 texDim = textureSize(shadowMap, 0);
+	float scale = 1.5;
+	float dx = scale * 1.0 / float(texDim.x);
+	float dy = scale * 1.0 / float(texDim.y);
+
+	float shadowFactor = 0.0;
+	int count = 0;
+	int range = 1;
+	
+	for (int x = -range; x <= range; x++)
+	{
+		for (int y = -range; y <= range; y++)
+		{
+			shadowFactor += textureProj(sc, vec2(dx*x, dy*y));
+			count++;
+		}
+	
+	}
+	return shadowFactor / count;
+}
+
 void main() 
 {
+	float shadow = filterPCF(In.ShadowCoord / In.ShadowCoord.w);
+
 	//Calculate normal from normal map
 	vec3 normal;
 	normal.rg = (texture(NormalMap, In.TexCoord).gr) * 2.0 - 1.0;
@@ -141,6 +191,6 @@ void main()
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
 
 	//Gamma correction
-	outColor.rgb = pow(outColor.rgb, vec3(1.0 / In.PosWorld.w));
+	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / In.PosWorld.w))) * shadow;
 	outColor.a = 1.0;
 }
