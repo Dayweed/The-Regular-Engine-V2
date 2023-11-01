@@ -21,9 +21,13 @@ namespace TRE
 
 		//check if player used super power
 		private bool isScaled = false;
-		private Vector3 fat = new Vector3(3f, 2f, 3f);
-		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
+		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
+		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
+		private Vector3 fat = new Vector3(3f, 2f, 3f);
+		//Player Scallings
+		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
+		private Vector3 scaledXform = new Vector3(2f, 0.75f, 2f);
 
 		private Vector3 playerDirection = new Vector3(0,0,1);
 
@@ -84,7 +88,7 @@ namespace TRE
 			PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			dirVec = new Vector3(0, 0, 0);
-
+			#region Movement
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				dirVec.z += -1;
@@ -141,8 +145,10 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
+            #endregion
 
-			if (InputSystem.GetKeyTrigger(InputKeys.E))
+            #region Ability
+            if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
 				isScaled = !isScaled;
 			}
@@ -152,15 +158,18 @@ namespace TRE
 				//for fat boi
 				current = MathF.Vec3Lerp(current, thin, 0.2f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
+				TransformSystem.SetScaling(this.ID, defaultXform);
 			}
 			else
 			{
 				//for fat boi
 				current = MathF.Vec3Lerp(current, fat, 0.2f);
 				PhysicsSystem.ResizeBoxCollider(this.ID, current);
+				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
+            #endregion
 
-			dirVec.Normalize();
+            dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{
