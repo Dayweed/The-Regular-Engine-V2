@@ -333,11 +333,11 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector()
+	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector() const
 	{
 		std::unordered_map<unsigned, Entity> vector;
 		vector.reserve(m_Actors.size());
-		for (auto actor : m_Actors)
+		for (const auto& actor : m_Actors)
 		{
 			vector.emplace(actor.second.m_RigidDynamic->getInternalActorIndex(), ECSManager::Instance().FindEntity(actor.first));
 		}
@@ -345,14 +345,14 @@ namespace TRE
 		return vector;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
 		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_CollisionHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}
@@ -371,14 +371,14 @@ namespace TRE
 		return Collisions;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_TriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}
@@ -397,14 +397,14 @@ namespace TRE
 		return Collisions;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_PrevTriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}

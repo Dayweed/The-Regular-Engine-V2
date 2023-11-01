@@ -54,10 +54,11 @@ namespace TRE
 		// void OnDestroyEntities() override;
 		void Shutdown() override;
 
-		std::unordered_map<unsigned, Entity> GenerateEntityActorVector();
-		std::vector<std::pair<Entity, Entity>> GetCollisionHistory();
-		std::vector<std::pair<Entity, Entity>> GetTriggerHistory();
-		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory();
+		// returns a map of <physx internal index, entity> for all entites with physics comps
+		std::unordered_map<unsigned, Entity> GenerateEntityActorVector() const;
+		std::vector<std::pair<Entity, Entity>> GetCollisionHistory() const;
+		std::vector<std::pair<Entity, Entity>> GetTriggerHistory() const;
+		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory() const;
 
 		void SetDrawDebug(bool draw);
 #pragma region Rigidbody Function Declarations

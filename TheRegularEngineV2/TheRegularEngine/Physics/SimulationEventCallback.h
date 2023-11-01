@@ -11,8 +11,8 @@ namespace TRE
 		enum Enum : unsigned char
 		{
 			Enter = 1 << 0,
-			Stay = 1 << 1,
-			Exit = 1 << 2
+			Stay  = 1 << 1,
+			Exit  = 1 << 2
 		};
 	} CollisionHistoryEntryEnum, TriggerHistoryEntryEnum;
 
