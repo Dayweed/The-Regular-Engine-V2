@@ -107,7 +107,7 @@ namespace TRE
 		case ForceMode::Impulse:        physxForceMode = PxForceMode::eIMPULSE; break;
 		case ForceMode::VelocityChange: physxForceMode = PxForceMode::eVELOCITY_CHANGE; break;
 		case ForceMode::Acceleration:   physxForceMode = PxForceMode::eACCELERATION; break;
-		case ForceMode::Force:
+		case ForceMode::Force:          [[fallthrough]];
 		default:                        physxForceMode = PxForceMode::eFORCE; break;
 		}
 
