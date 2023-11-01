@@ -8,6 +8,7 @@ using System.Diagnostics.Eventing.Reader;
 
 namespace TRE
 {
+	using PS = PhysicsSystem;
 	class MoleController2 : Entity
 	{
 		//Check if player is on the ground
@@ -20,17 +21,20 @@ namespace TRE
 		private float acceleration = 300f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
-		//Max height
-		private Vector3 maxHeight = new Vector3(0, 5, 0);
+
+		private float lerpSpeed = 0.05f;
 
         //Capsule Collider
         public List<Entity> pickedPowerUps;	// For dropping
         public bool haveBlueberry = false;  // Scaling
         public bool haveStrawberry = false; // Shape
         private bool isScaled = false;
-		private float defaultScale = 1f;
-		private float superScale = 4.8f;
-		private float currentScale = 1f;
+		private float defaultRadius = 2f;
+		private float superRadius = 4.8f;
+		private float currentRadius = 2f;
+		private float defaultHeight = 2f;
+		private float superHeight = 4.2f;
+		private float currentHeight = 2f;
 		//Transform Scale
         private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
@@ -40,9 +44,9 @@ namespace TRE
 		public void Start()
 		{
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
-			PhysicsSystem.ConstrainRotationX(this.ID, true);
-			PhysicsSystem.ConstrainRotationY(this.ID, true);
-			PhysicsSystem.ConstrainRotationZ(this.ID, true);
+			PS.ConstrainRotationX(this.ID, true);
+			PS.ConstrainRotationY(this.ID, true);
+			PS.ConstrainRotationZ(this.ID, true);
 		}
 
 		public void Update()
@@ -50,7 +54,7 @@ namespace TRE
 			TransformSystem.GetPosition(this.ID, out Vector3 pos);
 
 			//Movement Related stuff
-			PhysicsSystem.GetLinearVelocity(this.ID, out Vector3 currVelocity);
+			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			dirVec = new Vector3(0, 0, 0);
             #region Movement
@@ -121,16 +125,18 @@ namespace TRE
                 }
             }
 
-			if(isScaled == false)
+			if ((isScaled == false || !haveBlueberry))
 			{
-				currentScale = MathF.Lerp(currentScale, defaultScale, 0.2f);
-				PhysicsSystem.ResizeCapsuleCollider(this.ID, 2, currentScale);
+				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
+				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, defaultXform);
 			}
 			else
 			{
-				currentScale = MathF.Lerp(currentScale, superScale, 0.2f);
-				PhysicsSystem.ResizeCapsuleCollider(this.ID, 4.2f, currentScale);
+				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
+				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
             #endregion
@@ -142,13 +148,13 @@ namespace TRE
 				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
 				{
 					finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
-					PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 				else
 				{
 					Vector3 tmp = dirVec * maxVelocity;
 					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
-					PhysicsSystem.SetLinearVelocity(this.ID, finalVelocity);
+					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 			}
 
@@ -156,7 +162,7 @@ namespace TRE
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
-			PhysicsSystem.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
+			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
@@ -164,7 +170,7 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
-			if (PhysicsSystem.IsCollisionStay(this.ID, otherID))
+			if (PS.IsCollisionStay(this.ID, otherID))
 			{
 				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Player")
 				{
