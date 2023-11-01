@@ -87,6 +87,7 @@ namespace TRE
         private List<Entity> itemsToSpawn = new List<Entity>();
         private List<float> itemsTimer = new List<float>();
         private List<Vector3> itemsPos = new List<Vector3>();
+        private List<Vector3> itemsDefRot = new List<Vector3>();
 
         public RandomizeFallingObjLocation()
         {
@@ -161,9 +162,12 @@ namespace TRE
                         if (IsPosEmpty(itemToSpawnPos))
                         {
                             //yes, so add to list
-                            itemsToSpawn.Add(ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()], itemToSpawnPos, default, Vector3.one));
+                            Entity item = ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()]);
+                            item.transform.Position = itemToSpawnPos;
+                            itemsToSpawn.Add(item);
                             itemsTimer.Add(dropDuration);
                             itemsPos.Add(itemToSpawnPos);
+                            itemsDefRot.Add(item.transform.Rotation);
                             break;
                         }
                     }
@@ -245,7 +249,7 @@ namespace TRE
                             if (IsPosEmpty(itemPos))
                             {
                                 TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
-                                TransformSystem.SetRotation(itemsToSpawn[i].ID, Vector3.zero);
+                                TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
                                 itemsPos[i] = itemPos;
 
                                 itemsTimer[i] = dropDuration;
