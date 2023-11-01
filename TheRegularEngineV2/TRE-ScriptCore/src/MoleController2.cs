@@ -103,7 +103,7 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 30, 0);
+					Vector3 maxHeight = new Vector3(0, 35, 0);
 					Jump(maxHeight);
 				}
 			}

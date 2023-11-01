@@ -39,6 +39,7 @@ namespace TRE
 		private Entity Trigger_E;
 		private Entity Trigger_F;
 		private Entity Trigger_G;
+		private Entity Trigger_H;
 
 		public bool regionA;
 		public bool regionB;
@@ -47,6 +48,7 @@ namespace TRE
 		public bool regionE;
 		public bool regionF;
 		public bool regionG;
+		public bool regionH;
 
 		public float elapsedTime = 0.0f;
 
@@ -72,6 +74,9 @@ namespace TRE
 
 			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
 			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
+
+			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
+			Debug.Log("Trigger_H ID is " + Trigger_H.ID);
 
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 			PhysicsSystem.ConstrainRotationX(this.ID, true);
@@ -141,7 +146,7 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 30, 0);
+					Vector3 maxHeight = new Vector3(0, 35, 0);
 					Jump(maxHeight);
 				}
 			}
@@ -195,6 +200,7 @@ namespace TRE
 			regionE = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_E.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_E.ID);
 			regionF = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_F.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_F.ID);
 			regionG = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_G.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_G.ID);
+			regionH = PhysicsSystem.IsTriggerEnter(this.ID, Trigger_H.ID) || PhysicsSystem.IsTriggerStay(this.ID, Trigger_H.ID);
 		}
 		private void Jump(Vector3 JumpHeight)
 		{

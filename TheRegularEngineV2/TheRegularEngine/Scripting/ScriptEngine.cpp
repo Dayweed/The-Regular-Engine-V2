@@ -343,6 +343,12 @@ namespace TRE
 
 		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
 
+		s_ScriptEngineData->ScriptInstances.clear();
+		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
+		{
+			CreateCSEntityData(entity);
+		}
+
 		// Retrieve and instantiate the main class
 		//InitScriptingMain();
 	}
