@@ -86,7 +86,6 @@ namespace TRE
 			source.m_Channel->setPitch(source.m_Pitch);
 			source.m_Channel->setPriority(source.m_Priority);
 
-
 			/*for (auto go : audioMap)
 			{
 				if (go->HasComponent<Audio>())
@@ -102,6 +101,18 @@ namespace TRE
 
 		m_System->update();
 
+	}
+
+	void AudioSystem::LateUpdate()
+	{
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+			if (!GameLoop::Instance().IsGameRunning())
+			{
+				Audio& audio = go.get()->GetComponent<Audio>();
+				audio.m_Channel->setPaused(true);
+			}
+		}
 	}
 
 	void AudioSystem::BeforeReset()

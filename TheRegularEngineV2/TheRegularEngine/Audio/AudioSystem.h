@@ -148,6 +148,7 @@ namespace TRE
 
 		void Init() override;
 		void GameUpdate() override;
+		void LateUpdate() override;
 		void BeforeReset() override;
 		void AfterReset() override;
 		void OnDestroyEntities() override;
