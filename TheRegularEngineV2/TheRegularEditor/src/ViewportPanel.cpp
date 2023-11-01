@@ -185,6 +185,12 @@ namespace TRE
 		MouseActions();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize, ImVec2(0,0), ImVec2(1, 1));
 
+		if (ImGui::IsWindowHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				ImGui::SetWindowFocus();
+		}
+
 		if (ImGui::BeginDragDropTarget())
 		{
 			//For 3D Models

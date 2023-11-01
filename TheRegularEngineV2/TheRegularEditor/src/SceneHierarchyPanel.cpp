@@ -81,10 +81,10 @@ namespace TRE
 
 			if (ImGui::IsWindowHovered())
 			{
-				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 					ImGui::SetWindowFocus();
 
-				if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 					m_SelectionManager->ClearSelectedEntity();
 			}
 
@@ -116,6 +116,7 @@ namespace TRE
 						}
 					}
 				}
+
 				else
 				{
 					if (ImGui::BeginPopupContextWindow())
