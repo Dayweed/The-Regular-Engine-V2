@@ -63,6 +63,12 @@ namespace TRE
 		}
 
 		m_IsValid = true;
+
+		if (!m_MaterialUBO)
+			m_MaterialUBO = std::make_shared<UniformBuffer>(sizeof(MaterialUBO), 1);
+
+		m_UBO.m_Color = { 1.f, 1.f, 1.f, 1.f };
+		m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO));
 	}
 
 	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
@@ -76,7 +82,10 @@ namespace TRE
 		{
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
 			{
-				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
@@ -97,7 +106,10 @@ namespace TRE
 		{
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
 			{
-				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
