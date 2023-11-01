@@ -47,7 +47,7 @@ namespace TRE
 
 	void ToolBarPanel::Update()
 	{
-		ImGui::Begin("Tool Bar");
+		ImGui::Begin("Tool Bar", 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x/2 - 25);
 		
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F5))
