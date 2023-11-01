@@ -346,14 +346,16 @@ namespace TRE
 	ECSOutputArchive::ECSOutputArchive(std::string fileName) : m_FileName(fileName)
 	{
 		m_Root = nlohmann::json::array();
+		m_EntityNo = 0;
 	}
 
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
-		if (ECSManager::Instance().GetRegistry().valid(ent))
+		m_Current.push_back(static_cast<uint32_t>(ent));
+		/*if (ECSManager::Instance().GetRegistry().valid(ent))
 		{
 			m_Current.push_back(static_cast<uint32_t>(ent));
-		}
+		}*/
 	}
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
@@ -369,6 +371,7 @@ namespace TRE
 			m_Root.push_back(m_Current);
 			m_Current = nlohmann::json::array();
 			m_Current.push_back(u);
+			//m_Current.push_back(m_EntityNo++);
 		}
 	}
 

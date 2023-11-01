@@ -630,6 +630,7 @@ namespace TRE
 	private:
 		nlohmann::json m_Root;
 		nlohmann::json m_Current;
+		int m_EntityNo;
 
 		std::string m_FileName;
 	};
@@ -818,13 +819,17 @@ namespace TRE
 	template <typename T>
 	void ECSOutputArchive::operator()(entt::entity ent, const T& t)
 	{
-		if (ECSManager::Instance().GetRegistry().valid(ent))
-		{
-			m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+		m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
 
-			nlohmann::json json = t;
-			m_Current.push_back(json);
-		}
+		nlohmann::json json = t;
+		m_Current.push_back(json);
+		//if (ECSManager::Instance().GetRegistry().valid(ent))
+		//{
+		//	m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+
+		//	nlohmann::json json = t;
+		//	m_Current.push_back(json);
+		//}
 	}
 
 	template <typename T>
