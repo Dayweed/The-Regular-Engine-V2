@@ -179,6 +179,10 @@ namespace TRE
 			else
 				file << texture->GetHandleHex() << std::endl;
 		}
+		file << "End of Textures\n";
+		
+		file << "Color Value:\n";
+		file << m_UBO.m_Color.x << " " << m_UBO.m_Color.y << " " << m_UBO.m_Color.z << " " << m_UBO.m_Color.w;
 
 		file.close();
 	}
@@ -197,6 +201,8 @@ namespace TRE
 		std::string line;
 		std::string ShaderGUID;
 		std::unordered_map<std::string, std::string> textureGUIDs;
+		glm::vec4 Color;
+		bool HasColor = false;
 
 		while (std::getline(file, line))
 		{
@@ -208,11 +214,19 @@ namespace TRE
 			{
 				while (std::getline(file, line))
 				{
+					if (line == "End of Textures")
+						break;
+
 					//Split line into texture name and texture GUID
 					const std::string name = line.substr(0, line.find(" | "));
 					const std::string textureGUID = line.substr(line.find(" | ") + 3);
 					textureGUIDs[name] = textureGUID;
 				}
+			}
+			else if (line == "Color Value:")
+			{
+				file >> Color.x >> Color.y >> Color.z >> Color.w;
+				HasColor = true;
 			}
 		}
 
@@ -232,6 +246,9 @@ namespace TRE
 				mat->m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(Resource::GetGUIDFromHex(GUID));
 			}
 		}
+
+		if (HasColor)
+			mat->SetUBOData(Color);
 
 		ResourceManager::Instance().AddResource(std::move(mat));
 
