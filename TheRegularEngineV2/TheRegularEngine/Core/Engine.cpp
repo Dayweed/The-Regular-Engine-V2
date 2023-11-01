@@ -421,7 +421,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
-		//ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
+		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
 
 		// Allocate Default Size for Memory Manager
 		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
