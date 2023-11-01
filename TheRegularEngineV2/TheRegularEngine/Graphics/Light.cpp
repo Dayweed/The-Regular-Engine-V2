@@ -5,6 +5,11 @@
 
 namespace TRE
 {
+	glm::vec3 DirectionalLight::GetUpVec()
+	{
+		return glm::normalize(glm::cross(glm::vec3(0,1,0), Direction));
+	}
+
 	void LightSystem::LateUpdate()
 	{
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
