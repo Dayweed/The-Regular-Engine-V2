@@ -24,10 +24,10 @@ namespace TRE
 		//Box Collider
 		private Vector3 current = new Vector3(0.01f, 0.01f, 0.01f);
 		private Vector3 thin = new Vector3(0.01f, 0.01f, 0.01f);
-		private Vector3 fat = new Vector3(3f, 2f, 3f);
+		private Vector3 fat = new Vector3(6f, 5f, 5.5f);
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 scaledXform = new Vector3(2f, 0.75f, 2f);
+		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
 
 		private Vector3 playerDirection = new Vector3(0,0,1);
 

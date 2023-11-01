@@ -26,11 +26,11 @@ namespace TRE
 		//Capsule Collider
 		private bool isScaled = false;
 		private float defaultScale = 1f;
-		private float superScale = 5f;
+		private float superScale = 6.8f;
 		private float currentScale = 1f;
 		//Transform Scale
         private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 scaledXform = new Vector3(1f, 1.5f, 1f);
+		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
 
         private Vector3 playerDirection = new Vector3(0, 0, 1);
 
@@ -124,7 +124,7 @@ namespace TRE
 			else
 			{
 				currentScale = MathF.Lerp(currentScale, superScale, 0.2f);
-				PhysicsSystem.ResizeCapsuleCollider(this.ID, 2, currentScale);
+				PhysicsSystem.ResizeCapsuleCollider(this.ID, 4.2f, currentScale);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
             #endregion
