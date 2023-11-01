@@ -96,8 +96,8 @@ namespace TRE
 
 	void PrefabSystem::Init()
 	{
-		DeserializePrefabDirectory();
-		SerializePrefabDirectory();
+		// Update Prefab Directory if there is invalid data
+		if (DeserializePrefabDirectory()) SerializePrefabDirectory();
 	}
 
 	void PrefabSystem::Update()
@@ -773,7 +773,7 @@ namespace TRE
 		return GUID;
 	}
 
-	void PrefabSystem::DeserializePrefabDirectory()
+	bool PrefabSystem::DeserializePrefabDirectory()
 	{
 		// Prepare file name [For deserialization too]
 		std::string filePathString{ FILESYS_PREFABDIR };
@@ -851,6 +851,8 @@ namespace TRE
 		{
 			m_ExistingPrefabs.erase(invalid);
 		}
+
+		return !invalidGUIDs.empty();
 	}
 
 	void PrefabSystem::SerializePrefabDirectory()
