@@ -5,9 +5,10 @@
 
 namespace TRE
 {
-	glm::vec3 DirectionalLight::GetUpVec()
+	glm::vec3 DirectionalLight::GetUpVec() const
 	{
-		return glm::normalize(glm::cross(glm::vec3(0,1,0), Direction));
+		glm::vec3 leftVec = glm::normalize(glm::cross(glm::vec3(0,1,0), Direction));
+		return glm::normalize(glm::cross(leftVec, -Direction));
 	}
 
 	void LightSystem::LateUpdate()
