@@ -952,7 +952,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
 	}
 
-	void BindConstrainRotationX(CSEntityID ID, bool state)
+	static void BindConstrainRotationX(CSEntityID ID, bool state)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;
@@ -966,7 +966,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationX(entity, state);
 	}
 
-	void BindConstrainRotationY(CSEntityID ID, bool state)
+	static void BindConstrainRotationY(CSEntityID ID, bool state)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;
@@ -980,7 +980,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationY(entity, state);
 	}
 
-	void BindConstrainRotationZ(CSEntityID ID, bool state)
+	static void BindConstrainRotationZ(CSEntityID ID, bool state)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;

@@ -12,8 +12,8 @@ namespace TRE
 	{
 		public PowerUpManager MyPowerManager;
 
-        //check if player is on the ground (for now , just a plane)
-        private bool isGrounded = true;
+		//check if player is on the ground (for now , just a plane)
+		private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max Velocity vector
@@ -67,9 +67,9 @@ namespace TRE
 
 		public void Start()
 		{
-            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
-            Trigger_A = ECSManager.FindEntityByName("Trigger_A");
+			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
 			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
 
 			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
@@ -179,10 +179,10 @@ namespace TRE
 			if (isScaled && !mainBlueberry && !mainStrawberry)
 			{
 				isScaled = false;
-            }
+			}
 
-            // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.E))
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
 				if (mainBlueberry)
 				{
@@ -205,17 +205,17 @@ namespace TRE
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
-            #endregion
+			#endregion
 
-            #region Drop
-            // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
-            {
+			#region Drop
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
+			{
 				MyPowerManager.DropMain();
-            }
-            #endregion
+			}
+			#endregion
 
-            dirVec.Normalize();
+			dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{

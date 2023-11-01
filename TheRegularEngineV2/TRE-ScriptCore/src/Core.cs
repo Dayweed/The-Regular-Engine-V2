@@ -63,8 +63,8 @@ namespace TRE
 			if (ECSManager.IsValidEntity(ID))
 			{
 				parenting = new Parenting(ID);
-                transform = GetComponent<Transform>();
-            }
+				transform = GetComponent<Transform>();
+			}
 			else
 			{
 				parenting = new Parenting();
@@ -147,11 +147,11 @@ namespace TRE
 		}
 
 		public void RemoveComponent<T>() where T : Component, new()
-        {
-            if (HasComponent<T>())
-            {
-                ECSManager.RemoveComponent(ID, typeof(T));
-            }
+		{
+			if (HasComponent<T>())
+			{
+				ECSManager.RemoveComponent(ID, typeof(T));
+			}
 		}
 
 
@@ -776,10 +776,10 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetKinematic(EntityID entityid, bool enable);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool GetKinematic(EntityID entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetKinematic(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetGravity(EntityID entityid, bool enable);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

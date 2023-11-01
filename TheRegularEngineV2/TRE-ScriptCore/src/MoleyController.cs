@@ -10,11 +10,11 @@ namespace TRE
 {
 	using PS = PhysicsSystem;
 	class MoleyController : Entity
-    {
-        public PowerUpManager MyPowerManager;
+	{
+		public PowerUpManager MyPowerManager;
 
-        //Check if player is on the ground
-        private bool isGrounded = true;
+		//Check if player is on the ground
+		private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max velocity
@@ -26,10 +26,10 @@ namespace TRE
 
 		private float lerpSpeed = 0.05f;
 
-        //Capsule Collider
-        public bool mainBlueberry = false;  // Scaling
-        public bool mainStrawberry = false; // Shape
-        private bool isScaled = false;
+		//Capsule Collider
+		public bool mainBlueberry = false;  // Scaling
+		public bool mainStrawberry = false; // Shape
+		private bool isScaled = false;
 		private float defaultRadius = 2f;
 		private float superRadius = 4.8f;
 		private float currentRadius = 2f;
@@ -37,16 +37,16 @@ namespace TRE
 		private float superHeight = 4.2f;
 		private float currentHeight = 2f;
 		//Transform Scale
-        private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
+		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
 
-        private Vector3 playerDirection = new Vector3(0, 0, 1);
+		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
 		public void Start()
-        {
-            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+		{
+			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
-            TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
+			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
@@ -60,8 +60,8 @@ namespace TRE
 			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			dirVec = new Vector3(0, 0, 0);
-            #region Movement
-            if (InputSystem.GetKeyDown(InputKeys.I))
+			#region Movement
+			if (InputSystem.GetKeyDown(InputKeys.I))
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
@@ -108,8 +108,8 @@ namespace TRE
 					playerDirection.y = 315;
 				}
 			}
-            
-            if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+			
+			if (InputSystem.GetKeyTrigger(InputKeys.Enter))
 			{
 				if (isGrounded)
 				{
@@ -117,22 +117,22 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
-            #endregion
+			#endregion
 
-            #region Abilities
-            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
-            mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
-            if (isScaled && !mainBlueberry && !mainStrawberry)
-            {
-                isScaled = false;
-            }
-            if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
-            {
-                if (mainBlueberry)
-                {
-                    isScaled = !isScaled;
-                }
-            }
+			#region Abilities
+			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
+			if (isScaled && !mainBlueberry && !mainStrawberry)
+			{
+				isScaled = false;
+			}
+			if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
+			{
+				if (mainBlueberry)
+				{
+					isScaled = !isScaled;
+				}
+			}
 
 			if ((isScaled == false || !mainBlueberry))
 			{
@@ -148,17 +148,17 @@ namespace TRE
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, scaledXform);
 			}
-            #endregion
+			#endregion
 
-            #region Drop
-            // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
-            {
-                MyPowerManager.DropMain();
-            }
-            #endregion
+			#region Drop
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
+			{
+				MyPowerManager.DropMain();
+			}
+			#endregion
 
-            dirVec.Normalize();
+			dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{
