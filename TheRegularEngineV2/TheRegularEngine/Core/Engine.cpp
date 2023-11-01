@@ -346,6 +346,11 @@ namespace TRE
 		s_Instance = this;
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
+		
+		if (m_EngineInfo.MaximizeWindow)
+		{
+			m_Window->MaximizeWindow();
+		}
 
 		GameLoop::Instance().Init();
 		RegisterECS();
@@ -357,11 +362,6 @@ namespace TRE
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
 		Renderer::Init();
 		m_SceneRenderer->Initialize();
-
-		if (m_EngineInfo.MaximizeWindow)
-		{
-			m_Window->MaximizeWindow();
-		}
 
 		if (m_EngineInfo.EnableEditor)
 		{
@@ -434,10 +434,7 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
-			m_SceneRenderer->BeginFrame();
-
-			if (m_EngineInfo.EnableEditor)
-				m_EditorSceneRenderer->BeginEditorFrame();
+			Renderer::BeginFrame();
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -484,10 +481,7 @@ namespace TRE
 			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
-			m_SceneRenderer->EndFrame(false);
-			
-			if (m_EngineInfo.EnableEditor)
-				m_EditorSceneRenderer->EndFrame(true);
+			Renderer::EndFrame();
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)
