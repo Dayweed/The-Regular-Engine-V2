@@ -166,24 +166,22 @@ namespace TRE
 		MonoDomain* RootDomain = nullptr;
 		MonoDomain* AppDomain = nullptr;
 
-		MonoAssembly* MonoAssembly = nullptr;
-		MonoImage* AssemblyImage = nullptr;
+		MonoAssembly* MonoCoreAssembly = nullptr;
+		MonoImage* CoreAssemblyImage = nullptr;
+
+		MonoAssembly* MonoProjectAssembly = nullptr;
+		MonoImage* ProjectAssemblyImage = nullptr;
 
 		MonoObject* DemoObject = nullptr;
 
 		ScriptClass MainClass;
-
-#ifdef DEBUG
-		bool EnableDebugging = true;
-#else
-		bool EnableDebugging = false;
-#endif
 
 		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptClasses;
 		std::unordered_map<std::string, std::shared_ptr<ScriptInstance>> ScriptInstances;
 		std::unordered_map<std::string, ScriptFieldMap> EntityFieldMap;
 
 		std::string MonoAssemblyPath;
+		std::string MonoProjectPath;
 
 	};
 
@@ -196,6 +194,7 @@ namespace TRE
 		static void Shutdown();
 
 		static bool LoadAssembly(const std::string& assemblyPath);
+		static bool LoadProjectAssembly(const std::string& projectPath);
 		static void LoadClassesFromAssembly();
 
 		static bool RecompileScripts();
