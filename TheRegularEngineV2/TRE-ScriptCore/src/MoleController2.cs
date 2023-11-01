@@ -26,7 +26,7 @@ namespace TRE
 		//Capsule Collider
 		private bool isScaled = false;
 		private float defaultScale = 1f;
-		private float superScale = 6.8f;
+		private float superScale = 4.8f;
 		private float currentScale = 1f;
 		//Transform Scale
         private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
