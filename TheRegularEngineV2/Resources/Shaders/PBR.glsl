@@ -35,12 +35,12 @@ layout(set = 0, binding = 0) uniform UBO
 	vec4 m_DirectionalLightDirection;
 	vec4 m_DirectionalLightColor;
 	vec4 m_AmbientLight;
+} ubo;
 
-	vec4 m_Color; //Color that requested
-	
-	mat4 Proj; //For skybox to be removed after M2
-	mat4 View; //For skybox to be removed after M2
-}ubo;
+layout(set = 0, binding = 6) uniform MaterialColor
+{
+	vec4 m_Color;
+} MaterialUBO;
 
 const float gamma = 2.2;
 
@@ -68,7 +68,7 @@ void main()
 	Out.PosWorld.w = gamma;
 	Out.LightColor = ubo.m_LightColor;
 	Out.CamearPos = ubo.m_CameraPosition;
-	Out.Color = ubo.m_Color;
+	Out.Color = MaterialUBO.m_Color;
 }
 
 

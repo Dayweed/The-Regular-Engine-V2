@@ -191,7 +191,6 @@ namespace TRE
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
-		ubo.m_Color = { 1.f, 1.f, 1.f, 1.f }; //Color requested set here
 
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
@@ -219,7 +218,6 @@ namespace TRE
 		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
-		ubo.m_Color = { 1.f, 1.f, 1.f, 1.f }; //Color requested set here
 		
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
