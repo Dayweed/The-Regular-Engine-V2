@@ -31,14 +31,17 @@ namespace TRE
 		public bool mainStrawberry = false; // Shape
 		private bool isScaled = false;
 		private float defaultRadius = 2f;
-		private float superRadius = 4.8f;
+		private float blueberrysuperRadius = 4.8f;
+		private float strawberrysuperRadius = 2.4f;
 		private float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float superHeight = 4.2f;
+		private float blueberrysuperHeight = 4.2f;
+		private float strawberrysuperHeight = 1.2f;
 		private float currentHeight = 1f;
 		//Transform Scale
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
+		private Vector3 blueberryscaledXform = new Vector3(1f, 2.7f, 1f);
+		private Vector3 strawberryscaledXform = new Vector3(0.5f, 1.5f, 1f);
 		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 
         private Vector3 playerDirection = new Vector3(0, 0, 1);
@@ -129,6 +132,15 @@ namespace TRE
             }
             #endregion
 
+            #region Drop
+            // Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
+            {
+                MyPowerManager.DropMain();
+                isScaled = false;
+            }
+            #endregion
+
             #region Abilities
             mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
 			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
@@ -138,13 +150,13 @@ namespace TRE
 			}
 			if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
 			{
-				if (mainBlueberry)
+				if (mainBlueberry || mainStrawberry)
 				{
 					isScaled = !isScaled;
 				}
 			}
 
-			if ((isScaled == false || !mainBlueberry))
+			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
@@ -154,24 +166,26 @@ namespace TRE
                 currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed);
                 TransformSystem.SetScaling(this.ID, currentXform);
 			}
-			else
+			else if (mainBlueberry)
 			{
-				currentHeight = MathF.Lerp(currentHeight, superHeight, lerpSpeed);
-				currentRadius = MathF.Lerp(currentRadius, superRadius, lerpSpeed);
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-                currentXform.x = MathF.Lerp(currentXform.x, scaledXform.x, lerpSpeed);
-                currentXform.y = MathF.Lerp(currentXform.y, scaledXform.y, lerpSpeed);
-                currentXform.z = MathF.Lerp(currentXform.z, scaledXform.z, lerpSpeed);
+                currentXform.x = MathF.Lerp(currentXform.x, blueberryscaledXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, blueberryscaledXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, blueberryscaledXform.z, lerpSpeed);
                 TransformSystem.SetScaling(this.ID, currentXform);
             }
-			#endregion
-
-			#region Drop
-			// Check if can trigger ability
-			if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
+			else if (mainStrawberry)
 			{
-				MyPowerManager.DropMain();
-			}
+				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed);
+				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
 			#endregion
 
 			dirVec.Normalize();
