@@ -187,10 +187,12 @@ void main()
 
 	outColor.rgb += lightModel * attenuationColor;
 
+	outColor.rgb *= shadow;
+
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
 
 	//Gamma correction
-	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / In.PosWorld.w))) * shadow;
+	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / In.PosWorld.w)));
 	outColor.a = 1.0;
 }

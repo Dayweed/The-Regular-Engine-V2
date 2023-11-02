@@ -44,7 +44,8 @@ namespace TRE
 
 	struct ShadowUBO
 	{
-		glm::mat4 depthMVP;
+		glm::mat4 view;
+		glm::mat4 proj;
 	};
 
 	struct AnimationUBO
@@ -124,8 +125,8 @@ namespace TRE
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
 			std::shared_ptr<Material> m_ShadowMaterial;
 			std::shared_ptr<UniformBuffer> m_ShadowUBO;
-			uint32_t m_ShadowMapWidth = 2048;
-			uint32_t m_ShadowMapHeight = 2048;
+			uint32_t m_ShadowMapWidth = 1600;
+			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
 			struct
 			{
