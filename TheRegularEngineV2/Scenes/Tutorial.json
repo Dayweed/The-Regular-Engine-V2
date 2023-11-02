@@ -1,7 +1,7 @@
 [
    [
-      81,
-      4293918799,
+      82,
+      4294967295,
       5242880,
       1048577,
       2,
@@ -81,7 +81,8 @@
       76,
       77,
       78,
-      9437183
+      8388687,
+      80
    ],
    [
       1,
@@ -105,7 +106,7 @@
       }
    ],
    [
-      79,
+      81,
       1048577,
       {
          "m_Children": [],
@@ -575,11 +576,24 @@
       78,
       {
          "m_Children": [],
+         "m_Parent": "13719718879326929754"
+      },
+      8388687,
+      {
+         "m_Children": [
+            "677401345089954524",
+            "2551063161106943562"
+         ],
          "m_Parent": ""
+      },
+      80,
+      {
+         "m_Children": [],
+         "m_Parent": "13719718879326929754"
       }
    ],
    [
-      79,
+      81,
       1048577,
       {
          "m_Active": true,
@@ -1132,10 +1146,24 @@
          "m_GUID": "677401345089954524",
          "m_Name": "BGM",
          "m_Tag": ""
+      },
+      8388687,
+      {
+         "m_Active": true,
+         "m_GUID": "13719718879326929754",
+         "m_Name": "Audio",
+         "m_Tag": ""
+      },
+      80,
+      {
+         "m_Active": true,
+         "m_GUID": "2551063161106943562",
+         "m_Name": "SFX",
+         "m_Tag": ""
       }
    ],
    [
-      79,
+      81,
       1048577,
       {
          "m_Position": [
@@ -1193,13 +1221,13 @@
       3,
       {
          "m_Position": [
-            -1.0632376670837402,
-            -5.921664237976074,
-            -9.889259338378906
+            1.9082229137420654,
+            -6.382340431213379,
+            -12.902750015258789
          ],
          "m_Rotation": [
             0.0,
-            2.2493097276310436e-05,
+            3.354099681018852e-05,
             0.0
          ],
          "m_Scale": [
@@ -1774,8 +1802,8 @@
             0.0
          ],
          "m_Rotation": [
-            148.2981719970703,
-            46.083961486816406,
+            0.0,
+            180.0,
             0.0
          ],
          "m_Scale": [
@@ -2557,6 +2585,42 @@
             1.0,
             1.0
          ]
+      },
+      8388687,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      80,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
       }
    ],
    [
@@ -2705,7 +2769,7 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": false,
          "m_IsKinematic": false,
-         "m_Mass": 58.643062591552734,
+         "m_Mass": 117.28612518310547,
          "m_UseGravity": true
       },
       33,
@@ -2719,7 +2783,7 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 58.643062591552734,
+         "m_Mass": 117.28612518310547,
          "m_UseGravity": true
       },
       73,
@@ -3499,9 +3563,9 @@
             1.0
          ],
          "m_Direction": [
-            0.7203569412231445,
-            -0.36448776721954346,
-            -0.5901139974594116
+            -8.742277657347586e-08,
+            0.0,
+            -1.0
          ],
          "m_DirectionalColor": [
             1.0,
@@ -3515,21 +3579,41 @@
       0
    ],
    [
-      1,
+      2,
       78,
       {
          "m_FileName": "Holie Molie_Tutorial_Latin Salsa_LOOP.wav",
          "m_Loop": false,
-         "m_MaxDistance": 300.0,
+         "m_MaxDistance": 50.0,
          "m_MinDistance": 1.0,
          "m_Mute": false,
-         "m_Pause": false,
+         "m_Pause": true,
          "m_Pitch": 1.0,
          "m_Play": true,
          "m_PlayOnStart": true,
          "m_Priority": 1,
          "m_Spatialize": false,
-         "m_Volume": 0.4000000059604645,
+         "m_Volume": 0.40,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      80,
+      {
+         "m_FileName": "FOOTSTEPS-OUTDOOR_GEN-HDF-12111_LOOP.wav",
+         "m_Loop": false,
+         "m_MaxDistance": 50.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": true,
+         "m_Pitch": 1.0,
+         "m_Play": false,
+         "m_PlayOnStart": false,
+         "m_Priority": 2,
+         "m_Spatialize": false,
+         "m_Volume": 0.5,
          "m_goPosition": [
             0.0,
             0.0,
