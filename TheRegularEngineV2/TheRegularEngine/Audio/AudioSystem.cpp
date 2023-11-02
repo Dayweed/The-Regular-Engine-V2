@@ -404,4 +404,11 @@ namespace TRE
 		radius.second = audioSource.m_MaxDistance;
 		return radius;
 	}
+
+	bool AudioSystem::GetIsPlaying(Entity& go) const
+	{
+		Audio& source = go.get()->GetComponent<Audio>();
+		return source.m_Channel->isPlaying(&source.m_isPlaying);
+	}
+
 }
