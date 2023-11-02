@@ -239,12 +239,19 @@ namespace TRE
 						}
 						else if (item.m_ResourceType == "m_Prefab")
 						{
-							if (!GameLoop::Instance().IsGameRunning())
+							if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 							{
 								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
 								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
 								Entity prefabInstance = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->DisplayPrefabInNewScene(prefabGUID);
 								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+							}
+						}
+						else if (item.m_ResourceType == "m_Scene")
+						{
+							if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
+							{
+								SceneManager::Instance().LoadScene(item.m_Path.string());
 							}
 						}
 						else
