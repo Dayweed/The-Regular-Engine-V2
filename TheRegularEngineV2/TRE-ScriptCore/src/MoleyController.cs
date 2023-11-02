@@ -33,9 +33,9 @@ namespace TRE
 		private float defaultRadius = 2f;
 		private float superRadius = 4.8f;
 		private float currentRadius = 2f;
-		private float defaultHeight = 2f;
+		private float defaultHeight = 1f;
 		private float superHeight = 4.2f;
-		private float currentHeight = 2f;
+		private float currentHeight = 1f;
 		//Transform Scale
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
