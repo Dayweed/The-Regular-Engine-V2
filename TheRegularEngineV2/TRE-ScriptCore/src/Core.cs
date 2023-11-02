@@ -837,16 +837,16 @@ namespace TRE
 	public class Audio
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPlay(string entityid);
+		internal extern static void SetPlay(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPause(string entityid);
+		internal extern static void SetPause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void StopAudio(string entityid);
+		internal extern static void StopAudio(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool GetIsPlaying(string entityid);
+		internal extern static bool GetIsPlaying(EntityID entityid);
 	}
 
 	public class Script

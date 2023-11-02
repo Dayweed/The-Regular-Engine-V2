@@ -9,6 +9,8 @@ using System.Diagnostics.Eventing.Reader;
 namespace TRE
 {
 	using PS = PhysicsSystem;
+	using AS = Audio;
+
 	class MoleyController : Entity
 	{
 		public PowerUpManager MyPowerManager;
@@ -36,13 +38,16 @@ namespace TRE
 		private float defaultHeight = 2f;
 		private float superHeight = 4.2f;
 		private float currentHeight = 2f;
+		
 		//Transform Scale
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(1f, 2.7f, 1f);
 
 		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
-		public void Start()
+        private bool isMoving = false;
+
+        public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
@@ -50,6 +55,7 @@ namespace TRE
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
+			
 		}
 
 		public void Update()
@@ -58,32 +64,36 @@ namespace TRE
 
 			//Movement Related stuff
 			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
-
+			
 			dirVec = new Vector3(0, 0, 0);
 			#region Movement
 			if (InputSystem.GetKeyDown(InputKeys.I))
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
-			}
+				isMoving = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.K))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-			}
+                isMoving = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.J))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
-			}
+                isMoving = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.L))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-			}
+                isMoving = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.I))
 			{
@@ -117,6 +127,17 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
+			
+			//SFX
+			if(isMoving && AS.GetIsPlaying(this.ID) == false)
+			{
+				//AS.SetPlay(this.ID);
+			}
+			else if(AS.GetIsPlaying(this.ID))
+			{
+                //AS.StopAudio(this.ID);
+            }
+
             #endregion
 
             #region Swap
