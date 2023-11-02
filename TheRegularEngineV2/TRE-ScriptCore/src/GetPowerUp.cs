@@ -122,7 +122,7 @@ namespace TRE
 
             Vector3 newPos = playerObj.transform.Position;
             int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
-            newPos.y += playerObj.transform.Scale.y * 4 * collectedIndex;
+            newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
             transform.Position = newPos;
             //transform.Position = newPos;
 
