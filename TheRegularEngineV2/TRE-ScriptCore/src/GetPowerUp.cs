@@ -13,15 +13,16 @@ namespace TRE
         public Entity PowerUpManagerObj;
 
         public string mole1tag = "Red";
-        public string mole2tag = "Player";
+        public string mole2tag = "Blue";
 
-        public bool drop;
         private bool collected;
-        private int collectedIndex;
+
+        private float cooldownDuration;
+        private float cooldownCurrent;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
-        private Entity playerModel;                     // private Transform playerModel;
+        // private Entity playerModel;                  // private Transform playerModel;
 
         private PowerUpManager playerPowerUpManager;
 
@@ -32,8 +33,9 @@ namespace TRE
 
         public void OnCreate()
         {
-            drop = false;
             collected = false;
+            cooldownDuration = 0.5f;
+            cooldownCurrent = 0f;
         }
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
@@ -41,11 +43,20 @@ namespace TRE
             Entity other = new Entity(otherID);
             //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
 
-            if (collected) return;
+            if (other.CompareTag("Ground"))
+            {
+                //Debug.Log("LAND BRO");
+                //RemoveComponent<Rigidbody>();
+                GetComponent<Rigidbody>().useGravity = false;
+                //PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
+                cooldownCurrent = 0;
+                return;
+            }
+
+            if (collected || cooldownCurrent > 0) return;
 
             if (other.CompareTag(mole1tag) || other.CompareTag(mole2tag))
             {
-                //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 //headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
                 //playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
                 //playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
@@ -74,58 +85,14 @@ namespace TRE
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
-                Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
-                collectedIndex = playerPowerUpManager.powerUps.Count;
+                //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
                 SetToPlayer();
 
-                // Is Mole 1
-                if (playerObj.CompareTag(mole1tag))
-                {
-                    MoleController controller = playerObj.GetComponent<MoleController>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
+                collected = true;
 
-                    if (controller == null)
-                    {
-                        Debug.LogError("Could not find playerControl");
-                        return;
-                    }
-
-                    // Check what type of powerup it is (Default Blueberry for now)
-                    if (CompareTag("Strawberry"))
-                    {
-                        controller.haveStrawberry = true;
-                    }
-                    else if (CompareTag("Blueberry"))
-                    {
-                        controller.haveBlueberry = true;
-                    }
-
-                    collected = true;
-                }
-                // Is Mole 2
-                else if (playerObj.CompareTag(mole2tag))
-                {
-                    MoleController2 controller = playerObj.GetComponent<MoleController2>();               //playerControl = playerObj.gameObject.GetComponent<MoleController>();
-
-                    if (controller == null)
-                    {
-                        Debug.LogError("Could not find playerControl");
-                        return;
-                    }
-
-                    // Check what type of powerup it is (Default Blueberry for now)
-                    if (CompareTag("Strawberry"))
-                    {
-                        controller.haveStrawberry = true;
-                    }
-                    else if (CompareTag("Blueberry"))
-                    {
-                        controller.haveBlueberry = true;
-                    }
-
-                    collected = true;
-                }
+                GetComponent<Rigidbody>().useGravity = false;
             }
         }
 
@@ -137,6 +104,7 @@ namespace TRE
 
         public void Update()
         {
+            cooldownCurrent -= Time.deltaTime;
             SetToPlayer();
         }
 
@@ -150,14 +118,24 @@ namespace TRE
             if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
             Vector3 newPos = playerObj.transform.Position;
-            newPos.y += playerObj.transform.Scale.y * 5 * (collectedIndex + 1);
-            GetComponent<Transform>().Position = newPos;
+            int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
+            newPos.y += playerObj.transform.Scale.y * 4 * collectedIndex;
+            transform.Position = newPos;
             //transform.Position = newPos;
 
             //RigidBodySystem.SetKinematic(ID, false);                             //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;     // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<Collider>().enabled = false;         // THIS CANT BE DONE YET!
             //this.gameObject.GetComponent<RotateObj>().enabled = false;        // THIS CANT BE DONE YET!
             //SetActive(false);                                                   //this.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
+        public void ReleasePowerUp()
+        {
+            playerObj = null;
+            collected = false;
+            GetComponent<Rigidbody>().useGravity = true;
+            PhysicsSystem.AddForce(this.ID, new Vector3(0, 35, 0), ForceMode.VelocityChange);
+            cooldownCurrent = cooldownDuration;
         }
 
         public void TurnOnVisuals()

@@ -360,8 +360,8 @@ namespace TRE
 		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		Renderer::Init();
 		m_SceneRenderer->Initialize();
+		Renderer::Init();
 
 		if (m_EngineInfo.EnableEditor)
 		{
@@ -425,9 +425,9 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
-		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
+		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 
 		// Allocate Default Size for Memory Manager
 		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
@@ -440,6 +440,7 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
+			
 			Renderer::BeginFrame();
 
 			// Update

@@ -96,8 +96,8 @@ namespace TRE
 
 	void PrefabSystem::Init()
 	{
-		DeserializePrefabDirectory();
-		SerializePrefabDirectory();
+		// Update Prefab Directory if there is invalid data
+		if (DeserializePrefabDirectory()) SerializePrefabDirectory();
 	}
 
 	void PrefabSystem::Update()
@@ -122,8 +122,6 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
-		// Mimick Game Loop when forcing the scene to be resetted
-		ECSSystemManager::Instance().BeforeReset();
 
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
@@ -135,6 +133,9 @@ namespace TRE
 			GameLoop::Instance().GetBackUpRegistry().clear();
 			ECSManager::Instance().SaveRegistry(GameLoop::Instance().GetBackUpRegistry());
 		}
+
+		// Mimick Game Loop when forcing the scene to be resetted
+		ECSSystemManager::Instance().BeforeReset();
 
 		// Clear the "scene" and show the displayed prefab
 		ECSManager::Instance().DestroyAll();
@@ -773,7 +774,7 @@ namespace TRE
 		return GUID;
 	}
 
-	void PrefabSystem::DeserializePrefabDirectory()
+	bool PrefabSystem::DeserializePrefabDirectory()
 	{
 		// Prepare file name [For deserialization too]
 		std::string filePathString{ FILESYS_PREFABDIR };
@@ -851,6 +852,8 @@ namespace TRE
 		{
 			m_ExistingPrefabs.erase(invalid);
 		}
+
+		return !invalidGUIDs.empty();
 	}
 
 	void PrefabSystem::SerializePrefabDirectory()

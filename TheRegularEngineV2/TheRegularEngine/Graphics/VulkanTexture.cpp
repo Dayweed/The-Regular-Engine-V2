@@ -119,10 +119,10 @@ namespace TRE
 		range.baseMipLevel = 0;
 		range.levelCount = 1;
 		range.baseArrayLayer = 0;
-		range.layerCount = Config.Textures.size();
+		range.layerCount = static_cast<uint32_t>(Config.Textures.size());
 
 		std::vector<VkBufferImageCopy> bufferCopyRegions;
-		for (int x = 0; x < Config.Textures.size(); x++)
+		for (unsigned x = 0; x < Config.Textures.size(); x++)
 		{
 			VkBufferImageCopy bufferCopyRegion = {};
 			bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;

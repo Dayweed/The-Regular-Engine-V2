@@ -9,7 +9,7 @@ namespace TRE
 		private Entity Player1;
 		private Entity Player2;
 
-		private MoleController moleController;
+		private HoleyController moleController;
 		private float distance = 35;
 
 		private float distanceA = 35;
@@ -26,7 +26,7 @@ namespace TRE
 		public void Start()
 		{
 			Player1 = ECSManager.FindEntityByName("Holey");
-			moleController = Player1.GetComponent<MoleController>();
+			moleController = Player1.GetComponent<HoleyController>();
 			Player2 = ECSManager.FindEntityByName("Moley");
 		}
 

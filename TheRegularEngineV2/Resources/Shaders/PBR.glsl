@@ -19,6 +19,7 @@ layout(location = 0) out struct
 	vec3 VertColor;
 	vec2 TexCoord;
 	vec4 Color;
+	vec4 AmbientColor;
 } Out;
 
 layout(push_constant) uniform Push
@@ -69,8 +70,8 @@ void main()
 	Out.LightColor = ubo.m_LightColor;
 	Out.CamearPos = ubo.m_CameraPosition;
 	Out.Color = MaterialUBO.m_Color;
+	Out.AmbientColor = ubo.m_AmbientLight;
 }
-
 
 #version 450
 
@@ -86,6 +87,7 @@ layout(location = 0) in struct
 	vec3 VertColor;
 	vec2 TexCoord;
 	vec4 Color;
+	vec4 AmbientColor;
 } In;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
@@ -96,7 +98,6 @@ layout(set = 0, binding = 5) uniform sampler2D Metalness;
 
 layout(location = 0) out vec4 outColor;
 
-const float AMBIENT_INTENSITY = 0.05;
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
 void main() 
@@ -130,7 +131,7 @@ void main()
 	//Diffuse color
 	vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord);
 
-	outColor.rgb = AMBIENT_INTENSITY.rrr * diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb;
+	outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a * diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
 
 	vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
 

@@ -6,6 +6,7 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EditorSystem.h"
 #include "Scripting/ScriptEngine.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -54,7 +55,16 @@ namespace TRE
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F5))
 		{
-			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+			// Display button to return to scene
+			if (GameLoop::Instance().GetDisplayingPrefab())
+			{
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+			}
+			else
+			{
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+			}
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);

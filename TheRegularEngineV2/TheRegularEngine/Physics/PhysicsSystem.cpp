@@ -16,7 +16,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 1
+#define USE_PHYSX_PVD 0
 #endif
 
 using namespace physx;
@@ -458,9 +458,9 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -498,9 +498,9 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...

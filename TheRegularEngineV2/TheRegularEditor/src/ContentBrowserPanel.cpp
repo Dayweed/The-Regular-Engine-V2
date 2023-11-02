@@ -56,7 +56,7 @@ namespace TRE
 				//Determine the type of resource to drag and drop
 				const bool isImage = filenameString.ends_with(".png");
 				const bool isAudio = filenameString.ends_with(".wav");
-				const bool isShader = filenameString.ends_with(".glsl") || filenameString.ends_with(".frag");
+				const bool isShader = filenameString.ends_with(".glsl");
 				const bool isScene = filenameString.ends_with(".json");
 				const bool isPrefab = filenameString.ends_with(".prefab");
 				const bool isMeta = filenameString.ends_with(".meta");
