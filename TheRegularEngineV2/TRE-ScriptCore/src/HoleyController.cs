@@ -37,6 +37,7 @@ namespace TRE
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
+		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 
 		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
@@ -204,16 +205,22 @@ namespace TRE
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				TransformSystem.SetScaling(this.ID, defaultXform);
-			}
+                currentXform.x = MathF.Lerp(currentXform.x, defaultXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, defaultXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
 			else
 			{
 				//for fat boi
 				currentHeight = MathF.Lerp(currentHeight, superHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, superRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				TransformSystem.SetScaling(this.ID, scaledXform);
-			}
+                currentXform.x = MathF.Lerp(currentXform.x, scaledXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, scaledXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, scaledXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
 			#endregion
 
 			#region Drop
