@@ -153,7 +153,7 @@ namespace TRE
 			std::string label = (*timer).first;
 			if (label.find(EditLabel) != std::string::npos)
 				label.erase(label.find(EditLabel), EditLabel.length());
-			if((*timer).first == "Draw" || (*timer).first == "class TRE::PhysicsSystem")
+			if((*timer).first == "Draw" || (*timer).first == "class TRE::PhysicsSystem" || (*timer).first == "class TRE::ScriptingSystem")
 				tmp.insert({ label, (*timer).second });
 		}
 		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{tmp});
