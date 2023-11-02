@@ -13,6 +13,8 @@ namespace TRE
 	{
 		public PowerUpManager MyPowerManager;
 
+		//Check if player is boosted jump
+		private bool isBoostedJump = false;
 		//Check if player is on the ground
 		private bool isGrounded = true;
 		//direction vector
@@ -117,8 +119,17 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 35, 0);
-					Jump(maxHeight);
+					// Boosted Jump
+					if (isBoostedJump)
+                    {
+                        Vector3 maxHeight = new Vector3(0, 70, 0);
+                        Jump(maxHeight);
+                    }
+					else
+					{
+						Vector3 maxHeight = new Vector3(0, 35, 0);
+						Jump(maxHeight);
+					}
 				}
 			}
             #endregion
@@ -217,9 +228,14 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
+			// Check is activated jumppad
+			if (other.CompareTag("JumpPad"))
+			{
+				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
+            }
 			if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Red")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Red")
 				{
 					isGrounded = true;
 				}
@@ -236,6 +252,12 @@ namespace TRE
                     if (output.y > maxVelocity)
                         output.y = maxVelocity;
                     PS.SetLinearVelocity(this.ID, output);
+                }
+                // No longer boosted if leave jumppad
+                else if (EngineGetTag(otherID) == "JumpPad")
+                {
+					isBoostedJump = false;
+                    isGrounded = false;
                 }
             }
         }

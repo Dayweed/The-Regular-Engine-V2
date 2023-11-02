@@ -4,13 +4,15 @@
             "10912187722202796678",
             "11822093139939255162",
             "2190832989083742842",
-            "8829880216004354162"
+            "8829880216004354162",
+            "6452796380767818092"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/Holey.json",
             "../Resources/Prefabs/FallingMaracca.json",
             "../Resources/Prefabs/Moley.json",
-            "../Resources/Prefabs/FallingHat.json"
+            "../Resources/Prefabs/FallingHat.json",
+            "../Resources/Prefabs/JumpPad.json"
         ]
     }
 }

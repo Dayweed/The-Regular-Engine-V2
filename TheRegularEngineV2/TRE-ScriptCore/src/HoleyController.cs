@@ -12,8 +12,10 @@ namespace TRE
 	{
 		public PowerUpManager MyPowerManager;
 
-		//check if player is on the ground (for now , just a plane)
-		private bool isGrounded = true;
+        //Check if player is boosted jump
+        private bool isBoostedJump = false;
+        //check if player is on the ground (for now , just a plane)
+        private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max Velocity vector
@@ -171,10 +173,19 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 35, 0);
-					Jump(maxHeight);
+					// Boosted Jump
+					if (isBoostedJump)
+					{
+						Vector3 maxHeight = new Vector3(0, 70, 0);
+						Jump(maxHeight);
+					}
+					else
+					{
+						Vector3 maxHeight = new Vector3(0, 35, 0);
+						Jump(maxHeight);
+					}
 				}
-			}
+            }
             #endregion
 
             #region Swap
@@ -294,9 +305,14 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
-			if (PS.IsCollisionStay(this.ID, otherID))
+            // Check is activated jumppad
+            if (other.CompareTag("JumpPad"))
+            {
+                if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
+            }
+            if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Blue")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Blue")
 				{
 					isGrounded = true;
 				}
@@ -313,8 +329,14 @@ namespace TRE
 					if (output.y > maxVelocity)
 						output.y = maxVelocity;
 					PS.SetLinearVelocity(this.ID, output);
-				}
-			}
+                }
+                // No longer boosted if leave jumppad
+                else if (EngineGetTag(otherID) == "JumpPad")
+                {
+                    isBoostedJump = false;
+                    isGrounded = false;
+                }
+            }
 		}
 
 		private bool IsInsideTrigger(Entity entity)
