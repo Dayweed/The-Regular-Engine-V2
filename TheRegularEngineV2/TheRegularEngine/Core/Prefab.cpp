@@ -145,6 +145,7 @@ namespace TRE
 		MainCamera->AddComponent<Camera>();
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
 
+		m_DisplayedPrefab = nullptr;
 		m_DisplayedPrefab = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID);
 
 		GameLoop::Instance().SetDisplayingPrefab(true);
@@ -156,6 +157,8 @@ namespace TRE
 
 	void PrefabSystem::ReturnToScene()
 	{
+		m_DisplayedPrefab = nullptr;
+
 		// Mimick Game Loop when forcing the scene to be resetted
 		ECSSystemManager::Instance().BeforeReset();
 
@@ -487,7 +490,36 @@ namespace TRE
 
 		ResetTempPrefab();
 
+		// Construct if it is not displaying prefab (m_DisplayedPrefab == nullptr)
+		if (m_DisplayedPrefab) ConstructPhysicPrefab(instance);
+
 		return instance;
+	}
+
+	// TO CHANGE
+	void PrefabSystem::ConstructPhysicPrefab(Entity parent)
+	{
+		// Construct RigidBody, Sphere, Box or Capsule (TO CHANGE)
+		parent->HasComponent<Rigidbody>() && ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructRigidbody(parent);
+		if (parent->HasComponent<SphereCollider>())
+		{
+			SphereCollider& sc{ parent->GetComponent<SphereCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructSphereCollider(parent, sc.m_Radius, sc.m_Offset);
+		}
+		if (parent->HasComponent<BoxCollider>())
+		{
+			BoxCollider& bc{ parent->GetComponent<BoxCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructBoxCollider(parent, bc.m_HalfExtents, bc.m_Offset);
+		}
+		if (parent->HasComponent<CapsuleCollider>())
+		{
+			CapsuleCollider& cc{ parent->GetComponent<CapsuleCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(parent, cc.m_Radius, cc.m_HalfHeight);
+		}
+		for (Entity child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parent))
+		{
+			ConstructPhysicPrefab(child);
+		}
 	}
 
 	std::unordered_map<std::string, Entity> PrefabSystem::GetPrefabEntity(std::string prefabFilePath)

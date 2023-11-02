@@ -207,6 +207,16 @@ namespace TRE
 					isGrounded = false;
 				}
 			}
-		}
+            if (PS.IsCollisionExit(this.ID, otherID))
+            {
+                if (EngineGetTag(otherID) == "Red")
+                {
+                    PS.GetLinearVelocity(this.ID, out Vector3 output);
+                    if (output.y > maxVelocity)
+                        output.y = maxVelocity;
+                    PS.SetLinearVelocity(this.ID, output);
+                }
+            }
+        }
 	}
 }

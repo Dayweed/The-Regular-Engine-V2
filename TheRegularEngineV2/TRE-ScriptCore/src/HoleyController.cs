@@ -284,7 +284,7 @@ namespace TRE
 			}
 			if (PS.IsCollisionExit(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Blue")
 				{
 					PS.GetLinearVelocity(this.ID, out Vector3 output);
 					if (output.y > maxVelocity)
