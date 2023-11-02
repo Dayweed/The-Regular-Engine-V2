@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "16127539437416611749",
+         "m_GUID": "11364341643031427214",
          "m_Name": "FallingMaracca",
          "m_Tag": ""
       }
@@ -74,11 +74,11 @@
          "m_FreezePositionX": false,
          "m_FreezePositionY": false,
          "m_FreezePositionZ": false,
-         "m_FreezeRotationX": false,
-         "m_FreezeRotationY": false,
-         "m_FreezeRotationZ": false,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 8.0,
+         "m_Mass": 160.0,
          "m_UseGravity": true
       }
    ],
@@ -90,14 +90,14 @@
       0,
       {
          "m_HalfExtents": [
-            1.0,
-            1.0,
-            1.0
+            2.0,
+            5.0,
+            2.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
-            0.0,
+            0.20000000298023224,
             0.0
          ]
       }

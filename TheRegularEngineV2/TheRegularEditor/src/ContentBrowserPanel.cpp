@@ -66,13 +66,13 @@ namespace TRE
 				const bool isMaterial = filenameString.ends_with(".material.desc");
 
 				//Determine the icon type
-				newAsset.m_TextureID = isImage							? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isAudio							? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isScene || isShader || isPrefab	? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isMeta							? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isFont							? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = is3DObj							? m_TmpTexturesID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isMaterial						? m_TmpTexturesID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isImage							? m_ImageIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isAudio							? m_AudioIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isScene || isShader || isPrefab	? m_CubeIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isMeta							? m_MetaIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isFont							? m_FontIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = is3DObj							? m_3DObjIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isMaterial						? m_MaterialIconID : newAsset.m_TextureID;
 
 				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj || isMaterial)
 				{
@@ -303,6 +303,27 @@ namespace TRE
 	{
 		m_TmpTextures = Util::CreateIcon("icon-file.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_CubeIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+		
+		m_TmpTextures = Util::CreateIcon("png_icon.png");
+		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
+		
+		m_TmpTextures = Util::CreateIcon("wav_icon.png");
+		m_AudioIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
+		
+		m_TmpTextures = Util::CreateIcon("ttf_icon.png");
+		m_FontIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
+		
+		m_TmpTextures = Util::CreateIcon("meta_icon.png");
+		m_MetaIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
+		
+		m_TmpTextures = Util::CreateIcon("material_icon.png");
+		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
+		
+		m_TmpTextures = Util::CreateIcon("fbx_icon.png");
+		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 	}
 	
 	void ContentBrowserPanel::Update()

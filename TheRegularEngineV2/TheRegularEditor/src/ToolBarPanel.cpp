@@ -61,7 +61,7 @@ namespace TRE
 				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 			}
-			else
+
 			{
 				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 			}
@@ -71,15 +71,21 @@ namespace TRE
 
 		if (ImGui::ImageButton(m_PauseID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F6))
 		{
-			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
+			if (!GameLoop::Instance().GetDisplayingPrefab())
+			{
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
+			}
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
 
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F7))
 		{
-			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
-			EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+			if (!GameLoop::Instance().GetDisplayingPrefab())
+			{
+				EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{ false });
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+			}
 		}
 
 		ImGui::PopStyleColor(2);

@@ -12,8 +12,8 @@ namespace TRE
 	{
 		public PowerUpManager MyPowerManager;
 
-        //check if player is on the ground (for now , just a plane)
-        private bool isGrounded = true;
+		//check if player is on the ground (for now , just a plane)
+		private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max Velocity vector
@@ -37,6 +37,7 @@ namespace TRE
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
+		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 
 		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
@@ -67,9 +68,9 @@ namespace TRE
 
 		public void Start()
 		{
-            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
-            Trigger_A = ECSManager.FindEntityByName("Trigger_A");
+			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
 			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
 
 			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
@@ -171,18 +172,27 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
-			#endregion
+            #endregion
 
-			#region Ability
-			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+            #region Swap
+            // Check if can swap ability
+            if (InputSystem.GetKeyTrigger(InputKeys.Q))
+            {
+                MyPowerManager.SwapPowerUps();
+                isScaled = false;
+            }
+            #endregion
+
+            #region Ability
+            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
 			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
 			if (isScaled && !mainBlueberry && !mainStrawberry)
 			{
 				isScaled = false;
-            }
+			}
 
-            // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.E))
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
 				if (mainBlueberry)
 				{
@@ -195,27 +205,33 @@ namespace TRE
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				TransformSystem.SetScaling(this.ID, defaultXform);
-			}
+                currentXform.x = MathF.Lerp(currentXform.x, defaultXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, defaultXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
 			else
 			{
 				//for fat boi
 				currentHeight = MathF.Lerp(currentHeight, superHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, superRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				TransformSystem.SetScaling(this.ID, scaledXform);
-			}
-            #endregion
-
-            #region Drop
-            // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
-            {
-				MyPowerManager.DropMain();
+                currentXform.x = MathF.Lerp(currentXform.x, scaledXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, scaledXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, scaledXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
             }
-            #endregion
+			#endregion
 
-            dirVec.Normalize();
+			#region Drop
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
+			{
+				MyPowerManager.DropMain();
+			}
+			#endregion
+
+			dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{
@@ -275,7 +291,7 @@ namespace TRE
 			}
 			if (PS.IsCollisionExit(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Blue")
 				{
 					PS.GetLinearVelocity(this.ID, out Vector3 output);
 					if (output.y > maxVelocity)
