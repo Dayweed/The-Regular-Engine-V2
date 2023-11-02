@@ -10,10 +10,10 @@ namespace TRE
     public class GetPowerUp : Entity
     {
         public PowerUpsType powerUpType;
-        public Entity PowerUpManagerObj;
+        private Entity PowerUpManagerObj;
 
-        public string mole1tag = "Red";
-        public string mole2tag = "Blue";
+        private string mole1tag = "Red";
+        private string mole2tag = "Blue";
 
         private bool collected;
 
@@ -85,6 +85,8 @@ namespace TRE
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
+                Debug.Log("PCIKED");
+
                 //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 
@@ -104,6 +106,7 @@ namespace TRE
 
         public void Update()
         {
+            if (!collected) return;
             cooldownCurrent -= Time.deltaTime;
             SetToPlayer();
         }

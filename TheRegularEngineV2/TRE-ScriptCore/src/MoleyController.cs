@@ -117,10 +117,19 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
-			#endregion
+            #endregion
 
-			#region Abilities
-			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+            #region Swap
+            // Check if can swap ability
+            if (InputSystem.GetKeyTrigger(InputKeys.Backslash))
+            {
+                MyPowerManager.SwapPowerUps();
+                isScaled = false;
+            }
+            #endregion
+
+            #region Abilities
+            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
 			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
 			if (isScaled && !mainBlueberry && !mainStrawberry)
 			{
