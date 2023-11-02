@@ -1172,11 +1172,11 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->StopAudio(entity);
 	}
 
-	static bool BindIsPlaying(MonoString* id)
+	/*static bool BindIsPlaying(MonoString* id)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
-	}
+	}*/
 
 #pragma endregion
 

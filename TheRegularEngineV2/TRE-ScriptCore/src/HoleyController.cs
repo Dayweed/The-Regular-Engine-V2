@@ -7,9 +7,8 @@ using System.Threading;
 namespace TRE
 {
 	using PS = PhysicsSystem;
-    using AS = Audio;
 
-    public class HoleyController : Entity
+	public class HoleyController : Entity
 	{
 		public PowerUpManager MyPowerManager;
 
@@ -66,9 +65,7 @@ namespace TRE
 
 		public float elapsedTime = 0.0f;
 
-        private bool isMoving = false;
-
-        public void Start()
+		public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
@@ -122,29 +119,25 @@ namespace TRE
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
-				isMoving = true;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-                isMoving = true;
-            }
+			}
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
-                isMoving = true;
-            }
+			}
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-                isMoving = true;
-            }
+			}
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
@@ -178,17 +171,6 @@ namespace TRE
 					Jump(maxHeight);
 				}
 			}
-
-            //SFX
-            if (isMoving && AS.GetIsPlaying(this.ID) == false)
-            {
-                //AS.SetPlay(this.ID);
-            }
-            else if (AS.GetIsPlaying(this.ID))
-            {
-                //AS.StopAudio(this.ID);
-            }
-
             #endregion
 
             #region Swap
