@@ -26,7 +26,7 @@ namespace TRE
 		return m_DescriptorPool;
 	}
 
-	std::vector<std::unique_ptr<Image2D>>& SceneRenderer::GetColorImages()
+	std::vector<std::shared_ptr<Image2D>> SceneRenderer::GetColorImages()
 	{
 		return m_ColorImages;
 	}
@@ -37,9 +37,9 @@ namespace TRE
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
 		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
-		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
-		m_UBOSkybox = std::make_shared<UniformBuffer>(sizeof(SkyBoxUBO), 0);
-		
+		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
+		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
+
 		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 		//m_L2W = glm::identity<glm::mat4>();
 		//m_L2W = glm::scale(m_L2W, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -53,7 +53,6 @@ namespace TRE
 	void SceneRenderer::Initialize()
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
@@ -131,7 +130,7 @@ namespace TRE
 		ImageCon.Usage = ImageUsage::Attachment;
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			m_ColorImages[x] = std::make_unique<Image2D>(ImageCon);
+			m_ColorImages[x] = std::make_shared<Image2D>(ImageCon);
 		}
 
 		ImageConfig ImageCon2{};
@@ -242,7 +241,6 @@ namespace TRE
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
-		// auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		m_CommandBuffer->Begin();
 
@@ -262,11 +260,9 @@ namespace TRE
 		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
+		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
 
-		//std::set<ResourceHandle> renderedMaterials;
 		std::multimap<ResourceHandle, Entity> materialSort;
-
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
@@ -354,7 +350,7 @@ namespace TRE
 
 		//Skybox Pass
 		{
-			vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipeline());
+			Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
 			if (IsEditorScene)
 			{
 				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index);
@@ -385,7 +381,7 @@ namespace TRE
 			//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 		}
 
-		m_RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
+		Renderer::EndRenderPass(m_CommandBuffer);
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
@@ -393,7 +389,7 @@ namespace TRE
 
 	void SceneRenderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
-		m_DebugRenderer->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
+		Renderer::BindPipeline(m_CommandBuffer, m_DebugRenderer->GetPipeline());
 		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
@@ -529,6 +525,7 @@ namespace TRE
 		CubeConfig.Width = Texture1->GetWidth();
 		CubeConfig.SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 		CubeConfig.Textures = { Texture4, Texture2, Texture6, Texture5, Texture1, Texture3 };
+
 		m_SkyboxTexture = std::make_shared<VulkanTexture>(CubeConfig);
 		
 		//Backface culling
@@ -559,8 +556,12 @@ namespace TRE
 			6, 7, 3  // Triangle 12 (top face)
 		};
 
-		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(vertices[0]));
-		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
+		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()),
+			UINT32_T_CAST(vertices.size() * sizeof(vertices[0])));
+
+		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(indices.size() * sizeof(uint32_t)),
+			UINT32_T_CAST(indices.size()));
 
 		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
 		m_SkyboxMaterial->Invalidate();

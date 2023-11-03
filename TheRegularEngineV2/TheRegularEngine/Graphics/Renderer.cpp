@@ -19,7 +19,7 @@ namespace TRE
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
 	FinalRenderData* Renderer::s_FinalRenderData = nullptr;
 
-	static std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
+	std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
 		uint32_t m_VertexCount = static_cast<std::uint32_t>(vertices.size());
 		assert(m_VertexCount >= 3 && "Vertex count must be at least 3");
@@ -40,7 +40,7 @@ namespace TRE
 		return Vbuffer;
 	}
 
-	static std::unique_ptr<Buffer> CreateIndexBuffer(const std::vector<int>& indices)
+	std::unique_ptr<Buffer> CreateIndexBuffer(const std::vector<int>& indices)
 	{
 		uint32_t m_IndexCount = static_cast<std::uint32_t>(indices.size());
 
@@ -62,12 +62,10 @@ namespace TRE
 	void Renderer::Init()
 	{
 		s_FinalRenderData = new FinalRenderData;
-
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-		// auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		
 		float x = -1; float y = -1;
 		float width = 2, height = 2;
-
 		std::vector<QuadVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
@@ -84,16 +82,21 @@ namespace TRE
 
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			s_FinalRenderData->VertexBuffer = CreateVertexBuffer(data);
+			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(data.data()),
+				UINT32_T_CAST(sizeof(QuadVertex) * data.size()));
+
 			std::vector<int> indices = { 0,1,2,2,3,0 };
-			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
-			s_FinalRenderData->RenderPass = SwapChain->GetRenderPassPointer();
+			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+				UINT32_T_CAST(sizeof(int) * indices.size()),
+				UINT32_T_CAST(indices.size()));
+
+			s_FinalRenderData->RenderPass = SwapChain->GetRenderPass();
 
 			PipelineConfigurations PipelineConfig;
 			PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(4);
 			PipelineConfig.Primitive = PrimitiveType::Triangles;
 			PipelineConfig.VertexStride = PipelineConfig.Shader->GetVertexStrides();
-			s_FinalRenderData->Pipeline = std::make_unique<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
+			s_FinalRenderData->Pipeline = std::make_shared<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
 			s_FinalRenderData->Material = std::make_unique<Material>(PipelineConfig.Shader);
 			s_FinalRenderData->Material->Invalidate();
 		}
@@ -140,11 +143,9 @@ namespace TRE
 		scissor.offset.y = 0;
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		s_FinalRenderData->ImageInfo = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo();
-		
-		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipeline());
+		Renderer::BindPipeline(m_CommandBuffer, s_FinalRenderData->Pipeline);
 
-		s_FinalRenderData->Material->UpdateCompsitePass(s_FinalRenderData->ImageInfo);
+		s_FinalRenderData->Material->UpdateCompsitePass(Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo());
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(),
 			0, 1, &s_FinalRenderData->Material->GetDescriptor(swapChain->GetCurrentBufferIndex()), 0, NULL);
 
@@ -156,7 +157,47 @@ namespace TRE
 
 		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), 6, 1, 0, 0, 0);
 
-		s_FinalRenderData->RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
-		vkEndCommandBuffer(m_CommandBuffer->GetInUseCommandBuffer());
+		EndRenderPass(m_CommandBuffer);
+		m_CommandBuffer->End();
+	}
+
+	//To be implemented after framebuffer/renderpass abstraction
+	void Renderer::BeginRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<RenderPass>& Renderpass)
+	{
+		(void)CommandBuffer;
+		(void)Renderpass;
+	}
+
+	void Renderer::EndRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer)
+	{
+		vkCmdEndRenderPass(CommandBuffer->GetInUseCommandBuffer());
+	}
+
+	void Renderer::BeginFrame()
+	{
+		Engine::GetInstance().GetMainSceneRenderer()->BeginFrame();
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			Engine::GetInstance().GetEditorSceneRenderer()->BeginEditorFrame();
+		}
+	}
+	
+	void Renderer::EndFrame()
+	{
+		Engine::GetInstance().GetMainSceneRenderer()->EndFrame(false);
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			Engine::GetInstance().GetEditorSceneRenderer()->EndFrame(true);
+		}
+	}
+
+	void Renderer::BindPipeline(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<Pipeline>& Pipeline, bool IsCompute)
+	{
+		if (!IsCompute)
+			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline->GetPipeline());
+		else
+			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, Pipeline->GetPipeline());
 	}
 }

@@ -42,7 +42,7 @@ namespace TRE
 			m_Root.push_back(m_Current);
 		}
 
-		std::filesystem::path path{ m_FileName };
+		const std::filesystem::path path{ m_FileName };
 		std::filesystem::create_directories(path.parent_path());
 		std::ofstream file(path);
 		file << m_Root.dump(3);
@@ -96,8 +96,8 @@ namespace TRE
 
 	void PrefabSystem::Init()
 	{
-		DeserializePrefabDirectory();
-		SerializePrefabDirectory();
+		// Update Prefab Directory if there is invalid data
+		if (DeserializePrefabDirectory()) SerializePrefabDirectory();
 	}
 
 	void PrefabSystem::Update()
@@ -122,8 +122,6 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
-		// Mimick Game Loop when forcing the scene to be resetted
-		ECSSystemManager::Instance().BeforeReset();
 
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
@@ -136,6 +134,11 @@ namespace TRE
 			ECSManager::Instance().SaveRegistry(GameLoop::Instance().GetBackUpRegistry());
 		}
 
+		GameLoop::Instance().SetDisplayingPrefab(true);
+
+		// Mimick Game Loop when forcing the scene to be resetted
+		ECSSystemManager::Instance().BeforeReset();
+
 		// Clear the "scene" and show the displayed prefab
 		ECSManager::Instance().DestroyAll();
 
@@ -144,9 +147,8 @@ namespace TRE
 		MainCamera->AddComponent<Camera>();
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
 
+		m_DisplayedPrefab = nullptr;
 		m_DisplayedPrefab = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID);
-
-		GameLoop::Instance().SetDisplayingPrefab(true);
 
 		ECSSystemManager::Instance().AfterReset();
 
@@ -155,6 +157,8 @@ namespace TRE
 
 	void PrefabSystem::ReturnToScene()
 	{
+		m_DisplayedPrefab = nullptr;
+
 		// Mimick Game Loop when forcing the scene to be resetted
 		ECSSystemManager::Instance().BeforeReset();
 
@@ -702,9 +706,9 @@ namespace TRE
 				{
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
-					List.push_back(property::entry { PropertyName, Data });
+					List.emplace_back(PropertyName, Data);
 				});
-			instPropTable.push_back({ instInspectableComp[i].first, List });
+			instPropTable.emplace_back(instInspectableComp[i].first, List);
 		}
 
 		// Remove all components in one entity
@@ -773,7 +777,7 @@ namespace TRE
 		return GUID;
 	}
 
-	void PrefabSystem::DeserializePrefabDirectory()
+	bool PrefabSystem::DeserializePrefabDirectory()
 	{
 		// Prepare file name [For deserialization too]
 		std::string filePathString{ FILESYS_PREFABDIR };
@@ -851,6 +855,8 @@ namespace TRE
 		{
 			m_ExistingPrefabs.erase(invalid);
 		}
+
+		return !invalidGUIDs.empty();
 	}
 
 	void PrefabSystem::SerializePrefabDirectory()
@@ -975,9 +981,9 @@ namespace TRE
 				{
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
-					List.push_back(property::entry { PropertyName, Data });
+					List.emplace_back(PropertyName, Data);
 				});
-			instPropTable.push_back({ instInspectableComp[i].first, List });
+			instPropTable.emplace_back(instInspectableComp[i].first, List);
 		}
 
 		// Copy tempPrefab Stuff
@@ -991,9 +997,9 @@ namespace TRE
 				{
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
-					List.push_back(property::entry { PropertyName, Data });
+					List.emplace_back(PropertyName, Data);
 				});
-			prefPropTable.push_back({ prefInspectableComp[i].first, List });
+			prefPropTable.emplace_back(prefInspectableComp[i].first, List);
 		}
 
 		// Add components marked as to be added into instance

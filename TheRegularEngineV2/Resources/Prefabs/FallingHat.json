@@ -1,0 +1,124 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "8829880216004354162",
+         "m_Overrides": {},
+         "m_PrefabGUID": "8829880216004354162",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "12678098319685453658",
+         "m_Name": "FallingHat",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            20.0
+         ],
+         "m_Rotation": [
+            -179.99998474121094,
+            -5.008956577512436e-06,
+            -179.99998474121094
+         ],
+         "m_Scale": [
+            2.0,
+            2.0,
+            2.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 172.8000030517578,
+         "m_UseGravity": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_HalfExtents": [
+            4.5,
+            1.2000000476837158,
+            4.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_StoredClass": "TRE.FallingObj"
+      }
+   ]
+]

@@ -17,6 +17,11 @@ namespace TRE
 		return m_DebugDrawPipeline->GetPipelineLayout();
 	}
 
+	const std::shared_ptr<Pipeline>& DebugRenderer::GetPipeline() const
+	{
+		return m_DebugDrawPipeline;
+	}
+
 	DebugRenderer::DebugRenderer(std::shared_ptr<RenderPass> TargetPass) : m_RenderPass(TargetPass)
 	{
 		auto DebugDrawShader = ResourceManager::Instance().GetResource<Shader>(7);
@@ -25,7 +30,7 @@ namespace TRE
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
 		DebugDrawPipelineConfig.Shader = DebugDrawShader;
 		DebugDrawPipelineConfig.LineWidth = 2.5f;
-		m_DebugDrawPipeline = std::make_unique<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
+		m_DebugDrawPipeline = std::make_shared<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
 		m_DebugMaterialInstance->Invalidate();
@@ -55,8 +60,12 @@ namespace TRE
 
 		std::vector<int> DebugAABBIndices = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 4, 4, 5, 5, 1, 1, 2, 2, 6, 6, 5, 5, 4, 4, 7, 7, 3, 7, 6 };
 
-		m_DebugAABB->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugAABBVertices.data(), sizeof(DebugAABBVertices[0]) * DebugAABBVertices.size());
-		m_DebugAABB->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugAABBIndices.data(), sizeof(int) * DebugAABBIndices.size(), DebugAABBIndices.size());
+		m_DebugAABB->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugAABBVertices.data()),
+			UINT32_T_CAST(sizeof(DebugAABBVertices[0]) * DebugAABBVertices.size()));
+
+		m_DebugAABB->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugAABBIndices.data()),
+			UINT32_T_CAST(sizeof(int) * DebugAABBIndices.size()),
+			UINT32_T_CAST(DebugAABBIndices.size()));
 	}
 
 	void DebugRenderer::CreateDebugSphere()
@@ -74,8 +83,12 @@ namespace TRE
 		}
 		DebugSphereIndices.push_back(0); //Strip back to the first point
 
-		m_DebugSphere->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugSphereVert.data(), DebugSphereVert.size() * sizeof(DebugSphereVert[0]));
-		m_DebugSphere->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugSphereIndices.data(), sizeof(int) * DebugSphereIndices.size(), DebugSphereIndices.size());
+		m_DebugSphere->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugSphereVert.data()),
+			UINT32_T_CAST(DebugSphereVert.size() * sizeof(DebugSphereVert[0])));
+
+		m_DebugSphere->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugSphereIndices.data()),
+			UINT32_T_CAST(sizeof(int) * DebugSphereIndices.size()),
+			UINT32_T_CAST(DebugSphereIndices.size()));
 	}
 
 	void DebugRenderer::CreateDebugCapsule()
@@ -120,8 +133,12 @@ namespace TRE
 		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(0.5, 0.25, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
 		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
 
-		m_DebugCapsule->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugCapsuleVert.data(), DebugCapsuleVert.size() * sizeof(DebugVertex));
-		m_DebugCapsule->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugCapsuleIndices.data(), DebugCapsuleIndices.size() * sizeof(int), DebugCapsuleIndices.size());
+		m_DebugCapsule->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugCapsuleVert.data()),
+			UINT32_T_CAST(DebugCapsuleVert.size() * sizeof(DebugVertex)));
+
+		m_DebugCapsule->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugCapsuleIndices.data()),
+			UINT32_T_CAST(DebugCapsuleIndices.size() * sizeof(int)),
+			UINT32_T_CAST(DebugCapsuleIndices.size()));
 	}
 
 	void DebugRenderer::CreateDebugCameraFrustum()
@@ -139,8 +156,12 @@ namespace TRE
 
 		std::vector<int> DebugFrustumIndices = { 1,2,2,3,3,4,4,1,1,0,0,2,0,3,3,4,0 };
 		
-		m_DebugCameraFrustum->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugFrustumVertices.data(), DebugFrustumVertices.size() * sizeof(DebugVertex));
-		m_DebugCameraFrustum->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugFrustumIndices.data(), DebugFrustumIndices.size() * sizeof(int), DebugFrustumIndices.size());
+		m_DebugCameraFrustum->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugFrustumVertices.data()),
+			UINT32_T_CAST(DebugFrustumVertices.size() * sizeof(DebugVertex)));
+
+		m_DebugCameraFrustum->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugFrustumIndices.data()),
+			UINT32_T_CAST(DebugFrustumIndices.size() * sizeof(int)),
+			UINT32_T_CAST(DebugFrustumIndices.size()));
 	}
 
 	void DebugRenderer::CreateDebugDirectionalLight()
@@ -158,8 +179,12 @@ namespace TRE
 
 		std::vector<int> DebugLightDirectionIndices = { 0,1,2,3,4,2 };
 
-		m_DebugLightDirection->m_VertexBuffer = std::make_unique<VertexBuffer>((void*)DebugLightDirectionVertices.data(), DebugLightDirectionVertices.size() * sizeof(DebugVertex));
-		m_DebugLightDirection->m_IndexBuffer = std::make_unique<IndexBuffer>((void*)DebugLightDirectionIndices.data(), DebugLightDirectionIndices.size() * sizeof(int), DebugLightDirectionIndices.size());
+		m_DebugLightDirection->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugLightDirectionVertices.data()),
+			UINT32_T_CAST(DebugLightDirectionVertices.size() * sizeof(DebugVertex)));
+
+		m_DebugLightDirection->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugLightDirectionIndices.data()),
+			UINT32_T_CAST(DebugLightDirectionIndices.size() * sizeof(int)),
+			UINT32_T_CAST(DebugLightDirectionIndices.size()));
 	}
 
 	void DebugRenderer::UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)

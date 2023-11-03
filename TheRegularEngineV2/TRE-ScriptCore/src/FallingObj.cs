@@ -23,13 +23,13 @@ namespace TRE
 
         public void Update()
         {
-            CurrentTime -= Time.deltaTime;
+            //CurrentTime -= Time.deltaTime;
 
-            if (CurrentTime <= 0)
-            {
-                TransformSystem.SetPosition(ID, currentPos);
-                CurrentTime = Duration;
-            }
+            //if (CurrentTime <= 0)
+            //{
+            //    TransformSystem.SetPosition(ID, currentPos);
+            //    CurrentTime = Duration;
+            //}
         }
     }
 }

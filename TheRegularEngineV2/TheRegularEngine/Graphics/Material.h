@@ -46,11 +46,14 @@ namespace TRE
 
 			MaterialUBO& GetMaterialUBO() { return m_UBO; }
 			void SetMaterialUBO() { m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO)); }
+			void SetUBOData(glm::vec4 Test) { m_UBO.m_Color = Test; }
 
 			static ResourceType GetType() { return ResourceType::Material; }
 
 			void Serialize() override;
 			static std::shared_ptr<Material> Deserialize(const std::string& assetHexGUID);
+
+			bool IsValid() { return m_IsValid; }
 		private:
 			void AllocateTextures();
 		private:

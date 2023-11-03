@@ -33,8 +33,8 @@ namespace TRE
 {
 	void DemoDeserialize()
 	{
-		SceneManager::Instance().NewScene();
-		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
+		//SceneManager::Instance().NewScene();
+		SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	void DemoScene()
@@ -346,22 +346,22 @@ namespace TRE
 		s_Instance = this;
 		m_EngineInfo = EngineInfo;
 		m_Window = std::make_shared<Window>(m_EngineInfo.WindowConfigurations);
+		
+		if (m_EngineInfo.MaximizeWindow)
+		{
+			m_Window->MaximizeWindow();
+		}
 
 		GameLoop::Instance().Init();
 		RegisterECS();
 		Shader::SetupShaders();
 
-		//DemoDeserialize();
+
 		//DemoScene();
 
 		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
-		Renderer::Init();
 		m_SceneRenderer->Initialize();
-
-		if (m_EngineInfo.MaximizeWindow)
-		{
-			m_Window->MaximizeWindow();
-		}
+		Renderer::Init();
 
 		if (m_EngineInfo.EnableEditor)
 		{
@@ -381,7 +381,13 @@ namespace TRE
 		ScriptEngine::Init();
 		ScriptEngine::InitScriptingMain();
 
-		SceneManager::Instance().NewScene();
+		if (m_EngineInfo.EnableGame)
+		{
+			DemoDeserialize();
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+		}
+		else
+			SceneManager::Instance().NewScene();
 	}
 
 	Engine::~Engine()
@@ -414,14 +420,14 @@ namespace TRE
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
-		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
+		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<CameraSystem>();
 		ECSSystemManager::Instance().RegisterSystem<AudioSystem>();
 		ECSSystemManager::Instance().RegisterSystem<MeshRendererSystem>();
-		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
+		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 
 		// Allocate Default Size for Memory Manager
 		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());
@@ -434,10 +440,8 @@ namespace TRE
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
-			m_SceneRenderer->BeginFrame();
-
-			if (m_EngineInfo.EnableEditor)
-				m_EditorSceneRenderer->BeginEditorFrame();
+			
+			Renderer::BeginFrame();
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
@@ -484,10 +488,7 @@ namespace TRE
 			ECSManager::Instance().DeleteRemovalEntities();
 			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
-			m_SceneRenderer->EndFrame(false);
-			
-			if (m_EngineInfo.EnableEditor)
-				m_EditorSceneRenderer->EndFrame(true);
+			Renderer::EndFrame();
 
 			// Imgui Update (Editor Draw and Update Inspector, Always 1 Frame delayed)
 			if (m_EngineInfo.EnableEditor)

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace TRE
 {
 
-    using EntityID = System.UInt64;
+    // using EntityID = System.UInt64;
 
     public abstract class Component
     {
-        public Entity entity { get ; internal set; }
+        public Entity entity { get ; set; }
     }
 
     public class Transform : Component
@@ -75,10 +75,7 @@ namespace TRE
         // Constructor for Transform
         public Transform()
         {
-            // Set the default values
-            Position = new Vector3(0, 0, 0);
-            Rotation = new Vector3(0, 0, 0);
-            Scale = new Vector3(1, 1, 1);
+            // LEAVE AS BLANK!
         }
 
         public Transform(Entity e)
@@ -104,7 +101,32 @@ namespace TRE
 
     public class Rigidbody : Component
     {
-
+        public Rigidbody()
+        {
+            // LEAVE AS BLANK!
+        }
+        public bool useGravity
+        {
+            get
+            {                
+                return RigidBodySystem.GetGravity(entity.ID);
+            }
+            set
+            {
+                RigidBodySystem.SetGravity(entity.ID, value);
+            }
+        }
+        public bool isKinematic
+        {
+            get
+            {                
+                return RigidBodySystem.GetKinematic(entity.ID);
+            }
+            set
+            {
+                RigidBodySystem.SetKinematic(entity.ID, value);
+            }
+        }
     }
 
     public class BoxCollider : Component

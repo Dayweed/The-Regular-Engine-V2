@@ -123,6 +123,8 @@ namespace TRE
 		file << "Roll: " << m_BaseCamera.m_Roll << std::endl;
 		file << "FocalPoint: " << m_BaseCamera.m_FocalPoint.x << " " << m_BaseCamera.m_FocalPoint.y << " " << m_BaseCamera.m_FocalPoint.z << std::endl;
 		file << "FocalLength: " << m_BaseCamera.m_FocalLength << std::endl;
+		//file << ""
+
 
 		file.close();
 	}

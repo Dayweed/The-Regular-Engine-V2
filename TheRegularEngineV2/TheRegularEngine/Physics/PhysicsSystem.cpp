@@ -16,10 +16,8 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 1
+#define USE_PHYSX_PVD 0
 #endif
-
-#define UNUSED_PARAM(param) (void)param
 
 using namespace physx;
 // to save my dwindling sanity
@@ -31,10 +29,10 @@ namespace TRE
 		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 	{
-		UNUSED_PARAM(filterData0);
-		UNUSED_PARAM(filterData1);
-		UNUSED_PARAM(constantBlock);
-		UNUSED_PARAM(constantBlockSize);
+		UNUSED_VALUE(filterData0);
+		UNUSED_VALUE(filterData1);
+		UNUSED_VALUE(constantBlock);
+		UNUSED_VALUE(constantBlockSize);
 
 		// let triggers through
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
@@ -289,25 +287,26 @@ namespace TRE
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
 		{
-			ConstructRigidbody(entity);
+			// i just want the squiggly lines to go away...
+			UNUSED_VALUE(ConstructRigidbody(entity));
 		}
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
 		{
 			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
-			ConstructSphereCollider(entity, component.m_Radius, component.m_Offset);
+			UNUSED_VALUE(ConstructSphereCollider(entity, component.m_Radius, component.m_Offset));
 		}
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
 		{
 			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
-			ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset);
+			UNUSED_VALUE(ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset));
 		}
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 		{
 			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
-			ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset);
+			UNUSED_VALUE(ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset));
 		}
 	}
 
@@ -316,12 +315,12 @@ namespace TRE
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
-
+		
 		m_Actors.clear();
 		PX_RELEASE(m_DefaultMaterial);
+		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Scene);
 		PxCloseExtensions();
-		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Physics);
 		PX_RELEASE(m_Transport);
 		PX_RELEASE(m_Pvd);
@@ -334,11 +333,11 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector()
+	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector() const
 	{
 		std::unordered_map<unsigned, Entity> vector;
 		vector.reserve(m_Actors.size());
-		for (auto actor : m_Actors)
+		for (const auto& actor : m_Actors)
 		{
 			vector.emplace(actor.second.m_RigidDynamic->getInternalActorIndex(), ECSManager::Instance().FindEntity(actor.first));
 		}
@@ -346,14 +345,14 @@ namespace TRE
 		return vector;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
 		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_CollisionHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}
@@ -372,14 +371,14 @@ namespace TRE
 		return Collisions;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_TriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}
@@ -398,14 +397,14 @@ namespace TRE
 		return Collisions;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_PrevTriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}
@@ -459,9 +458,9 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -499,9 +498,9 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -860,12 +859,16 @@ namespace TRE
 
 	void PhysicsSystem::CreatePhysXScene()
 	{
-		PX_RELEASE(m_Scene);
+		if (m_Scene)
+			PX_RELEASE(m_Scene);
 
 		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 6, 0.0f);
 
 		//A cpu thread for the scene
+		if (m_Dispatcher)
+			PX_RELEASE(m_Dispatcher);
+			
 		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
 		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;
@@ -883,95 +886,6 @@ namespace TRE
 
 		m_Scene = m_Physics->createScene(sceneDesc);
 		assert(m_Scene);
-	}
-
-	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
-	{
-		UNUSED_PARAM(bodyBuffer); UNUSED_PARAM(poseBuffer); UNUSED_PARAM(count);
-	}
-
-	void SimulationEventCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
-	{
-		UNUSED_PARAM(constraints); UNUSED_PARAM(count);
-	}
-
-	void SimulationEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
-	{
-		if (!nbPairs) return;
-
-		for (unsigned i = 0; i < nbPairs; ++i)
-		{
-			const PxContactPair& pair = pairs[i];
-
-			// I sure hope these are equivalent!!!
-			// pairHeader.flags & PxContactPairHeaderFlag::eREMOVED_ACTOR_0;
-			// pairs[0].flags & PxContactPairFlag::eREMOVED_SHAPE_0;
-			if (pairHeader.flags & (PxContactPairHeaderFlag::eREMOVED_ACTOR_0 | PxContactPairHeaderFlag::eREMOVED_ACTOR_1))
-				continue;
-
-			unsigned actor0Index = pairHeader.actors[0]->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned actor1Index = pairHeader.actors[1]->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned flags = 0;
-
-			// ensure that actor0Index is lesser than (<) actor1Index 
-			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
-
-			if (pair.flags & PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH)
-				flags |= CollisionHistoryEntryEnum::Enter;
-
-			if (pair.flags & PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)
-				flags |= CollisionHistoryEntryEnum::Exit;
-
-			// if (!(pair.flags & (PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH | PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)))  // trust...right?
-			if (pair.events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
-				flags |= CollisionHistoryEntryEnum::Stay;
-
-			m_CollisionHistory.emplace_back(actor0Index, actor1Index, flags);
-		}
-	}
-
-	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
-	{
-		UNUSED_PARAM(actors); UNUSED_PARAM(count);
-	}
-
-	void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
-	{
-		if (!count) return;
-
-		for (unsigned i = 0; i < count; ++i)
-		{
-			const PxTriggerPair& pair = pairs[i];
-
-			// OH. MY. GOD. WTF.
-			if (pair.flags & (PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
-				continue;
-
-			assert(pair.triggerActor->is<PxRigidActor>());
-			assert(pair.otherActor->is<PxRigidActor>());
-
-			unsigned actor0Index = pair.triggerActor->is<PxRigidDynamic>()->getInternalActorIndex();
-			unsigned actor1Index = pair.otherActor->is<PxRigidDynamic>()->getInternalActorIndex();
-			unsigned flags = 0;
-
-			// ensure that actor0Index is lesser than (<) actor1Index 
-			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
-
-			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
-				flags |= TriggerHistoryEntryEnum::Enter;
-
-			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
-				flags |= TriggerHistoryEntryEnum::Exit;
-
-			// Because of https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/struct_px_pair_flag.html?highlight=enotify_touch_persists#_CPPv4N10PxPairFlag4Enum22eNOTIFY_TOUCH_PERSISTSE,
-			// IsTriggerStay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST, which is done in GameUpdate().
-			m_TriggerHistory.emplace_back(actor0Index, actor1Index, flags);
-		}
-	}
-
-	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
-	{
-		UNUSED_PARAM(actors); UNUSED_PARAM(count);
 	}
 
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)

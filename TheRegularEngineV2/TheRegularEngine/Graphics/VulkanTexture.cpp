@@ -9,7 +9,7 @@ TRE::ResourceHandle TRE::VulkanTexture::m_DefaultTextureID{ 0 };
 
 namespace TRE
 {
-	VulkanTexture::VulkanTexture(const CubeMapConfig& Config)
+	VulkanTexture::VulkanTexture(CubeMapConfig& Config)
 	{
 		assert(Config.Textures.size() == 6 && "Cubemap textures not more than 0");
 
@@ -55,8 +55,8 @@ namespace TRE
 			assert(Result == VK_SUCCESS && "Unable to map memory for cubemap");
 		}
 
-		VkDeviceSize layersize = ImageCubeMapSize / 6;
-		for (uint32_t x = 0; x < 6; x++)
+		VkDeviceSize layersize = ImageCubeMapSize / Config.Textures.size();
+		for (uint32_t x = 0; x < Config.Textures.size(); x++)
 		{
 			memcpy(data + layersize * x, Config.Textures[x]->GetBuffer(), layersize);
 		}
@@ -119,10 +119,10 @@ namespace TRE
 		range.baseMipLevel = 0;
 		range.levelCount = 1;
 		range.baseArrayLayer = 0;
-		range.layerCount = 6;
+		range.layerCount = static_cast<uint32_t>(Config.Textures.size());
 
 		std::vector<VkBufferImageCopy> bufferCopyRegions;
-		for (int x = 0; x < 6; x++)
+		for (unsigned x = 0; x < Config.Textures.size(); x++)
 		{
 			VkBufferImageCopy bufferCopyRegion = {};
 			bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -307,6 +307,11 @@ namespace TRE
 		vkDestroyImageView(device, m_ImageView, nullptr);
 		vkDestroyImage(device, m_Image, nullptr);
 		vkFreeMemory(device, m_ImageMemory, nullptr);
+		if (m_Buffer)
+		{
+			delete m_Buffer;
+			m_Buffer = nullptr;
+		}
 	}
 
 	const VkDescriptorImageInfo& VulkanTexture::GetDescriptorImageInfo() const

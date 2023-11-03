@@ -1,0 +1,124 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "11822093139939255162",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11822093139939255162",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "11364341643031427214",
+         "m_Name": "FallingMaracca",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            20.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            180.0
+         ],
+         "m_Scale": [
+            2.0,
+            2.0,
+            2.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "cb47d70f41fd3257",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 160.0,
+         "m_UseGravity": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_HalfExtents": [
+            2.0,
+            5.0,
+            2.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.20000000298023224,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_StoredClass": "TRE.FallingObj"
+      }
+   ]
+]

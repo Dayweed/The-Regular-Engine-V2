@@ -20,7 +20,7 @@ namespace TRE
 	// Using EntityID instead of EntityID in case need to change again
 	using EntityID = System.UInt64;		// Unsigned long long
 
-	public class Entity
+	public class Entity : Component
 	{
 		public EntityID ID;				// Can hold id of entity or id of prefab resource
 		public string name;
@@ -45,7 +45,7 @@ namespace TRE
 			{
 				name = ECSManager.FindNameFromID(ID);
 				parenting = new Parenting(ID);
-				transform = new Transform(this);
+				transform = GetComponent<Transform>();
 			}
 			else
 			{
@@ -63,7 +63,7 @@ namespace TRE
 			if (ECSManager.IsValidEntity(ID))
 			{
 				parenting = new Parenting(ID);
-				transform = new Transform(this);
+				transform = GetComponent<Transform>();
 			}
 			else
 			{
@@ -115,18 +115,15 @@ namespace TRE
 			return ECSManager.HasComponent(ID, typeof(T));
 		}
 
-		public T GetComponent<T>() where T : new()
+		public T GetComponent<T>() where T : Component, new()
 		{
 			if (Script.IsScript(typeof(T).ToString())) return Script.GetScript<T>(ID, typeof(T).ToString());
 
-			Debug.LogError("Can't find " + typeof(T).ToString() + ", returning new " + typeof(T).ToString() + "...");
-			Console.WriteLine("ERROR! GetComponent is returning new type for " + typeof(T).ToString());
-
-			return Script.GetScript<T>(ID, typeof(T).ToString());	// To change for getting directly
+			return GetCoreComponent<T>();	// To change for getting directly
 
 		}
 
-		public T GetCoreComponent<T>() where T : Component, new()
+		private T GetCoreComponent<T>() where T : Component, new()
 		{
 			if (!HasComponent<T>())
 			{
@@ -147,6 +144,14 @@ namespace TRE
 			}
 			ECSManager.AddComponent(ID, typeof(T));
 			return GetCoreComponent<T>();
+		}
+
+		public void RemoveComponent<T>() where T : Component, new()
+		{
+			if (HasComponent<T>())
+			{
+				ECSManager.RemoveComponent(ID, typeof(T));
+			}
 		}
 
 
@@ -197,7 +202,7 @@ namespace TRE
 		internal extern static bool EngineIsPrefabResource(EntityID id);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static EntityID CreatePrefabEntity(EntityID prefabid, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+		internal extern static EntityID CreatePrefabEntity(EntityID prefabid/*, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3()*/);
 	}
 
 	public struct Parenting
@@ -385,7 +390,26 @@ namespace TRE
 		public static float Distance(Vector3 vec1, Vector3 vec2)
 		{
 			// TO DO CALCULATE VECTOR DISTANCE :p
-			return vec1.Magnitude() - vec2.Magnitude();
+			return Math.Abs(vec1.Magnitude() - vec2.Magnitude());
+		}
+
+		// uhhhhhhhhh, trust?
+		public override bool Equals(object obj)
+		{
+			return obj is Vector3 vector &&
+				   x == vector.x &&
+				   y == vector.y &&
+				   z == vector.z;
+		}
+
+		// uhhhhhhhhh, trust?
+		public override int GetHashCode()
+		{
+			int hashCode = 373119288;
+			hashCode = hashCode * -1521134295 + x.GetHashCode();
+			hashCode = hashCode * -1521134295 + y.GetHashCode();
+			hashCode = hashCode * -1521134295 + z.GetHashCode();
+			return hashCode;
 		}
 	}
 
@@ -431,40 +455,40 @@ namespace TRE
 
 	}
 
-	public struct TransformS
-	{
-		private EntityID id;
-		public Vector3 position, rotation, scale;
+	//public struct TransformS
+	//{
+	//	private EntityID id;
+	//	public Vector3 position, rotation, scale;
 
-		public TransformS(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
-		{
-			id = _id;
-			position = _pos;
-			rotation = _rot;
-			scale = _sca;
-		}
+	//	public TransformS(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
+	//	{
+	//		id = _id;
+	//		position = _pos;
+	//		rotation = _rot;
+	//		scale = _sca;
+	//	}
 
-		public void SetPosition(Vector3 output)
-		{
-			position = output;
+	//	public void SetPosition(Vector3 output)
+	//	{
+	//		position = output;
 
-			TransformSystem.SetPosition(id, output);
-		}
+	//		TransformSystem.SetPosition(id, output);
+	//	}
 
-		public void SetRotation(Vector3 output)
-		{
-			rotation = output;
+	//	public void SetRotation(Vector3 output)
+	//	{
+	//		rotation = output;
 
-			TransformSystem.SetRotation(id, output);
-		}
+	//		TransformSystem.SetRotation(id, output);
+	//	}
 
-		public void SetScaling(Vector3 output)
-		{
-			scale = output;
+	//	public void SetScaling(Vector3 output)
+	//	{
+	//		scale = output;
 
-			TransformSystem.SetScaling(id, output);
-		}
-	}
+	//		TransformSystem.SetScaling(id, output);
+	//	}
+	//}
 
 	public class TransformSystem
 	{
@@ -495,24 +519,24 @@ namespace TRE
 			Entity ent = new Entity(FindIDFromName(name));
 			return ent;
 		}
-		public static Entity Instantiate(Entity entity, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3())
+		public static Entity Instantiate(Entity entity/*, Vector3 postion = new Vector3(), Vector3 scaling = new Vector3(), Vector3 rotation = new Vector3()*/)
 		{
 			// Ensure scaling is not zero, since Vector3 does not allow const version currently and must compile-time const
-			if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
-			{
-				Debug.LogWarning("Scaling is zero, setting the values to 1...");
-				scaling = new Vector3(1, 1, 1);
-			}
+			//if (scaling.x == 0 || scaling.y == 0 || scaling.z == 0)
+			//{
+			//	Debug.LogWarning("Scaling is zero, setting the values to 1...");
+			//	scaling = new Vector3(1, 1, 1);
+			//}
 
 			bool isPrefab = Prefab.EngineIsPrefabResource(entity.ID);
 			if (isPrefab)
 			{
-				EntityID id = Prefab.CreatePrefabEntity(entity.ID, postion, rotation, scaling);
+				EntityID id = Prefab.CreatePrefabEntity(entity.ID/*, postion, rotation, scaling*/);
 				return new Entity(id, FindNameFromID(id));
 			}
 			else if (IsValidEntity(entity.ID))
 			{
-				EntityID id = CloneEntity(entity.ID, postion, rotation, scaling);
+				EntityID id = CloneEntity(entity.ID/*, postion, rotation, scaling*/);
 				return new Entity(id, FindNameFromID(id));
 			}
 			else
@@ -526,7 +550,7 @@ namespace TRE
 		internal extern static EntityID CreateEntity(string name, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static EntityID CloneEntity(EntityID id, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3());
+		internal extern static EntityID CloneEntity(EntityID id/*, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3()*/);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool IsValidEntity(EntityID prefabid);
@@ -708,6 +732,9 @@ namespace TRE
 		internal extern static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void UpdateColliderOffset(EntityID entityid, Vector3 offset);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void AddForce(EntityID entityid, Vector3 force, ForceMode mode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -750,7 +777,13 @@ namespace TRE
 		internal extern static void SetKinematic(EntityID entityid, bool enable);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetKinematic(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void SetGravity(EntityID entityid, bool enable);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool GetGravity(EntityID entityid);
 	}
 
 	public class InputSystem

@@ -33,18 +33,26 @@ namespace TRE
         {
             if (powerUps.Count < 2) return;
 
-            Entity tempContainer = powerUps[0];
-            powerUps.RemoveAt(0);
-            powerUps.Add(tempContainer);
+            powerUps.Reverse();
 
-            if (usePower)
-            {
-                ActivatePowerUp(powerUps[0].GetComponent<GetPowerUp>()); // activating the main power up        // THIS CANT BE DONE YET
-            }
+            //Entity tempContainer = powerUps[0];
+            //powerUps.RemoveAt(0);
+            //powerUps.Add(tempContainer);
+
+            //if (usePower)
+            //{
+            //    ActivatePowerUp(powerUps[0].GetComponent<GetPowerUp>()); // activating the main power up        // THIS CANT BE DONE YET
+            //}
         }
 
         public void DropMain() //pop off the main power up
         {
+            if (powerUps.Count == 0) return;
+
+            GetPowerUp mainPowerUp = powerUps[0].GetComponent<GetPowerUp>();
+            mainPowerUp.ReleasePowerUp();
+            powerUps.RemoveAt(0);
+
             /* // THIS CANT BE DONE YET!
             GetPowerUp mainPowerUp = powerUps[0].GetComponent<GetPowerUp>();
             Rigidbody mainRb = powerUps[0].GetComponent<Rigidbody>();

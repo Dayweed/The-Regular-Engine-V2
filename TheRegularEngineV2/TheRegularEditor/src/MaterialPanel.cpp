@@ -32,6 +32,7 @@ namespace TRE
 				ImGui::Begin("Material", nullptr, ImGuiWindowFlags_NoCollapse);
 
 				InternalContent(material);
+				//Theres a chance that this is not attached to any entity, so dont update the UBO
 
 				ImGui::End();
 			}
@@ -137,15 +138,18 @@ namespace TRE
 		}
 
 		ImGui::Text("Color");
-		auto& Test = material->GetMaterialUBO();
-		float data[4]{ Test.m_Color.x, Test.m_Color.y, Test.m_Color.z, Test.m_Color.w };
-		ImGui::DragFloat4("", data, 0.01f, 0.f, 1.f);
-		Test.m_Color = { data[0], data[1], data[2], data[3] };
-		material->SetMaterialUBO();
+		auto& materialData = material->GetMaterialUBO();
+		float data[4]{ materialData.m_Color.x, materialData.m_Color.y, materialData.m_Color.z, materialData.m_Color.w };
+		ImGui::ColorEdit4(("##" + material->GetHandleHex()).c_str(), data);
+		materialData.m_Color = { data[0], data[1], data[2], data[3] };
 
 		if (ImGui::Button("Save"))
 		{
 			ResourceManager::Instance().SerializeResource<Material>(material->GetHandle());
 		}
+
+		if (material->IsValid() == false)
+			material->Invalidate();
+		material->SetMaterialUBO();
 	}
 }

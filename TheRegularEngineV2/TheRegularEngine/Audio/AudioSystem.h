@@ -11,13 +11,12 @@ namespace TRE
 	{
 	public:
 
-		//audio_file_dropdown m_AudioFileNameToDrop;
-		std::string m_FileName{""};
-		//std::string m_FilePath{ "../Assets/Audio/ViveLeFromageBGM1.wav" };
 		FMOD::ChannelGroup* m_ChannelGroup{};
 		FMOD::Channel* m_Channel{};
 		FMOD::Sound* m_Sound{};
 
+		std::string m_FileName{ "" };
+		std::vector<std::string> m_audioFiles;
 		float m_Volume{ 1.f };
 		float m_Pitch{ 1.f };
 		int m_Priority{ 0 };
@@ -29,19 +28,20 @@ namespace TRE
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
-		bool m_isPlaying{};
 
+		bool m_HasCompiled{ false };
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
+		property_vtable()
+			//std::map<int, std::string> channelIndex{};
 
-		std::map<int, std::string> channelIndex{};
+			bool m_isPlaying{};
 
 		friend void to_json(nlohmann::json& j, const Audio& t) //serialize
 		{
 			std::vector<float> v_pos{ t.m_goPosition.x, t.m_goPosition.y, t.m_goPosition.z };
 
-
 			j = nlohmann::json{
-				{"Audio", t.m_FileName},
+				{"m_FileName", t.m_FileName},
 				{ "m_Play", t.m_Play },
 				{ "m_Volume", t.m_Volume },
 				{ "m_Pitch", t.m_Pitch },
@@ -80,10 +80,10 @@ namespace TRE
 
 		}
 
-		property_vtable()	
+
 
 	};
-	
+
 	class AudioListener : property::base
 	{
 	public:
@@ -147,7 +147,8 @@ namespace TRE
 		~AudioSystem() override;
 
 		void Init() override;
-		void Update() override;
+		void GameUpdate() override;
+		void LateUpdate() override;
 		void BeforeReset() override;
 		void AfterReset() override;
 		void OnDestroyEntities() override;
@@ -165,32 +166,17 @@ namespace TRE
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
 
-		void SetVolume(Entity& go, const float volume);
-		void SetPitch(Entity& go, const float pitch);
-		void SetPause(Entity& go, const bool pause);
-		void SetLoop(Entity& go, const bool loop);
 		void SetFileName(Entity& go, const std::string filename);
-		void SetChannelGroup(Entity& go, const int channel);
-		void SetPriority(Entity& go, const int priority);
-		void SetMute(Entity& go, const bool mute);
-		void SetPlay(Entity& go, const bool play);
-		void SetSpatialize(Entity& go, const bool spatialize);
+		void SetChannelGroup(Entity& go, const std::string channel);
 		void SetListenerPosition(Entity& go);
 		void SetSourcePosition(Entity& go);
 		void SetSourceRadius(Entity& go, const float min, const float max);
-		
-		float GetVolume(Entity& go) const;
-		float GetPitch(Entity& go) const;
-		bool GetPause(Entity& go) const;
-		bool GetLoop(Entity& go) const;
-		int GetPriority(Entity& go) const;
-		bool GetMute(Entity& go) const;
-		bool GetPlay(Entity& go) const;
-		bool GetSpatialize(Entity& go) const;
+		bool GetIsPlaying(Entity& go) const;
+
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;
 		const std::pair<float, float> GetSourceRadius(Entity& go) const;
-		bool GetIsPlaying(Entity& go) const;
+
 
 		FMOD::ChannelGroup* GetChannelGroup(Entity& go);
 		std::string GetFileName(Entity& go) const;
@@ -207,20 +193,14 @@ namespace TRE
 
 	private:
 		FMOD::System* m_System = nullptr;
-		//FMOD::Sound* m_Sound = nullptr; 
-		//FMOD::Channel* m_Channel = nullptr;       
 
 		FMOD::ChannelGroup* m_SFXChannelGroup = nullptr;
 		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
 
 		const int MAX_CHANNELS = 64;
-
-		//std::unordered_map<Entity, FMOD::Channel*> channelMap;
-		//std::unordered_set<FMOD::Sound*> soundMap;
-		//std::unordered_map<Entity&, FMOD::Sound*> soundMap; //doesnt work
-		//std::unordered_set<Entity> audioMap;
+		;
 		std::unordered_set<Entity> audioMap;
-		std::unordered_map<Entity,FMOD::Sound*> soundToRemove;
+		std::unordered_map<Entity, FMOD::Sound*> soundToRemove;
 
 	};
 
@@ -228,16 +208,15 @@ namespace TRE
 
 property_begin(TRE::AudioListener)
 {
-		property_var(m_Position), 
+	property_var(m_Position),
 		property_var(m_Forward),
-		property_var(m_Up), 
+		property_var(m_Up),
 		property_var(m_Velocity)
 } property_vend_h(TRE::AudioListener)
 
 property_begin(TRE::Audio)
-{
-			//property_var(m_AudioFileNameToDrop),
-			property_var(m_FileName),
+	{
+		property_var(m_FileName),
 			property_var(m_Play),
 			property_var(m_Volume),
 			property_var(m_Pitch),
@@ -248,5 +227,6 @@ property_begin(TRE::Audio)
 			property_var(m_PlayOnStart),
 			property_var(m_Spatialize),
 			property_var(m_MinDistance),
-			property_var(m_MaxDistance)
-} property_vend_h(TRE::Audio)
+			property_var(m_MaxDistance),
+			property_var(m_goPosition)
+	} property_vend_h(TRE::Audio)

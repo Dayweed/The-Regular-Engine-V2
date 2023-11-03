@@ -138,8 +138,8 @@ namespace TRE
 		// Retrieve the entity from the ID
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return;
-		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != isActive);
-		Temp->GetComponent<Properties>().m_Active = isActive;
+		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != (bool)isActive);
+		Temp->GetComponent<Properties>().m_Active = (bool)isActive;
 	}
 
 	static bool BindEntityGetActive(CSEntityID ID)
@@ -178,15 +178,15 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<PrefabSystem>()->IsValidPrefabResource(entityID);
 	}
 
-	static CSEntityID BindCreatePrefabEntity(CSEntityID prefabID, glm::vec3 newPos, glm::vec3 newRot)
+	static CSEntityID BindCreatePrefabEntity(CSEntityID prefabID/*, glm::vec3 newPos, glm::vec3 newRot*/)
 	{
 		std::string prefabGUID{ EntityID_CSToEngine(prefabID) };
 		Entity prefabInstance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID) };
 
-		Transform& transform = prefabInstance->GetComponent<Transform>();
+		/*Transform& transform = prefabInstance->GetComponent<Transform>();
 		transform.m_Position = newPos;
 		transform.m_Rotation = newRot;
-		transform.m_IsDirty = true;
+		transform.m_IsDirty = true;*/
 
 		return EntityID_EngineToCS(prefabInstance->GetGUID());
 	}
@@ -924,6 +924,20 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCapsuleCollider(entity, radius, halfHeight);
 	}
 
+	static void BindOffsetCollider(CSEntityID ID, Vector3 offset)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CapsuleCollider>() && !entity->HasComponent<SphereCollider>() && !entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no Collider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->UpdateColliderData(entity, offset);
+	}
+
 	static void BindAddForce(CSEntityID ID, glm::vec3 force, ForceMode::Enum mode)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -938,7 +952,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->AddForce(entity, force, mode);
 	}
 
-	void BindConstrainRotationX(CSEntityID ID, bool state)
+	static void BindConstrainRotationX(CSEntityID ID, bool state)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;
@@ -952,7 +966,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationX(entity, state);
 	}
 
-	void BindConstrainRotationY(CSEntityID ID, bool state)
+	static void BindConstrainRotationY(CSEntityID ID, bool state)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;
@@ -966,7 +980,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstrainRotationY(entity, state);
 	}
 
-	void BindConstrainRotationZ(CSEntityID ID, bool state)
+	static void BindConstrainRotationZ(CSEntityID ID, bool state)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;
@@ -1073,13 +1087,30 @@ namespace TRE
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
 	}
 
+	static bool BindGetKinematic(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		return Temp->GetComponent<Rigidbody>().m_IsKinematic;
+	}
+
 	static void BindSetGravity(CSEntityID ID, bool enable)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return;
 
 		Temp->GetComponent<Rigidbody>().m_UseGravity = enable;
+		if (!enable) BindSetLinearVelocity(ID, {});
 		Temp->GetComponent<Rigidbody>().m_IsDirty = true;
+	}
+
+	static bool BindGetGravity(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		return Temp->GetComponent<Rigidbody>().m_UseGravity;
 	}
 #pragma endregion
 
@@ -1125,19 +1156,19 @@ namespace TRE
 	static void BindSetPlaySound(MonoString* id)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPlay(entity, true);
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
 	}
 
 	static void BindTogglePauseSound(MonoString* id, bool paused)
 	{
+		(void)paused;
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPause(entity, paused);
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
 	}
 
 	static void BindSetStopSound(MonoString* id)
 	{
 		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPlay(entity, false);
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->StopAudio(entity);
 	}
 
@@ -1286,6 +1317,7 @@ namespace TRE
 			mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::ResizeCapsuleCollider", BindResizeCapsuleCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::UpdateColliderOffset", BindOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
 			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationX", BindConstrainRotationX);
 			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationY", BindConstrainRotationY);
@@ -1303,7 +1335,9 @@ namespace TRE
 		// RigidBody Binding
 		{
 			mono_add_internal_call("TRE.RigidBodySystem::SetKinematic", BindSetKinematic);
+			mono_add_internal_call("TRE.RigidBodySystem::GetKinematic", BindGetKinematic);
 			mono_add_internal_call("TRE.RigidBodySystem::SetGravity", BindSetGravity);
+			mono_add_internal_call("TRE.RigidBodySystem::GetGravity", BindGetGravity);
 		}
 
 		// Input Binding

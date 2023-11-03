@@ -58,7 +58,7 @@ namespace TRE
 		SharedData& sharedData = m_Actors[entity->GetGUID()];
 
 		PxShape* capsuleShape;
-		
+
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 		if (capsuleCollider.m_IsTrigger)
 			capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
@@ -84,6 +84,7 @@ namespace TRE
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 		}
 
 		sharedData.m_AttachedComponents |= PhysicsComponentTypes::CapsuleCollider;

@@ -34,11 +34,7 @@ namespace TRE
 			void DestroySwapChain();
 
 		public:
-			const std::shared_ptr<RenderPass>& GetRenderPassPointer()
-			{
-				return m_Renderpass;
-			}
-			VkRenderPass GetRenderPass();
+			const std::shared_ptr<RenderPass>& GetRenderPass();
 			uint32_t GetImageCount();
 			uint32_t GetWidth();
 			uint32_t GetHeight();

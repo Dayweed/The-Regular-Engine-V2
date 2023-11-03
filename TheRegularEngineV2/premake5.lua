@@ -33,6 +33,9 @@ project "TheRegularEngine"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings "Extra"
+	
+	-- get the Math project to build by this point
+	dependson {"Math"}
 
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")

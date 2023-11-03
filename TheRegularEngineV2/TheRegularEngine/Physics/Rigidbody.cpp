@@ -73,11 +73,12 @@ namespace TRE
 		PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
 
 		// activate gravity by default
-		bool useGravity = true; // TODO: disabling gravity
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
+		bool useGravity = entity->GetComponent<Rigidbody>().m_UseGravity; // TODO: disabling gravity
+		(void)useGravity;
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		// this is necessary to allow the actor to freakin move by physics and forces and such
-		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, entity->GetComponent<Rigidbody>().m_IsKinematic);
 
 		// wake up the sleeping beauty
 		sharedData.m_RigidDynamic->wakeUp();
@@ -107,7 +108,7 @@ namespace TRE
 		case ForceMode::Impulse:        physxForceMode = PxForceMode::eIMPULSE; break;
 		case ForceMode::VelocityChange: physxForceMode = PxForceMode::eVELOCITY_CHANGE; break;
 		case ForceMode::Acceleration:   physxForceMode = PxForceMode::eACCELERATION; break;
-		case ForceMode::Force:
+		case ForceMode::Force:          [[fallthrough]];
 		default:                        physxForceMode = PxForceMode::eFORCE; break;
 		}
 
@@ -184,8 +185,9 @@ namespace TRE
 		rigidbody.m_Mass = rigidDynamic->getMass();
 		// rigidbody.m_Drag = ;
 		// rigidbody.m_AngularDrag = ;
-		rigidbody.m_UseGravity = !rigidDynamic->getActorFlags().isSet(PxActorFlag::eDISABLE_GRAVITY);
-		rigidbody.m_IsKinematic = rigidDynamic->getRigidBodyFlags().isSet(PxRigidBodyFlag::eKINEMATIC);
+		//rigidbody.m_UseGravity = !rigidDynamic->getActorFlags().isSet(PxActorFlag::eDISABLE_GRAVITY);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !rigidbody.m_UseGravity);
+		rigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, rigidbody.m_IsKinematic);
 	}
 
 	void PhysicsSystem::DestructRigidbody(const Entity& entity) const

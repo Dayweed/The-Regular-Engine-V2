@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TREIncludes.h"
 #include "Resource/ResourceManager.h"
+#include "GameLoop.h"
 
 namespace TRE
 {
@@ -27,6 +28,11 @@ namespace TRE
 
 	void SceneManager::LoadScene(std::string scenePath)
 	{
+		if (GameLoop::Instance().GetDisplayingPrefab())
+		{
+			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+		}
+
 		ECSSystemManager::Instance().BeforeReset();
 		ECSManager::Instance().DestroyAll();
 

@@ -232,6 +232,9 @@
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Physics\SimulationEventCallback.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
     <ClInclude Include="PropertyConfig.h" />
     <ClInclude Include="Resource\Resource.h">
       <Filter>Resource</Filter>
@@ -418,6 +421,9 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\Rigidbody.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\SimulationEventCallback.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\SphereCollider.cpp">

@@ -247,6 +247,10 @@ namespace TRE
 	class ECSManager
 	{
 	public:
+
+		// TO CHANGE
+		void ConstructPhysicPrefab(Entity parent);
+
 		/* !
 		@function		Instance
 		@author			Isaiah Lim (lim.i@digipen.edu)
@@ -563,6 +567,7 @@ namespace TRE
 		// EnTT stuff
 		entt::registry m_Registry;
 
+		std::vector<std::string> m_EntityOrder;
 		std::unordered_map<std::string, Entity> m_EntityList;
 		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 
@@ -630,6 +635,7 @@ namespace TRE
 	private:
 		nlohmann::json m_Root;
 		nlohmann::json m_Current;
+		int m_EntityNo;
 
 		std::string m_FileName;
 	};
@@ -660,7 +666,7 @@ namespace TRE
 		entt::exclude_t<Undeployed> u{};
 
 		auto view = m_Registry.view<Comp, Others...>(u);
-		objects.reserve(m_EntityList.size());
+		objects.reserve(m_EntityOrder.size());
 
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
@@ -670,6 +676,8 @@ namespace TRE
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}
 		}
+
+		std::reverse(objects.begin(), objects.end());
 
 		return objects;
 	}
@@ -779,7 +787,7 @@ namespace TRE
 			std::string compName{ typeid(T).name() };
 			if (typeid(T) == typeid(Properties))
 			{
-				TRE_CORE_ERROR("[" + funcName + "] Object does not have the component " + compName);
+				TRE_CORE_ERROR("[" + funcName + "] Object (ID " + std::to_string(static_cast<ENTTID>(m_Entity)) + ") does not have the component " + compName);
 			}
 			else
 			{
@@ -818,13 +826,17 @@ namespace TRE
 	template <typename T>
 	void ECSOutputArchive::operator()(entt::entity ent, const T& t)
 	{
-		if (ECSManager::Instance().GetRegistry().valid(ent))
-		{
-			m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+		m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
 
-			nlohmann::json json = t;
-			m_Current.push_back(json);
-		}
+		nlohmann::json json = t;
+		m_Current.push_back(json);
+		//if (ECSManager::Instance().GetRegistry().valid(ent))
+		//{
+		//	m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+
+		//	nlohmann::json json = t;
+		//	m_Current.push_back(json);
+		//}
 	}
 
 	template <typename T>
