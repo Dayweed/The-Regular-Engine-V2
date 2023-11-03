@@ -12,6 +12,7 @@
 
 namespace TRE
 {
+	static std::string lastSceneClicked;
 	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -173,11 +174,11 @@ namespace TRE
 				}
 			}
 
-			ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
+			/*ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
 			if (ImGui::Button("Open File Explorer"))
 			{
 				(void)FileExplorer::OpenFileExplorer(nullptr);
-			}
+			}*/
 
 			if (m_CurrentDirectory.compare(m_AssetDirectory) != 0 && m_CurrentDirectory.compare(m_SceneDirectory) != 0)
 			{
@@ -255,16 +256,17 @@ namespace TRE
 							{
 								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
 								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
-								Entity prefabInstance = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->DisplayPrefabInNewScene(prefabGUID);
-								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+								Entity prefabInstance = prefabsystem->DisplayPrefabInNewScene(prefabGUID);
+								m_SelectionManager->SelectEntity(prefabInstance);
 							}
 						}
 						else if (item.m_ResourceType == "m_Scene")
 						{
-							if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
+							/*if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 							{
 								SceneManager::Instance().LoadScene(item.m_Path.string());
-							}
+							}*/
+							lastSceneClicked = item.m_Path.string();
 						}
 						else
 						{
@@ -313,14 +315,21 @@ namespace TRE
 				}
 				ImGui::EndPopup();
 			}
-			
 		}
-			ImGui::EndChild();
+		ImGui::EndChild();
+
+		//For scene opening
+		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		{
+			if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
+			{
+				SceneManager::Instance().LoadScene(lastSceneClicked);
+			}
+		}
 	}
 
 	void ContentBrowserPanel::Init()
 	{
-		std::cout << "contentbrowser init\n";
 		// Late April Fools Joke (Activate this for sum humor in Content Browser)
 #if false
 		m_TmpTextures = Util::CreateIcon("icon-file.png");
