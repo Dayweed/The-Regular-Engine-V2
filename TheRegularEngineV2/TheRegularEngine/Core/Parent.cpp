@@ -23,18 +23,19 @@ namespace TRE
 			//For startup
 			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
 			{
-				if (parent.m_Parent != "")
-					SetParent(object, ECSManager::Instance().FindEntity(parent.m_Parent));
 				for (auto& child : parent.m_Children)
 				{
-					AddChild(object, ECSManager::Instance().FindEntity(child));
+					UpdateChildLocalData(object, ECSManager::Instance().FindEntity(child));
 				}
 
 				parent.m_IsDirty = false;
 			}
+		}
 
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
+		{
 			//Update world data
-			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty)// && object->GetComponent<Parenting>().m_IsDirty == false)
+			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
 			{
 				//Update own local data if i have a parent
 				UpdateLocalData(object);
