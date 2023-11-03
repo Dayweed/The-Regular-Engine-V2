@@ -67,5 +67,7 @@ namespace TRE
 			float m_RotationSensitivity = 4.f;
 
 			glm::vec3 m_ClickRay{};
+
+			std::uint32_t m_ClickCount{};
 	};
 }
