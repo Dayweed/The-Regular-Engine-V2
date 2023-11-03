@@ -1,17 +1,19 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
         "m_ExistingPrefabsKey": [
-            "10912187722202796678",
             "11822093139939255162",
+            "10912187722202796678",
             "2190832989083742842",
             "8829880216004354162",
+            "12155267292186183221",
             "6452796380767818092"
         ],
         "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/Holey.json",
             "../Resources/Prefabs/FallingMaracca.json",
+            "../Resources/Prefabs/Holey.json",
             "../Resources/Prefabs/Moley.json",
             "../Resources/Prefabs/FallingHat.json",
+            "../Resources/Prefabs/TriggerDisplay_1.json",
             "../Resources/Prefabs/JumpPad.json"
         ]
     }
