@@ -22,7 +22,7 @@ namespace TRE
             SetTag("Trigger");
         }
 
-        private void OnCollisionStay(System.UInt64 otherID)
+        private void OnTriggerStay(System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
 
@@ -32,7 +32,7 @@ namespace TRE
                 isHit = true;
                 triggerDisplay.CheckTrigger();
             }
-            if (PhysicsSystem.IsCollisionExit(this.ID, otherID))
+            if (PhysicsSystem.IsTriggerExit(this.ID, otherID))
             {
                 if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
                 {
