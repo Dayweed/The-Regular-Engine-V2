@@ -89,10 +89,10 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
-		if (m_IsViewportHovered == false)
+		if (m_IsViewportFocused == false)
 			return;
 
-		//Gizmo
+#pragma region Gizmo
 		if (event._key == (int)KeyButton::Q)
 		{
 			m_GizmoOperation = -1;
@@ -117,20 +117,47 @@ namespace TRE
 		}
 		else
 			m_IsGridAndSnap = false;
+#pragma endregion
 
-		//Look at
+		//Editor camera Look at
+#pragma region EditorCamera
+		EditorCamera& editorCamera = EditorCamera::Instance();
 		if (event._key == (int)KeyButton::F)
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
+				editorCamera.SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
+
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		{
+			const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
+			const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
+
+			if (event._key == (int)KeyButton::W)
+			{
+				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
+			}
+			if (event._key == (int)KeyButton::S)
+			{
+				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
+			}
+			if (event._key == (int)KeyButton::A)
+			{
+				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+			}
+			if (event._key == (int)KeyButton::D)
+			{
+				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+			}
+		}
+#pragma endregion
 	}
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
 	{
-		if(m_IsViewportHovered == false)
+		if(m_IsViewportFocused == false)
 			return;
 
 		EditorCamera& editorCamera = EditorCamera::Instance();
