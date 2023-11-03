@@ -320,6 +320,7 @@ namespace TRE
 
 	void ContentBrowserPanel::Init()
 	{
+		std::cout << "contentbrowser init\n";
 		// Late April Fools Joke (Activate this for sum humor in Content Browser)
 #if false
 		m_TmpTextures = Util::CreateIcon("icon-file.png");
