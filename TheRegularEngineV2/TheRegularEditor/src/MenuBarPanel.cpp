@@ -102,9 +102,15 @@ namespace TRE
 					if (ImGui::BeginMenu("Grid and Snap"))
 					{
 						ImGui::MenuItem("Increment Snapping");
-						ImGui::InputFloat("Position", &m_PosIncrement);
-						ImGui::InputFloat("Rotation", &m_RotIncrement);
-						ImGui::InputFloat("Scale", &m_ScaleIncrement);
+						ImGui::Text("Position");
+						ImGui::SameLine();
+						ImGui::InputFloat("##SnapPosition", &m_PosIncrement);
+						ImGui::Text("Rotation");
+						ImGui::SameLine();
+						ImGui::InputFloat("##SnapRotation", &m_RotIncrement);
+						ImGui::Text("Scale");
+						ImGui::SameLine();
+						ImGui::InputFloat("##SnapScale", &m_ScaleIncrement);
 						EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
 						ImGui::EndMenu();
 					}
@@ -112,9 +118,28 @@ namespace TRE
 					ImGui::EndMenu();
 				}
 				
-				if (ImGui::Button("Assign Editor Camera Values"))
+				if (ImGui::BeginMenu("Editor Camera"))
 				{
-					EditorCamera::Instance().AssignToMainCamera();
+					if (ImGui::BeginMenu("Sensitivity"))
+					{
+						ImGui::Text("Pan");
+						ImGui::SameLine();
+						ImGui::InputFloat("##EditorPan", &m_PosIncrement);
+						ImGui::Text("Rotation");
+						ImGui::SameLine();
+						ImGui::InputFloat("##EditorRotation", &m_RotIncrement);
+						ImGui::Text("Zoom");
+						ImGui::SameLine();
+						ImGui::InputFloat("##EditorZoom", &m_ScaleIncrement);
+						//EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
+						ImGui::EndMenu();
+					}
+
+					if (ImGui::Button("Assign Editor Camera Values"))
+					{
+						EditorCamera::Instance().AssignToMainCamera();
+					}
+					ImGui::EndMenu();
 				}
 
 				if (ImGui::Checkbox("Show All Colliders", &m_ShowAllColliders))

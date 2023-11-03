@@ -31,7 +31,7 @@ namespace TRE
 		private bool isScaled = false;
 		//Box Collider
 		private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 3.5f;
+		private float blueberrysuperRadius = 4f;
 		private float strawberrysuperRadius = 1.5f;
 		private float currentRadius = 2f;
 		private float defaultHeight = 1f;
@@ -49,55 +49,14 @@ namespace TRE
 		private float lerpSpeed = 0.05f;
 
 		//For camera controller
-		private Entity Trigger_A;
-		private Entity Trigger_B;
-		private Entity Trigger_C;
-		private Entity Trigger_D;
-		private Entity Trigger_E;
-		private Entity Trigger_F;
-		private Entity Trigger_G;
-		private Entity Trigger_H;
 		private Entity Key;
 		private Entity FinalPlatform;
-
-		public bool regionA;
-		public bool regionB;
-		public bool regionC;
-		public bool regionD;
-		public bool regionE;
-		public bool regionF;
-		public bool regionG;
-		public bool regionH;
 
 		public float elapsedTime = 0.0f;
 
 		public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
-
-			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
-			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
-
-			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
-			Debug.Log("Trigger_B ID is " + Trigger_B.ID);
-
-			Trigger_C = ECSManager.FindEntityByName("Trigger_C");
-			Debug.Log("Trigger_C ID is " + Trigger_C.ID);
-
-			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
-			Debug.Log("Trigger_D ID is " + Trigger_D.ID);
-
-			Trigger_E = ECSManager.FindEntityByName("Trigger_E");
-			Debug.Log("Trigger_E ID is " + Trigger_E.ID);
-
-			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
-			Debug.Log("Trigger_F ID is " + Trigger_F.ID);
-
-			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
-			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
-
-			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
-			Debug.Log("Trigger_H ID is " + Trigger_H.ID);
 
 			Key = ECSManager.FindEntityByName("Key");
 			Debug.Log("Key ID is " + Key.ID);
@@ -277,14 +236,7 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, playerDirection);
 
-			regionA = IsInsideTrigger(Trigger_A);
-			regionB = IsInsideTrigger(Trigger_B);
-			regionC = IsInsideTrigger(Trigger_C);
-			regionD = IsInsideTrigger(Trigger_D);
-			regionE = IsInsideTrigger(Trigger_E);
-			regionF = IsInsideTrigger(Trigger_F);
-			regionG = IsInsideTrigger(Trigger_G);
-			regionH = IsInsideTrigger(Trigger_H);
+			
 
 			if (PS.IsTriggerEnter(this.ID, Key.ID))
 			{
@@ -337,11 +289,6 @@ namespace TRE
                     isGrounded = false;
                 }
             }
-		}
-
-		private bool IsInsideTrigger(Entity entity)
-		{
-			return PS.IsTriggerEnter(this.ID, entity.ID) || PS.IsTriggerStay(this.ID, entity.ID);
 		}
 	}
 }

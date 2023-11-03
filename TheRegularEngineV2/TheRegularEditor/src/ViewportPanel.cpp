@@ -26,7 +26,7 @@ namespace TRE
 	}
 
 	void ViewportPanel::OnMouseMove(const MouseMoveEvent& event)
-	{
+	{	
 		m_MousePos.x = static_cast<float>(event._xpos);
 		m_MousePos.y = static_cast<float>(event._ypos);
 
@@ -123,8 +123,7 @@ namespace TRE
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				//if(SelectedEntity->HasComponent<MeshRenderer>())
-					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
+				EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
 	}
@@ -136,7 +135,7 @@ namespace TRE
 
 		EditorCamera& editorCamera = EditorCamera::Instance();
 		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
-		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
+		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
 
 		editorCamera.SetFocalDistance(baseCamera.m_FocalLength - zoomSpeed);
 
@@ -171,8 +170,6 @@ namespace TRE
 
 	void ViewportPanel::Update()
 	{
-		ImGui::GetIO().DeltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
-
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
 		ImGui::PopStyleVar();
@@ -182,6 +179,7 @@ namespace TRE
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
 		UpdateViewportSize();
+
 		MouseActions();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize, ImVec2(0,0), ImVec2(1, 1));
 
@@ -464,10 +462,12 @@ namespace TRE
 		{
 			static glm::vec2 panMouseStartPos{};
 			static glm::vec2 panMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Middle))
 			{
 				panMouseEndPos = m_MousePos;
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
+				panMouseStartPos = panMouseEndPos;
+
 				if (glm::length(positionOffset) < 0.1f)
 					return;
 				positionOffset = glm::normalize(positionOffset);
@@ -476,7 +476,7 @@ namespace TRE
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
 				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
-				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+				positionOffset *= ImGui::GetIO().DeltaTime;
 
 				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
 				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetUpVec() * positionOffset.y);
@@ -490,16 +490,19 @@ namespace TRE
 		{
 			static glm::vec2 rotMouseStartPos{};
 			static glm::vec2 rotMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
+
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
 			{
 				rotMouseEndPos = m_MousePos;
 				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
+				rotMouseStartPos = rotMouseEndPos;
+
 				if (glm::length(rotationOffset) < 0.1f)
 					return;
 				rotationOffset = glm::normalize(rotationOffset);
 				rotationOffset *= -1;
 				rotationOffset *= m_RotationSensitivity;
-				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+				rotationOffset *= ImGui::GetIO().DeltaTime;
 
 				const float yawSign = baseCamera.GetUpVec().y < 0 ? -1.f : 1.f;
 				editorCamera.SetYaw(baseCamera.m_Yaw + yawSign * rotationOffset.x);
@@ -509,6 +512,8 @@ namespace TRE
 			{
 				rotMouseStartPos = m_MousePos;
 			}
+
+
 		}
 	}
 }

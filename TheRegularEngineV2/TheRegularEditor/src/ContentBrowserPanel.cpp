@@ -21,6 +21,8 @@ namespace TRE
 		m_AssetDirectory += "\\Assets";
 		m_SceneDirectory = std::filesystem::current_path().parent_path();
 		m_SceneDirectory += "\\Scenes";
+		m_ScriptDirectory = std::filesystem::current_path().parent_path();
+		m_ScriptDirectory += "\\Scripts";
 		m_CurrentDirectory = m_AssetDirectory;
 
 		//Custom Flag Combinations
@@ -47,7 +49,7 @@ namespace TRE
 			if (p.is_directory())
 			{
 				//if the asset is a file
-				m_Assets.emplace_back(Asset{ true, m_TmpTexturesID ,"m_Invalid", filenameString, p.path()});
+				m_Assets.emplace_back(Asset{ true, m_FolderIconID ,"m_Invalid", filenameString, p.path()});
 			}
 			else
 			{
@@ -64,17 +66,21 @@ namespace TRE
 				const bool is3DObj = filenameString.ends_with(".fbx");
 				const bool isDesc = filenameString.ends_with(".desc");
 				const bool isMaterial = filenameString.ends_with(".material.desc");
+				const bool isScript = filenameString.ends_with(".cs");
 
 				//Determine the icon type
 				newAsset.m_TextureID = isImage							? m_ImageIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isAudio							? m_AudioIconID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isScene || isShader || isPrefab	? m_CubeIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isScene							? m_SceneIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isShader							? m_CubeIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isPrefab 						? m_PrefabIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isMeta							? m_MetaIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isFont							? m_FontIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = is3DObj							? m_3DObjIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isMaterial						? m_MaterialIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isScript							? m_CSScriptIconID : newAsset.m_TextureID;
 
-				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj || isMaterial)
+				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj || isMaterial || isScript)
 				{
 					//Allow Dragging of these file types
 					newAsset.m_ResourceType = isImage		? "m_TextureResource" : newAsset.m_ResourceType;
@@ -85,6 +91,7 @@ namespace TRE
 					newAsset.m_ResourceType = isPrefab		? "m_Prefab" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = is3DObj		? "m_3DObject" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isMaterial	? "m_Material" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isScript		? "m_Script" : newAsset.m_ResourceType;
 				}
 
 				if (isMaterial)
@@ -145,6 +152,11 @@ namespace TRE
 			if (ImGui::Button(m_SceneDirectory.filename().string().c_str()))
 			{
 				m_CurrentDirectory = m_SceneDirectory;
+				PollItems();
+			}
+			if (ImGui::Button(m_ScriptDirectory.filename().string().c_str()))
+			{
+				m_CurrentDirectory = m_ScriptDirectory;
 				PollItems();
 			}
 		}
@@ -308,11 +320,58 @@ namespace TRE
 
 	void ContentBrowserPanel::Init()
 	{
+		// Late April Fools Joke (Activate this for sum humor in Content Browser)
+#if false
 		m_TmpTextures = Util::CreateIcon("icon-file.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
+		m_TmpTextures = Util::CreateIcon("folder_icon.png");
+		m_FolderIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_kj.png");
+		m_SceneIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("cube_icon.png");
 		m_CubeIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_pg.png");
+		m_PrefabIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_eh.png");
+		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_vk.png");
+		m_AudioIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("ttf_icon.png");
+		m_FontIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("meta_icon.png");
+		m_MetaIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_ta.png");
+		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_lp.png");
+		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("Lcon_al.png");
+		m_CSScriptIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+#else
+		m_TmpTextures = Util::CreateIcon("icon-file.png");
+		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("folder_icon.png");
+		m_FolderIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_SceneIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_CubeIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_PrefabIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 		
 		m_TmpTextures = Util::CreateIcon("png_icon.png");
 		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
@@ -330,7 +389,11 @@ namespace TRE
 		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
 		
 		m_TmpTextures = Util::CreateIcon("fbx_icon.png");
-		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());	
+		
+		m_TmpTextures = Util::CreateIcon("icon-file.png");
+		m_CSScriptIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+#endif
 	}
 	
 	void ContentBrowserPanel::Update()
