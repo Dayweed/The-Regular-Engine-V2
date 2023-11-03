@@ -31,6 +31,12 @@ namespace TRE
 		void BindDebugCapsule(VkCommandBuffer CommandBuffer);
 		void DrawDebugCapsule(VkCommandBuffer CommandBuffer);
 
+		void BindDebugCapsuleRadius(VkCommandBuffer CommandBuffer);
+		void DrawDebugCapsuleRadius(VkCommandBuffer CommandBuffer);
+
+		void BindDebugCapsuleHalfExtent(VkCommandBuffer CommandBuffer);
+		void DrawDebugCapsuleHalfExtent(VkCommandBuffer CommandBuffer);
+
 		void BindDebugCameraFrustum(VkCommandBuffer CommandBuffer);
 		void DrawDebugCameraFrustum(VkCommandBuffer CommandBuffer);
 
@@ -60,6 +66,9 @@ namespace TRE
 		std::unique_ptr<DebugType> m_DebugSphere;
 		std::unique_ptr<DebugType> m_DebugAABB;
 		std::unique_ptr<DebugType> m_DebugCapsule;
+		std::unique_ptr<DebugType> m_DebugCapsuleRadius;
+		std::unique_ptr<DebugType> m_DebugCapsuleHalfExtent;
+
 		std::unique_ptr<DebugType> m_DebugCameraFrustum;
 		std::unique_ptr<DebugType> m_DebugLightDirection;
 

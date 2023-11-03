@@ -64,7 +64,7 @@ namespace TRE
 			glm::vec2 m_MousePos{};
 			float m_ZoomSensitivity = 1000.f;
 			float m_PanSpeed = 100.f;
-			float m_RotationSensitivity = 8.f;
+			float m_RotationSensitivity = 4.f;
 
 			glm::vec3 m_ClickRay{};
 	};

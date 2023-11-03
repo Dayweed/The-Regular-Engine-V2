@@ -475,7 +475,7 @@ namespace TRE
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
+				positionOffset *= m_PanSpeed * editorCamera.m_BaseCamera.m_FocalLength / 10.f;
 				positionOffset *= ImGui::GetIO().DeltaTime;
 
 				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
