@@ -9,24 +9,26 @@ namespace TRE
 {
     public class JumpPad : Entity
     {
-        public Entity entitySwitch;
         public bool isActivated;
-
-        private PowerUpManager playerPowerUpManager;
 
         public JumpPad()
         {
-
+            isActivated = false;
         }
 
         public void OnCreate()
         {
-            isActivated = true;
+
         }
 
         public void Update()
         {
 
+        }
+
+        public void ActivatePad(bool isActive)
+        {
+            isActivated = isActive;
         }
     }
 }

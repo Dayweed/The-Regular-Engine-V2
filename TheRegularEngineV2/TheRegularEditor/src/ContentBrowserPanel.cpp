@@ -258,6 +258,7 @@ namespace TRE
 						{
 							if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 							{
+								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
 								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
 								Entity prefabInstance = prefabsystem->DisplayPrefabInNewScene(prefabGUID);
@@ -327,6 +328,7 @@ namespace TRE
 		{
 			if (lastSceneClicked != "" && !GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 			{
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 				SceneManager::Instance().LoadScene(lastSceneClicked);
 				lastSceneClicked = "";
 			}
