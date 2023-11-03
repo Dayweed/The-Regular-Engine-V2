@@ -23,10 +23,7 @@ namespace TRE
 			//For startup
 			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
 			{
-				for (auto& child : parent.m_Children)
-				{
-					UpdateChildLocalData(object, ECSManager::Instance().FindEntity(child));
-				}
+				UpdateLocalData(object);
 
 				parent.m_IsDirty = false;
 			}

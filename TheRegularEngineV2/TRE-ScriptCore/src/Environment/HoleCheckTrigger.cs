@@ -26,14 +26,11 @@ namespace TRE
         {
             Entity other = new Entity(otherID);
 
-            // Check is activated jumppad
-            if (PhysicsSystem.IsCollisionStay(this.ID, otherID))
+            // Check is interacted with moles players
+            if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
             {
-                if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
-                {
-                    isHit = true;
-                    triggerDisplay.CheckTrigger();
-                }
+                isHit = true;
+                triggerDisplay.CheckTrigger();
             }
             if (PhysicsSystem.IsCollisionExit(this.ID, otherID))
             {
