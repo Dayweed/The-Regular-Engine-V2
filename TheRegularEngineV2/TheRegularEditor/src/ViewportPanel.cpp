@@ -123,8 +123,7 @@ namespace TRE
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				//if(SelectedEntity->HasComponent<MeshRenderer>())
-					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
+				EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
 	}
