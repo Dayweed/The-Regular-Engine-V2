@@ -31,6 +31,11 @@ namespace TRE
 		return m_GameRunning;
 	}
 
+	bool GameLoop::GetGameSimulating()
+	{
+		return m_GameSimulating;
+	}
+
 	bool GameLoop::GetSceneReset()
 	{
 		return m_SceneReset;
@@ -75,6 +80,12 @@ namespace TRE
 		}
 
 		m_GameRunning = isRunning;
+
+		// Start Simulating if it just started
+		if (!m_GameSimulating && isRunning)
+		{
+			m_GameSimulating = true;
+		}
 	}
 
 	void GameLoop::ResetScene()
@@ -82,6 +93,7 @@ namespace TRE
 		if (!m_BackUp.empty())
 		{
 			m_GameRunning = false;
+			m_GameSimulating = false;
 			SetSceneReset(true);
 		}
 	}

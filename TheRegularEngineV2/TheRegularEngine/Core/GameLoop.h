@@ -18,6 +18,9 @@ namespace TRE
 
 		bool IsGameRunning();
 
+		// This checks if the game had played and not stopped (true)
+		bool GetGameSimulating();
+
 		bool GetSceneReset();
 		void SetSceneReset(bool reset);
 
@@ -34,6 +37,7 @@ namespace TRE
 	private:
 		// Game Loop
 		bool m_GameRunning{ false };
+		bool m_GameSimulating{ false };	// This checks if the game had played and not stopped (true)
 
 		// Game Got Reseted this scene
 		bool m_SceneReset{ false };

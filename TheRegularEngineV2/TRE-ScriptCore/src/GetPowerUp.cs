@@ -85,8 +85,6 @@ namespace TRE
                 //if player already has 2 power-ups, don't pick up a 3rd one
                 if (playerPowerUpManager.powerUps.Count == 2) return;
 
-                Debug.Log("PCIKED");
-
                 //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
 

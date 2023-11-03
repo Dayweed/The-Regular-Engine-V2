@@ -89,9 +89,6 @@ namespace TRE
 		PrefabSystem() = default;
 		~PrefabSystem() = default;
 
-		// TO CHANGE
-		void ConstructPhysicPrefab(Entity parent);
-
 		void Init() override;
 		void Update() override;
 		void AfterReset() override;
