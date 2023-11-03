@@ -35,6 +35,8 @@ namespace TRE
 		
 		bool Contains(const std::string& assetName) const;
 		bool Contains(const ResourceHandle resourceHandle) const;
+		bool Compiled(const std::string& assetName) const;
+		bool Compiled(const ResourceHandle resourceHandle) const;
 		const ResourceHandle GetAssetHandle(const std::string& assetName) const;
 		template<typename T>
 		std::shared_ptr<T> GetAsset(const std::string& assetName);
@@ -50,7 +52,7 @@ namespace TRE
 		AssetManager& operator=(const AssetManager&) = delete;
 		void* operator new(size_t) = delete;
 	private:
-		std::unordered_map<std::string, ResourceHandle> m_AssetNameToHandle;
+		std::unordered_map<std::string, std::pair<ResourceHandle, bool>> m_AssetNameToHandle;
 	};
 
 	template <typename T>
@@ -89,7 +91,11 @@ namespace TRE
 		//Compile
 		//Load
 
-		const ResourceHandle handle = Resource::GenerateGUID();
+		ResourceHandle handle;
+		if(m_AssetNameToHandle.contains(assetName))
+			handle = m_AssetNameToHandle.at(assetName).first;
+		else
+			handle = Resource::GenerateGUID();
 		const std::string hex = Resource::GetGUIDHex(handle);
 		const std::string assetFolderPath = "../Assets/";
 		const std::string resourceFolderPath = "../Resources/";
@@ -140,10 +146,12 @@ namespace TRE
 	template<typename T>
 	std::shared_ptr<T> AssetManager::GetAsset(const std::string& assetName)
 	{
-		if(Contains(assetName))
-			return ResourceManager::Instance().GetResource<T>(m_AssetNameToHandle.at(assetName));
-		
-		return nullptr;
+		//if compiled before return
+		if(Compiled(assetName))
+			return ResourceManager::Instance().GetResource<T>(m_AssetNameToHandle.at(assetName).first);
+
+		//If not try compiling
+		return CompileAndLoad<T>(assetName);
 	}
 
 	template<typename T>

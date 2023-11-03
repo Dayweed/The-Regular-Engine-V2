@@ -227,7 +227,7 @@ namespace TRE
 
 		if (flip)
 		{
-			std::reverse(toFlip.begin(), toFlip.end());
+			//std::reverse(toFlip.begin(), toFlip.end());
 		}
 
 		for (entt::entity srcEntity : toFlip)

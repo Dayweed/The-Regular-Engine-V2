@@ -1,0 +1,213 @@
+[
+   [
+      3,
+      0,
+      1,
+      2
+   ],
+   [
+      3,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "12155267292186183221",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12155267292186183221",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12155267292186183221",
+         "m_Overrides": {},
+         "m_PrefabGUID": "17309196330906806664",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12155267292186183221",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4891184277280983224",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Children": [
+            "4611956133801695401",
+            "17282250538419950940"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "3706620144946033049"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "3706620144946033049"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "3706620144946033049",
+         "m_Name": "TriggerDisplay_1",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "4611956133801695401",
+         "m_Name": "TriggerDisplay_1_Trigger_1",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "17282250538419950940",
+         "m_Name": "TriggerDisplay_1_Trigger_2",
+         "m_Tag": ""
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Position": [
+            94.0,
+            -2.5380001068115234,
+            -103.07292938232422
+         ],
+         "m_Rotation": [
+            0.0,
+            9.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.6000000238418579,
+            1.0,
+            0.10000000149011612
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            98.30626678466797,
+            -3.7333872318267822,
+            -108.72234344482422
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.20000000298023224,
+            0.20000000298023224,
+            0.20000000298023224
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            109.0740966796875,
+            -3.7333872318267822,
+            -108.72234344482422
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.20000000298023224,
+            0.20000000298023224,
+            0.20000000298023224
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      1,
+      {
+         "m_HalfExtents": [
+            2.0,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2,
+      {
+         "m_HalfExtents": [
+            2.0,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      0,
+      {
+         "m_StoredClass": "TRE.HoleCheckDisplay"
+      },
+      1,
+      {
+         "m_StoredClass": "TRE.HoleCheckTrigger"
+      },
+      2,
+      {
+         "m_StoredClass": "TRE.HoleCheckTrigger"
+      }
+   ]
+]

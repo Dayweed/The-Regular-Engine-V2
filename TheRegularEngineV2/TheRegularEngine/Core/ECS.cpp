@@ -7,6 +7,7 @@
 
 #define TO DELETE
 #include "Transform.h"
+#include "GameLoop.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
 
@@ -107,10 +108,42 @@ namespace TRE
 		m_EntityOrder.emplace_back(obj->GetComponent<Properties>().m_GUID);
 		m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
 		m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
+
+		// Construct if it is not displaying prefab!
+		if (!GameLoop::Instance().GetDisplayingPrefab())
+		{
+			ConstructPhysicPrefab(obj);
+		}
+
 		// Return clone
 		return obj;
 	}
 
+	// TO CHANGE
+	void ECSManager::ConstructPhysicPrefab(Entity parent)
+	{
+		// Construct RigidBody, Sphere, Box or Capsule (TO CHANGE)
+		parent->HasComponent<Rigidbody>() && ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructRigidbody(parent);
+		if (parent->HasComponent<SphereCollider>())
+		{
+			SphereCollider& sc{ parent->GetComponent<SphereCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructSphereCollider(parent, sc.m_Radius, sc.m_Offset);
+		}
+		if (parent->HasComponent<BoxCollider>())
+		{
+			BoxCollider& bc{ parent->GetComponent<BoxCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructBoxCollider(parent, bc.m_HalfExtents, bc.m_Offset);
+		}
+		if (parent->HasComponent<CapsuleCollider>())
+		{
+			CapsuleCollider& cc{ parent->GetComponent<CapsuleCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(parent, cc.m_Radius, cc.m_HalfHeight);
+		}
+		for (Entity child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parent))
+		{
+			ConstructPhysicPrefab(child);
+		}
+	}
 
 	std::vector<Entity> ECSManager::GetAllEntities(bool IncludeNonActive)
 	{

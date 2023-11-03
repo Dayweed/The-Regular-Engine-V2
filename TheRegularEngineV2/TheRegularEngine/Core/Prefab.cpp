@@ -134,6 +134,8 @@ namespace TRE
 			ECSManager::Instance().SaveRegistry(GameLoop::Instance().GetBackUpRegistry());
 		}
 
+		GameLoop::Instance().SetDisplayingPrefab(true);
+
 		// Mimick Game Loop when forcing the scene to be resetted
 		ECSSystemManager::Instance().BeforeReset();
 
@@ -145,9 +147,8 @@ namespace TRE
 		MainCamera->AddComponent<Camera>();
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(MainCamera, true);
 
+		m_DisplayedPrefab = nullptr;
 		m_DisplayedPrefab = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID);
-
-		GameLoop::Instance().SetDisplayingPrefab(true);
 
 		ECSSystemManager::Instance().AfterReset();
 
@@ -156,6 +157,8 @@ namespace TRE
 
 	void PrefabSystem::ReturnToScene()
 	{
+		m_DisplayedPrefab = nullptr;
+
 		// Mimick Game Loop when forcing the scene to be resetted
 		ECSSystemManager::Instance().BeforeReset();
 
@@ -1085,6 +1088,9 @@ namespace TRE
 		{
 			for (auto entityPair : m_TempPrefabs)
 			{
+				// Clear the child and parent since they are all tempPrefabs
+				entityPair.second->GetComponent<Parenting>().m_Parent = "";
+				entityPair.second->GetComponent<Parenting>().m_Children.clear();
 				MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(entityPair.second->m_Entity));
 			}
 			m_TempPrefabs.clear();

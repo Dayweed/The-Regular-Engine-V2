@@ -38,6 +38,11 @@ namespace TRE
 
 	void EntityCopier::PasteEntities()
 	{
+		ECSSystemManager::Instance().BeforeReset();
+		// Ensure all the copied registry has new guid again jic for duplication
+		m_CopierRegistry.each([&](entt::entity srcEntity) {
+			m_CopierRegistry.get<Properties>(srcEntity).m_GUID = MemoryManager::Instance().GenerateGUIDStr();
+		});
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
 		ECSSystemManager::Instance().AfterReset();
 	}

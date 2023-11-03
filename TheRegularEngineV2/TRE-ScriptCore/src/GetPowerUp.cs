@@ -10,10 +10,10 @@ namespace TRE
     public class GetPowerUp : Entity
     {
         public PowerUpsType powerUpType;
-        public Entity PowerUpManagerObj;
+        private Entity PowerUpManagerObj;
 
-        public string mole1tag = "Red";
-        public string mole2tag = "Blue";
+        private string mole1tag = "Red";
+        private string mole2tag = "Blue";
 
         private bool collected;
 
@@ -104,6 +104,7 @@ namespace TRE
 
         public void Update()
         {
+            if (!collected) return;
             cooldownCurrent -= Time.deltaTime;
             SetToPlayer();
         }
@@ -119,7 +120,7 @@ namespace TRE
 
             Vector3 newPos = playerObj.transform.Position;
             int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
-            newPos.y += playerObj.transform.Scale.y * 4 * collectedIndex;
+            newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
             transform.Position = newPos;
             //transform.Position = newPos;
 

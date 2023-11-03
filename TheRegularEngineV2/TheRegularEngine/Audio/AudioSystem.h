@@ -171,6 +171,7 @@ namespace TRE
 		void SetListenerPosition(Entity& go);
 		void SetSourcePosition(Entity& go);
 		void SetSourceRadius(Entity& go, const float min, const float max);
+		bool GetIsPlaying(Entity& go) const;
 
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;

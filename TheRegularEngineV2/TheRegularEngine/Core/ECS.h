@@ -247,6 +247,10 @@ namespace TRE
 	class ECSManager
 	{
 	public:
+
+		// TO CHANGE
+		void ConstructPhysicPrefab(Entity parent);
+
 		/* !
 		@function		Instance
 		@author			Isaiah Lim (lim.i@digipen.edu)

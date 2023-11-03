@@ -12,8 +12,10 @@ namespace TRE
 	{
 		public PowerUpManager MyPowerManager;
 
-		//check if player is on the ground (for now , just a plane)
-		private bool isGrounded = true;
+        //Check if player is boosted jump
+        private bool isBoostedJump = false;
+        //check if player is on the ground (for now , just a plane)
+        private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
 		//Max Velocity vector
@@ -29,69 +31,32 @@ namespace TRE
 		private bool isScaled = false;
 		//Box Collider
 		private float defaultRadius = 2f;
-		private float superRadius = 3.5f;
+		private float blueberrysuperRadius = 4f;
+		private float strawberrysuperRadius = 1.5f;
 		private float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float superHeight = 0.1f;
+		private float blueberrysuperHeight = 0.1f;
+		private float strawberrysuperHeight = 0.1f;
 		private float currentHeight = 1f;
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 scaledXform = new Vector3(2f, 1f, 2f);
+		private Vector3 blueberryscaledXform = new Vector3(2f, 1f, 2f);
+		private Vector3 strawberryscaledXform = new Vector3(2f, 1f, 0.5f);
+		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 
 		private Vector3 playerDirection = new Vector3(0, 0, 1);
 
 		private float lerpSpeed = 0.05f;
 
 		//For camera controller
-		private Entity Trigger_A;
-		private Entity Trigger_B;
-		private Entity Trigger_C;
-		private Entity Trigger_D;
-		private Entity Trigger_E;
-		private Entity Trigger_F;
-		private Entity Trigger_G;
-		private Entity Trigger_H;
 		private Entity Key;
 		private Entity FinalPlatform;
-
-		public bool regionA;
-		public bool regionB;
-		public bool regionC;
-		public bool regionD;
-		public bool regionE;
-		public bool regionF;
-		public bool regionG;
-		public bool regionH;
 
 		public float elapsedTime = 0.0f;
 
 		public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
-
-			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
-			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
-
-			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
-			Debug.Log("Trigger_B ID is " + Trigger_B.ID);
-
-			Trigger_C = ECSManager.FindEntityByName("Trigger_C");
-			Debug.Log("Trigger_C ID is " + Trigger_C.ID);
-
-			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
-			Debug.Log("Trigger_D ID is " + Trigger_D.ID);
-
-			Trigger_E = ECSManager.FindEntityByName("Trigger_E");
-			Debug.Log("Trigger_E ID is " + Trigger_E.ID);
-
-			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
-			Debug.Log("Trigger_F ID is " + Trigger_F.ID);
-
-			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
-			Debug.Log("Trigger_G ID is " + Trigger_G.ID);
-
-			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
-			Debug.Log("Trigger_H ID is " + Trigger_H.ID);
 
 			Key = ECSManager.FindEntityByName("Key");
 			Debug.Log("Key ID is " + Key.ID);
@@ -167,15 +132,43 @@ namespace TRE
 			{
 				if (isGrounded)
 				{
-					Vector3 maxHeight = new Vector3(0, 35, 0);
-					Jump(maxHeight);
+					// Boosted Jump
+					if (isBoostedJump)
+					{
+						Vector3 maxHeight = new Vector3(0, 70, 0);
+						Jump(maxHeight);
+					}
+					else
+					{
+						Vector3 maxHeight = new Vector3(0, 35, 0);
+						Jump(maxHeight);
+					}
 				}
-			}
-			#endregion
+            }
+            #endregion
 
-			#region Ability
-			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+            #region Swap
+            // Check if can swap ability
+            if (InputSystem.GetKeyTrigger(InputKeys.Q))
+            {
+                MyPowerManager.SwapPowerUps();
+                isScaled = false;
+            }
+            #endregion
+
+            #region Drop
+            // Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
+            {
+                MyPowerManager.DropMain();
+                isScaled = false;
+            }
+            #endregion
+
+            #region Ability
+            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
 			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
+
 			if (isScaled && !mainBlueberry && !mainStrawberry)
 			{
 				isScaled = false;
@@ -184,35 +177,44 @@ namespace TRE
 			// Check if can trigger ability
 			if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
-				if (mainBlueberry)
+				if (mainBlueberry || mainStrawberry)
 				{
 					isScaled = !isScaled;
 				}
 			}
 
-			if ((isScaled == false || !mainBlueberry))
+			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				TransformSystem.SetScaling(this.ID, defaultXform);
-			}
-			else
+                currentXform.x = MathF.Lerp(currentXform.x, defaultXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, defaultXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
+			else if (mainBlueberry)
 			{
 				//for fat boi
-				currentHeight = MathF.Lerp(currentHeight, superHeight, lerpSpeed);
-				currentRadius = MathF.Lerp(currentRadius, superRadius, lerpSpeed);
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				TransformSystem.SetScaling(this.ID, scaledXform);
-			}
-			#endregion
-
-			#region Drop
-			// Check if can trigger ability
-			if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
+                currentXform.x = MathF.Lerp(currentXform.x, blueberryscaledXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, blueberryscaledXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, blueberryscaledXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
+			else if (mainStrawberry)
 			{
-				MyPowerManager.DropMain();
-			}
+				//for fat boi
+				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed);
+				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed);
+				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed);
+                currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed);
+                currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
 			#endregion
 
 			dirVec.Normalize();
@@ -234,14 +236,7 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, playerDirection);
 
-			regionA = IsInsideTrigger(Trigger_A);
-			regionB = IsInsideTrigger(Trigger_B);
-			regionC = IsInsideTrigger(Trigger_C);
-			regionD = IsInsideTrigger(Trigger_D);
-			regionE = IsInsideTrigger(Trigger_E);
-			regionF = IsInsideTrigger(Trigger_F);
-			regionG = IsInsideTrigger(Trigger_G);
-			regionH = IsInsideTrigger(Trigger_H);
+			
 
 			if (PS.IsTriggerEnter(this.ID, Key.ID))
 			{
@@ -262,9 +257,14 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
-			if (PS.IsCollisionStay(this.ID, otherID))
+            // Check is activated jumppad
+            if (other.CompareTag("JumpPad"))
+            {
+                if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
+            }
+            if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "Blue")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Blue")
 				{
 					isGrounded = true;
 				}
@@ -275,19 +275,20 @@ namespace TRE
 			}
 			if (PS.IsCollisionExit(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Player")
+				if (EngineGetTag(otherID) == "Blue")
 				{
 					PS.GetLinearVelocity(this.ID, out Vector3 output);
 					if (output.y > maxVelocity)
 						output.y = maxVelocity;
 					PS.SetLinearVelocity(this.ID, output);
-				}
-			}
-		}
-
-		private bool IsInsideTrigger(Entity entity)
-		{
-			return PS.IsTriggerEnter(this.ID, entity.ID) || PS.IsTriggerStay(this.ID, entity.ID);
+                }
+                // No longer boosted if leave jumppad
+                else if (EngineGetTag(otherID) == "JumpPad")
+                {
+                    isBoostedJump = false;
+                    isGrounded = false;
+                }
+            }
 		}
 	}
 }

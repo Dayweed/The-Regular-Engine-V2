@@ -5,6 +5,8 @@ namespace TRE::Util
 {
 	std::shared_ptr<VulkanTexture> CreateIcon(std::string PNG_name)
 	{
+		return AssetManager::Instance().GetAsset<VulkanTexture>(PNG_name);
+
 		const auto tmpGUID = AssetManager::Instance().GetAssetHandle(PNG_name);
 		const auto tmpHexGUID = Resource::GetGUIDHex(tmpGUID);
 		std::unique_ptr<VulkanTexture> tmpButton = std::make_unique<VulkanTexture>("../Resources/" + tmpHexGUID + ".DDS");

@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "12814471206294069586",
+         "m_GUID": "12678098319685453658",
          "m_Name": "FallingHat",
          "m_Tag": ""
       }
@@ -74,11 +74,11 @@
          "m_FreezePositionX": false,
          "m_FreezePositionY": false,
          "m_FreezePositionZ": false,
-         "m_FreezeRotationX": false,
-         "m_FreezeRotationY": false,
-         "m_FreezeRotationZ": false,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 8.0,
+         "m_Mass": 172.8000030517578,
          "m_UseGravity": true
       }
    ],
@@ -90,9 +90,9 @@
       0,
       {
          "m_HalfExtents": [
-            1.0,
-            1.0,
-            1.0
+            4.5,
+            1.2000000476837158,
+            4.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [

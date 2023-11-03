@@ -27,15 +27,17 @@ namespace TRE
 						assetName = assetName.substr(line.find_last_of('/') + 1);
 						std::string resourceCheck = resourcePath.string() + "/" + assetHandle;
 
+						std::pair rscCheck = std::make_pair(Resource::GetGUIDFromHex(assetHandle), false);
 						for (const auto& rscEntry : std::filesystem::directory_iterator(resourcePath))
 						{
 							std::string rscHandle = rscEntry.path().stem().string();
 							if (rscHandle == assetHandle)
 							{
-								m_AssetNameToHandle[assetName] = Resource::GetGUIDFromHex(assetHandle);
+								rscCheck.second = true;
 								break;
 							}
 						}
+						m_AssetNameToHandle[assetName] = rscCheck;
 					}
 				}
 				else
@@ -54,13 +56,29 @@ namespace TRE
 
 	void AssetManager::AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset)
 	{
-		m_AssetNameToHandle[assetName] = asset->GetHandle();
+		m_AssetNameToHandle[assetName] = std::pair(asset->GetHandle(), true);
 		ResourceManager::Instance().AddResource(std::move(asset));
 	}
 
 	void AssetManager::RemoveAsset(const std::string& assetName)
 	{
-		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName]);
+		const ResourceHandle handle = m_AssetNameToHandle[assetName].first;
+		ResourceType assetType = ResourceManager::Instance().GetResourceType(handle);
+		std::filesystem::path assetsPath = "../Assets/";
+		std::filesystem::path resourcePath = "../Resources/";
+		const std::string hexHandle = Resource::GetGUIDHex(handle);
+		//For physical files with intermediate, remove the intermediate file, descriptor file and resource file
+		if (assetType == ResourceType::Mesh)
+		{
+			assetsPath += hexHandle + ".desc" + ".geom";
+			std::filesystem::remove(assetsPath);
+			assetsPath = "../Assets/";
+			assetsPath += assetName + ".fbx";
+			std::filesystem::remove(assetsPath);
+			resourcePath += hexHandle + ".geom";
+			std::filesystem::remove(resourcePath);
+		}
+		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName].first);
 	}
 
 	void AssetManager::RenameAsset(const std::string& oldName, const std::string& newName)
@@ -68,7 +86,7 @@ namespace TRE
 		m_AssetNameToHandle[newName] = m_AssetNameToHandle[oldName];
 		m_AssetNameToHandle.erase(oldName);
 
-		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[newName]);
+		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[newName].first);
 		//Only type geom, texture and audio has physical asset file
 		if (assetType != ResourceType::Material)
 		{
@@ -87,7 +105,7 @@ namespace TRE
 
 		std::filesystem::path oldDescriptorPath = "../Assets/";
 		//Update descriptor file
-		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[newName]);
+		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[newName].first);
 		//Check for asset type
 		if (assetType == ResourceType::Material)
 			oldDescriptorPath += ".material";
@@ -152,10 +170,26 @@ namespace TRE
 
 	bool AssetManager::Contains(const ResourceHandle resourceHandle) const
 	{
-		for (auto x : m_AssetNameToHandle)
+		for (const auto& x : m_AssetNameToHandle)
 		{
-			if (x.second == resourceHandle)
+			if (x.second.first == resourceHandle)
 				return true;
+		}
+		return false;
+	}
+
+	bool AssetManager::Compiled(const std::string& assetName) const
+	{
+		if(Contains(assetName))
+			return m_AssetNameToHandle.at(assetName).second;
+	}
+
+	bool AssetManager::Compiled(const ResourceHandle resourceHandle) const
+	{
+		for (const auto& x : m_AssetNameToHandle)
+		{
+			if (x.second.first == resourceHandle)
+				return x.second.second;
 		}
 		return false;
 	}
@@ -163,7 +197,7 @@ namespace TRE
 	const ResourceHandle AssetManager::GetAssetHandle(const std::string& assetName) const
 	{
 		if(Contains(assetName))
-			return m_AssetNameToHandle.at(assetName);
+			return m_AssetNameToHandle.at(assetName).first;
 		
 		return 0;
 	}
@@ -173,7 +207,7 @@ namespace TRE
 		std::string name;
 		for (const auto& x : m_AssetNameToHandle)
 		{
-			if (x.second == resourceHandle)
+			if (x.second.first == resourceHandle)
 				name = x.first;
 		}
 		return name;
@@ -188,7 +222,7 @@ namespace TRE
 	{
 		for (const auto x : m_AssetNameToHandle)
 		{
-			std::cout << x.first << "| " << x.second <<"| " << Resource::GetGUIDHex(x.second) << std::endl;
+			std::cout << x.first << "| " << (x.second.first << x.second.second ? "Compiled" : "Not Compiled") << "| " << Resource::GetGUIDHex(x.second.first) << std::endl;
 		}
 	}
 }
