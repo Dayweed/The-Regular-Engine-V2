@@ -61,6 +61,8 @@ namespace TRE
 
 	void EditorSystem::Update()
 	{
+		//ImGui::GetIO().DeltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
+
 		static bool OpenDockSpace = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
@@ -105,9 +107,8 @@ namespace TRE
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		EditorCamera::Instance().Update();
-
 		m_PanelManager->Update();
+		EditorCamera::Instance().Update();
 
 		ImGui::End(); //Dockspace
 	}
