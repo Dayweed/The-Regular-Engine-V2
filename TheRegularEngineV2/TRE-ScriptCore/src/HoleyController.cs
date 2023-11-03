@@ -145,6 +145,12 @@ namespace TRE
 					}
 				}
             }
+
+			// To go to level 1
+            if (InputSystem.GetKeyDown(InputKeys.Escape))
+            {
+                Scene.ChangeScene("Level_1");
+            }
             #endregion
 
             #region Swap
