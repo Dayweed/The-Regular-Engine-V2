@@ -37,7 +37,7 @@ namespace TRE
 		private float strawberrysuperRadius = 2.4f;
 		private float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 4.2f;
+		private float blueberrysuperHeight = 4.8f;
 		private float strawberrysuperHeight = 1.2f;
 		private float currentHeight = 1f;
 		//Transform Scale
