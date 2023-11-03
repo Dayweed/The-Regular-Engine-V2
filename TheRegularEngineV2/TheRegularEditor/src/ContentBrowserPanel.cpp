@@ -47,7 +47,7 @@ namespace TRE
 			if (p.is_directory())
 			{
 				//if the asset is a file
-				m_Assets.emplace_back(Asset{ true, m_TmpTexturesID ,"m_Invalid", filenameString, p.path()});
+				m_Assets.emplace_back(Asset{ true, m_FolderIconID ,"m_Invalid", filenameString, p.path()});
 			}
 			else
 			{
@@ -68,7 +68,8 @@ namespace TRE
 				//Determine the icon type
 				newAsset.m_TextureID = isImage							? m_ImageIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isAudio							? m_AudioIconID : newAsset.m_TextureID;
-				newAsset.m_TextureID = isScene || isShader || isPrefab	? m_CubeIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isScene || isShader				? m_CubeIconID : newAsset.m_TextureID;
+				newAsset.m_TextureID = isPrefab 						? m_PrefabIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isMeta							? m_MetaIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isFont							? m_FontIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = is3DObj							? m_3DObjIconID : newAsset.m_TextureID;
@@ -308,11 +309,49 @@ namespace TRE
 
 	void ContentBrowserPanel::Init()
 	{
+		// Late April Fools Joke (Activate this for sum humor in Content Browser)
+#if true
 		m_TmpTextures = Util::CreateIcon("icon-file.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
+		m_TmpTextures = Util::CreateIcon("folder_icon.png");
+		m_FolderIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("cube_icon.png");
 		m_CubeIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("pg.png");
+		m_PrefabIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("png_icon.png");
+		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("wav_icon.png");
+		m_AudioIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("ttf_icon.png");
+		m_FontIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("meta_icon.png");
+		m_MetaIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("material_icon.png");
+		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("fbx_icon.png");
+		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+#else
+		m_TmpTextures = Util::CreateIcon("icon-file.png");
+		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("folder_icon.png");
+		m_FolderIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_CubeIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
+		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_PrefabIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 		
 		m_TmpTextures = Util::CreateIcon("png_icon.png");
 		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
@@ -331,6 +370,7 @@ namespace TRE
 		
 		m_TmpTextures = Util::CreateIcon("fbx_icon.png");
 		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+#endif
 	}
 	
 	void ContentBrowserPanel::Update()

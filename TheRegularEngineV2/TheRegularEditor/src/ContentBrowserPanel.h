@@ -45,7 +45,9 @@ namespace TRE
 
 			//Texture for icons
 			ImTextureID m_TmpTexturesID{};
+			ImTextureID m_FolderIconID{};
 			ImTextureID m_ImageIconID{};
+			ImTextureID m_PrefabIconID{};
 			ImTextureID m_CubeIconID{};
 			ImTextureID m_AudioIconID{};
 			ImTextureID m_FontIconID{};
