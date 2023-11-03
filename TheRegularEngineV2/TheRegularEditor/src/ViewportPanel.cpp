@@ -217,7 +217,7 @@ namespace TRE
 				
 				//Check if asset is already compiled
 				//Compiled before
-				if (AssetManager::Instance().Contains(assetName))
+				if (AssetManager::Instance().Compiled(assetName))
 				{
 					//Load into memory
 					if (AssetManager::Instance().GetAsset<RenderObject>(assetName) == nullptr)
