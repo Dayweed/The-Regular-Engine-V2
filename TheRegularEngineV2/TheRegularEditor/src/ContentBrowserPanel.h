@@ -46,6 +46,7 @@ namespace TRE
 			//Texture for icons
 			ImTextureID m_TmpTexturesID{};
 			ImTextureID m_FolderIconID{};
+			ImTextureID m_SceneIconID{};
 			ImTextureID m_ImageIconID{};
 			ImTextureID m_PrefabIconID{};
 			ImTextureID m_CubeIconID{};
@@ -54,6 +55,7 @@ namespace TRE
 			ImTextureID m_MetaIconID{};
 			ImTextureID m_MaterialIconID{};
 			ImTextureID m_3DObjIconID{};
+			ImTextureID m_CSScriptIconID{};
 
 			//Shared pointer for icons
 			std::shared_ptr<VulkanTexture> m_TmpTextures;
