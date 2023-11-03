@@ -321,7 +321,7 @@ namespace TRE
 	void ContentBrowserPanel::Init()
 	{
 		// Late April Fools Joke (Activate this for sum humor in Content Browser)
-#if true
+#if false
 		m_TmpTextures = Util::CreateIcon("icon-file.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
