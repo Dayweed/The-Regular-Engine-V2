@@ -163,6 +163,8 @@ namespace TRE
 		}
 		ImGui::EndChild();
 		ImGui::SameLine();
+
+		bool isHovered = false;
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
@@ -225,6 +227,8 @@ namespace TRE
 			ImGui::Columns(cols, nullptr, false);
 
 			m_AssetClicked = false;
+
+			isHovered = ImGui::IsWindowHovered();
 
 			for (int count{}; auto & item: m_Assets)
 			{
@@ -319,11 +323,12 @@ namespace TRE
 		ImGui::EndChild();
 
 		//For scene opening
-		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		if (isHovered && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
-			if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
+			if (lastSceneClicked != "" && !GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 			{
 				SceneManager::Instance().LoadScene(lastSceneClicked);
+				lastSceneClicked = "";
 			}
 		}
 	}

@@ -15,6 +15,7 @@ namespace TRE
 			std::vector<std::pair<std::string, property::base*>>& GetSelectedEntityComponents();
 			std::vector< std::pair<std::string, std::vector<property::entry>>>& GetSelectedEntityProperty();
 			void SelectEntity(Entity& EntityObject);
+			void UpdateSelectedEntity();
 
 		private:
 			Entity m_SelectedEntity;

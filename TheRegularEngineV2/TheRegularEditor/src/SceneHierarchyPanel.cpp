@@ -3,6 +3,7 @@
 #include "Core/GameLoop.h"
 #include "Imgui/imgui.h"
 #include "Core/Parent.h"
+#include "EditorSystem.h"
 
 namespace TRE
 {
@@ -18,7 +19,7 @@ namespace TRE
 
 	void SceneHierarchyPanel::Init()
 	{
-
+		EventHandler::getEventHandlerInstance().subscribe(this, &SceneHierarchyPanel::HandleShortcuts);
 	}
 
 	void SceneHierarchyPanel::Update()
@@ -146,6 +147,18 @@ namespace TRE
 			ImGui::TreePop();
 		}
 
+		if (ImGui::IsWindowHovered() && m_ShortcutCopyEntity)
+		{
+			EntityCopier::Instance().CopyEntities(EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity());
+		}
+		if (ImGui::IsWindowHovered() && m_ShortcutPasteEntity)
+		{
+			EntityCopier::Instance().PasteEntities();
+		}
+
+		m_ShortcutCopyEntity = false;
+		m_ShortcutPasteEntity = false;
+
 		ImGui::End();
 	}
 
@@ -221,6 +234,18 @@ namespace TRE
 		else
 		{
 			ECSManager::Instance().MarkForDeletion(CurrentEntity);
+		}
+	}
+
+	void SceneHierarchyPanel::HandleShortcuts(TypingEvent& event)
+	{
+		const KeyButton key = static_cast<KeyButton>(event.m_Key);
+		const KeyMods mods = static_cast<KeyMods>(event.m_Mod);
+
+		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
+		{
+			m_ShortcutCopyEntity = key == KeyButton::C;
+			m_ShortcutPasteEntity = key == KeyButton::V;
 		}
 	}
 }
