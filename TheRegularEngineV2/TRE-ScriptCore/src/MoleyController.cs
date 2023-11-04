@@ -21,9 +21,9 @@ namespace TRE
 		//direction vector
 		private Vector3 dirVec;
 		//Max velocity
-		private float maxVelocity = 15f;
+		private float maxVelocity = 30f;
 		//Acceleration
-		private float acceleration = 300f;
+		private float acceleration = 700f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
 		//maxJumpHeight
@@ -48,7 +48,7 @@ namespace TRE
 		private float currentHeight = 1f;
 		//Transform Scale
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 blueberryscaledXform = new Vector3(1f, 2.7f, 1f);
+		private Vector3 blueberryscaledXform = new Vector3(1f, 2.2f, 1f);
 		private Vector3 strawberryscaledXform = new Vector3(0.5f, 1.5f, 1f);
 		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 

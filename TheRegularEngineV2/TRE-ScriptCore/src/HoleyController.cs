@@ -19,9 +19,9 @@ namespace TRE
 		//direction vector
 		private Vector3 dirVec;
 		//Max Velocity vector
-		private float maxVelocity = 15f;
+		private float maxVelocity = 30f;
 		//Acceleration
-		private float acceleration = 300f;
+		private float acceleration = 700f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
 		//maxJumpHeight
