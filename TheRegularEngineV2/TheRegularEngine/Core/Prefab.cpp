@@ -417,6 +417,72 @@ namespace TRE
 		return arc.GetFilePath();
 	}
 
+	std::unordered_map<std::string, Entity> PrefabSystem::GetPrefabEntity(std::string prefabFilePath)
+	{
+		entt::registry copy;
+		PrefabInputArchive arc(prefabFilePath, copy);
+
+		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
+		entt::basic_snapshot_loader loader(copy);
+		loader.entities(arc)
+			.component<Prefabing>(arc)
+			.component<Parenting>(arc)
+			.component<Properties>(arc)
+			.component<Transform>(arc)
+			.component<MeshRenderer>(arc)
+			.component<Camera>(arc)
+			.component<Rigidbody>(arc)
+			.component<SphereCollider>(arc)
+			.component<BoxCollider>(arc)
+			.component<CapsuleCollider>(arc)
+			.component<Audio>(arc)
+			.component<AudioListener>(arc)
+			.component<DirectionalLight>(arc)
+			.component<ScriptComponent>(arc)
+			;
+
+		// Clone each component of the object into the prefab
+		// USES MEMORYMANAGER INSTEAD OF ECSMANAGER, ECSManager should never know this exist!
+		std::string name{};
+		unsigned int count{};
+		copy.each([&](entt::entity srcEntity) {
+			++count;	// Add count
+			Entity entity = MemoryManager::Instance().GetUndeployedEntity();
+			for (auto [id, source_storage] : copy.storage())
+			{
+				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+				if (destination_storage != nullptr && source_storage.contains(srcEntity))
+				{
+					if (!destination_storage->contains(entity->m_Entity))
+					{
+						destination_storage->emplace(entity->m_Entity, source_storage.get(srcEntity));
+					}
+					// Overwrite m_Entity if m_Entity already contains the component
+					else
+					{
+						destination_storage->erase(entity->m_Entity);
+						destination_storage->emplace(entity->m_Entity, source_storage.get(srcEntity));
+					}
+				}
+			}
+			std::string entGUID{ copy.get<Properties>(srcEntity).m_GUID };
+			name = { copy.get<Properties>(srcEntity).m_Name };
+			m_TempPrefabs.emplace(entGUID, entity);
+			m_TempPrefab = entity;
+			});
+
+		// Throw error if m_TempPrefab does not even have Prefabing
+		if (!m_TempPrefab->HasComponent<Prefabing>())
+		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + funcName + "] " + m_TempPrefab->GetName() + " does not even have Component Prefabing! Therefore it is invalid!");
+			ResetTempPrefab();
+			assert(m_TempPrefab->HasComponent<Prefabing>());
+		}
+
+		return m_TempPrefabs;
+	}
+
 	void PrefabSystem::SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID)
 	{
 		bool validOverwrite{ !newPrefab && child->HasComponent<Prefabing>() }; // Doesnt need to be in existingPrefabs
@@ -491,72 +557,6 @@ namespace TRE
 		ResetTempPrefab();
 
 		return instance;
-	}
-
-	std::unordered_map<std::string, Entity> PrefabSystem::GetPrefabEntity(std::string prefabFilePath)
-	{
-		entt::registry copy;
-		PrefabInputArchive arc(prefabFilePath, copy);
-
-		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
-		entt::basic_snapshot_loader loader(copy);
-		loader.entities(arc)
-			.component<Prefabing>(arc)
-			.component<Parenting>(arc)
-			.component<Properties>(arc)
-			.component<Transform>(arc)
-			.component<MeshRenderer>(arc)
-			.component<Camera>(arc)
-			.component<Rigidbody>(arc)
-			.component<SphereCollider>(arc)
-			.component<BoxCollider>(arc)
-			.component<CapsuleCollider>(arc)
-			.component<Audio>(arc)
-			.component<AudioListener>(arc)
-			.component<DirectionalLight>(arc)
-			.component<ScriptComponent>(arc)
-			;
-
-		// Clone each component of the object into the prefab
-		// USES MEMORYMANAGER INSTEAD OF ECSMANAGER, ECSManager should never know this exist!
-		std::string name{};
-		unsigned int count{};
-		copy.each([&](entt::entity srcEntity) {
-			++count;	// Add count
-			Entity entity = MemoryManager::Instance().GetUndeployedEntity();
-			for (auto [id, source_storage] : copy.storage())
-			{
-				auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
-				if (destination_storage != nullptr && source_storage.contains(srcEntity))
-				{
-					if (!destination_storage->contains(entity->m_Entity))
-					{
-						destination_storage->emplace(entity->m_Entity, source_storage.get(srcEntity));
-					}
-					// Overwrite m_Entity if m_Entity already contains the component
-					else
-					{
-						destination_storage->erase(entity->m_Entity);
-						destination_storage->emplace(entity->m_Entity, source_storage.get(srcEntity));
-					}
-				}
-			}
-			std::string entGUID{ copy.get<Properties>(srcEntity).m_GUID };
-			name = { copy.get<Properties>(srcEntity).m_Name };
-			m_TempPrefabs.emplace(entGUID, entity);
-			m_TempPrefab = entity;
-		});
-
-		// Throw error if m_TempPrefab does not even have Prefabing
-		if (!m_TempPrefab->HasComponent<Prefabing>())
-		{
-			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + funcName + "] " + m_TempPrefab->GetName() + " does not even have Component Prefabing! Therefore it is invalid!");
-			ResetTempPrefab();
-			assert(m_TempPrefab->HasComponent<Prefabing>());
-		}
-
-		return m_TempPrefabs;
 	}
 
 	void PrefabSystem::UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID, entt::entity parentEnt)
