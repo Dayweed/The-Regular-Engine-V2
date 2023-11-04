@@ -199,7 +199,7 @@ namespace TRE
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
-		glm::mat4 ViewRotate(1.f);
+		glm::mat4 depthViewMatrix(1.f);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
@@ -207,16 +207,13 @@ namespace TRE
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
 			
-			ViewRotate = glm::toMat4(glm::quat(glm::radians(entity->GetComponent<Transform>().m_Rotation)));
-			ViewRotate = glm::lookAt(entity->GetComponent<Transform>().m_Position, entity->GetComponent<Transform>().m_Rotation, editorCamera.m_BaseCamera.GetUpVec());
+			//depthViewMatrix = glm::toMat4(glm::quat(glm::radians(entity->GetComponent<Transform>().m_Rotation)));
+			depthViewMatrix = glm::lookAt(entity->GetComponent<Transform>().m_Position, entity->GetComponent<Transform>().m_Rotation, editorCamera.m_BaseCamera.GetUpVec());
 		}
-
-		glm::mat4 depthViewMatrix(1.f);
-		depthViewMatrix = ViewRotate;
 
 		ShadowUBO UBO_Shadow;
 		float lightFOV = 45.0f;
-		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoSize = 480.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
 		
@@ -227,10 +224,10 @@ namespace TRE
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
 		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
-		depthProjectionMatrix[3][2] = -orthoNear / (orthoFar - orthoNear);
+		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 		//depthProjectionMatrix[0][0] *= -1.f;
 		//depthProjectionMatrix[1][1] *= -1.f;
-		depthViewMatrix = glm::inverse(depthViewMatrix);
+		//depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
 		

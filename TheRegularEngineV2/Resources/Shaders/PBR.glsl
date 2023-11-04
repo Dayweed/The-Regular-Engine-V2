@@ -157,7 +157,7 @@ float ShadowPCF( in vec4 UVProjection )
 
 void main() 
 {
-	const float shadow = ShadowPCF(In.ShadowCoord / In.ShadowCoord.w);
+	const float shadow = ShadowNoPCF(In.ShadowCoord / In.ShadowCoord.w);
 
 	//Calculate normal from normal map
 	vec3 normal;

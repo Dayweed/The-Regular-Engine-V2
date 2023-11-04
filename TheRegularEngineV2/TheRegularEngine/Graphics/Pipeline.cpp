@@ -68,7 +68,7 @@ namespace TRE
 
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
 		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-		rasterizer.depthClampEnable = VK_FALSE;
+		rasterizer.depthClampEnable = VK_TRUE;
 		rasterizer.rasterizerDiscardEnable = VK_FALSE;
 		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizer.lineWidth = m_Config.LineWidth;
@@ -76,10 +76,10 @@ namespace TRE
 		//rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
 		//rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-		rasterizer.depthBiasEnable = VK_FALSE;
-		rasterizer.depthBiasConstantFactor = 0.f;
-		rasterizer.depthBiasClamp = 0.f;
-		rasterizer.depthBiasSlopeFactor = 0.f;
+		rasterizer.depthBiasEnable = VK_TRUE;
+		rasterizer.depthBiasConstantFactor = 1.25f;
+		rasterizer.depthBiasClamp = 1000.f;
+		rasterizer.depthBiasSlopeFactor = 2.3f;
 
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
