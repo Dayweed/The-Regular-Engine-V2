@@ -9,6 +9,7 @@ using System.Diagnostics.Eventing.Reader;
 namespace TRE
 {
 	using PS = PhysicsSystem;
+
 	class MoleyController : Entity
 	{
 		public PowerUpManager MyPowerManager;
@@ -27,6 +28,8 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
+		//Check if player is walking
+		private bool isWalking = false;
 
 		private float lerpSpeed = 0.05f;
 
@@ -73,25 +76,29 @@ namespace TRE
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
+				isWalking = true;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.K))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.J))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.L))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.I))
 			{
@@ -133,7 +140,25 @@ namespace TRE
 						Jump(maxHeight);
 					}
 				}
+				else
+				{
+					isWalking = false;
+				}
 			}
+			#endregion
+
+			#region Audio
+
+			//if (isWalking && AudioSystem.GetIsPlaying(this.ID) == false)
+			//{
+   //             AudioSystem.Stop(this.ID);
+   //             AudioSystem.Play(this.ID);
+			//}
+			//else if(AudioSystem.GetIsPlaying(this.ID))
+			//{
+   //             AudioSystem.Stop(this.ID);
+   //         }
+
             #endregion
 
             #region Swap

@@ -834,19 +834,19 @@ namespace TRE
 		public extern static float GetDeltaTime();
 	}
 
-	public class Audio
+	public class AudioSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPlay(string entityid);
+        public extern static void Play(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void SetPause(string entityid);
+        public extern static void TogglePause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void StopAudio(string entityid);
+        public extern static void Stop(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool GetIsPlaying(string entityid);
+        public extern static bool GetIsPlaying(EntityID entityid);
 	}
 
 	public class Scene

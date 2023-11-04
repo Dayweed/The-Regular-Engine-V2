@@ -34,7 +34,7 @@ namespace TRE
 		property_vtable()
 			//std::map<int, std::string> channelIndex{};
 
-			bool m_isPlaying{};
+		bool m_isPlaying{};
 
 		friend void to_json(nlohmann::json& j, const Audio& t) //serialize
 		{
@@ -161,7 +161,7 @@ namespace TRE
 		void Play(Entity& go, const bool shouldPlay);
 		void TogglePause(Entity& go);
 		void ToggleMute(Entity& go);
-		void StopAudio(Entity& go);
+		void Stop(Entity& go);
 		void CompileAudio(Entity& go);
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
