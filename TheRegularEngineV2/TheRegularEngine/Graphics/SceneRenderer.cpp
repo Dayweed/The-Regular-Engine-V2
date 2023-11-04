@@ -237,20 +237,18 @@ namespace TRE
 
 		ShadowUBO UBO_Shadow;
 		float lightFOV = 45.0f;
-		float orthoSize = 100.0f; // Adjust this to suit your scene's dimensions
+		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
 		
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = 2.f / (orthoSize - -orthoSize);
-		depthProjectionMatrix[1][1] = 2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
 		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
-		depthProjectionMatrix[0][0] *= -1.f;
-		depthProjectionMatrix[1][1] *= -1.f;
 		depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
@@ -295,14 +293,12 @@ namespace TRE
 		float orthoFar = 1000.0f;
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = 2.f / (orthoSize - -orthoSize);
-		depthProjectionMatrix[1][1] = 2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
 		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
-		depthProjectionMatrix[0][0] *= -1.f;
-		depthProjectionMatrix[1][1] *= -1.f;
 		depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
