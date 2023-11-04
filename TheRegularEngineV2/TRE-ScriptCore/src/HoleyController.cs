@@ -92,19 +92,11 @@ namespace TRE
 				dirVec.z += -1;
 				playerDirection.y = 180;
             }
-			else
-			{
-				isWalking = false;
-			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-            }
-            else
-            {
-                isWalking = false;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.A))
@@ -112,19 +104,11 @@ namespace TRE
 				dirVec.x += -1;
 				playerDirection.y = 270;
             }
-            else
-            {
-                isWalking = false;
-            }
 
             if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-            }
-            else
-            {
-                isWalking = false;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.W))
@@ -153,7 +137,10 @@ namespace TRE
 
 			if (InputSystem.GetKeyTrigger(InputKeys.Space))
 			{
-				if (isGrounded)
+                AudioSystem.PlayOnce(6503599471310675157);
+                isWalking = false;
+
+                if (isGrounded)
 				{
 					// Boosted Jump
 					if (isBoostedJump)
@@ -166,44 +153,44 @@ namespace TRE
 						Vector3 maxHeight = new Vector3(0, 70, 0);
 						Jump(maxHeight);
 					}
-
-					isWalking = false;
 				}
-				//AudioSystem.Play(6503599471310675157);
             }
 
-			// To go to level 1
+            // To go to level 1
             if (InputSystem.GetKeyDown(InputKeys.Escape))
             {
                 Scene.ChangeScene("Level_1");
             }
-            #endregion
+			#endregion
 
-            #region Audio
-            //if (InputSystem.GetKeyTrigger(InputKeys.W) || InputSystem.GetKeyTrigger(InputKeys.S) ||
-            //InputSystem.GetKeyTrigger(InputKeys.A) || InputSystem.GetKeyTrigger(InputKeys.D))
-            //{
-            //    isWalking = true;
-            //}
+			#region Audio
+			if (InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+			InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D))
+			{
+				isWalking = true;
+			}
 
-            ////if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
-            ////    InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
-            ////{
-            ////    isWalking = false;
-            ////}
+			if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+				InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
+			{
+				isWalking = false;
+			}
 
-            //if (isWalking && walkingSFXPlayed == false)
-            //{
-            //    walkingSFXPlayed = true;
-            //    AudioSystem.Play(15348080909718226430);
-            //}
-            //else if (!isWalking && walkingSFXPlayed)
-            //{
-            //    AudioSystem.Stop(15348080909718226430);
-            //    walkingSFXPlayed = false;
-            //}
+			if (isWalking && walkingSFXPlayed == false)
+			{
+                AudioSystem.Play(15348080909718226430);
+                walkingSFXPlayed = true;
+			}
 
-            ////Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
+			if (!isWalking || !isGrounded)
+			{
+				AudioSystem.Stop(15348080909718226430);
+				walkingSFXPlayed = false;
+			}
+
+			
+            //Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
+            //Debug.Log("isWalking: " + isWalking);
 
             #endregion
 

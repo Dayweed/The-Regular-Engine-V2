@@ -1160,6 +1160,15 @@ namespace TRE
 		if (!entity) return;
 
 		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
+		entity->GetComponent<Audio>().m_Play = true;
+	}
+
+	static void BindSetPlayOnce(CSEntityID ID)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
 	}
 
 	static void BindTogglePauseSound(CSEntityID ID, bool paused)
@@ -1393,6 +1402,7 @@ namespace TRE
 		//Audio
 		{
 			mono_add_internal_call("TRE.AudioSystem::Play", BindSetPlaySound);
+			mono_add_internal_call("TRE.AudioSystem::PlayOnce", BindSetPlayOnce);
 			mono_add_internal_call("TRE.AudioSystem::TogglePause", BindTogglePauseSound);
 			mono_add_internal_call("TRE.AudioSystem::Stop", BindSetStop);
 			mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);

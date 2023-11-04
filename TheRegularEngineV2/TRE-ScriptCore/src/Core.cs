@@ -839,7 +839,10 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Play(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void PlayOnce(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void TogglePause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

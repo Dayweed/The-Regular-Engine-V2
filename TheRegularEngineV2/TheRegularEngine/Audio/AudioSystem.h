@@ -34,7 +34,7 @@ namespace TRE
 		property_vtable()
 			//std::map<int, std::string> channelIndex{};
 
-		bool m_isPlaying{};
+		bool m_isPlaying{ false };
 
 		friend void to_json(nlohmann::json& j, const Audio& t) //serialize
 		{

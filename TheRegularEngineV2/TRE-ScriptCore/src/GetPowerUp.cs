@@ -92,6 +92,11 @@ namespace TRE
 
                 collected = true;
 
+                if(collected)
+                {
+                    AudioSystem.PlayOnce(5477680860725561631);
+                }
+
                 GetComponent<Rigidbody>().useGravity = false;
             }
         }
