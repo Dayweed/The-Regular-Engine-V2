@@ -9,6 +9,7 @@
 #include "EditorSystem.h"
 #include "Core/GameLoop.h"
 #include "ShaderTypes/PBRShader.h"
+#include "Graphics/EditorCamera.h"
 
 namespace TRE
 {
@@ -330,6 +331,7 @@ namespace TRE
 			{
 				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 				SceneManager::Instance().LoadScene(lastSceneClicked);
+				EditorCamera::Instance().Deserialize();
 				lastSceneClicked = "";
 			}
 		}
