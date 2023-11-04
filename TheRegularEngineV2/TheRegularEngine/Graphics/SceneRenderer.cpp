@@ -379,8 +379,6 @@ namespace TRE
 
 		//Shadow Pass
 		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
-		m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowDescriptInfo);
-		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
 		for (const auto& go_mr : materialSort)
 		{
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
@@ -389,6 +387,17 @@ namespace TRE
 			PushConstant pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			if (IsEditorScene)
+			{
+				m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowDescriptInfo);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index, m_ShadowDescriptInfo);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
+			}
 
 			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
 			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
