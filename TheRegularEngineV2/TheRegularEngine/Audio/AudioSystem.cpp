@@ -276,7 +276,7 @@ namespace TRE
 	void AudioSystem::Stop(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		ErrorCheck(audio.m_ChannelGroup->stop(), "FMOD: Stop()");
+		audio.m_ChannelGroup->stop();
 	}
 
 	int AudioSystem::ErrorCheck(FMOD_RESULT result, std::string function)

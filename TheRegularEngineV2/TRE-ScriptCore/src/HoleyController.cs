@@ -28,6 +28,7 @@ namespace TRE
 		private float maxJumpHeight = 70f;
         //Check if player is walking
         private bool isWalking = false;
+		private bool walkingSFXPlayed = false;
 
         //check if player used super power
         public bool mainBlueberry = false;  // Scaling
@@ -88,31 +89,26 @@ namespace TRE
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
-                isWalking = true;
             }
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-                isWalking = true;
             }
-
-			if (InputSystem.GetKeyDown(InputKeys.A))
+            if (InputSystem.GetKeyDown(InputKeys.A))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
-                isWalking = true;
             }
 
-			if (InputSystem.GetKeyDown(InputKeys.D))
+            if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-                isWalking = true;
             }
 
-			if (InputSystem.GetKeyDown(InputKeys.W))
+            if (InputSystem.GetKeyDown(InputKeys.W))
 			{
 				if (InputSystem.GetKeyDown(InputKeys.D))
 				{
@@ -152,10 +148,8 @@ namespace TRE
 						Jump(maxHeight);
 					}
 				}
-				else
-				{
-                    isWalking = false;
-                }
+
+				AudioSystem.Play(6503599471310675157);
             }
 
 			// To go to level 1
@@ -166,28 +160,44 @@ namespace TRE
             #endregion
 
             #region Audio
+            if (InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+				InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D))
+            {
+                isWalking = true;
+            }
 
-   //         if (isWalking && AudioSystem.GetIsPlaying(this.ID) == true)
-   //         {
-   //             AudioSystem.Play(this.ID);
-   //         }
-			//else
-			//{
-			//	AudioSystem.Stop(this.ID);
-			//}
+            if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+                InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
+            {
+                isWalking = false;
+            }
 
-			//if (InputSystem.GetKeyTrigger(InputKeys.W) == false && InputSystem.GetKeyTrigger(InputKeys.A) == false && InputSystem.GetKeyTrigger(InputKeys.S) == false && InputSystem.GetKeyTrigger(InputKeys.D) == false)
-			//{
-   //             AudioSystem.Stop(this.ID);
-   //         }
+			if(!isGrounded)
+			{
+				isWalking = false;
+			}
 
-   //         Debug.Log("Audio:" + AudioSystem.GetIsPlaying(this.ID));
+            if (isWalking && AudioSystem.GetIsPlaying(this.ID) == true)
+			{
+                AudioSystem.Play(this.ID);
+				walkingSFXPlayed = true;
 
-            #endregion
+            }
+			else if(!isWalking && walkingSFXPlayed)
+			{
+				AudioSystem.Stop(this.ID);
+				walkingSFXPlayed = false;
 
-            #region Swap
-            // Check if can swap ability
-            if (InputSystem.GetKeyTrigger(InputKeys.Q))
+            }
+
+
+			//Debug.Log("Audio:" + AudioSystem.GetIsPlaying(this.ID));
+
+			#endregion
+
+			#region Swap
+			// Check if can swap ability
+			if (InputSystem.GetKeyTrigger(InputKeys.Q))
             {
                 MyPowerManager.SwapPowerUps();
                 isScaled = false;
