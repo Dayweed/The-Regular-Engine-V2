@@ -511,9 +511,9 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
-			.component<DirectionalLight>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
+			.component<DirectionalLight>(arc)
 			.component<ScriptComponent>(arc)
 			;
 
