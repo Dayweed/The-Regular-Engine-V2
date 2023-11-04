@@ -89,6 +89,14 @@ namespace TRE
 
 		LoadCubeMap();
 		ShadowPassInit();
+
+		PipelineConfigurations Config{};
+		Config.Primitive = PrimitiveType::Triangles;
+		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
+		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
+
+		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+		m_ShadowMaterial->Invalidate();
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -161,6 +169,14 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+		vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
+		vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
+		vkFreeMemory(m_Device->GetLogicalDevice(), m_Depth.devicememory, nullptr);
+		vkDestroySampler(m_Device->GetLogicalDevice(), m_Depth.sampler, nullptr);
+
+		ShadowPassInit();
+
 		Create();
 		CreateFrameBuffer(m_RenderPass);
 	}
@@ -225,9 +241,9 @@ namespace TRE
 		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
-		//depthProjectionMatrix[0][0] *= -1.f;
-		//depthProjectionMatrix[1][1] *= -1.f;
-		//depthViewMatrix = glm::inverse(depthViewMatrix);
+		depthProjectionMatrix[0][0] *= -1.f;
+		depthProjectionMatrix[1][1] *= -1.f;
+		depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
 		
@@ -792,13 +808,5 @@ namespace TRE
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
 		}
-
-		PipelineConfigurations Config{};
-		Config.Primitive = PrimitiveType::Triangles;
-		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
-		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
-
-		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
-		m_ShadowMaterial->Invalidate();
 	}
 }
