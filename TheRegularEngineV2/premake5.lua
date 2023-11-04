@@ -360,6 +360,10 @@ project "TRE-ScriptCore"
 
 	targetdir ("Resources/Scripts")
 	objdir ("Resources/Scripts")
+	
+	nuget{"GlmSharp:0.9.8"}
+	nuget{"Coroutine:2.1.5"}
+	
 
 	files 
 	{
