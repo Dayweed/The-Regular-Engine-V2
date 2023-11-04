@@ -120,22 +120,14 @@ float SampleShadowTexture( in const vec4 Coord, in const vec2 off )
 	return ( Coord.w > 0.0 && dist < Coord.z ) ? 0.0f : 1.0f;
 }
 
-float ShadowNoPCF( in const vec4 UVProjection )
-{
-	float Shadow = 1.0;	
-	if ( UVProjection.z > -1.0 && UVProjection.z < 1.0 ) 
-	{
-		Shadow = SampleShadowTexture( UVProjection, vec2(0) );
-	}
-	return Shadow;
-}
 int isqr( int a ) { return a*a; }
+
 float ShadowPCF( in vec4 UVProjection )
 {
 	float Shadow = 1.0;
 	if ( UVProjection.z > -1.0 && UVProjection.z < 1.0 ) 
 	{
-		const float scale			= 1.5;
+		const float scale			= 1;
 		const vec2  TexelSize 		= scale / textureSize(shadowMap, 0);
 		const int	SampleRange		= 1;
 		const int	SampleTotal		= isqr(1 + 2 * SampleRange);
@@ -157,7 +149,7 @@ float ShadowPCF( in vec4 UVProjection )
 
 void main() 
 {
-	const float shadow = ShadowNoPCF(In.ShadowCoord / In.ShadowCoord.w);
+	const float shadow = ShadowPCF(In.ShadowCoord / In.ShadowCoord.w);
 
 	//Calculate normal from normal map
 	vec3 normal;
@@ -173,7 +165,6 @@ void main()
 	float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
 	lightAttenuation = clamp(lightAttenuation, 0.0, 1.0);
 	//float lightAttenuation = clamp(1 / lightDistance, 0.0, 1.0);
-	//const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
 	const vec3 attenuationColor = lightAttenuation + shadow * In.LightColor.rgb;
 
 	//Diffuse intensity
@@ -194,8 +185,6 @@ void main()
 	vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
 
 	outColor.rgb += lightModel * attenuationColor;
-
-	//outColor.rgb *= shadow;
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
