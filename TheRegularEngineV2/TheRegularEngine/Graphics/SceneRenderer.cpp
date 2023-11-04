@@ -12,6 +12,8 @@
 #include "Physics/PhysicsComponents.h"
 #include "Light.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/transform.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
@@ -36,9 +38,10 @@ namespace TRE
 		Create();
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
+		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
+		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
 
 		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 		//m_L2W = glm::identity<glm::mat4>();
@@ -85,6 +88,15 @@ namespace TRE
 		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 
 		LoadCubeMap();
+		ShadowPassInit();
+
+		PipelineConfigurations Config{};
+		Config.Primitive = PrimitiveType::Triangles;
+		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
+		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
+
+		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+		m_ShadowMaterial->Invalidate();
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -157,6 +169,15 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
+		//Shadows
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+		vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
+		vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
+		vkFreeMemory(m_Device->GetLogicalDevice(), m_Depth.devicememory, nullptr);
+		vkDestroySampler(m_Device->GetLogicalDevice(), m_Depth.sampler, nullptr);
+
+		ShadowPassInit();
+
 		Create();
 		CreateFrameBuffer(m_RenderPass);
 	}
@@ -179,6 +200,13 @@ namespace TRE
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
+
+		//Shadows
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+		vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
+		vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
+		vkFreeMemory(m_Device->GetLogicalDevice(), m_Depth.devicememory, nullptr);
+		vkDestroySampler(m_Device->GetLogicalDevice(), m_Depth.sampler, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -195,16 +223,41 @@ namespace TRE
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
+		glm::mat4 depthViewMatrix(1.f);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
+			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
+			
+			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
+
+		ShadowUBO UBO_Shadow;
+		float lightFOV = 45.0f;
+		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoNear = 0.1f;
+		float orthoFar = 1000.0f;
+		
+		glm::mat4 depthProjectionMatrix;
+		depthProjectionMatrix = glm::mat4(1.f);
+		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+		depthViewMatrix = glm::inverse(depthViewMatrix);
+		UBO_Shadow.view = depthViewMatrix;
+		UBO_Shadow.proj = depthProjectionMatrix;
+		
+		ubo.m_LightSpaceMatrix = depthProjectionMatrix * depthViewMatrix;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -222,16 +275,39 @@ namespace TRE
 		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
 		UBO_SkyBox.View = cameraComponent.m_BaseCamera.m_ViewMatrix;
 
+		glm::mat4 depthViewMatrix(1.f);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
+			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
+			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
+
+		ShadowUBO UBO_Shadow;
+		float lightFOV = 45.0f;
+		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoNear = 0.1f;
+		float orthoFar = 1000.0f;
+		glm::mat4 depthProjectionMatrix;
+		depthProjectionMatrix = glm::mat4(1.f);
+		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+		depthViewMatrix = glm::inverse(depthViewMatrix);
+		UBO_Shadow.view = depthViewMatrix;
+		UBO_Shadow.proj = depthProjectionMatrix;
+
+		ubo.m_LightSpaceMatrix = depthProjectionMatrix * depthViewMatrix;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
 		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
 		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
@@ -243,24 +319,6 @@ namespace TRE
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 
 		m_CommandBuffer->Begin();
-
-		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
-
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
-		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
-
-		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
 
 		std::multimap<ResourceHandle, Entity> materialSort;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
@@ -291,7 +349,79 @@ namespace TRE
 			materialSort.insert(std::make_pair(materialHandle, go_mr));
 		}
 
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_ShadowFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport2{};
+		viewport2.x = 0.0f;
+		viewport2.y = 0.0f;
+		m_ShadowMapWidth = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
+		m_ShadowMapHeight = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport2.width = m_ShadowMapWidth;
+		viewport2.height = m_ShadowMapHeight;
+		viewport2.minDepth = 0.0f;
+		viewport2.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+		VkRect2D scissor2{};
+		scissor2.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
+
+		//Shadow Pass
+		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
+		m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowDescriptInfo);
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
+		for (const auto& go_mr : materialSort)
+		{
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+			ResourceHandle currentMaterialHandle = go_mr.first;
+
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+			m_PreviousMaterialHandle = currentMaterialHandle;
+		}
+
+		vkCmdEndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
+
+		m_ShadowDescriptInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
+		m_ShadowDescriptInfo.imageView = m_Depth.imageview;
+		m_ShadowDescriptInfo.sampler = m_Depth.sampler;
+
+		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.f;
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
+
 		//Geom Pass
+		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
 		for (const auto& go_mr : materialSort)
 		{
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
@@ -309,12 +439,12 @@ namespace TRE
 				{
 					if (IsEditorScene)
 					{
-						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowDescriptInfo);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, m_ShadowDescriptInfo);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -322,12 +452,12 @@ namespace TRE
 				{
 					if (IsEditorScene)
 					{
-						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowDescriptInfo);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, m_ShadowDescriptInfo);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -353,12 +483,12 @@ namespace TRE
 			Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
 			if (IsEditorScene)
 			{
-				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index);
+				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
 			}
 			else
 			{
-				m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index);
+				m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
 			}
 
@@ -589,5 +719,98 @@ namespace TRE
 		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
 		m_SkyboxMaterial->Invalidate();
 		m_SkyboxMaterial->SetTexture("SamplerCubeMap", m_SkyboxTexture);
+	}
+
+	void SceneRenderer::ShadowPassInit()
+	{
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		m_ShadowMapWidth = SC->GetWidth();
+		m_ShadowMapHeight = SC->GetHeight();
+
+		VkImageCreateInfo imageCreateInfo{};
+		imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageCreateInfo.extent.width = m_ShadowMapWidth;
+		imageCreateInfo.extent.height = m_ShadowMapHeight;
+		imageCreateInfo.extent.depth = 1;
+		imageCreateInfo.mipLevels = 1;
+		imageCreateInfo.arrayLayers = 1;
+		imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		imageCreateInfo.format = VK_FORMAT_D16_UNORM;
+		imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		if (auto Result = vkCreateImage(m_Device->GetLogicalDevice(), &imageCreateInfo, nullptr, &m_Depth.image); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image for shadow");
+		}
+
+		VkMemoryAllocateInfo memAllocInfo{};
+		memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		VkMemoryRequirements memReqs;
+		vkGetImageMemoryRequirements(m_Device->GetLogicalDevice(), m_Depth.image, &memReqs);
+		memAllocInfo.allocationSize = memReqs.size;
+		memAllocInfo.memoryTypeIndex = m_Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+		if (auto Result = vkAllocateMemory(m_Device->GetLogicalDevice(), &memAllocInfo, nullptr, &m_Depth.devicememory); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to allocate memory for shadow image");
+		}
+
+		if (auto Result = vkBindImageMemory(m_Device->GetLogicalDevice(), m_Depth.image, m_Depth.devicememory, 0); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to bind memory for shadow image");
+		}
+
+		VkImageViewCreateInfo imageViewCreateInfo{};
+		imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageViewCreateInfo.format = VK_FORMAT_D16_UNORM;
+		imageViewCreateInfo.subresourceRange = {};
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;
+		imageViewCreateInfo.image = m_Depth.image;
+		if (auto Result = vkCreateImageView(m_Device->GetLogicalDevice(), &imageViewCreateInfo, nullptr, &m_Depth.imageview); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image view for shadow");
+		}
+
+		VkFilter shadowmap_filter = vkUtils::formatIsFilterable(m_Device->GetPhysicalDevice()->GetPhysicalDevice(), VK_FORMAT_D16_UNORM, VK_IMAGE_TILING_OPTIMAL) ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
+		VkSamplerCreateInfo samplerCreateInfo{};
+		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerCreateInfo.maxAnisotropy = 1.0f;
+		samplerCreateInfo.magFilter = shadowmap_filter;
+		samplerCreateInfo.minFilter = shadowmap_filter;
+		samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
+		samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
+		samplerCreateInfo.mipLodBias = 0.0f;
+		samplerCreateInfo.maxAnisotropy = 1.0f;
+		samplerCreateInfo.minLod = 0.0f;
+		samplerCreateInfo.maxLod = 1.0f;
+		samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+		if (auto Result = vkCreateSampler(m_Device->GetLogicalDevice(), &samplerCreateInfo, nullptr, &m_Depth.sampler); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
+		}
+
+		m_ShadowRenderPass = std::make_shared<RenderPass>(m_Device, true);
+
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.renderPass = m_ShadowRenderPass->GetHandle();
+		framebufferCreateInfo.attachmentCount = 1;
+		framebufferCreateInfo.pAttachments = &m_Depth.imageview;
+		framebufferCreateInfo.width = m_ShadowMapWidth;
+		framebufferCreateInfo.height = m_ShadowMapHeight;
+		framebufferCreateInfo.layers = 1;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
+		}
 	}
 }

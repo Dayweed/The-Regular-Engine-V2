@@ -76,10 +76,10 @@ namespace TRE
 		//rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
 		//rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-		rasterizer.depthBiasEnable = VK_FALSE;
-		rasterizer.depthBiasConstantFactor = 0.f;
+		rasterizer.depthBiasEnable = VK_TRUE;
+		rasterizer.depthBiasConstantFactor = 1.25f;
 		rasterizer.depthBiasClamp = 0.f;
-		rasterizer.depthBiasSlopeFactor = 0.f;
+		rasterizer.depthBiasSlopeFactor = 2.3f;
 
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;

@@ -61,33 +61,30 @@ namespace TRE
 			return;
 
 #pragma region Gizmo
-		if (m_IsViewportFocused)
+		if (event._key == (int)KeyButton::Q)
 		{
-			if (event._key == (int)KeyButton::Q)
-			{
-				m_GizmoOperation = -1;
-			}
-			if (event._key == (int)KeyButton::W)
-			{
-				m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-			}
-			if (event._key == (int)KeyButton::E)
-			{
-				m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
-			}
-			if (event._key == (int)KeyButton::R)
-			{
-				m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
-			}
-
-			//Gizmo snapping
-			if ((event._key == (int)KeyButton::LeftControl || event._key == (int)KeyButton::RightControl) && event._state == (int)KeyState::keyHeld)
-			{
-				m_IsGridAndSnap = true;
-			}
-			else
-				m_IsGridAndSnap = false;
+			m_GizmoOperation = -1;
 		}
+		if (event._key == (int)KeyButton::W)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		}
+		if (event._key == (int)KeyButton::E)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		}
+		if (event._key == (int)KeyButton::R)
+		{
+			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
+		}
+
+		//Gizmo snapping
+		if ((event._key == (int)KeyButton::LeftControl || event._key == (int)KeyButton::RightControl) && event._state == (int)KeyState::keyHeld)
+		{
+			m_IsGridAndSnap = true;
+		}
+		else
+			m_IsGridAndSnap = false;
 #pragma endregion
 
 		//Editor camera Look at
@@ -131,7 +128,7 @@ namespace TRE
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
 	{
-		if(m_IsViewportFocused == false)
+		if(m_IsViewportHovered == false)
 			return;
 
 		EditorCamera& editorCamera = EditorCamera::Instance();
