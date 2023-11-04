@@ -28,9 +28,6 @@ namespace TRE
 		void BindDebugAABB(VkCommandBuffer CommandBuffer);
 		void DrawDebugAABB(VkCommandBuffer CommandBuffer);
 
-		void BindDebugCapsule(VkCommandBuffer CommandBuffer);
-		void DrawDebugCapsule(VkCommandBuffer CommandBuffer);
-
 		void BindDebugCapsuleRadius(VkCommandBuffer CommandBuffer);
 		void DrawDebugCapsuleRadius(VkCommandBuffer CommandBuffer);
 
@@ -65,7 +62,6 @@ namespace TRE
 
 		std::unique_ptr<DebugType> m_DebugSphere;
 		std::unique_ptr<DebugType> m_DebugAABB;
-		std::unique_ptr<DebugType> m_DebugCapsule;
 		std::unique_ptr<DebugType> m_DebugCapsuleRadius;
 		std::unique_ptr<DebugType> m_DebugCapsuleHalfExtent;
 

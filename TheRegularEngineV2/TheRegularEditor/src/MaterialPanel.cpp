@@ -71,7 +71,8 @@ namespace TRE
 				{
 					std::string assetName = (const char*)payload->Data;
 					assetName = assetName.substr(assetName.find_last_of('\\') + 1);
-					assetName = assetName.substr(0, assetName.find_last_of(".png") + 1);
+					assetName.erase(assetName.find(".png")); 	// This is to remove unneeded data at the end after ".fbx"
+					assetName += ".png";
 
 					std::shared_ptr<VulkanTexture> droppedTexture;
 

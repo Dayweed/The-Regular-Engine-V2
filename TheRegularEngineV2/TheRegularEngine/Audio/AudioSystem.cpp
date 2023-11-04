@@ -45,8 +45,6 @@ namespace TRE
 			}
 			source.m_Channel->isPlaying(&source.m_isPlaying);
 
-			std::cout << source.m_isPlaying << std::endl;
-
 			if (source.m_PlayOnStart && source.m_Play)
 			{
 				Play(go, true);

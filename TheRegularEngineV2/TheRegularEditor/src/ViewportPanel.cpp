@@ -57,34 +57,37 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
-		if (m_IsViewportFocused == false)
+		if (m_IsViewportHovered == false)
 			return;
 
 #pragma region Gizmo
-		if (event._key == (int)KeyButton::Q)
+		if (m_IsViewportFocused)
 		{
-			m_GizmoOperation = -1;
-		}
-		if (event._key == (int)KeyButton::W)
-		{
-			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-		}
-		if (event._key == (int)KeyButton::E)
-		{
-			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
-		}
-		if (event._key == (int)KeyButton::R)
-		{
-			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
-		}
+			if (event._key == (int)KeyButton::Q)
+			{
+				m_GizmoOperation = -1;
+			}
+			if (event._key == (int)KeyButton::W)
+			{
+				m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+			}
+			if (event._key == (int)KeyButton::E)
+			{
+				m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+			}
+			if (event._key == (int)KeyButton::R)
+			{
+				m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
+			}
 
-		//Gizmo snapping
-		if ((event._key == (int)KeyButton::LeftControl || event._key == (int)KeyButton::RightControl) && event._state == (int)KeyState::keyHeld)
-		{
-			m_IsGridAndSnap = true;
+			//Gizmo snapping
+			if ((event._key == (int)KeyButton::LeftControl || event._key == (int)KeyButton::RightControl) && event._state == (int)KeyState::keyHeld)
+			{
+				m_IsGridAndSnap = true;
+			}
+			else
+				m_IsGridAndSnap = false;
 		}
-		else
-			m_IsGridAndSnap = false;
 #pragma endregion
 
 		//Editor camera Look at
@@ -98,26 +101,29 @@ namespace TRE
 			}
 		}
 
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		if (m_IsViewportFocused)
 		{
-			const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
-			const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+			{
+				const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
+				const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
 
-			if (event._key == (int)KeyButton::W)
-			{
-				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
-			}
-			if (event._key == (int)KeyButton::S)
-			{
-				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
-			}
-			if (event._key == (int)KeyButton::A)
-			{
-				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
-			}
-			if (event._key == (int)KeyButton::D)
-			{
-				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				if (event._key == (int)KeyButton::W)
+				{
+					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
+				}
+				if (event._key == (int)KeyButton::S)
+				{
+					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
+				}
+				if (event._key == (int)KeyButton::A)
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
+				if (event._key == (int)KeyButton::D)
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
 			}
 		}
 #pragma endregion
