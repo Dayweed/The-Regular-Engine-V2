@@ -375,19 +375,19 @@ namespace TRE
 		m_TmpTextures = Util::CreateIcon("Lcon_al.png");
 		m_CSScriptIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 #else
-		m_TmpTextures = Util::CreateIcon("icon-file.png");
+		m_TmpTextures = Util::CreateIcon("file_icon.png");
 		m_TmpTexturesID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
 		m_TmpTextures = Util::CreateIcon("folder_icon.png");
 		m_FolderIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
-		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_TmpTextures = Util::CreateIcon("json_icon.png");
 		m_SceneIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
 		m_TmpTextures = Util::CreateIcon("cube_icon.png");
 		m_CubeIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 
-		m_TmpTextures = Util::CreateIcon("cube_icon.png");
+		m_TmpTextures = Util::CreateIcon("prefab_icon.png");
 		m_PrefabIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 		
 		m_TmpTextures = Util::CreateIcon("png_icon.png");
@@ -402,13 +402,13 @@ namespace TRE
 		m_TmpTextures = Util::CreateIcon("meta_icon.png");
 		m_MetaIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
 		
-		m_TmpTextures = Util::CreateIcon("material_icon.png");
+		m_TmpTextures = Util::CreateIcon("mat_icon.png");
 		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
 		
 		m_TmpTextures = Util::CreateIcon("fbx_icon.png");
 		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());	
 		
-		m_TmpTextures = Util::CreateIcon("icon-file.png");
+		m_TmpTextures = Util::CreateIcon("cs_icon.png");
 		m_CSScriptIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 #endif
 	}
