@@ -218,13 +218,13 @@ namespace TRE
 		glm::mat4 depthViewMatrix(1.f);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
+			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
 			
-			//depthViewMatrix = glm::toMat4(glm::quat(glm::radians(entity->GetComponent<Transform>().m_Rotation)));
-			depthViewMatrix = glm::lookAt(entity->GetComponent<Transform>().m_Position, entity->GetComponent<Transform>().m_Rotation, editorCamera.m_BaseCamera.GetUpVec());
+			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
 
 		ShadowUBO UBO_Shadow;
