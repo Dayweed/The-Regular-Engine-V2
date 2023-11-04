@@ -34,6 +34,7 @@ namespace TRE
         public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		private bool isScaled = false;
+
 		//Box Collider
 		private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 4f;
@@ -43,6 +44,7 @@ namespace TRE
 		private float blueberrysuperHeight = 0.1f;
 		private float strawberrysuperHeight = 0.1f;
 		private float currentHeight = 1f;
+
 		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
 		private Vector3 blueberryscaledXform = new Vector3(2f, 1f, 2f);
@@ -90,22 +92,39 @@ namespace TRE
 				dirVec.z += -1;
 				playerDirection.y = 180;
             }
+			else
+			{
+				isWalking = false;
+			}
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
             }
+            else
+            {
+                isWalking = false;
+            }
+
             if (InputSystem.GetKeyDown(InputKeys.A))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
+            }
+            else
+            {
+                isWalking = false;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
+            }
+            else
+            {
+                isWalking = false;
             }
 
             if (InputSystem.GetKeyDown(InputKeys.W))
@@ -147,9 +166,10 @@ namespace TRE
 						Vector3 maxHeight = new Vector3(0, 70, 0);
 						Jump(maxHeight);
 					}
-				}
 
-				AudioSystem.Play(6503599471310675157);
+					isWalking = false;
+				}
+				//AudioSystem.Play(6503599471310675157);
             }
 
 			// To go to level 1
@@ -160,44 +180,36 @@ namespace TRE
             #endregion
 
             #region Audio
-            if (InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
-				InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D))
-            {
-                isWalking = true;
-            }
+            //if (InputSystem.GetKeyTrigger(InputKeys.W) || InputSystem.GetKeyTrigger(InputKeys.S) ||
+            //InputSystem.GetKeyTrigger(InputKeys.A) || InputSystem.GetKeyTrigger(InputKeys.D))
+            //{
+            //    isWalking = true;
+            //}
 
-            if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
-                InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
-            {
-                isWalking = false;
-            }
+            ////if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+            ////    InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
+            ////{
+            ////    isWalking = false;
+            ////}
 
-			if(!isGrounded)
-			{
-				isWalking = false;
-			}
+            //if (isWalking && walkingSFXPlayed == false)
+            //{
+            //    walkingSFXPlayed = true;
+            //    AudioSystem.Play(15348080909718226430);
+            //}
+            //else if (!isWalking && walkingSFXPlayed)
+            //{
+            //    AudioSystem.Stop(15348080909718226430);
+            //    walkingSFXPlayed = false;
+            //}
 
-            if (isWalking && AudioSystem.GetIsPlaying(this.ID) == true)
-			{
-                AudioSystem.Play(this.ID);
-				walkingSFXPlayed = true;
+            ////Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
 
-            }
-			else if(!isWalking && walkingSFXPlayed)
-			{
-				AudioSystem.Stop(this.ID);
-				walkingSFXPlayed = false;
+            #endregion
 
-            }
-
-
-			//Debug.Log("Audio:" + AudioSystem.GetIsPlaying(this.ID));
-
-			#endregion
-
-			#region Swap
-			// Check if can swap ability
-			if (InputSystem.GetKeyTrigger(InputKeys.Q))
+            #region Swap
+            // Check if can swap ability
+            if (InputSystem.GetKeyTrigger(InputKeys.Q))
             {
                 MyPowerManager.SwapPowerUps();
                 isScaled = false;

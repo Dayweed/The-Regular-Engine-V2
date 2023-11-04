@@ -1,7 +1,7 @@
 [
    [
-      100,
-      4293918816,
+      101,
+      4293918817,
       6291456,
       5242881,
       3145730,
@@ -98,8 +98,9 @@
       93,
       94,
       95,
-      10485857,
-      7340130,
+      96,
+      10485858,
+      7340131,
       8388607
    ],
    [
@@ -111,8 +112,10 @@
          "m_Overrides": {
             "Audio": [
                "TRE::Audio/Play",
+               "TRE::Audio/Loop",
                "TRE::Audio/Pause",
-               "TRE::Audio/Volume"
+               "TRE::Audio/Volume",
+               "TRE::Audio/PlayOnStart"
             ],
             "Transform": [
                "TRE::Transform/Position",
@@ -120,7 +123,9 @@
             ]
          },
          "m_PrefabGUID": "15526886209253662016",
-         "m_RemovedComps": []
+         "m_RemovedComps": [
+            "Audio"
+         ]
       },
       8,
       {
@@ -153,18 +158,8 @@
       }
    ],
    [
-      96,
+      97,
       3145730,
-      {
-         "m_Children": [],
-         "m_Parent": "13719718879326929754"
-      },
-      6291456,
-      {
-         "m_Children": [],
-         "m_Parent": "163401229232430487"
-      },
-      5242881,
       {
          "m_Children": [
             "11074317904837680811",
@@ -178,6 +173,16 @@
             "1763478461872210800"
          ],
          "m_Parent": ""
+      },
+      6291456,
+      {
+         "m_Children": [],
+         "m_Parent": "13719718879326929754"
+      },
+      5242881,
+      {
+         "m_Children": [],
+         "m_Parent": "163401229232430487"
       },
       3,
       {
@@ -452,7 +457,8 @@
       {
          "m_Children": [
             "677401345089954524",
-            "6503599471310675157"
+            "6503599471310675157",
+            "15348080909718226430"
          ],
          "m_Parent": ""
       },
@@ -703,16 +709,6 @@
       },
       93,
       {
-         "m_Children": [],
-         "m_Parent": "7006017916973803212"
-      },
-      94,
-      {
-         "m_Children": [],
-         "m_Parent": "2850030734791963668"
-      },
-      95,
-      {
          "m_Children": [
             "12164901314276372086",
             "1126110602601983549",
@@ -724,29 +720,44 @@
             "3082404526162369346"
          ],
          "m_Parent": ""
+      },
+      94,
+      {
+         "m_Children": [],
+         "m_Parent": "13719718879326929754"
+      },
+      95,
+      {
+         "m_Children": [],
+         "m_Parent": "7006017916973803212"
+      },
+      96,
+      {
+         "m_Children": [],
+         "m_Parent": "2850030734791963668"
       }
    ],
    [
-      96,
+      97,
       3145730,
+      {
+         "m_Active": true,
+         "m_GUID": "12808683192309642390",
+         "m_Name": "BoundaryColliders",
+         "m_Tag": ""
+      },
+      6291456,
       {
          "m_Active": true,
          "m_GUID": "6503599471310675157",
          "m_Name": "SFX_Jump",
          "m_Tag": ""
       },
-      6291456,
+      5242881,
       {
          "m_Active": true,
          "m_GUID": "17686485612800077627",
          "m_Name": "TriggerDisplay_3_Trigger_2",
-         "m_Tag": ""
-      },
-      5242881,
-      {
-         "m_Active": true,
-         "m_GUID": "12808683192309642390",
-         "m_Name": "BoundaryColliders",
          "m_Tag": ""
       },
       3,
@@ -1382,28 +1393,68 @@
       93,
       {
          "m_Active": true,
+         "m_GUID": "13852862498108933853",
+         "m_Name": "Triggers",
+         "m_Tag": ""
+      },
+      94,
+      {
+         "m_Active": true,
+         "m_GUID": "15348080909718226430",
+         "m_Name": "SFX_Footsteps",
+         "m_Tag": ""
+      },
+      95,
+      {
+         "m_Active": true,
          "m_GUID": "6831412733685073623",
          "m_Name": "Collider_2_1",
          "m_Tag": "Ground"
       },
-      94,
+      96,
       {
          "m_Active": true,
          "m_GUID": "17802411799606352421",
          "m_Name": "Short_Pillar",
          "m_Tag": "Ground"
-      },
-      95,
-      {
-         "m_Active": true,
-         "m_GUID": "13852862498108933853",
-         "m_Name": "Triggers",
-         "m_Tag": ""
       }
    ],
    [
-      96,
+      97,
       3145730,
+      {
+         "m_LocalPosition": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalRotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6291456,
       {
          "m_LocalPosition": [
             0.0,
@@ -1436,7 +1487,7 @@
             1.0
          ]
       },
-      6291456,
+      5242881,
       {
          "m_LocalPosition": [
             19.030765533447266,
@@ -1461,39 +1512,6 @@
          "m_Rotation": [
             0.0,
             -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      5242881,
-      {
-         "m_LocalPosition": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_LocalRotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_LocalScale": [
-            1.0,
-            1.0,
-            1.0
-         ],
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
             0.0
          ],
          "m_Scale": [
@@ -4475,6 +4493,72 @@
       93,
       {
          "m_LocalPosition": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalRotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      94,
+      {
+         "m_LocalPosition": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalRotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      95,
+      {
+         "m_LocalPosition": [
             53.78506851196289,
             -14.736274719238281,
             -38.202945709228516
@@ -4505,7 +4589,7 @@
             1.0
          ]
       },
-      94,
+      96,
       {
          "m_LocalPosition": [
             10.750648498535156,
@@ -4530,39 +4614,6 @@
          "m_Rotation": [
             0.0,
             -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      95,
-      {
-         "m_LocalPosition": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_LocalRotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_LocalScale": [
-            1.0,
-            1.0,
-            1.0
-         ],
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
             0.0
          ],
          "m_Scale": [
@@ -4694,7 +4745,7 @@
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      94,
+      96,
       {
          "ASSET_GEOM_m_RenderObject": "6118136395c0823e",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
@@ -4859,7 +4910,7 @@
    ],
    [
       58,
-      6291456,
+      5242881,
       {
          "m_HalfExtents": [
             2.0,
@@ -5643,7 +5694,7 @@
             0.0
          ]
       },
-      93,
+      95,
       {
          "m_HalfExtents": [
             21.5,
@@ -5657,7 +5708,7 @@
             0.0
          ]
       },
-      94,
+      96,
       {
          "m_HalfExtents": [
             3.5,
@@ -5725,14 +5776,14 @@
    ],
    [
       3,
-      3145730,
+      6291456,
       {
          "m_FileName": "BoingCartoon CTE01.wav",
          "m_Loop": true,
          "m_MaxDistance": 300.0,
          "m_MinDistance": 1.0,
          "m_Mute": false,
-         "m_Pause": true,
+         "m_Pause": false,
          "m_Pitch": 1.0,
          "m_Play": false,
          "m_PlayOnStart": true,
@@ -5745,26 +5796,6 @@
             0.0
          ]
       },
-      7,
-      {
-         "m_FileName": "FOOTSTEPS-OUTDOOR_GEN-HDF-12469_LOOP1.wav",
-         "m_Loop": true,
-         "m_MaxDistance": 300.0,
-         "m_MinDistance": 1.0,
-         "m_Mute": false,
-         "m_Pause": true,
-         "m_Pitch": 1.0,
-         "m_Play": false,
-         "m_PlayOnStart": true,
-         "m_Priority": 2,
-         "m_Spatialize": false,
-         "m_Volume": 0.4000000059604645,
-         "m_goPosition": [
-            -5.624466896057129,
-            -8.471269607543945,
-            -9.581930160522461
-         ]
-      },
       22,
       {
          "m_FileName": "Holie Molie_Tutorial_Latin Salsa_LOOP.wav",
@@ -5772,7 +5803,7 @@
          "m_MaxDistance": 50.0,
          "m_MinDistance": 1.0,
          "m_Mute": false,
-         "m_Pause": true,
+         "m_Pause": false,
          "m_Pitch": 1.0,
          "m_Play": true,
          "m_PlayOnStart": true,
@@ -5784,11 +5815,31 @@
             0.0,
             0.0
          ]
+      },
+      94,
+      {
+         "m_FileName": "FOOTSTEPS-OUTDOOR_GEN-HDF-12469_LOOP1.wav",
+         "m_Loop": true,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": false,
+         "m_PlayOnStart": true,
+         "m_Priority": 2,
+         "m_Spatialize": false,
+         "m_Volume": 0.5,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
       }
    ],
    [
       23,
-      6291456,
+      5242881,
       {
          "m_StoredClass": "TRE.HoleCheckTrigger"
       },

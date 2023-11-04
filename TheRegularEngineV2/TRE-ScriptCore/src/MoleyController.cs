@@ -28,10 +28,11 @@ namespace TRE
 		private Vector3 finalVelocity = Vector3.zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
-		//Check if player is walking
-		private bool isWalking = false;
+        //Check if player is walking
+        private bool isWalking = false;
+        private bool walkingSFXPlayed = false;
 
-		private float lerpSpeed = 0.05f;
+        private float lerpSpeed = 0.05f;
 
 		//Capsule Collider
 		public bool mainBlueberry = false;  // Scaling
@@ -144,20 +145,35 @@ namespace TRE
 				{
 					isWalking = false;
 				}
-			}
-			#endregion
+                //AudioSystem.Play(6503599471310675157);
+            }
+            #endregion
 
-			#region Audio
+            //#region Audio
+            //if (InputSystem.GetKeyTrigger(InputKeys.I) || InputSystem.GetKeyTrigger(InputKeys.K) ||
+            //InputSystem.GetKeyTrigger(InputKeys.J) || InputSystem.GetKeyTrigger(InputKeys.L))
+            //{
+            //    isWalking = true;
+            //}
 
-			//if (isWalking && AudioSystem.GetIsPlaying(this.ID) == false)
-			//{
-   //             AudioSystem.Stop(this.ID);
-   //             AudioSystem.Play(this.ID);
-			//}
-			//else if(AudioSystem.GetIsPlaying(this.ID))
-			//{
-   //             AudioSystem.Stop(this.ID);
-   //         }
+            ////if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+            ////    InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
+            ////{
+            ////    isWalking = false;
+            ////}
+
+            //if (isWalking && walkingSFXPlayed == false)
+            //{
+            //    walkingSFXPlayed = true;
+            //    AudioSystem.Play(15348080909718226430);
+            //}
+            //else if (!isWalking && walkingSFXPlayed)
+            //{
+            //    AudioSystem.Stop(15348080909718226430);
+            //    walkingSFXPlayed = false;
+            //}
+
+            ////Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
 
             #endregion
 
