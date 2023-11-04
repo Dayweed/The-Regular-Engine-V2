@@ -388,7 +388,7 @@ project "TRE-ScriptStorage"
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
 	
-	libdirs "../Resources/Scripts"
+	libdirs "Resources/Scripts"
 	links "TRE-ScriptCore.dll"
 	
 	files 
