@@ -9,6 +9,7 @@ using System.Diagnostics.Eventing.Reader;
 namespace TRE
 {
 	using PS = PhysicsSystem;
+
 	class MoleyController : Entity
 	{
 		public PowerUpManager MyPowerManager;
@@ -25,6 +26,10 @@ namespace TRE
 		private float acceleration = 300f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
+		//maxJumpHeight
+		private float maxJumpHeight = 70f;
+		//Check if player is walking
+		private bool isWalking = false;
 
 		private float lerpSpeed = 0.05f;
 
@@ -71,25 +76,29 @@ namespace TRE
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
+				isWalking = true;
 			}
 
 			if (InputSystem.GetKeyDown(InputKeys.K))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.J))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.L))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.I))
 			{
@@ -122,16 +131,34 @@ namespace TRE
 					// Boosted Jump
 					if (isBoostedJump)
                     {
-                        Vector3 maxHeight = new Vector3(0, 70, 0);
+                        Vector3 maxHeight = new Vector3(0, 100, 0);
                         Jump(maxHeight);
                     }
 					else
 					{
-						Vector3 maxHeight = new Vector3(0, 35, 0);
+						Vector3 maxHeight = new Vector3(0, 70, 0);
 						Jump(maxHeight);
 					}
 				}
+				else
+				{
+					isWalking = false;
+				}
 			}
+			#endregion
+
+			#region Audio
+
+			//if (isWalking && AudioSystem.GetIsPlaying(this.ID) == false)
+			//{
+   //             AudioSystem.Stop(this.ID);
+   //             AudioSystem.Play(this.ID);
+			//}
+			//else if(AudioSystem.GetIsPlaying(this.ID))
+			//{
+   //             AudioSystem.Stop(this.ID);
+   //         }
+
             #endregion
 
             #region Swap
@@ -249,8 +276,8 @@ namespace TRE
                 if (EngineGetTag(otherID) == "Red")
                 {
                     PS.GetLinearVelocity(this.ID, out Vector3 output);
-                    if (output.y > maxVelocity)
-                        output.y = maxVelocity;
+                    if (output.y > maxJumpHeight)
+                        output.y = maxJumpHeight;
                     PS.SetLinearVelocity(this.ID, output);
                 }
                 // No longer boosted if leave jumppad

@@ -24,9 +24,13 @@ namespace TRE
 		private float acceleration = 300f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
+		//maxJumpHeight
+		private float maxJumpHeight = 70f;
+        //Check if player is walking
+        private bool isWalking = false;
 
-		//check if player used super power
-		public bool mainBlueberry = false;  // Scaling
+        //check if player used super power
+        public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		private bool isScaled = false;
 		//Box Collider
@@ -84,25 +88,29 @@ namespace TRE
 			{
 				dirVec.z += -1;
 				playerDirection.y = 180;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.S))
 			{
 				dirVec.z += 1;
 				playerDirection.y = 0;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.A))
 			{
 				dirVec.x += -1;
 				playerDirection.y = 270;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.D))
 			{
 				dirVec.x += 1;
 				playerDirection.y = 90;
-			}
+                isWalking = true;
+            }
 
 			if (InputSystem.GetKeyDown(InputKeys.W))
 			{
@@ -135,15 +143,19 @@ namespace TRE
 					// Boosted Jump
 					if (isBoostedJump)
 					{
-						Vector3 maxHeight = new Vector3(0, 70, 0);
+						Vector3 maxHeight = new Vector3(0, 100, 0);
 						Jump(maxHeight);
 					}
 					else
 					{
-						Vector3 maxHeight = new Vector3(0, 35, 0);
+						Vector3 maxHeight = new Vector3(0, 70, 0);
 						Jump(maxHeight);
 					}
 				}
+				else
+				{
+                    isWalking = false;
+                }
             }
 
 			// To go to level 1
@@ -151,6 +163,26 @@ namespace TRE
             {
                 Scene.ChangeScene("Level_1");
             }
+            #endregion
+
+            #region Audio
+
+   //         if (isWalking && AudioSystem.GetIsPlaying(this.ID) == true)
+   //         {
+   //             AudioSystem.Play(this.ID);
+   //         }
+			//else
+			//{
+			//	AudioSystem.Stop(this.ID);
+			//}
+
+			//if (InputSystem.GetKeyTrigger(InputKeys.W) == false && InputSystem.GetKeyTrigger(InputKeys.A) == false && InputSystem.GetKeyTrigger(InputKeys.S) == false && InputSystem.GetKeyTrigger(InputKeys.D) == false)
+			//{
+   //             AudioSystem.Stop(this.ID);
+   //         }
+
+   //         Debug.Log("Audio:" + AudioSystem.GetIsPlaying(this.ID));
+
             #endregion
 
             #region Swap
@@ -287,8 +319,8 @@ namespace TRE
 				if (EngineGetTag(otherID) == "Blue")
 				{
 					PS.GetLinearVelocity(this.ID, out Vector3 output);
-					if (output.y > maxVelocity)
-						output.y = maxVelocity;
+					if (output.y > maxJumpHeight)
+						output.y = maxJumpHeight;
 					PS.SetLinearVelocity(this.ID, output);
                 }
                 // No longer boosted if leave jumppad
