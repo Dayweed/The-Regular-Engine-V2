@@ -31,6 +31,7 @@ layout(push_constant) uniform Push
 layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
+	mat4 m_LightSpaceMatrix;
 	vec3 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
@@ -46,11 +47,13 @@ layout(set = 0, binding = 6) uniform MaterialColor
 
 const float gamma = 2.2;
 
-const mat4 biasMat = mat4( 
+const mat4 C2T = mat4
+( 
 	0.5, 0.0, 0.0, 0.0,
 	0.0, 0.5, 0.0, 0.0,
 	0.0, 0.0, 1.0, 0.0,
-	0.5, 0.5, 0.0, 1.0 );
+	0.5, 0.5, 0.0, 1.0 
+);
 
 void main() 
 {
@@ -79,7 +82,7 @@ void main()
 	Out.Color = MaterialUBO.m_Color;
 	Out.AmbientColor = ubo.m_AmbientLight;
 
-	Out.outShadowCoord = ( biasMat * vec4(ubo.m_LightPosition, 1.f) * push.m_Model ) * vec4(inPosition, 1.0);
+	Out.outShadowCoord = C2T * ubo.m_LightSpaceMatrix * push.m_Model * vec4(inPosition, 1.0);
 }
 
 #version 450
@@ -111,46 +114,50 @@ layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
-float textureProj(vec4 shadowCoord, vec2 off)
+float SampleShadowTexture( in const vec4 Coord, in const vec2 off )
 {
-	float shadow = 1.0;
-	if ( shadowCoord.z > -1.0 && shadowCoord.z < 1.0 ) 
-	{
-		float dist = texture( shadowMap, shadowCoord.st + off ).r;
-		if ( shadowCoord.w > 0.0 && dist < shadowCoord.z ) 
-		{
-			shadow = 0.1;
-		}
-	}
-	return shadow;
+	float dist = texture( shadowMap, Coord.xy + off ).r;
+	return ( Coord.w > 0.0 && dist < Coord.z ) ? 0.0f : 1.0f;
 }
 
-float filterPCF(vec4 sc)
+float ShadowNoPCF( in const vec4 UVProjection )
 {
-	ivec2 texDim = textureSize(shadowMap, 0);
-	float scale = 1.5;
-	float dx = scale * 1.0 / float(texDim.x);
-	float dy = scale * 1.0 / float(texDim.y);
-
-	float shadowFactor = 0.0;
-	int count = 0;
-	int range = 1;
-	
-	for (int x = -range; x <= range; x++)
+	float Shadow = 1.0;	
+	if ( UVProjection.z > -1.0 && UVProjection.z < 1.0 ) 
 	{
-		for (int y = -range; y <= range; y++)
-		{
-			shadowFactor += textureProj(sc, vec2(dx*x, dy*y));
-			count++;
-		}
-	
+		Shadow = SampleShadowTexture( UVProjection, vec2(0) );
 	}
-	return shadowFactor / count;
+	return Shadow;
+}
+int isqr( int a ) { return a*a; }
+float ShadowPCF( in vec4 UVProjection )
+{
+	float Shadow = 1.0;
+	if ( UVProjection.z > -1.0 && UVProjection.z < 1.0 ) 
+	{
+		const float scale			= 1.5;
+		const vec2  TexelSize 		= scale / textureSize(shadowMap, 0);
+		const int	SampleRange		= 1;
+		const int	SampleTotal		= isqr(1 + 2 * SampleRange);
+		
+		float		ShadowAcc = 0;
+		for (int x = -SampleRange; x <= SampleRange; x++)
+		{
+			for (int y = -SampleRange; y <= SampleRange; y++)
+			{
+				ShadowAcc += SampleShadowTexture( UVProjection, vec2(TexelSize.x*x, TexelSize.y*y));
+			}
+		}
+
+		Shadow = ShadowAcc / SampleTotal;
+	}
+
+	return Shadow;
 }
 
 void main() 
 {
-	float shadow = filterPCF(In.ShadowCoord / In.ShadowCoord.w);
+	const float shadow = ShadowPCF(In.ShadowCoord / In.ShadowCoord.w);
 
 	//Calculate normal from normal map
 	vec3 normal;
@@ -166,7 +173,8 @@ void main()
 	float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
 	lightAttenuation = clamp(lightAttenuation, 0.0, 1.0);
 	//float lightAttenuation = clamp(1 / lightDistance, 0.0, 1.0);
-	const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
+	//const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
+	const vec3 attenuationColor = lightAttenuation + shadow * In.LightColor.rgb;
 
 	//Diffuse intensity
 	const float diffuseIntensity = max(dot(normal, lightDirection), 0.0);
@@ -187,7 +195,7 @@ void main()
 
 	outColor.rgb += lightModel * attenuationColor;
 
-	outColor.rgb *= shadow;
+	//outColor.rgb *= shadow;
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );

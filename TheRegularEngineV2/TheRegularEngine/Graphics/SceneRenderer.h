@@ -26,6 +26,7 @@ namespace TRE
 	struct UBO
 	{
 		glm::mat4 m_ProjView{ 1.f }; //World to view to projection
+		glm::mat4 m_LightSpaceMatrix {1.f};
 
 		glm::vec3 m_LightPosition{ 0.f, 0.f, 0.f}; //Light position for now will be the camera in world space
 		#pragma warning (suppress: 4324) // warning C4324: 'TRE::UBO': structure was padded due to alignment specifier	
@@ -34,6 +35,7 @@ namespace TRE
 		glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f); //Directional Light in world space
 		glm::vec4 m_LightDirectionalColor{ 1.f, 1.f, 1.f, 1.f }; //Color for directional light
 		glm::vec4 m_LightAmbientColor{ 1.f, 1.f, 1.f, 1.f }; //Color for ambient light
+
 	};
 
 	struct SkyBoxUBO
