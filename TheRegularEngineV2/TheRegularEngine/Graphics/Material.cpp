@@ -265,6 +265,8 @@ namespace TRE
 	{
 		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
 		{
+			if (Name == "shadowMap")
+				continue;
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID());
 		}

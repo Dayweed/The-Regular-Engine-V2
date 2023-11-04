@@ -119,6 +119,7 @@ namespace TRE
 
 	RenderPass::RenderPass(std::shared_ptr<Device> Device, bool isshadow) : m_Device(Device)
 	{
+		(void)isshadow;
 		//Renderpass
 		VkAttachmentDescription attachmentDescription{};
 		attachmentDescription.format = VK_FORMAT_D16_UNORM;

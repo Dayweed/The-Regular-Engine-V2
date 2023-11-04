@@ -182,6 +182,7 @@ namespace TRE
 	{
 		if(Contains(assetName))
 			return m_AssetNameToHandle.at(assetName).second;
+		return false;
 	}
 
 	bool AssetManager::Compiled(const ResourceHandle resourceHandle) const
@@ -222,7 +223,7 @@ namespace TRE
 	{
 		for (const auto x : m_AssetNameToHandle)
 		{
-			std::cout << x.first << "| " << (x.second.first << x.second.second ? "Compiled" : "Not Compiled") << "| " << Resource::GetGUIDHex(x.second.first) << std::endl;
+			std::cout << x.first << "| " << x.second.first << (x.second.second ? "Compiled" : "Not Compiled") << "| " << Resource::GetGUIDHex(x.second.first) << std::endl;
 		}
 	}
 }
