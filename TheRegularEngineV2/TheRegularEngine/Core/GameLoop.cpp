@@ -84,6 +84,7 @@ namespace TRE
 		// Start Simulating if it just started
 		if (!m_GameSimulating && isRunning)
 		{
+			ScriptEngine::ReloadAssembly();
 			m_GameSimulating = true;
 		}
 	}
@@ -125,5 +126,12 @@ namespace TRE
 		(void)event;
 		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
 		ResetScene();
+	}
+
+	void GameLoop::InstantReset()
+	{
+		GameLoop::Instance().GetBackUpRegistry().clear();
+		// Copy registry and components
+		ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
 	}
 }

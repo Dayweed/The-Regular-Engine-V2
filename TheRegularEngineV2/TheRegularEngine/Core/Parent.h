@@ -27,7 +27,7 @@ namespace TRE
 			if (j.contains("m_Parent"))
 				t.m_Parent = j.at("m_Parent").get<std::string>();
 			if (j.contains("m_Children"))
-				j.at("m_Children").get<std::vector<std::string>>();
+				t.m_Children = j.at("m_Children").get<std::vector<std::string>>();
 
 			t.m_IsDirty = true;
 		}

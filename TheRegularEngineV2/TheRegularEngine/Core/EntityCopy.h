@@ -34,6 +34,8 @@ namespace TRE
 
 		void SaveEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});		// Entity must be from the ECSManager::Instance().GetRegistry()!
 
+		void GenerateNewGUID(entt::entity ent, entt::registry& reg);
+
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
 		EntityCopier();

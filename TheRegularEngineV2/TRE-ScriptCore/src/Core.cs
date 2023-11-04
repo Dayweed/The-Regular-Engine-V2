@@ -849,6 +849,12 @@ namespace TRE
 		internal extern static bool GetIsPlaying(string entityid);
 	}
 
+	public class Scene
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void ChangeScene(string sceneName);
+    }
+
 	public class Script
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

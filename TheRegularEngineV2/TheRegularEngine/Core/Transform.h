@@ -41,10 +41,20 @@ namespace TRE
 			const float* sca = glm::value_ptr(t.m_Scale);
 			std::vector<float> v_sca{ sca[0], sca[1], sca[2]};
 
+			const float* locpos = glm::value_ptr(t.m_LocalPosition);
+			std::vector<float> v_lpos{ locpos[0], locpos[1], locpos[2]};
+			const float* locrot = glm::value_ptr(t.m_LocalRotation);
+			std::vector<float> v_lrot{ locrot[0], locrot[1], locrot[2]};
+			const float* locsca = glm::value_ptr(t.m_LocalScale);
+			std::vector<float> v_lsca{ locsca[0], locsca[1], locsca[2]};
+
 			j = nlohmann::json{
 				{ "m_Position", v_pos },
 				{ "m_Rotation", v_rot },
-				{ "m_Scale", v_sca }
+				{ "m_Scale", v_sca },
+				{ "m_LocalPosition", v_lpos },
+				{ "m_LocalRotation", v_lrot },
+				{ "m_LocalScale", v_lsca }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, Transform& t) // Deserialize
@@ -66,6 +76,24 @@ namespace TRE
 				std::vector<float> v_sca{ j.at("m_Scale").get<std::vector<float>>() };
 				float a_sca[3]{ v_sca[0], v_sca[1], v_sca[2] };
 				t.m_Scale = glm::make_vec3(a_sca);
+			}
+			if (j.contains("m_LocalPosition"))
+			{
+				std::vector<float> v_lpos{ j.at("m_LocalPosition").get<std::vector<float>>() };
+				float a_lpos[3]{ v_lpos[0], v_lpos[1], v_lpos[2] };
+				t.m_LocalPosition = glm::make_vec3(a_lpos);
+			}
+			if (j.contains("m_LocalRotation"))
+			{
+				std::vector<float> v_lrot{ j.at("m_LocalRotation").get<std::vector<float>>() };
+				float a_lrot[3]{ v_lrot[0], v_lrot[1], v_lrot[2] };
+				t.m_LocalRotation = glm::make_vec3(a_lrot);
+			}
+			if (j.contains("m_LocalScale"))
+			{
+				std::vector<float> v_lsca{ j.at("m_LocalScale").get<std::vector<float>>() };
+				float a_lsca[3]{ v_lsca[0], v_lsca[1], v_lsca[2] };
+				t.m_LocalScale = glm::make_vec3(a_lsca);
 			}
 
 			t.m_IsDirty = true;

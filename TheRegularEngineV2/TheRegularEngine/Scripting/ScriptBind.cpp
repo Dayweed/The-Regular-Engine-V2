@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Demo/Demo.h"
 #include "Core/Transform.h"
+#include "Core/GameLoop.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
@@ -1180,6 +1181,15 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region SceneBindings
+	static void BindLoadScene(MonoString* id)
+	{
+		std::string sceneName = MonoStringToString(id);
+		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
+		SceneManager::Instance().LoadScene(scenePath);
+	}
+#pragma endregion
+
 #pragma region ScriptBindings
 	static bool BindIsScript(MonoString* className)
 	{
@@ -1378,6 +1388,11 @@ namespace TRE
 			mono_add_internal_call("TRE.AudioSystem::SetPause", BindTogglePauseSound);
 			mono_add_internal_call("TRE.AudioSystem::StopAudio", BindSetStopSound);
 			mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
+		}
+
+		// Scene
+		{
+			mono_add_internal_call("TRE.Scene::ChangeScene", BindLoadScene);
 		}
 
 		// Scripting

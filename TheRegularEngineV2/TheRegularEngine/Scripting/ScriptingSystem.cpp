@@ -93,22 +93,22 @@ namespace TRE
 		}
 
 		// Update
-		for(auto e: m_ScriptEntities)
+		for (size_t i{}; i < m_ScriptEntities.size(); ++i)
 		{
-			ScriptEngine::OnUpdateEntity(e);
+			ScriptEngine::OnUpdateEntity(m_ScriptEntities[i]);
 		}
 
 		// Late Update
-		for(auto e: m_ScriptEntities)
+		for (size_t i{}; i < m_ScriptEntities.size(); ++i)
 		{
-			ScriptEngine::OnLateUpdateEntity(e);
+			ScriptEngine::OnLateUpdateEntity(m_ScriptEntities[i]);
 		}
 
 		// On Destroy
-		for (auto e : m_ScriptEntities)
+		for (size_t i{}; i < m_ScriptEntities.size(); ++i)
 		{
-			if (e->HasComponent<Removal>())
-				ScriptEngine::OnDestroyEntity(e);
+			if (m_ScriptEntities[i]->HasComponent<Removal>())
+				ScriptEngine::OnDestroyEntity(m_ScriptEntities[i]);
 		}
 
 		ScriptEngine::UpdateScriptingMain();
@@ -128,7 +128,6 @@ namespace TRE
 	void ScriptingSystem::AfterReset()
 	{
 		// Add back all entities with Scripting
-		ScriptEngine::ReloadAssembly();
 		InitializeScriptableObjects();
 		m_IsRunning = true;
 	}

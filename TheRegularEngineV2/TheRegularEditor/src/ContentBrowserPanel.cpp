@@ -12,6 +12,7 @@
 
 namespace TRE
 {
+	static std::string lastSceneClicked;
 	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -162,6 +163,8 @@ namespace TRE
 		}
 		ImGui::EndChild();
 		ImGui::SameLine();
+
+		bool isHovered = false;
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
@@ -173,11 +176,11 @@ namespace TRE
 				}
 			}
 
-			ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
+			/*ImGui::Text("Path:[%s]", m_CurrentDirectory.string().data());
 			if (ImGui::Button("Open File Explorer"))
 			{
 				(void)FileExplorer::OpenFileExplorer(nullptr);
-			}
+			}*/
 
 			if (m_CurrentDirectory.compare(m_AssetDirectory) != 0 && m_CurrentDirectory.compare(m_SceneDirectory) != 0)
 			{
@@ -225,6 +228,8 @@ namespace TRE
 
 			m_AssetClicked = false;
 
+			isHovered = ImGui::IsWindowHovered();
+
 			for (int count{}; auto & item: m_Assets)
 			{
 				ImGui::PushID(count++);
@@ -253,18 +258,20 @@ namespace TRE
 						{
 							if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 							{
+								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
 								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
-								Entity prefabInstance = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->DisplayPrefabInNewScene(prefabGUID);
-								EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+								Entity prefabInstance = prefabsystem->DisplayPrefabInNewScene(prefabGUID);
+								m_SelectionManager->SelectEntity(prefabInstance);
 							}
 						}
 						else if (item.m_ResourceType == "m_Scene")
 						{
-							if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
+							/*if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 							{
 								SceneManager::Instance().LoadScene(item.m_Path.string());
-							}
+							}*/
+							lastSceneClicked = item.m_Path.string();
 						}
 						else
 						{
@@ -313,9 +320,19 @@ namespace TRE
 				}
 				ImGui::EndPopup();
 			}
-			
 		}
-			ImGui::EndChild();
+		ImGui::EndChild();
+
+		//For scene opening
+		if (isHovered && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		{
+			if (lastSceneClicked != "" && !GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
+			{
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+				SceneManager::Instance().LoadScene(lastSceneClicked);
+				lastSceneClicked = "";
+			}
+		}
 	}
 
 	void ContentBrowserPanel::Init()

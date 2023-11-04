@@ -195,16 +195,6 @@ namespace TRE
 			SaveScene();
 			m_ShortcutSaveScene = false;
 		}
-		if (m_ShortcutCopyEntity)
-		{
-			EntityCopier::Instance().CopyEntities(EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity());
-			m_ShortcutCopyEntity = false;
-		}
-		if (m_ShortcutPasteEntity)
-		{
-			EntityCopier::Instance().PasteEntities();
-			m_ShortcutPasteEntity = false;
-		}
 	}
 
 	void MenuBarPanel::Shutdown()
@@ -267,8 +257,6 @@ namespace TRE
 			m_ShortcutNewScene	= key == KeyButton::N;
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
-			m_ShortcutCopyEntity = key == KeyButton::C;
-			m_ShortcutPasteEntity = key == KeyButton::V;
 		}
 	}
 }
