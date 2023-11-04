@@ -308,7 +308,7 @@ namespace TRE
 					{
 						//int offset = m_ClickCount % entitiesHit.size();
 						Entity selectedEntity = (--entitiesHit.end())->second;
-						int counter = 1;
+						std::uint32_t counter = 1;
 						for (auto it = entitiesHit.rbegin(); it != entitiesHit.rend(); ++it)
 						{
 							if (m_ClickCount < counter)

@@ -236,7 +236,6 @@ namespace TRE
 		}
 
 		ShadowUBO UBO_Shadow;
-		float lightFOV = 45.0f;
 		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
@@ -287,7 +286,6 @@ namespace TRE
 		}
 
 		ShadowUBO UBO_Shadow;
-		float lightFOV = 45.0f;
 		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
@@ -365,10 +363,10 @@ namespace TRE
 		VkViewport viewport2{};
 		viewport2.x = 0.0f;
 		viewport2.y = 0.0f;
-		m_ShadowMapWidth = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		m_ShadowMapHeight = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		viewport2.width = m_ShadowMapWidth;
-		viewport2.height = m_ShadowMapHeight;
+		m_ShadowMapWidth = Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth();
+		m_ShadowMapHeight = Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight();
+		viewport2.width = (float)m_ShadowMapWidth;
+		viewport2.height = (float)m_ShadowMapHeight;
 		viewport2.minDepth = 0.0f;
 		viewport2.maxDepth = 1.0f;
 		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);

@@ -379,7 +379,7 @@ namespace TRE
 			return audio.m_FileName = filename;
 		}
 
-		return {};
+		return std::string();
 	}
 
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
