@@ -25,6 +25,8 @@ namespace TRE
 		private float acceleration = 300f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
+		//maxJumpHeight
+		private float maxJumpHeight = 70f;
 
 		private float lerpSpeed = 0.05f;
 
@@ -122,12 +124,12 @@ namespace TRE
 					// Boosted Jump
 					if (isBoostedJump)
                     {
-                        Vector3 maxHeight = new Vector3(0, 70, 0);
+                        Vector3 maxHeight = new Vector3(0, 100, 0);
                         Jump(maxHeight);
                     }
 					else
 					{
-						Vector3 maxHeight = new Vector3(0, 35, 0);
+						Vector3 maxHeight = new Vector3(0, 70, 0);
 						Jump(maxHeight);
 					}
 				}
@@ -249,8 +251,8 @@ namespace TRE
                 if (EngineGetTag(otherID) == "Red")
                 {
                     PS.GetLinearVelocity(this.ID, out Vector3 output);
-                    if (output.y > maxVelocity)
-                        output.y = maxVelocity;
+                    if (output.y > maxJumpHeight)
+                        output.y = maxJumpHeight;
                     PS.SetLinearVelocity(this.ID, output);
                 }
                 // No longer boosted if leave jumppad
