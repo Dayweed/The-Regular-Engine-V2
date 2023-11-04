@@ -142,7 +142,7 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(10.f, 10.f, 0.f);
+		m_DefaultMaterial = m_Physics->createMaterial(10.f, 1000.f, 0.f);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
@@ -863,7 +863,7 @@ namespace TRE
 			PX_RELEASE(m_Scene);
 
 		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 6, 0.0f);
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 25, 0.0f);
 
 		//A cpu thread for the scene
 		if (m_Dispatcher)

@@ -93,52 +93,53 @@ namespace TRE
 
 	void DebugRenderer::CreateDebugCapsule()
 	{
-		m_DebugCapsule = std::make_unique<DebugType>();
+		m_DebugCapsuleRadius = std::make_unique<DebugType>();
+		m_DebugCapsuleHalfExtent = std::make_unique<DebugType>();
 
-		std::vector<DebugVertex> DebugCapsuleVert;
-		std::vector<int> DebugCapsuleIndices;
-		const int slices = 24;
+		const int slices = 12;
 		float Theta = (3.142f) / slices;
-		//Top half
-		for (int x = 0; x < slices; x++)
+		std::vector<DebugVertex> DebugCapsuleRadiusVert;
+		std::vector<int> DebugCapsuleRadiusIndices;
+		//Top half - first axis
+		for (int x = 0; x < slices;)
 		{
-			DebugCapsuleVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x) / 2.f, sinf(Theta * x) / 4.f + 0.25f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-			DebugCapsuleIndices.push_back(x);
+			DebugCapsuleRadiusVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x) / 2.f, sinf(Theta * x) / 2.f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+			DebugCapsuleRadiusIndices.push_back(x++);
+			DebugCapsuleRadiusIndices.push_back(x);
 		}
 
-		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(-0.5f, 0.25f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
+		DebugCapsuleRadiusVert.push_back(DebugVertex(glm::vec3(-0.5f, 0, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+		DebugCapsuleRadiusIndices.push_back((int)DebugCapsuleRadiusIndices.size());
+		DebugCapsuleRadiusIndices.push_back((int)DebugCapsuleRadiusIndices.size());
 
-		//Circular rim
-		Theta = -(3.14f * 2) / slices;
-		const int rimIndex = (int)DebugCapsuleIndices.size();
-		for (int x = 0; x < slices + 1; x++)
-		{
-			DebugCapsuleVert.push_back(DebugVertex(glm::vec3(cosf(Theta * x) / 2.f, 0.25f, sinf(Theta * x) / 2.f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-			DebugCapsuleIndices.push_back(x + rimIndex);
-		}
+		DebugCapsuleRadiusVert.push_back(DebugVertex(glm::vec3(0.f, 0.f, -0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+		DebugCapsuleRadiusIndices.push_back((int)DebugCapsuleRadiusIndices.size());
 
-		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(-0.5f, 0.25f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
-		
-		Theta = (-3.142f) / slices;
-		const int StartIndex = (int)DebugCapsuleIndices.size();
-		//Bottom half
-		for (int x = 0; x < slices; x++)
-		{
-			DebugCapsuleVert.push_back(DebugVertex(glm::vec3(-cosf(Theta * x) / 2.f, sinf(Theta * x) / 4.f - 0.25f, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-			DebugCapsuleIndices.push_back(x + StartIndex);
-		}
+		m_DebugCapsuleRadius->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugCapsuleRadiusVert.data()),
+			UINT32_T_CAST(DebugCapsuleRadiusVert.size() * sizeof(DebugVertex)));
 
-		DebugCapsuleVert.push_back(DebugVertex(glm::vec3(0.5, 0.25, 0), glm::vec4(0.f, 1.f, 0.f, 1.f)));
-		DebugCapsuleIndices.push_back((int)DebugCapsuleIndices.size());
+		m_DebugCapsuleRadius->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugCapsuleRadiusIndices.data()),
+			UINT32_T_CAST(DebugCapsuleRadiusIndices.size() * sizeof(int)),
+			UINT32_T_CAST(DebugCapsuleRadiusIndices.size()));
 
-		m_DebugCapsule->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugCapsuleVert.data()),
-			UINT32_T_CAST(DebugCapsuleVert.size() * sizeof(DebugVertex)));
+		std::vector<DebugVertex> DebugCapsuleExtentVert;
+		std::vector<int> DebugCapsuleExtentIndices;
 
-		m_DebugCapsule->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugCapsuleIndices.data()),
-			UINT32_T_CAST(DebugCapsuleIndices.size() * sizeof(int)),
-			UINT32_T_CAST(DebugCapsuleIndices.size()));
+		DebugCapsuleExtentVert.push_back(DebugVertex(glm::vec3(-0.5f, 0.f, 0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+		DebugCapsuleExtentVert.push_back(DebugVertex(glm::vec3(-0.5f, 0.5f, 0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+		DebugCapsuleExtentVert.push_back(DebugVertex(glm::vec3(0.5f, 0.f, 0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+		DebugCapsuleExtentVert.push_back(DebugVertex(glm::vec3(0.5f, 0.5f, 0.f), glm::vec4(0.f, 1.f, 0.f, 1.f)));
+		DebugCapsuleExtentIndices.push_back((int)DebugCapsuleExtentIndices.size());
+		DebugCapsuleExtentIndices.push_back((int)DebugCapsuleExtentIndices.size());
+		DebugCapsuleExtentIndices.push_back((int)DebugCapsuleExtentIndices.size());
+		DebugCapsuleExtentIndices.push_back((int)DebugCapsuleExtentIndices.size());
+
+		m_DebugCapsuleHalfExtent->m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(DebugCapsuleExtentVert.data()),
+			UINT32_T_CAST(DebugCapsuleExtentVert.size() * sizeof(DebugVertex)));
+
+		m_DebugCapsuleHalfExtent->m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(DebugCapsuleExtentIndices.data()),
+			UINT32_T_CAST(DebugCapsuleExtentIndices.size() * sizeof(int)),
+			UINT32_T_CAST(DebugCapsuleExtentIndices.size()));
 	}
 
 	void DebugRenderer::CreateDebugCameraFrustum()
@@ -223,17 +224,30 @@ namespace TRE
 		vkCmdDrawIndexed(CommandBuffer, m_DebugAABB->m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 	}
 
-	void DebugRenderer::BindDebugCapsule(VkCommandBuffer CommandBuffer)
+	void DebugRenderer::BindDebugCapsuleRadius(VkCommandBuffer CommandBuffer)
 	{
 		VkDeviceSize offsets[] = { 0 };
-		VkBuffer VertexBuffer = m_DebugCapsule->m_VertexBuffer->GetBuffer();
+		VkBuffer VertexBuffer = m_DebugCapsuleRadius->m_VertexBuffer->GetBuffer();
 		vkCmdBindVertexBuffers(CommandBuffer, 0, 1, &VertexBuffer, offsets);
-		vkCmdBindIndexBuffer(CommandBuffer, m_DebugCapsule->m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(CommandBuffer, m_DebugCapsuleRadius->m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 	}
 
-	void DebugRenderer::DrawDebugCapsule(VkCommandBuffer CommandBuffer)
+	void DebugRenderer::DrawDebugCapsuleRadius(VkCommandBuffer CommandBuffer)
 	{
-		vkCmdDrawIndexed(CommandBuffer, m_DebugCapsule->m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		vkCmdDrawIndexed(CommandBuffer, m_DebugCapsuleRadius->m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+	}
+
+	void DebugRenderer::BindDebugCapsuleHalfExtent(VkCommandBuffer CommandBuffer)
+	{
+		VkDeviceSize offsets[] = { 0 };
+		VkBuffer VertexBuffer = m_DebugCapsuleHalfExtent->m_VertexBuffer->GetBuffer();
+		vkCmdBindVertexBuffers(CommandBuffer, 0, 1, &VertexBuffer, offsets);
+		vkCmdBindIndexBuffer(CommandBuffer, m_DebugCapsuleHalfExtent->m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+	}
+
+	void DebugRenderer::DrawDebugCapsuleHalfExtent(VkCommandBuffer CommandBuffer)
+	{
+		vkCmdDrawIndexed(CommandBuffer, m_DebugCapsuleHalfExtent->m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 	}
 
 	void DebugRenderer::BindDebugCameraFrustum(VkCommandBuffer CommandBuffer)

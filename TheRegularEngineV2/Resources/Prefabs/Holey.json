@@ -1,57 +1,87 @@
 [
    [
-      1,
-      0
+      2,
+      0,
+      1
    ],
    [
-      1,
+      2,
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "10912187722202796678",
-         "m_Overrides": {
-            "BoxCollider": [
-               "TRE::BoxCollider/IsVisible",
-               "TRE::BoxCollider/HalfExtents"
-            ],
-            "CapsuleCollider": [
-               "TRE::CapsuleCollider/IsVisible"
-            ]
-         },
-         "m_PrefabGUID": "10912187722202796678",
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15526886209253662016",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15225568713149738293",
          "m_RemovedComps": []
       }
    ],
    [
-      1,
+      2,
       0,
       {
-         "m_Children": [],
+         "m_Children": [
+            "17841234758598888483"
+         ],
          "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "12431207586994082902"
       }
    ],
    [
-      1,
+      2,
       0,
       {
          "m_Active": true,
-         "m_GUID": "12587560836124106968",
+         "m_GUID": "12431207586994082902",
          "m_Name": "Holey",
+         "m_Tag": "Red"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "17841234758598888483",
+         "m_Name": "Power Manager",
          "m_Tag": ""
       }
    ],
    [
-      1,
+      2,
       0,
       {
+         "m_LocalPosition": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalRotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            1.0
+         ],
          "m_Position": [
-            5.728992938995361,
-            -6.974639892578125,
-            -13.981051445007324
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
-            0.0005472316988743842,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -59,14 +89,47 @@
             0.75,
             0.75
          ]
+      },
+      1,
+      {
+         "m_LocalPosition": [
+            0.0006399154663085938,
+            -1.4132328033447266,
+            52.12078857421875
+         ],
+         "m_LocalRotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            0.9333333373069763
+         ],
+         "m_Position": [
+            0.0004799365997314453,
+            -1.059924602508545,
+            -48.576934814453125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
       }
    ],
    [
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_GEOM_m_RenderObject": "789db1a40e2484e0",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       }
    ],
@@ -77,16 +140,16 @@
       1,
       0,
       {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
+         "m_AngularDrag": 0.5,
+         "m_Drag": 0.20000000298023224,
          "m_FreezePositionX": false,
          "m_FreezePositionY": false,
          "m_FreezePositionZ": false,
-         "m_FreezeRotationX": true,
+         "m_FreezeRotationX": false,
          "m_FreezeRotationY": false,
-         "m_FreezeRotationZ": true,
+         "m_FreezeRotationZ": false,
          "m_IsKinematic": false,
-         "m_Mass": 8.33038330078125,
+         "m_Mass": 58.643062591552734,
          "m_UseGravity": true
       }
    ],
@@ -94,21 +157,7 @@
       0
    ],
    [
-      1,
-      0,
-      {
-         "m_HalfExtents": [
-            0.0010000000474974513,
-            0.0010000000474974513,
-            0.0010000000474974513
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      }
+      0
    ],
    [
       1,
@@ -134,16 +183,14 @@
       0
    ],
    [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      1,
+      2,
       0,
       {
          "m_StoredClass": "TRE.HoleyController"
+      },
+      1,
+      {
+         "m_StoredClass": "TRE.PowerUpManager"
       }
    ]
 ]

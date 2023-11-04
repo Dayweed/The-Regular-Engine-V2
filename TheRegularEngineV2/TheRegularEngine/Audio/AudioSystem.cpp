@@ -57,10 +57,6 @@ namespace TRE
 					Play(go, true);
 				}
 			}
-			else
-			{
-
-			}
 
 			if (!source.m_Play)
 			{
@@ -277,10 +273,10 @@ namespace TRE
 		}
 	}
 
-	void AudioSystem::StopAudio(Entity& go)
+	void AudioSystem::Stop(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		ErrorCheck(audio.m_ChannelGroup->stop(), "FMOD: StopAudio()");
+		ErrorCheck(audio.m_ChannelGroup->stop(), "FMOD: Stop()");
 	}
 
 	int AudioSystem::ErrorCheck(FMOD_RESULT result, std::string function)

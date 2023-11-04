@@ -19,19 +19,30 @@ namespace TRE
             triggersComp = new List<HoleCheckTrigger>();
         }
 
-        public void OnCreate()
+        public void Start()
         {
             // Add triggers that are it's child as triggers
             for (int i = 0; i < NoOfTriggers; i++)
             {
                 Entity trigger = parenting.GetChild(i);
 
-                if (trigger == null || !trigger.CompareTag("Trigger") || !trigger.HasComponent<HoleCheckTrigger>())
+                if (trigger == null)
                 {
-                    Debug.LogError("Child (" + i + ") is invalid and not a trigger! Tag must be [Trigger] and HoleCheckTrigger");
+                    Debug.LogError("Child (" + i + ") is invalid!");
+                    return;
+                }
+                if (!trigger.CompareTag("Trigger"))
+                {
+                    Debug.LogError("Child (" + i + ") [" + trigger.name + "] Tag must be [Trigger]!");
+                    return;
+                }
+                if (trigger.GetComponent<HoleCheckTrigger>() == null)
+                {
+                    Debug.LogError("Child (" + i + ") [" + trigger.name + "] HoleCheckTrigger");
                     return;
                 }
 
+                trigger.GetComponent<HoleCheckTrigger>().triggerDisplay = this;
                 triggersComp.Add(trigger.GetComponent<HoleCheckTrigger>());
             }
         }

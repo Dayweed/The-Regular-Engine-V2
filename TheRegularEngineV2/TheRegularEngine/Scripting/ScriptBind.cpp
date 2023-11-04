@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Demo/Demo.h"
 #include "Core/Transform.h"
+#include "Core/GameLoop.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
@@ -1153,31 +1154,48 @@ namespace TRE
 
 #pragma region Audio
 
-	static void BindSetPlaySound(MonoString* id)
+	static void BindSetPlaySound(CSEntityID ID)
 	{
-		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
 	}
 
-	static void BindTogglePauseSound(MonoString* id, bool paused)
+	static void BindTogglePauseSound(CSEntityID ID, bool paused)
 	{
 		(void)paused;
-		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
 	}
 
-	static void BindSetStopSound(MonoString* id)
+	static void BindSetStop(CSEntityID ID)
 	{
-		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
-		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->StopAudio(entity);
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Stop(entity);
 	}
 
-	static bool BindIsPlaying(MonoString* id)
+	static bool BindIsPlaying(CSEntityID ID)
 	{
-		Entity entity = ECSManager::Instance().FindEntity(MonoStringToString(id));
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
 	}
 
+#pragma endregion
+
+#pragma region SceneBindings
+	static void BindLoadScene(MonoString* id)
+	{
+		std::string sceneName = MonoStringToString(id);
+		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
+		SceneManager::Instance().LoadScene(scenePath);
+	}
 #pragma endregion
 
 #pragma region ScriptBindings
@@ -1374,10 +1392,15 @@ namespace TRE
 
 		//Audio
 		{
-			mono_add_internal_call("TRE.AudioSystem::SetPlay", BindSetPlaySound);
-			mono_add_internal_call("TRE.AudioSystem::SetPause", BindTogglePauseSound);
-			mono_add_internal_call("TRE.AudioSystem::StopAudio", BindSetStopSound);
+			mono_add_internal_call("TRE.AudioSystem::Play", BindSetPlaySound);
+			mono_add_internal_call("TRE.AudioSystem::TogglePause", BindTogglePauseSound);
+			mono_add_internal_call("TRE.AudioSystem::Stop", BindSetStop);
 			mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
+		}
+
+		// Scene
+		{
+			mono_add_internal_call("TRE.Scene::ChangeScene", BindLoadScene);
 		}
 
 		// Scripting

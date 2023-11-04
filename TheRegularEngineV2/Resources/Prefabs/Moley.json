@@ -1,55 +1,83 @@
 [
    [
-      1,
-      0
+      2,
+      0,
+      1
    ],
    [
-      1,
+      2,
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "2190832989083742842",
-         "m_Overrides": {
-            "CapsuleCollider": [
-               "TRE::CapsuleCollider/Radius"
-            ],
-            "Properties": [
-               "TRE::Properties/Tag",
-               "TRE::Properties/Name"
-            ]
-         },
-         "m_PrefabGUID": "2190832989083742842",
-         "m_RemovedComps": [
-            "BoxCollider"
-         ]
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "6338820077763806458",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11817737584361501891",
+         "m_RemovedComps": []
       }
    ],
    [
-      1,
+      2,
       0,
       {
-         "m_Children": [],
+         "m_Children": [
+            "3992808045583201310"
+         ],
          "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "1376961461401726221"
       }
    ],
    [
-      1,
+      2,
       0,
       {
          "m_Active": true,
-         "m_GUID": "8574783488209516700",
+         "m_GUID": "1376961461401726221",
          "m_Name": "Moley",
-         "m_Tag": "Player"
+         "m_Tag": "Blue"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "3992808045583201310",
+         "m_Name": "Power Manager",
+         "m_Tag": ""
       }
    ],
    [
-      1,
+      2,
       0,
       {
+         "m_LocalPosition": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalRotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            1.0
+         ],
          "m_Position": [
-            5.728992938995361,
-            -6.974639892578125,
-            -13.981051445007324
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -61,14 +89,47 @@
             0.75,
             0.75
          ]
+      },
+      1,
+      {
+         "m_LocalPosition": [
+            24.170551300048828,
+            -2.1567559242248535,
+            42.047428131103516
+         ],
+         "m_LocalRotation": [
+            0.0,
+            -0.000486465374706313,
+            0.0
+         ],
+         "m_LocalScale": [
+            1.0,
+            1.0,
+            0.9333333373069763
+         ],
+         "m_Position": [
+            18.128215789794922,
+            -1.6175669431686401,
+            -54.464599609375
+         ],
+         "m_Rotation": [
+            0.0,
+            4.4055585021851584e-05,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
       }
    ],
    [
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
+         "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
          "m_IsVisible": true
       }
    ],
@@ -88,7 +149,7 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 7.330382823944092,
+         "m_Mass": 58.643062591552734,
          "m_UseGravity": true
       }
    ],
@@ -122,10 +183,14 @@
       0
    ],
    [
-      1,
+      2,
       0,
       {
          "m_StoredClass": "TRE.MoleyController"
+      },
+      1,
+      {
+         "m_StoredClass": "TRE.PowerUpManager"
       }
    ]
 ]

@@ -514,6 +514,7 @@ namespace TRE
 			glm::mat4 model(1.f);
 			model = glm::translate(model, tr.m_Position + sc.m_Offset);
 			const float radius = sc.m_Radius;
+			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
 			model = glm::scale(model, glm::vec3(radius, radius, radius));
 			pc.m_Model = model;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
@@ -544,30 +545,52 @@ namespace TRE
 
 		for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
 		{
+			const Transform& tr = capsule->GetComponent<Transform>();
+			const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
+			if (cc.m_IsVisible == false)
+				continue;
+			
 			for (int i = 0; i < 2; ++i)
 			{
-				const Transform& tr = capsule->GetComponent<Transform>();
-				const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
-				if (cc.m_IsVisible == false)
-					continue;
+				for (int j = 0; j < 2; ++j)
+				{
+					PushConstant pc{};
+					glm::mat4 model(1.f);
+					const float radius = cc.m_Radius;
+					const float halfExtent = cc.m_HalfHeight;
+					if (i == 0)
+						model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, halfExtent, 0));
+					else
+						model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, -halfExtent, 0));
+					model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+					model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(1, 0, 0));
+					model = glm::rotate(model, glm::radians(90.f * j), glm::vec3(0, 1, 0));
+					model = glm::scale(model, glm::vec3(radius, radius, radius));
+					pc.m_Model = model;
+					vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-				PushConstant pc{};
-				glm::mat4 model(1.f);
-				const float radius = cc.m_Radius * 2.f;
-				const float halfExtent = cc.m_HalfHeight;
-				model = glm::translate(model, tr.m_Position + cc.m_Offset);
-				model = glm::rotate(model, glm::radians(90.f * i), glm::vec3(0, 1, 0));
-				model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(0, 0, 1));
-				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-				model = glm::scale(model, glm::vec3(radius, radius + halfExtent, radius));
-				pc.m_Model = model;
-				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+					//Bind
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-				//Bind
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+					m_DebugRenderer->BindDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
+					m_DebugRenderer->DrawDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
 
-				m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
-				m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
+					PushConstant pc2{};
+					glm::mat4 model2(1.f);
+					model2 = glm::translate(model2, tr.m_Position + cc.m_Offset);
+					model2 = model2 * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+					model2 = glm::rotate(model2, glm::radians(180.f * i), glm::vec3(1, 0, 0));
+					model2 = glm::rotate(model2, glm::radians(90.f * j), glm::vec3(0, 1, 0));
+					model2 = glm::scale(model2, glm::vec3(radius, halfExtent * 2.f, radius));
+					pc2.m_Model = model2;
+					vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc2);
+
+					//Bind
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+					m_DebugRenderer->BindDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+					m_DebugRenderer->DrawDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+				}
 			}
 		}
 
