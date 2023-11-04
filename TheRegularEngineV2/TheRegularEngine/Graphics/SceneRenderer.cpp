@@ -169,6 +169,7 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
+		//Shadows
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 		vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
 		vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
@@ -199,6 +200,13 @@ namespace TRE
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
+
+		//Shadows
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+		vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
+		vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
+		vkFreeMemory(m_Device->GetLogicalDevice(), m_Depth.devicememory, nullptr);
+		vkDestroySampler(m_Device->GetLogicalDevice(), m_Depth.sampler, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -229,7 +237,7 @@ namespace TRE
 
 		ShadowUBO UBO_Shadow;
 		float lightFOV = 45.0f;
-		float orthoSize = 480.0f; // Adjust this to suit your scene's dimensions
+		float orthoSize = 100.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
 		
@@ -269,36 +277,37 @@ namespace TRE
 		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
 		UBO_SkyBox.View = cameraComponent.m_BaseCamera.m_ViewMatrix;
 
-		ShadowUBO UBO_Shadow;
-		float lightFOV = 45.0f;
-		glm::mat4 depthProjectionMatrix;
-		depthProjectionMatrix = glm::mat4(1.f);
-		const float tanHalfFov = glm::tan(glm::radians(45.f) / 2.f);
-		depthProjectionMatrix[0][0] = 1.f / (tanHalfFov * 16.f/9.f);
-		depthProjectionMatrix[1][1] = 1.f / tanHalfFov;
-		depthProjectionMatrix[2][2] = 0.5f;
-		depthProjectionMatrix[2][3] = 1.f;
-		depthProjectionMatrix[3][2] = -(1000 * 0.1) / (1000 - 0.1);
-		depthProjectionMatrix[3][3] = 0.f;
-		//Fip x and y axis
-		//depthProjectionMatrix[0][0] *= -1.f;
-		//depthProjectionMatrix[1][1] *= -1.f;
-		//glm::mat4 depthProjectionMatrix = glm::perspective(glm::radians(lightFOV), 1.0f, zNear, zFar);
-		//glm::mat4 depthViewMatrix = glm::lookAt(transform.m_Position, glm::vec3(0.0f), glm::vec3(0, 1, 0));
-		glm::mat4 depthViewMatrix;
-		depthViewMatrix = glm::translate(glm::mat4(1.f), transform.m_Position);// *glm::toMat4(camera.GetOrientation());
-		depthViewMatrix = glm::inverse(depthViewMatrix);
-		glm::mat4 depthModelMatrix = glm::mat4(1.0f);
-		UBO_Shadow.view = depthViewMatrix;
-		UBO_Shadow.proj = depthProjectionMatrix;
-
+		glm::mat4 depthViewMatrix(1.f);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
+			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
+			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
+
+		ShadowUBO UBO_Shadow;
+		float lightFOV = 45.0f;
+		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoNear = 0.1f;
+		float orthoFar = 1000.0f;
+		glm::mat4 depthProjectionMatrix;
+		depthProjectionMatrix = glm::mat4(1.f);
+		depthProjectionMatrix[0][0] = 2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[1][1] = 2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+		depthProjectionMatrix[0][0] *= -1.f;
+		depthProjectionMatrix[1][1] *= -1.f;
+		depthViewMatrix = glm::inverse(depthViewMatrix);
+		UBO_Shadow.view = depthViewMatrix;
+		UBO_Shadow.proj = depthProjectionMatrix;
+
+		ubo.m_LightSpaceMatrix = depthProjectionMatrix * depthViewMatrix;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
@@ -376,7 +385,6 @@ namespace TRE
 
 		//Shadow Pass
 		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
-		//vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipeline());
 		m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowDescriptInfo);
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
 		for (const auto& go_mr : materialSort)
