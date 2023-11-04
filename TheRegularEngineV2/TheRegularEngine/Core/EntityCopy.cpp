@@ -38,6 +38,11 @@ namespace TRE
 
 	void EntityCopier::PasteEntities()
 	{
+		ECSSystemManager::Instance().BeforeReset();
+		// Ensure all the copied registry has new guid again jic for duplication
+		m_CopierRegistry.each([&](entt::entity srcEntity) {
+			GenerateNewGUID(srcEntity, m_CopierRegistry);
+		});
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
 		ECSSystemManager::Instance().AfterReset();
 	}
@@ -87,5 +92,32 @@ namespace TRE
 		{
 			SaveEntityInRegistry(child, dstReg, entGUID, ent);
 		}
+	}
+
+	void EntityCopier::GenerateNewGUID(entt::entity ent, entt::registry& reg)
+	{
+		// Force serialize new guid for the ent
+		std::string prevGUID = reg.get<Properties>(ent).m_GUID;
+		std::string entGUID = MemoryManager::Instance().GenerateGUIDStr();
+		reg.get<Properties>(ent).m_GUID = entGUID;
+
+		reg.each([&](entt::entity srcEntity) {
+			// Replace it's childrens parent
+			if (reg.get<Parenting>(srcEntity).m_Parent == prevGUID)
+			{
+				reg.get<Parenting>(srcEntity).m_Parent = entGUID;
+			}
+			// Replace it's parent's children
+			else
+			{
+				std::vector<std::string>& children{ reg.get<Parenting>(srcEntity).m_Children };
+				auto it = std::find(children.begin(), children.end(), prevGUID);
+				if (it != children.end())
+				{
+					children.erase(it);
+					children.emplace_back(entGUID);
+				}
+			}
+		});
 	}
 }

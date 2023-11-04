@@ -34,6 +34,8 @@ namespace TRE
 		void ToggleRun(ToggleRunEvent& event);
 		void Reset(ResetSceneEvent& event);
 
+		void InstantReset();	// Note! This will force everything to be resetted and deleted!
+
 	private:
 		// Game Loop
 		bool m_GameRunning{ false };

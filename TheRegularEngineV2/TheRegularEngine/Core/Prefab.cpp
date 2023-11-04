@@ -1088,6 +1088,9 @@ namespace TRE
 		{
 			for (auto entityPair : m_TempPrefabs)
 			{
+				// Clear the child and parent since they are all tempPrefabs
+				entityPair.second->GetComponent<Parenting>().m_Parent = "";
+				entityPair.second->GetComponent<Parenting>().m_Children.clear();
 				MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(entityPair.second->m_Entity));
 			}
 			m_TempPrefabs.clear();

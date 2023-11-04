@@ -139,10 +139,6 @@ namespace TRE
 			CapsuleCollider& cc{ parent->GetComponent<CapsuleCollider>() };
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(parent, cc.m_Radius, cc.m_HalfHeight);
 		}
-		for (Entity child : ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(parent))
-		{
-			ConstructPhysicPrefab(child);
-		}
 	}
 
 	std::vector<Entity> ECSManager::GetAllEntities(bool IncludeNonActive)
@@ -335,7 +331,7 @@ namespace TRE
 	bool ECSManager::IsValidEntity(Entity ent)
 	{
 		// Checks if it is in the scene
-		return m_EntityList.find(ent->GetGUID()) != m_EntityList.end() && std::find(m_EntityOrder.begin(), m_EntityOrder.end(), ent->GetGUID()) != m_EntityOrder.end();
+		return ent->HasComponent<Properties>() && m_EntityList.find(ent->GetGUID()) != m_EntityList.end() && std::find(m_EntityOrder.begin(), m_EntityOrder.end(), ent->GetGUID()) != m_EntityOrder.end();
 	}
 
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)

@@ -30,7 +30,7 @@ namespace TRE
 		private bool regionG;
 		private bool regionH;
 
-		public CameraController cameraController;
+		CameraController cameraController;
 
 		private Vector3 expectedPosition;
 		private Vector3 expectedRotation;

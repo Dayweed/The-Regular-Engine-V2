@@ -15,9 +15,11 @@
 #include "Scripting/ScriptEngine.h"
 namespace TRE
 {
+	static std::chrono::high_resolution_clock::time_point startTime{};
 	ViewportPanel::ViewportPanel(const std::shared_ptr<SelectionManager>& selection_Manager)
 	{
 		m_SelectionManager = selection_Manager;
+		startTime = std::chrono::high_resolution_clock::now();
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -47,40 +49,6 @@ namespace TRE
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft) && m_GizmoOperation == -1)
-			{
-				//Object picking
-				//Offset mouse position to the middle of the viewport as if in game
-				EditorCamera& editorCamera = EditorCamera::Instance();
-
-				UpdateClickRay();
-
-				const Collision::Ray3D cameraRay = Collision::Ray3D(editorCamera.GetPosition(), m_ClickRay);
-
-				auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
-				auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
-				std::map<float, Entity> entitiesHit;
-				for (auto& mr : ent_mrs)
-				{
-					const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
-					float t = 0.f;
-					if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
-					{
-						entitiesHit[t] = mr;
-					}
-				}
-
-				if (entitiesHit.size() > 0)
-				{
-					//Single click for now
-					m_SelectionManager->SelectEntity(entitiesHit.begin()->second);
-				}
-				else
-				{
-					//Clear
-					m_SelectionManager->ClearSelectedEntity();
-				}
-			}
 		}
 		else if (event._state == (int)KeyState::keyHeld)
 		{
@@ -89,10 +57,10 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
-		if (m_IsViewportHovered == false)
+		if (m_IsViewportFocused == false)
 			return;
 
-		//Gizmo
+#pragma region Gizmo
 		if (event._key == (int)KeyButton::Q)
 		{
 			m_GizmoOperation = -1;
@@ -117,20 +85,47 @@ namespace TRE
 		}
 		else
 			m_IsGridAndSnap = false;
+#pragma endregion
 
-		//Look at
+		//Editor camera Look at
+#pragma region EditorCamera
+		EditorCamera& editorCamera = EditorCamera::Instance();
 		if (event._key == (int)KeyButton::F)
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
+				editorCamera.SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
+
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		{
+			const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
+			const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
+
+			if (event._key == (int)KeyButton::W)
+			{
+				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
+			}
+			if (event._key == (int)KeyButton::S)
+			{
+				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
+			}
+			if (event._key == (int)KeyButton::A)
+			{
+				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+			}
+			if (event._key == (int)KeyButton::D)
+			{
+				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+			}
+		}
+#pragma endregion
 	}
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
 	{
-		if(m_IsViewportHovered == false)
+		if(m_IsViewportFocused == false)
 			return;
 
 		EditorCamera& editorCamera = EditorCamera::Instance();
@@ -217,7 +212,7 @@ namespace TRE
 				
 				//Check if asset is already compiled
 				//Compiled before
-				if (AssetManager::Instance().Contains(assetName))
+				if (AssetManager::Instance().Compiled(assetName))
 				{
 					//Load into memory
 					if (AssetManager::Instance().GetAsset<RenderObject>(assetName) == nullptr)
@@ -265,7 +260,7 @@ namespace TRE
 				else
 				{
 					Entity prefabInstance{ prefabsystem->CreatePrefabEntityInstance(prefabGUID) };
-					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+					m_SelectionManager->SelectEntity(prefabInstance);
 				}
 			}
 
@@ -273,6 +268,67 @@ namespace TRE
 		}
 
 		UpdateGizmo();
+
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+		{
+			++m_ClickCount;
+
+			auto currentTime = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime);
+
+			if (duration.count() >= 500)
+			{
+				if (m_IsViewportFocused && m_GizmoOperation == -1)
+				{
+					//Object picking
+					//Offset mouse position to the middle of the viewport as if in game
+					EditorCamera& editorCamera = EditorCamera::Instance();
+
+					UpdateClickRay();
+
+					const Collision::Ray3D cameraRay = Collision::Ray3D(editorCamera.GetPosition(), m_ClickRay);
+
+					auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
+					auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
+					std::map<float, Entity> entitiesHit;
+					for (auto& mr : ent_mrs)
+					{
+						const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
+						float t = 0.f;
+						if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
+						{
+							entitiesHit[t] = mr;
+						}
+					}
+
+					if (entitiesHit.size() > 0)
+					{
+						//int offset = m_ClickCount % entitiesHit.size();
+						Entity selectedEntity = (--entitiesHit.end())->second;
+						int counter = 1;
+						for (auto it = entitiesHit.rbegin(); it != entitiesHit.rend(); ++it)
+						{
+							if (m_ClickCount < counter)
+							{
+								selectedEntity = it->second;
+								break;
+							}
+							++counter;
+							--m_ClickCount;
+						}
+						m_SelectionManager->SelectEntity(selectedEntity);
+					}
+					else
+					{
+						//Clear
+						m_SelectionManager->ClearSelectedEntity();
+					}
+				}
+
+				m_ClickCount = 0;
+				startTime = std::chrono::high_resolution_clock::now();
+			}
+		}
 
 		ImGui::End();
 	}
@@ -475,7 +531,7 @@ namespace TRE
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
+				positionOffset *= m_PanSpeed * editorCamera.m_BaseCamera.m_FocalLength / 10.f;
 				positionOffset *= ImGui::GetIO().DeltaTime;
 
 				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);

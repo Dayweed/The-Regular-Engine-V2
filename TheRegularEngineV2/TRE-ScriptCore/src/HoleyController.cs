@@ -145,6 +145,12 @@ namespace TRE
 					}
 				}
             }
+
+			// To go to level 1
+            if (InputSystem.GetKeyDown(InputKeys.Escape))
+            {
+                Scene.ChangeScene("Level_1");
+            }
             #endregion
 
             #region Swap
@@ -236,13 +242,15 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, playerDirection);
 
-			
 
-			if (PS.IsTriggerEnter(this.ID, Key.ID))
+			if (Key.ID != 0 && FinalPlatform.ID != 0)
 			{
-				Key.SetActive(false);
-				TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9, -302));
-				Debug.Log("Key Collected");
+				if (PS.IsTriggerEnter(this.ID, Key.ID))
+				{
+					Key.SetActive(false);
+					TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9, -302));
+					Debug.Log("Key Collected");
+				}
 			}
 		}
 
@@ -257,6 +265,7 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
+
             // Check is activated jumppad
             if (other.CompareTag("JumpPad"))
             {

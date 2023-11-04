@@ -15,6 +15,7 @@
 #include "TREIncludes.h"
 #include "Panel.h"
 #include "SelectionManager.h"
+#include "EventSystem/Events/InputEvent.h"
 
 namespace TRE
 {
@@ -29,7 +30,11 @@ namespace TRE
 			void DisplayChildren(TRE::Entity& CurrentEntity);
 			void DeleteChildren(TRE::Entity& CurrentEntity);
 
+			void HandleShortcuts(TypingEvent& event);
+
 		private:
 			std::shared_ptr<SelectionManager> m_SelectionManager;
+			bool m_ShortcutCopyEntity = false;
+			bool m_ShortcutPasteEntity = false;
 	};
 }

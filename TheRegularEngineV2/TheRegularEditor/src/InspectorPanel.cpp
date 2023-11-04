@@ -68,7 +68,7 @@ namespace TRE
 		if (entity != nullptr)
 		{
 			// This updates the tables
-			m_SelectionManager->SelectEntity(entity);
+			m_SelectionManager->UpdateSelectedEntity();
 
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
@@ -97,7 +97,7 @@ namespace TRE
 				if (ImGui::Button("Clone Prefab"))
 				{
 					Entity instance{ ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(pref.m_PrefabGUID) };
-					m_SelectionManager->SelectEntity(instance);
+					m_SelectionManager->UpdateSelectedEntity();
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("UnPrefab"))
@@ -110,7 +110,7 @@ namespace TRE
 				if (haveEdits && ImGui::Button("Revert"))
 				{
 					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->RevertInstance(entity, pref.m_PrefabGUID);
-					m_SelectionManager->SelectEntity(entity);
+					m_SelectionManager->UpdateSelectedEntity();
 				}
 				else if (!haveEdits)
 				{
@@ -143,7 +143,7 @@ namespace TRE
 						}
 
 						ECSManager::Instance().RemCompFromName(entity, List.first);
-						m_SelectionManager->SelectEntity(entity);
+						m_SelectionManager->UpdateSelectedEntity();
 						break;
 					}
 				}
@@ -546,7 +546,7 @@ namespace TRE
 							entity->GetComponent<ScriptComponent>().m_GUID = entity->GetGUID();;
 						}
 
-						m_SelectionManager->SelectEntity(entity);
+						m_SelectionManager->UpdateSelectedEntity();
 					}
 				}
 
