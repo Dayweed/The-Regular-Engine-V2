@@ -200,7 +200,6 @@ namespace TRE
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
 		glm::mat4 ViewRotate(1.f);
-		glm::mat4 ViewTranslate(1.f);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& light = entity->GetComponent<DirectionalLight>();
@@ -209,7 +208,7 @@ namespace TRE
 			ubo.m_LightAmbientColor = light.AmbientColor;
 			
 			ViewRotate = glm::toMat4(glm::quat(glm::radians(entity->GetComponent<Transform>().m_Rotation)));
-			ViewRotate = glm::lookAt(editorCamera.GetPosition(), entity->GetComponent<Transform>().m_Rotation, editorCamera.m_BaseCamera.GetUpVec());
+			ViewRotate = glm::lookAt(entity->GetComponent<Transform>().m_Position, entity->GetComponent<Transform>().m_Rotation, editorCamera.m_BaseCamera.GetUpVec());
 		}
 
 		glm::mat4 depthViewMatrix(1.f);
@@ -231,7 +230,7 @@ namespace TRE
 		depthProjectionMatrix[3][2] = -orthoNear / (orthoFar - orthoNear);
 		//depthProjectionMatrix[0][0] *= -1.f;
 		//depthProjectionMatrix[1][1] *= -1.f;
-		//depthViewMatrix = glm::inverse(depthViewMatrix);
+		depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
 		
@@ -684,6 +683,11 @@ namespace TRE
 
 	void SceneRenderer::ShadowPassInit()
 	{
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		m_ShadowMapWidth = SC->GetWidth();
+		m_ShadowMapHeight = SC->GetHeight();
+
 		VkImageCreateInfo imageCreateInfo{};
 		imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
