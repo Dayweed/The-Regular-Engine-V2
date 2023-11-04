@@ -25,7 +25,6 @@ namespace TRE
 
 		public void Update()
 		{
-			//Debug.Log("HOT RELOADING WORKS!");
 			TransformSystem.GetPosition(Player1.ID, out Vector3 holeyPos);
 			TransformSystem.GetPosition(Player2.ID, out Vector3 moleyPos);
 
