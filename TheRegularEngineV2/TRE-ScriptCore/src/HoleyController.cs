@@ -136,11 +136,11 @@ namespace TRE
 				{
 					if (InputSystem.GetKeyDown(InputKeys.L))
 					{
-						lastPlayerDirection = 225;
+						lastPlayerDirection = 315;
 					}
 					if (InputSystem.GetKeyDown(InputKeys.J))
 					{
-						lastPlayerDirection = 135;
+						lastPlayerDirection = 45;
 					}
 				}
 
@@ -148,11 +148,11 @@ namespace TRE
 				{
 					if (InputSystem.GetKeyDown(InputKeys.L))
 					{
-						lastPlayerDirection = 315;
+						lastPlayerDirection = 225;
 					}
 					if (InputSystem.GetKeyDown(InputKeys.J))
 					{
-						lastPlayerDirection = 45;
+						lastPlayerDirection = 135;
 					}
 				}
 
