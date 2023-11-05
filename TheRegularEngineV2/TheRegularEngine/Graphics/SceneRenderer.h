@@ -12,9 +12,12 @@
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Resource/ResourceManager.h"
 
 namespace TRE
 {
+	class Ent;
+	typedef std::shared_ptr<Ent> Entity;
 	struct EditorCamera;
 	class Camera;
 
@@ -59,7 +62,7 @@ namespace TRE
 	class SceneRenderer
 	{
 		public:
-			SceneRenderer(const std::shared_ptr<Device>& Device);
+			SceneRenderer(bool IsEditorScene);
 			~SceneRenderer();
 
 			void Initialize();
@@ -69,11 +72,14 @@ namespace TRE
 			
 			void BeginFrame();
 			void BeginEditorFrame();
-			void EndFrame(bool IsEditorScene);
+			void EndFrame();
 
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
+			void ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
+			void GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DebugDrawPass(uint32_t Index);
+			void SkyBoxPass(uint32_t Index);
 
 			//To be reabstracted
 			void LoadCubeMap();
@@ -129,15 +135,9 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
-			//struct
-			//{
-			//	VkImage image;
-			//	VkImageView imageview;
-			//	VkDeviceMemory devicememory;
-			//	VkSampler sampler;
-			//} m_Depth;
 
 			void ShadowPassInit();
-			//Shadow
+
+			bool m_IsEditorScene = false;
 	};
 }

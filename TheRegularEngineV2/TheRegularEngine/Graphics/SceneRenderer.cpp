@@ -11,7 +11,6 @@
 #include "Resource/ResourceManager.h"
 #include "Physics/PhysicsComponents.h"
 #include "Light.h"
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/transform.hpp"
@@ -33,12 +32,14 @@ namespace TRE
 		return m_ColorImages;
 	}
 
-	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
+	SceneRenderer::SceneRenderer(bool IsEditorScene) : m_IsEditorScene(IsEditorScene)
 	{
+		m_Device = RendererContext::GetDevice();
+
 		Create();
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
+		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
@@ -53,7 +54,7 @@ namespace TRE
 		//}
 	}
 
-	void SceneRenderer::Initialize()
+	void SceneRenderer::Initialize() 
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RenderPassCreateInfo{};
@@ -311,7 +312,7 @@ namespace TRE
 		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
 	}
 
-	void SceneRenderer::EndFrame(bool IsEditorScene)
+	void SceneRenderer::EndFrame()
 	{
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
@@ -347,6 +348,122 @@ namespace TRE
 			materialSort.insert(std::make_pair(materialHandle, go_mr));
 		}
 
+		ShadowPass(Index, materialSort);
+
+		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.f;
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
+
+		GeometryPass(Index, materialSort);
+		DebugDrawPass(Index);
+		SkyBoxPass(Index);
+
+		//Animation Pass
+		{
+			//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
+			//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
+
+			//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
+			//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
+			//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+		}
+
+		Renderer::EndRenderPass(m_CommandBuffer);
+
+		m_CommandBuffer->End();
+		m_CommandBuffer->Submit();
+	}
+
+	void SceneRenderer::GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
+		for (const auto& go_mr : MaterialSort)
+		{
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			ResourceHandle currentMaterialHandle = go_mr.first;
+
+			//If no material instance attached, use default PBR material
+			if (currentMaterialHandle != m_PreviousMaterialHandle)
+			{
+				if (mr.m_MaterialInstance == nullptr)
+				{
+					if (m_IsEditorScene)
+					{
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
+					}
+					else
+					{
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
+					}
+				}
+				else
+				{
+					if (m_IsEditorScene)
+					{
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
+					}
+					else
+					{
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
+					}
+				}
+			}
+
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+			m_PreviousMaterialHandle = currentMaterialHandle;
+		}
+
+		m_PreviousMaterialHandle = 0;
+	}
+
+	void SceneRenderer::SkyBoxPass(uint32_t Index)
+	{
+		Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
+		if (m_IsEditorScene)
+		{
+			m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
+		}
+		else
+		{
+			m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
+		}
+
+		VkBuffer vertexBuffers[] = { m_SkyboxVertexBuffer->GetBuffer() };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, vertexBuffers, offsets);
+
+		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+	}
+
+	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
 		VkClearValue clearValues[2];
 		clearValues[0].depthStencil = { 1.0f, 0 };
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -377,10 +494,9 @@ namespace TRE
 
 		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
 
-		//Shadow Pass
 		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
-		
-		if (IsEditorScene)
+
+		if (m_IsEditorScene)
 		{
 			m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowImages->GetDescriptorImageInfo());
 			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
@@ -391,7 +507,7 @@ namespace TRE
 			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
 		}
 
-		for (const auto& go_mr : materialSort)
+		for (const auto& go_mr : MaterialSort)
 		{
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 			ResourceHandle currentMaterialHandle = go_mr.first;
@@ -406,260 +522,148 @@ namespace TRE
 			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
 
-		vkCmdEndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
-
-		//m_ShadowDescriptInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-		//m_ShadowDescriptInfo.imageView = m_Depth.imageview;
-		//m_ShadowDescriptInfo.sampler = m_Depth.sampler;
-
-		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
-
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
-		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
-
-		//Geom Pass
-		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
-		for (const auto& go_mr : materialSort)
-		{
-			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
-
-			PushConstant pc{};
-			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			ResourceHandle currentMaterialHandle = go_mr.first;
-
-			//If no material instance attached, use default PBR material
-			if (currentMaterialHandle != m_PreviousMaterialHandle)
-			{
-				if (mr.m_MaterialInstance == nullptr)
-				{
-					if (IsEditorScene)
-					{
-						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
-						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
-					}
-					else
-					{
-						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
-						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
-					}
-				}
-				else
-				{
-					if (IsEditorScene)
-					{
-						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
-						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
-					}
-					else
-					{
-						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
-						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
-					}
-				}
-			}
-
-			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
-			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
-
-			m_PreviousMaterialHandle = currentMaterialHandle;
-		}
-
-		m_PreviousMaterialHandle = 0;
-		
-		//Debug Drawing Pass
-
-		if (IsEditorScene)
-		{
-			DebugDrawPass(Index);
-		}
-
-		//Skybox Pass
-		{
-			Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
-			if (IsEditorScene)
-			{
-				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
-			}
-			else
-			{
-				m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
-			}
-
-			VkBuffer vertexBuffers[] = { m_SkyboxVertexBuffer->GetBuffer() };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, vertexBuffers, offsets);
-
-			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
-		}
-
-		//Animation Pass
-		{
-			//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
-			//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
-
-			//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
-			//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
-			//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-
 		Renderer::EndRenderPass(m_CommandBuffer);
-
-		m_CommandBuffer->End();
-		m_CommandBuffer->Submit();
 	}
 
 	void SceneRenderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
-		Renderer::BindPipeline(m_CommandBuffer, m_DebugRenderer->GetPipeline());
-		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
-		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
-
-		for (const auto& spheres : ECSManager::Instance().GetEntities<SphereCollider>())
+		if (m_IsEditorScene)
 		{
-			const Transform& tr = spheres->GetComponent<Transform>();
-			const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
-			if(sc.m_IsVisible == false)
-				continue;
+			Renderer::BindPipeline(m_CommandBuffer, m_DebugRenderer->GetPipeline());
+			m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			model = glm::translate(model, tr.m_Position + sc.m_Offset);
-			const float radius = sc.m_Radius;
-			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-			model = glm::scale(model, glm::vec3(radius, radius, radius));
-			pc.m_Model = model;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-
-		for (const auto& box : ECSManager::Instance().GetEntities<BoxCollider>())
-		{
-			const Transform& tr = box->GetComponent<Transform>();
-			const BoxCollider& bc = box->GetComponent<BoxCollider>();
-			if (bc.m_IsVisible == false)
-				continue;
-
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			model = glm::translate(model, tr.m_Position + bc.m_Offset);
-			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-			const glm::vec3 scale = bc.m_HalfExtents * 2.f;
-			model = model * glm::scale(glm::mat4(1.f), scale);
-			pc.m_Model = model;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			m_DebugRenderer->BindDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-
-		for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
-		{
-			const Transform& tr = capsule->GetComponent<Transform>();
-			const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
-			if (cc.m_IsVisible == false)
-				continue;
-			
-			for (int i = 0; i < 2; ++i)
+			for (const auto& spheres : ECSManager::Instance().GetEntities<SphereCollider>())
 			{
-				for (int j = 0; j < 2; ++j)
+				const Transform& tr = spheres->GetComponent<Transform>();
+				const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
+				if (sc.m_IsVisible == false)
+					continue;
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				model = glm::translate(model, tr.m_Position + sc.m_Offset);
+				const float radius = sc.m_Radius;
+				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+				model = glm::scale(model, glm::vec3(radius, radius, radius));
+				pc.m_Model = model;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+
+			for (const auto& box : ECSManager::Instance().GetEntities<BoxCollider>())
+			{
+				const Transform& tr = box->GetComponent<Transform>();
+				const BoxCollider& bc = box->GetComponent<BoxCollider>();
+				if (bc.m_IsVisible == false)
+					continue;
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				model = glm::translate(model, tr.m_Position + bc.m_Offset);
+				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+				const glm::vec3 scale = bc.m_HalfExtents * 2.f;
+				model = model * glm::scale(glm::mat4(1.f), scale);
+				pc.m_Model = model;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				m_DebugRenderer->BindDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+
+			for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
+			{
+				const Transform& tr = capsule->GetComponent<Transform>();
+				const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
+				if (cc.m_IsVisible == false)
+					continue;
+
+				for (int i = 0; i < 2; ++i)
 				{
-					PushConstant pc{};
-					glm::mat4 model(1.f);
-					const float radius = cc.m_Radius;
-					const float halfExtent = cc.m_HalfHeight;
-					if (i == 0)
-						model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, halfExtent, 0));
-					else
-						model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, -halfExtent, 0));
-					model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-					model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(1, 0, 0));
-					model = glm::rotate(model, glm::radians(90.f * j), glm::vec3(0, 1, 0));
-					model = glm::scale(model, glm::vec3(radius, radius, radius));
-					pc.m_Model = model;
-					vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+					for (int j = 0; j < 2; ++j)
+					{
+						PushConstant pc{};
+						glm::mat4 model(1.f);
+						const float radius = cc.m_Radius;
+						const float halfExtent = cc.m_HalfHeight;
+						if (i == 0)
+							model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, halfExtent, 0));
+						else
+							model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, -halfExtent, 0));
+						model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+						model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(1, 0, 0));
+						model = glm::rotate(model, glm::radians(90.f * j), glm::vec3(0, 1, 0));
+						model = glm::scale(model, glm::vec3(radius, radius, radius));
+						pc.m_Model = model;
+						vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-					//Bind
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+						//Bind
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-					m_DebugRenderer->BindDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
-					m_DebugRenderer->DrawDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
+						m_DebugRenderer->BindDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
+						m_DebugRenderer->DrawDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
 
-					PushConstant pc2{};
-					glm::mat4 model2(1.f);
-					model2 = glm::translate(model2, tr.m_Position + cc.m_Offset);
-					model2 = model2 * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-					model2 = glm::rotate(model2, glm::radians(180.f * i), glm::vec3(1, 0, 0));
-					model2 = glm::rotate(model2, glm::radians(90.f * j), glm::vec3(0, 1, 0));
-					model2 = glm::scale(model2, glm::vec3(radius, halfExtent * 2.f, radius));
-					pc2.m_Model = model2;
-					vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc2);
+						PushConstant pc2{};
+						glm::mat4 model2(1.f);
+						model2 = glm::translate(model2, tr.m_Position + cc.m_Offset);
+						model2 = model2 * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+						model2 = glm::rotate(model2, glm::radians(180.f * i), glm::vec3(1, 0, 0));
+						model2 = glm::rotate(model2, glm::radians(90.f * j), glm::vec3(0, 1, 0));
+						model2 = glm::scale(model2, glm::vec3(radius, halfExtent * 2.f, radius));
+						pc2.m_Model = model2;
+						vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc2);
 
-					//Bind
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+						//Bind
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-					m_DebugRenderer->BindDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
-					m_DebugRenderer->DrawDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+						m_DebugRenderer->BindDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+						m_DebugRenderer->DrawDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+					}
 				}
 			}
-		}
 
-		for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
-		{
-			const Transform& tr = camera->GetComponent<Transform>();
-			// const Camera& cc = camera->GetComponent<Camera>();
+			for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
+			{
+				const Transform& tr = camera->GetComponent<Transform>();
+				// const Camera& cc = camera->GetComponent<Camera>();
 
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			const float scale = 100.f;/*cc.m_BaseCamera.m_Far - cc.m_BaseCamera.m_Near;*/
-			model = glm::translate(model, tr.m_Position);
-			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-			model = glm::scale(model, glm::vec3(scale, scale, scale));
-			pc.m_Model = model;
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				const float scale = 100.f;/*cc.m_BaseCamera.m_Far - cc.m_BaseCamera.m_Near;*/
+				model = glm::translate(model, tr.m_Position);
+				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+				model = glm::scale(model, glm::vec3(scale, scale, scale));
+				pc.m_Model = model;
 
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-			m_DebugRenderer->BindDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
-		}
+				m_DebugRenderer->BindDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
+			}
 
-		for (const auto& directionalLight : ECSManager::Instance().GetEntities<DirectionalLight>())
-		{
-			const Transform& tr = directionalLight->GetComponent<Transform>();
-			// const DirectionalLight& dl = directionalLight->GetComponent<DirectionalLight>();
-			
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			const float scale = 10.f;
-			model = glm::translate(model, tr.m_Position);
-			model = model * glm::mat4_cast(glm::quat(glm::radians(glm::vec3(-tr.m_Rotation.x, tr.m_Rotation.y, tr.m_Rotation.z))));
-			model = glm::scale(model, glm::vec3(scale, scale, scale));
-			pc.m_Model = model;
+			for (const auto& directionalLight : ECSManager::Instance().GetEntities<DirectionalLight>())
+			{
+				const Transform& tr = directionalLight->GetComponent<Transform>();
+				// const DirectionalLight& dl = directionalLight->GetComponent<DirectionalLight>();
 
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				const float scale = 10.f;
+				model = glm::translate(model, tr.m_Position);
+				model = model * glm::mat4_cast(glm::quat(glm::radians(glm::vec3(-tr.m_Rotation.x, tr.m_Rotation.y, tr.m_Rotation.z))));
+				model = glm::scale(model, glm::vec3(scale, scale, scale));
+				pc.m_Model = model;
 
-			m_DebugRenderer->BindDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+				m_DebugRenderer->BindDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+
 		}
 	}
 
