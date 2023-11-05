@@ -88,7 +88,7 @@ namespace TRE
 
 		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 
-		LoadCubeMap();
+		SkyBoxPassInit();
 		ShadowPassInit();
 
 		PipelineConfigurations Config{};
@@ -170,12 +170,7 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
-		//Shadows
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
-		//vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
-		//vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
-		//vkFreeMemory(m_Device->GetLogicalDevice(), m_Depth.devicememory, nullptr);
-		//vkDestroySampler(m_Device->GetLogicalDevice(), m_Depth.sampler, nullptr);
 
 		ShadowPassInit();
 
@@ -202,12 +197,7 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
-		//Shadows
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
-		//vkDestroyImage(m_Device->GetLogicalDevice(), m_Depth.image, nullptr);
-		//vkDestroyImageView(m_Device->GetLogicalDevice(), m_Depth.imageview, nullptr);
-		//vkFreeMemory(m_Device->GetLogicalDevice(), m_Depth.devicememory, nullptr);
-		//vkDestroySampler(m_Device->GetLogicalDevice(), m_Depth.sampler, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -317,8 +307,6 @@ namespace TRE
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 
-		m_CommandBuffer->Begin();
-
 		std::multimap<ResourceHandle, Entity> materialSort;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
@@ -348,6 +336,8 @@ namespace TRE
 			materialSort.insert(std::make_pair(materialHandle, go_mr));
 		}
 
+		m_CommandBuffer->Begin();
+
 		ShadowPass(Index, materialSort);
 
 		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
@@ -367,18 +357,9 @@ namespace TRE
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		GeometryPass(Index, materialSort);
+		GeometryAnimationPass(Index, materialSort);
 		DebugDrawPass(Index);
 		SkyBoxPass(Index);
-
-		//Animation Pass
-		{
-			//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
-			//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
-
-			//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
-			//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
-			//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
-		}
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
@@ -437,6 +418,18 @@ namespace TRE
 		}
 
 		m_PreviousMaterialHandle = 0;
+	}
+
+	void SceneRenderer::GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		(void)Index;
+		(void)MaterialSort;
+
+		//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
+		//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
+		//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
+		//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
+		//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 	}
 
 	void SceneRenderer::SkyBoxPass(uint32_t Index)
@@ -627,7 +620,6 @@ namespace TRE
 			for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
 			{
 				const Transform& tr = camera->GetComponent<Transform>();
-				// const Camera& cc = camera->GetComponent<Camera>();
 
 				PushConstant pc{};
 				glm::mat4 model(1.f);
@@ -667,7 +659,7 @@ namespace TRE
 		}
 	}
 
-	void SceneRenderer::LoadCubeMap()
+	void SceneRenderer::SkyBoxPassInit()
 	{
 		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
 		auto Skybox2 = Resource::GetGUIDFromHex("612fbc6691dcd0bb");

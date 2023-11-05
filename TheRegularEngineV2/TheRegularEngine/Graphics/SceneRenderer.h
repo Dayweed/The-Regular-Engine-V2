@@ -66,6 +66,7 @@ namespace TRE
 			~SceneRenderer();
 
 			void Initialize();
+			void ShadowPassInit();
 			void Shutdown();
 			void Create();
 			void Resize();
@@ -78,11 +79,11 @@ namespace TRE
 
 			void ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
+			void GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DebugDrawPass(uint32_t Index);
 			void SkyBoxPass(uint32_t Index);
 
-			//To be reabstracted
-			void LoadCubeMap();
+			void SkyBoxPassInit();
 
 		public:
 			std::vector<std::shared_ptr<Image2D>> GetColorImages();
@@ -135,8 +136,6 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
-
-			void ShadowPassInit();
 
 			bool m_IsEditorScene = false;
 	};
