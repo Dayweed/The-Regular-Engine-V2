@@ -680,6 +680,8 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(Temp, isMainCamera);
 	}
 
+
+
 	// Getters
 	static void BindCamGetViewMatrix(CSEntityID ID, glm::mat4* result)
 	{
@@ -817,6 +819,18 @@ namespace TRE
 	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
 	{
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+	}
+
+	static Vector3 BindCameraForwardVector()
+	{
+		glm::vec3 fwd = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera.GetViewDirection();
+		return Vector3(fwd.x, fwd.y, fwd.z);
+	}
+
+	static Vector3 BindCameraRightVector()
+	{
+		glm::vec3 right = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera.GetRightVec();
+		return Vector3(right.x, right.y, right.z);
 	}
 
 #pragma endregion
@@ -1351,6 +1365,9 @@ namespace TRE
 			mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
 			mono_add_internal_call("TRE.CameraSystem::SetMainCameraLookAt", BindCamMainSetLookAt);
 			mono_add_internal_call("TRE.CameraSystem::TransitionMainCamera", BindTransitionMainCamera);
+
+			mono_add_internal_call("TRE.CameraSystem::GetMainCameraForwardVec", BindCameraForwardVector);
+			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRightVec", BindCameraRightVector);
 		}
 
 		// Physics Bindings
