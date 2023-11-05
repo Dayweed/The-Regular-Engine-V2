@@ -12,7 +12,7 @@ namespace TRE
         public Vector3[] positions;
         public int currentIndex;
 
-        private float lerpSpeed = 0.005f;
+        private float lerpSpeed = 1.25f;
         private float offset = 0.1f;
 
         public PlatformLogic()
@@ -35,7 +35,7 @@ namespace TRE
             // Lerps through each positions
             if (positions.Length > 0)
             {
-                transform.Position = MathF.Vec3Lerp(transform.Position, positions[currentIndex], lerpSpeed);
+                transform.Position = MathF.Vec3Lerp(transform.Position, positions[currentIndex], lerpSpeed * Time.deltaTime);
                 // Move to next index, if it is very close to the ideal position
                 if (transform.Position.x >= positions[currentIndex].x - offset && transform.Position.x <= positions[currentIndex].x + offset
                     && transform.Position.y >= positions[currentIndex].y - offset && transform.Position.y <= positions[currentIndex].y + offset
