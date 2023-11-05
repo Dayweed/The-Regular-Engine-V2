@@ -291,8 +291,8 @@ namespace TRE
 				}
 			}
 
-			TransformSystem.SetRotation(this.ID, playerDirection);
-		}
+            TransformSystem.SetRotation(this.ID, new Vector3(0, playerDirection.y, 0));
+        }
 		private void Jump(Vector3 JumpHeight)
 		{
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);

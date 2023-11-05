@@ -90,9 +90,10 @@ namespace TRE
 		{
 			// Move The Test Object 
 			TransformSystem.GetPosition(this.ID, out Vector3 pos);
+            TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 
-			//Movement Related stuff
-			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
+            //Movement Related stuff
+            PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
 			if (pos.y < OutofMapPos.y)
 			{
@@ -318,10 +319,10 @@ namespace TRE
 				}
 			}
 
-			TransformSystem.SetRotation(this.ID, playerDirection);
+            TransformSystem.SetRotation(this.ID, new Vector3(0, playerDirection.y, 0));
 
 
-			if (Key.ID != 0 && FinalPlatform.ID != 0)
+            if (Key.ID != 0 && FinalPlatform.ID != 0)
 			{
 				if (PS.IsTriggerEnter(this.ID, Key.ID))
 				{
