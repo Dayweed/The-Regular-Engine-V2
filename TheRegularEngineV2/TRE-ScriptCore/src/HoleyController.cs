@@ -61,6 +61,10 @@ namespace TRE
 
 		public float elapsedTime = 0.0f;
 
+		private Vector3 InitialPosition = new Vector3(0.0f, 0.0f, 0.0f);
+		private Vector3 OutofMapPos = new Vector3(0.0f, 0.0f, 0.0f);
+		private bool DroppingOutOfMap = false;
+
 		public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
@@ -75,6 +79,11 @@ namespace TRE
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
+
+			TransformSystem.GetPosition(this.ID, out Vector3 InitialPos);
+			InitialPosition = InitialPos;
+			OutofMapPos = InitialPos;
+			OutofMapPos.y = InitialPos.y - 5.0f;
 		}
 
 		public void Update()
@@ -86,76 +95,102 @@ namespace TRE
             //Movement Related stuff
             PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
+			if (pos.y < OutofMapPos.y)
+			{
+				DroppingOutOfMap = true;
+				//Debug.Log("Out of map");
+			}
+			else
+			{
+				DroppingOutOfMap = false;
+				//Debug.Log("Not out of map");
+			}
+
+			if (pos.y < (InitialPosition.y - 50.0f))
+			{
+				TransformSystem.SetPosition(this.ID, InitialPosition);
+				//Debug.Log("Respawn");
+			}
+
 			dirVec = new Vector3(0, 0, 0);
 			#region Movement
-			if (InputSystem.GetKeyDown(InputKeys.W))
-			{
-				dirVec.z += -1;
-				playerDirection.y = 180;
-            }
 
-			if (InputSystem.GetKeyDown(InputKeys.S))
+			if (DroppingOutOfMap)
 			{
-				dirVec.z += 1;
-				playerDirection.y = 0;
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.A))
+				dirVec.x = 0.0f;
+				dirVec.z = 0.0f;
+			}
+			else if (DroppingOutOfMap == false)
 			{
-				dirVec.x += -1;
-				playerDirection.y = 270;
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.D))
-			{
-				dirVec.x += 1;
-				playerDirection.y = 90;
-            }
-
-            if (InputSystem.GetKeyDown(InputKeys.W))
-			{
-				if (InputSystem.GetKeyDown(InputKeys.D))
+				if (InputSystem.GetKeyDown(InputKeys.W))
 				{
-					playerDirection.y = 135;
+					dirVec.z += -1;
+					playerDirection.y = 180;
 				}
+
+				if (InputSystem.GetKeyDown(InputKeys.S))
+				{
+					dirVec.z += 1;
+					playerDirection.y = 0;
+				}
+
 				if (InputSystem.GetKeyDown(InputKeys.A))
 				{
-					playerDirection.y = 225;
+					dirVec.x += -1;
+					playerDirection.y = 270;
 				}
-			}
 
-			if (InputSystem.GetKeyDown(InputKeys.S))
-			{
 				if (InputSystem.GetKeyDown(InputKeys.D))
 				{
-					playerDirection.y = 45;
+					dirVec.x += 1;
+					playerDirection.y = 90;
 				}
-				if (InputSystem.GetKeyDown(InputKeys.A))
+
+				if (InputSystem.GetKeyDown(InputKeys.W))
 				{
-					playerDirection.y = 315;
+					if (InputSystem.GetKeyDown(InputKeys.D))
+					{
+						playerDirection.y = 135;
+					}
+					if (InputSystem.GetKeyDown(InputKeys.A))
+					{
+						playerDirection.y = 225;
+					}
+				}
+
+				if (InputSystem.GetKeyDown(InputKeys.S))
+				{
+					if (InputSystem.GetKeyDown(InputKeys.D))
+					{
+						playerDirection.y = 45;
+					}
+					if (InputSystem.GetKeyDown(InputKeys.A))
+					{
+						playerDirection.y = 315;
+					}
+				}
+
+				if (InputSystem.GetKeyTrigger(InputKeys.Space))
+				{
+					AudioSystem.PlayOnce(6503599471310675157);
+					isWalking = false;
+
+					if (isGrounded)
+					{
+						// Boosted Jump
+						if (isBoostedJump)
+						{
+							Vector3 maxHeight = new Vector3(0, 100, 0);
+							Jump(maxHeight);
+						}
+						else
+						{
+							Vector3 maxHeight = new Vector3(0, 70, 0);
+							Jump(maxHeight);
+						}
+					}
 				}
 			}
-
-			if (InputSystem.GetKeyTrigger(InputKeys.Space))
-			{
-                AudioSystem.PlayOnce(6503599471310675157);
-                isWalking = false;
-
-                if (isGrounded)
-				{
-					// Boosted Jump
-					if (isBoostedJump)
-					{
-						Vector3 maxHeight = new Vector3(0, 100, 0);
-						Jump(maxHeight);
-					}
-					else
-					{
-						Vector3 maxHeight = new Vector3(0, 70, 0);
-						Jump(maxHeight);
-					}
-				}
-            }
 			#endregion
 
 			#region Audio

@@ -108,7 +108,7 @@ namespace TRE
 			switch (BCn)
 			{
 			case (1):
-				compileFormat = issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
+				compileFormat = DXGI_FORMAT_BC1_UNORM_SRGB;//issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
 				if (issRGB)
 				{
 					vkFormat = isTransparent ? 134 : 132; // VK_FORMAT_BC1_RGBA_SRGB_BLOCK : VK_FORMAT_BC1_RGB_SRGB_BLOCK
@@ -119,7 +119,7 @@ namespace TRE
 				}
 				break;
 			case (3):
-				compileFormat = issRGB ? DXGI_FORMAT_BC3_UNORM_SRGB : DXGI_FORMAT_BC3_UNORM;
+				compileFormat = DXGI_FORMAT_BC3_UNORM_SRGB;//issRGB ?  DXGI_FORMAT_BC3_UNORM : DXGI_FORMAT_BC3_UNORM_SRGB;
 				vkFormat = issRGB ? 138 : 137; // VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_BC3_UNORM_BLOCK 
 				break;
 			case(5):

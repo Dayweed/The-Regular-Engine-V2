@@ -54,7 +54,11 @@ namespace TRE
 
         private Vector3 playerDirection = new Vector3(0, 0, 1);
 
-		public void Start()
+        private Vector3 InitialPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        private Vector3 OutofMapPos = new Vector3(0.0f, 0.0f, 0.0f);
+        private bool DroppingOutOfMap = false;
+
+        public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
@@ -62,7 +66,12 @@ namespace TRE
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
-		}
+
+            TransformSystem.GetPosition(this.ID, out Vector3 InitialPos);
+            InitialPosition = InitialPos;
+            OutofMapPos = InitialPos;
+            OutofMapPos.y = InitialPos.y - 5.0f;
+        }
 
 		public void Update()
 		{
@@ -71,76 +80,102 @@ namespace TRE
 			//Movement Related stuff
 			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
-			dirVec = new Vector3(0, 0, 0);
+            if (pos.y < OutofMapPos.y)
+            {
+                DroppingOutOfMap = true;
+                //Debug.Log("Out of map");
+            }
+            else
+            {
+                DroppingOutOfMap = false;
+                //Debug.Log("Not out of map");
+            }
+
+            if (pos.y < (InitialPosition.y - 50.0f))
+            {
+                TransformSystem.SetPosition(this.ID, InitialPosition);
+                //Debug.Log("Respawn");
+            }
+
+            dirVec = new Vector3(0, 0, 0);
 			#region Movement
-			if (InputSystem.GetKeyDown(InputKeys.I))
+
+			if (DroppingOutOfMap)
 			{
-				dirVec.z += -1;
-				playerDirection.y = 180;
+				dirVec.x = 0.0f;
+				dirVec.z = 0.0f;
 			}
-
-			if (InputSystem.GetKeyDown(InputKeys.K))
+			else if (DroppingOutOfMap == false)
 			{
-				dirVec.z += 1;
-				playerDirection.y = 0;
-            }
-
-			if (InputSystem.GetKeyDown(InputKeys.J))
-			{
-				dirVec.x += -1;
-				playerDirection.y = 270;
-            }
-
-			if (InputSystem.GetKeyDown(InputKeys.L))
-			{
-				dirVec.x += 1;
-				playerDirection.y = 90;
-            }
-
-			if (InputSystem.GetKeyDown(InputKeys.I))
-			{
-				if (InputSystem.GetKeyDown(InputKeys.L))
+				if (InputSystem.GetKeyDown(InputKeys.I))
 				{
-					playerDirection.y = 135;
+					dirVec.z += -1;
+					playerDirection.y = 180;
 				}
+
+				if (InputSystem.GetKeyDown(InputKeys.K))
+				{
+					dirVec.z += 1;
+					playerDirection.y = 0;
+				}
+
 				if (InputSystem.GetKeyDown(InputKeys.J))
 				{
-					playerDirection.y = 225;
+					dirVec.x += -1;
+					playerDirection.y = 270;
 				}
-			}
 
-			if (InputSystem.GetKeyDown(InputKeys.K))
-			{
 				if (InputSystem.GetKeyDown(InputKeys.L))
 				{
-					playerDirection.y = 45;
+					dirVec.x += 1;
+					playerDirection.y = 90;
 				}
-				if (InputSystem.GetKeyDown(InputKeys.J))
-				{
-					playerDirection.y = 315;
-				}
-			}
-			
-			if (InputSystem.GetKeyTrigger(InputKeys.Enter))
-			{
-                AudioSystem.PlayOnce(6503599471310675157);
-                isWalking = false;
 
-                if (isGrounded)
+				if (InputSystem.GetKeyDown(InputKeys.I))
 				{
-					// Boosted Jump
-					if (isBoostedJump)
-                    {
-                        Vector3 maxHeight = new Vector3(0, 100, 0);
-                        Jump(maxHeight);
-                    }
-					else
+					if (InputSystem.GetKeyDown(InputKeys.L))
 					{
-						Vector3 maxHeight = new Vector3(0, 70, 0);
-						Jump(maxHeight);
+						playerDirection.y = 135;
+					}
+					if (InputSystem.GetKeyDown(InputKeys.J))
+					{
+						playerDirection.y = 225;
 					}
 				}
-            }
+
+				if (InputSystem.GetKeyDown(InputKeys.K))
+				{
+					if (InputSystem.GetKeyDown(InputKeys.L))
+					{
+						playerDirection.y = 45;
+					}
+					if (InputSystem.GetKeyDown(InputKeys.J))
+					{
+						playerDirection.y = 315;
+					}
+				}
+
+				if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+				{
+					AudioSystem.PlayOnce(6503599471310675157);
+					isWalking = false;
+
+					if (isGrounded)
+					{
+						// Boosted Jump
+						if (isBoostedJump)
+						{
+							Vector3 maxHeight = new Vector3(0, 100, 0);
+							Jump(maxHeight);
+						}
+						else
+						{
+							Vector3 maxHeight = new Vector3(0, 70, 0);
+							Jump(maxHeight);
+						}
+					}
+				}
+			}
             #endregion
 
             #region Audio
