@@ -35,7 +35,6 @@ namespace TRE
             // Lerps through each positions
             if (positions.Length > 0)
             {
-                Debug.Log("MY POS " + transform.Position.x + "," + transform.Position.y + "," + transform.Position.z);
                 transform.Position = MathF.Vec3Lerp(transform.Position, positions[currentIndex], lerpSpeed);
                 // Move to next index, if it is very close to the ideal position
                 if (transform.Position.x >= positions[currentIndex].x - offset && transform.Position.x <= positions[currentIndex].x + offset
