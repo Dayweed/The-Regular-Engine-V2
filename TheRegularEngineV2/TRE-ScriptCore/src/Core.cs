@@ -872,4 +872,10 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static T GetScript<T>(EntityID ID, string ClassName);
 	}
+
+	public class Game
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void CloseGame();
+    }
 }

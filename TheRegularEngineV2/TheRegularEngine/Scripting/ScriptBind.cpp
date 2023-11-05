@@ -1256,6 +1256,14 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region GameBindings
+	static void BindCloseGame()
+	{
+		ECSSystemManager::Instance().BeforeReset();
+		Engine::GetInstance().Shutdown();
+	}
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -1425,6 +1433,11 @@ namespace TRE
 			mono_add_internal_call("TRE.Script::IsScript", BindIsScript);
 			mono_add_internal_call("TRE.Script::HaveScript", BindHaveScript);
 			mono_add_internal_call("TRE.Script::GetScript", BindGetScript);
+		}
+
+		// Game
+		{
+			mono_add_internal_call("TRE.Game::CloseGame", BindCloseGame);
 		}
 	}
 }

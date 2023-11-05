@@ -295,10 +295,10 @@ namespace TRE
             #endregion
 
             #region CHEATS
-            // To go to level 1
+            // Close Game
             if (InputSystem.GetKeyDown(InputKeys.Escape))
             {
-                Scene.ChangeScene("Level_1");
+				Game.CloseGame();
             }
             #endregion
 

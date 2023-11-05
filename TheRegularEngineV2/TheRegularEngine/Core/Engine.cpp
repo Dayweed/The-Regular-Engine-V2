@@ -392,7 +392,7 @@ namespace TRE
 
 	Engine::~Engine()
 	{
-		Shutdown();
+		if (!m_Shutdown) Shutdown();
 	}
 
 	void Engine::RegisterECS()
@@ -533,6 +533,6 @@ namespace TRE
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
 		Renderer::Shutdown();
-
+		m_Shutdown = true;
 	}
 }
