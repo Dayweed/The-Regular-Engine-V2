@@ -142,7 +142,10 @@ namespace TRE
 		m_DescriptorImageInfo.imageView = m_ImageData.ImageView;
 		m_DescriptorImageInfo.sampler = m_ImageData.Sampler;
 		
-		if (m_Config.Format == ImageFormat::DEPTH24STENCIL8 || m_Config.Format == ImageFormat::DEPTH32F || m_Config.Format == ImageFormat::DEPTH32FSTENCIL8UINT)
+		if (m_Config.Format == ImageFormat::DEPTH24STENCIL8 || 
+			m_Config.Format == ImageFormat::DEPTH32F || 
+			m_Config.Format == ImageFormat::DEPTH32FSTENCIL8UINT || 
+			m_Config.Format == ImageFormat::DEPTH16UN)
 			m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
 		else
 		{

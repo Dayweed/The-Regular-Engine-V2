@@ -88,7 +88,7 @@ namespace TRE::vkUtils
 
     bool IsDepthImage(const ImageFormat& Usage)
     {
-        return Usage == ImageFormat::DEPTH24STENCIL8 || Usage == ImageFormat::DEPTH32F || Usage == ImageFormat::DEPTH32FSTENCIL8UINT;
+        return Usage == ImageFormat::DEPTH24STENCIL8 || Usage == ImageFormat::DEPTH32F || Usage == ImageFormat::DEPTH32FSTENCIL8UINT || Usage == ImageFormat::DEPTH16UN;
     }
 
 	VkFormat VulkanImageFormat(ImageFormat format)
@@ -110,6 +110,7 @@ namespace TRE::vkUtils
 			case ImageFormat::DEPTH32FSTENCIL8UINT: return VK_FORMAT_D32_SFLOAT_S8_UINT;
 			case ImageFormat::DEPTH32F:				return VK_FORMAT_D32_SFLOAT;
 			case ImageFormat::DEPTH24STENCIL8:		return RendererContext::GetDevice()->GetPhysicalDevice()->GetDepthFormat();
+			case ImageFormat::DEPTH16UN:			return VK_FORMAT_D16_UNORM;
 		}
 		return VK_FORMAT_UNDEFINED;
 	}

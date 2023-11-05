@@ -118,10 +118,9 @@ namespace TRE
 			//Skybox
 
 			//Shadow
-			float zNear = 1.f;
-			float zFar = 96.f;
 			float depthBiasConstant = 1.25f;
 			float depthBiasSlope = 1.75f;
+			std::shared_ptr<Image2D> m_ShadowImages;
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
 			VkDescriptorImageInfo m_ShadowDescriptInfo;
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
@@ -130,13 +129,13 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
-			struct
-			{
-				VkImage image;
-				VkImageView imageview;
-				VkDeviceMemory devicememory;
-				VkSampler sampler;
-			} m_Depth;
+			//struct
+			//{
+			//	VkImage image;
+			//	VkImageView imageview;
+			//	VkDeviceMemory devicememory;
+			//	VkSampler sampler;
+			//} m_Depth;
 
 			void ShadowPassInit();
 			//Shadow
