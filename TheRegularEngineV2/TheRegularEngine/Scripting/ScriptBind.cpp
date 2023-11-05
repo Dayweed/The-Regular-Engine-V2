@@ -1205,6 +1205,12 @@ namespace TRE
 		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
 		SceneManager::Instance().LoadScene(scenePath);
 	}
+
+	static MonoString* BindGetSceneName()
+	{
+		std::string sceneName = SceneManager::Instance().GetCurrentSceneName();
+		return mono_string_new(mono_domain_get(), sceneName.c_str());
+	}
 #pragma endregion
 
 #pragma region ScriptBindings
@@ -1411,6 +1417,7 @@ namespace TRE
 		// Scene
 		{
 			mono_add_internal_call("TRE.Scene::ChangeScene", BindLoadScene);
+			mono_add_internal_call("TRE.Scene::GetSceneName", BindGetSceneName);
 		}
 
 		// Scripting

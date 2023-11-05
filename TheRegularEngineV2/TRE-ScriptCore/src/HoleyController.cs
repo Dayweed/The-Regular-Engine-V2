@@ -155,12 +155,6 @@ namespace TRE
 					}
 				}
             }
-
-            // To go to level 1
-            if (InputSystem.GetKeyDown(InputKeys.Escape))
-            {
-                Scene.ChangeScene("Level_1");
-            }
 			#endregion
 
 			#region Audio
@@ -262,9 +256,17 @@ namespace TRE
                 currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed);
                 TransformSystem.SetScaling(this.ID, currentXform);
             }
-			#endregion
+            #endregion
 
-			dirVec.Normalize();
+            #region CHEATS
+            // To go to level 1
+            if (InputSystem.GetKeyDown(InputKeys.Escape))
+            {
+                Scene.ChangeScene("Level_1");
+            }
+            #endregion
+
+            dirVec.Normalize();
 
 			if (dirVec != Vector3.zero)
 			{

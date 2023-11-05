@@ -856,6 +856,9 @@ namespace TRE
 	{
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void ChangeScene(string sceneName);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string GetSceneName();
     }
 
 	public class Script
