@@ -127,8 +127,8 @@ namespace TRE
 			if (regionG)
 			{
 				expectedPosition = new Vector3(50, 40, 50);
-				expectedRotation = new Vector3(35, 200, 0);
-				expectedDistance = 50;
+				expectedRotation = new Vector3(35, 185, 0);
+				expectedDistance = 60;
 			}
 
 			if (regionH)

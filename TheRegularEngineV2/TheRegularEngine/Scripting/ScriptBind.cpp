@@ -846,6 +846,12 @@ namespace TRE
 		return Vector3(right.x, right.y, right.z);
 	}
 
+	static Vector3 BindCameraRotation()
+	{
+		glm::vec3 rotation = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Rotation;
+		return Vector3(rotation.x, rotation.y, rotation.z);
+	}
+
 #pragma endregion
 
 #pragma region InputBindings
@@ -1386,6 +1392,7 @@ namespace TRE
 
 			mono_add_internal_call("TRE.CameraSystem::GetMainCameraForwardVec", BindCameraForwardVector);
 			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRightVec", BindCameraRightVector);
+			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRotation", BindCameraRotation);
 		}
 
 		// Physics Bindings

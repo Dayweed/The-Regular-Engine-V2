@@ -52,7 +52,8 @@ namespace TRE
 		private Vector3 strawberryscaledXform = new Vector3(0.5f, 1.5f, 1f);
 		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 
-		private Vector3 playerDirection = new Vector3(0, 0, 1);
+		private int playerDirection = 0;
+		private int lastPlayerDirection = 0;
 
 		private Vector3 InitialPosition = new Vector3(0.0f, 0.0f, 0.0f);
 		private Vector3 OutofMapPos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -109,42 +110,37 @@ namespace TRE
 			{
 				if (InputSystem.GetKeyDown(InputKeys.I))
 				{
-					//dirVec.z += -1;
 					dirVec += CS.GetMainCameraForwardVec();
-
-					playerDirection.y = 180;
+					lastPlayerDirection = 0;
 				}
 
 				if (InputSystem.GetKeyDown(InputKeys.K))
 				{
-					//dirVec.z += 1;
 					dirVec -= CS.GetMainCameraForwardVec();
-					playerDirection.y = 0;
+					lastPlayerDirection = 180;
 				}
 
 				if (InputSystem.GetKeyDown(InputKeys.J))
 				{
-					//dirVec.x += -1;
 					dirVec += CS.GetMainCameraRightVec();
-					playerDirection.y = 270;
+					lastPlayerDirection = 90;
 				}
 
 				if (InputSystem.GetKeyDown(InputKeys.L))
 				{
-					//dirVec.x += 1;
 					dirVec -= CS.GetMainCameraRightVec();
-					playerDirection.y = 90;
+					lastPlayerDirection = 270;
 				}
 
 				if (InputSystem.GetKeyDown(InputKeys.I))
 				{
 					if (InputSystem.GetKeyDown(InputKeys.L))
 					{
-						playerDirection.y = 135;
+						lastPlayerDirection = 225;
 					}
 					if (InputSystem.GetKeyDown(InputKeys.J))
 					{
-						playerDirection.y = 225;
+						lastPlayerDirection = 135;
 					}
 				}
 
@@ -152,11 +148,11 @@ namespace TRE
 				{
 					if (InputSystem.GetKeyDown(InputKeys.L))
 					{
-						playerDirection.y = 45;
+						lastPlayerDirection = 315;
 					}
 					if (InputSystem.GetKeyDown(InputKeys.J))
 					{
-						playerDirection.y = 315;
+						lastPlayerDirection = 45;
 					}
 				}
 
@@ -282,6 +278,9 @@ namespace TRE
 			dirVec.y = 0;
 			dirVec.Normalize();
 
+			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+			playerDirection = (playerDirection % 360);
+
 			if (dirVec != Vector3.zero)
 			{
 				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
@@ -297,7 +296,7 @@ namespace TRE
 				}
 			}
 
-			TransformSystem.SetRotation(this.ID, new Vector3(0, playerDirection.y, 0));
+			TransformSystem.SetRotation(this.ID, new Vector3(0, playerDirection, 0));
 		}
 		private void Jump(Vector3 JumpHeight)
 		{
