@@ -34,7 +34,7 @@ namespace TRE
         public void OnCreate()
         {
             collected = false;
-            cooldownDuration = 0.5f;
+            cooldownDuration = 1f;
             cooldownCurrent = 0f;
         }
 

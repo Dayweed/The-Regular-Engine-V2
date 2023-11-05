@@ -360,7 +360,7 @@ namespace TRE
 			if (PS.IsCollisionStay(this.ID, otherID))
 			{
 				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
-					|| EngineGetTag(otherID) == "Blue" || EngineGetTag(otherID) == "RedCollider")
+					|| EngineGetTag(otherID) == "Blue" || EngineGetTag(otherID) == "BlueCollider")
 				{
 					isGrounded = true;
 				}
