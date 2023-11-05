@@ -31,6 +31,9 @@ To run commerical engine executable (with ImGui)
 - Copy imgui.ini in [TheRegularEditor] folder to [Executable_Release_TheRegularEditor] folder
 - Run [TheRegularEditor.exe]
 
+Shortcuts
+- [Escape] while the game is running in (Tutorial/Level_1) Scenes will close the game
+
 Known bugs to avoid
 - Saving scenes anywhere other than [Scenes] folder
 - Gizmo not updating prefab instances
