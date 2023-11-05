@@ -16,7 +16,8 @@
 #include "glm/gtx/transform.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
-
+#include "InputHandler/InputHandler.h"
+#include "InputHandler/KeyButton.h"
 //To be removed
 #include "EditorCamera.h"
 
@@ -514,6 +515,8 @@ namespace TRE
 
 			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
+
+		m_PreviousMaterialHandle = 0; 
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 	}
