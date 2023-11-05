@@ -72,6 +72,7 @@ namespace TRE
 
 			if (m_SelectionManager->GetSelectedEntity() == nullptr)
 			{
+				ImGui::End();
 				return;
 			}
 

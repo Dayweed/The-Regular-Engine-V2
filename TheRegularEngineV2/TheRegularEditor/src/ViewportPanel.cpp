@@ -409,7 +409,7 @@ namespace TRE
 	void ViewportPanel::UpdateGizmo()
 	{
 		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
-		if (SelectedEntity && m_GizmoOperation != -1)
+		if (SelectedEntity && ECSManager::Instance().IsValidEntity(SelectedEntity) && m_GizmoOperation != -1)
 		{
 			ImGuizmo::SetOrthographic(true);
 			ImGuizmo::SetDrawlist();
