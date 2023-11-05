@@ -48,7 +48,7 @@ namespace TRE
 			}
 		}
 
-		RecompileAssetsOfType(ResourceType::Texture);
+		//RecompileAssetsOfType(ResourceType::Texture);
 	}
 
 	void AssetManager::Shutdown()
