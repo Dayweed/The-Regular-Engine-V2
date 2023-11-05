@@ -17,45 +17,45 @@ namespace TRE
 
 	class Resource
 	{
-		public:
-			Resource() = default;
-			virtual ~Resource() {}
-			static ResourceHandle GenerateGUID();
-			static std::string GetGUIDHex(const ResourceHandle assetHandle);
-			static ResourceHandle GetGUIDFromHex(const std::string& GUID);
-			static ResourceHandle GetGUIDFromPath(const std::string& path);
+	public:
+		Resource() = default;
+		virtual ~Resource() {}
+		static ResourceHandle GenerateGUID();
+		static std::string GetGUIDHex(const ResourceHandle assetHandle);
+		static ResourceHandle GetGUIDFromHex(const std::string& GUID);
+		static ResourceHandle GetGUIDFromPath(const std::string& path);
 			
-			virtual void Serialize() {}
+		virtual void Serialize() {}
 
-			void SetHandle(ResourceHandle handle)
-			{
-				m_Handle = handle;
-			}
+		void SetHandle(ResourceHandle handle)
+		{
+			m_Handle = handle;
+		}
 
-			ResourceHandle GetHandle() const
-			{
-				return m_Handle;
-			}
+		ResourceHandle GetHandle() const
+		{
+			return m_Handle;
+		}
 
-			ResourceHandle& GetHandleRef()
-			{
-				return m_Handle;
-			}
+		ResourceHandle& GetHandleRef()
+		{
+			return m_Handle;
+		}
 
-			std::string GetHandleHex() const
-			{
-				std::stringstream ss;
-				ss << std::hex << m_Handle;
-				return ss.str();
-			}
+		std::string GetHandleHex() const
+		{
+			std::stringstream ss;
+			ss << std::hex << m_Handle;
+			return ss.str();
+		}
 
-			ResourceType GetType() const
-			{
-				return m_Type;
-			}
+		ResourceType GetType() const
+		{
+			return m_Type;
+		}
 
-		protected:
-			ResourceHandle m_Handle{ 0 };
-			ResourceType m_Type{ ResourceType::None };
+	protected:
+		ResourceHandle m_Handle{ 0 };
+		ResourceType m_Type{ ResourceType::None };
 	};
 }
