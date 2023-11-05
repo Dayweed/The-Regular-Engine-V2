@@ -575,6 +575,19 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region MeshRendererBindings
+	static void BindSetMaterialInstance(MonoString* materialInstanceName)
+	{
+		std::string str = MonoStringToString(materialInstanceName);
+
+		std::vector<std::shared_ptr<Material>> assets;
+		for (auto& resource : ResourceManager::Instance().GetResourcesOfType<Material>())
+		{
+			std::string name;
+		}
+	}
+#pragma endregion
+
 #pragma region CameraBindings
 	static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
 	{
@@ -1329,6 +1342,11 @@ namespace TRE
 			mono_add_internal_call("TRE.TransformSystem::GetPosition", BindGetPosition);
 			mono_add_internal_call("TRE.TransformSystem::GetRotation", BindGetRotation);
 			mono_add_internal_call("TRE.TransformSystem::GetScaling", BindGetScaling);
+		}
+
+		// Mesh Renderer Bindings
+		{
+			mono_add_internal_call("TRE.MeshRendererSystem::SetMaterialInstance", BindSetMaterialInstance);
 		}
 
 		// Camera Bindings
