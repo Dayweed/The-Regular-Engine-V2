@@ -717,6 +717,9 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static Vector3 GetMainCameraRightVec();
 
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static Vector3 GetMainCameraRotation();
+
 	}
 
 	public enum ForceMode
