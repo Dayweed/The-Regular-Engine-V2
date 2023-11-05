@@ -165,7 +165,7 @@ namespace TRE
 						// Boosted Jump
 						if (isBoostedJump)
 						{
-							Vector3 maxHeight = new Vector3(0, 100, 0);
+							Vector3 maxHeight = new Vector3(0, 150, 0);
 							Jump(maxHeight);
 						}
 						else

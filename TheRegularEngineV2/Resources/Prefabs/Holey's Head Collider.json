@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "3345695154444609703",
+         "m_GUID": "15903187485590096156",
          "m_Name": "Holey's Head Collider",
          "m_Tag": "BlueCollider"
       }
@@ -62,9 +62,9 @@
             0.0
          ],
          "m_Scale": [
+            2.0,
             1.0,
-            1.0,
-            1.0
+            2.0
          ]
       }
    ],

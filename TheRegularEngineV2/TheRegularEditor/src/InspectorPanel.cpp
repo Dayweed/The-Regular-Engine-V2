@@ -70,6 +70,11 @@ namespace TRE
 			// This updates the tables
 			m_SelectionManager->UpdateSelectedEntity();
 
+			if (m_SelectionManager->GetSelectedEntity() == nullptr)
+			{
+				return;
+			}
+
 			auto& properties = m_SelectionManager->GetSelectedEntityProperty();
 
 			bool isPrefabInstance = false;

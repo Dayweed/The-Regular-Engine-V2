@@ -44,7 +44,7 @@ namespace TRE
             {
                 JumpPad.GetComponent<JumpPad>().ActivatePad(true);
             }
-            if (PhysicsSystem.IsCollisionExit(this.ID, otherID))
+            if (PhysicsSystem.IsTriggerExit(this.ID, otherID))
             {
                 if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
                 {

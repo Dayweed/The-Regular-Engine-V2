@@ -74,8 +74,9 @@ namespace TRE
 		{
 			std::string funcName{ __FUNCTION__ };
 			std::string selectedAddress{ std::to_string((unsigned long long)(void**) & m_SelectedEntity) };
-			TRE_ERROR("[" + funcName + "] m_SelectedEntity (" + selectedAddress + ") is not valid! Ignoring...");
-			assert(ECSManager::Instance().IsValidEntity(m_SelectedEntity));
+			TRE_ERROR("[" + funcName + "] m_SelectedEntity (" + selectedAddress + ") is not valid! Clearing...");
+			//assert(ECSManager::Instance().IsValidEntity(m_SelectedEntity));
+			ClearSelectedEntity();
 		}
 	}
 }
