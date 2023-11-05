@@ -828,9 +828,20 @@ namespace TRE
 
 	public class Time
 	{
-		public static readonly float deltaTime = GetDeltaTime();
+        public static float deltaTime
+        {
+            get
+            {
+				float time = GetDeltaTime();
+                return time;
+            }
+			set
+			{
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+			}
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float GetDeltaTime();
 	}
 
