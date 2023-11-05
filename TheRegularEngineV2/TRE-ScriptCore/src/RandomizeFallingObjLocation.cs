@@ -112,7 +112,7 @@ namespace TRE
             timeBetweenSpawns = 2;
             size = new Vector3(20, 0, 50);
             canSpawnObjs = true;
-            dropDuration = 5.0f;
+            dropDuration = 3.5f;
             minRange = 5.5f;
         }
 
