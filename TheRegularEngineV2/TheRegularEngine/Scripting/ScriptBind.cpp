@@ -1292,8 +1292,7 @@ namespace TRE
 #pragma region GameBindings
 	static void BindCloseGame()
 	{
-		ECSSystemManager::Instance().BeforeReset();
-		Engine::GetInstance().Shutdown();
+		Engine::GetInstance().TellToShutdown();
 	}
 #pragma endregion
 

@@ -293,7 +293,8 @@ namespace TRE
             #endregion
 
             dirVec.y = 0;
-            dirVec = dirVec.Normalized;
+            if (dirVec != new vec3())
+                dirVec = dirVec.Normalized;
 
             playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
             playerDirection = (playerDirection % 360);
