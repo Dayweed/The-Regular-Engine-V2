@@ -57,7 +57,7 @@ namespace TRE
 
 	void ViewportPanel::OnKeyboardClick(const InputEvent& event)
 	{
-		if (m_IsViewportFocused == false)
+		if (m_IsViewportHovered == false)
 			return;
 
 #pragma region Gizmo
@@ -98,26 +98,29 @@ namespace TRE
 			}
 		}
 
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		if (m_IsViewportFocused)
 		{
-			const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
-			const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+			{
+				const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
+				const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
 
-			if (event._key == (int)KeyButton::W)
-			{
-				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
-			}
-			if (event._key == (int)KeyButton::S)
-			{
-				editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
-			}
-			if (event._key == (int)KeyButton::A)
-			{
-				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
-			}
-			if (event._key == (int)KeyButton::D)
-			{
-				editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				if (event._key == (int)KeyButton::W)
+				{
+					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
+				}
+				if (event._key == (int)KeyButton::S)
+				{
+					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
+				}
+				if (event._key == (int)KeyButton::A)
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
+				if (event._key == (int)KeyButton::D)
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
 			}
 		}
 #pragma endregion
@@ -125,7 +128,7 @@ namespace TRE
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
 	{
-		if(m_IsViewportFocused == false)
+		if(m_IsViewportHovered == false)
 			return;
 
 		EditorCamera& editorCamera = EditorCamera::Instance();
@@ -305,7 +308,7 @@ namespace TRE
 					{
 						//int offset = m_ClickCount % entitiesHit.size();
 						Entity selectedEntity = (--entitiesHit.end())->second;
-						int counter = 1;
+						std::uint32_t counter = 1;
 						for (auto it = entitiesHit.rbegin(); it != entitiesHit.rend(); ++it)
 						{
 							if (m_ClickCount < counter)
@@ -406,7 +409,7 @@ namespace TRE
 	void ViewportPanel::UpdateGizmo()
 	{
 		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
-		if (SelectedEntity && m_GizmoOperation != -1)
+		if (SelectedEntity && ECSManager::Instance().IsValidEntity(SelectedEntity) && m_GizmoOperation != -1)
 		{
 			ImGuizmo::SetOrthographic(true);
 			ImGuizmo::SetDrawlist();

@@ -359,14 +359,14 @@ namespace TRE
 
 		//DemoScene();
 
-		m_SceneRenderer = std::make_shared<SceneRenderer>(m_Window->GetRenderContext()->GetDeviceInternally());
+		m_SceneRenderer = std::make_shared<SceneRenderer>(false);
 		m_SceneRenderer->Initialize();
 		Renderer::Init();
 
 		if (m_EngineInfo.EnableEditor)
 		{
 			m_VulkanEditor = std::make_shared<VulkanEditor>(m_Window->GetRenderContext()->GetDeviceInternally());
-			m_EditorSceneRenderer = std::make_shared<SceneRenderer>(RendererContext::GetDevice());
+			m_EditorSceneRenderer = std::make_shared<SceneRenderer>(true);
 			m_EditorSceneRenderer->Initialize();
 			Engine::GetInstance().GetVulkanImgui()->SetEditorSceneDescriptor(m_EditorSceneRenderer);
 		}
@@ -392,7 +392,7 @@ namespace TRE
 
 	Engine::~Engine()
 	{
-		Shutdown();
+		if (!m_Shutdown) Shutdown();
 	}
 
 	void Engine::RegisterECS()
@@ -533,6 +533,6 @@ namespace TRE
 		EditorSystemManager::Instance().ShutdownSystem();
 		MemoryManager::Instance().DeleteEntities();
 		Renderer::Shutdown();
-
+		m_Shutdown = true;
 	}
 }

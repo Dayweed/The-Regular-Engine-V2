@@ -68,6 +68,8 @@ namespace TRE
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 
 			expectedDistance = 35;
+			expectedPosition = new Vector3(0, 10, 20);
+			expectedRotation = new Vector3(30, 180, 0);
 		}
 		public void Update()
 		{
@@ -125,8 +127,8 @@ namespace TRE
 			if (regionG)
 			{
 				expectedPosition = new Vector3(50, 40, 50);
-				expectedRotation = new Vector3(35, 200, 0);
-				expectedDistance = 50;
+				expectedRotation = new Vector3(35, 185, 0);
+				expectedDistance = 60;
 			}
 
 			if (regionH)
@@ -140,7 +142,6 @@ namespace TRE
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
 		}
-
 
 		private bool IsInsideTrigger(Entity entity)
 		{

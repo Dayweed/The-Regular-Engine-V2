@@ -45,6 +45,8 @@ namespace TRE
 		const std::string GetName(const ResourceHandle resourceHandle) const;
 		const std::string GetName(const std::string& hexHandle) const;
 
+		void RecompileAssetsOfType(const ResourceType type);
+
 		void PrintAllAssets() const;
 	private:
 		AssetManager() = default;
@@ -102,15 +104,18 @@ namespace TRE
 		ResourceType type = T::GetType();
 		if (type == ResourceType::Mesh)
 		{
-			//Create DescriptorFile
-			GeomDescriptorFile descriptorFile;
 			const std::string assetPath = assetFolderPath + assetName;
 			const std::string descPath = assetFolderPath + hex + ".geom" + ".desc";
 			const std::string resourcePath = resourceFolderPath + hex + ".geom";
-			descriptorFile.SetAssetPath(assetPath);
-			descriptorFile.SetResourcePath(resourcePath);
-			descriptorFile.SetDescriptorPath(descPath);
-			descriptorFile.GenerateDescriptorFile();
+			//Create DescriptorFile
+			if (m_AssetNameToHandle.contains(assetName) == false)
+			{
+				GeomDescriptorFile descriptorFile;
+				descriptorFile.SetAssetPath(assetPath);
+				descriptorFile.SetResourcePath(resourcePath);
+				descriptorFile.SetDescriptorPath(descPath);
+				descriptorFile.GenerateDescriptorFile();
+			}
 			//Compile
 			Geom::RunCompiler(descPath);
 			//Load
@@ -122,14 +127,17 @@ namespace TRE
 		}
 		else if (type == ResourceType::Texture)
 		{
-			TextureDescriptorFile descriptorFile;
 			const std::string assetPath = assetFolderPath + assetName;
 			const std::string descPath = assetFolderPath + hex + ".texture" + ".desc";
 			const std::string resourcePath = resourceFolderPath + hex + ".DDS";
-			descriptorFile.SetAssetPath(assetPath);
-			descriptorFile.SetResourcePath(resourcePath);
-			descriptorFile.SetDescriptorPath(descPath);
-			descriptorFile.GenerateDescriptorFile();
+			if (m_AssetNameToHandle.contains(assetName) == false)
+			{
+				TextureDescriptorFile descriptorFile;				
+				descriptorFile.SetAssetPath(assetPath);
+				descriptorFile.SetResourcePath(resourcePath);
+				descriptorFile.SetDescriptorPath(descPath);
+				descriptorFile.GenerateDescriptorFile();
+			}
 			//Compile
 			Texture::RunCompiler(descPath);
 			//Load

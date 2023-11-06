@@ -177,16 +177,22 @@ namespace TRE
 		std::unique_ptr<Line> line = std::make_unique<Line>("7");
 		auto SkyboxPassShaderHandle = 3;
 		auto FinalPassShaderHandle = 4;
+		auto ShadowMapHandle = 5;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
 		FinalPassShader->SetHandle(FinalPassShaderHandle);
 		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
 
-		//SkyboxPassShader
+		//SkyboxShader
 		std::unique_ptr<Shader> SkyboxPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/Skybox.TREshader");
 		SkyboxPassShader->SetHandle(SkyboxPassShaderHandle);
 		ResourceManager::Instance().AddResource(std::move(SkyboxPassShader));
+
+		//ShadowMappingShader
+		std::unique_ptr<Shader> ShadowMapShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMapping.TREshader");
+		ShadowMapShader->SetHandle(ShadowMapHandle);
+		ResourceManager::Instance().AddResource(std::move(ShadowMapShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

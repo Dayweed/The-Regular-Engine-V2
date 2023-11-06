@@ -71,7 +71,7 @@ namespace TRE
 		m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO));
 	}
 
-	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap)
 	{
 		if(m_IsValid == false)
 			Invalidate();
@@ -89,7 +89,10 @@ namespace TRE
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
-				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
 			}
 			Write.dstSet = m_DescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -98,7 +101,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap)
 	{
 		m_WriteDescriptors.clear();
 
@@ -113,7 +116,10 @@ namespace TRE
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
-				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
 			}
 			Write.dstSet = m_EditorDescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -259,6 +265,8 @@ namespace TRE
 	{
 		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
 		{
+			if (Name == "shadowMap")
+				continue;
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID());
 		}

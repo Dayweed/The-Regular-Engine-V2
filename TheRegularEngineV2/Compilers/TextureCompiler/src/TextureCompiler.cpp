@@ -70,16 +70,16 @@ namespace TRE
 
 		if (issRGB)
 		{
-			loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 			vkFormat = 43; // VK_FORMAT_R8G8B8A8_SRGB
 		}
 		else
 		{
-			loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 			vkFormat = 44; // VK_FORMAT_R8G8B8A8_UNORM
 		}
 
-		compileFormat = loadFormat;
+		loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; //I am assuming all textures that come in are sRGB
+
+		//compileFormat = loadFormat;
 
 		if (descriptor.GetCompress())
 		{
@@ -108,7 +108,7 @@ namespace TRE
 			switch (BCn)
 			{
 			case (1):
-				compileFormat = issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
+				compileFormat = DXGI_FORMAT_BC1_UNORM_SRGB;//issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
 				if (issRGB)
 				{
 					vkFormat = isTransparent ? 134 : 132; // VK_FORMAT_BC1_RGBA_SRGB_BLOCK : VK_FORMAT_BC1_RGB_SRGB_BLOCK
@@ -119,7 +119,7 @@ namespace TRE
 				}
 				break;
 			case (3):
-				compileFormat = issRGB ? DXGI_FORMAT_BC3_UNORM : DXGI_FORMAT_BC3_UNORM_SRGB;
+				compileFormat = DXGI_FORMAT_BC3_UNORM_SRGB;//issRGB ?  DXGI_FORMAT_BC3_UNORM : DXGI_FORMAT_BC3_UNORM_SRGB;
 				vkFormat = issRGB ? 138 : 137; // VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_BC3_UNORM_BLOCK 
 				break;
 			case(5):

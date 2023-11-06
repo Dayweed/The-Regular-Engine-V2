@@ -575,6 +575,19 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region MeshRendererBindings
+	static void BindSetMaterialInstance(MonoString* materialInstanceName)
+	{
+		std::string str = MonoStringToString(materialInstanceName);
+
+		std::vector<std::shared_ptr<Material>> assets;
+		for (auto& resource : ResourceManager::Instance().GetResourcesOfType<Material>())
+		{
+			std::string name;
+		}
+	}
+#pragma endregion
+
 #pragma region CameraBindings
 	static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
 	{
@@ -679,6 +692,8 @@ namespace TRE
 
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->SetIsMainCamera(Temp, isMainCamera);
 	}
+
+
 
 	// Getters
 	static void BindCamGetViewMatrix(CSEntityID ID, glm::mat4* result)
@@ -817,6 +832,24 @@ namespace TRE
 	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
 	{
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+	}
+
+	static Vector3 BindCameraForwardVector()
+	{
+		glm::vec3 fwd = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera.GetViewDirection();
+		return Vector3(fwd.x, fwd.y, fwd.z);
+	}
+
+	static Vector3 BindCameraRightVector()
+	{
+		glm::vec3 right = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera.GetRightVec();
+		return Vector3(right.x, right.y, right.z);
+	}
+
+	static Vector3 BindCameraRotation()
+	{
+		glm::vec3 rotation = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Rotation;
+		return Vector3(rotation.x, rotation.y, rotation.z);
 	}
 
 #pragma endregion
@@ -1160,6 +1193,15 @@ namespace TRE
 		if (!entity) return;
 
 		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
+		entity->GetComponent<Audio>().m_Play = true;
+	}
+
+	static void BindSetPlayOnce(CSEntityID ID)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
 	}
 
 	static void BindTogglePauseSound(CSEntityID ID, bool paused)
@@ -1195,6 +1237,12 @@ namespace TRE
 		std::string sceneName = MonoStringToString(id);
 		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
 		SceneManager::Instance().LoadScene(scenePath);
+	}
+
+	static MonoString* BindGetSceneName()
+	{
+		std::string sceneName = SceneManager::Instance().GetCurrentSceneName();
+		return mono_string_new(mono_domain_get(), sceneName.c_str());
 	}
 #pragma endregion
 
@@ -1238,6 +1286,14 @@ namespace TRE
 		auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
 
 		return instances[IDStr]->GetScriptObject();
+	}
+#pragma endregion
+
+#pragma region GameBindings
+	static void BindCloseGame()
+	{
+		ECSSystemManager::Instance().BeforeReset();
+		Engine::GetInstance().Shutdown();
 	}
 #pragma endregion
 
@@ -1294,6 +1350,11 @@ namespace TRE
 			mono_add_internal_call("TRE.TransformSystem::GetScaling", BindGetScaling);
 		}
 
+		// Mesh Renderer Bindings
+		{
+			mono_add_internal_call("TRE.MeshRendererSystem::SetMaterialInstance", BindSetMaterialInstance);
+		}
+
 		// Camera Bindings
 		{
 			mono_add_internal_call("TRE.CameraSystem::SetViewportSize", BindCamSetViewportSize);
@@ -1328,6 +1389,10 @@ namespace TRE
 			mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
 			mono_add_internal_call("TRE.CameraSystem::SetMainCameraLookAt", BindCamMainSetLookAt);
 			mono_add_internal_call("TRE.CameraSystem::TransitionMainCamera", BindTransitionMainCamera);
+
+			mono_add_internal_call("TRE.CameraSystem::GetMainCameraForwardVec", BindCameraForwardVector);
+			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRightVec", BindCameraRightVector);
+			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRotation", BindCameraRotation);
 		}
 
 		// Physics Bindings
@@ -1393,6 +1458,7 @@ namespace TRE
 		//Audio
 		{
 			mono_add_internal_call("TRE.AudioSystem::Play", BindSetPlaySound);
+			mono_add_internal_call("TRE.AudioSystem::PlayOnce", BindSetPlayOnce);
 			mono_add_internal_call("TRE.AudioSystem::TogglePause", BindTogglePauseSound);
 			mono_add_internal_call("TRE.AudioSystem::Stop", BindSetStop);
 			mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
@@ -1401,6 +1467,7 @@ namespace TRE
 		// Scene
 		{
 			mono_add_internal_call("TRE.Scene::ChangeScene", BindLoadScene);
+			mono_add_internal_call("TRE.Scene::GetSceneName", BindGetSceneName);
 		}
 
 		// Scripting
@@ -1408,6 +1475,11 @@ namespace TRE
 			mono_add_internal_call("TRE.Script::IsScript", BindIsScript);
 			mono_add_internal_call("TRE.Script::HaveScript", BindHaveScript);
 			mono_add_internal_call("TRE.Script::GetScript", BindGetScript);
+		}
+
+		// Game
+		{
+			mono_add_internal_call("TRE.Game::CloseGame", BindCloseGame);
 		}
 	}
 }

@@ -16,6 +16,7 @@ namespace TRE
 	{
 		public:
 			RenderPass(std::shared_ptr<Device> Device, RenderPassInfo Info);
+			RenderPass(std::shared_ptr<Device> Device, bool isshadow);
 			~RenderPass();
 
 			void Recreate();

@@ -710,6 +710,16 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void TransitionMainCamera(Vector3 targetPosition, Vector3 targetRotation, float speed);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static Vector3 GetMainCameraForwardVec();
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static Vector3 GetMainCameraRightVec();
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static Vector3 GetMainCameraRotation();
+
 	}
 
 	public enum ForceMode
@@ -828,9 +838,20 @@ namespace TRE
 
 	public class Time
 	{
-		public static readonly float deltaTime = GetDeltaTime();
+        public static float deltaTime
+        {
+            get
+            {
+				float time = GetDeltaTime();
+                return time;
+            }
+			set
+			{
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+			}
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float GetDeltaTime();
 	}
 
@@ -839,7 +860,10 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Play(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void PlayOnce(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void TogglePause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -853,6 +877,9 @@ namespace TRE
 	{
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void ChangeScene(string sceneName);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static string GetSceneName();
     }
 
 	public class Script
@@ -866,4 +893,10 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static T GetScript<T>(EntityID ID, string ClassName);
 	}
+
+	public class Game
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void CloseGame();
+    }
 }

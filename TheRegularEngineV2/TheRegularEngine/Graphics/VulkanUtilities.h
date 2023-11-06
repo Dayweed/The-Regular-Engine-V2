@@ -12,4 +12,5 @@ namespace TRE::vkUtils
 	bool IsDepthImage(const ImageFormat& Usage);
 	VkFormat VulkanImageFormat(ImageFormat format);
 	uint32_t BufferFindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+	VkBool32 formatIsFilterable(VkPhysicalDevice physicalDevice, VkFormat format, VkImageTiling tiling);
 }

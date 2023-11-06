@@ -9,7 +9,7 @@ namespace TRE
 		private Entity Player1;
 		private Entity Player2;
 
-		private float distance;
+		private float distance = 20;
 
 		public Vector3 expectedPosition;
 		public Vector3 expectedRotation;

@@ -10,19 +10,9 @@
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "6338820077763806458",
-         "m_Overrides": {
-            "CapsuleCollider": [
-               "TRE::CapsuleCollider/Radius"
-            ],
-            "Properties": [
-               "TRE::Properties/Tag",
-               "TRE::Properties/Name"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "6338820077763806458",
-         "m_RemovedComps": [
-            "BoxCollider"
-         ]
+         "m_RemovedComps": []
       },
       1,
       {
@@ -38,14 +28,14 @@
       0,
       {
          "m_Children": [
-            "10202012133145713356"
+            "6521021739057743279"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "12672650845156526568"
+         "m_Parent": "13437221903354903917"
       }
    ],
    [
@@ -53,14 +43,14 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "12672650845156526568",
+         "m_GUID": "13437221903354903917",
          "m_Name": "Moley",
-         "m_Tag": "Blue"
+         "m_Tag": "Red"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "10202012133145713356",
+         "m_GUID": "6521021739057743279",
          "m_Name": "Power Manager",
          "m_Tag": ""
       }
@@ -85,9 +75,9 @@
             1.0
          ],
          "m_Position": [
-            5.728992938995361,
-            -6.974639892578125,
-            -13.981051445007324
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -103,13 +93,13 @@
       1,
       {
          "m_LocalPosition": [
-            -0.38303279876708984,
-            0.05929851531982422,
-            -3.340531349182129
+            13.595771789550781,
+            -1.2131751775741577,
+            -40.84857940673828
          ],
          "m_LocalRotation": [
             0.0,
-            -0.00048685880028642714,
+            -0.0004863603098783642,
             0.0
          ],
          "m_LocalScale": [
@@ -118,13 +108,13 @@
             0.9333333373069763
          ],
          "m_Position": [
-            5.346083641052246,
-            -6.915341854095459,
-            -16.389467239379883
+            13.595771789550781,
+            -1.2131751775741577,
+            -40.84857940673828
          ],
          "m_Rotation": [
             0.0,
-            4.35846668551676e-05,
+            4.410038673086092e-05,
             0.0
          ],
          "m_Scale": [
@@ -138,8 +128,8 @@
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "edbe87b85f00c309",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
+         "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
          "m_IsVisible": true
       }
    ],

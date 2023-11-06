@@ -1,8 +1,8 @@
 Asset File Path:
-../Assets/pg.png
+../Assets/Red_Normal.png
 
 Texture File Path:
-../Resources/4cb5b7129abd2a0a.DDS
+../Resources/ea1d9d17815a6c2c.DDS
 
 Compress:
 1
@@ -11,10 +11,10 @@ GL_Linear:
 1
 
 BCn:
-1
+3
 
 sRGB:
-1
+0
 
 Transparent:
 0

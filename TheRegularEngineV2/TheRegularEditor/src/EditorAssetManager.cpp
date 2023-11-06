@@ -47,6 +47,8 @@ namespace TRE
 				file.close();
 			}
 		}
+
+		//RecompileAssetsOfType(ResourceType::Texture);
 	}
 
 	void AssetManager::Shutdown()
@@ -182,6 +184,7 @@ namespace TRE
 	{
 		if(Contains(assetName))
 			return m_AssetNameToHandle.at(assetName).second;
+		return false;
 	}
 
 	bool AssetManager::Compiled(const ResourceHandle resourceHandle) const
@@ -218,11 +221,41 @@ namespace TRE
 		return GetName(Resource::GetGUIDFromHex(hexHandle));
 	}
 
+	void AssetManager::RecompileAssetsOfType(const ResourceType type)
+	{
+		for (auto& file : m_AssetNameToHandle)
+		{
+			//If compiled before, recompile again
+			if (file.second.second)
+			{
+				if (type == ResourceType::Texture)
+				{
+					//This is wrong next time fix
+					if (file.first.find(".png") != std::string::npos)
+					{
+						std::cout << file.first << " | " << Resource::GetGUIDHex(file.second.first) << std::endl;
+						CompileAndLoad<VulkanTexture>(file.first);
+					}
+				}
+			}
+		}
+
+		if (type == ResourceType::Mesh)
+		{
+			//RecompileMeshes();
+		}
+		else if (type == ResourceType::Texture)
+		{
+			//RecompileTextures();
+			
+		}
+	}
+
 	void AssetManager::PrintAllAssets() const
 	{
 		for (const auto x : m_AssetNameToHandle)
 		{
-			std::cout << x.first << "| " << (x.second.first << x.second.second ? "Compiled" : "Not Compiled") << "| " << Resource::GetGUIDHex(x.second.first) << std::endl;
+			std::cout << x.first << "| " << x.second.first << (x.second.second ? "Compiled" : "Not Compiled") << "| " << Resource::GetGUIDHex(x.second.first) << std::endl;
 		}
 	}
 }

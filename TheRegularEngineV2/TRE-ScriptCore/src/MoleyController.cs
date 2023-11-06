@@ -4,189 +4,257 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
-using System.Diagnostics.Eventing.Reader;
-
 namespace TRE
 {
 	using PS = PhysicsSystem;
+	using CS = CameraSystem;
 
-	class MoleyController : Entity
+	public class MoleyController : Entity
 	{
 		public PowerUpManager MyPowerManager;
 
 		//Check if player is boosted jump
 		private bool isBoostedJump = false;
-		//Check if player is on the ground
+		//check if player is on the ground (for now , just a plane)
 		private bool isGrounded = true;
 		//direction vector
 		private Vector3 dirVec;
-		//Max velocity
-		private float maxVelocity = 15f;
+		//Max Velocity vector
+		private float maxVelocity = 30f;
 		//Acceleration
-		private float acceleration = 300f;
+		private float acceleration = 700f;
 		//final velocity
 		private Vector3 finalVelocity = Vector3.zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
 		//Check if player is walking
 		private bool isWalking = false;
+		private bool walkingSFXPlayed = false;
 
-		private float lerpSpeed = 0.05f;
-
-		//Capsule Collider
+		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		private bool isScaled = false;
+
+		//Box Collider
 		private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 4.8f;
-		private float strawberrysuperRadius = 2.4f;
+		private float blueberrysuperRadius = 4f;
+		private float strawberrysuperRadius = 1.5f;
 		private float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 4.8f;
-		private float strawberrysuperHeight = 1.2f;
+		private float blueberrysuperHeight = 0.1f;
+		private float strawberrysuperHeight = 0.1f;
 		private float currentHeight = 1f;
-		//Transform Scale
+
+		//Player Scallings
 		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 blueberryscaledXform = new Vector3(1f, 2.7f, 1f);
-		private Vector3 strawberryscaledXform = new Vector3(0.5f, 1.5f, 1f);
+		private Vector3 blueberryscaledXform = new Vector3(2f, 1f, 2f);
+		private Vector3 strawberryscaledXform = new Vector3(2f, 1f, 0.5f);
 		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
 
-        private Vector3 playerDirection = new Vector3(0, 0, 1);
+		private int playerDirection = 0;
+		private int lastPlayerDirection = 0;
+
+		private float lerpSpeed = 5f;
+
+		//For camera controller
+		private Entity Key;
+		private Entity FinalPlatform;
+
+		public float elapsedTime = 0.0f;
+
+		private Vector3 InitialPosition = new Vector3(0.0f, 0.0f, 0.0f);
+		private Vector3 OutofMapPos = new Vector3(0.0f, 0.0f, 0.0f);
+		private bool DroppingOutOfMap = false;
 
 		public void Start()
 		{
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 
+			Key = ECSManager.FindEntityByName("Key");
+			Debug.Log("Key ID is " + Key.ID);
+
+			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
+			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
+
 			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
+
+			TransformSystem.GetPosition(this.ID, out Vector3 InitialPos);
+			InitialPosition = InitialPos;
+			OutofMapPos = InitialPos;
+			OutofMapPos.y = InitialPos.y - 5.0f;
 		}
 
 		public void Update()
 		{
+			// Move The Test Object 
 			TransformSystem.GetPosition(this.ID, out Vector3 pos);
+			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
 
 			//Movement Related stuff
 			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
 
+			if (pos.y < OutofMapPos.y)
+			{
+				DroppingOutOfMap = true;
+				//Debug.Log("Out of map");
+			}
+			else
+			{
+				DroppingOutOfMap = false;
+				//Debug.Log("Not out of map");
+			}
+
+			if (pos.y < (InitialPosition.y - 50.0f))
+			{
+				TransformSystem.SetPosition(this.ID, InitialPosition);
+				//Debug.Log("Respawn");
+			}
+
 			dirVec = new Vector3(0, 0, 0);
 			#region Movement
-			if (InputSystem.GetKeyDown(InputKeys.I))
+
+			if (DroppingOutOfMap)
 			{
-				dirVec.z += -1;
-				playerDirection.y = 180;
-				isWalking = true;
+				dirVec.x = 0.0f;
+				dirVec.z = 0.0f;
 			}
-
-			if (InputSystem.GetKeyDown(InputKeys.K))
+			else if (DroppingOutOfMap == false)
 			{
-				dirVec.z += 1;
-				playerDirection.y = 0;
-                isWalking = true;
-            }
-
-			if (InputSystem.GetKeyDown(InputKeys.J))
-			{
-				dirVec.x += -1;
-				playerDirection.y = 270;
-                isWalking = true;
-            }
-
-			if (InputSystem.GetKeyDown(InputKeys.L))
-			{
-				dirVec.x += 1;
-				playerDirection.y = 90;
-                isWalking = true;
-            }
-
-			if (InputSystem.GetKeyDown(InputKeys.I))
-			{
-				if (InputSystem.GetKeyDown(InputKeys.L))
+				if (InputSystem.GetKeyDown(InputKeys.W))
 				{
-					playerDirection.y = 135;
+					dirVec += CS.GetMainCameraForwardVec();
+					lastPlayerDirection = 0;
 				}
-				if (InputSystem.GetKeyDown(InputKeys.J))
-				{
-					playerDirection.y = 225;
-				}
-			}
 
-			if (InputSystem.GetKeyDown(InputKeys.K))
-			{
-				if (InputSystem.GetKeyDown(InputKeys.L))
+				if (InputSystem.GetKeyDown(InputKeys.S))
 				{
-					playerDirection.y = 45;
+					dirVec -= CS.GetMainCameraForwardVec();
+					lastPlayerDirection = 180;
 				}
-				if (InputSystem.GetKeyDown(InputKeys.J))
+
+				if (InputSystem.GetKeyDown(InputKeys.A))
 				{
-					playerDirection.y = 315;
+					dirVec += CS.GetMainCameraRightVec();
+					lastPlayerDirection = 90;
 				}
-			}
-			
-			if (InputSystem.GetKeyTrigger(InputKeys.Enter))
-			{
-				if (isGrounded)
+
+				if (InputSystem.GetKeyDown(InputKeys.D))
 				{
-					// Boosted Jump
-					if (isBoostedJump)
-                    {
-                        Vector3 maxHeight = new Vector3(0, 100, 0);
-                        Jump(maxHeight);
-                    }
-					else
+					dirVec -= CS.GetMainCameraRightVec();
+					lastPlayerDirection = 270;
+				}
+
+				if (InputSystem.GetKeyDown(InputKeys.W))
+				{
+					if (InputSystem.GetKeyDown(InputKeys.D))
 					{
-						Vector3 maxHeight = new Vector3(0, 70, 0);
-						Jump(maxHeight);
+						lastPlayerDirection = 315;
+					}
+					if (InputSystem.GetKeyDown(InputKeys.A))
+					{
+						lastPlayerDirection = 45;
 					}
 				}
-				else
+
+				if (InputSystem.GetKeyDown(InputKeys.S))
 				{
+					if (InputSystem.GetKeyDown(InputKeys.D))
+					{
+						lastPlayerDirection = 225;
+					}
+					if (InputSystem.GetKeyDown(InputKeys.A))
+					{
+						lastPlayerDirection = 135;
+					}
+				}
+
+				if (InputSystem.GetKeyTrigger(InputKeys.Space))
+				{
+					AudioSystem.PlayOnce(6503599471310675157);
 					isWalking = false;
+
+					if (isGrounded)
+					{
+						// Boosted Jump
+						if (isBoostedJump)
+						{
+							Vector3 maxHeight = new Vector3(0, 150, 0);
+							Jump(maxHeight);
+						}
+						else
+						{
+							Vector3 maxHeight = new Vector3(0, 70, 0);
+							Jump(maxHeight);
+						}
+					}
 				}
 			}
 			#endregion
 
 			#region Audio
+			if (InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+			InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D))
+			{
+				isWalking = true;
+			}
 
-			//if (isWalking && AudioSystem.GetIsPlaying(this.ID) == false)
-			//{
-   //             AudioSystem.Stop(this.ID);
-   //             AudioSystem.Play(this.ID);
-			//}
-			//else if(AudioSystem.GetIsPlaying(this.ID))
-			//{
-   //             AudioSystem.Stop(this.ID);
-   //         }
+			if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
+				InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
+			{
+				isWalking = false;
+			}
 
-            #endregion
+			if (isWalking && walkingSFXPlayed == false)
+			{
+				AudioSystem.Play(15348080909718226430);
+				walkingSFXPlayed = true;
+			}
 
-            #region Swap
-            // Check if can swap ability
-            if (InputSystem.GetKeyTrigger(InputKeys.Backslash))
-            {
-                MyPowerManager.SwapPowerUps();
-                isScaled = false;
-            }
-            #endregion
+			if (!isWalking || !isGrounded)
+			{
+				AudioSystem.Stop(15348080909718226430);
+				walkingSFXPlayed = false;
+			}
 
-            #region Drop
-            // Check if can trigger ability
-            if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
-            {
-                MyPowerManager.DropMain();
-                isScaled = false;
-            }
-            #endregion
 
-            #region Abilities
-            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+			//Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
+			//Debug.Log("isWalking: " + isWalking);
+
+			#endregion
+
+			#region Swap
+			// Check if can swap ability
+			if (InputSystem.GetKeyTrigger(InputKeys.Q))
+			{
+				MyPowerManager.SwapPowerUps();
+				isScaled = false;
+			}
+			#endregion
+
+			#region Drop
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
+			{
+				MyPowerManager.DropMain();
+				isScaled = false;
+			}
+			#endregion
+
+			#region Ability
+			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
 			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
+
 			if (isScaled && !mainBlueberry && !mainStrawberry)
 			{
 				isScaled = false;
 			}
-			if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
+
+			// Check if can trigger ability
+			if (InputSystem.GetKeyTrigger(InputKeys.E))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -196,37 +264,51 @@ namespace TRE
 
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
-				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed);
-				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed);
+				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
+				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-                currentXform.x = MathF.Lerp(currentXform.x, defaultXform.x, lerpSpeed);
-                currentXform.y = MathF.Lerp(currentXform.y, defaultXform.y, lerpSpeed);
-                currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed);
-                TransformSystem.SetScaling(this.ID, currentXform);
+				currentXform.x = MathF.Lerp(currentXform.x, defaultXform.x, lerpSpeed * Time.deltaTime);
+				currentXform.y = MathF.Lerp(currentXform.y, defaultXform.y, lerpSpeed * Time.deltaTime);
+				currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed * Time.deltaTime);
+				TransformSystem.SetScaling(this.ID, currentXform);
 			}
 			else if (mainBlueberry)
 			{
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed);
-				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed);
+				//for fat boi
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
+				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-                currentXform.x = MathF.Lerp(currentXform.x, blueberryscaledXform.x, lerpSpeed);
-                currentXform.y = MathF.Lerp(currentXform.y, blueberryscaledXform.y, lerpSpeed);
-                currentXform.z = MathF.Lerp(currentXform.z, blueberryscaledXform.z, lerpSpeed);
-                TransformSystem.SetScaling(this.ID, currentXform);
-            }
+				currentXform.x = MathF.Lerp(currentXform.x, blueberryscaledXform.x, lerpSpeed * Time.deltaTime);
+				currentXform.y = MathF.Lerp(currentXform.y, blueberryscaledXform.y, lerpSpeed * Time.deltaTime);
+				currentXform.z = MathF.Lerp(currentXform.z, blueberryscaledXform.z, lerpSpeed * Time.deltaTime);
+				TransformSystem.SetScaling(this.ID, currentXform);
+			}
 			else if (mainStrawberry)
 			{
-				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed);
-				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed);
+				//for fat boi
+				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
+				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-                currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed);
-                currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed);
-                currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed);
-                TransformSystem.SetScaling(this.ID, currentXform);
-            }
+				currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
+				currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed * Time.deltaTime);
+				currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed * Time.deltaTime);
+				TransformSystem.SetScaling(this.ID, currentXform);
+			}
 			#endregion
 
+			#region CHEATS
+			// Close Game
+			if (InputSystem.GetKeyDown(InputKeys.Escape))
+			{
+				Game.CloseGame();
+			}
+			#endregion
+
+			dirVec.y = 0;
 			dirVec.Normalize();
+
+			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+			playerDirection = (playerDirection % 360);
 
 			if (dirVec != Vector3.zero)
 			{
@@ -243,10 +325,22 @@ namespace TRE
 				}
 			}
 
-			TransformSystem.SetRotation(this.ID, playerDirection);
+			TransformSystem.SetRotation(this.ID, new Vector3(0, playerDirection, 0));
+
+			if (Key.ID != 0 && FinalPlatform.ID != 0)
+			{
+				if (PS.IsTriggerEnter(this.ID, Key.ID))
+				{
+					Key.SetActive(false);
+					TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9, -302));
+					Debug.Log("Key Collected");
+				}
+			}
 		}
+
 		private void Jump(Vector3 JumpHeight)
 		{
+			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
@@ -255,14 +349,16 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
+
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))
 			{
 				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
-            }
+			}
 			if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Red")
+				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
+					|| EngineGetTag(otherID) == "Blue" || EngineGetTag(otherID) == "BlueCollider")
 				{
 					isGrounded = true;
 				}
@@ -271,22 +367,22 @@ namespace TRE
 					isGrounded = false;
 				}
 			}
-            if (PS.IsCollisionExit(this.ID, otherID))
-            {
-                if (EngineGetTag(otherID) == "Red")
-                {
-                    PS.GetLinearVelocity(this.ID, out Vector3 output);
-                    if (output.y > maxJumpHeight)
-                        output.y = maxJumpHeight;
-                    PS.SetLinearVelocity(this.ID, output);
-                }
-                // No longer boosted if leave jumppad
-                else if (EngineGetTag(otherID) == "JumpPad")
-                {
+			if (PS.IsCollisionExit(this.ID, otherID))
+			{
+				if (EngineGetTag(otherID) == "Blue")
+				{
+					PS.GetLinearVelocity(this.ID, out Vector3 output);
+					if (output.y > maxJumpHeight)
+						output.y = maxJumpHeight;
+					PS.SetLinearVelocity(this.ID, output);
+				}
+				// No longer boosted if leave jumppad
+				else if (EngineGetTag(otherID) == "JumpPad")
+				{
 					isBoostedJump = false;
-                    isGrounded = false;
-                }
-            }
-        }
+					isGrounded = false;
+				}
+			}
+		}
 	}
 }

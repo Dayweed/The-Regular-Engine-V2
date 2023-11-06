@@ -18,23 +18,25 @@
 @@@@@((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((/@@@@
 
 To run in vs studio (in Release)
-- Set to Debug mode
-- Clean Solution
-- Click on [GenerateProject.bat] in the main folder, reload if neccessary
-- Rebuild Solution
-- Set to Release mode
+- Set mode
 - Clean Solution
 - Click on [GenerateProject.bat] in the main folder, reload if neccessary
 - Rebuild Solution
 
-To run commerical engine executable (with ImGui)
-- Copy imgui.ini in [TheRegularEditor] folder to [Executable_Release_TheRegularEditor] folder
-- Run [TheRegularEditor.exe]
+[Editor]
+- Copy imgui.ini in [TheRegularEditor] folder to [Executable_Release] folder
+- Run [TheRegularEditor.exe] from [Executable_Release] folder
+
+[Runtime]
+- Run [TRE-Runtime.exe] from [Executable_Release] folder
+
+Shortcuts
+- [Escape] while the game is running in (Tutorial/Level_1) Scenes will close the game
 
 Known bugs to avoid
 - Saving scenes anywhere other than [Scenes] folder
 - Gizmo not updating prefab instances
-- Stopping and playing multiple times will flip the order of entities
+- Stopping and playing will flip the order of entities
 
 
 

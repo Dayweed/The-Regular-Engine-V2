@@ -185,11 +185,11 @@ namespace TRE
 	
 	void Renderer::EndFrame()
 	{
-		Engine::GetInstance().GetMainSceneRenderer()->EndFrame(false);
+		Engine::GetInstance().GetMainSceneRenderer()->EndFrame();
 
 		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			Engine::GetInstance().GetEditorSceneRenderer()->EndFrame(true);
+			Engine::GetInstance().GetEditorSceneRenderer()->EndFrame();
 		}
 	}
 

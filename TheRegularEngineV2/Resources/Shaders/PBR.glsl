@@ -20,6 +20,7 @@ layout(location = 0) out struct
 	vec2 TexCoord;
 	vec4 Color;
 	vec4 AmbientColor;
+	vec4 outShadowCoord;
 } Out;
 
 layout(push_constant) uniform Push
@@ -30,6 +31,7 @@ layout(push_constant) uniform Push
 layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
+	mat4 m_LightSpaceMatrix;
 	vec3 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
@@ -44,6 +46,14 @@ layout(set = 0, binding = 6) uniform MaterialColor
 } MaterialUBO;
 
 const float gamma = 2.2;
+
+const mat4 C2T = mat4
+( 
+	0.5, 0.0, 0.0, 0.0,
+	0.0, 0.5, 0.0, 0.0,
+	0.0, 0.0, 1.0, 0.0,
+	0.5, 0.5, 0.0, 1.0 
+);
 
 void main() 
 {
@@ -71,6 +81,8 @@ void main()
 	Out.CamearPos = ubo.m_CameraPosition;
 	Out.Color = MaterialUBO.m_Color;
 	Out.AmbientColor = ubo.m_AmbientLight;
+
+	Out.outShadowCoord = C2T * ubo.m_LightSpaceMatrix * push.m_Model * vec4(inPosition, 1.0);
 }
 
 #version 450
@@ -88,6 +100,7 @@ layout(location = 0) in struct
 	vec2 TexCoord;
 	vec4 Color;
 	vec4 AmbientColor;
+	vec4 ShadowCoord;
 } In;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
@@ -95,13 +108,49 @@ layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
 layout(set = 0, binding = 4) uniform sampler2D AOMap;
 layout(set = 0, binding = 5) uniform sampler2D Metalness;
+layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
+float SampleShadowTexture( in const vec4 Coord, in const vec2 off )
+{
+	float dist = texture( shadowMap, Coord.xy + off ).r;
+	return ( Coord.w > 0.0 && dist < Coord.z ) ? 0.0f : 1.0f;
+}
+
+int isqr( int a ) { return a*a; }
+
+float ShadowPCF( in vec4 UVProjection )
+{
+	float Shadow = 1.0;
+	if ( UVProjection.z > -1.0 && UVProjection.z < 1.0 ) 
+	{
+		const float scale			= 1;
+		const vec2  TexelSize 		= scale / textureSize(shadowMap, 0);
+		const int	SampleRange		= 1;
+		const int	SampleTotal		= isqr(1 + 2 * SampleRange);
+		
+		float		ShadowAcc = 0;
+		for (int x = -SampleRange; x <= SampleRange; x++)
+		{
+			for (int y = -SampleRange; y <= SampleRange; y++)
+			{
+				ShadowAcc += SampleShadowTexture( UVProjection, vec2(TexelSize.x*x, TexelSize.y*y));
+			}
+		}
+
+		Shadow = ShadowAcc / SampleTotal;
+	}
+
+	return Shadow;
+}
+
 void main() 
 {
+	const float shadow = ShadowPCF(In.ShadowCoord / In.ShadowCoord.w);
+
 	//Calculate normal from normal map
 	vec3 normal;
 	normal.rg = (texture(NormalMap, In.TexCoord).gr) * 2.0 - 1.0;
@@ -116,7 +165,7 @@ void main()
 	float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
 	lightAttenuation = clamp(lightAttenuation, 0.0, 1.0);
 	//float lightAttenuation = clamp(1 / lightDistance, 0.0, 1.0);
-	const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
+	const vec3 attenuationColor = lightAttenuation + shadow * In.LightColor.rgb;
 
 	//Diffuse intensity
 	const float diffuseIntensity = max(dot(normal, lightDirection), 0.0);
@@ -141,6 +190,6 @@ void main()
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
 
 	//Gamma correction
-	outColor.rgb = pow(outColor.rgb, vec3(1.0 / In.PosWorld.w));
+	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / In.PosWorld.w)));
 	outColor.a = 1.0;
 }

@@ -36,21 +36,16 @@ namespace TRE
 		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
 		{
 			Audio& source = go->GetComponent<Audio>();
-			//GetFileName(go);
 
 			if (!source.m_HasCompiled)
 			{
 				CompileAudio(go);
 				source.m_HasCompiled = true;
 			}
-			source.m_Channel->isPlaying(&source.m_isPlaying);
 
-			std::cout << source.m_isPlaying << std::endl;
-
-			if (source.m_PlayOnStart && source.m_Play)
+			if (source.m_Play)
 			{
 				Play(go, true);
-
 			}
 			else if (source.m_Loop)
 			{
@@ -78,6 +73,7 @@ namespace TRE
 				}
 			}
 
+			source.m_Channel->isPlaying(&source.m_isPlaying);
 			TogglePause(go);
 			ToggleMute(go);
 			source.m_Channel->setVolume(source.m_Volume);
@@ -220,28 +216,35 @@ namespace TRE
 	void AudioSystem::Play(Entity& go, const bool shouldPlay)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
+
+		if (audio.m_isPlaying || !shouldPlay) {
+			return;
+		}
+
 		if (shouldPlay)
 		{
-			audio.m_Pause = false;
-			audio.m_PlayOnStart = false;
+			if (audio.m_Loop == false)
+			{
+				audio.m_Sound->setMode(FMOD_LOOP_OFF);
+			}
+			else
+			{
+				audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
+				audio.m_Sound->setLoopCount(-1);
+			};
+
+			audio.m_Channel->setPaused(false); 
+			audio.m_isPlaying = true;
 			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		}
 		else
 		{
-			audio.m_Pause = true;
+			//audio.m_Pause = true;
+			audio.m_Channel->stop();
+			audio.m_isPlaying = false;
 		}
+
 		SetSourcePosition(go);
-
-		if (audio.m_Loop == false)
-		{
-			audio.m_Sound->setMode(FMOD_LOOP_OFF);
-		}
-		else
-		{
-			audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
-			audio.m_Sound->setLoopCount(-1);
-		};
-
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
@@ -278,7 +281,7 @@ namespace TRE
 	void AudioSystem::Stop(Entity& go)
 	{
 		Audio& audio = go.get()->GetComponent<Audio>();
-		ErrorCheck(audio.m_ChannelGroup->stop(), "FMOD: Stop()");
+		audio.m_Channel->stop();
 	}
 
 	int AudioSystem::ErrorCheck(FMOD_RESULT result, std::string function)

@@ -31,12 +31,13 @@ namespace TRE
 		glm::vec3 m_FocalPoint{ 0.f, 0.f, m_FocalLength }; // SSSS
 		float m_AspectRatio{ 16.f / 9.f }; // SSSS
 		bool m_IsPerspective{ true }; // SSSS
-	public:
-		const glm::quat GetOrientation() const;
+		
 		const glm::vec3 GetUpVec() const;
 		const glm::vec3 GetRightVec() const;
 		const glm::vec3 GetForwardVec() const;
 		const glm::vec3 GetViewDirection() const;
+	public:
+		const glm::quat GetOrientation() const;
 	};
 
 	class Camera;

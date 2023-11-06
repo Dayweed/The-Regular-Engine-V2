@@ -109,7 +109,9 @@ namespace TRE
 	
 	void AnimationTest::UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
-		m_MaterialInstace->UpdateForRendering(UBO, Index);
+		//m_MaterialInstace->UpdateForRendering(UBO, Index);
+		(void)Index;
+		(void)UBO;
 	}
 
 	void AnimationTest::BindPipeline(VkCommandBuffer CmdBuffer)

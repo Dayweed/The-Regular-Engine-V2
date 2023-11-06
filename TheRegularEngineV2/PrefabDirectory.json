@@ -1,24 +1,26 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
         "m_ExistingPrefabsKey": [
-            "7670209894207584463",
             "11822093139939255162",
-            "8829880216004354162",
+            "7670209894207584463",
             "15526886209253662016",
+            "8829880216004354162",
             "6452796380767818092",
-            "1091796284315141664",
             "13004780274330328106",
-            "6338820077763806458"
+            "1091796284315141664",
+            "6338820077763806458",
+            "7226326221621054613"
         ],
         "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/Blueberry.json",
             "../Resources/Prefabs/FallingMaracca.json",
-            "../Resources/Prefabs/FallingHat.json",
+            "../Resources/Prefabs/Blueberry.json",
             "../Resources/Prefabs/Holey.json",
+            "../Resources/Prefabs/FallingHat.json",
             "../Resources/Prefabs/JumpPad.json",
-            "../Resources/Prefabs/TriggerDisplay.json",
             "../Resources/Prefabs/Strawberry.json",
-            "../Resources/Prefabs/Moley.json"
+            "../Resources/Prefabs/TriggerDisplay.json",
+            "../Resources/Prefabs/Moley.json",
+            "../Resources/Prefabs/Holey's Head Collider.json"
         ]
     }
 }

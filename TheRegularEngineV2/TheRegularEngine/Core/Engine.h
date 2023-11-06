@@ -50,6 +50,7 @@ namespace TRE
 			std::shared_ptr<SceneRenderer> m_EditorSceneRenderer;
 			EngineInfo m_EngineInfo;
 			bool m_Running = true;
+			bool m_Shutdown = false;
 
 			static Engine* s_Instance;
 	};
