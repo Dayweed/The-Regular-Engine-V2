@@ -96,7 +96,8 @@ namespace TRE
 				t.m_LocalScale = glm::make_vec3(a_lsca);
 			}
 
-			t.m_IsDirty = true;
+			if (t.m_LocalPosition == glm::vec3() && t.m_LocalRotation == glm::vec3() && t.m_Scale == glm::vec3(1,1,1))
+				t.m_IsDirty = true;
 		}
 	};
 

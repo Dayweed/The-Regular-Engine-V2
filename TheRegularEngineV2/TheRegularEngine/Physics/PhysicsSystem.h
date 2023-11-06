@@ -14,7 +14,8 @@
 #include "pch.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
-#include "PhysicsComponents.h"
+#include "PhysicsComponent.h"
+#include "Rigidbody.h" // For ForceMode::Enum
 #include "SimulationEventCallback.h"
 
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html

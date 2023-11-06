@@ -101,6 +101,11 @@ namespace TRE
 			}
 		}
 		child->GetComponent<Parenting>().m_Parent = "";
+
+		child->GetComponent<Transform>().m_LocalPosition = {};
+		child->GetComponent<Transform>().m_LocalRotation = {};
+		child->GetComponent<Transform>().m_LocalScale = {1, 1, 1};
+		child->GetComponent<Transform>().m_IsDirty = true;
 	}
 
 	void ParentingSystem::AddChild(Entity parent, Entity child)

@@ -9,7 +9,6 @@
 #include "Profiler.h"
 #include "Physics/PhysicsSystem.h"
 #include "Audio/AudioSystem.h"
-#include "Logger.h"
 #include "Scripting/ScriptingSystem.h"
 #include "Scripting/ScriptEngine.h"
 #include "Graphics/Light.h"
@@ -19,12 +18,8 @@
 
 //TO DELETE
 #pragma region TO DELETE TEST
-#include <time.h>       /* time */
 #include "Graphics/VulkanTexture.h"
 #include "Resource/ResourceManager.h"
-#include "Graphics/ShaderReflection.h"
-#include "TextureDescriptorFile.h"	
-#include "Physics/PhysicsComponents.h"
 #include "ShaderTypes/PBRShader.h"
 
 #include "Demo/Demo.h"

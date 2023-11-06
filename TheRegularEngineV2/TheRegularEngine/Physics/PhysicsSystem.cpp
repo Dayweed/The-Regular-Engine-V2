@@ -11,8 +11,14 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #include "pch.h"
+#include "Core/Engine.h"
+#include "Core/Transform.h"
 #include "PhysicsSystem.h"
-#include "TREIncludes.h"
+
+// #include "TREIncludes.h"
+#include "Physics/SphereCollider.h"
+#include "Physics/BoxCollider.h"
+#include "Physics/CapsuleCollider.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
@@ -24,7 +30,7 @@ using namespace physx;
 
 namespace TRE
 {
-	// largely identical to PhysX's SnippetTriggers implementation
+	// largely identical to PhysX's SnippetTriggers' implementation
 	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
