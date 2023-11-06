@@ -1301,185 +1301,184 @@ namespace TRE
 	{
 		// ECS Bindings
 		{
-			mono_add_internal_call("TRE.ECSManager::CreateEntity", BindCreateEntity);
-			mono_add_internal_call("TRE.ECSManager::CloneEntity", BindCloneEntity);
-			mono_add_internal_call("TRE.ECSManager::IsValidEntity", BindIsValidEntity);
-			mono_add_internal_call("TRE.ECSManager::AddComponent", BindAddComponent);
-			mono_add_internal_call("TRE.ECSManager::RemoveComponent", BindRemoveComponent);
-			mono_add_internal_call("TRE.ECSManager::DestroyEntity", BindDestroyEntity);
-			mono_add_internal_call("TRE.Demo::SpawnObject", BindTestFunction);
-			mono_add_internal_call("TRE.ECSManager::FindIDFromName", FindIDFromName);
-			mono_add_internal_call("TRE.ECSManager::FindNameFromID", FindNameFromID);
-			mono_add_internal_call("TRE.ECSManager::FindParentIDFromID", FindParentIDFromID);
-			mono_add_internal_call("TRE.ECSManager::HasComponent",BindHasComponent);
+			mono_add_internal_call("TRE.ECSManager::Engine_CreateEntity", BindCreateEntity);
+			mono_add_internal_call("TRE.ECSManager::Engine_CloneEntity", BindCloneEntity);
+			mono_add_internal_call("TRE.ECSManager::Engine_IsValidEntity", BindIsValidEntity);
+			mono_add_internal_call("TRE.ECSManager::Engine_AddComponent", BindAddComponent);
+			mono_add_internal_call("TRE.ECSManager::Engine_RemoveComponent", BindRemoveComponent);
+			mono_add_internal_call("TRE.ECSManager::Engine_DestroyEntity", BindDestroyEntity);
+			mono_add_internal_call("TRE.ECSManager::Engine_FindIDFromName", FindIDFromName);
+			mono_add_internal_call("TRE.ECSManager::Engine_FindNameFromID", FindNameFromID);
+			mono_add_internal_call("TRE.ECSManager::Engine_FindParentIDFromID", FindParentIDFromID);
+			mono_add_internal_call("TRE.ECSManager::Engine_HasComponent",BindHasComponent);
 		}
 
 		// Entity Bindings
 		{
-			mono_add_internal_call("TRE.Entity::EngineRename", BindEntityRename);
-			mono_add_internal_call("TRE.Entity::EngineSetActive", BindEntityActive);
-			mono_add_internal_call("TRE.Entity::EngineGetActive", BindEntityGetActive);
-			mono_add_internal_call("TRE.Entity::EngineSetTag", BindEntitySetTag);
-			mono_add_internal_call("TRE.Entity::EngineGetTag", BindEntityGetTag);
-			mono_add_internal_call("TRE.Entity::EngineCompareTag", BindEntityCompareTag);
+			mono_add_internal_call("TRE.Entity::Engine_Rename", BindEntityRename);
+			mono_add_internal_call("TRE.Entity::Engine_SetActive", BindEntityActive);
+			mono_add_internal_call("TRE.Entity::Engine_GetActive", BindEntityGetActive);
+			mono_add_internal_call("TRE.Entity::Engine_SetTag", BindEntitySetTag);
+			mono_add_internal_call("TRE.Entity::Engine_GetTag", BindEntityGetTag);
+			mono_add_internal_call("TRE.Entity::Engine_CompareTag", BindEntityCompareTag);
 		}
 
 		// Prefab Bindings
 		{
-			mono_add_internal_call("TRE.Prefab::EngineIsPrefabResource", BindCheckIsPrefabResource);
-			mono_add_internal_call("TRE.Prefab::CreatePrefabEntity", BindCreatePrefabEntity);
+			mono_add_internal_call("TRE.Prefab::Engine_IsPrefabResource", BindCheckIsPrefabResource);
+			mono_add_internal_call("TRE.Prefab::Engine_CreatePrefabEntity", BindCreatePrefabEntity);
 		}
 
 		// Parent Bindings
 		{
-			mono_add_internal_call("TRE.Parenting::EngineParentSetParent", BindParentSetParent);
-			mono_add_internal_call("TRE.Parenting::EngineParentRemoveParent", BindParentRemoveParent);
-			mono_add_internal_call("TRE.Parenting::EngineParentAddChild", BindParentAddChild);
-			mono_add_internal_call("TRE.Parenting::EngineParentRemoveChild", BindParentRemoveChild);
-			mono_add_internal_call("TRE.Parenting::EngineGetChildID", BindParentGetChildFromIndex);
-			mono_add_internal_call("TRE.Parenting::EngineGetChildIDFromName", BindParentGetChildFromName);
+			mono_add_internal_call("TRE.Parenting::Engine_ParentSetParent", BindParentSetParent);
+			mono_add_internal_call("TRE.Parenting::Engine_ParentRemoveParent", BindParentRemoveParent);
+			mono_add_internal_call("TRE.Parenting::Engine_ParentAddChild", BindParentAddChild);
+			mono_add_internal_call("TRE.Parenting::Engine_ParentRemoveChild", BindParentRemoveChild);
+			mono_add_internal_call("TRE.Parenting::Engine_GetChildID", BindParentGetChildFromIndex);
+			mono_add_internal_call("TRE.Parenting::Engine_GetChildIDFromName", BindParentGetChildFromName);
 		}
 
 		// Transform Bindings
 		{
-			mono_add_internal_call("TRE.TransformSystem::SetPosition", BindSetPosition);
-			mono_add_internal_call("TRE.TransformSystem::SetRotation", BindSetRotation);
-			mono_add_internal_call("TRE.TransformSystem::SetScaling", BindSetScaling);
-			mono_add_internal_call("TRE.TransformSystem::GetPosition", BindGetPosition);
-			mono_add_internal_call("TRE.TransformSystem::GetRotation", BindGetRotation);
-			mono_add_internal_call("TRE.TransformSystem::GetScaling", BindGetScaling);
+			mono_add_internal_call("TRE.TransformSystem::Engine_SetPosition", BindSetPosition);
+			mono_add_internal_call("TRE.TransformSystem::Engine_SetRotation", BindSetRotation);
+			mono_add_internal_call("TRE.TransformSystem::Engine_SetScaling", BindSetScaling);
+			mono_add_internal_call("TRE.TransformSystem::Engine_GetPosition", BindGetPosition);
+			mono_add_internal_call("TRE.TransformSystem::Engine_GetRotation", BindGetRotation);
+			mono_add_internal_call("TRE.TransformSystem::Engine_GetScaling", BindGetScaling);
 		}
 
 		// Mesh Renderer Bindings
 		{
-			mono_add_internal_call("TRE.MeshRendererSystem::SetMaterialInstance", BindSetMaterialInstance);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialInstance", BindSetMaterialInstance);
 		}
 
 		// Camera Bindings
 		{
-			mono_add_internal_call("TRE.CameraSystem::SetViewportSize", BindCamSetViewportSize);
-			mono_add_internal_call("TRE.CameraSystem::SetFocalPoint", BindCamSetFocalPoint);
-			mono_add_internal_call("TRE.CameraSystem::SetFocalLength", BindCamSetFocalLength);
-			mono_add_internal_call("TRE.CameraSystem::SetFOV", BindCamSetFOV);
-			mono_add_internal_call("TRE.CameraSystem::SetNear", BindCamSetNear);
-			mono_add_internal_call("TRE.CameraSystem::SetFar", BindCamSetFar);
-			mono_add_internal_call("TRE.CameraSystem::SetLeft", BindCamSetLeft);
-			mono_add_internal_call("TRE.CameraSystem::SetRight", BindCamSetRight);
-			mono_add_internal_call("TRE.CameraSystem::SetBottom", BindCamSetBottom);
-			mono_add_internal_call("TRE.CameraSystem::SetTop", BindCamSetTop);
-			mono_add_internal_call("TRE.CameraSystem::SetAspectRatio", BindCamSetAspectRatio);
-			mono_add_internal_call("TRE.CameraSystem::SetIsPerspective", BindCamSetIsPerspective);
-			mono_add_internal_call("TRE.CameraSystem::SetIsMainCamera", BindCamSetIsMainCamera);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetViewportSize", BindCamSetViewportSize);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetFocalPoint", BindCamSetFocalPoint);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetFocalLength", BindCamSetFocalLength);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetFOV", BindCamSetFOV);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetNear", BindCamSetNear);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetFar", BindCamSetFar);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetLeft", BindCamSetLeft);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetRight", BindCamSetRight);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetBottom", BindCamSetBottom);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetTop", BindCamSetTop);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetAspectRatio", BindCamSetAspectRatio);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetIsPerspective", BindCamSetIsPerspective);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetIsMainCamera", BindCamSetIsMainCamera);
 
-			mono_add_internal_call("TRE.CameraSystem::GetViewMatrix", BindCamGetViewMatrix);
-			mono_add_internal_call("TRE.CameraSystem::GetProjectionMatrix", BindCamGetProjectionMatrix);
-			mono_add_internal_call("TRE.CameraSystem::GetInverseViewMatrix", BindCamGetInverseViewMatrix);
-			mono_add_internal_call("TRE.CameraSystem::GetInverseProjectionMatrix", BindCamGetInverseProjectionMatrix);
-			mono_add_internal_call("TRE.CameraSystem::GetInverseViewProjectionMatrix", BindCamGetInverseViewProjectionMatrix);
-			mono_add_internal_call("TRE.CameraSystem::GetViewportSize", BindCamGetViewportSize);
-			mono_add_internal_call("TRE.CameraSystem::GetFOV", BindCamGetFOV);
-			mono_add_internal_call("TRE.CameraSystem::GetNear", BindCamGetNear);
-			mono_add_internal_call("TRE.CameraSystem::GetFar", BindCamGetFar);
-			mono_add_internal_call("TRE.CameraSystem::GetLeft", BindCamGetLeft);
-			mono_add_internal_call("TRE.CameraSystem::GetRight", BindCamGetRight);
-			mono_add_internal_call("TRE.CameraSystem::GetBottom", BindCamGetBottom);
-			mono_add_internal_call("TRE.CameraSystem::GetTop", BindCamGetTop);
-			mono_add_internal_call("TRE.CameraSystem::GetAspectRatio", BindCamGetAspectRatio);
-			mono_add_internal_call("TRE.CameraSystem::IsPerspective", BindCamIsPerspective);
-			mono_add_internal_call("TRE.CameraSystem::IsMainCamera", BindCamIsMainCamera);
-			mono_add_internal_call("TRE.CameraSystem::SetMainCameraLookAt", BindCamMainSetLookAt);
-			mono_add_internal_call("TRE.CameraSystem::TransitionMainCamera", BindTransitionMainCamera);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetViewMatrix", BindCamGetViewMatrix);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetProjectionMatrix", BindCamGetProjectionMatrix);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetInverseViewMatrix", BindCamGetInverseViewMatrix);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetInverseProjectionMatrix", BindCamGetInverseProjectionMatrix);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetInverseViewProjectionMatrix", BindCamGetInverseViewProjectionMatrix);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetViewportSize", BindCamGetViewportSize);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetFOV", BindCamGetFOV);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetNear", BindCamGetNear);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetFar", BindCamGetFar);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetLeft", BindCamGetLeft);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetRight", BindCamGetRight);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetBottom", BindCamGetBottom);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetTop", BindCamGetTop);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetAspectRatio", BindCamGetAspectRatio);
+			mono_add_internal_call("TRE.CameraSystem::Engine_IsPerspective", BindCamIsPerspective);
+			mono_add_internal_call("TRE.CameraSystem::Engine_IsMainCamera", BindCamIsMainCamera);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetMainCameraLookAt", BindCamMainSetLookAt);
+			mono_add_internal_call("TRE.CameraSystem::Engine_TransitionMainCamera", BindTransitionMainCamera);
 
-			mono_add_internal_call("TRE.CameraSystem::GetMainCameraForwardVec", BindCameraForwardVector);
-			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRightVec", BindCameraRightVector);
-			mono_add_internal_call("TRE.CameraSystem::GetMainCameraRotation", BindCameraRotation);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraForwardVec", BindCameraForwardVector);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraRightVec", BindCameraRightVector);
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraRotation", BindCameraRotation);
 		}
 
 		// Physics Bindings
 		{
-			mono_add_internal_call("TRE.PhysicsSystem::ResizeSphereCollider", BindResizeSphereCollider);
-			mono_add_internal_call("TRE.PhysicsSystem::ResizeBoxCollider", BindResizeBoxCollider);
-			mono_add_internal_call("TRE.PhysicsSystem::ResizeCapsuleCollider", BindResizeCapsuleCollider);
-			mono_add_internal_call("TRE.PhysicsSystem::UpdateColliderOffset", BindOffsetCollider);
-			mono_add_internal_call("TRE.PhysicsSystem::AddForce", BindAddForce);
-			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationX", BindConstrainRotationX);
-			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationY", BindConstrainRotationY);
-			mono_add_internal_call("TRE.PhysicsSystem::ConstrainRotationZ", BindConstrainRotationZ);
-			mono_add_internal_call("TRE.PhysicsSystem::GetLinearVelocity", BindGetLinearVelocity);
-			mono_add_internal_call("TRE.PhysicsSystem::SetLinearVelocity", BindSetLinearVelocity);
-			mono_add_internal_call("TRE.PhysicsSystem::IsCollisionEnter", BindIsCollisionEnter);
-			mono_add_internal_call("TRE.PhysicsSystem::IsCollisionStay", BindIsCollisionStay);
-			mono_add_internal_call("TRE.PhysicsSystem::IsCollisionExit", BindIsCollisionExit);
-			mono_add_internal_call("TRE.PhysicsSystem::IsTriggerEnter", BindIsTriggerEnter);
-			mono_add_internal_call("TRE.PhysicsSystem::IsTriggerStay", BindIsTriggerStay);
-			mono_add_internal_call("TRE.PhysicsSystem::IsTriggerExit", BindIsTriggerExit);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeSphereCollider", BindResizeSphereCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeBoxCollider", BindResizeBoxCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCapsuleCollider", BindResizeCapsuleCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_UpdateColliderOffset", BindOffsetCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_AddForce", BindAddForce);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationX", BindConstrainRotationX);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationY", BindConstrainRotationY);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationZ", BindConstrainRotationZ);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetLinearVelocity", BindGetLinearVelocity);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetLinearVelocity", BindSetLinearVelocity);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionEnter", BindIsCollisionEnter);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionStay", BindIsCollisionStay);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionExit", BindIsCollisionExit);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerEnter", BindIsTriggerEnter);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerStay", BindIsTriggerStay);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerExit", BindIsTriggerExit);
 		}
 
 		// RigidBody Binding
 		{
-			mono_add_internal_call("TRE.RigidBodySystem::SetKinematic", BindSetKinematic);
-			mono_add_internal_call("TRE.RigidBodySystem::GetKinematic", BindGetKinematic);
-			mono_add_internal_call("TRE.RigidBodySystem::SetGravity", BindSetGravity);
-			mono_add_internal_call("TRE.RigidBodySystem::GetGravity", BindGetGravity);
+			mono_add_internal_call("TRE.RigidBodySystem::Engine_SetKinematic", BindSetKinematic);
+			mono_add_internal_call("TRE.RigidBodySystem::Engine_GetKinematic", BindGetKinematic);
+			mono_add_internal_call("TRE.RigidBodySystem::Engine_SetGravity", BindSetGravity);
+			mono_add_internal_call("TRE.RigidBodySystem::Engine_GetGravity", BindGetGravity);
 		}
 
 		// Input Binding
 		{
-			mono_add_internal_call("TRE.InputSystem::GetKeyDown", GetKeyDown);
-			mono_add_internal_call("TRE.InputSystem::GetKeyTrigger", GetKeyTrigger);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyDown", GetKeyDown);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyTrigger", GetKeyTrigger);
 		}
 
 		// Logging
 		{
-			mono_add_internal_call("TRE.Debug::Log", SendMessageToConsole);
-			mono_add_internal_call("TRE.Debug::LogWarning", SendWarningToConsole);
-			mono_add_internal_call("TRE.Debug::LogError", SendErrorToConsole);
-			mono_add_internal_call("TRE.Debug::LogCritical", SendCriticalToConsole);
+			mono_add_internal_call("TRE.Debug::Engine_Log", SendMessageToConsole);
+			mono_add_internal_call("TRE.Debug::Engine_LogWarning", SendWarningToConsole);
+			mono_add_internal_call("TRE.Debug::Engine_LogError", SendErrorToConsole);
+			mono_add_internal_call("TRE.Debug::Engine_LogCritical", SendCriticalToConsole);
 		}
 
 		// Math
 		{
-			mono_add_internal_call("TRE.MathF::Sqrt", BindSqrt);
-			mono_add_internal_call("TRE.MathF::Lerp", BindLerp);
-			mono_add_internal_call("TRE.MathF::Vec3Lerp", BindLerpVec3);
+			mono_add_internal_call("TRE.MathF::Engine_Sqrt", BindSqrt);
+			mono_add_internal_call("TRE.MathF::Engine_Lerp", BindLerp);
+			mono_add_internal_call("TRE.MathF::Engine_Vec3Lerp", BindLerpVec3);
 		}
 
 		// Random
 		{
-			mono_add_internal_call("TRE.Random::IntRange", BindIntRandRange);
-			mono_add_internal_call("TRE.Random::FloatRange", BindFloatRandRange);
+			mono_add_internal_call("TRE.Random::Engine_IntRange", BindIntRandRange);
+			mono_add_internal_call("TRE.Random::Engine_FloatRange", BindFloatRandRange);
 		}
 
 		// Time
 		{
-			mono_add_internal_call("TRE.Time::GetDeltaTime", BindGetDeltaTime);
+			mono_add_internal_call("TRE.Time::Engine_GetDeltaTime", BindGetDeltaTime);
 		}
 
 		//Audio
 		{
-			mono_add_internal_call("TRE.AudioSystem::Play", BindSetPlaySound);
-			mono_add_internal_call("TRE.AudioSystem::PlayOnce", BindSetPlayOnce);
-			mono_add_internal_call("TRE.AudioSystem::TogglePause", BindTogglePauseSound);
-			mono_add_internal_call("TRE.AudioSystem::Stop", BindSetStop);
-			mono_add_internal_call("TRE.AudioSystem::GetIsPlaying", BindIsPlaying);
+			mono_add_internal_call("TRE.AudioSystem::Engine_Play", BindSetPlaySound);
+			mono_add_internal_call("TRE.AudioSystem::Engine_PlayOnce", BindSetPlayOnce);
+			mono_add_internal_call("TRE.AudioSystem::Engine_TogglePause", BindTogglePauseSound);
+			mono_add_internal_call("TRE.AudioSystem::Engine_Stop", BindSetStop);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetIsPlaying", BindIsPlaying);
 		}
 
 		// Scene
 		{
-			mono_add_internal_call("TRE.Scene::ChangeScene", BindLoadScene);
-			mono_add_internal_call("TRE.Scene::GetSceneName", BindGetSceneName);
+			mono_add_internal_call("TRE.Scene::Engine_ChangeScene", BindLoadScene);
+			mono_add_internal_call("TRE.Scene::Engine_GetSceneName", BindGetSceneName);
 		}
 
 		// Scripting
 		{
-			mono_add_internal_call("TRE.Script::IsScript", BindIsScript);
-			mono_add_internal_call("TRE.Script::HaveScript", BindHaveScript);
-			mono_add_internal_call("TRE.Script::GetScript", BindGetScript);
+			mono_add_internal_call("TRE.Script::Engine_IsScript", BindIsScript);
+			mono_add_internal_call("TRE.Script::Engine_HaveScript", BindHaveScript);
+			mono_add_internal_call("TRE.Script::Engine_GetScript", BindGetScript);
 		}
 
 		// Game
 		{
-			mono_add_internal_call("TRE.Game::CloseGame", BindCloseGame);
+			mono_add_internal_call("TRE.Game::Engine_CloseGame", BindCloseGame);
 		}
 	}
 }
