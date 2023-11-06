@@ -37,6 +37,7 @@ project "TheRegularEngine"
 	-- get the Math project to build by this point
 	dependson {"Math"}
 
+
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
@@ -151,6 +152,8 @@ project "TheRegularEditor"
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
 
+	dependson {"TRE-ScriptStorage"}
+
 	links 
 	{ 
 		"TheRegularEngine",
@@ -262,7 +265,9 @@ project "TRE-Runtime"
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
 
-	links 
+	dependson {"TRE-ScriptStorage"}
+
+	links
 	{ 
 		"TheRegularEngine",
 		"ImGui"
@@ -393,6 +398,8 @@ project "TRE-ScriptStorage"
 	links"Coroutine.dll"
 	links"GlmSharp.dll"
 	
+	dependson {"TRE-ScriptCore"}
+
 	files 
 	{
 		"%{prj.name}/src/**.cs",
