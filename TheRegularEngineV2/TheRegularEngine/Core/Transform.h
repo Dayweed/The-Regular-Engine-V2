@@ -52,9 +52,9 @@ namespace TRE
 				{ "m_Position", v_pos },
 				{ "m_Rotation", v_rot },
 				{ "m_Scale", v_sca },
-				{ "m_LocalPosition", v_lpos },
+				/*{ "m_LocalPosition", v_lpos },
 				{ "m_LocalRotation", v_lrot },
-				{ "m_LocalScale", v_lsca }
+				{ "m_LocalScale", v_lsca }*/
 			};
 		}
 		friend void from_json(const nlohmann::json& j, Transform& t) // Deserialize
@@ -77,7 +77,7 @@ namespace TRE
 				float a_sca[3]{ v_sca[0], v_sca[1], v_sca[2] };
 				t.m_Scale = glm::make_vec3(a_sca);
 			}
-			if (j.contains("m_LocalPosition"))
+			/*if (j.contains("m_LocalPosition"))
 			{
 				std::vector<float> v_lpos{ j.at("m_LocalPosition").get<std::vector<float>>() };
 				float a_lpos[3]{ v_lpos[0], v_lpos[1], v_lpos[2] };
@@ -97,7 +97,8 @@ namespace TRE
 			}
 
 			if (t.m_LocalPosition == glm::vec3() && t.m_LocalRotation == glm::vec3() && t.m_Scale == glm::vec3(1,1,1))
-				t.m_IsDirty = true;
+				t.m_IsDirty = true;*/
+			t.m_IsDirty = true;
 		}
 	};
 

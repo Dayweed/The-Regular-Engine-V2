@@ -316,6 +316,11 @@ namespace TRE
 		return m_EditorSceneRenderer;
 	}
 
+	void Engine::TellToShutdown()
+	{
+		m_Running = false;
+	}
+
 	const std::shared_ptr<Window>& Engine::GetWindow()
 	{
 		return m_Window;
@@ -509,6 +514,8 @@ namespace TRE
 			Profiler::Instance().PrintTimers();
 		}
 		
+		// If either fails here, shut it down
+		Shutdown();
 	}
 
 	void Engine::Shutdown()

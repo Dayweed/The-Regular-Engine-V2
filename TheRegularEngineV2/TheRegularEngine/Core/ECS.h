@@ -765,7 +765,7 @@ namespace TRE
 	T& Ent::GetComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
-		if (this == nullptr || &m_Entity == nullptr)
+		if (this == nullptr || &m_Entity == nullptr || shared_from_this() == nullptr)
 		{
 			std::string funcName{ __FUNCTION__ };
 			TRE_CORE_ERROR("[" + funcName + "] Object is no longer valid (this or entity is nullptr)");

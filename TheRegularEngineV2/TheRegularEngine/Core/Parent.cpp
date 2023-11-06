@@ -4,6 +4,8 @@
 #include "Transform.h"
 #include "Logger.h"
 
+#include <glm/gtc/matrix_inverse.hpp>
+
 namespace TRE
 {
 	void ParentingSystem::Update()
@@ -34,6 +36,8 @@ namespace TRE
 			//Update world data
 			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
 			{
+				transform.CalculateWorldMatrix();
+
 				//Update own local data if i have a parent
 				UpdateLocalData(object);
 

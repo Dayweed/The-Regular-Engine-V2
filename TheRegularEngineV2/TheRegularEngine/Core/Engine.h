@@ -40,6 +40,8 @@ namespace TRE
 			const std::shared_ptr<SceneRenderer>& GetMainSceneRenderer();
 			const std::shared_ptr<SceneRenderer>& GetEditorSceneRenderer();
 
+			void TellToShutdown();	// This while make it try to shutdown in the next loop
+
 		protected:
 			Engine(const EngineInfo& EngineInfo = EngineInfo());
 

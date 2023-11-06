@@ -13,8 +13,8 @@ namespace TRE
 	{
 		glm::quat rotation = glm::quat(glm::radians(m_Rotation));
 		glm::mat4 rotationMat = glm::mat4_cast(rotation);
-		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_Scale);
-		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_Position);
+		glm::mat4 scaleMat = glm::scale(glm::identity<glm::mat4>(), m_Scale);
+		glm::mat4 translationMat = glm::translate(glm::identity<glm::mat4>(), m_Position);
 
 		m_WorldXform = translationMat * rotationMat * scaleMat;
 	}
@@ -31,9 +31,9 @@ namespace TRE
 	const glm::mat4 Transform::CalculateLocalMatrix()
 	{
 		glm::quat rotation = glm::quat(glm::radians(m_LocalRotation));
+		glm::mat4 scaleMat = glm::scale(glm::identity<glm::mat4>(), m_LocalScale);
 		glm::mat4 rotationMat = glm::mat4_cast(rotation);
-		glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), m_LocalScale);
-		glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), m_LocalPosition);
+		glm::mat4 translationMat = glm::translate(glm::identity<glm::mat4>(), m_LocalPosition);
 
 		return translationMat * rotationMat * scaleMat;
 	}
@@ -45,7 +45,7 @@ namespace TRE
 		CalculateWorldMatrix();
 
 		glm::mat4 inverseParentWorldTransform = glm::affineInverse(parent.m_WorldXform);
-		const glm::mat4 localXform = m_WorldXform * inverseParentWorldTransform;
+		const glm::mat4 localXform = inverseParentWorldTransform * m_WorldXform;
 
 		m_LocalPosition = glm::vec3(localXform[3]);
 		m_LocalScale = glm::vec3(glm::length(localXform[0]), glm::length(localXform[1]), glm::length(localXform[2]));
