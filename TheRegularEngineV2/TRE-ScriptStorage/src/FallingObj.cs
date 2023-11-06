@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
@@ -12,7 +13,7 @@ namespace TRE
         public float Duration;
         public float CurrentTime;
 
-        public Vector3 currentPos;
+        public vec3 currentPos;
 
         public void Start()
         {

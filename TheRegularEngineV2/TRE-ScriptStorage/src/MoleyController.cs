@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
+
 namespace TRE
 {
 	using PS = PhysicsSystem;
@@ -18,13 +20,13 @@ namespace TRE
 		//check if player is on the ground (for now , just a plane)
 		private bool isGrounded = true;
 		//direction vector
-		private Vector3 dirVec;
+		private vec3 dirVec;
 		//Max Velocity vector
 		private float maxVelocity = 30f;
 		//Acceleration
 		private float acceleration = 700f;
 		//final velocity
-		private Vector3 finalVelocity = Vector3.zero;
+		private vec3 finalVelocity = vec3.Zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
 		//Check if player is walking
@@ -47,10 +49,10 @@ namespace TRE
 		private float currentHeight = 1f;
 
 		//Player Scallings
-		private Vector3 defaultXform = new Vector3(0.75f, 0.75f, 0.75f);
-		private Vector3 blueberryscaledXform = new Vector3(2f, 1f, 2f);
-		private Vector3 strawberryscaledXform = new Vector3(2f, 1f, 0.5f);
-		private Vector3 currentXform = new Vector3(0.75f, 0.75f, 0.75f);
+		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
+		private vec3 blueberryscaledXform = new vec3(2f, 1f, 2f);
+		private vec3 strawberryscaledXform = new vec3(2f, 1f, 0.5f);
+		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
@@ -63,8 +65,8 @@ namespace TRE
 
 		public float elapsedTime = 0.0f;
 
-		private Vector3 InitialPosition = new Vector3(0.0f, 0.0f, 0.0f);
-		private Vector3 OutofMapPos = new Vector3(0.0f, 0.0f, 0.0f);
+		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
+		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
 		private bool DroppingOutOfMap = false;
 
 		public void Start()
@@ -77,12 +79,12 @@ namespace TRE
 			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
 			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
 
-			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
+			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
 
-			TransformSystem.GetPosition(this.ID, out Vector3 InitialPos);
+			TransformSystem.GetPosition(this.ID, out vec3 InitialPos);
 			InitialPosition = InitialPos;
 			OutofMapPos = InitialPos;
 			OutofMapPos.y = InitialPos.y - 5.0f;
@@ -91,11 +93,11 @@ namespace TRE
 		public void Update()
 		{
 			// Move The Test Object 
-			TransformSystem.GetPosition(this.ID, out Vector3 pos);
-			TransformSystem.SetRotation(this.ID, new Vector3(0, 0, 0));
+			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 
 			//Movement Related stuff
-			PS.GetLinearVelocity(this.ID, out Vector3 currVelocity);
+			PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
 
 			if (pos.y < OutofMapPos.y)
 			{
@@ -114,7 +116,7 @@ namespace TRE
 				//Debug.Log("Respawn");
 			}
 
-			dirVec = new Vector3(0, 0, 0);
+			dirVec = new vec3(0, 0, 0);
 			#region Movement
 
 			if (DroppingOutOfMap)
@@ -182,12 +184,12 @@ namespace TRE
 						// Boosted Jump
 						if (isBoostedJump)
 						{
-							Vector3 maxHeight = new Vector3(0, 150, 0);
+                            vec3 maxHeight = new vec3(0, 150, 0);
 							Jump(maxHeight);
 						}
 						else
 						{
-							Vector3 maxHeight = new Vector3(0, 70, 0);
+                            vec3 maxHeight = new vec3(0, 70, 0);
 							Jump(maxHeight);
 						}
 					}
@@ -305,40 +307,40 @@ namespace TRE
 			#endregion
 
 			dirVec.y = 0;
-			dirVec.Normalize();
+			dirVec = dirVec.Normalized;
 
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
 
-			if (dirVec != Vector3.zero)
+			if (dirVec != vec3.Zero)
 			{
 				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
 				{
-					finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
+					finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
 					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 				else
 				{
-					Vector3 tmp = dirVec * maxVelocity;
-					finalVelocity = new Vector3(tmp.x, currVelocity.y, tmp.z);
+                    vec3 tmp = dirVec * maxVelocity;
+					finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
 					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 			}
 
-			TransformSystem.SetRotation(this.ID, new Vector3(0, playerDirection, 0));
+			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
 			if (Key.ID != 0 && FinalPlatform.ID != 0)
 			{
 				if (PS.IsTriggerEnter(this.ID, Key.ID))
 				{
 					Key.SetActive(false);
-					TransformSystem.SetPosition(FinalPlatform.ID, new Vector3(100, 9, -302));
+					TransformSystem.SetPosition(FinalPlatform.ID, new vec3(100, 9, -302));
 					Debug.Log("Key Collected");
 				}
 			}
 		}
 
-		private void Jump(Vector3 JumpHeight)
+		private void Jump(vec3 JumpHeight)
 		{
 			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
@@ -371,7 +373,7 @@ namespace TRE
 			{
 				if (EngineGetTag(otherID) == "Blue")
 				{
-					PS.GetLinearVelocity(this.ID, out Vector3 output);
+					PS.GetLinearVelocity(this.ID, out vec3 output);
 					if (output.y > maxJumpHeight)
 						output.y = maxJumpHeight;
 					PS.SetLinearVelocity(this.ID, output);

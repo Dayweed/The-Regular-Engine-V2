@@ -4,12 +4,13 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
     public class PlatformLogic : Entity
     {
-        public Vector3[] positions;
+        public vec3[] positions;
         public int currentIndex;
 
         private float lerpSpeed = 1.25f;
@@ -26,7 +27,7 @@ namespace TRE
             if (Scene.GetSceneName() == "Level_1" && name == "Platform_1")
             {
                 currentIndex = 0;
-                positions = new Vector3[] { new Vector3(10, 18, -210), new Vector3(10, 18, -174) };
+                positions = new vec3[] { new vec3(10, 18, -210), new vec3(10, 18, -174) };
             }
         }
 

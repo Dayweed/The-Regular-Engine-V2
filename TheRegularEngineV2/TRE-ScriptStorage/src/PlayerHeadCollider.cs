@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlmSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace TRE
             {
                 return;
             }
-            Vector3 newPos = playerObj.transform.Position;
+            vec3 newPos = playerObj.transform.Position;
             newPos.y += playerObj.transform.Scale.y * 5f;
             transform.Position = newPos;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlmSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,8 +33,8 @@ namespace TRE
 
 		CameraController cameraController;
 
-		private Vector3 expectedPosition;
-		private Vector3 expectedRotation;
+		private vec3 expectedPosition;
+		private vec3 expectedRotation;
 		private float expectedDistance;
 		
 		public void Start()
@@ -68,8 +69,8 @@ namespace TRE
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 
 			expectedDistance = 35;
-			expectedPosition = new Vector3(0, 10, 20);
-			expectedRotation = new Vector3(30, 180, 0);
+			expectedPosition = new vec3(0, 10, 20);
+			expectedRotation = new vec3(30, 180, 0);
 		}
 		public void Update()
 		{
@@ -84,57 +85,57 @@ namespace TRE
 
 			if (regionA)
 			{
-				expectedPosition = new Vector3(0, 10, 20);
-				expectedRotation = new Vector3(30, 180, 0);
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 35;
 			}
 
 			if (regionB)
 			{
-				expectedPosition = new Vector3(0, 35, 50);
-				expectedRotation = new Vector3(45, 180, 0);
+				expectedPosition = new vec3(0, 35, 50);
+				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 50;
 			}
 
 			if (regionC)
 			{
-				expectedPosition = new Vector3(0, 40, 50);
-				expectedRotation = new Vector3(15, 180, 0);
+				expectedPosition = new vec3(0, 40, 50);
+				expectedRotation = new vec3(15, 180, 0);
 				expectedDistance = 25;
 			}
 
 			if (regionD)
 			{
-				expectedPosition = new Vector3(0, 40, 50);
-				expectedRotation = new Vector3(45, 180, 0);
+				expectedPosition = new vec3(0, 40, 50);
+				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 50;
 			}
 
 			if (regionE)
 			{
-				expectedPosition = new Vector3(0, 40, 50);
-				expectedRotation = new Vector3(30, 180, 0);
+				expectedPosition = new vec3(0, 40, 50);
+				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 50;
 			}
 
 			if (regionF)
 			{
-				expectedPosition = new Vector3(0, 40, 50);
-				expectedRotation = new Vector3(45, 180, 0);
+				expectedPosition = new vec3(0, 40, 50);
+				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 65;
 			}
 
 			if (regionG)
 			{
-				expectedPosition = new Vector3(50, 40, 50);
-				expectedRotation = new Vector3(35, 185, 0);
+				expectedPosition = new vec3(50, 40, 50);
+				expectedRotation = new vec3(35, 185, 0);
 				expectedDistance = 60;
 			}
 
 			if (regionH)
 			{
-				expectedPosition = new Vector3(50, 40, 50);
-				expectedRotation = new Vector3(20, 180, 0);
+				expectedPosition = new vec3(50, 40, 50);
+				expectedRotation = new vec3(20, 180, 0);
 				expectedDistance = 20;
 			}
 

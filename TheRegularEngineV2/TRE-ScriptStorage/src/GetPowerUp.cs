@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
@@ -123,7 +124,7 @@ namespace TRE
 
             if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
-            Vector3 newPos = playerObj.transform.Position;
+            vec3 newPos = playerObj.transform.Position;
             int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
             newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
             transform.Position = newPos;
@@ -140,7 +141,7 @@ namespace TRE
             playerObj = null;
             collected = false;
             GetComponent<Rigidbody>().useGravity = true;
-            PhysicsSystem.AddForce(this.ID, new Vector3(20, 50, 0), ForceMode.VelocityChange);
+            PhysicsSystem.AddForce(this.ID, new vec3(20, 50, 0), ForceMode.VelocityChange);
             cooldownCurrent = cooldownDuration;
         }
 
