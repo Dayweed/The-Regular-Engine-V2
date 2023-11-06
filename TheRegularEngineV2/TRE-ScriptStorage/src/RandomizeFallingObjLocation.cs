@@ -73,7 +73,7 @@ namespace TRE
         public List<Entity> fallingObjPrefabs;
         public List<Entity> fallingObjRNG;
 
-        public Vector3 size;
+        public vec3 size;
 
         public int maxAmountToSpawn;
         public int timeBetweenSpawns;
@@ -111,7 +111,7 @@ namespace TRE
             maxAmountToSpawn = 3;
             maxObjects = 3;
             timeBetweenSpawns = 2;
-            size = new Vector3(20, 0, 50);
+            size = new vec3(20, 0, 50);
             canSpawnObjs = true;
             dropDuration = 3.5f;
             minRange = 5.5f;

@@ -70,7 +70,7 @@ namespace TRE
 	{
 	public:
 		ScriptClass() = default;
-		ScriptClass(const std::string& classNamespace,const std::string& className);
+		ScriptClass(const std::string& classNamespace,const std::string& className, bool isCore);
 
 		MonoObject* Instantiate();
 		MonoMethod* GetMethod(const std::string& name, int paramCount);

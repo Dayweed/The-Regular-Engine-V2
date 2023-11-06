@@ -385,8 +385,8 @@ project "TRE-ScriptStorage"
 	dotnetframework "4.7.2"
 
 	-- (DON'T DELETE THIS!)
-	targetdir ("Executable_" .. outputdir .. "/")
-	objdir ("Executable_" .. outputdir .. "/")
+	targetdir ("Resources/Scripts")
+	objdir ("Resources/Scripts")
 	
 	libdirs "Resources/Scripts"
 	links "TRE-ScriptCore.dll"

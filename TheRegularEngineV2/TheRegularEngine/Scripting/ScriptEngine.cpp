@@ -162,7 +162,7 @@ namespace TRE
 
 		// Here we will load the project assembly when the project script and core script is separated.
 
-		status = LoadProjectAssembly("../Resources/Scripts/TRE-ScriptProject.dll");
+		status = LoadProjectAssembly("../Resources/Scripts/TRE-ScriptStorage.dll");
 		if(!status)
 		{
 			TRE_CORE_ERROR("Failed to load project assembly");
@@ -173,9 +173,13 @@ namespace TRE
 
 		// Register all ECS components to the scripting engine
 
-		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
+		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity", true);
 
-		ReloadAssembly();
+		s_ScriptEngineData->ScriptInstances.clear();
+		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
+		{
+			CreateCSEntityData(entity);
+		}
 	}
 
 	void ScriptEngine::Shutdown()
@@ -248,7 +252,7 @@ namespace TRE
 		s_ScriptEngineData->ScriptClasses.clear();
 
 		// Change the CoreAssemblyImage to AppCoreAssemblyImage when project script and core script is separated.
-		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->CoreAssemblyImage , MONO_TABLE_TYPEDEF);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->ProjectAssemblyImage , MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 		MonoClass* entity = mono_class_from_name(s_ScriptEngineData->CoreAssemblyImage, "TRE", "Entity");
 
@@ -257,8 +261,8 @@ namespace TRE
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-			const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->CoreAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
-			const char* name = mono_metadata_string_heap(s_ScriptEngineData->CoreAssemblyImage, cols[MONO_TYPEDEF_NAME]);
+			const char* nameSpace = mono_metadata_string_heap(s_ScriptEngineData->ProjectAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(s_ScriptEngineData->ProjectAssemblyImage, cols[MONO_TYPEDEF_NAME]);
 
 			std::string className;
 
@@ -270,7 +274,7 @@ namespace TRE
 			printf("%s.%s\n", nameSpace, name);
 
 			//Create main class called entity, Also change the assembly image to AppCoreAssemblyImage when project script and core script is separated.
-			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->CoreAssemblyImage, nameSpace, name);
+			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->ProjectAssemblyImage, nameSpace, name);
 
 			if(monoClass == entity)
 				continue;
@@ -279,7 +283,7 @@ namespace TRE
 				continue;
 
 			TRE_CORE_INFO("Found class: {0}", className);
-			std::shared_ptr<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name);
+			std::shared_ptr<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name, false);
 			s_ScriptEngineData->ScriptClasses.insert(std::make_pair(className, scriptClass));
 
 			// Load fields of each of the classes that is not the entity class
@@ -310,8 +314,8 @@ namespace TRE
 		batch.open("ScriptCompiler.bat", std::ios::out);
 
 		batch << "@echo OFF" << std::endl;
-		batch << "cd " + std::filesystem::current_path().parent_path().string() + "/TRE-ScriptCore" << std::endl;
-		batch << "dotnet build TRE-ScriptCore.csproj" << std::endl;
+		batch << "cd " + std::filesystem::current_path().parent_path().string() + "/TRE-ScriptStorage" << std::endl;
+		batch << "dotnet build TRE-ScriptStorage.csproj" << std::endl;
 
 		batch.close();
 
@@ -341,7 +345,7 @@ namespace TRE
 
 		// Register back all the components to the scripting engine
 
-		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity");
+		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity", true);
 
 		s_ScriptEngineData->ScriptInstances.clear();
 		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
@@ -606,9 +610,9 @@ namespace TRE
 
 #pragma region ScriptClass
 
-	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className ) : m_ClassNamespace(classNamespace), m_ClassName(className)
+	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className , bool isCore) : m_ClassNamespace(classNamespace), m_ClassName(className)
 	{
-		m_MonoClass = mono_class_from_name(ScriptEngine::s_ScriptEngineData->CoreAssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
+		m_MonoClass = mono_class_from_name(isCore ? ScriptEngine::s_ScriptEngineData->CoreAssemblyImage : ScriptEngine::s_ScriptEngineData->ProjectAssemblyImage, m_ClassNamespace.c_str(), m_ClassName.c_str());
 	}
 
 	MonoObject* ScriptClass::Instantiate()

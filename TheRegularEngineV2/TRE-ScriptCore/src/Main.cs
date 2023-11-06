@@ -124,13 +124,13 @@ namespace TRE
 			*/
 		}
 
-		private void Jump(Vector3 JumpHeight)
-		{
-			/* Commenting out uneeded code to prevent Console Panel spam...
-			PhysicsSystem.AddForce(Test.ID, JumpHeight, ForceMode.Force);
-			// PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
-			*/
-		}
+		//private void Jump(Vector3 JumpHeight)
+		//{
+		//	/* Commenting out uneeded code to prevent Console Panel spam...
+		//	PhysicsSystem.AddForce(Test.ID, JumpHeight, ForceMode.Force);
+		//	// PS.AddForce(Test.id, 35, PS.ForceMode.VelocityChange);
+		//	*/
+		//}
 	}
 
 	public class Testing : Entity

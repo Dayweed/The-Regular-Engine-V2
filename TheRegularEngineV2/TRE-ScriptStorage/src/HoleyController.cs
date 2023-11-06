@@ -302,7 +302,7 @@ namespace TRE
             {
                 if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
                 {
-                    finalVelocity = currVelocity + (dirVec * acceleration * Time.GetDeltaTime());
+                    finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
                     PS.SetLinearVelocity(this.ID, finalVelocity);
                 }
                 else
