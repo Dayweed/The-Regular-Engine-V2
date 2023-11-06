@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlmSharp;
 
 namespace TRE
 {
@@ -19,8 +20,8 @@ namespace TRE
 		
 		CameraController cameraController;
 
-		private Vector3 expectedPosition;
-		private Vector3 expectedRotation;
+		private vec3 expectedPosition;
+		private vec3 expectedRotation;
 		private float expectedDistance;
 		
 		public void Start()
@@ -38,8 +39,8 @@ namespace TRE
 			Debug.Log("CameraController ID is " + cameraController.ID);
 
 			expectedDistance = 35;
-			expectedPosition = new Vector3(0, 10, 20);
-			expectedRotation = new Vector3(30, 180, 0);
+			expectedPosition = new vec3(0, 10, 20);
+			expectedRotation = new vec3(30, 180, 0);
 
 		}
 		
@@ -50,15 +51,15 @@ namespace TRE
 
 			if (regionA)
 			{
-				expectedPosition = new Vector3(0, 10, 20);
-				expectedRotation = new Vector3(30, 180, 0);
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 35;
 			}
 
 			if(regionB)
 			{
-				expectedPosition = new Vector3(0, 10, 20);
-				expectedRotation = new Vector3(45, 90, 0);
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(45, 90, 0);
 				expectedDistance = 60;
 			}
 

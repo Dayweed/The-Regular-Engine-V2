@@ -360,6 +360,10 @@ project "TRE-ScriptCore"
 
 	targetdir ("Resources/Scripts")
 	objdir ("Resources/Scripts")
+	
+	libdirs"Resources/Scripts"
+	links"Coroutine.dll"
+	links"GlmSharp.dll"
 
 	files 
 	{
@@ -381,15 +385,18 @@ project "TRE-ScriptStorage"
 	dotnetframework "4.7.2"
 
 	-- (DON'T DELETE THIS!)
-	targetdir ("Executable_" .. outputdir .. "/")
-	objdir ("Executable_" .. outputdir .. "/")
+	targetdir ("Resources/Scripts")
+	objdir ("Resources/Scripts")
 	
-	libdirs "../Resources/Scripts"
+	libdirs "Resources/Scripts"
 	links "TRE-ScriptCore.dll"
+	links"Coroutine.dll"
+	links"GlmSharp.dll"
 	
 	files 
 	{
 		"%{prj.name}/src/**.cs",
+		"%{TheRegularEngineV2}/Scripts/**.cs"
 	}
 
 	filter "configurations:Debug"

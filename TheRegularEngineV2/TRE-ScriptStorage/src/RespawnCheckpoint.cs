@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
@@ -15,8 +16,8 @@ namespace TRE
 
         private Entity RespawnPoint1;
 
-        private Vector3 RespawnPositionBlue = new Vector3(0, 0, 0);
-        private Vector3 RespawnPositionRed = new Vector3(0, 0, 0);
+        private vec3 RespawnPositionBlue = new vec3(0, 0, 0);
+        private vec3 RespawnPositionRed = new vec3(0, 0, 0);
 
         public void Start()
         {
@@ -45,7 +46,7 @@ namespace TRE
         {
             if (IsInsideTrigger(RespawnPoint1))
             {
-                TransformSystem.GetPosition(RespawnPoint1.ID, out Vector3 RespawnPositionBlue);
+                TransformSystem.GetPosition(RespawnPoint1.ID, out vec3 RespawnPositionBlue);
             }
         }
 

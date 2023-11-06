@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
@@ -13,7 +14,7 @@ namespace TRE
         //private InputActionMap player; //the main action map to control the player
 
         private Entity blueberryModel;
-        public Vector3 changeToThisSize;
+        public vec3 changeToThisSize;
         public float colliderRadius;
         public float colliderHeight;
 
@@ -30,7 +31,7 @@ namespace TRE
             //inputActionAsset = this.GetComponentInParent<PlayerInput>().actions;
             //player = inputActionAsset.FindActionMap("Player");
 
-            blueberryModel = this.parenting.GetChild(1);                //blueberryModel = this.transform.GetChild(1).gameObject;
+            blueberryModel = parenting.GetChild(1);                //blueberryModel = this.transform.GetChild(1).gameObject;
         }
 
         private void OnEnable()
@@ -50,11 +51,11 @@ namespace TRE
             if (!changeSize)
             {
                 Debug.Log("changing size");
-                this.transform.Scale=changeToThisSize;  //change the way it looks
+                transform.Scale=changeToThisSize;  //change the way it looks
                                                               //change the collider size
                                                               //this.transform.parent.GetComponent<CapsuleCollider>().radius = colliderRadius;
 
-                PhysicsSystem.ResizeCapsuleCollider(this.ID, colliderRadius, colliderHeight); //this.parenting.parent.GetComponent<CapsuleCollider>().height = colliderHeight;
+                PhysicsSystem.ResizeCapsuleCollider(ID, colliderRadius, colliderHeight); //this.parenting.parent.GetComponent<CapsuleCollider>().height = colliderHeight;
 
                 changeSize = true;
             }
@@ -72,10 +73,10 @@ namespace TRE
 
         public void ChangeToDefault()
         {
-            this.transform.Scale = Vector3.one;
+            transform.Scale = vec3.Ones;
 
             //change back collider size
-            PhysicsSystem.ResizeCapsuleCollider(this.ID, colliderRadius, 2); //this.parenting.GetParent().GetComponent<CapsuleCollider>().height = 2;    // THIS CANT BE DONE YET
+            PhysicsSystem.ResizeCapsuleCollider(ID, colliderRadius, 2); //this.parenting.GetParent().GetComponent<CapsuleCollider>().height = 2;    // THIS CANT BE DONE YET
 
             changeSize = false;
         }

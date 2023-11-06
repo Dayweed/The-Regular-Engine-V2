@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
@@ -72,7 +73,7 @@ namespace TRE
         public List<Entity> fallingObjPrefabs;
         public List<Entity> fallingObjRNG;
 
-        public Vector3 size;
+        public vec3 size;
 
         public int maxAmountToSpawn;
         public int timeBetweenSpawns;
@@ -87,8 +88,8 @@ namespace TRE
 
         private List<Entity> itemsToSpawn = new List<Entity>();
         private List<float> itemsTimer = new List<float>();
-        private List<Vector3> itemsPos = new List<Vector3>();
-        private List<Vector3> itemsDefRot = new List<Vector3>();
+        private List<vec3> itemsPos = new List<vec3>();
+        private List<vec3> itemsDefRot = new List<vec3>();
 
         public RandomizeFallingObjLocation()
         {
@@ -110,7 +111,7 @@ namespace TRE
             maxAmountToSpawn = 3;
             maxObjects = 3;
             timeBetweenSpawns = 2;
-            size = new Vector3(20, 0, 50);
+            size = new vec3(20, 0, 50);
             canSpawnObjs = true;
             dropDuration = 3.5f;
             minRange = 5.5f;
@@ -130,13 +131,11 @@ namespace TRE
             UpdateItems();
         }
 
-        public Vector3 SpawnObjPos()
+        public vec3 SpawnObjPos()
         {
-            Vector3 spawningPos = this.transform.Position + new Vector3(Random.Range(-size.x / 2, size.x / 2),
+            vec3 spawningPos = this.transform.Position + new vec3(Random.Range(-size.x / 2, size.x / 2),
                                                                             Random.Range(-size.y / 2, size.y / 2),
                                                                                 Random.Range(-size.z / 2, size.z / 2));
-            
-
             return spawningPos;
         }
 
@@ -163,7 +162,7 @@ namespace TRE
                     while (searchCount-- > 0)
                     {
                         //choose random position
-                        Vector3 itemToSpawnPos = SpawnObjPos();
+                        vec3 itemToSpawnPos = SpawnObjPos();
 
                         //is this pos empty
                         if (IsPosEmpty(itemToSpawnPos))
@@ -183,7 +182,7 @@ namespace TRE
             }
         }
 
-        private bool IsPosEmpty(Vector3 position)
+        private bool IsPosEmpty(vec3 position)
         {
             //foreach (Entity item in itemsToSpawn)
             //{
@@ -193,10 +192,10 @@ namespace TRE
             //        return false;
             //    }
             //}
-            foreach (Vector3 pos in itemsPos)
+            foreach (vec3 pos in itemsPos)
             {
-                Vector3 checkPos = new Vector3(pos.x, position.y, pos.z);
-                if (Vector3.Distance(position, checkPos) < minRange)
+                vec3 checkPos = new vec3(pos.x, position.y, pos.z);
+                if (vec3.Distance(position, checkPos) < minRange)
                 {
                     return false;
                 }
@@ -245,17 +244,17 @@ namespace TRE
                     while (searchCount-- > 0)
                     {
                         //choose random position
-                        Vector3 itemToSpawnPos = SpawnObjPos();
+                        vec3 itemToSpawnPos = SpawnObjPos();
 
                         if (IsPosEmpty(itemToSpawnPos))
                         {
                             //choose random position
-                            Vector3 itemPos = SpawnObjPos();
+                            vec3 itemPos = SpawnObjPos();
 
                             //is this pos empty
                             if (IsPosEmpty(itemPos))
                             {
-                                PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, Vector3.zero);
+                                PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
                                 TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
                                 TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
                                 itemsPos[i] = itemPos;

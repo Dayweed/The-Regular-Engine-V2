@@ -5,6 +5,8 @@ using System.Management.Instrumentation;
 using System.Text;
 using System.Threading.Tasks;
 
+using GlmSharp;
+
 namespace TRE
 {
 
@@ -17,28 +19,28 @@ namespace TRE
 
     public class Transform : Component
     {
-        public Vector3 Position
+        public vec3 Position
         {
             get
             {
-                TransformSystem.GetPosition(entity.ID, out Vector3 pos);
+                TransformSystem.Engine_GetPosition(entity.ID, out vec3 pos);
                 return pos;
             }
             set
             {
-                TransformSystem.SetPosition(entity.ID, value);
+                TransformSystem.Engine_SetPosition(entity.ID, value);
             }
         }
 
-        public Vector3 Rotation
+        public vec3 Rotation
         {
             get
             {
                 if (entity.ID == 0)
                 {
-                    return new Vector3(0, 0, 0);
+                    return new vec3(0, 0, 0);
                 }
-                TransformSystem.GetRotation(entity.ID, out Vector3 rot);
+                TransformSystem.Engine_GetRotation(entity.ID, out vec3 rot);
                 return rot;
             }
             set
@@ -47,19 +49,19 @@ namespace TRE
                 {
                     return;
                 }
-                TransformSystem.SetRotation(entity.ID, value);
+                TransformSystem.Engine_SetRotation(entity.ID, value);
             }
         }
 
-        public Vector3 Scale
+        public vec3 Scale
         {
             get
             {
                 if (entity.ID == 0)
                 {
-                    return new Vector3(1, 1, 1);
+                    return new vec3(1, 1, 1);
                 }
-                TransformSystem.GetScaling(entity.ID, out Vector3 scale);
+                TransformSystem.Engine_GetScaling(entity.ID, out vec3 scale);
                 return scale;
             }
             set
@@ -68,7 +70,7 @@ namespace TRE
                 {
                     return;
                 }
-                TransformSystem.SetScaling(entity.ID, value);
+                TransformSystem.Engine_SetScaling(entity.ID, value);
             }
         }
 
@@ -84,7 +86,7 @@ namespace TRE
         }
 
         // Constructor for Transform
-        public Transform(Vector3 position, Vector3 rotation, Vector3 scale)
+        public Transform(vec3 position, vec3 rotation, vec3 scale)
         {
             // Set the default values
             Position = position;
@@ -97,6 +99,8 @@ namespace TRE
     {
         // use transform component as template
         // add Camera variables here
+
+
     }
 
     public class Rigidbody : Component
@@ -109,22 +113,22 @@ namespace TRE
         {
             get
             {                
-                return RigidBodySystem.GetGravity(entity.ID);
+                return RigidBodySystem.Engine_GetGravity(entity.ID);
             }
             set
             {
-                RigidBodySystem.SetGravity(entity.ID, value);
+                RigidBodySystem.Engine_SetGravity(entity.ID, value);
             }
         }
         public bool isKinematic
         {
             get
             {                
-                return RigidBodySystem.GetKinematic(entity.ID);
+                return RigidBodySystem.Engine_GetKinematic(entity.ID);
             }
             set
             {
-                RigidBodySystem.SetKinematic(entity.ID, value);
+                RigidBodySystem.Engine_SetKinematic(entity.ID, value);
             }
         }
     }
