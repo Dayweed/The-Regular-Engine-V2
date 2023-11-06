@@ -24,7 +24,10 @@
 #include "Core/Profiler.h"
 
 //-----------------Physics-----------------//
-#include "Physics/PhysicsComponents.h"
+#include "Physics/Rigidbody.h"
+#include "Physics/SphereCollider.h"
+#include "Physics/BoxCollider.h"
+#include "Physics/CapsuleCollider.h"
 #include "Physics/PhysicsSystem.h"
 
 //-----------------Graphics-----------------//

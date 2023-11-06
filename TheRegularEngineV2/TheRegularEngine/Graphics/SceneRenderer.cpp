@@ -6,18 +6,17 @@
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "Core/Logger.h"
-#include "ShaderReflection.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
-#include "Physics/PhysicsComponents.h"
+#include "Physics/SphereCollider.h"
+#include "Physics/BoxCollider.h"
+#include "Physics/CapsuleCollider.h"
 #include "Light.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "glm/gtx/transform.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
-#include "InputHandler/InputHandler.h"
-#include "InputHandler/KeyButton.h"
+
 //To be removed
 #include "EditorCamera.h"
 

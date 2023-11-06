@@ -1,6 +1,7 @@
 #include "pch.h"
+#include "CapsuleCollider.h"
 #include "PhysicsSystem.h"
-#include "TREIncludes.h"
+#include "Core/Transform.h"
 
 using namespace physx;
 // to save my dwindling sanity
@@ -10,19 +11,21 @@ namespace TRE
 	void to_json(nlohmann::json& j, const CapsuleCollider& t)
 	{
 		j = nlohmann::json{
+			// WriteMemberToJSON(m_IsActive),
+			WriteMemberToJSON(m_IsTrigger),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 			WriteMemberToJSON(m_HalfHeight),
-			WriteMemberToJSON(m_IsTrigger),
 		};
 	}
 
 	void from_json(const nlohmann::json& j, CapsuleCollider& t)
 	{
+		// ReadMemberFromJSON(m_IsActive);
+		ReadMemberFromJSON(m_IsTrigger);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
-		ReadMemberFromJSON(m_IsTrigger);
 	}
 
 	bool PhysicsSystem::ConstructCapsuleCollider(const Entity& entity, const float radius, const float halfHeight, const glm::vec3& offset) const
