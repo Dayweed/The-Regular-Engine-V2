@@ -15,7 +15,7 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
-#include "Graphics/SpriteRendererComponent.h"
+#include "Graphics/UIComponent.h"
 
 namespace TRE
 {
@@ -132,7 +132,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
-		ECSManager::Instance().RegisterComponent<SpriteRenderer>("Sprite Renderer");								// 
+		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// 
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();

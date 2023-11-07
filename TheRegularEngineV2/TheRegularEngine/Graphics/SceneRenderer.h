@@ -13,6 +13,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Resource/ResourceManager.h"
+#include "UIRenderer.h"
 
 namespace TRE
 {
@@ -38,7 +39,6 @@ namespace TRE
 		glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f); //Directional Light in world space
 		glm::vec4 m_LightDirectionalColor{ 1.f, 1.f, 1.f, 1.f }; //Color for directional light
 		glm::vec4 m_LightAmbientColor{ 1.f, 1.f, 1.f, 1.f }; //Color for ambient light
-
 	};
 
 	struct SkyBoxUBO
@@ -136,6 +136,9 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
+
+			//UI Renderer
+			std::shared_ptr<UIRenderer> m_UIRenderer;
 
 			bool m_IsEditorScene = false;
 	};

@@ -98,6 +98,8 @@ namespace TRE
 
 		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
 		m_ShadowMaterial->Invalidate();
+
+		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)

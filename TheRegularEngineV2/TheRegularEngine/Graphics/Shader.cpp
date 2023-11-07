@@ -178,6 +178,7 @@ namespace TRE
 		auto SkyboxPassShaderHandle = 3;
 		auto FinalPassShaderHandle = 4;
 		auto ShadowMapHandle = 5;
+		auto UIHandle = 6;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
@@ -193,6 +194,11 @@ namespace TRE
 		std::unique_ptr<Shader> ShadowMapShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMapping.TREshader");
 		ShadowMapShader->SetHandle(ShadowMapHandle);
 		ResourceManager::Instance().AddResource(std::move(ShadowMapShader));
+
+		//UIShader
+		std::unique_ptr<Shader> UIShader = ShaderCompiler::DeserializeReflectShader("../Resources/UI.TREshader");
+		UIShader->SetHandle(UIHandle);
+		ResourceManager::Instance().AddResource(std::move(UIShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

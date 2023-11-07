@@ -5,18 +5,17 @@
 
 namespace TRE
 {
-	struct SpriteRenderer : property::base
+	struct UIComponent : property::base
 	{
 		std::shared_ptr<VulkanTexture> m_Texture;
+		std::shared_ptr<Material> m_Material;
 		bool m_IsVisible = true;
-
-
 
 		property_vtable()
 	};
 }
 
-property_begin(TRE::SpriteRenderer)
+property_begin(TRE::UIComponent)
 {
 	property_var_fnbegin("Texture", resource_list)
 	{
@@ -40,4 +39,4 @@ property_begin(TRE::SpriteRenderer)
 	} property_var_fnend(),
 	property_var(m_IsVisible),
 
-} property_vend_h(TRE::SpriteRenderer)
+} property_vend_h(TRE::UIComponent)
