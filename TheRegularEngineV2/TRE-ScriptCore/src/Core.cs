@@ -1172,13 +1172,28 @@ namespace TRE
 		internal extern static void Engine_ResizeSphereCollider(EntityID entityid, float newRadius);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetSphereColliderRadius(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static vec3 Engine_GetBoxColliderHalfExtents(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetCapsuleColliderRadius(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetCapsuleColliderHalfHeight(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_UpdateColliderOffset(EntityID entityid, vec3 offset);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static vec3 Engine_GetColliderOffset(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_AddForce(EntityID entityid, vec3 force, ForceMode mode);
@@ -1363,6 +1378,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Engine_Stop(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetFileName(EntityID entityid, string fileName);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static string Engine_GetFileName(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static bool Engine_GetIsPlaying(EntityID entityid);

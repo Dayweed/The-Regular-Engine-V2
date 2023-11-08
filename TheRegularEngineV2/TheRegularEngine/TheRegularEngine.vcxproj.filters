@@ -202,6 +202,9 @@
     <ClInclude Include="Graphics\ShaderResource.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\SpriteRendererComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\SwapChain.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -274,9 +277,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Graphics\SpriteRendererComponent.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
