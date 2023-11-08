@@ -6,6 +6,12 @@
 #include "Core/Engine.h"
 #include "Resource/ResourceManager.h"
 #include "Core/Transform.h"
+#include "EditorCamera.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "glm/gtx/quaternion.hpp"
+#include "Core/Logger.h"
 
 namespace TRE
 {
@@ -33,16 +39,16 @@ namespace TRE
 		std::vector<UIVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
-		data[0].UV = glm::vec2(0, 0);
+		data[0].UV = glm::vec2(1, 1);
 
 		data[1].Position = glm::vec3(x + width, y, 0.0f);
-		data[1].UV = glm::vec2(1, 0);
+		data[1].UV = glm::vec2(0, 1);
 
 		data[2].Position = glm::vec3(x + width, y + height, 0.0f);
-		data[2].UV = glm::vec2(1, 1);
+		data[2].UV = glm::vec2(0, 0);
 
 		data[3].Position = glm::vec3(x, y + height, 0.0f);
-		data[3].UV = glm::vec2(0, 1);
+		data[3].UV = glm::vec2(1, 0);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
@@ -51,6 +57,10 @@ namespace TRE
 
 		m_TestMaterial = std::make_shared<Material>(PipelineConfig.Shader);
 		m_TestMaterial->Invalidate();
+
+		auto TextureHandle = Resource::GetGUIDFromHex("73ad6e03030ce642");
+		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle);
+		m_TestMaterial->SetTexture("UI_Texture", Texture1);
 	}
 
 	UIRenderer::~UIRenderer()
@@ -60,9 +70,13 @@ namespace TRE
 
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
+		UIUBO UBO{};
+		UBO.m_ProjView2DSpace = glm::ortho(0.0f, 960.f, 0.0f, 450.f);
+		UBO.m_ProjView2DSpace[3] = glm::vec4(0.f, 0.f, 0.f, 1.f);
+		UBO.m_ProjView2DSpace = glm::mat4(1.f);
+		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
+
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
-		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -76,19 +90,29 @@ namespace TRE
 		Renderer::BindPipeline(CommandBuffer, m_UIPipeline);
 		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
 		{
-			if (!Entity->GetComponent<UIComponent>().m_IsVisible)
+			auto& UIComp = Entity->GetComponent<UIComponent>();
+			if (!UIComp.m_IsVisible)
 				continue;
 
 			PushConstant pc{};
-			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			auto TransformComp = Entity->GetComponent<Transform>();
+			glm::quat rotation = glm::quat(glm::radians(glm::vec3(TransformComp.m_Rotation.x, TransformComp.m_Rotation.y, 1.f)));
+			glm::mat4 rotationMat = glm::mat4_cast(rotation);
+			glm::mat4 scaleMat = glm::scale(glm::identity<glm::mat4>(), glm::vec3(TransformComp.m_Scale.x, TransformComp.m_Scale.y, 1.f));
+			glm::mat4 translationMat = glm::translate(glm::identity<glm::mat4>(), glm::vec3(TransformComp.m_Position.x, TransformComp.m_Position.y, 1.f));
+			pc.m_Model = translationMat * rotationMat * scaleMat;
+			pc.m_Model = glm::mat4(1.f);
+
 			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_UIPipeline->GetPipelineLayout(), 
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-			auto& Material = Entity->GetComponent<UIComponent>().m_Material;
+			auto& Material = UIComp.m_Material;
 			if (Material == nullptr)
 				Material = m_TestMaterial;
 
-			m_TestMaterial->SetTexture("UI_Texture", Texture1);
+			if (UIComp.m_Texture)
+				m_TestMaterial->SetTexture("UI_Texture", UIComp.m_Texture);
+
 			m_TestMaterial->UpdateForEditorSceneRendering(m_UIUBO, Index);
 
 			vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &Material->GetEditorDescriptor(Index), 0, NULL);

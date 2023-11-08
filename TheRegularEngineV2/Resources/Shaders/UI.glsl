@@ -28,6 +28,8 @@ void main()
 	Out.Color = in_Color;
     Out.UV = in_UV;
     gl_Position = ubo.m_ProjView * L2W.Transform * vec4(in_Position, 1.0);
+    gl_Position.y *= -1.0;
+    gl_Position.z = 0.f;
 }
 
 #version 450
@@ -46,5 +48,5 @@ layout (set = 0, binding = 1) uniform sampler2D UI_Texture;
 
 void main() 
 {
-    outColor = texture(UI_Texture, In.UV) * In.Color;
+    outColor = texture(UI_Texture, In.UV);
 }
