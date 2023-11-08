@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/ECS.h"
-#include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
 
 namespace TRE

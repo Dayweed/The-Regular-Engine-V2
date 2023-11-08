@@ -365,6 +365,8 @@ namespace TRE
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
+		m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
 	}

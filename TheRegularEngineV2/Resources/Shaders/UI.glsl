@@ -42,7 +42,7 @@ struct VertexOut
 };
 
 layout (location = 0) in VertexOut In;
-layout (set = 0, binding = 0) uniform sampler2D in_Texture;
+layout (set = 0, binding = 1) uniform sampler2D in_Texture;
 
 void main() 
 {

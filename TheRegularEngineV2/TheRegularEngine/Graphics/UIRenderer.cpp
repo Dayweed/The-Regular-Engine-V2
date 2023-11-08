@@ -15,14 +15,18 @@ namespace TRE
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RPConfig.ImageFormat = SC->GetColorFormat();
-		RPConfig.DepthEnabled = false;
-		m_UIRenderpass = std::make_shared<RenderPass>(RPConfig);
+		RPConfig.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		RPConfig.DepthImageFormat = SC->GetDepthFormat();
+		RPConfig.DepthEnabled = true;
+		RPConfig.ClearColor = false;
+		m_UIRenderpass = std::make_shared<RenderPass>(m_Device, RPConfig);
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
-		m_UIPipeline = std::make_shared<Pipeline>(PipelineConfig);
+		m_UIPipeline = std::make_shared<Pipeline>(PipelineConfig, m_UIRenderpass);
 
+		m_UIUBO = std::make_shared<UniformBuffer>(sizeof(UIUBO), 0);
 	}
 
 	UIRenderer::~UIRenderer()
@@ -32,6 +36,17 @@ namespace TRE
 
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
+		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+		
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_UIRenderpass->GetHandle();
+		renderPassInfo.framebuffer = TargetFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+
+		vkCmdBeginRenderPass(CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
 		Renderer::BindPipeline(CommandBuffer, m_UIPipeline);
 		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
 		{
@@ -41,8 +56,9 @@ namespace TRE
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			const auto& Material = Entity->GetComponent<UIComponent>().m_Material;
+			Material->UpdateForEditorSceneRendering(m_UIUBO, Index);
 
-			vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, dset, 0, NULL);
+			vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &Material->GetEditorDescriptor(Index), 0, NULL);
 		}
 
 		Renderer::EndRenderPass(CommandBuffer);
