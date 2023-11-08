@@ -8,7 +8,7 @@ namespace TRE
 	{
 		std::shared_ptr<VulkanTexture> m_Texture;
 		std::shared_ptr<Material> m_Material;
-		bool m_IsVisible = true;
+		bool m_IsVisible = false;
 
 		property_vtable()
 	};

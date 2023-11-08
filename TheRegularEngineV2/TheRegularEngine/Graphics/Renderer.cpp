@@ -9,12 +9,6 @@
 
 namespace TRE
 {
-	struct QuadVertex
-	{
-		glm::vec3 Position;
-		glm::vec2 TexCoord;
-	};
-
 	std::shared_ptr<SceneRenderer> Renderer::s_MainRenderer = nullptr;
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
 	FinalRenderData* Renderer::s_FinalRenderData = nullptr;

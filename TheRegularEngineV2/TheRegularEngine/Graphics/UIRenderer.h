@@ -5,9 +5,18 @@
 #include "RenderPass.h"
 #include "Material.h"
 #include "CommandBuffer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace TRE
 {
+	struct UIVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
+		glm::vec2 UV;
+	};
+
 	struct UIUBO
 	{
 		glm::mat4 m_ProjView2DSpace;
@@ -27,5 +36,11 @@ namespace TRE
 			std::shared_ptr<RenderPass> m_UIRenderpass;
 			std::shared_ptr<Material> m_UIMaterial;
 			std::shared_ptr<UniformBuffer> m_UIUBO;
+
+		private:
+			std::shared_ptr<VertexBuffer> m_TestVertexBuffer;
+			std::shared_ptr<IndexBuffer> m_TestIndexBuffer;
+
+			std::shared_ptr<Material> m_TestMaterial;
 	};
 }

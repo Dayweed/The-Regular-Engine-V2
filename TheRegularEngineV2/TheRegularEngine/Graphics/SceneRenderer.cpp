@@ -365,7 +365,8 @@ namespace TRE
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
-		m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+		if (m_IsEditorScene)
+			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
@@ -673,7 +674,6 @@ namespace TRE
 		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
 		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
 		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
-
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
 		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
 		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);
