@@ -23,6 +23,7 @@ namespace TRE
 		PrimitiveType Primitive;
 		float LineWidth = 1.f;
 		size_t VertexStride = 0;
+		bool EnableCull = true;
 	};
 
 	class Pipeline
@@ -33,7 +34,6 @@ namespace TRE
 
 		public:
 			VkPrimitiveTopology GetVulkanTopology(PrimitiveType TopologyType);
-			const std::vector<VkDescriptorSet>& GetDescriptorSets();
 			VkPipelineLayout GetPipelineLayout();
 			VkPipeline GetPipeline();
 			PipelineConfigurations& GetConfig();

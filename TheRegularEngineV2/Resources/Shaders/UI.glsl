@@ -28,7 +28,6 @@ void main()
 	Out.Color = in_Color;
     Out.UV = in_UV;
     gl_Position = ubo.m_ProjView * L2W.Transform * vec4(in_Position, 1.0);
-    gl_Position.y *= -1.0;
 }
 
 #version 450
