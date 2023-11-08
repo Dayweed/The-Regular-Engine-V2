@@ -39,16 +39,16 @@ namespace TRE
 		std::vector<UIVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
-		data[0].UV = glm::vec2(1, 1);
+		data[0].UV = glm::vec2(0, 0);
 
 		data[1].Position = glm::vec3(x + width, y, 0.0f);
-		data[1].UV = glm::vec2(0, 1);
+		data[1].UV = glm::vec2(1, 0);
 
 		data[2].Position = glm::vec3(x + width, y + height, 0.0f);
-		data[2].UV = glm::vec2(0, 0);
+		data[2].UV = glm::vec2(1, 1);
 
 		data[3].Position = glm::vec3(x, y + height, 0.0f);
-		data[3].UV = glm::vec2(1, 0);
+		data[3].UV = glm::vec2(0, 1);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
@@ -58,7 +58,7 @@ namespace TRE
 		m_TestMaterial = std::make_shared<Material>(PipelineConfig.Shader);
 		m_TestMaterial->Invalidate();
 
-		auto TextureHandle = Resource::GetGUIDFromHex("73ad6e03030ce642");
+		auto TextureHandle = Resource::GetGUIDFromHex("d180b66ce70dea24");
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle);
 		m_TestMaterial->SetTexture("UI_Texture", Texture1);
 	}
@@ -71,8 +71,8 @@ namespace TRE
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
 		UIUBO UBO{};
-		UBO.m_ProjView2DSpace = glm::ortho(0.0f, 960.f, 0.0f, 450.f);
-		UBO.m_ProjView2DSpace[3] = glm::vec4(0.f, 0.f, 0.f, 1.f);
+		//UBO.m_ProjView2DSpace = glm::ortho(0.0f, 960.f, 0.0f, 450.f);
+		//UBO.m_ProjView2DSpace[3] = glm::vec4(0.f, 0.f, 0.f, 1.f);
 		UBO.m_ProjView2DSpace = glm::mat4(1.f);
 		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
 
@@ -86,6 +86,20 @@ namespace TRE
 		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
 
 		vkCmdBeginRenderPass(CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.f;
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		vkCmdSetScissor(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		Renderer::BindPipeline(CommandBuffer, m_UIPipeline);
 		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())

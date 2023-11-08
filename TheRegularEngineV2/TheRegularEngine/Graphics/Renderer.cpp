@@ -123,9 +123,9 @@ namespace TRE
 
 		VkViewport viewport {};
 		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.height = (float)height;
+		viewport.y = (float)height;
 		viewport.width = (float)width;
+		viewport.height = -(float)height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
