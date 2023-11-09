@@ -35,7 +35,7 @@ namespace TRE
 
 		m_UIUBO = std::make_shared<UniformBuffer>(sizeof(UIUBO), 0);
 
-		float x = -1; float y = -1;
+		float x = -1.f; float y = -1.f;
 		float width = 2, height = 2;
 		std::vector<UIVertex> data(4);
 
@@ -72,9 +72,9 @@ namespace TRE
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
 		UIUBO UBO{};
-		//UBO.m_ProjView2DSpace = glm::ortho(0.0f, 960.f, 0.0f, 450.f);
-		//UBO.m_ProjView2DSpace[3] = glm::vec4(0.f, 0.f, 0.f, 1.f);
-		UBO.m_ProjView2DSpace = glm::mat4(1.f);
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(960.f, 540.f, 0.f)); //Translate by viewport width or height / 2
+		UBO.m_ProjView2DSpace = glm::ortho(0.f, 1920.f, 0.f, 1080.f) * TranslateToMid;
+
 		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
 
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
@@ -111,12 +111,7 @@ namespace TRE
 
 			PushConstant pc{};
 			auto TransformComp = Entity->GetComponent<Transform>();
-			glm::quat rotation = glm::quat(glm::radians(glm::vec3(TransformComp.m_Rotation.x, TransformComp.m_Rotation.y, 1.f)));
-			glm::mat4 rotationMat = glm::mat4_cast(rotation);
-			glm::mat4 scaleMat = glm::scale(glm::identity<glm::mat4>(), glm::vec3(TransformComp.m_Scale.x, TransformComp.m_Scale.y, 1.f));
-			glm::mat4 translationMat = glm::translate(glm::identity<glm::mat4>(), glm::vec3(TransformComp.m_Position.x, TransformComp.m_Position.y, 1.f));
-			pc.m_Model = translationMat * rotationMat * scaleMat;
-			pc.m_Model = glm::mat4(1.f);
+			pc.m_Model = TransformComp.m_WorldXform;
 
 			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_UIPipeline->GetPipelineLayout(), 
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
