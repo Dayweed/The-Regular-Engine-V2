@@ -11,6 +11,7 @@ namespace TRE
 {
 	RenderObject::RenderObject(const std::string& geomAsset)
 	{
+		m_HasIndexBuffer = false;
 		std::unique_ptr<Geom> geom = Geom::Deserialize(geomAsset);
 
 		m_Type = ResourceType::Mesh;

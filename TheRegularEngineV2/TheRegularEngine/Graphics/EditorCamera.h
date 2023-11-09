@@ -27,6 +27,7 @@ namespace TRE
 		void SetPitch(const float pitch);
 		void SetYaw(const float yaw);
 		void SetRoll(const float roll);
+		void SetViewportSize(const uint32_t width, const uint32_t height);
 
 		const glm::mat4& GetViewMatrix() const { return m_BaseCamera.m_ViewMatrix; }
 		const glm::mat4 GetInverseViewMatrix() const { return glm::inverse(m_BaseCamera.m_ViewMatrix); }
