@@ -23,11 +23,11 @@ using Coroutine; // Add this for Coroutine lib
 namespace TRE
 {
 	// Using EntityID instead of EntityID in case need to change again
-	using EntityID = System.UInt64;		// Unsigned long long
+	using EntityID = System.UInt64;     // Unsigned long long
 
 	public class Entity : Component
 	{
-		public EntityID ID;				// Can hold id of entity or id of prefab resource
+		public EntityID ID;             // Can hold id of entity or id of prefab resource
 		public string name;
 		public Parenting parenting;
 		public Transform transform;
@@ -122,7 +122,7 @@ namespace TRE
 		{
 			if (Script.Engine_IsScript(typeof(T).ToString())) return Script.Engine_GetScript<T>(ID, typeof(T).ToString());
 
-			return GetCoreComponent<T>();	// To change for getting directly
+			return GetCoreComponent<T>();   // To change for getting directly
 
 		}
 
@@ -133,7 +133,7 @@ namespace TRE
 				return null;
 			}
 
-			T component = new T() {entity = this};
+			T component = new T() { entity = this };
 			return component;
 		}
 
@@ -157,35 +157,35 @@ namespace TRE
 			}
 		}
 
-        public static void EngineRename(EntityID id, string name)
-        {
-            Engine_Rename(id, name);
-        }
+		public static void EngineRename(EntityID id, string name)
+		{
+			Engine_Rename(id, name);
+		}
 
-        public static void EngineSetActive(EntityID id, bool active)
-        {
-            Engine_SetActive(id, active);
-        }
+		public static void EngineSetActive(EntityID id, bool active)
+		{
+			Engine_SetActive(id, active);
+		}
 
-        public static bool EngineGetActive(EntityID id)
-        {
-            return Engine_GetActive(id);
-        }
+		public static bool EngineGetActive(EntityID id)
+		{
+			return Engine_GetActive(id);
+		}
 
-        public static void EngineSetTag(EntityID id, string tag)
-        {
-            Engine_SetTag(id, tag);
-        }
+		public static void EngineSetTag(EntityID id, string tag)
+		{
+			Engine_SetTag(id, tag);
+		}
 
-        public static string EngineGetTag(EntityID id)
-        {
-            return Engine_GetTag(id);
-        }
+		public static string EngineGetTag(EntityID id)
+		{
+			return Engine_GetTag(id);
+		}
 
-        public static bool EngineCompareTag(EntityID id, string otherTag)
-        {
-            return Engine_CompareTag(id, otherTag);
-        }
+		public static bool EngineCompareTag(EntityID id, string otherTag)
+		{
+			return Engine_CompareTag(id, otherTag);
+		}
 
 
 
@@ -232,15 +232,15 @@ namespace TRE
 
 	public struct Prefab
 	{
-        public bool IsPrefabResource(EntityID id)
-        {
-            return Engine_IsPrefabResource(id);
-        }
+		public bool IsPrefabResource(EntityID id)
+		{
+			return Engine_IsPrefabResource(id);
+		}
 
-        public EntityID CreatePrefabEntity(EntityID prefabid)
-        {
-            return Engine_CreatePrefabEntity(prefabid);
-        }
+		public EntityID CreatePrefabEntity(EntityID prefabid)
+		{
+			return Engine_CreatePrefabEntity(prefabid);
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_IsPrefabResource(EntityID id);
@@ -459,24 +459,24 @@ namespace TRE
 	//	}
 	//}
 
-	public class Debug 
+	public class Debug
 	{
-        public static void Log(string message)
-        {
-            Engine_Log(message);
-        }
-        public static void LogWarning(string message)
-        {
-            Engine_LogWarning(message);
-        }
-        public static void LogError(string message)
-        {
-            Engine_LogError(message);
-        }
-        public static void LogCritical(string message)
-        {
-            Engine_LogCritical(message);
-        }
+		public static void Log(string message)
+		{
+			Engine_Log(message);
+		}
+		public static void LogWarning(string message)
+		{
+			Engine_LogWarning(message);
+		}
+		public static void LogError(string message)
+		{
+			Engine_LogError(message);
+		}
+		public static void LogCritical(string message)
+		{
+			Engine_LogCritical(message);
+		}
 
 
 		// Logging Functions
@@ -535,36 +535,36 @@ namespace TRE
 
 	public class TransformSystem
 	{
-        public static void SetPosition(EntityID id, vec3 position)
-        {
-            Engine_SetPosition(id, position);
-        }
+		public static void SetPosition(EntityID id, vec3 position)
+		{
+			Engine_SetPosition(id, position);
+		}
 
-        public static void GetPosition(EntityID id, out vec3 output)
-        {
-            Engine_GetPosition(id, out output);
-        }
+		public static void GetPosition(EntityID id, out vec3 output)
+		{
+			Engine_GetPosition(id, out output);
+		}
 
-        public static void SetRotation(EntityID id, vec3 rotation)
-        {
-            Engine_SetRotation(id, rotation);
-        }
+		public static void SetRotation(EntityID id, vec3 rotation)
+		{
+			Engine_SetRotation(id, rotation);
+		}
 
-        public static void GetRotation(EntityID id, out vec3 rotation)
-        { 
-            Engine_GetRotation(id, out rotation);
-        }
+		public static void GetRotation(EntityID id, out vec3 rotation)
+		{
+			Engine_GetRotation(id, out rotation);
+		}
 
-        public static void SetScaling(EntityID id, vec3 scaling)
-        {
-            Engine_SetScaling(id, scaling);
-        }
+		public static void SetScaling(EntityID id, vec3 scaling)
+		{
+			Engine_SetScaling(id, scaling);
+		}
 
-        public static void GetScaling(EntityID id, out vec3 output)
-        {
-			            Engine_GetScaling(id, out output);
-        }
-        
+		public static void GetScaling(EntityID id, out vec3 output)
+		{
+			Engine_GetScaling(id, out output);
+		}
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_GetPosition(EntityID id, out vec3 output);
 
@@ -618,56 +618,56 @@ namespace TRE
 			}
 		}
 
-        public static EntityID CreateEntity(string name, vec3 postion = new vec3(), vec3 rotation = new vec3(),
-            vec3 scaling = new vec3())
-        {
-            return Engine_CreateEntity(name, postion, rotation, scaling);
-        }
+		public static EntityID CreateEntity(string name, vec3 postion = new vec3(), vec3 rotation = new vec3(),
+			vec3 scaling = new vec3())
+		{
+			return Engine_CreateEntity(name, postion, rotation, scaling);
+		}
 
-        public static EntityID CloneEntity(EntityID id )
-        {
+		public static EntityID CloneEntity(EntityID id)
+		{
 			return Engine_CloneEntity(id);
-        }
+		}
 
-        public static bool IsValidEntity(EntityID prefabid)
-        {
-            return Engine_IsValidEntity(prefabid);
-        }
+		public static bool IsValidEntity(EntityID prefabid)
+		{
+			return Engine_IsValidEntity(prefabid);
+		}
 
-        public static void AddComponent(EntityID entityID, Type component)
-        {
-            Engine_AddComponent(entityID, component);
-        }
+		public static void AddComponent(EntityID entityID, Type component)
+		{
+			Engine_AddComponent(entityID, component);
+		}
 
-        public static void RemoveComponent(EntityID entityID, Type component)
-        {
-            Engine_RemoveComponent(entityID, component);
-        }
+		public static void RemoveComponent(EntityID entityID, Type component)
+		{
+			Engine_RemoveComponent(entityID, component);
+		}
 
-        public static void DestroyEntity(EntityID entityID)
-        {
-            Engine_DestroyEntity(entityID);
-        }
+		public static void DestroyEntity(EntityID entityID)
+		{
+			Engine_DestroyEntity(entityID);
+		}
 
-        public static EntityID FindIDFromName(string name)
-        {
-            return Engine_FindIDFromName(name);
-        }
+		public static EntityID FindIDFromName(string name)
+		{
+			return Engine_FindIDFromName(name);
+		}
 
-        public static string FindNameFromID(EntityID id)
-        {
-            return Engine_FindNameFromID(id);
-        }
+		public static string FindNameFromID(EntityID id)
+		{
+			return Engine_FindNameFromID(id);
+		}
 
-        public static EntityID FindParentIDFromID(EntityID id)
-        {
-            return Engine_FindParentIDFromID(id);
-        }
+		public static EntityID FindParentIDFromID(EntityID id)
+		{
+			return Engine_FindParentIDFromID(id);
+		}
 
-        public static bool HasComponent(EntityID id, Type component)
-        {
-            return Engine_HasComponent(id, component);
-        }
+		public static bool HasComponent(EntityID id, Type component)
+		{
+			return Engine_HasComponent(id, component);
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static EntityID Engine_CreateEntity(string name, vec3 postion = new vec3(), vec3 rotation = new vec3(), vec3 scaling = new vec3());
@@ -697,295 +697,295 @@ namespace TRE
 		internal extern static EntityID Engine_FindParentIDFromID(EntityID id);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool Engine_HasComponent(EntityID id , Type component);
+		internal extern static bool Engine_HasComponent(EntityID id, Type component);
 	}
 
 	public class CameraSystem
 	{
-        public static void SetPosition(EntityID entity, vec3 newPos)
-        {
-            Engine_SetPosition(entity, newPos);
-        }
+		public static void SetPosition(EntityID entity, vec3 newPos)
+		{
+			Engine_SetPosition(entity, newPos);
+		}
 
-        public static void SetRotation(EntityID entity, vec3 newRot)
-        {
-            Engine_SetRotation(entity, newRot);
-        }
+		public static void SetRotation(EntityID entity, vec3 newRot)
+		{
+			Engine_SetRotation(entity, newRot);
+		}
 
-        public static void SetViewportSize(EntityID entity, vec2 newSize)
-        {
-            Engine_SetViewportSize(entity, newSize);
-        }
+		public static void SetViewportSize(EntityID entity, vec2 newSize)
+		{
+			Engine_SetViewportSize(entity, newSize);
+		}
 
-        public static void SetFocalPointA(EntityID entity, vec3 newFocalPoint)
-        {
-            Engine_SetFocalPointA(entity, newFocalPoint);
-        }
+		public static void SetFocalPointA(EntityID entity, vec3 newFocalPoint)
+		{
+			Engine_SetFocalPointA(entity, newFocalPoint);
+		}
 
-        public static void SetFocalLength(EntityID entity, float newFocalLength)
-        {
-            Engine_SetFocalLength(entity, newFocalLength);
-        }
+		public static void SetFocalLength(EntityID entity, float newFocalLength)
+		{
+			Engine_SetFocalLength(entity, newFocalLength);
+		}
 
-        public static void SetPitch(EntityID entity, float newPitch)
-        {
-            Engine_SetPitch(entity, newPitch);
-        }
+		public static void SetPitch(EntityID entity, float newPitch)
+		{
+			Engine_SetPitch(entity, newPitch);
+		}
 
-        public static void SetYaw(EntityID entity, float newYaw)
-        {
-            Engine_SetYaw(entity, newYaw);
-        }
+		public static void SetYaw(EntityID entity, float newYaw)
+		{
+			Engine_SetYaw(entity, newYaw);
+		}
 
-        public static void SetRoll(EntityID entity, float newRoll)
-        {
-            Engine_SetRoll(entity, newRoll);
-        }
+		public static void SetRoll(EntityID entity, float newRoll)
+		{
+			Engine_SetRoll(entity, newRoll);
+		}
 
-        public static void SetFOV(EntityID entity, float newFOV)
-        {
-            Engine_SetFOV(entity, newFOV);
-        }
+		public static void SetFOV(EntityID entity, float newFOV)
+		{
+			Engine_SetFOV(entity, newFOV);
+		}
 
-        public static void SetNear(EntityID entity, float newNear)
-        {
-            Engine_SetNear(entity, newNear);
-        }
+		public static void SetNear(EntityID entity, float newNear)
+		{
+			Engine_SetNear(entity, newNear);
+		}
 
-        public static void SetFar(EntityID entity, float newFar)
-        {
-            Engine_SetFar(entity, newFar);
-        }
+		public static void SetFar(EntityID entity, float newFar)
+		{
+			Engine_SetFar(entity, newFar);
+		}
 
-        public static void SetLeft(EntityID entity, float newLeft)
-        {
-            Engine_SetLeft(entity, newLeft);
-        }
+		public static void SetLeft(EntityID entity, float newLeft)
+		{
+			Engine_SetLeft(entity, newLeft);
+		}
 
-        public static void SetRight(EntityID entity, float newRight)
-        {
-            Engine_SetRight(entity, newRight);
-        }
+		public static void SetRight(EntityID entity, float newRight)
+		{
+			Engine_SetRight(entity, newRight);
+		}
 
-        public static void SetTop(EntityID entity, float newTop)
-        {
-            Engine_SetTop(entity, newTop);
-        }
+		public static void SetTop(EntityID entity, float newTop)
+		{
+			Engine_SetTop(entity, newTop);
+		}
 
-        public static void SetBottom(EntityID entity, float newBottom)
-        {
-            Engine_SetBottom(entity, newBottom);
-        }
+		public static void SetBottom(EntityID entity, float newBottom)
+		{
+			Engine_SetBottom(entity, newBottom);
+		}
 
-        public static void SetAspectRatio(EntityID entity, float newAspectRatio)
-        {
-            Engine_SetAspectRatio(entity, newAspectRatio);
-        }
-        public static void SetIsPerspective(EntityID entity, bool newIsPerspective)
-        {
-            Engine_SetIsPerspective(entity, newIsPerspective);
-        }
+		public static void SetAspectRatio(EntityID entity, float newAspectRatio)
+		{
+			Engine_SetAspectRatio(entity, newAspectRatio);
+		}
+		public static void SetIsPerspective(EntityID entity, bool newIsPerspective)
+		{
+			Engine_SetIsPerspective(entity, newIsPerspective);
+		}
 
-        public static void SetIsMainCamera(EntityID entity, bool newIsMainCamera)
-        {
-            Engine_SetIsMainCamera(entity, newIsMainCamera);
-        }
+		public static void SetIsMainCamera(EntityID entity, bool newIsMainCamera)
+		{
+			Engine_SetIsMainCamera(entity, newIsMainCamera);
+		}
 
-        public static void GetPosition(EntityID entity, out vec3 output)
-        {
-            Engine_GetPosition(entity, out output);
-        }
+		public static void GetPosition(EntityID entity, out vec3 output)
+		{
+			Engine_GetPosition(entity, out output);
+		}
 
-        public static void GetRotation(EntityID entity, out vec3 output)
-        {
-            Engine_GetRotation(entity, out output);
-        }
+		public static void GetRotation(EntityID entity, out vec3 output)
+		{
+			Engine_GetRotation(entity, out output);
+		}
 
-        public static void GetViewMatrix(EntityID entity, out mat4 output)
-        {
-            Engine_GetViewMatrix(entity, out output);
-        }
+		public static void GetViewMatrix(EntityID entity, out mat4 output)
+		{
+			Engine_GetViewMatrix(entity, out output);
+		}
 
-        public static void GetProjectionMatrix(EntityID entity, out mat4 output)
-        {
-            Engine_GetProjectionMatrix(entity, out output);
-        }
+		public static void GetProjectionMatrix(EntityID entity, out mat4 output)
+		{
+			Engine_GetProjectionMatrix(entity, out output);
+		}
 
-        public static void GetInverseViewMatrix(EntityID entity, out mat4 output)
-        {
-            Engine_GetInverseViewMatrix(entity, out output);
-        }
+		public static void GetInverseViewMatrix(EntityID entity, out mat4 output)
+		{
+			Engine_GetInverseViewMatrix(entity, out output);
+		}
 
-        public static void GetInverseProjectionMatrix(EntityID entity, out mat4 output)
-        {
+		public static void GetInverseProjectionMatrix(EntityID entity, out mat4 output)
+		{
 			Engine_GetInverseProjectionMatrix(entity, out output);
-        }
+		}
 
-        public static void GetInverseViewProjectionMatrix(EntityID entity, out mat4 output)
-        {
-            Engine_GetInverseViewProjectionMatrix(entity, out output);
-        }
+		public static void GetInverseViewProjectionMatrix(EntityID entity, out mat4 output)
+		{
+			Engine_GetInverseViewProjectionMatrix(entity, out output);
+		}
 
-        public static void GetViewportSize(EntityID entity, out vec2 output)
-        {
-            Engine_GetViewportSize(entity, out output);
-        }
+		public static void GetViewportSize(EntityID entity, out vec2 output)
+		{
+			Engine_GetViewportSize(entity, out output);
+		}
 
-        public static void GetFocalPoint(EntityID entity, out vec3 output)
-        {
-            Engine_GetFocalPoint(entity, out output);
-        }
+		public static void GetFocalPoint(EntityID entity, out vec3 output)
+		{
+			Engine_GetFocalPoint(entity, out output);
+		}
 
-        public static void GetFocalLength(EntityID entity, out float output)
-        {
-            Engine_GetFocalLength(entity, out output);
-        }
+		public static void GetFocalLength(EntityID entity, out float output)
+		{
+			Engine_GetFocalLength(entity, out output);
+		}
 
-        public static void GetPitch(EntityID entity, out float output)
-        {
-            Engine_GetPitch(entity, out output);
-        }
+		public static void GetPitch(EntityID entity, out float output)
+		{
+			Engine_GetPitch(entity, out output);
+		}
 
-        public static void GetYaw(EntityID entity, out float output)
-        {
-            Engine_GetYaw(entity, out output);
-        }
+		public static void GetYaw(EntityID entity, out float output)
+		{
+			Engine_GetYaw(entity, out output);
+		}
 
-        public static void GetRoll(EntityID entity, out float output)
-        {
-            Engine_GetRoll(entity, out output);
-        }
+		public static void GetRoll(EntityID entity, out float output)
+		{
+			Engine_GetRoll(entity, out output);
+		}
 
-        public static void GetFOV(EntityID entity, out float output)
-        {
-            Engine_GetFOV(entity, out output);
-        }
+		public static void GetFOV(EntityID entity, out float output)
+		{
+			Engine_GetFOV(entity, out output);
+		}
 
-        public static void GetNear(EntityID entity, out float output)
-        {
-            Engine_GetNear(entity, out output);
-        }
+		public static void GetNear(EntityID entity, out float output)
+		{
+			Engine_GetNear(entity, out output);
+		}
 
-        public static void GetFar(EntityID entity, out float output)
-        {
-            Engine_GetFar(entity, out output);
-        }
+		public static void GetFar(EntityID entity, out float output)
+		{
+			Engine_GetFar(entity, out output);
+		}
 
-        public static void GetLeft(EntityID entity, out float output)
-        {
-            Engine_GetLeft(entity, out output);
-        }
+		public static void GetLeft(EntityID entity, out float output)
+		{
+			Engine_GetLeft(entity, out output);
+		}
 
-        public static void GetRight(EntityID entity, out float output)
-        {
-            Engine_GetRight(entity, out output);
-        }
+		public static void GetRight(EntityID entity, out float output)
+		{
+			Engine_GetRight(entity, out output);
+		}
 
-        public static void GetTop(EntityID entity, out float output)
-        {
-            Engine_GetTop(entity, out output);
-        }
+		public static void GetTop(EntityID entity, out float output)
+		{
+			Engine_GetTop(entity, out output);
+		}
 
-        public static void GetBottom(EntityID entity, out float output)
-        {
-            Engine_GetBottom(entity, out output);
-        }
+		public static void GetBottom(EntityID entity, out float output)
+		{
+			Engine_GetBottom(entity, out output);
+		}
 
-        public static void GetAspectRatio(EntityID entity, out float output)
-        {
-            Engine_GetAspectRatio(entity, out output);
-        }
+		public static void GetAspectRatio(EntityID entity, out float output)
+		{
+			Engine_GetAspectRatio(entity, out output);
+		}
 
-        public static void GetIsPerspective(EntityID entity, out bool output)
-        {
-            Engine_GetIsPerspective(entity, out output);
-        }
+		public static void GetIsPerspective(EntityID entity, out bool output)
+		{
+			Engine_GetIsPerspective(entity, out output);
+		}
 
-        public static void GetIsMainCamera(EntityID entity, out bool output)
-        {
-            Engine_GetIsMainCamera(entity, out output);
-        }
+		public static void GetIsMainCamera(EntityID entity, out bool output)
+		{
+			Engine_GetIsMainCamera(entity, out output);
+		}
 
-        public static void SetMainCameraLookAt(vec3 target, float distance)
-        {
+		public static void SetMainCameraLookAt(vec3 target, float distance)
+		{
 			Engine_SetMainCameraLookAt(target, distance);
-        }
+		}
 
-        public static void TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float speed)
-        {
+		public static void TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float speed)
+		{
 			Engine_TransitionMainCamera(targetPosition, targetRotation, speed);
-        }
+		}
 
-        public static vec3 GetMainCameraForwardVec()
-        {
-            return Engine_GetMainCameraForwardVec();
-        }
+		public static vec3 GetMainCameraForwardVec()
+		{
+			return Engine_GetMainCameraForwardVec();
+		}
 
-        public static vec3 GetMainCameraRightVec()
-        {
-            return Engine_GetMainCameraRightVec();
-        }
+		public static vec3 GetMainCameraRightVec()
+		{
+			return Engine_GetMainCameraRightVec();
+		}
 
-        public static vec3 GetMainCameraRotation()
-        {
+		public static vec3 GetMainCameraRotation()
+		{
 			return Engine_GetMainCameraRotation();
-        }
+		}
 
 
-        #region Setters
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetPosition(EntityID entityid, vec3 newPos);
+		#region Setters
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetPosition(EntityID entityid, vec3 newPos);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetRotation(EntityID entityid, vec3 newRot);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetRotation(EntityID entityid, vec3 newRot);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetViewportSize(EntityID entityid, vec2 newSize);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetViewportSize(EntityID entityid, vec2 newSize);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetFocalPointA(EntityID entityid, vec3 newFocalPoint);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetFocalPointA(EntityID entityid, vec3 newFocalPoint);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetFocalLength(EntityID entityid, float newFocalLength);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetFocalLength(EntityID entityid, float newFocalLength);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetPitch(EntityID entityid, float newPitch);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetPitch(EntityID entityid, float newPitch);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetYaw(EntityID entityid, float newYaw);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetYaw(EntityID entityid, float newYaw);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetRoll(EntityID entityid, float newRoll);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetRoll(EntityID entityid, float newRoll);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetFOV(EntityID entityid, float newFOV);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetFOV(EntityID entityid, float newFOV);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetNear(EntityID entityid, float newNear);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetNear(EntityID entityid, float newNear);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetFar(EntityID entityid, float newFar);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetFar(EntityID entityid, float newFar);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetLeft(EntityID entityid, float newLeft);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetLeft(EntityID entityid, float newLeft);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetRight(EntityID entityid, float newRight);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetRight(EntityID entityid, float newRight);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetTop(EntityID entityid, float newTop);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetTop(EntityID entityid, float newTop);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetBottom(EntityID entityid, float newBottom);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetBottom(EntityID entityid, float newBottom);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetAspectRatio(EntityID entityid, float newAspectRatio);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetAspectRatio(EntityID entityid, float newAspectRatio);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetIsPerspective(EntityID entityid, bool newIsPerspective);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetIsPerspective(EntityID entityid, bool newIsPerspective);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetIsMainCamera(EntityID entityid, bool newIsMainCamera);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetIsMainCamera(EntityID entityid, bool newIsMainCamera);
 
 		#endregion
 
@@ -1074,11 +1074,30 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetMainCameraRotation();
 
-#endregion
+		#endregion
 
 	}
 
-	public enum ForceMode
+	public class MeshRendererSystem
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetMaterialInstance(EntityID entityid, string instanceGUID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetMaterialVisibility(EntityID entityid, bool visibility);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetMaterialVisibility(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetMaterialCulled(EntityID entityid, bool culled);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetMaterialCulled(EntityID entityid);
+    }
+
+
+    public enum ForceMode
 	{
 		Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
 		Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time

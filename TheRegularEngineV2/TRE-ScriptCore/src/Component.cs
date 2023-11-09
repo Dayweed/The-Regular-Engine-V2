@@ -97,7 +97,37 @@ namespace TRE
 
     public class MeshRenderer : Component
     {
-        
+        public string Material
+        {
+            set
+            {
+                MeshRendererSystem.Engine_SetMaterialInstance(entity.ID, value);
+            }
+        }
+
+        public bool Visible
+        {
+            get
+            {
+                return MeshRendererSystem.Engine_GetMaterialVisibility(entity.ID);
+            }
+            set
+            {
+                MeshRendererSystem.Engine_SetMaterialVisibility(entity.ID, value);
+            }
+        }
+
+        public bool Culled
+        {
+            get
+            {
+                return MeshRendererSystem.Engine_GetMaterialCulled(entity.ID);
+            }
+            set
+            {
+                MeshRendererSystem.Engine_SetMaterialCulled(entity.ID, value);
+            }
+        }
     }
 
     public class Camera : Component

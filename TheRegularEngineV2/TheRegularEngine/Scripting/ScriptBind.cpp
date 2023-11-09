@@ -584,15 +584,97 @@ namespace TRE
 #pragma endregion
 
 #pragma region MeshRendererBindings
-	static void BindSetMaterialInstance(MonoString* materialInstanceName)
+	static void BindSetMaterialInstance(CSEntityID ID, MonoString* materialInstanceName)
 	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return;
+		}
+
 		std::string str = MonoStringToString(materialInstanceName);
 
 		std::vector<std::shared_ptr<Material>> assets;
 		for (auto& resource : ResourceManager::Instance().GetResourcesOfType<Material>())
 		{
-			std::string name;
+			if (str == resource->GetGUIDHex(resource->GetHandle()))
+			{
+				Temp->GetComponent<MeshRenderer>().m_MaterialInstance = resource;
+				Temp->GetComponent<MeshRenderer>().m_IsDirty = true;
+				return;
+			}
 		}
+
+		PUBLISHERROR("Unable to find material " + str);
+	}
+
+	static void BindSetMaterialVisibility(CSEntityID ID, bool isVisible)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return;
+		}
+
+		MeshRenderer& render = Temp->GetComponent<MeshRenderer>();
+		// Ignores if the same value
+		if (render.m_IsVisible == isVisible) return;
+
+		render.m_IsVisible = isVisible;
+		render.m_IsDirty = true;
+	}
+
+	static bool BindGetMaterialVisibility(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+
+		return Temp->GetComponent<MeshRenderer>().m_IsVisible;
+	}
+
+	static void BindSetMaterialCulled(CSEntityID ID, bool isCulled)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return;
+		}
+
+		MeshRenderer& render = Temp->GetComponent<MeshRenderer>();
+		// Ignores if the same value
+		if (render.m_IsCulled == isCulled) return;
+
+		render.m_IsCulled = isCulled;
+		render.m_IsDirty = true;
+	}
+
+	static bool BindGetMaterialCulled(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+
+		return Temp->GetComponent<MeshRenderer>().m_IsCulled;
 	}
 #pragma endregion
 
@@ -1449,6 +1531,10 @@ namespace TRE
 		// Mesh Renderer Bindings
 		{
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialInstance", BindSetMaterialInstance);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialVisibility", BindSetMaterialVisibility);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialVisibility", BindGetMaterialVisibility);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialCulled", BindSetMaterialCulled);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialCulled", BindGetMaterialCulled);
 		}
 
 		// Camera Bindings

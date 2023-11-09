@@ -61,6 +61,8 @@ namespace TRE
 			ImGui::EndDragDropTarget();
 		}
 
+		//AssetManager::Instance().PrintAllAssets();
+
 		//create entity
 		auto& entity = m_SelectionManager->GetSelectedEntity();
 
