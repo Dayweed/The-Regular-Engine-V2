@@ -22,8 +22,9 @@ namespace TRE
 			const std::string& assetName = m_AssetSelector->GetSelectedAssetName();
 			std::string toPrint;
 
+
 			//Check if compiled before
-			if (const auto resourceHandle = m_AssetSelector->GetSelectedAsset(); resourceHandle)
+			if (const auto resourceHandle = m_AssetSelector->GetSelectedAsset(); resourceHandle && AssetManager::Instance().Compiled(resourceHandle))
 			{
 				toPrint = "Texture " + assetName;
 				ImGui::Text(toPrint.c_str());
@@ -34,7 +35,8 @@ namespace TRE
 				ImGui::Text(toPrint.c_str());
 				if (ImGui::Button("Compile"))
 				{
-					AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
+					auto texture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
+					m_AssetSelector->UpdateSelectedAssetHandle(texture->GetHandle());
 				}
 			}
 			ImGui::End();

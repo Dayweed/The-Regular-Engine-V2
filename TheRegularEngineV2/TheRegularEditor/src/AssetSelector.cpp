@@ -86,4 +86,9 @@ namespace TRE
 			}
 		}
 	}
+
+	void AssetSelector::UpdateSelectedAssetHandle(const ResourceHandle handle)
+	{
+		m_SelectedAsset = handle;
+	}
 }

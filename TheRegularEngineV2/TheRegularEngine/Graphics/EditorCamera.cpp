@@ -62,6 +62,14 @@ namespace TRE
 		m_IsDirty = true;
 	}
 
+	void EditorCamera::SetViewportSize(const uint32_t width, const uint32_t height)
+	{
+		/*m_BaseCamera.m_ViewportWidth = width;
+		m_BaseCamera.m_ViewportHeight = height;*/
+		m_BaseCamera.m_AspectRatio = (float)width / (float)height;
+		m_IsDirty = true;
+	}
+
 	void EditorCamera::SetPosition(const glm::vec3& position)
 	{
 		m_Position = position;

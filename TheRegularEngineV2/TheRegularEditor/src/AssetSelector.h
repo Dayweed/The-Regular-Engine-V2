@@ -35,6 +35,7 @@ namespace TRE
 		void ClearSelectedAsset();
 		//void SelectEntity(const ResourceHandle& resourceHandle, AssetType assetType);
 		void SelectAsset(const std::string& assetName, AssetType assetType);
+		void UpdateSelectedAssetHandle(const ResourceHandle handle);
 
 	private:
 		ResourceHandle m_SelectedAsset{ 0 };
