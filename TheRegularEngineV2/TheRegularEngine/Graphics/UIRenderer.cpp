@@ -56,12 +56,12 @@ namespace TRE
 		m_TestIndexBuffer = std::make_shared<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
 		m_TestVertexBuffer = std::make_shared<VertexBuffer>((void*)data.data(), data.size() * sizeof(UIVertex));
 
-		m_TestMaterial = std::make_shared<Material>(PipelineConfig.Shader);
-		m_TestMaterial->Invalidate();
+		m_UIMaterial = std::make_shared<Material>(PipelineConfig.Shader);
+		m_UIMaterial->Invalidate();
 
 		auto TextureHandle = Resource::GetGUIDFromHex("d180b66ce70dea24");
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle);
-		m_TestMaterial->SetTexture("UI_Texture", Texture1);
+		m_UIMaterial->SetTexture("UI_Texture", Texture1);
 	}
 
 	UIRenderer::~UIRenderer()
@@ -112,21 +112,18 @@ namespace TRE
 			UI_PushConstant pc{};
 			auto TransformComp = Entity->GetComponent<Transform>();
 			pc.L2W = TransformComp.m_WorldXform;
+			pc.L2W = glm::scale(pc.L2W, glm::vec3(UIComp.m_Width, UIComp.m_Height, 0.f));
 			pc.Color = UIComp.m_Color;
 
 			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_UIPipeline->GetPipelineLayout(), 
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(UI_PushConstant), &pc);
 
-			auto& Material = UIComp.m_Material;
-			if (Material == nullptr)
-				Material = m_TestMaterial;
-
 			if (UIComp.m_Texture)
-				m_TestMaterial->SetTexture("UI_Texture", UIComp.m_Texture);
+				m_UIMaterial->SetTexture("UI_Texture", UIComp.m_Texture);
 
-			m_TestMaterial->UpdateForEditorSceneRendering(m_UIUBO, Index);
+			m_UIMaterial->UpdateForEditorSceneRendering(m_UIUBO, Index);
 
-			vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &Material->GetEditorDescriptor(Index), 0, NULL);
+			vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &m_UIMaterial->GetEditorDescriptor(Index), 0, NULL);
 
 			VkDeviceSize offsets[] = { 0 };
 			auto VB = m_TestVertexBuffer->GetBuffer();

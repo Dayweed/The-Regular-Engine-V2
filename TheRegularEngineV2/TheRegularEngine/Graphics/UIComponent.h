@@ -9,9 +9,10 @@ namespace TRE
 	{
 		public:
 		std::shared_ptr<VulkanTexture> m_Texture;
-		std::shared_ptr<Material> m_Material;
 		bool m_IsVisible = false;
 		glm::vec4 m_Color { 1.f, 1.f, 1.f, 1.f };
+		int m_Width = 1;
+		int m_Height = 1;
 
 		property_vtable()
 
@@ -24,7 +25,9 @@ namespace TRE
 			{
 				{ "Texture", t.m_Texture ? t.m_Texture->GetHandleHex() : "0" },
 				{ "m_IsVisible", t.m_IsVisible },
-				{ "Color", StoredColor }
+				{ "Color", StoredColor },
+				{ "Width", t.m_Width },
+				{ "Height", t.m_Height }
 			};
 		}
 
@@ -64,6 +67,14 @@ namespace TRE
 				float LoadedColor[4] { Color[0], Color[1], Color[2], Color[3] };
 				t.m_Color = glm::make_vec4(LoadedColor);
 			}
+			if (j.contains("Width"))
+			{
+				t.m_Width = j.at("Width").get<int>();
+			}
+			if (j.contains("Height"))
+			{
+				t.m_Height = j.at("Height").get<int>();
+			}
 		}
 	};
 }
@@ -92,5 +103,7 @@ property_begin(TRE::UIComponent)
 	} property_var_fnend(),
 	property_var(m_IsVisible),
 	property_var(m_Color),
+	property_var(m_Width),
+	property_var(m_Height),
 
 } property_vend_h(TRE::UIComponent)

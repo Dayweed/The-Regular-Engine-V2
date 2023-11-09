@@ -45,7 +45,5 @@ namespace TRE
 		private:
 			std::shared_ptr<VertexBuffer> m_TestVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_TestIndexBuffer;
-
-			std::shared_ptr<Material> m_TestMaterial;
 	};
 }
