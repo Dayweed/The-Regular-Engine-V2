@@ -283,7 +283,7 @@ namespace TRE
 						}
 						else
 						{
-							const AssetSelector::AssetType assetType = m_AssetSelector->FindAssetType(item.m_ResourceType);
+							const AssetSelectorEvent::AssetType assetType = m_AssetSelector->FindAssetType(item.m_ResourceType);
 							m_AssetSelector->SelectAsset(item.m_FileName, assetType);
 						}
 						m_AssetClicked = true;
