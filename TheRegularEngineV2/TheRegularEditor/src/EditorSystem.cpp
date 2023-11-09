@@ -127,6 +127,19 @@ namespace TRE
 		//		}
 		//	}
 		//}
+
+		/*if (InputHandler::GetKeyTrigger((int)KeyButton::B))
+		{
+			const auto& newMesh = AssetManager::Instance().CompileAndLoad<RenderObject>("Blue_Holey.fbx");
+
+			for (auto& ent : ECSManager::Instance().GetEntities<MeshRenderer>())
+			{
+				if (ent->GetComponent<MeshRenderer>().m_RenderObject->GetHandle() == newMesh->GetHandle())
+				{
+					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->SetMeshRenderer(ent, newMesh);
+				}
+			}
+		}*/
 	}
 
 	void EditorSystem::Shutdown()
