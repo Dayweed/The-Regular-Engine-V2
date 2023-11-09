@@ -53,4 +53,16 @@ namespace TRE
 		LocalGloalGizmoEvent() = delete;
 		LocalGloalGizmoEvent(bool local) : m_IsLocal(local) {}
 	};
+
+	struct AssetSelectorEvent : Event
+	{
+		std::string m_AssetName;
+		enum class AssetType
+		{
+			Unknown = 0, Texture, Model, Shader, Material, Scene, Audio, Font, Script, Particle, Prefab
+		};
+		AssetType m_AssetType;
+		AssetSelectorEvent() = delete;
+		AssetSelectorEvent(std::string assetName, AssetType assetType) : m_AssetName(assetName), m_AssetType(assetType) {}
+	};
 }
