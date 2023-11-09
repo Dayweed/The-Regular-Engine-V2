@@ -16,7 +16,7 @@ namespace TRE
         private string mole1tag = "Red";
         private string mole2tag = "Blue";
 
-        private bool collected;
+        public bool collected;
 
         private float cooldownDuration;
         private float cooldownCurrent;

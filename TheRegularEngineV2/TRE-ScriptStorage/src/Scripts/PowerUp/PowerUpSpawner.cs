@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
 
 namespace TRE
 {
@@ -12,6 +13,57 @@ namespace TRE
 
     public class PowerUpSpawner : Entity
     {
+        public Entity spawnedPowerUp;
+        public Entity powerUpPrefab;
+        private vec3 positionOffset;
 
+        private bool spawned;
+        private float cooldownCurrent;
+        private float cooldownDuration = 5.0f;
+        
+        public void OnCreate()
+        {
+            if (CompareTag("SpawnStrawberry"))
+            {
+                powerUpPrefab = new Entity(13004780274330328106);
+            }
+            else if (CompareTag("SpawnBlueberry"))
+            {
+                powerUpPrefab = new Entity(7670209894207584463);
+            }
+
+            positionOffset = new vec3(0, 20, 0);
+
+            spawned = false;
+        }
+
+        public void Update()
+        {
+            // Check if power up is collected
+            if (!ECSManager.IsValidEntity(spawnedPowerUp.ID) || spawnedPowerUp.GetComponent<GetPowerUp>().collected)
+            {
+                spawned = false;
+                cooldownCurrent = cooldownDuration;
+            }
+
+            // Spawn Power Up
+            if (!spawned)
+            {
+                cooldownCurrent -= Time.deltaTime;
+                if (cooldownCurrent <= 0)
+                {
+                    SpawnPowerUp();
+                    spawned = true;
+                }
+            }
+        }
+
+        public void SpawnPowerUp()
+        {
+            spawnedPowerUp = ECSManager.Instantiate(powerUpPrefab);
+            spawnedPowerUp.transform.Position = transform.Position + spawnedPowerUp.transform.Scale.y + positionOffset;
+            spawnedPowerUp.transform.Rotation = transform.Rotation;
+            PhysicsSystem.AddForce(spawnedPowerUp.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
+        }
     }
 }
