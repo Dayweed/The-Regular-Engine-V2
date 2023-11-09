@@ -89,7 +89,6 @@ namespace TRE
 
 			if (m_Resources.find(Handle) == m_Resources.end())
 			{
-				//TRE_CORE_INFO("Resource not found {0}", Resource::GetGUIDHex(Handle));
 				return nullptr;
 			}
 		}
