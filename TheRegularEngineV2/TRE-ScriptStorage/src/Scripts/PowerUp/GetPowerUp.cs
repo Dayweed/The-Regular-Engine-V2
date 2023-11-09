@@ -16,10 +16,10 @@ namespace TRE
         private string mole1tag = "Red";
         private string mole2tag = "Blue";
 
-        public bool collected;
+        public bool collected = false;
 
-        private float cooldownDuration;
-        private float cooldownCurrent;
+        public float cooldownDuration = 1.5f;
+        public float cooldownCurrent = 0f;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
@@ -37,9 +37,7 @@ namespace TRE
 
         public void OnCreate()
         {
-            collected = false;
-            cooldownDuration = 1.5f;
-            cooldownCurrent = 0f;
+
         }
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
@@ -121,7 +119,7 @@ namespace TRE
                 transform.Rotation = new vec3(0, newRot, 0);
                 return;
             }
-            cooldownCurrent -= Time.deltaTime;
+            if (cooldownCurrent >= 0) cooldownCurrent -= Time.deltaTime;
             SetToPlayer();
         }
 
