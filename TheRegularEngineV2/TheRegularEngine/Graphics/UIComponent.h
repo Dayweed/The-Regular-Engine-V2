@@ -9,6 +9,7 @@ namespace TRE
 		std::shared_ptr<VulkanTexture> m_Texture;
 		std::shared_ptr<Material> m_Material;
 		bool m_IsVisible = false;
+		glm::vec4 m_Color { 1.f, 1.f, 1.f, 1.f };
 
 		property_vtable()
 	};
@@ -37,5 +38,6 @@ property_begin(TRE::UIComponent)
 
 	} property_var_fnend(),
 	property_var(m_IsVisible),
+	property_var(m_Color),
 
 } property_vend_h(TRE::UIComponent)

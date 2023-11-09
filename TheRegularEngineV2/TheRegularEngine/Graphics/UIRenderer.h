@@ -13,13 +13,18 @@ namespace TRE
 	struct UIVertex
 	{
 		glm::vec3 Position;
-		glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
 		glm::vec2 UV;
 	};
 
 	struct UIUBO
 	{
 		glm::mat4 m_ProjView2DSpace;
+	};
+
+	struct UI_PushConstant
+	{
+		glm::mat4 L2W;
+		glm::vec4 Color;
 	};
 
 	class UIRenderer

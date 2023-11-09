@@ -109,12 +109,13 @@ namespace TRE
 			if (!UIComp.m_IsVisible)
 				continue;
 
-			PushConstant pc{};
+			UI_PushConstant pc{};
 			auto TransformComp = Entity->GetComponent<Transform>();
-			pc.m_Model = TransformComp.m_WorldXform;
+			pc.L2W = TransformComp.m_WorldXform;
+			pc.Color = UIComp.m_Color;
 
 			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_UIPipeline->GetPipelineLayout(), 
-				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(UI_PushConstant), &pc);
 
 			auto& Material = UIComp.m_Material;
 			if (Material == nullptr)
