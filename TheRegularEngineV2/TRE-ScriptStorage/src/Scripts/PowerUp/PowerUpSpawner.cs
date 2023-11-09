@@ -17,9 +17,9 @@ namespace TRE
         public Entity powerUpPrefab;
         private vec3 positionOffset;
 
-        private bool spawned;
-        private float cooldownCurrent;
-        private float cooldownDuration = 5.0f;
+        public bool spawned;
+        public float cooldownCurrent;
+        public float cooldownDuration = 5.0f;
         
         public void OnCreate()
         {
@@ -32,7 +32,9 @@ namespace TRE
                 powerUpPrefab = new Entity(7670209894207584463);
             }
 
-            positionOffset = new vec3(0, 20, 0);
+            positionOffset = new vec3(0, 2, 0);
+
+            cooldownCurrent = 0;
 
             spawned = false;
         }
@@ -40,7 +42,7 @@ namespace TRE
         public void Update()
         {
             // Check if power up is collected
-            if (!ECSManager.IsValidEntity(spawnedPowerUp.ID) || spawnedPowerUp.GetComponent<GetPowerUp>().collected)
+            if (spawned && (spawnedPowerUp == null || !ECSManager.IsValidEntity(spawnedPowerUp.ID) || spawnedPowerUp.GetComponent<GetPowerUp>().collected))
             {
                 spawned = false;
                 cooldownCurrent = cooldownDuration;
@@ -63,6 +65,9 @@ namespace TRE
             spawnedPowerUp = ECSManager.Instantiate(powerUpPrefab);
             spawnedPowerUp.transform.Position = transform.Position + spawnedPowerUp.transform.Scale.y + positionOffset;
             spawnedPowerUp.transform.Rotation = transform.Rotation;
+            spawnedPowerUp.GetComponent<Rigidbody>().useGravity = true;
+            spawnedPowerUp.parenting.SetParent(this);
+            PhysicsSystem.SetLinearVelocity(spawnedPowerUp.ID, vec3.Zero);
             PhysicsSystem.AddForce(spawnedPowerUp.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
         }
     }
