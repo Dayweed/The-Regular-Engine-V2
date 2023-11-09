@@ -24,7 +24,7 @@ namespace TRE
 		m_SceneDirectory = std::filesystem::current_path().parent_path();
 		m_SceneDirectory += "\\Scenes";
 		m_ScriptDirectory = std::filesystem::current_path().parent_path();
-		m_ScriptDirectory += "\\Scripts";
+		m_ScriptDirectory += "\\TRE-ScriptStorage\\src\\Scripts";
 		m_CurrentDirectory = m_AssetDirectory;
 
 		//Custom Flag Combinations
