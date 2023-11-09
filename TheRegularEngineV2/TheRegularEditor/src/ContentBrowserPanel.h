@@ -35,6 +35,8 @@ namespace TRE
 			std::filesystem::path m_CurrentDirectory;
 			//Asset Folder Path
 			std::filesystem::path m_AssetDirectory;
+			//Prefabs Folder Path
+			std::filesystem::path m_PrefabDirectory;
 			//Scenes Folder Path
 			std::filesystem::path m_SceneDirectory;
 			//Scripts Folder Path
