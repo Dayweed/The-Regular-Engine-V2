@@ -17,8 +17,6 @@
 #include "TexturePanel.h"
 #include "Graphics/EditorCamera.h"
 
-#include "InputHandler/InputHandler.h"
-
 namespace TRE
 {
 	EditorSystem::EditorSystem()
@@ -113,20 +111,6 @@ namespace TRE
 		EditorCamera::Instance().Update();
 
 		ImGui::End(); //Dockspace
-
-		//if (InputHandler::GetKeyTrigger((int)KeyButton::B))
-		//{
-		//	const auto& newTexture = AssetManager::Instance().CompileAndLoad<VulkanTexture>("Blue_BaseColor.png");
-		//	//Find all materials or sprite renderers that use this texture and update them
-		//	for (auto& material : AssetManager::Instance().GetAssetsOfType<Material>())
-		//	{
-		//		std::string assignedTextureName;
-		//		if (material->ContainsTexture(newTexture->GetHandle(), assignedTextureName))
-		//		{
-		//			material->SetTexture(assignedTextureName, newTexture);
-		//		}
-		//	}
-		//}
 	}
 
 	void EditorSystem::Shutdown()

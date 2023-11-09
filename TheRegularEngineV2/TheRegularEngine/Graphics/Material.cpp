@@ -150,19 +150,6 @@ namespace TRE
 		m_Textures[Name] = textures;
 	}
 
-	const bool Material::ContainsTexture(const ResourceHandle& resourceHandle, std::string& boundedName)
-	{
-		for (const auto& texture : m_Textures)
-		{
-			if (texture.second->GetHandle() == resourceHandle)
-			{
-				boundedName = texture.first;
-				return true;
-			}
-		}
-		return false;
-	}
-
 	void Material::Serialize()
 	{
 		if (m_Handle == PBR::GetDefaultMaterial())

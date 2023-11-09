@@ -6,6 +6,7 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "GLFW/glfw3.h"
 
+#define DEBUG 1
 namespace TRE
 {
 	std::unordered_map<int, int> InputHandler::m_keyMap;
