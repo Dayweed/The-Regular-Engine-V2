@@ -24,7 +24,6 @@ namespace TRE
 			const std::string& assetName = m_AssetSelector->GetSelectedAssetName();
 			std::string toPrint;
 
-
 			//Check if compiled before
 			if (AssetManager::Instance().Compiled(m_ResourceHandle))
 			{
@@ -103,7 +102,17 @@ namespace TRE
 
 					descriptorFile.GenerateDescriptorFile();
 
-					AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
+					auto newTexture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
+
+					//Find all materials or sprite renderers that use this texture and update them
+					for (auto& material : AssetManager::Instance().GetAssetsOfType<Material>())
+					{
+						std::string assignedTextureName;
+						if (material->ContainsTexture(newTexture->GetHandle(), assignedTextureName))
+						{
+							material->SetTexture(assignedTextureName, newTexture);
+						}
+					}
 				}
 			}
 			else
@@ -148,7 +157,6 @@ namespace TRE
 					TextureDescriptorFile descriptor;
 					descriptor.ReadDescriptorFile(m_DescriptorFilePath);
 
-					m_HexHandle = Resource::GetGUIDHex(resourceHandle);
 					m_Compress = descriptor.GetCompress();
 					m_Linear = descriptor.GetLinear();
 					m_BCn = descriptor.GetBCn();
