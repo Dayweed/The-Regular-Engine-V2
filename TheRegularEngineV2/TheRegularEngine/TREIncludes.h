@@ -36,6 +36,7 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Light.h"
+#include "Graphics/UIComponent.h"
 
 //-----------------Scripting-----------------//
 #include "Scripting/ScriptComponent.h"

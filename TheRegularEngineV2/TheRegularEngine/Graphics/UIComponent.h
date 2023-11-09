@@ -1,17 +1,70 @@
 #pragma once
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace TRE
 {
-	struct UIComponent : property::base
+	class UIComponent : property::base
 	{
+		public:
 		std::shared_ptr<VulkanTexture> m_Texture;
 		std::shared_ptr<Material> m_Material;
 		bool m_IsVisible = false;
 		glm::vec4 m_Color { 1.f, 1.f, 1.f, 1.f };
 
 		property_vtable()
+
+		friend void to_json(nlohmann::json& j, const UIComponent& t)
+		{
+			const float* Color = glm::value_ptr(t.m_Color);
+			std::vector<float> StoredColor { Color[0], Color[1], Color[2], Color[3] };
+
+			j = nlohmann::json
+			{
+				{ "Texture", t.m_Texture ? t.m_Texture->GetHandleHex() : "0" },
+				{ "m_IsVisible", t.m_IsVisible },
+				{ "Color", StoredColor }
+			};
+		}
+
+		friend void from_json(const nlohmann::json& j, UIComponent& t)
+		{
+			if (j.contains("Texture"))
+			{
+				std::string String = j.at("Texture").get<std::string>();
+				ResourceHandle TextureHandle = Resource::GetGUIDFromHex(String);
+
+				if (TextureHandle != 0)
+				{
+					if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle); Texture)
+					{
+						t.m_Texture = Texture;
+					}
+					else
+					{
+						t.m_Texture = VulkanTexture::Deserialize(String);
+
+						if (t.m_Texture == nullptr)
+							TRE_CORE_CRITICAL(String + "Texture failed to load in UI Component");
+					}
+				}
+				else
+				{
+					t.m_Texture = nullptr;
+				}
+			}
+			if (j.contains("m_IsVisible"))
+			{
+				t.m_IsVisible = j.at("m_IsVisible").get<bool>();
+			}
+			if (j.contains("Color"))
+			{
+				std::vector<float> Color { j.at("Color").get<std::vector<float>>() };
+				float LoadedColor[4] { Color[0], Color[1], Color[2], Color[3] };
+				t.m_Color = glm::make_vec4(LoadedColor);
+			}
+		}
 	};
 }
 
