@@ -24,6 +24,7 @@ namespace TRE
 		float LineWidth = 1.f;
 		size_t VertexStride = 0;
 		bool EnableCull = true;
+		bool EnableBlending = false;
 	};
 
 	class Pipeline

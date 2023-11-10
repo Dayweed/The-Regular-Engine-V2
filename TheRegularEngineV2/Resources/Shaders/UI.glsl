@@ -44,7 +44,7 @@ struct VertexOut
 layout (location = 0) in VertexOut In;
 layout (set = 0, binding = 1) uniform sampler2D UI_Texture;
 
-void main() 
+void main()
 {
     outColor = texture(UI_Texture, In.UV) * In.Color;
 }
