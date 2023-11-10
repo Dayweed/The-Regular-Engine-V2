@@ -5,7 +5,7 @@
 
 namespace TRE
 {
-	PostProcessingRenderer::PostProcessingRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
+	PostProcessEffect::PostProcessEffect(const std::shared_ptr<Device>& device)
 	{
 		auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
@@ -15,22 +15,7 @@ namespace TRE
 		RPConfig.DepthImageFormat = SC->GetDepthFormat();
 		RPConfig.DepthEnabled = true;
 		RPConfig.ClearColor = false;
-		m_PostRenderpass = std::make_shared<RenderPass>(m_Device, RPConfig);
-
-		PipelineConfigurations PipelineConfig{};
-		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(8); //Vignette shader
-		PipelineConfig.EnableCull = false;
-		PipelineConfig.EnableBlending = true;
-		PipelineConfig.EnableDepthTest = false;
-		m_PostPipeline = std::make_shared<Pipeline>(PipelineConfig, m_PostRenderpass);
-
-		m_PostEffects[1] = std::make_shared<Vignette>();
-		for (auto& effects : m_PostEffects)
-		{
-			effects.second->SetupUBO();
-			effects.second->SetupShader(PipelineConfig.Shader);
-		}
+		m_Renderpass = std::make_shared<RenderPass>(device, RPConfig);
 
 		float x = -1.f; float y = -1.f;
 		float width = 2, height = 2;
@@ -50,32 +35,20 @@ namespace TRE
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
-		m_PostIndexBuffer = std::make_shared<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
-		m_PostVertexBuffer = std::make_shared<VertexBuffer>((void*)data.data(), data.size() * sizeof(PostVertex));
+		m_IndexBuffer = std::make_shared<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
+		m_VertexBuffer = std::make_shared<VertexBuffer>((void*)data.data(), data.size() * sizeof(PostVertex));
 	}
 
-	PostProcessingRenderer::~PostProcessingRenderer()
+	void PostProcessEffect::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
 	{
-
-	}
-
-	void PostProcessingRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
-	{
-		for (const auto& effects : m_PostEffects)
-		{
-			effects.second->UpdateUBO();
-		}
-
-		const auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_PostRenderpass->GetHandle();
-		renderPassInfo.framebuffer = TargetFramebuffer;
+		renderPassInfo.renderPass = m_Renderpass->GetHandle();
+		renderPassInfo.framebuffer = targetFramebuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
 
-		vkCmdBeginRenderPass(CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBeginRenderPass(commandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkViewport viewport{};
 		viewport.x = 0.f;
@@ -84,27 +57,44 @@ namespace TRE
 		viewport.height = -static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+		vkCmdSetViewport(commandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
 		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
-		vkCmdSetScissor(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
+		vkCmdSetScissor(commandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		Renderer::BindPipeline(CommandBuffer, m_PostPipeline);
+		Renderer::BindPipeline(commandBuffer, m_Pipeline);
+		m_Material->UpdateForRendering(m_UBO, index);
+		vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Material->GetDescriptor(index), 0, NULL);
+
+		VkDeviceSize offsets[] = { 0 };
+		auto VB = m_VertexBuffer->GetBuffer();
+		vkCmdBindVertexBuffers(commandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+		vkCmdBindIndexBuffer(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+		vkCmdDrawIndexed(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+
+		Renderer::EndRenderPass(commandBuffer);
+	}
+
+	PostProcessingRenderer::PostProcessingRenderer(const std::shared_ptr<Device>& device)
+	{
+		m_PostEffects[1] = std::make_shared<Vignette>(device);
+	}
+
+	PostProcessingRenderer::~PostProcessingRenderer()
+	{
+
+	}
+
+	void PostProcessingRenderer::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
+	{
 		for (const auto& effects : m_PostEffects)
 		{
-			effects.second->Render(m_PostPipeline, CommandBuffer, Index);
-
-			VkDeviceSize offsets[] = { 0 };
-			auto VB = m_PostVertexBuffer->GetBuffer();
-			vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
-			vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_PostIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_PostIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			effects.second->UpdateUBO();
+			effects.second->Render(targetFramebuffer, commandBuffer, index);
 		}
-
-		Renderer::EndRenderPass(CommandBuffer);
 	}
 
 	void PostProcessingRenderer::AddPostEffect(const std::shared_ptr<PostProcessEffect>& effect, const int index, const std::string name)

@@ -19,15 +19,20 @@ namespace TRE
 	class PostProcessEffect
 	{
 	public:
-		PostProcessEffect() = default;
+		PostProcessEffect(const std::shared_ptr<Device>& device);
 		virtual ~PostProcessEffect() {};
 
 		void SetupName(const std::string& name) { m_Name = name; }
 		virtual void SetupUBO() = 0;
 		virtual void SetupShader(std::shared_ptr<Shader> shader) = 0;
 		virtual void UpdateUBO() {};
-		virtual void Render(const std::shared_ptr <Pipeline>& pipeline, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index) = 0;
+		virtual void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
 	protected:
+		std::shared_ptr<Pipeline> m_Pipeline;
+		std::shared_ptr<RenderPass> m_Renderpass;
+		std::shared_ptr<VertexBuffer> m_VertexBuffer;
+		std::shared_ptr<IndexBuffer> m_IndexBuffer;
+
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<UniformBuffer> m_UBO;
 		std::string m_Name;
@@ -36,18 +41,13 @@ namespace TRE
 	class PostProcessingRenderer
 	{
 	public:
-		PostProcessingRenderer(const std::shared_ptr<Device>& Device);
+		PostProcessingRenderer(const std::shared_ptr<Device>& device);
 		~PostProcessingRenderer();
 
-		void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
+		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
 
 		void AddPostEffect(const std::shared_ptr<PostProcessEffect>& effect, const int index, const std::string name);
 	private:
-		std::shared_ptr<Device> m_Device;
-		std::shared_ptr<Pipeline> m_PostPipeline;
-		std::shared_ptr<RenderPass> m_PostRenderpass;
-		std::shared_ptr<VertexBuffer> m_PostVertexBuffer;
-		std::shared_ptr<IndexBuffer> m_PostIndexBuffer;
 		
 		std::map<int, std::shared_ptr<PostProcessEffect>> m_PostEffects;
 	};

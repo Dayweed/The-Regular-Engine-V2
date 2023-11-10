@@ -4,6 +4,20 @@
 
 namespace TRE
 {
+	Vignette::Vignette(const std::shared_ptr<Device>& device) : PostProcessEffect(device)
+	{
+		PipelineConfigurations PipelineConfig{};
+		PipelineConfig.Primitive = PrimitiveType::Triangles;
+		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(8); //Vignette shader
+		PipelineConfig.EnableCull = false;
+		PipelineConfig.EnableBlending = true;
+		PipelineConfig.EnableDepthTest = false;
+		m_Pipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);	
+
+		SetupUBO();
+		SetupShader(PipelineConfig.Shader);
+	}
+
 	void Vignette::SetupUBO()
 	{
 		m_UBO = std::make_shared<UniformBuffer>(sizeof(VignetteUBO), 0);
@@ -20,15 +34,9 @@ namespace TRE
 		VignetteUBO UBO{};
 		UBO.Color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		UBO.Resolution = glm::vec2(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth(), Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		UBO.Radius = 1.0f;
+		UBO.Radius = .5f;
 		UBO.Softness = 0.f;
 
 		m_UBO->SetData(&UBO, sizeof(VignetteUBO));
-	}
-
-	void Vignette::Render(const std::shared_ptr <Pipeline>& pipeline, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
-	{
-		m_Material->UpdateForRendering(m_UBO, index);
-		vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetPipelineLayout(), 0, 1, &m_Material->GetDescriptor(index), 0, NULL);
 	}
 }

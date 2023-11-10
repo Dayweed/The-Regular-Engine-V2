@@ -15,10 +15,11 @@ namespace TRE
 	class Vignette : public PostProcessEffect
 	{
 	public:
+		Vignette(const std::shared_ptr<Device>& device);
+
 		void SetupUBO() override;
 		void SetupShader(std::shared_ptr<Shader> shader) override;
 		void UpdateUBO() override;
-		void Render(const std::shared_ptr <Pipeline>& pipeline, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index) override;
 	
 		void SetColor(const glm::vec4& color) { m_Color = color; }
 		void SetRadius(const float radius) { m_Radius = radius; }
