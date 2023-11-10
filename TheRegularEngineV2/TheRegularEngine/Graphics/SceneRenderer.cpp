@@ -365,8 +365,7 @@ namespace TRE
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
-		if (m_IsEditorScene)
-			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+		m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();

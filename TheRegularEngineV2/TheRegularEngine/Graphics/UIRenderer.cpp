@@ -69,7 +69,7 @@ namespace TRE
 
 	}
 
-	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
+	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor)
 	{
 		UIUBO UBO{};
 		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(960.f, 540.f, 0.f)); //Translate by viewport width or height / 2
@@ -121,9 +121,17 @@ namespace TRE
 			if (UIComp.m_Texture)
 				m_UIMaterial->SetTexture("UI_Texture", UIComp.m_Texture);
 
-			m_UIMaterial->UpdateForEditorSceneRendering(m_UIUBO, Index);
+			if (IsEditor)
+			{
+				m_UIMaterial->UpdateForEditorSceneRendering(m_UIUBO, Index);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &m_UIMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				m_UIMaterial->UpdateForRendering(m_UIUBO, Index);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &m_UIMaterial->GetDescriptor(Index), 0, NULL);
+			}
 
-			vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &m_UIMaterial->GetEditorDescriptor(Index), 0, NULL);
 
 			VkDeviceSize offsets[] = { 0 };
 			auto VB = m_TestVertexBuffer->GetBuffer();

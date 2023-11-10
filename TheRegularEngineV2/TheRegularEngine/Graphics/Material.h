@@ -32,7 +32,7 @@ namespace TRE
 			~Material();
 
 			void Invalidate();
-			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap);
+			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap = VkDescriptorImageInfo());
 			void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap = VkDescriptorImageInfo());
 			void UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo); //To be removed
 
