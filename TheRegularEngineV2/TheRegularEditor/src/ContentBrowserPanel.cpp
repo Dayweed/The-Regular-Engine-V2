@@ -275,10 +275,6 @@ namespace TRE
 						}
 						else if (item.m_ResourceType == "m_Scene")
 						{
-							/*if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
-							{
-								SceneManager::Instance().LoadScene(item.m_Path.string());
-							}*/
 							lastSceneClicked = item.m_Path.string();
 						}
 						else

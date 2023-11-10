@@ -179,6 +179,8 @@ namespace TRE
 		auto FinalPassShaderHandle = 4;
 		auto ShadowMapHandle = 5;
 		auto UIHandle = 6;
+		auto DebugHandle = 7;
+		auto VignetteHandle = 8;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
@@ -199,6 +201,11 @@ namespace TRE
 		std::unique_ptr<Shader> UIShader = ShaderCompiler::DeserializeReflectShader("../Resources/UI.TREshader");
 		UIShader->SetHandle(UIHandle);
 		ResourceManager::Instance().AddResource(std::move(UIShader));
+
+		//VignetteShader
+		std::unique_ptr<Shader> VignetteShader = ShaderCompiler::DeserializeReflectShader("../Resources/Vignette.TREshader");
+		VignetteShader->SetHandle(VignetteHandle);
+		ResourceManager::Instance().AddResource(std::move(VignetteShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

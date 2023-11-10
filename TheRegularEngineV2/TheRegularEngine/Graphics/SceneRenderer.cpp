@@ -100,6 +100,7 @@ namespace TRE
 		m_ShadowMaterial->Invalidate();
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
+		m_PostRenderer = std::make_shared<PostProcessingRenderer>(m_Device);
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -275,7 +276,7 @@ namespace TRE
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
-			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			depthViewMatrix = glm::translate(glm::mat4(1.f), glm::vec3(transform.m_Position.x, 100.f, transform.m_Position.z)) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
 
 		ShadowUBO UBO_Shadow;
@@ -366,6 +367,9 @@ namespace TRE
 		Renderer::EndRenderPass(m_CommandBuffer);
 
 		m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+
+		if(m_IsEditorScene == false)
+			m_PostRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
