@@ -25,6 +25,7 @@ namespace TRE
 		size_t VertexStride = 0;
 		bool EnableCull = true;
 		bool EnableBlending = false;
+		bool EnableDepthTest = true;
 	};
 
 	class Pipeline

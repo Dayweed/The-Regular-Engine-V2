@@ -32,6 +32,7 @@ namespace TRE
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
 		PipelineConfig.EnableCull = false;
 		PipelineConfig.EnableBlending = true;
+		PipelineConfig.EnableDepthTest = false;
 		m_UIPipeline = std::make_shared<Pipeline>(PipelineConfig, m_UIRenderpass);
 
 		m_UIUBO = std::make_shared<UniformBuffer>(sizeof(UIUBO), 0);
