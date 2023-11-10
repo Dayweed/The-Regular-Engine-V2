@@ -379,7 +379,8 @@ namespace TRE
 			DirectionalLight,
 			ScriptComponent,
 			UIComponent,
-			AnimationComponent
+			AnimationComponent,
+			ParticleComponent
 		>();
 	}
 
@@ -408,7 +409,8 @@ namespace TRE
 			.component<DirectionalLight>(arc)
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
-			.component<AnimationComponent>(arc);
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		arc.Close();
 
@@ -443,7 +445,8 @@ namespace TRE
 			.component<DirectionalLight>(arc)
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
-			.component<AnimationComponent>(arc);
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		// Clone each component of the object into the prefab
 		// USES MEMORYMANAGER INSTEAD OF ECSMANAGER, ECSManager should never know this exist!

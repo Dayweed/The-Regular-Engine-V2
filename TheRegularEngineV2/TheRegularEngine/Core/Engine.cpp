@@ -15,7 +15,6 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
-#include "Graphics/UIComponent.h"
 
 namespace TRE
 {
@@ -134,6 +133,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<ParticleComponent>("Particle Component");					// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();

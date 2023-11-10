@@ -187,7 +187,8 @@ namespace TRE
 			.component<Audio>(arc)
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
-			.component<AnimationComponent>(arc);
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		arc.Close();
 
@@ -219,7 +220,8 @@ namespace TRE
 			.component<Audio>(arc)
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
-			.component<AnimationComponent>(arc);
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}
@@ -292,7 +294,8 @@ namespace TRE
 			DirectionalLight,
 			ScriptComponent,
 			UIComponent,
-			AnimationComponent
+			AnimationComponent,
+			ParticleComponent
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)
