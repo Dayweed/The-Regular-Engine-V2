@@ -37,6 +37,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Light.h"
 #include "Graphics/UIComponent.h"
+#include "Graphics/AnimationComponent.h"
 
 //-----------------Scripting-----------------//
 #include "Scripting/ScriptComponent.h"
