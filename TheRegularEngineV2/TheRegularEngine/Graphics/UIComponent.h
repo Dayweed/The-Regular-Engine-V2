@@ -81,10 +81,8 @@ namespace TRE
 
 property_begin(TRE::UIComponent)
 {
-	property_var_fnbegin("Texture", resource_list)
+	property_var_fnbegin("Texture", resource_ref)
 	{
-		InOut.m_Type = "TEXTURE";
-
 		if (isRead)
 		{
 			if (Self.m_Texture)
