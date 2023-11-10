@@ -68,7 +68,7 @@ namespace TRE
 		private:
 			bool SanityCheck();
 			void ImportData(const GeomDescriptorFile& geomDesc);
-			void ImportStaticMesh(std::vector<InputMeshPart>& inputMesh);
+			void ImportStaticMesh(std::vector<InputMeshPart>& inputMesh, const GeomDescriptorFile& geomDesc);
 			bool ImportGeometryValidateMesh(const aiMesh& AssimpMesh, int& iTexture, int& iColor);
 			void MergeData(std::vector<InputMeshPart>& inputMesh);
 			void Optimize(std::vector<InputMeshPart>& inputMesh);

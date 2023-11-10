@@ -95,12 +95,47 @@ namespace TRE
         }
     }
 
+    public class MeshRenderer : Component
+    {
+        public string Material
+        {
+            set
+            {
+                MeshRendererSystem.Engine_SetMaterialInstance(entity.ID, value);
+            }
+        }
+
+        public bool Visible
+        {
+            get
+            {
+                return MeshRendererSystem.Engine_GetMaterialVisibility(entity.ID);
+            }
+            set
+            {
+                MeshRendererSystem.Engine_SetMaterialVisibility(entity.ID, value);
+            }
+        }
+
+        public bool Culled
+        {
+            get
+            {
+                return MeshRendererSystem.Engine_GetMaterialCulled(entity.ID);
+            }
+            set
+            {
+                MeshRendererSystem.Engine_SetMaterialCulled(entity.ID, value);
+            }
+        }
+    }
+
     public class Camera : Component
     {
         // use transform component as template
         // add Camera variables here
 
-
+        // Can leave as blank for now (ZR)
     }
 
     public class Rigidbody : Component
@@ -135,21 +170,144 @@ namespace TRE
 
     public class BoxCollider : Component
     {
-
+        public BoxCollider()
+        {
+            // LEAVE AS BLANK!
+        }
+        public vec3 HalfExtents
+        {
+            get
+            {                
+                return PhysicsSystem.Engine_GetBoxColliderHalfExtents(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.ResizeBoxCollider(entity.ID, value);
+            }
+        }
+        public vec3 Offset // SET DOES NOT WORK
+        {
+            get
+            {                
+                return PhysicsSystem.Engine_GetColliderOffset(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+            }
+        }
     }
 
     public class SphereCollider : Component
     {
-
+        public SphereCollider()
+        {
+            // LEAVE AS BLANK!
+        }
+        public float Radius
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetSphereColliderRadius(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.ResizeSphereCollider(entity.ID, value);
+            }
+        }
+        public vec3 Offset // SET DOES NOT WORK
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetColliderOffset(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+            }
+        }
     }
 
     public class CapsuleCollider : Component
     {
-
+        public CapsuleCollider()
+        {
+            // LEAVE AS BLANK!
+        }
+        public float Radius
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetCapsuleColliderRadius(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_ResizeCapsuleCollider(entity.ID, value, PhysicsSystem.Engine_GetCapsuleColliderHalfHeight(entity.ID));
+            }
+        }
+        public float HalfHeight
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetCapsuleColliderHalfHeight(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_ResizeCapsuleCollider(entity.ID, PhysicsSystem.Engine_GetCapsuleColliderRadius(entity.ID), value);
+            }
+        }
+        public vec3 Offset // SET DOES NOT WORK
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetColliderOffset(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+            }
+        }
     }
 
-    public class MeshRenderer : Component
+    public class Audio : Component
     {
-
+        public Audio()
+        {
+            // LEAVE AS BLANK!
+        }
+        public string FileName
+        {
+            get
+            {
+                return AudioSystem.Engine_GetFileName(entity.ID);
+            }
+            set
+            {
+                AudioSystem.Engine_SetFileName(entity.ID, value);
+            }
+        }
+        public bool IsPlaying()
+        {
+            return AudioSystem.Engine_GetIsPlaying(entity.ID);
+        }
+        public void Play(bool once = false)
+        {
+            if (once)
+            {
+                AudioSystem.PlayOnce(entity.ID);
+            }
+            else
+            {
+                AudioSystem.Play(entity.ID);
+            }
+        }
+        public void Pause()
+        {
+            AudioSystem.Engine_TogglePause(entity.ID);
+        }
+        public void Stop()
+        {
+            AudioSystem.Stop(entity.ID);
+        }
     }
 }

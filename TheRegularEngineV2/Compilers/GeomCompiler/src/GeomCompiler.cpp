@@ -99,7 +99,7 @@ namespace TRE
 	{
 		std::vector<InputMeshPart> MyNodes;
 		
-		ImportStaticMesh(MyNodes);
+		ImportStaticMesh(MyNodes, geomDesc);
 
 		MergeData(MyNodes);
 
@@ -111,7 +111,7 @@ namespace TRE
 		CastToGeom(std::move(skinGeom));
 	}
 
-	void GeomCompiler::ImportStaticMesh(std::vector<InputMeshPart>& inputMesh)
+	void GeomCompiler::ImportStaticMesh(std::vector<InputMeshPart>& inputMesh, const GeomDescriptorFile& geomDesc)
 	{
 		auto ProcessMesh = [&](const aiMesh& AssimpMesh, const aiMatrix4x4& Transform, InputMeshPart& MeshPart, const int iTexCordinates, const int iColors)
 		{
@@ -254,8 +254,21 @@ namespace TRE
 			}
 		};
 
-		//aiMatrix4x4 L2W = m_DescriptorMatrix;
 		aiMatrix4x4 L2W = aiMatrix4x4();
+		aiVector3D scaling((ai_real)geomDesc.GetScale().x, (ai_real)geomDesc.GetScale().y, (ai_real)geomDesc.GetScale().z);
+		aiVector3D translation((ai_real)geomDesc.GetPosition().x, (ai_real)geomDesc.GetPosition().y, (ai_real)geomDesc.GetPosition().z);
+		aiMatrix4x4 scale;
+		aiMatrix4x4::Scaling(scaling, scale);
+		aiMatrix4x4 rotationX;
+		aiMatrix4x4::RotationX((ai_real)geomDesc.GetRotation().x, rotationX);
+		aiMatrix4x4 rotationY;
+		aiMatrix4x4::RotationY((ai_real)geomDesc.GetRotation().y, rotationY);
+		aiMatrix4x4 rotationZ;
+		aiMatrix4x4::RotationZ((ai_real)geomDesc.GetRotation().z, rotationZ);
+		aiMatrix4x4 translationMatrix;
+		aiMatrix4x4::Translation(translation, translationMatrix);
+		L2W = scale * rotationX * rotationY * rotationZ * translationMatrix;
+
 		RecurseScene(*m_Scene->mRootNode, L2W);
 	}
 

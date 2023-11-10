@@ -16,6 +16,9 @@
 #include "GamePanel.h"
 #include "TexturePanel.h"
 #include "Graphics/EditorCamera.h"
+#include "ModelPanel.h"
+
+#include "InputHandler/InputHandler.h"
 
 namespace TRE
 {
@@ -41,6 +44,7 @@ namespace TRE
 		m_PanelManager->InsertPanel<MaterialPanel>("Material", m_SelectionManager, m_AssetSelector);
 		m_PanelManager->InsertPanel<GamePanel>("Game Panel");
 		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
+		m_PanelManager->InsertPanel<ModelPanel>("Model Panel", m_AssetSelector);
 		m_PanelManager->Init();
 	}
 
@@ -111,6 +115,33 @@ namespace TRE
 		EditorCamera::Instance().Update();
 
 		ImGui::End(); //Dockspace
+
+		//if (InputHandler::GetKeyTrigger((int)KeyButton::B))
+		//{
+		//	const auto& newTexture = AssetManager::Instance().CompileAndLoad<VulkanTexture>("Blue_BaseColor.png");
+		//	//Find all materials or sprite renderers that use this texture and update them
+		//	for (auto& material : AssetManager::Instance().GetAssetsOfType<Material>())
+		//	{
+		//		std::string assignedTextureName;
+		//		if (material->ContainsTexture(newTexture->GetHandle(), assignedTextureName))
+		//		{
+		//			material->SetTexture(assignedTextureName, newTexture);
+		//		}
+		//	}
+		//}
+
+		/*if (InputHandler::GetKeyTrigger((int)KeyButton::B))
+		{
+			const auto& newMesh = AssetManager::Instance().CompileAndLoad<RenderObject>("Blue_Holey.fbx");
+
+			for (auto& ent : ECSManager::Instance().GetEntities<MeshRenderer>())
+			{
+				if (ent->GetComponent<MeshRenderer>().m_RenderObject->GetHandle() == newMesh->GetHandle())
+				{
+					ECSSystemManager::Instance().GetSystem<MeshRendererSystem>()->SetMeshRenderer(ent, newMesh);
+				}
+			}
+		}*/
 	}
 
 	void EditorSystem::Shutdown()

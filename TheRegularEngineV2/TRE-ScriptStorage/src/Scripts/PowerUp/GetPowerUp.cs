@@ -16,16 +16,19 @@ namespace TRE
         private string mole1tag = "Red";
         private string mole2tag = "Blue";
 
-        private bool collected;
+        public bool collected = false;
 
-        private float cooldownDuration;
-        private float cooldownCurrent;
+        public float cooldownDuration = 1.5f;
+        public float cooldownCurrent = 0f;
 
         //private Renderer headPiece;                   // THIS CANT BE DONE YET!
         private Entity playerObj;                       // private Transform playerObj;
         // private Entity playerModel;                  // private Transform playerModel;
 
         private PowerUpManager playerPowerUpManager;
+
+        private float groundOffset = 2;
+        private float rotationSpeed = 20;
 
         public GetPowerUp()
         {
@@ -34,9 +37,7 @@ namespace TRE
 
         public void OnCreate()
         {
-            collected = false;
-            cooldownDuration = 1.5f;
-            cooldownCurrent = 0f;
+
         }
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
@@ -44,11 +45,12 @@ namespace TRE
             Entity other = new Entity(otherID);
             //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
 
-            if (other.CompareTag("Ground"))
+            if (GetComponent<Rigidbody>().useGravity == true && other.CompareTag("Ground"))
             {
                 //Debug.Log("LAND BRO");
                 //RemoveComponent<Rigidbody>();
                 GetComponent<Rigidbody>().useGravity = false;
+                transform.Position = new vec3(transform.Position.x, transform.Position.y + transform.Scale.y + groundOffset, transform.Position.z);
                 //PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
                 cooldownCurrent = 0;
                 return;
@@ -110,8 +112,14 @@ namespace TRE
 
         public void Update()
         {
-            if (!collected) return;
-            cooldownCurrent -= Time.deltaTime;
+            if (!collected)
+            {
+                // Spin blueberry
+                float newRot = transform.Rotation.y + rotationSpeed * Time.deltaTime;
+                transform.Rotation = new vec3(0, newRot, 0);
+                return;
+            }
+            if (cooldownCurrent >= 0) cooldownCurrent -= Time.deltaTime;
             SetToPlayer();
         }
 
@@ -141,7 +149,7 @@ namespace TRE
             playerObj = null;
             collected = false;
             GetComponent<Rigidbody>().useGravity = true;
-            PhysicsSystem.AddForce(this.ID, new vec3(20, 50, 0), ForceMode.VelocityChange);
+            PhysicsSystem.AddForce(this.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
             cooldownCurrent = cooldownDuration;
         }
 

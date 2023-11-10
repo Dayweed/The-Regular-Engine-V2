@@ -346,19 +346,23 @@ namespace TRE
 			TRE_INFO("Audio added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::Rigidbody:
-			Temp->AddComponent<Rigidbody>();
+			Temp->AddComponent<Rigidbody>().m_IsDirty = true;
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructRigidbody(Temp);
 			TRE_INFO("Rigidbody added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::BoxCollider:
-			Temp->AddComponent<BoxCollider>();
+			Temp->AddComponent<BoxCollider>().m_IsDirty = true;
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructBoxCollider(Temp);
 			TRE_INFO("Box Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::SphereCollider:
-			Temp->AddComponent<SphereCollider>();
+			Temp->AddComponent<SphereCollider>().m_IsDirty = true;
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructSphereCollider(Temp);
 			TRE_INFO("Sphere Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::CapsuleCollider:
-			Temp->AddComponent<CapsuleCollider>();
+			Temp->AddComponent<CapsuleCollider>().m_IsDirty = true;
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(Temp);
 			TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		default:
@@ -392,18 +396,22 @@ namespace TRE
 			break;
 		case ComponentsID::Rigidbody:
 			Temp->RemoveComponent<Rigidbody>();
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructRigidbody(Temp);
 			TRE_INFO("Rigid Body Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::BoxCollider:
 			Temp->RemoveComponent<BoxCollider>();
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructBoxCollider(Temp);
 			TRE_INFO("Box Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::SphereCollider:
 			Temp->RemoveComponent<SphereCollider>();
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructSphereCollider(Temp);
 			TRE_INFO("Sphere Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::CapsuleCollider:
 			Temp->RemoveComponent<CapsuleCollider>();
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructCapsuleCollider(Temp);
 			TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		default:
@@ -430,6 +438,8 @@ namespace TRE
 
 		switch(componentID)
 		{
+		case ComponentsID::Transform:
+			return entity->HasComponent<Transform>();
 		case ComponentsID::MeshRenderer:
 			return entity->HasComponent<MeshRenderer>();
 		case ComponentsID::Camera:
@@ -444,8 +454,6 @@ namespace TRE
 			return entity->HasComponent<CapsuleCollider>();
 		case ComponentsID::Audio:
 			return entity->HasComponent<Audio>();
-		case ComponentsID::Transform:
-			return entity->HasComponent<Transform>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -576,15 +584,97 @@ namespace TRE
 #pragma endregion
 
 #pragma region MeshRendererBindings
-	static void BindSetMaterialInstance(MonoString* materialInstanceName)
+	static void BindSetMaterialInstance(CSEntityID ID, MonoString* materialInstanceName)
 	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return;
+		}
+
 		std::string str = MonoStringToString(materialInstanceName);
 
 		std::vector<std::shared_ptr<Material>> assets;
 		for (auto& resource : ResourceManager::Instance().GetResourcesOfType<Material>())
 		{
-			std::string name;
+			if (str == resource->GetGUIDHex(resource->GetHandle()))
+			{
+				Temp->GetComponent<MeshRenderer>().m_MaterialInstance = resource;
+				Temp->GetComponent<MeshRenderer>().m_IsDirty = true;
+				return;
+			}
 		}
+
+		PUBLISHERROR("Unable to find material " + str);
+	}
+
+	static void BindSetMaterialVisibility(CSEntityID ID, bool isVisible)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return;
+		}
+
+		MeshRenderer& render = Temp->GetComponent<MeshRenderer>();
+		// Ignores if the same value
+		if (render.m_IsVisible == isVisible) return;
+
+		render.m_IsVisible = isVisible;
+		render.m_IsDirty = true;
+	}
+
+	static bool BindGetMaterialVisibility(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+
+		return Temp->GetComponent<MeshRenderer>().m_IsVisible;
+	}
+
+	static void BindSetMaterialCulled(CSEntityID ID, bool isCulled)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return;
+		}
+
+		MeshRenderer& render = Temp->GetComponent<MeshRenderer>();
+		// Ignores if the same value
+		if (render.m_IsCulled == isCulled) return;
+
+		render.m_IsCulled = isCulled;
+		render.m_IsDirty = true;
+	}
+
+	static bool BindGetMaterialCulled(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+
+		return Temp->GetComponent<MeshRenderer>().m_IsCulled;
 	}
 #pragma endregion
 
@@ -930,6 +1020,20 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeSphereCollider(entity, radius);
 	}
 
+	static float BindGetSphereColliderRadius(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<SphereCollider>())
+		{
+			PUBLISHERROR("There is no SphereCollider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<SphereCollider>().m_Radius;
+	}
+
 	static void BindResizeBoxCollider(CSEntityID ID, glm::vec3 halfExtents)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -942,6 +1046,20 @@ namespace TRE
 		}
 
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeBoxCollider(entity, halfExtents);
+	}
+
+	static glm::vec3 BindGetBoxColliderHalfExtents(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no BoxCollider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<BoxCollider>().m_HalfExtents;
 	}
 
 	static void BindResizeCapsuleCollider(CSEntityID ID, float radius, float halfHeight)
@@ -958,6 +1076,34 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCapsuleCollider(entity, radius, halfHeight);
 	}
 
+	static float BindGetCapsuleColliderRadius(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<CapsuleCollider>())
+		{
+			PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<CapsuleCollider>().m_Radius;
+	}
+
+	static float BindGetCapsuleColliderHalfHeight(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<CapsuleCollider>())
+		{
+			PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<CapsuleCollider>().m_HalfHeight;
+	}
+
 	static void BindOffsetCollider(CSEntityID ID, Vector3 offset)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -970,6 +1116,22 @@ namespace TRE
 		}
 
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->UpdateColliderData(entity, offset);
+	}
+
+	static Vector3 BindGetOffsetCollider(CSEntityID ID, Vector3 offset)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<CapsuleCollider>() && !entity->HasComponent<SphereCollider>() && !entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no Collider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		if (entity->HasComponent<CapsuleCollider>()) return entity->GetComponent<CapsuleCollider>().m_Offset;
+		if (entity->HasComponent<SphereCollider>())	return entity->GetComponent<SphereCollider>().m_Offset;
+		return entity->GetComponent<BoxCollider>().m_Offset;
 	}
 
 	static void BindAddForce(CSEntityID ID, glm::vec3 force, ForceMode::Enum mode)
@@ -1221,6 +1383,24 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Stop(entity);
 	}
 
+	static void BindSetFileName(CSEntityID ID, MonoString* fileName)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		std::string str = MonoStringToString(fileName);
+
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetFileName(entity, str);
+	}
+
+	static MonoString* BindGetFileName(CSEntityID ID)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return mono_string_new(mono_domain_get(), "");
+
+		return mono_string_new(mono_domain_get(), ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetFileName(entity).c_str());
+	}
+
 	static bool BindIsPlaying(CSEntityID ID)
 	{
 		Entity entity = VALIDATEENTITY(ID);
@@ -1351,6 +1531,10 @@ namespace TRE
 		// Mesh Renderer Bindings
 		{
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialInstance", BindSetMaterialInstance);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialVisibility", BindSetMaterialVisibility);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialVisibility", BindGetMaterialVisibility);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialCulled", BindSetMaterialCulled);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialCulled", BindGetMaterialCulled);
 		}
 
 		// Camera Bindings
@@ -1396,9 +1580,14 @@ namespace TRE
 		// Physics Bindings
 		{
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeSphereCollider", BindResizeSphereCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetSphereColliderRadius", BindGetSphereColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeBoxCollider", BindResizeBoxCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxColliderHalfExtents", BindGetBoxColliderHalfExtents);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCapsuleCollider", BindResizeCapsuleCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderRadius", BindGetCapsuleColliderRadius);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderHalfHeight", BindGetCapsuleColliderHalfHeight);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_UpdateColliderOffset", BindOffsetCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetColliderOffset", BindGetOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_AddForce", BindAddForce);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationX", BindConstrainRotationX);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationY", BindConstrainRotationY);
@@ -1459,6 +1648,8 @@ namespace TRE
 			mono_add_internal_call("TRE.AudioSystem::Engine_PlayOnce", BindSetPlayOnce);
 			mono_add_internal_call("TRE.AudioSystem::Engine_TogglePause", BindTogglePauseSound);
 			mono_add_internal_call("TRE.AudioSystem::Engine_Stop", BindSetStop);
+			mono_add_internal_call("TRE.AudioSystem::Engine_SetFileName", BindSetFileName);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetFileName", BindGetFileName);
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetIsPlaying", BindIsPlaying);
 		}
 

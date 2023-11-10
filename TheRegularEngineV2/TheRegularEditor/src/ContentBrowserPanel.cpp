@@ -21,10 +21,12 @@ namespace TRE
 		
 		m_AssetDirectory = std::filesystem::current_path().parent_path();
 		m_AssetDirectory += "\\Assets";
+		m_PrefabDirectory = std::filesystem::current_path().parent_path();
+		m_PrefabDirectory += "\\Assets\\Prefabs";
 		m_SceneDirectory = std::filesystem::current_path().parent_path();
 		m_SceneDirectory += "\\Scenes";
 		m_ScriptDirectory = std::filesystem::current_path().parent_path();
-		m_ScriptDirectory += "\\Scripts";
+		m_ScriptDirectory += "\\TRE-ScriptStorage\\src\\Scripts";
 		m_CurrentDirectory = m_AssetDirectory;
 
 		//Custom Flag Combinations
@@ -151,6 +153,11 @@ namespace TRE
 				m_CurrentDirectory = m_AssetDirectory;
 				PollItems();
 			}
+			if (ImGui::Button(m_PrefabDirectory.filename().string().c_str()))
+			{
+				m_CurrentDirectory = m_PrefabDirectory;
+				PollItems();
+			}
 			if (ImGui::Button(m_SceneDirectory.filename().string().c_str()))
 			{
 				m_CurrentDirectory = m_SceneDirectory;
@@ -183,7 +190,7 @@ namespace TRE
 				(void)FileExplorer::OpenFileExplorer(nullptr);
 			}*/
 
-			if (m_CurrentDirectory.compare(m_AssetDirectory) != 0 && m_CurrentDirectory.compare(m_SceneDirectory) != 0)
+			if (m_CurrentDirectory.compare(m_AssetDirectory) != 0 && m_CurrentDirectory.compare(m_SceneDirectory) != 0 && m_CurrentDirectory.compare(m_ScriptDirectory) != 0)
 			{
 				if (ImGui::Button("Back"))
 				{
@@ -276,7 +283,7 @@ namespace TRE
 						}
 						else
 						{
-							const AssetSelector::AssetType assetType = m_AssetSelector->FindAssetType(item.m_ResourceType);
+							const AssetSelectorEvent::AssetType assetType = m_AssetSelector->FindAssetType(item.m_ResourceType);
 							m_AssetSelector->SelectAsset(item.m_FileName, assetType);
 						}
 						m_AssetClicked = true;

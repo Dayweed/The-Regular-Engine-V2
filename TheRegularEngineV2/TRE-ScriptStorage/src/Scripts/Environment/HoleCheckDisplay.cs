@@ -66,6 +66,15 @@ namespace TRE
             // TO DO Display as all triggered
             Debug.Log("I HAVE BEEN TRIGGERED!");
             isCompleted = true;
+            GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
+
+            /* Material instances GUID
+                > 18cf136263b2c948
+                > b67077a64edeaafc
+                > 74617a06db4fb375
+                > e9766d0227b43187
+                > bc2355f39496ffbf
+            */
         }
     }
 }

@@ -40,6 +40,7 @@ namespace TRE
 
 			const std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTexturesRef() { return m_Textures; }
+			const bool ContainsTexture(const ResourceHandle& resourceHandle, std::string& boundedName);
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 			const VkDescriptorSet& GetEditorDescriptor(uint32_t FrameIndex) { return m_EditorDescriptorSets[FrameIndex]; }
