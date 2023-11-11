@@ -8,6 +8,12 @@ namespace TRE
 	class UIComponent : property::base
 	{
 		public:
+		UIComponent()
+		{
+			m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(6));
+			m_Material->Invalidate();
+		}
+
 		std::shared_ptr<VulkanTexture> m_Texture;
 		bool m_IsVisible = false;
 		glm::vec4 m_Color { 1.f, 1.f, 1.f, 1.f };
