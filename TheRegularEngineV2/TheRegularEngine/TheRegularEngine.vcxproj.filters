@@ -31,6 +31,9 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PostProcessing">
+      <UniqueIdentifier>{488E05B2-345C-F9B7-1DF0-69DE095DD51C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{ED6CDF9B-D939-3AA7-0253-284FEE7E6F35}</UniqueIdentifier>
     </Filter>
@@ -259,6 +262,12 @@
     <ClInclude Include="Physics\SphereCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessing\PostRenderer.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\Vignette.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
     <ClInclude Include="PropertyConfig.h" />
     <ClInclude Include="Resource\Resource.h">
       <Filter>Resource</Filter>
@@ -455,6 +464,12 @@
     </ClCompile>
     <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing\PostRenderer.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing\Vignette.cpp">
+      <Filter>PostProcessing</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Resource.cpp">
       <Filter>Resource</Filter>
