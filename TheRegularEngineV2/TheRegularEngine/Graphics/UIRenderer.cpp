@@ -58,12 +58,8 @@ namespace TRE
 		m_TestIndexBuffer = std::make_shared<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
 		m_TestVertexBuffer = std::make_shared<VertexBuffer>((void*)data.data(), data.size() * sizeof(UIVertex));
 
-		m_UIMaterial = std::make_shared<Material>(PipelineConfig.Shader);
-		m_UIMaterial->Invalidate();
-
 		auto TextureHandle = Resource::GetGUIDFromHex("d180b66ce70dea24");
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle);
-		m_UIMaterial->SetTexture("UI_Texture", Texture1);
 	}
 
 	UIRenderer::~UIRenderer()
@@ -108,7 +104,7 @@ namespace TRE
 		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
 		{
 			auto& UIComp = Entity->GetComponent<UIComponent>();
-			if (!UIComp.m_IsVisible)
+			if (!UIComp.m_IsVisible || !UIComp.m_Texture)
 				continue;
 
 			UI_PushConstant pc{};
@@ -120,18 +116,17 @@ namespace TRE
 			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_UIPipeline->GetPipelineLayout(), 
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(UI_PushConstant), &pc);
 
-			if (UIComp.m_Texture)
-				m_UIMaterial->SetTexture("UI_Texture", UIComp.m_Texture);
+			UIComp.m_Material->SetTexture("UI_Texture", UIComp.m_Texture);
 
 			if (IsEditor)
 			{
-				m_UIMaterial->UpdateForEditorSceneRendering(m_UIUBO, Index);
-				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &m_UIMaterial->GetEditorDescriptor(Index), 0, NULL);
+				UIComp.m_Material->UpdateForEditorSceneRendering(m_UIUBO, Index);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &UIComp.m_Material->GetEditorDescriptor(Index), 0, NULL);
 			}
 			else
 			{
-				m_UIMaterial->UpdateForRendering(m_UIUBO, Index);
-				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &m_UIMaterial->GetDescriptor(Index), 0, NULL);
+				UIComp.m_Material->UpdateForRendering(m_UIUBO, Index);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_UIPipeline->GetPipelineLayout(), 0, 1, &UIComp.m_Material->GetDescriptor(Index), 0, NULL);
 			}
 
 

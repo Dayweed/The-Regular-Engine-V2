@@ -13,6 +13,7 @@ namespace TRE
 		glm::vec4 m_Color { 1.f, 1.f, 1.f, 1.f };
 		int m_Width = 1;
 		int m_Height = 1;
+		std::shared_ptr<Material> m_Material; //Should be removed and batched in future
 
 		property_vtable()
 
@@ -37,7 +38,11 @@ namespace TRE
 			{
 				std::string String = j.at("Texture").get<std::string>();
 				ResourceHandle TextureHandle = Resource::GetGUIDFromHex(String);
-
+				if (!t.m_Material)
+				{
+					t.m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(6));
+					t.m_Material->Invalidate();
+				}
 				if (TextureHandle != 0)
 				{
 					if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle); Texture)

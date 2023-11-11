@@ -262,7 +262,7 @@
     <ClInclude Include="Physics\SphereCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="PostProcessing\PostRenderer.h">
+    <ClInclude Include="PostProcessing\PostProcessing.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessing\Vignette.h">
@@ -465,7 +465,7 @@
     <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="PostProcessing\PostRenderer.cpp">
+    <ClCompile Include="PostProcessing\PostProcessing.cpp">
       <Filter>PostProcessing</Filter>
     </ClCompile>
     <ClCompile Include="PostProcessing\Vignette.cpp">

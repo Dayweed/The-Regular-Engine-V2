@@ -39,7 +39,7 @@ namespace TRE
 			std::shared_ptr<Device> m_Device;
 			std::shared_ptr<Pipeline> m_UIPipeline;
 			std::shared_ptr<RenderPass> m_UIRenderpass;
-			std::shared_ptr<Material> m_UIMaterial;
+			std::vector<std::shared_ptr<Material>> m_UIMaterial;
 			std::shared_ptr<UniformBuffer> m_UIUBO;
 
 		private:
