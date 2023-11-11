@@ -14,7 +14,7 @@
 #include "IndexBuffer.h"
 #include "Resource/ResourceManager.h"
 #include "UIRenderer.h"
-#include "PostProcessing/Vignette.h"
+#include "PostProcessing/PostProcessing.h"
 
 namespace TRE
 {
@@ -140,9 +140,6 @@ namespace TRE
 
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
-
-			//Post Processing
-			std::shared_ptr<PostProcessingRenderer> m_PostRenderer;
 
 			bool m_IsEditorScene = false;
 	};

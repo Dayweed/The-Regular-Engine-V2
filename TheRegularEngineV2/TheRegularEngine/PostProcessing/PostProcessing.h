@@ -22,7 +22,6 @@ namespace TRE
 		PostProcessEffect(const std::shared_ptr<Device>& device);
 		virtual ~PostProcessEffect() {};
 
-		void SetupName(const std::string& name) { m_Name = name; }
 		virtual void SetupUBO() = 0;
 		virtual void SetupShader(std::shared_ptr<Shader> shader) = 0;
 		virtual void UpdateUBO() {};
@@ -35,20 +34,39 @@ namespace TRE
 
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<UniformBuffer> m_UBO;
-		std::string m_Name;
 	};
 
-	class PostProcessingRenderer
+	class PostProcessingManager
 	{
 	public:
-		PostProcessingRenderer(const std::shared_ptr<Device>& device);
-		~PostProcessingRenderer();
-
+		static PostProcessingManager& Instance()
+		{
+			static PostProcessingManager instance;
+			return instance;
+		}
+		void Init();
 		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
+		void Shutdown();
 
-		void AddPostEffect(const std::shared_ptr<PostProcessEffect>& effect, const int index, const std::string name);
-	private:
+		void AddPostEffect(std::unique_ptr<PostProcessEffect> effect, const int index, const std::string name);
+		void RemovePostEffect(const std::string& name);
 		
-		std::map<int, std::shared_ptr<PostProcessEffect>> m_PostEffects;
+		template<typename T>
+		T& GetPostEffect(const std::string& name);
+	private:
+		PostProcessingManager() {};
+		PostProcessingManager(PostProcessingManager const&) = delete;
+		void operator=(PostProcessingManager const&) = delete;
+		void* operator new(size_t) = delete;
+	private:
+		std::map<std::string, std::pair<int, std::unique_ptr<PostProcessEffect>>> m_PostEffects;
 	};
+
+	template<typename T>
+	inline T& PostProcessingManager::GetPostEffect(const std::string& name)
+	{
+		if(m_PostEffects.find(name) != m_PostEffects.end())
+			return *static_cast<T*>(m_PostEffects[name].second.get());
+		//return T();
+	}
 }

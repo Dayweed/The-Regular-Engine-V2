@@ -32,10 +32,10 @@ namespace TRE
 	void Vignette::UpdateUBO()
 	{
 		VignetteUBO UBO{};
-		UBO.Color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		UBO.Color = m_Color;
 		UBO.Resolution = glm::vec2(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth(), Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		UBO.Radius = .5f;
-		UBO.Softness = 0.f;
+		UBO.Radius = m_Radius;
+		UBO.Softness = m_Softness;
 
 		m_UBO->SetData(&UBO, sizeof(VignetteUBO));
 	}

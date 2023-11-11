@@ -1415,6 +1415,11 @@ namespace TRE
 			Engine_ChangeScene(sceneName);
         }
 
+		public static void TransitionScene(string sceneName, float totalDuration)
+		{
+			Engine_TransitionScene(sceneName, totalDuration);
+		}
+
         public static string GetSceneName()
         {
             return Engine_GetSceneName();
@@ -1423,7 +1428,10 @@ namespace TRE
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Engine_ChangeScene(string sceneName);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_TransitionScene(string sceneName, float totalDuration);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static string Engine_GetSceneName();
     }
 

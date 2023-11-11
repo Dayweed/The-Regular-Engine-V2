@@ -15,6 +15,7 @@
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
+#include "SceneManager.h"
 
 namespace TRE
 {
@@ -162,6 +163,7 @@ namespace TRE
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
+			SceneTransitioner::Instance().Update();
 			ECSSystemManager::Instance().UpdateSystem();
 			Profiler::Instance().EndTimer("UpdateSystem");
 

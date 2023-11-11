@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "PostRenderer.h"
+#include "PostProcessing.h"
 #include "Graphics/Renderer.h"
 #include "Core/Engine.h"
+#include "Vignette.h"
 
 namespace TRE
 {
@@ -78,30 +79,36 @@ namespace TRE
 		Renderer::EndRenderPass(commandBuffer);
 	}
 
-	PostProcessingRenderer::PostProcessingRenderer(const std::shared_ptr<Device>& device)
+	void PostProcessingManager::Init()
 	{
-		m_PostEffects[1] = std::make_shared<Vignette>(device);
+		m_PostEffects["Vignette"] = std::move(std::pair(1, std::make_unique<Vignette>(RendererContext::GetDevice())));
 	}
 
-	PostProcessingRenderer::~PostProcessingRenderer()
-	{
-
-	}
-
-	void PostProcessingRenderer::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
+	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
 	{
 		for (const auto& effects : m_PostEffects)
 		{
-			effects.second->UpdateUBO();
-			effects.second->Render(targetFramebuffer, commandBuffer, index);
+			effects.second.second->UpdateUBO();
+			effects.second.second->Render(targetFramebuffer, commandBuffer, index);
 		}
 	}
 
-	void PostProcessingRenderer::AddPostEffect(const std::shared_ptr<PostProcessEffect>& effect, const int index, const std::string name)
+	void PostProcessingManager::Shutdown()
 	{
-		/*m_PostEffects[index] = effect;
-		m_PostEffects[index]->SetupUBO();
-		m_PostEffects[index]->SetupShader(m_PostPipeline->GetShader());
-		m_PostEffects[index]->SetName(name);*/
+		m_PostEffects.clear();
+	}
+
+	void PostProcessingManager::AddPostEffect(std::unique_ptr<PostProcessEffect> effect, const int index, const std::string name)
+	{
+		m_PostEffects[name] = std::pair(index, nullptr);
+		m_PostEffects[name].second = std::move(effect);
+	}
+
+	void PostProcessingManager::RemovePostEffect(const std::string& name)
+	{
+		if (m_PostEffects.find(name) != m_PostEffects.end())
+		{
+			m_PostEffects.erase(name);
+		}
 	}
 }

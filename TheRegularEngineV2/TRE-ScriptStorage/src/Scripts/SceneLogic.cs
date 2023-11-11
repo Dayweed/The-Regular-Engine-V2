@@ -39,7 +39,7 @@ namespace TRE
                     return;
                 }
             }
-            if (goToNextScene) Scene.ChangeScene(nextSceneName);
+            if (goToNextScene) Scene.TransitionScene(nextSceneName, 4f);
         }
     }
 }

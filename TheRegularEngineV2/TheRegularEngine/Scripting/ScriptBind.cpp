@@ -1419,6 +1419,13 @@ namespace TRE
 		SceneManager::Instance().LoadScene(scenePath);
 	}
 
+	static void BindTransitionScene(MonoString* id, float totalDuration)
+	{
+		std::string sceneName = MonoStringToString(id);
+		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
+		SceneTransitioner::Instance().TransitionToScene(scenePath, totalDuration);
+	}
+
 	static MonoString* BindGetSceneName()
 	{
 		std::string sceneName = SceneManager::Instance().GetCurrentSceneName();
@@ -1656,6 +1663,7 @@ namespace TRE
 		// Scene
 		{
 			mono_add_internal_call("TRE.Scene::Engine_ChangeScene", BindLoadScene);
+			mono_add_internal_call("TRE.Scene::Engine_TransitionScene", BindTransitionScene);
 			mono_add_internal_call("TRE.Scene::Engine_GetSceneName", BindGetSceneName);
 		}
 

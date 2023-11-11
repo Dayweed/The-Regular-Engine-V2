@@ -100,7 +100,8 @@ namespace TRE
 		m_ShadowMaterial->Invalidate();
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
-		m_PostRenderer = std::make_shared<PostProcessingRenderer>(m_Device);
+
+		PostProcessingManager::Instance().Init();
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -188,6 +189,8 @@ namespace TRE
 
 	void SceneRenderer::Shutdown()
 	{
+		PostProcessingManager::Instance().Shutdown();
+
 		auto Device = m_Device->GetLogicalDevice();
 
 		vkDeviceWaitIdle(Device);
@@ -369,7 +372,7 @@ namespace TRE
 		m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 
 		if(m_IsEditorScene == false)
-			m_PostRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
+			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();

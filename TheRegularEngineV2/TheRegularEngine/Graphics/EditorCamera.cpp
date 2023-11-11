@@ -62,11 +62,9 @@ namespace TRE
 		m_IsDirty = true;
 	}
 
-	void EditorCamera::SetViewportSize(const uint32_t width, const uint32_t height)
+	void EditorCamera::SetViewportSize(const float width, const float height)
 	{
-		/*m_BaseCamera.m_ViewportWidth = width;
-		m_BaseCamera.m_ViewportHeight = height;*/
-		m_BaseCamera.m_AspectRatio = (float)width / (float)height;
+		m_BaseCamera.m_AspectRatio = width / height;
 		m_IsDirty = true;
 	}
 
