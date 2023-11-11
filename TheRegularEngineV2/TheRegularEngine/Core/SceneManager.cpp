@@ -99,11 +99,11 @@ namespace TRE
 		{
 			if (m_ElapsedTime < m_Duration)
 			{
-				auto& vignette = PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette");
+				auto vignette = PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette");
 				//Close vignette
 				if (m_ElapsedTime < m_HalfDuration)
 				{
-					vignette.SetRadius(1.0f - (m_ElapsedTime / m_HalfDuration));
+					vignette->SetRadius(1.0f - (m_ElapsedTime / m_HalfDuration));
 				}
 				//Open vignette
 				else
@@ -114,7 +114,7 @@ namespace TRE
 						m_LoadedNewScene = true;
 					}
 
-					vignette.SetRadius((m_ElapsedTime - m_HalfDuration) / m_HalfDuration);
+					vignette->SetRadius((m_ElapsedTime - m_HalfDuration) / m_HalfDuration);
 				}
 
 				m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
@@ -137,5 +137,4 @@ namespace TRE
 		m_HalfDuration = m_Duration / 2.0f;
 		m_IsTransitioning = true;
 	}
-
 }

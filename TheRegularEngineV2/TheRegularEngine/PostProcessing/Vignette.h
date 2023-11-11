@@ -15,7 +15,7 @@ namespace TRE
 	class Vignette : public PostProcessEffect
 	{
 	public:
-		Vignette(const std::shared_ptr<Device>& device);
+		Vignette();
 
 		void SetupUBO() override;
 		void SetupShader(std::shared_ptr<Shader> shader) override;

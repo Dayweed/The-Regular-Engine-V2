@@ -19,7 +19,7 @@ namespace TRE
 	class PostProcessEffect
 	{
 	public:
-		PostProcessEffect(const std::shared_ptr<Device>& device);
+		PostProcessEffect();
 		virtual ~PostProcessEffect() {};
 
 		virtual void SetupUBO() = 0;
@@ -48,25 +48,25 @@ namespace TRE
 		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
 		void Shutdown();
 
-		void AddPostEffect(std::unique_ptr<PostProcessEffect> effect, const int index, const std::string name);
+		void AddPostEffect(std::shared_ptr<PostProcessEffect> effect, const int index, const std::string name);
 		void RemovePostEffect(const std::string& name);
 		
 		template<typename T>
-		T& GetPostEffect(const std::string& name);
+		std::shared_ptr<T> GetPostEffect(const std::string& name);
 	private:
 		PostProcessingManager() {};
 		PostProcessingManager(PostProcessingManager const&) = delete;
 		void operator=(PostProcessingManager const&) = delete;
 		void* operator new(size_t) = delete;
 	private:
-		std::map<std::string, std::pair<int, std::unique_ptr<PostProcessEffect>>> m_PostEffects;
+		std::map<std::string, std::pair<int, std::shared_ptr<PostProcessEffect>>> m_PostEffects;
 	};
 
 	template<typename T>
-	inline T& PostProcessingManager::GetPostEffect(const std::string& name)
+	std::shared_ptr<T> PostProcessingManager::GetPostEffect(const std::string& name)
 	{
 		if(m_PostEffects.find(name) != m_PostEffects.end())
-			return *static_cast<T*>(m_PostEffects[name].second.get());
-		//return T();
+			return std::dynamic_pointer_cast<T>(m_PostEffects[name].second);
+		return nullptr;
 	}
 }

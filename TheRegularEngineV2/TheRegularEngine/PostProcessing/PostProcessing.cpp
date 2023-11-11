@@ -6,9 +6,10 @@
 
 namespace TRE
 {
-	PostProcessEffect::PostProcessEffect(const std::shared_ptr<Device>& device)
+	PostProcessEffect::PostProcessEffect()
 	{
 		auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		const auto& device = RendererContext::GetDevice();
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RPConfig.ImageFormat = SC->GetColorFormat();
@@ -81,7 +82,7 @@ namespace TRE
 
 	void PostProcessingManager::Init()
 	{
-		m_PostEffects["Vignette"] = std::move(std::pair(1, std::make_unique<Vignette>(RendererContext::GetDevice())));
+		m_PostEffects["Vignette"] = std::move(std::pair(1, std::make_shared<Vignette>()));
 	}
 
 	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
@@ -98,10 +99,9 @@ namespace TRE
 		m_PostEffects.clear();
 	}
 
-	void PostProcessingManager::AddPostEffect(std::unique_ptr<PostProcessEffect> effect, const int index, const std::string name)
+	void PostProcessingManager::AddPostEffect(std::shared_ptr<PostProcessEffect> effect, const int index, const std::string name)
 	{
-		m_PostEffects[name] = std::pair(index, nullptr);
-		m_PostEffects[name].second = std::move(effect);
+		m_PostEffects[name] = std::pair(index, effect);
 	}
 
 	void PostProcessingManager::RemovePostEffect(const std::string& name)

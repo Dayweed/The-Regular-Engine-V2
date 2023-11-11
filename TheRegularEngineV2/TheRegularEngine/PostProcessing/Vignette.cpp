@@ -4,7 +4,7 @@
 
 namespace TRE
 {
-	Vignette::Vignette(const std::shared_ptr<Device>& device) : PostProcessEffect(device)
+	Vignette::Vignette() : PostProcessEffect()
 	{
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
