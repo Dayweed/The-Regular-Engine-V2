@@ -467,7 +467,6 @@ namespace TRE
 			}
 
 			readFile.close();
-			std::cout << "\n";
 		}
 
 		//Shader files
