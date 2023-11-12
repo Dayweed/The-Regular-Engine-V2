@@ -16,6 +16,7 @@ namespace TRE
 			AnimationComponent()
 			{
 				TRE_CORE_INFO("Animation Component Constructor");
+#if false
 				AnimationImporter Importer;
 				m_AnimationSource = std::make_shared<AnimationGeom>();
 				if (auto ImportResult = Importer.Import(*m_AnimationSource, "../Assets/GirlAnimationWalkingTextures/GirlAnimationWalking.fbx"); !ImportResult)
@@ -47,6 +48,7 @@ namespace TRE
 				m_MaterialInstace->SetTexture("Glossiness", Texture5);
 
 				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
+#endif
 			}
 
 			std::shared_ptr<AnimationGeom> m_AnimationSource;

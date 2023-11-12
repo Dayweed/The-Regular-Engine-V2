@@ -383,10 +383,11 @@ namespace TRE
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
-		m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
-
-		if(m_IsEditorScene == false)
+		if (m_IsEditorScene == false)
+		{
+			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
+		}
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
