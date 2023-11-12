@@ -87,12 +87,11 @@ namespace TRE
 		}
 		else
 		{
-			int test = 0;
 			int previouslocation = 0;
 			for (const auto& VertexLayout : m_Config.CustomVertexBufferInputLayout)
 			{
 				VkVertexInputBindingDescription Binding{};
-				Binding.binding = test;
+				Binding.binding = VertexLayout.BindPoint;
 				Binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 				Binding.stride = VertexLayout.VertexStride;
 				VertexInputBindingDescriptions.push_back(Binding);
@@ -107,13 +106,11 @@ namespace TRE
 					previouslocation = InputAttribute.location;
 					VertexInputAttributesDescriptions.push_back(InputAttribute);
 				}
-
-				test++;
 			}
 
 			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
 			vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
-			vertexInputInfo.vertexBindingDescriptionCount = VertexInputBindingDescriptions.size();
+			vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(VertexInputBindingDescriptions.size());
 			vertexInputInfo.pVertexBindingDescriptions = VertexInputBindingDescriptions.data();
 		}
 

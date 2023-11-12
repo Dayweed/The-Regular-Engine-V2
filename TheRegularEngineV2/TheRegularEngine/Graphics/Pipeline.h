@@ -30,7 +30,7 @@ namespace TRE
 	class VertexBufferInputLayout //1 for each binding point
 	{
 		public:
-			VertexBufferInputLayout(const std::initializer_list<VertexBufferInput>& Inputs) : m_Inputs(Inputs)
+			VertexBufferInputLayout(const std::initializer_list<VertexBufferInput>& Inputs, uint32_t BindingLocation) : m_Inputs(Inputs), BindPoint(BindingLocation)
 			{
 				uint32_t offset = 0;
 				VertexStride = 0;

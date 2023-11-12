@@ -107,10 +107,11 @@ namespace TRE
 		AnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
 		AnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(9);
 		AnimationPipelineConfig.UseAutoShaderVertexInput = false;
-		VertexBufferInputLayout Layout1 = { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 };
-		VertexBufferInputLayout Layout2 = { VertexInputDataType::Vec4, VertexInputDataType::IVec4 };
-		AnimationPipelineConfig.CustomVertexBufferInputLayout.push_back(Layout1);
-		AnimationPipelineConfig.CustomVertexBufferInputLayout.push_back(Layout2);
+		AnimationPipelineConfig.CustomVertexBufferInputLayout =
+		{
+			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+		};
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
 
 		m_L2W = glm::identity<glm::mat4>();
