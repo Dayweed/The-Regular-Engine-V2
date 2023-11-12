@@ -142,7 +142,7 @@ namespace TRE
 		rasterizer.rasterizerDiscardEnable = VK_FALSE;
 		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizer.lineWidth = m_Config.LineWidth;
-		rasterizer.cullMode = m_Config.EnableCull ? VK_CULL_MODE_BACK_BIT : VK_CULL_MODE_NONE;
+		rasterizer.cullMode = m_Config.CullMode;
 		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.f;

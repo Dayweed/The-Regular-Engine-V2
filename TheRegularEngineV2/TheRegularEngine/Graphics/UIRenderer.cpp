@@ -30,7 +30,7 @@ namespace TRE
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
-		PipelineConfig.EnableCull = false;
+		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
 		PipelineConfig.EnableBlending = true;
 		PipelineConfig.EnableDepthTest = false;
 		m_UIPipeline = std::make_shared<Pipeline>(PipelineConfig, m_UIRenderpass);

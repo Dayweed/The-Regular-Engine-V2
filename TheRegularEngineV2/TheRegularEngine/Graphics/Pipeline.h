@@ -69,7 +69,7 @@ namespace TRE
 		PrimitiveType Primitive;
 		float LineWidth = 1.f;
 		size_t VertexStride = 0;
-		bool EnableCull = true;
+		VkCullModeFlagBits CullMode = VK_CULL_MODE_BACK_BIT;
 		bool EnableBlending = false;
 		bool EnableDepthTest = true;
 

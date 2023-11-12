@@ -62,12 +62,12 @@ void main()
 
 	mat3 rot = mat3(push.m_Model);
 
-	vec3 normalWorldSpace = normalize(mat3(push.m_Model) * inNormal);
-	float lightIntensity = ubo.m_AmbientLight.a + max(dot(normalWorldSpace, -normalize(ubo.m_DirectionalLightDirection.xyz)), 0);
+	// vec3 normalWorldSpace = normalize(mat3(push.m_Model) * inNormal);
+	// float lightIntensity = ubo.m_AmbientLight.a + max(dot(normalWorldSpace, -normalize(ubo.m_DirectionalLightDirection.xyz)), 0);
 
-    Out.VertColor = lightIntensity *  ubo.m_AmbientLight.rgb * inColor;
-	Out.VertColor = Out.VertColor * ubo.m_DirectionalLightColor.rgb * ubo.m_DirectionalLightColor.a;
-    Out.VertColor = pow(Out.VertColor, gamma.rrr);
+    // Out.VertColor = lightIntensity *  ubo.m_AmbientLight.rgb * inColor;
+	// Out.VertColor = Out.VertColor * ubo.m_DirectionalLightColor.rgb * ubo.m_DirectionalLightColor.a;
+    Out.VertColor = pow(inColor, gamma.rrr);
 	Out.TexCoord = inTexCoord;
 
 	vec3 normal = normalize(rot * inNormal);
@@ -117,40 +117,7 @@ layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
 
-// float SampleShadowTexture( in const vec4 Coord, in const vec2 off )
-// {
-// 	float dist = texture( shadowMap, Coord.xy + off ).r;
-// 	return ( Coord.w > 0.0 && dist < Coord.z ) ? 0.0f : 1.0f;
-// }
-
-// int isqr( int a ) { return a*a; }
-
-// float ShadowPCF( in vec4 UVProjection )
-// {
-// 	float Shadow = 1.0;
-// 	if (UVProjection.z > -1.0 && UVProjection.z < 1.0 ) 
-// 	{
-// 		const float scale			= 1;
-// 		const vec2  TexelSize 		= scale / textureSize(shadowMap, 0);
-// 		const int	SampleRange		= 1;
-// 		const int	SampleTotal		= isqr(1 + 2 * SampleRange);
-		
-// 		float		ShadowAcc = 0;
-// 		for (int x = -SampleRange; x <= SampleRange; x++)
-// 		{
-// 			for (int y = -SampleRange; y <= SampleRange; y++)
-// 			{
-// 				ShadowAcc += SampleShadowTexture( UVProjection, vec2(TexelSize.x*x, TexelSize.y*y));
-// 			}
-// 		}
-
-// 		Shadow = ShadowAcc / SampleTotal;
-// 	}
-
-// 	return Shadow;
-// }
-
-float NormalShadow(in vec3 lightCoords, in vec3 normal)
+float Shadow(in vec3 lightCoords, in vec3 normal)
 {
 	float shadow = 0.0;
 	if(lightCoords.z >= 0.0 && lightCoords.z <= 1.0)
@@ -158,7 +125,7 @@ float NormalShadow(in vec3 lightCoords, in vec3 normal)
 		lightCoords.xy = lightCoords.xy * 0.5 + 0.5;
 
 		float currentDepth = lightCoords.z;
-		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.005);
+		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
 
 		int sampleRadius = 4;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -190,36 +157,38 @@ void main()
 	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 	normal = normalize(In.BTN * normal); //Transform normal to world space
 
-	const float shadow = NormalShadow(In.ShadowCoord.xyz / In.ShadowCoord.w, normal);
+	const float shadow = Shadow(In.ShadowCoord.xyz / In.ShadowCoord.w, normal);
 	
 	//Light calculations
-	vec3 lightDirection = In.LightPosWorld - In.PosWorld.xyz;
-	const float lightDistance = length(lightDirection);
-	lightDirection = normalize(lightDirection);
+	//vec3 lightDirection = In.LightPosWorld - In.PosWorld.xyz;
+	//const float lightDistance = length(lightDirection);
+	//lightDirection = normalize(lightDirection);
 
-	float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
-	lightAttenuation = clamp(lightAttenuation, 0.0, 1.0);
+	//float lightAttenuation = 1.0 / (1.0 + 0.1 * lightDistance + 0.01 * lightDistance * lightDistance);
+	//lightAttenuation = clamp(lightAttenuation, 0.0, 1.0);
 	//float lightAttenuation = clamp(1 / lightDistance, 0.0, 1.0);
-	const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
+	//const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
 
 	//Diffuse intensity
-	const float diffuseIntensity = max(dot(normal, lightDirection), 0.0);
+	const float diffuseIntensity = max(dot(normal, -In.DirectionalLightDirection.xyz), 0.0) * (1.0 - shadow);
 
 	//Eye to texel direction
-	const vec3 eyeDirection = normalize(In.PosWorld.xyz - In.CamearPos.xyz);
+	//const vec3 eyeDirection = normalize(In.PosWorld.xyz - In.CamearPos.xyz);
 
 	//Shininess
-	const float shininess = mix(1, 100, 1 - texture(RoughnessMap, In.TexCoord).r);
-	const float specularIntensity = pow(max(dot(reflect(lightDirection, normal), eyeDirection), 0.0), shininess);
+	//const float shininess = mix(1, 100, 1 - texture(RoughnessMap, In.TexCoord).r);
+	//const float specularIntensity = pow(max(dot(reflect(-In.DirectionalLightDirection, normal), eyeDirection), 0.0), shininess);
 	
 	//Diffuse color
-	vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord) * (1.0 - shadow);
+	vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord);
 
-	outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a * diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
+	//outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a + diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
+	outColor.rgb = diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a + In.AmbientColor.rgb * In.AmbientColor.a;
 
-	vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
+	//vec3 lightModel = In.LightColor.rgb * (specularIntensity.rrr * Glossiness + diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
+	vec3 lightModel = In.LightColor.rgb * (diffuseIntensity.rrr * diffuseColor.rgb) * In.LightColor.a;
 
-	outColor.rgb += lightModel * attenuationColor;
+	outColor.rgb += lightModel;// * attenuationColor;
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );

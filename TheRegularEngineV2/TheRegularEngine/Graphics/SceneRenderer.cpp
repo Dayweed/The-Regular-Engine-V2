@@ -94,6 +94,7 @@ namespace TRE
 		PipelineConfigurations Config{};
 		Config.Primitive = PrimitiveType::Triangles;
 		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
+		Config.CullMode = VK_CULL_MODE_FRONT_BIT;
 		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
 		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
@@ -310,10 +311,10 @@ namespace TRE
 
 		const auto& sc = Engine::GetInstance().GetWindow()->GetSwapChain();
 		ShadowUBO UBO_Shadow;
-		float orthoLength = 300.f;//sc->GetWidth() / 2.f; // Adjust this to suit your scene's dimensions
-		float orthoHeight = 300.f;//sc->GetHeight() / 2.f; // Adjust this to suit your scene's dimensions
+		float orthoLength = 100.f;//sc->GetWidth() / 2.f; // Adjust this to suit your scene's dimensions
+		float orthoHeight = 100.f;//sc->GetHeight() / 2.f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
-		float orthoFar = 1000.0f;
+		float orthoFar = 100.0f;
 
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);

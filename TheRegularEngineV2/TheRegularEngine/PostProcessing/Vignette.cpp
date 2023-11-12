@@ -9,7 +9,7 @@ namespace TRE
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(8); //Vignette shader
-		PipelineConfig.EnableCull = false;
+		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
 		PipelineConfig.EnableBlending = true;
 		PipelineConfig.EnableDepthTest = false;
 		m_Pipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);	
