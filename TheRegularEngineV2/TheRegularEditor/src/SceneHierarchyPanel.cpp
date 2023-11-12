@@ -173,7 +173,9 @@ namespace TRE
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
 		size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
 		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | (vectorSize ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
-		 
+
+		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4( 0, 1, 1, 1 ) : ImVec4(1, 1, 1, 1);
+		ImGui::PushStyleColor(0, color);
 		if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 		{
 			if (ImGui::BeginDragDropSource())
@@ -212,6 +214,15 @@ namespace TRE
 
 			ImGui::TreePop();
 		}
+		else
+		{
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+			{
+				m_SelectionManager->SelectEntity(CurrentEntity);
+			}
+		}
+
+		ImGui::PopStyleColor();
 	}
 
 	void SceneHierarchyPanel::DeleteChildren(TRE::Entity& CurrentEntity)
