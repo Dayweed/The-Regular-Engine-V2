@@ -200,7 +200,7 @@ namespace TRE
 		const std::string assetFolderPath = "../Assets/";
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = hexHandle + ".TREShader";
-		const std::string descPath = assetFolderPath + resource + ".desc";
+		const std::string descPath = resourceFolderPath + resource + ".desc";
 		const std::string resourcePath = resourceFolderPath + resource;
 		SetAssetPath(shaderName + ".TREShader");
 		SetDescriptorPath(descPath);

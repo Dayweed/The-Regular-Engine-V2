@@ -25,7 +25,17 @@ namespace TRE
 		m_SceneDirectory += "\\Scenes";
 		m_ScriptDirectory = std::filesystem::current_path().parent_path();
 		m_ScriptDirectory += "\\Scripts";
+		m_ResourcesDirectory = std::filesystem::current_path().parent_path();
+		m_ResourcesDirectory += "\\Resources";
+		m_ShaderDirectory = m_ResourcesDirectory;
+		m_ShaderDirectory += "\\Shaders";
 		m_CurrentDirectory = m_AssetDirectory;
+
+		//std::cout << "m_CurrentDirectory: " << m_CurrentDirectory << "\n";
+		//std::cout << "m_AssetDirectory: " << m_AssetDirectory << "\n";
+		//std::cout << "m_SceneDirectory: " << m_SceneDirectory << "\n";
+		//std::cout << "m_ScriptDirectory: " << m_ScriptDirectory << "\n";
+		//std::cout << "m_ShaderDirectory: " << m_ShaderDirectory << "\n";
 
 		//Custom Flag Combinations
 		m_PopUps |= ImGuiWindowFlags_NoResize;
@@ -100,7 +110,7 @@ namespace TRE
 				{
 					std::string hexHandle = filenameString.substr(0, filenameString.find_first_of('.'));
 					newAsset.m_FileName = AssetManager::Instance().GetName(hexHandle);
-					newAsset.m_Path = "../Resources/" + hexHandle + ".material";
+					newAsset.m_Path = m_ResourcesDirectory.filename().string() + hexHandle + ".material";
 
 					//Because material technically is a descriptor file, we need to add it to the list
 					m_Assets.emplace_back(newAsset);
@@ -235,6 +245,7 @@ namespace TRE
 			{
 				ImGui::PushID(count++);
 
+				//click on folder
 				if (item.m_Folder)
 				{
 					if (ImGui::ImageButton(item.m_TextureID,{m_ImgSize, m_ImgSize}, { 0,0 }, { 1,1 }))
@@ -245,6 +256,8 @@ namespace TRE
 					}
 					ImGui::TextWrapped("%s", item.m_FileName.c_str());
 				}
+
+				//click on asset
 				else
 				{
 					if (ImGui::ImageButton(item.m_TextureID, { m_ImgSize, m_ImgSize }, { 0,0 }, { 1,1 }))
@@ -337,6 +350,150 @@ namespace TRE
 		}
 	}
 
+	void ContentBrowserPanel::FileWatcher()
+	{
+		//Asset files
+		for (auto& p : std::filesystem::directory_iterator(m_AssetDirectory))
+		{
+			const std::filesystem::path descFilePath = p.path();
+			const std::filesystem::path relativePath = std::filesystem::relative(descFilePath, m_AssetDirectory);
+			const std::string assetsFileName = relativePath.filename().string();
+			//std::cout << "assetsFileName: " << assetsFileName << "\n";
+			std::string fileType{};
+			std::string fbxFileName{};
+			std::string geomFileName{};
+			std::string pngFileName{};
+			std::string ddsFileName{};
+			FileType caseNum{FileType::none};
+			std::ifstream readFile{};
+			const size_t pos = assetsFileName.find_first_of('.');
+
+			//if there's a dot in the string
+			if (pos != std::string::npos)
+			{
+				fileType = assetsFileName.substr(pos+1);
+				readFile.open(descFilePath, std::ios::in);
+				if (fileType.find("geom") != std::string::npos) caseNum = FileType::geom;
+				else if (fileType.find("texture") != std::string::npos) caseNum = FileType::texture;
+			}
+			
+			switch (caseNum)
+			{
+			case FileType::geom:
+				if (readFile.is_open())
+				{
+					//fbx file path
+					std::getline(readFile, fbxFileName);
+					std::getline(readFile, fbxFileName);
+					//std::cout << fbxFileName << "\n";
+
+					//geom file path
+					std::getline(readFile, geomFileName);
+					std::getline(readFile, geomFileName);
+					std::getline(readFile, geomFileName);
+					//std::cout << geomFileName << "\n";
+				
+					const std::filesystem::path fbxFilePath = fbxFileName;
+					const std::filesystem::path geomFilePath = geomFileName;
+
+					const std::filesystem::file_time_type tDescFile = std::filesystem::last_write_time(descFilePath);
+					const std::filesystem::file_time_type tFbxFile = std::filesystem::last_write_time(fbxFilePath);
+					const std::filesystem::file_time_type tGeomFile = std::filesystem::last_write_time(geomFilePath);
+					
+					//std::cout << "desc timing: " << std::format("File write time is {}\n", tDescFile);
+					//std::cout << "fbx timing: " << std::format("File write time is {}\n", tFbxFile);
+					//std::cout << "geom timing: " << std::format("File write time is {}\n", tGeomFile);
+
+					//geom file does not exist
+					if (!std::filesystem::exists(geomFilePath))
+					{
+						//recompile code
+					}
+
+					//fbx file is newer than geom file
+					else if (tFbxFile > tGeomFile)
+					{
+						const std::filesystem::file_time_type maxT = std::max(tFbxFile, tDescFile);
+						//recompile code
+					}
+				}
+				break;
+
+			case FileType::texture:
+				if (readFile.is_open())
+				{
+					//png file path
+					std::getline(readFile, pngFileName);
+					std::getline(readFile, pngFileName);
+					//std::cout << pngFileName << "\n";
+
+					//dds file path
+					std::getline(readFile, ddsFileName);
+					std::getline(readFile, ddsFileName);
+					std::getline(readFile, ddsFileName);
+					//std::cout << ddsFileName << "\n";
+
+					const std::filesystem::path pngFilePath = pngFileName;
+					const std::filesystem::path ddsFilePath = ddsFileName;
+
+					const std::filesystem::file_time_type tDescFile = std::filesystem::last_write_time(descFilePath);
+					const std::filesystem::file_time_type tPngFile = std::filesystem::last_write_time(pngFilePath);
+					const std::filesystem::file_time_type tDdsFile = std::filesystem::last_write_time(ddsFilePath);
+
+					//std::cout << "desc timing: " << std::format("File write time is {}\n", tDescFile);
+					//std::cout << "png timing: " << std::format("File write time is {}\n", tPngFile);
+					//std::cout << "dds timing: " << std::format("File write time is {}\n", tDdsFile);
+
+					//dds file does not exist
+					if (!std::filesystem::exists(ddsFilePath))
+					{
+						//recompile code
+					}
+
+					//png file is newer than dds file
+					else if (tPngFile > tDdsFile)
+					{
+						const std::filesystem::file_time_type maxT = std::max(tPngFile, tDescFile);
+						//recompile code
+					}
+				}
+				break;
+
+			default:
+				break;
+			}
+
+			readFile.close();
+			std::cout << "\n";
+		}
+
+		//Shader files
+		for (auto& p : std::filesystem::directory_iterator(m_ShaderDirectory))
+		{
+			const std::filesystem::path glslFilePath = p.path();
+			const std::filesystem::path relativePath = std::filesystem::relative(glslFilePath, m_ResourcesDirectory);
+			const std::string filenameString = relativePath.filename().string();
+			//std::cout << glslFilePath << "\n";
+			//std::cout << filenameString << "\n";
+
+			std::string resourceFileName = "\\" + filenameString.substr(0, filenameString.find_first_of('.')) + ".TREshader";
+			resourceFileName = m_ResourcesDirectory.string() + resourceFileName;
+			//std::cout << resourceFileName << "\n";
+			const std::filesystem::path binaryFilePath = resourceFileName;
+
+			const std::filesystem::file_time_type tGlslFile = std::filesystem::last_write_time(glslFilePath);
+			const std::filesystem::file_time_type tBinaryFile = std::filesystem::last_write_time(binaryFilePath);
+			
+			//binary file does not exist or glsl file is newer than binary file
+			if (!std::filesystem::exists(binaryFilePath) || tGlslFile > tBinaryFile)
+			{
+				//recompile code
+				//std::cout << "glsl timing: " << std::format("File write time is {}\n", tGlslFile);
+				//std::cout << "binary timing: " << std::format("File write time is {}\n", tBinaryFile);
+			}
+		}
+	}
+
 	void ContentBrowserPanel::Init()
 	{
 		// Late April Fools Joke (Activate this for sum humor in Content Browser)
@@ -425,6 +582,7 @@ namespace TRE
 		{
 			m_CurrentTimer = 0.f;
 			PollItems();
+			FileWatcher();
 		}
 
 		if (ImGui::Begin("Content Browser", nullptr, ImGuiWindowFlags_NoCollapse))
