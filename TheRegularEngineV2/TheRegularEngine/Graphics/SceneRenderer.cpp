@@ -240,17 +240,18 @@ namespace TRE
 		}
 
 		ShadowUBO UBO_Shadow;
-		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoLength = 50.0f; // Adjust this to suit your scene's dimensions
+		float orthoHeight = 50.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
-		float orthoFar = 1000.0f;
+		float orthoFar = 100.0f;
 		
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
-		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+		depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
-		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+		depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 		depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
@@ -278,10 +279,10 @@ namespace TRE
 		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		UBO ubo{};
 		const Camera& cameraComponent = mainCamera->GetComponent<Camera>();
-		const Transform& transform = mainCamera->GetComponent<Transform>();
+		const Transform& cameraTransform = mainCamera->GetComponent<Transform>();
 		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
-		ubo.m_LightPosition = transform.m_Position;
-		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
+		ubo.m_LightPosition = cameraTransform.m_Position;
+		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
@@ -295,31 +296,34 @@ namespace TRE
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
-			depthViewMatrix = glm::translate(glm::mat4(1.f), glm::vec3(transform.m_Position.x, 100.f, transform.m_Position.z)) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			depthViewMatrix = /*glm::translate(glm::mat4(1.f), cameraTransform.m_Position) **/ glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
 
+		const auto& sc = Engine::GetInstance().GetWindow()->GetSwapChain();
 		ShadowUBO UBO_Shadow;
-		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoLength = 300.f;//sc->GetWidth() / 2.f; // Adjust this to suit your scene's dimensions
+		float orthoHeight = 300.f;//sc->GetHeight() / 2.f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
+
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
-		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+		depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
-		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+		depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 		depthViewMatrix = glm::inverse(depthViewMatrix);
+
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
 
-		ubo.m_LightSpaceMatrix = depthProjectionMatrix * depthViewMatrix;
+		ubo.m_LightSpaceMatrix = UBO_Shadow.proj * UBO_Shadow.view;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
-
 	}
 
 	void SceneRenderer::EndFrame()
