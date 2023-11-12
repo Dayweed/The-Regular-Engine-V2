@@ -31,6 +31,9 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PostProcessing">
+      <UniqueIdentifier>{488E05B2-345C-F9B7-1DF0-69DE095DD51C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{ED6CDF9B-D939-3AA7-0253-284FEE7E6F35}</UniqueIdentifier>
     </Filter>
@@ -124,6 +127,9 @@
     <ClInclude Include="EventSystem\Events\InputEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\AnimationComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\AnimationImporter.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -131,9 +137,6 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\AnimationStructure.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\AnimationTest.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
@@ -175,6 +178,9 @@
     <ClInclude Include="Graphics\MeshRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\ParticleComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Pipeline.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -203,6 +209,12 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\SwapChain.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\UIComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\UIRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\UniformBuffer.h">
@@ -247,6 +259,12 @@
     <ClInclude Include="Physics\SphereCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessing\PostProcessing.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\Vignette.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
     <ClInclude Include="PropertyConfig.h" />
     <ClInclude Include="Resource\Resource.h">
       <Filter>Resource</Filter>
@@ -274,9 +292,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Graphics\SpriteRendererComponent.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -337,9 +352,6 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\AnimationPlayer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\AnimationTest.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Buffer.cpp">
@@ -408,6 +420,9 @@
     <ClCompile Include="Graphics\SwapChain.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\UIRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\UniformBuffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -443,6 +458,12 @@
     </ClCompile>
     <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing\PostProcessing.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing\Vignette.cpp">
+      <Filter>PostProcessing</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Resource.cpp">
       <Filter>Resource</Filter>

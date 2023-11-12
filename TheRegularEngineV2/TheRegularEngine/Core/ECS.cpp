@@ -4,6 +4,7 @@
 #include "Parent.h"
 #include "SystemManager.h"
 #include "TREIncludes.h"
+#include "Graphics/UIComponent.h"
 
 #define TO DELETE
 #include "Transform.h"
@@ -185,7 +186,9 @@ namespace TRE
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
 			.component<ScriptComponent>(arc)
-			;
+			.component<UIComponent>(arc)
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		arc.Close();
 
@@ -216,7 +219,9 @@ namespace TRE
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
 			.component<ScriptComponent>(arc)
-			;
+			.component<UIComponent>(arc)
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}
@@ -287,7 +292,10 @@ namespace TRE
 			Audio,
 			AudioListener,
 			DirectionalLight,
-			ScriptComponent
+			ScriptComponent,
+			UIComponent,
+			AnimationComponent,
+			ParticleComponent
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)

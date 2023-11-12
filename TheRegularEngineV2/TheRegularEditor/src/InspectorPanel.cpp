@@ -61,6 +61,8 @@ namespace TRE
 			ImGui::EndDragDropTarget();
 		}
 
+		//AssetManager::Instance().PrintAllAssets();
+
 		//create entity
 		auto& entity = m_SelectionManager->GetSelectedEntity();
 
@@ -244,26 +246,51 @@ namespace TRE
 								std::string handle = "##" + std::to_string(Value.m_Value);
 								if (ImGui::InputText(handle.c_str(), resourceName, sizeof(resourceName), ImGuiInputTextFlags_ReadOnly) || ImGui::IsItemHovered())
 								{
-									//if (ImGui::BeginDragDropTarget())
-									//{
-									//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_TextureResource"))
-									//	{
-									//		std::string materialName = (const char*)payload->Data;
-									//		std::cout << "Material Name: " << materialName << "\n";
-									//		//std::cout << AssetManager::Instance().GetName(materialName) << "\n";
-									//		//Value.m_Value = AssetManager::Instance().GetHandle(materialName);
-									//	}
-									//	else
-									//		std::cout << "Failed to get payload\n";
+									if (ImGui::BeginDragDropTarget())
+									{
+										if (const ImGuiPayload* payload = ImGui::GetDragDropPayload(); payload != nullptr)
+										{
+											if (payload->IsDataType("m_TextureResource"))
+											{
+												std::string assetName = (const char*)payload->Data;
+												assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+												assetName.erase(assetName.find(".png")); 	// This is to remove unneeded data at the end after ".fbx"
+												assetName += ".png";
 
-									//	ImGui::EndDragDropTarget();
-									//}
+												std::shared_ptr<VulkanTexture> droppedTexture;
+
+												//Check if asset is already compiled
+												//Compiled before
+												if (AssetManager::Instance().Contains(assetName))
+												{
+													//Load into memory
+													if (droppedTexture = AssetManager::Instance().GetAsset<VulkanTexture>(assetName); droppedTexture == nullptr)
+													{
+														AssetManager::Instance().AddAsset<VulkanTexture>(assetName);
+														droppedTexture = AssetManager::Instance().GetAsset<VulkanTexture>(assetName);
+													}
+												}
+												else
+												{
+													//Compile and load asset
+													droppedTexture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
+												}
+												Value.m_Value = droppedTexture->GetHandle();
+											}
+										}
+										else
+										{
+											TRE_CORE_ERROR("Failed to get drag drop texture");
+										}
+										ImGui::EndDragDropTarget();
+									}
 								}
 							}
 							else if constexpr (std::is_same_v<T, resource_list>)
 							{
 								std::string imguiHandle = "##" + std::to_string(Value.m_Value);
 								std::string selected = AssetManager::Instance().GetName(Value.m_Value);
+			
 								if (ImGui::BeginCombo(imguiHandle.c_str(), selected.c_str()))
 								{
 									if (ImGui::Selectable("None", false))

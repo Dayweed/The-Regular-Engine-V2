@@ -16,6 +16,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
+#include "AnimationComponent.h"
 
 //To be removed
 #include "EditorCamera.h"
@@ -39,7 +40,7 @@ namespace TRE
 		Create();
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000).Build();
+		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(1000).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
@@ -86,7 +87,6 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
-		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 
 		SkyBoxPassInit();
 		ShadowPassInit();
@@ -98,6 +98,22 @@ namespace TRE
 
 		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
 		m_ShadowMaterial->Invalidate();
+
+		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
+
+		PostProcessingManager::Instance().Init();
+
+		PipelineConfigurations AnimationPipelineConfig{};
+		AnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+		AnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(9);
+		AnimationPipelineConfig.UseAutoShaderVertexInput = false;
+		VertexBufferInputLayout Layout1 = { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 };
+		VertexBufferInputLayout Layout2 = { VertexInputDataType::Vec4, VertexInputDataType::IVec4 };
+		AnimationPipelineConfig.CustomVertexBufferInputLayout.push_back(Layout1);
+		AnimationPipelineConfig.CustomVertexBufferInputLayout.push_back(Layout2);
+		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
+
+		m_L2W = glm::identity<glm::mat4>();
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -185,6 +201,8 @@ namespace TRE
 
 	void SceneRenderer::Shutdown()
 	{
+		PostProcessingManager::Instance().Shutdown();
+
 		auto Device = m_Device->GetLogicalDevice();
 
 		vkDeviceWaitIdle(Device);
@@ -227,17 +245,18 @@ namespace TRE
 		}
 
 		ShadowUBO UBO_Shadow;
-		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoLength = 50.0f; // Adjust this to suit your scene's dimensions
+		float orthoHeight = 50.0f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
-		float orthoFar = 1000.0f;
+		float orthoFar = 100.0f;
 		
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
-		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+		depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
-		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+		depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 		depthViewMatrix = glm::inverse(depthViewMatrix);
 		UBO_Shadow.view = depthViewMatrix;
@@ -248,6 +267,18 @@ namespace TRE
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
+		{
+			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			if (!AnimComp.m_IsAnimating || !AnimComp.m_IsVisible)
+				continue;
+
+			AnimComp.m_AnimationSource->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+			AnimComp.m_AnimationSource->m_AnimPlayer.ComputeMatrices(AnimComp.m_BufferData.L2W, m_L2W);
+			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
+			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
+		}
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -256,10 +287,10 @@ namespace TRE
 		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		UBO ubo{};
 		const Camera& cameraComponent = mainCamera->GetComponent<Camera>();
-		const Transform& transform = mainCamera->GetComponent<Transform>();
+		const Transform& cameraTransform = mainCamera->GetComponent<Transform>();
 		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
-		ubo.m_LightPosition = transform.m_Position;
-		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
+		ubo.m_LightPosition = cameraTransform.m_Position;
+		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
@@ -273,33 +304,34 @@ namespace TRE
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
-			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			depthViewMatrix = /*glm::translate(glm::mat4(1.f), cameraTransform.m_Position) **/ glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
 
+		const auto& sc = Engine::GetInstance().GetWindow()->GetSwapChain();
 		ShadowUBO UBO_Shadow;
-		float orthoSize = 500.0f; // Adjust this to suit your scene's dimensions
+		float orthoLength = 300.f;//sc->GetWidth() / 2.f; // Adjust this to suit your scene's dimensions
+		float orthoHeight = 300.f;//sc->GetHeight() / 2.f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 1000.0f;
+
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = -2.f / (orthoSize - -orthoSize);
-		depthProjectionMatrix[1][1] = -2.f / (orthoSize - -orthoSize);
+		depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+		depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-		depthProjectionMatrix[3][0] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
-		depthProjectionMatrix[3][1] = -(orthoSize + -orthoSize) / (orthoSize - -orthoSize);
+		depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+		depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
 		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 		depthViewMatrix = glm::inverse(depthViewMatrix);
+
 		UBO_Shadow.view = depthViewMatrix;
 		UBO_Shadow.proj = depthProjectionMatrix;
 
-		ubo.m_LightSpaceMatrix = depthProjectionMatrix * depthViewMatrix;
+		ubo.m_LightSpaceMatrix = UBO_Shadow.proj * UBO_Shadow.view;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
-		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
-		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
 	}
 
 	void SceneRenderer::EndFrame()
@@ -363,6 +395,12 @@ namespace TRE
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
+		if (m_IsEditorScene == false)
+		{
+			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
+		}
+
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
 	}
@@ -372,6 +410,9 @@ namespace TRE
 		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
 		for (const auto& go_mr : MaterialSort)
 		{
+			if (go_mr.second->HasComponent<AnimationComponent>()) //This only render static meshes
+				continue;
+
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
 			PushConstant pc{};
@@ -422,14 +463,37 @@ namespace TRE
 
 	void SceneRenderer::GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
-		(void)Index;
 		(void)MaterialSort;
+		Renderer::BindPipeline(m_CommandBuffer, m_AnimationPipeline);
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
+		{
+			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
+			if (!AnimationComp.m_IsAnimating || !AnimationComp.m_IsVisible)
+				continue;
 
-		//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
-		//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
-		//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
-		//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
-		//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+			if (m_IsEditorScene)
+			{
+				AnimationComp.m_MaterialInstace->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				AnimationComp.m_MaterialInstace->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
+			}
+
+			VkDeviceSize offsets[] = { 0 };
+			auto VB = AnimationComp.m_VertexBuffer->GetBuffer();
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+
+			VkDeviceSize offsets2[] = { 0 };
+			auto BoneVB = AnimationComp.m_BoneVertexBuffer->GetBuffer();
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 1, 1, &BoneVB, offsets2);
+
+			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+			
+			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		}
 	}
 
 	void SceneRenderer::SkyBoxPass(uint32_t Index)
@@ -669,7 +733,6 @@ namespace TRE
 		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
 		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
 		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
-
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
 		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
 		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);

@@ -22,11 +22,11 @@ namespace TRE
 		VkAttachmentDescription colorAttchmentDescriptions{};
 		colorAttchmentDescriptions.format = m_Info.ImageFormat;
 		colorAttchmentDescriptions.samples = VK_SAMPLE_COUNT_1_BIT;
-		colorAttchmentDescriptions.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttchmentDescriptions.loadOp = m_Info.ClearColor ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD;
 		colorAttchmentDescriptions.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		colorAttchmentDescriptions.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		colorAttchmentDescriptions.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttchmentDescriptions.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		colorAttchmentDescriptions.initialLayout = colorAttchmentDescriptions.loadOp == VK_ATTACHMENT_LOAD_OP_CLEAR ? VK_IMAGE_LAYOUT_UNDEFINED : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		colorAttchmentDescriptions.finalLayout = m_Info.FinalLayout;
 
 		VkAttachmentReference colorAttachmentRef = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
@@ -37,11 +37,11 @@ namespace TRE
 		{
 			depthAttachment.format = m_Info.DepthImageFormat;
 			depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			depthAttachment.loadOp = m_Info.ClearColor ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD;
 			depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			depthAttachment.initialLayout = depthAttachment.loadOp == VK_ATTACHMENT_LOAD_OP_CLEAR ? VK_IMAGE_LAYOUT_UNDEFINED : VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 			depthAttachment.finalLayout = m_Info.DepthFinalLayout;
 
 			depthAttachmentRef.attachment = 1;

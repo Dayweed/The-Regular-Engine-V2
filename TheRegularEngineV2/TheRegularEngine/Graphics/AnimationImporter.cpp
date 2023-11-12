@@ -208,9 +208,11 @@ namespace TRE
 
                 // Copy Vertices
                 MyNodes[iMesh].m_Vertices.resize(AssimpMesh.mNumVertices);
+                MyNodes[iMesh].m_BoneInfluence.resize(AssimpMesh.mNumVertices);
                 for (auto i = 0u; i < AssimpMesh.mNumVertices; ++i)
                 {
                     vertex& Vertex = MyNodes[iMesh].m_Vertices[i];
+                    BoneInfluence& BoneInfo = MyNodes[iMesh].m_BoneInfluence[i];
 
                     auto L = AssimpMesh.mVertices[i];
                     L = m_MeshReferences[iMesh].m_Nodes[0]->mTransformation * L;
@@ -243,8 +245,8 @@ namespace TRE
                     }
 
                     // Mark the weights as uninitialized we will be setting them later
-                    Vertex.m_BoneIndex.x = Vertex.m_BoneIndex.y = Vertex.m_BoneIndex.z = Vertex.m_BoneIndex.w = 0;
-                    Vertex.m_BoneWeights.x = Vertex.m_BoneWeights.y = Vertex.m_BoneWeights.z = Vertex.m_BoneWeights.w = 0;
+                    BoneInfo.m_BoneIndex.x = BoneInfo.m_BoneIndex.y = BoneInfo.m_BoneIndex.z = BoneInfo.m_BoneIndex.w = 0;
+                    BoneInfo.m_BoneWeights.x = BoneInfo.m_BoneWeights.y = BoneInfo.m_BoneWeights.z = BoneInfo.m_BoneWeights.w = 0;
                 }
 
                 // Copy the indices
@@ -324,7 +326,7 @@ namespace TRE
                         }
 
                         // Copy Weight To the Vert
-                        auto& V = MyNodes[iMesh].m_Vertices[iVertex];
+                        auto& B = MyNodes[iMesh].m_BoneInfluence[iVertex];
                         for (int i = 0; i < E.m_Count; ++i)
                         {
                             const auto& BW = E.m_Weights[i];
@@ -332,24 +334,24 @@ namespace TRE
                             switch (i)
                             {
                                 case 0:
-                                    V.m_BoneIndex.x = BW.m_iBone;
-                                    V.m_BoneWeights.x = BW.m_Weight;
+                                    B.m_BoneIndex.x = BW.m_iBone;
+                                    B.m_BoneWeights.x = BW.m_Weight;
                                     break;
-                                case 1: V.m_BoneIndex.y = BW.m_iBone;
-                                    V.m_BoneWeights.y = BW.m_Weight;
+                                case 1: B.m_BoneIndex.y = BW.m_iBone;
+                                    B.m_BoneWeights.y = BW.m_Weight;
                                     break;
-                                case 2: V.m_BoneIndex.z = BW.m_iBone;
-                                    V.m_BoneWeights.z = BW.m_Weight;
+                                case 2: B.m_BoneIndex.z = BW.m_iBone;
+                                    B.m_BoneWeights.z = BW.m_Weight;
                                     break;
-                                case 3: V.m_BoneIndex.w = BW.m_iBone;
-                                    V.m_BoneWeights.w = BW.m_Weight;
+                                case 3: B.m_BoneIndex.w = BW.m_iBone;
+                                    B.m_BoneWeights.w = BW.m_Weight;
                                     break;
                             }
                         }
                     }
 
                     // Sanity check (make sure that all the vertices have bone and weights
-                    for (auto& V : MyNodes[iMesh].m_Vertices)
+                    for (auto& V : MyNodes[iMesh].m_BoneInfluence)
                     {
                         assert(V.m_BoneWeights.x > 0);
                     }
@@ -371,7 +373,7 @@ namespace TRE
                         const std::uint8_t iSkeletonBone = (uint8_t)m_pAnimCharacter->m_Skeleton.findBone(pN->mName.C_Str());
                         for (auto iVertex = 0u; iVertex < AssimpMesh.mNumVertices; ++iVertex)
                         {
-                            auto& V = pMyNode->m_Vertices[iVertex];
+                            auto& V = pMyNode->m_BoneInfluence[iVertex];
                             V.m_BoneIndex.x = iSkeletonBone;
                             V.m_BoneWeights.x = 1.f;
                         }
@@ -427,6 +429,7 @@ namespace TRE
                         const int  iBaseVertex = static_cast<int>(MyNodes[i].m_Vertices.size());
                         const auto iBaseIndex = MyNodes[i].m_Indices.size();
                         MyNodes[i].m_Vertices.insert(MyNodes[i].m_Vertices.end(), MyNodes[j].m_Vertices.begin(), MyNodes[j].m_Vertices.end());
+                        MyNodes[i].m_BoneInfluence.insert(MyNodes[i].m_BoneInfluence.end(), MyNodes[j].m_BoneInfluence.begin(), MyNodes[j].m_BoneInfluence.end());
                         MyNodes[i].m_Indices.insert(MyNodes[i].m_Indices.end(), MyNodes[j].m_Indices.begin(), MyNodes[j].m_Indices.end());
 
                         // Fix the indices
@@ -464,6 +467,7 @@ namespace TRE
                 auto& FinalMesh = m_pAnimCharacter->m_SkinGeom.m_Mesh[iFinalMesh];
                 auto& SubMesh = FinalMesh.m_Submeshes.emplace_back();
 
+                SubMesh.m_BoneInfluence = std::move(E.m_BoneInfluence);
                 SubMesh.m_Vertices = std::move(E.m_Vertices);
                 SubMesh.m_Indices = std::move(E.m_Indices);
                 SubMesh.m_iMaterial = E.m_iMaterialInstance;

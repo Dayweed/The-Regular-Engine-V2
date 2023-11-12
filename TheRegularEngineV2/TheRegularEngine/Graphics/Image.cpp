@@ -121,7 +121,7 @@ namespace TRE
 			samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
 			samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
 			samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-			samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+			samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 			samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
 			samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
 			samplerCreateInfo.mipLodBias = 0.0f;

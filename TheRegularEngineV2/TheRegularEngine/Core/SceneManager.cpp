@@ -2,6 +2,8 @@
 #include "TREIncludes.h"
 #include "Resource/ResourceManager.h"
 #include "GameLoop.h"
+#include "PostProcessing/Vignette.h"
+
 
 namespace TRE
 {
@@ -78,5 +80,61 @@ namespace TRE
 		std::string sceneName = filePath.substr(filePath.find_last_of('\\') + 1);
 		sceneName.erase(sceneName.find(FILESYS_SCENE_TYPE));
 		return sceneName;
+	}
+
+	void SceneTransitioner::Init()
+	{
+		m_Duration = 0.0f;
+		m_HalfDuration = 0.0f;
+		m_ElapsedTime = 0.0f;
+		m_IsTransitioning = false;
+		m_LoadedNewScene = false;
+
+		m_TransitionSceneName = "";
+	}
+
+	void SceneTransitioner::Update()
+	{
+		if (m_IsTransitioning)
+		{
+			if (m_ElapsedTime < m_Duration)
+			{
+				auto vignette = PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette");
+				//Close vignette
+				if (m_ElapsedTime < m_HalfDuration)
+				{
+					vignette->SetRadius(1.0f - (m_ElapsedTime / m_HalfDuration));
+				}
+				//Open vignette
+				else
+				{
+					if (m_LoadedNewScene == false)
+					{
+						SceneManager::Instance().LoadScene(m_TransitionSceneName);
+						m_LoadedNewScene = true;
+					}
+
+					vignette->SetRadius((m_ElapsedTime - m_HalfDuration) / m_HalfDuration);
+				}
+
+				m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
+			}
+			else
+			{
+				m_ElapsedTime = 0.0f;
+				m_Duration = 0.0f;
+				m_IsTransitioning = false;
+				m_LoadedNewScene = false;
+				m_TransitionSceneName = "";
+			}
+		}
+	}
+
+	void SceneTransitioner::TransitionToScene(const std::string& sceneName, const float totalDuration)
+	{
+		m_TransitionSceneName = sceneName;
+		m_Duration = totalDuration;
+		m_HalfDuration = m_Duration / 2.0f;
+		m_IsTransitioning = true;
 	}
 }

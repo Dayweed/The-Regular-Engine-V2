@@ -377,7 +377,10 @@ namespace TRE
 			Audio,
 			AudioListener,
 			DirectionalLight,
-			ScriptComponent
+			ScriptComponent,
+			UIComponent,
+			AnimationComponent,
+			ParticleComponent
 		>();
 	}
 
@@ -405,7 +408,9 @@ namespace TRE
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)
 			.component<ScriptComponent>(arc)
-			;
+			.component<UIComponent>(arc)
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		arc.Close();
 
@@ -439,7 +444,9 @@ namespace TRE
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)
 			.component<ScriptComponent>(arc)
-			;
+			.component<UIComponent>(arc)
+			.component<AnimationComponent>(arc)
+			.component<ParticleComponent>(arc);
 
 		// Clone each component of the object into the prefab
 		// USES MEMORYMANAGER INSTEAD OF ECSMANAGER, ECSManager should never know this exist!

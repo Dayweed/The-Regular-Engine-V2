@@ -10,6 +10,7 @@ namespace TRE
 		VkFormat DepthImageFormat;
 		VkImageLayout DepthFinalLayout;
 		bool DepthEnabled = false;
+		bool ClearColor = true;
 	};
 
 	class RenderPass

@@ -7,12 +7,13 @@
 #include "Pipeline.h"
 #include "Material.h"
 #include "DebugRenderer.h"
-#include "AnimationTest.h"
 #include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Resource/ResourceManager.h"
+#include "UIRenderer.h"
+#include "PostProcessing/PostProcessing.h"
 
 namespace TRE
 {
@@ -38,7 +39,6 @@ namespace TRE
 		glm::vec4 m_LightDirection = glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f); //Directional Light in world space
 		glm::vec4 m_LightDirectionalColor{ 1.f, 1.f, 1.f, 1.f }; //Color for directional light
 		glm::vec4 m_LightAmbientColor{ 1.f, 1.f, 1.f, 1.f }; //Color for ambient light
-
 	};
 
 	struct SkyBoxUBO
@@ -106,12 +106,6 @@ namespace TRE
 
 			std::unique_ptr<DebugRenderer> m_DebugRenderer;
 
-			//Temp for animation Testing
-			//std::unique_ptr<AnimationTest> m_Animation;
-			//std::shared_ptr<UniformBuffer> m_AnimationUBO;
-			//AnimationUBO m_AnimationBuffer;
-			//glm::mat4						m_L2W;
-
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
@@ -136,6 +130,13 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
+
+			//AnimationPass
+			std::shared_ptr<Pipeline> m_AnimationPipeline;
+			glm::mat4 m_L2W;
+
+			//UI Renderer
+			std::shared_ptr<UIRenderer> m_UIRenderer;
 
 			bool m_IsEditorScene = false;
 	};

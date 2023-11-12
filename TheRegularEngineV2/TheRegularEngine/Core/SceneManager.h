@@ -87,4 +87,32 @@ namespace TRE
 		std::string m_CurrentSceneFilePath{ GETFOLDER(FILESYS_SCENE) + SCENE_DEFAULT_NAME + GETFILE(FILESYS_SCENE) };
 		int m_DupDefaultName{};
 	};
+
+	class SceneTransitioner
+	{
+	public:
+		static SceneTransitioner& Instance()
+		{
+			static SceneTransitioner instance;
+			return instance;
+		}
+
+		void Init();
+		void Update();
+
+		void TransitionToScene(const std::string& sceneName, const float totalDuration);
+	private:
+		SceneTransitioner() {};
+		SceneTransitioner(SceneTransitioner const&) = delete;
+		void operator=(SceneTransitioner const&) = delete;
+		void* operator new(size_t) = delete;
+
+		float m_Duration;
+		float m_HalfDuration;
+		float m_ElapsedTime;
+		bool m_IsTransitioning;
+		bool m_LoadedNewScene;
+
+		std::string m_TransitionSceneName;
+	};
 }

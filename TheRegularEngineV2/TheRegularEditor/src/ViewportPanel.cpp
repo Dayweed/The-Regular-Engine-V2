@@ -176,6 +176,7 @@ namespace TRE
 		m_ImageSize = m_ViewportSize = ImGui::GetContentRegionAvail();
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
+		EditorCamera::Instance().SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 		UpdateViewportSize();
 
 		MouseActions();
@@ -354,19 +355,6 @@ namespace TRE
 
 	void ViewportPanel::UpdateViewportSize()
 	{
-		const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
-		const float aspectRatio = static_cast<float>(windowConfig.width) / windowConfig.height;
-		if ((m_ViewportSize.x / m_ViewportSize.y) < aspectRatio)
-		{
-			m_ImageSize.x = m_ViewportSize.x;
-			m_ImageSize.y = m_ViewportSize.x / aspectRatio;
-		}
-		else
-		{
-			m_ImageSize.y = m_ViewportSize.y;
-			m_ImageSize.x = m_ViewportSize.y * aspectRatio;
-
-		}
 		//Center the image
 		m_ImageOffset = m_ViewportSize - m_ImageSize;
 		m_ImageOffset.x *= 0.5f;

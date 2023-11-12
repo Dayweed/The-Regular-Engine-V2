@@ -2,12 +2,12 @@
 
 #pragma stage : vert
 
-layout(location = 0) in vec4  inWeights;
-layout(location = 1) in ivec4 inBones;
-layout(location = 2) in vec3  inPosition;
-layout(location = 3) in vec3  inNormal;
-layout(location = 4) in vec3  inTangent;
-layout(location = 5) in vec2  inUV;
+layout(location = 1) in vec3  inPosition;
+layout(location = 2) in vec3  inNormal;
+layout(location = 3) in vec3  inTangent;
+layout(location = 4) in vec2  inUV;
+layout(location = 5) in vec4  inWeights;
+layout(location = 6) in ivec4 inBones;
 
 layout(set = 0, binding = 0) uniform UBO
 {
@@ -50,5 +50,5 @@ layout(set = 0, binding = 5) uniform sampler2D Glossiness;
 
 void main() 
 {
-   outColor = In.Color * texture(Diffuse, In.UV);
+   outColor = In.Color * texture(Diffuse, In.UV) * texture(DiffuseAO, In.UV);
 }

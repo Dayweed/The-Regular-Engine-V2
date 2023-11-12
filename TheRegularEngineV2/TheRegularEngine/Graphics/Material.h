@@ -32,14 +32,15 @@ namespace TRE
 			~Material();
 
 			void Invalidate();
-			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap);
-			void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap);
+			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap = VkDescriptorImageInfo());
+			void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap = VkDescriptorImageInfo());
 			void UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo); //To be removed
 
 			void SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures);
 
 			const std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTextures() { return m_Textures; }
 			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>>& GetTexturesRef() { return m_Textures; }
+			const bool ContainsTexture(const ResourceHandle& resourceHandle, std::string& boundedName);
 
 			const VkDescriptorSet& GetDescriptor(uint32_t FrameIndex);
 			const VkDescriptorSet& GetEditorDescriptor(uint32_t FrameIndex) { return m_EditorDescriptorSets[FrameIndex]; }
