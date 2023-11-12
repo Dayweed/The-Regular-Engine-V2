@@ -133,7 +133,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// Serialized, reflected
-		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// 
 		ECSManager::Instance().RegisterComponent<ParticleComponent>("Particle Component");					// Serialized, reflected
 
 		// Register Systems

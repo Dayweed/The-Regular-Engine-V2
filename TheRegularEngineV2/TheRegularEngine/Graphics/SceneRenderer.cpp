@@ -16,6 +16,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
+#include "AnimationComponent.h"
 
 //To be removed
 #include "EditorCamera.h"
@@ -86,7 +87,6 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
-		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
 
 		SkyBoxPassInit();
 		ShadowPassInit();
@@ -102,6 +102,15 @@ namespace TRE
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
 
 		PostProcessingManager::Instance().Init();
+
+		PipelineConfigurations AnimationPipelineConfig{};
+		AnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+		AnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(9);
+		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
+
+		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
+		m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
+		m_L2W = glm::identity<glm::mat4>();
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -254,6 +263,15 @@ namespace TRE
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
+		{
+			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			AnimComp.m_AnimationSource->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+			AnimComp.m_AnimationSource->m_AnimPlayer.ComputeMatrices(AnimComp.m_BufferData.L2W, m_L2W);
+			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
+			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
+		}
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -303,9 +321,7 @@ namespace TRE
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
-		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
-		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
+
 	}
 
 	void SceneRenderer::EndFrame()
@@ -383,6 +399,9 @@ namespace TRE
 		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
 		for (const auto& go_mr : MaterialSort)
 		{
+			if (go_mr.second->HasComponent<AnimationComponent>()) //This only render static meshes
+				continue;
+
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
 			PushConstant pc{};
@@ -433,12 +452,33 @@ namespace TRE
 
 	void SceneRenderer::GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
-		(void)Index;
 		(void)MaterialSort;
+		Renderer::BindPipeline(m_CommandBuffer, m_AnimationPipeline);
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
+		{
+			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 
-		//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
+			if (m_IsEditorScene)
+			{
+				AnimationComp.m_MaterialInstace->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				AnimationComp.m_MaterialInstace->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
+			}
+
+			VkDeviceSize offsets[] = { 0 };
+			auto VB = AnimationComp.m_VertexBuffer->GetBuffer();
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+			
+			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		}
+
 		//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
-		//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
+		//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
 		//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
 		//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 	}

@@ -109,9 +109,9 @@ namespace TRE
 
 			//Temp for animation Testing
 			//std::unique_ptr<AnimationTest> m_Animation;
-			//std::shared_ptr<UniformBuffer> m_AnimationUBO;
-			//AnimationUBO m_AnimationBuffer;
-			//glm::mat4						m_L2W;
+			std::shared_ptr<UniformBuffer> m_AnimationUBO;
+			AnimationUBO m_AnimationBuffer;
+			glm::mat4						m_L2W;
 
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
@@ -137,6 +137,9 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
+
+			//AnimationPass
+			std::shared_ptr<Pipeline> m_AnimationPipeline;
 
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
