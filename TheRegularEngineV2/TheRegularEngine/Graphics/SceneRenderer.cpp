@@ -106,6 +106,11 @@ namespace TRE
 		PipelineConfigurations AnimationPipelineConfig{};
 		AnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
 		AnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(9);
+		AnimationPipelineConfig.UseAutoShaderVertexInput = false;
+		VertexBufferInputLayout Layout1 = { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 };
+		VertexBufferInputLayout Layout2 = { VertexInputDataType::Vec4, VertexInputDataType::IVec4 };
+		AnimationPipelineConfig.CustomVertexBufferInputLayout.push_back(Layout1);
+		AnimationPipelineConfig.CustomVertexBufferInputLayout.push_back(Layout2);
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
 
 		m_L2W = glm::identity<glm::mat4>();
@@ -266,6 +271,9 @@ namespace TRE
 		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
 		{
 			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			if (!AnimComp.m_IsAnimating || !AnimComp.m_IsVisible)
+				continue;
+
 			AnimComp.m_AnimationSource->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
 			AnimComp.m_AnimationSource->m_AnimPlayer.ComputeMatrices(AnimComp.m_BufferData.L2W, m_L2W);
 			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
@@ -460,6 +468,8 @@ namespace TRE
 		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
 		{
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
+			if (!AnimationComp.m_IsAnimating || !AnimationComp.m_IsVisible)
+				continue;
 
 			if (m_IsEditorScene)
 			{
@@ -475,15 +485,15 @@ namespace TRE
 			VkDeviceSize offsets[] = { 0 };
 			auto VB = AnimationComp.m_VertexBuffer->GetBuffer();
 			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+
+			VkDeviceSize offsets2[] = { 0 };
+			auto BoneVB = AnimationComp.m_BoneVertexBuffer->GetBuffer();
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 1, 1, &BoneVB, offsets2);
+
 			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 			
 			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
-
-		//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
-		//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
-		//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
-		//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 	}
 
 	void SceneRenderer::SkyBoxPass(uint32_t Index)

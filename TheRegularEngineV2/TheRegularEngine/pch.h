@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include <vector>
 #include <variant>
+#include <initializer_list>
 
 //Utilities
 #include <algorithm>

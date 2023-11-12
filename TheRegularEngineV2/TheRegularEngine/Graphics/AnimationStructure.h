@@ -50,19 +50,24 @@ namespace TRE
 
 	struct vertex
 	{
-		glm::vec4         m_BoneWeights;
-		glm::uvec4        m_BoneIndex;
 		glm::vec3         m_Position;
 		glm::vec3         m_Normal;
 		glm::vec3         m_Tangent;
 		glm::vec2         m_UV;
 	};
 
+	struct BoneInfluence
+	{
+		glm::vec4         m_BoneWeights;
+		glm::uvec4        m_BoneIndex;
+	};
+
 	struct submesh
 	{
-		std::vector<vertex>     m_Vertices;
-		std::vector<int>        m_Indices;
-		int                     m_iMaterial;
+		std::vector<vertex>		   m_Vertices;
+		std::vector<BoneInfluence> m_BoneInfluence;
+		std::vector<int>		   m_Indices;
+		int						   m_iMaterial;
 	};
 
 	struct mesh

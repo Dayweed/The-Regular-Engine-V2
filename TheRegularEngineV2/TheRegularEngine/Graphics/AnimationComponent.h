@@ -16,7 +16,7 @@ namespace TRE
 			AnimationComponent()
 			{
 				TRE_CORE_INFO("Animation Component Constructor");
-#if false
+#if 0
 				AnimationImporter Importer;
 				m_AnimationSource = std::make_shared<AnimationGeom>();
 				if (auto ImportResult = Importer.Import(*m_AnimationSource, "../Assets/GirlAnimationWalkingTextures/GirlAnimationWalking.fbx"); !ImportResult)
@@ -24,6 +24,9 @@ namespace TRE
 
 				m_VertexBuffer = std::make_shared<VertexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Vertices.data(),
 					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Vertices.size() * sizeof(TRE::vertex));
+
+				m_BoneVertexBuffer = std::make_shared<VertexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_BoneInfluence.data(),
+					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_BoneInfluence.size() * sizeof(TRE::BoneInfluence));
 
 				m_IndexBuffer = std::make_shared<IndexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.data(),
 					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size() * sizeof(int), m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size());
@@ -53,6 +56,7 @@ namespace TRE
 
 			std::shared_ptr<AnimationGeom> m_AnimationSource;
 			std::shared_ptr<VertexBuffer> m_VertexBuffer;
+			std::shared_ptr<VertexBuffer> m_BoneVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_IndexBuffer;
 			std::shared_ptr<Material> m_MaterialInstace;
 			std::shared_ptr<UniformBuffer> m_UBO;
@@ -85,22 +89,23 @@ property_begin(TRE::AnimationComponent)
 {
 	//property_var_fnbegin("AnimationSource", resource_ref)
 	//{
-	//	//if (isRead)
-	//	//{
-	//	//	if (Self.m_ObjectSource)
-	//	//		InOut.m_Value = Self.m_ObjectSource->GetHandle();
-	//	//	else
-	//	//		InOut.m_Value = 0;
-	//	//}
-	//	//else
-	//	//{
-	//	//	if (InOut.m_Value)
-	//	//		Self.m_ObjectSource = TRE::ResourceManager::Instance().GetResource<TRE::RenderObject>(InOut.m_Value);
-	//	//	else
-	//	//		Self.m_ObjectSource = nullptr;
-	//	//}
+	//	if (isRead)
+	//	{
+	//		if (Self.m_AnimationSource)
+	//			InOut.m_Value = Self.m_AnimationSource->GetHandle();
+	//		else
+	//			InOut.m_Value = 0;
+	//	}
+	//	else
+	//	{
+	//		if (InOut.m_Value)
+	//			Self.m_AnimationSource = TRE::ResourceManager::Instance().GetResource<TRE::RenderObject>(InOut.m_Value);
+	//		else
+	//			Self.m_AnimationSource = nullptr;
+	//	}
 
 	//} property_var_fnend(),
-	property_var(m_IsVisible)
+	property_var(m_IsVisible),
+	property_var(m_IsAnimating),
 
 } property_vend_h(TRE::AnimationComponent)

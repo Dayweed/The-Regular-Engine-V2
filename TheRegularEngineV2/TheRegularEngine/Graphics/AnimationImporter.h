@@ -15,6 +15,7 @@ namespace TRE
 				std::string                     m_MeshName;
 				std::string                     m_Name;
 				std::vector<vertex>				m_Vertices;
+				std::vector<BoneInfluence>		m_BoneInfluence;
 				std::vector<int>                m_Indices;
 				int                             m_iMaterialInstance;
 			};

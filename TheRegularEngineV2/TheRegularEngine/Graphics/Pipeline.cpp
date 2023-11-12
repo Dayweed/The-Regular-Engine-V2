@@ -8,6 +8,45 @@
 
 namespace TRE
 {
+	uint32_t VertexBufferInput::VertexDataTypeSize(VertexInputDataType type)
+	{
+		switch (type)
+		{
+			case VertexInputDataType::Float:  return 4;
+			case VertexInputDataType::Vec2:   return 4 * 2;
+			case VertexInputDataType::Vec3:   return 4 * 3;
+			case VertexInputDataType::Vec4:   return 4 * 4;
+			case VertexInputDataType::Mat3:   return 4 * 3 * 3;
+			case VertexInputDataType::Mat4:   return 4 * 4 * 4;
+			case VertexInputDataType::Int:    return 4;
+			case VertexInputDataType::IVec2:  return 4 * 2;
+			case VertexInputDataType::IVec3:  return 4 * 3;
+			case VertexInputDataType::IVec4:  return 4 * 4;
+			case VertexInputDataType::Bool:   return 1;
+		}
+
+		assert(false, "Data Type not registered");
+		return 0;
+	}
+
+	VkFormat Pipeline::VertexDataTypeToVulkanFormat(VertexInputDataType type)
+	{
+		switch (type)
+		{
+			case VertexInputDataType::Float:   return VK_FORMAT_R32_SFLOAT;
+			case VertexInputDataType::Vec2:    return VK_FORMAT_R32G32_SFLOAT;
+			case VertexInputDataType::Vec3:    return VK_FORMAT_R32G32B32_SFLOAT;
+			case VertexInputDataType::Vec4:    return VK_FORMAT_R32G32B32A32_SFLOAT;
+			case VertexInputDataType::Int:     return VK_FORMAT_R32_SINT;
+			case VertexInputDataType::IVec2:   return VK_FORMAT_R32G32_SINT;
+			case VertexInputDataType::IVec3:   return VK_FORMAT_R32G32B32_SINT;
+			case VertexInputDataType::IVec4:   return VK_FORMAT_R32G32B32A32_SINT;
+		}
+
+		assert(false);
+		return VK_FORMAT_UNDEFINED;
+	}
+
 	PipelineConfigurations& Pipeline::GetConfig()
 	{
 		return m_Config;
@@ -28,21 +67,55 @@ namespace TRE
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Device = RendererContext::GetDevice();
 
-		const auto& VertexInputAttributesDescriptions = m_Config.Shader->GetVertexAttributes();
-		VkVertexInputBindingDescription VertexInputBindingDescriptions{};
-		VertexInputBindingDescriptions.binding = 0;
-		VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-		if (m_Config.VertexStride == 0)
-			VertexInputBindingDescriptions.stride = m_Config.Shader->GetVertexStrides();
-		else
-			VertexInputBindingDescriptions.stride = (uint32_t)m_Config.VertexStride;
-
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
-		vertexInputInfo.vertexBindingDescriptionCount = 1;
-		vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
-		vertexInputInfo.pVertexBindingDescriptions = &VertexInputBindingDescriptions;
+		std::vector<VkVertexInputBindingDescription> VertexInputBindingDescriptions;
+		std::vector<VkVertexInputAttributeDescription> VertexInputAttributesDescriptions;
+
+		if (m_Config.UseAutoShaderVertexInput)
+		{
+			const auto& VertexInputAttributesDescriptions = m_Config.Shader->GetVertexAttributes();
+			VkVertexInputBindingDescription VertexInputBindingDescriptions{};
+			VertexInputBindingDescriptions.binding = 0;
+			VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+			VertexInputBindingDescriptions.stride = (m_Config.VertexStride == 0) ? m_Config.Shader->GetVertexStrides() : (uint32_t)m_Config.VertexStride;
+
+			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
+			vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
+			vertexInputInfo.vertexBindingDescriptionCount = 1;
+			vertexInputInfo.pVertexBindingDescriptions = &VertexInputBindingDescriptions;
+		}
+		else
+		{
+			int test = 0;
+			int previouslocation = 0;
+			for (const auto& VertexLayout : m_Config.CustomVertexBufferInputLayout)
+			{
+				VkVertexInputBindingDescription Binding{};
+				Binding.binding = test;
+				Binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+				Binding.stride = VertexLayout.VertexStride;
+				VertexInputBindingDescriptions.push_back(Binding);
+
+				for (int x = 0; x < VertexLayout.m_Inputs.size(); x++)
+				{
+					VkVertexInputAttributeDescription InputAttribute{};
+					InputAttribute.location = previouslocation + 1;
+					InputAttribute.binding = Binding.binding;
+					InputAttribute.offset = VertexLayout.m_Inputs[x].Offset;
+					InputAttribute.format = VertexDataTypeToVulkanFormat(VertexLayout.m_Inputs[x].Type);
+					previouslocation = InputAttribute.location;
+					VertexInputAttributesDescriptions.push_back(InputAttribute);
+				}
+
+				test++;
+			}
+
+			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
+			vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
+			vertexInputInfo.vertexBindingDescriptionCount = VertexInputBindingDescriptions.size();
+			vertexInputInfo.pVertexBindingDescriptions = VertexInputBindingDescriptions.data();
+		}
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
