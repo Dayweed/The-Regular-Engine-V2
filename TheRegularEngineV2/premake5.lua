@@ -293,7 +293,7 @@ project "TRE-Runtime"
 	{
 		"TheRegularEngine",
 		"Dependencies/Math/include",
-		-- "%{IncludeDir.Assimp}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		-- "%{IncludeDir.Freetype}",
 		-- "%{IncludeDir.GLFW}",

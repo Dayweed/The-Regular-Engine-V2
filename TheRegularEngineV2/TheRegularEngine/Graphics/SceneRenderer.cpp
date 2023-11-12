@@ -108,8 +108,6 @@ namespace TRE
 		AnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(9);
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
 
-		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
-		m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 		m_L2W = glm::identity<glm::mat4>();
 	}
 

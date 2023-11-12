@@ -3,7 +3,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include "AnimationStructure.h"
-#include "AnimationTest.h"
+#include "AnimationPlayer.h"
 
 namespace TRE
 {

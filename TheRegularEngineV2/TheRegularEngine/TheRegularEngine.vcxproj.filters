@@ -139,9 +139,6 @@
     <ClInclude Include="Graphics\AnimationStructure.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\AnimationTest.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -355,9 +352,6 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\AnimationPlayer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\AnimationTest.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Buffer.cpp">

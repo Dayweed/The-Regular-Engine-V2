@@ -7,7 +7,6 @@
 #include "Pipeline.h"
 #include "Material.h"
 #include "DebugRenderer.h"
-#include "AnimationTest.h"
 #include "ShaderTypes/PBRShader.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
@@ -107,12 +106,6 @@ namespace TRE
 
 			std::unique_ptr<DebugRenderer> m_DebugRenderer;
 
-			//Temp for animation Testing
-			//std::unique_ptr<AnimationTest> m_Animation;
-			std::shared_ptr<UniformBuffer> m_AnimationUBO;
-			AnimationUBO m_AnimationBuffer;
-			glm::mat4						m_L2W;
-
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
@@ -140,6 +133,7 @@ namespace TRE
 
 			//AnimationPass
 			std::shared_ptr<Pipeline> m_AnimationPipeline;
+			glm::mat4 m_L2W;
 
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
