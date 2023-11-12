@@ -11,7 +11,7 @@ namespace TRE
 	public:
 		glm::vec3 Direction{ 1,-1,1 };
 		glm::vec4 DirectionalColor{ 1,1,1,1 }; ///RGB, A = Intensity
-		glm::vec4 AmbientColor{ 1,1,1,1 }; ///RGB, A = Intensity
+		glm::vec4 AmbientColor{ 1,1,1,0.05 }; ///RGB, A = Intensity
 
 		glm::vec3 GetUpVec() const;
 

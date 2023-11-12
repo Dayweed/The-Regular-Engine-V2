@@ -59,14 +59,22 @@ namespace TRE
 		void operator=(PostProcessingManager const&) = delete;
 		void* operator new(size_t) = delete;
 	private:
-		std::map<std::string, std::pair<int, std::shared_ptr<PostProcessEffect>>> m_PostEffects;
+		std::map<int, std::pair<std::string, std::shared_ptr<PostProcessEffect>>> m_PostEffects;
 	};
 
 	template<typename T>
 	std::shared_ptr<T> PostProcessingManager::GetPostEffect(const std::string& name)
 	{
-		if(m_PostEffects.find(name) != m_PostEffects.end())
-			return std::dynamic_pointer_cast<T>(m_PostEffects[name].second);
+		for (auto& effect : m_PostEffects)
+		{
+			if (effect.second.first == name)
+			{
+				return std::dynamic_pointer_cast<T>(effect.second.second);
+			}
+		}
 		return nullptr;
+		/*if(m_PostEffects.find(name) != m_PostEffects.end())
+			return std::dynamic_pointer_cast<T>(m_PostEffects[name].second);
+		return nullptr;*/
 	}
 }
