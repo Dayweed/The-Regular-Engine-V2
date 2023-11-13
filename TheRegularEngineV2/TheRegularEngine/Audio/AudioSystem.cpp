@@ -42,25 +42,31 @@ namespace TRE
 				CompileAudio(go);
 				source.m_HasCompiled = true;
 			}
+		}
 
-			if (source.m_Play)
+		for (auto go : audioMap)
+		{
+			if (go->HasComponent<Audio>())
 			{
-				Play(go, true);
-			}
-			else if (source.m_Loop)
-			{
-				if (!source.m_isPlaying)
+				Audio& source = go->GetComponent<Audio>();
+
+				if (source.m_Play)
 				{
 					Play(go, true);
 				}
-			}
-
-			if (!source.m_Play)
-			{
+				else if (!source.m_Play)
 				{
-					source.m_Channel->stop();
-				}
+					{
+						source.m_Channel->stop();
+					}
 
+				}
+				source.m_Channel->isPlaying(&source.m_isPlaying);
+				TogglePause(go);
+				ToggleMute(go);
+				source.m_Channel->setVolume(source.m_Volume);
+				source.m_Channel->setPitch(source.m_Pitch);
+				source.m_Channel->setPriority(source.m_Priority);
 			}
 			else
 			{
@@ -72,20 +78,6 @@ namespace TRE
 					soundToRemove.erase(it);
 				}
 			}
-
-			source.m_Channel->isPlaying(&source.m_isPlaying);
-			TogglePause(go);
-			ToggleMute(go);
-			source.m_Channel->setVolume(source.m_Volume);
-			source.m_Channel->setPitch(source.m_Pitch);
-			source.m_Channel->setPriority(source.m_Priority);
-
-			/*for (auto go : audioMap)
-			{
-				if (go->HasComponent<Audio>())
-				{
-				}
-			}*/
 		}
 
 		for (const Entity go : entitiesToRemove)
@@ -286,7 +278,8 @@ namespace TRE
 
 	int AudioSystem::ErrorCheck(FMOD_RESULT result, std::string function)
 	{
-		if (result != FMOD_OK) {
+		if (result != FMOD_OK) 
+		{
 			TRE_CORE_ERROR(function);
 
 			return 1;
@@ -311,8 +304,10 @@ namespace TRE
 			LoadFile(go);
 		}
 
-		//audioMap.insert(go);
-		//soundToRemove.insert({ go, audio.m_Sound });
+		audioMap.insert(go);
+		soundToRemove.insert({ go, audio.m_Sound });
+
+		std::cout << audioMap.count(go) << std::endl;
 	}
 
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
