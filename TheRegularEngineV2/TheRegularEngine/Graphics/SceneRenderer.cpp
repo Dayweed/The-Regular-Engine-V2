@@ -310,10 +310,10 @@ namespace TRE
 		}
 
 		ShadowUBO UBO_Shadow;
-		float orthoLength = 100.f; // Adjust this to suit your scene's dimensions
-		float orthoHeight = 100.f; // Adjust this to suit your scene's dimensions
-		float orthoNear = 0.1f;
-		float orthoFar = 100.0f;
+		const float orthoLength = m_ShadowFrustumLengthHeight.first;
+		const float orthoHeight = m_ShadowFrustumLengthHeight.second;
+		const float orthoNear = m_ShadowFrustumNearFar.first;
+		const float orthoFar = m_ShadowFrustumNearFar.second;
 
 		glm::mat4 depthProjectionMatrix;
 		depthProjectionMatrix = glm::mat4(1.f);
@@ -823,5 +823,16 @@ namespace TRE
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
 		}
+
+		m_ShadowFrustumNearFar = std::pair(0.1f, 150.f);
+		m_ShadowFrustumLengthHeight = std::pair(100.f, 100.f);
+		m_ShadowFrustumLengthHeightEditor = std::pair(100.f, 100.f);
+		
+		
+		m_ShadowFrustum.first = glm::vec3(-m_ShadowFrustumLengthHeight.first, -m_ShadowFrustumLengthHeight.second, m_ShadowFrustumNearFar.first);
+		m_ShadowFrustum.second = glm::vec3(m_ShadowFrustumLengthHeight.first, m_ShadowFrustumLengthHeight.second, m_ShadowFrustumNearFar.second);
+
+		m_ShadowFrustumEditor.first = glm::vec3(-m_ShadowFrustumLengthHeightEditor.first, -m_ShadowFrustumLengthHeightEditor.second, m_ShadowFrustumNearFar.first);
+		m_ShadowFrustumEditor.second = glm::vec3(m_ShadowFrustumLengthHeightEditor.first, m_ShadowFrustumLengthHeightEditor.second, m_ShadowFrustumNearFar.second);
 	}
 }
