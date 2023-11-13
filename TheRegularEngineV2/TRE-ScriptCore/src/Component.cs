@@ -291,16 +291,9 @@ namespace TRE
         {
             return AudioSystem.Engine_GetIsPlaying(entity.ID);
         }
-        public void Play(bool once = false)
+        public void Play()
         {
-            if (once)
-            {
-                AudioSystem.PlayOnce(entity.ID);
-            }
-            else
-            {
-                AudioSystem.Play(entity.ID);
-            }
+            AudioSystem.Play(entity.ID);
         }
         public void Pause()
         {
