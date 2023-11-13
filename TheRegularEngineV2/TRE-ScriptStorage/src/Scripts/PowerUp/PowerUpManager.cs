@@ -9,6 +9,7 @@ namespace TRE
 {
     public class PowerUpManager : Entity
     {
+        public PowerUpUI MyPowerUpUI;
         public List<Entity> powerUps = new List<Entity>();
 
         //private Entity baseForm;

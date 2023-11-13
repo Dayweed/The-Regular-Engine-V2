@@ -12,8 +12,9 @@ namespace TRE
 	using PS = PhysicsSystem;
 	using CS = CameraSystem;
 	class HoleyController : Entity
-	{
-		public PowerUpManager MyPowerManager;
+    {
+        public PowerUpUI MyPowerUpUI;
+        public PowerUpManager MyPowerManager;
 
 
 		//Check if player is boosted jump
@@ -65,10 +66,13 @@ namespace TRE
         private Transform holeyTransform;
 
 		public void Start()
-		{
-			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+        {
+            MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();
+            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+            MyPowerManager.MyPowerUpUI = MyPowerUpUI;
+            MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 
-			holeyTransform = GetComponent<Transform>();
+            holeyTransform = GetComponent<Transform>();
 			holeyTransform.Rotation = new vec3(0, 0, 0);
 
 			PS.ConstrainRotationX(this.ID, true);
@@ -233,6 +237,7 @@ namespace TRE
             if (InputSystem.GetKeyTrigger(InputKeys.Backslash))
             {
                 MyPowerManager.SwapPowerUps();
+                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
                 isScaled = false;
             }
 
@@ -244,6 +249,7 @@ namespace TRE
             if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
             {
                 MyPowerManager.DropMain();
+                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
                 isScaled = false;
             }
 
@@ -367,6 +373,11 @@ namespace TRE
 					isGrounded = false;
 				}
 			}
-		}
-	}
+        }
+
+        public void UpdateDisplay()
+        {
+            MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+        }
+    }
 }

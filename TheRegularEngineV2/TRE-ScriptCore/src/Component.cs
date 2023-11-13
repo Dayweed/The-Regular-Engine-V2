@@ -312,7 +312,7 @@ namespace TRE
         }
     }
 
-    public class SpriteRenderer : Entity
+    public class SpriteRenderer : Component
     {
         public SpriteRenderer()
         {
@@ -322,55 +322,55 @@ namespace TRE
         {
             get
             {
-                return SpriteSystem.BindSpriteGetVisible(entity.ID);
+                return SpriteSystem.Engine_GetVisible(entity.ID);
             }
             set
             {
-                SpriteSystem.BindSpriteSetVisible(entity.ID, value);
+                SpriteSystem.Engine_SetVisible(entity.ID, value);
             }
         }
         public int Width
         {
             get
             {
-                return SpriteSystem.BindSpriteGetWidth(entity.ID);
+                return SpriteSystem.Engine_GetWidth(entity.ID);
             }
             set
             {
-                SpriteSystem.BindSpriteSetWidth(entity.ID, value);
+                SpriteSystem.Engine_SetWidth(entity.ID, value);
             }
         }
         public int Height
         {
             get
             {
-                return SpriteSystem.BindSpriteGetHeight(entity.ID);
+                return SpriteSystem.Engine_GetHeight(entity.ID);
             }
             set
             {
-                SpriteSystem.BindSpriteSetHeight(entity.ID, value);
+                SpriteSystem.Engine_SetHeight(entity.ID, value);
             }
         }
         public vec4 Color
         {
             get
             {
-                return SpriteSystem.BindSpriteGetColor(entity.ID);
+                return SpriteSystem.Engine_GetColor(entity.ID);
             }
             set
             {
-                SpriteSystem.BindSpriteSetColor(entity.ID, value);
+                SpriteSystem.Engine_SetColor(entity.ID, value);
             }
         }
         public string Texture
         {
             get
             {
-                return SpriteSystem.BindSpriteGetTexture(entity.ID);
+                return SpriteSystem.Engine_GetTexture(entity.ID);
             }
             set
             {
-                SpriteSystem.BindSpriteSetTexture(entity.ID, value);
+                SpriteSystem.Engine_SetTexture(entity.ID, value);
             }
         }
     }

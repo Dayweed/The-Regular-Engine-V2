@@ -90,6 +90,7 @@ namespace TRE
 
                 //Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
                 playerPowerUpManager.powerUps.Add(this);                            // playerPowerUpManager.powerUps.Add(this.gameObject);
+                playerPowerUpManager.MyPowerUpUI.UpdateUI(playerPowerUpManager.powerUps);
 
                 SetToPlayer();
 

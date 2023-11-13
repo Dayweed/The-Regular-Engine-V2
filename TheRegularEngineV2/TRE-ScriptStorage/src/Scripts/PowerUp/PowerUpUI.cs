@@ -23,20 +23,32 @@ namespace TRE
 
         public void UpdateUI(List<Entity> powerUps)
         {
-            if (powerUps.Count == 0) return;
+            // Just in case the child have not assign yet
+            if (activePowerUp == null)
+                activePowerUp = parenting.GetChildFromName("ActivePowerUp").GetComponent<SpriteRenderer>();
+            if (notactivePowerUp == null)
+                notactivePowerUp = parenting.GetChildFromName("NotActivePowerUp").GetComponent<SpriteRenderer>();
 
-            if (powerUps.Count >= 1)
+            if (powerUps.Count == 0)
             {
-                DisplayUI(powerUps[0], activePowerUp);
+                activePowerUp.isVisible = false;
+                notactivePowerUp.isVisible = false;
+                return;
             }
 
             if (powerUps.Count >= 2)
             {
+                DisplayUI(powerUps[0], activePowerUp);
                 DisplayUI(powerUps[1], notactivePowerUp);
+            }
+            else if (powerUps.Count >= 1)
+            {
+                DisplayUI(powerUps[0], activePowerUp);
+                notactivePowerUp.isVisible = false;
             }
         }
 
-        public void DisplayUI(Entity ent, SpriteRenderer display)
+        private void DisplayUI(Entity ent, SpriteRenderer display)
         {
             if (!ECSManager.IsValidEntity(ent.ID))
             {

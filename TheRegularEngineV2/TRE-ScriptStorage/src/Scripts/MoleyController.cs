@@ -13,6 +13,7 @@ namespace TRE
 
 	public class MoleyController : Entity
 	{
+		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
 		//Check if player is boosted jump
@@ -71,9 +72,12 @@ namespace TRE
 
 		public void Start()
 		{
-			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+			MyPowerUpUI = ECSManager.FindEntityByName("LeftCharacter_HUD").GetComponent<PowerUpUI>();
+            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
+			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 
-			Key = ECSManager.FindEntityByName("Key");
+            Key = ECSManager.FindEntityByName("Key");
 			Debug.Log("Key ID is " + Key.ID);
 
 			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
@@ -239,7 +243,8 @@ namespace TRE
 			if (InputSystem.GetKeyTrigger(InputKeys.Q))
 			{
 				MyPowerManager.SwapPowerUps();
-				isScaled = false;
+                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+                isScaled = false;
 			}
 			#endregion
 
@@ -248,7 +253,8 @@ namespace TRE
 			if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
 			{
 				MyPowerManager.DropMain();
-				isScaled = false;
+                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+                isScaled = false;
 			}
 			#endregion
 
@@ -393,5 +399,10 @@ namespace TRE
 				}
 			}
 		}
+
+		public void UpdateDisplay()
+		{
+			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+        }
 	}
 }

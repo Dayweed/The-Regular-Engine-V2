@@ -130,6 +130,7 @@ namespace TRE
 		{
 			if (!HasComponent<T>())
 			{
+				Debug.Engine_LogError("DO NOT HAVE COMPONENT " + typeof(T).ToString());
 				return null;
 			}
 
@@ -1466,34 +1467,34 @@ namespace TRE
 	public class SpriteSystem
 	{
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void BindSpriteSetVisible(EntityID ID, bool isVisible);
+        public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 		
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool BindSpriteGetVisible(EntityID ID);
+        public extern static bool Engine_GetVisible(EntityID ID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void BindSpriteSetWidth(EntityID ID, int width);
+        public extern static void Engine_SetWidth(EntityID ID, int width);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int BindSpriteGetWidth(EntityID ID);
+        public extern static int Engine_GetWidth(EntityID ID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void BindSpriteSetHeight(EntityID ID, int height);
+        public extern static void Engine_SetHeight(EntityID ID, int height);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int BindSpriteGetHeight(EntityID ID);
+        public extern static int Engine_GetHeight(EntityID ID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void BindSpriteSetColor(EntityID ID, vec4 color);
+        public extern static void Engine_SetColor(EntityID ID, vec4 color);
 		
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static vec4 BindSpriteGetColor(EntityID ID);
+        public extern static vec4 Engine_GetColor(EntityID ID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void BindSpriteSetTexture(EntityID ID, string texture);
+        public extern static void Engine_SetTexture(EntityID ID, string texture);
 		
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static string BindSpriteGetTexture(EntityID ID);
+        public extern static string Engine_GetTexture(EntityID ID);
     }
 
 	public class Game

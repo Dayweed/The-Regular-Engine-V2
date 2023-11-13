@@ -38,6 +38,7 @@ namespace TRE
 		AudioListener,
 		Script,
 		Transform,
+		SpriteRenderer,
 		None
 	};
 	std::unordered_map<std::string, ComponentsID> ComponentsMap
@@ -51,6 +52,7 @@ namespace TRE
 		{"TRE.BoxCollider", ComponentsID::BoxCollider},
 		{"TRE.CapsuleCollider", ComponentsID::CapsuleCollider},
 		{"TRE.AudioListener", ComponentsID::AudioListener},
+		{"TRE.SpriteRenderer", ComponentsID::SpriteRenderer},
 		{"TRE.Script", ComponentsID::Script}
 	};
 
@@ -353,17 +355,21 @@ namespace TRE
 		case ComponentsID::BoxCollider:
 			Temp->AddComponent<BoxCollider>().m_IsDirty = true;
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructBoxCollider(Temp);
-			TRE_INFO("Box Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			TRE_INFO("Box Collider added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::SphereCollider:
 			Temp->AddComponent<SphereCollider>().m_IsDirty = true;
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructSphereCollider(Temp);
-			TRE_INFO("Sphere Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			TRE_INFO("Sphere Collider added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::CapsuleCollider:
 			Temp->AddComponent<CapsuleCollider>().m_IsDirty = true;
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(Temp);
-			TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			TRE_INFO("Capsule Collider added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
+		case ComponentsID::SpriteRenderer:
+			Temp->AddComponent<UIComponent>();
+			TRE_INFO("Sprite Renderer (UI Component) added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
@@ -414,6 +420,10 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructCapsuleCollider(Temp);
 			TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::SpriteRenderer:
+			Temp->RemoveComponent<UIComponent>();
+			TRE_INFO("Sprite Renderer (UI Component) Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -454,6 +464,8 @@ namespace TRE
 			return entity->HasComponent<CapsuleCollider>();
 		case ComponentsID::Audio:
 			return entity->HasComponent<Audio>();
+		case ComponentsID::SpriteRenderer:
+			return entity->HasComponent<UIComponent>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -1778,16 +1790,16 @@ namespace TRE
 
 		// SpriteRenderer
 		{
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetVisible", BindSpriteSetVisible);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetVisible", BindSpriteGetVisible);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetWidth", BindSpriteSetWidth);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetWidth", BindSpriteGetWidth);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetHeight", BindSpriteSetHeight);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetHeight", BindSpriteGetHeight);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetColor", BindSpriteSetColor);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetColor", BindSpriteGetColor);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetTexture", BindSpriteSetTexture);
-			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetTexture", BindSpriteGetTexture);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_SetVisible", BindSpriteSetVisible);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_GetVisible", BindSpriteGetVisible);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_SetWidth", BindSpriteSetWidth);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_GetWidth", BindSpriteGetWidth);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_SetHeight", BindSpriteSetHeight);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_GetHeight", BindSpriteGetHeight);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_SetColor", BindSpriteSetColor);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_GetColor", BindSpriteGetColor);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_SetTexture", BindSpriteSetTexture);
+			mono_add_internal_call("TRE.SpriteSystem::Engine_GetTexture", BindSpriteGetTexture);
 		}
 
 		// Game
