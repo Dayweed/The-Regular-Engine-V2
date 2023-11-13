@@ -29,6 +29,11 @@ struct Color
 	glm::vec4 m_Value;
 };
 
+struct Color3
+{
+	glm::vec3 m_Value;
+};
+
 //--------------------------------------------------------------------------------------------
 // User settings
 //--------------------------------------------------------------------------------------------
@@ -157,6 +162,7 @@ namespace property
             , glm::vec3
             , glm::vec4
             , Color
+            , Color3
             , resource_ref
             , resource_list
             , audio_file_dropdown

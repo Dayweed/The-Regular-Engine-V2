@@ -73,19 +73,45 @@ namespace TRE
 
 property_begin(TRE::DirectionalLight)
 {
-	property_var_fnbegin("Directional Light Color", Color)
-	{
-		if(isRead)
-			InOut.m_Value = Self.DirectionalColor;
-		else
-			Self.DirectionalColor = InOut.m_Value;
-	}property_var_fnend()
-	, property_var_fnbegin("Ambient Light Color", Color)
+	property_var_fnbegin("Directional Light Color", Color3)
 	{
 		if (isRead)
-			InOut.m_Value = Self.AmbientColor;
+		{
+			glm::vec3 color = glm::vec3(Self.DirectionalColor.x, Self.DirectionalColor.y, Self.DirectionalColor.z);
+			InOut.m_Value = color;
+		}
 		else
-			Self.AmbientColor = InOut.m_Value;
+		{
+			glm::vec3 color = InOut.m_Value;
+			Self.DirectionalColor = glm::vec4(color.x, color.y, color.z, Self.DirectionalColor.w);
+		}
+	}property_var_fnend()
+	, property_var_fnbegin("Directional Light Intensity", float)
+	{
+		if (isRead)
+			InOut = Self.DirectionalColor.w;
+		else
+			Self.DirectionalColor.w = InOut;
+	}property_var_fnend()
+	, property_var_fnbegin("Ambient Light Color", Color3)
+	{
+		if (isRead)
+		{
+			glm::vec3 color = glm::vec3(Self.AmbientColor.x, Self.AmbientColor.y, Self.AmbientColor.z);
+			InOut.m_Value = Self.AmbientColor;
+		}
+		else
+		{
+			glm::vec3 color = InOut.m_Value;
+			Self.AmbientColor = glm::vec4(color.x, color.y, color.z, Self.AmbientColor.w);
+		}
+	}property_var_fnend()
+	, property_var_fnbegin("Ambient Light Intensity", float)
+	{
+		if (isRead)
+			InOut = Self.AmbientColor.w;
+		else
+			Self.AmbientColor.w = InOut;
 	}property_var_fnend()
 
 } property_vend_h(TRE::DirectionalLight)
