@@ -11,7 +11,7 @@ project "CompilerLib"
 	includedirs
     {
         "include",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
     }
 
 	files

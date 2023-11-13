@@ -58,6 +58,10 @@ namespace TRE
 
 		std::unique_ptr<VertexBuffer> m_BoneVertexBuffer;
 
+		//AnimationPlayer m_AnimationPlayer;
+		std::vector<Animation> m_Animations;
+		Skeleton m_Skeleton;
+
 		bool m_HasIndexBuffer{ false };
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 

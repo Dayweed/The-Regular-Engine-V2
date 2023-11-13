@@ -23,7 +23,10 @@ int main(int argc, char** argv)
 	}
 	descriptorFile.ReadDescriptorFile(argv[1]);
 	TRE::GeomCompiler::Instance().Compile(descriptorFile);
-	TRE::Geom::Serialize(descriptorFile.GetResourcePath(), TRE::GeomCompiler::Instance().GetGeom());
+	TRE::Geom::Serialize(descriptorFile.GetResourcePath(), 
+	TRE::GeomCompiler::Instance().GetGeom(), 
+	TRE::GeomCompiler::Instance().GetSkeleton(), 
+	TRE::GeomCompiler::Instance().GetAnimation().m_Animations);
 	std::cout << "===Geom Compiler: Success===" << std::endl;
 
 	return 0;

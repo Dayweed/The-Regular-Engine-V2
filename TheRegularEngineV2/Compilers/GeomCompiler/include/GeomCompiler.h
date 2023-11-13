@@ -14,6 +14,11 @@ namespace TRE
 	class GeomCompiler
 	{
 		public:
+			struct anim_package
+			{
+				std::vector<Animation>          m_Animations;
+			};
+
 			static GeomCompiler& Instance()
 			{
 				static GeomCompiler instance;
@@ -23,6 +28,9 @@ namespace TRE
 			void Compile(const GeomDescriptorFile& geomDesc);
 
 			std::unique_ptr<Geom> GetGeom() { return std::move(m_Geom); }
+			const Skeleton& GetSkeleton() { return m_Skeleton; }
+			const anim_package& GetAnimation() { return m_AnimPackage; }
+
 		private:
 			struct Refs
 			{
@@ -69,50 +77,6 @@ namespace TRE
 
 				glm::vec3 PosCompressionOffset;
 				glm::vec2 UVCompressionOffset;
-			};
-
-			struct Skeleton
-			{
-				struct bone
-				{
-					std::string		m_Name;               // Bone name used for debugging
-					glm::mat4		m_InvBind;            // Skin/Bind Pose to Local Space of the bone
-					glm::mat4		m_NeutalPose;         // The neutral pose given by the Nodes
-					int				m_iParent;            // Parent used to to concadenate the matrices
-				};
-
-				int findBone(std::string BoneName) const
-				{
-					int i = 0;
-					for (auto& B : m_Bones)
-						if (BoneName == B.m_Name)
-							return i;
-						else ++i;
-
-					return -1;
-				}
-
-				std::vector<bone>   m_Bones;              // Bones are shorted (Parents go first)
-			};
-
-			struct bone_keyframes
-			{
-				std::vector<glm::vec3> m_Scale;
-				std::vector<glm::quat> m_Rotate;
-				std::vector<glm::vec3> m_Translate;
-			};
-
-			struct animation
-			{
-				std::string                     m_Name;             // Name for the animation (for debug)
-				int                             m_FPS;              // What is the frame per second (ideally we should have 60fps or grader)
-				float                           m_TimeLength;       // How long in seconds is this animation
-				std::vector<bone_keyframes>     m_BoneKeyFrames;    // Keyframe used for the animation, note that the order of the keyframes in the vector should match the skeleton order
-			};
-
-			struct anim_package
-			{
-				std::vector<animation>          m_Animations;
 			};
 
 		private:

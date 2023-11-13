@@ -46,17 +46,13 @@ namespace TRE
 		}
 	}
 
-	void Geom::Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom)
+	void Geom::Serialize(const std::string& filePath, const std::unique_ptr<Geom> geom, const Skeleton& Skel, const std::vector<Animation>& Animations)
 	{
 		std::string_view name = filePath;
 		name.remove_prefix(name.find_last_of('/') + 1);
 		name.remove_suffix(name.size() - name.find_last_of('.'));
 
 		std::ofstream file(filePath, std::ios::binary);
-
-
-		std::cout << "Number of indices to serialize: " << geom->nIndices << std::endl;
-		std::cout << "Number of bones to serialize: " << geom->nBones << std::endl;
 
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pSubMesh), sizeof(Geom::SubMesh) * m_Geom->nSubMeshes);
@@ -71,9 +67,22 @@ namespace TRE
 		file.write(reinterpret_cast<const char*>(&Animated), sizeof(int));
 		if (geom->m_IsAnimated)
 		{
+			std::cout << "Is Animated" << std::endl;
 			std::cout << "Serialize bones" << std::endl;
 			file.write(reinterpret_cast<const char*>(&geom->nBones), sizeof(std::uint32_t));
 			file.write(reinterpret_cast<const char*>(geom->pBone), sizeof(BoneInfluence) * geom->nBones);
+
+			std::cout << "Serialize Skeleton" << std::endl;
+			uint32_t NumberOfBones = Skel.m_Bones.size();
+			std::cout << "Skeleton bone size: " << NumberOfBones << std::endl;
+			file.write(reinterpret_cast<const char*>(&NumberOfBones), sizeof(std::uint32_t));
+			file.write(reinterpret_cast<const char*>(Skel.m_Bones.data()), sizeof(bone) * Skel.m_Bones.size());
+
+			std::cout << "Serialize Animation" << std::endl;
+			uint32_t NumberOfAnimations = Animations.size();
+			std::cout << "Number of animations size: " << NumberOfAnimations<< std::endl;
+			file.write(reinterpret_cast<const char*>(&NumberOfAnimations), sizeof(std::uint32_t));
+			file.write(reinterpret_cast<const char*>(Animations.data()), sizeof(Animation) * NumberOfAnimations);
 		}
 
 		file.close();
@@ -129,11 +138,28 @@ namespace TRE
 
 				if (geom->m_IsAnimated)
 				{
+					std::cout << "Deserialize Bones" << std::endl;
 					geom->nBones = *reinterpret_cast<std::uint32_t*>(buffer + offset);
 					geom->pBone = new BoneInfluence[geom->nBones];
 					offset += sizeof(std::uint32_t);
 					memcpy(geom->pBone, buffer + offset, sizeof(std::uint32_t) * geom->nBones);
 					offset += sizeof(std::uint32_t) * geom->nBones;
+
+					std::cout << "Deserialize Skeleton" << std::endl;
+					uint32_t SkelBone = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+					offset += sizeof(std::uint32_t);
+					geom->m_Skeleton.m_Bones.resize(SkelBone);
+
+					memcpy(geom->m_Skeleton.m_Bones.data(), buffer + offset, sizeof(bone) * SkelBone);
+					offset += sizeof(bone) * SkelBone;
+
+					std::cout << "Deserialize Animations" << std::endl;
+					uint32_t AnimationsNumber = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+					offset += sizeof(std::uint32_t);
+					geom->m_Animation.resize(AnimationsNumber);
+
+					memcpy(geom->m_Animation.data(), buffer + offset, sizeof(Animation) * AnimationsNumber);
+					//offset += sizeof(Animation) * AnimationsNumber;
 				}
 
 				delete[] buffer;
