@@ -306,13 +306,12 @@ namespace TRE
 			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.DirectionalColor;
 			ubo.m_LightAmbientColor = light.AmbientColor;
-			depthViewMatrix = /*glm::translate(glm::mat4(1.f), cameraTransform.m_Position) **/ glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			depthViewMatrix = glm::translate(glm::mat4(1.f), glm::vec3(cameraTransform.m_Position.x, cameraTransform.m_Position.y + 10.f, cameraTransform.m_Position.z)) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 		}
 
-		const auto& sc = Engine::GetInstance().GetWindow()->GetSwapChain();
 		ShadowUBO UBO_Shadow;
-		float orthoLength = 100.f;//sc->GetWidth() / 2.f; // Adjust this to suit your scene's dimensions
-		float orthoHeight = 100.f;//sc->GetHeight() / 2.f; // Adjust this to suit your scene's dimensions
+		float orthoLength = 100.f; // Adjust this to suit your scene's dimensions
+		float orthoHeight = 100.f; // Adjust this to suit your scene's dimensions
 		float orthoNear = 0.1f;
 		float orthoFar = 100.0f;
 

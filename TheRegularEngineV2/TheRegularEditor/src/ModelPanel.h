@@ -14,6 +14,8 @@ namespace TRE
 
 		void OnAssetSelectEvent(const AssetSelectorEvent& event);
 	private:
+		void UpdateModelPanel();
+	private:
 		std::shared_ptr<AssetSelector> m_AssetSelector;
 		glm::vec3 m_Scale;
 		glm::vec3 m_Rotation;

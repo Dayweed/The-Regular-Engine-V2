@@ -69,12 +69,13 @@ namespace TRE
 			}
 			else
 			{
-				toPrint = "Texture " + assetName + " not compiled yet";
+				toPrint = "Model " + assetName + " not compiled yet";
 				ImGui::Text(toPrint.c_str());
-				if (ImGui::Button("Compile Texture"))
+				if (ImGui::Button("Compile Model"))
 				{
-					auto texture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
-					m_AssetSelector->UpdateSelectedAssetHandle(texture->GetHandle());
+					auto model = AssetManager::Instance().CompileAndLoad<RenderObject>(assetName);
+					m_AssetSelector->UpdateSelectedAssetHandle(model->GetHandle());
+					UpdateModelPanel();
 				}
 			}
 			ImGui::End();
@@ -95,34 +96,38 @@ namespace TRE
 		{
 			m_MeshSelected = true;
 
-			//Open descriptor file if compiled before
-			if (const auto resourceHandle = m_AssetSelector->GetSelectedAsset();
-				resourceHandle && AssetManager::Instance().Compiled(resourceHandle))
-			{
-				m_ResourceHandle = resourceHandle;
-
-				//Open descriptor file
-				m_DescriptorFilePath = "../Assets/" + Resource::GetGUIDHex(resourceHandle) + ".geom.desc";
-				std::ifstream file(m_DescriptorFilePath);
-				if (file.is_open())
-				{
-					GeomDescriptorFile descriptor;
-					descriptor.ReadDescriptorFile(m_DescriptorFilePath);
-
-					m_Scale = descriptor.GetScale();
-					m_Rotation = descriptor.GetRotation();
-					m_Translation = descriptor.GetPosition();
-					m_Optimize = descriptor.GetOptimize();
-				}
-				else
-				{
-					std::cout << "Could not open descriptor file " << m_DescriptorFilePath << std::endl;
-				}
-
-				file.close();
-			}
+			UpdateModelPanel();
 		}
+	}
 
+	void ModelPanel::UpdateModelPanel()
+	{
+		//Open descriptor file if compiled before
+		if (const auto resourceHandle = m_AssetSelector->GetSelectedAsset();
+			resourceHandle && AssetManager::Instance().Compiled(resourceHandle))
+		{
+			m_ResourceHandle = resourceHandle;
+
+			//Open descriptor file
+			m_DescriptorFilePath = "../Assets/" + Resource::GetGUIDHex(resourceHandle) + ".geom.desc";
+			std::ifstream file(m_DescriptorFilePath);
+			if (file.is_open())
+			{
+				GeomDescriptorFile descriptor;
+				descriptor.ReadDescriptorFile(m_DescriptorFilePath);
+
+				m_Scale = descriptor.GetScale();
+				m_Rotation = descriptor.GetRotation();
+				m_Translation = descriptor.GetPosition();
+				m_Optimize = descriptor.GetOptimize();
+			}
+			else
+			{
+				std::cout << "Could not open descriptor file " << m_DescriptorFilePath << std::endl;
+			}
+
+			file.close();
+		}
 	}
 
 }
