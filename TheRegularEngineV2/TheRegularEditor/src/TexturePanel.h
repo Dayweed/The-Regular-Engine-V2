@@ -15,6 +15,8 @@ namespace TRE
 		void OnAssetSelectEvent(const AssetSelectorEvent& event);
 
 	private:
+		void UpdateTexturePanel();
+	private:
 		std::shared_ptr<AssetSelector> m_AssetSelector;
 		bool m_Compress;
 		bool m_Linear;

@@ -123,6 +123,7 @@ namespace TRE
 				{
 					auto texture = AssetManager::Instance().CompileAndLoad<VulkanTexture>(assetName);
 					m_AssetSelector->UpdateSelectedAssetHandle(texture->GetHandle());
+					UpdateTexturePanel();
 				}
 			}
 			ImGui::End();
@@ -143,33 +144,38 @@ namespace TRE
 		{
 			m_TextureSelected = true;
 
-			//Open descriptor file if compiled before
-			if (const auto resourceHandle = m_AssetSelector->GetSelectedAsset(); 
-				resourceHandle && AssetManager::Instance().Compiled(resourceHandle))
+			UpdateTexturePanel();
+		}
+	}
+
+	void TexturePanel::UpdateTexturePanel()
+	{
+		//Open descriptor file if compiled before
+		if (const auto resourceHandle = m_AssetSelector->GetSelectedAsset();
+			resourceHandle && AssetManager::Instance().Compiled(resourceHandle))
+		{
+			m_ResourceHandle = resourceHandle;
+
+			//Open descriptor file
+			m_DescriptorFilePath = "../Assets/" + Resource::GetGUIDHex(resourceHandle) + ".texture.desc";
+			std::ifstream file(m_DescriptorFilePath);
+			if (file.is_open())
 			{
-				m_ResourceHandle = resourceHandle;
+				TextureDescriptorFile descriptor;
+				descriptor.ReadDescriptorFile(m_DescriptorFilePath);
 
-				//Open descriptor file
-				m_DescriptorFilePath = "../Assets/" + Resource::GetGUIDHex(resourceHandle) + ".texture.desc";
-				std::ifstream file(m_DescriptorFilePath);
-				if (file.is_open())
-				{
-					TextureDescriptorFile descriptor;
-					descriptor.ReadDescriptorFile(m_DescriptorFilePath);
-
-					m_Compress = descriptor.GetCompress();
-					m_Linear = descriptor.GetLinear();
-					m_BCn = descriptor.GetBCn();
-					m_sRGB = descriptor.GetsRGB();
-					m_Transparent = descriptor.GetTransparent();
-				}
-				else
-				{
-					std::cout << "Could not open descriptor file " << m_DescriptorFilePath << std::endl;
-				}
-
-				file.close();
+				m_Compress = descriptor.GetCompress();
+				m_Linear = descriptor.GetLinear();
+				m_BCn = descriptor.GetBCn();
+				m_sRGB = descriptor.GetsRGB();
+				m_Transparent = descriptor.GetTransparent();
 			}
+			else
+			{
+				std::cout << "Could not open descriptor file " << m_DescriptorFilePath << std::endl;
+			}
+
+			file.close();
 		}
 	}
 }

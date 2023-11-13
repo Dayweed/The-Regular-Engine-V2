@@ -130,6 +130,7 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
+			std::pair<glm::vec3, glm::vec3> m_ShadowFrustum;
 
 			//AnimationPass
 			std::shared_ptr<Pipeline> m_AnimationPipeline;
