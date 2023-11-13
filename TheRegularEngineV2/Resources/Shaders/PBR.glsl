@@ -188,7 +188,7 @@ void main()
 	//outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a + diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
 	outColor.rgb = diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a + In.AmbientColor.rgb * In.AmbientColor.a;
 
-	vec3 lightModel = In.DirectionalLightColor.rgb * (diffuseIntensity.rrr * diffuseColor.rgb) * 10.0 * (1.0 - shadow);
+	vec3 lightModel = In.DirectionalLightColor.rgb * (diffuseIntensity.rrr * diffuseColor.rgb) * In.DirectionalLightColor.a * (1.0 - shadow);
 
 	outColor.rgb += lightModel;
 

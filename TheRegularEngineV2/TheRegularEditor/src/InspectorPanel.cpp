@@ -239,6 +239,12 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4(NameField.c_str(), color);
 								Value.m_Value = { color[0], color[1], color[2], color[3] };
 							}
+							else if constexpr (std::is_same_v <T, Color3>)
+							{
+								float color[3]{ Value.m_Value.r, Value.m_Value.g, Value.m_Value.b };
+								UpdatedData = UpdatedData ? true : ImGui::ColorEdit3(NameField.c_str(), color);
+								Value.m_Value = { color[0], color[1], color[2] };
+							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
 								static char resourceName[200];
