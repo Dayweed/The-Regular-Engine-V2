@@ -95,7 +95,7 @@ namespace TRE
 
                 collected = true;
 
-                if(collected)
+                if(collected && ECSManager.IsValidEntity(5477680860725561631))
                 {
                     AudioSystem.PlayOnce(5477680860725561631);
                 }

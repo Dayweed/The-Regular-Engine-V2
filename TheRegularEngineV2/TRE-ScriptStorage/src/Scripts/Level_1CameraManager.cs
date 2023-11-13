@@ -70,7 +70,7 @@ namespace TRE
 
 		private bool IsInsideTrigger(Entity entity)
 		{
-			return PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID);
+			return ECSManager.IsValidEntity(entity.ID) && (PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID));
 		}
 	}
 }

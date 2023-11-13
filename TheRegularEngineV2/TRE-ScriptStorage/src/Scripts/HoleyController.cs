@@ -166,7 +166,10 @@ namespace TRE
 
                 if (InputSystem.GetKeyTrigger(InputKeys.Enter))
                 {
-                    AudioSystem.PlayOnce(6503599471310675157);
+                    if (ECSManager.IsValidEntity(6503599471310675157))
+                    {
+                        AudioSystem.PlayOnce(6503599471310675157);
+                    }
                     isWalking = false;
 
                     if (isGrounded)
@@ -202,16 +205,19 @@ namespace TRE
                 isWalking = false;
             }
 
-            if (isWalking && walkingSFXPlayed == false)
+            if (ECSManager.IsValidEntity(15348080909718226430))
             {
-                AudioSystem.Play(15348080909718226430);
-                walkingSFXPlayed = true;
-            }
+                if (isWalking && walkingSFXPlayed == false)
+                {
+                    AudioSystem.Play(15348080909718226430);
+                    walkingSFXPlayed = true;
+                }
 
-            if (!isWalking || !isGrounded)
-            {
-                AudioSystem.Stop(15348080909718226430);
-                walkingSFXPlayed = false;
+                if (!isWalking || !isGrounded)
+                {
+                    AudioSystem.Stop(15348080909718226430);
+                    walkingSFXPlayed = false;
+                }
             }
 
 

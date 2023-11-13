@@ -44,7 +44,7 @@ namespace TRE
 
         public void Update()
         {
-            if (IsInsideTrigger(RespawnPoint1))
+            if (ECSManager.IsValidEntity(RespawnPoint1.ID) && IsInsideTrigger(RespawnPoint1))
             {
                 TransformSystem.GetPosition(RespawnPoint1.ID, out vec3 RespawnPositionBlue);
             }
@@ -52,7 +52,7 @@ namespace TRE
 
         private bool IsInsideTrigger(Entity entity)
         {
-            return PS.IsTriggerEnter(Player1.ID, entity.ID) || PS.IsTriggerStay(Player1.ID, entity.ID);
+            return ECSManager.IsValidEntity(entity.ID) && (PS.IsTriggerEnter(Player1.ID, entity.ID) || PS.IsTriggerStay(Player1.ID, entity.ID));
         }
     }
 }
