@@ -276,8 +276,8 @@ namespace TRE
 			if (!AnimComp.m_IsAnimating || !AnimComp.m_IsVisible)
 				continue;
 
-			AnimComp.m_AnimationSource->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
-			AnimComp.m_AnimationSource->m_AnimPlayer.ComputeMatrices(AnimComp.m_BufferData.L2W, m_L2W);
+			//AnimComp.m_AnimationSource->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+			//AnimComp.m_AnimationSource->m_AnimPlayer.ComputeMatrices(AnimComp.m_BufferData.L2W, m_L2W);
 			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}

@@ -17,6 +17,7 @@ project "GeomCompiler"
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.MeshOptimizer}",
 		"%{IncludeDir.Compiler}",
+		"%{IncludeDir.glm}",
     }
 
 	files

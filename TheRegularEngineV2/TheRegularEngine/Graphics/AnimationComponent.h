@@ -54,7 +54,7 @@ namespace TRE
 #endif
 			}
 
-			std::shared_ptr<AnimationGeom> m_AnimationSource;
+			//std::shared_ptr<AnimationGeom> m_AnimationSource;
 			std::shared_ptr<VertexBuffer> m_VertexBuffer;
 			std::shared_ptr<VertexBuffer> m_BoneVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_IndexBuffer;

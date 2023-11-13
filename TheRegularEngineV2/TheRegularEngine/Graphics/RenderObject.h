@@ -28,6 +28,12 @@ namespace TRE
 			}
 		};
 
+		//struct BoneInfluence
+		//{
+		//	glm::vec4         m_BoneWeights{};
+		//	glm::uvec4        m_BoneIndex{};
+		//};
+
 		RenderObject(const std::string& geomAsset);
 		~RenderObject();
 
@@ -49,6 +55,8 @@ namespace TRE
 	private:
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::uint32_t m_VertexCount;
+
+		std::unique_ptr<VertexBuffer> m_BoneVertexBuffer;
 
 		bool m_HasIndexBuffer{ false };
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;

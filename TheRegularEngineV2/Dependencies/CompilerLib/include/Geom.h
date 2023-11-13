@@ -8,6 +8,12 @@
 
 namespace TRE
 {
+	struct BoneInfluence
+	{
+		glm::vec4         m_BoneWeights;
+		glm::uvec4        m_BoneIndex;
+	};
+
 	struct IColor
 	{
 		std::uint8_t R;
@@ -56,6 +62,8 @@ namespace TRE
 			std::uint32_t			m_iVertices;		//Index of vertices in submesh
 			std::uint32_t			m_nVertices;		//Total number of vertices for this submesh
 			std::uint16_t			m_iMaterial;		//Index of material in submesh
+			std::uint32_t			m_iBones;			//Total number of bones for this submesh
+			std::uint32_t			m_nBones;			//Index of bone in submesh
 			glm::vec3				m_PosCompressionOffset;
 			glm::vec2				m_UVCompressionOffset;
 		};
@@ -64,6 +72,7 @@ namespace TRE
 		SubMesh*					pSubMesh;
 		Position*					pPosition;
 		Extra*						pExtra;
+		BoneInfluence*				pBone;
 		std::uint32_t*				pIndices;
 
 		std::uint32_t				nMeshes;
@@ -71,6 +80,7 @@ namespace TRE
 		std::uint32_t				nPosition;
 		std::uint32_t				nExtras;
 		std::uint32_t				nIndices;
+		std::uint32_t				nBones;
 		glm::vec3					PosCompressionScale;
 		glm::vec2					UVCompressionScale;
 
@@ -96,6 +106,8 @@ namespace TRE
 			std::vector<Geom::Extra> Extra;
 			std::vector<std::uint32_t> Indices;
 			std::uint32_t MaterialIndex;
+
+			std::vector<BoneInfluence> Bone;
 
 			//Next time then compress
 			glm::vec3 PosCompressionOffset;

@@ -16,7 +16,7 @@ namespace TRE
 
     struct AnimationGeom
     {
-        geom            m_SkinGeom;
+        //geom            m_SkinGeom;
         Skeleton        m_Skeleton;
         anim_package    m_AnimPackage;
         AnimationPlayer m_AnimPlayer{ m_Skeleton, m_AnimPackage };
