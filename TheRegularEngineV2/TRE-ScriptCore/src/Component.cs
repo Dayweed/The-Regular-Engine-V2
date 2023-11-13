@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Instrumentation;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -308,6 +309,69 @@ namespace TRE
         public void Stop()
         {
             AudioSystem.Stop(entity.ID);
+        }
+    }
+
+    public class SpriteRenderer : Entity
+    {
+        public SpriteRenderer()
+        {
+            // LEAVE AS BLANK!
+        }
+        public bool isVisible
+        {
+            get
+            {
+                return SpriteSystem.BindSpriteGetVisible(entity.ID);
+            }
+            set
+            {
+                SpriteSystem.BindSpriteSetVisible(entity.ID, value);
+            }
+        }
+        public int Width
+        {
+            get
+            {
+                return SpriteSystem.BindSpriteGetWidth(entity.ID);
+            }
+            set
+            {
+                SpriteSystem.BindSpriteSetWidth(entity.ID, value);
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                return SpriteSystem.BindSpriteGetHeight(entity.ID);
+            }
+            set
+            {
+                SpriteSystem.BindSpriteSetHeight(entity.ID, value);
+            }
+        }
+        public vec4 Color
+        {
+            get
+            {
+                return SpriteSystem.BindSpriteGetColor(entity.ID);
+            }
+            set
+            {
+                SpriteSystem.BindSpriteSetColor(entity.ID, value);
+            }
+        }
+        public string Texture
+        {
+            get
+            {
+                return SpriteSystem.BindSpriteGetTexture(entity.ID);
+            }
+            set
+            {
+                SpriteSystem.BindSpriteSetTexture(entity.ID, value);
+            }
         }
     }
 }

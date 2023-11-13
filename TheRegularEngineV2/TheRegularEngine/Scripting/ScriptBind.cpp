@@ -1476,6 +1476,108 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region SpriteBindings
+	static void BindSpriteSetVisible(CSEntityID ID, bool isVisible)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return;
+		if (!Temp->HasComponent<UIComponent>()) return;
+		Temp->GetComponent<UIComponent>().m_IsVisible = isVisible;
+	}
+
+	static bool BindSpriteGetVisible(CSEntityID ID)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return false;
+		if (!Temp->HasComponent<UIComponent>()) return false;
+		return Temp->GetComponent<UIComponent>().m_IsVisible;
+	}
+
+	static void BindSpriteSetWidth(CSEntityID ID, int width)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return;
+		if (!Temp->HasComponent<UIComponent>()) return;
+		Temp->GetComponent<UIComponent>().m_Width = width;
+	}
+
+	static int BindSpriteGetWidth(CSEntityID ID)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return 0;
+		if (!Temp->HasComponent<UIComponent>()) return 0;
+		return Temp->GetComponent<UIComponent>().m_Width;
+	}
+
+	static void BindSpriteSetHeight(CSEntityID ID, int height)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return;
+		if (!Temp->HasComponent<UIComponent>()) return;
+		Temp->GetComponent<UIComponent>().m_Height = height;
+	}
+
+	static int BindSpriteGetHeight(CSEntityID ID)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return 0;
+		if (!Temp->HasComponent<UIComponent>()) return 0;
+		return Temp->GetComponent<UIComponent>().m_Height;
+	}
+
+	static void BindSpriteSetColor(CSEntityID ID, glm::vec4 color)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return;
+		if (!Temp->HasComponent<UIComponent>()) return;
+		Temp->GetComponent<UIComponent>().m_Color = color;
+	}
+
+	static glm::vec4 BindSpriteGetColor(CSEntityID ID)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return {};
+		if (!Temp->HasComponent<UIComponent>()) return {};
+		return Temp->GetComponent<UIComponent>().m_Color;
+	}
+
+	static void BindSpriteSetTexture(CSEntityID ID, MonoString* texture)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return;
+		if (!Temp->HasComponent<UIComponent>()) return;
+		UIComponent& uiComp = Temp->GetComponent<UIComponent>();
+		std::string texturestr = MonoStringToString(texture);
+		ResourceHandle textureHdl = Resource::GetGUIDFromHex(texturestr);
+		if (textureHdl != 0)
+		{
+			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHdl); Texture)
+			{
+				uiComp.m_Texture = Texture;
+			}
+			else
+			{
+				uiComp.m_Texture = VulkanTexture::Deserialize(texturestr);
+
+				if (uiComp.m_Texture == nullptr)
+					PUBLISHERROR("Texture (" + texturestr + ") failed to load in UI Component");
+			}
+		}
+		else
+		{
+			uiComp.m_Texture = nullptr;
+		}
+	}
+
+	static MonoString* BindSpriteGetTexture(CSEntityID ID)
+	{
+		Entity Temp{ VALIDATEENTITY(ID) };
+		if (!Temp) return mono_string_new(mono_domain_get(), "");
+		if (!Temp->HasComponent<UIComponent>()) return mono_string_new(mono_domain_get(), "");
+		return mono_string_new(mono_domain_get(), Temp->GetComponent<UIComponent>().m_Texture->GetHandleHex().c_str());
+	}
+#pragma endregion
+
 #pragma region GameBindings
 	static void BindCloseGame()
 	{
@@ -1672,6 +1774,20 @@ namespace TRE
 			mono_add_internal_call("TRE.Script::Engine_IsScript", BindIsScript);
 			mono_add_internal_call("TRE.Script::Engine_HaveScript", BindHaveScript);
 			mono_add_internal_call("TRE.Script::Engine_GetScript", BindGetScript);
+		}
+
+		// SpriteRenderer
+		{
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetVisible", BindSpriteSetVisible);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetVisible", BindSpriteGetVisible);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetWidth", BindSpriteSetWidth);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetWidth", BindSpriteGetWidth);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetHeight", BindSpriteSetHeight);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetHeight", BindSpriteGetHeight);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetColor", BindSpriteSetColor);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetColor", BindSpriteGetColor);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_SetTexture", BindSpriteSetTexture);
+			mono_add_internal_call("TRE.SpriteRenderer::Engine_GetTexture", BindSpriteGetTexture);
 		}
 
 		// Game

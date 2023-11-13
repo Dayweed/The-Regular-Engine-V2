@@ -15,6 +15,7 @@ namespace TRE
 	{
 		public PowerUpManager MyPowerManager;
 
+
 		//Check if player is boosted jump
 		private bool isBoostedJump = false;
 		//Check if player is on the ground

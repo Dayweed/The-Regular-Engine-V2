@@ -62,59 +62,5 @@ namespace TRE
             mainPowerUp.TurnOnVisuals();
             */
         }
-
-        public void ToggleMainPowerUp() //turn on or off the main powerup
-        {
-            if (powerUps.Count == 0) return;
-
-            //GetPowerUp mainPowerUp = powerUps[0].GetComponent<GetPowerUp>();    // THIS CANT BE DONE YET
-
-            //if power up is currently in use
-            if (usePower)
-            {
-                DeactivatePowerUps();
-            }
-            //if power up isn't being used
-            else
-            {
-                //ActivatePowerUp(mainPowerUp);     // THIS CANT BE DONE YET
-            }
-        }
-
-        private void ActivatePowerUp(GetPowerUp thisPower) //change to the model that represents the powerup
-        {
-            //baseForm.SetActive(false);
-
-            switch (thisPower.powerUpType)
-            {
-                case PowerUpsType.Blueberry:
-                    //blueberryForm.SetActive(true);
-                    //strawberryForm.SetActive(false);
-                    break;
-                case PowerUpsType.Strawberry:
-                    //blueberryForm.SetActive(false);
-                    //strawberryForm.SetActive(true);
-                    break;
-                default:
-                    break;
-            }
-
-            usePower = true;
-        }
-
-        private void DeactivatePowerUps() //turn back to base model
-        {
-            //baseForm.SetActive(true);
-            //blueberryForm.SetActive(false);
-            //strawberryForm.SetActive(false);
-
-            usePower = false;
-        }
-
-        public void RemoveMain() //remove the first powerup
-        {
-            DeactivatePowerUps();
-            powerUps.RemoveAt(0);
-        }
     }
 }
