@@ -30,6 +30,8 @@ namespace TRE
 		float m_MaxDistance{ 300.f };
 
 		bool m_HasCompiled{ false };
+		bool m_Played{ false };
+
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
 		property_vtable()
 			//std::map<int, std::string> channelIndex{};
@@ -201,6 +203,8 @@ namespace TRE
 		;
 		std::unordered_set<Entity> audioMap;
 		std::unordered_map<Entity, FMOD::Sound*> soundToRemove;
+
+		
 
 	};
 
