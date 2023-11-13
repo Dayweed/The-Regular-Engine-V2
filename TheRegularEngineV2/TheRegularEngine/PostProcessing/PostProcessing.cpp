@@ -82,7 +82,7 @@ namespace TRE
 
 	void PostProcessingManager::Init()
 	{
-		m_PostEffects["Vignette"] = std::move(std::pair(1, std::make_shared<Vignette>()));
+		m_PostEffects[1] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
 	}
 
 	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
@@ -101,14 +101,18 @@ namespace TRE
 
 	void PostProcessingManager::AddPostEffect(std::shared_ptr<PostProcessEffect> effect, const int index, const std::string name)
 	{
-		m_PostEffects[name] = std::pair(index, effect);
+		m_PostEffects[index] = std::pair(name, effect);
 	}
 
 	void PostProcessingManager::RemovePostEffect(const std::string& name)
 	{
-		if (m_PostEffects.find(name) != m_PostEffects.end())
+		for (auto& effect : m_PostEffects)
 		{
-			m_PostEffects.erase(name);
+			if (effect.second.first == name)
+			{
+				m_PostEffects.erase(effect.first);
+				return;
+			}
 		}
 	}
 }
