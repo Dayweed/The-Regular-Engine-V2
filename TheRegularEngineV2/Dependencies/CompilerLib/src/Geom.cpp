@@ -54,6 +54,10 @@ namespace TRE
 
 		std::ofstream file(filePath, std::ios::binary);
 
+
+		std::cout << "Number of indices to serialize: " << geom->nIndices << std::endl;
+		std::cout << "Number of bones to serialize: " << geom->nBones << std::endl;
+
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pMesh->Name), sizeof(Geom::Mesh) * m_Geom->nMeshes);
 		//file.write(reinterpret_cast<const char*>(&m_Geom->pSubMesh), sizeof(Geom::SubMesh) * m_Geom->nSubMeshes);
 		file.write(reinterpret_cast<const char*>(&geom->nPosition), sizeof(std::uint32_t));
@@ -62,6 +66,15 @@ namespace TRE
 		file.write(reinterpret_cast<const char*>(geom->pExtra), sizeof(Geom::Extra) * geom->nExtras);
 		file.write(reinterpret_cast<const char*>(&geom->nIndices), sizeof(std::uint32_t));
 		file.write(reinterpret_cast<const char*>(geom->pIndices), sizeof(std::uint32_t) * geom->nIndices);
+
+		int Animated = geom->m_IsAnimated ? 1 : 0;
+		file.write(reinterpret_cast<const char*>(&Animated), sizeof(int));
+		if (geom->m_IsAnimated)
+		{
+			std::cout << "Serialize bones" << std::endl;
+			file.write(reinterpret_cast<const char*>(&geom->nBones), sizeof(std::uint32_t));
+			file.write(reinterpret_cast<const char*>(geom->pBone), sizeof(BoneInfluence) * geom->nBones);
+		}
 
 		file.close();
 	}
@@ -89,19 +102,39 @@ namespace TRE
 				//geom->pSubMesh = reinterpret_cast<Geom::SubMesh*>(buffer + sizeof(Geom::Mesh) * geom->nMeshes);
 				geom->nPosition = *reinterpret_cast<std::uint32_t*>(buffer + offset);
 				offset += sizeof(std::uint32_t);
+				
 				geom->pPosition = new Geom::Position[geom->nPosition];
 				memcpy(geom->pPosition, buffer + offset, sizeof(Geom::Position) * geom->nPosition);
 				offset += sizeof(Geom::Position) * geom->nPosition;
+				
 				geom->nExtras = *reinterpret_cast<std::uint32_t*>(buffer + offset);
 				geom->pExtra = new Geom::Extra[geom->nExtras];
 				offset += sizeof(std::uint32_t);
+				
 				memcpy(geom->pExtra, buffer + offset, sizeof(Geom::Extra) * geom->nExtras);
 				offset += sizeof(Geom::Extra) * geom->nExtras;
+				
 				geom->nIndices = *reinterpret_cast<std::uint32_t*>(buffer + offset);
 				geom->pIndices = new std::uint32_t[geom->nIndices];
 				offset += sizeof(std::uint32_t);
+
 				memcpy(geom->pIndices, buffer + offset, sizeof(std::uint32_t) * geom->nIndices);
 				offset += sizeof(std::uint32_t) * geom->nIndices;
+
+				int Animated;
+				memcpy(&Animated, buffer + offset, sizeof(int));
+				offset += sizeof(int);
+
+				geom->m_IsAnimated = (Animated == 1) ? true : false;
+
+				if (geom->m_IsAnimated)
+				{
+					geom->nBones = *reinterpret_cast<std::uint32_t*>(buffer + offset);
+					geom->pBone = new BoneInfluence[geom->nBones];
+					offset += sizeof(std::uint32_t);
+					memcpy(geom->pBone, buffer + offset, sizeof(std::uint32_t) * geom->nBones);
+					offset += sizeof(std::uint32_t) * geom->nBones;
+				}
 
 				delete[] buffer;
 			}

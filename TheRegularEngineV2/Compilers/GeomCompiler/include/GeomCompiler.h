@@ -41,9 +41,6 @@ namespace TRE
 				IColor Tangent;
 				IColor Bitangent;
 				IColor Color;
-
-				//glm::ivec4 BoneWeights;
-				//glm::ivec4 BoneIndex;
 			};
 
 			struct InputMeshPart

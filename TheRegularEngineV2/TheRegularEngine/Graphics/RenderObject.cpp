@@ -34,8 +34,18 @@ namespace TRE
 			indices[i] = geom->pIndices[i];
 		}
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()),
-			UINT32_T_CAST(vertices.size() * sizeof(Vertex)));
+		if (geom->m_IsAnimated)
+		{
+			std::vector<BoneVertex> BoneVertices(geom->nBones);
+			for (uint32_t x = 0; x < geom->nBones; x++)
+			{
+				BoneVertices[x].m_BoneIndex = geom->pBone[x].m_BoneIndex;
+				BoneVertices[x].m_BoneWeights = geom->pBone[x].m_BoneWeights;
+			}
+			m_BoneVertexBuffer = std::make_unique<VertexBuffer>((void*)BoneVertices.data(), BoneVertices.size() * sizeof(BoneVertex));
+		}
+
+		m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()), UINT32_T_CAST(vertices.size() * sizeof(Vertex)));
 
 		if (!indices.empty())
 		{
@@ -44,6 +54,7 @@ namespace TRE
 				UINT32_T_CAST(indices.size()));
 			m_HasIndexBuffer = true;
 		}
+
 		CreateBoundingSphere(vertices);
 	}
 

@@ -84,6 +84,8 @@ namespace TRE
 		glm::vec3					PosCompressionScale;
 		glm::vec2					UVCompressionScale;
 
+		bool m_IsAnimated = false;
+
 		~Geom()
 		{
 			delete[] pMesh;

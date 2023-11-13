@@ -395,6 +395,7 @@ namespace TRE
 			optimized_submesh.Indices.resize(index_count);
 			optimized_submesh.Vertices.resize(vertex_count);
 			optimized_submesh.MaterialIndex = meshPart.MaterialIndex;
+			optimized_submesh.m_BoneInfluence = meshPart.m_BoneInfluence;
 
 			//Remap indices
 			meshopt_remapIndexBuffer(optimized_submesh.Indices.data(), meshPart.Indices.data(), index_count, &remap[0]);
@@ -479,7 +480,8 @@ namespace TRE
 			SubMesh.MaterialIndex = E.MaterialIndex;
 			SubMesh.PosCompressionOffset = E.PosCompressionOffset;
 			SubMesh.UVCompressionOffset = E.UVCompressionOffset;
-			SubMesh.Bone = E.m_BoneInfluence;
+			if (m_IsAnimatable)
+				SubMesh.Bone = E.m_BoneInfluence;
 		}
 
 		return std::move(skinGeom);
@@ -503,7 +505,8 @@ namespace TRE
 				totalVertices += _submesh.Position.size();
 				totalExtras += _submesh.Extra.size();
 				totalIndices += _submesh.Indices.size();
-				totalBones += _submesh.Bone.size();
+				if (m_IsAnimatable)
+					totalBones += _submesh.Bone.size();
 			}
 		}
 
@@ -530,9 +533,11 @@ namespace TRE
 		m_Geom->nPosition = (std::uint32_t)totalVertices;
 		m_Geom->nExtras = (std::uint32_t)totalExtras;
 		m_Geom->nIndices = (std::uint32_t)totalIndices;
-		m_Geom->nBones = (std::uint32_t)totalBones;
+		if (m_IsAnimatable)
+			m_Geom->nBones = (std::uint32_t)totalBones;
 		m_Geom->PosCompressionScale = tempGeom->PosCompressionScale;
 		m_Geom->UVCompressionScale = tempGeom->UVCompressionScale;
+		m_Geom->m_IsAnimated = m_IsAnimatable;
 
 		std::size_t iVertex = 0, iIndices = 0, iExtra = 0, iBones = 0;
 		for (std::size_t i = 0; i < totalMeshes; ++i)
@@ -547,9 +552,10 @@ namespace TRE
 				SubMesh[j].m_iIndices = (std::uint32_t)iIndices;
 				SubMesh[j].m_iVertices = (std::uint32_t)iVertex;
 				SubMesh[j].m_iMaterial = (std::uint16_t)tempGeom->Meshes[i].Submeshes[j].MaterialIndex;
-				SubMesh[j].m_iBones = (std::uint32_t)iBones;
 				SubMesh[j].m_PosCompressionOffset = tempGeom->Meshes[i].Submeshes[j].PosCompressionOffset;
 				SubMesh[j].m_UVCompressionOffset = tempGeom->Meshes[i].Submeshes[j].UVCompressionOffset;
+				if (m_IsAnimatable)
+					SubMesh[j].m_iBones = (std::uint32_t)iBones;
 
 				std::size_t vertSize = tempGeom->Meshes[i].Submeshes[j].Position.size();
 				std::size_t extraSize = tempGeom->Meshes[i].Submeshes[j].Extra.size();
@@ -599,6 +605,7 @@ namespace TRE
 				}
 
 				//Bones
+				if (m_IsAnimatable)
 				{
 					for (const auto& _Bone : submesh.Bone)
 					{
@@ -609,7 +616,8 @@ namespace TRE
 
 				SubMesh[j].m_nVertices = (std::uint32_t)vertSize;
 				SubMesh[j].m_nIndices = (std::uint32_t)indexSize;
-				SubMesh[j].m_nBones = (std::uint32_t)BoneSize;
+				if (m_IsAnimatable)
+					SubMesh[j].m_nBones = (std::uint32_t)BoneSize;
 			}
 		}
 
@@ -618,7 +626,8 @@ namespace TRE
 		m_Geom->pPosition = uPos.release();
 		m_Geom->pExtra = uExtras.release();
 		m_Geom->pIndices = uIndices.release();
-		m_Geom->pBone = uBones.release();
+		if (m_IsAnimatable)
+			m_Geom->pBone = uBones.release();
 	}
 
 	//For animation

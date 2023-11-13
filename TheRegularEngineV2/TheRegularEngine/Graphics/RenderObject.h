@@ -28,11 +28,11 @@ namespace TRE
 			}
 		};
 
-		//struct BoneInfluence
-		//{
-		//	glm::vec4         m_BoneWeights{};
-		//	glm::uvec4        m_BoneIndex{};
-		//};
+		struct BoneVertex
+		{
+			glm::vec4         m_BoneWeights{};
+			glm::uvec4        m_BoneIndex{};
+		};
 
 		RenderObject(const std::string& geomAsset);
 		~RenderObject();
