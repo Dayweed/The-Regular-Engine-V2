@@ -182,9 +182,8 @@ namespace TRE
 				{
 					if (ECSManager.IsValidEntity(6503599471310675157))
 					{
-						AudioSystem.Play(6503599471310675157);
+						AudioSystem.PlayOnce(6503599471310675157);
 					}
-
 					isWalking = false;
 
 					if (isGrounded)

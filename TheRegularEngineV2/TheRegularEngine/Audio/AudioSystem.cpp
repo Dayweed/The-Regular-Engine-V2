@@ -50,11 +50,17 @@ namespace TRE
 			{
 				Audio& source = go->GetComponent<Audio>();
 
-				if (source.m_PlayOnStart && source.m_Play)
+				if (source.m_Play)
 				{
 					Play(go, true);
 				}
-				
+				else if (!source.m_Play)
+				{
+					{
+						source.m_Channel->stop();
+					}
+
+				}
 				source.m_Channel->isPlaying(&source.m_isPlaying);
 				TogglePause(go);
 				ToggleMute(go);
@@ -130,6 +136,8 @@ namespace TRE
 
 	void AudioSystem::Init()
 	{
+		/*EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::ToggleRun);
+		EventHandler::getEventHandlerInstance().subscribe(this, &GameLoop::Reset);*/
 
 	}
 
@@ -205,19 +213,29 @@ namespace TRE
 			return;
 		}
 
-		if (audio.m_Loop == false)
+		if (shouldPlay)
 		{
-			audio.m_Sound->setMode(FMOD_LOOP_OFF);
+			if (audio.m_Loop == false)
+			{
+				audio.m_Sound->setMode(FMOD_LOOP_OFF);
+			}
+			else
+			{
+				audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
+				audio.m_Sound->setLoopCount(-1);
+			};
 
-			audio.m_Played = true;
+			audio.m_Channel->setPaused(false); 
+			audio.m_isPlaying = true;
+			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		}
 		else
 		{
-			audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
-			audio.m_Sound->setLoopCount(-1);
-		};
+			//audio.m_Pause = true;
+			audio.m_Channel->stop();
+			audio.m_isPlaying = false;
+		}
 
-		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
 		SetSourcePosition(go);
 	}
 
