@@ -164,7 +164,7 @@ namespace TRE
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
-		entity->RemoveComponent<CapsuleCollider>();
+		//entity->RemoveComponent<CapsuleCollider>();
 	}
 
 	void PhysicsSystem::SetCapsuleColliderTrigger(const Entity& entity, const bool isTrigger) const

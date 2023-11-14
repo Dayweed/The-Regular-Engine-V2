@@ -1758,6 +1758,7 @@ namespace TRE
 		//Audio
 		{
 			mono_add_internal_call("TRE.AudioSystem::Engine_Play", BindSetPlaySound);
+			mono_add_internal_call("TRE.AudioSystem::Engine_PlayOnce", BindSetPlaySound);
 			mono_add_internal_call("TRE.AudioSystem::Engine_TogglePause", BindTogglePauseSound);
 			mono_add_internal_call("TRE.AudioSystem::Engine_Stop", BindSetStop);
 			mono_add_internal_call("TRE.AudioSystem::Engine_SetFileName", BindSetFileName);

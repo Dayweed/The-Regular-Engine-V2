@@ -155,7 +155,7 @@ namespace TRE
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
-		entity->RemoveComponent<BoxCollider>();
+		//entity->RemoveComponent<BoxCollider>();
 	}
 
 	void PhysicsSystem::SetBoxColliderTrigger(const Entity& entity, const bool isTrigger) const

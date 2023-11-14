@@ -153,7 +153,7 @@ namespace TRE
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
-		entity->RemoveComponent<SphereCollider>();
+		//entity->RemoveComponent<SphereCollider>();
 	}
 
 	void PhysicsSystem::SetSphereColliderTrigger(const Entity& entity, const bool isTrigger) const

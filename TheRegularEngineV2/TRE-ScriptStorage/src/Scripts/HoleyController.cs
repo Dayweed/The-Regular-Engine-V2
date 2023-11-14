@@ -62,7 +62,13 @@ namespace TRE
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
 		private bool DroppingOutOfMap = false;
 
-		//Transfrom Component
+        private bool Invulnerability = false;
+        private float InvulCurrent = 1.0f;
+        private float InvulPeriod = 1.0f;
+        private float InvulBlinkCurrent = 0.1f;
+        private float InvulBlinkPeriod = 0.1f;
+
+        //Transfrom Component
         private Transform holeyTransform;
 
 		public void Start()
@@ -86,6 +92,25 @@ namespace TRE
 
         public void Update()
         {
+            #region Invulnerability
+            if (Invulnerability)
+            {
+                InvulBlinkCurrent -= Time.deltaTime;
+                if (InvulBlinkCurrent <= 0)
+                {
+                    GetComponent<MeshRenderer>().Visible = !GetComponent<MeshRenderer>().Visible;
+                    InvulBlinkCurrent = InvulBlinkPeriod;
+                }
+                InvulCurrent -= Time.deltaTime;
+                if (InvulCurrent <= 0)
+                {
+                    Invulnerability = false;
+                    GetComponent<MeshRenderer>().Visible = true;
+                    InvulCurrent = InvulPeriod;
+                }
+
+            }
+            #endregion
             vec3 pos = holeyTransform.Position;
 
             //Movement Related stuff
@@ -104,7 +129,7 @@ namespace TRE
 
             if (pos.y < (InitialPosition.y - 50.0f))
             {
-                holeyTransform.Position = InitialPosition;
+                ResetToInitialPos();
                 //Debug.Log("Respawn");
             }
 
@@ -249,7 +274,6 @@ namespace TRE
             if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
             {
                 MyPowerManager.DropMain();
-                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
                 isScaled = false;
             }
 
@@ -340,6 +364,11 @@ namespace TRE
 			isGrounded = false;
 
 			Entity other = new Entity(otherID);
+            // Make it loose one of it's powerups
+            if (other.CompareTag("FallingObstacle"))
+            {
+                TakeDamage();
+            }
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))
 			{
@@ -378,6 +407,26 @@ namespace TRE
         public void UpdateDisplay()
         {
             MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+        }
+
+        public void TakeDamage()
+        {
+            if (Invulnerability) return;
+            if (MyPowerManager.powerUps.Count > 0)
+            {
+                MyPowerManager.LoseMain();
+                isScaled = false;
+            }
+            else
+            {
+                ResetToInitialPos();
+            }
+            Invulnerability = true;
+        }
+
+        public void ResetToInitialPos()
+        {
+            holeyTransform.Position = InitialPosition;
         }
     }
 }

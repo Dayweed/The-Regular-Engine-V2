@@ -783,6 +783,9 @@ namespace TRE
 
 			Entity entity = ECSManager::Instance().FindEntity(guid);
 
+			// Skip this entity if invalid
+			if (entity == nullptr) continue;
+
 			const bool hasRemovalComponent = entity->HasComponent<Removal>();
 
 			// if the attached comps say yes, but the entity says no...
@@ -825,7 +828,8 @@ namespace TRE
 		// erasing elements in a map: https://stackoverflow.com/a/8234813
 		for (auto it = m_Actors.begin(); it != m_Actors.end();)
 		{
-			if (it->second.m_MarkForRemoval)
+			// Remove nullptr entities or mark for removal
+			if (ECSManager::Instance().FindEntity(it->second.m_GUID) == nullptr || it->second.m_MarkForRemoval)
 				it = m_Actors.erase(it);
 			else
 				++it;

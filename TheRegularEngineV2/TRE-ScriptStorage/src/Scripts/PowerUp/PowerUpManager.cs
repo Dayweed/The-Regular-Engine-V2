@@ -54,14 +54,20 @@ namespace TRE
             mainPowerUp.ReleasePowerUp();
             powerUps.RemoveAt(0);
 
-            /* // THIS CANT BE DONE YET!
-            GetPowerUp mainPowerUp = powerUps[0].GetComponent<GetPowerUp>();
-            Rigidbody mainRb = powerUps[0].GetComponent<Rigidbody>();
-            RemoveMain();
-            mainRb.isKinematic = false;
-            mainRb.AddForce(Vector3.up * MathF.Sqrt(2 * -2f * Physics.gravity.y) + this.transform.forward * -2f, ForceMode.VelocityChange);
-            mainPowerUp.TurnOnVisuals();
-            */
+            MyPowerUpUI.UpdateUI(powerUps);
+        }
+
+        public void LoseMain()
+        {
+            if (powerUps.Count == 0) return;
+
+            ECSManager.DestroyEntity(powerUps[0].ID);
+            powerUps.RemoveAt(0);
+
+            if (MyPowerUpUI != null)
+            {
+                MyPowerUpUI.UpdateUI(powerUps);
+            }
         }
     }
 }
