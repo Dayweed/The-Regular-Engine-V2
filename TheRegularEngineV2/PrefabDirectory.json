@@ -6,11 +6,12 @@
             "15526886209253662016",
             "8829880216004354162",
             "6452796380767818092",
-            "13004780274330328106",
             "1091796284315141664",
+            "13004780274330328106",
             "6338820077763806458",
             "7226326221621054613",
-            "13405510363890397293"
+            "13405510363890397293",
+            "3902543711165755485"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -18,11 +19,12 @@
             "../Resources/Prefabs/Holey.json",
             "../Resources/Prefabs/FallingHat.json",
             "../Resources/Prefabs/JumpPad.json",
-            "../Resources/Prefabs/Strawberry.json",
             "../Resources/Prefabs/TriggerDisplay.json",
+            "../Resources/Prefabs/Strawberry.json",
             "../Resources/Prefabs/Moley.json",
             "../Resources/Prefabs/Holey's Head Collider.json",
-            "../Resources/Prefabs/PowerUpSpawner.json"
+            "../Resources/Prefabs/PowerUpSpawner.json",
+            "../Resources/Prefabs/RollingObject.json"
         ]
     }
 }

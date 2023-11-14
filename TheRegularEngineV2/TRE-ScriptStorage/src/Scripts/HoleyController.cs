@@ -365,7 +365,7 @@ namespace TRE
 
 			Entity other = new Entity(otherID);
             // Make it loose one of it's powerups
-            if (other.CompareTag("FallingObstacle"))
+            if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
             {
                 TakeDamage();
             }

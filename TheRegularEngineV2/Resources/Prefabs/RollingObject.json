@@ -1,0 +1,314 @@
+[
+   [
+      4,
+      0,
+      1,
+      2,
+      3
+   ],
+   [
+      4,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3902543711165755485",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {},
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Children": [
+            "7799537388078544080",
+            "8196895255649283432",
+            "2100387396365835395"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "17868600836239194313"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "17868600836239194313"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "17868600836239194313"
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "17868600836239194313",
+         "m_Name": "RollingObject",
+         "m_Tag": "RollingObstacle"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "7799537388078544080",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "8196895255649283432",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "2100387396365835395",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      0,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": true,
+         "m_FreezePositionY": true,
+         "m_FreezePositionZ": true,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 4.188790321350098,
+         "m_UseGravity": false
+      },
+      2,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": true,
+         "m_FreezePositionY": true,
+         "m_FreezePositionZ": true,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 1.0,
+         "m_UseGravity": false
+      },
+      3,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": true,
+         "m_FreezePositionY": true,
+         "m_FreezePositionZ": true,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": true,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 1.0,
+         "m_UseGravity": false
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 1.0
+      }
+   ],
+   [
+      2,
+      2,
+      {
+         "m_HalfExtents": [
+            0.5,
+            0.5,
+            1.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            1.5,
+            -1.5,
+            0.0
+         ]
+      },
+      3,
+      {
+         "m_HalfExtents": [
+            0.5,
+            0.5,
+            1.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            -1.5,
+            -1.5,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      0,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      2,
+      {
+         "m_StoredClass": "TRE.RollingObjLedge"
+      },
+      3,
+      {
+         "m_StoredClass": "TRE.RollingObjLedge"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
