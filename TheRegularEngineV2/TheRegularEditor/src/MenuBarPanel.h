@@ -43,6 +43,9 @@ namespace TRE
 
 			void HandleShortcuts(TypingEvent& event);
 
+			void Serialize(std::ofstream& file);
+			void Deserialize(std::ifstream& file);
+
 		private:
 			//Bool to the status of every menu item
 			bool m_ShowHierarchyPanel = true;
@@ -72,6 +75,11 @@ namespace TRE
 			float m_ScaleIncrement = 1.0f;
 			//bool for local and global
 			bool m_LocalGizmo = false;
+
+			//Editor camera
+			float m_PanSpeed{ 1000.f };
+			float m_ZoomSensitivity{ 100.f };
+			float m_RotationSensitivity{ 4.f };
 
 			//Bool for show all collider draws
 			bool m_ShowAllColliders = false;

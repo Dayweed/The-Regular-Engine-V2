@@ -24,7 +24,7 @@ namespace TRE
 
 	void EditorCamera::Shutdown()
 	{
-		Serialize();
+		
 	}
 
 	void EditorCamera::SetFocalPoint(const glm::vec3& focalPoint)
@@ -104,47 +104,18 @@ namespace TRE
 		}
 	}
 
-	void EditorCamera::Serialize()
+	void EditorCamera::Serialize(std::ofstream& file)
 	{
-		std::string finalPath = "../EditorData/";
-
-		std::filesystem::directory_entry entry(finalPath);
-		if (!entry.exists())
-		{
-			std::filesystem::create_directory(finalPath);
-		}
-
-		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
-		std::ofstream file(finalPath);
-
-		if (!file.is_open())
-		{
-			std::cout << "Failed to open file" << finalPath << std::endl;
-			return;
-		}
-
 		file << "Position: " << m_Position.x << " " << m_Position.y << " " << m_Position.z << std::endl;
 		file << "Pitch: " << m_BaseCamera.m_Pitch << std::endl;
 		file << "Yaw: " << m_BaseCamera.m_Yaw << std::endl;
 		file << "Roll: " << m_BaseCamera.m_Roll << std::endl;
 		file << "FocalPoint: " << m_BaseCamera.m_FocalPoint.x << " " << m_BaseCamera.m_FocalPoint.y << " " << m_BaseCamera.m_FocalPoint.z << std::endl;
 		file << "FocalLength: " << m_BaseCamera.m_FocalLength << std::endl;
-		//file << ""
-
-
-		file.close();
 	}
 
-	void EditorCamera::Deserialize()
+	void EditorCamera::Deserialize(std::ifstream& file)
 	{
-		std::string finalPath = "../EditorData/";
-		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
-		std::ifstream file(finalPath);
-		if (!file.is_open())
-		{
-			return;
-		}
-
 		std::string line;
 		std::getline(file, line);
 		std::istringstream iss(line);
@@ -180,8 +151,6 @@ namespace TRE
 		iss = std::istringstream(line);
 		iss >> focalLength;
 		iss >> m_BaseCamera.m_FocalLength;
-
-		file.close();
 
 		m_IsDirty = true;
 	}

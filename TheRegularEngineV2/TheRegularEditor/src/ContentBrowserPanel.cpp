@@ -345,9 +345,10 @@ namespace TRE
 		{
 			if (lastSceneClicked != "" && !GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetGameSimulating())
 			{
-				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+				EditorSystem& editorSystem = *EditorSystemManager::Instance().GetSystem<EditorSystem>();
+				editorSystem.GetSelectionManager()->ClearSelectedEntity();
 				SceneManager::Instance().LoadScene(lastSceneClicked);
-				EditorCamera::Instance().Deserialize();
+				editorSystem.Deserialize();
 				lastSceneClicked = "";
 			}
 		}

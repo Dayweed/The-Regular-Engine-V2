@@ -46,6 +46,8 @@ namespace TRE
 		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
 		m_PanelManager->InsertPanel<ModelPanel>("Model Panel", m_AssetSelector);
 		m_PanelManager->Init();
+
+		Deserialize();
 	}
 
 	void EditorSystem::Init()
@@ -119,6 +121,7 @@ namespace TRE
 
 	void EditorSystem::Shutdown()
 	{
+		Serialize();
 		m_PanelManager->Shutdown();
 		TRE_INFO("Editor Shutdown");
 	}
@@ -126,5 +129,46 @@ namespace TRE
 	std::shared_ptr<SelectionManager>& EditorSystem::GetSelectionManager()
 	{
 		return m_SelectionManager;
+	}
+
+	void EditorSystem::Serialize()
+	{
+		std::string finalPath = "../EditorData/";
+
+		std::filesystem::directory_entry entry(finalPath);
+		if (!entry.exists())
+		{
+			std::filesystem::create_directory(finalPath);
+		}
+
+		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
+		std::ofstream file(finalPath);
+
+		if (!file.is_open())
+		{
+			std::cout << "Failed to open file" << finalPath << std::endl;
+			return;
+		}
+
+		EditorCamera::Instance().Serialize(file);
+		m_PanelManager->GetPanel<MenuBarPanel>("Menu Bar")->Serialize(file);
+
+		file.close();
+	}
+
+	void EditorSystem::Deserialize()
+	{
+		std::string finalPath = "../EditorData/";
+		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
+		std::ifstream file(finalPath);
+		if (!file.is_open())
+		{
+			return;
+		}
+
+		EditorCamera::Instance().Deserialize(file);
+		m_PanelManager->GetPanel<MenuBarPanel>("Menu Bar")->Deserialize(file);
+
+		file.close();
 	}
 }

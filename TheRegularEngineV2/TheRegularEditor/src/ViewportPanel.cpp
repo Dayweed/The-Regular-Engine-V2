@@ -156,6 +156,13 @@ namespace TRE
 		m_IsGizmoLocal = event.m_IsLocal;
 	}
 
+	void ViewportPanel::OnEditorCamera(const EditorCameraEvent& event)
+	{
+		m_ZoomSensitivity = event.m_ZoomSensitivity;
+		m_PanSpeed = event.m_PanSpeed;
+		m_RotationSensitivity = event.m_RotationSensitivity;
+	}
+
 	void ViewportPanel::Init()
 	{
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseMove);
@@ -164,6 +171,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoLocal);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnEditorCamera);
 	}
 
 	void ViewportPanel::Update()
@@ -559,8 +567,6 @@ namespace TRE
 			{
 				rotMouseStartPos = m_MousePos;
 			}
-
-
 		}
 	}
 }

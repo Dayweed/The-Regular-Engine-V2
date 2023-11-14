@@ -37,6 +37,8 @@ namespace TRE
 			void OnKeyboardClick(const InputEvent& event);
 			void OnGridAndSnap(const GridAndSnapEvent& event);
 			void OnGizmoLocal(const LocalGloalGizmoEvent& event);
+			void OnEditorCamera(const EditorCameraEvent& event);
+
 		private:
 			//Gonna rewrite in editor camera next time
 			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);

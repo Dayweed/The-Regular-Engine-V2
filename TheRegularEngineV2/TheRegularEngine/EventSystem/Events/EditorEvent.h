@@ -54,6 +54,15 @@ namespace TRE
 		LocalGloalGizmoEvent(bool local) : m_IsLocal(local) {}
 	};
 
+	struct EditorCameraEvent : Event
+	{
+		float m_PanSpeed{};
+		float m_ZoomSensitivity{};
+		float m_RotationSensitivity{};
+		EditorCameraEvent() = delete;
+		EditorCameraEvent(float pan, float zoom, float rot) : m_PanSpeed(pan), m_ZoomSensitivity(zoom), m_RotationSensitivity(rot) {}
+	};;
+
 	struct AssetSelectorEvent : Event
 	{
 		std::string m_AssetName;

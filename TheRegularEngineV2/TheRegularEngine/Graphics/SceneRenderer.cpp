@@ -809,6 +809,7 @@ namespace TRE
 		ImgConfig.Usage = ImageUsage::Attachment;
 		ImgConfig.CreateSampler = true;
 		ImgConfig.Transfer = false;
+		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 
 		m_ShadowImages = std::make_shared<Image2D>(ImgConfig);
 		m_ShadowRenderPass = std::make_shared<RenderPass>(m_Device, true);

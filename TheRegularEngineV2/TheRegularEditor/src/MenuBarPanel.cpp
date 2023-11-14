@@ -124,21 +124,21 @@ namespace TRE
 					{
 						ImGui::Text("Pan");
 						ImGui::SameLine();
-						ImGui::InputFloat("##EditorPan", &m_PosIncrement);
+						ImGui::InputFloat("##EditorPan", &m_PanSpeed);
 						ImGui::Text("Rotation");
 						ImGui::SameLine();
-						ImGui::InputFloat("##EditorRotation", &m_RotIncrement);
+						ImGui::InputFloat("##EditorRotation", &m_RotationSensitivity);
 						ImGui::Text("Zoom");
 						ImGui::SameLine();
-						ImGui::InputFloat("##EditorZoom", &m_ScaleIncrement);
-						//EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
+						ImGui::InputFloat("##EditorZoom", &m_ZoomSensitivity);
+						EventHandler::getEventHandlerInstance().Publish(EditorCameraEvent{ m_PanSpeed, m_ZoomSensitivity, m_RotationSensitivity });
 						ImGui::EndMenu();
 					}
 
-					if (ImGui::Button("Assign Editor Camera Values"))
-					{
-						EditorCamera::Instance().AssignToMainCamera();
-					}
+					//if (ImGui::Button("Assign Editor Camera Values"))
+					//{
+					//	EditorCamera::Instance().AssignToMainCamera();
+					//}
 					ImGui::EndMenu();
 				}
 
@@ -216,7 +216,8 @@ namespace TRE
 
 	void MenuBarPanel::OpenScene()
 	{
-		EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+		EditorSystem& editorSystem = *EditorSystemManager::Instance().GetSystem<EditorSystem>();
+		editorSystem.GetSelectionManager()->ClearSelectedEntity();
 
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
@@ -228,7 +229,7 @@ namespace TRE
 			{
 				SceneManager::Instance().LoadScene(path);
 
-				EditorCamera::Instance().Deserialize();
+				editorSystem.Deserialize();
 			}
 		}
 	}
@@ -258,5 +259,53 @@ namespace TRE
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
 		}
+	}
+
+	void MenuBarPanel::Serialize(std::ofstream& file)
+	{
+		file << "GizmoPosIncrement: " << m_PosIncrement << std::endl;
+		file << "GizmoRotIncrement: " << m_RotIncrement << std::endl;
+		file << "GizmoScaleIncrement: " << m_ScaleIncrement << std::endl;
+		file << "EditorPanSpeed: " << m_PanSpeed << std::endl;
+		file << "EditorZoomSensitivity: " << m_ZoomSensitivity << std::endl;
+		file << "EditorRotationSensitivity: " << m_RotationSensitivity << std::endl;
+	}
+
+	void MenuBarPanel::Deserialize(std::ifstream& file)
+	{
+		std::string line;
+		while (std::getline(file, line))
+		{
+			std::istringstream iss(line);
+			std::string name;
+			iss >> name;
+			if (name == "GizmoPosIncrement:")
+			{
+				iss >> m_PosIncrement;
+			}
+			else if (name == "GizmoRotIncrement:")
+			{
+				iss >> m_RotIncrement;
+			}
+			else if (name == "GizmoScaleIncrement:")
+			{
+				iss >> m_ScaleIncrement;
+			}
+			else if (name == "EditorPanSpeed:")
+			{
+				iss >> m_PanSpeed;
+			}
+			else if (name == "EditorZoomSensitivity:")
+			{
+				iss >> m_ZoomSensitivity;
+			}
+			else if (name == "EditorRotationSensitivity:")
+			{
+				iss >> m_RotationSensitivity;
+			}
+		}
+
+		EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
+		EventHandler::getEventHandlerInstance().Publish(EditorCameraEvent{ m_PanSpeed, m_ZoomSensitivity, m_RotationSensitivity });
 	}
 }

@@ -20,6 +20,10 @@ namespace TRE
 
 			std::shared_ptr<SelectionManager>& GetSelectionManager();
 
+			//Serialize and Deserialize for editor specific data
+			void Serialize();
+			void Deserialize();
+
 		private:
 			std::unique_ptr<PanelManager> m_PanelManager;
 			std::shared_ptr<SelectionManager> m_SelectionManager;

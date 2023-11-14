@@ -42,8 +42,8 @@ namespace TRE
 		void SetDirection(const glm::vec3& position);
 		void AssignToMainCamera();
 
-		void Serialize();
-		void Deserialize();
+		void Serialize(std::ofstream& file);
+		void Deserialize(std::ifstream& file);
 	private:
 		void SetPosition(const glm::vec3& position);
 	private:

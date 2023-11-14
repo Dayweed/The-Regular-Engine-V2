@@ -41,6 +41,7 @@ namespace TRE
 
 		ImageFormat Format = ImageFormat::RGBA;
 		ImageUsage Usage = ImageUsage::Texture;
+		VkSamplerAddressMode AddressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 		bool Transfer = false;
 		uint32_t Width = 1;
 		uint32_t Height = 1;
