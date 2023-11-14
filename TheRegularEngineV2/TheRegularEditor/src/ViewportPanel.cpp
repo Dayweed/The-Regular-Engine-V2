@@ -436,11 +436,13 @@ namespace TRE
 				break;
 			}
 
+			float snapArray[3] = { snapValue, snapValue, snapValue };
+
 			ImGuizmo::MODE mode = ImGuizmo::WORLD;
 			if(m_IsGizmoLocal)
 				mode = ImGuizmo::LOCAL;
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? snapArray : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
