@@ -40,7 +40,7 @@ namespace TRE
 		Create();
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(1000).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000).Build();
+		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(5000).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 5000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 5000).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
@@ -222,6 +222,8 @@ namespace TRE
 
 	void SceneRenderer::BeginEditorFrame()
 	{
+		//m_DescriptorPool->ResetPool();
+
 		const EditorCamera& editorCamera = EditorCamera::Instance();
 		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		
@@ -285,6 +287,8 @@ namespace TRE
 
 	void SceneRenderer::BeginFrame()
 	{
+		//m_DescriptorPool->ResetPool();
+
 		//UBO
 		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		UBO ubo{};

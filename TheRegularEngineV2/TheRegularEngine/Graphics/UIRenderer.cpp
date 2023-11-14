@@ -104,7 +104,7 @@ namespace TRE
 		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
 		{
 			auto& UIComp = Entity->GetComponent<UIComponent>();
-			if (!UIComp.m_IsVisible || !UIComp.m_Texture)
+			if (!UIComp.m_IsVisible || !UIComp.m_Texture || !UIComp.m_Material)
 				continue;
 
 			UI_PushConstant pc{};
