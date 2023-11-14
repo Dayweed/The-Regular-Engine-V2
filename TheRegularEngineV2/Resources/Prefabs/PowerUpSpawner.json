@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "8025905355996001924",
+         "m_GUID": "5168006195789158554",
          "m_Name": "PowerUpSpawner",
          "m_Tag": ""
       }
@@ -92,5 +92,14 @@
       {
          "m_StoredClass": "TRE.PowerUpSpawner"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]

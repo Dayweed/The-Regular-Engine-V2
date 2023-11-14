@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "9142685296827196984",
+         "m_GUID": "11753537330237744667",
          "m_Name": "Strawberry",
          "m_Tag": "Strawberry"
       }
@@ -36,21 +36,6 @@
       1,
       0,
       {
-         "m_LocalPosition": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_LocalRotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_LocalScale": [
-            1.0,
-            1.0,
-            1.0
-         ],
          "m_Position": [
             0.0,
             0.0,
@@ -131,5 +116,14 @@
       {
          "m_StoredClass": "TRE.GetPowerUp"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]

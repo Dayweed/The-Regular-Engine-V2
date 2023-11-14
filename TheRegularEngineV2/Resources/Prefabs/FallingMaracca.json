@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "11364341643031427214",
+         "m_GUID": "15947493635303571604",
          "m_Name": "FallingMaracca",
          "m_Tag": ""
       }
@@ -120,5 +120,14 @@
       {
          "m_StoredClass": "TRE.FallingObj"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]

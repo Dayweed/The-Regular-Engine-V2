@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "14618405702222530827",
+         "m_GUID": "5259959167964450631",
          "m_Name": "JumpPad",
          "m_Tag": "JumpPad"
       }
@@ -106,5 +106,14 @@
       {
          "m_StoredClass": "TRE.JumpPad"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]
