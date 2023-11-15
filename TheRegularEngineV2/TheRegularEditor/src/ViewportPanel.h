@@ -37,6 +37,7 @@ namespace TRE
 			void OnKeyboardClick(const InputEvent& event);
 			void OnGridAndSnap(const GridAndSnapEvent& event);
 			void OnGizmoLocal(const LocalGloalGizmoEvent& event);
+			void OnGizmoOperation(const GizmoOperationEvent& event);
 			void OnEditorCamera(const EditorCameraEvent& event);
 
 		private:

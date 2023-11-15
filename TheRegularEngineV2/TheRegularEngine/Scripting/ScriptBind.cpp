@@ -39,6 +39,7 @@ namespace TRE
 		Script,
 		Transform,
 		SpriteRenderer,
+		Parenting,
 		None
 	};
 	std::unordered_map<std::string, ComponentsID> ComponentsMap
@@ -53,6 +54,7 @@ namespace TRE
 		{"TRE.CapsuleCollider", ComponentsID::CapsuleCollider},
 		{"TRE.AudioListener", ComponentsID::AudioListener},
 		{"TRE.SpriteRenderer", ComponentsID::SpriteRenderer},
+		{"TRE.Parenting", ComponentsID::Parenting},
 		{"TRE.Script", ComponentsID::Script}
 	};
 
@@ -371,6 +373,10 @@ namespace TRE
 			Temp->AddComponent<UIComponent>();
 			TRE_INFO("Sprite Renderer (UI Component) added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Parenting:
+			Temp->AddComponent<Parenting>();
+			TRE_INFO("Parenting (UI Component) added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -424,6 +430,10 @@ namespace TRE
 			Temp->RemoveComponent<UIComponent>();
 			TRE_INFO("Sprite Renderer (UI Component) Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Parenting:
+			Temp->RemoveComponent<Parenting>();
+			TRE_INFO("Parenting (UI Component) Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -466,6 +476,8 @@ namespace TRE
 			return entity->HasComponent<Audio>();
 		case ComponentsID::SpriteRenderer:
 			return entity->HasComponent<UIComponent>();
+		case ComponentsID::Parenting:
+			return entity->HasComponent<Parenting>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -526,15 +538,20 @@ namespace TRE
 		return  mono_string_new(mono_domain_get(), Temp->GetName().c_str());
 	}
 
-	static MonoString* FindParentIDFromID(CSEntityID ID)
+	static CSEntityID FindParentIDFromID(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
-		if (!Temp) return mono_string_new(mono_domain_get(), "");
+		if (!Temp) return CSEntityID();
 
-		return  mono_string_new(mono_domain_get(), Temp->GetComponent<Parenting>().m_Parent.c_str());
+		return  EntityID_EngineToCS(Temp->GetComponent<Parenting>().m_Parent);
 	}
 
 #pragma region TransformBindings
+
+	static glm::vec3 BindRotateVector(glm::vec3 vector, glm::vec3 rotation)
+	{
+		return ECSSystemManager::Instance().GetSystem<TransformSystem>()->RotateMatrix(vector, rotation);
+	}
 
 	static void BindSetPosition(CSEntityID ID, glm::vec3 newPos)
 	{
@@ -1623,16 +1640,17 @@ namespace TRE
 
 		// Parent Bindings
 		{
-			mono_add_internal_call("TRE.Parenting::Engine_ParentSetParent", BindParentSetParent);
-			mono_add_internal_call("TRE.Parenting::Engine_ParentRemoveParent", BindParentRemoveParent);
-			mono_add_internal_call("TRE.Parenting::Engine_ParentAddChild", BindParentAddChild);
-			mono_add_internal_call("TRE.Parenting::Engine_ParentRemoveChild", BindParentRemoveChild);
-			mono_add_internal_call("TRE.Parenting::Engine_GetChildID", BindParentGetChildFromIndex);
-			mono_add_internal_call("TRE.Parenting::Engine_GetChildIDFromName", BindParentGetChildFromName);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_ParentSetParent", BindParentSetParent);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_ParentRemoveParent", BindParentRemoveParent);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_ParentAddChild", BindParentAddChild);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_ParentRemoveChild", BindParentRemoveChild);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_GetChildID", BindParentGetChildFromIndex);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_GetChildIDFromName", BindParentGetChildFromName);
 		}
 
 		// Transform Bindings
 		{
+			mono_add_internal_call("TRE.TransformSystem::Engine_RotateVector", BindRotateVector);
 			mono_add_internal_call("TRE.TransformSystem::Engine_SetPosition", BindSetPosition);
 			mono_add_internal_call("TRE.TransformSystem::Engine_SetRotation", BindSetRotation);
 			mono_add_internal_call("TRE.TransformSystem::Engine_SetScaling", BindSetScaling);

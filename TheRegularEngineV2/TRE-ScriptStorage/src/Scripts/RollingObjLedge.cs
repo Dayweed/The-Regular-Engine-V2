@@ -10,10 +10,10 @@ namespace TRE
 {
     public class RollingObjLedge : Entity
     {
-        public bool isGrounded = true;
-        private Entity Ground;
+        //public bool isGrounded = true;
+        //private Entity Ground;
 
-        private float moveSpeed = 1.25f;
+        //private float moveSpeed = 1.25f;
 
         public RollingObjLedge()
         {
@@ -27,25 +27,25 @@ namespace TRE
 
         public void Update()
         {
-            // Check if the ledges is no longer being triggered
-            if (Ground == null) return;
+            //// Check if the ledges is no longer being triggered
+            //if (Ground == null) return;
 
-            if (PhysicsSystem.IsTriggerExit(ID, Ground.ID))
-            {
-                Debug.Log("EXIT");
-                isGrounded = false;
-                Ground = null;
-            }
+            //if (PhysicsSystem.IsTriggerExit(ID, Ground.ID))
+            //{
+            //    Debug.Log("EXIT");
+            //    isGrounded = false;
+            //    Ground = null;
+            //}
         }
 
         private void OnTriggerStay(System.UInt64 otherID)
         {
-            Entity other = new Entity(otherID);
-            if (other.CompareTag("Ground"))
-            {
-                isGrounded = true;
-                Ground = other;
-            }
+            //Entity other = new Entity(otherID);
+            //if (other.CompareTag("Ground"))
+            //{
+            //    isGrounded = true;
+            //    Ground = other;
+            //}
         }
     }
 }

@@ -10,6 +10,8 @@ using GlmSharp;
 
 namespace TRE
 {
+    // Using EntityID instead of EntityID in case need to change again
+    using EntityID = System.UInt64;     // Unsigned long long
 
     // using EntityID = System.UInt64;
 
@@ -93,6 +95,53 @@ namespace TRE
             Position = position;
             Rotation = rotation;
             Scale = scale;
+        }
+    }
+
+    public class Parenting : Component
+    {
+        public Entity parent
+        {
+            get
+            {
+                return ParentingSystem.GetParent(entity.ID);
+            }
+        }
+
+        public void SetParent(Entity parent)
+        {
+            ParentingSystem.Engine_ParentSetParent(entity.ID, parent.ID);
+        }
+
+        public void RemoveParent()
+        {
+            ParentingSystem.Engine_ParentRemoveParent(entity.ID);
+        }
+
+        public void AddChild(Entity child)
+        {
+            ParentingSystem.Engine_ParentAddChild(entity.ID, child.ID);
+        }
+
+        public void RemoveChild(Entity child)
+        {
+            ParentingSystem.Engine_ParentRemoveChild(entity.ID, child.ID);
+        }
+
+        public Entity GetChild(int _index)
+        {
+            EntityID childID = ParentingSystem.Engine_GetChildID(entity.ID, _index);
+            string childName = ECSManager.Engine_FindNameFromID(childID);
+            Entity child = new Entity(childID, childName);
+            return child;
+        }
+
+        public Entity GetChildFromName(string name)
+        {
+            EntityID childID = ParentingSystem.Engine_GetChildIDFromName(entity.ID, name);
+            string childName = ECSManager.Engine_FindNameFromID(childID);
+            Entity child = new Entity(childID, childName);
+            return child;
         }
     }
 

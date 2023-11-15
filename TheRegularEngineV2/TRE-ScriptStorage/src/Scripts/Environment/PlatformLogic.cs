@@ -18,7 +18,7 @@ namespace TRE
 
         public PlatformLogic()
         {
-            
+            positions = new vec3[0];
         }
 
         public void Start()

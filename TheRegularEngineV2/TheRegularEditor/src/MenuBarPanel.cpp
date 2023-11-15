@@ -211,6 +211,7 @@ namespace TRE
 		{
 			SceneManager::Instance().NewScene();
 			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "New Scene Created" });
+			EventHandler::getEventHandlerInstance().Publish(GizmoOperationEvent{ -1 });
 		}
 	}
 
@@ -228,8 +229,8 @@ namespace TRE
 			if (!path.empty())
 			{
 				SceneManager::Instance().LoadScene(path);
-
 				editorSystem.Deserialize();
+				EventHandler::getEventHandlerInstance().Publish(GizmoOperationEvent{ -1 });
 			}
 		}
 	}

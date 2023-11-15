@@ -54,6 +54,13 @@ namespace TRE
 		LocalGloalGizmoEvent(bool local) : m_IsLocal(local) {}
 	};
 
+	struct GizmoOperationEvent : Event
+	{
+		int m_Operation{};
+		GizmoOperationEvent() = delete;
+		GizmoOperationEvent(int operation) : m_Operation(operation) {}
+	};
+
 	struct EditorCameraEvent : Event
 	{
 		float m_PanSpeed{};

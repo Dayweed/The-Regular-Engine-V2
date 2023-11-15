@@ -156,6 +156,11 @@ namespace TRE
 		m_IsGizmoLocal = event.m_IsLocal;
 	}
 
+	void ViewportPanel::OnGizmoOperation(const GizmoOperationEvent& event)
+	{
+		m_GizmoOperation = event.m_Operation;
+	}
+
 	void ViewportPanel::OnEditorCamera(const EditorCameraEvent& event)
 	{
 		m_ZoomSensitivity = event.m_ZoomSensitivity;
@@ -171,6 +176,7 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoLocal);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoOperation);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnEditorCamera);
 	}
 

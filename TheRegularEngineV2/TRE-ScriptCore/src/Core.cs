@@ -36,7 +36,7 @@ namespace TRE
 		{
 			ID = new EntityID();
 			name = "";
-			parenting = new Parenting();
+			parenting = null;
 			transform = null;
 		}
 
@@ -47,13 +47,13 @@ namespace TRE
 			if (ECSManager.Engine_IsValidEntity(ID))
 			{
 				name = ECSManager.Engine_FindNameFromID(ID);
-				parenting = new Parenting(ID);
+				parenting = GetComponent<Parenting>();
 				transform = GetComponent<Transform>();
 			}
 			else
-			{
-				name = "";
-				parenting = new Parenting();
+            {
+                name = "";
+				parenting = null;
 				transform = null;
 			}
 		}
@@ -65,12 +65,12 @@ namespace TRE
 
 			if (ECSManager.Engine_IsValidEntity(ID))
 			{
-				parenting = new Parenting(ID);
+				parenting = GetComponent<Parenting>();
 				transform = GetComponent<Transform>();
 			}
 			else
-			{
-				parenting = new Parenting();
+            {
+                parenting = null;
 				transform = null;
 			}
 		}
@@ -250,57 +250,14 @@ namespace TRE
 		internal extern static EntityID Engine_CreatePrefabEntity(EntityID prefabid/*, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3()*/);
 	}
 
-	public struct Parenting
+	public class ParentingSystem
 	{
-		private EntityID id;
-
-		public Parenting(EntityID myID)
-		{
-			id = myID;
-		}
-
-		public void SetParent(Entity _parent)
-		{
-			Engine_ParentSetParent(id, _parent.ID);
-		}
-
-		public Entity GetParent()
-		{
-			EntityID parentID = ECSManager.Engine_FindParentIDFromID(id);
+		public static Entity GetParent(EntityID id)
+        {
+            EntityID parentID = ECSManager.Engine_FindParentIDFromID(id);
 			string parentName = ECSManager.Engine_FindNameFromID(parentID);
 			Entity parent = new Entity(parentID, parentName);
 			return parent;
-		}
-
-		public void RemoveParent()
-		{
-			Engine_ParentRemoveParent(id);
-		}
-
-		public void AddChild(Entity child)
-		{
-			Engine_ParentAddChild(id, child.ID);
-		}
-
-		public void RemoveChild(Entity child)
-		{
-			Engine_ParentRemoveChild(id, child.ID);
-		}
-
-		public Entity GetChild(int _index)
-		{
-			EntityID childID = Engine_GetChildID(id, _index);
-			string childName = ECSManager.Engine_FindNameFromID(childID);
-			Entity child = new Entity(childID, childName);
-			return child;
-		}
-
-		public Entity GetChildFromName(string name)
-		{
-			EntityID childID = Engine_GetChildIDFromName(id, name);
-			string childName = ECSManager.Engine_FindNameFromID(childID);
-			Entity child = new Entity(childID, childName);
-			return child;
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -565,6 +522,14 @@ namespace TRE
 		{
 			Engine_GetScaling(id, out output);
 		}
+
+		public static vec3 RotateVector(vec3 vector, vec3 rotation)
+		{
+			return Engine_RotateVector(vector, rotation);
+        }
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static vec3 Engine_RotateVector(vec3 vector, vec3 rotation);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_GetPosition(EntityID id, out vec3 output);

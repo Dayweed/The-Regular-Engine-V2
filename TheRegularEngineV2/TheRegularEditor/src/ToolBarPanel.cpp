@@ -7,6 +7,7 @@
 #include "EditorSystem.h"
 #include "Scripting/ScriptEngine.h"
 #include "Core/GameLoop.h"
+#include "ViewportPanel.h"
 
 namespace TRE
 {
@@ -85,6 +86,7 @@ namespace TRE
 			{
 				EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{ false });
 				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+				EventHandler::getEventHandlerInstance().Publish(GizmoOperationEvent{ -1 });
 			}
 		}
 
