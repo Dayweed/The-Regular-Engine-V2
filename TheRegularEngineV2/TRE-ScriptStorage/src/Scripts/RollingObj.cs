@@ -17,12 +17,12 @@ namespace TRE
         public vec3 rotateVector = new vec3(0, 0, -1);
         public vec3 threesixty = new vec3(0, 0, 360);
 
-        // For checking ledges
-        RollingObjLedge lLedge;
-        RollingObjLedge rLedge;
+        public float bufferTime = 0.5f;
+        public float bufferCurr = 0;
 
-        // For display object
-        Entity MyObject;
+        // For checking ledges
+        Entity lLedge;
+        Entity rLedge;
 
         private float moveSpeed = 2.25f;
         private float rotateSpeed = 50.0f;
@@ -34,9 +34,8 @@ namespace TRE
 
         public void Start()
         {
-            MyObject = parenting.GetChildFromName("RollingObjectRender");
-            lLedge = parenting.GetChildFromName("LeftLedge").GetComponent<RollingObjLedge>();
-            rLedge = parenting.GetChildFromName("RightLedge").GetComponent<RollingObjLedge>();
+            lLedge = parenting.parent.parenting.GetChildFromName("LeftLedge");
+            rLedge = parenting.parent.parenting.GetChildFromName("RightLedge");
 
             // Rotate moveVector based on angle
         }
@@ -44,23 +43,27 @@ namespace TRE
         public void Update()
         {
             // Check if the ledges is no longer being triggered
-            if (MyObject == null || lLedge == null || rLedge == null) return;
+            if (lLedge == null || rLedge == null) return;
 
-            if (!lLedge.isGrounded || !rLedge.isGrounded)
-            {
-                Bounceback();
-            }
-
+            //if (!lLedge.isGrounded || !rLedge.isGrounded)
+            //{
+            //    Bounceback();
+            //}
             transform.Position += moveVector * moveDir * moveSpeed * Time.deltaTime;
-            MyObject.transform.Position = transform.Position;
-            MyObject.transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
+            transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
             //MyObject.transform.Rotation = MyObject.transform.Rotation.z > 360 ? MyObject.transform.Rotation - threesixty : MyObject.transform.Rotation;
             //MyObject.transform.Rotation = MyObject.transform.Rotation.z < 0 ? MyObject.transform.Rotation + threesixty : MyObject.transform.Rotation;
         }
 
         public void Bounceback()
         {
+            if (bufferCurr > 0)
+            {
+                bufferCurr -= Time.deltaTime;
+                return;
+            }
             moveDir = moveDir == 1 ? -1 : 1;
+            bufferCurr = bufferTime;
         }
 
         private void OnTriggerStay(System.UInt64 otherID)
@@ -74,7 +77,7 @@ namespace TRE
             {
                 other.GetComponent<HoleyController>().TakeDamage();
             }
-            else
+            else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
             {
                 Bounceback();
             }

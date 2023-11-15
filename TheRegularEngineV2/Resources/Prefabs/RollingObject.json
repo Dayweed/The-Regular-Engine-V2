@@ -46,26 +46,26 @@
       0,
       {
          "m_Children": [
-            "7799537388078544080",
-            "8196895255649283432",
-            "2100387396365835395"
+            "16489551088950105470",
+            "12191282281044224984",
+            "10137915681545961815"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "17868600836239194313"
+         "m_Parent": "11627041661152482412"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "17868600836239194313"
+         "m_Parent": "11627041661152482412"
       },
       3,
       {
          "m_Children": [],
-         "m_Parent": "17868600836239194313"
+         "m_Parent": "11627041661152482412"
       }
    ],
    [
@@ -73,28 +73,28 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "17868600836239194313",
+         "m_GUID": "11627041661152482412",
          "m_Name": "RollingObject",
          "m_Tag": "RollingObstacle"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "7799537388078544080",
+         "m_GUID": "16489551088950105470",
          "m_Name": "RollingObjectRender",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "8196895255649283432",
+         "m_GUID": "12191282281044224984",
          "m_Name": "LeftLedge",
          "m_Tag": ""
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "2100387396365835395",
+         "m_GUID": "10137915681545961815",
          "m_Name": "RightLedge",
          "m_Tag": ""
       }
@@ -187,53 +187,11 @@
       0
    ],
    [
-      3,
-      0,
-      {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
-         "m_FreezePositionX": true,
-         "m_FreezePositionY": true,
-         "m_FreezePositionZ": true,
-         "m_FreezeRotationX": true,
-         "m_FreezeRotationY": true,
-         "m_FreezeRotationZ": true,
-         "m_IsKinematic": false,
-         "m_Mass": 4.188790321350098,
-         "m_UseGravity": false
-      },
-      2,
-      {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
-         "m_FreezePositionX": true,
-         "m_FreezePositionY": true,
-         "m_FreezePositionZ": true,
-         "m_FreezeRotationX": true,
-         "m_FreezeRotationY": true,
-         "m_FreezeRotationZ": true,
-         "m_IsKinematic": false,
-         "m_Mass": 1.0,
-         "m_UseGravity": false
-      },
-      3,
-      {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
-         "m_FreezePositionX": true,
-         "m_FreezePositionY": true,
-         "m_FreezePositionZ": true,
-         "m_FreezeRotationX": true,
-         "m_FreezeRotationY": true,
-         "m_FreezeRotationZ": true,
-         "m_IsKinematic": false,
-         "m_Mass": 1.0,
-         "m_UseGravity": false
-      }
+      0
    ],
    [
       1,
-      0,
+      1,
       {
          "m_IsTrigger": true,
          "m_Offset": [
@@ -250,13 +208,13 @@
       {
          "m_HalfExtents": [
             0.5,
-            0.5,
+            1.0,
             1.0
          ],
          "m_IsTrigger": true,
          "m_Offset": [
-            1.5,
-            -1.5,
+            0.0,
+            0.0,
             0.0
          ]
       },
@@ -264,13 +222,13 @@
       {
          "m_HalfExtents": [
             0.5,
-            0.5,
+            1.0,
             1.0
          ],
          "m_IsTrigger": true,
          "m_Offset": [
-            -1.5,
-            -1.5,
+            0.0,
+            0.0,
             0.0
          ]
       }
@@ -288,18 +246,10 @@
       0
    ],
    [
-      3,
-      0,
+      1,
+      1,
       {
          "m_StoredClass": "TRE.RollingObj"
-      },
-      2,
-      {
-         "m_StoredClass": "TRE.RollingObjLedge"
-      },
-      3,
-      {
-         "m_StoredClass": "TRE.RollingObjLedge"
       }
    ],
    [
