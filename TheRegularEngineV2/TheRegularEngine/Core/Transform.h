@@ -106,6 +106,8 @@ namespace TRE
 	{
 	public:
 		void LateUpdate() override;
+
+		glm::vec3 RotateMatrix(glm::vec3 vector, glm::vec3 rotation);
 	};
 }
 

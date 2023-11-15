@@ -52,7 +52,6 @@ namespace TRE
 			}
 			else
             {
-                Console.Write("BLANK SSSHHHHHHHHHHHHHIIIIIIIIIIIIIIIIITTTTTTTTTTTTTTTTTTT");
                 name = "";
 				parenting = null;
 				transform = null;
@@ -71,7 +70,6 @@ namespace TRE
 			}
 			else
             {
-                Console.Write("NAME SSSHHHHHHHHHHHHHIIIIIIIIIIIIIIIIITTTTTTTTTTTTTTTTTTT");
                 parenting = null;
 				transform = null;
 			}
@@ -524,6 +522,14 @@ namespace TRE
 		{
 			Engine_GetScaling(id, out output);
 		}
+
+		public static vec3 RotateVector(vec3 vector, vec3 rotation)
+		{
+			return Engine_RotateVector(vector, rotation);
+        }
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static vec3 Engine_RotateVector(vec3 vector, vec3 rotation);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_GetPosition(EntityID id, out vec3 output);

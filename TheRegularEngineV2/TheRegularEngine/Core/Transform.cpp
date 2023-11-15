@@ -64,4 +64,14 @@ namespace TRE
 			}
 		}
 	}
+
+	glm::vec3 TransformSystem::RotateMatrix(glm::vec3 vector, glm::vec3 rotation)
+	{
+		glm::quat rotationQuat = glm::quat(glm::radians(rotation));
+		glm::mat4 rotationMat = glm::mat4_cast(rotationQuat);
+		glm::mat4 translationMat = glm::translate(glm::identity<glm::mat4>(), vector);
+		glm::mat4 newMat = rotationMat * translationMat;
+
+		return glm::vec3(newMat[3]);
+	}
 }

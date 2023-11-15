@@ -35,6 +35,8 @@ namespace TRE
             rLedge = parenting.parent.parenting.GetChildFromName("RightLedge");
 
             // Rotate moveVector based on angle
+            moveVector = TransformSystem.RotateVector(defaultVector, transform.Rotation);
+            Debug.Log("NEW VECTOR " + moveVector.x + ", " + moveVector.y + ", " + moveVector.z);
         }
 
         public void Update()

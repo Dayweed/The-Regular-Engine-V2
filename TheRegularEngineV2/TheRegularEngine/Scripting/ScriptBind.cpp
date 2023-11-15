@@ -548,6 +548,11 @@ namespace TRE
 
 #pragma region TransformBindings
 
+	static glm::vec3 BindRotateVector(glm::vec3 vector, glm::vec3 rotation)
+	{
+		return ECSSystemManager::Instance().GetSystem<TransformSystem>()->RotateMatrix(vector, rotation);
+	}
+
 	static void BindSetPosition(CSEntityID ID, glm::vec3 newPos)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
@@ -1645,6 +1650,7 @@ namespace TRE
 
 		// Transform Bindings
 		{
+			mono_add_internal_call("TRE.TransformSystem::Engine_RotateVector", BindRotateVector);
 			mono_add_internal_call("TRE.TransformSystem::Engine_SetPosition", BindSetPosition);
 			mono_add_internal_call("TRE.TransformSystem::Engine_SetRotation", BindSetRotation);
 			mono_add_internal_call("TRE.TransformSystem::Engine_SetScaling", BindSetScaling);
