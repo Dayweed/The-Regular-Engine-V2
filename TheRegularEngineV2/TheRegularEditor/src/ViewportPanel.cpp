@@ -108,10 +108,22 @@ namespace TRE
 				if (event._key == (int)KeyButton::W)
 				{
 					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
+
+					if (editorCamera.m_BaseCamera.m_FocalLength < 1.f)
+					{
+						editorCamera.SetFocalDistance(1.f);
+						editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetViewDirection());
+					}
 				}
 				if (event._key == (int)KeyButton::S)
 				{
 					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
+
+					if (editorCamera.m_BaseCamera.m_FocalLength < 1.f)
+					{
+						editorCamera.SetFocalDistance(1.f);
+						editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetViewDirection());
+					}
 				}
 				if (event._key == (int)KeyButton::A)
 				{
