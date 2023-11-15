@@ -272,14 +272,14 @@ namespace TRE
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 
-		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
+		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
 		{
+			auto& MRComp = Entity->GetComponent<MeshRenderer>();
 			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
-			if (!AnimComp.m_IsAnimating || !AnimComp.m_IsVisible)
+			if (!AnimComp.m_IsVisible)
 				continue;
 
-			//AnimComp.m_AnimationSource->m_AnimPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
-			//AnimComp.m_AnimationSource->m_AnimPlayer.ComputeMatrices(AnimComp.m_BufferData.L2W, m_L2W);
+			MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, m_L2W);
 			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
@@ -394,7 +394,7 @@ namespace TRE
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		GeometryPass(Index, materialSort);
-		GeometryAnimationPass(Index, materialSort);
+		//GeometryAnimationPass(Index, materialSort);
 		DebugDrawPass(Index);
 		SkyBoxPass(Index);
 

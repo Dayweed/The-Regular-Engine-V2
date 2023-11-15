@@ -7,6 +7,23 @@
 
 namespace TRE
 {
+	struct AnimationPlayer
+	{
+		AnimationPlayer() = default;
+		AnimationPlayer(const Skeleton& Skel, const std::vector<Animation>& Animations) : m_Skeleton(Skel), m_Animations(Animations)
+		{
+
+		}
+
+		void Update(float DT);
+		void ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W) const;
+
+		Skeleton m_Skeleton;
+		std::vector<Animation> m_Animations;
+		int           m_iCurAnim{};
+		float         m_Time{};
+	};
+
 	class RenderObject : public Resource
 	{
 	public:
@@ -47,6 +64,8 @@ namespace TRE
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
 
+		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W);
+
 	private:
 		void CreateBoundingSphere(const std::vector<Vertex>& vertices);
 
@@ -58,7 +77,7 @@ namespace TRE
 
 		std::unique_ptr<VertexBuffer> m_BoneVertexBuffer;
 
-		//AnimationPlayer m_AnimationPlayer;
+		AnimationPlayer m_AnimationPlayer;
 		std::vector<Animation> m_Animations;
 		Skeleton m_Skeleton;
 

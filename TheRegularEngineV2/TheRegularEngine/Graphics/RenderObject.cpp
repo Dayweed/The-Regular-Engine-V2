@@ -47,6 +47,11 @@ namespace TRE
 
 		m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()), UINT32_T_CAST(vertices.size() * sizeof(Vertex)));
 
+		m_Animations = geom->m_Animation;
+		m_Skeleton = geom->m_Skeleton;
+
+		m_AnimationPlayer = AnimationPlayer(m_Skeleton, m_Animations);
+
 		if (!indices.empty())
 		{
 			m_IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
@@ -135,5 +140,54 @@ namespace TRE
 		ResourceManager::Instance().AddResource(std::move(ro));
 
 		return std::move(ResourceManager::Instance().GetResource<RenderObject>(assetHandle));
+	}
+
+	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W)
+	{
+		m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+		m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W);
+	}
+
+	void AnimationPlayer::Update(float DT)
+	{
+		auto& Anim = m_Animations[m_iCurAnim];
+		// advance time
+		m_Time += DT;
+		while (m_Time >= Anim.m_TimeLength) m_Time -= Anim.m_TimeLength;
+	}
+	void AnimationPlayer::ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W) const
+	{
+		auto& Anim = m_Animations[m_iCurAnim];
+		const float FrameTime = m_Time * Anim.m_FPS;
+		const int   iFrameT0 = static_cast<int>(FrameTime);
+		const int   iFrameT1 = static_cast<int>((iFrameT0 + 1) % Anim.m_BoneKeyFrames[0].m_Scale.size());
+		// compute hierarchy matrices
+		for (int i = 0; i < Anim.m_BoneKeyFrames.size(); ++i)
+		{
+			auto& KeyFrame = Anim.m_BoneKeyFrames[i];
+			glm::vec3 BlendedScale = KeyFrame.m_Scale[iFrameT0] + ((FrameTime - iFrameT0) * (KeyFrame.m_Scale[iFrameT1] - KeyFrame.m_Scale[iFrameT0]));
+			glm::quat BlendedRotate = vkUtils::Blend(KeyFrame.m_Rotate[iFrameT0], (FrameTime - iFrameT0), KeyFrame.m_Rotate[iFrameT1]);
+			glm::vec3 BlendedTranslate = KeyFrame.m_Translate[iFrameT0] + ((FrameTime - iFrameT0) * (KeyFrame.m_Translate[iFrameT1] - KeyFrame.m_Translate[iFrameT0]));
+			glm::mat4 Scale(1.f); glm::mat4 Translate(1.f);
+			Scale = glm::scale(Scale, BlendedScale);
+			glm::mat4 Rotate = glm::mat4_cast(BlendedRotate);
+			Translate = glm::translate(Translate, BlendedTranslate);
+			FinalL2W[i] = Translate * Rotate * Scale;
+			if (-1 != m_Skeleton.m_Bones[i].m_iParent)
+			{
+				assert(m_Skeleton.m_Bones[i].m_iParent <= i);
+				FinalL2W[i] = FinalL2W[m_Skeleton.m_Bones[i].m_iParent] * FinalL2W[i];
+			}
+			else
+			{
+				assert(i == 0);
+				FinalL2W[i] = L2W * FinalL2W[i];
+			}
+		}
+		// add the bind matrices into the final hierarchy
+		for (int i = 0; i < Anim.m_BoneKeyFrames.size(); ++i)
+		{
+			FinalL2W[i] *= m_Skeleton.m_Bones[i].m_InvBind;
+		}
 	}
 }

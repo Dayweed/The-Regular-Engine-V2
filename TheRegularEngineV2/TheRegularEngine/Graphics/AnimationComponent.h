@@ -15,7 +15,7 @@ namespace TRE
 		public:
 			AnimationComponent()
 			{
-				TRE_CORE_INFO("Animation Component Constructor");
+				//TRE_CORE_INFO("Animation Component Constructor");
 #if 0
 				AnimationImporter Importer;
 				m_AnimationSource = std::make_shared<AnimationGeom>();
@@ -49,9 +49,9 @@ namespace TRE
 				m_MaterialInstace->SetTexture("NormalMap", Texture3);
 				m_MaterialInstace->SetTexture("Specular", Texture4);
 				m_MaterialInstace->SetTexture("Glossiness", Texture5);
+#endif
 
 				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
-#endif
 			}
 
 			//std::shared_ptr<AnimationGeom> m_AnimationSource;
