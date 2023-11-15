@@ -22,6 +22,9 @@ namespace TRE
 		glm::vec3	m_LocalScale{ 1.f,1.f,1.f };
 
 		bool		m_IsDirty{ true };
+	private:
+		glm::vec3	m_RotationOld{ 0,0,0 };
+		glm::quat	m_OldRotation{ 0,0,0,1 };
 	public:
 		void CalculateWorldMatrix();
 		const glm::mat4 CalculateLocalMatrix();
