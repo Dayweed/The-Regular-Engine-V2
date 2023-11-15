@@ -17,9 +17,6 @@ namespace TRE
         public vec3 rotateVector = new vec3(0, 0, -1);
         public vec3 threesixty = new vec3(0, 0, 360);
 
-        public float bufferTime = 0.5f;
-        public float bufferCurr = 0;
-
         // For checking ledges
         Entity lLedge;
         Entity rLedge;
@@ -45,28 +42,23 @@ namespace TRE
             // Check if the ledges is no longer being triggered
             if (lLedge == null || rLedge == null) return;
 
-            //if (!lLedge.isGrounded || !rLedge.isGrounded)
-            //{
-            //    Bounceback();
-            //}
+            if (PhysicsSystem.IsTriggerEnter(ID, lLedge.ID) || PhysicsSystem.IsTriggerEnter(ID, rLedge.ID))
+            {
+                Bounceback();
+            }
+
             transform.Position += moveVector * moveDir * moveSpeed * Time.deltaTime;
             transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
-            //MyObject.transform.Rotation = MyObject.transform.Rotation.z > 360 ? MyObject.transform.Rotation - threesixty : MyObject.transform.Rotation;
-            //MyObject.transform.Rotation = MyObject.transform.Rotation.z < 0 ? MyObject.transform.Rotation + threesixty : MyObject.transform.Rotation;
+            transform.Rotation = transform.Rotation.z > 360 ? transform.Rotation - threesixty : transform.Rotation;
+            transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
         }
 
         public void Bounceback()
         {
-            if (bufferCurr > 0)
-            {
-                bufferCurr -= Time.deltaTime;
-                return;
-            }
             moveDir = moveDir == 1 ? -1 : 1;
-            bufferCurr = bufferTime;
         }
 
-        private void OnTriggerStay(System.UInt64 otherID)
+        private void OnCollisionStay(System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
             if (other.CompareTag("Red"))
