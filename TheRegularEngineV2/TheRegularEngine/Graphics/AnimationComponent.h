@@ -1,12 +1,10 @@
 #pragma once
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
-#include "AnimationStructure.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Material.h"
 #include "UniformBuffer.h"
-#include "AnimationImporter.h"
 
 namespace TRE
 {
@@ -31,6 +29,7 @@ namespace TRE
 				m_IndexBuffer = std::make_shared<IndexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.data(),
 					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size() * sizeof(int), m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size());
 
+#endif
 				auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
 				auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
 				auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
@@ -49,7 +48,6 @@ namespace TRE
 				m_MaterialInstace->SetTexture("NormalMap", Texture3);
 				m_MaterialInstace->SetTexture("Specular", Texture4);
 				m_MaterialInstace->SetTexture("Glossiness", Texture5);
-#endif
 
 				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 			}

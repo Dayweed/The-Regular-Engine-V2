@@ -110,7 +110,7 @@ namespace TRE
 		AnimationPipelineConfig.UseAutoShaderVertexInput = false;
 		AnimationPipelineConfig.CustomVertexBufferInputLayout =
 		{
-			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
 			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
 		};
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
@@ -394,7 +394,7 @@ namespace TRE
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		GeometryPass(Index, materialSort);
-		//GeometryAnimationPass(Index, materialSort);
+		GeometryAnimationPass(Index, materialSort);
 		DebugDrawPass(Index);
 		SkyBoxPass(Index);
 
@@ -473,6 +473,7 @@ namespace TRE
 		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
 		{
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
+			MeshRenderer& MeshRendererComp = Entity->GetComponent<MeshRenderer>();
 			if (!AnimationComp.m_IsAnimating || !AnimationComp.m_IsVisible)
 				continue;
 
@@ -487,17 +488,19 @@ namespace TRE
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
 			}
 
-			VkDeviceSize offsets[] = { 0 };
-			auto VB = AnimationComp.m_VertexBuffer->GetBuffer();
-			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+			//VkDeviceSize offsets[] = { 0 };
+			//auto VB = MeshRendererComp.m_RenderObject->GetBuffer();
+			//vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
 
-			VkDeviceSize offsets2[] = { 0 };
-			auto BoneVB = AnimationComp.m_BoneVertexBuffer->GetBuffer();
-			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 1, 1, &BoneVB, offsets2);
+			//VkDeviceSize offsets2[] = { 0 };
+			//auto BoneVB = AnimationComp.m_BoneVertexBuffer->GetBuffer();
+			//vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 1, 1, &BoneVB, offsets2);
 
-			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+			//vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 			
-			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			MeshRendererComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+
+			//vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
 	}
 

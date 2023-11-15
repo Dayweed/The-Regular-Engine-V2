@@ -65,6 +65,7 @@ namespace TRE
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
 
 		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W);
+		void BindAnimation(VkCommandBuffer commandBuffer);
 
 	private:
 		void CreateBoundingSphere(const std::vector<Vertex>& vertices);
