@@ -1,127 +1,137 @@
 [
    [
-      104,
-      4293918819,
-      30408704,
-      17825793,
-      16777218,
-      14680067,
-      11534340,
-      23068677,
-      35651590,
-      12582919,
-      11534344,
-      11534345,
-      11534346,
-      11534347,
-      11534348,
-      11534349,
-      11534350,
-      11534351,
-      11534352,
-      11534353,
-      20971538,
-      11534355,
-      11534356,
-      11534357,
-      11534358,
-      11534359,
-      11534360,
-      11534361,
-      11534362,
-      11534363,
-      11534364,
-      11534365,
-      23068702,
-      11534367,
-      18874400,
-      11534369,
-      11534370,
-      11534371,
-      11534372,
-      11534373,
-      11534374,
-      11534375,
-      11534376,
-      24117289,
-      11534378,
-      12582955,
-      11534380,
-      12582957,
-      23068718,
-      11534383,
-      11534384,
-      11534385,
-      11534386,
-      11534387,
-      11534388,
-      11534389,
-      11534390,
-      11534391,
-      11534392,
-      11534393,
-      11534394,
-      11534395,
-      11534396,
-      11534397,
-      11534398,
-      11534399,
-      11534400,
-      11534401,
-      11534402,
-      11534403,
-      11534404,
-      11534405,
-      11534406,
-      11534407,
-      11534408,
-      11534409,
-      11534410,
-      11534411,
-      11534412,
-      11534413,
-      11534414,
-      11534415,
-      11534416,
-      11534417,
-      11534418,
-      11534419,
-      11534420,
-      11534421,
-      11534422,
-      20971607,
-      11534424,
-      20971609,
-      20971610,
-      18874459,
-      23068764,
-      31457381,
-      12583006,
-      12583007,
-      12583008,
-      12583009,
-      12583010,
-      99614813,
-      58720356,
-      113246310,
-      114294783
+      111,
+      4293918824,
+      11534336,
+      10485761,
+      9437186,
+      6291459,
+      4194308,
+      4194309,
+      4194310,
+      4194311,
+      4194312,
+      4194313,
+      4194314,
+      4194315,
+      4194316,
+      4194317,
+      4194318,
+      4194319,
+      4194320,
+      4194321,
+      4194322,
+      4194323,
+      4194324,
+      4194325,
+      4194326,
+      4194327,
+      4194328,
+      4194329,
+      4194330,
+      4194331,
+      4194332,
+      4194333,
+      4194334,
+      4194335,
+      4194336,
+      4194337,
+      4194338,
+      4194339,
+      4194340,
+      4194341,
+      4194342,
+      4194343,
+      4194344,
+      4194345,
+      4194346,
+      4194347,
+      4194348,
+      4194349,
+      4194350,
+      4194351,
+      4194352,
+      4194353,
+      4194354,
+      4194355,
+      4194356,
+      4194357,
+      4194358,
+      4194359,
+      4194360,
+      4194361,
+      4194362,
+      4194363,
+      4194364,
+      4194365,
+      4194366,
+      4194367,
+      4194368,
+      4194369,
+      4194370,
+      4194371,
+      4194372,
+      4194373,
+      4194374,
+      4194375,
+      4194376,
+      4194377,
+      4194378,
+      4194379,
+      4194380,
+      4194381,
+      4194382,
+      4194383,
+      4194384,
+      4194385,
+      4194386,
+      4194387,
+      4194388,
+      4194389,
+      4194390,
+      4194391,
+      4194392,
+      4194393,
+      4194394,
+      4194395,
+      4194396,
+      4194397,
+      4194398,
+      4194399,
+      4194400,
+      4194401,
+      4194402,
+      4194403,
+      4194404,
+      4194405,
+      4194406,
+      4194407,
+      61866093,
+      23068777,
+      46137450,
+      57671679,
+      35651692,
+      9437291
    ],
    [
-      42,
-      23068718,
+      43,
+      4194335,
       {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "6452796380767818092",
          "m_Overrides": {
+            "BoxCollider": [
+               "TRE::BoxCollider/HalfExtents"
+            ],
             "Transform": [
                "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
+               "TRE::Transform/Scale"
             ]
          },
-         "m_PrefabGUID": "11141021253523213075",
+         "m_PrefabGUID": "6452796380767818092",
          "m_RemovedComps": []
       },
-      23068702,
+      6291459,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -137,49 +147,7 @@
          "m_PrefabGUID": "3902543711165755485",
          "m_RemovedComps": []
       },
-      58720356,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "3902543711165755485",
-         "m_RemovedComps": []
-      },
-      12583006,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534417,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "7226326221621054613",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name",
-               "TRE::Properties/Tag"
-            ]
-         },
-         "m_PrefabGUID": "7226326221621054613",
-         "m_RemovedComps": []
-      },
-      12583009,
+      4194308,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "6452796380767818092",
@@ -191,43 +159,7 @@
          "m_PrefabGUID": "6452796380767818092",
          "m_RemovedComps": []
       },
-      11534422,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      11534420,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "6338820077763806458",
-         "m_Overrides": {},
-         "m_PrefabGUID": "11817737584361501891",
-         "m_RemovedComps": []
-      },
-      11534412,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "6338820077763806458",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "6338820077763806458",
-         "m_RemovedComps": [
-            "BoxCollider"
-         ]
-      },
-      11534407,
+      4194328,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -243,7 +175,7 @@
          "m_PrefabGUID": "3902543711165755485",
          "m_RemovedComps": []
       },
-      11534406,
+      4194313,
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -256,111 +188,7 @@
          "m_PrefabGUID": "11141021253523213075",
          "m_RemovedComps": []
       },
-      11534405,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534403,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "11141021253523213075",
-         "m_RemovedComps": []
-      },
-      11534402,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "11141021253523213075",
-         "m_RemovedComps": []
-      },
-      11534401,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "3902543711165755485",
-         "m_RemovedComps": []
-      },
-      11534400,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "13004780274330328106",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
-         "m_PrefabGUID": "13004780274330328106",
-         "m_RemovedComps": []
-      },
-      11534396,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "7226326221621054613",
-         "m_Overrides": {},
-         "m_PrefabGUID": "7226326221621054613",
-         "m_RemovedComps": []
-      },
-      11534389,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "3902543711165755485",
-         "m_RemovedComps": []
-      },
-      11534357,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "11141021253523213075",
-         "m_RemovedComps": []
-      },
-      11534384,
+      4194326,
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -373,235 +201,7 @@
          "m_PrefabGUID": "10529015477283610632",
          "m_RemovedComps": []
       },
-      20971609,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "11141021253523213075",
-         "m_RemovedComps": []
-      },
-      11534350,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "11141021253523213075",
-         "m_RemovedComps": []
-      },
-      11534383,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      11534397,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      11534365,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534364,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      11534363,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534360,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      17825793,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "11141021253523213075",
-         "m_RemovedComps": []
-      },
-      11534356,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "7670209894207584463",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
-         "m_PrefabGUID": "7670209894207584463",
-         "m_RemovedComps": []
-      },
-      11534361,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      11534351,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "15526886209253662016",
-         "m_Overrides": {},
-         "m_PrefabGUID": "15225568713149738293",
-         "m_RemovedComps": []
-      },
-      11534371,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      11534348,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534347,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534345,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "17457174681056085958",
-         "m_RemovedComps": []
-      },
-      11534362,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "15526886209253662016",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "15526886209253662016",
-         "m_RemovedComps": []
-      },
-      11534385,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "3902543711165755485",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
-         "m_PrefabGUID": "10529015477283610632",
-         "m_RemovedComps": []
-      },
-      20971607,
+      4194315,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "13405510363890397293",
@@ -616,7 +216,111 @@
          "m_PrefabGUID": "13405510363890397293",
          "m_RemovedComps": []
       },
-      30408704,
+      4194318,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194338,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194347,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194385,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194322,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194360,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194325,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194331,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194333,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -632,7 +336,74 @@
          "m_PrefabGUID": "3902543711165755485",
          "m_RemovedComps": []
       },
-      11534352,
+      4194376,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194389,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194340,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "6338820077763806458",
+         "m_RemovedComps": [
+            "BoxCollider"
+         ]
+      },
+      4194343,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194348,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194351,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -648,7 +419,259 @@
          "m_PrefabGUID": "3902543711165755485",
          "m_RemovedComps": []
       },
-      12582957,
+      4194352,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194366,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "3902543711165755485",
+         "m_RemovedComps": []
+      },
+      4194353,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7226326221621054613",
+         "m_Overrides": {},
+         "m_PrefabGUID": "7226326221621054613",
+         "m_RemovedComps": []
+      },
+      4194359,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194361,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194370,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194372,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7670209894207584463",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7670209894207584463",
+         "m_RemovedComps": []
+      },
+      4194354,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194377,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11817737584361501891",
+         "m_RemovedComps": []
+      },
+      4194310,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15225568713149738293",
+         "m_RemovedComps": []
+      },
+      4194386,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194398,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "13004780274330328106",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "13004780274330328106",
+         "m_RemovedComps": []
+      },
+      4194388,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "11141021253523213075",
+         "m_RemovedComps": []
+      },
+      4194391,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "3902543711165755485",
+         "m_RemovedComps": []
+      },
+      4194323,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194396,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "10529015477283610632",
+         "m_RemovedComps": []
+      },
+      4194399,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "15526886209253662016",
+         "m_RemovedComps": []
+      },
+      4194400,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7226326221621054613",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name",
+               "TRE::Properties/Tag"
+            ]
+         },
+         "m_PrefabGUID": "7226326221621054613",
+         "m_RemovedComps": []
+      },
+      4194401,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "3902543711165755485",
+         "m_RemovedComps": []
+      },
+      4194402,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "3902543711165755485",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "17457174681056085958",
+         "m_RemovedComps": []
+      },
+      4194407,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "3902543711165755485",
@@ -666,27 +689,25 @@
       }
    ],
    [
-      99,
-      23068718,
-      {
-         "m_Children": [],
-         "m_Parent": "8602463449476522826"
-      },
-      11534413,
-      {
-         "m_Children": [],
-         "m_Parent": "2729116090822182374"
-      },
-      23068702,
+      107,
+      46137450,
       {
          "m_Children": [
-            "555763289228690012",
-            "7237907308266715578",
-            "14783206945654960298"
+            "3709303595834937498"
          ],
          "m_Parent": ""
       },
-      58720356,
+      4194335,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      9437186,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      6291459,
       {
          "m_Children": [
             "17606160331453763170",
@@ -695,32 +716,17 @@
          ],
          "m_Parent": ""
       },
-      12583006,
+      11534336,
       {
          "m_Children": [],
-         "m_Parent": "17747842400141749309"
+         "m_Parent": "10526534899293167432"
       },
-      12583008,
+      4194363,
       {
          "m_Children": [],
-         "m_Parent": ""
+         "m_Parent": "15346622620313816836"
       },
-      11534417,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      12583009,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534386,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      12583010,
+      10485761,
       {
          "m_Children": [
             "4098787822426184224",
@@ -732,91 +738,17 @@
          ],
          "m_Parent": ""
       },
-      11534424,
+      4194308,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      16777218,
+      4194344,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      11534373,
-      {
-         "m_Children": [
-            "12253833483768012129",
-            "5341764972209801935"
-         ],
-         "m_Parent": ""
-      },
-      11534422,
-      {
-         "m_Children": [],
-         "m_Parent": "4487062596090695470"
-      },
-      11534420,
-      {
-         "m_Children": [],
-         "m_Parent": "3083324973552451588"
-      },
-      18874459,
-      {
-         "m_Children": [],
-         "m_Parent": "2793467606270948995"
-      },
-      11534340,
-      {
-         "m_Children": [],
-         "m_Parent": "15346622620313816836"
-      },
-      11534418,
-      {
-         "m_Children": [],
-         "m_Parent": "17717983652414676124"
-      },
-      11534415,
-      {
-         "m_Children": [],
-         "m_Parent": "17717983652414676124"
-      },
-      11534378,
-      {
-         "m_Children": [
-            "5032629955791283077",
-            "739345412699227593",
-            "14386861699052173988"
-         ],
-         "m_Parent": ""
-      },
-      11534414,
-      {
-         "m_Children": [],
-         "m_Parent": "15346622620313816836"
-      },
-      11534412,
-      {
-         "m_Children": [
-            "4694208894626685328"
-         ],
-         "m_Parent": ""
-      },
-      11534411,
-      {
-         "m_Children": [],
-         "m_Parent": "12773985037250275535"
-      },
-      11534410,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534408,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      11534407,
+      4194328,
       {
          "m_Children": [
             "3183613570360925687",
@@ -825,57 +757,160 @@
          ],
          "m_Parent": ""
       },
-      11534406,
+      4194311,
       {
          "m_Children": [],
-         "m_Parent": "8638724527096793179"
+         "m_Parent": "17141392075740864435"
       },
-      11534369,
+      4194334,
       {
          "m_Children": [
-            "2764085969092453395",
-            "16010057194925687253",
-            "8172867766267368227"
+            "11690234509869862253",
+            "13893834637884961600"
          ],
          "m_Parent": ""
       },
-      11534405,
+      4194367,
       {
          "m_Children": [],
-         "m_Parent": "7518721778352420521"
+         "m_Parent": "17141392075740864435"
       },
-      11534404,
+      4194309,
       {
-         "m_Children": [
-            "15522695247995750922",
-            "16652792847362431326",
-            "10232440659126932282",
-            "2738161342624268926",
-            "12922571304963767824"
-         ],
-         "m_Parent": ""
+         "m_Children": [],
+         "m_Parent": "2793467606270948995"
       },
-      11534403,
+      4194313,
       {
          "m_Children": [],
          "m_Parent": "18256738796623824957"
       },
-      23068764,
+      4194371,
       {
          "m_Children": [],
-         "m_Parent": "17141392075740864435"
+         "m_Parent": "8250124719872487376"
       },
-      20971538,
+      4194364,
       {
          "m_Children": [],
-         "m_Parent": "17141392075740864435"
+         "m_Parent": "8250124719872487376"
       },
-      11534402,
+      4194356,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      4194326,
+      {
+         "m_Children": [],
+         "m_Parent": "4487062596090695470"
+      },
+      4194315,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194355,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      4194316,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194327,
+      {
+         "m_Children": [],
+         "m_Parent": "15346622620313816836"
+      },
+      4194392,
+      {
+         "m_Children": [],
+         "m_Parent": "17717983652414676124"
+      },
+      4194317,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      4194318,
+      {
+         "m_Children": [],
+         "m_Parent": "17747842400141749309"
+      },
+      4194349,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194338,
+      {
+         "m_Children": [],
+         "m_Parent": "4487062596090695470"
+      },
+      4194319,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      4194347,
+      {
+         "m_Children": [],
+         "m_Parent": "18256738796623824957"
+      },
+      4194385,
+      {
+         "m_Children": [],
+         "m_Parent": "8638724527096793179"
+      },
+      4194322,
       {
          "m_Children": [],
          "m_Parent": "5568717759846241375"
       },
-      11534401,
+      4194362,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194360,
+      {
+         "m_Children": [],
+         "m_Parent": "5568717759846241375"
+      },
+      4194325,
+      {
+         "m_Children": [],
+         "m_Parent": "7518721778352420521"
+      },
+      4194329,
+      {
+         "m_Children": [],
+         "m_Parent": "5700592569056788822"
+      },
+      4194330,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      4194346,
+      {
+         "m_Children": [],
+         "m_Parent": "17717983652414676124"
+      },
+      4194331,
+      {
+         "m_Children": [],
+         "m_Parent": "8602463449476522826"
+      },
+      4194332,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      4194333,
       {
          "m_Children": [
             "11704522873693597201",
@@ -884,182 +919,54 @@
          ],
          "m_Parent": ""
       },
-      11534400,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534399,
-      {
-         "m_Children": [
-            "11690234509869862253",
-            "13893834637884961600"
-         ],
-         "m_Parent": ""
-      },
-      35651590,
-      {
-         "m_Children": [],
-         "m_Parent": "15346622620313816836"
-      },
-      11534396,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534393,
-      {
-         "m_Children": [],
-         "m_Parent": "17717983652414676124"
-      },
-      11534389,
-      {
-         "m_Children": [
-            "7252527653907453289",
-            "13122366621517613341",
-            "8265603442841886971"
-         ],
-         "m_Parent": ""
-      },
-      11534388,
-      {
-         "m_Children": [],
-         "m_Parent": "5700592569056788822"
-      },
-      11534357,
-      {
-         "m_Children": [],
-         "m_Parent": "4487062596090695470"
-      },
-      11534384,
-      {
-         "m_Children": [],
-         "m_Parent": "5568717759846241375"
-      },
-      20971609,
-      {
-         "m_Children": [],
-         "m_Parent": "11179364070372630161"
-      },
-      24117289,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      20971610,
-      {
-         "m_Children": [],
-         "m_Parent": "8250124719872487376"
-      },
-      11534409,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      11534350,
-      {
-         "m_Children": [],
-         "m_Parent": "17747842400141749309"
-      },
-      11534383,
-      {
-         "m_Children": [],
-         "m_Parent": "17747842400141749309"
-      },
-      12583007,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      11534380,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      11534397,
-      {
-         "m_Children": [],
-         "m_Parent": "18256738796623824957"
-      },
-      11534376,
-      {
-         "m_Children": [],
-         "m_Parent": "10526534899293167432"
-      },
-      11534374,
-      {
-         "m_Children": [],
-         "m_Parent": "1693422613737718374"
-      },
-      11534394,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534372,
+      4194336,
       {
          "m_Children": [],
          "m_Parent": "2729116090822182374"
       },
-      11534370,
-      {
-         "m_Children": [
-            "11815244249492137024",
-            "938949463693376217"
-         ],
-         "m_Parent": ""
-      },
-      12582955,
-      {
-         "m_Children": [],
-         "m_Parent": "5700592569056788822"
-      },
-      11534395,
-      {
-         "m_Children": [],
-         "m_Parent": "8250124719872487376"
-      },
-      11534365,
+      4194376,
       {
          "m_Children": [],
          "m_Parent": "8602463449476522826"
       },
-      11534364,
-      {
-         "m_Children": [],
-         "m_Parent": "8638724527096793179"
-      },
-      11534363,
-      {
-         "m_Children": [],
-         "m_Parent": "11179364070372630161"
-      },
-      11534360,
-      {
-         "m_Children": [],
-         "m_Parent": "5568717759846241375"
-      },
-      11534359,
+      4194320,
       {
          "m_Children": [],
          "m_Parent": "17141392075740864435"
       },
-      17825793,
+      4194395,
       {
          "m_Children": [],
-         "m_Parent": "7518721778352420521"
+         "m_Parent": "17141392075740864435"
       },
-      11534356,
+      4194394,
       {
          "m_Children": [],
+         "m_Parent": "15346622620313816836"
+      },
+      4194321,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      4194389,
+      {
+         "m_Children": [],
+         "m_Parent": "11179364070372630161"
+      },
+      4194340,
+      {
+         "m_Children": [
+            "4694208894626685328"
+         ],
          "m_Parent": ""
       },
-      11534392,
+      4194337,
       {
          "m_Children": [],
-         "m_Parent": "12773985037250275535"
+         "m_Parent": "17717983652414676124"
       },
-      11534353,
+      4194339,
       {
          "m_Children": [
             "16064886909957664133",
@@ -1071,154 +978,65 @@
          ],
          "m_Parent": ""
       },
-      11534361,
-      {
-         "m_Children": [],
-         "m_Parent": "8602463449476522826"
-      },
-      11534351,
-      {
-         "m_Children": [],
-         "m_Parent": "14719781833455431992"
-      },
-      11534367,
-      {
-         "m_Children": [],
-         "m_Parent": "1693422613737718374"
-      },
-      11534371,
-      {
-         "m_Children": [],
-         "m_Parent": "7518721778352420521"
-      },
-      11534349,
-      {
-         "m_Children": [],
-         "m_Parent": "2793467606270948995"
-      },
-      11534348,
-      {
-         "m_Children": [],
-         "m_Parent": "4487062596090695470"
-      },
-      11534398,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534347,
-      {
-         "m_Children": [],
-         "m_Parent": "8638724527096793179"
-      },
-      11534346,
-      {
-         "m_Children": [
-            "12331692901831594538",
-            "6300704751841976918",
-            "5621524118966297762"
-         ],
-         "m_Parent": ""
-      },
-      11534421,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534345,
-      {
-         "m_Children": [],
-         "m_Parent": "18256738796623824957"
-      },
-      11534355,
-      {
-         "m_Children": [
-            "18232374864943781219",
-            "18350626281452126156"
-         ],
-         "m_Parent": ""
-      },
-      11534390,
-      {
-         "m_Children": [],
-         "m_Parent": "2729116090822182374"
-      },
-      23068677,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      11534344,
-      {
-         "m_Children": [],
-         "m_Parent": "10526534899293167432"
-      },
-      11534362,
-      {
-         "m_Children": [
-            "2981591812823467501"
-         ],
-         "m_Parent": ""
-      },
-      11534385,
-      {
-         "m_Children": [],
-         "m_Parent": "11179364070372630161"
-      },
-      11534391,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      11534358,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      11534387,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      20971607,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      30408704,
-      {
-         "m_Children": [
-            "10961172670547181262",
-            "18082458673077682882",
-            "7045176196596716171"
-         ],
-         "m_Parent": ""
-      },
-      11534375,
-      {
-         "m_Children": [],
-         "m_Parent": "10526534899293167432"
-      },
-      11534352,
-      {
-         "m_Children": [
-            "15236931178165147777",
-            "6289423023894902861",
-            "16378991574705379567"
-         ],
-         "m_Parent": ""
-      },
-      18874400,
+      4194341,
       {
          "m_Children": [],
          "m_Parent": "12773985037250275535"
       },
-      11534416,
+      4194357,
+      {
+         "m_Children": [
+            "15522695247995750922",
+            "16652792847362431326",
+            "10232440659126932282",
+            "2738161342624268926",
+            "12922571304963767824"
+         ],
+         "m_Parent": ""
+      },
+      4194365,
+      {
+         "m_Children": [
+            "12253833483768012129",
+            "5341764972209801935"
+         ],
+         "m_Parent": ""
+      },
+      4194345,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      4194342,
+      {
+         "m_Children": [
+            "2764085969092453395",
+            "16010057194925687253",
+            "8172867766267368227"
+         ],
+         "m_Parent": ""
+      },
+      4194314,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      12582957,
+      4194374,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      4194343,
+      {
+         "m_Children": [],
+         "m_Parent": "8638724527096793179"
+      },
+      4194348,
+      {
+         "m_Children": [],
+         "m_Parent": "4487062596090695470"
+      },
+      4194351,
       {
          "m_Children": [
             "5477758466079836628",
@@ -1227,7 +1045,240 @@
          ],
          "m_Parent": ""
       },
-      12582919,
+      4194352,
+      {
+         "m_Children": [],
+         "m_Parent": "7518721778352420521"
+      },
+      4194366,
+      {
+         "m_Children": [
+            "555763289228690012",
+            "7237907308266715578",
+            "14783206945654960298"
+         ],
+         "m_Parent": ""
+      },
+      4194353,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194358,
+      {
+         "m_Children": [],
+         "m_Parent": "1693422613737718374"
+      },
+      4194359,
+      {
+         "m_Children": [],
+         "m_Parent": "17747842400141749309"
+      },
+      4194361,
+      {
+         "m_Children": [],
+         "m_Parent": "17747842400141749309"
+      },
+      4194368,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194369,
+      {
+         "m_Children": [],
+         "m_Parent": "12773985037250275535"
+      },
+      4194370,
+      {
+         "m_Children": [],
+         "m_Parent": "5568717759846241375"
+      },
+      4194372,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194350,
+      {
+         "m_Children": [
+            "11815244249492137024",
+            "938949463693376217"
+         ],
+         "m_Parent": ""
+      },
+      4194354,
+      {
+         "m_Children": [],
+         "m_Parent": "8602463449476522826"
+      },
+      4194373,
+      {
+         "m_Children": [],
+         "m_Parent": "5700592569056788822"
+      },
+      4194375,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      4194377,
+      {
+         "m_Children": [],
+         "m_Parent": "3083324973552451588"
+      },
+      4194378,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194379,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194380,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      4194381,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      4194382,
+      {
+         "m_Children": [],
+         "m_Parent": "12773985037250275535"
+      },
+      4194310,
+      {
+         "m_Children": [],
+         "m_Parent": "14719781833455431992"
+      },
+      4194312,
+      {
+         "m_Children": [],
+         "m_Parent": "2729116090822182374"
+      },
+      4194386,
+      {
+         "m_Children": [],
+         "m_Parent": "18256738796623824957"
+      },
+      4194398,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194387,
+      {
+         "m_Children": [
+            "18232374864943781219",
+            "18350626281452126156"
+         ],
+         "m_Parent": ""
+      },
+      4194388,
+      {
+         "m_Children": [],
+         "m_Parent": "11179364070372630161"
+      },
+      4194390,
+      {
+         "m_Children": [],
+         "m_Parent": "2729116090822182374"
+      },
+      4194391,
+      {
+         "m_Children": [
+            "7252527653907453289",
+            "13122366621517613341",
+            "8265603442841886971"
+         ],
+         "m_Parent": ""
+      },
+      4194393,
+      {
+         "m_Children": [],
+         "m_Parent": "2793467606270948995"
+      },
+      4194323,
+      {
+         "m_Children": [],
+         "m_Parent": "11179364070372630161"
+      },
+      4194324,
+      {
+         "m_Children": [
+            "12331692901831594538",
+            "6300704751841976918",
+            "5621524118966297762",
+            "743192072763579533",
+            "3905383112044026061",
+            "11332242690765056742",
+            "15635119534585804154",
+            "5816545067232003812"
+         ],
+         "m_Parent": ""
+      },
+      4194396,
+      {
+         "m_Children": [],
+         "m_Parent": "7518721778352420521"
+      },
+      4194397,
+      {
+         "m_Children": [
+            "5032629955791283077",
+            "739345412699227593",
+            "14386861699052173988"
+         ],
+         "m_Parent": ""
+      },
+      4194384,
+      {
+         "m_Children": [],
+         "m_Parent": "1693422613737718374"
+      },
+      4194383,
+      {
+         "m_Children": [],
+         "m_Parent": "15346622620313816836"
+      },
+      4194399,
+      {
+         "m_Children": [
+            "2981591812823467501"
+         ],
+         "m_Parent": ""
+      },
+      4194400,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194401,
+      {
+         "m_Children": [
+            "15236931178165147777",
+            "6289423023894902861",
+            "16378991574705379567"
+         ],
+         "m_Parent": ""
+      },
+      4194402,
+      {
+         "m_Children": [],
+         "m_Parent": "8638724527096793179"
+      },
+      4194403,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      4194404,
       {
          "m_Children": [
             "6549103985751571312",
@@ -1236,761 +1287,800 @@
          ],
          "m_Parent": ""
       },
-      14680067,
+      4194405,
+      {
+         "m_Children": [],
+         "m_Parent": "10526534899293167432"
+      },
+      4194406,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      4194407,
+      {
+         "m_Children": [
+            "10961172670547181262",
+            "18082458673077682882",
+            "7045176196596716171"
+         ],
+         "m_Parent": ""
+      },
+      23068777,
       {
          "m_Children": [],
          "m_Parent": "15346622620313816836"
       },
-      11534419,
+      35651692,
       {
          "m_Children": [],
-         "m_Parent": "15346622620313816836"
+         "m_Parent": "16084349820120907883"
       }
    ],
    [
-      99,
-      23068718,
+      107,
+      46137450,
       {
          "m_Active": true,
-         "m_GUID": "16782888489591353298",
-         "m_Name": "LeftLedge",
+         "m_GUID": "16084349820120907883",
+         "m_Name": "Collider_MovingHoleInTheWall",
          "m_Tag": ""
       },
-      11534413,
+      4194335,
       {
          "m_Active": true,
-         "m_GUID": "13525158816526212984",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
+         "m_GUID": "10046354506112695696",
+         "m_Name": "JumpPad",
+         "m_Tag": "JumpPad"
       },
-      23068702,
+      9437186,
       {
          "m_Active": true,
-         "m_GUID": "17747842400141749309",
-         "m_Name": "TumbleWeed_7",
-         "m_Tag": "RollingObstacle"
+         "m_GUID": "743192072763579533",
+         "m_Name": "Collider_RollingPlatform_4",
+         "m_Tag": "Ground"
       },
-      58720356,
+      6291459,
       {
          "m_Active": true,
          "m_GUID": "7518721778352420521",
          "m_Name": "TumbleWeed_3",
          "m_Tag": "RollingObstacle"
       },
-      12583006,
+      11534336,
       {
          "m_Active": true,
-         "m_GUID": "555763289228690012",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      12583008,
-      {
-         "m_Active": true,
-         "m_GUID": "16696080460806998314",
-         "m_Name": "Directional Light",
-         "m_Tag": ""
-      },
-      11534417,
-      {
-         "m_Active": true,
-         "m_GUID": "7980446520441605751",
-         "m_Name": "Moley's Head Collider",
-         "m_Tag": "RedCollider"
-      },
-      12583009,
-      {
-         "m_Active": true,
-         "m_GUID": "15969774912167081507",
-         "m_Name": "JumpPad",
-         "m_Tag": "JumpPad"
-      },
-      11534386,
-      {
-         "m_Active": true,
-         "m_GUID": "9128911171259814468",
-         "m_Name": "Collider_Floor_6",
+         "m_GUID": "5816545067232003812",
+         "m_Name": "Collider_RollingPlatform_8",
          "m_Tag": "Ground"
       },
-      12583010,
-      {
-         "m_Active": true,
-         "m_GUID": "17141392075740864435",
-         "m_Name": "Collider_2",
-         "m_Tag": ""
-      },
-      11534424,
-      {
-         "m_Active": true,
-         "m_GUID": "14737049914315934620",
-         "m_Name": "Starting Platform",
-         "m_Tag": "Ground"
-      },
-      16777218,
-      {
-         "m_Active": true,
-         "m_GUID": "17585162364418683998",
-         "m_Name": "Level1_Environment",
-         "m_Tag": ""
-      },
-      11534373,
-      {
-         "m_Active": true,
-         "m_GUID": "5700592569056788822",
-         "m_Name": "Triggers",
-         "m_Tag": ""
-      },
-      11534422,
-      {
-         "m_Active": true,
-         "m_GUID": "8265603442841886971",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
-      },
-      11534420,
-      {
-         "m_Active": true,
-         "m_GUID": "4694208894626685328",
-         "m_Name": "Power Manager",
-         "m_Tag": ""
-      },
-      18874459,
-      {
-         "m_Active": true,
-         "m_GUID": "18232374864943781219",
-         "m_Name": "ActivePowerUp",
-         "m_Tag": "RightHUD"
-      },
-      11534340,
-      {
-         "m_Active": true,
-         "m_GUID": "16652792847362431326",
-         "m_Name": "HoleInTheWall_Left",
-         "m_Tag": ""
-      },
-      11534418,
-      {
-         "m_Active": true,
-         "m_GUID": "739345412699227593",
-         "m_Name": "PlatformChallenge_2",
-         "m_Tag": ""
-      },
-      11534415,
-      {
-         "m_Active": true,
-         "m_GUID": "5032629955791283077",
-         "m_Name": "PlatformChallenge_1",
-         "m_Tag": ""
-      },
-      11534378,
-      {
-         "m_Active": true,
-         "m_GUID": "17717983652414676124",
-         "m_Name": "Collider_MovingPlatformsChallenge",
-         "m_Tag": ""
-      },
-      11534414,
+      4194363,
       {
          "m_Active": true,
          "m_GUID": "12922571304963767824",
          "m_Name": "HoleInTheWall_Bottom",
          "m_Tag": ""
       },
-      11534412,
+      10485761,
       {
          "m_Active": true,
-         "m_GUID": "3083324973552451588",
-         "m_Name": "Moley",
-         "m_Tag": "Red"
-      },
-      11534411,
-      {
-         "m_Active": true,
-         "m_GUID": "8172867766267368227",
-         "m_Name": "Collider_Gate_3",
-         "m_Tag": "Ground"
-      },
-      11534410,
-      {
-         "m_Active": true,
-         "m_GUID": "4322846592163836925",
-         "m_Name": "Button",
+         "m_GUID": "17141392075740864435",
+         "m_Name": "Collider_2",
          "m_Tag": ""
       },
-      11534408,
+      4194308,
       {
          "m_Active": true,
-         "m_GUID": "10307113691108978772",
-         "m_Name": "Collider_Floor_4",
-         "m_Tag": "Ground"
+         "m_GUID": "15969774912167081507",
+         "m_Name": "JumpPad",
+         "m_Tag": "JumpPad"
       },
-      11534407,
+      4194344,
+      {
+         "m_Active": true,
+         "m_GUID": "16696080460806998314",
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      4194328,
       {
          "m_Active": true,
          "m_GUID": "11179364070372630161",
          "m_Name": "TumbleWeed_9",
          "m_Tag": "RollingObstacle"
       },
-      11534406,
-      {
-         "m_Active": true,
-         "m_GUID": "18082458673077682882",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      11534369,
-      {
-         "m_Active": true,
-         "m_GUID": "12773985037250275535",
-         "m_Name": "Collider_Gate",
-         "m_Tag": ""
-      },
-      11534405,
-      {
-         "m_Active": true,
-         "m_GUID": "17606160331453763170",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534404,
-      {
-         "m_Active": true,
-         "m_GUID": "15346622620313816836",
-         "m_Name": "Collider_FirstHoleInTheWall",
-         "m_Tag": ""
-      },
-      11534403,
-      {
-         "m_Active": true,
-         "m_GUID": "11075228330527057345",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      23068764,
-      {
-         "m_Active": true,
-         "m_GUID": "6416252350877334313",
-         "m_Name": "Collider_2_5",
-         "m_Tag": "Ground"
-      },
-      20971538,
-      {
-         "m_Active": true,
-         "m_GUID": "4098787822426184224",
-         "m_Name": "Collider_2_1",
-         "m_Tag": "Ground"
-      },
-      11534402,
-      {
-         "m_Active": true,
-         "m_GUID": "6289423023894902861",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      11534401,
-      {
-         "m_Active": true,
-         "m_GUID": "18256738796623824957",
-         "m_Name": "TumbleWeed_5",
-         "m_Tag": "RollingObstacle"
-      },
-      11534400,
-      {
-         "m_Active": true,
-         "m_GUID": "8937053672119431330",
-         "m_Name": "Strawberry",
-         "m_Tag": "Strawberry"
-      },
-      11534399,
-      {
-         "m_Active": true,
-         "m_GUID": "8250124719872487376",
-         "m_Name": "LeftCharacter_HUD",
-         "m_Tag": "LeftHUD"
-      },
-      35651590,
-      {
-         "m_Active": true,
-         "m_GUID": "15522695247995750922",
-         "m_Name": "HoleInTheWall_Floor",
-         "m_Tag": ""
-      },
-      11534396,
-      {
-         "m_Active": true,
-         "m_GUID": "31758499223845933",
-         "m_Name": "Holey's Head Collider",
-         "m_Tag": "BlueCollider"
-      },
-      11534393,
-      {
-         "m_Active": true,
-         "m_GUID": "14386861699052173988",
-         "m_Name": "PlatformChallenge_3",
-         "m_Tag": ""
-      },
-      11534389,
-      {
-         "m_Active": true,
-         "m_GUID": "4487062596090695470",
-         "m_Name": "TumbleWeed_6",
-         "m_Tag": "RollingObstacle"
-      },
-      11534388,
-      {
-         "m_Active": true,
-         "m_GUID": "5341764972209801935",
-         "m_Name": "Trigger_B",
-         "m_Tag": ""
-      },
-      11534357,
-      {
-         "m_Active": true,
-         "m_GUID": "13122366621517613341",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      11534384,
-      {
-         "m_Active": true,
-         "m_GUID": "16378991574705379567",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
-      },
-      20971609,
-      {
-         "m_Active": true,
-         "m_GUID": "15807434217976115592",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      24117289,
-      {
-         "m_Active": true,
-         "m_GUID": "13403403417414574728",
-         "m_Name": "Collider_Floor_2",
-         "m_Tag": "Ground"
-      },
-      20971610,
-      {
-         "m_Active": true,
-         "m_GUID": "11690234509869862253",
-         "m_Name": "ActivePowerUp",
-         "m_Tag": "LeftHUD"
-      },
-      11534409,
-      {
-         "m_Active": true,
-         "m_GUID": "18082106574727795430",
-         "m_Name": "Collider_2_2",
-         "m_Tag": "Ground"
-      },
-      11534350,
-      {
-         "m_Active": true,
-         "m_GUID": "7237907308266715578",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      11534383,
-      {
-         "m_Active": true,
-         "m_GUID": "14783206945654960298",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
-      },
-      12583007,
+      4194311,
       {
          "m_Active": true,
          "m_GUID": "11673026770933112185",
          "m_Name": "Collider_2_4",
          "m_Tag": "Ground"
       },
-      11534380,
+      4194334,
       {
          "m_Active": true,
-         "m_GUID": "16064886909957664133",
-         "m_Name": "Collider_Floor_1",
+         "m_GUID": "8250124719872487376",
+         "m_Name": "LeftCharacter_HUD",
+         "m_Tag": "LeftHUD"
+      },
+      4194367,
+      {
+         "m_Active": true,
+         "m_GUID": "6416252350877334313",
+         "m_Name": "Collider_2_5",
          "m_Tag": "Ground"
       },
-      11534397,
+      4194309,
       {
          "m_Active": true,
-         "m_GUID": "1844482618496107827",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
+         "m_GUID": "18232374864943781219",
+         "m_Name": "ActivePowerUp",
+         "m_Tag": "RightHUD"
       },
-      11534376,
+      4194313,
       {
          "m_Active": true,
-         "m_GUID": "6300704751841976918",
-         "m_Name": "Collider_RollingPlatform_2",
+         "m_GUID": "11075228330527057345",
+         "m_Name": "LeftLedge",
          "m_Tag": ""
       },
-      11534374,
-      {
-         "m_Active": true,
-         "m_GUID": "11815244249492137024",
-         "m_Name": "RespawnPoint1",
-         "m_Tag": ""
-      },
-      11534394,
-      {
-         "m_Active": true,
-         "m_GUID": "17842243038432436161",
-         "m_Name": "Level1_Whitebox",
-         "m_Tag": ""
-      },
-      11534372,
-      {
-         "m_Active": true,
-         "m_GUID": "6549103985751571312",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534370,
-      {
-         "m_Active": true,
-         "m_GUID": "1693422613737718374",
-         "m_Name": "RespawnPointManager",
-         "m_Tag": ""
-      },
-      12582955,
-      {
-         "m_Active": true,
-         "m_GUID": "12253833483768012129",
-         "m_Name": "Trigger_A",
-         "m_Tag": ""
-      },
-      11534395,
+      4194371,
       {
          "m_Active": true,
          "m_GUID": "13893834637884961600",
          "m_Name": "NotActivePowerUp",
          "m_Tag": "LeftHUD"
       },
-      11534365,
+      4194364,
       {
          "m_Active": true,
-         "m_GUID": "5477758466079836628",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
+         "m_GUID": "11690234509869862253",
+         "m_Name": "ActivePowerUp",
+         "m_Tag": "LeftHUD"
       },
-      11534364,
+      4194356,
       {
          "m_Active": true,
-         "m_GUID": "10961172670547181262",
+         "m_GUID": "16064886909957664133",
+         "m_Name": "Collider_Floor_1",
+         "m_Tag": "Ground"
+      },
+      4194326,
+      {
+         "m_Active": true,
+         "m_GUID": "8265603442841886971",
          "m_Name": "RightLedge",
          "m_Tag": ""
       },
-      11534363,
-      {
-         "m_Active": true,
-         "m_GUID": "3183613570360925687",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534360,
-      {
-         "m_Active": true,
-         "m_GUID": "15236931178165147777",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534359,
-      {
-         "m_Active": true,
-         "m_GUID": "13200389739587195014",
-         "m_Name": "Collider_2_6",
-         "m_Tag": "Ground"
-      },
-      17825793,
-      {
-         "m_Active": true,
-         "m_GUID": "688724305020336945",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      11534356,
-      {
-         "m_Active": true,
-         "m_GUID": "2354601854269553172",
-         "m_Name": "Blueberry",
-         "m_Tag": "Blueberry"
-      },
-      11534392,
-      {
-         "m_Active": true,
-         "m_GUID": "16010057194925687253",
-         "m_Name": "Collider_Gate_2",
-         "m_Tag": "Ground"
-      },
-      11534353,
-      {
-         "m_Active": true,
-         "m_GUID": "7472364672095714181",
-         "m_Name": "Collider_Floor",
-         "m_Tag": ""
-      },
-      11534361,
-      {
-         "m_Active": true,
-         "m_GUID": "1464596291629381124",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
-      },
-      11534351,
-      {
-         "m_Active": true,
-         "m_GUID": "2981591812823467501",
-         "m_Name": "Power Manager",
-         "m_Tag": ""
-      },
-      11534367,
-      {
-         "m_Active": true,
-         "m_GUID": "938949463693376217",
-         "m_Name": "RespawnPoint2",
-         "m_Tag": ""
-      },
-      11534371,
-      {
-         "m_Active": true,
-         "m_GUID": "13555650062363726339",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
-      },
-      11534349,
-      {
-         "m_Active": true,
-         "m_GUID": "18350626281452126156",
-         "m_Name": "NotActivePowerUp",
-         "m_Tag": "RightHUD"
-      },
-      11534348,
-      {
-         "m_Active": true,
-         "m_GUID": "7252527653907453289",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534398,
-      {
-         "m_Active": true,
-         "m_GUID": "13834884240856388338",
-         "m_Name": "Main Camera",
-         "m_Tag": ""
-      },
-      11534347,
-      {
-         "m_Active": true,
-         "m_GUID": "7045176196596716171",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534346,
-      {
-         "m_Active": true,
-         "m_GUID": "10526534899293167432",
-         "m_Name": "Collider_RollingPlatform",
-         "m_Tag": ""
-      },
-      11534421,
-      {
-         "m_Active": true,
-         "m_GUID": "9255418460071677599",
-         "m_Name": "Moving_Platform_1",
-         "m_Tag": "Platform"
-      },
-      11534345,
-      {
-         "m_Active": true,
-         "m_GUID": "11704522873693597201",
-         "m_Name": "RollingObjectRender",
-         "m_Tag": ""
-      },
-      11534355,
-      {
-         "m_Active": true,
-         "m_GUID": "2793467606270948995",
-         "m_Name": "RightCharacter_HUD",
-         "m_Tag": "RightHUD"
-      },
-      11534390,
-      {
-         "m_Active": true,
-         "m_GUID": "13115448215171162680",
-         "m_Name": "LeftLedge",
-         "m_Tag": ""
-      },
-      23068677,
-      {
-         "m_Active": true,
-         "m_GUID": "4772649382411875457",
-         "m_Name": "Collider_2_3",
-         "m_Tag": "Ground"
-      },
-      11534344,
-      {
-         "m_Active": true,
-         "m_GUID": "5621524118966297762",
-         "m_Name": "Collider_RollingPlatform_3",
-         "m_Tag": ""
-      },
-      11534362,
-      {
-         "m_Active": true,
-         "m_GUID": "14719781833455431992",
-         "m_Name": "Holey",
-         "m_Tag": "Blue"
-      },
-      11534385,
-      {
-         "m_Active": true,
-         "m_GUID": "16790607263958209951",
-         "m_Name": "RightLedge",
-         "m_Tag": ""
-      },
-      11534391,
-      {
-         "m_Active": true,
-         "m_GUID": "5577926421103857274",
-         "m_Name": "Basic Cube",
-         "m_Tag": ""
-      },
-      11534358,
-      {
-         "m_Active": true,
-         "m_GUID": "2164755031164647254",
-         "m_Name": "Collider_Floor_3",
-         "m_Tag": "Ground"
-      },
-      11534387,
-      {
-         "m_Active": true,
-         "m_GUID": "7152412592741358843",
-         "m_Name": "Collider_Floor_5",
-         "m_Tag": "Ground"
-      },
-      20971607,
+      4194315,
       {
          "m_Active": true,
          "m_GUID": "393918643888459511",
          "m_Name": "PowerUpSpawner",
          "m_Tag": "SpawnStrawberry"
       },
-      30408704,
+      4194355,
       {
          "m_Active": true,
-         "m_GUID": "8638724527096793179",
-         "m_Name": "TumbleWeed_2",
-         "m_Tag": "RollingObstacle"
-      },
-      11534375,
-      {
-         "m_Active": true,
-         "m_GUID": "12331692901831594538",
-         "m_Name": "Collider_RollingPlatform_1",
-         "m_Tag": ""
-      },
-      11534352,
-      {
-         "m_Active": true,
-         "m_GUID": "5568717759846241375",
-         "m_Name": "TumbleWeed_4",
-         "m_Tag": "RollingObstacle"
-      },
-      18874400,
-      {
-         "m_Active": true,
-         "m_GUID": "2764085969092453395",
-         "m_Name": "Collider_Gate_1",
+         "m_GUID": "7152412592741358843",
+         "m_Name": "Collider_Floor_5",
          "m_Tag": "Ground"
       },
-      11534416,
+      4194316,
+      {
+         "m_Active": true,
+         "m_GUID": "9255418460071677599",
+         "m_Name": "Moving_Platform_1",
+         "m_Tag": "Platform"
+      },
+      4194327,
+      {
+         "m_Active": true,
+         "m_GUID": "10232440659126932282",
+         "m_Name": "HoleInTheWall_Right",
+         "m_Tag": ""
+      },
+      4194392,
+      {
+         "m_Active": true,
+         "m_GUID": "739345412699227593",
+         "m_Name": "PlatformChallenge_2",
+         "m_Tag": "Ground"
+      },
+      4194317,
+      {
+         "m_Active": true,
+         "m_GUID": "9128911171259814468",
+         "m_Name": "Collider_Floor_6",
+         "m_Tag": "Ground"
+      },
+      4194318,
+      {
+         "m_Active": true,
+         "m_GUID": "555763289228690012",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194349,
       {
          "m_Active": true,
          "m_GUID": "8153914915028152974",
          "m_Name": "CameraManager",
          "m_Tag": ""
       },
-      12582957,
+      4194338,
+      {
+         "m_Active": true,
+         "m_GUID": "7252527653907453289",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194319,
+      {
+         "m_Active": true,
+         "m_GUID": "12331692901831594538",
+         "m_Name": "Collider_RollingPlatform_1",
+         "m_Tag": "Ground"
+      },
+      4194347,
+      {
+         "m_Active": true,
+         "m_GUID": "1844482618496107827",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194385,
+      {
+         "m_Active": true,
+         "m_GUID": "10961172670547181262",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194322,
+      {
+         "m_Active": true,
+         "m_GUID": "15236931178165147777",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194362,
+      {
+         "m_Active": true,
+         "m_GUID": "14737049914315934620",
+         "m_Name": "Starting Platform",
+         "m_Tag": "Ground"
+      },
+      4194360,
+      {
+         "m_Active": true,
+         "m_GUID": "16378991574705379567",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194325,
+      {
+         "m_Active": true,
+         "m_GUID": "688724305020336945",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194329,
+      {
+         "m_Active": true,
+         "m_GUID": "12253833483768012129",
+         "m_Name": "Trigger_A",
+         "m_Tag": ""
+      },
+      4194330,
+      {
+         "m_Active": true,
+         "m_GUID": "5621524118966297762",
+         "m_Name": "Collider_RollingPlatform_3",
+         "m_Tag": "Ground"
+      },
+      4194346,
+      {
+         "m_Active": true,
+         "m_GUID": "5032629955791283077",
+         "m_Name": "PlatformChallenge_1",
+         "m_Tag": "Ground"
+      },
+      4194331,
+      {
+         "m_Active": true,
+         "m_GUID": "5477758466079836628",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194332,
+      {
+         "m_Active": true,
+         "m_GUID": "4772649382411875457",
+         "m_Name": "Collider_2_3",
+         "m_Tag": "Ground"
+      },
+      4194333,
+      {
+         "m_Active": true,
+         "m_GUID": "18256738796623824957",
+         "m_Name": "TumbleWeed_5",
+         "m_Tag": "RollingObstacle"
+      },
+      4194336,
+      {
+         "m_Active": true,
+         "m_GUID": "13525158816526212984",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194376,
+      {
+         "m_Active": true,
+         "m_GUID": "1464596291629381124",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194320,
+      {
+         "m_Active": true,
+         "m_GUID": "18082106574727795430",
+         "m_Name": "Collider_2_2",
+         "m_Tag": "Ground"
+      },
+      4194395,
+      {
+         "m_Active": true,
+         "m_GUID": "13200389739587195014",
+         "m_Name": "Collider_2_6",
+         "m_Tag": "Ground"
+      },
+      4194394,
+      {
+         "m_Active": true,
+         "m_GUID": "16652792847362431326",
+         "m_Name": "HoleInTheWall_Left",
+         "m_Tag": ""
+      },
+      4194321,
+      {
+         "m_Active": true,
+         "m_GUID": "3905383112044026061",
+         "m_Name": "Collider_RollingPlatform_5",
+         "m_Tag": "Ground"
+      },
+      4194389,
+      {
+         "m_Active": true,
+         "m_GUID": "3183613570360925687",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194340,
+      {
+         "m_Active": true,
+         "m_GUID": "3083324973552451588",
+         "m_Name": "Moley",
+         "m_Tag": "Red"
+      },
+      4194337,
+      {
+         "m_Active": true,
+         "m_GUID": "14386861699052173988",
+         "m_Name": "PlatformChallenge_3",
+         "m_Tag": "Ground"
+      },
+      4194339,
+      {
+         "m_Active": true,
+         "m_GUID": "7472364672095714181",
+         "m_Name": "Collider_Floor",
+         "m_Tag": ""
+      },
+      4194341,
+      {
+         "m_Active": true,
+         "m_GUID": "8172867766267368227",
+         "m_Name": "Collider_Gate_3",
+         "m_Tag": "Ground"
+      },
+      4194357,
+      {
+         "m_Active": true,
+         "m_GUID": "15346622620313816836",
+         "m_Name": "Collider_FirstHoleInTheWall",
+         "m_Tag": ""
+      },
+      4194365,
+      {
+         "m_Active": true,
+         "m_GUID": "5700592569056788822",
+         "m_Name": "Triggers",
+         "m_Tag": ""
+      },
+      4194345,
+      {
+         "m_Active": true,
+         "m_GUID": "6300704751841976918",
+         "m_Name": "Collider_RollingPlatform_2",
+         "m_Tag": "Ground"
+      },
+      4194342,
+      {
+         "m_Active": true,
+         "m_GUID": "12773985037250275535",
+         "m_Name": "Collider_Gate",
+         "m_Tag": ""
+      },
+      4194314,
+      {
+         "m_Active": true,
+         "m_GUID": "4322846592163836925",
+         "m_Name": "Button",
+         "m_Tag": ""
+      },
+      4194374,
+      {
+         "m_Active": true,
+         "m_GUID": "10307113691108978772",
+         "m_Name": "Collider_Floor_4",
+         "m_Tag": "Ground"
+      },
+      4194343,
+      {
+         "m_Active": true,
+         "m_GUID": "18082458673077682882",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194348,
+      {
+         "m_Active": true,
+         "m_GUID": "13122366621517613341",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194351,
       {
          "m_Active": true,
          "m_GUID": "8602463449476522826",
          "m_Name": "TumbleWeed_8",
          "m_Tag": "RollingObstacle"
       },
-      12582919,
+      4194352,
       {
          "m_Active": true,
-         "m_GUID": "2729116090822182374",
-         "m_Name": "TumbleWeed_1",
+         "m_GUID": "17606160331453763170",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194366,
+      {
+         "m_Active": true,
+         "m_GUID": "17747842400141749309",
+         "m_Name": "TumbleWeed_7",
          "m_Tag": "RollingObstacle"
       },
-      14680067,
+      4194353,
+      {
+         "m_Active": true,
+         "m_GUID": "31758499223845933",
+         "m_Name": "Holey's Head Collider",
+         "m_Tag": "BlueCollider"
+      },
+      4194358,
+      {
+         "m_Active": true,
+         "m_GUID": "11815244249492137024",
+         "m_Name": "RespawnPoint1",
+         "m_Tag": ""
+      },
+      4194359,
+      {
+         "m_Active": true,
+         "m_GUID": "7237907308266715578",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194361,
+      {
+         "m_Active": true,
+         "m_GUID": "14783206945654960298",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194368,
+      {
+         "m_Active": true,
+         "m_GUID": "5577926421103857274",
+         "m_Name": "Basic Cube",
+         "m_Tag": ""
+      },
+      4194369,
+      {
+         "m_Active": true,
+         "m_GUID": "16010057194925687253",
+         "m_Name": "Collider_Gate_2",
+         "m_Tag": "Ground"
+      },
+      4194370,
+      {
+         "m_Active": true,
+         "m_GUID": "6289423023894902861",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194372,
+      {
+         "m_Active": true,
+         "m_GUID": "2354601854269553172",
+         "m_Name": "Blueberry",
+         "m_Tag": "Blueberry"
+      },
+      4194350,
+      {
+         "m_Active": true,
+         "m_GUID": "1693422613737718374",
+         "m_Name": "RespawnPointManager",
+         "m_Tag": ""
+      },
+      4194354,
+      {
+         "m_Active": true,
+         "m_GUID": "16782888489591353298",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194373,
+      {
+         "m_Active": true,
+         "m_GUID": "5341764972209801935",
+         "m_Name": "Trigger_B",
+         "m_Tag": ""
+      },
+      4194375,
+      {
+         "m_Active": true,
+         "m_GUID": "11332242690765056742",
+         "m_Name": "Collider_RollingPlatform_6",
+         "m_Tag": "Ground"
+      },
+      4194377,
+      {
+         "m_Active": true,
+         "m_GUID": "4694208894626685328",
+         "m_Name": "Power Manager",
+         "m_Tag": ""
+      },
+      4194378,
+      {
+         "m_Active": true,
+         "m_GUID": "13834884240856388338",
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      4194379,
+      {
+         "m_Active": true,
+         "m_GUID": "17842243038432436161",
+         "m_Name": "Level1_Whitebox",
+         "m_Tag": ""
+      },
+      4194380,
+      {
+         "m_Active": true,
+         "m_GUID": "13403403417414574728",
+         "m_Name": "Collider_Floor_2",
+         "m_Tag": "Ground"
+      },
+      4194381,
+      {
+         "m_Active": true,
+         "m_GUID": "4098787822426184224",
+         "m_Name": "Collider_2_1",
+         "m_Tag": "Ground"
+      },
+      4194382,
+      {
+         "m_Active": true,
+         "m_GUID": "2764085969092453395",
+         "m_Name": "Collider_Gate_1",
+         "m_Tag": "Ground"
+      },
+      4194310,
+      {
+         "m_Active": true,
+         "m_GUID": "2981591812823467501",
+         "m_Name": "Power Manager",
+         "m_Tag": ""
+      },
+      4194312,
+      {
+         "m_Active": true,
+         "m_GUID": "6549103985751571312",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194386,
+      {
+         "m_Active": true,
+         "m_GUID": "11704522873693597201",
+         "m_Name": "RollingObjectRender",
+         "m_Tag": ""
+      },
+      4194398,
+      {
+         "m_Active": true,
+         "m_GUID": "8937053672119431330",
+         "m_Name": "Strawberry",
+         "m_Tag": "Strawberry"
+      },
+      4194387,
+      {
+         "m_Active": true,
+         "m_GUID": "2793467606270948995",
+         "m_Name": "RightCharacter_HUD",
+         "m_Tag": "RightHUD"
+      },
+      4194388,
+      {
+         "m_Active": true,
+         "m_GUID": "15807434217976115592",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194390,
+      {
+         "m_Active": true,
+         "m_GUID": "13115448215171162680",
+         "m_Name": "LeftLedge",
+         "m_Tag": ""
+      },
+      4194391,
+      {
+         "m_Active": true,
+         "m_GUID": "4487062596090695470",
+         "m_Name": "TumbleWeed_6",
+         "m_Tag": "RollingObstacle"
+      },
+      4194393,
+      {
+         "m_Active": true,
+         "m_GUID": "18350626281452126156",
+         "m_Name": "NotActivePowerUp",
+         "m_Tag": "RightHUD"
+      },
+      4194323,
+      {
+         "m_Active": true,
+         "m_GUID": "16790607263958209951",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194324,
+      {
+         "m_Active": true,
+         "m_GUID": "10526534899293167432",
+         "m_Name": "Collider_RollingPlatform",
+         "m_Tag": ""
+      },
+      4194396,
+      {
+         "m_Active": true,
+         "m_GUID": "13555650062363726339",
+         "m_Name": "RightLedge",
+         "m_Tag": ""
+      },
+      4194397,
+      {
+         "m_Active": true,
+         "m_GUID": "17717983652414676124",
+         "m_Name": "Collider_MovingPlatformsChallenge",
+         "m_Tag": ""
+      },
+      4194384,
+      {
+         "m_Active": true,
+         "m_GUID": "938949463693376217",
+         "m_Name": "RespawnPoint2",
+         "m_Tag": ""
+      },
+      4194383,
       {
          "m_Active": true,
          "m_GUID": "2738161342624268926",
          "m_Name": "HoleInTheWall_Top",
          "m_Tag": ""
       },
-      11534419,
+      4194399,
       {
          "m_Active": true,
-         "m_GUID": "10232440659126932282",
-         "m_Name": "HoleInTheWall_Right",
+         "m_GUID": "14719781833455431992",
+         "m_Name": "Holey",
+         "m_Tag": "Blue"
+      },
+      4194400,
+      {
+         "m_Active": true,
+         "m_GUID": "7980446520441605751",
+         "m_Name": "Moley's Head Collider",
+         "m_Tag": "RedCollider"
+      },
+      4194401,
+      {
+         "m_Active": true,
+         "m_GUID": "5568717759846241375",
+         "m_Name": "TumbleWeed_4",
+         "m_Tag": "RollingObstacle"
+      },
+      4194402,
+      {
+         "m_Active": true,
+         "m_GUID": "7045176196596716171",
+         "m_Name": "RollingObjectRender",
          "m_Tag": ""
+      },
+      4194403,
+      {
+         "m_Active": true,
+         "m_GUID": "2164755031164647254",
+         "m_Name": "Collider_Floor_3",
+         "m_Tag": "Ground"
+      },
+      4194404,
+      {
+         "m_Active": true,
+         "m_GUID": "2729116090822182374",
+         "m_Name": "TumbleWeed_1",
+         "m_Tag": "RollingObstacle"
+      },
+      4194405,
+      {
+         "m_Active": true,
+         "m_GUID": "15635119534585804154",
+         "m_Name": "Collider_RollingPlatform_7",
+         "m_Tag": "Ground"
+      },
+      4194406,
+      {
+         "m_Active": true,
+         "m_GUID": "17585162364418683998",
+         "m_Name": "Level1_Environment",
+         "m_Tag": ""
+      },
+      4194407,
+      {
+         "m_Active": true,
+         "m_GUID": "8638724527096793179",
+         "m_Name": "TumbleWeed_2",
+         "m_Tag": "RollingObstacle"
+      },
+      23068777,
+      {
+         "m_Active": true,
+         "m_GUID": "15522695247995750922",
+         "m_Name": "HoleInTheWall_Floor",
+         "m_Tag": "Ground"
+      },
+      35651692,
+      {
+         "m_Active": true,
+         "m_GUID": "3709303595834937498",
+         "m_Name": "Collider_MovingHITW_1",
+         "m_Tag": "Ground"
       }
    ],
    [
-      99,
-      23068718,
+      107,
+      46137450,
       {
          "m_Position": [
-            330.13714599609375,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
             0.0,
-            -90.0,
+            0.0,
             0.0
          ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534413,
-      {
-         "m_Position": [
-            194.12982177734375,
-            25.0,
-            -306.5590515136719
-         ],
          "m_Rotation": [
             0.0,
-            -89.94404602050781,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999997615814209,
-            1.0,
-            0.9999997615814209
-         ]
-      },
-      23068702,
-      {
-         "m_Position": [
-            291.9447937011719,
-            25.0,
-            -335.0
-         ],
-         "m_Rotation": [
             0.0,
-            -90.0,
             0.0
          ],
          "m_Scale": [
@@ -1999,7 +2089,43 @@
             1.0
          ]
       },
-      58720356,
+      4194335,
+      {
+         "m_Position": [
+            306.5,
+            29.396480560302734,
+            -288.2733459472656
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.949999988079071,
+            0.10000000149011612,
+            0.949999988079071
+         ]
+      },
+      9437186,
+      {
+         "m_Position": [
+            306.58001708984375,
+            16.0,
+            -378.2830810546875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6291459,
       {
          "m_Position": [
             235.40673828125,
@@ -2017,210 +2143,12 @@
             1.0
          ]
       },
-      12583006,
+      11534336,
       {
          "m_Position": [
-            291.94500732421875,
-            25.0,
-            -315.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      12583008,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            -33.11431884765625
-         ],
-         "m_Rotation": [
-            270.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534417,
-      {
-         "m_Position": [
-            -6.517961025238037,
-            -4.2656354904174805,
-            -9.581930160522461
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            2.0,
-            1.0,
-            2.0
-         ]
-      },
-      12583009,
-      {
-         "m_Position": [
-            -5.117712020874023,
-            -3.9215826988220215,
-            -196.81192016601563
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.6000000238418579,
-            0.10000000149011612,
-            0.6000000238418579
-         ]
-      },
-      11534386,
-      {
-         "m_Position": [
-            -9.033747673034668,
-            -9.604753494262695,
-            -202.24526977539063
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      12583010,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534424,
-      {
-         "m_Position": [
-            -16.631065368652344,
-            -13.191606521606445,
-            -100.37674713134766
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            35.0,
-            10.0,
-            35.0
-         ]
-      },
-      16777218,
-      {
-         "m_Position": [
-            -32.66892623901367,
-            0.0,
-            -180.02743530273438
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.25,
-            0.25,
-            0.25
-         ]
-      },
-      11534373,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534422,
-      {
-         "m_Position": [
-            281.25482177734375,
-            25.0,
-            -306.5590515136719
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534420,
-      {
-         "m_Position": [
-            13.595773696899414,
-            -1.2131750583648682,
-            -40.84859085083008
-         ],
-         "m_Rotation": [
-            4.539366273093037e-06,
-            3.105005816905759e-05,
-            -4.695896677731071e-06
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.699999988079071
-         ]
-      },
-      18874459,
-      {
-         "m_Position": [
-            -770.0,
-            390.0,
-            0.0
+            354.5,
+            36.0,
+            -288.2598571777344
          ],
          "m_Rotation": [
             0.0,
@@ -2233,79 +2161,7 @@
             1.0
          ]
       },
-      11534340,
-      {
-         "m_Position": [
-            78.5,
-            32.97513961791992,
-            -225.75802612304688
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534418,
-      {
-         "m_Position": [
-            204.5,
-            14.0,
-            -141.242431640625
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534415,
-      {
-         "m_Position": [
-            148.5,
-            14.0,
-            -141.242431640625
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534378,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534414,
+      4194363,
       {
          "m_Position": [
             78.5,
@@ -2323,79 +2179,61 @@
             1.0
          ]
       },
-      11534412,
+      10485761,
       {
          "m_Position": [
-            -21.393999099731445,
-            -4.065608501434326,
-            -94.84107971191406
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194308,
+      {
+         "m_Position": [
+            -5.117712020874023,
+            -3.9215826988220215,
+            -196.81192016601563
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.6000000238418579,
+            0.10000000149011612,
+            0.6000000238418579
+         ]
+      },
+      4194344,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            -33.11431884765625
+         ],
+         "m_Rotation": [
+            270.0,
             180.0,
             0.0
          ],
          "m_Scale": [
-            0.75,
-            0.75,
-            0.75
-         ]
-      },
-      11534411,
-      {
-         "m_Position": [
-            -16.164880752563477,
-            9.380280494689941,
-            -145.10504150390625
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
             1.0,
             1.0,
             1.0
          ]
       },
-      11534410,
-      {
-         "m_Position": [
-            -5.337953567504883,
-            22.0,
-            -212.2386016845703
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            2.0,
-            2.0,
-            2.0
-         ]
-      },
-      11534408,
-      {
-         "m_Position": [
-            -33.56270980834961,
-            -11.162614822387695,
-            -151.51219177246094
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534407,
+      4194328,
       {
          "m_Position": [
             352.6435546875,
@@ -2413,439 +2251,7 @@
             1.0
          ]
       },
-      11534406,
-      {
-         "m_Position": [
-            213.7238311767578,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534369,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534405,
-      {
-         "m_Position": [
-            235.40699768066406,
-            25.0,
-            -317.0748291015625
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534404,
-      {
-         "m_Position": [
-            -11.5,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534403,
-      {
-         "m_Position": [
-            270.59979248046875,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      23068764,
-      {
-         "m_Position": [
-            -21.393808364868164,
-            12.650845527648926,
-            -230.27342224121094
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      20971538,
-      {
-         "m_Position": [
-            -10.956543922424316,
-            1.6562223434448242,
-            -174.6380157470703
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534402,
-      {
-         "m_Position": [
-            257.43524169921875,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534401,
-      {
-         "m_Position": [
-            270.59979248046875,
-            25.0,
-            -335.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534400,
-      {
-         "m_Position": [
-            -9.73396110534668,
-            20.488548278808594,
-            -173.1472930908203
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.5,
-            0.5,
-            0.5
-         ]
-      },
-      11534399,
-      {
-         "m_Position": [
-            -750.0,
-            380.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      35651590,
-      {
-         "m_Position": [
-            80.5,
-            14.0,
-            -208.26329040527344
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534396,
-      {
-         "m_Position": [
-            -6.517961025238037,
-            -4.2656354904174805,
-            -9.581930160522461
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            2.0,
-            1.0,
-            2.0
-         ]
-      },
-      11534393,
-      {
-         "m_Position": [
-            238.5,
-            14.0,
-            -208.242431640625
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534389,
-      {
-         "m_Position": [
-            281.25482177734375,
-            25.0,
-            -335.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534388,
-      {
-         "m_Position": [
-            -30.234399795532227,
-            15.247161865234375,
-            -204.4456329345703
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534357,
-      {
-         "m_Position": [
-            281.25482177734375,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534384,
-      {
-         "m_Position": [
-            257.43524169921875,
-            25.0,
-            -306.5590515136719
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      20971609,
-      {
-         "m_Position": [
-            352.6435546875,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      24117289,
-      {
-         "m_Position": [
-            -21.473434448242188,
-            -9.534210205078125,
-            -167.9701385498047
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      20971610,
-      {
-         "m_Position": [
-            770.530029296875,
-            390.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534409,
-      {
-         "m_Position": [
-            -44.67759323120117,
-            13.547502517700195,
-            -174.5719757080078
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534350,
-      {
-         "m_Position": [
-            291.9447937011719,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534383,
-      {
-         "m_Position": [
-            291.9447937011719,
-            25.0,
-            -306.5590515136719
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      12583007,
+      4194311,
       {
          "m_Position": [
             -49.16610336303711,
@@ -2863,12 +2269,30 @@
             1.0
          ]
       },
-      11534380,
+      4194334,
       {
          "m_Position": [
-            -16.43480110168457,
-            -12.46833610534668,
-            -141.0985565185547
+            -750.0,
+            380.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194367,
+      {
+         "m_Position": [
+            -21.393808364868164,
+            12.650845527648926,
+            -230.27342224121094
          ],
          "m_Rotation": [
             0.0,
@@ -2881,16 +2305,34 @@
             1.0
          ]
       },
-      11534397,
+      4194309,
+      {
+         "m_Position": [
+            -770.0,
+            390.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194313,
       {
          "m_Position": [
             270.59979248046875,
             25.0,
-            -306.5590515136719
+            -365.5354919433594
          ],
          "m_Rotation": [
             0.0,
-            -90.0,
+            -89.95154571533203,
             0.0
          ],
          "m_Scale": [
@@ -2899,115 +2341,7 @@
             0.9999999403953552
          ]
       },
-      11534376,
-      {
-         "m_Position": [
-            266.58001708984375,
-            16.0,
-            -336.2830810546875
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534374,
-      {
-         "m_Position": [
-            -16.566186904907227,
-            -1.2112131118774414,
-            -113.1578140258789
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534394,
-      {
-         "m_Position": [
-            -43.0,
-            3.0,
-            -186.0
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534372,
-      {
-         "m_Position": [
-            194.0,
-            26.0,
-            -335.0
-         ],
-         "m_Rotation": [
-            -180.0,
-            -90.0,
-            -180.0
-         ],
-         "m_Scale": [
-            1.9999992847442627,
-            2.0,
-            1.9999992847442627
-         ]
-      },
-      11534370,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      12582955,
-      {
-         "m_Position": [
-            -26.25156593322754,
-            0.0,
-            -114.27315521240234
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534395,
+      4194371,
       {
          "m_Position": [
             870.0,
@@ -3025,245 +2359,11 @@
             1.0
          ]
       },
-      11534365,
+      4194364,
       {
          "m_Position": [
-            330.1369934082031,
-            25.0,
-            -345.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534364,
-      {
-         "m_Position": [
-            213.7238311767578,
-            25.0,
-            -306.5590515136719
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534363,
-      {
-         "m_Position": [
-            352.6440124511719,
-            25.0,
-            -340.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534360,
-      {
-         "m_Position": [
-            257.43499755859375,
-            25.0,
-            -335.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534359,
-      {
-         "m_Position": [
-            -4.821384906768799,
-            12.413981437683105,
-            -213.46127319335938
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      17825793,
-      {
-         "m_Position": [
-            235.40673828125,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999998807907104,
-            1.0,
-            0.9999998807907104
-         ]
-      },
-      11534356,
-      {
-         "m_Position": [
-            -16.125877380371094,
-            0.0,
-            -162.7202911376953
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.5,
-            0.5,
-            0.5
-         ]
-      },
-      11534392,
-      {
-         "m_Position": [
-            -26.88195037841797,
-            0.0,
-            -145.8316192626953
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534353,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534361,
-      {
-         "m_Position": [
-            330.13714599609375,
-            25.0,
-            -306.5590515136719
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999999403953552,
-            1.0,
-            0.9999999403953552
-         ]
-      },
-      11534351,
-      {
-         "m_Position": [
-            0.00035953521728515625,
-            -0.7949433326721191,
-            -36.43269729614258
-         ],
-         "m_Rotation": [
-            4.539366273093037e-06,
-            1.2104952418212633e-07,
-            -4.69589622298372e-06
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.699999988079071
-         ]
-      },
-      11534367,
-      {
-         "m_Position": [
-            13.012489318847656,
-            31.93533706665039,
-            -204.88082885742188
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534371,
-      {
-         "m_Position": [
-            235.40673828125,
-            25.0,
-            -306.5590515136719
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999998807907104,
-            1.0,
-            0.9999998807907104
-         ]
-      },
-      11534349,
-      {
-         "m_Position": [
-            -870.0,
-            330.0,
+            770.530029296875,
+            390.0,
             0.0
          ],
          "m_Rotation": [
@@ -3277,156 +2377,12 @@
             1.0
          ]
       },
-      11534348,
+      4194356,
       {
          "m_Position": [
-            281.2550048828125,
-            25.0,
-            -335.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534398,
-      {
-         "m_Position": [
-            -15.126418113708496,
-            10.881996154785156,
-            -42.61907196044922
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534347,
-      {
-         "m_Position": [
-            213.7239990234375,
-            25.0,
-            -350.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534346,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534421,
-      {
-         "m_Position": [
-            16.395000457763672,
-            18.00778579711914,
-            -210.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            20.0,
-            1.0,
-            20.0
-         ]
-      },
-      11534345,
-      {
-         "m_Position": [
-            270.6000061035156,
-            25.0,
-            -356.11810302734375
-         ],
-         "m_Rotation": [
-            0.0,
-            -90.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.999999761581421,
-            2.0,
-            1.999999761581421
-         ]
-      },
-      11534355,
-      {
-         "m_Position": [
-            750.0,
-            380.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534390,
-      {
-         "m_Position": [
-            194.12982177734375,
-            25.0,
-            -365.5354919433594
-         ],
-         "m_Rotation": [
-            0.0,
-            -89.94404602050781,
-            0.0
-         ],
-         "m_Scale": [
-            0.9999997615814209,
-            1.0,
-            0.9999997615814209
-         ]
-      },
-      23068677,
-      {
-         "m_Position": [
-            -60.58393859863281,
-            13.061535835266113,
-            -202.47360229492188
+            -16.43480110168457,
+            -12.46833610534668,
+            -141.0985565185547
          ],
          "m_Rotation": [
             0.0,
@@ -3439,52 +2395,16 @@
             1.0
          ]
       },
-      11534344,
+      4194326,
       {
          "m_Position": [
-            306.58001708984375,
-            36.0,
-            -384.2830810546875
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534362,
-      {
-         "m_Position": [
-            -9.13290786743164,
-            -3.2228150367736816,
-            -95.75627136230469
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.75
-         ]
-      },
-      11534385,
-      {
-         "m_Position": [
-            352.6435546875,
+            281.25482177734375,
             25.0,
             -306.5590515136719
          ],
          "m_Rotation": [
             0.0,
-            -90.0,
+            -89.95154571533203,
             0.0
          ],
          "m_Scale": [
@@ -3493,61 +2413,7 @@
             0.9999999403953552
          ]
       },
-      11534391,
-      {
-         "m_Position": [
-            28.39571762084961,
-            16.654632568359375,
-            -203.61366271972656
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534358,
-      {
-         "m_Position": [
-            -4.791675090789795,
-            -9.686509132385254,
-            -152.15724182128906
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534387,
-      {
-         "m_Position": [
-            -32.64933395385742,
-            -9.690698623657227,
-            -195.76979064941406
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      20971607,
+      4194315,
       {
          "m_Position": [
             281.93243408203125,
@@ -3565,16 +2431,16 @@
             5.0
          ]
       },
-      30408704,
+      4194355,
       {
          "m_Position": [
-            213.7238311767578,
-            25.0,
-            -335.0
+            -32.64933395385742,
+            -9.690698623657227,
+            -195.76979064941406
          ],
          "m_Rotation": [
             0.0,
-            -90.0,
+            1.0,
             0.0
          ],
          "m_Scale": [
@@ -3583,7 +2449,133 @@
             1.0
          ]
       },
-      11534375,
+      4194316,
+      {
+         "m_Position": [
+            16.395000457763672,
+            18.00778579711914,
+            -210.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            20.0,
+            1.0,
+            20.0
+         ]
+      },
+      4194327,
+      {
+         "m_Position": [
+            78.5,
+            32.97513961791992,
+            -193.1925048828125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194392,
+      {
+         "m_Position": [
+            204.5,
+            14.0,
+            -141.242431640625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194317,
+      {
+         "m_Position": [
+            -9.033747673034668,
+            -9.604753494262695,
+            -202.24526977539063
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194318,
+      {
+         "m_Position": [
+            291.94500732421875,
+            25.0,
+            -315.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194349,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194338,
+      {
+         "m_Position": [
+            281.2550048828125,
+            25.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194319,
       {
          "m_Position": [
             178.5800018310547,
@@ -3601,10 +2593,208 @@
             1.0
          ]
       },
-      11534352,
+      4194347,
+      {
+         "m_Position": [
+            270.59979248046875,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194385,
+      {
+         "m_Position": [
+            213.7238311767578,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194322,
+      {
+         "m_Position": [
+            257.43499755859375,
+            25.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194362,
+      {
+         "m_Position": [
+            -16.631065368652344,
+            -13.191606521606445,
+            -100.37674713134766
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            35.0,
+            10.0,
+            35.0
+         ]
+      },
+      4194360,
       {
          "m_Position": [
             257.43524169921875,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194325,
+      {
+         "m_Position": [
+            235.40673828125,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194329,
+      {
+         "m_Position": [
+            -26.25156593322754,
+            0.0,
+            -114.27315521240234
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194330,
+      {
+         "m_Position": [
+            306.58001708984375,
+            36.0,
+            -384.2830810546875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194346,
+      {
+         "m_Position": [
+            148.5,
+            14.0,
+            -141.242431640625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194331,
+      {
+         "m_Position": [
+            330.1369934082031,
+            25.0,
+            -345.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194332,
+      {
+         "m_Position": [
+            -60.58393859863281,
+            13.061535835266113,
+            -202.47360229492188
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194333,
+      {
+         "m_Position": [
+            270.59979248046875,
             25.0,
             -335.0
          ],
@@ -3619,12 +2809,48 @@
             1.0
          ]
       },
-      18874400,
+      4194336,
       {
          "m_Position": [
-            -5.204372406005859,
-            0.015825748443603516,
-            -145.9295196533203
+            194.12982177734375,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.86730194091797,
+            0.0
+         ],
+         "m_Scale": [
+            0.999999463558197,
+            1.0,
+            0.999999463558197
+         ]
+      },
+      4194376,
+      {
+         "m_Position": [
+            330.13714599609375,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194320,
+      {
+         "m_Position": [
+            -44.67759323120117,
+            13.547502517700195,
+            -174.5719757080078
          ],
          "m_Rotation": [
             0.0,
@@ -3637,7 +2863,115 @@
             1.0
          ]
       },
-      11534416,
+      4194395,
+      {
+         "m_Position": [
+            -4.821384906768799,
+            12.413981437683105,
+            -213.46127319335938
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194394,
+      {
+         "m_Position": [
+            78.5,
+            32.97513961791992,
+            -225.75802612304688
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194321,
+      {
+         "m_Position": [
+            342.58001708984375,
+            42.0,
+            -384.2830810546875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194389,
+      {
+         "m_Position": [
+            352.6440124511719,
+            25.0,
+            -340.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194340,
+      {
+         "m_Position": [
+            -21.393999099731445,
+            -4.065608501434326,
+            -94.84107971191406
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      },
+      4194337,
+      {
+         "m_Position": [
+            238.5,
+            14.0,
+            -208.242431640625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194339,
       {
          "m_Position": [
             0.0,
@@ -3655,7 +2989,169 @@
             1.0
          ]
       },
-      12582957,
+      4194341,
+      {
+         "m_Position": [
+            -16.164880752563477,
+            9.380280494689941,
+            -145.10504150390625
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194357,
+      {
+         "m_Position": [
+            -11.5,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194365,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194345,
+      {
+         "m_Position": [
+            266.58001708984375,
+            16.0,
+            -336.2830810546875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194342,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194314,
+      {
+         "m_Position": [
+            -5.337953567504883,
+            22.0,
+            -212.2386016845703
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            2.0,
+            2.0,
+            2.0
+         ]
+      },
+      4194374,
+      {
+         "m_Position": [
+            -33.56270980834961,
+            -11.162614822387695,
+            -151.51219177246094
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194343,
+      {
+         "m_Position": [
+            213.7238311767578,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194348,
+      {
+         "m_Position": [
+            281.25482177734375,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194351,
       {
          "m_Position": [
             330.13714599609375,
@@ -3673,10 +3169,28 @@
             1.0
          ]
       },
-      12582919,
+      4194352,
       {
          "m_Position": [
-            194.12982177734375,
+            235.40699768066406,
+            25.0,
+            -317.0748291015625
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194366,
+      {
+         "m_Position": [
+            291.9447937011719,
             25.0,
             -335.0
          ],
@@ -3691,7 +3205,583 @@
             1.0
          ]
       },
-      14680067,
+      4194353,
+      {
+         "m_Position": [
+            -6.517961025238037,
+            -4.2656354904174805,
+            -9.581930160522461
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            2.0,
+            1.0,
+            2.0
+         ]
+      },
+      4194358,
+      {
+         "m_Position": [
+            -16.566186904907227,
+            -1.2112131118774414,
+            -113.1578140258789
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194359,
+      {
+         "m_Position": [
+            291.9447937011719,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194361,
+      {
+         "m_Position": [
+            291.9447937011719,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194368,
+      {
+         "m_Position": [
+            31.411001205444336,
+            16.654632568359375,
+            -172.77008056640625
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194369,
+      {
+         "m_Position": [
+            -26.88195037841797,
+            0.0,
+            -145.8316192626953
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194370,
+      {
+         "m_Position": [
+            257.43524169921875,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194372,
+      {
+         "m_Position": [
+            -16.125877380371094,
+            0.0,
+            -162.7202911376953
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      4194350,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194354,
+      {
+         "m_Position": [
+            330.13714599609375,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194373,
+      {
+         "m_Position": [
+            -30.234399795532227,
+            15.247161865234375,
+            -204.4456329345703
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194375,
+      {
+         "m_Position": [
+            306.5,
+            16.0,
+            -293.2829895019531
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194377,
+      {
+         "m_Position": [
+            13.595773696899414,
+            -1.2131750583648682,
+            -40.84859085083008
+         ],
+         "m_Rotation": [
+            4.539366273093037e-06,
+            3.105005816905759e-05,
+            -4.695896677731071e-06
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
+      },
+      4194378,
+      {
+         "m_Position": [
+            -15.126418113708496,
+            10.881996154785156,
+            -42.61907196044922
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194379,
+      {
+         "m_Position": [
+            -43.0,
+            3.0,
+            -186.0
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194380,
+      {
+         "m_Position": [
+            -21.473434448242188,
+            -9.534210205078125,
+            -167.9701385498047
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194381,
+      {
+         "m_Position": [
+            -10.956543922424316,
+            1.6562223434448242,
+            -174.6380157470703
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194382,
+      {
+         "m_Position": [
+            -5.204372406005859,
+            0.015825748443603516,
+            -145.9295196533203
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194310,
+      {
+         "m_Position": [
+            0.00035953521728515625,
+            -0.7949433326721191,
+            -36.43269729614258
+         ],
+         "m_Rotation": [
+            4.539366273093037e-06,
+            1.2104952418212633e-07,
+            -4.69589622298372e-06
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
+      },
+      4194312,
+      {
+         "m_Position": [
+            194.0,
+            26.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999997854232788,
+            2.0,
+            1.999997854232788
+         ]
+      },
+      4194386,
+      {
+         "m_Position": [
+            270.6000061035156,
+            25.0,
+            -356.11810302734375
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194398,
+      {
+         "m_Position": [
+            -9.73396110534668,
+            20.488548278808594,
+            -173.1472930908203
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      4194387,
+      {
+         "m_Position": [
+            750.0,
+            380.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194388,
+      {
+         "m_Position": [
+            352.6435546875,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194390,
+      {
+         "m_Position": [
+            194.12982177734375,
+            25.0,
+            -365.5354919433594
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.86730194091797,
+            0.0
+         ],
+         "m_Scale": [
+            0.999999463558197,
+            1.0,
+            0.999999463558197
+         ]
+      },
+      4194391,
+      {
+         "m_Position": [
+            281.25482177734375,
+            25.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -90.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194393,
+      {
+         "m_Position": [
+            -870.0,
+            330.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194323,
+      {
+         "m_Position": [
+            352.6435546875,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194324,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194396,
+      {
+         "m_Position": [
+            235.40673828125,
+            25.0,
+            -306.5590515136719
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      },
+      4194397,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194384,
+      {
+         "m_Position": [
+            13.012489318847656,
+            31.93533706665039,
+            -204.88082885742188
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194383,
       {
          "m_Position": [
             78.5,
@@ -3709,12 +3799,192 @@
             1.0
          ]
       },
-      11534419,
+      4194399,
       {
          "m_Position": [
-            78.5,
-            32.97513961791992,
-            -193.1925048828125
+            -9.13290786743164,
+            -3.2228150367736816,
+            -95.75627136230469
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      },
+      4194400,
+      {
+         "m_Position": [
+            -6.517961025238037,
+            -4.2656354904174805,
+            -9.581930160522461
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            2.0,
+            1.0,
+            2.0
+         ]
+      },
+      4194401,
+      {
+         "m_Position": [
+            257.43524169921875,
+            25.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -90.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194402,
+      {
+         "m_Position": [
+            213.7239990234375,
+            25.0,
+            -350.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -90.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.999999761581421,
+            2.0,
+            1.999999761581421
+         ]
+      },
+      4194403,
+      {
+         "m_Position": [
+            -4.791675090789795,
+            -9.686509132385254,
+            -152.15724182128906
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194404,
+      {
+         "m_Position": [
+            194.12982177734375,
+            25.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -90.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194405,
+      {
+         "m_Position": [
+            306.5,
+            18.0,
+            -290.2829895019531
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194406,
+      {
+         "m_Position": [
+            -32.66892623901367,
+            0.0,
+            -180.02743530273438
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.25,
+            0.25,
+            0.25
+         ]
+      },
+      4194407,
+      {
+         "m_Position": [
+            213.7238311767578,
+            25.0,
+            -335.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -90.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      23068777,
+      {
+         "m_Position": [
+            80.5,
+            14.0,
+            -208.26329040527344
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      35651692,
+      {
+         "m_Position": [
+            528.5,
+            44.0,
+            -232.25985717773438
          ],
          "m_Rotation": [
             0.0,
@@ -3729,131 +3999,137 @@
       }
    ],
    [
-      20,
-      12583006,
-      {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
-         "m_IsVisible": true
-      },
-      12583009,
+      21,
+      4194335,
       {
          "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      11534424,
+      4194308,
+      {
+         "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_IsVisible": true
+      },
+      4194315,
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       },
-      16777218,
+      4194316,
       {
-         "ASSET_GEOM_m_RenderObject": "2647883345981251",
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
+         "m_IsVisible": true
+      },
+      4194318,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      },
+      4194338,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      },
+      4194322,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      },
+      4194362,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       },
-      11534412,
+      4194331,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      },
+      4194389,
+      {
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      },
+      4194340,
       {
          "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
          "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
          "m_IsVisible": true
       },
-      11534410,
+      4194314,
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      11534405,
+      4194352,
       {
          "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       },
-      11534400,
-      {
-         "ASSET_GEOM_m_RenderObject": "6a670b9d30fba191",
-         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
-         "m_IsVisible": true
-      },
-      11534394,
-      {
-         "ASSET_GEOM_m_RenderObject": "de63c45de040cc83",
-         "ASSET_MAT_m_MaterialInstance": "0",
-         "m_IsVisible": true
-      },
-      11534372,
-      {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
-         "m_IsVisible": true
-      },
-      11534365,
-      {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
-         "m_IsVisible": true
-      },
-      11534363,
-      {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
-         "m_IsVisible": true
-      },
-      11534360,
-      {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
-         "m_IsVisible": true
-      },
-      11534356,
+      4194372,
       {
          "ASSET_GEOM_m_RenderObject": "5e5479e60fbcccaf",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      11534348,
+      4194379,
+      {
+         "ASSET_GEOM_m_RenderObject": "de63c45de040cc83",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      4194312,
       {
          "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       },
-      11534347,
+      4194386,
       {
          "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       },
-      11534421,
+      4194398,
       {
-         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
-         "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
+         "ASSET_GEOM_m_RenderObject": "6a670b9d30fba191",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      11534345,
-      {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
-         "m_IsVisible": true
-      },
-      11534362,
+      4194399,
       {
          "ASSET_GEOM_m_RenderObject": "789db1a40e2484e0",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       },
-      20971607,
+      4194402,
       {
-         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_IsVisible": true
+      },
+      4194406,
+      {
+         "ASSET_GEOM_m_RenderObject": "2647883345981251",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
    ],
    [
       1,
-      11534398,
+      4194378,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -3879,7 +4155,7 @@
    ],
    [
       4,
-      11534412,
+      4194340,
       {
          "m_AngularDrag": 0.05000000074505806,
          "m_Drag": 0.0,
@@ -3893,7 +4169,7 @@
          "m_Mass": 58.643062591552734,
          "m_UseGravity": true
       },
-      11534400,
+      4194372,
       {
          "m_AngularDrag": 0.05000000074505806,
          "m_Drag": 0.0,
@@ -3907,7 +4183,7 @@
          "m_Mass": 1.0,
          "m_UseGravity": false
       },
-      11534356,
+      4194398,
       {
          "m_AngularDrag": 0.05000000074505806,
          "m_Drag": 0.0,
@@ -3921,7 +4197,7 @@
          "m_Mass": 1.0,
          "m_UseGravity": false
       },
-      11534362,
+      4194399,
       {
          "m_AngularDrag": 0.5,
          "m_Drag": 0.20000000298023224,
@@ -3938,7 +4214,7 @@
    ],
    [
       11,
-      12583006,
+      4194318,
       {
          "m_IsTrigger": false,
          "m_Offset": [
@@ -3948,7 +4224,7 @@
          ],
          "m_Radius": 2.0
       },
-      11534405,
+      4194338,
       {
          "m_IsTrigger": false,
          "m_Offset": [
@@ -3958,7 +4234,47 @@
          ],
          "m_Radius": 2.0
       },
-      11534400,
+      4194322,
+      {
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 2.0
+      },
+      4194331,
+      {
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 2.0
+      },
+      4194389,
+      {
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 2.0
+      },
+      4194352,
+      {
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Radius": 2.0
+      },
+      4194372,
       {
          "m_IsTrigger": true,
          "m_Offset": [
@@ -3968,7 +4284,7 @@
          ],
          "m_Radius": 1.5
       },
-      11534372,
+      4194312,
       {
          "m_IsTrigger": false,
          "m_Offset": [
@@ -3978,7 +4294,7 @@
          ],
          "m_Radius": 2.0
       },
-      11534365,
+      4194386,
       {
          "m_IsTrigger": false,
          "m_Offset": [
@@ -3988,27 +4304,7 @@
          ],
          "m_Radius": 2.0
       },
-      11534363,
-      {
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Radius": 2.0
-      },
-      11534360,
-      {
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Radius": 2.0
-      },
-      11534356,
+      4194398,
       {
          "m_IsTrigger": true,
          "m_Offset": [
@@ -4018,27 +4314,7 @@
          ],
          "m_Radius": 1.5
       },
-      11534348,
-      {
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Radius": 2.0
-      },
-      11534347,
-      {
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Radius": 2.0
-      },
-      11534345,
+      4194402,
       {
          "m_IsTrigger": false,
          "m_Offset": [
@@ -4050,41 +4326,13 @@
       }
    ],
    [
-      55,
-      23068718,
+      62,
+      4194335,
       {
          "m_HalfExtents": [
+            6.0,
             0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534413,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534417,
-      {
-         "m_HalfExtents": [
-            1.5,
-            0.5,
-            1.5
+            6.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [
@@ -4093,7 +4341,49 @@
             0.0
          ]
       },
-      12583009,
+      9437186,
+      {
+         "m_HalfExtents": [
+            12.0,
+            8.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      11534336,
+      {
+         "m_HalfExtents": [
+            36.0,
+            12.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194363,
+      {
+         "m_HalfExtents": [
+            4.0,
+            4.0,
+            6.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194308,
       {
          "m_HalfExtents": [
             4.0,
@@ -4107,10 +4397,10 @@
             0.0
          ]
       },
-      11534386,
+      4194311,
       {
          "m_HalfExtents": [
-            12.5,
+            6.0,
             6.0,
             12.0
          ],
@@ -4121,161 +4411,7 @@
             0.0
          ]
       },
-      11534424,
-      {
-         "m_HalfExtents": [
-            17.0,
-            5.0,
-            17.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534422,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534340,
-      {
-         "m_HalfExtents": [
-            4.0,
-            14.0,
-            6.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534418,
-      {
-         "m_HalfExtents": [
-            12.0,
-            6.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534415,
-      {
-         "m_HalfExtents": [
-            12.0,
-            6.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534414,
-      {
-         "m_HalfExtents": [
-            4.0,
-            4.0,
-            6.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534411,
-      {
-         "m_HalfExtents": [
-            17.5,
-            2.5,
-            1.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534410,
-      {
-         "m_HalfExtents": [
-            1.0,
-            1.0,
-            1.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534408,
-      {
-         "m_HalfExtents": [
-            12.0,
-            7.5,
-            6.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534406,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534403,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      23068764,
+      4194367,
       {
          "m_HalfExtents": [
             23.0,
@@ -4289,21 +4425,7 @@
             0.0
          ]
       },
-      20971538,
-      {
-         "m_HalfExtents": [
-            13.0,
-            17.0,
-            7.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534402,
+      4194313,
       {
          "m_HalfExtents": [
             0.5,
@@ -4317,175 +4439,7 @@
             0.0
          ]
       },
-      35651590,
-      {
-         "m_HalfExtents": [
-            50.0,
-            6.0,
-            24.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534396,
-      {
-         "m_HalfExtents": [
-            1.5,
-            0.5,
-            1.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534393,
-      {
-         "m_HalfExtents": [
-            12.0,
-            6.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534388,
-      {
-         "m_HalfExtents": [
-            41.5,
-            25.5,
-            45.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534357,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534384,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      20971609,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      24117289,
-      {
-         "m_HalfExtents": [
-            23.0,
-            6.0,
-            11.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534409,
-      {
-         "m_HalfExtents": [
-            23.0,
-            5.0,
-            6.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534350,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534383,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      12583007,
-      {
-         "m_HalfExtents": [
-            6.0,
-            6.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534380,
+      4194356,
       {
          "m_HalfExtents": [
             18.0,
@@ -4499,7 +4453,7 @@
             0.0
          ]
       },
-      11534397,
+      4194326,
       {
          "m_HalfExtents": [
             0.5,
@@ -4513,245 +4467,7 @@
             0.0
          ]
       },
-      11534376,
-      {
-         "m_HalfExtents": [
-            100.0,
-            8.0,
-            30.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534374,
-      {
-         "m_HalfExtents": [
-            17.5,
-            7.0,
-            4.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      12582955,
-      {
-         "m_HalfExtents": [
-            33.5,
-            18.5,
-            49.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534364,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534359,
-      {
-         "m_HalfExtents": [
-            7.0,
-            6.0,
-            13.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      17825793,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534392,
-      {
-         "m_HalfExtents": [
-            6.0,
-            8.0,
-            1.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534361,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534367,
-      {
-         "m_HalfExtents": [
-            2.200000047683716,
-            1.5,
-            6.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534371,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534421,
-      {
-         "m_HalfExtents": [
-            10.0,
-            0.5,
-            10.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534390,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      23068677,
-      {
-         "m_HalfExtents": [
-            6.0,
-            5.5,
-            23.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534344,
-      {
-         "m_HalfExtents": [
-            12.0,
-            12.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534385,
-      {
-         "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534391,
-      {
-         "m_HalfExtents": [
-            2.0,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534358,
-      {
-         "m_HalfExtents": [
-            6.5,
-            6.0,
-            5.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      11534387,
+      4194355,
       {
          "m_HalfExtents": [
             12.0,
@@ -4765,7 +4481,63 @@
             0.0
          ]
       },
-      11534375,
+      4194316,
+      {
+         "m_HalfExtents": [
+            10.0,
+            0.5,
+            10.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194327,
+      {
+         "m_HalfExtents": [
+            4.0,
+            14.0,
+            7.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194392,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194317,
+      {
+         "m_HalfExtents": [
+            12.5,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194319,
       {
          "m_HalfExtents": [
             12.0,
@@ -4779,7 +4551,385 @@
             0.0
          ]
       },
-      18874400,
+      4194347,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194385,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194362,
+      {
+         "m_HalfExtents": [
+            17.0,
+            5.0,
+            17.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194360,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194325,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194329,
+      {
+         "m_HalfExtents": [
+            33.5,
+            18.5,
+            49.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194330,
+      {
+         "m_HalfExtents": [
+            12.0,
+            12.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194346,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194332,
+      {
+         "m_HalfExtents": [
+            6.0,
+            5.5,
+            23.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194336,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194376,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194320,
+      {
+         "m_HalfExtents": [
+            23.0,
+            5.0,
+            6.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194395,
+      {
+         "m_HalfExtents": [
+            7.0,
+            6.0,
+            13.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194394,
+      {
+         "m_HalfExtents": [
+            4.0,
+            14.0,
+            6.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194321,
+      {
+         "m_HalfExtents": [
+            48.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194337,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194341,
+      {
+         "m_HalfExtents": [
+            17.5,
+            2.5,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194345,
+      {
+         "m_HalfExtents": [
+            100.0,
+            8.0,
+            30.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194314,
+      {
+         "m_HalfExtents": [
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194374,
+      {
+         "m_HalfExtents": [
+            12.0,
+            7.5,
+            6.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194343,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194348,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194353,
+      {
+         "m_HalfExtents": [
+            1.5,
+            0.5,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194358,
+      {
+         "m_HalfExtents": [
+            17.5,
+            7.0,
+            4.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194359,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194361,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194368,
+      {
+         "m_HalfExtents": [
+            2.0,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194369,
       {
          "m_HalfExtents": [
             6.0,
@@ -4793,7 +4943,175 @@
             0.0
          ]
       },
-      14680067,
+      4194370,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194354,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194373,
+      {
+         "m_HalfExtents": [
+            41.5,
+            25.5,
+            45.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194375,
+      {
+         "m_HalfExtents": [
+            10.0,
+            8.0,
+            13.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194380,
+      {
+         "m_HalfExtents": [
+            23.0,
+            6.0,
+            11.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194381,
+      {
+         "m_HalfExtents": [
+            13.0,
+            17.0,
+            7.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194382,
+      {
+         "m_HalfExtents": [
+            6.0,
+            8.0,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194388,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194390,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194323,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194396,
+      {
+         "m_HalfExtents": [
+            0.5,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194384,
+      {
+         "m_HalfExtents": [
+            2.200000047683716,
+            1.5,
+            6.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194383,
       {
          "m_HalfExtents": [
             4.0,
@@ -4807,12 +5125,68 @@
             0.0
          ]
       },
-      11534419,
+      4194400,
       {
          "m_HalfExtents": [
+            1.5,
+            0.5,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194403,
+      {
+         "m_HalfExtents": [
+            6.5,
+            6.0,
+            5.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194405,
+      {
+         "m_HalfExtents": [
+            10.0,
+            10.0,
+            10.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      23068777,
+      {
+         "m_HalfExtents": [
+            50.0,
+            6.0,
+            24.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      35651692,
+      {
+         "m_HalfExtents": [
+            12.0,
             4.0,
-            14.0,
-            7.0
+            20.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [
@@ -4824,7 +5198,7 @@
    ],
    [
       2,
-      11534412,
+      4194340,
       {
          "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
@@ -4835,7 +5209,7 @@
          ],
          "m_Radius": 2.0
       },
-      11534362,
+      4194399,
       {
          "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
@@ -4849,7 +5223,7 @@
    ],
    [
       1,
-      12583008,
+      4194344,
       {
          "m_AmbientColor": [
             1.0,
@@ -4877,128 +5251,119 @@
       0
    ],
    [
-      26,
-      12583006,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534417,
-      {
-         "m_StoredClass": "TRE.PlayerHeadCollider"
-      },
-      12583009,
+      27,
+      4194335,
       {
          "m_StoredClass": "TRE.JumpPad"
       },
-      11534420,
+      4194308,
       {
-         "m_StoredClass": "TRE.PowerUpManager"
+         "m_StoredClass": "TRE.JumpPad"
       },
-      11534412,
-      {
-         "m_StoredClass": "TRE.MoleyController"
-      },
-      11534410,
-      {
-         "m_StoredClass": "TRE.JumpPadSwitch"
-      },
-      11534405,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534400,
-      {
-         "m_StoredClass": "TRE.GetPowerUp"
-      },
-      11534399,
+      4194334,
       {
          "m_StoredClass": "TRE.PowerUpUI"
       },
-      11534396,
-      {
-         "m_StoredClass": "TRE.PlayerHeadCollider"
-      },
-      11534372,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534370,
-      {
-         "m_StoredClass": "TRE.RespawnCheckpoint"
-      },
-      11534365,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534363,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534360,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534356,
-      {
-         "m_StoredClass": "TRE.GetPowerUp"
-      },
-      11534351,
-      {
-         "m_StoredClass": "TRE.PowerUpManager"
-      },
-      11534348,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534398,
-      {
-         "m_StoredClass": "TRE.CameraController"
-      },
-      11534347,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534421,
-      {
-         "m_StoredClass": "TRE.PlatformLogic"
-      },
-      11534345,
-      {
-         "m_StoredClass": "TRE.RollingObj"
-      },
-      11534355,
-      {
-         "m_StoredClass": "TRE.PowerUpUI"
-      },
-      11534362,
-      {
-         "m_StoredClass": "TRE.HoleyController"
-      },
-      20971607,
+      4194315,
       {
          "m_StoredClass": "TRE.PowerUpSpawner"
       },
-      11534416,
+      4194316,
+      {
+         "m_StoredClass": "TRE.PlatformLogic"
+      },
+      4194318,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194349,
       {
          "m_StoredClass": "TRE.Level_1CameraManager"
+      },
+      4194338,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194322,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194331,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194389,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194340,
+      {
+         "m_StoredClass": "TRE.MoleyController"
+      },
+      4194314,
+      {
+         "m_StoredClass": "TRE.JumpPadSwitch"
+      },
+      4194352,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194353,
+      {
+         "m_StoredClass": "TRE.PlayerHeadCollider"
+      },
+      4194372,
+      {
+         "m_StoredClass": "TRE.GetPowerUp"
+      },
+      4194350,
+      {
+         "m_StoredClass": "TRE.RespawnCheckpoint"
+      },
+      4194377,
+      {
+         "m_StoredClass": "TRE.PowerUpManager"
+      },
+      4194378,
+      {
+         "m_StoredClass": "TRE.CameraController"
+      },
+      4194310,
+      {
+         "m_StoredClass": "TRE.PowerUpManager"
+      },
+      4194312,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194386,
+      {
+         "m_StoredClass": "TRE.RollingObj"
+      },
+      4194398,
+      {
+         "m_StoredClass": "TRE.GetPowerUp"
+      },
+      4194387,
+      {
+         "m_StoredClass": "TRE.PowerUpUI"
+      },
+      4194399,
+      {
+         "m_StoredClass": "TRE.HoleyController"
+      },
+      4194400,
+      {
+         "m_StoredClass": "TRE.PlayerHeadCollider"
+      },
+      4194402,
+      {
+         "m_StoredClass": "TRE.RollingObj"
       }
    ],
    [
       6,
-      18874459,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 35,
-         "Texture": "248738ca8104694",
-         "Width": 35,
-         "m_IsVisible": true
-      },
-      11534399,
+      4194334,
       {
          "Color": [
             1.0,
@@ -5011,7 +5376,7 @@
          "Width": 177,
          "m_IsVisible": true
       },
-      20971610,
+      4194309,
       {
          "Color": [
             1.0,
@@ -5020,11 +5385,11 @@
             1.0
          ],
          "Height": 35,
-         "Texture": "b47b5e31695b436d",
+         "Texture": "248738ca8104694",
          "Width": 35,
          "m_IsVisible": true
       },
-      11534395,
+      4194371,
       {
          "Color": [
             1.0,
@@ -5037,7 +5402,7 @@
          "Width": 20,
          "m_IsVisible": true
       },
-      11534349,
+      4194364,
       {
          "Color": [
             1.0,
@@ -5045,12 +5410,12 @@
             1.0,
             1.0
          ],
-         "Height": 20,
+         "Height": 35,
          "Texture": "b47b5e31695b436d",
-         "Width": 20,
+         "Width": 35,
          "m_IsVisible": true
       },
-      11534355,
+      4194387,
       {
          "Color": [
             1.0,
@@ -5061,6 +5426,19 @@
          "Height": 110,
          "Texture": "f50f65a6be0e9bb3",
          "Width": 177,
+         "m_IsVisible": true
+      },
+      4194393,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 20,
+         "Texture": "b47b5e31695b436d",
+         "Width": 20,
          "m_IsVisible": true
       }
    ],
