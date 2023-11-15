@@ -103,7 +103,7 @@ namespace TRE
 			if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
 			{
 				const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
-				const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime;
+				const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime * editorCamera.m_BaseCamera.m_FocalLength / 10.f * PanSensitivity(m_ImageSize.x, m_ImageSize.y).x;
 
 				if (event._key == (int)KeyButton::W)
 				{
