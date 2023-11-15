@@ -260,6 +260,8 @@ namespace TRE
                                 itemsPos[i] = itemPos;
 
                                 itemsTimer[i] = dropDuration;
+
+                                //AudioSystem.Play(16157905661456646599);
                             }
                         }
                     }

@@ -217,8 +217,6 @@ namespace TRE
 		audio.m_Channel->setPaused(false); 
 		audio.m_isPlaying = true;
 		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
-		
-		SetSourcePosition(go);
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
@@ -280,6 +278,7 @@ namespace TRE
 		else if (audio.m_Spatialize)
 		{
 			Load3DFile(go);
+			SetSourcePosition(go);
 		}
 		else
 		{
@@ -289,7 +288,6 @@ namespace TRE
 		audioMap.insert(go);
 		soundToRemove.insert({ go, audio.m_Sound });
 
-		std::cout << audioMap.count(go) << std::endl;
 	}
 
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
@@ -336,6 +334,8 @@ namespace TRE
 		audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
 		audiosource.m_Channel->setMode(FMOD_3D);
 		audiosource.m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
+
+		//std::cout << "Source Position: " << audiosource.m_goPosition.x << ", " << audiosource.m_goPosition.y << ", " << audiosource.m_goPosition.z << std::endl;
 	}
 
 	void AudioSystem::SetSourceRadius(Entity& go, const float min, const float max)
@@ -344,6 +344,8 @@ namespace TRE
 		audiosource.m_Channel->set3DMinMaxDistance(min, max);
 		audiosource.m_MinDistance = min;
 		audiosource.m_MaxDistance = max;
+
+		//std::cout << "Source Radius: " << audiosource.m_MinDistance << ", " << audiosource.m_MaxDistance << std::endl;
 	}
 
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
