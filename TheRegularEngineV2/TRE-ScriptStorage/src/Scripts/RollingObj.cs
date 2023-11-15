@@ -21,8 +21,8 @@ namespace TRE
         Entity lLedge;
         Entity rLedge;
 
-        private float moveSpeed = 2.25f;
-        private float rotateSpeed = 50.0f;
+        private float moveSpeed = 5.0f;
+        private float rotateSpeed = 100.0f;
 
         public RollingObj()
         {
@@ -36,7 +36,7 @@ namespace TRE
 
             // Rotate moveVector based on angle
             moveVector = TransformSystem.RotateVector(defaultVector, transform.Rotation);
-            Debug.Log("NEW VECTOR " + moveVector.x + ", " + moveVector.y + ", " + moveVector.z);
+            rotateVector = new vec3(moveVector.z, moveVector.y, moveVector.x);
         }
 
         public void Update()
