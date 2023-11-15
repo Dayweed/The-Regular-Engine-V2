@@ -275,7 +275,11 @@ namespace TRE
             {
                 MyPowerManager.DropMain();
                 isScaled = false;
-            }
+				if (ECSManager.IsValidEntity(8534116593687196231))
+				{
+					AudioSystem.Play(8534116593687196231);
+				}
+			}
 
             #endregion
 
