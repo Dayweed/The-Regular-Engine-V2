@@ -263,6 +263,8 @@ project "TRE-Runtime"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings "Extra"
+
+	targetname "HoleyMoley"
 	
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
