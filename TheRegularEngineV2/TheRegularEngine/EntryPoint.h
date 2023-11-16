@@ -16,8 +16,12 @@
 
 extern TRE::Engine* TRE::CreateApp(); //Getting the definition from other projects
 
-int main()
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	(void)hInstance;
+	(void)hPrevInstance;
+	(void)lpCmdLine;
+	(void)nShowCmd;
 	#if defined(DEBUG) | defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif

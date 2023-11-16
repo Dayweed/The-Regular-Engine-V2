@@ -252,6 +252,8 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
 		}
 
+		kind "WindowedApp"
+
 
 project "TRE-Runtime"
 	location "TRE-Runtime"
@@ -356,6 +358,8 @@ project "TRE-Runtime"
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
 		}
+
+		kind "WindowedApp"
 
 project "TRE-ScriptCore"
 	location "TRE-ScriptCore"

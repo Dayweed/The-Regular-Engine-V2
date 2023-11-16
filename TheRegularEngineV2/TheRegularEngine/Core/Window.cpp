@@ -48,7 +48,10 @@ namespace TRE
 			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			glfwWindowHint(GLFW_AUTO_ICONIFY, false);
 			m_WindowHandle = glfwCreateWindow(mode->width, mode->height, m_Config.Title.c_str(), primaryMonitor, nullptr);
+
+			glfwFocusWindow(m_WindowHandle);
 		}
 		else
 			m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
