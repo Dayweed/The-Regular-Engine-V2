@@ -44,15 +44,6 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
-
-		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
-		//m_L2W = glm::identity<glm::mat4>();
-		//m_L2W = glm::scale(m_L2W, glm::vec3(0.1f, 0.1f, 0.1f));
-		//m_L2W = glm::translate(m_L2W, glm::vec3(0.1f, -100.f, 150.f));
-		//for (int x = 0; x < 256; x++)
-		//{
-		//	m_AnimationBuffer.L2W[x] = glm::identity<glm::mat4>();
-		//}
 	}
 
 	void SceneRenderer::Initialize() 
@@ -86,7 +77,6 @@ namespace TRE
 		}
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
-
 
 		SkyBoxPassInit();
 		ShadowPassInit();
@@ -220,8 +210,6 @@ namespace TRE
 
 	void SceneRenderer::BeginEditorFrame()
 	{
-		//m_DescriptorPool->ResetPool();
-
 		const EditorCamera& editorCamera = EditorCamera::Instance();
 		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		
@@ -275,7 +263,7 @@ namespace TRE
 			const auto& TransformComp = Entity->GetComponent<Transform>();
 			auto& MRComp = Entity->GetComponent<MeshRenderer>();
 			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
-			if (!AnimComp.m_IsVisible)
+			if (!MRComp.m_IsVisible)
 				continue;
 
 			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
@@ -285,8 +273,6 @@ namespace TRE
 
 	void SceneRenderer::BeginFrame()
 	{
-		//m_DescriptorPool->ResetPool();
-
 		//UBO
 		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
 		UBO ubo{};
@@ -341,7 +327,7 @@ namespace TRE
 			const auto& TransformComp = Entity->GetComponent<Transform>();
 			auto& MRComp = Entity->GetComponent<MeshRenderer>();
 			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
-			if (!AnimComp.m_IsVisible)
+			if (!MRComp.m_IsVisible)
 				continue;
 
 			MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
@@ -485,7 +471,7 @@ namespace TRE
 		{
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 			MeshRenderer& MeshRendererComp = Entity->GetComponent<MeshRenderer>();
-			if (!AnimationComp.m_IsAnimating || !AnimationComp.m_IsVisible)
+			if (!AnimationComp.m_IsAnimating || !MeshRendererComp.m_IsVisible)
 				continue;
 
 			if (m_IsEditorScene)
@@ -499,19 +485,7 @@ namespace TRE
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
 			}
 
-			//VkDeviceSize offsets[] = { 0 };
-			//auto VB = MeshRendererComp.m_RenderObject->GetBuffer();
-			//vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
-
-			//VkDeviceSize offsets2[] = { 0 };
-			//auto BoneVB = AnimationComp.m_BoneVertexBuffer->GetBuffer();
-			//vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 1, 1, &BoneVB, offsets2);
-
-			//vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-			
 			MeshRendererComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
-
-			//vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), AnimationComp.m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
 	}
 

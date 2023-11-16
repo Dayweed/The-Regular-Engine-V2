@@ -14,22 +14,6 @@ namespace TRE
 			AnimationComponent()
 			{
 				//TRE_CORE_INFO("Animation Component Constructor");
-#if 0
-				AnimationImporter Importer;
-				m_AnimationSource = std::make_shared<AnimationGeom>();
-				if (auto ImportResult = Importer.Import(*m_AnimationSource, "../Assets/GirlAnimationWalkingTextures/GirlAnimationWalking.fbx"); !ImportResult)
-					assert(ImportResult == true && "Failed to load animated model");
-
-				m_VertexBuffer = std::make_shared<VertexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Vertices.data(),
-					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Vertices.size() * sizeof(TRE::vertex));
-
-				m_BoneVertexBuffer = std::make_shared<VertexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_BoneInfluence.data(),
-					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_BoneInfluence.size() * sizeof(TRE::BoneInfluence));
-
-				m_IndexBuffer = std::make_shared<IndexBuffer>((void*)m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.data(),
-					m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size() * sizeof(int), m_AnimationSource->m_SkinGeom.m_Mesh[0].m_Submeshes[0].m_Indices.size());
-
-#endif
 				auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
 				auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
 				auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
@@ -52,14 +36,9 @@ namespace TRE
 				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 			}
 
-			//std::shared_ptr<AnimationGeom> m_AnimationSource;
-			std::shared_ptr<VertexBuffer> m_VertexBuffer;
-			std::shared_ptr<VertexBuffer> m_BoneVertexBuffer;
-			std::shared_ptr<IndexBuffer> m_IndexBuffer;
 			std::shared_ptr<Material> m_MaterialInstace;
 			std::shared_ptr<UniformBuffer> m_UBO;
 			AnimationUBO m_BufferData;
-			bool m_IsVisible = false;
 			bool m_IsAnimating = true;
 
 			property_vtable()
@@ -68,7 +47,7 @@ namespace TRE
 			{
 				j = nlohmann::json
 				{
-					{ "m_IsVisible", t.m_IsVisible },
+					{ "m_IsAnimating", t.m_IsAnimating },
 				};
 			}
 
@@ -76,7 +55,7 @@ namespace TRE
 			{
 				if (j.contains("m_IsVisible"))
 				{
-					t.m_IsVisible = j.at("m_IsVisible").get<bool>();
+					t.m_IsAnimating = j.at("m_IsAnimating").get<bool>();
 				}
 			}
 	};
@@ -103,7 +82,6 @@ property_begin(TRE::AnimationComponent)
 	//	}
 
 	//} property_var_fnend(),
-	property_var(m_IsVisible),
 	property_var(m_IsAnimating),
 
 } property_vend_h(TRE::AnimationComponent)
