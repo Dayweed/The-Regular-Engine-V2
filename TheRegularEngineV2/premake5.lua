@@ -253,6 +253,7 @@ project "TheRegularEditor"
 		}
 
 		kind "WindowedApp"
+		defines {"WINDOWED"}
 
 
 project "TRE-Runtime"
@@ -360,6 +361,7 @@ project "TRE-Runtime"
 		}
 
 		kind "WindowedApp"
+		defines {"WINDOWED"}
 
 project "TRE-ScriptCore"
 	location "TRE-ScriptCore"
