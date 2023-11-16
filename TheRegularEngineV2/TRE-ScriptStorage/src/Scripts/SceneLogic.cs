@@ -41,12 +41,13 @@ namespace TRE
             }
             if (goToNextScene)
             {
-                Scene.TransitionScene(nextSceneName, 4f);
+                Scene.TransitionScene(nextSceneName, 7f);
 
                 //temp only!! not a very smooth transition atm
                 if (ECSManager.IsValidEntity(12557813022109059017))
                 {
                     AudioSystem.Play(12557813022109059017);
+                    AudioSystem.Stop(677401345089954524);
                 }
                 else
                 {
