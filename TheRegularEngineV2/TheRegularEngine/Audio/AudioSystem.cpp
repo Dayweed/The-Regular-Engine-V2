@@ -216,7 +216,7 @@ namespace TRE
 
 		audio.m_Channel->setPaused(false); 
 		audio.m_isPlaying = true;
-		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()");
+		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()" + audio.m_FileName);
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
