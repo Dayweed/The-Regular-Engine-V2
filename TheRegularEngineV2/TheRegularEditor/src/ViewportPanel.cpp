@@ -289,7 +289,11 @@ namespace TRE
 				}
 				else
 				{
+					const EditorCamera& camera = EditorCamera::Instance();
+					UpdateClickRay();
 					Entity prefabInstance{ prefabsystem->CreatePrefabEntityInstance(prefabGUID) };
+					prefabInstance->GetComponent<Transform>().m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
+					prefabInstance->GetComponent<Transform>().m_IsDirty = true;
 					m_SelectionManager->SelectEntity(prefabInstance);
 				}
 			}
