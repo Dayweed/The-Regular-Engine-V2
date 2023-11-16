@@ -114,8 +114,6 @@ namespace TRE
 			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
 		};
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
-
-		m_L2W = glm::identity<glm::mat4>();
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -274,12 +272,12 @@ namespace TRE
 
 		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
 		{
+			const auto& TransformComp = Entity->GetComponent<Transform>();
 			auto& MRComp = Entity->GetComponent<MeshRenderer>();
 			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
 			if (!AnimComp.m_IsVisible)
 				continue;
 
-			MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, m_L2W);
 			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
@@ -337,6 +335,19 @@ namespace TRE
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
+		{
+			const auto& TransformComp = Entity->GetComponent<Transform>();
+			auto& MRComp = Entity->GetComponent<MeshRenderer>();
+			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			if (!AnimComp.m_IsVisible)
+				continue;
+
+			MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
+			AnimComp.m_BufferData.ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
+			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
+		}
 	}
 
 	void SceneRenderer::EndFrame()
