@@ -39,7 +39,20 @@ namespace TRE
                     return;
                 }
             }
-            if (goToNextScene) Scene.TransitionScene(nextSceneName, 4f);
+            if (goToNextScene)
+            {
+                Scene.TransitionScene(nextSceneName, 4f);
+
+                //temp only!! not a very smooth transition atm
+                if (ECSManager.IsValidEntity(12557813022109059017))
+                {
+                    AudioSystem.Play(12557813022109059017);
+                }
+                else
+                {
+					AudioSystem.Stop(12557813022109059017);
+				}
+            }
         }
     }
 }
