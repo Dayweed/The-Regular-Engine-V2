@@ -36,6 +36,7 @@ namespace TRE
 		const glm::vec3 GetRightVec() const;
 		const glm::vec3 GetForwardVec() const;
 		const glm::vec3 GetViewDirection() const;
+		std::array<glm::vec3, 8> GetFrustumCorners(bool useRenderRatio = true) const;
 	public:
 		const glm::quat GetOrientation() const;
 	};
