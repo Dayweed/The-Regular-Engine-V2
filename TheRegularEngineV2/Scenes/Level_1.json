@@ -1,159 +1,86 @@
 [
    [
-      117,
-      4293918735,
-      12582978,
-      7340041,
-      6291496,
-      3145836,
-      3145814,
-      3145761,
-      3145763,
-      3145748,
-      3145758,
-      3145753,
-      3145735,
-      3145762,
-      3145765,
-      3145778,
-      3145749,
-      10485805,
-      3145784,
-      3145731,
-      3145728,
-      3145755,
-      3145746,
-      3145807,
-      3145740,
-      3145752,
-      3145776,
-      3145741,
-      3145781,
-      3145772,
-      3145733,
-      3145738,
-      3145767,
-      5242911,
-      3145732,
-      3145729,
-      3145786,
-      3145834,
-      3145747,
-      3145774,
-      19922982,
-      3145734,
-      3145777,
-      5242921,
-      5242922,
-      5242923,
-      3145754,
-      10485856,
-      3145822,
-      3145841,
-      3145823,
-      3145787,
-      31457327,
-      16777239,
-      15728654,
-      1048608,
-      3145782,
-      3145783,
-      1048593,
-      1048604,
-      1048584,
-      1048587,
-      3145788,
-      1048612,
-      3145790,
-      3145791,
-      3145792,
-      3145793,
-      1048592,
-      3145795,
-      3145796,
-      3145797,
-      3145798,
-      3145799,
-      3145800,
-      3145801,
-      3145802,
-      3145803,
-      3145804,
-      3145805,
-      3145806,
-      1048633,
-      3145808,
-      3145809,
-      3145810,
-      3145811,
-      3145812,
-      3145813,
-      1048627,
-      3145815,
-      3145816,
-      3145817,
-      3145818,
-      3145819,
-      3145820,
-      3145821,
-      1048605,
-      1048598,
-      1048637,
-      3145825,
-      3145826,
-      3145827,
-      3145828,
-      3145829,
-      3145830,
-      3145831,
-      3145832,
-      3145833,
-      1048628,
-      3145835,
-      1048578,
-      3145837,
-      3145838,
-      3145839,
-      3145840,
-      14680178,
-      7340147,
-      8388607
+      76,
+      4293918792,
+      9437184,
+      8388609,
+      7340034,
+      4194307,
+      2097156,
+      2097157,
+      2097158,
+      2097159,
+      2097160,
+      2097161,
+      2097162,
+      2097163,
+      2097164,
+      2097165,
+      2097166,
+      2097167,
+      2097168,
+      2097169,
+      2097170,
+      2097171,
+      2097172,
+      2097173,
+      2097174,
+      2097175,
+      2097176,
+      2097177,
+      2097178,
+      2097179,
+      2097180,
+      2097181,
+      2097182,
+      2097183,
+      2097184,
+      2097185,
+      2097186,
+      2097187,
+      2097188,
+      2097189,
+      2097190,
+      2097191,
+      2097192,
+      2097193,
+      2097194,
+      2097195,
+      2097196,
+      2097197,
+      2097198,
+      2097199,
+      2097200,
+      2097201,
+      2097202,
+      2097203,
+      2097204,
+      2097205,
+      2097206,
+      2097207,
+      2097208,
+      2097209,
+      2097210,
+      2097211,
+      2097212,
+      2097213,
+      44040254,
+      39845951,
+      20971584,
+      20971585,
+      1048642,
+      5242947,
+      28311620,
+      2097221,
+      37748806,
+      27262975,
+      19923018,
+      25165895,
+      12582985
    ],
    [
-      9,
-      3145839,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "6452796380767818092",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
-         "m_PrefabGUID": "6452796380767818092",
-         "m_RemovedComps": []
-      },
-      3145837,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "6338820077763806458",
-         "m_Overrides": {},
-         "m_PrefabGUID": "11817737584361501891",
-         "m_RemovedComps": []
-      },
-      3145820,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "13004780274330328106",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
-         "m_PrefabGUID": "13004780274330328106",
-         "m_RemovedComps": []
-      },
-      3145811,
+      10,
+      2097161,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "15526886209253662016",
@@ -166,7 +93,80 @@
          "m_PrefabGUID": "15526886209253662016",
          "m_RemovedComps": []
       },
-      3145810,
+      2097170,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7226326221621054613",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name",
+               "TRE::Properties/Tag"
+            ]
+         },
+         "m_PrefabGUID": "7226326221621054613",
+         "m_RemovedComps": []
+      },
+      8388609,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15225568713149738293",
+         "m_RemovedComps": []
+      },
+      2097211,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7670209894207584463",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7670209894207584463",
+         "m_RemovedComps": []
+      },
+      2097174,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "13004780274330328106",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "13004780274330328106",
+         "m_RemovedComps": []
+      },
+      2097175,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7226326221621054613",
+         "m_Overrides": {},
+         "m_PrefabGUID": "7226326221621054613",
+         "m_RemovedComps": []
+      },
+      2097179,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "6452796380767818092",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6452796380767818092",
+         "m_RemovedComps": []
+      },
+      2097201,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11817737584361501891",
+         "m_RemovedComps": []
+      },
+      2097177,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "6338820077763806458",
@@ -181,71 +181,101 @@
             "BoxCollider"
          ]
       },
-      3145808,
+      2097194,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "7670209894207584463",
+         "m_MainPrefabGUID": "6452796380767818092",
          "m_Overrides": {
+            "BoxCollider": [
+               "TRE::BoxCollider/HalfExtents",
+               "TRE::BoxCollider/Offset"
+            ],
             "Transform": [
-               "TRE::Transform/Position"
+               "TRE::Transform/Position",
+               "TRE::Transform/Scale"
             ]
          },
-         "m_PrefabGUID": "7670209894207584463",
-         "m_RemovedComps": []
-      },
-      3145788,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "7226326221621054613",
-         "m_Overrides": {},
-         "m_PrefabGUID": "7226326221621054613",
-         "m_RemovedComps": []
-      },
-      5242911,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "7226326221621054613",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name",
-               "TRE::Properties/Tag"
-            ]
-         },
-         "m_PrefabGUID": "7226326221621054613",
-         "m_RemovedComps": []
-      },
-      5242922,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "15526886209253662016",
-         "m_Overrides": {},
-         "m_PrefabGUID": "15225568713149738293",
+         "m_PrefabGUID": "6452796380767818092",
          "m_RemovedComps": []
       }
    ],
    [
-      51,
-      3145840,
+      71,
+      5242947,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      2097221,
       {
          "m_Children": [],
          "m_Parent": "10083114834088713480"
       },
-      3145839,
+      44040254,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      28311620,
+      {
+         "m_Children": [
+            "2764085969092453395",
+            "16010057194925687253",
+            "8172867766267368227"
+         ],
+         "m_Parent": ""
+      },
+      37748806,
+      {
+         "m_Children": [],
+         "m_Parent": "5700592569056788822"
+      },
+      39845951,
+      {
+         "m_Children": [],
+         "m_Parent": "14013462178478943687"
+      },
+      20971584,
+      {
+         "m_Children": [],
+         "m_Parent": "14013462178478943687"
+      },
+      20971585,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      3145838,
+      1048642,
+      {
+         "m_Children": [],
+         "m_Parent": "12773985037250275535"
+      },
+      2097168,
+      {
+         "m_Children": [],
+         "m_Parent": "5700592569056788822"
+      },
+      2097157,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      3145837,
+      2097176,
       {
-         "m_Children": [],
-         "m_Parent": "3083324973552451588"
+         "m_Children": [
+            "11690234509869862253",
+            "13893834637884961600"
+         ],
+         "m_Parent": ""
       },
-      3145835,
+      2097161,
+      {
+         "m_Children": [
+            "2981591812823467501"
+         ],
+         "m_Parent": ""
+      },
+      2097163,
       {
          "m_Children": [
             "2775082732150868457",
@@ -253,74 +283,45 @@
          ],
          "m_Parent": ""
       },
-      3145833,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145832,
-      {
-         "m_Children": [],
-         "m_Parent": "2793467606270948995"
-      },
-      3145831,
+      2097166,
       {
          "m_Children": [],
          "m_Parent": "17141392075740864435"
       },
-      3145830,
+      2097167,
       {
          "m_Children": [],
-         "m_Parent": "7472364672095714181"
+         "m_Parent": "12773985037250275535"
       },
-      3145829,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      3145828,
-      {
-         "m_Children": [
-            "16064886909957664133",
-            "13403403417414574728",
-            "2164755031164647254",
-            "10307113691108978772",
-            "7152412592741358843",
-            "9128911171259814468"
-         ],
-         "m_Parent": ""
-      },
-      3145827,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145825,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      3145820,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145819,
+      2097184,
       {
          "m_Children": [],
          "m_Parent": "1693422613737718374"
       },
-      3145818,
+      2097193,
+      {
+         "m_Children": [],
+         "m_Parent": "9986875456619391397"
+      },
+      2097204,
+      {
+         "m_Children": [],
+         "m_Parent": "14013462178478943687"
+      },
+      2097169,
+      {
+         "m_Children": [
+            "11815244249492137024",
+            "938949463693376217"
+         ],
+         "m_Parent": ""
+      },
+      2097170,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      3145817,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      3145816,
+      2097162,
       {
          "m_Children": [
             "4098787822426184224",
@@ -332,153 +333,17 @@
          ],
          "m_Parent": ""
       },
-      3145815,
+      2097192,
       {
          "m_Children": [],
          "m_Parent": "7472364672095714181"
       },
-      3145813,
-      {
-         "m_Children": [],
-         "m_Parent": "12773985037250275535"
-      },
-      3145826,
-      {
-         "m_Children": [],
-         "m_Parent": "5700592569056788822"
-      },
-      3145812,
-      {
-         "m_Children": [
-            "11815244249492137024",
-            "938949463693376217"
-         ],
-         "m_Parent": ""
-      },
-      3145811,
-      {
-         "m_Children": [
-            "2981591812823467501"
-         ],
-         "m_Parent": ""
-      },
-      3145810,
-      {
-         "m_Children": [
-            "4694208894626685328"
-         ],
-         "m_Parent": ""
-      },
-      3145809,
+      2097203,
       {
          "m_Children": [],
          "m_Parent": "7472364672095714181"
       },
-      3145808,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145806,
-      {
-         "m_Children": [],
-         "m_Parent": "5700592569056788822"
-      },
-      3145805,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      3145804,
-      {
-         "m_Children": [],
-         "m_Parent": "12773985037250275535"
-      },
-      3145802,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145801,
-      {
-         "m_Children": [],
-         "m_Parent": "2793467606270948995"
-      },
-      3145800,
-      {
-         "m_Children": [],
-         "m_Parent": "7472364672095714181"
-      },
-      3145799,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145803,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145798,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145797,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      3145796,
-      {
-         "m_Children": [
-            "2764085969092453395",
-            "16010057194925687253",
-            "8172867766267368227"
-         ],
-         "m_Parent": ""
-      },
-      3145795,
-      {
-         "m_Children": [],
-         "m_Parent": "1693422613737718374"
-      },
-      3145793,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      3145792,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145791,
-      {
-         "m_Children": [],
-         "m_Parent": "8250124719872487376"
-      },
-      3145821,
-      {
-         "m_Children": [],
-         "m_Parent": "8250124719872487376"
-      },
-      3145790,
-      {
-         "m_Children": [],
-         "m_Parent": "12773985037250275535"
-      },
-      3145788,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      3145783,
-      {
-         "m_Children": [],
-         "m_Parent": "17141392075740864435"
-      },
-      3145782,
+      2097172,
       {
          "m_Children": [
             "12253833483768012129",
@@ -486,25 +351,132 @@
          ],
          "m_Parent": ""
       },
-      5242911,
+      2097160,
+      {
+         "m_Children": [],
+         "m_Parent": "8250124719872487376"
+      },
+      2097173,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      5242923,
-      {
-         "m_Children": [
-            "11690234509869862253",
-            "13893834637884961600"
-         ],
-         "m_Parent": ""
-      },
-      5242922,
+      8388609,
       {
          "m_Children": [],
          "m_Parent": "14719781833455431992"
       },
-      5242921,
+      2097211,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097159,
+      {
+         "m_Children": [],
+         "m_Parent": "2793467606270948995"
+      },
+      2097174,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      7340034,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      2097175,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097207,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097198,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097178,
+      {
+         "m_Children": [],
+         "m_Parent": "2793467606270948995"
+      },
+      2097209,
+      {
+         "m_Children": [],
+         "m_Parent": "12773985037250275535"
+      },
+      9437184,
+      {
+         "m_Children": [],
+         "m_Parent": "14013462178478943687"
+      },
+      2097179,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097212,
+      {
+         "m_Children": [
+            "127940880923388805",
+            "4657305659430111568",
+            "17447094584406960146",
+            "17122924801537054016"
+         ],
+         "m_Parent": ""
+      },
+      2097202,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      2097180,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      2097165,
+      {
+         "m_Children": [],
+         "m_Parent": "8250124719872487376"
+      },
+      2097205,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097156,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      2097181,
+      {
+         "m_Children": [],
+         "m_Parent": "9986875456619391397"
+      },
+      2097171,
+      {
+         "m_Children": [],
+         "m_Parent": "1693422613737718374"
+      },
+      2097182,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      2097183,
+      {
+         "m_Children": [],
+         "m_Parent": "9986875456619391397"
+      },
+      2097185,
       {
          "m_Children": [
             "18232374864943781219",
@@ -512,933 +484,638 @@
          ],
          "m_Parent": ""
       },
-      19922982,
+      2097164,
+      {
+         "m_Children": [],
+         "m_Parent": "7472364672095714181"
+      },
+      2097196,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097186,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097188,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097187,
+      {
+         "m_Children": [],
+         "m_Parent": "9986875456619391397"
+      },
+      4194307,
+      {
+         "m_Children": [],
+         "m_Parent": "17141392075740864435"
+      },
+      2097210,
       {
          "m_Children": [],
          "m_Parent": "10083114834088713480"
+      },
+      2097201,
+      {
+         "m_Children": [],
+         "m_Parent": "3083324973552451588"
+      },
+      2097177,
+      {
+         "m_Children": [
+            "4694208894626685328"
+         ],
+         "m_Parent": ""
+      },
+      2097189,
+      {
+         "m_Children": [
+            "16064886909957664133",
+            "13403403417414574728",
+            "2164755031164647254",
+            "10307113691108978772",
+            "7152412592741358843",
+            "9128911171259814468"
+         ],
+         "m_Parent": ""
+      },
+      2097213,
+      {
+         "m_Children": [
+            "1637832093353520516",
+            "2775274740245181717",
+            "6362883811349824352",
+            "314282645212875191",
+            "5190057882694227598"
+         ],
+         "m_Parent": ""
+      },
+      2097190,
+      {
+         "m_Children": [],
+         "m_Parent": "14013462178478943687"
+      },
+      2097158,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097191,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097195,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097197,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097200,
+      {
+         "m_Children": [
+            "9273956748390335",
+            "7481280499668986868",
+            "7457971243183892213",
+            "489154809993964661",
+            "11275048327956506314",
+            "17635808507539349810",
+            "12548971282219934457"
+         ],
+         "m_Parent": ""
+      },
+      2097199,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097206,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097208,
+      {
+         "m_Children": [],
+         "m_Parent": "2495744252101835726"
+      },
+      2097194,
+      {
+         "m_Children": [],
+         "m_Parent": ""
       }
    ],
    [
-      51,
-      3145840,
-      {
-         "m_Active": true,
-         "m_GUID": "2775082732150868457",
-         "m_Name": "BGM (Placeholder)",
-         "m_Tag": ""
-      },
-      3145839,
-      {
-         "m_Active": true,
-         "m_GUID": "15969774912167081507",
-         "m_Name": "JumpPad",
-         "m_Tag": "JumpPad"
-      },
-      3145838,
-      {
-         "m_Active": true,
-         "m_GUID": "3715730403005274056",
-         "m_Name": "Basic Cube",
-         "m_Tag": ""
-      },
-      3145837,
-      {
-         "m_Active": true,
-         "m_GUID": "4694208894626685328",
-         "m_Name": "Power Manager",
-         "m_Tag": ""
-      },
-      3145835,
-      {
-         "m_Active": true,
-         "m_GUID": "10083114834088713480",
-         "m_Name": "Audio",
-         "m_Tag": ""
-      },
-      3145833,
-      {
-         "m_Active": true,
-         "m_GUID": "17842243038432436161",
-         "m_Name": "Level1_Whitebox",
-         "m_Tag": ""
-      },
-      3145832,
-      {
-         "m_Active": true,
-         "m_GUID": "18232374864943781219",
-         "m_Name": "ActivePowerUp",
-         "m_Tag": "RightHUD"
-      },
-      3145831,
-      {
-         "m_Active": true,
-         "m_GUID": "11673026770933112185",
-         "m_Name": "Collider_2_4",
-         "m_Tag": "Ground"
-      },
-      3145830,
-      {
-         "m_Active": true,
-         "m_GUID": "10307113691108978772",
-         "m_Name": "Collider_Floor_4",
-         "m_Tag": "Ground"
-      },
-      3145829,
-      {
-         "m_Active": true,
-         "m_GUID": "9128911171259814468",
-         "m_Name": "Collider_Floor_6",
-         "m_Tag": "Ground"
-      },
-      3145828,
-      {
-         "m_Active": true,
-         "m_GUID": "7472364672095714181",
-         "m_Name": "Collider_Floor",
-         "m_Tag": ""
-      },
-      3145827,
-      {
-         "m_Active": true,
-         "m_GUID": "17585162364418683998",
-         "m_Name": "Level1_Environment",
-         "m_Tag": ""
-      },
-      3145825,
-      {
-         "m_Active": true,
-         "m_GUID": "4772649382411875457",
-         "m_Name": "Collider_2_3",
-         "m_Tag": "Ground"
-      },
-      3145820,
-      {
-         "m_Active": true,
-         "m_GUID": "8937053672119431330",
-         "m_Name": "Strawberry",
-         "m_Tag": "Strawberry"
-      },
-      3145819,
-      {
-         "m_Active": true,
-         "m_GUID": "11815244249492137024",
-         "m_Name": "RespawnPoint1",
-         "m_Tag": ""
-      },
-      3145818,
-      {
-         "m_Active": true,
-         "m_GUID": "16696080460806998314",
-         "m_Name": "Directional Light",
-         "m_Tag": ""
-      },
-      3145817,
-      {
-         "m_Active": true,
-         "m_GUID": "16064886909957664133",
-         "m_Name": "Collider_Floor_1",
-         "m_Tag": "Ground"
-      },
-      3145816,
-      {
-         "m_Active": true,
-         "m_GUID": "17141392075740864435",
-         "m_Name": "Collider_2",
-         "m_Tag": ""
-      },
-      3145815,
-      {
-         "m_Active": true,
-         "m_GUID": "2164755031164647254",
-         "m_Name": "Collider_Floor_3",
-         "m_Tag": "Ground"
-      },
-      3145813,
-      {
-         "m_Active": true,
-         "m_GUID": "2764085969092453395",
-         "m_Name": "Collider_Gate_1",
-         "m_Tag": "Ground"
-      },
-      3145826,
-      {
-         "m_Active": true,
-         "m_GUID": "5341764972209801935",
-         "m_Name": "Trigger_B",
-         "m_Tag": ""
-      },
-      3145812,
-      {
-         "m_Active": true,
-         "m_GUID": "1693422613737718374",
-         "m_Name": "RespawnPointManager",
-         "m_Tag": ""
-      },
-      3145811,
-      {
-         "m_Active": true,
-         "m_GUID": "14719781833455431992",
-         "m_Name": "Holey",
-         "m_Tag": "Blue"
-      },
-      3145810,
-      {
-         "m_Active": true,
-         "m_GUID": "3083324973552451588",
-         "m_Name": "Moley",
-         "m_Tag": "Red"
-      },
-      3145809,
-      {
-         "m_Active": true,
-         "m_GUID": "7152412592741358843",
-         "m_Name": "Collider_Floor_5",
-         "m_Tag": "Ground"
-      },
-      3145808,
-      {
-         "m_Active": true,
-         "m_GUID": "2354601854269553172",
-         "m_Name": "Blueberry",
-         "m_Tag": "Blueberry"
-      },
-      3145806,
-      {
-         "m_Active": true,
-         "m_GUID": "12253833483768012129",
-         "m_Name": "Trigger_A",
-         "m_Tag": ""
-      },
-      3145805,
-      {
-         "m_Active": true,
-         "m_GUID": "13200389739587195014",
-         "m_Name": "Collider_2_6",
-         "m_Tag": "Ground"
-      },
-      3145804,
-      {
-         "m_Active": true,
-         "m_GUID": "8172867766267368227",
-         "m_Name": "Collider_Gate_3",
-         "m_Tag": "Ground"
-      },
-      3145802,
-      {
-         "m_Active": true,
-         "m_GUID": "4322846592163836925",
-         "m_Name": "Button",
-         "m_Tag": ""
-      },
-      3145801,
-      {
-         "m_Active": true,
-         "m_GUID": "18350626281452126156",
-         "m_Name": "NotActivePowerUp",
-         "m_Tag": "RightHUD"
-      },
-      3145800,
+      71,
+      5242947,
       {
          "m_Active": true,
          "m_GUID": "13403403417414574728",
          "m_Name": "Collider_Floor_2",
          "m_Tag": "Ground"
       },
-      3145799,
+      2097221,
       {
          "m_Active": true,
-         "m_GUID": "13834884240856388338",
-         "m_Name": "Main Camera",
+         "m_GUID": "2775082732150868457",
+         "m_Name": "BGM (Placeholder)",
          "m_Tag": ""
       },
-      3145803,
+      44040254,
       {
          "m_Active": true,
-         "m_GUID": "8153914915028152974",
-         "m_Name": "CameraManager",
-         "m_Tag": ""
-      },
-      3145798,
-      {
-         "m_Active": true,
-         "m_GUID": "9255418460071677599",
-         "m_Name": "Platform_1",
-         "m_Tag": "Platform"
-      },
-      3145797,
-      {
-         "m_Active": true,
-         "m_GUID": "6416252350877334313",
-         "m_Name": "Collider_2_5",
+         "m_GUID": "2164755031164647254",
+         "m_Name": "Collider_Floor_3",
          "m_Tag": "Ground"
       },
-      3145796,
+      28311620,
       {
          "m_Active": true,
          "m_GUID": "12773985037250275535",
          "m_Name": "Collider_Gate",
          "m_Tag": ""
       },
-      3145795,
+      37748806,
       {
          "m_Active": true,
-         "m_GUID": "938949463693376217",
-         "m_Name": "RespawnPoint2",
+         "m_GUID": "12253833483768012129",
+         "m_Name": "Trigger_A",
          "m_Tag": ""
       },
-      3145793,
+      39845951,
       {
          "m_Active": true,
-         "m_GUID": "18082106574727795430",
-         "m_Name": "Collider_2_2",
+         "m_GUID": "1637832093353520516",
+         "m_Name": "Collider_FirstHITW_Floor",
          "m_Tag": "Ground"
       },
-      3145792,
+      20971584,
       {
          "m_Active": true,
-         "m_GUID": "14737049914315934620",
-         "m_Name": "Starting Platform",
-         "m_Tag": "Ground"
-      },
-      3145791,
-      {
-         "m_Active": true,
-         "m_GUID": "13893834637884961600",
-         "m_Name": "NotActivePowerUp",
-         "m_Tag": "LeftHUD"
-      },
-      3145821,
-      {
-         "m_Active": true,
-         "m_GUID": "11690234509869862253",
-         "m_Name": "ActivePowerUp",
-         "m_Tag": "LeftHUD"
-      },
-      3145790,
-      {
-         "m_Active": true,
-         "m_GUID": "16010057194925687253",
-         "m_Name": "Collider_Gate_2",
-         "m_Tag": "Ground"
-      },
-      3145788,
-      {
-         "m_Active": true,
-         "m_GUID": "31758499223845933",
-         "m_Name": "Holey's Head Collider",
-         "m_Tag": "BlueCollider"
-      },
-      3145783,
-      {
-         "m_Active": true,
-         "m_GUID": "4098787822426184224",
-         "m_Name": "Collider_2_1",
-         "m_Tag": "Ground"
-      },
-      3145782,
-      {
-         "m_Active": true,
-         "m_GUID": "5700592569056788822",
-         "m_Name": "Triggers",
+         "m_GUID": "2775274740245181717",
+         "m_Name": "Collider_FirstHITW_1",
          "m_Tag": ""
       },
-      5242911,
+      20971585,
       {
          "m_Active": true,
-         "m_GUID": "7980446520441605751",
-         "m_Name": "Moley's Head Collider",
-         "m_Tag": "RedCollider"
+         "m_GUID": "3715730403005274056",
+         "m_Name": "Basic Cube",
+         "m_Tag": ""
       },
-      5242923,
+      1048642,
+      {
+         "m_Active": true,
+         "m_GUID": "2764085969092453395",
+         "m_Name": "Collider_Gate_1",
+         "m_Tag": "Ground"
+      },
+      2097168,
+      {
+         "m_Active": true,
+         "m_GUID": "5341764972209801935",
+         "m_Name": "Trigger_B",
+         "m_Tag": ""
+      },
+      2097157,
+      {
+         "m_Active": true,
+         "m_GUID": "4322846592163836925",
+         "m_Name": "Button",
+         "m_Tag": ""
+      },
+      2097176,
       {
          "m_Active": true,
          "m_GUID": "8250124719872487376",
          "m_Name": "LeftCharacter_HUD",
          "m_Tag": "LeftHUD"
       },
-      5242922,
+      2097161,
+      {
+         "m_Active": true,
+         "m_GUID": "14719781833455431992",
+         "m_Name": "Holey",
+         "m_Tag": "Blue"
+      },
+      2097163,
+      {
+         "m_Active": true,
+         "m_GUID": "10083114834088713480",
+         "m_Name": "Audio",
+         "m_Tag": ""
+      },
+      2097166,
+      {
+         "m_Active": true,
+         "m_GUID": "18082106574727795430",
+         "m_Name": "Collider_2_2",
+         "m_Tag": "Ground"
+      },
+      2097167,
+      {
+         "m_Active": true,
+         "m_GUID": "8172867766267368227",
+         "m_Name": "Collider_Gate_3",
+         "m_Tag": "Ground"
+      },
+      2097184,
+      {
+         "m_Active": true,
+         "m_GUID": "938949463693376217",
+         "m_Name": "RespawnPoint2",
+         "m_Tag": ""
+      },
+      2097193,
+      {
+         "m_Active": true,
+         "m_GUID": "127940880923388805",
+         "m_Name": "Collider_PlatformChallenge_1",
+         "m_Tag": "Ground"
+      },
+      2097204,
+      {
+         "m_Active": true,
+         "m_GUID": "6362883811349824352",
+         "m_Name": "Collider_FirstHITW_2",
+         "m_Tag": ""
+      },
+      2097169,
+      {
+         "m_Active": true,
+         "m_GUID": "1693422613737718374",
+         "m_Name": "RespawnPointManager",
+         "m_Tag": ""
+      },
+      2097170,
+      {
+         "m_Active": true,
+         "m_GUID": "7980446520441605751",
+         "m_Name": "Moley's Head Collider",
+         "m_Tag": "RedCollider"
+      },
+      2097162,
+      {
+         "m_Active": true,
+         "m_GUID": "17141392075740864435",
+         "m_Name": "Collider_2",
+         "m_Tag": ""
+      },
+      2097192,
+      {
+         "m_Active": true,
+         "m_GUID": "7152412592741358843",
+         "m_Name": "Collider_Floor_5",
+         "m_Tag": "Ground"
+      },
+      2097203,
+      {
+         "m_Active": true,
+         "m_GUID": "10307113691108978772",
+         "m_Name": "Collider_Floor_4",
+         "m_Tag": "Ground"
+      },
+      2097172,
+      {
+         "m_Active": true,
+         "m_GUID": "5700592569056788822",
+         "m_Name": "Triggers",
+         "m_Tag": ""
+      },
+      2097160,
+      {
+         "m_Active": true,
+         "m_GUID": "11690234509869862253",
+         "m_Name": "ActivePowerUp",
+         "m_Tag": "LeftHUD"
+      },
+      2097173,
+      {
+         "m_Active": true,
+         "m_GUID": "14737049914315934620",
+         "m_Name": "Starting Platform",
+         "m_Tag": "Ground"
+      },
+      8388609,
       {
          "m_Active": true,
          "m_GUID": "2981591812823467501",
          "m_Name": "Power Manager",
          "m_Tag": ""
       },
-      5242921,
+      2097211,
+      {
+         "m_Active": true,
+         "m_GUID": "2354601854269553172",
+         "m_Name": "Blueberry",
+         "m_Tag": "Blueberry"
+      },
+      2097159,
+      {
+         "m_Active": true,
+         "m_GUID": "18232374864943781219",
+         "m_Name": "ActivePowerUp",
+         "m_Tag": "RightHUD"
+      },
+      2097174,
+      {
+         "m_Active": true,
+         "m_GUID": "8937053672119431330",
+         "m_Name": "Strawberry",
+         "m_Tag": "Strawberry"
+      },
+      7340034,
+      {
+         "m_Active": true,
+         "m_GUID": "11673026770933112185",
+         "m_Name": "Collider_2_4",
+         "m_Tag": "Ground"
+      },
+      2097175,
+      {
+         "m_Active": true,
+         "m_GUID": "31758499223845933",
+         "m_Name": "Holey's Head Collider",
+         "m_Tag": "BlueCollider"
+      },
+      2097207,
+      {
+         "m_Active": true,
+         "m_GUID": "16696080460806998314",
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      2097198,
+      {
+         "m_Active": true,
+         "m_GUID": "17842243038432436161",
+         "m_Name": "Level1_Whitebox",
+         "m_Tag": ""
+      },
+      2097178,
+      {
+         "m_Active": true,
+         "m_GUID": "18350626281452126156",
+         "m_Name": "NotActivePowerUp",
+         "m_Tag": "RightHUD"
+      },
+      2097209,
+      {
+         "m_Active": true,
+         "m_GUID": "16010057194925687253",
+         "m_Name": "Collider_Gate_2",
+         "m_Tag": "Ground"
+      },
+      9437184,
+      {
+         "m_Active": true,
+         "m_GUID": "314282645212875191",
+         "m_Name": "Collider_FirstHITW_3",
+         "m_Tag": ""
+      },
+      2097179,
+      {
+         "m_Active": true,
+         "m_GUID": "15969774912167081507",
+         "m_Name": "JumpPad",
+         "m_Tag": "JumpPad"
+      },
+      2097212,
+      {
+         "m_Active": true,
+         "m_GUID": "9986875456619391397",
+         "m_Name": "Collider_PlatformChallenge",
+         "m_Tag": "Ground"
+      },
+      2097202,
+      {
+         "m_Active": true,
+         "m_GUID": "6416252350877334313",
+         "m_Name": "Collider_2_5",
+         "m_Tag": "Ground"
+      },
+      2097180,
+      {
+         "m_Active": true,
+         "m_GUID": "16064886909957664133",
+         "m_Name": "Collider_Floor_1",
+         "m_Tag": "Ground"
+      },
+      2097165,
+      {
+         "m_Active": true,
+         "m_GUID": "13893834637884961600",
+         "m_Name": "NotActivePowerUp",
+         "m_Tag": "LeftHUD"
+      },
+      2097205,
+      {
+         "m_Active": true,
+         "m_GUID": "13834884240856388338",
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      2097156,
+      {
+         "m_Active": true,
+         "m_GUID": "4772649382411875457",
+         "m_Name": "Collider_2_3",
+         "m_Tag": "Ground"
+      },
+      2097181,
+      {
+         "m_Active": true,
+         "m_GUID": "4657305659430111568",
+         "m_Name": "Collider_PlatformChallenge_2",
+         "m_Tag": "Ground"
+      },
+      2097171,
+      {
+         "m_Active": true,
+         "m_GUID": "11815244249492137024",
+         "m_Name": "RespawnPoint1",
+         "m_Tag": ""
+      },
+      2097182,
+      {
+         "m_Active": true,
+         "m_GUID": "4098787822426184224",
+         "m_Name": "Collider_2_1",
+         "m_Tag": "Ground"
+      },
+      2097183,
+      {
+         "m_Active": true,
+         "m_GUID": "17447094584406960146",
+         "m_Name": "Collider_PlatformChallenge_3",
+         "m_Tag": "Ground"
+      },
+      2097185,
       {
          "m_Active": true,
          "m_GUID": "2793467606270948995",
          "m_Name": "RightCharacter_HUD",
          "m_Tag": "RightHUD"
       },
-      19922982,
+      2097164,
+      {
+         "m_Active": true,
+         "m_GUID": "9128911171259814468",
+         "m_Name": "Collider_Floor_6",
+         "m_Tag": "Ground"
+      },
+      2097196,
+      {
+         "m_Active": true,
+         "m_GUID": "8153914915028152974",
+         "m_Name": "CameraManager",
+         "m_Tag": ""
+      },
+      2097186,
+      {
+         "m_Active": true,
+         "m_GUID": "9255418460071677599",
+         "m_Name": "Platform_1",
+         "m_Tag": "Platform"
+      },
+      2097188,
+      {
+         "m_Active": true,
+         "m_GUID": "17585162364418683998",
+         "m_Name": "Level1_Environment",
+         "m_Tag": ""
+      },
+      2097187,
+      {
+         "m_Active": true,
+         "m_GUID": "17122924801537054016",
+         "m_Name": "Collider_PlatformChallenge_3",
+         "m_Tag": "Ground"
+      },
+      4194307,
+      {
+         "m_Active": true,
+         "m_GUID": "13200389739587195014",
+         "m_Name": "Collider_2_6",
+         "m_Tag": "Ground"
+      },
+      2097210,
       {
          "m_Active": true,
          "m_GUID": "14245008706481936771",
          "m_Name": "Ambience",
          "m_Tag": ""
+      },
+      2097201,
+      {
+         "m_Active": true,
+         "m_GUID": "4694208894626685328",
+         "m_Name": "Power Manager",
+         "m_Tag": ""
+      },
+      2097177,
+      {
+         "m_Active": true,
+         "m_GUID": "3083324973552451588",
+         "m_Name": "Moley",
+         "m_Tag": "Red"
+      },
+      2097189,
+      {
+         "m_Active": true,
+         "m_GUID": "7472364672095714181",
+         "m_Name": "Collider_Floor",
+         "m_Tag": ""
+      },
+      2097213,
+      {
+         "m_Active": true,
+         "m_GUID": "14013462178478943687",
+         "m_Name": "Collider_FirstHITW",
+         "m_Tag": ""
+      },
+      2097190,
+      {
+         "m_Active": true,
+         "m_GUID": "5190057882694227598",
+         "m_Name": "Collider_FirstHITW_4",
+         "m_Tag": ""
+      },
+      2097158,
+      {
+         "m_Active": true,
+         "m_GUID": "489154809993964661",
+         "m_Name": "Collider_RollingSection_4",
+         "m_Tag": "Ground"
+      },
+      2097191,
+      {
+         "m_Active": true,
+         "m_GUID": "7457971243183892213",
+         "m_Name": "Collider_RollingSection_3",
+         "m_Tag": "Ground"
+      },
+      2097195,
+      {
+         "m_Active": true,
+         "m_GUID": "9273956748390335",
+         "m_Name": "Collider_RollingSection_1",
+         "m_Tag": "Ground"
+      },
+      2097197,
+      {
+         "m_Active": true,
+         "m_GUID": "7481280499668986868",
+         "m_Name": "Collider_RollingSection_2",
+         "m_Tag": "Ground"
+      },
+      2097200,
+      {
+         "m_Active": true,
+         "m_GUID": "2495744252101835726",
+         "m_Name": "Collider_RollingSection",
+         "m_Tag": "Ground"
+      },
+      2097199,
+      {
+         "m_Active": true,
+         "m_GUID": "11275048327956506314",
+         "m_Name": "Collider_RollingSection_5",
+         "m_Tag": ""
+      },
+      2097206,
+      {
+         "m_Active": true,
+         "m_GUID": "17635808507539349810",
+         "m_Name": "Collider_RollingSection_6",
+         "m_Tag": "Ground"
+      },
+      2097208,
+      {
+         "m_Active": true,
+         "m_GUID": "12548971282219934457",
+         "m_Name": "Collider_RollingSection_7",
+         "m_Tag": "Ground"
+      },
+      2097194,
+      {
+         "m_Active": true,
+         "m_GUID": "2453955169338220515",
+         "m_Name": "JumpPad",
+         "m_Tag": "JumpPad"
       }
    ],
    [
-      51,
-      3145840,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145839,
-      {
-         "m_Position": [
-            -5.117712020874023,
-            -3.9215826988220215,
-            -196.81192016601563
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.6000000238418579,
-            0.10000000149011612,
-            0.6000000238418579
-         ]
-      },
-      3145838,
-      {
-         "m_Position": [
-            28.40696144104004,
-            16.422082901000977,
-            -202.5902557373047
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145837,
-      {
-         "m_Position": [
-            13.595773696899414,
-            -1.2131750583648682,
-            -40.84858322143555
-         ],
-         "m_Rotation": [
-            4.539366273093037e-06,
-            3.102807022514753e-05,
-            -4.695896677731071e-06
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.699999988079071
-         ]
-      },
-      3145835,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145833,
-      {
-         "m_Position": [
-            -43.099998474121094,
-            1.4249999523162842,
-            -180.8271942138672
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145832,
-      {
-         "m_Position": [
-            -770.0,
-            390.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145831,
-      {
-         "m_Position": [
-            -49.16610336303711,
-            12.575206756591797,
-            -224.72837829589844
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145830,
-      {
-         "m_Position": [
-            -33.56270980834961,
-            -11.162614822387695,
-            -151.51219177246094
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145829,
-      {
-         "m_Position": [
-            -9.033747673034668,
-            -9.604753494262695,
-            -202.24526977539063
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145828,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145827,
-      {
-         "m_Position": [
-            -32.66892623901367,
-            0.0,
-            -180.02743530273438
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.25,
-            0.25,
-            0.25
-         ]
-      },
-      3145825,
-      {
-         "m_Position": [
-            -60.58393859863281,
-            13.061535835266113,
-            -202.47360229492188
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145820,
-      {
-         "m_Position": [
-            -9.73396110534668,
-            20.488548278808594,
-            -173.1472930908203
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.5,
-            0.5,
-            0.5
-         ]
-      },
-      3145819,
-      {
-         "m_Position": [
-            -16.566186904907227,
-            -1.2112131118774414,
-            -113.1578140258789
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145818,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            -33.11431884765625
-         ],
-         "m_Rotation": [
-            270.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145817,
-      {
-         "m_Position": [
-            -16.43480110168457,
-            -12.46833610534668,
-            -141.0985565185547
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145816,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145815,
-      {
-         "m_Position": [
-            -4.791675090789795,
-            -9.686509132385254,
-            -152.15724182128906
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145813,
-      {
-         "m_Position": [
-            -5.204372406005859,
-            0.015825748443603516,
-            -145.9295196533203
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145826,
-      {
-         "m_Position": [
-            -30.234399795532227,
-            15.247161865234375,
-            -204.4456329345703
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145812,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145811,
-      {
-         "m_Position": [
-            -9.13290786743164,
-            -3.2228150367736816,
-            -95.75627136230469
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.75
-         ]
-      },
-      3145810,
-      {
-         "m_Position": [
-            -21.393999099731445,
-            -4.065608501434326,
-            -94.84107971191406
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.75
-         ]
-      },
-      3145809,
-      {
-         "m_Position": [
-            -32.64933395385742,
-            -9.690698623657227,
-            -195.76979064941406
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145808,
-      {
-         "m_Position": [
-            -16.125877380371094,
-            0.0,
-            -162.7202911376953
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            0.5,
-            0.5,
-            0.5
-         ]
-      },
-      3145806,
-      {
-         "m_Position": [
-            -26.25156593322754,
-            0.0,
-            -114.27315521240234
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145805,
-      {
-         "m_Position": [
-            -4.821384906768799,
-            12.413981437683105,
-            -213.46127319335938
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145804,
-      {
-         "m_Position": [
-            -16.164880752563477,
-            9.380280494689941,
-            -145.10504150390625
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145802,
-      {
-         "m_Position": [
-            -5.337953567504883,
-            22.0,
-            -212.2386016845703
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            2.0,
-            2.0,
-            2.0
-         ]
-      },
-      3145801,
-      {
-         "m_Position": [
-            -870.0,
-            330.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145800,
+      71,
+      5242947,
       {
          "m_Position": [
             -21.473434448242188,
@@ -1456,155 +1133,11 @@
             1.0
          ]
       },
-      3145799,
-      {
-         "m_Position": [
-            -15.126418113708496,
-            10.881996154785156,
-            -42.61907196044922
-         ],
-         "m_Rotation": [
-            0.0,
-            180.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145803,
+      2097221,
       {
          "m_Position": [
             0.0,
             0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145798,
-      {
-         "m_Position": [
-            16.394269943237305,
-            17.902116775512695,
-            -210.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            20.0,
-            1.0,
-            20.0
-         ]
-      },
-      3145797,
-      {
-         "m_Position": [
-            -21.393808364868164,
-            12.650845527648926,
-            -230.27342224121094
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145796,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145795,
-      {
-         "m_Position": [
-            13.012489318847656,
-            31.93533706665039,
-            -204.88082885742188
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145793,
-      {
-         "m_Position": [
-            -44.67759323120117,
-            13.547502517700195,
-            -174.5719757080078
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145792,
-      {
-         "m_Position": [
-            -16.631065368652344,
-            -13.191606521606445,
-            -100.37674713134766
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            35.0,
-            10.0,
-            35.0
-         ]
-      },
-      3145791,
-      {
-         "m_Position": [
-            870.0,
-            330.0,
             0.0
          ],
          "m_Rotation": [
@@ -1618,30 +1151,12 @@
             1.0
          ]
       },
-      3145821,
+      44040254,
       {
          "m_Position": [
-            770.530029296875,
-            390.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145790,
-      {
-         "m_Position": [
-            -26.88195037841797,
-            0.0,
-            -145.8316192626953
+            -4.791675090789795,
+            -9.686509132385254,
+            -152.15724182128906
          ],
          "m_Rotation": [
             0.0,
@@ -1654,79 +1169,151 @@
             1.0
          ]
       },
-      3145788,
+      28311620,
       {
          "m_Position": [
-            -6.517961025238037,
-            -4.2656354904174805,
-            -9.581930160522461
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      37748806,
+      {
+         "m_Position": [
+            -26.25156593322754,
+            0.0,
+            -114.27315521240234
          ],
          "m_Rotation": [
             0.0,
             -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      39845951,
+      {
+         "m_Position": [
+            80.39993286132813,
+            12.3899507522583,
+            -203.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      20971584,
+      {
+         "m_Position": [
+            78.39993286132813,
+            41.389949798583984,
+            -204.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      20971585,
+      {
+         "m_Position": [
+            28.40696144104004,
+            16.422082901000977,
+            -202.5902557373047
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048642,
+      {
+         "m_Position": [
+            -5.204372406005859,
+            0.015825748443603516,
+            -145.9295196533203
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097168,
+      {
+         "m_Position": [
+            -30.234399795532227,
+            15.247161865234375,
+            -204.4456329345703
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097157,
+      {
+         "m_Position": [
+            -5.337953567504883,
+            22.0,
+            -212.2386016845703
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
             2.0,
-            1.0,
-            2.0
-         ]
-      },
-      3145783,
-      {
-         "m_Position": [
-            -10.956543922424316,
-            1.6562223434448242,
-            -174.6380157470703
-         ],
-         "m_Rotation": [
-            0.0,
-            1.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      3145782,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      5242911,
-      {
-         "m_Position": [
-            -6.517961025238037,
-            -4.2656354904174805,
-            -9.581930160522461
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
             2.0,
-            1.0,
             2.0
          ]
       },
-      5242923,
+      2097176,
       {
          "m_Position": [
             -750.0,
@@ -1744,7 +1331,277 @@
             1.0
          ]
       },
-      5242922,
+      2097161,
+      {
+         "m_Position": [
+            -9.13290786743164,
+            -3.2228150367736816,
+            -95.75627136230469
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      },
+      2097163,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097166,
+      {
+         "m_Position": [
+            -44.67759323120117,
+            13.547502517700195,
+            -174.5719757080078
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097167,
+      {
+         "m_Position": [
+            -16.164880752563477,
+            9.380280494689941,
+            -145.10504150390625
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097184,
+      {
+         "m_Position": [
+            13.012489318847656,
+            31.93533706665039,
+            -204.88082885742188
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097193,
+      {
+         "m_Position": [
+            148.39993286132813,
+            12.3899507522583,
+            -136.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097204,
+      {
+         "m_Position": [
+            78.39993286132813,
+            31.389949798583984,
+            -220.5900421142578
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097169,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097170,
+      {
+         "m_Position": [
+            -6.517961025238037,
+            -4.2656354904174805,
+            -9.581930160522461
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            2.0,
+            1.0,
+            2.0
+         ]
+      },
+      2097162,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097192,
+      {
+         "m_Position": [
+            -32.64933395385742,
+            -9.690698623657227,
+            -195.76979064941406
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097203,
+      {
+         "m_Position": [
+            -33.56270980834961,
+            -11.162614822387695,
+            -151.51219177246094
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097172,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097160,
+      {
+         "m_Position": [
+            770.530029296875,
+            390.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097173,
+      {
+         "m_Position": [
+            -16.631065368652344,
+            -13.191606521606445,
+            -100.37674713134766
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            35.0,
+            10.0,
+            35.0
+         ]
+      },
+      8388609,
       {
          "m_Position": [
             0.00035953521728515625,
@@ -1762,7 +1619,385 @@
             0.699999988079071
          ]
       },
-      5242921,
+      2097211,
+      {
+         "m_Position": [
+            -16.125877380371094,
+            0.0,
+            -162.7202911376953
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      2097159,
+      {
+         "m_Position": [
+            -770.0,
+            390.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097174,
+      {
+         "m_Position": [
+            -9.73396110534668,
+            20.488548278808594,
+            -173.1472930908203
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      7340034,
+      {
+         "m_Position": [
+            -49.16610336303711,
+            12.575206756591797,
+            -224.72837829589844
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097175,
+      {
+         "m_Position": [
+            -6.517961025238037,
+            -4.2656354904174805,
+            -9.581930160522461
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            2.0,
+            1.0,
+            2.0
+         ]
+      },
+      2097207,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            -33.11431884765625
+         ],
+         "m_Rotation": [
+            270.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097198,
+      {
+         "m_Position": [
+            -43.099998474121094,
+            1.4249999523162842,
+            -180.8271942138672
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097178,
+      {
+         "m_Position": [
+            -870.0,
+            330.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097209,
+      {
+         "m_Position": [
+            -26.88195037841797,
+            0.0,
+            -145.8316192626953
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9437184,
+      {
+         "m_Position": [
+            78.39993286132813,
+            21.389949798583984,
+            -207.60140991210938
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097179,
+      {
+         "m_Position": [
+            -5.117712020874023,
+            -2.9470810890197754,
+            -196.81192016601563
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.25,
+            1.0
+         ]
+      },
+      2097212,
+      {
+         "m_Position": [
+            186.39993286132813,
+            12.390000343322754,
+            -162.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097202,
+      {
+         "m_Position": [
+            -21.393808364868164,
+            12.650845527648926,
+            -230.27342224121094
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097180,
+      {
+         "m_Position": [
+            -16.43480110168457,
+            -12.46833610534668,
+            -141.0985565185547
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097165,
+      {
+         "m_Position": [
+            870.0,
+            330.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097205,
+      {
+         "m_Position": [
+            -15.126418113708496,
+            10.881996154785156,
+            -42.61907196044922
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097156,
+      {
+         "m_Position": [
+            -60.58393859863281,
+            13.061535835266113,
+            -202.47360229492188
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097181,
+      {
+         "m_Position": [
+            204.39993286132813,
+            12.3899507522583,
+            -136.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097171,
+      {
+         "m_Position": [
+            -16.566186904907227,
+            -1.2112131118774414,
+            -113.1578140258789
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097182,
+      {
+         "m_Position": [
+            -10.956543922424316,
+            1.6562223434448242,
+            -174.6380157470703
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097183,
+      {
+         "m_Position": [
+            238.39993286132813,
+            12.3899507522583,
+            -203.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097185,
       {
          "m_Position": [
             750.0,
@@ -1780,7 +2015,115 @@
             1.0
          ]
       },
-      19922982,
+      2097164,
+      {
+         "m_Position": [
+            -9.033747673034668,
+            -9.604753494262695,
+            -202.24526977539063
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097196,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097186,
+      {
+         "m_Position": [
+            16.394269943237305,
+            17.902116775512695,
+            -210.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            20.0,
+            1.0,
+            20.0
+         ]
+      },
+      2097188,
+      {
+         "m_Position": [
+            -32.66892623901367,
+            0.0,
+            -180.02743530273438
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.25,
+            0.25,
+            0.25
+         ]
+      },
+      2097187,
+      {
+         "m_Position": [
+            238.39993286132813,
+            12.3899507522583,
+            -203.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194307,
+      {
+         "m_Position": [
+            -4.821384906768799,
+            12.413981437683105,
+            -213.46127319335938
+         ],
+         "m_Rotation": [
+            0.0,
+            1.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097210,
       {
          "m_Position": [
             0.0,
@@ -1797,74 +2140,332 @@
             1.0,
             1.0
          ]
+      },
+      2097201,
+      {
+         "m_Position": [
+            13.595773696899414,
+            -1.2131750583648682,
+            -40.84859085083008
+         ],
+         "m_Rotation": [
+            4.539366273093037e-06,
+            3.105005816905759e-05,
+            -4.695896677731071e-06
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
+      },
+      2097177,
+      {
+         "m_Position": [
+            -21.393999099731445,
+            -4.065608501434326,
+            -94.84107971191406
+         ],
+         "m_Rotation": [
+            0.0,
+            180.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      },
+      2097189,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097213,
+      {
+         "m_Position": [
+            80.4000015258789,
+            12.6899995803833,
+            -203.10699462890625
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097190,
+      {
+         "m_Position": [
+            78.39993286132813,
+            31.389949798583984,
+            -188.1204376220703
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097158,
+      {
+         "m_Position": [
+            342.3999328613281,
+            40.43510055541992,
+            -379.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097191,
+      {
+         "m_Position": [
+            306.3999328613281,
+            14.3899507522583,
+            -367.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097195,
+      {
+         "m_Position": [
+            178.39993286132813,
+            12.3899507522583,
+            -281.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097197,
+      {
+         "m_Position": [
+            266.3999328613281,
+            14.3899507522583,
+            -331.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097200,
+      {
+         "m_Position": [
+            273.3999328613281,
+            12.390000343322754,
+            -332.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097199,
+      {
+         "m_Position": [
+            306.3999328613281,
+            20.389949798583984,
+            -379.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097206,
+      {
+         "m_Position": [
+            306.3999328613281,
+            14.3899507522583,
+            -288.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097208,
+      {
+         "m_Position": [
+            306.3999328613281,
+            18.389949798583984,
+            -285.10711669921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097194,
+      {
+         "m_Position": [
+            306.4042663574219,
+            27.080276489257813,
+            -282.96575927734375
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.25,
+            1.0
+         ]
       }
    ],
    [
-      10,
-      3145839,
+      11,
+      2097157,
       {
-         "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      3145833,
-      {
-         "ASSET_GEOM_m_RenderObject": "de63c45de040cc83",
-         "ASSET_MAT_m_MaterialInstance": "0",
-         "m_IsVisible": true
-      },
-      3145827,
-      {
-         "ASSET_GEOM_m_RenderObject": "2647883345981251",
-         "ASSET_MAT_m_MaterialInstance": "0",
-         "m_IsVisible": true
-      },
-      3145820,
-      {
-         "ASSET_GEOM_m_RenderObject": "6a670b9d30fba191",
-         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
-         "m_IsVisible": true
-      },
-      3145811,
+      2097161,
       {
          "ASSET_GEOM_m_RenderObject": "789db1a40e2484e0",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       },
-      3145810,
+      2097173,
       {
-         "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
-         "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       },
-      3145808,
+      2097211,
       {
          "ASSET_GEOM_m_RenderObject": "5e5479e60fbcccaf",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      3145802,
+      2097174,
       {
-         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_GEOM_m_RenderObject": "6a670b9d30fba191",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       },
-      3145798,
+      2097198,
+      {
+         "ASSET_GEOM_m_RenderObject": "de63c45de040cc83",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      2097179,
+      {
+         "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_IsVisible": true
+      },
+      2097186,
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
          "m_IsVisible": true
       },
-      3145792,
+      2097188,
       {
-         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_GEOM_m_RenderObject": "2647883345981251",
          "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      2097177,
+      {
+         "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
+         "ASSET_MAT_m_MaterialInstance": "b67077a64edeaafc",
+         "m_IsVisible": true
+      },
+      2097194,
+      {
+         "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       }
    ],
    [
       1,
-      3145799,
+      2097205,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -1890,21 +2491,7 @@
    ],
    [
       4,
-      3145820,
-      {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
-         "m_FreezePositionX": false,
-         "m_FreezePositionY": false,
-         "m_FreezePositionZ": false,
-         "m_FreezeRotationX": false,
-         "m_FreezeRotationY": false,
-         "m_FreezeRotationZ": false,
-         "m_IsKinematic": false,
-         "m_Mass": 1.0,
-         "m_UseGravity": false
-      },
-      3145811,
+      2097161,
       {
          "m_AngularDrag": 0.5,
          "m_Drag": 0.20000000298023224,
@@ -1918,21 +2505,7 @@
          "m_Mass": 58.643062591552734,
          "m_UseGravity": true
       },
-      3145810,
-      {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
-         "m_FreezePositionX": false,
-         "m_FreezePositionY": false,
-         "m_FreezePositionZ": false,
-         "m_FreezeRotationX": true,
-         "m_FreezeRotationY": false,
-         "m_FreezeRotationZ": true,
-         "m_IsKinematic": false,
-         "m_Mass": 58.643062591552734,
-         "m_UseGravity": true
-      },
-      3145808,
+      2097211,
       {
          "m_AngularDrag": 0.05000000074505806,
          "m_Drag": 0.0,
@@ -1945,11 +2518,39 @@
          "m_IsKinematic": false,
          "m_Mass": 1.0,
          "m_UseGravity": false
+      },
+      2097174,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 1.0,
+         "m_UseGravity": false
+      },
+      2097177,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 58.643062591552734,
+         "m_UseGravity": true
       }
    ],
    [
       2,
-      3145820,
+      2097211,
       {
          "m_IsTrigger": true,
          "m_Offset": [
@@ -1959,7 +2560,7 @@
          ],
          "m_Radius": 1.5
       },
-      3145808,
+      2097174,
       {
          "m_IsTrigger": true,
          "m_Offset": [
@@ -1971,232 +2572,8 @@
       }
    ],
    [
-      26,
-      3145839,
-      {
-         "m_HalfExtents": [
-            4.0,
-            0.5,
-            4.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145838,
-      {
-         "m_HalfExtents": [
-            2.0,
-            2.0,
-            2.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145831,
-      {
-         "m_HalfExtents": [
-            6.0,
-            6.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145830,
-      {
-         "m_HalfExtents": [
-            12.0,
-            7.5,
-            6.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145829,
-      {
-         "m_HalfExtents": [
-            12.5,
-            6.0,
-            12.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145825,
-      {
-         "m_HalfExtents": [
-            6.0,
-            5.5,
-            23.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145819,
-      {
-         "m_HalfExtents": [
-            17.5,
-            7.0,
-            4.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145817,
-      {
-         "m_HalfExtents": [
-            18.0,
-            5.0,
-            18.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145815,
-      {
-         "m_HalfExtents": [
-            6.5,
-            6.0,
-            5.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145813,
-      {
-         "m_HalfExtents": [
-            6.0,
-            8.0,
-            1.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145826,
-      {
-         "m_HalfExtents": [
-            41.5,
-            25.5,
-            45.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145809,
-      {
-         "m_HalfExtents": [
-            12.0,
-            6.0,
-            18.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145806,
-      {
-         "m_HalfExtents": [
-            33.5,
-            18.5,
-            49.5
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145805,
-      {
-         "m_HalfExtents": [
-            7.0,
-            6.0,
-            13.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145804,
-      {
-         "m_HalfExtents": [
-            17.5,
-            2.5,
-            1.5
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145802,
-      {
-         "m_HalfExtents": [
-            1.0,
-            1.0,
-            1.0
-         ],
-         "m_IsTrigger": true,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145800,
+      43,
+      5242947,
       {
          "m_HalfExtents": [
             23.0,
@@ -2210,26 +2587,12 @@
             0.0
          ]
       },
-      3145798,
+      44040254,
       {
          "m_HalfExtents": [
-            10.0,
-            0.5,
-            10.0
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      3145797,
-      {
-         "m_HalfExtents": [
-            23.0,
+            6.5,
             6.0,
-            6.0
+            5.5
          ],
          "m_IsTrigger": false,
          "m_Offset": [
@@ -2238,12 +2601,12 @@
             0.0
          ]
       },
-      3145795,
+      37748806,
       {
          "m_HalfExtents": [
-            2.200000047683716,
-            1.5,
-            6.0
+            33.5,
+            18.5,
+            49.5
          ],
          "m_IsTrigger": true,
          "m_Offset": [
@@ -2252,12 +2615,12 @@
             0.0
          ]
       },
-      3145793,
+      39845951,
       {
          "m_HalfExtents": [
-            23.0,
-            5.0,
-            6.5
+            50.0,
+            6.0,
+            24.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [
@@ -2266,12 +2629,12 @@
             0.0
          ]
       },
-      3145792,
+      20971584,
       {
          "m_HalfExtents": [
-            17.0,
-            5.0,
-            17.0
+            4.0,
+            4.0,
+            23.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [
@@ -2280,7 +2643,21 @@
             0.0
          ]
       },
-      3145790,
+      20971585,
+      {
+         "m_HalfExtents": [
+            2.0,
+            2.0,
+            2.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      1048642,
       {
          "m_HalfExtents": [
             6.0,
@@ -2294,7 +2671,105 @@
             0.0
          ]
       },
-      3145788,
+      2097168,
+      {
+         "m_HalfExtents": [
+            41.5,
+            25.5,
+            45.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097157,
+      {
+         "m_HalfExtents": [
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097166,
+      {
+         "m_HalfExtents": [
+            23.0,
+            5.0,
+            6.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097167,
+      {
+         "m_HalfExtents": [
+            17.5,
+            2.5,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097184,
+      {
+         "m_HalfExtents": [
+            2.200000047683716,
+            1.5,
+            6.0
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097193,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097204,
+      {
+         "m_HalfExtents": [
+            4.0,
+            14.0,
+            6.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097170,
       {
          "m_HalfExtents": [
             1.5,
@@ -2308,7 +2783,189 @@
             0.0
          ]
       },
-      3145783,
+      2097192,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            18.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097203,
+      {
+         "m_HalfExtents": [
+            12.0,
+            7.5,
+            6.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097173,
+      {
+         "m_HalfExtents": [
+            17.0,
+            5.0,
+            17.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      7340034,
+      {
+         "m_HalfExtents": [
+            6.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097175,
+      {
+         "m_HalfExtents": [
+            1.5,
+            0.5,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097209,
+      {
+         "m_HalfExtents": [
+            6.0,
+            8.0,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      9437184,
+      {
+         "m_HalfExtents": [
+            4.0,
+            4.0,
+            6.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097179,
+      {
+         "m_HalfExtents": [
+            6.199999809265137,
+            1.0,
+            6.199999809265137
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.20000000298023224,
+            0.0
+         ]
+      },
+      2097202,
+      {
+         "m_HalfExtents": [
+            23.0,
+            6.0,
+            6.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097180,
+      {
+         "m_HalfExtents": [
+            18.0,
+            5.0,
+            18.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097156,
+      {
+         "m_HalfExtents": [
+            6.0,
+            5.5,
+            23.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097181,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097171,
+      {
+         "m_HalfExtents": [
+            17.5,
+            7.0,
+            4.5
+         ],
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097182,
       {
          "m_HalfExtents": [
             13.0,
@@ -2322,12 +2979,12 @@
             0.0
          ]
       },
-      5242911,
+      2097183,
       {
          "m_HalfExtents": [
-            1.5,
-            0.5,
-            1.5
+            12.0,
+            6.0,
+            12.0
          ],
          "m_IsTrigger": false,
          "m_Offset": [
@@ -2335,11 +2992,193 @@
             0.0,
             0.0
          ]
+      },
+      2097164,
+      {
+         "m_HalfExtents": [
+            12.5,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097186,
+      {
+         "m_HalfExtents": [
+            10.0,
+            0.5,
+            10.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097187,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      4194307,
+      {
+         "m_HalfExtents": [
+            7.0,
+            6.0,
+            13.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097190,
+      {
+         "m_HalfExtents": [
+            4.0,
+            14.0,
+            7.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097158,
+      {
+         "m_HalfExtents": [
+            48.0,
+            6.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097191,
+      {
+         "m_HalfExtents": [
+            12.0,
+            8.0,
+            6.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097195,
+      {
+         "m_HalfExtents": [
+            12.0,
+            6.0,
+            20.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097197,
+      {
+         "m_HalfExtents": [
+            100.0,
+            8.0,
+            30.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097199,
+      {
+         "m_HalfExtents": [
+            12.0,
+            14.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097206,
+      {
+         "m_HalfExtents": [
+            10.0,
+            8.0,
+            13.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097208,
+      {
+         "m_HalfExtents": [
+            10.0,
+            8.0,
+            10.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097194,
+      {
+         "m_HalfExtents": [
+            6.199999809265137,
+            1.0,
+            6.199999809265137
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.20000000298023224,
+            0.0
+         ]
       }
    ],
    [
       2,
-      3145811,
+      2097161,
       {
          "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
@@ -2350,7 +3189,7 @@
          ],
          "m_Radius": 2.0
       },
-      3145810,
+      2097177,
       {
          "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
@@ -2364,7 +3203,7 @@
    ],
    [
       1,
-      3145818,
+      2097207,
       {
          "m_AmbientColor": [
             1.0,
@@ -2390,7 +3229,7 @@
    ],
    [
       2,
-      3145840,
+      2097221,
       {
          "m_FileName": "BGM_Holie Molie_Latin Salsa_1.212sec_198bpm_LOOP.wav",
          "m_Loop": true,
@@ -2410,7 +3249,7 @@
             0.0
          ]
       },
-      19922982,
+      2097210,
       {
          "m_FileName": "Ambience_Daytime_Forest_Field_Sun_Loop.wav",
          "m_Loop": true,
@@ -2432,127 +3271,79 @@
       }
    ],
    [
-      16,
-      3145839,
-      {
-         "m_StoredClass": "TRE.JumpPad"
-      },
-      3145837,
-      {
-         "m_StoredClass": "TRE.PowerUpManager"
-      },
-      3145820,
-      {
-         "m_StoredClass": "TRE.GetPowerUp"
-      },
-      3145812,
-      {
-         "m_StoredClass": "TRE.RespawnCheckpoint"
-      },
-      3145811,
-      {
-         "m_StoredClass": "TRE.HoleyController"
-      },
-      3145810,
-      {
-         "m_StoredClass": "TRE.MoleyController"
-      },
-      3145808,
-      {
-         "m_StoredClass": "TRE.GetPowerUp"
-      },
-      3145802,
+      17,
+      2097157,
       {
          "m_StoredClass": "TRE.JumpPadSwitch"
       },
-      3145799,
-      {
-         "m_StoredClass": "TRE.CameraController"
-      },
-      3145803,
-      {
-         "m_StoredClass": "TRE.Level_1CameraManager"
-      },
-      3145798,
-      {
-         "m_StoredClass": "TRE.PlatformLogic"
-      },
-      3145788,
-      {
-         "m_StoredClass": "TRE.PlayerHeadCollider"
-      },
-      5242911,
-      {
-         "m_StoredClass": "TRE.PlayerHeadCollider"
-      },
-      5242923,
+      2097176,
       {
          "m_StoredClass": "TRE.PowerUpUI"
       },
-      5242922,
+      2097161,
+      {
+         "m_StoredClass": "TRE.HoleyController"
+      },
+      2097169,
+      {
+         "m_StoredClass": "TRE.RespawnCheckpoint"
+      },
+      2097170,
+      {
+         "m_StoredClass": "TRE.PlayerHeadCollider"
+      },
+      8388609,
       {
          "m_StoredClass": "TRE.PowerUpManager"
       },
-      5242921,
+      2097211,
+      {
+         "m_StoredClass": "TRE.GetPowerUp"
+      },
+      2097174,
+      {
+         "m_StoredClass": "TRE.GetPowerUp"
+      },
+      2097175,
+      {
+         "m_StoredClass": "TRE.PlayerHeadCollider"
+      },
+      2097179,
+      {
+         "m_StoredClass": "TRE.JumpPad"
+      },
+      2097205,
+      {
+         "m_StoredClass": "TRE.CameraController"
+      },
+      2097185,
       {
          "m_StoredClass": "TRE.PowerUpUI"
+      },
+      2097196,
+      {
+         "m_StoredClass": "TRE.Level_1CameraManager"
+      },
+      2097186,
+      {
+         "m_StoredClass": "TRE.PlatformLogic"
+      },
+      2097201,
+      {
+         "m_StoredClass": "TRE.PowerUpManager"
+      },
+      2097177,
+      {
+         "m_StoredClass": "TRE.MoleyController"
+      },
+      2097194,
+      {
+         "m_StoredClass": "TRE.JumpPad"
       }
    ],
    [
       6,
-      3145832,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 35,
-         "Texture": "248738ca8104694",
-         "Width": 35,
-         "m_IsVisible": true
-      },
-      3145801,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 20,
-         "Texture": "b47b5e31695b436d",
-         "Width": 20,
-         "m_IsVisible": true
-      },
-      3145791,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 20,
-         "Texture": "248738ca8104694",
-         "Width": 20,
-         "m_IsVisible": true
-      },
-      3145821,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 35,
-         "Texture": "b47b5e31695b436d",
-         "Width": 35,
-         "m_IsVisible": true
-      },
-      5242923,
+      2097176,
       {
          "Color": [
             1.0,
@@ -2565,7 +3356,59 @@
          "Width": 177,
          "m_IsVisible": true
       },
-      5242921,
+      2097160,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 35,
+         "Texture": "b47b5e31695b436d",
+         "Width": 35,
+         "m_IsVisible": true
+      },
+      2097159,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 35,
+         "Texture": "248738ca8104694",
+         "Width": 35,
+         "m_IsVisible": true
+      },
+      2097178,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 20,
+         "Texture": "b47b5e31695b436d",
+         "Width": 20,
+         "m_IsVisible": true
+      },
+      2097165,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 20,
+         "Texture": "248738ca8104694",
+         "Width": 20,
+         "m_IsVisible": true
+      },
+      2097185,
       {
          "Color": [
             1.0,
