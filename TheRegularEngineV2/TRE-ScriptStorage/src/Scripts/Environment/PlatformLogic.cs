@@ -13,7 +13,7 @@ namespace TRE
         public vec3[] positions;
         public int currentIndex;
 
-        private float lerpSpeed = 1.25f;
+        private float lerpSpeed = 1.5f;
         private float offset = 0.1f;
 
         public PlatformLogic()
@@ -24,10 +24,15 @@ namespace TRE
         public void Start()
         {
             // Determine platform positions based on data
-            if (Scene.GetSceneName() == "Level_1" && name == "Platform_1")
+            if (Scene.GetSceneName() == "Level_1" && name == "MovingPlatform_1")
             {
                 currentIndex = 0;
-                positions = new vec3[] { new vec3(22, 18, -210), new vec3(22, 18, -174) };
+                positions = new vec3[] { new vec3(16, 18, -227), new vec3(16, 18, -178) };
+            }
+
+            if (Scene.GetSceneName() == "Level_1" && name == "Collider_MovingHITW")
+            {
+
             }
         }
 
