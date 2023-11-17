@@ -351,56 +351,100 @@ namespace TRE
 		return vector;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory() const
+	void PhysicsSystem::GetCollisionHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit)
 	{
-		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
-		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+		onEnter.clear();
+		onStay.clear();
+		onExit.clear();
+
+		std::vector<std::pair<unsigned, unsigned>> CollisionsStayID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsEnterID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsExitID{};
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_CollisionHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
 			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
-			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-			CollisionsID.emplace_back(pair);
+			if (entry.m_Flags & CollisionHistoryEntryEnum::Enter)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsStayID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & CollisionHistoryEntryEnum::Stay)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsEnterID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & CollisionHistoryEntryEnum::Exit)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsExitID.emplace_back(pair);
+			}
 		}
 
 		// Generate Entity Actor Vector
 		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
 
 		// Find Entity
-		std::vector<std::pair<Entity, Entity>> Collisions;
-		Collisions.reserve(CollisionsID.size());
-		for (auto IDs : CollisionsID)
+		for (auto IDs : CollisionsStayID)
 		{
-			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
 		}
-
-		return Collisions;
+		for (auto IDs : CollisionsEnterID)
+		{
+			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+		for (auto IDs : CollisionsExitID)
+		{
+			onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory() const
+	void PhysicsSystem::GetTriggerHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit)
 	{
-		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
-		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
+		onEnter.clear();
+		onStay.clear();
+		onExit.clear();
+
+		std::vector<std::pair<unsigned, unsigned>> CollisionsStayID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsEnterID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsExitID{};
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_TriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
-			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-			CollisionsID.emplace_back(pair);
+			const TriggerHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
+			if (entry.m_Flags & TriggerHistoryEntryEnum::Enter)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsStayID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & TriggerHistoryEntryEnum::Stay)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsEnterID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & TriggerHistoryEntryEnum::Exit)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsExitID.emplace_back(pair);
+			}
 		}
 
 		// Generate Entity Actor Vector
 		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
 
 		// Find Entity
-		std::vector<std::pair<Entity, Entity>> Collisions;
-		Collisions.reserve(CollisionsID.size());
-		for (auto IDs : CollisionsID)
+		for (auto IDs : CollisionsStayID)
 		{
-			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
 		}
-
-		return Collisions;
+		for (auto IDs : CollisionsEnterID)
+		{
+			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
+		for (auto IDs : CollisionsExitID)
+		{
+			onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		}
 	}
 
 	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory() const

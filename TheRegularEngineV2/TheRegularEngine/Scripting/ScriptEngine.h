@@ -106,8 +106,12 @@ namespace TRE
 		void OnStartInvoke();
 		void OnUpdateInvoke();
 		void OnLateUpdateInvoke();
+		void OnTriggerEnterInvoke(Entity other);
 		void OnTriggerStayInvoke(Entity other);
+		void OnTriggerExitInvoke(Entity other);
+		void OnCollisionEnterInvoke(Entity other);
 		void OnCollisionStayInvoke(Entity other);
+		void OnCollisionExitInvoke(Entity other);
 
 		std::shared_ptr<ScriptClass> GetScriptClass() { return m_ScriptClass; }
 
@@ -149,8 +153,12 @@ namespace TRE
 		MonoMethod* m_StartMethod = nullptr;
 		MonoMethod* m_UpdateMethod = nullptr;
 		MonoMethod* m_LateUpdateMethod = nullptr;
+		MonoMethod* m_TriggerEnterMethod = nullptr;
 		MonoMethod* m_TriggerStayMethod = nullptr;
+		MonoMethod* m_TriggerExitMethod = nullptr;
+		MonoMethod* m_CollisionEnterMethod = nullptr;
 		MonoMethod* m_CollisionStayMethod = nullptr;
+		MonoMethod* m_CollisionExitMethod = nullptr;
 
 		std::uint32_t m_GCHandle{};
 
@@ -215,8 +223,12 @@ namespace TRE
 		static void OnLateUpdateEntity(Entity e	);
 
 		// Collision
+		static void OnTriggerEnter(Entity e, Entity other);
 		static void OnTriggerStay(Entity e, Entity other);
+		static void OnTriggerExit(Entity e, Entity other);
+		static void OnCollisionEnter(Entity e, Entity other);
 		static void OnCollisionStay(Entity e, Entity other);
+		static void OnCollisionExit(Entity e, Entity other);
 
 		static void PrintAllContainersHere();
 
