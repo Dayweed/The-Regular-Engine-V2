@@ -415,7 +415,16 @@ namespace TRE
 					isGrounded = false;
 				}
 			}
-			if (PS.IsCollisionExit(this.ID, otherID))
+			if (PS.IsCollisionStay(this.ID, otherID))
+			{
+				if (EngineGetTag(otherID) == "Platform")
+				{
+					parenting.SetParent(other);
+					Debug.Log("Parenting to " + other.name);
+				}
+			}
+
+            if (PS.IsCollisionExit(this.ID, otherID))
 			{
 				if (EngineGetTag(otherID) == "Blue")
 				{
@@ -432,6 +441,28 @@ namespace TRE
 				}
 			}
 		}
+
+		//private void OnCollisionEnter(System.UInt64 otherID)
+		//{
+		//	Entity other = new Entity(otherID);
+  //         //if on the platform child it
+		//   if(other.CompareTag("Platform") && parenting.)
+		//	{
+		//		parenting.SetParent(other);
+		//		Debug.Log("Parenting to " + other.name);
+		//	}
+  //      }
+
+		private void OnCollisionExit(System.UInt64 otherID)
+		{
+            Entity other = new Entity(otherID);
+            //if on the platform unchild it
+            if (other.CompareTag("Platform"))
+			{
+				parenting.RemoveParent();
+				Debug.Log("Unparenting from " + other.name);
+            }
+        }
 
 		public void UpdateDisplay()
 		{
