@@ -108,7 +108,7 @@ namespace TRE
 		return -GetForwardVec();
 	}
 
-	std::array<glm::vec3, 8> BaseCamera::GetFrustumCorners(bool useRenderRatio) const
+	std::array<glm::vec3, 8> BaseCamera::GetFrustumCorners(const bool useRenderRatio, const float ratio) const
 	{
 		float yTopNear = tan(glm::radians(m_Fov / 2.f)) * m_Near;
 		float yBottomNear = -yTopNear;
@@ -118,6 +118,8 @@ namespace TRE
 		float renderRatio = 1.f;
 		if(useRenderRatio)
 			renderRatio = (m_FocalLength * 2.f) / (m_Far - m_Near);
+		else
+			renderRatio = ratio;
 		const float newFar = m_Far * renderRatio;
 		float yTopFar = tan(glm::radians(m_Fov / 2.f)) * newFar;
 		float yBottomFar = -yTopFar;

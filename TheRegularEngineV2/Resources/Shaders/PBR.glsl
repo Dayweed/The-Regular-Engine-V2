@@ -130,7 +130,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		float currentDepth = lightCoords.z;
 		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
 
-		int sampleRadius = 4;
+		int sampleRadius = 3;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
 
 		for(int y = -sampleRadius; y <= sampleRadius; y++)

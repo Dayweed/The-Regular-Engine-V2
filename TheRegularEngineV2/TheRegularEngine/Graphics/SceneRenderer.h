@@ -19,8 +19,7 @@ namespace TRE
 {
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
-	class EditorCamera;
-	class Camera;
+	class BaseCamera;
 
 	struct PushConstant
 	{
@@ -90,7 +89,7 @@ namespace TRE
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
 		private:
-			bool ShadowFrustumCheck(const Entity& cameraEntity);
+			bool ShadowFrustumCheck(const BaseCamera& baseCamera);
 			void RecreateShadowAABB(const std::array<glm::vec3, 8>& cameraFrustum);
 		private:
 			std::shared_ptr<Device> m_Device;
@@ -135,11 +134,20 @@ namespace TRE
 			VkFramebuffer m_ShadowFramebuffer;
 
 			float m_ShadowAABBPadding = 10.f;
+			//Game
 			glm::vec3 m_ShadowAABBMin;
 			glm::vec3 m_ShadowAABBMax;
 			glm::vec3 m_ShadowRenderPoint;
 			glm::mat4 m_ShadowView;
 			glm::mat4 m_ShadowProj;
+
+			//Editor viewport
+			glm::vec3 m_EditorShadowAABBMin;
+			glm::vec3 m_EditorShadowAABBMax;
+			glm::vec3 m_EditorShadowRenderPoint;
+			glm::mat4 m_EditorShadowView;
+			glm::mat4 m_EditorShadowProj;
+			float m_EditorShadowRatio = 0.05f;
 
 			//AnimationPass
 			std::shared_ptr<Pipeline> m_AnimationPipeline;

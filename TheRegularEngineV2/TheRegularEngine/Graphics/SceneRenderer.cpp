@@ -211,6 +211,7 @@ namespace TRE
 	void SceneRenderer::BeginEditorFrame()
 	{
 		const EditorCamera& editorCamera = EditorCamera::Instance();
+		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
 		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		
 		UBO ubo{};
@@ -223,6 +224,7 @@ namespace TRE
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
 		glm::mat4 depthViewMatrix(1.f);
+		const bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entity->GetComponent<Transform>();
@@ -231,32 +233,47 @@ namespace TRE
 			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
 			ubo.m_LightAmbientColor = light.m_AmbientColor;
 			
-			depthViewMatrix = glm::translate(glm::mat4(1.f), EditorCamera::Instance().GetPosition()) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			if (recalculateShadowFrustum)
+			{
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, m_EditorShadowRatio));
+				depthViewMatrix = glm::translate(glm::mat4(1.f), m_EditorShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			}
 		}
 
-		ShadowUBO UBO_Shadow;
-		float orthoLength = 50.0f; // Adjust this to suit your scene's dimensions
-		float orthoHeight = 50.0f; // Adjust this to suit your scene's dimensions
-		float orthoNear = 0.1f;
-		float orthoFar = 100.0f;
+		if (recalculateShadowFrustum)
+		{
+			ShadowUBO UBO_Shadow;
+			glm::mat4 depthProjectionMatrix;
+			const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
+			const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
+			const float deltaZ = m_EditorShadowAABBMax.z - m_EditorShadowAABBMin.z;
+			const float orthoLength = deltaX;
+			const float orthoHeight = deltaY;
+			const float orthoNear = 0.1f;
+			const float orthoFar = orthoNear + deltaZ;
+
+			depthProjectionMatrix = glm::mat4(1.f);
+			depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+			depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+			depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+			depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+			depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+			depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+
+			depthViewMatrix = glm::inverse(depthViewMatrix);
+			m_EditorShadowView = depthViewMatrix;
+			m_EditorShadowProj = depthProjectionMatrix;
+
+			UBO_Shadow.view = m_EditorShadowView;
+			UBO_Shadow.proj = m_EditorShadowProj;
+
+			m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+		}
 		
-		glm::mat4 depthProjectionMatrix;
-		depthProjectionMatrix = glm::mat4(1.f);
-		depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-		depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-		depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-		depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-		depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-		depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
-		depthViewMatrix = glm::inverse(depthViewMatrix);
-		UBO_Shadow.view = depthViewMatrix;
-		UBO_Shadow.proj = depthProjectionMatrix;
-		
-		ubo.m_LightSpaceMatrix = depthProjectionMatrix * depthViewMatrix;
+		ubo.m_LightSpaceMatrix = m_EditorShadowProj * m_EditorShadowView;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
-		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 
 		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
 		{
@@ -275,19 +292,21 @@ namespace TRE
 	{
 		//UBO
 		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
-		UBO ubo{};
 		const Camera& cameraComponent = mainCamera->GetComponent<Camera>();
+		const BaseCamera& baseCamera = cameraComponent.m_BaseCamera;
 		const Transform& cameraTransform = mainCamera->GetComponent<Transform>();
-		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
+
+		UBO ubo{};
+		ubo.m_ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 		ubo.m_LightPosition = cameraTransform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
 		SkyBoxUBO UBO_SkyBox;
-		UBO_SkyBox.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
-		UBO_SkyBox.View = cameraComponent.m_BaseCamera.m_ViewMatrix;
+		UBO_SkyBox.Proj = baseCamera.m_ProjectionMatrix;
+		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
 
 		glm::mat4 depthViewMatrix(1.f);
-		const bool recalculateShadowFrustum = ShadowFrustumCheck(mainCamera);
+		const bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
@@ -298,7 +317,7 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(cameraComponent.m_BaseCamera.GetFrustumCorners());
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(true, 1.f));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 			}
 		}
@@ -347,7 +366,7 @@ namespace TRE
 				continue;
 
 			MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
-			AnimComp.m_BufferData.ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
+			AnimComp.m_BufferData.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
 	}
@@ -838,22 +857,39 @@ namespace TRE
 		const float maxFloat = std::numeric_limits<float>::max();
 		m_ShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);
 		m_ShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
+		m_EditorShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);
+		m_EditorShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
 	}
 
-	bool SceneRenderer::ShadowFrustumCheck(const Entity& cameraEntity)
+	bool SceneRenderer::ShadowFrustumCheck(const BaseCamera& baseCamera)
 	{
-		const auto cameraFrustum = cameraEntity->GetComponent<Camera>().m_BaseCamera.GetFrustumCorners();
-
 		//Check if frustum points outside of shadow AABB
 		for (int i = 0; i < 8; i++)
 		{
-			if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
-				cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||
-				cameraFrustum[i].z < m_ShadowAABBMin.z || cameraFrustum[i].z > m_ShadowAABBMax.z)
+			if (m_IsEditorScene)
 			{
-				return true;
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, m_EditorShadowRatio);
+
+				if (cameraFrustum[i].x < m_EditorShadowAABBMin.x || cameraFrustum[i].x > m_EditorShadowAABBMax.x ||
+					cameraFrustum[i].y < m_EditorShadowAABBMin.y || cameraFrustum[i].y > m_EditorShadowAABBMax.y ||
+					cameraFrustum[i].z < m_EditorShadowAABBMin.z || cameraFrustum[i].z > m_EditorShadowAABBMax.z)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(true, 1.f);
+
+				if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
+					cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||
+					cameraFrustum[i].z < m_ShadowAABBMin.z || cameraFrustum[i].z > m_ShadowAABBMax.z)
+				{
+					return true;
+				}
 			}
 		}
+		
 		return false;
 	}
 
@@ -879,12 +915,24 @@ namespace TRE
 			}
 
 			const glm::vec3 padding = glm::vec3(m_ShadowAABBPadding, m_ShadowAABBPadding, m_ShadowAABBPadding);
-			m_ShadowAABBMin = glm::vec3(minX, minY, minZ);
-			m_ShadowAABBMin -= padding;
-			m_ShadowAABBMax = glm::vec3(maxX, maxY, maxZ);
-			m_ShadowAABBMax += padding;
-			m_ShadowRenderPoint = (m_ShadowAABBMax + m_ShadowAABBMin) * 0.5f;
-			m_ShadowRenderPoint.y = m_ShadowAABBMax.y; //Always render from top of AABB
+			if (m_IsEditorScene)
+			{
+				m_EditorShadowAABBMin = glm::vec3(minX, minY, minZ);
+				m_EditorShadowAABBMin -= padding;
+				m_EditorShadowAABBMax = glm::vec3(maxX, maxY, maxZ);
+				m_EditorShadowAABBMax += padding;
+				m_EditorShadowRenderPoint = (m_EditorShadowAABBMax + m_EditorShadowAABBMin) * 0.5f;
+				m_EditorShadowRenderPoint.y = m_EditorShadowAABBMax.y; //Always render from top of AABB
+			}
+			else
+			{
+				m_ShadowAABBMin = glm::vec3(minX, minY, minZ);
+				m_ShadowAABBMin -= padding;
+				m_ShadowAABBMax = glm::vec3(maxX, maxY, maxZ);
+				m_ShadowAABBMax += padding;
+				m_ShadowRenderPoint = (m_ShadowAABBMax + m_ShadowAABBMin) * 0.5f;
+				m_ShadowRenderPoint.y = m_ShadowAABBMax.y; //Always render from top of AABB
+			}
 		}
 	}
 }
