@@ -423,7 +423,6 @@ namespace TRE
 					Debug.Log("Parenting to " + other.name);
 				}
 			}
-
             if (PS.IsCollisionExit(this.ID, otherID))
 			{
 				if (EngineGetTag(otherID) == "Blue")
