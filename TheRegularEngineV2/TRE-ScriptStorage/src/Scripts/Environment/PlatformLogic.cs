@@ -27,7 +27,7 @@ namespace TRE
             if (Scene.GetSceneName() == "Level_1" && name == "Platform_1")
             {
                 currentIndex = 0;
-                positions = new vec3[] { new vec3(22, 18, -210), new vec3(22, 18, -174) };
+                positions = new vec3[] { new vec3(16.394f, 17.902f, -210), new vec3(16.394f, 17.902f, -174) };
             }
         }
 

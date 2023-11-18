@@ -395,7 +395,6 @@ namespace TRE
                 if (EngineGetTag(otherID) == "Platform")
                 {
                     parenting.SetParent(other);
-                    Debug.Log("Parenting to " + other.name);
                 }
             }
             if (PS.IsCollisionExit(this.ID, otherID))
