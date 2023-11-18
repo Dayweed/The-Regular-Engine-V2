@@ -14,8 +14,12 @@ namespace TRE
 
         public List<HoleCheckDisplay> triggerComplete;
 
+        public static float currentTime;
+        public float waitingTime = 5.0f;
+
         public void Start()
         {
+            currentTime = 0.0f;
             currentSceneName = Scene.GetSceneName();
             triggerComplete = new List<HoleCheckDisplay>();
             Debug.Log("Name " + currentSceneName);
@@ -23,6 +27,7 @@ namespace TRE
             {
                 triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
                 triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
+
                 nextSceneName = "Level_1";
             }
         }
@@ -31,6 +36,9 @@ namespace TRE
         {
             // Go to next scene if list of triggers are completed
             bool goToNextScene = triggerComplete.Count == 0 ? false : true;
+
+            currentTime += Time.deltaTime;
+
             foreach (HoleCheckDisplay trigger in triggerComplete)
             {
                 if (!trigger.isCompleted)
@@ -39,7 +47,9 @@ namespace TRE
                     return;
                 }
             }
-            if (goToNextScene)
+            
+            //go to next scene after 5s
+            if (goToNextScene && currentTime >= waitingTime)
             {
                 Scene.TransitionScene(nextSceneName, 7f);
 
@@ -53,6 +63,8 @@ namespace TRE
                 {
 					AudioSystem.Stop(12557813022109059017);
 				}
+
+                currentTime = 0;
             }
         }
     }
