@@ -37,8 +37,6 @@ namespace TRE
             // Go to next scene if list of triggers are completed
             bool goToNextScene = triggerComplete.Count == 0 ? false : true;
 
-            currentTime += Time.deltaTime;
-
             foreach (HoleCheckDisplay trigger in triggerComplete)
             {
                 if (!trigger.isCompleted)
@@ -49,9 +47,17 @@ namespace TRE
             }
             
             //go to next scene after 5s
-            if (goToNextScene && currentTime >= waitingTime)
+            if (goToNextScene)
             {
-                Scene.TransitionScene(nextSceneName, 7f);
+                if (currentTime >= waitingTime)
+                {
+                    Scene.TransitionScene(nextSceneName, 7f);
+                }
+
+                else
+                {
+                    currentTime += Time.deltaTime;
+                }
 
                 //temp only!! not a very smooth transition atm
                 if (ECSManager.IsValidEntity(12557813022109059017))
@@ -63,8 +69,6 @@ namespace TRE
                 {
 					AudioSystem.Stop(12557813022109059017);
 				}
-
-                currentTime = 0;
             }
         }
     }
