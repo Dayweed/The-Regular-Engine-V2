@@ -83,11 +83,11 @@ namespace TRE
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 
-            Key = ECSManager.FindEntityByName("Key");
+            /*Key = ECSManager.FindEntityByName("Key");
 			Debug.Log("Key ID is " + Key.ID);
 
 			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
-			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
+			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);*/
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
@@ -371,7 +371,7 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
-			if (Key.ID != 0 && FinalPlatform.ID != 0)
+			/*if (Key.ID != 0 && FinalPlatform.ID != 0)
 			{
 				if (PS.IsTriggerEnter(this.ID, Key.ID))
 				{
@@ -379,7 +379,7 @@ namespace TRE
 					TransformSystem.SetPosition(FinalPlatform.ID, new vec3(100, 9, -302));
 					Debug.Log("Key Collected");
 				}
-			}
+			}*/
 
 			isGrounded = false;
 		}
