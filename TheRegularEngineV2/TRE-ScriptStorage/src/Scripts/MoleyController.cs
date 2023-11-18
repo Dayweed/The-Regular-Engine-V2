@@ -102,7 +102,7 @@ namespace TRE
 
 		public void Update()
 		{
-            #region Invulnerability
+			#region Invulnerability
 			if (Invulnerability)
 			{
 				InvulBlinkCurrent -= Time.deltaTime;
@@ -380,6 +380,8 @@ namespace TRE
 					Debug.Log("Key Collected");
 				}
 			}
+
+			isGrounded = false;
 		}
 
 		private void Jump(vec3 JumpHeight)
@@ -390,8 +392,6 @@ namespace TRE
 
 		private void OnCollisionStay(System.UInt64 otherID)
 		{
-			isGrounded = false;
-
 			Entity other = new Entity(otherID);
             // Make it loose one of it's powerups
             if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
@@ -403,41 +403,16 @@ namespace TRE
 			{
 				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
 			}
-			if (PS.IsCollisionStay(this.ID, otherID))
-			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
+			//For jumping
+			if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
 					|| EngineGetTag(otherID) == "Blue" || EngineGetTag(otherID) == "BlueCollider")
-				{
-					isGrounded = true;
-				}
-				else
-				{
-					isGrounded = false;
-				}
-			}
-			if (PS.IsCollisionStay(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Platform")
-				{
-					parenting.SetParent(other);
-					Debug.Log("Parenting to " + other.name);
-				}
+				isGrounded = true;
 			}
-            if (PS.IsCollisionExit(this.ID, otherID))
+			if (EngineGetTag(otherID) == "Platform")
 			{
-				if (EngineGetTag(otherID) == "Blue")
-				{
-					PS.GetLinearVelocity(this.ID, out vec3 output);
-					if (output.y > maxJumpHeight)
-						output.y = maxJumpHeight;
-					PS.SetLinearVelocity(this.ID, output);
-				}
-				// No longer boosted if leave jumppad
-				else if (EngineGetTag(otherID) == "JumpPad")
-				{
-					isBoostedJump = false;
-					isGrounded = false;
-				}
+				parenting.SetParent(other);
+				Debug.Log("Parenting to " + other.name);
 			}
 		}
 
@@ -461,7 +436,20 @@ namespace TRE
 				parenting.RemoveParent();
 				Debug.Log("Unparenting from " + other.name);
             }
-        }
+			if (EngineGetTag(otherID) == "Blue")
+			{
+				PS.GetLinearVelocity(this.ID, out vec3 output);
+				if (output.y > maxJumpHeight)
+					output.y = maxJumpHeight;
+				PS.SetLinearVelocity(this.ID, output);
+			}
+			// No longer boosted if leave jumppad
+			else if (EngineGetTag(otherID) == "JumpPad")
+			{
+				isBoostedJump = false;
+				isGrounded = false;
+			}
+		}
 
 		public void UpdateDisplay()
 		{

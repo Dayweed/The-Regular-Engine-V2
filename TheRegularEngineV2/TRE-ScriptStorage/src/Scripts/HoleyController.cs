@@ -357,6 +357,7 @@ namespace TRE
 
             holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
+            isGrounded = false;
 		}
 		private void Jump(vec3 JumpHeight)
 		{
@@ -378,41 +379,15 @@ namespace TRE
 			{
 				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
 			}
-			if (PS.IsCollisionStay(this.ID, otherID))
-			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
+			if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
 					|| EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "RedCollider")
-				{
-					isGrounded = true;
-				}
-				else
-				{
-					isGrounded = false;
-				}
-			}
-            if (PS.IsCollisionStay(this.ID, otherID))
-            {
-                if (EngineGetTag(otherID) == "Platform")
-                {
-                    parenting.SetParent(other);
-                    Debug.Log("Parenting to " + other.name);
-                }
-            }
-            if (PS.IsCollisionExit(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Red")
-				{
-					PS.GetLinearVelocity(this.ID, out vec3 output);
-					if (output.y > maxJumpHeight)
-						output.y = maxJumpHeight;
-					PS.SetLinearVelocity(this.ID, output);
-				}
-				// No longer boosted if leave jumppad
-				else if (EngineGetTag(otherID) == "JumpPad")
-				{
-					isBoostedJump = false;
-					isGrounded = false;
-				}
+				isGrounded = true;
+			}
+			if (EngineGetTag(otherID) == "Platform")
+			{
+				parenting.SetParent(other);
+				Debug.Log("Parenting to " + other.name);
 			}
         }
         private void OnCollisionExit(System.UInt64 otherID)
@@ -424,7 +399,20 @@ namespace TRE
                 parenting.RemoveParent();
                 Debug.Log("Unparenting from " + other.name);
             }
-        }
+			if (EngineGetTag(otherID) == "Red")
+			{
+				PS.GetLinearVelocity(this.ID, out vec3 output);
+				if (output.y > maxJumpHeight)
+					output.y = maxJumpHeight;
+				PS.SetLinearVelocity(this.ID, output);
+			}
+			// No longer boosted if leave jumppad
+			else if (EngineGetTag(otherID) == "JumpPad")
+			{
+				isBoostedJump = false;
+				isGrounded = false;
+			}
+		}
 
         public void UpdateDisplay()
         {

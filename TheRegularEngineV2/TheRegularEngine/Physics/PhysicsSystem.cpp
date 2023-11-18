@@ -367,12 +367,12 @@ namespace TRE
 			if (entry.m_Flags & CollisionHistoryEntryEnum::Enter)
 			{
 				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-				CollisionsStayID.emplace_back(pair);
+				CollisionsEnterID.emplace_back(pair);
 			}
 			else if (entry.m_Flags & CollisionHistoryEntryEnum::Stay)
 			{
 				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-				CollisionsEnterID.emplace_back(pair);
+				CollisionsStayID.emplace_back(pair);
 			}
 			else if (entry.m_Flags & CollisionHistoryEntryEnum::Exit)
 			{
@@ -387,11 +387,11 @@ namespace TRE
 		// Find Entity
 		for (auto IDs : CollisionsStayID)
 		{
-			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
 		}
 		for (auto IDs : CollisionsEnterID)
 		{
-			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
 		}
 		for (auto IDs : CollisionsExitID)
 		{
@@ -415,12 +415,12 @@ namespace TRE
 			if (entry.m_Flags & TriggerHistoryEntryEnum::Enter)
 			{
 				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-				CollisionsStayID.emplace_back(pair);
+				CollisionsEnterID.emplace_back(pair);
 			}
 			else if (entry.m_Flags & TriggerHistoryEntryEnum::Stay)
 			{
 				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-				CollisionsEnterID.emplace_back(pair);
+				CollisionsStayID.emplace_back(pair);
 			}
 			else if (entry.m_Flags & TriggerHistoryEntryEnum::Exit)
 			{
@@ -435,11 +435,11 @@ namespace TRE
 		// Find Entity
 		for (auto IDs : CollisionsStayID)
 		{
-			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
 		}
 		for (auto IDs : CollisionsEnterID)
 		{
-			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
 		}
 		for (auto IDs : CollisionsExitID)
 		{
