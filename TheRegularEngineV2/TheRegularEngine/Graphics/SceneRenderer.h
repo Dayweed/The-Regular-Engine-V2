@@ -52,12 +52,6 @@ namespace TRE
 		glm::mat4 proj;
 	};
 
-	struct AnimationUBO
-	{
-		glm::mat4 ProjView {1.f};
-		glm::mat4 L2W[256];
-	};
-
 	class SceneRenderer
 	{
 		public:

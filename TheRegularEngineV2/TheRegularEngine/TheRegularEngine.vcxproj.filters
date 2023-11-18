@@ -130,6 +130,9 @@
     <ClInclude Include="Graphics\AnimationComponent.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\AnimationSystem.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -338,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="Editor\ImguiBuildBackend.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\AnimationSystem.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Buffer.cpp">
       <Filter>Graphics</Filter>

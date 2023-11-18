@@ -283,6 +283,7 @@ namespace TRE
 			if (!MRComp.m_IsVisible)
 				continue;
 
+			//MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, glm::identity<glm::mat4>());
 			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
@@ -448,7 +449,9 @@ namespace TRE
 		for (const auto& go_mr : MaterialSort)
 		{
 			if (go_mr.second->HasComponent<AnimationComponent>()) //This only render static meshes
+			{
 				continue;
+			}
 
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
@@ -502,7 +505,7 @@ namespace TRE
 	{
 		(void)MaterialSort;
 		Renderer::BindPipeline(m_CommandBuffer, m_AnimationPipeline);
-		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
 		{
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 			MeshRenderer& MeshRendererComp = Entity->GetComponent<MeshRenderer>();
