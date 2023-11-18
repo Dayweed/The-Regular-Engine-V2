@@ -8,6 +8,12 @@
 
 namespace TRE
 {
+	struct AnimationUBO
+	{
+		glm::mat4 ProjView {1.f};
+		glm::mat4 L2W[256];
+	};
+
 	class AnimationComponent : property::base
 	{
 		public:
@@ -27,11 +33,11 @@ namespace TRE
 
 				m_MaterialInstace = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(9));
 				m_MaterialInstace->Invalidate();
-				m_MaterialInstace->SetTexture("Diffuse", Texture1);
-				m_MaterialInstace->SetTexture("DiffuseAO", Texture2);
+				m_MaterialInstace->SetTexture("DiffuseMap", Texture1);
+				m_MaterialInstace->SetTexture("AOMap", Texture2);
 				m_MaterialInstace->SetTexture("NormalMap", Texture3);
-				m_MaterialInstace->SetTexture("Specular", Texture4);
-				m_MaterialInstace->SetTexture("Glossiness", Texture5);
+				m_MaterialInstace->SetTexture("RoughnessMap", Texture4);
+				m_MaterialInstace->SetTexture("Metalness", Texture5);
 
 				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 			}

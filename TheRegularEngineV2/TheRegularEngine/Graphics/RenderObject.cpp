@@ -90,10 +90,7 @@ namespace TRE
 		VkDeviceSize offsets2[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 1, 1, bonevertexBuffers, offsets2);
 
-		if (m_HasIndexBuffer)
-		{
-			vkCmdBindIndexBuffer(commandBuffer, m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-		}
+		vkCmdBindIndexBuffer(commandBuffer, m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 		vkCmdDrawIndexed(commandBuffer, m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 	}

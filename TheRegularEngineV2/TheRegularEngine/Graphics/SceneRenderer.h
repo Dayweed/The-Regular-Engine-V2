@@ -19,8 +19,7 @@ namespace TRE
 {
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
-	struct EditorCamera;
-	class Camera;
+	class BaseCamera;
 
 	struct PushConstant
 	{
@@ -53,12 +52,6 @@ namespace TRE
 		glm::mat4 proj;
 	};
 
-	struct AnimationUBO
-	{
-		glm::mat4 ProjView {1.f};
-		glm::mat4 L2W[256];
-	};
-
 	class SceneRenderer
 	{
 		public:
@@ -89,6 +82,9 @@ namespace TRE
 			std::vector<std::shared_ptr<Image2D>> GetColorImages();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
 
+		private:
+			bool ShadowFrustumCheck(const BaseCamera& baseCamera);
+			void RecreateShadowAABB(const std::array<glm::vec3, 8>& cameraFrustum);
 		private:
 			std::shared_ptr<Device> m_Device;
 			std::shared_ptr<CommandBuffer> m_CommandBuffer;
@@ -131,11 +127,21 @@ namespace TRE
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
 
-			std::pair<float, float> m_ShadowFrustumNearFar;
-			std::pair<float, float> m_ShadowFrustumLengthHeight;
-			std::pair<float, float> m_ShadowFrustumLengthHeightEditor;
-			std::pair<glm::vec3, glm::vec3> m_ShadowFrustum; //Min, Max
-			std::pair<glm::vec3, glm::vec3> m_ShadowFrustumEditor;
+			float m_ShadowAABBPadding = 10.f;
+			//Game
+			glm::vec3 m_ShadowAABBMin;
+			glm::vec3 m_ShadowAABBMax;
+			glm::vec3 m_ShadowRenderPoint;
+			glm::mat4 m_ShadowView;
+			glm::mat4 m_ShadowProj;
+
+			//Editor viewport
+			glm::vec3 m_EditorShadowAABBMin;
+			glm::vec3 m_EditorShadowAABBMax;
+			glm::vec3 m_EditorShadowRenderPoint;
+			glm::mat4 m_EditorShadowView;
+			glm::mat4 m_EditorShadowProj;
+			float m_EditorShadowRatio = 0.05f;
 
 			//AnimationPass
 			std::shared_ptr<Pipeline> m_AnimationPipeline;

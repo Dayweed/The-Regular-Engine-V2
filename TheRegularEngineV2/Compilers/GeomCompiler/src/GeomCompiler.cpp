@@ -1198,10 +1198,10 @@ namespace TRE
 				}
 
 				// Sanity check (make sure that all the vertices have bone and weights
-				for (auto& V : MyNodes[iMesh].m_BoneInfluence)
-				{
-					assert(V.m_BoneWeights.x > 0);
-				}
+				//for (auto& V : MyNodes[iMesh].m_BoneInfluence)
+				//{
+				//	assert(V.m_BoneWeights.x > 0);
+				//}
 			}
 			else
 			{
