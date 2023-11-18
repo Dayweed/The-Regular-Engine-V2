@@ -421,7 +421,6 @@ namespace TRE
             if (other.CompareTag("Platform"))
 			{
 				parenting.RemoveParent();
-				Debug.Log("Unparenting from " + other.name);
             }
 			if (EngineGetTag(otherID) == "Blue")
 			{
