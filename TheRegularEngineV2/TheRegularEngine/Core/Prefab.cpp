@@ -556,7 +556,7 @@ namespace TRE
 		for (size_t i{}; i < children.size(); ++i) // Doing this instead cos string might be too long and cos errors :(
 		{
 			std::string childID{ children[i] };
-			CreatePrefabChild(childID, instance);
+			Entity child = CreatePrefabChild(childID, instance);
 		}
 
 		m_TempPrefab = mainTempPrefab;
@@ -614,7 +614,7 @@ namespace TRE
 		}
 	}
 
-	void PrefabSystem::CreatePrefabChild(std::string childGUID, Entity& parent)
+	Entity PrefabSystem::CreatePrefabChild(std::string childGUID, Entity& parent)
 	{
 		// Create an Entity from ECSManager
 		Entity childTemp{ m_TempPrefabs[childGUID] };
@@ -634,6 +634,7 @@ namespace TRE
 		parentsChildren.erase(it);
 		parentsChildren.emplace_back(instance->GetGUID());
 		instance->GetComponent<Parenting>().m_Parent = parent->GetGUID();
+		instance->GetComponent<Transform>().UpdateLocalData(parent->GetComponent<Transform>());
 
 		// Do the same for the children
 		std::vector<std::string> children{ instance->GetComponent<Parenting>().m_Children };
@@ -642,6 +643,8 @@ namespace TRE
 			std::string childID{ children[i] };
 			CreatePrefabChild(childID, instance);
 		}
+
+		return instance;
 	}
 
 	bool PrefabSystem::RevertInstance(Entity instance, std::string prefabGUID)

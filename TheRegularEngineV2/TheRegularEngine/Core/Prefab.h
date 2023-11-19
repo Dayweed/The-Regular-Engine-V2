@@ -132,7 +132,7 @@ namespace TRE
 
 		void SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID);
 
-		void CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
+		Entity CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
 
 		void UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});	// Similar to SaveEntityInRegistry but for m_TempPrefabs
 

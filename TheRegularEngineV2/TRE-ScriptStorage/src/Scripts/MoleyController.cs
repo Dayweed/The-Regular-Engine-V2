@@ -37,7 +37,7 @@ namespace TRE
 		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
-		private bool isScaled = false;
+		public bool isScaled = false;
 
 		//Box Collider
 		private float defaultRadius = 2f;

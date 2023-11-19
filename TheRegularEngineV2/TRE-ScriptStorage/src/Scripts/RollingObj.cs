@@ -36,7 +36,7 @@ namespace TRE
 
             // Rotate moveVector based on angle
             moveVector = TransformSystem.RotateVector(defaultVector, transform.Rotation);
-            rotateVector = new vec3(moveVector.z, moveVector.y, moveVector.x);
+            rotateVector = new vec3(moveVector.z, moveVector.y, -moveVector.x);
         }
 
         public void Update()
@@ -65,7 +65,16 @@ namespace TRE
             Entity other = new Entity(otherID);
             if (other.CompareTag("Red"))
             {
-                other.GetComponent<MoleyController>().TakeDamage();
+                // Bounce back if the Moley is using their strawberry powerUp
+                MoleyController ctrl = other.GetComponent<MoleyController>();
+                if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
+                {
+                    Bounceback();
+                }
+                else
+                {
+                    ctrl.TakeDamage();
+                }
             }
             else if (other.CompareTag("Blue"))
             {
