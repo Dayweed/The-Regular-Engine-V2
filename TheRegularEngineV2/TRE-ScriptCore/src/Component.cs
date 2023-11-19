@@ -39,19 +39,11 @@ namespace TRE
         {
             get
             {
-                if (entity.ID == 0)
-                {
-                    return new vec3(0, 0, 0);
-                }
                 TransformSystem.Engine_GetRotation(entity.ID, out vec3 rot);
                 return rot;
             }
             set
             {
-                if (entity.ID == 0)
-                {
-                    return;
-                }
                 TransformSystem.Engine_SetRotation(entity.ID, value);
             }
         }
@@ -60,19 +52,11 @@ namespace TRE
         {
             get
             {
-                if (entity.ID == 0)
-                {
-                    return new vec3(1, 1, 1);
-                }
                 TransformSystem.Engine_GetScaling(entity.ID, out vec3 scale);
                 return scale;
             }
             set
             {
-                if (entity.ID == 0)
-                {
-                    return;
-                }
                 TransformSystem.Engine_SetScaling(entity.ID, value);
             }
         }

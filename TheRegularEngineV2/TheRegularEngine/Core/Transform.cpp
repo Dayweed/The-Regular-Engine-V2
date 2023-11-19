@@ -70,12 +70,12 @@ namespace TRE
 		parent.CalculateWorldMatrix();
 		CalculateWorldMatrix();
 
-		glm::mat4 inverseParentWorldTransform = glm::affineInverse(parent.m_WorldXform);
+		glm::mat4 inverseParentWorldTransform = glm::inverse(parent.m_WorldXform);
 		const glm::mat4 localXform = inverseParentWorldTransform * m_WorldXform;
 
 		m_LocalPosition = glm::vec3(localXform[3]);
 		m_LocalScale = glm::vec3(glm::length(localXform[0]), glm::length(localXform[1]), glm::length(localXform[2]));
-		m_LocalRotation = glm::degrees(glm::eulerAngles(glm::quat(localXform)));
+		m_LocalRotation = glm::degrees(glm::eulerAngles(glm::quat(glm::mat3(localXform))));
 	}
 
 	void TransformSystem::LateUpdate()
