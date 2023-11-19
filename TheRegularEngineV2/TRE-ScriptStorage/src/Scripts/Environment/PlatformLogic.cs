@@ -13,8 +13,11 @@ namespace TRE
 		public vec3[] positions;
 		public int currentIndex;
 
-		private float lerpSpeed = 1.5f;
+		private float moveSpeed = 7.5f;
 		private float offset = 0.1f;
+
+		private float currentTime = 0.0f;
+		private float delay = 2.0f;
 
 		public PlatformLogic()
 		{
@@ -94,18 +97,33 @@ namespace TRE
 		{
 			oldPosition = transform.Position;
 
-			// Lerps through each positions
-			if (positions.Length > 0)
+			float dirX = (positions[currentIndex].x - transform.Position.x);
+            float dirY = (positions[currentIndex].y - transform.Position.y);
+            float dirZ = (positions[currentIndex].z - transform.Position.z);
+
+			vec3 dir = new vec3(dirX, dirY, dirZ);
+			vec3 normDir = dir.Normalized;
+
+            // Lerps through each positions
+            if (positions.Length > 0)
 			{
-				transform.Position = MathF.Vec3Lerp(transform.Position, positions[currentIndex], lerpSpeed * Time.deltaTime);
-				// Move to next index, if it is very close to the ideal position
-				if (transform.Position.x >= positions[currentIndex].x - offset && transform.Position.x <= positions[currentIndex].x + offset
-					&& transform.Position.y >= positions[currentIndex].y - offset && transform.Position.y <= positions[currentIndex].y + offset
-					&& transform.Position.z >= positions[currentIndex].z - offset && transform.Position.z <= positions[currentIndex].z + offset)
+				if (currentTime <= 0.0f)
 				{
-					++currentIndex;
-					if (currentIndex >= positions.Length) currentIndex = 0;
+					transform.Position += normDir * moveSpeed * Time.deltaTime;
+					// Move to next index, if it is very close to the ideal position
+					if (transform.Position.x >= positions[currentIndex].x - offset && transform.Position.x <= positions[currentIndex].x + offset
+						&& transform.Position.y >= positions[currentIndex].y - offset && transform.Position.y <= positions[currentIndex].y + offset
+						&& transform.Position.z >= positions[currentIndex].z - offset && transform.Position.z <= positions[currentIndex].z + offset)
+					{
+						++currentIndex;
+						if (currentIndex >= positions.Length) currentIndex = 0;
+                        currentTime = delay;
+                    }
 				}
+				else
+				{
+					currentTime -= Time.deltaTime;
+                }
 			}
 		}
 
