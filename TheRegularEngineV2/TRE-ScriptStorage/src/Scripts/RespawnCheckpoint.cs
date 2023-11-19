@@ -23,7 +23,7 @@ namespace TRE
         {
             Player1 = ECSManager.FindEntityByName("Holey");
             Player2 = ECSManager.FindEntityByName("Moley");
-            RespawnPoint1 = ECSManager.FindEntityByName("RespawnCollider1");
+            RespawnPoint1 = ECSManager.FindEntityByName("RespawnPoint1");
             Debug.Log("Respawn Checkpoint Start Function");
         }
 

@@ -57,8 +57,11 @@ namespace TRE
 
 		// returns a map of <physx internal index, entity> for all entites with physics comps
 		std::unordered_map<unsigned, Entity> GenerateEntityActorVector() const;
-		std::vector<std::pair<Entity, Entity>> GetCollisionHistory() const;
-		std::vector<std::pair<Entity, Entity>> GetTriggerHistory() const;
+
+		typedef std::vector<std::pair<Entity, Entity>> VectorCollidedEntities;
+
+		void GetCollisionHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit);
+		void GetTriggerHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit);
 		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory() const;
 
 		void SetDrawDebug(bool draw);

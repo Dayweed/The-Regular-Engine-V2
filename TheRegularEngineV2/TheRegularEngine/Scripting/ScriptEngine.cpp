@@ -543,6 +543,21 @@ namespace TRE
 		}
 	}
 
+	void ScriptEngine::OnTriggerEnter(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnTriggerEnterInvoke(other);
+		}
+		else
+		{
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
+		}
+	}
+
 	void ScriptEngine::OnTriggerStay(Entity e, Entity other)
 	{
 		std::string GUID = e->GetGUID();
@@ -558,6 +573,36 @@ namespace TRE
 		}
 	}
 
+	void ScriptEngine::OnTriggerExit(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnTriggerExitInvoke(other);
+		}
+		else
+		{
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
+		}
+	}
+
+	void ScriptEngine::OnCollisionEnter(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnCollisionEnterInvoke(other);
+		}
+		else
+		{
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
+		}
+	}
+
 	void ScriptEngine::OnCollisionStay(Entity e, Entity other)
 	{
 		std::string GUID = e->GetGUID();
@@ -565,6 +610,21 @@ namespace TRE
 		{
 			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
 			instance->OnCollisionStayInvoke(other);
+		}
+		else
+		{
+			std::string function{ __FUNCTION__ };
+			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
+		}
+	}
+
+	void ScriptEngine::OnCollisionExit(Entity e, Entity other)
+	{
+		std::string GUID = e->GetGUID();
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
+		{
+			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
+			instance->OnCollisionExitInvoke(other);
 		}
 		else
 		{
@@ -664,8 +724,12 @@ namespace TRE
 		m_StartMethod = scriptClass->GetMethod("Start", 0);
 		m_UpdateMethod = scriptClass->GetMethod("Update", 0);
 		m_LateUpdateMethod = scriptClass->GetMethod("LateUpdate", 0);
+		m_TriggerEnterMethod = scriptClass->GetMethod("OnTriggerEnter", 1);
 		m_TriggerStayMethod = scriptClass->GetMethod("OnTriggerStay", 1);
+		m_TriggerExitMethod = scriptClass->GetMethod("OnTriggerExit", 1);
+		m_CollisionEnterMethod = scriptClass->GetMethod("OnCollisionEnter", 1);
 		m_CollisionStayMethod = scriptClass->GetMethod("OnCollisionStay", 1);
+		m_CollisionExitMethod = scriptClass->GetMethod("OnCollisionExit", 1);
 
 		{
 			unsigned long long id = std::stoull(entity);
@@ -716,6 +780,16 @@ namespace TRE
 			m_ScriptClass->InvokeMethod(m_Instance, m_LateUpdateMethod, nullptr);
 	}
 
+	void ScriptInstance::OnTriggerEnterInvoke(Entity other)
+	{
+		if (m_TriggerEnterMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_TriggerEnterMethod, &param);
+		}
+	}
+
 	void ScriptInstance::OnTriggerStayInvoke(Entity other)
 	{
 		if (m_TriggerStayMethod)
@@ -725,7 +799,26 @@ namespace TRE
 			m_ScriptClass->InvokeMethod(m_Instance, m_TriggerStayMethod, &param);
 		}
 	}
-	
+
+	void ScriptInstance::OnTriggerExitInvoke(Entity other)
+	{
+		if (m_TriggerExitMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_TriggerExitMethod, &param);
+		}
+	}	
+
+	void ScriptInstance::OnCollisionEnterInvoke(Entity other)
+	{
+		if (m_CollisionEnterMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_CollisionEnterMethod, &param);
+		}
+	}	
 
 	void ScriptInstance::OnCollisionStayInvoke(Entity other)
 	{
@@ -734,6 +827,16 @@ namespace TRE
 			unsigned long long id = std::stoull(other->GetGUID());
 			void* param = &id;
 			m_ScriptClass->InvokeMethod(m_Instance, m_CollisionStayMethod, &param);
+		}
+	}	
+
+	void ScriptInstance::OnCollisionExitInvoke(Entity other)
+	{
+		if (m_CollisionExitMethod)
+		{
+			unsigned long long id = std::stoull(other->GetGUID());
+			void* param = &id;
+			m_ScriptClass->InvokeMethod(m_Instance, m_CollisionExitMethod, &param);
 		}
 	}
 

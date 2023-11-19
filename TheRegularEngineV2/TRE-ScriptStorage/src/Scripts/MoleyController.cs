@@ -83,11 +83,11 @@ namespace TRE
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 
-            Key = ECSManager.FindEntityByName("Key");
+            /*Key = ECSManager.FindEntityByName("Key");
 			Debug.Log("Key ID is " + Key.ID);
 
 			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
-			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);
+			Debug.Log("FinalPlatform ID is " + FinalPlatform.ID);*/
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
@@ -102,7 +102,7 @@ namespace TRE
 
 		public void Update()
 		{
-            #region Invulnerability
+			#region Invulnerability
 			if (Invulnerability)
 			{
 				InvulBlinkCurrent -= Time.deltaTime;
@@ -371,7 +371,7 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
-			if (Key.ID != 0 && FinalPlatform.ID != 0)
+			/*if (Key.ID != 0 && FinalPlatform.ID != 0)
 			{
 				if (PS.IsTriggerEnter(this.ID, Key.ID))
 				{
@@ -379,7 +379,9 @@ namespace TRE
 					TransformSystem.SetPosition(FinalPlatform.ID, new vec3(100, 9, -302));
 					Debug.Log("Key Collected");
 				}
-			}
+			}*/
+
+			isGrounded = false;
 		}
 
 		private void Jump(vec3 JumpHeight)
@@ -390,8 +392,6 @@ namespace TRE
 
 		private void OnCollisionStay(System.UInt64 otherID)
 		{
-			isGrounded = false;
-
 			Entity other = new Entity(otherID);
             // Make it loose one of it's powerups
             if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
@@ -403,33 +403,37 @@ namespace TRE
 			{
 				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
 			}
-			if (PS.IsCollisionStay(this.ID, otherID))
-			{
-				if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
+			//For jumping
+			if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
 					|| EngineGetTag(otherID) == "Blue" || EngineGetTag(otherID) == "BlueCollider")
-				{
-					isGrounded = true;
-				}
-				else
-				{
-					isGrounded = false;
-				}
-			}
-			if (PS.IsCollisionExit(this.ID, otherID))
 			{
-				if (EngineGetTag(otherID) == "Blue")
-				{
-					PS.GetLinearVelocity(this.ID, out vec3 output);
-					if (output.y > maxJumpHeight)
-						output.y = maxJumpHeight;
-					PS.SetLinearVelocity(this.ID, output);
-				}
-				// No longer boosted if leave jumppad
-				else if (EngineGetTag(otherID) == "JumpPad")
-				{
-					isBoostedJump = false;
-					isGrounded = false;
-				}
+				isGrounded = true;
+			}
+			if (EngineGetTag(otherID) == "Platform")
+			{
+				parenting.SetParent(other);
+			}
+		}
+		private void OnCollisionExit(System.UInt64 otherID)
+		{
+            Entity other = new Entity(otherID);
+            //if on the platform unchild it
+            if (other.CompareTag("Platform"))
+			{
+				parenting.RemoveParent();
+            }
+			if (EngineGetTag(otherID) == "Blue")
+			{
+				PS.GetLinearVelocity(this.ID, out vec3 output);
+				if (output.y > maxJumpHeight)
+					output.y = maxJumpHeight;
+				PS.SetLinearVelocity(this.ID, output);
+			}
+			// No longer boosted if leave jumppad
+			else if (EngineGetTag(otherID) == "JumpPad")
+			{
+				isBoostedJump = false;
+				isGrounded = false;
 			}
 		}
 

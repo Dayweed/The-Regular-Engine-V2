@@ -44,13 +44,14 @@ layout(location = 0) in struct
 } In;
 layout(location = 0) out vec4 outColor;
 
-layout(set = 0, binding = 1) uniform sampler2D Diffuse;
-layout(set = 0, binding = 2) uniform sampler2D DiffuseAO;
-layout(set = 0, binding = 3) uniform sampler2D NormalMap;
-layout(set = 0, binding = 4) uniform sampler2D Specular;
-layout(set = 0, binding = 5) uniform sampler2D Glossiness;
+layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
+layout(set = 0, binding = 2) uniform sampler2D NormalMap;
+layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
+layout(set = 0, binding = 4) uniform sampler2D AOMap;
+layout(set = 0, binding = 5) uniform sampler2D Metalness;
+layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 void main() 
 {
-   outColor = In.Color * texture(Diffuse, In.UV) * texture(DiffuseAO, In.UV);
+   outColor = In.Color * texture(DiffuseMap, In.UV) * texture(AOMap, In.UV);
 }

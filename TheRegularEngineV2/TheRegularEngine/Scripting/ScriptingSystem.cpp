@@ -73,23 +73,63 @@ namespace TRE
 		}
 
 		// Check for trigger
-		std::vector<std::pair<Entity, Entity>> triggerEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetTriggerHistory() };
-		for (auto e : triggerEntries)
+		// Enter
+		std::vector<std::pair<Entity, Entity>> triggerEnterEntries;
+		std::vector<std::pair<Entity, Entity>> triggerStayEntries;
+		std::vector<std::pair<Entity, Entity>> triggerExitEntries;
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetTriggerHistory(triggerEnterEntries, triggerStayEntries, triggerExitEntries);
+		for (auto e : triggerEnterEntries)
+		{
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerEnter(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerEnter(e.second, e.first);
+		}
+		//Stay
+		for (auto e : triggerStayEntries)
 		{
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnTriggerStay(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
 				ScriptEngine::OnTriggerStay(e.second, e.first);
 		}
+		// Exit
+		for (auto e : triggerExitEntries)
+		{
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerExit(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnTriggerExit(e.second, e.first);
+		}
 
 		// Check for collision
-		std::vector<std::pair<Entity, Entity>> collisionEntries{ ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetCollisionHistory() };
-		for (auto e : collisionEntries)
+		// Enter
+		std::vector<std::pair<Entity, Entity>> collisionEnterEntries;
+		std::vector<std::pair<Entity, Entity>> collisionStayEntries;
+		std::vector<std::pair<Entity, Entity>> collisionExitEntries;
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetCollisionHistory(collisionEnterEntries, collisionStayEntries, collisionExitEntries);
+		for (auto e : collisionEnterEntries)
+		{
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionEnter(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionEnter(e.second, e.first);
+		}
+		// Stay
+		for (auto e : collisionStayEntries)
 		{
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnCollisionStay(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
 				ScriptEngine::OnCollisionStay(e.second, e.first);
+		}
+		// Exit
+		for (auto e : collisionExitEntries)
+		{
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionExit(e.first, e.second);
+			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
+				ScriptEngine::OnCollisionExit(e.second, e.first);
 		}
 
 		// Update

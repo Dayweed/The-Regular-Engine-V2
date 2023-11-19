@@ -7,8 +7,8 @@ namespace TRE
 {
 	glm::vec3 DirectionalLight::GetUpVec() const
 	{
-		glm::vec3 leftVec = glm::normalize(glm::cross(glm::vec3(0,1,0), Direction));
-		return glm::normalize(glm::cross(leftVec, -Direction));
+		glm::vec3 leftVec = glm::normalize(glm::cross(glm::vec3(0,1,0), m_Direction));
+		return glm::normalize(glm::cross(leftVec, -m_Direction));
 	}
 
 	void LightSystem::LateUpdate()
@@ -30,7 +30,7 @@ namespace TRE
 				rotationMatrix = glm::rotate(rotationMatrix, roll, glm::vec3(0, 0, 1));
 
 				glm::vec4 directionalVec = rotationMatrix * glm::vec4(0, 0, 1, 0);
-				light.Direction = glm::vec3(directionalVec);
+				light.m_Direction = glm::vec3(directionalVec);
 			}
 		}
 	}

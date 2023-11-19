@@ -108,6 +108,50 @@ namespace TRE
 		return -GetForwardVec();
 	}
 
+	std::array<glm::vec3, 8> BaseCamera::GetFrustumCorners(const bool useRenderRatio, const float ratio) const
+	{
+		float yTopNear = tan(glm::radians(m_Fov / 2.f)) * m_Near;
+		float yBottomNear = -yTopNear;
+		float xRightNear = yTopNear * m_AspectRatio;
+		float xLeftNear = -xRightNear;
+
+		float renderRatio = 1.f;
+		if(useRenderRatio)
+			renderRatio = (m_FocalLength * 2.f) / (m_Far - m_Near);
+		else
+			renderRatio = ratio;
+		const float newFar = m_Far * renderRatio;
+		float yTopFar = tan(glm::radians(m_Fov / 2.f)) * newFar;
+		float yBottomFar = -yTopFar;
+		float xRightFar = yTopFar * m_AspectRatio;
+		float xLeftFar = -xRightFar;
+
+		//View space
+		std::array<glm::vec3, 8> cameraFrustum
+		{
+			glm::vec3(xLeftNear, yBottomNear, m_Near),
+			glm::vec3(xRightNear, yBottomNear, m_Near),
+			glm::vec3(xRightNear, yTopNear, m_Near),
+			glm::vec3(xLeftNear, yTopNear, m_Near),
+			glm::vec3(xLeftFar, yBottomFar, newFar),
+			glm::vec3(xRightFar, yBottomFar, newFar),
+			glm::vec3(xRightFar, yTopFar, newFar),
+			glm::vec3(xLeftFar, yTopFar, newFar)
+		};
+
+		//World space
+		{
+			const auto invView = glm::inverse(m_ViewMatrix);
+			for (int i = 0; i < 8; i++)
+			{
+				cameraFrustum[i] = invView * glm::vec4(cameraFrustum[i], 1.f);
+			}
+		}
+
+		return cameraFrustum;
+	}
+
+
 	void CameraSystem::LateUpdate()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())

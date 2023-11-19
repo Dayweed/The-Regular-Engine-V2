@@ -13,7 +13,7 @@ namespace TRE
         public vec3[] positions;
         public int currentIndex;
 
-        private float lerpSpeed = 1.25f;
+        private float lerpSpeed = 1.5f;
         private float offset = 0.1f;
 
         public PlatformLogic()
@@ -23,11 +23,68 @@ namespace TRE
 
         public void Start()
         {
-            // Determine platform positions based on data
-            if (Scene.GetSceneName() == "Level_1" && name == "Platform_1")
+            if (Scene.GetSceneName() == "Level_1")
             {
-                currentIndex = 0;
-                positions = new vec3[] { new vec3(22, 18, -210), new vec3(22, 18, -174) };
+                // Determine platform positions based on data
+                if (name == "MovingPlatform_1")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(16.394f, 14.422f, -227), new vec3(16.394f, 14.422f, -178) };
+                }
+
+                if (name == "MovingPlatform_2")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(146.419f, 14.422f, -237), new vec3(146.419f, 14.422f, -169) };
+                }
+
+                if (name == "MovingPlatform_3")
+                {
+                    currentIndex = 1;
+                    positions = new vec3[] { new vec3(174.419f, 14.422f, -237), new vec3(174.419f, 14.422f, -169) };
+                }
+
+                if (name == "MovingPlatform_4")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(200.419f, 14.422f, -237), new vec3(200.419f, 14.422f, -169) };
+                }
+
+                if (name == "MovingPlatform_5")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(380.419f, 42.422f, -353), new vec3(380.419f, 42.422f, -309) };
+                }
+
+                if (name == "MovingPlatform_6")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(380.419f, 42.422f, -257), new vec3(446.419f, 42.422f, -257) };
+                }
+
+                if (name == "Collider_MovingHITW")
+                {
+                    currentIndex = 1;
+                    positions = new vec3[] { new vec3(446.419f, 42.422f, -227.107f), new vec3(528.400f, 42.422f, -227.107f) };
+                }
+
+                if (name == "MovingPlatform_7")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(566.419f, 42.422f, -171), new vec3(566.419f, 90.422f, -171) };
+                }
+
+                if (name == "MovingPlatform_8")
+                {
+                    currentIndex = 0;
+                    positions = new vec3[] { new vec3(642.419f, 90.422f, -171), new vec3(756.419f, 90.422f, -171) };
+                }
+
+                if (name == "MovingPlatform_9")
+                {
+                    currentIndex = 1;
+                    positions = new vec3[] { new vec3(832.419f, 90.422f, -171), new vec3(894.419f, 90.422f, -171) };
+                }
             }
         }
 
