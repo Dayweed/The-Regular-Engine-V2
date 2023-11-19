@@ -42,7 +42,7 @@ namespace TRE
 		//Box Collider
 		private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 4f;
-		private float strawberrysuperRadius = 1.5f;
+		private float strawberrysuperRadius = 4f;
 		private float currentRadius = 2f;
 		private float defaultHeight = 1f;
 		private float blueberrysuperHeight = 0.1f;
