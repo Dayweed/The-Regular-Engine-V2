@@ -103,6 +103,7 @@ namespace TRE
 			std::unique_ptr<DebugRenderer> m_DebugRenderer;
 
 			std::shared_ptr<Material>		m_DefaultPBRMaterial;
+			std::shared_ptr<Material>		m_DefaultAnimationPBRMaterial;
 			ResourceHandle					m_PreviousMaterialHandle;
 
 			//Skybox

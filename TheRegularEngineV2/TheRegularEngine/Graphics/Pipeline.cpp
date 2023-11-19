@@ -99,11 +99,11 @@ namespace TRE
 				for (int x = 0; x < VertexLayout.m_Inputs.size(); x++)
 				{
 					VkVertexInputAttributeDescription InputAttribute{};
-					InputAttribute.location = previouslocation + 1;
+					InputAttribute.location = previouslocation;
 					InputAttribute.binding = Binding.binding;
 					InputAttribute.offset = VertexLayout.m_Inputs[x].Offset;
 					InputAttribute.format = VertexDataTypeToVulkanFormat(VertexLayout.m_Inputs[x].Type);
-					previouslocation = InputAttribute.location;
+					++previouslocation;
 					VertexInputAttributesDescriptions.push_back(InputAttribute);
 				}
 			}

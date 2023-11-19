@@ -366,7 +366,10 @@ namespace TRE
 			if (!MRComp.m_IsVisible)
 				continue;
 
-			MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
+			if (AnimComp.m_IsAnimating)
+				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
+
+
 			AnimComp.m_BufferData.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
@@ -380,6 +383,9 @@ namespace TRE
 		std::multimap<ResourceHandle, Entity> materialSort;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
+			if (go_mr->HasComponent<AnimationComponent>())
+				continue;
+
 			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
@@ -507,20 +513,46 @@ namespace TRE
 		Renderer::BindPipeline(m_CommandBuffer, m_AnimationPipeline);
 		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
 		{
-			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 			MeshRenderer& MeshRendererComp = Entity->GetComponent<MeshRenderer>();
-			if (!AnimationComp.m_IsAnimating || !MeshRendererComp.m_IsVisible)
+			if (!MeshRendererComp.m_IsVisible)
 				continue;
 
-			if (m_IsEditorScene)
+			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
+
+
+
+			if (MeshRendererComp.m_MaterialInstance == nullptr)
 			{
-				AnimationComp.m_MaterialInstace->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetEditorDescriptor(Index), 0, NULL);
+				ResourceHandle materialHandle = PBR::GetDefaultAnimationMaterial();
+				if (m_DefaultAnimationPBRMaterial == nullptr)
+				{
+					m_DefaultAnimationPBRMaterial = ResourceManager::Instance().GetResource<Material>(materialHandle);
+					m_DefaultAnimationPBRMaterial->Invalidate();
+				}
+
+				if (m_IsEditorScene)
+				{
+					m_DefaultAnimationPBRMaterial->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
+				}
+				else
+				{
+					m_DefaultAnimationPBRMaterial->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetDescriptor(Index), 0, NULL);
+				}
 			}
 			else
 			{
-				AnimationComp.m_MaterialInstace->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
+				if (m_IsEditorScene)
+				{
+					AnimationComp.m_MaterialInstace->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetEditorDescriptor(Index), 0, NULL);
+				}
+				else
+				{
+					AnimationComp.m_MaterialInstace->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
+				}
 			}
 
 			MeshRendererComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
