@@ -14,8 +14,9 @@ namespace TRE
 
         public List<HoleCheckDisplay> triggerComplete;
 
+        public SpriteRenderer courseComplete;
         public static float currentTime;
-        public float waitingTime = 5.0f;
+        public float waitingTime = 0.90f;
 
         public void Start()
         {
@@ -30,6 +31,7 @@ namespace TRE
 
                 nextSceneName = "Level_1";
             }
+            courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
         }
 
         public void Update()
@@ -45,12 +47,15 @@ namespace TRE
                     return;
                 }
             }
-            
-            //go to next scene after 5s
+
+            //go to next scene after a while
             if (goToNextScene)
             {
+                courseComplete.isVisible = true;
+
                 if (currentTime >= waitingTime)
                 {
+                    currentTime = 0.0f;
                     Scene.TransitionScene(nextSceneName, 7f);
                 }
 
