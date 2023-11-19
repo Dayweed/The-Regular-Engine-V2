@@ -409,19 +409,10 @@ namespace TRE
 			{
 				isGrounded = true;
 			}
-			if (EngineGetTag(otherID) == "Platform")
-			{
-				parenting.SetParent(other);
-			}
 		}
 		private void OnCollisionExit(System.UInt64 otherID)
 		{
-            Entity other = new Entity(otherID);
-            //if on the platform unchild it
-            if (other.CompareTag("Platform"))
-			{
-				parenting.RemoveParent();
-            }
+            Entity other = new Entity(otherID);            
 			if (EngineGetTag(otherID) == "Blue")
 			{
 				PS.GetLinearVelocity(this.ID, out vec3 output);

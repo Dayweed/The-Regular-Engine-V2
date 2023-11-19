@@ -36,7 +36,7 @@ namespace TRE
 			//Update world data
 			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
 			{
-				transform.CalculateWorldMatrix();
+				//transform.CalculateWorldMatrix();
 
 				//Update own local data if i have a parent
 				UpdateLocalData(object);
