@@ -187,10 +187,7 @@ namespace TRE
 				ECSSystemManager::Instance().BeforeReset();
 				Profiler::Instance().EndTimer("BeforeReset");
 
-				// Copy registry and components
-				ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
-				// Clear Backup
-				GameLoop::Instance().GetBackUpRegistry().clear();
+				GameLoop::Instance().InstantReset();
 
 				Profiler::Instance().StartTimer("AfterReset");
 				ECSSystemManager::Instance().AfterReset();

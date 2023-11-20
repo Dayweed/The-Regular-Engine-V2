@@ -17,10 +17,10 @@ namespace TRE
 		public PowerUpManager MyPowerManager;
 
 
-		//Check if player is boosted jump
-		private bool isBoostedJump = false;
+        //Check if player is boosted jump
+        public bool isBoostedJump = false;
 		//Check if player is on the ground
-		private bool isGrounded = true;
+		public bool isGrounded = true;
 		//direction vector
 		private vec3 dirVec;
 		//Max velocity
@@ -376,11 +376,15 @@ namespace TRE
 			}
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))
-			{
-				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
-			}
-			if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
-					|| EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "RedCollider")
+            {
+                isGrounded = true;
+                if (other.GetComponent<JumpPad>().isActivated)
+				{
+					isBoostedJump = true;
+				}
+            }
+            if (other.CompareTag("Ground") || other.CompareTag("Platform")
+                || other.CompareTag("Red") || other.CompareTag("RedCollider"))
 			{
 				isGrounded = true;
 			}
@@ -396,12 +400,17 @@ namespace TRE
 				PS.SetLinearVelocity(this.ID, output);
 			}
 			// No longer boosted if leave jumppad
-			else if (EngineGetTag(otherID) == "JumpPad")
-			{
-				isBoostedJump = false;
+			else if (other.CompareTag("JumpPad"))
+            {
+                isBoostedJump = false;
 				isGrounded = false;
-			}
-		}
+            }
+            if (other.CompareTag("Ground") || other.CompareTag("Platform")
+                || other.CompareTag("Red") || other.CompareTag("RedCollider"))
+            {
+                isGrounded = false;
+            }
+        }
 
 		public void UpdateDisplay()
 		{

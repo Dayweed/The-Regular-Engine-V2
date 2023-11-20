@@ -16,10 +16,10 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
-		//Check if player is boosted jump
-		private bool isBoostedJump = false;
-		//check if player is on the ground (for now , just a plane)
-		private bool isGrounded = true;
+        //Check if player is boosted jump
+        public bool isBoostedJump = false;
+        //check if player is on the ground (for now , just a plane)
+        public bool isGrounded = true;
 		//direction vector
 		private vec3 dirVec;
 		//Max Velocity vector
@@ -391,8 +391,10 @@ namespace TRE
 		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
-		{
-			Entity other = new Entity(otherID);
+        {
+            isGrounded = false;
+
+            Entity other = new Entity(otherID);
             // Make it loose one of it's powerups
             if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
             {
@@ -400,12 +402,16 @@ namespace TRE
             }
             // Check is activated jumppad
             if (other.CompareTag("JumpPad"))
-			{
-				if (other.GetComponent<JumpPad>().isActivated) isBoostedJump = true;
+            {
+                isGrounded = true;
+				if (other.GetComponent<JumpPad>().isActivated)
+				{
+					isBoostedJump = true;
+				}
 			}
 			//For jumping
-			if (EngineGetTag(otherID) == "Ground" || EngineGetTag(otherID) == "JumpPad" || EngineGetTag(otherID) == "Platform"
-					|| EngineGetTag(otherID) == "Blue" || EngineGetTag(otherID) == "BlueCollider")
+			if (other.CompareTag("Ground") || other.CompareTag("Platform")
+				|| other.CompareTag("Blue") || other.CompareTag("BlueCollider"))
 			{
 				isGrounded = true;
 			}
@@ -420,13 +426,18 @@ namespace TRE
 					output.y = maxJumpHeight;
 				PS.SetLinearVelocity(this.ID, output);
 			}
-			// No longer boosted if leave jumppad
-			else if (EngineGetTag(otherID) == "JumpPad")
-			{
+            // No longer boosted if leave jumppad
+            if (other.CompareTag("JumpPad"))
+            {
 				isBoostedJump = false;
 				isGrounded = false;
-			}
-		}
+            }
+            if (other.CompareTag("Ground") || other.CompareTag("Platform")
+                || other.CompareTag("Blue") || other.CompareTag("BlueCollider"))
+            {
+                isGrounded = false;
+            }
+        }
 
 		public void UpdateDisplay()
 		{

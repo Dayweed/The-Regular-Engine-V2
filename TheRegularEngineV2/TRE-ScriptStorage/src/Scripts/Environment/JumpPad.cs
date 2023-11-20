@@ -9,16 +9,22 @@ namespace TRE
 {
     public class JumpPad : Entity
     {
-        public bool isActivated;
+        public bool isActivated = false;
+        private string activatedMat = "18cf136263b2c948";
+        private string deactivatedMat = "b67077a64edeaafc";
 
         public JumpPad()
         {
-            isActivated = false;
+
         }
 
-        public void OnCreate()
+        public void Start()
         {
-
+            if (name == "JumpPad_1")
+            {
+                isActivated = true;
+            }
+            GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
         }
 
         public void Update()
@@ -28,7 +34,9 @@ namespace TRE
 
         public void ActivatePad(bool isActive)
         {
+            // This is to make it actually activate cos for some reason it doesnt now :/
             isActivated = isActive;
+            GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
         }
     }
 }

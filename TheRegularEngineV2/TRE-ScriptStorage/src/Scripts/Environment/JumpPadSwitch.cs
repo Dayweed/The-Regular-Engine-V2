@@ -36,20 +36,23 @@ namespace TRE
 
         }
 
-        private void OnTriggerStay(System.UInt64 otherID)
+        public void OnTriggerStay(System.UInt64 otherID)
         {
             Entity other = new Entity(otherID);
             // Check is activated jumppad
-            if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
+            if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
                 JumpPad.GetComponent<JumpPad>().ActivatePad(true);
             }
-            if (PhysicsSystem.IsTriggerExit(this.ID, otherID))
+        }
+
+        public void OnTriggerExit(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+            // Check is activated jumppad
+            if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
-                if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
-                {
-                    JumpPad.GetComponent<JumpPad>().ActivatePad(false);
-                }
+                JumpPad.GetComponent<JumpPad>().ActivatePad(false);
             }
         }
     }

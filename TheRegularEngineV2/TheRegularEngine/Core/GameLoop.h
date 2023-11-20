@@ -51,6 +51,9 @@ namespace TRE
 
 		entt::registry m_BackUp;
 
+		std::string m_BackUpSceneName;
+		std::string m_BackUpSceneFilePath;
+
 		// Delete possible copy ctor and assignment to ensure singleton
 		GameLoop() {};
 		GameLoop(GameLoop const&) = delete;

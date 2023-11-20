@@ -77,6 +77,10 @@ namespace TRE
 
 			// Save the registry
 			ECSManager::Instance().SaveRegistry(m_BackUp);
+
+			// Remember current scene and scenepath
+			m_BackUpSceneName = SceneManager::Instance().m_CurrentScene;
+			m_BackUpSceneFilePath = SceneManager::Instance().m_CurrentSceneFilePath;
 		}
 
 		m_GameRunning = isRunning;
@@ -130,8 +134,13 @@ namespace TRE
 
 	void GameLoop::InstantReset()
 	{
-		GameLoop::Instance().GetBackUpRegistry().clear();
 		// Copy registry and components
-		ECSManager::Instance().CopyRegistry(GameLoop::Instance().GetBackUpRegistry());
+		ECSManager::Instance().CopyRegistry(GetBackUpRegistry());
+		// Clear Backup
+		GetBackUpRegistry().clear();
+
+		// Restore current scene and scenepath
+		SceneManager::Instance().m_CurrentScene = m_BackUpSceneName;
+		SceneManager::Instance().m_CurrentSceneFilePath = m_BackUpSceneFilePath;
 	}
 }

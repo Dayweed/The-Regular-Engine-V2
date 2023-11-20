@@ -478,10 +478,11 @@ namespace TRE
 									}
 									else if (inst.m_Type == ScriptFieldTypes::String)
 									{
-										MonoString* data = instance->GetFieldValue<MonoString*>(name);
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::String TOO LAGGY TO LET IT RUN");
+										/*MonoString* data = instance->GetFieldValue<MonoString*>(name);
 										std::string Value = mono_string_to_utf8(data);
 										UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
-										instance->SetFieldValue<MonoString*>(name, mono_string_new(mono_domain_get(), Value.c_str()));
+										instance->SetFieldValue<MonoString*>(name, mono_string_new(mono_domain_get(), Value.c_str()));*/
 									}
 									else
 									{

@@ -72,6 +72,8 @@ namespace TRE
 		std::string GetCurrentSceneName();
 
 	private:
+		friend class GameLoop;
+
 		// Delete possible copy ctor and assignment to ensure singleton
 		SceneManager() {};
 		SceneManager(SceneManager const&) = delete;
