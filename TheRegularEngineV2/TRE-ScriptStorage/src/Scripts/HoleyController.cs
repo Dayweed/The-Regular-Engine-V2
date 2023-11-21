@@ -311,9 +311,9 @@ namespace TRE
 					}
 					else
 					{
-						if (ECSManager.IsValidEntity(9169969694358689235))
+						if (ECSManager.IsValidEntity(1721643561669291303))
 						{
-							AudioSystem.Play(9169969694358689235);
+							AudioSystem.Play(1721643561669291303);
 						}
 					}
 				}

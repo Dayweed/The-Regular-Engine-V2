@@ -226,6 +226,19 @@ namespace TRE
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
 					}
+					
+					if (ImGui::MenuItem("Animation"))
+					{
+						MaterialDescriptorFile descriptorFileMaterial;
+						descriptorFileMaterial.Generate();
+
+						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetAnimationShaderHandle());
+						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
+						newMaterial->Invalidate();
+
+						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
+					}
+
 					if (ImGui::MenuItem("Others"))
 					{
 	

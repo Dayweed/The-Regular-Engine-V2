@@ -545,13 +545,13 @@ namespace TRE
 			{
 				if (m_IsEditorScene)
 				{
-					AnimationComp.m_MaterialInstace->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetEditorDescriptor(Index), 0, NULL);
+					MeshRendererComp.m_MaterialInstance->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					AnimationComp.m_MaterialInstace->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &AnimationComp.m_MaterialInstace->GetDescriptor(Index), 0, NULL);
+					MeshRendererComp.m_MaterialInstance->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}
 
