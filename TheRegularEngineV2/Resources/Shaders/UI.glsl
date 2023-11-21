@@ -48,5 +48,4 @@ void main()
 {
     outColor = texture(UI_Texture, In.UV) * In.Color;
     outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
-    outColor.w = In.Color.w;
 }
