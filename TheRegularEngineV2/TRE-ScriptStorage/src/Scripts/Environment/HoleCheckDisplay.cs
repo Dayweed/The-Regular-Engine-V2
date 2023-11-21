@@ -66,6 +66,12 @@ namespace TRE
             // TO DO Display as all triggered
             Debug.Log("I HAVE BEEN TRIGGERED!");
             isCompleted = true;
+
+			if (ECSManager.IsValidEntity(1325263638198634131))
+			{
+				AudioSystem.Play(1325263638198634131);
+			}
+
             GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
 
             /* Material instances GUID
