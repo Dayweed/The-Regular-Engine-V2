@@ -585,7 +585,7 @@ namespace TRE
 		{
 			m_CurrentTimer = 0.f;
 			PollItems();
-			FileWatcher();
+			//FileWatcher();
 		}
 
 		if (ImGui::Begin("Content Browser", nullptr, ImGuiWindowFlags_NoCollapse))

@@ -626,21 +626,30 @@ namespace TRE
 
 		std::string str = MonoStringToString(materialInstanceName);
 
-		std::vector<std::shared_ptr<Material>> assets;
-		for (auto& resource : ResourceManager::Instance().GetResourcesOfType<Material>())
-		{
-			if (str == resource->GetGUIDHex(resource->GetHandle()))
-			{
-				Temp->GetComponent<MeshRenderer>().m_MaterialInstance = resource;
-				Temp->GetComponent<MeshRenderer>().m_IsDirty = true;
-				return;
-			}
-		}
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		mr.m_MaterialInstance = ResourceManager::Instance().GetResource<Material>(Resource::GetGUIDFromHex(str));
+		mr.m_IsDirty = true;
 
-		PUBLISHERROR("Unable to find material " + str);
+		if(mr.m_MaterialInstance == nullptr)
+			PUBLISHERROR("Unable to find material " + str);
 	}
 
-	static void BindSetMaterialVisibility(CSEntityID ID, bool isVisible)
+	static MonoString* BindGetMaterialInstance(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return mono_string_new(mono_domain_get(), "");
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return mono_string_new(mono_domain_get(), "");
+		}
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		if (mr.m_MaterialInstance == nullptr)
+			return mono_string_new(mono_domain_get(), "");
+		return mono_string_new(mono_domain_get(), mr.m_MaterialInstance->GetHandleHex().c_str());
+	}
+
+	static void BindSetMeshVisibility(CSEntityID ID, bool isVisible)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return;
@@ -659,7 +668,7 @@ namespace TRE
 		render.m_IsDirty = true;
 	}
 
-	static bool BindGetMaterialVisibility(CSEntityID ID)
+	static bool BindGetMeshVisibility(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return false;
@@ -673,7 +682,7 @@ namespace TRE
 		return Temp->GetComponent<MeshRenderer>().m_IsVisible;
 	}
 
-	static void BindSetMaterialCulled(CSEntityID ID, bool isCulled)
+	static void BindSetMesh(CSEntityID ID, MonoString* meshName)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return;
@@ -684,27 +693,31 @@ namespace TRE
 			return;
 		}
 
-		MeshRenderer& render = Temp->GetComponent<MeshRenderer>();
-		// Ignores if the same value
-		if (render.m_IsCulled == isCulled) return;
+		std::string str = MonoStringToString(meshName);
 
-		render.m_IsCulled = isCulled;
-		render.m_IsDirty = true;
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		mr.m_RenderObject = ResourceManager::Instance().GetResource<RenderObject>(Resource::GetGUIDFromHex(str));
+		mr.m_IsDirty = true;
+
+		if (mr.m_RenderObject == nullptr)
+			PUBLISHERROR("Unable to find mesh " + str);
 	}
 
-	static bool BindGetMaterialCulled(CSEntityID ID)
+	static MonoString* BindGetMesh(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
-		if (!Temp) return false;
-
+		if (!Temp) return mono_string_new(mono_domain_get(), "");
 		if (!Temp->HasComponent<MeshRenderer>())
 		{
 			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
-			return false;
+			return mono_string_new(mono_domain_get(), "");
 		}
-
-		return Temp->GetComponent<MeshRenderer>().m_IsCulled;
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		if (mr.m_RenderObject == nullptr)
+			return mono_string_new(mono_domain_get(), "");
+		return mono_string_new(mono_domain_get(), mr.m_RenderObject->GetHandleHex().c_str());
 	}
+
 #pragma endregion
 
 #pragma region CameraBindings
@@ -1667,10 +1680,11 @@ namespace TRE
 		// Mesh Renderer Bindings
 		{
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialInstance", BindSetMaterialInstance);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialVisibility", BindSetMaterialVisibility);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialVisibility", BindGetMaterialVisibility);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialCulled", BindSetMaterialCulled);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialCulled", BindGetMaterialCulled);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialInstance", BindGetMaterialInstance);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMesh", BindSetMesh);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMesh", BindGetMesh);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshVisibility", BindSetMeshVisibility);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMeshVisibility", BindGetMeshVisibility);
 		}
 
 		// Camera Bindings

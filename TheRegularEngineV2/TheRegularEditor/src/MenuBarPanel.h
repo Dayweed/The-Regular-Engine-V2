@@ -54,7 +54,7 @@ namespace TRE
 			bool m_ShowScenePanel = true;
 			bool m_ShowGamePanel = true;
 			bool m_ShowConsolePanel = true;
-			bool m_ShowAssetPanel = true;
+			bool m_ShowAssetPanel = false;
 
 			//bool for options
 			bool m_Test = false;

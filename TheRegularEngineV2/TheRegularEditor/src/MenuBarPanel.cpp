@@ -10,6 +10,7 @@
 #include "Imgui/imgui.h"
 #include "EditorSystem.h"
 #include "Graphics/EditorCamera.h"
+#include "AssetPanel.h"
 
 namespace TRE
 {
@@ -86,7 +87,10 @@ namespace TRE
 				ImGui::MenuItem("Scene", nullptr, &m_ShowScenePanel);
 				ImGui::MenuItem("Game", nullptr, &m_ShowGamePanel);
 				ImGui::MenuItem("Console", nullptr, &m_ShowConsolePanel);
-				ImGui::MenuItem("Asset", nullptr, &m_ShowAssetPanel);
+				if (ImGui::MenuItem("Asset", nullptr, &m_ShowAssetPanel))
+				{
+					EventHandler::getEventHandlerInstance().Publish(AssetPanelEvent{ m_ShowAssetPanel });
+				}
 				ImGui::PopItemFlag();
 				ImGui::EndMenu();
 			}

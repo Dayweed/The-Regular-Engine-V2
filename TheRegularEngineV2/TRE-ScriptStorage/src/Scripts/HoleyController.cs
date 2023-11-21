@@ -312,6 +312,8 @@ namespace TRE
 			}
 			else if (mainBlueberry)
 			{
+				//if(GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);

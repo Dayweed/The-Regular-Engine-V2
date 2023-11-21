@@ -1049,17 +1049,20 @@ namespace TRE
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Engine_SetMaterialInstance(EntityID entityid, string instanceGUID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetMaterialVisibility(EntityID entityid, bool visibility);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string Engine_GetMaterialInstance(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetMesh(EntityID entityid, string meshGUID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string Engine_GetMesh(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetMeshVisibility(EntityID entityid, bool visibility);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetMaterialVisibility(EntityID entityid);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetMaterialCulled(EntityID entityid, bool culled);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetMaterialCulled(EntityID entityid);
+        internal extern static bool Engine_GetMeshVisibility(EntityID entityid);
     }
 
 
