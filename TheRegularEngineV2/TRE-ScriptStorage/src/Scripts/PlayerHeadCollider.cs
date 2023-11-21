@@ -36,10 +36,6 @@ namespace TRE
             {
                 playerObj = ECSManager.FindEntityByName("Holey");
             }
-            else
-            {
-                Debug.Log("PlayerHeadCollider: Start(): this entity is not a player collider");
-            }
         }
 
 

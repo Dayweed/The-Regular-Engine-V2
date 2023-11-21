@@ -11,7 +11,8 @@
             "6338820077763806458",
             "7226326221621054613",
             "13405510363890397293",
-            "3902543711165755485"
+            "3902543711165755485",
+            "6140392063845837423"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -24,7 +25,8 @@
             "../Resources/Prefabs/Moley.json",
             "../Resources/Prefabs/Holey's Head Collider.json",
             "../Resources/Prefabs/PowerUpSpawner.json",
-            "../Resources/Prefabs/RollingObject.json"
+            "../Resources/Prefabs/RollingObject.json",
+            "../Resources/Prefabs/CactusRight.json"
         ]
     }
 }
