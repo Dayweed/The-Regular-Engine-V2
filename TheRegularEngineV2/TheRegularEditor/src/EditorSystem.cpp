@@ -17,6 +17,7 @@
 #include "TexturePanel.h"
 #include "Graphics/EditorCamera.h"
 #include "ModelPanel.h"
+#include "AssetPanel.h"
 
 #include "InputHandler/InputHandler.h"
 
@@ -45,6 +46,7 @@ namespace TRE
 		m_PanelManager->InsertPanel<GamePanel>("Game Panel");
 		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
 		m_PanelManager->InsertPanel<ModelPanel>("Model Panel", m_AssetSelector);
+		m_PanelManager->InsertPanel<AssetPanel>("Asset Panel", m_AssetSelector);
 		m_PanelManager->Init();
 
 		Deserialize();

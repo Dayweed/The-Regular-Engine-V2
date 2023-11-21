@@ -81,4 +81,11 @@ namespace TRE
 		AssetSelectorEvent() = delete;
 		AssetSelectorEvent(std::string assetName, AssetType assetType) : m_AssetName(assetName), m_AssetType(assetType) {}
 	};
+
+	struct AssetPanelEvent : Event
+	{
+		bool m_ShowAssetPanel{ false };
+		AssetPanelEvent() = delete;
+		AssetPanelEvent(bool showAssetPanel) : m_ShowAssetPanel(showAssetPanel) {}
+	};
 }

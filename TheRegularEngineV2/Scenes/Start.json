@@ -1,75 +1,92 @@
 [
    [
-      4,
-      0,
-      1,
-      2,
-      100
+      9,
+      4293918725,
+      9437184,
+      6291457,
+      3145730,
+      2097155,
+      14680068,
+      7340038,
+      8388615,
+      8388607
    ],
    [
       0
    ],
    [
-      4,
-      0,
+      5,
+      2097155,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      1,
+      9437184,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      2,
+      3145730,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      100,
+      6291457,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      14680068,
       {
          "m_Children": [],
          "m_Parent": ""
       }
    ],
    [
-      4,
-      0,
+      5,
+      2097155,
       {
          "m_Active": true,
-         "m_GUID": "7506946556237656375",
-         "m_Name": "Main Camera",
+         "m_GUID": "12232295300205085691",
+         "m_Name": "Start_Text",
          "m_Tag": ""
       },
-      1,
+      9437184,
       {
          "m_Active": true,
-         "m_GUID": "186295433483879855",
+         "m_GUID": "11326403255607558828",
+         "m_Name": "Game_Logo",
+         "m_Tag": ""
+      },
+      3145730,
+      {
+         "m_Active": true,
+         "m_GUID": "9290128648601350937",
          "m_Name": "Directional Light",
          "m_Tag": ""
       },
-      2,
+      6291457,
       {
          "m_Active": true,
-         "m_GUID": "6592899233930011936",
-         "m_Name": "GameObject (3)",
+         "m_GUID": "14177345381978001509",
+         "m_Name": "Main Camera",
          "m_Tag": ""
       },
-      100,
+      14680068,
       {
          "m_Active": true,
-         "m_GUID": "10166403911715257845",
-         "m_Name": "GameObject (4)",
+         "m_GUID": "719364352508923233",
+         "m_Name": "SceneTransition",
          "m_Tag": ""
       }
    ],
    [
-      4,
-      0,
+      5,
+      2097155,
       {
          "m_Position": [
             0.0,
-            0.0,
+            420.0,
             0.0
          ],
          "m_Rotation": [
@@ -83,7 +100,25 @@
             1.0
          ]
       },
-      1,
+      9437184,
+      {
+         "m_Position": [
+            0.0,
+            -80.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145730,
       {
          "m_Position": [
             0.0,
@@ -101,7 +136,7 @@
             1.0
          ]
       },
-      2,
+      6291457,
       {
          "m_Position": [
             0.0,
@@ -119,7 +154,7 @@
             1.0
          ]
       },
-      100,
+      14680068,
       {
          "m_Position": [
             0.0,
@@ -143,7 +178,7 @@
    ],
    [
       1,
-      0,
+      6291457,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -181,18 +216,24 @@
    ],
    [
       1,
-      1,
+      3145730,
       {
          "m_AmbientColor": [
             1.0,
             1.0,
             1.0,
-            1.0
+            0.05000000074505806
          ],
          "m_Direction": [
             0.7071067690849304,
             -0.4999999701976776,
             0.4999999701976776
+         ],
+         "m_DirectionalColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
          ]
       }
    ],
@@ -204,13 +245,48 @@
    ],
    [
       2,
-      2,
+      2097155,
       {
-         "m_StoredClass": "TRE.RandomizeFallingObjLocation"
+         "m_StoredClass": "TRE.TextBounce"
       },
-      100,
+      14680068,
       {
-         "m_StoredClass": "TRE.HumanCentipede"
+         "m_StoredClass": "TRE.MainMenuSceneTransition"
       }
+   ],
+   [
+      2,
+      2097155,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "Texture": "e39091bbe8e137c8",
+         "Width": 340,
+         "m_IsVisible": true
+      },
+      9437184,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 405,
+         "Texture": "3d8a2183fa1ee1c",
+         "Width": 720,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]

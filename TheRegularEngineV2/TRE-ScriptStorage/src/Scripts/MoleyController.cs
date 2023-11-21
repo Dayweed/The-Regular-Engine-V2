@@ -66,6 +66,9 @@ namespace TRE
 
 		public float elapsedTime = 0.0f;
 
+		private vec3 RespawnPoint = new vec3(0, 0, 0);
+        private bool RespawnPlayer = false;
+        private float RespawnTimer = 1.0f;
 		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
 		private bool DroppingOutOfMap = false;
@@ -75,6 +78,8 @@ namespace TRE
 		private float InvulPeriod = 1.0f;
 		private float InvulBlinkCurrent = 0.1f;
 		private float InvulBlinkPeriod = 0.1f;
+
+        private Transform moleyTransform;
 
         public void Start()
 		{
@@ -98,6 +103,8 @@ namespace TRE
 			InitialPosition = InitialPos;
 			OutofMapPos = InitialPos;
 			OutofMapPos.y = InitialPos.y - 5.0f;
+
+			moleyTransform = GetComponent<Transform>();
 		}
 
 		public void Update()
@@ -141,8 +148,8 @@ namespace TRE
 			}
 
 			if (pos.y < (InitialPosition.y - 50.0f))
-			{
-				ResetToInitialPos();
+            {
+                RespawnPlayer = true;
                 //Debug.Log("Respawn");
             }
 
@@ -382,6 +389,20 @@ namespace TRE
 			}*/
 
 			isGrounded = false;
+
+            if(RespawnPlayer)
+            {
+                if (RespawnTimer > 0)
+                {
+                    RespawnTimer -= Time.deltaTime;
+                }
+                else
+                {
+                    Respawn();
+                    RespawnPlayer = false;
+                    RespawnTimer = 1.0f;
+                }
+            }
 		}
 
 		private void Jump(vec3 JumpHeight)
@@ -462,6 +483,16 @@ namespace TRE
         public void ResetToInitialPos()
         {
             TransformSystem.SetPosition(this.ID, InitialPosition);
+        }
+
+        private void Respawn()
+        {
+            moleyTransform.Position = RespawnPoint;
+        }
+
+        public void SetRespawnPoint(vec3 pos)
+        {
+			RespawnPoint = pos;
         }
     }
 }

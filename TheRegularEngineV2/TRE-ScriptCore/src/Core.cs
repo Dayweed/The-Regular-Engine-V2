@@ -1049,17 +1049,20 @@ namespace TRE
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Engine_SetMaterialInstance(EntityID entityid, string instanceGUID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetMaterialVisibility(EntityID entityid, bool visibility);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string Engine_GetMaterialInstance(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetMesh(EntityID entityid, string meshGUID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string Engine_GetMesh(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetMeshVisibility(EntityID entityid, bool visibility);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetMaterialVisibility(EntityID entityid);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetMaterialCulled(EntityID entityid, bool culled);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetMaterialCulled(EntityID entityid);
+        internal extern static bool Engine_GetMeshVisibility(EntityID entityid);
     }
 
 
@@ -1270,6 +1273,11 @@ namespace TRE
             return Engine_Vec3Lerp(start, end, t);
         }
 
+        public static float Sin(float value)
+        {
+            // return Engine_Sin(value);
+			return (float)System.Math.Sin(value);
+        }
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_Sqrt(float value);
@@ -1279,9 +1287,13 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_Vec3Lerp(vec3 start, vec3 end, float t);
-	}
 
-	public class Random
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float Engine_Sin(float value);
+
+    }
+
+    public class Random
 	{
 		public static int Range(int min_inclusive, int max_exclusive)
 		{

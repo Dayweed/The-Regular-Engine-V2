@@ -131,11 +131,26 @@ namespace TRE
 
     public class MeshRenderer : Component
     {
+        public string Mesh
+        {
+			set
+            {
+				MeshRendererSystem.Engine_SetMesh(entity.ID, value);
+			}
+			get
+            {
+				return MeshRendererSystem.Engine_GetMesh(entity.ID);
+			}
+		}
         public string Material
         {
             set
             {
                 MeshRendererSystem.Engine_SetMaterialInstance(entity.ID, value);
+            }
+            get
+            {
+                return MeshRendererSystem.Engine_GetMaterialInstance(entity.ID);
             }
         }
 
@@ -143,23 +158,11 @@ namespace TRE
         {
             get
             {
-                return MeshRendererSystem.Engine_GetMaterialVisibility(entity.ID);
+                return MeshRendererSystem.Engine_GetMeshVisibility(entity.ID);
             }
             set
             {
-                MeshRendererSystem.Engine_SetMaterialVisibility(entity.ID, value);
-            }
-        }
-
-        public bool Culled
-        {
-            get
-            {
-                return MeshRendererSystem.Engine_GetMaterialCulled(entity.ID);
-            }
-            set
-            {
-                MeshRendererSystem.Engine_SetMaterialCulled(entity.ID, value);
+                MeshRendererSystem.Engine_SetMeshVisibility(entity.ID, value);
             }
         }
     }

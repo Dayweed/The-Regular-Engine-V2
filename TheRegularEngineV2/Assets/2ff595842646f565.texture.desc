@@ -1,8 +1,8 @@
 Asset File Path:
-../Assets/game-logo.png
+../Assets/ui-complete.png
 
 Texture File Path:
-../Resources/3d8a2183fa1ee1c.DDS
+../Resources/2ff595842646f565.DDS
 
 Compress:
 1
@@ -17,5 +17,5 @@ sRGB:
 1
 
 Transparent:
-1
+0
 

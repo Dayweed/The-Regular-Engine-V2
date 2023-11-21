@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
 using System.Diagnostics.Eventing.Reader;
+using Coroutine;
 using GlmSharp;
 
 namespace TRE
@@ -58,6 +59,9 @@ namespace TRE
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
+		private vec3 RespawnPoint = new vec3(0, 0, 0);
+        private bool RespawnPlayer = false;
+		private float RespawnTimer = 1.0f;
 		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
 		private bool DroppingOutOfMap = false;
@@ -129,7 +133,8 @@ namespace TRE
 
 			if (pos.y < (InitialPosition.y - 50.0f))
 			{
-				ResetToInitialPos();
+				RespawnPlayer = true;
+				Debug.Log(RespawnPoint.ToString());
 				//Debug.Log("Respawn");
 			}
 
@@ -312,6 +317,8 @@ namespace TRE
 			}
 			else if (mainBlueberry)
 			{
+				//if(GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
@@ -358,6 +365,20 @@ namespace TRE
 			holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
 			isGrounded = false;
+
+			if(RespawnPlayer)
+            {
+                if (RespawnTimer > 0)
+                {
+                    RespawnTimer -= Time.deltaTime;
+                }
+                else
+                {
+                    Respawn(); 
+                    RespawnPlayer = false;
+					RespawnTimer = 1.0f;
+                }
+            }
 		}
 		private void Jump(vec3 JumpHeight)
 		{
@@ -427,6 +448,7 @@ namespace TRE
 			}
 			else
 			{
+				
 				ResetToInitialPos();
 			}
 			Invulnerability = true;
@@ -436,5 +458,16 @@ namespace TRE
 		{
 			holeyTransform.Position = InitialPosition;
 		}
+
+		// activate this function using a coroutine to time the spawning of the player
+		private void Respawn() 
+		{
+			holeyTransform.Position = RespawnPoint;
+		}
+
+		public void SetRespawnPoint(vec3 position)
+        {
+            RespawnPoint = position;
+        }
 	}
 }

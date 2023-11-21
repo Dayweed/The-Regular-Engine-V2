@@ -180,6 +180,8 @@ namespace TRE
 		{
 			CreateCSEntityData(entity);
 		}
+
+		//InitScriptingMain();
 	}
 
 	void ScriptEngine::Shutdown()
@@ -396,13 +398,6 @@ namespace TRE
 		s_ScriptEngineData->DemoObject = mono_object_new(s_ScriptEngineData->AppDomain, testClass);
 		// Run constructor of the object class
 		mono_runtime_object_init(s_ScriptEngineData->DemoObject);
-
-		// Take Care of creating the data
-		s_ScriptEngineData->ScriptInstances.clear();
-		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
-		{
-			CreateCSEntityData(entity);
-		}
 	}
 
 	void ScriptEngine::UpdateScriptingMain()

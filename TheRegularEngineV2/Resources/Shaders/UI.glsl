@@ -47,4 +47,5 @@ layout (set = 0, binding = 1) uniform sampler2D UI_Texture;
 void main()
 {
     outColor = texture(UI_Texture, In.UV) * In.Color;
+    outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
 }
