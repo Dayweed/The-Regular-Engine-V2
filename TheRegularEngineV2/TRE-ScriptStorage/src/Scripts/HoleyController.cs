@@ -302,6 +302,20 @@ namespace TRE
 				if (mainBlueberry || mainStrawberry)
 				{
 					isScaled = !isScaled;
+					if (isScaled)
+					{
+						if (ECSManager.IsValidEntity(16494487554086442885))
+						{
+							AudioSystem.Play(16494487554086442885);
+						}
+					}
+					else
+					{
+						if (ECSManager.IsValidEntity(9169969694358689235))
+						{
+							AudioSystem.Play(9169969694358689235);
+						}
+					}
 				}
 			}
 
