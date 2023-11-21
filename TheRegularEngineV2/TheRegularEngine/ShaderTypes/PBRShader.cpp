@@ -38,6 +38,11 @@ namespace TRE
 		return m_ShaderHandle;
 	}
 
+	const ResourceHandle& PBR::GetAnimationShaderHandle()
+	{
+		return m_AnimationShaderHandle;
+	}
+
 	void PBR::CreateDefaultMaterial()
 	{
 		m_DefaultMaterial = Resource::GenerateGUID();

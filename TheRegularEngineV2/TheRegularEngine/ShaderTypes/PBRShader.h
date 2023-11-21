@@ -10,6 +10,7 @@ namespace TRE
 		static const ResourceHandle& GetDefaultMaterial();
 		static const ResourceHandle& GetShaderHandle();
 		static const ResourceHandle& GetDefaultAnimationMaterial();
+		static const ResourceHandle& GetAnimationShaderHandle();
 
 	private:
 		static void CreateDefaultMaterial();

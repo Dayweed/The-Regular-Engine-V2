@@ -53,5 +53,7 @@ layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 void main() 
 {
-   outColor = In.Color * texture(DiffuseMap, In.UV) * texture(AOMap, In.UV);
+   	outColor = In.Color * texture(DiffuseMap, In.UV);
+   	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / 2.2)));
+	outColor.a = 1.0;
 }

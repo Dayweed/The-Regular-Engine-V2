@@ -19,25 +19,25 @@ namespace TRE
 		public:
 			AnimationComponent()
 			{
-				//TRE_CORE_INFO("Animation Component Constructor");
-				auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
-				auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
-				auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
-				auto AnimationtextureHandle4 = Resource::GetGUIDFromHex("c076cd64a7491d7");
-				auto AnimationtextureHandle5 = Resource::GetGUIDFromHex("6b2822ce3972f53");
-				auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle1);
-				auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle2);
-				auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle3);
-				auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle4);
-				auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle5);
+				////TRE_CORE_INFO("Animation Component Constructor");
+				//auto AnimationtextureHandle1 = Resource::GetGUIDFromHex("9c6509635ee2d750");
+				//auto AnimationtextureHandle2 = Resource::GetGUIDFromHex("52ba56f854e86f56");
+				//auto AnimationtextureHandle3 = Resource::GetGUIDFromHex("547865c1f61ef1f9");
+				//auto AnimationtextureHandle4 = Resource::GetGUIDFromHex("c076cd64a7491d7");
+				//auto AnimationtextureHandle5 = Resource::GetGUIDFromHex("6b2822ce3972f53");
+				//auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle1);
+				//auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle2);
+				//auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle3);
+				//auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle4);
+				//auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(AnimationtextureHandle5);
 
-				m_MaterialInstace = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(9));
-				m_MaterialInstace->Invalidate();
-				m_MaterialInstace->SetTexture("DiffuseMap", Texture1);
-				m_MaterialInstace->SetTexture("AOMap", Texture2);
-				m_MaterialInstace->SetTexture("NormalMap", Texture3);
-				m_MaterialInstace->SetTexture("RoughnessMap", Texture4);
-				m_MaterialInstace->SetTexture("Metalness", Texture5);
+				//m_MaterialInstace = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(9));
+				//m_MaterialInstace->Invalidate();
+				//m_MaterialInstace->SetTexture("DiffuseMap", Texture1);
+				//m_MaterialInstace->SetTexture("AOMap", Texture2);
+				//m_MaterialInstace->SetTexture("NormalMap", Texture3);
+				//m_MaterialInstace->SetTexture("RoughnessMap", Texture4);
+				//m_MaterialInstace->SetTexture("Metalness", Texture5);
 
 				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
 			}
