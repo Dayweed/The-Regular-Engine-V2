@@ -45,6 +45,8 @@ namespace TRE
                 holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
                 triggerStars.Add(holeCheckDisplays);
 
+                PersistentSystem.SetValue("MaxStarsObtained", "1");
+
                 nextSceneName = "ResultScreen";
             }
             courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
@@ -86,7 +88,11 @@ namespace TRE
             //go to next scene after a while
             if (goToNextScene)
             {
-                courseComplete.isVisible = true;
+                if (!courseComplete.isVisible)
+                {
+                    courseComplete.isVisible = true;
+                    ECSManager.FindEntityByName("CourseComplete").GetComponent<VFX_SlapOn>().SlapOn();
+                }
 
                 if (currentTime >= waitingTime)
                 {
