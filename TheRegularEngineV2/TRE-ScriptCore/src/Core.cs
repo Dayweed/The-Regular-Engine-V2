@@ -1472,4 +1472,23 @@ namespace TRE
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Engine_CloseGame();
     }
+
+	public class PersistentSystem
+    {
+        public static string GetValue(string Name)
+        {
+            return Engine_GetPersistentValue(Name);
+        }
+
+        public static void SetValue(string Name, string Value)
+        {
+            Engine_SetPersistentValue(Name, Value);
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static string Engine_GetPersistentValue(string VariableName);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetPersistentValue(string VariableName, string VariableValue);
+    }
 }

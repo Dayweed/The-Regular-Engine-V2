@@ -14,6 +14,8 @@ namespace TRE
 
         public List<HoleCheckDisplay> triggerComplete;
 
+        public List<List<HoleCheckDisplay>> triggerStars;
+
         public SpriteRenderer courseComplete;
         public static float currentTime;
         public float waitingTime = 0.90f;
@@ -23,19 +25,52 @@ namespace TRE
             currentTime = 0.0f;
             currentSceneName = Scene.GetSceneName();
             triggerComplete = new List<HoleCheckDisplay>();
+            triggerStars = new List<List<HoleCheckDisplay>>();
+
             Debug.Log("Name " + currentSceneName);
+
+            PersistentSystem.SetValue("PrevScene", currentSceneName);
+
+            PersistentSystem.SetValue("StarsObtained", "0");
+
             if (currentSceneName == "Tutorial")
             {
+                // Add for course complete triggers
                 triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
                 triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 
-                nextSceneName = "Level_1";
+                // Add for optional stars triggers
+                List<HoleCheckDisplay> holeCheckDisplays = new List<HoleCheckDisplay>();
+                holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>());
+                holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
+                triggerStars.Add(holeCheckDisplays);
+
+                nextSceneName = "ResultScreen";
             }
             courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
         }
 
         public void Update()
         {
+            // Check if any of the list 
+            for (int i = triggerStars.Count - 1; i >= 0; --i)
+            {
+                List<HoleCheckDisplay> holeCheckDisplays = triggerStars[i];
+                bool isCompleted = true;
+                foreach (HoleCheckDisplay trigger in holeCheckDisplays)
+                {
+                    if (!trigger.isCompleted)
+                    {
+                        isCompleted = false;
+                    }
+                }
+                if (isCompleted)
+                {
+                    IncrementStars();
+                    triggerStars.RemoveAt(i);
+                }
+            }
+
             // Go to next scene if list of triggers are completed
             bool goToNextScene = triggerComplete.Count == 0 ? false : true;
 
@@ -74,6 +109,18 @@ namespace TRE
                 {
 					AudioSystem.Stop(12557813022109059017);
 				}
+            }
+        }
+
+        public void IncrementStars()
+        {
+            int numStars = 0;
+
+            if (Int32.TryParse(PersistentSystem.GetValue("StarsObtained"), out numStars))
+            {
+                ++numStars;
+                PersistentSystem.SetValue("StarsObtained", numStars.ToString());
+                Debug.Log("Stars " + PersistentSystem.GetValue("StarsObtained"));
             }
         }
     }

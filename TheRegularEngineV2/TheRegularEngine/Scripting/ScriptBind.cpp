@@ -1606,6 +1606,18 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region PersistenBindings
+	static MonoString* BindGetPersistentVarVal(MonoString* VariableName)
+	{
+		return mono_string_new(mono_domain_get(), PersistentManager::Instance().GetVariableValue(MonoStringToString(VariableName)).c_str());
+	}
+
+	static void BindSetPersistentVarVal(MonoString* VariableName, MonoString* VariableValue)
+	{
+		PersistentManager::Instance().SetVariableValue(MonoStringToString(VariableName), MonoStringToString(VariableValue));
+	}
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -1815,6 +1827,12 @@ namespace TRE
 		// Game
 		{
 			mono_add_internal_call("TRE.Game::Engine_CloseGame", BindCloseGame);
+		}
+
+		// PersistentValues
+		{
+			mono_add_internal_call("TRE.PersistentSystem::Engine_GetPersistentValue", BindGetPersistentVarVal);
+			mono_add_internal_call("TRE.PersistentSystem::Engine_SetPersistentValue", BindSetPersistentVarVal);
 		}
 	}
 }

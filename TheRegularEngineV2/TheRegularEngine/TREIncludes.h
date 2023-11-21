@@ -18,6 +18,7 @@
 #include "Core/Parent.h"
 #include "Core/Transform.h"
 #include "Core/SceneManager.h"
+#include "Core/PersistentManager.h"
 #include "Core/MemoryManager.h"
 #include "Core/FileSystem.h"
 #include "Core/Logger.h"

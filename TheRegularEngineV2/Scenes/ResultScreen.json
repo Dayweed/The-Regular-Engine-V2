@@ -1,0 +1,207 @@
+[
+   [
+      8,
+      4293918721,
+      9437184,
+      20971524,
+      3145730,
+      2097155,
+      7340037,
+      8388614,
+      8388607
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      9437184,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097155,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      3145730,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      3,
+      9437184,
+      {
+         "m_Active": true,
+         "m_GUID": "15417132125968774991",
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      2097155,
+      {
+         "m_Active": true,
+         "m_GUID": "9192168270985279212",
+         "m_Name": "Background",
+         "m_Tag": "Mesh cos no UI Layering"
+      },
+      3145730,
+      {
+         "m_Active": true,
+         "m_GUID": "18336607868352152562",
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      }
+   ],
+   [
+      3,
+      9437184,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097155,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            10.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            20.0,
+            20.0,
+            1.0
+         ]
+      },
+      3145730,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      2097155,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      9437184,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 100.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            -100.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Right": 1.0,
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      3145730,
+      {
+         "m_AmbientColor": [
+            1.0,
+            1.0,
+            1.0,
+            0.05000000074505806
+         ],
+         "m_Direction": [
+            0.7071067690849304,
+            -0.4999999701976776,
+            0.4999999701976776
+         ],
+         "m_DirectionalColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      2097155,
+      {
+         "m_StoredClass": "TRE.ResultLogic"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
