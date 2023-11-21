@@ -10,6 +10,7 @@ namespace TRE
     public class JumpPadSwitch : Entity
     {
         public Entity JumpPad;
+        public Entity JumpPad_1;
 
         public JumpPadSwitch()
         {
@@ -19,6 +20,7 @@ namespace TRE
         public void OnCreate()
         {
             JumpPad = ECSManager.FindEntityByName("JumpPad");
+            JumpPad_1 = ECSManager.FindEntityByName("JumpPad_1");
             if (JumpPad == null)
             {
                 Debug.LogError("JumpPadSwitch JumpPad is null!");
@@ -43,6 +45,7 @@ namespace TRE
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
                 JumpPad.GetComponent<JumpPad>().ActivatePad(true);
+                JumpPad_1.GetComponent<JumpPad>().ActivatePad(true);
             }
         }
 
@@ -53,6 +56,7 @@ namespace TRE
             if (other.CompareTag("Red") || other.CompareTag("Blue"))
             {
                 JumpPad.GetComponent<JumpPad>().ActivatePad(false);
+                JumpPad_1.GetComponent<JumpPad>().ActivatePad(false);
             }
         }
     }

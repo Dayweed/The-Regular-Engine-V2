@@ -20,7 +20,7 @@ namespace TRE
 
         public void Start()
         {
-            if (name == "JumpPad_1")
+            if (name == "JumpPad_2")
             {
                 isActivated = true;
             }
