@@ -23,6 +23,7 @@ namespace TRE
 
 		CheckForNewScriptableObjects();
 		UpdateScriptableObjects();
+		//ScriptEngine::UpdateScriptingMain();
 	}
 
 	void ScriptingSystem::GameUpdate()
@@ -151,7 +152,7 @@ namespace TRE
 				ScriptEngine::OnDestroyEntity(m_ScriptEntities[i]);
 		}
 
-		ScriptEngine::UpdateScriptingMain();
+		//ScriptEngine::UpdateScriptingMain();
 		
 	}
 
