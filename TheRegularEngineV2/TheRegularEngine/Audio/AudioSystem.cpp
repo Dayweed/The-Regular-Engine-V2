@@ -54,6 +54,10 @@ namespace TRE
 				{
 					Play(go, true);
 				}
+				else if (!source.m_Play)
+				{
+					source.m_Channel->stop();
+				}
 
 				source.m_Channel->isPlaying(&source.m_isPlaying);
 				TogglePause(go);
