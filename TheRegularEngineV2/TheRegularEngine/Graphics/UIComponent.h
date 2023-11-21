@@ -111,8 +111,18 @@ property_begin(TRE::UIComponent)
 
 	} property_var_fnend(),
 	property_var(m_IsVisible),
-	property_var(m_Color),
+	property_var_fnbegin("Color", Color)
+	{
+		if (isRead)
+		{
+			InOut.m_Value = Self.m_Color;
+		}
+		else
+		{
+			Self.m_Color = InOut.m_Value;
+		}
+	} property_var_fnend(),
 	property_var(m_Width),
-	property_var(m_Height),
+	property_var(m_Height)
 
 } property_vend_h(TRE::UIComponent)
