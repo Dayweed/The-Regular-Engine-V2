@@ -240,17 +240,17 @@ namespace TRE
 				isWalking = false;
 			}
 
-			if (ECSManager.IsValidEntity(15348080909718226430))
+			if (ECSManager.IsValidEntity(12597375607403829379))
 			{
 				if (isWalking && walkingSFXPlayed == false)
 				{
-					AudioSystem.Play(15348080909718226430);
+					AudioSystem.Play(12597375607403829379);
 					walkingSFXPlayed = true;
 				}
 
 				if (!isWalking || !isGrounded)
 				{
-					AudioSystem.Stop(15348080909718226430);
+					AudioSystem.Stop(12597375607403829379);
 					walkingSFXPlayed = false;
 				}
 			}

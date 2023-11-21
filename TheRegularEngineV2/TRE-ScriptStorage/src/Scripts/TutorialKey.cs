@@ -26,6 +26,11 @@ namespace TRE
             {
                 TransformSystem.SetPosition(FinalPlatform.ID, new vec3(100, 9, -302));
                 this.SetActive(false);
+
+                if(ECSManager.IsValidEntity(5918200844399750609))
+                {
+                    AudioSystem.Play(5918200844399750609);
+                }
             }
         }
     }
