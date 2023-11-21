@@ -1361,6 +1361,11 @@ namespace TRE
 	{
 		return Vector3(Mathf::LerpUnclamped(a.x, b.x, t), Mathf::LerpUnclamped(a.y, b.y, t), Mathf::LerpUnclamped(a.z, b.z, t));
 	}
+
+	static float BindSin(float value)
+	{
+		return Mathf::Sin(value);
+	}
 #pragma endregion
 
 #pragma region RandomBindings
@@ -1760,6 +1765,7 @@ namespace TRE
 			mono_add_internal_call("TRE.MathF::Engine_Sqrt", BindSqrt);
 			mono_add_internal_call("TRE.MathF::Engine_Lerp", BindLerp);
 			mono_add_internal_call("TRE.MathF::Engine_Vec3Lerp", BindLerpVec3);
+			mono_add_internal_call("TRE.MathF::Engine_Sin", BindSin);
 		}
 
 		// Random

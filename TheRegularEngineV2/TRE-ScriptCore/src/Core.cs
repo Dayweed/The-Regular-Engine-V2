@@ -1270,6 +1270,11 @@ namespace TRE
             return Engine_Vec3Lerp(start, end, t);
         }
 
+        public static float Sin(float value)
+        {
+            // return Engine_Sin(value);
+			return (float)System.Math.Sin(value);
+        }
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_Sqrt(float value);
@@ -1279,9 +1284,13 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_Vec3Lerp(vec3 start, vec3 end, float t);
-	}
 
-	public class Random
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float Engine_Sin(float value);
+
+    }
+
+    public class Random
 	{
 		public static int Range(int min_inclusive, int max_exclusive)
 		{
