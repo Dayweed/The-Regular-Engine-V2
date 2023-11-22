@@ -294,7 +294,7 @@ namespace TRE
 					Entity prefabInstance{ prefabsystem->CreatePrefabEntityInstance(prefabGUID) };
 					prefabInstance->GetComponent<Transform>().m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
 					prefabInstance->GetComponent<Transform>().m_IsDirty = true;
-					prefabInstance->GetComponent<Transform>().CalculateWorldMatrix();
+					//prefabInstance->GetComponent<Transform>().CalculateWorldMatrix();
 					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildTransform(prefabInstance);
 					m_SelectionManager->SelectEntity(prefabInstance);
 				}
