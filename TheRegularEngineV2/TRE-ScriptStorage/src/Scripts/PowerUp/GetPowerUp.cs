@@ -135,6 +135,8 @@ namespace TRE
 
             if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
+            GetComponent<MeshRenderer>().Visible = false;
+
             vec3 newPos = playerObj.transform.Position;
             int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
             newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
@@ -149,6 +151,8 @@ namespace TRE
 
         public void ReleasePowerUp()
         {
+            GetComponent<MeshRenderer>().Visible = true;
+
             playerObj = null;
             collected = false;
             GetComponent<Rigidbody>().useGravity = true;
