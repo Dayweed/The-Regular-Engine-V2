@@ -30,6 +30,8 @@ namespace TRE
         private float groundOffset = 2;
         private float rotationSpeed = 20;
 
+        //private ulong collectedSFX;
+
         public GetPowerUp()
         {
 

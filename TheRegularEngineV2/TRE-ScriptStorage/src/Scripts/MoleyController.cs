@@ -64,6 +64,13 @@ namespace TRE
 		private Entity Key;
 		private Entity FinalPlatform;
 
+		//For audio
+		private ulong walkingSFX;
+		private ulong jumpSFX;
+		private ulong changesizeSFX;
+		private ulong normalsizeSFX;
+		private ulong droppowerupSFX;
+
 		public float elapsedTime = 0.0f;
 
 		private vec3 RespawnPoint = new vec3(0, 0, 0);
@@ -105,6 +112,13 @@ namespace TRE
 			OutofMapPos.y = InitialPos.y - 5.0f;
 
 			moleyTransform = GetComponent<Transform>();
+
+			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
+			jumpSFX = ECSManager.FindIDFromName("SFX_MoleyJump");
+			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
+			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
+			droppowerupSFX = ECSManager.FindIDFromName("SFX_DropPowerUp");
+
 		}
 
 		public void Update()
@@ -213,9 +227,10 @@ namespace TRE
 
 				if (InputSystem.GetKeyTrigger(InputKeys.Space))
 				{
-					if (ECSManager.IsValidEntity(6503599471310675157))
+					if (ECSManager.IsValidEntity(jumpSFX))
 					{
-						AudioSystem.Play(6503599471310675157);
+						AudioSystem.Play(jumpSFX
+							);
 					}
 					isWalking = false;
 
@@ -250,24 +265,20 @@ namespace TRE
 				isWalking = false;
 			}
 
-			if (ECSManager.IsValidEntity(15348080909718226430))
+			if (ECSManager.IsValidEntity(walkingSFX))
 			{
 				if (isWalking && walkingSFXPlayed == false)
 				{
-					AudioSystem.Play(15348080909718226430);
+					AudioSystem.Play(walkingSFX);
 					walkingSFXPlayed = true;
 				}
 
 				if (!isWalking || !isGrounded)
 				{
-					AudioSystem.Stop(15348080909718226430);
+					AudioSystem.Stop(walkingSFX);
 					walkingSFXPlayed = false;
 				}
 			}
-
-
-			//Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
-			//Debug.Log("isWalking: " + isWalking);
 
 			#endregion
 
@@ -287,9 +298,9 @@ namespace TRE
 			{
 				MyPowerManager.DropMain();
                 isScaled = false;
-				if (ECSManager.IsValidEntity(8534116593687196231))
+				if (ECSManager.IsValidEntity(droppowerupSFX))
 				{
-					AudioSystem.Play(8534116593687196231);
+					AudioSystem.Play(droppowerupSFX);
 				}
 			}
 			#endregion
@@ -312,16 +323,16 @@ namespace TRE
 
 					if (isScaled)
 					{
-						if(ECSManager.IsValidEntity(17415746094483107537))
+						if(ECSManager.IsValidEntity(changesizeSFX))
 						{
-							AudioSystem.Play(17415746094483107537);
+							AudioSystem.Play(changesizeSFX);
 						}
 					}
 					else
 					{
-						if (ECSManager.IsValidEntity(9169969694358689235))
+						if (ECSManager.IsValidEntity(normalsizeSFX))
 						{
-							AudioSystem.Play(9169969694358689235);
+							AudioSystem.Play(normalsizeSFX);
 						}
 					}
 				}
