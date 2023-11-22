@@ -22,7 +22,7 @@
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
-#define USE_PHYSX_PVD 0
+#define USE_PHYSX_PVD 1
 #endif
 
 using namespace physx;
@@ -148,7 +148,7 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(10.f, 1000.f, 0.f);
+		m_DefaultMaterial = m_Physics->createMaterial(299999999999999999999999999999999999999.f, 299999999999999999999999999999999999999.f, 0.f);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}

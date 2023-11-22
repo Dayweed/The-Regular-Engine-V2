@@ -43,19 +43,20 @@ namespace TRE
 		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
-		private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 4.8f;
-		private float strawberrysuperRadius = 2.4f;
-		private float currentRadius = 2f;
-		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 4.8f;
-		private float strawberrysuperHeight = 1.2f;
-		private float currentHeight = 1f;
-		//Transform Scale
-		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
-		private vec3 blueberryscaledXform = new vec3(1f, 2.2f, 1f);
-		private vec3 strawberryscaledXform = new vec3(0.5f, 1.5f, 1f);
-		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
+        public float defaultRadius = 2f;
+        public float blueberrysuperRadius = 4.8f;
+        public float strawberrysuperRadius = 2.4f;
+        public float currentRadius = 2f;
+        public float defaultHeight = 1f;
+        public float blueberrysuperHeight = 4.8f;
+        public float strawberrysuperHeight = 1.2f;
+        public float currentHeight = 1f;
+		public float currOffset = 0f;
+        //Transform Scale
+        public vec3 defaultXform = new vec3(75f, 75f, 75f);
+        public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
+        public vec3 strawberryscaledXform = new vec3(0.5f, 1.5f, 1f);
+        public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
@@ -338,30 +339,35 @@ namespace TRE
 			}
 
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
-			{
-				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
+            {
+				//default model
+                if (GetComponent<MeshRenderer>().Mesh != "789db1a40e2484e0")
+                    GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
+                currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 0, 3 * lerpSpeed * Time.deltaTime);
+				currentXform = defaultXform;
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				currentXform.x = MathF.Lerp(currentXform.x, defaultXform.x, lerpSpeed * Time.deltaTime);
-				currentXform.y = MathF.Lerp(currentXform.y, defaultXform.y, lerpSpeed * Time.deltaTime);
-				currentXform.z = MathF.Lerp(currentXform.z, defaultXform.z, lerpSpeed * Time.deltaTime);
-				TransformSystem.SetScaling(this.ID, currentXform);
-			}
+                PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
+                TransformSystem.SetScaling(this.ID, currentXform);
+
+            }
 			else if (mainBlueberry)
 			{
-				//if(GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
-				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+				//Tall model
+				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
+					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				currentXform.x = MathF.Lerp(currentXform.x, blueberryscaledXform.x, lerpSpeed * Time.deltaTime);
-				currentXform.y = MathF.Lerp(currentXform.y, blueberryscaledXform.y, lerpSpeed * Time.deltaTime);
-				currentXform.z = MathF.Lerp(currentXform.z, blueberryscaledXform.z, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 8.5f, 0.5f * lerpSpeed * Time.deltaTime);
+				currentXform = blueberryscaledXform;
+				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
+				PS.ResizeCapsuleCollider(this.ID, blueberrysuperRadius, blueberrysuperHeight);
 				TransformSystem.SetScaling(this.ID, currentXform);
 			}
 			else if (mainStrawberry)
 			{
-				//Change to cactus
+				//Cactus Model
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
@@ -406,34 +412,16 @@ namespace TRE
 
             if (dirVec != vec3.Zero)
             {
-                if (isGrounded)
+                if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) <= maxVelocity)
                 {
-                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
-                    {
-                        finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
-                    else
-                    {
-                        vec3 tmp = dirVec * maxVelocity;
-                        finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
+                    finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+                    PS.SetLinearVelocity(this.ID, finalVelocity);
                 }
-                else if (!isGrounded)
+                else
                 {
-                    //change to be air max velocirty instead
-                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxAirVelocity)
-                    {
-                        finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
-                    else
-                    {
-                        vec3 tmp = dirVec * maxAirVelocity;
-                        finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
+                    vec3 tmp = dirVec * maxVelocity;
+                    finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+                    PS.SetLinearVelocity(this.ID, finalVelocity);
                 }
             }
             else if (dirVec.x == 0 && dirVec.z == 0)

@@ -15,25 +15,27 @@ namespace TRE
 
         //Scaling variables
         private float lerpSpeed = 5f;
-        private vec3 defaultScale = new vec3(0f, 0f, 0f);
+        private vec3 defaultScale = new vec3(0.00000000001f, 0.00000000001f, 0.00000000001f);
         private vec3 leftScale = new vec3(2f, 4f, 2f);          // ROYCE CHANGE VALUES HERE
         private vec3 rightScale = new vec3(2f, 2f, 2f);         // ROYCE CHANGE VALUES HERE
         private vec3 currScale = new vec3(0f, 0f, 0f);
 
         private void SetToPlayer()
         {
+            PhysicsSystem.GetColliderOffset(playerObj.ID, out vec3 offset);
             if(playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
             {
                 return;
             }
             vec3 newPos = playerObj.transform.Position;
-            newPos.y += playerObj.transform.Scale.y * 5f;
+            newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
+                    + offset.y + 100f;
             //Right Cactus Values
             if(this.CompareTag(rightCactus))
-                newPos.x += playerObj.transform.Scale.z * 4f;
+                newPos.x += playerObj.GetComponent<HoleyController>().currentRadius + 0.8f;
             //Left Cactus Values
             else if (this.CompareTag(leftCactus))
-                newPos.x -= playerObj.transform.Scale.z * 4f;
+                newPos.x -= playerObj.GetComponent<HoleyController>().currentRadius + 0.8f;
             transform.Position = newPos;
         }
 
