@@ -66,473 +66,708 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "5553690368000057511",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ]
+         },
+         "m_PrefabGUID": "17946854975500777174",
          "m_RemovedComps": []
       },
       1,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "14492405820127484216",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "12460031351668762711",
          "m_RemovedComps": []
       },
       2,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "12935499595996087922",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "1218369175585538584",
          "m_RemovedComps": []
       },
       3,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "11400451873909590341",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "2322229849552974763",
          "m_RemovedComps": []
       },
       4,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "414699048727379628",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "1745325793206256891",
          "m_RemovedComps": []
       },
       5,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "11640238767150841112",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7922054230813524787",
          "m_RemovedComps": []
       },
       6,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "16308968116261639247",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17379033902630711244",
          "m_RemovedComps": []
       },
       7,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "9989782441913307237",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "12163790903568516776",
          "m_RemovedComps": []
       },
       8,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "1076233699547635954",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "18428460019958879349",
          "m_RemovedComps": []
       },
       9,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "2096234851746414433",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17400302386699662638",
          "m_RemovedComps": []
       },
       10,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "89042997877667182",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "10567799144915142965",
          "m_RemovedComps": []
       },
       11,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "6592685644257370738",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "3514112299425322640",
          "m_RemovedComps": []
       },
       12,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10484333148480182428",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "9141734736790575842",
          "m_RemovedComps": []
       },
       13,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "14646423256219172190",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "15265622647310936910",
          "m_RemovedComps": []
       },
       14,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "9292001356580572456",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17087283087136886388",
          "m_RemovedComps": []
       },
       15,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "3920622941683978756",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "2943691534889310274",
          "m_RemovedComps": []
       },
       16,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "13603730583119632825",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7901397206832567090",
          "m_RemovedComps": []
       },
       17,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "13273616780874626922",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "1987103225084441212",
          "m_RemovedComps": []
       },
       18,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "1200971790571257990",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "4246509020950465247",
          "m_RemovedComps": []
       },
       19,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "3119923419002128110",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "18345986049408149034",
          "m_RemovedComps": []
       },
       20,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "315150701034925103",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "2563746377382113983",
          "m_RemovedComps": []
       },
       21,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10956950940582329879",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "836004515298621786",
          "m_RemovedComps": []
       },
       22,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "16847767524513519969",
          "m_RemovedComps": []
       },
       23,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "1008312654236361886",
          "m_RemovedComps": []
       },
       24,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17877982529814260420",
          "m_RemovedComps": []
       },
       25,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "16197290562442303265",
          "m_RemovedComps": []
       },
       26,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "9159393454817719894",
          "m_RemovedComps": []
       },
       27,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17590788297644140250",
          "m_RemovedComps": []
       },
       28,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "3336884029682156090",
          "m_RemovedComps": []
       },
       29,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6858030862487776183",
          "m_RemovedComps": []
       },
       30,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "17245983428422875744",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17492881307649713299",
          "m_RemovedComps": []
       },
       31,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "8298433548810220130",
          "m_RemovedComps": []
       },
       32,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "10228951597883996228",
          "m_RemovedComps": []
       },
       33,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "15784216704138576859",
          "m_RemovedComps": []
       },
       34,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "BoxCollider": [
+               "TRE::BoxCollider/HalfExtents"
+            ],
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7594043956560651893",
          "m_RemovedComps": []
       },
       35,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "1018384970845574948",
          "m_RemovedComps": []
       },
       36,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "2280976440371317539",
          "m_RemovedComps": []
       },
       37,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "15071516775992544382",
          "m_RemovedComps": []
       },
       38,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "2171186480346359820",
          "m_RemovedComps": []
       },
       39,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "6714573261229370146",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7612078168219682662",
          "m_RemovedComps": []
       },
       40,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "16814424219746287606",
          "m_RemovedComps": []
       },
       41,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "7770714325323881641",
          "m_RemovedComps": []
       },
       42,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17085510972174238268",
          "m_RemovedComps": []
       },
       43,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "9306569773533170138",
          "m_RemovedComps": []
       },
       44,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10513262257211590559",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "11334223482714700064",
          "m_RemovedComps": []
       },
       45,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "10068426404617341877",
          "m_RemovedComps": []
       },
       46,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6611696885917138204",
          "m_RemovedComps": []
       },
       47,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "9231840586548196597",
          "m_RemovedComps": []
       },
       48,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "497483012167625336",
          "m_RemovedComps": []
       },
       49,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "9186276061100288766",
          "m_RemovedComps": []
       },
       50,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "16911352404869483431",
          "m_RemovedComps": []
       },
       51,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6347020226645190795",
          "m_RemovedComps": []
       },
       52,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "8588817494294097447",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "14301437575258313618",
          "m_RemovedComps": []
       },
       53,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "17895696509638550151",
          "m_RemovedComps": []
       },
       54,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "11532744040952367283",
          "m_RemovedComps": []
       },
       55,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "16872129259194514696",
          "m_RemovedComps": []
       },
       56,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "15178947699205435816",
          "m_RemovedComps": []
       },
       57,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
+         "m_MainPrefabGUID": "17946854975500777174",
          "m_Overrides": {},
-         "m_PrefabGUID": "4486736249171469349",
+         "m_PrefabGUID": "2158242430806241412",
          "m_RemovedComps": []
       },
       58,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "5553690368000057511",
-         "m_Overrides": {},
-         "m_PrefabGUID": "10665611666694348414",
+         "m_MainPrefabGUID": "17946854975500777174",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6706452347744900893",
          "m_RemovedComps": []
       }
    ],
@@ -541,365 +776,365 @@
       0,
       {
          "m_Children": [
-            "3606670088632712813",
-            "12447117076492904197",
-            "12105338806779188574",
-            "1206295820721593531",
-            "16460592120604682536",
-            "17297431458117421290",
-            "11043500359933411386",
-            "2534642724615662311",
-            "7689404361022278443"
+            "5718455617794962197",
+            "1198092999841427129",
+            "15906483031585498882",
+            "8404714645018116317",
+            "9792284890704134965",
+            "6906527011264699013",
+            "11513665259940456027",
+            "25433429310813526",
+            "16701397578199448311"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [
-            "178151029318885165",
-            "5800422096848418328",
-            "9375208710405151598",
-            "4303852020550683033",
-            "16940912884346509401"
+            "15440524379184077153",
+            "2044379064315277592",
+            "2553018344439711662",
+            "14411556947966382654",
+            "17737244855426541853"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "3606670088632712813"
+         "m_Parent": "5718455617794962197"
       },
       3,
       {
          "m_Children": [],
-         "m_Parent": "3606670088632712813"
+         "m_Parent": "5718455617794962197"
       },
       4,
       {
          "m_Children": [],
-         "m_Parent": "3606670088632712813"
+         "m_Parent": "5718455617794962197"
       },
       5,
       {
          "m_Children": [],
-         "m_Parent": "3606670088632712813"
+         "m_Parent": "5718455617794962197"
       },
       6,
       {
          "m_Children": [],
-         "m_Parent": "3606670088632712813"
+         "m_Parent": "5718455617794962197"
       },
       7,
       {
          "m_Children": [
-            "12353540507394399989",
-            "5598311019067844027",
-            "4285137265463892304",
-            "14339263315956429040",
-            "16355293429545618625"
+            "3318818787030528030",
+            "12490591509248945045",
+            "16577052194640611237",
+            "17216937129475814638",
+            "4927155425282758955"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       8,
       {
          "m_Children": [],
-         "m_Parent": "12447117076492904197"
+         "m_Parent": "1198092999841427129"
       },
       9,
       {
          "m_Children": [],
-         "m_Parent": "12447117076492904197"
+         "m_Parent": "1198092999841427129"
       },
       10,
       {
          "m_Children": [],
-         "m_Parent": "12447117076492904197"
+         "m_Parent": "1198092999841427129"
       },
       11,
       {
          "m_Children": [],
-         "m_Parent": "12447117076492904197"
+         "m_Parent": "1198092999841427129"
       },
       12,
       {
          "m_Children": [],
-         "m_Parent": "12447117076492904197"
+         "m_Parent": "1198092999841427129"
       },
       13,
       {
          "m_Children": [
-            "13458942361176427496",
-            "2418999781308327897",
-            "14440627653468656490"
+            "15436273018285469567",
+            "9854780847782622634",
+            "8912272946241326267"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       14,
       {
          "m_Children": [],
-         "m_Parent": "12105338806779188574"
+         "m_Parent": "15906483031585498882"
       },
       15,
       {
          "m_Children": [],
-         "m_Parent": "12105338806779188574"
+         "m_Parent": "15906483031585498882"
       },
       16,
       {
          "m_Children": [],
-         "m_Parent": "12105338806779188574"
+         "m_Parent": "15906483031585498882"
       },
       17,
       {
          "m_Children": [
-            "8375892012510488239",
-            "16833736796103198350",
-            "16562191403951563790",
-            "5816034615619947548",
-            "5874050342207979755",
-            "9320125789311445596",
-            "15818305119270585253",
-            "14465250313056020000",
-            "13925759275657472696",
-            "1538050725390388491",
-            "17046265049409567563",
-            "9337040667461888224"
+            "14863424279705905833",
+            "1843890981968751550",
+            "15723956482782091356",
+            "12439913305532518006",
+            "2921821891971254353",
+            "6941667224151540873",
+            "7286903387517183404",
+            "10892389464433052555",
+            "10366189423529431612",
+            "15620956784935993267",
+            "14280951474755622024",
+            "13584707801348840151"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       18,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       19,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       20,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       21,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       22,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       23,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       24,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       25,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       26,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       27,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       28,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       29,
       {
          "m_Children": [],
-         "m_Parent": "1206295820721593531"
+         "m_Parent": "8404714645018116317"
       },
       30,
       {
          "m_Children": [
-            "16944389340776187387",
-            "12890320055499627028",
-            "16683900989055534375",
-            "4795452272197378627",
-            "9873739396350967029",
-            "15423212755567822878",
-            "1363088350033511976",
-            "13190459444684931033"
+            "970008558035043495",
+            "14524048881749381291",
+            "16405868274197800023",
+            "11490768603787724106",
+            "9102005095812360821",
+            "15124856755873468164",
+            "13341300148252545013",
+            "14426612200689363111"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       31,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       32,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       33,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       34,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       35,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       36,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       37,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       38,
       {
          "m_Children": [],
-         "m_Parent": "16460592120604682536"
+         "m_Parent": "9792284890704134965"
       },
       39,
       {
          "m_Children": [
-            "6272918574489786361",
-            "3580519676571055290",
-            "15106520698798816798",
-            "15527529331294812699"
+            "3674740897369268835",
+            "13924431202606585594",
+            "18026212590238232105",
+            "12293314221225098627"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       40,
       {
          "m_Children": [],
-         "m_Parent": "17297431458117421290"
+         "m_Parent": "6906527011264699013"
       },
       41,
       {
          "m_Children": [],
-         "m_Parent": "17297431458117421290"
+         "m_Parent": "6906527011264699013"
       },
       42,
       {
          "m_Children": [],
-         "m_Parent": "17297431458117421290"
+         "m_Parent": "6906527011264699013"
       },
       43,
       {
          "m_Children": [],
-         "m_Parent": "17297431458117421290"
+         "m_Parent": "6906527011264699013"
       },
       44,
       {
          "m_Children": [
-            "323662006459032899",
-            "10581067147368336166",
-            "15675807835421358998",
-            "13138819058539551279",
-            "7343721692509432108",
-            "18032489083436664383",
-            "6124553985493881187"
+            "12357937322414086871",
+            "11274589947694829593",
+            "6732215050136146942",
+            "10185879492328623726",
+            "9510775460782066794",
+            "17107404642788749756",
+            "11854422653490637506"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       45,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       46,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       47,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       48,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       49,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       50,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       51,
       {
          "m_Children": [],
-         "m_Parent": "11043500359933411386"
+         "m_Parent": "11513665259940456027"
       },
       52,
       {
          "m_Children": [
-            "6026625358991924493",
-            "13726441773498103630",
-            "15727937509576040248",
-            "2844690317817573"
+            "6360925564065880359",
+            "4276444924117008442",
+            "12901739171969005927",
+            "4594383407141370197"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       53,
       {
          "m_Children": [],
-         "m_Parent": "2534642724615662311"
+         "m_Parent": "25433429310813526"
       },
       54,
       {
          "m_Children": [],
-         "m_Parent": "2534642724615662311"
+         "m_Parent": "25433429310813526"
       },
       55,
       {
          "m_Children": [],
-         "m_Parent": "2534642724615662311"
+         "m_Parent": "25433429310813526"
       },
       56,
       {
          "m_Children": [],
-         "m_Parent": "2534642724615662311"
+         "m_Parent": "25433429310813526"
       },
       57,
       {
          "m_Children": [
-            "16252692293646613321"
+            "17880914806800934814"
          ],
-         "m_Parent": "9731284417358720131"
+         "m_Parent": "17613436365893019273"
       },
       58,
       {
          "m_Children": [],
-         "m_Parent": "7689404361022278443"
+         "m_Parent": "16701397578199448311"
       }
    ],
    [
@@ -907,413 +1142,413 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "9731284417358720131",
+         "m_GUID": "17613436365893019273",
          "m_Name": "Tutorial_Environment",
          "m_Tag": ""
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "3606670088632712813",
+         "m_GUID": "5718455617794962197",
          "m_Name": "Section_1",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "178151029318885165",
+         "m_GUID": "15440524379184077153",
          "m_Name": "Building_01",
          "m_Tag": ""
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "5800422096848418328",
+         "m_GUID": "2044379064315277592",
          "m_Name": "Tutorial_Floor_1",
          "m_Tag": ""
       },
       4,
       {
          "m_Active": true,
-         "m_GUID": "9375208710405151598",
+         "m_GUID": "2553018344439711662",
          "m_Name": "Tutorial_Building_03",
          "m_Tag": ""
       },
       5,
       {
          "m_Active": true,
-         "m_GUID": "4303852020550683033",
+         "m_GUID": "14411556947966382654",
          "m_Name": "Tutorial_Building_02",
          "m_Tag": ""
       },
       6,
       {
          "m_Active": true,
-         "m_GUID": "16940912884346509401",
+         "m_GUID": "17737244855426541853",
          "m_Name": "Tutorial_Building_04",
          "m_Tag": ""
       },
       7,
       {
          "m_Active": true,
-         "m_GUID": "12447117076492904197",
+         "m_GUID": "1198092999841427129",
          "m_Name": "Section_2",
          "m_Tag": ""
       },
       8,
       {
          "m_Active": true,
-         "m_GUID": "12353540507394399989",
+         "m_GUID": "3318818787030528030",
          "m_Name": "Tutorial_Building_05",
          "m_Tag": ""
       },
       9,
       {
          "m_Active": true,
-         "m_GUID": "5598311019067844027",
+         "m_GUID": "12490591509248945045",
          "m_Name": "Tutorial_Floor_2",
          "m_Tag": ""
       },
       10,
       {
          "m_Active": true,
-         "m_GUID": "4285137265463892304",
+         "m_GUID": "16577052194640611237",
          "m_Name": "Tutorial_Building_06",
          "m_Tag": ""
       },
       11,
       {
          "m_Active": true,
-         "m_GUID": "14339263315956429040",
+         "m_GUID": "17216937129475814638",
          "m_Name": "Tutorial_Building_07",
          "m_Tag": ""
       },
       12,
       {
          "m_Active": true,
-         "m_GUID": "16355293429545618625",
+         "m_GUID": "4927155425282758955",
          "m_Name": "Tutorial_Building_08",
          "m_Tag": ""
       },
       13,
       {
          "m_Active": true,
-         "m_GUID": "12105338806779188574",
+         "m_GUID": "15906483031585498882",
          "m_Name": "Section_3",
          "m_Tag": ""
       },
       14,
       {
          "m_Active": true,
-         "m_GUID": "13458942361176427496",
+         "m_GUID": "15436273018285469567",
          "m_Name": "Tutorial_Floor_3",
          "m_Tag": ""
       },
       15,
       {
          "m_Active": true,
-         "m_GUID": "2418999781308327897",
+         "m_GUID": "9854780847782622634",
          "m_Name": "Tutorial_Building_09",
          "m_Tag": ""
       },
       16,
       {
          "m_Active": true,
-         "m_GUID": "14440627653468656490",
+         "m_GUID": "8912272946241326267",
          "m_Name": "Tutorial_Building_10",
          "m_Tag": ""
       },
       17,
       {
          "m_Active": true,
-         "m_GUID": "1206295820721593531",
+         "m_GUID": "8404714645018116317",
          "m_Name": "Collider_Section_1",
          "m_Tag": ""
       },
       18,
       {
          "m_Active": true,
-         "m_GUID": "8375892012510488239",
+         "m_GUID": "14863424279705905833",
          "m_Name": "Collider_Building_01_1",
          "m_Tag": ""
       },
       19,
       {
          "m_Active": true,
-         "m_GUID": "16833736796103198350",
+         "m_GUID": "1843890981968751550",
          "m_Name": "Collider_Building_01_2",
          "m_Tag": ""
       },
       20,
       {
          "m_Active": true,
-         "m_GUID": "16562191403951563790",
+         "m_GUID": "15723956482782091356",
          "m_Name": "Collider_Building_02",
          "m_Tag": ""
       },
       21,
       {
          "m_Active": true,
-         "m_GUID": "5816034615619947548",
+         "m_GUID": "12439913305532518006",
          "m_Name": "Collider_Building_03",
          "m_Tag": ""
       },
       22,
       {
          "m_Active": true,
-         "m_GUID": "5874050342207979755",
+         "m_GUID": "2921821891971254353",
          "m_Name": "Collider_Building_04",
          "m_Tag": ""
       },
       23,
       {
          "m_Active": true,
-         "m_GUID": "9320125789311445596",
+         "m_GUID": "6941667224151540873",
          "m_Name": "Collider_Floor_01_4",
          "m_Tag": ""
       },
       24,
       {
          "m_Active": true,
-         "m_GUID": "15818305119270585253",
+         "m_GUID": "7286903387517183404",
          "m_Name": "Collider_Floor_01_2",
          "m_Tag": ""
       },
       25,
       {
          "m_Active": true,
-         "m_GUID": "14465250313056020000",
+         "m_GUID": "10892389464433052555",
          "m_Name": "Collider_Floor_01_3",
          "m_Tag": ""
       },
       26,
       {
          "m_Active": true,
-         "m_GUID": "13925759275657472696",
+         "m_GUID": "10366189423529431612",
          "m_Name": "Collider_Floor_01_1",
          "m_Tag": ""
       },
       27,
       {
          "m_Active": true,
-         "m_GUID": "1538050725390388491",
+         "m_GUID": "15620956784935993267",
          "m_Name": "Collider_Floor_01_5",
          "m_Tag": ""
       },
       28,
       {
          "m_Active": true,
-         "m_GUID": "17046265049409567563",
+         "m_GUID": "14280951474755622024",
          "m_Name": "Collider_Floor_01_6",
          "m_Tag": ""
       },
       29,
       {
          "m_Active": true,
-         "m_GUID": "9337040667461888224",
+         "m_GUID": "13584707801348840151",
          "m_Name": "Collider_Floor_01_7",
          "m_Tag": ""
       },
       30,
       {
          "m_Active": true,
-         "m_GUID": "16460592120604682536",
+         "m_GUID": "9792284890704134965",
          "m_Name": "Collider_Section_2",
          "m_Tag": ""
       },
       31,
       {
          "m_Active": true,
-         "m_GUID": "16944389340776187387",
+         "m_GUID": "970008558035043495",
          "m_Name": "Collider_Building_05",
          "m_Tag": ""
       },
       32,
       {
          "m_Active": true,
-         "m_GUID": "12890320055499627028",
+         "m_GUID": "14524048881749381291",
          "m_Name": "Collider_Building_06",
          "m_Tag": ""
       },
       33,
       {
          "m_Active": true,
-         "m_GUID": "16683900989055534375",
+         "m_GUID": "16405868274197800023",
          "m_Name": "Collider_Building_07",
          "m_Tag": ""
       },
       34,
       {
          "m_Active": true,
-         "m_GUID": "4795452272197378627",
+         "m_GUID": "11490768603787724106",
          "m_Name": "Collider_Building_08",
          "m_Tag": ""
       },
       35,
       {
          "m_Active": true,
-         "m_GUID": "9873739396350967029",
+         "m_GUID": "9102005095812360821",
          "m_Name": "Collider_Floor_02_1",
          "m_Tag": ""
       },
       36,
       {
          "m_Active": true,
-         "m_GUID": "15423212755567822878",
+         "m_GUID": "15124856755873468164",
          "m_Name": "Collider_Floor_02_2",
          "m_Tag": ""
       },
       37,
       {
          "m_Active": true,
-         "m_GUID": "1363088350033511976",
+         "m_GUID": "13341300148252545013",
          "m_Name": "Collider_Floor_02_3",
          "m_Tag": ""
       },
       38,
       {
          "m_Active": true,
-         "m_GUID": "13190459444684931033",
+         "m_GUID": "14426612200689363111",
          "m_Name": "Collider_Floor_02_4",
          "m_Tag": ""
       },
       39,
       {
          "m_Active": true,
-         "m_GUID": "17297431458117421290",
+         "m_GUID": "6906527011264699013",
          "m_Name": "Collider_Section_3",
          "m_Tag": ""
       },
       40,
       {
          "m_Active": true,
-         "m_GUID": "6272918574489786361",
+         "m_GUID": "3674740897369268835",
          "m_Name": "Collider_Building_09",
          "m_Tag": ""
       },
       41,
       {
          "m_Active": true,
-         "m_GUID": "3580519676571055290",
+         "m_GUID": "13924431202606585594",
          "m_Name": "Collider_Building_10_1",
          "m_Tag": ""
       },
       42,
       {
          "m_Active": true,
-         "m_GUID": "15106520698798816798",
+         "m_GUID": "18026212590238232105",
          "m_Name": "Collider_Building_10_2",
          "m_Tag": ""
       },
       43,
       {
          "m_Active": true,
-         "m_GUID": "15527529331294812699",
+         "m_GUID": "12293314221225098627",
          "m_Name": "Collider_Floor_03",
          "m_Tag": ""
       },
       44,
       {
          "m_Active": true,
-         "m_GUID": "11043500359933411386",
+         "m_GUID": "11513665259940456027",
          "m_Name": "Ground_Section_1",
          "m_Tag": ""
       },
       45,
       {
          "m_Active": true,
-         "m_GUID": "323662006459032899",
+         "m_GUID": "12357937322414086871",
          "m_Name": "Ground_Floor_01_1",
          "m_Tag": "Ground"
       },
       46,
       {
          "m_Active": true,
-         "m_GUID": "10581067147368336166",
+         "m_GUID": "11274589947694829593",
          "m_Name": "Ground_Floor_01_2",
          "m_Tag": "Ground"
       },
       47,
       {
          "m_Active": true,
-         "m_GUID": "15675807835421358998",
+         "m_GUID": "6732215050136146942",
          "m_Name": "Ground_Floor_01_3",
          "m_Tag": "Ground"
       },
       48,
       {
          "m_Active": true,
-         "m_GUID": "13138819058539551279",
+         "m_GUID": "10185879492328623726",
          "m_Name": "Ground_Floor_01_4",
          "m_Tag": "Ground"
       },
       49,
       {
          "m_Active": true,
-         "m_GUID": "7343721692509432108",
+         "m_GUID": "9510775460782066794",
          "m_Name": "Ground_Floor_01_5",
          "m_Tag": "Ground"
       },
       50,
       {
          "m_Active": true,
-         "m_GUID": "18032489083436664383",
+         "m_GUID": "17107404642788749756",
          "m_Name": "Ground_Floor_01_6",
          "m_Tag": "Ground"
       },
       51,
       {
          "m_Active": true,
-         "m_GUID": "6124553985493881187",
+         "m_GUID": "11854422653490637506",
          "m_Name": "Ground_Floor_01_7",
          "m_Tag": "Ground"
       },
       52,
       {
          "m_Active": true,
-         "m_GUID": "2534642724615662311",
+         "m_GUID": "25433429310813526",
          "m_Name": "Ground_Section_2",
          "m_Tag": ""
       },
       53,
       {
          "m_Active": true,
-         "m_GUID": "6026625358991924493",
+         "m_GUID": "6360925564065880359",
          "m_Name": "Ground_Floor_02_1",
          "m_Tag": "Ground"
       },
       54,
       {
          "m_Active": true,
-         "m_GUID": "13726441773498103630",
+         "m_GUID": "4276444924117008442",
          "m_Name": "Ground_Floor_02_2",
          "m_Tag": "Ground"
       },
       55,
       {
          "m_Active": true,
-         "m_GUID": "15727937509576040248",
+         "m_GUID": "12901739171969005927",
          "m_Name": "Ground_Floor_02_3",
          "m_Tag": "Ground"
       },
       56,
       {
          "m_Active": true,
-         "m_GUID": "2844690317817573",
+         "m_GUID": "4594383407141370197",
          "m_Name": "Ground_Floor_02_4",
          "m_Tag": "Ground"
       },
       57,
       {
          "m_Active": true,
-         "m_GUID": "7689404361022278443",
+         "m_GUID": "16701397578199448311",
          "m_Name": "Ground_Section_3",
          "m_Tag": ""
       },
       58,
       {
          "m_Active": true,
-         "m_GUID": "16252692293646613321",
+         "m_GUID": "17880914806800934814",
          "m_Name": "Ground_Floor_03",
          "m_Tag": "Ground"
       }
@@ -1341,9 +1576,9 @@
       1,
       {
          "m_Position": [
-            2.14288330078125,
-            -99.878173828125,
-            2063.99169921875
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -1359,9 +1594,9 @@
       2,
       {
          "m_Position": [
-            -17.215087890625,
-            11.289901733398438,
-            2019.6287841796875
+            -19.35797119140625,
+            0.0,
+            -44.362998962402344
          ],
          "m_Rotation": [
             0.0,
@@ -1377,9 +1612,9 @@
       3,
       {
          "m_Position": [
-            41.26275634765625,
-            -11.68914794921875,
-            2021.5098876953125
+            39.119873046875,
+            -25.0,
+            -42.4818115234375
          ],
          "m_Rotation": [
             0.0,
@@ -1395,9 +1630,9 @@
       4,
       {
          "m_Position": [
-            48.942413330078125,
-            8.494979858398438,
-            1992.5389404296875
+            46.799530029296875,
+            -4.828244209289551,
+            -71.4527587890625
          ],
          "m_Rotation": [
             0.0,
@@ -1413,9 +1648,9 @@
       5,
       {
          "m_Position": [
-            19.787322998046875,
-            10.789627075195313,
-            1994.751220703125
+            17.644439697265625,
+            -2.7082271575927734,
+            -69.240478515625
          ],
          "m_Rotation": [
             0.0,
@@ -1431,9 +1666,9 @@
       6,
       {
          "m_Position": [
-            78.10374450683594,
-            10.789627075195313,
-            1991.057373046875
+            75.96086120605469,
+            -2.5937891006469727,
+            -72.934326171875
          ],
          "m_Rotation": [
             0.0,
@@ -1449,9 +1684,9 @@
       7,
       {
          "m_Position": [
-            22.802001953125,
-            -99.878173828125,
-            2063.99169921875
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -1467,9 +1702,9 @@
       8,
       {
          "m_Position": [
-            81.45646667480469,
-            8.081527709960938,
-            1908.677734375
+            81.87959289550781,
+            -9.528620719909668,
+            -154.22866821289063
          ],
          "m_Rotation": [
             0.0,
@@ -1485,9 +1720,9 @@
       9,
       {
          "m_Position": [
-            90.28123474121094,
-            -11.957656860351563,
-            1867.7093505859375
+            92.36116027832031,
+            -29.398523330688477,
+            -196.2823486328125
          ],
          "m_Rotation": [
             0.0,
@@ -1503,9 +1738,9 @@
       10,
       {
          "m_Position": [
-            78.69065856933594,
-            10.242507934570313,
-            1881.193115234375
+            86.63916778564453,
+            -7.263805389404297,
+            -122.56329345703125
          ],
          "m_Rotation": [
             0.0,
@@ -1521,9 +1756,9 @@
       11,
       {
          "m_Position": [
-            71.83200073242188,
-            13.013717651367188,
-            1851.591796875
+            75.48324584960938,
+            -5.110716819763184,
+            -196.0181427001953
          ],
          "m_Rotation": [
             -180.0,
@@ -1539,9 +1774,9 @@
       12,
       {
          "m_Position": [
-            69.85382080078125,
-            9.994644165039063,
-            1792.6566162109375
+            75.56197357177734,
+            -4.237895965576172,
+            -242.3381805419922
          ],
          "m_Rotation": [
             0.0,
@@ -1557,9 +1792,9 @@
       13,
       {
          "m_Position": [
-            97.93254089355469,
-            -4.3208770751953125,
-            1713.95703125
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -1575,9 +1810,9 @@
       14,
       {
          "m_Position": [
-            77.66984558105469,
-            -15.426116943359375,
-            1696.3192138671875
+            83.52078247070313,
+            -29.37712860107422,
+            -370.7835998535156
          ],
          "m_Rotation": [
             0.0,
@@ -1593,9 +1828,9 @@
       15,
       {
          "m_Position": [
-            48.8863525390625,
-            6.3380126953125,
-            1727.2786865234375
+            54.011932373046875,
+            -8.356681823730469,
+            -341.1405029296875
          ],
          "m_Rotation": [
             0.0,
@@ -1611,9 +1846,9 @@
       16,
       {
          "m_Position": [
-            62.59065246582031,
-            5.8464508056640625,
-            1668.690673828125
+            76.45417785644531,
+            -8.988778114318848,
+            -399.1269836425781
          ],
          "m_Rotation": [
             0.0,
@@ -1631,7 +1866,7 @@
          "m_Position": [
             0.0,
             0.0,
-            1991.99755859375
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -1647,9 +1882,9 @@
       18,
       {
          "m_Position": [
-            -15.077667236328125,
-            14.928634643554688,
-            1999.58447265625
+            -17.197782516479492,
+            0.0,
+            -58.97856903076172
          ],
          "m_Rotation": [
             0.0,
@@ -1665,9 +1900,9 @@
       19,
       {
          "m_Position": [
-            -36.37614440917969,
-            14.928634643554688,
-            2026.6707763671875
+            -33.27740478515625,
+            1.4391822814941406,
+            -37.50384521484375
          ],
          "m_Rotation": [
             0.0,
@@ -1683,9 +1918,9 @@
       20,
       {
          "m_Position": [
-            19.458419799804688,
-            14.928634643554688,
-            1995.7725830078125
+            16.75212860107422,
+            1.0546936988830566,
+            -68.9561996459961
          ],
          "m_Rotation": [
             0.0,
@@ -1701,9 +1936,9 @@
       21,
       {
          "m_Position": [
-            49.191253662109375,
-            9.7911376953125,
-            1992.210205078125
+            46.9905891418457,
+            -3.7263026237487793,
+            -71.58952331542969
          ],
          "m_Rotation": [
             0.0,
@@ -1719,9 +1954,9 @@
       22,
       {
          "m_Position": [
-            77.53544616699219,
-            8.0162353515625,
-            1991.1905517578125
+            75.198974609375,
+            -5.891371250152588,
+            -72.89295959472656
          ],
          "m_Rotation": [
             0.0,
@@ -1737,9 +1972,9 @@
       23,
       {
          "m_Position": [
-            0.728668212890625,
-            -11.418266296386719,
-            2016.2294921875
+            -1.6698522567749023,
+            -25.233192443847656,
+            -47.655052185058594
          ],
          "m_Rotation": [
             0.0,
@@ -1755,9 +1990,9 @@
       24,
       {
          "m_Position": [
-            -32.4561767578125,
-            -11.510398864746094,
-            2035.7694091796875
+            -34.50763702392578,
+            -25.166645050048828,
+            -28.263826370239258
          ],
          "m_Rotation": [
             0.0,
@@ -1773,9 +2008,9 @@
       25,
       {
          "m_Position": [
-            17.190383911132813,
-            -11.351263046264648,
-            2035.7694091796875
+            14.958524703979492,
+            -25.23093032836914,
+            -28.239887237548828
          ],
          "m_Rotation": [
             0.0,
@@ -1791,9 +2026,9 @@
       26,
       {
          "m_Position": [
-            -7.52337646484375,
-            -13.570672988891602,
-            2045.8280029296875
+            -9.40927505493164,
+            -26.679706573486328,
+            -18.144805908203125
          ],
          "m_Rotation": [
             0.0,
@@ -1809,9 +2044,9 @@
       27,
       {
          "m_Position": [
-            48.96199035644531,
-            -14.11909008026123,
-            2023.1937255859375
+            46.99737548828125,
+            -28.155284881591797,
+            -42.167057037353516
          ],
          "m_Rotation": [
             0.0,
@@ -1827,9 +2062,9 @@
       28,
       {
          "m_Position": [
-            48.96199035644531,
-            -12.565131187438965,
-            2039.4761962890625
+            46.49822235107422,
+            -25.97081756591797,
+            -24.111736297607422
          ],
          "m_Rotation": [
             0.0,
@@ -1845,9 +2080,9 @@
       29,
       {
          "m_Position": [
-            97.40672302246094,
-            -11.409061431884766,
-            2009.9434814453125
+            95.18756866455078,
+            -25.3646297454834,
+            -54.053462982177734
          ],
          "m_Rotation": [
             0.0,
@@ -1865,7 +2100,7 @@
          "m_Position": [
             0.0,
             0.0,
-            1777.50830078125
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -1881,9 +2116,9 @@
       31,
       {
          "m_Position": [
-            80.03861999511719,
-            8.480560302734375,
-            1909.1116943359375
+            81.10015869140625,
+            -9.289260864257813,
+            -154.78530883789063
          ],
          "m_Rotation": [
             0.0,
@@ -1899,9 +2134,9 @@
       32,
       {
          "m_Position": [
-            81.09355163574219,
-            10.462799072265625,
-            1881.340576171875
+            86.39151763916016,
+            -9.058818817138672,
+            -122.19390869140625
          ],
          "m_Rotation": [
             0.0,
@@ -1917,9 +2152,9 @@
       33,
       {
          "m_Position": [
-            67.89254760742188,
-            12.121597290039063,
-            1852.23046875
+            73.09901428222656,
+            -7.676881790161133,
+            -196.8959503173828
          ],
          "m_Rotation": [
             0.0,
@@ -1935,9 +2170,9 @@
       34,
       {
          "m_Position": [
-            67.43136596679688,
-            12.511940002441406,
-            1792.7431640625
+            75.65283966064453,
+            -5.814753532409668,
+            -242.29551696777344
          ],
          "m_Rotation": [
             0.0,
@@ -1953,9 +2188,9 @@
       35,
       {
          "m_Position": [
-            100.69847106933594,
-            -11.905713081359863,
-            1945.805419921875
+            102.85104370117188,
+            -29.851438522338867,
+            -118.2157974243164
          ],
          "m_Rotation": [
             0.0,
@@ -1971,9 +2206,9 @@
       36,
       {
          "m_Position": [
-            108.091552734375,
-            -15.201791763305664,
-            1909.209228515625
+            109.42788696289063,
+            -32.670372009277344,
+            -154.31719970703125
          ],
          "m_Rotation": [
             0.0,
@@ -1989,9 +2224,9 @@
       37,
       {
          "m_Position": [
-            124.5262451171875,
-            -12.817968368530273,
-            1909.26904296875
+            126.54615020751953,
+            -30.539188385009766,
+            -154.89601135253906
          ],
          "m_Rotation": [
             0.0,
@@ -2007,9 +2242,9 @@
       38,
       {
          "m_Position": [
-            89.62004089355469,
-            -11.739251136779785,
-            1830.724853515625
+            91.8765869140625,
+            -29.761768341064453,
+            -233.7569122314453
          ],
          "m_Rotation": [
             0.0,
@@ -2027,7 +2262,7 @@
          "m_Position": [
             0.0,
             0.0,
-            1802.8648681640625
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -2043,9 +2278,9 @@
       40,
       {
          "m_Position": [
-            41.71452331542969,
-            8.504180908203125,
-            1728.3134765625
+            51.07484436035156,
+            -10.014847755432129,
+            -340.6893005371094
          ],
          "m_Rotation": [
             0.0,
@@ -2061,9 +2296,9 @@
       41,
       {
          "m_Position": [
-            42.46455383300781,
-            8.504180908203125,
-            1669.06005859375
+            56.44200897216797,
+            -14.148488998413086,
+            -399.0282897949219
          ],
          "m_Rotation": [
             0.0,
@@ -2079,9 +2314,9 @@
       42,
       {
          "m_Position": [
-            68.66337585449219,
-            8.504180908203125,
-            1660.4227294921875
+            82.52577209472656,
+            -11.323266983032227,
+            -407.5658874511719
          ],
          "m_Rotation": [
             0.0,
@@ -2097,9 +2332,9 @@
       43,
       {
          "m_Position": [
-            84.29600524902344,
-            -15.248916625976563,
-            1695.93359375
+            90.50547790527344,
+            -29.170263290405273,
+            -371.02154541015625
          ],
          "m_Rotation": [
             0.0,
@@ -2116,8 +2351,8 @@
       {
          "m_Position": [
             0.0,
-            0.0,
-            1586.8587646484375
+            70.42778778076172,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -2133,9 +2368,9 @@
       45,
       {
          "m_Position": [
-            -7.52337646484375,
-            -10.272647857666016,
-            2045.828125
+            -9.50594425201416,
+            -23.20592498779297,
+            -18.117321014404297
          ],
          "m_Rotation": [
             0.0,
@@ -2151,9 +2386,9 @@
       46,
       {
          "m_Position": [
-            -32.4561767578125,
-            -7.226665496826172,
-            2035.76953125
+            -34.47513961791992,
+            -20.73990821838379,
+            -28.1364803314209
          ],
          "m_Rotation": [
             0.0,
@@ -2169,9 +2404,9 @@
       47,
       {
          "m_Position": [
-            17.190383911132813,
-            -7.125796794891357,
-            2035.76953125
+            15.012386322021484,
+            -20.647537231445313,
+            -28.38872528076172
          ],
          "m_Rotation": [
             0.0,
@@ -2187,9 +2422,9 @@
       48,
       {
          "m_Position": [
-            0.728668212890625,
-            -7.195072650909424,
-            2016.2294921875
+            -1.4005661010742188,
+            -20.60181427001953,
+            -47.74810791015625
          ],
          "m_Rotation": [
             0.0,
@@ -2205,9 +2440,9 @@
       49,
       {
          "m_Position": [
-            48.96199035644531,
-            -12.378437042236328,
-            2023.19384765625
+            47.03996276855469,
+            -25.772294998168945,
+            -42.240272521972656
          ],
          "m_Rotation": [
             0.0,
@@ -2223,9 +2458,9 @@
       50,
       {
          "m_Position": [
-            48.96199035644531,
-            -9.888773918151855,
-            2039.476318359375
+            46.72267532348633,
+            -23.426862716674805,
+            -24.322233200073242
          ],
          "m_Rotation": [
             0.0,
@@ -2241,9 +2476,9 @@
       51,
       {
          "m_Position": [
-            97.40672302246094,
-            -7.165446758270264,
-            2009.943603515625
+            95.42931365966797,
+            -20.81413459777832,
+            -54.009117126464844
          ],
          "m_Rotation": [
             0.0,
@@ -2261,7 +2496,7 @@
          "m_Position": [
             0.0,
             0.0,
-            860.9467163085938
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -2277,9 +2512,9 @@
       53,
       {
          "m_Position": [
-            100.69847106933594,
-            -7.680351257324219,
-            1945.805419921875
+            102.79549407958984,
+            -25.041458129882813,
+            -117.91740417480469
          ],
          "m_Rotation": [
             0.0,
@@ -2296,8 +2531,8 @@
       {
          "m_Position": [
             108.091552734375,
-            -12.517377853393555,
-            1909.209228515625
+            -29.810209274291992,
+            -154.6573028564453
          ],
          "m_Rotation": [
             0.0,
@@ -2313,9 +2548,9 @@
       55,
       {
          "m_Position": [
-            124.5262451171875,
-            -10.145755767822266,
-            1909.26904296875
+            126.5419692993164,
+            -27.34171485900879,
+            -154.0459442138672
          ],
          "m_Rotation": [
             0.0,
@@ -2331,9 +2566,9 @@
       56,
       {
          "m_Position": [
-            89.62004089355469,
-            -7.643385887145996,
-            1830.7249755859375
+            91.78043365478516,
+            -25.023448944091797,
+            -233.91064453125
          ],
          "m_Rotation": [
             0.0,
@@ -2355,7 +2590,7 @@
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -2367,9 +2602,9 @@
       58,
       {
          "m_Position": [
-            84.29600524902344,
-            -11.127968788146973,
-            1695.93359375
+            90.55948638916016,
+            -24.808935165405273,
+            -371.43109130859375
          ],
          "m_Rotation": [
             0.0,
@@ -2688,7 +2923,7 @@
       34,
       {
          "m_HalfExtents": [
-            9.0,
+            12.0,
             20.0,
             21.0
          ],
