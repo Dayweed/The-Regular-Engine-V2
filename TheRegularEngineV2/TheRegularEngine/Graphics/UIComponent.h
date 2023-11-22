@@ -20,6 +20,7 @@ namespace TRE
 		int m_Width = 1;
 		int m_Height = 1;
 		std::shared_ptr<Material> m_Material; //Should be removed and batched in future
+		int m_RenderLayer = 0;
 
 		property_vtable()
 
@@ -34,7 +35,8 @@ namespace TRE
 				{ "m_IsVisible", t.m_IsVisible },
 				{ "Color", StoredColor },
 				{ "Width", t.m_Width },
-				{ "Height", t.m_Height }
+				{ "Height", t.m_Height }, 
+				{ "RenderLayer", t.m_RenderLayer }
 			};
 		}
 
@@ -86,6 +88,10 @@ namespace TRE
 			{
 				t.m_Height = j.at("Height").get<int>();
 			}
+			if (j.contains("RenderLayer"))
+			{
+				t.m_RenderLayer = j.at("RenderLayer").get<int>();
+			}
 		}
 	};
 }
@@ -123,6 +129,7 @@ property_begin(TRE::UIComponent)
 		}
 	} property_var_fnend(),
 	property_var(m_Width),
-	property_var(m_Height)
+	property_var(m_Height),
+	property_var(m_RenderLayer)
 
 } property_vend_h(TRE::UIComponent)

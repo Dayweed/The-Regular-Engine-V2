@@ -43,14 +43,13 @@ namespace TRE
 				BoneVertices[x].m_BoneWeights = geom->pBone[x].m_BoneWeights;
 			}
 			m_BoneVertexBuffer = std::make_unique<VertexBuffer>((void*)BoneVertices.data(), BoneVertices.size() * sizeof(BoneVertex));
+
+			m_Animations = geom->m_Animation;
+			m_Skeleton = geom->m_Skeleton;
+			m_AnimationPlayer = AnimationPlayer(m_Skeleton, m_Animations);
 		}
 
 		m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()), UINT32_T_CAST(vertices.size() * sizeof(Vertex)));
-
-		m_Animations = geom->m_Animation;
-		m_Skeleton = geom->m_Skeleton;
-
-		m_AnimationPlayer = AnimationPlayer(m_Skeleton, m_Animations);
 
 		if (!indices.empty())
 		{
@@ -159,8 +158,11 @@ namespace TRE
 
 	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W)
 	{
-		m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
-		m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W);
+		if (m_AnimationPlayer.m_Animations.size() != 0)
+		{
+			m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+			m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W);
+		}
 	}
 
 	void AnimationPlayer::Update(float DT)

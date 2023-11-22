@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "Device.h"
 #include "UniformBuffer.h"
 #include "Pipeline.h"
@@ -10,6 +11,9 @@
 
 namespace TRE
 {
+	class Ent;
+	typedef std::shared_ptr<Ent> Entity;
+
 	struct UIVertex
 	{
 		glm::vec3 Position;
@@ -45,5 +49,6 @@ namespace TRE
 		private:
 			std::shared_ptr<VertexBuffer> m_TestVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_TestIndexBuffer;
+			std::vector<std::pair<int, Entity>> m_UIEntities;
 	};
 }

@@ -283,8 +283,9 @@ namespace TRE
 			if (!MRComp.m_IsVisible)
 				continue;
 
-			//MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, glm::identity<glm::mat4>());
-			AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
+			if (AnimComp.m_IsAnimating)
+				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
+
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
 	}
@@ -365,13 +366,6 @@ namespace TRE
 			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
 			if (!MRComp.m_IsVisible)
 				continue;
-
-			if (AnimComp.m_IsAnimating)
-				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
-
-
-			AnimComp.m_BufferData.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
-			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
 	}
 
@@ -519,7 +513,9 @@ namespace TRE
 
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 
-
+			PushConstant pc{};
+			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 			if (MeshRendererComp.m_MaterialInstance == nullptr)
 			{
@@ -532,12 +528,12 @@ namespace TRE
 
 				if (m_IsEditorScene)
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetDescriptor(Index), 0, NULL);
 				}
 			}
@@ -545,12 +541,12 @@ namespace TRE
 			{
 				if (m_IsEditorScene)
 				{
-					MeshRendererComp.m_MaterialInstance->UpdateForEditorSceneRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					MeshRendererComp.m_MaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					MeshRendererComp.m_MaterialInstance->UpdateForRendering(AnimationComp.m_UBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+					MeshRendererComp.m_MaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}

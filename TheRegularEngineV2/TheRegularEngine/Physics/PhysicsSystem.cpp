@@ -953,6 +953,21 @@ namespace TRE
 		const auto xform = PxTransform(VEC3_CAST(PxVec3, transform.m_Position + offset), PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
 
 		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(xform);
+
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+
+		if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+		{
+			entity->GetComponent<SphereCollider>().m_Offset = offset;
+		}
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+		{
+			entity->GetComponent<BoxCollider>().m_Offset = offset;
+		}
+		if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+		{
+			entity->GetComponent<CapsuleCollider>().m_Offset = offset;
+		}
 	}
 }
 
