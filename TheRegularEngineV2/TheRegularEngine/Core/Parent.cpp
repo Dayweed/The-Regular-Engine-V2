@@ -190,12 +190,13 @@ namespace TRE
 	void ParentingSystem::UpdateChildTransform(Entity parent)
 	{
 		Transform& parentTransform = parent->GetComponent<Transform>();
+		parentTransform.CalculateWorldMatrix();
 		for (Entity& child : GetChildren(parent))
 		{
 			Transform& childTransform = child->GetComponent<Transform>();
 			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
-			//childTransform.m_IsDirty = true;
+			UpdateChildLocalData(parent, child);
 
 			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{
