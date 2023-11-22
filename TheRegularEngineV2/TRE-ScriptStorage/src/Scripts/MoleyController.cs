@@ -233,11 +233,7 @@ namespace TRE
 
 				if (InputSystem.GetKeyTrigger(InputKeys.Space))
 				{
-					if (ECSManager.IsValidEntity(jumpSFX))
-					{
-						AudioSystem.Play(jumpSFX
-							);
-					}
+					
 					isWalking = false;
 
 					if (isGrounded)
@@ -247,11 +243,19 @@ namespace TRE
 						{
                             vec3 maxHeight = new vec3(0, 150, 0);
 							Jump(maxHeight);
+							if (ECSManager.IsValidEntity(jumpSFX))
+							{
+								AudioSystem.Play(jumpSFX);
+							}
 						}
 						else
 						{
                             vec3 maxHeight = new vec3(0, 70, 0);
 							Jump(maxHeight);
+							if (ECSManager.IsValidEntity(jumpSFX))
+							{
+								AudioSystem.Play(jumpSFX);
+							}
 						}
 					}
 				}
