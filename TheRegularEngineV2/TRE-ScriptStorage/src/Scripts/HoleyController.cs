@@ -41,7 +41,7 @@ namespace TRE
 		//Capsule Collider
 		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
-		private bool isScaled = false;
+		public bool isScaled = false;
 		private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 4.8f;
 		private float strawberrysuperRadius = 2.4f;
@@ -72,6 +72,11 @@ namespace TRE
 		private float InvulBlinkCurrent = 0.1f;
 		private float InvulBlinkPeriod = 0.1f;
 
+		private ulong walkingSFX;
+		private ulong jumpSFX;
+		private ulong changesizeSFX;
+		private ulong normalsizeSFX;
+
 		//Transfrom Component
 		private Transform holeyTransform;
 
@@ -92,6 +97,11 @@ namespace TRE
 			InitialPosition = holeyTransform.Position;
 			OutofMapPos = holeyTransform.Position;
 			OutofMapPos.y = holeyTransform.Position.y - 5.0f;
+
+			walkingSFX = ECSManager.FindIDFromName("SFX_HoleyFootsteps");
+			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
+			changesizeSFX = ECSManager.FindIDFromName("SFX_Tall");
+			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 		}
 
 		public void Update()
@@ -201,9 +211,9 @@ namespace TRE
 
 				if (InputSystem.GetKeyTrigger(InputKeys.Enter))
 				{
-					if (ECSManager.IsValidEntity(6503599471310675157))
+					if (ECSManager.IsValidEntity(jumpSFX))
 					{
-						AudioSystem.Play(6503599471310675157);
+						AudioSystem.Play(jumpSFX);
 					}
 					isWalking = false;
 
@@ -240,24 +250,21 @@ namespace TRE
 				isWalking = false;
 			}
 
-			if (ECSManager.IsValidEntity(12597375607403829379))
+			if (ECSManager.IsValidEntity(walkingSFX))
 			{
 				if (isWalking && walkingSFXPlayed == false)
 				{
-					AudioSystem.Play(12597375607403829379);
+					AudioSystem.Play(walkingSFX);
 					walkingSFXPlayed = true;
 				}
 
 				if (!isWalking || !isGrounded)
 				{
-					AudioSystem.Stop(12597375607403829379);
+					AudioSystem.Stop(walkingSFX);
 					walkingSFXPlayed = false;
 				}
 			}
 
-
-			//Debug.Log("Audio:" + AudioSystem.GetIsPlaying(15348080909718226430));
-			//Debug.Log("isWalking: " + isWalking);
 
 			#endregion
 
@@ -280,10 +287,7 @@ namespace TRE
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
-				if (ECSManager.IsValidEntity(8534116593687196231))
-				{
-					AudioSystem.Play(8534116593687196231);
-				}
+				
 			}
 
 			#endregion
@@ -304,16 +308,16 @@ namespace TRE
 					isScaled = !isScaled;
 					if (isScaled)
 					{
-						if (ECSManager.IsValidEntity(16494487554086442885))
+						if (ECSManager.IsValidEntity(changesizeSFX))
 						{
-							AudioSystem.Play(16494487554086442885);
+							AudioSystem.Play(changesizeSFX);
 						}
 					}
 					else
 					{
-						if (ECSManager.IsValidEntity(1721643561669291303))
+						if (ECSManager.IsValidEntity(normalsizeSFX))
 						{
-							AudioSystem.Play(1721643561669291303);
+							AudioSystem.Play(normalsizeSFX);
 						}
 					}
 				}
@@ -420,8 +424,9 @@ namespace TRE
 				}
             }
             if (other.CompareTag("Ground") || other.CompareTag("Platform")
-                || other.CompareTag("Red") || other.CompareTag("RedCollider"))
-			{
+                || other.CompareTag("Blue") || other.CompareTag("BlueCollider")
+				|| other.CompareTag("LeftCactus") || other.CompareTag("RightCactus"))
+            {
 				isGrounded = true;
 			}
 		}
