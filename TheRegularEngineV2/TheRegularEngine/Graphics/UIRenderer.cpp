@@ -75,6 +75,16 @@ namespace TRE
 
 		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
 
+		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
+		{
+			UIComponent UIComp = Entity->GetComponent<UIComponent>();
+
+			if (m_UIEntities.contains(UIComp.m_RenderLayer))
+				continue;
+
+			m_UIEntities[UIComp.m_RenderLayer] = Entity;
+		}
+
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -101,7 +111,7 @@ namespace TRE
 		vkCmdSetScissor(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		Renderer::BindPipeline(CommandBuffer, m_UIPipeline);
-		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
+		for (auto [RenderLayer, Entity] : m_UIEntities)
 		{
 			auto& UIComp = Entity->GetComponent<UIComponent>();
 			if (!UIComp.m_IsVisible || !UIComp.m_Texture || !UIComp.m_Material)
