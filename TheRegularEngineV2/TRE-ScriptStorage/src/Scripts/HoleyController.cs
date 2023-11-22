@@ -17,7 +17,6 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
-
         //Check if player is boosted jump
         public bool isBoostedJump = false;
 		//Check if player is on the ground
@@ -107,6 +106,8 @@ namespace TRE
 			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Tall");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
+
+			RespawnPoint = holeyTransform.Position;
 		}
 
 		public void Update()
@@ -495,7 +496,8 @@ namespace TRE
 		private void Respawn() 
 		{
 			holeyTransform.Position = RespawnPoint;
-		}
+            Invulnerability = true;
+        }
 
 		public void SetRespawnPoint(vec3 position)
         {
