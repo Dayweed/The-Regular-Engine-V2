@@ -116,6 +116,8 @@ namespace TRE
 			OutofMapPos = InitialPos;
 			OutofMapPos.y = InitialPos.y - 5.0f;
 
+			
+
 			moleyTransform = GetComponent<Transform>();
 
 			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
@@ -123,6 +125,8 @@ namespace TRE
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			droppowerupSFX = ECSManager.FindIDFromName("SFX_DropPowerUp");
+
+            RespawnPoint = moleyTransform.Position;
 
 		}
 
@@ -523,6 +527,7 @@ namespace TRE
         private void Respawn()
         {
             moleyTransform.Position = RespawnPoint;
+            Invulnerability = true;
         }
 
         public void SetRespawnPoint(vec3 pos)
