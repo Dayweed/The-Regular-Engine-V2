@@ -3,7 +3,7 @@
 
 namespace TRE
 {
-	void AssetManager::Initialize()
+	void AssetManager::Poll()
 	{
 		//Go throught assets folder and link assetname to asset handle based on available descriptor files
 		std::filesystem::path assetsPath = "../Assets";

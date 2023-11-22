@@ -18,7 +18,7 @@ namespace TRE
 			return instance;
 		}
 
-		void Initialize();
+		void Poll();
 		void Shutdown();
 
 		//Use for drag and drop
