@@ -454,7 +454,8 @@ namespace TRE
 			}
 			//For jumping
 			if (other.CompareTag("Ground") || other.CompareTag("Platform")
-				|| other.CompareTag("Blue") || other.CompareTag("BlueCollider"))
+				|| other.CompareTag("Blue") || other.CompareTag("BlueCollider")
+				|| other.CompareTag("LeftCactus")|| other.CompareTag("RightCactus"))
 			{
 				isGrounded = true;
 			}

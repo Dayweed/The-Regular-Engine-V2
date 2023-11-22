@@ -41,7 +41,7 @@ namespace TRE
 		//Capsule Collider
 		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
-		private bool isScaled = false;
+		public bool isScaled = false;
 		private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 4.8f;
 		private float strawberrysuperRadius = 2.4f;
@@ -424,8 +424,9 @@ namespace TRE
 				}
             }
             if (other.CompareTag("Ground") || other.CompareTag("Platform")
-                || other.CompareTag("Red") || other.CompareTag("RedCollider"))
-			{
+                || other.CompareTag("Blue") || other.CompareTag("BlueCollider")
+				|| other.CompareTag("LeftCactus") || other.CompareTag("RightCactus"))
+            {
 				isGrounded = true;
 			}
 		}

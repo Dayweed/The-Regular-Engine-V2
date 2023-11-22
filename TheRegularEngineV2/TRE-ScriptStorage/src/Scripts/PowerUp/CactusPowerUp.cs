@@ -16,10 +16,9 @@ namespace TRE
         //Scaling variables
         private float lerpSpeed = 5f;
         private vec3 defaultScale = new vec3(0f, 0f, 0f);
-        private vec3 leftScale = new vec3(0f, 0f, 0f);          // ROYCE CHANGE VALUES HERE
-        private vec3 rightScale = new vec3(0f, 0f, 0f);         // ROYCE CHANGE VALUES HERE
+        private vec3 leftScale = new vec3(2f, 4f, 2f);          // ROYCE CHANGE VALUES HERE
+        private vec3 rightScale = new vec3(2f, 2f, 2f);         // ROYCE CHANGE VALUES HERE
         private vec3 currScale = new vec3(0f, 0f, 0f);
-
 
         private void SetToPlayer()
         {
@@ -42,35 +41,27 @@ namespace TRE
         {
             if (this.CompareTag(rightCactus))
             {
-                if(currScale.x == 0f)
+                if(playerObj.GetComponent<HoleyController>().isScaled == false || !playerObj.GetComponent<HoleyController>().mainStrawberry)
                 {
-                    MathF.Lerp(currScale.x, rightScale.x, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.y, rightScale.y, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.z, rightScale.z, lerpSpeed * Time.deltaTime);
+                    currScale = MathF.Vec3Lerp(currScale, defaultScale, lerpSpeed * Time.deltaTime);
                     PhysicsSystem.ResizeBoxCollider(this.ID, currScale);
                 }
-                else if(currScale.x > 0f)
+                else if (playerObj.GetComponent<HoleyController>().mainStrawberry)
                 {
-                    MathF.Lerp(currScale.x, defaultScale.x, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.y, defaultScale.y, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.z, defaultScale.z, lerpSpeed * Time.deltaTime);
+                    currScale = MathF.Vec3Lerp(currScale, rightScale, lerpSpeed * Time.deltaTime);
                     PhysicsSystem.ResizeBoxCollider(this.ID, currScale);
                 }
             } 
             else if (this.CompareTag(leftCactus))
             {
-                if(currScale.x == 0f)
+                if (playerObj.GetComponent<HoleyController>().isScaled == false || !playerObj.GetComponent<HoleyController>().mainStrawberry)
                 {
-                    MathF.Lerp(currScale.x, leftScale.x, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.y, leftScale.y, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.z, leftScale.z, lerpSpeed * Time.deltaTime);
+                    currScale = MathF.Vec3Lerp(currScale, defaultScale, lerpSpeed * Time.deltaTime);
                     PhysicsSystem.ResizeBoxCollider(this.ID, currScale);
                 }
-                else if(currScale.x > 0f)
+                else if (playerObj.GetComponent<HoleyController>().mainStrawberry)
                 {
-                    MathF.Lerp(currScale.x, defaultScale.x, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.y, defaultScale.y, lerpSpeed * Time.deltaTime);
-                    MathF.Lerp(currScale.z, defaultScale.z, lerpSpeed * Time.deltaTime);
+                    currScale = MathF.Vec3Lerp(currScale, leftScale, lerpSpeed * Time.deltaTime);
                     PhysicsSystem.ResizeBoxCollider(this.ID, currScale);
                 }
             }
@@ -86,6 +77,7 @@ namespace TRE
             // set to Holey's position
             SetToPlayer();
             //Check if Holey has strawberry then allow scaling
+            ScaleChange();
         }
     }
 }
