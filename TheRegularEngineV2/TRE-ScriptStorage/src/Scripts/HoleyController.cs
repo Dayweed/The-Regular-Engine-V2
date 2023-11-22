@@ -424,12 +424,12 @@ namespace TRE
                     PS.SetLinearVelocity(this.ID, finalVelocity);
                 }
             }
-            else if (dirVec.x == 0 && dirVec.z == 0)
+            /*else if (dirVec.x == 0 && dirVec.z == 0)
             {
                 // If no input, slow down
                 finalVelocity = currVelocity * 0.9f;
                 PS.SetLinearVelocity(this.ID, finalVelocity);
-            }
+            }*/
 
             holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
