@@ -20,7 +20,7 @@ namespace TRE
 
         public void Update()
         {
-            if (InputSystem.GetKeyTrigger(InputKeys.Space))
+            if (InputSystem.GetKeyTrigger(InputKeys.Space) && InputSystem.GetKeyTrigger(InputKeys.Enter))
             {
                 Scene.ChangeScene(TutorialSceneName);
             }
