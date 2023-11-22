@@ -44,10 +44,10 @@ namespace TRE
             Entity other = new Entity(otherID);
 
             // Check is interacted with moles players
-            if ((EngineCompareTag(ID, "TriggerMoleyStrawberry") && EngineGetTag(otherID) == "Red" && other.HasComponent<MoleyController>() && other.GetComponent<MoleyController>().isScaled && other.GetComponent<MoleyController>().mainStrawberry)
-             || (EngineCompareTag(ID, "TriggerMoleyBlueberry") && EngineGetTag(otherID) == "Red" && other.HasComponent<MoleyController>() && other.GetComponent<MoleyController>().isScaled && other.GetComponent<MoleyController>().mainBlueberry)
-             || (EngineCompareTag(ID, "TriggerHoleyStrawberry") && EngineGetTag(otherID) == "Blue" && other.HasComponent<HoleyController>() && other.GetComponent<HoleyController>().isScaled && other.GetComponent<HoleyController>().mainStrawberry)
-             || (EngineCompareTag(ID, "TriggerHoleyBlueberry") && EngineGetTag(otherID) == "Blue" && other.HasComponent<HoleyController>() && other.GetComponent<HoleyController>().isScaled && other.GetComponent<HoleyController>().mainBlueberry))
+            if ((EngineCompareTag(ID, "TriggerMoleyStrawberry") && EngineGetTag(otherID) == "Red" && other.GetComponent<MoleyController>().isScaled && other.GetComponent<MoleyController>().mainStrawberry)
+             || (EngineCompareTag(ID, "TriggerMoleyBlueberry") && EngineGetTag(otherID) == "Red" && other.GetComponent<MoleyController>().isScaled && other.GetComponent<MoleyController>().mainBlueberry)
+             || (EngineCompareTag(ID, "TriggerHoleyStrawberry") && EngineGetTag(otherID) == "Blue" && other.GetComponent<HoleyController>().isScaled && other.GetComponent<HoleyController>().mainStrawberry)
+             || (EngineCompareTag(ID, "TriggerHoleyBlueberry") && EngineGetTag(otherID) == "Blue" && other.GetComponent<HoleyController>().isScaled && other.GetComponent<HoleyController>().mainBlueberry))
             {
                 isHit = false;
                 triggerDisplay.CheckTrigger();
