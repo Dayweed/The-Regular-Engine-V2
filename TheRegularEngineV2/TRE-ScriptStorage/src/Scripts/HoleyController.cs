@@ -436,6 +436,12 @@ namespace TRE
                     }
                 }
             }
+            else
+            {
+                // If no input, slow down
+                finalVelocity = currVelocity * 0.9f;
+                PS.SetLinearVelocity(this.ID, finalVelocity);
+            }
 
             holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
