@@ -379,14 +379,14 @@ namespace TRE
 				dirVec = dirVec.Normalized;
 
 				//Walking animation
-				//if (GetComponent<MeshRenderer>().Mesh != "38f15a6260750456")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "38f15a6260750456";
-				//	//if (HasComponent<Animation>() == false)
-				//	//{
-				//	//	AddComponent<Animation>();
-				//	//}
-				//}	
+				if (GetComponent<MeshRenderer>().Mesh != "7c45522179c4a49c")
+				{
+					GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
+					if (HasComponent<Animation>() == false)
+					{
+						AddComponent<Animation>();
+					}
+				}
 			}
 			else
 			{

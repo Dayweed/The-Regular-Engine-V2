@@ -275,19 +275,7 @@ namespace TRE
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 
-		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
-		{
-			const auto& TransformComp = Entity->GetComponent<Transform>();
-			auto& MRComp = Entity->GetComponent<MeshRenderer>();
-			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
-			if (!MRComp.m_IsVisible)
-				continue;
 
-			if (AnimComp.m_IsAnimating)
-				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
-
-			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
-		}
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -371,6 +359,20 @@ namespace TRE
 
 	void SceneRenderer::EndFrame()
 	{
+		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
+		{
+			const auto& TransformComp = Entity->GetComponent<Transform>();
+			auto& MRComp = Entity->GetComponent<MeshRenderer>();
+			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			if (!MRComp.m_IsVisible)
+				continue;
+
+			if (AnimComp.m_IsAnimating)
+				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
+
+			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
+		}
+
 		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
 
