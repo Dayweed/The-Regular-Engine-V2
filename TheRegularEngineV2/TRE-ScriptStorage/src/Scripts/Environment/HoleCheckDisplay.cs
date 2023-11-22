@@ -31,11 +31,11 @@ namespace TRE
                     Debug.LogError("Child (" + i + ") is invalid!");
                     return;
                 }
-                if (!trigger.CompareTag("Trigger"))
-                {
-                    Debug.LogError("Child (" + i + ") [" + trigger.name + "] Tag must be [Trigger]!");
-                    return;
-                }
+                //if (!trigger.CompareTag("Trigger"))
+                //{
+                //    Debug.LogError("Child (" + i + ") [" + trigger.name + "] Tag must be [Trigger]!");
+                //    return;
+                //}
                 if (trigger.GetComponent<HoleCheckTrigger>() == null)
                 {
                     Debug.LogError("Child (" + i + ") [" + trigger.name + "] HoleCheckTrigger");

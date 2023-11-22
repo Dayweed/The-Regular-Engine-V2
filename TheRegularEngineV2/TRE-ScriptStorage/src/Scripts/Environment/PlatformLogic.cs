@@ -111,12 +111,11 @@ namespace TRE
 				{
 					transform.Position += normDir * moveSpeed * Time.deltaTime;
 					// Move to next index, if it is very close to the ideal position
-					if (transform.Position.x >= positions[currentIndex].x - offset && transform.Position.x <= positions[currentIndex].x + offset
-						&& transform.Position.y >= positions[currentIndex].y - offset && transform.Position.y <= positions[currentIndex].y + offset
-						&& transform.Position.z >= positions[currentIndex].z - offset && transform.Position.z <= positions[currentIndex].z + offset)
+					if (IsNearPosition(positions[currentIndex]))
 					{
 						++currentIndex;
 						if (currentIndex >= positions.Length) currentIndex = 0;
+						transform.Position = positions[currentIndex];
                         currentTime = delay;
                     }
 				}
@@ -127,7 +126,7 @@ namespace TRE
 			}
 		}
 
-		private void OnCollisionStay(System.UInt64 otherID)
+		public void OnCollisionStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			//if on the platform unchild it
@@ -135,6 +134,29 @@ namespace TRE
 			{
 				other.GetComponent<Transform>().Position += transform.Position - oldPosition;
 			}
+		}
+
+		private bool IsNearPosition(vec3 targetPosition)
+		{
+            vec3 minusOffset = targetPosition - offset;
+            vec3 plusOffset = targetPosition + offset;
+
+			vec3 minOffset = new vec3(
+				(minusOffset.x < plusOffset.x) ? minusOffset.x : plusOffset.x,
+				(minusOffset.y < plusOffset.y) ? minusOffset.y : plusOffset.y,
+				(minusOffset.z < plusOffset.z) ? minusOffset.z : plusOffset.z
+                );
+
+			vec3 maxOffset = new vec3(
+				(minusOffset.x > plusOffset.x) ? minusOffset.x : plusOffset.x,
+				(minusOffset.y > plusOffset.y) ? minusOffset.y : plusOffset.y,
+				(minusOffset.z > plusOffset.z) ? minusOffset.z : plusOffset.z
+                );
+
+
+            return transform.Position.x >= minOffset.x && transform.Position.x <= maxOffset.x
+                && transform.Position.y >= minOffset.y && transform.Position.y <= maxOffset.y
+                && transform.Position.z >= minOffset.z && transform.Position.z <= maxOffset.z;
 		}
 	}
 }

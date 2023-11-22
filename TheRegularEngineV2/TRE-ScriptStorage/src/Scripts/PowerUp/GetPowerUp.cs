@@ -30,7 +30,7 @@ namespace TRE
         private float groundOffset = 2;
         private float rotationSpeed = 20;
 
-        //private ulong collectedSFX;
+        private ulong collectedSFX;
 
         public GetPowerUp()
         {
@@ -39,8 +39,8 @@ namespace TRE
 
         public void OnCreate()
         {
-
-        }
+            collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
+		}
 
         private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
         {
@@ -98,9 +98,9 @@ namespace TRE
 
                 collected = true;
 
-                if(collected && ECSManager.IsValidEntity(5477680860725561631))
+                if(collected && ECSManager.IsValidEntity(collectedSFX))
                 {
-                    AudioSystem.PlayOnce(5477680860725561631);
+                    AudioSystem.Play(collectedSFX);
                 }
 
                 GetComponent<Rigidbody>().useGravity = false;
