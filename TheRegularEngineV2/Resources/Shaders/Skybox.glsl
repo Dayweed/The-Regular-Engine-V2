@@ -29,4 +29,5 @@ layout (set = 0, binding = 1) uniform samplerCube SamplerCubeMap;
 void main() 
 {
     outColor = texture(SamplerCubeMap, inUVW);
+    outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
 }
