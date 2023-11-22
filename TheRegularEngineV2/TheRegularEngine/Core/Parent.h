@@ -176,7 +176,7 @@ namespace TRE
 
 		void GetTotalEntities(int& noOfEntities, Entity object);
 
-		void UpdateChildTransform(Entity parent);
+		void UpdateChildTransform(Entity parent, bool updateLocal = false);
 	private:
 		void UpdateChildLocalData(Entity parent, Entity child);
 		void UpdateLocalData(Entity current);
