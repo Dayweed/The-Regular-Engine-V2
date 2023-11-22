@@ -920,9 +920,8 @@ namespace TRE
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 25, 0.0f);
 
 		//A cpu thread for the scene
-		if (m_Dispatcher)
-			PX_RELEASE(m_Dispatcher);
-			
+		PX_RELEASE(m_Dispatcher);
+
 		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
 		assert(m_Dispatcher);
 		sceneDesc.cpuDispatcher = m_Dispatcher;

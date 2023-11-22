@@ -1094,6 +1094,11 @@ namespace TRE
             Engine_UpdateColliderOffset(entityid, offset);
         }
 
+        public static void GetColliderOffset(EntityID entityid, out vec3 offset)
+        {
+            offset = Engine_GetColliderOffset(entityid);
+        }
+
         public static void AddForce(EntityID id, vec3 force, ForceMode mode)
         {
             Engine_AddForce(id, force, mode);

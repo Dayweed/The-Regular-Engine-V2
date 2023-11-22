@@ -1160,7 +1160,7 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->UpdateColliderData(entity, offset);
 	}
 
-	static Vector3 BindGetOffsetCollider(CSEntityID ID, Vector3 offset)
+	static Vector3 BindGetOffsetCollider(CSEntityID ID)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return {};
