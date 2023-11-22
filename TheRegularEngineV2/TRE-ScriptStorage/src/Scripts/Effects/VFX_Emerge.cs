@@ -29,7 +29,7 @@ namespace TRE
         bool shrinking;
         bool idle = true;
 
-        float scaleSpeed = 60.0f;
+        float scaleSpeed = 75.0f;
         float rotateSpeed = 15.0f;
         float moveSpeed = 30.0f;
 
