@@ -28,7 +28,12 @@ namespace TRE
 
 		public void Start()
 		{
-			if (Scene.GetSceneName() == "Level_1")
+            if (Scene.GetSceneName() == "TODELETE")
+            {
+                currentIndex = 0;
+                positions = new vec3[] { new vec3(16.394f, 14.422f, -227), new vec3(16.394f, 14.422f, -178) };
+            }
+            if (Scene.GetSceneName() == "Level_1")
 			{
 				// Determine platform positions based on data
 				if (name == "MovingPlatform_1")

@@ -295,7 +295,7 @@ namespace TRE
 					prefabInstance->GetComponent<Transform>().m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
 					prefabInstance->GetComponent<Transform>().m_IsDirty = true;
 					//prefabInstance->GetComponent<Transform>().CalculateWorldMatrix();
-					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildTransform(prefabInstance);
+					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildTransform(prefabInstance, true);
 					m_SelectionManager->SelectEntity(prefabInstance);
 				}
 			}
