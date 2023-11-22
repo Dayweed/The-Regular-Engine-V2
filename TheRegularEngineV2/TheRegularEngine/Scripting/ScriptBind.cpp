@@ -1620,7 +1620,14 @@ namespace TRE
 #pragma region GameBindings
 	static void BindCloseGame()
 	{
-		Engine::GetInstance().TellToShutdown();
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			GameLoop::Instance().ResetScene();
+		}
+		else
+		{
+			Engine::GetInstance().TellToShutdown();
+		}
 	}
 #pragma endregion
 

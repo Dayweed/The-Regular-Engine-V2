@@ -8,9 +8,9 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "6140392063845837423",
+         "m_MainPrefabGUID": "12595427909806929522",
          "m_Overrides": {},
-         "m_PrefabGUID": "6140392063845837423",
+         "m_PrefabGUID": "12595427909806929522",
          "m_RemovedComps": []
       }
    ],
@@ -27,9 +27,9 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "14544724648983183534",
-         "m_Name": "Right Cactus",
-         "m_Tag": "RightCactus"
+         "m_GUID": "5946996886493916517",
+         "m_Name": "Star_VFX",
+         "m_Tag": ""
       }
    ],
    [
@@ -37,18 +37,18 @@
       0,
       {
          "m_Position": [
-            -22.186552047729492,
-            -14.273938179016113,
-            -106.75675964355469
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
-            1.0,
-            1.0,
+            100.0,
+            100.0,
             1.0
          ]
       }
@@ -66,43 +66,42 @@
       0
    ],
    [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
       1,
       0,
       {
-         "m_HalfExtents": [
-            0.0,
-            0.0,
-            0.0
+         "m_StoredClass": "TRE.VFX_Emerge"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
          ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
+         "Height": 1,
+         "Texture": "92618220a6c79a0e",
+         "Width": 1,
+         "m_IsVisible": false
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      1,
-      0,
-      {
-         "m_StoredClass": "TRE.CactusPowerUp"
-      }
-   ],
-   [
-      0
    ],
    [
       0

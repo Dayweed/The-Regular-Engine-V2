@@ -20,6 +20,8 @@ namespace TRE
         public static float currentTime;
         public float waitingTime = 0.90f;
 
+        VFX_Emerge StarEmerge;
+
         public void Start()
         {
             currentTime = 0.0f;
@@ -50,6 +52,8 @@ namespace TRE
                 nextSceneName = "ResultScreen";
             }
             courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
+
+            StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
         }
 
         public void Update()
@@ -70,6 +74,10 @@ namespace TRE
                 {
                     IncrementStars();
                     triggerStars.RemoveAt(i);
+                    if (StarEmerge != null)
+                    {
+                        StarEmerge.Emerge();
+                    }
                 }
             }
 
