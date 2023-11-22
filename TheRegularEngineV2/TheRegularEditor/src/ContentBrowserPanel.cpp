@@ -210,6 +210,8 @@ namespace TRE
 						newMaterial->Invalidate();
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
+
+						m_AssetSelector->SelectAsset(AssetManager::Instance().GetName(descriptorFileMaterial.GetResourceHandle()), AssetSelectorEvent::AssetType::Material);
 					}
 					
 					if (ImGui::MenuItem("Animation"))
@@ -222,6 +224,8 @@ namespace TRE
 						newMaterial->Invalidate();
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
+
+						m_AssetSelector->SelectAsset(AssetManager::Instance().GetName(descriptorFileMaterial.GetResourceHandle()), AssetSelectorEvent::AssetType::Material);
 					}
 
 					if (ImGui::MenuItem("Others"))

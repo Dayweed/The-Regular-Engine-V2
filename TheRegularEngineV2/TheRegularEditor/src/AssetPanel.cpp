@@ -42,7 +42,7 @@ namespace TRE
 
 	}
 
-	void AssetPanel::OnAssetSelectEvent(const AssetSelectorEvent& event)
+	void AssetPanel::OnAssetSelectEvent(const AssetSelectorEvent& /*event*/)
 	{
 
 	}

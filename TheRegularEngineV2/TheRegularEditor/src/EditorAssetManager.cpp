@@ -5,17 +5,22 @@ namespace TRE
 {
 	void AssetManager::Poll()
 	{
-		//Go throught assets folder and link assetname to asset handle based on available descriptor files
-		std::filesystem::path assetsPath = "../Assets";
-		std::filesystem::path resourcePath = "../Resources";
+		// this function must run once at the very beginning to initialise variables
+		static bool runOnce = false;
+
+		// but perhaps, let's not poll every frame... 
+		static std::time_t start_timer = std::time(nullptr);
+		const long long result = std::time(nullptr) - start_timer;
+		if (runOnce && result < 2) return;
+
+		//Go through assets folder and link assetName to asset handle based on available descriptor files
+		const std::filesystem::path assetsPath = "../Assets";
+		const std::filesystem::path resourcePath = "../Resources";
 		for (const auto& entry : std::filesystem::directory_iterator(assetsPath))
 		{
-			std::string extension = entry.path().extension().string();
 			if (entry.path().extension() == ".desc")
 			{
 				std::ifstream file(entry.path());
-				std::string assetHandle = entry.path().stem().string();
-				assetHandle = assetHandle.substr(0, assetHandle.find_first_of('.'));
 				if (file.is_open())
 				{
 					std::string line;
@@ -25,13 +30,15 @@ namespace TRE
 						std::getline(file, line);
 						std::string assetName = line;
 						assetName = assetName.substr(line.find_last_of('/') + 1);
+						std::string assetHandle = entry.path().stem().string();
+						assetHandle = assetHandle.substr(0, assetHandle.find_first_of('.'));
 						std::string resourceCheck = resourcePath.string() + "/" + assetHandle;
 
 						std::pair rscCheck = std::make_pair(Resource::GetGUIDFromHex(assetHandle), false);
 						for (const auto& rscEntry : std::filesystem::directory_iterator(resourcePath))
 						{
-							std::string rscHandle = rscEntry.path().stem().string();
-							if (rscHandle == assetHandle)
+							// std::string rscHandle = rscEntry.path().stem().string();
+							if (rscEntry.path().stem().string() == assetHandle)
 							{
 								rscCheck.second = true;
 								break;
@@ -49,6 +56,10 @@ namespace TRE
 		}
 
 		//RecompileAssetsOfType(ResourceType::Texture);
+
+		runOnce = true;
+		// reset timer
+		std::time(&start_timer);
 	}
 
 	void AssetManager::Shutdown()
