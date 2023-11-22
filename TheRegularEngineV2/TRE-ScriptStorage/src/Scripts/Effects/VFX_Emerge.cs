@@ -29,15 +29,15 @@ namespace TRE
         bool shrinking;
         bool idle = true;
 
-        float scaleSpeed = 75.0f;
+        float scaleSpeed = 80.0f;
         float rotateSpeed = 15.0f;
-        float moveSpeed = 30.0f;
+        float moveSpeed = 65.0f;
 
         vec3 MinScaleOffset;
         vec3 MaxScaleOffset;
 
         float coolDown = 0;
-        float coolDownDefault = 2.5f;
+        float coolDownDefault = 0.45f;
 
         SpriteRenderer MyRenderer;
 

@@ -107,7 +107,7 @@ namespace TRE
                 if (currentTime >= waitingTime)
                 {
                     currentTime = 0.0f;
-                    Scene.TransitionScene(nextSceneName, 7f);
+                    Scene.TransitionScene(nextSceneName, 4.5f);
                 }
 
                 else

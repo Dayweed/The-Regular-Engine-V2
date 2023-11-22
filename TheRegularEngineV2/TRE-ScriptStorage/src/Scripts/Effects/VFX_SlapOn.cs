@@ -28,8 +28,8 @@ namespace TRE
         bool doneColor;
         SpriteRenderer MyRenderer;
 
-        float rotationSpeed = 15.0f;
-        float scaleSpeed = 15.0f;
+        float rotationSpeed = 17.5f;
+        float scaleSpeed = 25.0f;
         float colorSpeed = 1f;
 
         vec3 MinRotateOffset;
