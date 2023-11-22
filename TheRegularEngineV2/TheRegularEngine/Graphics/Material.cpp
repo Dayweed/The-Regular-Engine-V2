@@ -128,6 +128,67 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
+	void Material::UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, const VkDescriptorImageInfo& ShadowMap)
+	{
+		if (m_IsValid == false)
+			Invalidate();
+
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+			{
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else if (Write.dstBinding == 8)
+					Write.pBufferInfo = &uboanimation->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+			}
+			Write.dstSet = m_DescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
+	void Material::UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, const VkDescriptorImageInfo& ShadowMap)
+	{
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+			{
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else if (Write.dstBinding == 8)
+					Write.pBufferInfo = &uboanimation->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+			}
+			Write.dstSet = m_EditorDescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
 	void Material::UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo)
 	{
 		m_WriteDescriptors.clear();
