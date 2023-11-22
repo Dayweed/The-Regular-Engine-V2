@@ -431,7 +431,7 @@ namespace TRE
 					}
 				}
 			}
-            else
+            else if (dirVec.x == 0 && dirVec.z == 0)
             {
                 // If no input, slow down
                 finalVelocity = currVelocity * 0.9f;
