@@ -95,6 +95,10 @@ namespace TRE
 
         private Transform moleyTransform;
 
+        private Entity UIPopup2;
+        private bool IsActivated = false;
+        private bool HasBeenTriggeredBefore = false;
+
         public void Start()
 		{
 			MyPowerUpUI = ECSManager.FindEntityByName("LeftCharacter_HUD").GetComponent<PowerUpUI>();
@@ -118,8 +122,6 @@ namespace TRE
 			OutofMapPos = InitialPos;
 			OutofMapPos.y = InitialPos.y - 5.0f;
 
-			
-
 			moleyTransform = GetComponent<Transform>();
 
 			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
@@ -130,9 +132,12 @@ namespace TRE
 
             RespawnPoint = moleyTransform.Position;
 
-		}
+			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
+            IsActivated = false;
+			HasBeenTriggeredBefore = false;
+    }
 
-		public void Update()
+        public void Update()
 		{
 			#region Invulnerability
 			if (Invulnerability)
@@ -466,7 +471,21 @@ namespace TRE
                     RespawnTimer = 1.0f;
                 }
             }
-		}
+
+            if (!HasBeenTriggeredBefore)
+			{
+				if (IsActivated)
+				{
+					UIPopup2.GetComponent<SpriteRenderer>().isVisible = true;
+				}
+
+				if (IsActivated && InputSystem.GetKeyDown(InputKeys.Space))
+				{
+					UIPopup2.GetComponent<SpriteRenderer>().isVisible = false;
+					HasBeenTriggeredBefore = true;
+				}
+			}
+        }
 
 		private void Jump(vec3 JumpHeight)
 		{
@@ -531,7 +550,12 @@ namespace TRE
 
         public void TakeDamage()
         {
-            if (Invulnerability) return;
+			if (Invulnerability)
+			{
+				IsActivated = true;
+				return;
+			}
+
             if (MyPowerManager.powerUps.Count > 0)
             {
                 MyPowerManager.LoseMain();
