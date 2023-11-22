@@ -23,8 +23,15 @@ namespace TRE
 			ImGui::Begin("Asset Panel", &m_ShowAssetPanel);
 			for (const auto& asset : AssetManager::Instance().GetAssets())
 			{
-				std::string print = asset.first + " | " + Resource::GetGUIDHex(asset.second.first) + " | " + (asset.second.second ? "Compiled" : "Not Compiled");
+				constexpr unsigned maxAssetNameSize = 40;
+				std::string assetName(asset.first);
+
+				if (assetName.size() < maxAssetNameSize)
+					assetName.append(std::string(maxAssetNameSize - assetName.size(), ' '));
+
+				std::string print = assetName + " | " + Resource::GetGUIDHex(asset.second.first) + " | " + (asset.second.second ? "Compiled" : "Not Compiled");
 				ImGui::Text(print.c_str());
+				ImGui::Spacing();
 			}
 			ImGui::End();
 		}
