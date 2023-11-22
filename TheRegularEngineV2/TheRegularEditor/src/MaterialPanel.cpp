@@ -98,6 +98,11 @@ namespace TRE
 				ImGui::EndDragDropTarget();
 			}
 		}
+		ImGui::SameLine();
+		if (ImGui::Button(("X##" + texture.first).c_str()))
+		{
+			texture.second = ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID());
+		}
 	}
 	
 	void MaterialPanel::Rename(std::shared_ptr<Material> material)

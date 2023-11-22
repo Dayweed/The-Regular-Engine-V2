@@ -129,21 +129,6 @@ namespace TRE
 					m_Assets.emplace_back(newAsset);
 			}
 		}
-
-		//Add material instances in to see on content browser if it is in m_AssetDirectory
-		/*if (m_CurrentDirectory == m_AssetDirectory)
-		{
-			for (const auto& mat : AssetManager::Instance().GetAssetsOfType<Material>())
-			{
-				Asset materialAsset{};
-				materialAsset.m_TextureID = m_TmpTexturesID;
-				materialAsset.m_ResourceType = "m_Material";
-				materialAsset.m_FileName = AssetManager::Instance().GetName(mat->GetHandle());
-				materialAsset.m_Path = "../Resources/" + mat->GetHandleHex() + ".material";
-
-				m_Assets.emplace_back(materialAsset);
-			}
-		}*/
 	}
 
 	void ContentBrowserPanel::BrowseProjectFiles()
@@ -604,6 +589,7 @@ namespace TRE
 		if (ImGui::Begin("Content Browser", nullptr, ImGuiWindowFlags_NoCollapse))
 		{
 			BrowseProjectFiles();
+			AssetManager::Instance().Poll();
 		}
 		ImGui::End();
 	}

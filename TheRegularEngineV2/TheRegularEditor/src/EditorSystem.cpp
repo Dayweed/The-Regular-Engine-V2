@@ -27,7 +27,7 @@ namespace TRE
 	{
 		TRE_INFO("Editor Init");
 		
-		AssetManager::Instance().Initialize();
+		AssetManager::Instance().Poll();
 		EditorCamera::Instance().Init();
 
 		m_PanelManager = std::make_unique<PanelManager>();

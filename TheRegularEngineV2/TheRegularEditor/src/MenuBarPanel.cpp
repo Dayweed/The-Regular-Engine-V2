@@ -77,7 +77,6 @@ namespace TRE
 				ImGui::EndMenu();
 			}
 
-
 			if (ImGui::BeginMenu("Windows"))
 			{
 				ImGui::PushItemFlag(ImGuiItemFlags_SelectableDontClosePopup, true);
