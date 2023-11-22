@@ -399,37 +399,43 @@ namespace TRE
             playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
 
-            if (dirVec != vec3.Zero)
+			if (dirVec != vec3.Zero)
+			{
+				if (isGrounded)
+				{
+					if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
+					{
+						finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+						PS.SetLinearVelocity(this.ID, finalVelocity);
+					}
+					else
+					{
+						vec3 tmp = dirVec * maxVelocity;
+						finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+						PS.SetLinearVelocity(this.ID, finalVelocity);
+					}
+				}
+				else if (!isGrounded)
+				{
+					//change to be air max velocirty instead
+					if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxAirVelocity)
+					{
+						finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+						PS.SetLinearVelocity(this.ID, finalVelocity);
+					}
+					else
+					{
+						vec3 tmp = dirVec * maxAirVelocity;
+						finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+						PS.SetLinearVelocity(this.ID, finalVelocity);
+					}
+				}
+			}
+            else if (dirVec.x == 0 && dirVec.z == 0)
             {
-                if (isGrounded)
-                {
-                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
-                    {
-                        finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
-                    else
-                    {
-                        vec3 tmp = dirVec * maxVelocity;
-                        finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
-                }
-                else if (!isGrounded)
-                {
-                    //change to be air max velocirty instead
-                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxAirVelocity)
-                    {
-                        finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
-                    else
-                    {
-                        vec3 tmp = dirVec * maxAirVelocity;
-                        finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-                        PS.SetLinearVelocity(this.ID, finalVelocity);
-                    }
-                }
+                // If no input, slow down
+                finalVelocity = currVelocity * 0.9f;
+                PS.SetLinearVelocity(this.ID, finalVelocity);
             }
 
             TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
