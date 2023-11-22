@@ -1,0 +1,817 @@
+[
+   [
+      17,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+   ],
+   [
+      17,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "5553690368000057511",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14492405820127484216",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12935499595996087922",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11400451873909590341",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "414699048727379628",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11640238767150841112",
+         "m_RemovedComps": []
+      },
+      6,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "16308968116261639247",
+         "m_RemovedComps": []
+      },
+      7,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9989782441913307237",
+         "m_RemovedComps": []
+      },
+      8,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1076233699547635954",
+         "m_RemovedComps": []
+      },
+      9,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "2096234851746414433",
+         "m_RemovedComps": []
+      },
+      10,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "89042997877667182",
+         "m_RemovedComps": []
+      },
+      11,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "6592685644257370738",
+         "m_RemovedComps": []
+      },
+      12,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10484333148480182428",
+         "m_RemovedComps": []
+      },
+      13,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14646423256219172190",
+         "m_RemovedComps": []
+      },
+      14,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9292001356580572456",
+         "m_RemovedComps": []
+      },
+      15,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3920622941683978756",
+         "m_RemovedComps": []
+      },
+      16,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "13603730583119632825",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      17,
+      0,
+      {
+         "m_Children": [
+            "11594366722669924111",
+            "12113762521992796778",
+            "1166202453389056684"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [
+            "4738224005170695286",
+            "11783038707136846450",
+            "3161127716292229292",
+            "10805341142417426577",
+            "18024513460222814812"
+         ],
+         "m_Parent": "1342883304983477837"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "11594366722669924111"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "11594366722669924111"
+      },
+      4,
+      {
+         "m_Children": [],
+         "m_Parent": "11594366722669924111"
+      },
+      5,
+      {
+         "m_Children": [],
+         "m_Parent": "11594366722669924111"
+      },
+      6,
+      {
+         "m_Children": [],
+         "m_Parent": "11594366722669924111"
+      },
+      7,
+      {
+         "m_Children": [
+            "9951532681974971336",
+            "15397854650885588819",
+            "9133963647069003588",
+            "11577291916165408784",
+            "11926350354257363476"
+         ],
+         "m_Parent": "1342883304983477837"
+      },
+      8,
+      {
+         "m_Children": [],
+         "m_Parent": "12113762521992796778"
+      },
+      9,
+      {
+         "m_Children": [],
+         "m_Parent": "12113762521992796778"
+      },
+      10,
+      {
+         "m_Children": [],
+         "m_Parent": "12113762521992796778"
+      },
+      11,
+      {
+         "m_Children": [],
+         "m_Parent": "12113762521992796778"
+      },
+      12,
+      {
+         "m_Children": [],
+         "m_Parent": "12113762521992796778"
+      },
+      13,
+      {
+         "m_Children": [
+            "17647723967237667941",
+            "10056684208521931475",
+            "1787104399330194718"
+         ],
+         "m_Parent": "1342883304983477837"
+      },
+      14,
+      {
+         "m_Children": [],
+         "m_Parent": "1166202453389056684"
+      },
+      15,
+      {
+         "m_Children": [],
+         "m_Parent": "1166202453389056684"
+      },
+      16,
+      {
+         "m_Children": [],
+         "m_Parent": "1166202453389056684"
+      }
+   ],
+   [
+      17,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "1342883304983477837",
+         "m_Name": "Tutorial_Environment",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "11594366722669924111",
+         "m_Name": "Section_1",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "4738224005170695286",
+         "m_Name": "Building_01",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "11783038707136846450",
+         "m_Name": "Tutorial_Floor_1",
+         "m_Tag": ""
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "3161127716292229292",
+         "m_Name": "Tutorial_Building_02",
+         "m_Tag": ""
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "10805341142417426577",
+         "m_Name": "Tutorial_Building_04",
+         "m_Tag": ""
+      },
+      6,
+      {
+         "m_Active": true,
+         "m_GUID": "18024513460222814812",
+         "m_Name": "Tutorial_Building_04",
+         "m_Tag": ""
+      },
+      7,
+      {
+         "m_Active": true,
+         "m_GUID": "12113762521992796778",
+         "m_Name": "Section_2",
+         "m_Tag": ""
+      },
+      8,
+      {
+         "m_Active": true,
+         "m_GUID": "9951532681974971336",
+         "m_Name": "Tutorial_Building_02",
+         "m_Tag": ""
+      },
+      9,
+      {
+         "m_Active": true,
+         "m_GUID": "15397854650885588819",
+         "m_Name": "Tutorial_Floor_2",
+         "m_Tag": ""
+      },
+      10,
+      {
+         "m_Active": true,
+         "m_GUID": "9133963647069003588",
+         "m_Name": "Tutorial_Building_04",
+         "m_Tag": ""
+      },
+      11,
+      {
+         "m_Active": true,
+         "m_GUID": "11577291916165408784",
+         "m_Name": "Tutorial_Building_05",
+         "m_Tag": ""
+      },
+      12,
+      {
+         "m_Active": true,
+         "m_GUID": "11926350354257363476",
+         "m_Name": "Tutorial_Building_06",
+         "m_Tag": ""
+      },
+      13,
+      {
+         "m_Active": true,
+         "m_GUID": "1166202453389056684",
+         "m_Name": "Section_3",
+         "m_Tag": ""
+      },
+      14,
+      {
+         "m_Active": true,
+         "m_GUID": "17647723967237667941",
+         "m_Name": "Tutorial_Floor_3",
+         "m_Tag": ""
+      },
+      15,
+      {
+         "m_Active": true,
+         "m_GUID": "10056684208521931475",
+         "m_Name": "Tutorial_Building_07",
+         "m_Tag": ""
+      },
+      16,
+      {
+         "m_Active": true,
+         "m_GUID": "1787104399330194718",
+         "m_Name": "Tutorial_Building_08",
+         "m_Tag": ""
+      }
+   ],
+   [
+      17,
+      0,
+      {
+         "m_Position": [
+            140.6456298828125,
+            180.39920043945313,
+            69.74505615234375
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            142.78851318359375,
+            80.52102661132813,
+            70.45135498046875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            123.4305419921875,
+            191.68910217285156,
+            26.08843231201172
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            181.9084014892578,
+            168.71005249023438,
+            27.969558715820313
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            189.5880584716797,
+            188.89418029785156,
+            -1.0013885498046875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            160.43295288085938,
+            191.18882751464844,
+            1.2109527587890625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6,
+      {
+         "m_Position": [
+            218.74937438964844,
+            191.18882751464844,
+            -2.4829330444335938
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7,
+      {
+         "m_Position": [
+            163.4476318359375,
+            80.52102661132813,
+            70.45135498046875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8,
+      {
+         "m_Position": [
+            222.10208129882813,
+            188.48072814941406,
+            -84.86260986328125
+         ],
+         "m_Rotation": [
+            0.0,
+            89.96573638916016,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9,
+      {
+         "m_Position": [
+            230.92684936523438,
+            168.44154357910156,
+            -125.83099365234375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      10,
+      {
+         "m_Position": [
+            219.33628845214844,
+            190.64170837402344,
+            -112.34716796875
+         ],
+         "m_Rotation": [
+            0.0,
+            89.96573638916016,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      11,
+      {
+         "m_Position": [
+            212.47764587402344,
+            193.4129180908203,
+            -141.94854736328125
+         ],
+         "m_Rotation": [
+            -180.0,
+            -0.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      12,
+      {
+         "m_Position": [
+            210.49945068359375,
+            190.3938446044922,
+            -200.88375854492188
+         ],
+         "m_Rotation": [
+            0.0,
+            89.96573638916016,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      13,
+      {
+         "m_Position": [
+            238.57818603515625,
+            176.0783233642578,
+            -279.58331298828125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      14,
+      {
+         "m_Position": [
+            218.31549072265625,
+            164.97308349609375,
+            -297.22113037109375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      15,
+      {
+         "m_Position": [
+            189.53199768066406,
+            186.73721313476563,
+            -266.2616271972656
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      16,
+      {
+         "m_Position": [
+            203.2362823486328,
+            186.2456512451172,
+            -324.84967041015625
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      13,
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "4e513dd68f542640",
+         "ASSET_MAT_m_MaterialInstance": "f13cdf6a66355fd3",
+         "m_IsVisible": true
+      },
+      3,
+      {
+         "ASSET_GEOM_m_RenderObject": "d801cf3f3f44d1b3",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      4,
+      {
+         "ASSET_GEOM_m_RenderObject": "fccf123d4737aa7e",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      5,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_MaterialInstance": "f13cdf6a66355fd3",
+         "m_IsVisible": true
+      },
+      6,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      8,
+      {
+         "ASSET_GEOM_m_RenderObject": "fccf123d4737aa7e",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      9,
+      {
+         "ASSET_GEOM_m_RenderObject": "e91dcf184e026d51",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      10,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      11,
+      {
+         "ASSET_GEOM_m_RenderObject": "d59bd7deafad712d",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      12,
+      {
+         "ASSET_GEOM_m_RenderObject": "fe9c6f2ea3d97556",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      14,
+      {
+         "ASSET_GEOM_m_RenderObject": "38f15a6260750456",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      15,
+      {
+         "ASSET_GEOM_m_RenderObject": "cf7b3dbea3584a62",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      16,
+      {
+         "ASSET_GEOM_m_RenderObject": "bafa267d4b337f6a",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
