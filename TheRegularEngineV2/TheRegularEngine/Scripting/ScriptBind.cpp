@@ -40,6 +40,7 @@ namespace TRE
 		Transform,
 		SpriteRenderer,
 		Parenting,
+		Animation,
 		None
 	};
 	std::unordered_map<std::string, ComponentsID> ComponentsMap
@@ -55,7 +56,8 @@ namespace TRE
 		{"TRE.AudioListener", ComponentsID::AudioListener},
 		{"TRE.SpriteRenderer", ComponentsID::SpriteRenderer},
 		{"TRE.Parenting", ComponentsID::Parenting},
-		{"TRE.Script", ComponentsID::Script}
+		{"TRE.Script", ComponentsID::Script},
+		{"TRE.Animation", ComponentsID::Animation}
 	};
 
 	namespace Tools
@@ -375,7 +377,11 @@ namespace TRE
 			break;
 		case ComponentsID::Parenting:
 			Temp->AddComponent<Parenting>();
-			TRE_INFO("Parenting (UI Component) added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			TRE_INFO("Parenting added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
+		case ComponentsID::Animation:
+			Temp->AddComponent<AnimationComponent>();
+			TRE_INFO("Animation added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
@@ -434,6 +440,10 @@ namespace TRE
 			Temp->RemoveComponent<Parenting>();
 			TRE_INFO("Parenting (UI Component) Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Animation:
+			Temp->RemoveComponent<AnimationComponent>();
+			TRE_INFO("Animation Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -478,6 +488,8 @@ namespace TRE
 			return entity->HasComponent<UIComponent>();
 		case ComponentsID::Parenting:
 			return entity->HasComponent<Parenting>();
+		case ComponentsID::Animation:
+			return entity->HasComponent<AnimationComponent>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;

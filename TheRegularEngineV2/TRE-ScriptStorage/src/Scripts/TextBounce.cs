@@ -12,8 +12,8 @@ namespace TRE
     {
         float initialYPos;
         float timer = 0;
-        float height = 10;
-        float period = 10f;
+        float height = 10f;
+        float period = 5f;
 
         public void Start()
         {

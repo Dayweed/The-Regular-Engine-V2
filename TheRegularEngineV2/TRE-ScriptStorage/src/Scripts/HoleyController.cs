@@ -25,8 +25,10 @@ namespace TRE
 		private vec3 dirVec;
 		//Max velocity
 		private float maxVelocity = 30f;
-		//Acceleration
-		private float acceleration = 700f;
+        //Max Air Velocity vector
+        private float maxAirVelocity = 25f;
+        //Acceleration
+        private float acceleration = 700f;
 		//final velocity
 		private vec3 finalVelocity = vec3.Zero;
 		//maxJumpHeight
@@ -372,28 +374,70 @@ namespace TRE
 			#endregion
 
 			dirVec.y = 0;
-			if (dirVec != new vec3())
+			if (dirVec != vec3.Zero)
+			{
 				dirVec = dirVec.Normalized;
+
+				//Walking animation
+				//if (GetComponent<MeshRenderer>().Mesh != "38f15a6260750456")
+				//{
+				//	GetComponent<MeshRenderer>().Mesh = "38f15a6260750456";
+				//	//if (HasComponent<Animation>() == false)
+				//	//{
+				//	//	AddComponent<Animation>();
+				//	//}
+				//}	
+			}
+			else
+			{
+				//Idle animation
+				//if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+				//{
+				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+				//	//if (HasComponent<Animation>() == false)
+				//	//{
+				//	//	AddComponent<Animation>();
+				//	//}
+				//}
+			}
 
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
 
-			if (dirVec != vec3.Zero)
-			{
-				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
-				{
-					finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-				else
-				{
-					vec3 tmp = dirVec * maxVelocity;
-					finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-			}
+            if (dirVec != vec3.Zero)
+            {
+                if (isGrounded)
+                {
+                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
+                    {
+                        finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+                        PS.SetLinearVelocity(this.ID, finalVelocity);
+                    }
+                    else
+                    {
+                        vec3 tmp = dirVec * maxVelocity;
+                        finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+                        PS.SetLinearVelocity(this.ID, finalVelocity);
+                    }
+                }
+                else if (!isGrounded)
+                {
+                    //change to be air max velocirty instead
+                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxAirVelocity)
+                    {
+                        finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+                        PS.SetLinearVelocity(this.ID, finalVelocity);
+                    }
+                    else
+                    {
+                        vec3 tmp = dirVec * maxAirVelocity;
+                        finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+                        PS.SetLinearVelocity(this.ID, finalVelocity);
+                    }
+                }
+            }
 
-			holeyTransform.Rotation = new vec3(0, playerDirection, 0);
+            holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
 			isGrounded = false;
 
