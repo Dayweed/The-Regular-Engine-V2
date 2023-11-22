@@ -49,6 +49,6 @@ namespace TRE
 		private:
 			std::shared_ptr<VertexBuffer> m_TestVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_TestIndexBuffer;
-			std::map<int, Entity> m_UIEntities;
+			std::vector<std::pair<int, Entity>> m_UIEntities;
 	};
 }

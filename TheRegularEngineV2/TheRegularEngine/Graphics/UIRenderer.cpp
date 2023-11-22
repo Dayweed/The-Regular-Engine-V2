@@ -75,15 +75,17 @@ namespace TRE
 
 		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
 
-		for (const auto& Entity : ECSManager::Instance().GetEntities<UIComponent>())
+		m_UIEntities.clear();
+		for (const auto& E : ECSManager::Instance().GetEntities<UIComponent>())
 		{
-			UIComponent UIComp = Entity->GetComponent<UIComponent>();
-
-			if (m_UIEntities.contains(UIComp.m_RenderLayer))
-				continue;
-
-			m_UIEntities[UIComp.m_RenderLayer] = Entity;
+			UIComponent UIComp = E->GetComponent<UIComponent>();
+			m_UIEntities.push_back(std::pair<int, Entity>(UIComp.m_RenderLayer, E));
 		}
+
+		std::sort(m_UIEntities.begin(), m_UIEntities.end(), [](std::pair<int, Entity> left, std::pair<int, Entity> right)
+		{
+			return left.first < right.first;
+		});
 
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
