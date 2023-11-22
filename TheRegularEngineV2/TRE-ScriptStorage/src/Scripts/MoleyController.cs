@@ -73,9 +73,14 @@ namespace TRE
 
 		public float elapsedTime = 0.0f;
 
+		// Respawn Variables
 		private vec3 RespawnPoint = new vec3(0, 0, 0);
         private bool RespawnPlayer = false;
         private float RespawnTimer = 1.0f;
+
+		//Dead or alive
+		public bool isDead = false;
+
 		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
 		private bool DroppingOutOfMap = false;
@@ -151,7 +156,8 @@ namespace TRE
 			PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
 
 			if (pos.y < OutofMapPos.y)
-			{
+            {
+                isDead = true;
 				DroppingOutOfMap = true;
 				//Debug.Log("Out of map");
 			}
@@ -421,6 +427,7 @@ namespace TRE
                 else
                 {
                     Respawn();
+                    isDead = false;
                     RespawnPlayer = false;
                     RespawnTimer = 1.0f;
                 }
@@ -498,7 +505,8 @@ namespace TRE
             }
             else
             {
-                ResetToInitialPos();
+                isDead = true;
+                RespawnPlayer = true;
             }
 			Invulnerability = true;
         }

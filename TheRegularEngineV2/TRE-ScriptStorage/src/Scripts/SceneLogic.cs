@@ -22,6 +22,9 @@ namespace TRE
 
         VFX_Emerge StarEmerge;
 
+        private Entity holey_ref;
+        private Entity moley_ref;
+
         public void Start()
         {
             currentTime = 0.0f;
@@ -54,6 +57,9 @@ namespace TRE
             courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
 
             StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
+
+            holey_ref = ECSManager.FindEntityByName("Holey");
+            moley_ref = ECSManager.FindEntityByName("Moley");
         }
 
         public void Update()
@@ -79,6 +85,11 @@ namespace TRE
                         StarEmerge.Emerge();
                     }
                 }
+            }
+
+            if (holey_ref.GetComponent<HoleyController>().isDead && moley_ref.GetComponent<MoleyController>().isDead)
+            {
+                // transition to the result screen with the game over sprite instead.
             }
 
             // Go to next scene if list of triggers are completed
