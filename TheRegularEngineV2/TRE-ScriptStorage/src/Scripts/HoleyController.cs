@@ -501,5 +501,10 @@ namespace TRE
         {
             RespawnPoint = position;
         }
+
+        public bool GetIsDead()
+        {
+            return isDead;
+        }
 	}
 }

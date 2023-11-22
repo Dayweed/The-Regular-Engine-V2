@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
 
@@ -21,9 +22,6 @@ namespace TRE
         public float waitingTime = 0.90f;
 
         VFX_Emerge StarEmerge;
-
-        private Entity holey_ref;
-        private Entity moley_ref;
 
         public void Start()
         {
@@ -57,9 +55,6 @@ namespace TRE
             courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
 
             StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
-
-            holey_ref = ECSManager.FindEntityByName("Holey");
-            moley_ref = ECSManager.FindEntityByName("Moley");
         }
 
         public void Update()
@@ -87,13 +82,9 @@ namespace TRE
                 }
             }
 
-            if (holey_ref.GetComponent<HoleyController>().isDead && moley_ref.GetComponent<MoleyController>().isDead)
-            {
-                // transition to the result screen with the game over sprite instead.
-            }
-
             // Go to next scene if list of triggers are completed
             bool goToNextScene = triggerComplete.Count == 0 ? false : true;
+
 
             foreach (HoleCheckDisplay trigger in triggerComplete)
             {
