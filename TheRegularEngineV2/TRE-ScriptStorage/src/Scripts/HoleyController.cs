@@ -76,7 +76,6 @@ namespace TRE
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
-		private ulong droppowerupSFX;
 
 		//Transfrom Component
 		private Transform holeyTransform;
@@ -103,7 +102,6 @@ namespace TRE
 			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Tall");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
-			droppowerupSFX = ECSManager.FindIDFromName("SFX_DropPowerUp");
 		}
 
 		public void Update()
@@ -289,10 +287,7 @@ namespace TRE
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
-				if (ECSManager.IsValidEntity(droppowerupSFX))
-				{
-					AudioSystem.Play(droppowerupSFX);
-				}
+				
 			}
 
 			#endregion

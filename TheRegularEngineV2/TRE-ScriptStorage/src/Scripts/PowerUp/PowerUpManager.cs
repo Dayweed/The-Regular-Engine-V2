@@ -16,7 +16,10 @@ namespace TRE
         //private Entity blueberryForm;
         //private Entity strawberryForm;
 
-        private bool usePower = false;
+        //Audio
+		private ulong droppowerupSFX;
+
+		private bool usePower = false;
 
         public PowerUpManager()
         {
@@ -25,10 +28,12 @@ namespace TRE
 
         private void OnCreate()
         {
-            //baseForm = this.parenting.GetChild(0);
-            //blueberryForm = this.parenting.GetChild(1);
-            //strawberryForm = this.parenting.GetChild(2);
-        }
+			//baseForm = this.parenting.GetChild(0);
+			//blueberryForm = this.parenting.GetChild(1);
+			//strawberryForm = this.parenting.GetChild(2);
+
+			droppowerupSFX = ECSManager.FindIDFromName("SFX_DropPowerUp");
+		}
 
         public void SwapPowerUps() //if holding 2 powerups, swap between them. if currently using a power-up, will swap into the other form
         {
@@ -55,7 +60,13 @@ namespace TRE
             powerUps.RemoveAt(0);
 
             MyPowerUpUI.UpdateUI(powerUps);
-        }
+
+			if (ECSManager.IsValidEntity(droppowerupSFX))
+			{
+				AudioSystem.Play(droppowerupSFX);
+			}
+
+		}
 
         public void LoseMain()
         {

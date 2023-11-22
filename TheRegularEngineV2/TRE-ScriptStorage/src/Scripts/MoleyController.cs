@@ -298,10 +298,6 @@ namespace TRE
 			{
 				MyPowerManager.DropMain();
                 isScaled = false;
-				if (ECSManager.IsValidEntity(droppowerupSFX))
-				{
-					AudioSystem.Play(droppowerupSFX);
-				}
 			}
 			#endregion
 
