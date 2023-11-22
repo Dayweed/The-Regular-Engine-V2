@@ -25,20 +25,33 @@ namespace TRE
             if (InputSystem.GetKeyTrigger(InputKeys.Space))
             {
                 spacePressed = true;
-            }
+				if (ECSManager.IsValidEntity(13376208322872696703))
+				{
+					AudioSystem.Play(13376208322872696703);
+				}
+			}
 
             if (InputSystem.GetKeyTrigger(InputKeys.Enter))
             {
                 enterPressed = true;
-            }
+				if (ECSManager.IsValidEntity(13376208322872696703))
+				{
+					AudioSystem.Play(13376208322872696703);
+				}
+			}
 
             if (spacePressed && enterPressed)
             {
-                Scene.ChangeScene(TutorialSceneName);
+				if (ECSManager.IsValidEntity(6154957411926925810))
+				{
+					AudioSystem.Play(6154957411926925810);
+				}
 
-                spacePressed = false;
+				Scene.TransitionScene(TutorialSceneName, 4.0f);
+
+				spacePressed = false;
                 enterPressed = false;
-            }
+			}
         }
     }
 }
