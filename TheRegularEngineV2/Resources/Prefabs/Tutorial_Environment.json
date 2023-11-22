@@ -1,0 +1,3007 @@
+[
+   [
+      59,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58
+   ],
+   [
+      59,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "5553690368000057511",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14492405820127484216",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12935499595996087922",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11400451873909590341",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "414699048727379628",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11640238767150841112",
+         "m_RemovedComps": []
+      },
+      6,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "16308968116261639247",
+         "m_RemovedComps": []
+      },
+      7,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9989782441913307237",
+         "m_RemovedComps": []
+      },
+      8,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1076233699547635954",
+         "m_RemovedComps": []
+      },
+      9,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "2096234851746414433",
+         "m_RemovedComps": []
+      },
+      10,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "89042997877667182",
+         "m_RemovedComps": []
+      },
+      11,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "6592685644257370738",
+         "m_RemovedComps": []
+      },
+      12,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10484333148480182428",
+         "m_RemovedComps": []
+      },
+      13,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14646423256219172190",
+         "m_RemovedComps": []
+      },
+      14,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9292001356580572456",
+         "m_RemovedComps": []
+      },
+      15,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3920622941683978756",
+         "m_RemovedComps": []
+      },
+      16,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "13603730583119632825",
+         "m_RemovedComps": []
+      },
+      17,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "13273616780874626922",
+         "m_RemovedComps": []
+      },
+      18,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1200971790571257990",
+         "m_RemovedComps": []
+      },
+      19,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3119923419002128110",
+         "m_RemovedComps": []
+      },
+      20,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "315150701034925103",
+         "m_RemovedComps": []
+      },
+      21,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10956950940582329879",
+         "m_RemovedComps": []
+      },
+      22,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      23,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      24,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      25,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      26,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      27,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      28,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      29,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      30,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "17245983428422875744",
+         "m_RemovedComps": []
+      },
+      31,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      32,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      33,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      34,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      35,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      36,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      37,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      38,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      39,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "6714573261229370146",
+         "m_RemovedComps": []
+      },
+      40,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      41,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      42,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      43,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      44,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10513262257211590559",
+         "m_RemovedComps": []
+      },
+      45,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      46,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      47,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      48,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      49,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      50,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      51,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      52,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "8588817494294097447",
+         "m_RemovedComps": []
+      },
+      53,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      54,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      55,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      56,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      },
+      57,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4486736249171469349",
+         "m_RemovedComps": []
+      },
+      58,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "5553690368000057511",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10665611666694348414",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      59,
+      0,
+      {
+         "m_Children": [
+            "3606670088632712813",
+            "12447117076492904197",
+            "12105338806779188574",
+            "1206295820721593531",
+            "16460592120604682536",
+            "17297431458117421290",
+            "11043500359933411386",
+            "2534642724615662311",
+            "7689404361022278443"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [
+            "178151029318885165",
+            "5800422096848418328",
+            "9375208710405151598",
+            "4303852020550683033",
+            "16940912884346509401"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "3606670088632712813"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "3606670088632712813"
+      },
+      4,
+      {
+         "m_Children": [],
+         "m_Parent": "3606670088632712813"
+      },
+      5,
+      {
+         "m_Children": [],
+         "m_Parent": "3606670088632712813"
+      },
+      6,
+      {
+         "m_Children": [],
+         "m_Parent": "3606670088632712813"
+      },
+      7,
+      {
+         "m_Children": [
+            "12353540507394399989",
+            "5598311019067844027",
+            "4285137265463892304",
+            "14339263315956429040",
+            "16355293429545618625"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      8,
+      {
+         "m_Children": [],
+         "m_Parent": "12447117076492904197"
+      },
+      9,
+      {
+         "m_Children": [],
+         "m_Parent": "12447117076492904197"
+      },
+      10,
+      {
+         "m_Children": [],
+         "m_Parent": "12447117076492904197"
+      },
+      11,
+      {
+         "m_Children": [],
+         "m_Parent": "12447117076492904197"
+      },
+      12,
+      {
+         "m_Children": [],
+         "m_Parent": "12447117076492904197"
+      },
+      13,
+      {
+         "m_Children": [
+            "13458942361176427496",
+            "2418999781308327897",
+            "14440627653468656490"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      14,
+      {
+         "m_Children": [],
+         "m_Parent": "12105338806779188574"
+      },
+      15,
+      {
+         "m_Children": [],
+         "m_Parent": "12105338806779188574"
+      },
+      16,
+      {
+         "m_Children": [],
+         "m_Parent": "12105338806779188574"
+      },
+      17,
+      {
+         "m_Children": [
+            "8375892012510488239",
+            "16833736796103198350",
+            "16562191403951563790",
+            "5816034615619947548",
+            "5874050342207979755",
+            "9320125789311445596",
+            "15818305119270585253",
+            "14465250313056020000",
+            "13925759275657472696",
+            "1538050725390388491",
+            "17046265049409567563",
+            "9337040667461888224"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      18,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      19,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      20,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      21,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      22,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      23,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      24,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      25,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      26,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      27,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      28,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      29,
+      {
+         "m_Children": [],
+         "m_Parent": "1206295820721593531"
+      },
+      30,
+      {
+         "m_Children": [
+            "16944389340776187387",
+            "12890320055499627028",
+            "16683900989055534375",
+            "4795452272197378627",
+            "9873739396350967029",
+            "15423212755567822878",
+            "1363088350033511976",
+            "13190459444684931033"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      31,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      32,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      33,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      34,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      35,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      36,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      37,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      38,
+      {
+         "m_Children": [],
+         "m_Parent": "16460592120604682536"
+      },
+      39,
+      {
+         "m_Children": [
+            "6272918574489786361",
+            "3580519676571055290",
+            "15106520698798816798",
+            "15527529331294812699"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      40,
+      {
+         "m_Children": [],
+         "m_Parent": "17297431458117421290"
+      },
+      41,
+      {
+         "m_Children": [],
+         "m_Parent": "17297431458117421290"
+      },
+      42,
+      {
+         "m_Children": [],
+         "m_Parent": "17297431458117421290"
+      },
+      43,
+      {
+         "m_Children": [],
+         "m_Parent": "17297431458117421290"
+      },
+      44,
+      {
+         "m_Children": [
+            "323662006459032899",
+            "10581067147368336166",
+            "15675807835421358998",
+            "13138819058539551279",
+            "7343721692509432108",
+            "18032489083436664383",
+            "6124553985493881187"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      45,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      46,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      47,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      48,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      49,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      50,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      51,
+      {
+         "m_Children": [],
+         "m_Parent": "11043500359933411386"
+      },
+      52,
+      {
+         "m_Children": [
+            "6026625358991924493",
+            "13726441773498103630",
+            "15727937509576040248",
+            "2844690317817573"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      53,
+      {
+         "m_Children": [],
+         "m_Parent": "2534642724615662311"
+      },
+      54,
+      {
+         "m_Children": [],
+         "m_Parent": "2534642724615662311"
+      },
+      55,
+      {
+         "m_Children": [],
+         "m_Parent": "2534642724615662311"
+      },
+      56,
+      {
+         "m_Children": [],
+         "m_Parent": "2534642724615662311"
+      },
+      57,
+      {
+         "m_Children": [
+            "16252692293646613321"
+         ],
+         "m_Parent": "9731284417358720131"
+      },
+      58,
+      {
+         "m_Children": [],
+         "m_Parent": "7689404361022278443"
+      }
+   ],
+   [
+      59,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "9731284417358720131",
+         "m_Name": "Tutorial_Environment",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "3606670088632712813",
+         "m_Name": "Section_1",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "178151029318885165",
+         "m_Name": "Building_01",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "5800422096848418328",
+         "m_Name": "Tutorial_Floor_1",
+         "m_Tag": ""
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "9375208710405151598",
+         "m_Name": "Tutorial_Building_03",
+         "m_Tag": ""
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "4303852020550683033",
+         "m_Name": "Tutorial_Building_02",
+         "m_Tag": ""
+      },
+      6,
+      {
+         "m_Active": true,
+         "m_GUID": "16940912884346509401",
+         "m_Name": "Tutorial_Building_04",
+         "m_Tag": ""
+      },
+      7,
+      {
+         "m_Active": true,
+         "m_GUID": "12447117076492904197",
+         "m_Name": "Section_2",
+         "m_Tag": ""
+      },
+      8,
+      {
+         "m_Active": true,
+         "m_GUID": "12353540507394399989",
+         "m_Name": "Tutorial_Building_05",
+         "m_Tag": ""
+      },
+      9,
+      {
+         "m_Active": true,
+         "m_GUID": "5598311019067844027",
+         "m_Name": "Tutorial_Floor_2",
+         "m_Tag": ""
+      },
+      10,
+      {
+         "m_Active": true,
+         "m_GUID": "4285137265463892304",
+         "m_Name": "Tutorial_Building_06",
+         "m_Tag": ""
+      },
+      11,
+      {
+         "m_Active": true,
+         "m_GUID": "14339263315956429040",
+         "m_Name": "Tutorial_Building_07",
+         "m_Tag": ""
+      },
+      12,
+      {
+         "m_Active": true,
+         "m_GUID": "16355293429545618625",
+         "m_Name": "Tutorial_Building_08",
+         "m_Tag": ""
+      },
+      13,
+      {
+         "m_Active": true,
+         "m_GUID": "12105338806779188574",
+         "m_Name": "Section_3",
+         "m_Tag": ""
+      },
+      14,
+      {
+         "m_Active": true,
+         "m_GUID": "13458942361176427496",
+         "m_Name": "Tutorial_Floor_3",
+         "m_Tag": ""
+      },
+      15,
+      {
+         "m_Active": true,
+         "m_GUID": "2418999781308327897",
+         "m_Name": "Tutorial_Building_09",
+         "m_Tag": ""
+      },
+      16,
+      {
+         "m_Active": true,
+         "m_GUID": "14440627653468656490",
+         "m_Name": "Tutorial_Building_10",
+         "m_Tag": ""
+      },
+      17,
+      {
+         "m_Active": true,
+         "m_GUID": "1206295820721593531",
+         "m_Name": "Collider_Section_1",
+         "m_Tag": ""
+      },
+      18,
+      {
+         "m_Active": true,
+         "m_GUID": "8375892012510488239",
+         "m_Name": "Collider_Building_01_1",
+         "m_Tag": ""
+      },
+      19,
+      {
+         "m_Active": true,
+         "m_GUID": "16833736796103198350",
+         "m_Name": "Collider_Building_01_2",
+         "m_Tag": ""
+      },
+      20,
+      {
+         "m_Active": true,
+         "m_GUID": "16562191403951563790",
+         "m_Name": "Collider_Building_02",
+         "m_Tag": ""
+      },
+      21,
+      {
+         "m_Active": true,
+         "m_GUID": "5816034615619947548",
+         "m_Name": "Collider_Building_03",
+         "m_Tag": ""
+      },
+      22,
+      {
+         "m_Active": true,
+         "m_GUID": "5874050342207979755",
+         "m_Name": "Collider_Building_04",
+         "m_Tag": ""
+      },
+      23,
+      {
+         "m_Active": true,
+         "m_GUID": "9320125789311445596",
+         "m_Name": "Collider_Floor_01_4",
+         "m_Tag": ""
+      },
+      24,
+      {
+         "m_Active": true,
+         "m_GUID": "15818305119270585253",
+         "m_Name": "Collider_Floor_01_2",
+         "m_Tag": ""
+      },
+      25,
+      {
+         "m_Active": true,
+         "m_GUID": "14465250313056020000",
+         "m_Name": "Collider_Floor_01_3",
+         "m_Tag": ""
+      },
+      26,
+      {
+         "m_Active": true,
+         "m_GUID": "13925759275657472696",
+         "m_Name": "Collider_Floor_01_1",
+         "m_Tag": ""
+      },
+      27,
+      {
+         "m_Active": true,
+         "m_GUID": "1538050725390388491",
+         "m_Name": "Collider_Floor_01_5",
+         "m_Tag": ""
+      },
+      28,
+      {
+         "m_Active": true,
+         "m_GUID": "17046265049409567563",
+         "m_Name": "Collider_Floor_01_6",
+         "m_Tag": ""
+      },
+      29,
+      {
+         "m_Active": true,
+         "m_GUID": "9337040667461888224",
+         "m_Name": "Collider_Floor_01_7",
+         "m_Tag": ""
+      },
+      30,
+      {
+         "m_Active": true,
+         "m_GUID": "16460592120604682536",
+         "m_Name": "Collider_Section_2",
+         "m_Tag": ""
+      },
+      31,
+      {
+         "m_Active": true,
+         "m_GUID": "16944389340776187387",
+         "m_Name": "Collider_Building_05",
+         "m_Tag": ""
+      },
+      32,
+      {
+         "m_Active": true,
+         "m_GUID": "12890320055499627028",
+         "m_Name": "Collider_Building_06",
+         "m_Tag": ""
+      },
+      33,
+      {
+         "m_Active": true,
+         "m_GUID": "16683900989055534375",
+         "m_Name": "Collider_Building_07",
+         "m_Tag": ""
+      },
+      34,
+      {
+         "m_Active": true,
+         "m_GUID": "4795452272197378627",
+         "m_Name": "Collider_Building_08",
+         "m_Tag": ""
+      },
+      35,
+      {
+         "m_Active": true,
+         "m_GUID": "9873739396350967029",
+         "m_Name": "Collider_Floor_02_1",
+         "m_Tag": ""
+      },
+      36,
+      {
+         "m_Active": true,
+         "m_GUID": "15423212755567822878",
+         "m_Name": "Collider_Floor_02_2",
+         "m_Tag": ""
+      },
+      37,
+      {
+         "m_Active": true,
+         "m_GUID": "1363088350033511976",
+         "m_Name": "Collider_Floor_02_3",
+         "m_Tag": ""
+      },
+      38,
+      {
+         "m_Active": true,
+         "m_GUID": "13190459444684931033",
+         "m_Name": "Collider_Floor_02_4",
+         "m_Tag": ""
+      },
+      39,
+      {
+         "m_Active": true,
+         "m_GUID": "17297431458117421290",
+         "m_Name": "Collider_Section_3",
+         "m_Tag": ""
+      },
+      40,
+      {
+         "m_Active": true,
+         "m_GUID": "6272918574489786361",
+         "m_Name": "Collider_Building_09",
+         "m_Tag": ""
+      },
+      41,
+      {
+         "m_Active": true,
+         "m_GUID": "3580519676571055290",
+         "m_Name": "Collider_Building_10_1",
+         "m_Tag": ""
+      },
+      42,
+      {
+         "m_Active": true,
+         "m_GUID": "15106520698798816798",
+         "m_Name": "Collider_Building_10_2",
+         "m_Tag": ""
+      },
+      43,
+      {
+         "m_Active": true,
+         "m_GUID": "15527529331294812699",
+         "m_Name": "Collider_Floor_03",
+         "m_Tag": ""
+      },
+      44,
+      {
+         "m_Active": true,
+         "m_GUID": "11043500359933411386",
+         "m_Name": "Ground_Section_1",
+         "m_Tag": ""
+      },
+      45,
+      {
+         "m_Active": true,
+         "m_GUID": "323662006459032899",
+         "m_Name": "Ground_Floor_01_1",
+         "m_Tag": "Ground"
+      },
+      46,
+      {
+         "m_Active": true,
+         "m_GUID": "10581067147368336166",
+         "m_Name": "Ground_Floor_01_2",
+         "m_Tag": "Ground"
+      },
+      47,
+      {
+         "m_Active": true,
+         "m_GUID": "15675807835421358998",
+         "m_Name": "Ground_Floor_01_3",
+         "m_Tag": "Ground"
+      },
+      48,
+      {
+         "m_Active": true,
+         "m_GUID": "13138819058539551279",
+         "m_Name": "Ground_Floor_01_4",
+         "m_Tag": "Ground"
+      },
+      49,
+      {
+         "m_Active": true,
+         "m_GUID": "7343721692509432108",
+         "m_Name": "Ground_Floor_01_5",
+         "m_Tag": "Ground"
+      },
+      50,
+      {
+         "m_Active": true,
+         "m_GUID": "18032489083436664383",
+         "m_Name": "Ground_Floor_01_6",
+         "m_Tag": "Ground"
+      },
+      51,
+      {
+         "m_Active": true,
+         "m_GUID": "6124553985493881187",
+         "m_Name": "Ground_Floor_01_7",
+         "m_Tag": "Ground"
+      },
+      52,
+      {
+         "m_Active": true,
+         "m_GUID": "2534642724615662311",
+         "m_Name": "Ground_Section_2",
+         "m_Tag": ""
+      },
+      53,
+      {
+         "m_Active": true,
+         "m_GUID": "6026625358991924493",
+         "m_Name": "Ground_Floor_02_1",
+         "m_Tag": "Ground"
+      },
+      54,
+      {
+         "m_Active": true,
+         "m_GUID": "13726441773498103630",
+         "m_Name": "Ground_Floor_02_2",
+         "m_Tag": "Ground"
+      },
+      55,
+      {
+         "m_Active": true,
+         "m_GUID": "15727937509576040248",
+         "m_Name": "Ground_Floor_02_3",
+         "m_Tag": "Ground"
+      },
+      56,
+      {
+         "m_Active": true,
+         "m_GUID": "2844690317817573",
+         "m_Name": "Ground_Floor_02_4",
+         "m_Tag": "Ground"
+      },
+      57,
+      {
+         "m_Active": true,
+         "m_GUID": "7689404361022278443",
+         "m_Name": "Ground_Section_3",
+         "m_Tag": ""
+      },
+      58,
+      {
+         "m_Active": true,
+         "m_GUID": "16252692293646613321",
+         "m_Name": "Ground_Floor_03",
+         "m_Tag": "Ground"
+      }
+   ],
+   [
+      59,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            2.14288330078125,
+            -99.878173828125,
+            2063.99169921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            -17.215087890625,
+            11.289901733398438,
+            2019.6287841796875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            41.26275634765625,
+            -11.68914794921875,
+            2021.5098876953125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            48.942413330078125,
+            8.494979858398438,
+            1992.5389404296875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            19.787322998046875,
+            10.789627075195313,
+            1994.751220703125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6,
+      {
+         "m_Position": [
+            78.10374450683594,
+            10.789627075195313,
+            1991.057373046875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7,
+      {
+         "m_Position": [
+            22.802001953125,
+            -99.878173828125,
+            2063.99169921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8,
+      {
+         "m_Position": [
+            81.45646667480469,
+            8.081527709960938,
+            1908.677734375
+         ],
+         "m_Rotation": [
+            0.0,
+            89.96573638916016,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9,
+      {
+         "m_Position": [
+            90.28123474121094,
+            -11.957656860351563,
+            1867.7093505859375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      10,
+      {
+         "m_Position": [
+            78.69065856933594,
+            10.242507934570313,
+            1881.193115234375
+         ],
+         "m_Rotation": [
+            0.0,
+            89.96573638916016,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      11,
+      {
+         "m_Position": [
+            71.83200073242188,
+            13.013717651367188,
+            1851.591796875
+         ],
+         "m_Rotation": [
+            -180.0,
+            -0.0,
+            -180.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      12,
+      {
+         "m_Position": [
+            69.85382080078125,
+            9.994644165039063,
+            1792.6566162109375
+         ],
+         "m_Rotation": [
+            0.0,
+            89.96573638916016,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      13,
+      {
+         "m_Position": [
+            97.93254089355469,
+            -4.3208770751953125,
+            1713.95703125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      14,
+      {
+         "m_Position": [
+            77.66984558105469,
+            -15.426116943359375,
+            1696.3192138671875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      15,
+      {
+         "m_Position": [
+            48.8863525390625,
+            6.3380126953125,
+            1727.2786865234375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      16,
+      {
+         "m_Position": [
+            62.59065246582031,
+            5.8464508056640625,
+            1668.690673828125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      17,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            1991.99755859375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      18,
+      {
+         "m_Position": [
+            -15.077667236328125,
+            14.928634643554688,
+            1999.58447265625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      19,
+      {
+         "m_Position": [
+            -36.37614440917969,
+            14.928634643554688,
+            2026.6707763671875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      20,
+      {
+         "m_Position": [
+            19.458419799804688,
+            14.928634643554688,
+            1995.7725830078125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      21,
+      {
+         "m_Position": [
+            49.191253662109375,
+            9.7911376953125,
+            1992.210205078125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      22,
+      {
+         "m_Position": [
+            77.53544616699219,
+            8.0162353515625,
+            1991.1905517578125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      23,
+      {
+         "m_Position": [
+            0.728668212890625,
+            -11.418266296386719,
+            2016.2294921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      24,
+      {
+         "m_Position": [
+            -32.4561767578125,
+            -11.510398864746094,
+            2035.7694091796875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      25,
+      {
+         "m_Position": [
+            17.190383911132813,
+            -11.351263046264648,
+            2035.7694091796875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      26,
+      {
+         "m_Position": [
+            -7.52337646484375,
+            -13.570672988891602,
+            2045.8280029296875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      27,
+      {
+         "m_Position": [
+            48.96199035644531,
+            -14.11909008026123,
+            2023.1937255859375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      28,
+      {
+         "m_Position": [
+            48.96199035644531,
+            -12.565131187438965,
+            2039.4761962890625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      29,
+      {
+         "m_Position": [
+            97.40672302246094,
+            -11.409061431884766,
+            2009.9434814453125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      30,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            1777.50830078125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      31,
+      {
+         "m_Position": [
+            80.03861999511719,
+            8.480560302734375,
+            1909.1116943359375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      32,
+      {
+         "m_Position": [
+            81.09355163574219,
+            10.462799072265625,
+            1881.340576171875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      33,
+      {
+         "m_Position": [
+            67.89254760742188,
+            12.121597290039063,
+            1852.23046875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      34,
+      {
+         "m_Position": [
+            67.43136596679688,
+            12.511940002441406,
+            1792.7431640625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      35,
+      {
+         "m_Position": [
+            100.69847106933594,
+            -11.905713081359863,
+            1945.805419921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      36,
+      {
+         "m_Position": [
+            108.091552734375,
+            -15.201791763305664,
+            1909.209228515625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      37,
+      {
+         "m_Position": [
+            124.5262451171875,
+            -12.817968368530273,
+            1909.26904296875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      38,
+      {
+         "m_Position": [
+            89.62004089355469,
+            -11.739251136779785,
+            1830.724853515625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      39,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            1802.8648681640625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      40,
+      {
+         "m_Position": [
+            41.71452331542969,
+            8.504180908203125,
+            1728.3134765625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      41,
+      {
+         "m_Position": [
+            42.46455383300781,
+            8.504180908203125,
+            1669.06005859375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      42,
+      {
+         "m_Position": [
+            68.66337585449219,
+            8.504180908203125,
+            1660.4227294921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      43,
+      {
+         "m_Position": [
+            84.29600524902344,
+            -15.248916625976563,
+            1695.93359375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      44,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            1586.8587646484375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      45,
+      {
+         "m_Position": [
+            -7.52337646484375,
+            -10.272647857666016,
+            2045.828125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      46,
+      {
+         "m_Position": [
+            -32.4561767578125,
+            -7.226665496826172,
+            2035.76953125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      47,
+      {
+         "m_Position": [
+            17.190383911132813,
+            -7.125796794891357,
+            2035.76953125
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      48,
+      {
+         "m_Position": [
+            0.728668212890625,
+            -7.195072650909424,
+            2016.2294921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      49,
+      {
+         "m_Position": [
+            48.96199035644531,
+            -12.378437042236328,
+            2023.19384765625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      50,
+      {
+         "m_Position": [
+            48.96199035644531,
+            -9.888773918151855,
+            2039.476318359375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      51,
+      {
+         "m_Position": [
+            97.40672302246094,
+            -7.165446758270264,
+            2009.943603515625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      52,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            860.9467163085938
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      53,
+      {
+         "m_Position": [
+            100.69847106933594,
+            -7.680351257324219,
+            1945.805419921875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      54,
+      {
+         "m_Position": [
+            108.091552734375,
+            -12.517377853393555,
+            1909.209228515625
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      55,
+      {
+         "m_Position": [
+            124.5262451171875,
+            -10.145755767822266,
+            1909.26904296875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      56,
+      {
+         "m_Position": [
+            89.62004089355469,
+            -7.643385887145996,
+            1830.7249755859375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      57,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      58,
+      {
+         "m_Position": [
+            84.29600524902344,
+            -11.127968788146973,
+            1695.93359375
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      13,
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "4e513dd68f542640",
+         "ASSET_MAT_m_MaterialInstance": "f13cdf6a66355fd3",
+         "m_IsVisible": true
+      },
+      3,
+      {
+         "ASSET_GEOM_m_RenderObject": "d801cf3f3f44d1b3",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      4,
+      {
+         "ASSET_GEOM_m_RenderObject": "fccf123d4737aa7e",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      5,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_MaterialInstance": "f13cdf6a66355fd3",
+         "m_IsVisible": true
+      },
+      6,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      8,
+      {
+         "ASSET_GEOM_m_RenderObject": "fccf123d4737aa7e",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      9,
+      {
+         "ASSET_GEOM_m_RenderObject": "e91dcf184e026d51",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      10,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      11,
+      {
+         "ASSET_GEOM_m_RenderObject": "d59bd7deafad712d",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      12,
+      {
+         "ASSET_GEOM_m_RenderObject": "fe9c6f2ea3d97556",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      14,
+      {
+         "ASSET_GEOM_m_RenderObject": "38f15a6260750456",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      15,
+      {
+         "ASSET_GEOM_m_RenderObject": "cf7b3dbea3584a62",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      },
+      16,
+      {
+         "ASSET_GEOM_m_RenderObject": "bafa267d4b337f6a",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      36,
+      18,
+      {
+         "m_HalfExtents": [
+            25.0,
+            22.0,
+            11.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      19,
+      {
+         "m_HalfExtents": [
+            11.0,
+            22.0,
+            22.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      20,
+      {
+         "m_HalfExtents": [
+            11.0,
+            22.0,
+            11.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      21,
+      {
+         "m_HalfExtents": [
+            18.0,
+            22.0,
+            15.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      22,
+      {
+         "m_HalfExtents": [
+            10.0,
+            15.0,
+            12.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      23,
+      {
+         "m_HalfExtents": [
+            30.0,
+            4.0,
+            15.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      24,
+      {
+         "m_HalfExtents": [
+            15.0,
+            4.0,
+            5.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      25,
+      {
+         "m_HalfExtents": [
+            13.5,
+            4.0,
+            5.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      26,
+      {
+         "m_HalfExtents": [
+            11.0,
+            3.0,
+            18.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      27,
+      {
+         "m_HalfExtents": [
+            18.5,
+            2.0,
+            16.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      28,
+      {
+         "m_HalfExtents": [
+            18.5,
+            2.5,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      29,
+      {
+         "m_HalfExtents": [
+            30.0,
+            4.0,
+            30.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      31,
+      {
+         "m_HalfExtents": [
+            16.0,
+            21.0,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      32,
+      {
+         "m_HalfExtents": [
+            11.0,
+            18.0,
+            9.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      33,
+      {
+         "m_HalfExtents": [
+            9.0,
+            20.0,
+            21.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      34,
+      {
+         "m_HalfExtents": [
+            9.0,
+            20.0,
+            21.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      35,
+      {
+         "m_HalfExtents": [
+            24.0,
+            4.0,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      36,
+      {
+         "m_HalfExtents": [
+            16.0,
+            2.0,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      37,
+      {
+         "m_HalfExtents": [
+            1.5,
+            2.5,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      38,
+      {
+         "m_HalfExtents": [
+            35.0,
+            4.0,
+            60.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      40,
+      {
+         "m_HalfExtents": [
+            12.0,
+            20.0,
+            27.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      41,
+      {
+         "m_HalfExtents": [
+            8.0,
+            20.0,
+            30.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      42,
+      {
+         "m_HalfExtents": [
+            22.0,
+            20.0,
+            22.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      43,
+      {
+         "m_HalfExtents": [
+            40.0,
+            4.0,
+            60.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      45,
+      {
+         "m_HalfExtents": [
+            11.0,
+            0.20000000298023224,
+            18.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      46,
+      {
+         "m_HalfExtents": [
+            15.0,
+            0.20000000298023224,
+            5.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      47,
+      {
+         "m_HalfExtents": [
+            13.5,
+            0.20000000298023224,
+            5.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      48,
+      {
+         "m_HalfExtents": [
+            30.0,
+            0.20000000298023224,
+            15.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      49,
+      {
+         "m_HalfExtents": [
+            18.5,
+            0.20000000298023224,
+            16.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      50,
+      {
+         "m_HalfExtents": [
+            18.5,
+            0.20000000298023224,
+            1.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      51,
+      {
+         "m_HalfExtents": [
+            30.0,
+            0.20000000298023224,
+            30.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      53,
+      {
+         "m_HalfExtents": [
+            24.0,
+            0.20000000298023224,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      54,
+      {
+         "m_HalfExtents": [
+            16.0,
+            0.20000000298023224,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      55,
+      {
+         "m_HalfExtents": [
+            1.5,
+            0.20000000298023224,
+            18.5
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      56,
+      {
+         "m_HalfExtents": [
+            35.0,
+            0.20000000298023224,
+            60.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      58,
+      {
+         "m_HalfExtents": [
+            40.0,
+            0.20000000298023224,
+            60.0
+         ],
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
