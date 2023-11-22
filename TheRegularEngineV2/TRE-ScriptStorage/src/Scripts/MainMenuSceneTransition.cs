@@ -11,6 +11,8 @@ namespace TRE
     {
         private string TutorialSceneName;
         private string ControlsDisplaySceneName;
+        public bool spacePressed;
+        public bool enterPressed;
 
         public void Start()
         {
@@ -20,15 +22,23 @@ namespace TRE
 
         public void Update()
         {
-            if (InputSystem.GetKeyTrigger(InputKeys.Space) && InputSystem.GetKeyTrigger(InputKeys.Enter))
+            if (InputSystem.GetKeyTrigger(InputKeys.Space))
             {
-                Scene.ChangeScene(TutorialSceneName);
+                spacePressed = true;
             }
 
-            //if (InputSystem.GetKeyTrigger(InputKeys.Space))
-            //{
-            //    Scene.ChangeScene(ControlsDisplaySceneName);
-            //}
+            if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+            {
+                enterPressed = true;
+            }
+
+            if (spacePressed && enterPressed)
+            {
+                Scene.ChangeScene(TutorialSceneName);
+
+                spacePressed = false;
+                enterPressed = false;
+            }
         }
     }
 }
