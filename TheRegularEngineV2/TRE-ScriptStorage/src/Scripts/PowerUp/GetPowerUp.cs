@@ -49,9 +49,9 @@ namespace TRE
 
             if (GetComponent<Rigidbody>().useGravity == true && other.CompareTag("Ground"))
             {
-                //Debug.Log("LAND BRO");
                 //RemoveComponent<Rigidbody>();
                 GetComponent<Rigidbody>().useGravity = false;
+                PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
                 transform.Position = new vec3(transform.Position.x, transform.Position.y + transform.Scale.y + groundOffset, transform.Position.z);
                 //PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
                 cooldownCurrent = 0;
@@ -104,6 +104,7 @@ namespace TRE
                 }
 
                 GetComponent<Rigidbody>().useGravity = false;
+                PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
             }
         }
 
@@ -133,7 +134,7 @@ namespace TRE
 
             //this.transform.Position =  new Vector3(0, this.transform.Position.y, 0);     // this.transform.localPosition = new Vector3(0, this.transform.localPosition.y, 0);
 
-            if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
+            if (!collected || playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
             GetComponent<MeshRenderer>().Visible = false;
 
@@ -142,14 +143,12 @@ namespace TRE
             //newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
             if (playerObj.CompareTag(mole1tag)) 
             {
-                newPos.y += playerObj.GetComponent<MoleyController>().currentHeight + playerObj.GetComponent<MoleyController>().currentRadius
-                + 8.5f + 0.8f;
+                newPos.y += playerObj.GetComponent<MoleyController>().currentHeight + playerObj.GetComponent<MoleyController>().currentRadius;
             }
 
             if (playerObj.CompareTag(mole2tag))
             {
-                newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
-                + 8.5f + 0.8f;
+                newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius;
             }
             transform.Position = newPos;
             //transform.Position = newPos;
@@ -163,7 +162,6 @@ namespace TRE
         public void ReleasePowerUp()
         {
             GetComponent<MeshRenderer>().Visible = true;
-
             playerObj = null;
             collected = false;
             GetComponent<Rigidbody>().useGravity = true;

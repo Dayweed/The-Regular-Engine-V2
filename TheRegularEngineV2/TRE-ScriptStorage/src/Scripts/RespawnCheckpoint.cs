@@ -62,14 +62,14 @@ namespace TRE
 
             if (other.CompareTag("Red")) // Moley
             {
-                Debug.Log(other.name + " got triggered!");
+                //Debug.Log(other.name + " got triggered!");
                 // here we will set the player's respawn position to the position of the checkpoint that is matched.
                 other.GetComponent<MoleyController>().SetRespawnPoint(RespawnPoints[this.name]);
             }
 
             if (other.CompareTag("Blue")) // Holey
             {
-                Debug.Log(other.name + " got triggered!");
+                //Debug.Log(other.name + " got triggered!");
                 other.GetComponent<HoleyController>().SetRespawnPoint(RespawnPoints[this.name]);
             }
         }
