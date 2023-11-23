@@ -64,7 +64,7 @@ namespace TRE
 		//Respawn variables
 		private vec3 RespawnPoint = new vec3(0, 0, 0);
         private bool RespawnPlayer = false;
-		private float RespawnTimer = 1.0f;
+		private float RespawnTimer = 1.5f;
 
 		// Is Dead
 		public bool isDead = false;
@@ -86,6 +86,9 @@ namespace TRE
 
 		//Transfrom Component
 		private Transform holeyTransform;
+
+		//Moley Reference 
+		private Entity moley_ref;
 
 		public void Start()
 		{
@@ -111,7 +114,9 @@ namespace TRE
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 
 			RespawnPoint = holeyTransform.Position;
-		}
+
+            moley_ref = ECSManager.FindEntityByName("Moley");
+        }
 
 		public void Update()
 		{
@@ -153,10 +158,17 @@ namespace TRE
 
 			if (pos.y < (InitialPosition.y - 50.0f))
 			{
-				RespawnPlayer = true;
-				Debug.Log(RespawnPoint.ToString());
-				//Debug.Log("Respawn");
-			}
+                if (!moley_ref.GetComponent<MoleyController>().GetIsDead() && isDead)
+                {
+                    RespawnPlayer = true;
+                    if (MyPowerManager.powerUps.Count > 0)
+                    {
+                        MyPowerManager.LoseMain();
+                        isScaled = false;
+                    }
+
+                }
+            }
 
 			dirVec = new vec3(0, 0, 0);
 
@@ -446,7 +458,7 @@ namespace TRE
                     Respawn(); 
 					isDead = false;
                     RespawnPlayer = false;
-					RespawnTimer = 1.0f;
+					RespawnTimer = 1.5f;
                 }
             }
 		}
