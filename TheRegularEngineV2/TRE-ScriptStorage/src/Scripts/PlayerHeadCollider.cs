@@ -32,10 +32,15 @@ namespace TRE
             }
             else if(this.CompareTag(mole2tag))
             {
-                //vec3 newPos = playerObj.transform.Position;
-                //newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
-                //    + offset.y + 0.8f;
-                //transform.Position = newPos;
+                vec3 newPos = playerObj.transform.Position;
+                newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius + offset.y + 1f;
+
+
+                if (playerObj.GetComponent<HoleyController>().mainBlueberry == true && playerObj.GetComponent<HoleyController>().isScaled == true)
+                {
+                    newPos.y = playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius + offset.y + 10f;
+                }
+                transform.Position = newPos;
             }
 
         }

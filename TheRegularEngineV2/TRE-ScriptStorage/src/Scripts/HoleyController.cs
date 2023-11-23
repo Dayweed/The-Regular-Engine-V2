@@ -369,15 +369,16 @@ namespace TRE
 				//Tall model
 				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
 					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
-				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 8.5f, 0.5f * lerpSpeed * Time.deltaTime);
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight/100, 0.5f * lerpSpeed * Time.deltaTime);
+				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius/100, lerpSpeed * Time.deltaTime);
+				//currOffset = MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
-				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
-				PS.ResizeCapsuleCollider(this.ID, blueberrysuperRadius, blueberrysuperHeight);
-				TransformSystem.SetScaling(this.ID, currentXform);
-			}
-			else if (mainStrawberry)
+
+                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
+            else if (mainStrawberry)
 			{
 				//Cactus Model
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
