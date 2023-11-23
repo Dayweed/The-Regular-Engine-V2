@@ -384,7 +384,7 @@ namespace TRE
                     GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
                 currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 0, 3 * lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 0, lerpSpeed * Time.deltaTime);
 				currentXform = defaultXform;
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
@@ -398,7 +398,7 @@ namespace TRE
 					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = 8.5f;//MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
