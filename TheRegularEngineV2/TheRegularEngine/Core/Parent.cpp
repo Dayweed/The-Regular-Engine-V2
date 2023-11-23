@@ -25,7 +25,15 @@ namespace TRE
 			//For startup
 			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
 			{
+				/*Transform& trans = object->GetComponent<Transform>();
+				std::cout << "Parent: " << ((GetParent(object)) ? GetParent(object)->GetName() : "NONE") << ", " << "; Child: " << object->GetName() << "\n";
+				std::cout << "Chi Pos: " << trans.m_Position.x << ", " << trans.m_Position.y << ", " << trans.m_Position.z << "\n";
+				std::cout << "Chi Loc: " << trans.m_LocalPosition.x << ", " << trans.m_LocalPosition.y << ", " << trans.m_LocalPosition.z << "\n";*/
+
 				UpdateLocalData(object);
+
+				/*std::cout << "Chi Pos: " << trans.m_Position.x << ", " << trans.m_Position.y << ", " << trans.m_Position.z << "\n";
+				std::cout << "Chi Loc: " << trans.m_LocalPosition.x << ", " << trans.m_LocalPosition.y << ", " << trans.m_LocalPosition.z << "\n";*/
 
 				parent.m_IsDirty = false;
 			}
@@ -197,6 +205,12 @@ namespace TRE
 		for (Entity& child : GetChildren(parent))
 		{
 			Transform& childTransform = child->GetComponent<Transform>();
+			/*std::cout << "Parent: " << parent->GetName() << ", " << "; Child: " << child->GetName() << "\n";
+			std::cout << "Par Pos: " << parentTransform.m_Position.x << ", " << parentTransform.m_Position.y << ", " << parentTransform.m_Position.z << "\n";
+			std::cout << "Par Loc: " << parentTransform.m_LocalPosition.x << ", " << parentTransform.m_LocalPosition.y << ", " << parentTransform.m_LocalPosition.z << "\n";
+			std::cout << "Chi Pos: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
+			std::cout << "Chi Loc: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";
+			*/
 			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
 			if (updateLocal)
@@ -204,6 +218,8 @@ namespace TRE
 				UpdateChildLocalData(parent, child);
 			}
 			childTransform.m_IsDirty = true;
+			//std::cout << "Chi Pos: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
+			//std::cout << "Chi Loc: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";
 
 			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{

@@ -87,6 +87,14 @@ namespace TRE
 			{
 				transform.CalculateWorldMatrix();
 				transform.m_IsDirty = false;
+
+				// Overwrite prefab ["TRE::Transform/Position"] if it is a prefab
+				if (go->HasComponent<Prefabing>())
+				{
+					go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Position");
+					go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Rotation");
+					go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Scale");
+				}
 			}
 		}
 	}
