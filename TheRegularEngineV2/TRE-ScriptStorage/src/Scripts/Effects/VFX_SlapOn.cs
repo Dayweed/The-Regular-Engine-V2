@@ -47,9 +47,18 @@ namespace TRE
         {
             MyRenderer = GetComponent<SpriteRenderer>();
 
-            StartRotate = new vec3(0, 0, 20.0f);
-            StartScale = new vec3(20, 20, 1);
-            StartColor = new vec4(1, 1, 1, 0);
+            if (Scene.GetSceneName() == "ResultScreen")
+            {
+                StartRotate = new vec3(0, 0, 0.5f);
+                StartScale = new vec3(12f, 54f, 1);
+                StartColor = new vec4(1, 1, 1, 0);
+            }
+            else
+            {
+                StartRotate = new vec3(0, 0, 20.0f);
+                StartScale = new vec3(20, 20, 1);
+                StartColor = new vec4(1, 1, 1, 0);
+            }
         }
 
         public void Update()
