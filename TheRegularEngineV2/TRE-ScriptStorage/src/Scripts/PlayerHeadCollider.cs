@@ -16,7 +16,7 @@ namespace TRE
         bool isPlayer2 = false;
         private vec3 offset;
 
-        private void SetToPlayer()
+        public void SetToPlayer()
         {
             PhysicsSystem.GetColliderOffset(playerObj.ID, out offset);
 
@@ -32,10 +32,10 @@ namespace TRE
             }
             else if(this.CompareTag(mole2tag))
             {
-                //vec3 newPos = playerObj.transform.Position;
-                //newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
-                //    + offset.y + 0.8f;
-                //transform.Position = newPos;
+                vec3 newPos = playerObj.transform.Position;
+                newPos.y += (playerObj.GetComponent<CapsuleCollider>().HalfHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
+                                                                                           //+ offset.y;
+                transform.Position = newPos;
             }
 
         }

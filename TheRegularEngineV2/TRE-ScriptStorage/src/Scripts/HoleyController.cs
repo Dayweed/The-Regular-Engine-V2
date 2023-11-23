@@ -333,6 +333,32 @@ namespace TRE
 				if (mainBlueberry || mainStrawberry)
 				{
 					isScaled = !isScaled;
+
+					// Shift it up to prevent falling
+					if (isScaled)
+					{
+						//vec3 newPos = transform.Position;
+						//newPos.y += 1.5f;
+						//transform.Position = newPos;
+						PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+
+						// Shift other mole up too if it is colliding
+						Entity headCollider = ECSManager.FindEntityByName("Holey's Head Collider");
+						headCollider.GetComponent<PlayerHeadCollider>().SetToPlayer();
+						Entity Moley = ECSManager.FindEntityByName("Moley");
+						if (PhysicsSystem.IsCollisionStay(headCollider.ID, Moley.ID))
+                        {
+                            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+                            vec3 moleyPos = Moley.transform.Position;
+							moleyPos.y += blueberrysuperHeight * 2 * 3f;
+							Moley.transform.Position = moleyPos;
+						}
+						//vec3 newColliderPos = headCollider.transform.Position;
+						//newColliderPos.y += (headCollider.GetComponent<HoleyController>().currentHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
+						//																					  //+ offset.y;
+						//headCollider.transform.Position = newColliderPos;
+					}
+
 					if (isScaled)
 					{
 						if (ECSManager.IsValidEntity(changesizeSFX))

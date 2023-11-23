@@ -41,7 +41,7 @@ namespace TRE
         vec4 MaxColorOffset;
 
         float TimerToStop;
-        float TimerToStopDefault = 5f;
+        float TimerToStopDefault = 2f;
 
         public void Start()
         {
@@ -62,6 +62,10 @@ namespace TRE
                     doneRotate = true;
                     doneScale = true;
                     doneColor = true;
+                    slapping = false;
+                    transform.Rotation = EndRotation;
+                    transform.Scale = EndScale;
+                    MyRenderer.Color = EndColor;
                 }
 
                 if (transform.Rotation.x >= MinRotateOffset.x && transform.Rotation.x <= MaxRotateOffset.x
