@@ -49,7 +49,7 @@ namespace TRE
 
             if (Scene.GetSceneName() == "ResultScreen")
             {
-                StartRotate = new vec3(0, 0, 0.5f);
+                StartRotate = new vec3(0, 0, 10.5f);
                 StartScale = new vec3(12f, 54f, 1);
                 StartColor = new vec4(1, 1, 1, 0);
             }
