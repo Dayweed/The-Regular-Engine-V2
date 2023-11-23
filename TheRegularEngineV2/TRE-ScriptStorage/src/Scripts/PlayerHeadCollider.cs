@@ -33,7 +33,7 @@ namespace TRE
             else if(this.CompareTag(mole2tag))
             {
                 vec3 newPos = playerObj.transform.Position;
-                newPos.y += (playerObj.GetComponent<CapsuleCollider>().HalfHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
+                newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight + 3; //+ playerObj.GetComponent<HoleyController>().currentRadius
                                                                                            //+ offset.y;
                 transform.Position = newPos;
             }

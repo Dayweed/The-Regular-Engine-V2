@@ -350,7 +350,7 @@ namespace TRE
                         {
                             PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
                             vec3 moleyPos = Moley.transform.Position;
-							moleyPos.y += blueberrysuperHeight * 2 * 3f;
+							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2 + 3f;
 							Moley.transform.Position = moleyPos;
 						}
 						//vec3 newColliderPos = headCollider.transform.Position;
@@ -395,9 +395,9 @@ namespace TRE
 				//Tall model
 				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
 					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight/100, 0.5f * lerpSpeed * Time.deltaTime);
-				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius/100, lerpSpeed * Time.deltaTime);
-				//currOffset = MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
+				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
+				currOffset = 8.5f;// MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
