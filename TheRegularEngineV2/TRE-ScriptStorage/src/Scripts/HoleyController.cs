@@ -348,16 +348,17 @@ namespace TRE
 						Entity Moley = ECSManager.FindEntityByName("Moley");
 						if (PhysicsSystem.IsCollisionStay(headCollider.ID, Moley.ID))
                         {
-                            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
                             vec3 moleyPos = Moley.transform.Position;
-							moleyPos.y += blueberrysuperHeight * 2 * 3f;
+							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
 							Moley.transform.Position = moleyPos;
-						}
-						//vec3 newColliderPos = headCollider.transform.Position;
-						//newColliderPos.y += (headCollider.GetComponent<HoleyController>().currentHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
-						//																					  //+ offset.y;
-						//headCollider.transform.Position = newColliderPos;
-					}
+                            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+                        }
+                        PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+                        //vec3 newColliderPos = headCollider.transform.Position;
+                        //newColliderPos.y += (headCollider.GetComponent<HoleyController>().currentHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
+                        //																					  //+ offset.y;
+                        //headCollider.transform.Position = newColliderPos;
+                    }
 
 					if (isScaled)
 					{
@@ -383,7 +384,7 @@ namespace TRE
                     GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
                 currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 0, 3 * lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 0, lerpSpeed * Time.deltaTime);
 				currentXform = defaultXform;
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
@@ -395,9 +396,9 @@ namespace TRE
 				//Tall model
 				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
 					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight/100, 0.5f * lerpSpeed * Time.deltaTime);
-				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius/100, lerpSpeed * Time.deltaTime);
-				//currOffset = MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
+				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);

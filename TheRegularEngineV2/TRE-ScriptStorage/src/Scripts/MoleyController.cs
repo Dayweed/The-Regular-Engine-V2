@@ -47,8 +47,8 @@ namespace TRE
 		private float strawberrysuperRadius = 4f;
 		public float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 0.1f;
-		private float strawberrysuperHeight = 0.1f;
+		private float blueberrysuperHeight = 2.4f;
+		private float strawberrysuperHeight = 4.8f;
 		public float currentHeight = 1f;
 
 		//Player Scallings
@@ -394,7 +394,7 @@ namespace TRE
 					GetComponent<MeshRenderer>().Material = "a8e7782a23bd1acf";
 				}
                 currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
+				//currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				currentXform = blueberryscaledXform;
