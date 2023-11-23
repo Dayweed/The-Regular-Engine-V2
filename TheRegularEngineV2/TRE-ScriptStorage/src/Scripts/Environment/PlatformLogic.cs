@@ -96,6 +96,11 @@ namespace TRE
 					positions = new vec3[] { new vec3(832.419f, 90.422f, -171), new vec3(894.419f, 90.422f, -171) };
 				}
 			}
+
+			if (currentIndex < positions.Length)
+			{
+                transform.Position = positions[currentIndex];
+            }
 		}
 
 		public void Update()
@@ -107,7 +112,11 @@ namespace TRE
             float dirZ = (positions[currentIndex].z - transform.Position.z);
 
 			vec3 dir = new vec3(dirX, dirY, dirZ);
-			vec3 normDir = dir.Normalized;
+			vec3 normDir = new vec3();
+			if (dir.Length > 0)
+			{
+                normDir = dir.Normalized;
+            }
 
             // Lerps through each positions
             if (positions.Length > 0)
@@ -120,7 +129,7 @@ namespace TRE
 					{
 						++currentIndex;
 						if (currentIndex >= positions.Length) currentIndex = 0;
-						transform.Position = positions[currentIndex];
+						//transform.Position = positions[currentIndex];
                         currentTime = delay;
                     }
 				}
@@ -143,8 +152,8 @@ namespace TRE
 
 		private bool IsNearPosition(vec3 targetPosition)
 		{
-            vec3 minusOffset = targetPosition - offset;
-            vec3 plusOffset = targetPosition + offset;
+            vec3 minusOffset = targetPosition - new vec3(offset);
+            vec3 plusOffset = targetPosition + new vec3(offset);
 
 			vec3 minOffset = new vec3(
 				(minusOffset.x < plusOffset.x) ? minusOffset.x : plusOffset.x,
@@ -157,7 +166,6 @@ namespace TRE
 				(minusOffset.y > plusOffset.y) ? minusOffset.y : plusOffset.y,
 				(minusOffset.z > plusOffset.z) ? minusOffset.z : plusOffset.z
                 );
-
 
             return transform.Position.x >= minOffset.x && transform.Position.x <= maxOffset.x
                 && transform.Position.y >= minOffset.y && transform.Position.y <= maxOffset.y
