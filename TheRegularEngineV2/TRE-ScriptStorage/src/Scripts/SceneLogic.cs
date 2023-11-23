@@ -69,7 +69,7 @@ namespace TRE
 
             if(forceGoToNextScene)
             {
-                Scene.TransitionScene("Level_1", 4.5f);
+                //Scene.TransitionScene("Level_1", 4.5f);
             }
             #endregion
 
@@ -110,7 +110,7 @@ namespace TRE
             }
 
             //go to next scene after a while
-            if (goToNextScene)
+            if (goToNextScene || forceGoToNextScene)
             {
                 if (!courseComplete.isVisible)
                 {
