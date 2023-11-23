@@ -348,16 +348,17 @@ namespace TRE
 						Entity Moley = ECSManager.FindEntityByName("Moley");
 						if (PhysicsSystem.IsCollisionStay(headCollider.ID, Moley.ID))
                         {
-                            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
                             vec3 moleyPos = Moley.transform.Position;
-							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2 + 3f;
+							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
 							Moley.transform.Position = moleyPos;
-						}
-						//vec3 newColliderPos = headCollider.transform.Position;
-						//newColliderPos.y += (headCollider.GetComponent<HoleyController>().currentHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
-						//																					  //+ offset.y;
-						//headCollider.transform.Position = newColliderPos;
-					}
+                            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+                        }
+                        PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+                        //vec3 newColliderPos = headCollider.transform.Position;
+                        //newColliderPos.y += (headCollider.GetComponent<HoleyController>().currentHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
+                        //																					  //+ offset.y;
+                        //headCollider.transform.Position = newColliderPos;
+                    }
 
 					if (isScaled)
 					{
@@ -397,7 +398,7 @@ namespace TRE
 					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = 8.5f;// MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
+				currOffset = 8.5f;//MathF.Lerp(0, 8.5f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
