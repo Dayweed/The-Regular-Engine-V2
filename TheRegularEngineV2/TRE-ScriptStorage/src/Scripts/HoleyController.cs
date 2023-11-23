@@ -114,6 +114,7 @@ namespace TRE
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 
 			RespawnPoint = holeyTransform.Position;
+			RespawnPoint.y += 50.0f;
 
             moley_ref = ECSManager.FindEntityByName("Moley");
         }
