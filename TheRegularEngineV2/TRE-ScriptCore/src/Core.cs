@@ -897,7 +897,6 @@ namespace TRE
 			return Engine_GetMainCameraRotation();
 		}
 
-
 		#region Setters
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetPosition(EntityID entityid, vec3 newPos);
@@ -1063,6 +1062,16 @@ namespace TRE
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool Engine_GetMeshVisibility(EntityID entityid);
+
+        public static void SetMesh(EntityID entityid, string meshGUID)
+        {
+			Engine_SetMesh(entityid, meshGUID);
+        }
+
+        public static void SetMaterial(EntityID entityid, string instanceGUID)
+        {
+            Engine_SetMaterialInstance(entityid, instanceGUID);
+        }
     }
 
 

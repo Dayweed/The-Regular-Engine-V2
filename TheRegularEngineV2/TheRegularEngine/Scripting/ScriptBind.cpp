@@ -711,6 +711,21 @@ namespace TRE
 		mr.m_RenderObject = ResourceManager::Instance().GetResource<RenderObject>(Resource::GetGUIDFromHex(str));
 		mr.m_IsDirty = true;
 
+		if (mr.m_RenderObject->IsRigged())
+		{
+			if (Temp->HasComponent<AnimationComponent>() == false)
+			{
+				Temp->AddComponent<AnimationComponent>();
+			}
+		}
+		else
+		{
+			if (Temp->HasComponent<AnimationComponent>())
+			{
+				Temp->RemoveComponent<AnimationComponent>();
+			}
+		}
+
 		if (mr.m_RenderObject == nullptr)
 			PUBLISHERROR("Unable to find mesh " + str);
 	}
