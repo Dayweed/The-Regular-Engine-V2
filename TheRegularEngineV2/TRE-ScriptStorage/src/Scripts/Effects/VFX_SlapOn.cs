@@ -49,7 +49,7 @@ namespace TRE
 
             if (Scene.GetSceneName() == "ResultScreen")
             {
-                StartRotate = new vec3(0, 0, 10.5f);
+                StartRotate = new vec3(0, 0, 0f);
                 StartScale = new vec3(12f, 54f, 1);
                 StartColor = new vec4(1, 1, 1, 0);
             }
@@ -137,11 +137,16 @@ namespace TRE
             doneScale = false;
             doneColor = false;
 
-            RotateVec = (EndRotation - StartRotate).Normalized;
-            ScaleVec = (EndScale - StartScale).Normalized;
-            ColorVec = (EndColor - StartColor).Normalized;
+            RotateVec = (EndRotation - StartRotate);
+            ScaleVec = (EndScale - StartScale);
+            ColorVec = (EndColor - StartColor);
 
-            transform.Rotation = StartRotate;
+            if (RotateVec.Length > 0) RotateVec = RotateVec.Normalized;
+            if (ScaleVec.Length > 0) ScaleVec = ScaleVec.Normalized;
+            if (ColorVec.Length > 0) ColorVec = ColorVec.Normalized;
+
+
+			transform.Rotation = StartRotate;
             transform.Scale = StartScale;
             MyRenderer.Color = StartColor;
 
