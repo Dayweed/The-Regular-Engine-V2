@@ -1,20 +1,21 @@
 Asset File Path:
-../Assets/GirlAnimationWalkingTextures/Normal.png
+../Assets/Skybox6.png
 
 Texture File Path:
-../Resources/547865c1f61ef1f9.DDS
+../Resources/855ecfb3bc347f5d.DDS
 
 Compress:
-0
+1
 
 GL_Linear:
 1
 
 BCn:
-5
+1
 
 sRGB:
-0
+1
 
 Transparent:
 0
+

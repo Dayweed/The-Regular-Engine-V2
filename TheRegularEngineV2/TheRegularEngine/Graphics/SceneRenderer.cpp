@@ -789,12 +789,12 @@ namespace TRE
 
 	void SceneRenderer::SkyBoxPassInit()
 	{
-		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
-		auto Skybox2 = Resource::GetGUIDFromHex("612fbc6691dcd0bb");
-		auto Skybox3 = Resource::GetGUIDFromHex("d7317320914622e8");
-		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
-		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
-		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
+		auto Skybox1 = Resource::GetGUIDFromHex("86e229134d7c2f4e");
+		auto Skybox2 = Resource::GetGUIDFromHex("584d1fc06a88a4a6");
+		auto Skybox3 = Resource::GetGUIDFromHex("b0551365b3b9c5c2");
+		auto Skybox4 = Resource::GetGUIDFromHex("8ffa171d290d63db");
+		auto Skybox5 = Resource::GetGUIDFromHex("c3ed8c144c6f7bb4");
+		auto Skybox6 = Resource::GetGUIDFromHex("855ecfb3bc347f5d");
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
 		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
 		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);
