@@ -46,26 +46,26 @@
       0,
       {
          "m_Children": [
-            "10337862884711844318",
-            "14622530991932580670",
-            "17296381932344212268"
+            "10009100062694239672",
+            "8949378909894678502",
+            "1183978155612272581"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "2662982903751643901"
+         "m_Parent": "9849388884675812301"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "2662982903751643901"
+         "m_Parent": "9849388884675812301"
       },
       3,
       {
          "m_Children": [],
-         "m_Parent": "2662982903751643901"
+         "m_Parent": "9849388884675812301"
       }
    ],
    [
@@ -73,28 +73,28 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "2662982903751643901",
+         "m_GUID": "9849388884675812301",
          "m_Name": "RollingObject",
          "m_Tag": "RollingObstacle"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "10337862884711844318",
+         "m_GUID": "10009100062694239672",
          "m_Name": "RollingObjectRender",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "14622530991932580670",
+         "m_GUID": "8949378909894678502",
          "m_Name": "LeftLedge",
          "m_Tag": ""
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "17296381932344212268",
+         "m_GUID": "1183978155612272581",
          "m_Name": "RightLedge",
          "m_Tag": ""
       }
@@ -179,6 +179,7 @@
       1,
       {
          "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       }
@@ -207,9 +208,9 @@
       2,
       {
          "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
+            1.5,
+            4.0,
+            4.0
          ],
          "m_IsTrigger": true,
          "m_Offset": [
@@ -221,9 +222,9 @@
       3,
       {
          "m_HalfExtents": [
-            0.5,
-            2.0,
-            2.0
+            1.5,
+            4.0,
+            4.0
          ],
          "m_IsTrigger": true,
          "m_Offset": [

@@ -24,6 +24,9 @@ namespace TRE
         private float moveSpeed = 5.0f;
         private float rotateSpeed = 100.0f;
 
+        private float cooldown = 0f;
+        private float cooldownDefault = 2.0f;
+
         public RollingObj()
         {
 
@@ -41,13 +44,10 @@ namespace TRE
 
         public void Update()
         {
+            if (cooldown > 0) cooldown -= Time.deltaTime;
+
             // Check if the ledges is no longer being triggered
             if (lLedge == null || rLedge == null) return;
-
-            if (PhysicsSystem.IsTriggerEnter(ID, lLedge.ID) || PhysicsSystem.IsTriggerEnter(ID, rLedge.ID))
-            {
-                Bounceback();
-            }
 
             transform.Position += moveVector * moveDir * moveSpeed * Time.deltaTime;
             transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
@@ -57,7 +57,18 @@ namespace TRE
 
         public void Bounceback()
         {
+            if (cooldown > 0) return;
+
             moveDir = moveDir == 1 ? -1 : 1;
+            cooldown = cooldownDefault;
+        }
+
+        private void OnTriggerEnter(System.UInt64 otherID)
+        {
+            if (PhysicsSystem.IsTriggerEnter(ID, lLedge.ID) || PhysicsSystem.IsTriggerEnter(ID, rLedge.ID))
+            {
+                Bounceback();
+            }
         }
 
         private void OnCollisionStay(System.UInt64 otherID)
