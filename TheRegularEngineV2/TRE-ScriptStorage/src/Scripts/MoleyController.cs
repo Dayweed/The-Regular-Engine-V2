@@ -45,11 +45,11 @@ namespace TRE
 		private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 4f;
 		private float strawberrysuperRadius = 4f;
-		private float currentRadius = 2f;
+		public float currentRadius = 2f;
 		private float defaultHeight = 1f;
 		private float blueberrysuperHeight = 0.1f;
 		private float strawberrysuperHeight = 0.1f;
-		private float currentHeight = 1f;
+		public float currentHeight = 1f;
 
 		//Player Scallings
 		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);

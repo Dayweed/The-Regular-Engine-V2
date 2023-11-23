@@ -139,7 +139,18 @@ namespace TRE
 
             vec3 newPos = playerObj.transform.Position;
             int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
-            newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
+            //newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
+            if (playerObj.CompareTag(mole1tag)) 
+            {
+                newPos.y += playerObj.GetComponent<MoleyController>().currentHeight + playerObj.GetComponent<MoleyController>().currentRadius
+                + 8.5f + 0.8f;
+            }
+
+            if (playerObj.CompareTag(mole2tag))
+            {
+                newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
+                + 8.5f + 0.8f;
+            }
             transform.Position = newPos;
             //transform.Position = newPos;
 
@@ -156,7 +167,7 @@ namespace TRE
             playerObj = null;
             collected = false;
             GetComponent<Rigidbody>().useGravity = true;
-            PhysicsSystem.AddForce(this.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
+            PhysicsSystem.AddForce(this.ID, new vec3(0, 15, 0), ForceMode.VelocityChange);
             cooldownCurrent = cooldownDuration;
         }
 

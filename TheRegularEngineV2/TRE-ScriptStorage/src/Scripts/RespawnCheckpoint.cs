@@ -31,6 +31,15 @@ namespace TRE
 
             // Configure the respawn positions for all the level checkpoints
 
+            // Tutorial / Level 0
+            RespawnPoints.Add("RespawnPoint1_L0", new vec3(112.112f, -5.082f, -68.054f));
+            RespawnPoints.Add("RespawnPoint2_L0", new vec3(112.112f, -9.310f, -99.054f));
+            RespawnPoints.Add("RespawnPoint3_L0", new vec3(118.834f, -14.078f, -148.931f));
+            RespawnPoints.Add("RespawnPoint4_L0", new vec3(114.112f, -9.310f, -281.054f));
+            RespawnPoints.Add("RespawnPoint5_L0", new vec3(114.112f, -9.310f, -310.054f));
+            RespawnPoints.Add("RespawnPoint6_L0", new vec3(60.112f, 20.337f, -337.054f));
+            RespawnPoints.Add("RespawnPoint7_L0", new vec3(85.112f, 21.167f, -391.054f));
+
             // Level 1
             // adjust the spawning locations accordingly to what is desired.
             RespawnPoints.Add("RespawnPoint1_L1", new vec3(-16.566f, -1.011f, -113.158f));
