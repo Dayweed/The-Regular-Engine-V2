@@ -1,11 +1,11 @@
 Asset File Path:
-../Assets/GirlAnimationWalkingTextures/DiffuseAO.png
+../Assets/Skybox2.png
 
 Texture File Path:
-../Resources/6b2822ce3972f53.DDS
+../Resources/584d1fc06a88a4a6.DDS
 
 Compress:
-0
+1
 
 GL_Linear:
 1
@@ -14,7 +14,8 @@ BCn:
 1
 
 sRGB:
-0
+1
 
 Transparent:
 0
+
