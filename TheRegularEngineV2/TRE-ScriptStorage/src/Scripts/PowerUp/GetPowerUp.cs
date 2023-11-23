@@ -167,7 +167,7 @@ namespace TRE
             playerObj = null;
             collected = false;
             GetComponent<Rigidbody>().useGravity = true;
-            PhysicsSystem.AddForce(this.ID, new vec3(0, 15, 0), ForceMode.VelocityChange);
+            PhysicsSystem.AddForce(this.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
             cooldownCurrent = cooldownDuration;
         }
 
