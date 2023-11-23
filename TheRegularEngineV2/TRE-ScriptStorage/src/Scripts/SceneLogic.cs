@@ -62,14 +62,9 @@ namespace TRE
         public void Update()
         {
             #region CHEATS
-            if (InputSystem.GetKeyDown(InputKeys.D1))
+            if (InputSystem.GetKeyTrigger(InputKeys.D1))
             {
                 forceGoToNextScene = true;
-            }
-
-            if(forceGoToNextScene)
-            {
-                //Scene.TransitionScene("Level_1", 4.5f);
             }
             #endregion
 
@@ -105,7 +100,10 @@ namespace TRE
                 if (!trigger.isCompleted)
                 {
                     goToNextScene = false;
-                    return;
+                    if (!forceGoToNextScene)
+                    {
+                        return;
+                    }
                 }
             }
 
