@@ -22,21 +22,26 @@ namespace TRE
 
         private void SetToPlayer()
         {
-            PhysicsSystem.GetColliderOffset(playerObj.ID, out vec3 offset);
-            if(playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
+            if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
             {
                 return;
             }
-            vec3 newPos = playerObj.transform.Position;
-            newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
-                    + offset.y + 100f;
-            //Right Cactus Values
-            if(this.CompareTag(rightCactus))
-                newPos.x += playerObj.GetComponent<HoleyController>().currentRadius + 0.8f;
-            //Left Cactus Values
-            else if (this.CompareTag(leftCactus))
-                newPos.x -= playerObj.GetComponent<HoleyController>().currentRadius + 0.8f;
-            transform.Position = newPos;
+
+            if (playerObj.GetComponent<HoleyController>().mainStrawberry == true)
+            {
+                PhysicsSystem.GetColliderOffset(playerObj.ID, out vec3 offset);
+                vec3 newPos = playerObj.transform.Position;
+                newPos.y += (playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
+                        + offset.y) * 1.2f;
+                //Right Cactus Values
+                if (this.CompareTag(rightCactus))
+                    newPos.x += playerObj.GetComponent<HoleyController>().currentRadius * 1.3f;
+                //Left Cactus Values
+                else if (this.CompareTag(leftCactus))
+                    newPos.x -= playerObj.GetComponent<HoleyController>().currentRadius * 1.3f;
+                transform.Position = newPos;
+            }
+
         }
 
         private void ScaleChange()
