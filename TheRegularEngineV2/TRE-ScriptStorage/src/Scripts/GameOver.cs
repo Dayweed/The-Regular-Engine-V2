@@ -35,6 +35,8 @@ namespace TRE
             if (holey_ref.GetComponent<HoleyController>().GetIsDead() && moley_ref.GetComponent<MoleyController>().GetIsDead())
             {
                 goToGameOver = true;
+                holey_ref.SetActive(false);
+                moley_ref.SetActive(false);
             }
 
             if (goToGameOver)

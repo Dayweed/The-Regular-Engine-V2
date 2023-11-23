@@ -78,7 +78,7 @@ namespace TRE
 		// Respawn Variables
 		private vec3 RespawnPoint = new vec3(0, 0, 0);
         private bool RespawnPlayer = false;
-        private float RespawnTimer = 1.0f;
+        private float RespawnTimer = 1.5f;
 
 		//Dead or alive
 		public bool isDead = false;
@@ -98,6 +98,9 @@ namespace TRE
         private Entity UIPopup2;
         private bool IsActivated = false;
         private bool HasBeenTriggeredBefore = false;
+		
+		//reference to holey
+		private Entity holey_ref;
 
         public void Start()
 		{
@@ -135,6 +138,8 @@ namespace TRE
 			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
             IsActivated = false;
 			HasBeenTriggeredBefore = false;
+
+			holey_ref = ECSManager.FindEntityByName("Holey");
     }
 
         public void Update()
@@ -180,8 +185,19 @@ namespace TRE
 
 			if (pos.y < (InitialPosition.y - 50.0f))
             {
-                RespawnPlayer = true;
-                //Debug.Log("Respawn");
+                if (!holey_ref.GetComponent<HoleyController>().GetIsDead() && isDead)
+                {
+                    RespawnPlayer = true;
+                    if (MyPowerManager.powerUps.Count > 0)
+                    {
+                        MyPowerManager.LoseMain();
+                        isScaled = false;
+                    }
+
+                }
+                
+				// else do not respawn player since both are dead
+                
             }
 
 			dirVec = new vec3(0, 0, 0);
@@ -451,7 +467,7 @@ namespace TRE
 
             if(RespawnPlayer)
             {
-                if (RespawnTimer > 0)
+                if (RespawnTimer > 0 && isDead)
                 {
                     RespawnTimer -= Time.deltaTime;
                 }
@@ -460,7 +476,7 @@ namespace TRE
                     Respawn();
                     isDead = false;
                     RespawnPlayer = false;
-                    RespawnTimer = 1.0f;
+                    RespawnTimer = 1.5f;
                 }
             }
 

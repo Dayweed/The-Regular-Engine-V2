@@ -15,6 +15,7 @@ namespace TRE
 	public:
 		std::shared_ptr<RenderObject>	m_RenderObject;
 		std::shared_ptr<Material>		m_MaterialInstance;
+		std::shared_ptr<Material>		m_AnimationMaterialInstance;
 		Collision::Sphere3D				m_BoundingSphere;
 		bool							m_IsVisible{ true };
 		bool							m_IsCulled{ false };
@@ -27,6 +28,7 @@ namespace TRE
 			j = nlohmann::json{
 				{ "ASSET_GEOM_m_RenderObject", t.m_RenderObject ? t.m_RenderObject->GetHandleHex() : "0" },
 				{ "ASSET_MAT_m_MaterialInstance", t.m_MaterialInstance ? t.m_MaterialInstance->GetHandleHex() : "0" },
+				{ "ASSET_MAT_m_AnimationMaterialInstance", t.m_AnimationMaterialInstance ? t.m_AnimationMaterialInstance->GetHandleHex() : "0" },
 				{ "m_IsVisible", t.m_IsVisible },	
 			};
 		}
@@ -79,6 +81,32 @@ namespace TRE
 				else
 				{
 					t.m_MaterialInstance = nullptr;
+				}
+			}
+
+			if (j.contains("ASSET_MAT_m_AnimationMaterialInstance"))
+			{
+				std::string matString = j.at("ASSET_MAT_m_AnimationMaterialInstance").get<std::string>();
+				ResourceHandle matHandle = Resource::GetGUIDFromHex(matString);
+
+				if (matHandle != 0)
+				{
+					if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
+					{
+						t.m_AnimationMaterialInstance = material;
+					}
+					else
+					{
+						t.m_AnimationMaterialInstance = Material::Deserialize(matString);
+
+						if (t.m_AnimationMaterialInstance == nullptr)
+							TRE_CORE_CRITICAL(matString + ".mat not found!");
+					}
+				}
+				//Else most likely default material
+				else
+				{
+					t.m_AnimationMaterialInstance = nullptr;
 				}
 			}
 
@@ -158,6 +186,26 @@ property_begin(TRE::MeshRenderer)
 				Self.m_MaterialInstance = nullptr;
 		}
 		
+	} property_var_fnend(),
+	property_var_fnbegin("Animation Material Instance", resource_list)
+	{
+		InOut.m_Type = "MATERIAL";
+
+		if (isRead)
+		{
+			if (Self.m_AnimationMaterialInstance)
+				InOut.m_Value = Self.m_AnimationMaterialInstance->GetHandle();
+			else
+				InOut.m_Value = 0;
+		}
+		else
+		{
+			if (InOut.m_Value)
+				Self.m_AnimationMaterialInstance = TRE::ResourceManager::Instance().GetResource<TRE::Material>(InOut.m_Value);
+			else
+				Self.m_AnimationMaterialInstance = nullptr;
+		}
+
 	} property_var_fnend(),
 	property_var(m_IsVisible)
 
