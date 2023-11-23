@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
@@ -475,6 +476,7 @@ namespace TRE
                 else
                 {
                     Respawn();
+					PS.SetLinearVelocity(ID, vec3.Zero);
                     isDead = false;
                     RespawnPlayer = false;
                     RespawnTimer = 1.5f;

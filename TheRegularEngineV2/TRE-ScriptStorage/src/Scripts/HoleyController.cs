@@ -484,8 +484,9 @@ namespace TRE
                 }
                 else
                 {
-                    Respawn(); 
-					isDead = false;
+                    Respawn();
+                    PS.SetLinearVelocity(ID, vec3.Zero);
+                    isDead = false;
                     RespawnPlayer = false;
 					RespawnTimer = 1.5f;
                 }
