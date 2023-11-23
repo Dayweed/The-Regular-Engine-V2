@@ -40,6 +40,9 @@ namespace TRE
         vec3 MaxScaleOffset;
         vec4 MaxColorOffset;
 
+        float TimerToStop;
+        float TimerToStopDefault = 5f;
+
         public void Start()
         {
             MyRenderer = GetComponent<SpriteRenderer>();
@@ -53,6 +56,14 @@ namespace TRE
         {
             if (slapping)
             {
+                TimerToStop -= Time.deltaTime;
+                if (TimerToStop <= 0)
+                {
+                    doneRotate = true;
+                    doneScale = true;
+                    doneColor = true;
+                }
+
                 if (transform.Rotation.x >= MinRotateOffset.x && transform.Rotation.x <= MaxRotateOffset.x
                     && transform.Rotation.y >= MinRotateOffset.y && transform.Rotation.y <= MaxRotateOffset.y
                     && transform.Rotation.z >= MinRotateOffset.z && transform.Rotation.z <= MaxRotateOffset.z)
@@ -100,6 +111,9 @@ namespace TRE
         public void SlapOn()
         {
             if (slapping) return;
+
+            // Force stop
+            TimerToStop = TimerToStopDefault;
 
             EndRotation = transform.Rotation;
             EndScale = transform.Scale;
