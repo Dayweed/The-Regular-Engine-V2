@@ -100,7 +100,7 @@ namespace TRE
 			if (regionC)
 			{
 				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(15, 180, 0);
+				expectedRotation = new vec3(35, 180, 0);
 				expectedDistance = 25;
 			}
 
@@ -128,8 +128,8 @@ namespace TRE
 			if (regionG)
 			{
 				expectedPosition = new vec3(50, 40, 50);
-				expectedRotation = new vec3(35, 185, 0);
-				expectedDistance = 60;
+				expectedRotation = new vec3(35, 270, 0);
+				expectedDistance = 45;
 			}
 
 			if (regionH)

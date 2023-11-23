@@ -103,7 +103,7 @@ namespace TRE
 
 			InitialPosition = holeyTransform.Position;
 			OutofMapPos = holeyTransform.Position;
-			OutofMapPos.y = holeyTransform.Position.y - 5.0f;
+			OutofMapPos.y = holeyTransform.Position.y - 50.0f;
 
 			walkingSFX = ECSManager.FindIDFromName("SFX_HoleyFootsteps");
 			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");

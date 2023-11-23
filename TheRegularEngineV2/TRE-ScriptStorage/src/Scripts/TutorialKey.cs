@@ -24,7 +24,7 @@ namespace TRE
 
             if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
             {
-                TransformSystem.SetPosition(FinalPlatform.ID, new vec3(100, 9, -302));
+                TransformSystem.SetPosition(FinalPlatform.ID, new vec3(78, 9.5f, -347));
                 this.SetActive(false);
 
                 if(ECSManager.IsValidEntity(5918200844399750609))
