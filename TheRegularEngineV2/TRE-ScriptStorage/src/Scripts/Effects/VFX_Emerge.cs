@@ -39,6 +39,9 @@ namespace TRE
         float coolDown = 0;
         float coolDownDefault = 0.45f;
 
+        float TimerToStop;
+        float TimerToStopDefault = 5f;
+
         SpriteRenderer MyRenderer;
 
         public void Start()
@@ -64,6 +67,18 @@ namespace TRE
 
             if (!idle && (emerging || shrinking))
             {
+                if (emerging)
+                {
+                    TimerToStop -= Time.deltaTime;
+                }
+
+                if (emerging && TimerToStop <= 0)
+                {
+                    transform.Scale = EndScale;
+                    TimerToStop = 0f;
+                    emerging = false;
+                }
+
                 if (transform.Scale.x >= MinScaleOffset.x && transform.Scale.x <= MaxScaleOffset.x
                     && transform.Scale.y >= MinScaleOffset.y && transform.Scale.y <= MaxScaleOffset.y
                     && transform.Scale.z >= MinScaleOffset.z && transform.Scale.z <= MaxScaleOffset.z)
@@ -106,6 +121,9 @@ namespace TRE
         public void Emerge()
         {
             if (emerging) return;
+
+            // Force stop it using timer
+            TimerToStop = TimerToStopDefault;
 
             MyRenderer.isVisible = true;
             EndScale = transform.Scale;
