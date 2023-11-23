@@ -135,7 +135,7 @@ namespace TRE
 			droppowerupSFX = ECSManager.FindIDFromName("SFX_DropPowerUp");
 
             RespawnPoint = moleyTransform.Position;
-			RespawnPoint.y += 50.0f;
+			RespawnPoint.y += 10.0f;
 
 			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
             IsActivated = false;
