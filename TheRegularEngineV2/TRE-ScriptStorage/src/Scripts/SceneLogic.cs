@@ -21,6 +21,8 @@ namespace TRE
         public static float currentTime;
         public float waitingTime = 0.90f;
 
+        public bool forceGoToNextScene = false;
+
         VFX_Emerge StarEmerge;
 
         public void Start()
@@ -59,6 +61,18 @@ namespace TRE
 
         public void Update()
         {
+            #region CHEATS
+            if (InputSystem.GetKeyDown(InputKeys.D1))
+            {
+                forceGoToNextScene = true;
+            }
+
+            if(forceGoToNextScene)
+            {
+                Scene.TransitionScene("Level_1", 4.5f);
+            }
+            #endregion
+
             // Check if any of the list 
             for (int i = triggerStars.Count - 1; i >= 0; --i)
             {

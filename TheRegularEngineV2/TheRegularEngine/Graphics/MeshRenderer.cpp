@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "MeshRenderer.h"
 #include "Core/Transform.h"
+#include "ShaderTypes/PBRShader.h"
+#include "Resource/ResourceManager.h"
+#include "Graphics/AnimationComponent.h"
 
 namespace TRE
 {

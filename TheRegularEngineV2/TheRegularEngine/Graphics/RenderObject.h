@@ -60,6 +60,7 @@ namespace TRE
 		void Draw(VkCommandBuffer commandBuffer);
 
 		static ResourceType GetType() { return ResourceType::Mesh; }
+		bool IsRigged() { return m_IsRigged; }
 
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
@@ -81,6 +82,7 @@ namespace TRE
 		AnimationPlayer m_AnimationPlayer;
 		std::vector<Animation> m_Animations;
 		Skeleton m_Skeleton;
+		bool m_IsRigged = false;;
 
 		bool m_HasIndexBuffer{ false };
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
