@@ -38,8 +38,11 @@ namespace TRE
 			{
 				//transform.CalculateWorldMatrix();
 
-				//Update own local data if i have a parent
-				UpdateLocalData(object);
+				//Update own local data if i have a parent and the parent did not update it's own position
+				if (Entity parent = GetParent(object); !parent || !parent->GetComponent<Transform>().m_IsDirty)
+				{
+					UpdateLocalData(object);
+				}
 
 				//Update children local data
 				UpdateChildTransform(object);
@@ -193,11 +196,7 @@ namespace TRE
 		parentTransform.CalculateWorldMatrix();
 		for (Entity& child : GetChildren(parent))
 		{
-			//std::cout << "Parent: Child: " << parent->GetName() << ", " << child->GetName() << "\n";
 			Transform& childTransform = child->GetComponent<Transform>();
-			/*std::cout << "parentTransform : " << parentTransform.m_Position.x << ", " << parentTransform.m_Position.y << ", " << parentTransform.m_Position.z << "\n";
-			std::cout << "childTransform P: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
-			std::cout << "childTransform L: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";*/
 			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
 			if (updateLocal)
@@ -205,12 +204,6 @@ namespace TRE
 				UpdateChildLocalData(parent, child);
 			}
 			childTransform.m_IsDirty = true;
-			/*std::cout << "childTransform P: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
-			std::cout << "childTransform L: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";
-
-			std::cout << "------------------------------------------------------------\n";
-			std::cout << child->GetName() << "'s Position is " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
-			std::cout << "============================================================\n";*/
 
 			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{
