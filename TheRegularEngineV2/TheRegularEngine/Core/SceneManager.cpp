@@ -121,6 +121,7 @@ namespace TRE
 			}
 			else
 			{
+				PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette")->SetRadius(1.0f);
 				m_ElapsedTime = 0.0f;
 				m_Duration = 0.0f;
 				m_IsTransitioning = false;
