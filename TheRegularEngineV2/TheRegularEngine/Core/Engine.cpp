@@ -98,7 +98,7 @@ namespace TRE
 
 		if (m_EngineInfo.EnableGame)
 		{
-			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
+			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Start.json");
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 		else
