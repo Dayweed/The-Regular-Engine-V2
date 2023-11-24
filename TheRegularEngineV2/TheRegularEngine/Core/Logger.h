@@ -20,6 +20,7 @@ namespace TRE
 	};
 }
 
+#ifdef DEBUG
 // Core log macros
 #define TRE_CORE_TRACE(...)    ::TRE::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define TRE_CORE_INFO(...)     ::TRE::Log::GetCoreLogger()->info(__VA_ARGS__)
@@ -32,4 +33,17 @@ namespace TRE
 #define TRE_INFO(...)          ::TRE::Log::GetClientLogger()->info(__VA_ARGS__)
 #define TRE_WARN(...)          ::TRE::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define TRE_ERROR(...)         ::TRE::Log::GetClientLogger()->error(__VA_ARGS__)
-#define TRE_CRITICAL(...)      ::TRE::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define TRE_CRITICAL(...)      ::TRE::Log::GetClientLogger()->critical(__VA_ARGS__)  
+#else
+#define TRE_CORE_TRACE(...)    
+#define TRE_CORE_INFO(...)     
+#define TRE_CORE_WARN(...)     
+#define TRE_CORE_ERROR(...)    
+#define TRE_CORE_CRITICAL(...) 
+
+#define TRE_TRACE(...)         
+#define TRE_INFO(...)          
+#define TRE_WARN(...)          
+#define TRE_ERROR(...)         
+#define TRE_CRITICAL(...)      
+#endif
