@@ -27,7 +27,8 @@ namespace TRE
             if(this.CompareTag(mole1tag))
             {
                 vec3 newPos = playerObj.transform.Position;
-                newPos.y += playerObj.transform.Scale.y * 5f;
+                newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 3f;
+
                 transform.Position = newPos;
             }
             else if(this.CompareTag(mole2tag))

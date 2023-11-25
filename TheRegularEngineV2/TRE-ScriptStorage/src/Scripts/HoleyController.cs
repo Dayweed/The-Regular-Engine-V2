@@ -10,39 +10,39 @@ using GlmSharp;
 
 namespace TRE
 {
-	using PS = PhysicsSystem;
-	using CS = CameraSystem;
-	class HoleyController : Entity
-	{
-		public PowerUpUI MyPowerUpUI;
-		public PowerUpManager MyPowerManager;
+    using PS = PhysicsSystem;
+    using CS = CameraSystem;
+    class HoleyController : Entity
+    {
+        public PowerUpUI MyPowerUpUI;
+        public PowerUpManager MyPowerManager;
 
         //Check if player is boosted jump
         public bool isBoostedJump = false;
-		//Check if player is on the ground
-		public bool isGrounded = true;
-		//direction vector
-		private vec3 dirVec;
-		//Max velocity
-		private float maxVelocity = 30f;
+        //Check if player is on the ground
+        public bool isGrounded = true;
+        //direction vector
+        private vec3 dirVec;
+        //Max velocity
+        private float maxVelocity = 30f;
         //Max Air Velocity vector
         //private float maxAirVelocity = 25f;
         //Acceleration
         private float acceleration = 700f;
-		//final velocity
-		private vec3 finalVelocity = vec3.Zero;
-		//maxJumpHeight
-		private float maxJumpHeight = 70f;
-		//Check if player is walking
-		private bool isWalking = false;
-		private bool walkingSFXPlayed = false;
+        //final velocity
+        private vec3 finalVelocity = vec3.Zero;
+        //maxJumpHeight
+        private float maxJumpHeight = 70f;
+        //Check if player is walking
+        private bool isWalking = false;
+        private bool walkingSFXPlayed = false;
 
-		private float lerpSpeed = 5f;
+        private float lerpSpeed = 5f;
 
-		//Capsule Collider
-		public bool mainBlueberry = false;  // Scaling
-		public bool mainStrawberry = false; // Shape
-		public bool isScaled = false;
+        //Capsule Collider
+        public bool mainBlueberry = false;  // Scaling
+        public bool mainStrawberry = false; // Shape
+        public bool isScaled = false;
         public float defaultRadius = 2f;
         public float blueberrysuperRadius = 4.8f;
         public float strawberrysuperRadius = 2.4f;
@@ -51,114 +51,114 @@ namespace TRE
         public float blueberrysuperHeight = 4.8f;
         public float strawberrysuperHeight = 1.2f;
         public float currentHeight = 1f;
-		public float currOffset = 0f;
+        public float currOffset = 3f;
         //Transform Scale
         public vec3 defaultXform = new vec3(75f, 75f, 75f);
         public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
         public vec3 strawberryscaledXform = new vec3(0.5f, 1.5f, 1f);
         public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
-		private int playerDirection = 0;
-		private int lastPlayerDirection = 0;
+        private int playerDirection = 0;
+        private int lastPlayerDirection = 0;
 
-		//Respawn variables
-		private vec3 RespawnPoint = new vec3(0, 0, 0);
+        //Respawn variables
+        private vec3 RespawnPoint = new vec3(0, 0, 0);
         private bool RespawnPlayer = false;
-		private float RespawnTimer = 1.5f;
+        private float RespawnTimer = 1.5f;
 
-		// Is Dead
-		public bool isDead = false;
+        // Is Dead
+        public bool isDead = false;
 
-		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
-		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
-		private bool DroppingOutOfMap = false;
+        private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
+        private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
+        private bool DroppingOutOfMap = false;
 
-		private bool Invulnerability = false;
-		private float InvulCurrent = 1.0f;
-		private float InvulPeriod = 1.0f;
-		private float InvulBlinkCurrent = 0.1f;
-		private float InvulBlinkPeriod = 0.1f;
+        private bool Invulnerability = false;
+        private float InvulCurrent = 1.0f;
+        private float InvulPeriod = 1.0f;
+        private float InvulBlinkCurrent = 0.1f;
+        private float InvulBlinkPeriod = 0.1f;
 
-		private ulong walkingSFX;
-		private ulong jumpSFX;
-		private ulong changesizeSFX;
-		private ulong normalsizeSFX;
+        private ulong walkingSFX;
+        private ulong jumpSFX;
+        private ulong changesizeSFX;
+        private ulong normalsizeSFX;
 
-		//Transfrom Component
-		private Transform holeyTransform;
+        //Transfrom Component
+        private Transform holeyTransform;
 
-		//Moley Reference 
-		private Entity moley_ref;
+        //Moley Reference 
+        private Entity moley_ref;
 
-		public void Start()
-		{
-			MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();
-			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
-			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
-			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+        public void Start()
+        {
+            MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();
+            MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
+            MyPowerManager.MyPowerUpUI = MyPowerUpUI;
+            MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 
-			holeyTransform = GetComponent<Transform>();
-			holeyTransform.Rotation = new vec3(0, 0, 0);
+            holeyTransform = GetComponent<Transform>();
+            holeyTransform.Rotation = new vec3(0, 0, 0);
 
-			PS.ConstrainRotationX(this.ID, true);
-			PS.ConstrainRotationY(this.ID, true);
-			PS.ConstrainRotationZ(this.ID, true);
+            PS.ConstrainRotationX(this.ID, true);
+            PS.ConstrainRotationY(this.ID, true);
+            PS.ConstrainRotationZ(this.ID, true);
 
-			InitialPosition = holeyTransform.Position;
-			OutofMapPos = holeyTransform.Position;
-			OutofMapPos.y = holeyTransform.Position.y - 50.0f;
+            InitialPosition = holeyTransform.Position;
+            OutofMapPos = holeyTransform.Position;
+            OutofMapPos.y = holeyTransform.Position.y - 50.0f;
 
-			walkingSFX = ECSManager.FindIDFromName("SFX_HoleyFootsteps");
-			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
-			changesizeSFX = ECSManager.FindIDFromName("SFX_Tall");
-			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
+            walkingSFX = ECSManager.FindIDFromName("SFX_HoleyFootsteps");
+            jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
+            changesizeSFX = ECSManager.FindIDFromName("SFX_Tall");
+            normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 
-			RespawnPoint = holeyTransform.Position;
-			RespawnPoint.y += 10.0f;
+            RespawnPoint = holeyTransform.Position;
+            RespawnPoint.y += 10.0f;
 
             moley_ref = ECSManager.FindEntityByName("Moley");
         }
 
-		public void Update()
-		{
-			#region Invulnerability
-			if (Invulnerability)
-			{
-				InvulBlinkCurrent -= Time.deltaTime;
-				if (InvulBlinkCurrent <= 0)
-				{
-					GetComponent<MeshRenderer>().Visible = !GetComponent<MeshRenderer>().Visible;
-					InvulBlinkCurrent = InvulBlinkPeriod;
-				}
-				InvulCurrent -= Time.deltaTime;
-				if (InvulCurrent <= 0)
-				{
-					Invulnerability = false;
-					GetComponent<MeshRenderer>().Visible = true;
-					InvulCurrent = InvulPeriod;
-				}
+        public void Update()
+        {
+            #region Invulnerability
+            if (Invulnerability)
+            {
+                InvulBlinkCurrent -= Time.deltaTime;
+                if (InvulBlinkCurrent <= 0)
+                {
+                    GetComponent<MeshRenderer>().Visible = !GetComponent<MeshRenderer>().Visible;
+                    InvulBlinkCurrent = InvulBlinkPeriod;
+                }
+                InvulCurrent -= Time.deltaTime;
+                if (InvulCurrent <= 0)
+                {
+                    Invulnerability = false;
+                    GetComponent<MeshRenderer>().Visible = true;
+                    InvulCurrent = InvulPeriod;
+                }
 
-			}
-			#endregion
-			vec3 pos = holeyTransform.Position;
+            }
+            #endregion
+            vec3 pos = holeyTransform.Position;
 
-			//Movement Related stuff
-			PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
+            //Movement Related stuff
+            PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
 
-			if (pos.y < OutofMapPos.y)
+            if (pos.y < OutofMapPos.y)
             {
                 isDead = true;
-				DroppingOutOfMap = true;
-				//Debug.Log("Out of map");
-			}
-			else
-			{
-				DroppingOutOfMap = false;
-				//Debug.Log("Not out of map");
-			}
+                DroppingOutOfMap = true;
+                //Debug.Log("Out of map");
+            }
+            else
+            {
+                DroppingOutOfMap = false;
+                //Debug.Log("Not out of map");
+            }
 
-			if (pos.y < (InitialPosition.y - 50.0f))
-			{
+            if (pos.y < (InitialPosition.y - 50.0f))
+            {
                 if (!moley_ref.GetComponent<MoleyController>().GetIsDead() && isDead)
                 {
                     RespawnPlayer = true;
@@ -171,285 +171,300 @@ namespace TRE
                 }
             }
 
-			dirVec = new vec3(0, 0, 0);
+            dirVec = new vec3(0, 0, 0);
 
-			#region Movement
+            #region Movement
 
-			if (DroppingOutOfMap)
-			{
-				dirVec.x = 0.0f;
-				dirVec.z = 0.0f;
-			}
-			else if (DroppingOutOfMap == false)
-			{
-				if (InputSystem.GetKeyDown(InputKeys.I))
-				{
-					dirVec += CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 0;
-				}
+            if (DroppingOutOfMap)
+            {
+                dirVec.x = 0.0f;
+                dirVec.z = 0.0f;
+            }
+            else if (DroppingOutOfMap == false)
+            {
+                if (InputSystem.GetKeyDown(InputKeys.I))
+                {
+                    dirVec += CS.GetMainCameraForwardVec();
+                    lastPlayerDirection = 0;
+                }
 
-				if (InputSystem.GetKeyDown(InputKeys.K))
-				{
-					dirVec -= CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 180;
-				}
+                if (InputSystem.GetKeyDown(InputKeys.K))
+                {
+                    dirVec -= CS.GetMainCameraForwardVec();
+                    lastPlayerDirection = 180;
+                }
 
-				if (InputSystem.GetKeyDown(InputKeys.J))
-				{
-					dirVec += CS.GetMainCameraRightVec();
-					lastPlayerDirection = 90;
-				}
+                if (InputSystem.GetKeyDown(InputKeys.J))
+                {
+                    dirVec += CS.GetMainCameraRightVec();
+                    lastPlayerDirection = 90;
+                }
 
-				if (InputSystem.GetKeyDown(InputKeys.L))
-				{
-					dirVec -= CS.GetMainCameraRightVec();
-					lastPlayerDirection = 270;
-				}
+                if (InputSystem.GetKeyDown(InputKeys.L))
+                {
+                    dirVec -= CS.GetMainCameraRightVec();
+                    lastPlayerDirection = 270;
+                }
 
-				if (InputSystem.GetKeyDown(InputKeys.I))
-				{
-					if (InputSystem.GetKeyDown(InputKeys.L))
-					{
-						lastPlayerDirection = 315;
-					}
+                if (InputSystem.GetKeyDown(InputKeys.I))
+                {
+                    if (InputSystem.GetKeyDown(InputKeys.L))
+                    {
+                        lastPlayerDirection = 315;
+                    }
 
-					if (InputSystem.GetKeyDown(InputKeys.J))
-					{
-						lastPlayerDirection = 45;
-					}
-				}
+                    if (InputSystem.GetKeyDown(InputKeys.J))
+                    {
+                        lastPlayerDirection = 45;
+                    }
+                }
 
-				if (InputSystem.GetKeyDown(InputKeys.K))
-				{
-					if (InputSystem.GetKeyDown(InputKeys.L))
-					{
-						lastPlayerDirection = 225;
-					}
+                if (InputSystem.GetKeyDown(InputKeys.K))
+                {
+                    if (InputSystem.GetKeyDown(InputKeys.L))
+                    {
+                        lastPlayerDirection = 225;
+                    }
 
-					if (InputSystem.GetKeyDown(InputKeys.J))
-					{
-						lastPlayerDirection = 135;
-					}
-				}
+                    if (InputSystem.GetKeyDown(InputKeys.J))
+                    {
+                        lastPlayerDirection = 135;
+                    }
+                }
 
-				if (InputSystem.GetKeyTrigger(InputKeys.Enter))
-				{
-					
-					isWalking = false;
+                if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+                {
 
-					if (isGrounded)
-					{
-						// Boosted Jump
-						if (isBoostedJump)
-						{
-							vec3 maxHeight = new vec3(0, 150, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
-						}
-						else
-						{
-							vec3 maxHeight = new vec3(0, 70, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
-						}
-					}
-				}
-			}
+                    isWalking = false;
 
-			#endregion
+                    if (isGrounded)
+                    {
+                        // Boosted Jump
+                        if (isBoostedJump)
+                        {
+                            vec3 maxHeight = new vec3(0, 150, 0);
+                            Jump(maxHeight);
+                            if (ECSManager.IsValidEntity(jumpSFX))
+                            {
+                                AudioSystem.Play(jumpSFX);
+                            }
+                        }
+                        else
+                        {
+                            vec3 maxHeight = new vec3(0, 70, 0);
+                            Jump(maxHeight);
+                            if (ECSManager.IsValidEntity(jumpSFX))
+                            {
+                                AudioSystem.Play(jumpSFX);
+                            }
+                        }
+                    }
+                }
+            }
 
-			#region Audio
+            #endregion
 
-			if (InputSystem.GetKeyDown(InputKeys.I) || InputSystem.GetKeyDown(InputKeys.K) ||
-				InputSystem.GetKeyDown(InputKeys.J) || InputSystem.GetKeyDown(InputKeys.L))
-			{
-				isWalking = true;
-			}
+            #region Audio
 
-			if (!(InputSystem.GetKeyDown(InputKeys.I) || InputSystem.GetKeyDown(InputKeys.J) ||
-				  InputSystem.GetKeyDown(InputKeys.K) || InputSystem.GetKeyDown(InputKeys.L)))
-			{
-				isWalking = false;
-			}
+            if (InputSystem.GetKeyDown(InputKeys.I) || InputSystem.GetKeyDown(InputKeys.K) ||
+                InputSystem.GetKeyDown(InputKeys.J) || InputSystem.GetKeyDown(InputKeys.L))
+            {
+                isWalking = true;
+            }
 
-			if (ECSManager.IsValidEntity(walkingSFX))
-			{
-				if (isWalking && walkingSFXPlayed == false)
-				{
-					AudioSystem.Play(walkingSFX);
-					walkingSFXPlayed = true;
-				}
+            if (!(InputSystem.GetKeyDown(InputKeys.I) || InputSystem.GetKeyDown(InputKeys.J) ||
+                  InputSystem.GetKeyDown(InputKeys.K) || InputSystem.GetKeyDown(InputKeys.L)))
+            {
+                isWalking = false;
+            }
 
-				if (!isWalking || !isGrounded)
-				{
-					AudioSystem.Stop(walkingSFX);
-					walkingSFXPlayed = false;
-				}
-			}
+            if (ECSManager.IsValidEntity(walkingSFX))
+            {
+                if (isWalking && walkingSFXPlayed == false)
+                {
+                    AudioSystem.Play(walkingSFX);
+                    walkingSFXPlayed = true;
+                }
+
+                if (!isWalking || !isGrounded)
+                {
+                    AudioSystem.Stop(walkingSFX);
+                    walkingSFXPlayed = false;
+                }
+            }
 
 
-			#endregion
+            #endregion
 
-			#region Swap
+            #region Swap
 
-			// Check if can swap ability
-			if (InputSystem.GetKeyTrigger(InputKeys.Backslash))
-			{
-				MyPowerManager.SwapPowerUps();
-				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
-				isScaled = false;
-			}
+            // Check if can swap ability
+            if (InputSystem.GetKeyTrigger(InputKeys.Backslash))
+            {
+                MyPowerManager.SwapPowerUps();
+                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+                isScaled = false;
+            }
 
-			#endregion
+            #endregion
 
-			#region Drop
+            #region Drop
 
-			// Check if can trigger ability
-			if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
-			{
-				MyPowerManager.DropMain();
-				isScaled = false;
-				
-			}
+            // Check if can trigger ability
+            if (InputSystem.GetKeyTrigger(InputKeys.RightShift))
+            {
+                MyPowerManager.DropMain();
+                isScaled = false;
 
-			#endregion
+            }
 
-			#region Abilities
+            #endregion
 
-			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
-			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
-			if (isScaled && !mainBlueberry && !mainStrawberry)
-			{
-				isScaled = false;
-			}
+            #region Abilities
 
-			if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
-			{
-				if (mainBlueberry || mainStrawberry)
-				{
-					isScaled = !isScaled;
+            mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
+            mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
+            if (isScaled && !mainBlueberry && !mainStrawberry)
+            {
+                isScaled = false;
+            }
 
-					// Shift it up to prevent falling
-					if (isScaled)
-					{
-						//vec3 newPos = transform.Position;
-						//newPos.y += 1.5f;
-						//transform.Position = newPos;
-						PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+            if (InputSystem.GetKeyTrigger(InputKeys.Backspace))
+            {
+                if (mainBlueberry || mainStrawberry)
+                {
+                    isScaled = !isScaled;
 
-						// Shift other mole up too if it is colliding
-						Entity headCollider = ECSManager.FindEntityByName("Holey's Head Collider");
-						headCollider.GetComponent<PlayerHeadCollider>().SetToPlayer();
-						Entity Moley = ECSManager.FindEntityByName("Moley");
-						if (PhysicsSystem.IsCollisionStay(headCollider.ID, Moley.ID))
+                    // Shift it up to prevent falling
+                    if (isScaled)
+                    {
+                        //vec3 newPos = transform.Position;
+                        //newPos.y += 1.5f;
+                        //transform.Position = newPos;
+                        PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+
+                        // Shift other mole up too if it is colliding
+                        Entity headCollider = ECSManager.FindEntityByName("Holey's Head Collider");
+                        headCollider.GetComponent<PlayerHeadCollider>().SetToPlayer();
+                        Entity Moley = ECSManager.FindEntityByName("Moley");
+                        if (PhysicsSystem.IsCollisionStay(headCollider.ID, Moley.ID))
                         {
                             vec3 moleyPos = Moley.transform.Position;
-							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
-							Moley.transform.Position = moleyPos;
+                            moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
+                            Moley.transform.Position = moleyPos;
                             PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
                         }
                         PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
-                        //vec3 newColliderPos = headCollider.transform.Position;
-                        //newColliderPos.y += (headCollider.GetComponent<HoleyController>().currentHeight * 4); //+ playerObj.GetComponent<HoleyController>().currentRadius
-                        //																					  //+ offset.y;
-                        //headCollider.transform.Position = newColliderPos;
                     }
 
-					if (isScaled)
-					{
-						if (ECSManager.IsValidEntity(changesizeSFX))
-						{
-							AudioSystem.Play(changesizeSFX);
-						}
-					}
-					else
-					{
-						if (ECSManager.IsValidEntity(normalsizeSFX))
-						{
-							AudioSystem.Play(normalsizeSFX);
-						}
-					}
-				}
-			}
+                    if (isScaled)
+                    {
+                        if (ECSManager.IsValidEntity(changesizeSFX))
+                        {
+                            AudioSystem.Play(changesizeSFX);
+                        }
+                    }
+                    else
+                    {
+                        if (ECSManager.IsValidEntity(normalsizeSFX))
+                        {
+                            AudioSystem.Play(normalsizeSFX);
+                        }
+                    }
+                }
+            }
 
-			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
+            if (isScaled == false || (!mainBlueberry && !mainStrawberry))
             {
-				//default model
-                if (GetComponent<MeshRenderer>().Mesh != "789db1a40e2484e0")
-                    GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
+                //default model
+                dirVec.y = 0;
+                if (dirVec != new vec3() && isGrounded)
+                {
+                    dirVec = dirVec.Normalized;
+
+                    //Walking animation
+                    GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
+                    GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+                }
+                else if (!isGrounded)
+                {
+                    dirVec = dirVec.NormalizedSafe;
+                    GetComponent<MeshRenderer>().Mesh = "a124f8de20c124b6";
+                    GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+                }
+                else
+                {
+                    GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+                    GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+                }
                 currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
-				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 0, lerpSpeed * Time.deltaTime);
-				currentXform = defaultXform;
-				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
+                currOffset = MathF.Lerp(currOffset, 3, lerpSpeed * Time.deltaTime);
+                currentXform = new vec3(0.03f, 0.03f, 0.03f);
+
+                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
                 TransformSystem.SetScaling(this.ID, currentXform);
 
             }
-			else if (mainBlueberry)
-			{
-				//Tall model
-				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
-					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
-				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
-				currentXform = blueberryscaledXform;
+            else if (mainBlueberry)
+            {
+                //Tall model
+                if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
+                    GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
+                currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
+                currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
+                currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
+                currentXform = blueberryscaledXform;
 
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
                 TransformSystem.SetScaling(this.ID, currentXform);
             }
             else if (mainStrawberry)
-			{
-				//Cactus Model
-				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
-				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
-				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
-				currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
-				currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed * Time.deltaTime);
-				currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed * Time.deltaTime);
-				TransformSystem.SetScaling(this.ID, currentXform);
-			}
+            {
+                //Cactus Model
+                currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
+                currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
+                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
+                currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed * Time.deltaTime);
+                currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed * Time.deltaTime);
+                TransformSystem.SetScaling(this.ID, currentXform);
+            }
 
-			#endregion
+            #endregion
+            //Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
+            dirVec.y = 0;
+            if (dirVec != vec3.Zero)
+            {
+                dirVec = dirVec.Normalized;
 
-			dirVec.y = 0;
-			if (dirVec != vec3.Zero)
-			{
-				dirVec = dirVec.Normalized;
+                //Walking animation
+                //if (GetComponent<MeshRenderer>().Mesh != "7c45522179c4a49c")
+                //{
+                //	GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
+                //	if (HasComponent<Animation>() == false)
+                //	{
+                //		AddComponent<Animation>();
+                //	}
+                //}
+            }
+            else
+            {
+                //Idle animation
+                //if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+                //{
+                //	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+                //	//if (HasComponent<Animation>() == false)
+                //	//{
+                //	//	AddComponent<Animation>();
+                //	//}
+                //}
+            }
 
-				//Walking animation
-				//if (GetComponent<MeshRenderer>().Mesh != "7c45522179c4a49c")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
-				//	if (HasComponent<Animation>() == false)
-				//	{
-				//		AddComponent<Animation>();
-				//	}
-				//}
-			}
-			else
-			{
-				//Idle animation
-				//if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
-				//	//if (HasComponent<Animation>() == false)
-				//	//{
-				//	//	AddComponent<Animation>();
-				//	//}
-				//}
-			}
-
-			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
-			playerDirection = (playerDirection % 360);
+            playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+            playerDirection = (playerDirection % 360);
 
             if (dirVec != vec3.Zero)
             {
@@ -474,9 +489,9 @@ namespace TRE
 
             holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
-			isGrounded = false;
+            isGrounded = false;
 
-			if(RespawnPlayer)
+            if (RespawnPlayer)
             {
                 if (RespawnTimer > 0)
                 {
@@ -488,56 +503,56 @@ namespace TRE
                     PS.SetLinearVelocity(ID, vec3.Zero);
                     isDead = false;
                     RespawnPlayer = false;
-					RespawnTimer = 1.5f;
+                    RespawnTimer = 1.5f;
                 }
             }
-		}
-		private void Jump(vec3 JumpHeight)
-		{
-			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
-		}
+        }
+        private void Jump(vec3 JumpHeight)
+        {
+            PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
+        }
 
-		private void OnCollisionStay(System.UInt64 otherID)
-		{
-			isGrounded = false;
+        private void OnCollisionStay(System.UInt64 otherID)
+        {
+            isGrounded = false;
 
-			Entity other = new Entity(otherID);
-			// Make it loose one of it's powerups
-			if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
-			{
-				TakeDamage();
-			}
-			// Check is activated jumppad
-			if (other.CompareTag("JumpPad"))
+            Entity other = new Entity(otherID);
+            // Make it loose one of it's powerups
+            if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
+            {
+                TakeDamage();
+            }
+            // Check is activated jumppad
+            if (other.CompareTag("JumpPad"))
             {
                 isGrounded = true;
                 if (other.GetComponent<JumpPad>().isActivated)
-				{
-					isBoostedJump = true;
-				}
+                {
+                    isBoostedJump = true;
+                }
             }
             if (other.CompareTag("Ground") || other.CompareTag("Platform")
-                || other.CompareTag("Blue") || other.CompareTag("BlueCollider")
-				|| other.CompareTag("LeftCactus") || other.CompareTag("RightCactus"))
+                || other.CompareTag("Blue") || other.CompareTag("RedCollider")
+                || other.CompareTag("LeftCactus") || other.CompareTag("RightCactus"))
             {
-				isGrounded = true;
-			}
-		}
-		private void OnCollisionExit(System.UInt64 otherID)
-		{
-			Entity other = new Entity(otherID);
-			if (EngineGetTag(otherID) == "Red")
-			{
-				PS.GetLinearVelocity(this.ID, out vec3 output);
-				if (output.y > maxJumpHeight)
-					output.y = maxJumpHeight;
-				PS.SetLinearVelocity(this.ID, output);
-			}
-			// No longer boosted if leave jumppad
-			else if (other.CompareTag("JumpPad"))
+                isGrounded = true;
+            }
+        }
+        private void OnCollisionExit(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+            if (EngineGetTag(otherID) == "Red")
+            {
+                PS.GetLinearVelocity(this.ID, out vec3 output);
+                if (output.y > maxJumpHeight)
+                    output.y = maxJumpHeight;
+                PS.SetLinearVelocity(this.ID, output);
+            }
+            // No longer boosted if leave jumppad
+            else if (other.CompareTag("JumpPad"))
             {
                 isBoostedJump = false;
-				isGrounded = false;
+                isGrounded = false;
             }
             if (other.CompareTag("Ground") || other.CompareTag("Platform")
                 || other.CompareTag("Red") || other.CompareTag("RedCollider"))
@@ -546,40 +561,40 @@ namespace TRE
             }
         }
 
-		public void UpdateDisplay()
-		{
-			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
-		}
+        public void UpdateDisplay()
+        {
+            MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+        }
 
-		public void TakeDamage()
-		{
-			if (Invulnerability) return;
-			if (MyPowerManager.powerUps.Count > 0)
-			{
-				MyPowerManager.LoseMain();
-				isScaled = false;
-			}
-			else
+        public void TakeDamage()
+        {
+            if (Invulnerability) return;
+            if (MyPowerManager.powerUps.Count > 0)
+            {
+                MyPowerManager.LoseMain();
+                isScaled = false;
+            }
+            else
             {
                 RespawnPlayer = true;
                 isDead = true;
             }
-			Invulnerability = true;
-		}
-
-		public void ResetToInitialPos()
-		{
-			holeyTransform.Position = InitialPosition;
-		}
-
-		// activate this function using a coroutine to time the spawning of the player
-		private void Respawn() 
-		{
-			holeyTransform.Position = RespawnPoint;
             Invulnerability = true;
         }
 
-		public void SetRespawnPoint(vec3 position)
+        public void ResetToInitialPos()
+        {
+            holeyTransform.Position = InitialPosition;
+        }
+
+        // activate this function using a coroutine to time the spawning of the player
+        private void Respawn()
+        {
+            holeyTransform.Position = RespawnPoint;
+            Invulnerability = true;
+        }
+
+        public void SetRespawnPoint(vec3 position)
         {
             RespawnPoint = position;
         }
@@ -588,5 +603,5 @@ namespace TRE
         {
             return isDead;
         }
-	}
+    }
 }

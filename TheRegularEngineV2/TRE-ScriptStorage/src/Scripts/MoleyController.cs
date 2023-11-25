@@ -51,7 +51,7 @@ namespace TRE
         private float blueberrysuperHeight = 2.4f;
         private float strawberrysuperHeight = 4.8f;
         public float currentHeight = 1f;
-        public float currentOffset = 0f;
+        public float currOffset = 3f;
 
         //Player Scallings
         private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
@@ -379,7 +379,7 @@ namespace TRE
                 //Default model
                 GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
                 dirVec.y = 0;
-                if (dirVec != new vec3() && currVelocity.y <= 0.5f && currVelocity.y >= -0.5f)
+                if (dirVec != new vec3() && isGrounded)
                 {
                     dirVec = dirVec.Normalized;
 
@@ -387,7 +387,7 @@ namespace TRE
                     GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
                     GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
                 }
-                else if (currVelocity.y > 0.5f || currVelocity.y < -0.5f)
+                else if (!isGrounded)
                 {
                     dirVec = dirVec.NormalizedSafe;
                     GetComponent<MeshRenderer>().Mesh = "a124f8de20c124b6";
@@ -395,21 +395,18 @@ namespace TRE
                 }
                 else
                 {
-                    //Idle state
-                    {
-                        //Blue animation material
-                        //GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
-                        //Red Animation Material
-                        GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
-                        GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
-                        TransformSystem.SetScaling(this.ID, new vec3(0.03f, 0.03f, 0.03f));
-                    }
+                    //Red Animation Material
+                    GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+                    GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+                    //TransformSystem.SetScaling(this.ID, new vec3(0.03f, 0.03f, 0.03f));
                 }
                 currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
                 currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
+                currOffset = MathF.Lerp(currOffset, 3, lerpSpeed * Time.deltaTime);
                 currentXform = new vec3(0.03f, 0.03f, 0.03f);
 
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
                 TransformSystem.SetScaling(this.ID, currentXform);
             }
             else if (mainBlueberry)
@@ -420,10 +417,13 @@ namespace TRE
                     GetComponent<MeshRenderer>().Mesh = "4f4b81a656732e21";
                     GetComponent<MeshRenderer>().Material = "a8e7782a23bd1acf";
                 }
-                currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
-                currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+                currentHeight   = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
+                currentRadius   = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
+                currOffset = MathF.Lerp(currOffset, 1, lerpSpeed * Time.deltaTime);
                 currentXform = blueberryscaledXform;
+
+                PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
+                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 TransformSystem.SetScaling(this.ID, currentXform);
             }
             else if (mainStrawberry)
@@ -433,13 +433,43 @@ namespace TRE
                     GetComponent<MeshRenderer>().Mesh = "44ee4ae04937492b";
                 currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
                 currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
-                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
                 currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed * Time.deltaTime);
                 currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed * Time.deltaTime);
+
+                PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
                 TransformSystem.SetScaling(this.ID, currentXform);
             }
             #endregion
+
+            //Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
+            dirVec.y = 0;
+            if (dirVec != vec3.Zero)
+            {
+                dirVec = dirVec.Normalized;
+
+                //Walking animation
+                //if (GetComponent<MeshRenderer>().Mesh != "7c45522179c4a49c")
+                //{
+                //	GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
+                //	if (HasComponent<Animation>() == false)
+                //	{
+                //		AddComponent<Animation>();
+                //	}
+                //}
+            }
+            else
+            {
+                //Idle animation
+                //if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+                //{
+                //	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+                //	//if (HasComponent<Animation>() == false)
+                //	//{
+                //	//	AddComponent<Animation>();
+                //	//}
+                //}
+            }
 
             #region CHEATS
             // Close Game
