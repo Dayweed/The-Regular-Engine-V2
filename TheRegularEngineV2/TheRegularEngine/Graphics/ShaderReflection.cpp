@@ -514,6 +514,7 @@ namespace TRE
 
 				TRE_CORE_TRACE("Shader {0} ({1}, {2})", Name, Set, Binding);
 				TRE_CORE_TRACE("Member Count: {0}", MemberCount);
+				UNREFERENCED_PARAMETER(MemberCount);
 				TRE_CORE_TRACE("Size: {0}", Size);
 				
 				ShaderDescriptorSet.UniformBuffers[Binding] = Ubo;
@@ -540,7 +541,9 @@ namespace TRE
 			PushConstant.Size = BufferSize - Offset;
 
 			TRE_CORE_TRACE("Push Constant Name: {0}", Name);
+			UNREFERENCED_PARAMETER(Name);
 			TRE_CORE_TRACE("Push Constant Member Count: {0}", MemberCount);
+			UNREFERENCED_PARAMETER(MemberCount);
 			TRE_CORE_TRACE("Push Constant Size: {0}", BufferSize);
 		}
 

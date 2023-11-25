@@ -271,6 +271,7 @@ namespace TRE
 
 	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)
 	{
+		UNREFERENCED_PARAMETER(event);
 		//Hot reload only when not game mode
 #ifdef GAME
 		
