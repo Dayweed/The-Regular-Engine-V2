@@ -2,6 +2,7 @@
 
 #include "Core/System.h"
 #include "Core/ECS.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -22,7 +23,7 @@ namespace TRE
 
 		void UpdateScriptableObjects();
 		void CheckForNewScriptableObjects();
-
+		void CallRecompile(const ToggleRunEvent&);
 
 		bool DemoInit = true;
 

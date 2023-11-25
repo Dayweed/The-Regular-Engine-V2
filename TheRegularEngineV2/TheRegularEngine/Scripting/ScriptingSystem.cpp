@@ -3,6 +3,10 @@
 #include "TREIncludes.h"
 
 #include"Scripting/ScriptingSystem.h"
+
+#include "../../TheRegularEditor/src/ToolBarPanel.h"
+#include "EventSystem/EventHandler/EventHandler.h"
+#include "EventSystem/Events/EditorEvent.h"
 #include"Scripting/ScriptComponent.h"
 #include "Scripting/ScriptEngine.h"
 
@@ -12,6 +16,8 @@ namespace TRE
 	{
 		m_IsRunning = true;
 		m_ScriptableUpdate = true;
+
+		EventHandler::getEventHandlerInstance().subscribe(this,&ScriptingSystem::CallRecompile);
 	}
 
 	void ScriptingSystem::Update()
@@ -28,10 +34,9 @@ namespace TRE
 
 	void ScriptingSystem::GameUpdate()
 	{
+
 		if(m_IsRunning == true)
 		{
-			ScriptEngine::RecompileScripts();
-			ScriptEngine::ReloadAssembly();
 			//inital Create entity instances (only works if they are created before scene starts)
 			for(auto e: m_ScriptEntities)
 			{
@@ -262,6 +267,15 @@ namespace TRE
 		//		}
 		//	}
 		//}
+	}
+
+	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)
+	{
+		if(event.m_Playing == true)
+		{
+			ScriptEngine::RecompileScripts();
+			ScriptEngine::ReloadAssembly();
+		}
 	}
 
 

@@ -88,7 +88,6 @@ namespace TRE
 		// Start Simulating if it just started
 		if (!m_GameSimulating && isRunning)
 		{
-			ScriptEngine::ReloadAssembly();
 			m_GameSimulating = true;
 		}
 	}

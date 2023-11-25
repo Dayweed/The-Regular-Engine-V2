@@ -324,7 +324,7 @@ namespace TRE
 		//std::system("ScriptCompiler.bat");
 
 		//// remove the batch file
-		//std::filesystem::remove("ScriptCompiler.bat");
+		//std::filesystem::remove("ScriptCompiler.bat") ;
 
 		std::system("dotnet build ../TRE-ScriptStorage/TRE-ScriptStorage.csproj");
 
