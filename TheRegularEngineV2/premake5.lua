@@ -42,6 +42,9 @@ project "TheRegularEngine"
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
 
+	-- ignore those dang PDB warnings (LNK4099)
+	linkoptions {"/ignore:4099"}
+
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
 
@@ -153,6 +156,9 @@ project "TheRegularEditor"
 	objdir ("Executable_" .. outputdir .. "/")
 
 	dependson {"TRE-ScriptStorage"}
+	
+	-- ignore those dang PDB warnings (LNK4099)
+	linkoptions {"/ignore:4099"}
 
 	links 
 	{ 
@@ -282,6 +288,9 @@ project "TRE-Runtime"
 	objdir ("Executable_" .. outputdir .. "/")
 
 	dependson {"TRE-ScriptStorage"}
+
+	-- ignore those dang PDB warnings (LNK4099)
+	linkoptions {"/ignore:4099"}
 
 	links
 	{ 
