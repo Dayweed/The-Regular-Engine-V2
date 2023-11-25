@@ -519,7 +519,7 @@ namespace TRE
 			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-			if (MeshRendererComp.m_MaterialInstance == nullptr)
+			if (MeshRendererComp.m_AnimationMaterialInstance == nullptr)
 			{
 				ResourceHandle materialHandle = PBR::GetDefaultAnimationMaterial();
 				if (m_DefaultAnimationPBRMaterial == nullptr)

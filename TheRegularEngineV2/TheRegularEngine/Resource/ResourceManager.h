@@ -69,9 +69,8 @@ namespace TRE
 		}
 		else if (type == ResourceType::Material)
 		{
-			/*std::unique_ptr<Material> material = std::make_unique<Material>(GetResource<Shader>(3));
-			material->SetHandle(Resource::GetGUIDFromHex(hexHandle));
-			m_Resources[material->GetHandle()] = std::move(material);*/
+			std::shared_ptr<Material> material = Material::Deserialize(hexHandle);
+			(void)material;
 		}
 		else
 		{

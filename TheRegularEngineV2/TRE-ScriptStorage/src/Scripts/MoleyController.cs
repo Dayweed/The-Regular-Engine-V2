@@ -376,12 +376,12 @@ namespace TRE
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
 				//Default model
-				if(GetComponent<MeshRenderer>().Mesh != "789db1a40e2484e0")
+				if (GetComponent<MeshRenderer>().Mesh != "789db1a40e2484e0")
 				{
-                    GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
+					GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
 					GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
 				}
-                currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
+				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
                 currentXform = new vec3(75f, 75f, 75f);
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
@@ -427,7 +427,24 @@ namespace TRE
 
 			dirVec.y = 0;
             if (dirVec != new vec3())
-                dirVec = dirVec.Normalized;
+			{
+				dirVec = dirVec.Normalized;
+				
+				//Walking state
+			}
+			else
+			{
+				//Idle state
+				if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+				{
+					//Blue animation material
+					//GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+					//Red Animation Material
+					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+					TransformSystem.SetScaling(this.ID, new vec3(0.05f, 0.05f, 0.05f));
+				}
+			}
 
             playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
@@ -446,24 +463,14 @@ namespace TRE
 					PS.SetLinearVelocity(this.ID, finalVelocity);
 				}
 			}
-            /*else if (dirVec.x == 0 && dirVec.z == 0)
+			/*else if (dirVec.x == 0 && dirVec.z == 0)
             {
                 // If no input, slow down
                 finalVelocity = currVelocity * 0.9f;
                 PS.SetLinearVelocity(this.ID, finalVelocity);
-            }*/
+            }*/			
 
-            TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
-
-			/*if (Key.ID != 0 && FinalPlatform.ID != 0)
-			{
-				if (PS.IsTriggerEnter(this.ID, Key.ID))
-				{
-					Key.SetActive(false);
-					TransformSystem.SetPosition(FinalPlatform.ID, new vec3(100, 9, -302));
-					Debug.Log("Key Collected");
-				}
-			}*/
+			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
 			isGrounded = false;
 

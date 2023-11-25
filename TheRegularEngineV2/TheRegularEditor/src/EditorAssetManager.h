@@ -42,7 +42,7 @@ namespace TRE
 		std::shared_ptr<T> GetAsset(const std::string& assetName);
 		template<typename T>
 		std::vector<std::shared_ptr<T>> GetAssetsOfType();
-		std::unordered_map<std::string, std::pair<ResourceHandle, bool>>& GetAssets() { return m_AssetNameToHandle; }
+		std::map<std::string, std::pair<ResourceHandle, bool>>& GetAssets() { return m_AssetNameToHandle; }
 		const std::string GetName(const ResourceHandle resourceHandle) const;
 		const std::string GetName(const std::string& hexHandle) const;
 
@@ -55,7 +55,7 @@ namespace TRE
 		AssetManager& operator=(const AssetManager&) = delete;
 		void* operator new(size_t) = delete;
 	private:
-		std::unordered_map<std::string, std::pair<ResourceHandle, bool>> m_AssetNameToHandle;
+		std::map<std::string, std::pair<ResourceHandle, bool>> m_AssetNameToHandle;
 	};
 
 	template <typename T>

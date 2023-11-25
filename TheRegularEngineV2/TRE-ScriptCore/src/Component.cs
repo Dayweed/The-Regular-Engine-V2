@@ -154,6 +154,18 @@ namespace TRE
 			}
 		}
 
+		public string AnimMaterial
+		{
+			set
+			{
+				MeshRendererSystem.Engine_SetAnimMaterialInstance(entity.ID, value);
+			}
+			get
+			{
+				return MeshRendererSystem.Engine_GetAnimMaterialInstance(entity.ID);
+			}
+		}
+
 		public bool Visible
 		{
 			get

@@ -23,7 +23,7 @@ namespace TRE
 			ImGui::Begin("Asset Panel", &m_ShowAssetPanel);
 			for (const auto& asset : AssetManager::Instance().GetAssets())
 			{
-				constexpr unsigned maxAssetNameSize = 40;
+				constexpr unsigned maxAssetNameSize = 25;
 				std::string assetName(asset.first);
 
 				if (assetName.size() < maxAssetNameSize)

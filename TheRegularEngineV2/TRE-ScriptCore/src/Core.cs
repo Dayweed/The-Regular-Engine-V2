@@ -1052,6 +1052,12 @@ namespace TRE
 		internal extern static string Engine_GetMaterialInstance(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetAnimMaterialInstance(EntityID entityid, string instanceGUID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static string Engine_GetAnimMaterialInstance(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetMesh(EntityID entityid, string meshGUID);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
