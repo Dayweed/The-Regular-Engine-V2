@@ -14,6 +14,9 @@ namespace TRE
 		private Transform Player1Transform;
 		private Transform Player2Transform;
 
+		private MoleyController MoleyController;
+		private HoleyController HoleyController;
+
 		private float distance = 20;
 
 		public vec3 expectedPosition;
@@ -24,11 +27,14 @@ namespace TRE
 
 		public void Start()
 		{
-			Player1 = ECSManager.FindEntityByName("Holey");
-			Player2 = ECSManager.FindEntityByName("Moley");
+			Player1 = ECSManager.FindEntityByName("Moley");
+			Player2 = ECSManager.FindEntityByName("Holey");
 
 			Player1Transform = Player1.GetComponent<Transform>();
 			Player2Transform = Player2.GetComponent<Transform>();
+
+			MoleyController = Player1.GetComponent<MoleyController>();
+			HoleyController = Player2.GetComponent<HoleyController>();
 		}
 
 		public void Update()
@@ -38,6 +44,16 @@ namespace TRE
 
 			vec3 pos = Player1Transform.Position + Player2Transform.Position;
 			pos /= 2;
+
+			if(MoleyController.isGrounded == false)
+			{
+				pos.y = Player2Transform.Position.y;
+			}
+			else if(HoleyController.isGrounded == false)
+			{
+				pos.y = Player1Transform.Position.y;
+			}
+
 			CameraSystem.SetMainCameraLookAt(pos, distance);
 		}
 	}
