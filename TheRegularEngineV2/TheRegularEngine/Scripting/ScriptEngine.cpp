@@ -272,7 +272,7 @@ namespace TRE
 			else
 				className = name;
 
-			printf("%s.%s\n", nameSpace, name);
+			//printf("%s.%s\n", nameSpace, name);
 
 			//Create main class called entity, Also change the assembly image to AppCoreAssemblyImage when project script and core script is separated.
 			MonoClass* monoClass = mono_class_from_name(s_ScriptEngineData->ProjectAssemblyImage, nameSpace, name);
