@@ -45,14 +45,7 @@ namespace TRE
 			vec3 pos = Player1Transform.Position + Player2Transform.Position;
 			pos /= 2;
 
-			if(MoleyController.isGrounded == false)
-			{
-				pos.y = Player2Transform.Position.y;
-			}
-			else if(HoleyController.isGrounded == false)
-			{
-				pos.y = Player1Transform.Position.y;
-			}
+			pos.y = (Math.Max(Player1Transform.Position.y, Player2Transform.Position.y) + pos.y) / 2;
 
 			CameraSystem.SetMainCameraLookAt(pos, distance);
 		}
