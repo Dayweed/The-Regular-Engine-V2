@@ -496,10 +496,12 @@ namespace TRE
 		}
 	}
 
+	/*
 	static void BindTestFunction()
 	{
 		Demo::SpawnObject();
 	}
+	*/
 
 	static std::unordered_map<std::string, std::string> GetAllSceneObjects()
 	{

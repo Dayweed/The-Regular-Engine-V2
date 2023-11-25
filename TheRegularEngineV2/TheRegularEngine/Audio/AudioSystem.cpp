@@ -93,7 +93,7 @@ namespace TRE
 		{
 			if (!GameLoop::Instance().IsGameRunning())
 			{
-				Audio& audio = go.get()->GetComponent<Audio>();
+				Audio& audio = go->GetComponent<Audio>();
 				audio.m_Channel->setPaused(true);
 			}
 		}
@@ -149,7 +149,7 @@ namespace TRE
 
 	void AudioSystem::LoadFile(Entity& go) //(Entity& go, filepath)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 
 		std::string file_path_{ "../Resources/Audio/" };
 		std::string m_FilePath = file_path_ + audio.m_FileName;
@@ -176,7 +176,7 @@ namespace TRE
 
 	void AudioSystem::Load3DFile(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 
 		std::string file_path_{ "../Resources/Audio/" };
 		std::string m_FilePath = file_path_ + audio.m_FileName;
@@ -203,7 +203,7 @@ namespace TRE
 
 	void AudioSystem::Play(Entity& go, const bool shouldPlay)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 
 		if (audio.m_isPlaying || !shouldPlay)
 			return;
@@ -218,14 +218,14 @@ namespace TRE
 			audio.m_Sound->setLoopCount(-1);
 		};
 
-		audio.m_Channel->setPaused(false); 
+		audio.m_Channel->setPaused(false);
 		audio.m_isPlaying = true;
 		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()" + audio.m_FileName);
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 
 		if (!audio.m_Pause)
 		{
@@ -241,7 +241,7 @@ namespace TRE
 
 	void AudioSystem::ToggleMute(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 		if (!audio.m_Mute)
 		{
 			audio.m_Channel->setMute(false);
@@ -256,13 +256,13 @@ namespace TRE
 
 	void AudioSystem::Stop(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 		audio.m_Channel->stop();
 	}
 
 	int AudioSystem::ErrorCheck(FMOD_RESULT result, std::string function)
 	{
-		if (result != FMOD_OK) 
+		if (result != FMOD_OK)
 		{
 			TRE_CORE_ERROR(function);
 
@@ -273,7 +273,7 @@ namespace TRE
 
 	void AudioSystem::CompileAudio(Entity& go)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 
 		if (audio.m_FileName == "") {
 			TRE_CORE_WARN("Audio filename is not set. Skipping audio compilation.");
@@ -296,13 +296,13 @@ namespace TRE
 
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 		audio.m_FileName = filename;
 	}
 
 	void AudioSystem::SetChannelGroup(Entity& go, const std::string channel)
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		Audio& audio = go->GetComponent<Audio>();
 		if (channel == "Music")
 		{
 			audio.m_ChannelGroup = m_MusicChannelGroup;
@@ -316,7 +316,7 @@ namespace TRE
 
 	void AudioSystem::SetListenerPosition(Entity& go)
 	{
-		AudioListener& listener = go.get()->GetComponent<AudioListener>();
+		AudioListener& listener = go->GetComponent<AudioListener>();
 
 		const glm::vec3 pos = go->GetComponent<Transform>().m_Position;
 		const glm::vec3 viewVec = go->GetComponent<Camera>().m_BaseCamera.GetViewDirection();
@@ -331,8 +331,8 @@ namespace TRE
 
 	void AudioSystem::SetSourcePosition(Entity& go)
 	{
-		Transform& sourceposition = go.get()->GetComponent<Transform>();
-		Audio& audiosource = go.get()->GetComponent<Audio>();
+		Transform& sourceposition = go->GetComponent<Transform>();
+		Audio& audiosource = go->GetComponent<Audio>();
 		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
 
 		audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
@@ -344,7 +344,7 @@ namespace TRE
 
 	void AudioSystem::SetSourceRadius(Entity& go, const float min, const float max)
 	{
-		Audio& audiosource = go.get()->GetComponent<Audio>();
+		Audio& audiosource = go->GetComponent<Audio>();
 		audiosource.m_Channel->set3DMinMaxDistance(min, max);
 		audiosource.m_MinDistance = min;
 		audiosource.m_MaxDistance = max;
@@ -354,12 +354,15 @@ namespace TRE
 
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
 	{
-		return go.get()->GetComponent<Audio>().m_ChannelGroup;
+		return go->GetComponent<Audio>().m_ChannelGroup;
 	}
 
 	std::string AudioSystem::GetFileName(Entity& go) const
 	{
-		Audio& audio = go.get()->GetComponent<Audio>();
+		// The code below was producing C4702: "unreachable code" due to the fact that the function was returning
+		// immediately on its first iteration, causing the increment part of the range-for loop to never execute.
+#if 0
+		Audio& audio = go->GetComponent<Audio>();
 
 		for (const auto& entry : std::filesystem::directory_iterator("../Resources/Audio/")) {
 			std::string filename = entry.path().filename().string();
@@ -368,21 +371,38 @@ namespace TRE
 		}
 
 		return {};
+#else
+		Audio& audio = go->GetComponent<Audio>();
+
+		const std::filesystem::directory_iterator directory("../Resources/Audio/");
+
+		// return an empty string immediately if the directory is empty
+		if (std::filesystem::begin(directory) == std::filesystem::end(directory))
+		{
+			audio.m_audioFiles.emplace_back();
+			return audio.m_FileName = std::string{};
+		}
+
+		// otherwise, obtain the first entry's filename
+		const std::string filename = directory->path().filename().string();
+		audio.m_audioFiles.push_back(filename);
+		return audio.m_FileName = filename;
+#endif
 	}
 
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
 	{
-		return go.get()->GetComponent<AudioListener>().m_Position;
+		return go->GetComponent<AudioListener>().m_Position;
 	}
 
 	FMOD_VECTOR AudioSystem::GetSourcePosition(Entity& go) const
 	{
-		return go.get()->GetComponent<Audio>().m_goPosition;
+		return go->GetComponent<Audio>().m_goPosition;
 	}
 
 	const std::pair<float, float> AudioSystem::GetSourceRadius(Entity& go) const
 	{
-		const Audio& audioSource = go.get()->GetComponent<Audio>();
+		const Audio& audioSource = go->GetComponent<Audio>();
 		std::pair<float, float> radius;
 		radius.first = audioSource.m_MinDistance;
 		radius.second = audioSource.m_MaxDistance;
@@ -391,7 +411,7 @@ namespace TRE
 
 	bool AudioSystem::GetIsPlaying(Entity& go) const
 	{
-		Audio& source = go.get()->GetComponent<Audio>();
+		Audio& source = go->GetComponent<Audio>();
 		return source.m_Channel->isPlaying(&source.m_isPlaying);
 	}
 
