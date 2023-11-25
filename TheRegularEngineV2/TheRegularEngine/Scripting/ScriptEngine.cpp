@@ -311,20 +311,22 @@ namespace TRE
 
 	bool ScriptEngine::RecompileScripts()
 	{
-		//Get path to scriptCore
-		std::fstream batch;
-		batch.open("ScriptCompiler.bat", std::ios::out);
+		////Get path to scriptCore
+		//std::fstream batch;
+		//batch.open("ScriptCompiler.bat", std::ios::out);
 
-		batch << "@echo OFF" << std::endl;
-		batch << "cd " + std::filesystem::current_path().parent_path().string() + "/TRE-ScriptStorage" << std::endl;
-		batch << "dotnet build TRE-ScriptStorage.csproj" << std::endl;
+		//batch << "@echo OFF" << std::endl;
+		//batch << "cd " + std::filesystem::current_path().parent_path().string() + "/TRE-ScriptStorage" << std::endl;
+		//batch << "dotnet build TRE-ScriptStorage.csproj" << std::endl;
 
-		batch.close();
+		//batch.close();
 
-		std::system("ScriptCompiler.bat");
+		//std::system("ScriptCompiler.bat");
 
-		// remove the batch file
-		std::filesystem::remove("ScriptCompiler.bat");
+		//// remove the batch file
+		//std::filesystem::remove("ScriptCompiler.bat");
+
+		std::system("dotnet build ../TRE-ScriptStorage/TRE-ScriptStorage.csproj");
 
 		return true;
 	}
