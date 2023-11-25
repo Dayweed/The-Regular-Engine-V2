@@ -6,6 +6,10 @@
 #include "Material.h"
 #include "UniformBuffer.h"
 
+#ifndef UINT32_T_CAST // a bit funky that I had to do this but alright...
+#define UINT32_T_CAST(n) static_cast<uint32_t>((n))
+#endif
+
 namespace TRE
 {
 	struct AnimationUBO
@@ -18,7 +22,7 @@ namespace TRE
 		public:
 			AnimationComponent()
 			{
-				m_UBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 8);
+				m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(AnimationUBO)), 8);
 			}
 
 			std::shared_ptr<UniformBuffer> m_UBO;

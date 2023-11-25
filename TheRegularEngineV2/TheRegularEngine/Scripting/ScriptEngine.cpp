@@ -135,14 +135,13 @@ namespace TRE
 
 		void PrintAllContainers()
 		{
-
+#ifdef _DEBUG
 			for(auto& scriptInstance : ScriptEngine::s_ScriptEngineData->ScriptInstances)
 			{
 				TRE_CORE_INFO("Instance: {0} ", scriptInstance.first);
 			}
-			
+#endif
 		}
-
 	}
 
 

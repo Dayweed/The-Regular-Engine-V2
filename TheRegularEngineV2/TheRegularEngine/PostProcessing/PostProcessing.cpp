@@ -37,8 +37,12 @@ namespace TRE
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
-		m_IndexBuffer = std::make_shared<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
-		m_VertexBuffer = std::make_shared<VertexBuffer>((void*)data.data(), data.size() * sizeof(PostVertex));
+		m_IndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_VertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(PostVertex)));
 	}
 
 	void PostProcessEffect::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)

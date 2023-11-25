@@ -35,7 +35,7 @@ namespace TRE
 		PipelineConfig.EnableDepthTest = false;
 		m_UIPipeline = std::make_shared<Pipeline>(PipelineConfig, m_UIRenderpass);
 
-		m_UIUBO = std::make_shared<UniformBuffer>(sizeof(UIUBO), 0);
+		m_UIUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
 
 		float x = -1.f; float y = -1.f;
 		float width = 2, height = 2;
@@ -55,8 +55,12 @@ namespace TRE
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
-		m_TestIndexBuffer = std::make_shared<IndexBuffer>((void*)indices.data(), sizeof(int) * indices.size(), indices.size());
-		m_TestVertexBuffer = std::make_shared<VertexBuffer>((void*)data.data(), data.size() * sizeof(UIVertex));
+		m_TestIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_TestVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(UIVertex)));
 
 		auto TextureHandle = Resource::GetGUIDFromHex("d180b66ce70dea24");
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle);

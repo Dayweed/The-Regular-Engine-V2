@@ -42,7 +42,8 @@ namespace TRE
 				BoneVertices[x].m_BoneIndex = geom->pBone[x].m_BoneIndex;
 				BoneVertices[x].m_BoneWeights = geom->pBone[x].m_BoneWeights;
 			}
-			m_BoneVertexBuffer = std::make_unique<VertexBuffer>((void*)BoneVertices.data(), BoneVertices.size() * sizeof(BoneVertex));
+			m_BoneVertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(BoneVertices.data()),
+				UINT32_T_CAST(BoneVertices.size() * sizeof(BoneVertex)));
 
 			m_Animations = geom->m_Animation;
 			m_Skeleton = geom->m_Skeleton;

@@ -20,7 +20,7 @@ namespace TRE
 
 	void Vignette::SetupUBO()
 	{
-		m_UBO = std::make_shared<UniformBuffer>(sizeof(VignetteUBO), 0);
+		m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(VignetteUBO)), 0);
 	}
 
 	void Vignette::SetupShader(std::shared_ptr<Shader> shader)
