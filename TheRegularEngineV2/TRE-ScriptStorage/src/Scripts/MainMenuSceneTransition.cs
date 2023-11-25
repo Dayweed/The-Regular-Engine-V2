@@ -18,10 +18,18 @@ namespace TRE
 		{
 			TutorialSceneName = "Tutorial";
 			//ControlsDisplaySceneName = "ControlsDisplay";
+			spacePressed = false;
+			enterPressed = false;
 		}
 
 		public void Update()
 		{
+			// Close Game
+			if (InputSystem.GetKeyDown(InputKeys.Escape))
+			{
+				Game.CloseGame();
+			}
+
 			if (InputSystem.GetKeyTrigger(InputKeys.Space))
 			{
 				spacePressed = true;

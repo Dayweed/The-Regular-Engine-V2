@@ -66,6 +66,12 @@ namespace TRE
 					Scene.TransitionScene("Level_1", 7f);
 				}
 			}
+
+			// Close Game
+			if (InputSystem.GetKeyDown(InputKeys.Escape))
+			{
+				Game.CloseGame();
+			}
 		}
 	}
 }
