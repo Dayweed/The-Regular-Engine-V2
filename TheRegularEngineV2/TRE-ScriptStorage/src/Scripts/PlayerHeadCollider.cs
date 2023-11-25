@@ -26,16 +26,16 @@ namespace TRE
             }
             if(this.CompareTag(mole1tag))
             {
-                vec3 newPos = playerObj.transform.Position;
-                newPos.y += playerObj.transform.Scale.y * 5f;
-                transform.Position = newPos;
+                //vec3 newPos = playerObj.transform.Position;
+                //newPos.y += playerObj.transform.Scale.y * 5f;
+                //transform.Position = newPos;
             }
             else if(this.CompareTag(mole2tag))
             {
-                vec3 newPos = playerObj.transform.Position;
-                newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 2f; //+ playerObj.GetComponent<HoleyController>().currentRadius
-                                                                                           //+ offset.y;
-                transform.Position = newPos;
+                //vec3 newPos = playerObj.transform.Position;
+                //newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 2f; //+ playerObj.GetComponent<HoleyController>().currentRadius
+                //                                                                           //+ offset.y;
+                //transform.Position = newPos;
             }
 
         }
