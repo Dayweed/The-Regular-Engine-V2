@@ -17,25 +17,25 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
-		//Check if player is boosted jump
-		public bool isBoostedJump = false;
-		//check if player is on the ground (for now , just a plane)
-		public bool isGrounded = true;
-		//direction vector
-		private vec3 dirVec;
-		//Max Velocity vector
-		private float maxVelocity = 30f;
-		//Max Air Velocity vector
-		private float maxAirVelocity = 25f;
-		//Acceleration
-		private float acceleration = 700f;
-		//final velocity
-		private vec3 finalVelocity = vec3.Zero;
-		//maxJumpHeight
-		private float maxJumpHeight = 70f;
-		//Check if player is walking
-		private bool isWalking = false;
-		private bool walkingSFXPlayed = false;
+        //Check if player is boosted jump
+        public bool isBoostedJump = false;
+        //check if player is on the ground (for now , just a plane)
+        public bool isGrounded = true;
+        //direction vector
+        private vec3 dirVec;
+        //Max Velocity vector
+        private float maxVelocity = 30f;
+        //Max Air Velocity vector
+        //private float maxAirVelocity = 25f;
+        //Acceleration
+        private float acceleration = 700f;
+        //final velocity
+        private vec3 finalVelocity = vec3.Zero;
+        //maxJumpHeight
+        private float maxJumpHeight = 70f;
+        //Check if player is walking
+        private bool isWalking = false;
+        private bool walkingSFXPlayed = false;
 
 		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling

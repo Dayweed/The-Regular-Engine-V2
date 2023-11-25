@@ -25,7 +25,8 @@ namespace TRE
 			case VertexInputDataType::Bool:   return 1;
 		}
 
-		assert(false, "Data Type not registered");
+		#pragma message("Data Type not registered")
+		assert(false);
 		return 0;
 	}
 

@@ -27,9 +27,9 @@ namespace TRE
 	{
 		for (auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
 		{
-			const auto& TransformComp = Entity->GetComponent<Transform>();
+			//const auto& TransformComp = Entity->GetComponent<Transform>();
 			auto& MRComp = Entity->GetComponent<MeshRenderer>();
-			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			//auto& AnimComp = Entity->GetComponent<AnimationComponent>();
 			if (!MRComp.m_IsVisible)
 				continue;
 

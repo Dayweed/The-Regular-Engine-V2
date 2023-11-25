@@ -36481,6 +36481,7 @@ class basic_snapshot_loader {
             while(length--) {
                 archive(entt, instance);
                 const auto entity = reg->valid(entt) ? entt : reg->create(entt);
+                UNREFERENCED_PARAMETER(entity);
                 ENTT_ASSERT(entity == entt, "Entity not available for use");
                 reg->template emplace<Component>(entt, std::move(instance));
             }
