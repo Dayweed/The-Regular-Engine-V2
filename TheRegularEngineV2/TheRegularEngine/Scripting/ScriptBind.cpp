@@ -1706,6 +1706,38 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region UIBindings
+
+	static void Engine_SetVisible(CSEntityID id, bool visible)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<UIComponent>())
+		{
+			PUBLISHERROR("There is no UIComponent in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<UIComponent>().m_IsVisible = visible;
+	}
+
+	static bool Engine_GetVisible(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<UIComponent>())
+		{
+			PUBLISHERROR("There is no UIComponent in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<UIComponent>().m_IsVisible;
+	
+	}
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -1925,6 +1957,12 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.PersistentSystem::Engine_GetPersistentValue", BindGetPersistentVarVal);
 			mono_add_internal_call("TRE.PersistentSystem::Engine_SetPersistentValue", BindSetPersistentVarVal);
+		}
+
+		// Ui
+		{
+			mono_add_internal_call("TRE.UISystem::Engine_SetVisible", Engine_SetVisible);
+			mono_add_internal_call("TRE.UISystem::Engine_GetVisible", Engine_GetVisible);
 		}
 	}
 }

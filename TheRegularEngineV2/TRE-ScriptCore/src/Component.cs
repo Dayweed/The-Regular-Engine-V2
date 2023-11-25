@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -421,4 +422,24 @@ namespace TRE
 			}
 		}
 	}
+
+    public class UI : Component
+    {
+        public UI()
+        {
+
+        }
+        public bool IsVisible
+        {
+            get
+            {
+                return UISystem.Engine_GetVisible(entity.ID);
+            }
+            set
+            {
+                UISystem.Engine_SetVisible(entity.ID, value);
+            }
+        }
+    }
+
 }

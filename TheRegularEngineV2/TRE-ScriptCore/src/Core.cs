@@ -279,144 +279,6 @@ namespace TRE
 		internal extern static void Engine_ParentRemoveChild(EntityID _id, EntityID _child_id);
 	}
 
-	//public struct Vector3
-	//{
-	//	public float x, y, z;
-	//	public static Vector3 left = new Vector3(-1, 0, 0);
-	//	public static Vector3 right = new Vector3(1, 0, 0);
-	//	public static Vector3 down = new Vector3(0, -1, 0);
-	//	public static Vector3 up = new Vector3(0, 1, 0);
-	//	public static Vector3 back = new Vector3(0, 0, -1);
-	//	public static Vector3 forward = new Vector3(0, 0, 1);
-	//	public static Vector3 zero = new Vector3(0, 0, 0);
-	//	public static Vector3 one = new Vector3(1, 1, 1);
-
-	//	public Vector3(float x, float y, float z)
-	//	{
-	//		this.x = x; this.y = y; this.z = z;
-	//	}
-
-	//	public static Vector3 operator +(Vector3 a, Vector3 b)
-	//	{
-	//		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
-	//	}
-
-	//	public static Vector3 operator +(Vector3 a, float b)
-	//	{
-	//		return new Vector3(a.x + b, a.y + b, a.z + b);
-	//	}
-
-	//	public static Vector3 operator -(Vector3 a, Vector3 b)
-	//	{
-	//		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
-	//	}
-
-	//	public static Vector3 operator -(Vector3 a, float b)
-	//	{
-	//		return new Vector3(a.x - b, a.y - b, a.z - b);
-	//	}
-
-	//	public static Vector3 operator *(Vector3 a, Vector3 b)
-	//	{
-	//		return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
-	//	}
-
-	//	public static Vector3 operator *(Vector3 a, float b)
-	//	{
-	//		return new Vector3(a.x * b, a.y * b, a.z * b);
-	//	}
-
-	//	public static Vector3 operator /(Vector3 a, Vector3 b)
-	//	{
-	//		return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
-	//	}
-
-	//	public static Vector3 operator /(Vector3 a, float b)
-	//	{
-	//		return new Vector3(a.x / b, a.y / b, a.z / b);
-	//	}
-
-	//	public static bool operator ==(Vector3 a, Vector3 b)
-	//	{
-	//		if (a.x == b.x && a.y == b.y && a.z == b.z)
-	//		{
-	//			return true;
-	//		}
-	//		else
-	//		{
-	//			return false;
-	//		}
-	//	}
-
-	//	public float Magnitude()
-	//	{
-	//		return (float)Math.Sqrt(x * x + y * y + z * z);
-	//	}
-
-	//	public void Normalize()
-	//	{
-	//		if(Magnitude() != 0)
-	//		{
-	//			this.x = this.x / Magnitude();
-	//			this.y = this.y / Magnitude();
-	//			this.z = this.z / Magnitude();
-	//		}
-	//		if(Magnitude() == 0)
-	//		{
-	//			this.x = 0;
-	//			this.y = 0;
-	//			this.z = 0;
-	//		}
-	//	}
-
-	//	public static bool operator !=(Vector3 a, Vector3 b)
-	//	{
-	//		if (a.x != b.x || a.y != b.y || a.z != b.z)
-	//		{
-	//			return true;
-	//		}
-	//		else
-	//		{
-	//			return false;
-	//		}
-	//	}
-
-	//	public static float Distance(Vector3 vec1, Vector3 vec2)
-	//	{
-	//		// TO DO CALCULATE VECTOR DISTANCE :p
-	//		return Math.Abs(vec1.Magnitude() - vec2.Magnitude());
-	//	}
-
-	//	// uhhhhhhhhh, trust?
-	//	public override bool Equals(object obj)
-	//	{
-	//		return obj is Vector3 vector &&
-	//			   x == vector.x &&
-	//			   y == vector.y &&
-	//			   z == vector.z;
-	//	}
-
-	//	// uhhhhhhhhh, trust?
-	//	public override int GetHashCode()
-	//	{
-	//		int hashCode = 373119288;
-	//		hashCode = hashCode * -1521134295 + x.GetHashCode();
-	//		hashCode = hashCode * -1521134295 + y.GetHashCode();
-	//		hashCode = hashCode * -1521134295 + z.GetHashCode();
-	//		return hashCode;
-	//	}
-	//}
-
-	//public struct Vector2
-	//{
-	//	public float x, y;
-
-	//	public Vector2(float x, float y)
-	//	{
-	//		this.x = x; this.y = y;
-	//	}
-	//}
-
 	public class Debug
 	{
 		public static void Log(string message)
@@ -455,41 +317,6 @@ namespace TRE
 		// ECS get parent
 
 	}
-
-	//public struct TransformS
-	//{
-	//	private EntityID id;
-	//	public Vector3 position, rotation, scale;
-
-	//	public TransformS(EntityID _id = new EntityID(), Vector3 _pos = new Vector3(), Vector3 _rot = new Vector3(), Vector3 _sca = new Vector3())
-	//	{
-	//		id = _id;
-	//		position = _pos;
-	//		rotation = _rot;
-	//		scale = _sca;
-	//	}
-
-	//	public void SetPosition(Vector3 output)
-	//	{
-	//		position = output;
-
-	//		TransformSystem.SetPosition(id, output);
-	//	}
-
-	//	public void SetRotation(Vector3 output)
-	//	{
-	//		rotation = output;
-
-	//		TransformSystem.SetRotation(id, output);
-	//	}
-
-	//	public void SetScaling(Vector3 output)
-	//	{
-	//		scale = output;
-
-	//		TransformSystem.SetScaling(id, output);
-	//	}
-	//}
 
 	public class TransformSystem
 	{
@@ -1080,7 +907,6 @@ namespace TRE
 		}
 	}
 
-
 	public enum ForceMode
 	{
 		Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
@@ -1523,4 +1349,15 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetPersistentValue(string VariableName, string VariableValue);
 	}
+
+    public class UISystem
+    {
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetVisible(EntityID ID);
+    }
+
 }
