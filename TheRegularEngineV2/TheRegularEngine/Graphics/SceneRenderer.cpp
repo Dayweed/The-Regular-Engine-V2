@@ -307,7 +307,7 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(true, 1.f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1f));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 			}
 		}
@@ -912,7 +912,7 @@ namespace TRE
 			}
 			else
 			{
-				const auto cameraFrustum = baseCamera.GetFrustumCorners(true, 1.f);
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.08f);
 
 				if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
 					cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||
