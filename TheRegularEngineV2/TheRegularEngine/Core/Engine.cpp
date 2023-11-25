@@ -113,7 +113,7 @@ namespace TRE
 	void Engine::RegisterECS()
 	{
 		// Load set folders and names
-		FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
+		//FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
 		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore

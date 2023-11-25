@@ -216,9 +216,8 @@ namespace TRE
 		std::string prefabPath{ m_ExistingPrefabs[prefabGUID] };
 
 		// Try opening filePath
-		std::ifstream file;
-		file.open(prefabPath);
-		if (!file)
+		std::ifstream file(prefabPath);
+		if (!file.is_open())
 		{
 			std::string funcName{ __FUNCTION__ };
 			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not have a valid filepath (" + prefabPath + ")! Removing from m_ExistingPrefabs...");
@@ -763,9 +762,9 @@ namespace TRE
 	std::string PrefabSystem::ReadPrefabAssetFile(std::string filePathName)
 	{
 		// Try opening filePath
-		std::ifstream file;
-		file.open(filePathName);
-		if (!file)
+		std::ifstream file(filePathName);
+		
+		if (file.is_open() == false)
 		{
 			std::string funcName{ __FUNCTION__ };
 			TRE_CORE_WARN("[" + funcName + "] filePathName (" + filePathName + ") does not exist! Returning empty string...");
@@ -824,9 +823,9 @@ namespace TRE
 			std::string prefabPath{ prefab.second };
 
 			// Try opening filePath
-			std::ifstream file;
-			file.open(prefabPath);
-			if (!file)
+			std::ifstream file(prefabPath);
+			
+			if (!file.is_open())
 			{
 				std::string funcName{ __FUNCTION__ };
 				TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not have a valid filepath (" + prefabPath + ")! Removing from m_ExistingPrefabs...");

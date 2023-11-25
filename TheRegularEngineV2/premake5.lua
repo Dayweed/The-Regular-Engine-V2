@@ -19,9 +19,9 @@ outputdir = "%{cfg.buildcfg}"
 group "Dependencies"
 include "Dependencies/ImGui"
 include "Dependencies/Math"
---include "Dependencies/MeshOptimizer"
---include "Dependencies/CompilerLib"
---include "Compilers/GeomCompiler"
+-- include "Dependencies/MeshOptimizer"
+-- include "Dependencies/CompilerLib"
+-- include "Compilers/GeomCompiler"
 -- include "Compilers/TextureCompiler"
 -- include "Compilers/ShaderCompiler"
 group ""
@@ -371,8 +371,8 @@ project "TRE-ScriptCore"
 	language "C#"
 	dotnetframework "4.7.2"
 
-	targetdir ("Resources/Scripts")
-	objdir ("Resources/Scripts")
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
 	
 	libdirs"Resources/Scripts"
 	links"Coroutine.dll"
@@ -398,8 +398,8 @@ project "TRE-ScriptStorage"
 	dotnetframework "4.7.2"
 
 	-- (DON'T DELETE THIS!)
-	targetdir ("Resources/Scripts")
-	objdir ("Resources/Scripts")
+	targetdir ("Executable_" .. outputdir .. "/")
+	objdir ("Executable_" .. outputdir .. "/")
 	
 	libdirs "Resources/Scripts"
 	links "TRE-ScriptCore.dll"
