@@ -16,6 +16,7 @@
 #include "Core/ECS.h"
 #include "PhysicsComponent.h"
 #include "Rigidbody.h" // For ForceMode::Enum
+#include "ErrorCallback.h"
 #include "SimulationEventCallback.h"
 
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
@@ -293,18 +294,18 @@ namespace TRE
 
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
-		physx::PxDefaultAllocator		m_Allocator;
-		physx::PxDefaultErrorCallback	m_ErrorCallback;
-		SimulationEventCallback			m_SimulationEventCallback;
+		physx::PxDefaultAllocator       m_Allocator;
+		ErrorCallback                   m_ErrorCallback;
+		SimulationEventCallback         m_SimulationEventCallback;
 		// OH MY GOD AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-		physx::PxFoundation*			m_Foundation = nullptr;
-		physx::PxPvd*					m_Pvd = nullptr;
-		physx::PxPvdTransport*			m_Transport = nullptr;
-		physx::PxPhysics*				m_Physics = nullptr;
-		physx::PxDefaultCpuDispatcher*	m_Dispatcher = nullptr;
-		physx::PxScene*					m_Scene = nullptr;
-		physx::PxMaterial*				m_DefaultMaterial = nullptr;
+		physx::PxFoundation*            m_Foundation = nullptr;
+		physx::PxPvd*                   m_Pvd = nullptr;
+		physx::PxPvdTransport*          m_Transport = nullptr;
+		physx::PxPhysics*               m_Physics = nullptr;
+		physx::PxDefaultCpuDispatcher*  m_Dispatcher = nullptr;
+		physx::PxScene*                 m_Scene = nullptr;
+		physx::PxMaterial*              m_DefaultMaterial = nullptr;
 
 		bool m_DrawDebugLines = false;
 	};

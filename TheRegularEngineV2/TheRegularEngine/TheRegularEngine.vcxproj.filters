@@ -241,6 +241,9 @@
     <ClInclude Include="Physics\CapsuleCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Physics\ErrorCallback.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
     <ClInclude Include="Physics\PhysicsComponent.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -442,6 +445,9 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\CapsuleCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\ErrorCallback.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
