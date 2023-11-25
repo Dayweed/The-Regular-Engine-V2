@@ -19,7 +19,7 @@ namespace TRE
 		//Audio
 		private ulong droppowerupSFX;
 
-		private bool usePower = false;
+		//private bool usePower = false;
 
 		public PowerUpManager()
 		{

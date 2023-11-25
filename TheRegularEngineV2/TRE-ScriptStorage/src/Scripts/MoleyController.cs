@@ -65,8 +65,8 @@ namespace TRE
         private float lerpSpeed = 5f;
 
         //For camera controller
-        private Entity Key;
-        private Entity FinalPlatform;
+        //private Entity Key;
+        //private Entity FinalPlatform;
 
         //For audio
         private ulong walkingSFX;

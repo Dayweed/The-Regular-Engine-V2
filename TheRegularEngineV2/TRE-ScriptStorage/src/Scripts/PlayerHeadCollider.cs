@@ -12,8 +12,8 @@ namespace TRE
         private Entity playerObj;
         private string mole1tag = "RedCollider";
         private string mole2tag = "BlueCollider";
-        bool isPlayer1 = false;
-        bool isPlayer2 = false;
+        //bool isPlayer1 = false;
+        //bool isPlayer2 = false;
         private vec3 offset;
 
         public void SetToPlayer()

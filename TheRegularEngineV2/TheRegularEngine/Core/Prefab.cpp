@@ -716,6 +716,8 @@ namespace TRE
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
 					List.emplace_back(PropertyName, Data);
+
+					(void)Flags;
 				});
 			instPropTable.emplace_back(instInspectableComp[i].first, List);
 		}
@@ -991,6 +993,8 @@ namespace TRE
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
 					List.emplace_back(PropertyName, Data);
+
+					(void)Flags;
 				});
 			instPropTable.emplace_back(instInspectableComp[i].first, List);
 		}
@@ -1007,6 +1011,8 @@ namespace TRE
 					// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 					assert(Flags.m_isScope == false || PropertyName.back() == ']');
 					List.emplace_back(PropertyName, Data);
+
+					(void)Flags;
 				});
 			prefPropTable.emplace_back(prefInspectableComp[i].first, List);
 		}

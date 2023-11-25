@@ -26,7 +26,7 @@ namespace TRE
 		//Max velocity
 		private float maxVelocity = 30f;
         //Max Air Velocity vector
-        private float maxAirVelocity = 25f;
+        //private float maxAirVelocity = 25f;
         //Acceleration
         private float acceleration = 700f;
 		//final velocity

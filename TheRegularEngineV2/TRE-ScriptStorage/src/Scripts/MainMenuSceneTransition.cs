@@ -10,14 +10,14 @@ namespace TRE
 	public class MainMenuSceneTransition : Entity
 	{
 		private string TutorialSceneName;
-		private string ControlsDisplaySceneName;
+		//private string ControlsDisplaySceneName;
 		public bool spacePressed;
 		public bool enterPressed;
 
 		public void Start()
 		{
 			TutorialSceneName = "Tutorial";
-			ControlsDisplaySceneName = "ControlsDisplay";
+			//ControlsDisplaySceneName = "ControlsDisplay";
 		}
 
 		public void Update()
