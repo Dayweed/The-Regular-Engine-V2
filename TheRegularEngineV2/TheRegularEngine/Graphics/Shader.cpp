@@ -179,7 +179,7 @@ namespace TRE
 		auto FinalPassShaderHandle = 4;
 		auto ShadowMapHandle = 5;
 		auto UIHandle = 6;
-		auto DebugHandle = 7;
+		//auto DebugHandle = 7;
 		auto VignetteHandle = 8;
 		auto AnimationHandle = 9;
 

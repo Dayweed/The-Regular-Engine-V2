@@ -478,6 +478,7 @@ namespace TRE
 
 				m_ReflectionData.VertexInputAttributeDescriptions.push_back(VertexAttributeDesc);
 				TRE_CORE_TRACE("Reflected Input Stage: Name: {0} Binding:{1} Location: {2} Offset: {3}", Name, Binding, Location, OffsetStride);
+				UNREFERENCED_PARAMETER(Name);
 
 				OffsetStride += GetStrideFromVulkanFormat(VertexAttributeDesc.format);
 				//TRE_CORE_INFO("Reflected Input Stage: Offset: {0}", OffsetStride);
