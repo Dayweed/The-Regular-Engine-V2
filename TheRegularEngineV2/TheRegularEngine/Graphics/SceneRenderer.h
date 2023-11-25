@@ -123,6 +123,7 @@ namespace TRE
 			VkDescriptorImageInfo m_ShadowDescriptInfo;
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
 			std::shared_ptr<Material> m_ShadowMaterial;
+			std::shared_ptr<Pipeline> m_ShadowAnimationPipeline;
 			std::shared_ptr<UniformBuffer> m_ShadowUBO;
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;

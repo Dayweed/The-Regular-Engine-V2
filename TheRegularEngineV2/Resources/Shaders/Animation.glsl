@@ -60,7 +60,7 @@ void main()
 
 	gl_Position = ubo.m_ProjView * L2W * vec4(inPosition.xyz, 1.0);
 
-	mat3 rot = mat3(L2W);
+	mat3 rot = mat3(push.m_Model);
 
 	Out.VertColor = pow(inColor, gamma.rrr);
 	Out.TexCoord = inUV;

@@ -87,6 +87,19 @@ namespace TRE
 		Config.CullMode = VK_CULL_MODE_FRONT_BIT;
 		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
+		PipelineConfigurations ShadowAnimationPipelineConfig{};
+		ShadowAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+		ShadowAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
+		ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_FRONT_BIT;
+		ShadowAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+		ShadowAnimationPipelineConfig.CustomVertexBufferInputLayout =
+		{
+			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+		};
+
+		m_ShadowAnimationPipeline = std::make_shared<Pipeline>(ShadowAnimationPipelineConfig, m_ShadowRenderPass);
+
 		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
 		m_ShadowMaterial->Invalidate();
 
@@ -639,8 +652,32 @@ namespace TRE
 
 			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
-
 		m_PreviousMaterialHandle = 0; 
+
+		Renderer::BindPipeline(m_CommandBuffer, m_ShadowAnimationPipeline);
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
+		{
+			const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
+			const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
+
+			PushConstant pc{};
+			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			if (m_IsEditorScene)
+			{
+				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
+			}
+
+			MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+		}
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 	}
