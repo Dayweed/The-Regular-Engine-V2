@@ -278,6 +278,7 @@ namespace TRE
 			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
 		}
+#else
 #endif
 	}
 }

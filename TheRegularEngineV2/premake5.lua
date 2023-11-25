@@ -268,20 +268,15 @@ project "TheRegularEditor"
 			-- '{COPY} "%{ResourcesScripts.Storage}" "%{cfg.targetdir}"',
 		}
 
-		kind "WindowedApp"
-		defines {"WINDOWED"}
-
-
 project "TRE-Runtime"
 	location "TRE-Runtime"
-	kind "ConsoleApp"
+	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings "Extra"
 
 	targetname "HoleyMoley"
-	--icon "TRE-Runtime/TRE-Runtime.rc"
 
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
@@ -300,6 +295,7 @@ project "TRE-Runtime"
 
 	defines 
 	{
+		"WINDOWED",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
@@ -361,7 +357,7 @@ project "TRE-Runtime"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
-			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.pdb" "%{cfg.targetdir}"',
+			--'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.pdb" "%{cfg.targetdir}"',
 			-- '{COPY} "%{ResourcesScripts.Coroutine}" "%{cfg.targetdir}"',
 			-- '{COPY} "%{ResourcesScripts.GLM}" "%{cfg.targetdir}"',
 			-- '{COPY} "%{ResourcesScripts.Tuple}" "%{cfg.targetdir}"',
@@ -394,8 +390,7 @@ project "TRE-Runtime"
 			-- '{COPY} "%{ResourcesScripts.Storage}" "%{cfg.targetdir}"',
 		}
 
-		kind "WindowedApp"
-		defines {"WINDOWED"}
+		
 
 project "TRE-ScriptCore"
 	location "TRE-ScriptCore"
