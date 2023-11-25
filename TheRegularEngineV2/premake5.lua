@@ -295,7 +295,7 @@ project "TRE-Runtime"
 
 	defines 
 	{
-		"WINDOWED",
+		"GAME",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",

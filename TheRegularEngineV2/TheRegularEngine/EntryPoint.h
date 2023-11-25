@@ -16,7 +16,7 @@
 
 extern TRE::Engine* TRE::CreateApp(); //Getting the definition from other projects
 
-#ifdef WINDOWED
+#ifdef GAME
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	(void)hInstance;

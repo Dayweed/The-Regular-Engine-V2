@@ -272,13 +272,14 @@ namespace TRE
 	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)
 	{
 		//Hot reload only when not game mode
-#ifdef WINDOWED
+#ifdef GAME
+		
+#else
 		if (event.m_Playing == true)
 		{
 			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
 		}
-#else
 #endif
 	}
 }
