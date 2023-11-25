@@ -7,41 +7,41 @@ using System.Threading;
 
 namespace TRE
 {
-    public class MainMenuSceneTransition : Entity
-    {
-        private string TutorialSceneName;
-        private string ControlsDisplaySceneName;
-        public bool spacePressed;
-        public bool enterPressed;
+	public class MainMenuSceneTransition : Entity
+	{
+		private string TutorialSceneName;
+		private string ControlsDisplaySceneName;
+		public bool spacePressed;
+		public bool enterPressed;
 
-        public void Start()
-        {
-            TutorialSceneName = "Tutorial";
-            ControlsDisplaySceneName = "ControlsDisplay";
-        }
+		public void Start()
+		{
+			TutorialSceneName = "Tutorial";
+			ControlsDisplaySceneName = "ControlsDisplay";
+		}
 
-        public void Update()
-        {
-            if (InputSystem.GetKeyTrigger(InputKeys.Space))
-            {
-                spacePressed = true;
+		public void Update()
+		{
+			if (InputSystem.GetKeyTrigger(InputKeys.Space))
+			{
+				spacePressed = true;
 				if (ECSManager.IsValidEntity(13376208322872696703))
 				{
 					AudioSystem.Play(13376208322872696703);
 				}
 			}
 
-            if (InputSystem.GetKeyTrigger(InputKeys.Enter))
-            {
-                enterPressed = true;
+			if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+			{
+				enterPressed = true;
 				if (ECSManager.IsValidEntity(13376208322872696703))
 				{
 					AudioSystem.Play(13376208322872696703);
 				}
 			}
 
-            if (spacePressed && enterPressed)
-            {
+			if (spacePressed && enterPressed)
+			{
 				if (ECSManager.IsValidEntity(6154957411926925810))
 				{
 					AudioSystem.Play(6154957411926925810);
@@ -50,8 +50,8 @@ namespace TRE
 				Scene.TransitionScene(TutorialSceneName, 4.0f);
 
 				spacePressed = false;
-                enterPressed = false;
+				enterPressed = false;
 			}
-        }
-    }
+		}
+	}
 }

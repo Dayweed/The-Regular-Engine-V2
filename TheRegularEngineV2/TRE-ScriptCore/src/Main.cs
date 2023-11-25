@@ -13,22 +13,22 @@ namespace TRE
 
 		public void Start()
 		{
-			
+
 		}
 
 		public void Update()
 		{
 			var lastTime = DateTime.Now;
-            while (true)
-            {
+			while (true)
+			{
 				var currtime = DateTime.Now;
-                CoroutineHandler.Tick(currtime - lastTime);
+				CoroutineHandler.Tick(currtime - lastTime);
 				lastTime = currtime;
 				Thread.Sleep(1);
-            }
+			}
 		}
 
-		
+
 	}
 
 }

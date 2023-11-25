@@ -36,7 +36,7 @@ namespace TRE
 		private vec3 expectedPosition;
 		private vec3 expectedRotation;
 		private float expectedDistance;
-		
+
 		public void Start()
 		{
 			Holey = ECSManager.FindEntityByName("Holey");

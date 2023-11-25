@@ -7,36 +7,36 @@ using System.Threading;
 
 namespace TRE
 {
-    public class JumpPad : Entity
-    {
-        public bool isActivated = false;
-        private string activatedMat = "18cf136263b2c948";
-        private string deactivatedMat = "b67077a64edeaafc";
+	public class JumpPad : Entity
+	{
+		public bool isActivated = false;
+		private string activatedMat = "18cf136263b2c948";
+		private string deactivatedMat = "b67077a64edeaafc";
 
-        public JumpPad()
-        {
+		public JumpPad()
+		{
 
-        }
+		}
 
-        public void Start()
-        {
-            if (name == "JumpPad_2")
-            {
-                isActivated = true;
-            }
-            GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
-        }
+		public void Start()
+		{
+			if (name == "JumpPad_2")
+			{
+				isActivated = true;
+			}
+			GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
+		}
 
-        public void Update()
-        {
+		public void Update()
+		{
 
-        }
+		}
 
-        public void ActivatePad(bool isActive)
-        {
-            // This is to make it actually activate cos for some reason it doesnt now :/
-            isActivated = isActive;
-            GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
-        }
-    }
+		public void ActivatePad(bool isActive)
+		{
+			// This is to make it actually activate cos for some reason it doesnt now :/
+			isActivated = isActive;
+			GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
+		}
+	}
 }
