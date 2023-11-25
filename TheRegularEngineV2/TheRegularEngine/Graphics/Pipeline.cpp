@@ -75,16 +75,16 @@ namespace TRE
 
 		if (m_Config.UseAutoShaderVertexInput)
 		{
-			const auto& VertexInputAttributesDescriptions = m_Config.Shader->GetVertexAttributes();
-			VkVertexInputBindingDescription VertexInputBindingDescriptions{};
-			VertexInputBindingDescriptions.binding = 0;
-			VertexInputBindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-			VertexInputBindingDescriptions.stride = (m_Config.VertexStride == 0) ? m_Config.Shader->GetVertexStrides() : (uint32_t)m_Config.VertexStride;
+			const auto& VertexInputAttributesDescription = m_Config.Shader->GetVertexAttributes();
+			VkVertexInputBindingDescription VertexInputBindingDescription{};
+			VertexInputBindingDescription.binding = 0;
+			VertexInputBindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+			VertexInputBindingDescription.stride = (m_Config.VertexStride == 0) ? m_Config.Shader->GetVertexStrides() : (uint32_t)m_Config.VertexStride;
 
-			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescriptions.size());
-			vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescriptions.data();
+			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(VertexInputAttributesDescription.size());
+			vertexInputInfo.pVertexAttributeDescriptions = VertexInputAttributesDescription.data();
 			vertexInputInfo.vertexBindingDescriptionCount = 1;
-			vertexInputInfo.pVertexBindingDescriptions = &VertexInputBindingDescriptions;
+			vertexInputInfo.pVertexBindingDescriptions = &VertexInputBindingDescription;
 		}
 		else
 		{
