@@ -54,8 +54,9 @@ namespace TRE
 			return;
 		}
 
-		ECSSystemManager::Instance().AfterReset();
-		ResourceManager::Instance().UnloadUnusedResources();
+		ECSSystemManager::Instance().AfterReset(); 
+
+		//ResourceManager::Instance().UnloadUnusedResources();
 	}
 
 	void SceneManager::SaveSceneAs(std::string scenePath)
