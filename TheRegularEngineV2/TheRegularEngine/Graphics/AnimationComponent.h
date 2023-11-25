@@ -23,9 +23,12 @@ namespace TRE
 			AnimationComponent()
 			{
 				m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(AnimationUBO)), 8);
+				m_ShadowAnimationMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(10));
+				m_ShadowAnimationMaterial->Invalidate();
 			}
 
 			std::shared_ptr<UniformBuffer> m_UBO;
+			std::shared_ptr<Material> m_ShadowAnimationMaterial;
 			AnimationUBO m_BufferData;
 			bool m_IsAnimating = true;
 

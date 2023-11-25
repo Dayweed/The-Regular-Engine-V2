@@ -182,6 +182,7 @@ namespace TRE
 		//auto DebugHandle = 7;
 		auto VignetteHandle = 8;
 		auto AnimationHandle = 9;
+		auto ShadowMapAnimationHandle = 10;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
@@ -212,6 +213,11 @@ namespace TRE
 		std::unique_ptr<Shader> AnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
 		AnimationShader->SetHandle(AnimationHandle);
 		ResourceManager::Instance().AddResource(std::move(AnimationShader));
+
+		//ShadowMappingForAnimationShader
+		std::unique_ptr<Shader> ShadowMapAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMappingAnimation.TREshader");
+		ShadowMapAnimationShader->SetHandle(ShadowMapAnimationHandle);
+		ResourceManager::Instance().AddResource(std::move(ShadowMapAnimationShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)
