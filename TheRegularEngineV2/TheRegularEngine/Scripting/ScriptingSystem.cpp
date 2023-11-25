@@ -17,12 +17,12 @@ namespace TRE
 		m_IsRunning = true;
 		m_ScriptableUpdate = true;
 
-		EventHandler::getEventHandlerInstance().subscribe(this,&ScriptingSystem::CallRecompile);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ScriptingSystem::CallRecompile);
 	}
 
 	void ScriptingSystem::Update()
 	{
-		if(m_ScriptableUpdate == true)
+		if (m_ScriptableUpdate == true)
 		{
 			m_ScriptableUpdate = false;
 		}
@@ -35,15 +35,15 @@ namespace TRE
 	void ScriptingSystem::GameUpdate()
 	{
 
-		if(m_IsRunning == true)
+		if (m_IsRunning == true)
 		{
 			//inital Create entity instances (only works if they are created before scene starts)
-			for(auto e: m_ScriptEntities)
+			for (auto e : m_ScriptEntities)
 			{
 				ScriptEngine::OnCreateEntity(e);
 			}
 			m_IsRunning = false;
-			
+
 		}
 
 		// On Enable
@@ -69,7 +69,7 @@ namespace TRE
 		}
 
 		// For Scripts just created
-		for(auto e: m_ScriptEntities)
+		for (auto e : m_ScriptEntities)
 		{
 			ScriptComponent& script{ e->GetComponent<ScriptComponent>() };
 			if (script.m_RanStart) continue;
@@ -158,7 +158,7 @@ namespace TRE
 		}
 
 		//ScriptEngine::UpdateScriptingMain();
-		
+
 	}
 
 	void ScriptingSystem::LateUpdate()
@@ -189,9 +189,9 @@ namespace TRE
 	void ScriptingSystem::AddScriptableObject(Entity entity)
 	{
 		//interate through the vector and add the entity while ensuring no duplicates
-		for(auto e : m_ScriptEntities)
+		for (auto e : m_ScriptEntities)
 		{
-			if(e == entity)
+			if (e == entity)
 			{
 				return;
 			}
@@ -215,15 +215,15 @@ namespace TRE
 		m_ScriptEntities.clear();
 		m_ScriptEntities = ECSManager::Instance().GetEntities<ScriptComponent>(true);
 
-		
+
 	}
 
 	void ScriptingSystem::RemoveScriptableObject(Entity entity)
 	{
 		//interate through the vector and remove the entity
-		for(auto e : m_ScriptEntities)
+		for (auto e : m_ScriptEntities)
 		{
-			if(e == entity)
+			if (e == entity)
 			{
 				erase(m_ScriptEntities, e);
 				return;
@@ -234,9 +234,9 @@ namespace TRE
 	void ScriptingSystem::UpdateScriptableObjects()
 	{
 		// iterate through the vector and update the scriptable objects
-		for(auto e: m_ScriptEntities)
+		for (auto e : m_ScriptEntities)
 		{
-			if(ECSManager::Instance().IsValidEntity(e) && e->GetComponent<ScriptComponent>().m_IsDirty)
+			if (ECSManager::Instance().IsValidEntity(e) && e->GetComponent<ScriptComponent>().m_IsDirty)
 			{
 				// update the scriptable objec
 			}
@@ -271,12 +271,13 @@ namespace TRE
 
 	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)
 	{
-		if(event.m_Playing == true)
+		//Hot reload only when not game mode
+#ifdef WINDOWED
+		if (event.m_Playing == true)
 		{
 			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
 		}
+#endif
 	}
-
-
 }

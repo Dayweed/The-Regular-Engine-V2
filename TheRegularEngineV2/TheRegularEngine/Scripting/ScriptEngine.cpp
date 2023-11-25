@@ -385,8 +385,6 @@ namespace TRE
 				fieldMap[name].m_Field.m_Name = name;
 				fieldMap[name].m_Field.m_Type = field.m_Type;
 			}
-
-
 		}
 	}
 
