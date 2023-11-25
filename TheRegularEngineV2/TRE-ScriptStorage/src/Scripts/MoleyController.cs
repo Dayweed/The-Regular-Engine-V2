@@ -51,7 +51,6 @@ namespace TRE
 		private float blueberrysuperHeight = 2.4f;
 		private float strawberrysuperHeight = 4.8f;
 		public float currentHeight = 1f;
-		public float currentOffset = 0f;
 
 		//Player Scallings
 		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
@@ -376,33 +375,15 @@ namespace TRE
 
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
-                //Default model
-                GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
-                dirVec.y = 0;
-                if (dirVec != new vec3())
-                {
-                    dirVec = dirVec.Normalized;
-
-					//Walking state
-					GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
-                    GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
-                }
-                else
-                {
-                    //Idle state
-                    {
-                        //Blue animation material
-                        //GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
-                        //Red Animation Material
-                        GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
-                        GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
-                        TransformSystem.SetScaling(this.ID, new vec3(0.03f, 0.03f, 0.03f));
-                    }
-                }
-                currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
+				//Default model
+				if (GetComponent<MeshRenderer>().Mesh != "789db1a40e2484e0")
+				{
+					GetComponent<MeshRenderer>().Mesh = "789db1a40e2484e0";
+					GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
+				}
+				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
-                currentXform = new vec3(0.03f, 0.03f, 0.03f);
-
+                currentXform = new vec3(75f, 75f, 75f);
                 PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, currentXform);
 			}
@@ -415,6 +396,7 @@ namespace TRE
 					GetComponent<MeshRenderer>().Material = "a8e7782a23bd1acf";
 				}
                 currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
+				//currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				currentXform = blueberryscaledXform;
@@ -443,7 +425,26 @@ namespace TRE
 			}
 			#endregion
 
-
+			dirVec.y = 0;
+            if (dirVec != new vec3())
+			{
+				dirVec = dirVec.Normalized;
+				
+				//Walking state
+			}
+			else
+			{
+				//Idle state
+				if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
+				{
+					//Blue animation material
+					//GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+					//Red Animation Material
+					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+					TransformSystem.SetScaling(this.ID, new vec3(0.05f, 0.05f, 0.05f));
+				}
+			}
 
             playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
