@@ -8,67 +8,67 @@ using GlmSharp;
 
 namespace TRE
 {
-    //private InputActionAsset inputActionAsset; //contains the action maps, actions, bindings and controls schemes
-    //private InputActionMap player; //the main action map to control the player
+	//private InputActionAsset inputActionAsset; //contains the action maps, actions, bindings and controls schemes
+	//private InputActionMap player; //the main action map to control the player
 
-    public class PowerUpSpawner : Entity
-    {
-        public Entity spawnedPowerUp;
-        public Entity powerUpPrefab;
-        private vec3 positionOffset;
+	public class PowerUpSpawner : Entity
+	{
+		public Entity spawnedPowerUp;
+		public Entity powerUpPrefab;
+		private vec3 positionOffset;
 
-        public bool spawned;
-        public float cooldownCurrent;
-        public float cooldownDuration = 5.0f;
-        
-        public void OnCreate()
-        {
-            if (CompareTag("SpawnStrawberry"))
-            {
-                powerUpPrefab = new Entity(13004780274330328106);
-            }
-            else if (CompareTag("SpawnBlueberry"))
-            {
-                powerUpPrefab = new Entity(7670209894207584463);
-            }
+		public bool spawned;
+		public float cooldownCurrent;
+		public float cooldownDuration = 5.0f;
 
-            positionOffset = new vec3(0, 2, 0);
+		public void OnCreate()
+		{
+			if (CompareTag("SpawnStrawberry"))
+			{
+				powerUpPrefab = new Entity(13004780274330328106);
+			}
+			else if (CompareTag("SpawnBlueberry"))
+			{
+				powerUpPrefab = new Entity(7670209894207584463);
+			}
 
-            cooldownCurrent = 0;
+			positionOffset = new vec3(0, 2, 0);
 
-            spawned = false;
-        }
+			cooldownCurrent = 0;
 
-        public void Update()
-        {
-            // Check if power up is collected
-            if (spawned && (spawnedPowerUp == null || !ECSManager.IsValidEntity(spawnedPowerUp.ID) || spawnedPowerUp.GetComponent<GetPowerUp>().collected))
-            {
-                spawned = false;
-                cooldownCurrent = cooldownDuration;
-            }
+			spawned = false;
+		}
 
-            // Spawn Power Up
-            if (!spawned)
-            {
-                cooldownCurrent -= Time.deltaTime;
-                if (cooldownCurrent <= 0)
-                {
-                    SpawnPowerUp();
-                    spawned = true;
-                }
-            }
-        }
+		public void Update()
+		{
+			// Check if power up is collected
+			if (spawned && (spawnedPowerUp == null || !ECSManager.IsValidEntity(spawnedPowerUp.ID) || spawnedPowerUp.GetComponent<GetPowerUp>().collected))
+			{
+				spawned = false;
+				cooldownCurrent = cooldownDuration;
+			}
 
-        public void SpawnPowerUp()
-        {
-            spawnedPowerUp = ECSManager.Instantiate(powerUpPrefab);
-            spawnedPowerUp.transform.Position = transform.Position + spawnedPowerUp.transform.Scale.y + positionOffset;
-            spawnedPowerUp.transform.Rotation = transform.Rotation;
-            spawnedPowerUp.GetComponent<Rigidbody>().useGravity = true;
-            spawnedPowerUp.parenting.SetParent(this);
-            PhysicsSystem.SetLinearVelocity(spawnedPowerUp.ID, vec3.Zero);
-            PhysicsSystem.AddForce(spawnedPowerUp.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
-        }
-    }
+			// Spawn Power Up
+			if (!spawned)
+			{
+				cooldownCurrent -= Time.deltaTime;
+				if (cooldownCurrent <= 0)
+				{
+					SpawnPowerUp();
+					spawned = true;
+				}
+			}
+		}
+
+		public void SpawnPowerUp()
+		{
+			spawnedPowerUp = ECSManager.Instantiate(powerUpPrefab);
+			spawnedPowerUp.transform.Position = transform.Position + spawnedPowerUp.transform.Scale.y + positionOffset;
+			spawnedPowerUp.transform.Rotation = transform.Rotation;
+			spawnedPowerUp.GetComponent<Rigidbody>().useGravity = true;
+			spawnedPowerUp.parenting.SetParent(this);
+			PhysicsSystem.SetLinearVelocity(spawnedPowerUp.ID, vec3.Zero);
+			PhysicsSystem.AddForce(spawnedPowerUp.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
+		}
+	}
 }

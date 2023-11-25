@@ -17,7 +17,7 @@ namespace TRE
 
 	public abstract class Component
 	{
-		public Entity entity { get ; set; }
+		public Entity entity { get; set; }
 	}
 
 	public class Transform : Component
@@ -181,7 +181,7 @@ namespace TRE
 
 	public class Animation : Component
 	{
-	
+
 	}
 
 
@@ -202,7 +202,7 @@ namespace TRE
 		public bool useGravity
 		{
 			get
-			{                
+			{
 				return RigidBodySystem.Engine_GetGravity(entity.ID);
 			}
 			set
@@ -213,7 +213,7 @@ namespace TRE
 		public bool isKinematic
 		{
 			get
-			{                
+			{
 				return RigidBodySystem.Engine_GetKinematic(entity.ID);
 			}
 			set
@@ -232,7 +232,7 @@ namespace TRE
 		public vec3 HalfExtents
 		{
 			get
-			{                
+			{
 				return PhysicsSystem.Engine_GetBoxColliderHalfExtents(entity.ID);
 			}
 			set
@@ -243,7 +243,7 @@ namespace TRE
 		public vec3 Offset // SET DOES NOT WORK
 		{
 			get
-			{                
+			{
 				return PhysicsSystem.Engine_GetColliderOffset(entity.ID);
 			}
 			set

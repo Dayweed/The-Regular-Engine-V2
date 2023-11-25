@@ -51,8 +51,8 @@ namespace TRE
 				transform = GetComponent<Transform>();
 			}
 			else
-            {
-                name = "";
+			{
+				name = "";
 				parenting = null;
 				transform = null;
 			}
@@ -69,8 +69,8 @@ namespace TRE
 				transform = GetComponent<Transform>();
 			}
 			else
-            {
-                parenting = null;
+			{
+				parenting = null;
 				transform = null;
 			}
 		}
@@ -253,8 +253,8 @@ namespace TRE
 	public class ParentingSystem
 	{
 		public static Entity GetParent(EntityID id)
-        {
-            EntityID parentID = ECSManager.Engine_FindParentIDFromID(id);
+		{
+			EntityID parentID = ECSManager.Engine_FindParentIDFromID(id);
 			string parentName = ECSManager.Engine_FindNameFromID(parentID);
 			Entity parent = new Entity(parentID, parentName);
 			return parent;
@@ -526,7 +526,7 @@ namespace TRE
 		public static vec3 RotateVector(vec3 vector, vec3 rotation)
 		{
 			return Engine_RotateVector(vector, rotation);
-        }
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_RotateVector(vec3 vector, vec3 rotation);
@@ -1044,9 +1044,9 @@ namespace TRE
 	}
 
 	public class MeshRendererSystem
-    {
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetMaterialInstance(EntityID entityid, string instanceGUID);
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetMaterialInstance(EntityID entityid, string instanceGUID);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string Engine_GetMaterialInstance(EntityID entityid);
@@ -1064,24 +1064,24 @@ namespace TRE
 		internal extern static string Engine_GetMesh(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetMeshVisibility(EntityID entityid, bool visibility);
+		internal extern static void Engine_SetMeshVisibility(EntityID entityid, bool visibility);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetMeshVisibility(EntityID entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetMeshVisibility(EntityID entityid);
 
-        public static void SetMesh(EntityID entityid, string meshGUID)
-        {
+		public static void SetMesh(EntityID entityid, string meshGUID)
+		{
 			Engine_SetMesh(entityid, meshGUID);
-        }
+		}
 
-        public static void SetMaterial(EntityID entityid, string instanceGUID)
-        {
-            Engine_SetMaterialInstance(entityid, instanceGUID);
-        }
-    }
+		public static void SetMaterial(EntityID entityid, string instanceGUID)
+		{
+			Engine_SetMaterialInstance(entityid, instanceGUID);
+		}
+	}
 
 
-    public enum ForceMode
+	public enum ForceMode
 	{
 		Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
 		Impulse,            //!< parameter has unit of mass * length / time, i.e., force * time
@@ -1092,87 +1092,87 @@ namespace TRE
 	public class PhysicsSystem
 	{
 		public static void ResizeSphereCollider(EntityID entityid, float newRadius)
-        {
-            Engine_ResizeSphereCollider(entityid, newRadius);
-        }
-        public static void ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents)
-        {
-            Engine_ResizeBoxCollider(entityid, newHalfExtents);
-        }
-        public static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight)
-        {
-            Engine_ResizeCapsuleCollider(entityid, newRadius, newHelfHeight);
-        }
+		{
+			Engine_ResizeSphereCollider(entityid, newRadius);
+		}
+		public static void ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents)
+		{
+			Engine_ResizeBoxCollider(entityid, newHalfExtents);
+		}
+		public static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight)
+		{
+			Engine_ResizeCapsuleCollider(entityid, newRadius, newHelfHeight);
+		}
 
-        public static void UpdateColliderOffset(EntityID entityid, vec3 offset)
-        {
-            Engine_UpdateColliderOffset(entityid, offset);
-        }
+		public static void UpdateColliderOffset(EntityID entityid, vec3 offset)
+		{
+			Engine_UpdateColliderOffset(entityid, offset);
+		}
 
-        public static void GetColliderOffset(EntityID entityid, out vec3 offset)
-        {
-            offset = Engine_GetColliderOffset(entityid);
-        }
+		public static void GetColliderOffset(EntityID entityid, out vec3 offset)
+		{
+			offset = Engine_GetColliderOffset(entityid);
+		}
 
-        public static void AddForce(EntityID id, vec3 force, ForceMode mode)
-        {
-            Engine_AddForce(id, force, mode);
-        }
+		public static void AddForce(EntityID id, vec3 force, ForceMode mode)
+		{
+			Engine_AddForce(id, force, mode);
+		}
 
-        public static void ConstrainRotationX(EntityID entityid, bool state)
-        {
-            Engine_ConstrainRotationX(entityid, state);
-        }
+		public static void ConstrainRotationX(EntityID entityid, bool state)
+		{
+			Engine_ConstrainRotationX(entityid, state);
+		}
 
-        public static void ConstrainRotationY(EntityID entityid, bool state)
-        {
-            Engine_ConstrainRotationY(entityid, state);
-        }
+		public static void ConstrainRotationY(EntityID entityid, bool state)
+		{
+			Engine_ConstrainRotationY(entityid, state);
+		}
 
-        public static void ConstrainRotationZ(EntityID entityid, bool state)
-        {
-            Engine_ConstrainRotationZ(entityid, state);
-        }
+		public static void ConstrainRotationZ(EntityID entityid, bool state)
+		{
+			Engine_ConstrainRotationZ(entityid, state);
+		}
 
-        public static void GetLinearVelocity(EntityID entityid, out vec3 output)
-        {
-            Engine_GetLinearVelocity(entityid, out output);
-        }
+		public static void GetLinearVelocity(EntityID entityid, out vec3 output)
+		{
+			Engine_GetLinearVelocity(entityid, out output);
+		}
 
-        public static void SetLinearVelocity(EntityID entityid, vec3 velocity)
-        {
-            Engine_SetLinearVelocity(entityid, velocity);
-        }
+		public static void SetLinearVelocity(EntityID entityid, vec3 velocity)
+		{
+			Engine_SetLinearVelocity(entityid, velocity);
+		}
 
-        public static bool IsCollisionEnter(EntityID entityid1, EntityID entityid2)
-        {
-            return Engine_IsCollisionEnter(entityid1, entityid2);
-        }
+		public static bool IsCollisionEnter(EntityID entityid1, EntityID entityid2)
+		{
+			return Engine_IsCollisionEnter(entityid1, entityid2);
+		}
 
-        public static bool IsCollisionStay(EntityID entityid1, EntityID entityid2)
-        {
-            return Engine_IsCollisionStay(entityid1, entityid2);
-        }
+		public static bool IsCollisionStay(EntityID entityid1, EntityID entityid2)
+		{
+			return Engine_IsCollisionStay(entityid1, entityid2);
+		}
 
-        public static bool IsCollisionExit(EntityID entityid1, EntityID entityid2)
-        {
-            return Engine_IsCollisionExit(entityid1, entityid2);
-        }
+		public static bool IsCollisionExit(EntityID entityid1, EntityID entityid2)
+		{
+			return Engine_IsCollisionExit(entityid1, entityid2);
+		}
 
-        public static bool IsTriggerEnter(EntityID entityid1, EntityID entityid2)
-        {
-            return Engine_IsTriggerEnter(entityid1, entityid2);
-        }
+		public static bool IsTriggerEnter(EntityID entityid1, EntityID entityid2)
+		{
+			return Engine_IsTriggerEnter(entityid1, entityid2);
+		}
 
-        public static bool IsTriggerStay(EntityID entityid1, EntityID entityid2)
-        {
-            return Engine_IsTriggerStay(entityid1, entityid2);
-        }
+		public static bool IsTriggerStay(EntityID entityid1, EntityID entityid2)
+		{
+			return Engine_IsTriggerStay(entityid1, entityid2);
+		}
 
-        public static bool IsTriggerExit(EntityID entityid1, EntityID entityid2)
-        {
-            return Engine_IsTriggerExit(entityid1, entityid2);
-        }
+		public static bool IsTriggerExit(EntityID entityid1, EntityID entityid2)
+		{
+			return Engine_IsTriggerExit(entityid1, entityid2);
+		}
 
 
 
@@ -1208,10 +1208,10 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ConstrainRotationX(EntityID entityid, bool state);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ConstrainRotationY(EntityID entityid, bool state);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ConstrainRotationZ(EntityID entityid, bool state);
 
@@ -1259,15 +1259,15 @@ namespace TRE
 
 	public class InputSystem
 	{
-        public static bool GetKeyDown(InputKeys keycode)
-        {
-            return Engine_GetKeyDown(keycode);
-        }
+		public static bool GetKeyDown(InputKeys keycode)
+		{
+			return Engine_GetKeyDown(keycode);
+		}
 
-        public static bool GetKeyTrigger(InputKeys keycode)
-        {
-            return Engine_GetKeyTrigger(keycode);
-        }
+		public static bool GetKeyTrigger(InputKeys keycode)
+		{
+			return Engine_GetKeyTrigger(keycode);
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyDown(InputKeys keycode);
@@ -1278,26 +1278,26 @@ namespace TRE
 
 	public class MathF
 	{
-        public static float Sqrt(float value)
-        {
-            return Engine_Sqrt(value);
-        }
+		public static float Sqrt(float value)
+		{
+			return Engine_Sqrt(value);
+		}
 
-        public static float Lerp(float start, float end, float t)
-        {
-            return Engine_Lerp(start, end, t);
-        }
+		public static float Lerp(float start, float end, float t)
+		{
+			return Engine_Lerp(start, end, t);
+		}
 
-        public static vec3 Vec3Lerp(vec3 start, vec3 end, float t)
-        {
-            return Engine_Vec3Lerp(start, end, t);
-        }
+		public static vec3 Vec3Lerp(vec3 start, vec3 end, float t)
+		{
+			return Engine_Vec3Lerp(start, end, t);
+		}
 
-        public static float Sin(float value)
-        {
-            // return Engine_Sin(value);
+		public static float Sin(float value)
+		{
+			// return Engine_Sin(value);
 			return (float)System.Math.Sin(value);
-        }
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_Sqrt(float value);
@@ -1308,12 +1308,12 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_Vec3Lerp(vec3 start, vec3 end, float t);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static float Engine_Sin(float value);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_Sin(float value);
 
-    }
+	}
 
-    public class Random
+	public class Random
 	{
 		public static int Range(int min_inclusive, int max_exclusive)
 		{
@@ -1334,121 +1334,121 @@ namespace TRE
 
 	public class Time
 	{
-        public static float deltaTime
-        {
-            get
-            {
+		public static float deltaTime
+		{
+			get
+			{
 				float time = Engine_GetDeltaTime();
-                return time;
-            }
+				return time;
+			}
 			set
 			{
 
 			}
-        }
+		}
 
-        public static float GetDeltaTime()
-        {
+		public static float GetDeltaTime()
+		{
 			return Engine_GetDeltaTime();
-        }
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float Engine_GetDeltaTime();
 	}
 
 	public class AudioSystem
 	{
-        public static void Play(EntityID entityid)
-        {
-            Engine_Play(entityid);
-        }
+		public static void Play(EntityID entityid)
+		{
+			Engine_Play(entityid);
+		}
 
-        public static void PlayOnce(EntityID entityid)
-        {
-            Engine_PlayOnce(entityid);
-        }
+		public static void PlayOnce(EntityID entityid)
+		{
+			Engine_PlayOnce(entityid);
+		}
 
-        public static void TogglePause(EntityID entityid)
-        {
-            Engine_TogglePause(entityid);
-        }
+		public static void TogglePause(EntityID entityid)
+		{
+			Engine_TogglePause(entityid);
+		}
 
-        public static void Stop(EntityID entityid)
-        {
-            Engine_Stop(entityid);
-        }
+		public static void Stop(EntityID entityid)
+		{
+			Engine_Stop(entityid);
+		}
 
-        public static bool GetIsPlaying(EntityID entityid)
-        {
-            return Engine_GetIsPlaying(entityid);
-        }
+		public static bool GetIsPlaying(EntityID entityid)
+		{
+			return Engine_GetIsPlaying(entityid);
+		}
 
-
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_Play(EntityID entityid);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_PlayOnce(EntityID entityid);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_TogglePause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_Stop(EntityID entityid);
+		public extern static void Engine_Play(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetFileName(EntityID entityid, string fileName);
+		public extern static void Engine_PlayOnce(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static string Engine_GetFileName(EntityID entityid);
+		public extern static void Engine_TogglePause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetIsPlaying(EntityID entityid);
+		public extern static void Engine_Stop(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetFileName(EntityID entityid, string fileName);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static string Engine_GetFileName(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetIsPlaying(EntityID entityid);
 	}
 
 	public class Scene
 	{
-        public static void ChangeScene(string sceneName)
-        {
+		public static void ChangeScene(string sceneName)
+		{
 			Engine_ChangeScene(sceneName);
-        }
+		}
 
 		public static void TransitionScene(string sceneName, float totalDuration)
 		{
 			Engine_TransitionScene(sceneName, totalDuration);
 		}
 
-        public static string GetSceneName()
-        {
-            return Engine_GetSceneName();
-        }
+		public static string GetSceneName()
+		{
+			return Engine_GetSceneName();
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_ChangeScene(string sceneName);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_ChangeScene(string sceneName);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_TransitionScene(string sceneName, float totalDuration);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static string Engine_GetSceneName();
-    }
+		internal extern static string Engine_GetSceneName();
+	}
 
 	public class Script
 	{
-        public static bool IsScript(string ClassName)
-        {
-            return Engine_IsScript(ClassName);
-        }
+		public static bool IsScript(string ClassName)
+		{
+			return Engine_IsScript(ClassName);
+		}
 
-        public static bool HaveScript(EntityID ID, string ClassName)
-        {
-            return Engine_HaveScript(ID, ClassName);
-        }
+		public static bool HaveScript(EntityID ID, string ClassName)
+		{
+			return Engine_HaveScript(ID, ClassName);
+		}
 
-        public static T GetScript<T>(EntityID ID, string ClassName)
-        {
-            return Engine_GetScript<T>(ID, ClassName);
-        }
+		public static T GetScript<T>(EntityID ID, string ClassName)
+		{
+			return Engine_GetScript<T>(ID, ClassName);
+		}
 
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1463,64 +1463,64 @@ namespace TRE
 
 	public class SpriteSystem
 	{
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
-		
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetVisible(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetWidth(EntityID ID, int width);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetVisible(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int Engine_GetWidth(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetWidth(EntityID ID, int width);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetHeight(EntityID ID, int height);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static int Engine_GetWidth(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int Engine_GetHeight(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetHeight(EntityID ID, int height);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetColor(EntityID ID, vec4 color);
-		
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static vec4 Engine_GetColor(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static int Engine_GetHeight(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetTexture(EntityID ID, string texture);
-		
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static string Engine_GetTexture(EntityID ID);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetColor(EntityID ID, vec4 color);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static vec4 Engine_GetColor(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetTexture(EntityID ID, string texture);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static string Engine_GetTexture(EntityID ID);
+	}
 
 	public class Game
 	{
-        public static void CloseGame()
-        {
-            Engine_CloseGame();
-        }
+		public static void CloseGame()
+		{
+			Engine_CloseGame();
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_CloseGame();
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_CloseGame();
+	}
 
 	public class PersistentSystem
-    {
-        public static string GetValue(string Name)
-        {
-            return Engine_GetPersistentValue(Name);
-        }
+	{
+		public static string GetValue(string Name)
+		{
+			return Engine_GetPersistentValue(Name);
+		}
 
-        public static void SetValue(string Name, string Value)
-        {
-            Engine_SetPersistentValue(Name, Value);
-        }
+		public static void SetValue(string Name, string Value)
+		{
+			Engine_SetPersistentValue(Name, Value);
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static string Engine_GetPersistentValue(string VariableName);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static string Engine_GetPersistentValue(string VariableName);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetPersistentValue(string VariableName, string VariableValue);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetPersistentValue(string VariableName, string VariableValue);
+	}
 }

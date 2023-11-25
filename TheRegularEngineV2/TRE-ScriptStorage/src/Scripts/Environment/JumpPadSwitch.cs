@@ -7,57 +7,57 @@ using System.Threading;
 
 namespace TRE
 {
-    public class JumpPadSwitch : Entity
-    {
-        public Entity JumpPad;
-        public Entity JumpPad_1;
+	public class JumpPadSwitch : Entity
+	{
+		public Entity JumpPad;
+		public Entity JumpPad_1;
 
-        public JumpPadSwitch()
-        {
-            
-        }
+		public JumpPadSwitch()
+		{
 
-        public void OnCreate()
-        {
-            JumpPad = ECSManager.FindEntityByName("JumpPad");
-            JumpPad_1 = ECSManager.FindEntityByName("JumpPad_1");
-            if (JumpPad == null)
-            {
-                Debug.LogError("JumpPadSwitch JumpPad is null!");
-                return;
-            }
-            if (JumpPad.GetComponent<JumpPad>() == null)
-            {
-                Debug.LogError("JumpPadSwitch JumpPad Component is null!");
-                return;
-            }
-        }
+		}
 
-        public void Update()
-        {
+		public void OnCreate()
+		{
+			JumpPad = ECSManager.FindEntityByName("JumpPad");
+			JumpPad_1 = ECSManager.FindEntityByName("JumpPad_1");
+			if (JumpPad == null)
+			{
+				Debug.LogError("JumpPadSwitch JumpPad is null!");
+				return;
+			}
+			if (JumpPad.GetComponent<JumpPad>() == null)
+			{
+				Debug.LogError("JumpPadSwitch JumpPad Component is null!");
+				return;
+			}
+		}
 
-        }
+		public void Update()
+		{
 
-        public void OnTriggerStay(System.UInt64 otherID)
-        {
-            Entity other = new Entity(otherID);
-            // Check is activated jumppad
-            if (other.CompareTag("Red") || other.CompareTag("Blue"))
-            {
-                JumpPad.GetComponent<JumpPad>().ActivatePad(true);
-                JumpPad_1.GetComponent<JumpPad>().ActivatePad(true);
-            }
-        }
+		}
 
-        public void OnTriggerExit(System.UInt64 otherID)
-        {
-            Entity other = new Entity(otherID);
-            // Check is activated jumppad
-            if (other.CompareTag("Red") || other.CompareTag("Blue"))
-            {
-                JumpPad.GetComponent<JumpPad>().ActivatePad(false);
-                JumpPad_1.GetComponent<JumpPad>().ActivatePad(false);
-            }
-        }
-    }
+		public void OnTriggerStay(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+			// Check is activated jumppad
+			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			{
+				JumpPad.GetComponent<JumpPad>().ActivatePad(true);
+				JumpPad_1.GetComponent<JumpPad>().ActivatePad(true);
+			}
+		}
+
+		public void OnTriggerExit(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+			// Check is activated jumppad
+			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			{
+				JumpPad.GetComponent<JumpPad>().ActivatePad(false);
+				JumpPad_1.GetComponent<JumpPad>().ActivatePad(false);
+			}
+		}
+	}
 }

@@ -11,7 +11,7 @@ namespace TRE
 		private Entity Player1;
 		private Entity Player2;
 
-        private Transform Player1Transform;
+		private Transform Player1Transform;
 		private Transform Player2Transform;
 
 		private float distance = 20;

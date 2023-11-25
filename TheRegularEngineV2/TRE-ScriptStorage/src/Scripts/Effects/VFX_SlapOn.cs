@@ -8,186 +8,186 @@ using GlmSharp;
 
 namespace TRE
 {
-    public class VFX_SlapOn : Entity
-    {
-        vec3 StartRotate;
-        vec3 StartScale;
-        vec4 StartColor;
+	public class VFX_SlapOn : Entity
+	{
+		vec3 StartRotate;
+		vec3 StartScale;
+		vec4 StartColor;
 
-        vec3 RotateVec;
-        vec3 ScaleVec;
-        vec4 ColorVec;
+		vec3 RotateVec;
+		vec3 ScaleVec;
+		vec4 ColorVec;
 
-        vec3 EndRotation;
-        vec3 EndScale;
-        vec4 EndColor;
+		vec3 EndRotation;
+		vec3 EndScale;
+		vec4 EndColor;
 
-        bool slapping;
-        bool doneRotate;
-        bool doneScale;
-        bool doneColor;
-        SpriteRenderer MyRenderer;
+		bool slapping;
+		bool doneRotate;
+		bool doneScale;
+		bool doneColor;
+		SpriteRenderer MyRenderer;
 
-        float rotationSpeed = 17.5f;
-        float scaleSpeed = 25.0f;
-        float colorSpeed = 1f;
+		float rotationSpeed = 17.5f;
+		float scaleSpeed = 25.0f;
+		float colorSpeed = 1f;
 
-        vec3 MinRotateOffset;
-        vec3 MinScaleOffset;
-        vec4 MinColorOffset;
+		vec3 MinRotateOffset;
+		vec3 MinScaleOffset;
+		vec4 MinColorOffset;
 
-        vec3 MaxRotateOffset;
-        vec3 MaxScaleOffset;
-        vec4 MaxColorOffset;
+		vec3 MaxRotateOffset;
+		vec3 MaxScaleOffset;
+		vec4 MaxColorOffset;
 
-        float TimerToStop;
-        float TimerToStopDefault = 2f;
+		float TimerToStop;
+		float TimerToStopDefault = 2f;
 
-        public void Start()
-        {
-            MyRenderer = GetComponent<SpriteRenderer>();
+		public void Start()
+		{
+			MyRenderer = GetComponent<SpriteRenderer>();
 
-            if (Scene.GetSceneName() == "ResultScreen")
-            {
-                StartRotate = new vec3(0, 0, 0f);
-                StartScale = new vec3(12f, 54f, 1);
-                StartColor = new vec4(1, 1, 1, 0);
-            }
-            else
-            {
-                StartRotate = new vec3(0, 0, 20.0f);
-                StartScale = new vec3(20, 20, 1);
-                StartColor = new vec4(1, 1, 1, 0);
-            }
-        }
+			if (Scene.GetSceneName() == "ResultScreen")
+			{
+				StartRotate = new vec3(0, 0, 0f);
+				StartScale = new vec3(12f, 54f, 1);
+				StartColor = new vec4(1, 1, 1, 0);
+			}
+			else
+			{
+				StartRotate = new vec3(0, 0, 20.0f);
+				StartScale = new vec3(20, 20, 1);
+				StartColor = new vec4(1, 1, 1, 0);
+			}
+		}
 
-        public void Update()
-        {
-            if (slapping)
-            {
-                TimerToStop -= Time.deltaTime;
-                if (TimerToStop <= 0)
-                {
-                    doneRotate = true;
-                    doneScale = true;
-                    doneColor = true;
-                    slapping = false;
-                    transform.Rotation = EndRotation;
-                    transform.Scale = EndScale;
-                    MyRenderer.Color = EndColor;
-                }
+		public void Update()
+		{
+			if (slapping)
+			{
+				TimerToStop -= Time.deltaTime;
+				if (TimerToStop <= 0)
+				{
+					doneRotate = true;
+					doneScale = true;
+					doneColor = true;
+					slapping = false;
+					transform.Rotation = EndRotation;
+					transform.Scale = EndScale;
+					MyRenderer.Color = EndColor;
+				}
 
-                if (transform.Rotation.x >= MinRotateOffset.x && transform.Rotation.x <= MaxRotateOffset.x
-                    && transform.Rotation.y >= MinRotateOffset.y && transform.Rotation.y <= MaxRotateOffset.y
-                    && transform.Rotation.z >= MinRotateOffset.z && transform.Rotation.z <= MaxRotateOffset.z)
-                {
-                    doneRotate = true;
-                }
-                else
-                {
-                    transform.Rotation += RotateVec * rotationSpeed * Time.deltaTime;
-                }
+				if (transform.Rotation.x >= MinRotateOffset.x && transform.Rotation.x <= MaxRotateOffset.x
+					&& transform.Rotation.y >= MinRotateOffset.y && transform.Rotation.y <= MaxRotateOffset.y
+					&& transform.Rotation.z >= MinRotateOffset.z && transform.Rotation.z <= MaxRotateOffset.z)
+				{
+					doneRotate = true;
+				}
+				else
+				{
+					transform.Rotation += RotateVec * rotationSpeed * Time.deltaTime;
+				}
 
-                if (transform.Scale.x >= MinScaleOffset.x && transform.Scale.x <= MaxScaleOffset.x
-                    && transform.Scale.y >= MinScaleOffset.y && transform.Scale.y <= MaxScaleOffset.y
-                    && transform.Scale.z >= MinScaleOffset.z && transform.Scale.z <= MaxScaleOffset.z)
-                {
-                    doneScale = true;
-                }
-                else if (!doneScale)
-                {
-                    transform.Scale += ScaleVec * scaleSpeed * Time.deltaTime;
-                }
+				if (transform.Scale.x >= MinScaleOffset.x && transform.Scale.x <= MaxScaleOffset.x
+					&& transform.Scale.y >= MinScaleOffset.y && transform.Scale.y <= MaxScaleOffset.y
+					&& transform.Scale.z >= MinScaleOffset.z && transform.Scale.z <= MaxScaleOffset.z)
+				{
+					doneScale = true;
+				}
+				else if (!doneScale)
+				{
+					transform.Scale += ScaleVec * scaleSpeed * Time.deltaTime;
+				}
 
-                if (MyRenderer.Color.x >= MinColorOffset.x && MyRenderer.Color.x <= MaxColorOffset.x
-                    && MyRenderer.Color.y >= MinColorOffset.y && MyRenderer.Color.y <= MaxColorOffset.y
-                    && MyRenderer.Color.z >= MinColorOffset.z && MyRenderer.Color.z <= MaxColorOffset.z
-                    && MyRenderer.Color.w >= MinColorOffset.w && MyRenderer.Color.w <= MaxColorOffset.w)
-                {
-                    doneColor = true;
-                }
-                else if (!doneColor)
-                {
-                    MyRenderer.Color += ColorVec * colorSpeed * Time.deltaTime;
-                }
+				if (MyRenderer.Color.x >= MinColorOffset.x && MyRenderer.Color.x <= MaxColorOffset.x
+					&& MyRenderer.Color.y >= MinColorOffset.y && MyRenderer.Color.y <= MaxColorOffset.y
+					&& MyRenderer.Color.z >= MinColorOffset.z && MyRenderer.Color.z <= MaxColorOffset.z
+					&& MyRenderer.Color.w >= MinColorOffset.w && MyRenderer.Color.w <= MaxColorOffset.w)
+				{
+					doneColor = true;
+				}
+				else if (!doneColor)
+				{
+					MyRenderer.Color += ColorVec * colorSpeed * Time.deltaTime;
+				}
 
-                if (doneRotate && doneScale && doneColor)
-                {
-                    slapping = false;
-                    transform.Rotation = EndRotation;
-                    transform.Scale = EndScale;
-                    MyRenderer.Color = EndColor;
-                }
-            }
-        }
+				if (doneRotate && doneScale && doneColor)
+				{
+					slapping = false;
+					transform.Rotation = EndRotation;
+					transform.Scale = EndScale;
+					MyRenderer.Color = EndColor;
+				}
+			}
+		}
 
-        public void SlapOn()
-        {
-            if (slapping) return;
+		public void SlapOn()
+		{
+			if (slapping) return;
 
-            // Force stop
-            TimerToStop = TimerToStopDefault;
+			// Force stop
+			TimerToStop = TimerToStopDefault;
 
-            EndRotation = transform.Rotation;
-            EndScale = transform.Scale;
-            EndColor = MyRenderer.Color;
+			EndRotation = transform.Rotation;
+			EndScale = transform.Scale;
+			EndColor = MyRenderer.Color;
 
-            slapping = true;
-            doneRotate = false;
-            doneScale = false;
-            doneColor = false;
+			slapping = true;
+			doneRotate = false;
+			doneScale = false;
+			doneColor = false;
 
-            RotateVec = (EndRotation - StartRotate);
-            ScaleVec = (EndScale - StartScale);
-            ColorVec = (EndColor - StartColor);
+			RotateVec = (EndRotation - StartRotate);
+			ScaleVec = (EndScale - StartScale);
+			ColorVec = (EndColor - StartColor);
 
-            if (RotateVec.Length > 0) RotateVec = RotateVec.Normalized;
-            if (ScaleVec.Length > 0) ScaleVec = ScaleVec.Normalized;
-            if (ColorVec.Length > 0) ColorVec = ColorVec.Normalized;
+			if (RotateVec.Length > 0) RotateVec = RotateVec.Normalized;
+			if (ScaleVec.Length > 0) ScaleVec = ScaleVec.Normalized;
+			if (ColorVec.Length > 0) ColorVec = ColorVec.Normalized;
 
 
 			transform.Rotation = StartRotate;
-            transform.Scale = StartScale;
-            MyRenderer.Color = StartColor;
+			transform.Scale = StartScale;
+			MyRenderer.Color = StartColor;
 
 
-            vec3 rotOff = RotateVec * rotationSpeed * 0.5f * Time.deltaTime;
-            MinRotateOffset = new vec3(
-                (EndRotation.x - rotOff.x < EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x : EndRotation.x + rotOff.x,
-                (EndRotation.y - rotOff.y < EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y : EndRotation.y + rotOff.y,
-                (EndRotation.z - rotOff.z < EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z : EndRotation.z + rotOff.z
-                );
-            MaxRotateOffset = new vec3(
-                (EndRotation.x - rotOff.x > EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x : EndRotation.x + rotOff.x,
-                (EndRotation.y - rotOff.y > EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y : EndRotation.y + rotOff.y,
-                (EndRotation.z - rotOff.z > EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z : EndRotation.z + rotOff.z
-                );
+			vec3 rotOff = RotateVec * rotationSpeed * 0.5f * Time.deltaTime;
+			MinRotateOffset = new vec3(
+				(EndRotation.x - rotOff.x < EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x : EndRotation.x + rotOff.x,
+				(EndRotation.y - rotOff.y < EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y : EndRotation.y + rotOff.y,
+				(EndRotation.z - rotOff.z < EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z : EndRotation.z + rotOff.z
+				);
+			MaxRotateOffset = new vec3(
+				(EndRotation.x - rotOff.x > EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x : EndRotation.x + rotOff.x,
+				(EndRotation.y - rotOff.y > EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y : EndRotation.y + rotOff.y,
+				(EndRotation.z - rotOff.z > EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z : EndRotation.z + rotOff.z
+				);
 
-            vec3 scaOff = ScaleVec * scaleSpeed * 0.5f * Time.deltaTime;
-            MinScaleOffset = new vec3(
-                (EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
-                (EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
-                (EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
-                );
-            MaxScaleOffset = new vec3(
-                (EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
-                (EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
-                (EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
-                );
+			vec3 scaOff = ScaleVec * scaleSpeed * 0.5f * Time.deltaTime;
+			MinScaleOffset = new vec3(
+				(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
+				(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
+				(EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
+				);
+			MaxScaleOffset = new vec3(
+				(EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
+				(EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
+				(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
+				);
 
-            vec4 colOff = ColorVec * colorSpeed * 0.5f * Time.deltaTime;
-            MinColorOffset = new vec4(
-                (EndColor.x - colOff.x < EndColor.x + colOff.x) ? EndColor.x - colOff.x : EndColor.x + colOff.x,
-                (EndColor.y - colOff.y < EndColor.y + colOff.y) ? EndColor.y - colOff.y : EndColor.y + colOff.y,
-                (EndColor.z - colOff.z < EndColor.z + colOff.z) ? EndColor.z - colOff.z : EndColor.z + colOff.z,
-                (EndColor.w - colOff.w < EndColor.w + colOff.w) ? EndColor.w - colOff.w : EndColor.w + colOff.w
-                );
-            MaxColorOffset = new vec4(
-                (EndColor.x - colOff.x > EndColor.x + colOff.x) ? EndColor.x - colOff.x : EndColor.x + colOff.x,
-                (EndColor.y - colOff.y > EndColor.y + colOff.y) ? EndColor.y - colOff.y : EndColor.y + colOff.y,
-                (EndColor.z - colOff.z > EndColor.z + colOff.z) ? EndColor.z - colOff.z : EndColor.z + colOff.z,
-                (EndColor.w - colOff.w > EndColor.w + colOff.w) ? EndColor.w - colOff.w : EndColor.w + colOff.w
-                );
-        }
-    }
+			vec4 colOff = ColorVec * colorSpeed * 0.5f * Time.deltaTime;
+			MinColorOffset = new vec4(
+				(EndColor.x - colOff.x < EndColor.x + colOff.x) ? EndColor.x - colOff.x : EndColor.x + colOff.x,
+				(EndColor.y - colOff.y < EndColor.y + colOff.y) ? EndColor.y - colOff.y : EndColor.y + colOff.y,
+				(EndColor.z - colOff.z < EndColor.z + colOff.z) ? EndColor.z - colOff.z : EndColor.z + colOff.z,
+				(EndColor.w - colOff.w < EndColor.w + colOff.w) ? EndColor.w - colOff.w : EndColor.w + colOff.w
+				);
+			MaxColorOffset = new vec4(
+				(EndColor.x - colOff.x > EndColor.x + colOff.x) ? EndColor.x - colOff.x : EndColor.x + colOff.x,
+				(EndColor.y - colOff.y > EndColor.y + colOff.y) ? EndColor.y - colOff.y : EndColor.y + colOff.y,
+				(EndColor.z - colOff.z > EndColor.z + colOff.z) ? EndColor.z - colOff.z : EndColor.z + colOff.z,
+				(EndColor.w - colOff.w > EndColor.w + colOff.w) ? EndColor.w - colOff.w : EndColor.w + colOff.w
+				);
+		}
+	}
 }

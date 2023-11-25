@@ -7,27 +7,27 @@ using System.Threading;
 
 namespace TRE
 {
-    public class PowerUpManager : Entity
-    {
-        public PowerUpUI MyPowerUpUI;
-        public List<Entity> powerUps = new List<Entity>();
+	public class PowerUpManager : Entity
+	{
+		public PowerUpUI MyPowerUpUI;
+		public List<Entity> powerUps = new List<Entity>();
 
-        //private Entity baseForm;
-        //private Entity blueberryForm;
-        //private Entity strawberryForm;
+		//private Entity baseForm;
+		//private Entity blueberryForm;
+		//private Entity strawberryForm;
 
-        //Audio
+		//Audio
 		private ulong droppowerupSFX;
 
 		private bool usePower = false;
 
-        public PowerUpManager()
-        {
+		public PowerUpManager()
+		{
 
-        }
+		}
 
-        private void OnCreate()
-        {
+		private void OnCreate()
+		{
 			//baseForm = this.parenting.GetChild(0);
 			//blueberryForm = this.parenting.GetChild(1);
 			//strawberryForm = this.parenting.GetChild(2);
@@ -35,31 +35,31 @@ namespace TRE
 			droppowerupSFX = ECSManager.FindIDFromName("SFX_DropPowerUp");
 		}
 
-        public void SwapPowerUps() //if holding 2 powerups, swap between them. if currently using a power-up, will swap into the other form
-        {
-            if (powerUps.Count < 2) return;
+		public void SwapPowerUps() //if holding 2 powerups, swap between them. if currently using a power-up, will swap into the other form
+		{
+			if (powerUps.Count < 2) return;
 
-            powerUps.Reverse();
+			powerUps.Reverse();
 
-            //Entity tempContainer = powerUps[0];
-            //powerUps.RemoveAt(0);
-            //powerUps.Add(tempContainer);
+			//Entity tempContainer = powerUps[0];
+			//powerUps.RemoveAt(0);
+			//powerUps.Add(tempContainer);
 
-            //if (usePower)
-            //{
-            //    ActivatePowerUp(powerUps[0].GetComponent<GetPowerUp>()); // activating the main power up        // THIS CANT BE DONE YET
-            //}
-        }
+			//if (usePower)
+			//{
+			//    ActivatePowerUp(powerUps[0].GetComponent<GetPowerUp>()); // activating the main power up        // THIS CANT BE DONE YET
+			//}
+		}
 
-        public void DropMain() //pop off the main power up
-        {
-            if (powerUps.Count == 0) return;
+		public void DropMain() //pop off the main power up
+		{
+			if (powerUps.Count == 0) return;
 
-            GetPowerUp mainPowerUp = powerUps[0].GetComponent<GetPowerUp>();
-            mainPowerUp.ReleasePowerUp();
-            powerUps.RemoveAt(0);
+			GetPowerUp mainPowerUp = powerUps[0].GetComponent<GetPowerUp>();
+			mainPowerUp.ReleasePowerUp();
+			powerUps.RemoveAt(0);
 
-            MyPowerUpUI.UpdateUI(powerUps);
+			MyPowerUpUI.UpdateUI(powerUps);
 
 			if (ECSManager.IsValidEntity(droppowerupSFX))
 			{
@@ -68,17 +68,17 @@ namespace TRE
 
 		}
 
-        public void LoseMain()
-        {
-            if (powerUps.Count == 0) return;
+		public void LoseMain()
+		{
+			if (powerUps.Count == 0) return;
 
-            ECSManager.DestroyEntity(powerUps[0].ID);
-            powerUps.RemoveAt(0);
+			ECSManager.DestroyEntity(powerUps[0].ID);
+			powerUps.RemoveAt(0);
 
-            if (MyPowerUpUI != null)
-            {
-                MyPowerUpUI.UpdateUI(powerUps);
-            }
-        }
-    }
+			if (MyPowerUpUI != null)
+			{
+				MyPowerUpUI.UpdateUI(powerUps);
+			}
+		}
+	}
 }

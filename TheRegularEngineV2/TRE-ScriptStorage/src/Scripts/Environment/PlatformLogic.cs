@@ -24,16 +24,16 @@ namespace TRE
 			positions = new vec3[0];
 		}
 
-		private vec3 oldPosition = new vec3(0,0,0);
+		private vec3 oldPosition = new vec3(0, 0, 0);
 
 		public void Start()
 		{
-            if (Scene.GetSceneName() == "TODELETE")
-            {
-                currentIndex = 0;
-                positions = new vec3[] { new vec3(16.394f, 14.422f, -227), new vec3(16.394f, 14.422f, -178) };
-            }
-            if (Scene.GetSceneName() == "Level_1")
+			if (Scene.GetSceneName() == "TODELETE")
+			{
+				currentIndex = 0;
+				positions = new vec3[] { new vec3(16.394f, 14.422f, -227), new vec3(16.394f, 14.422f, -178) };
+			}
+			if (Scene.GetSceneName() == "Level_1")
 			{
 				// Determine platform positions based on data
 				if (name == "MovingPlatform_1")
@@ -99,8 +99,8 @@ namespace TRE
 
 			if (currentIndex < positions.Length)
 			{
-                transform.Position = positions[currentIndex];
-            }
+				transform.Position = positions[currentIndex];
+			}
 		}
 
 		public void Update()
@@ -108,18 +108,18 @@ namespace TRE
 			oldPosition = transform.Position;
 
 			float dirX = (positions[currentIndex].x - transform.Position.x);
-            float dirY = (positions[currentIndex].y - transform.Position.y);
-            float dirZ = (positions[currentIndex].z - transform.Position.z);
+			float dirY = (positions[currentIndex].y - transform.Position.y);
+			float dirZ = (positions[currentIndex].z - transform.Position.z);
 
 			vec3 dir = new vec3(dirX, dirY, dirZ);
 			vec3 normDir = new vec3();
 			if (dir.Length > 0)
 			{
-                normDir = dir.Normalized;
-            }
+				normDir = dir.Normalized;
+			}
 
-            // Lerps through each positions
-            if (positions.Length > 0)
+			// Lerps through each positions
+			if (positions.Length > 0)
 			{
 				if (currentTime <= 0.0f)
 				{
@@ -130,13 +130,13 @@ namespace TRE
 						++currentIndex;
 						if (currentIndex >= positions.Length) currentIndex = 0;
 						//transform.Position = positions[currentIndex];
-                        currentTime = delay;
-                    }
+						currentTime = delay;
+					}
 				}
 				else
 				{
 					currentTime -= Time.deltaTime;
-                }
+				}
 			}
 		}
 
@@ -152,24 +152,24 @@ namespace TRE
 
 		private bool IsNearPosition(vec3 targetPosition)
 		{
-            vec3 minusOffset = targetPosition - new vec3(offset);
-            vec3 plusOffset = targetPosition + new vec3(offset);
+			vec3 minusOffset = targetPosition - new vec3(offset);
+			vec3 plusOffset = targetPosition + new vec3(offset);
 
 			vec3 minOffset = new vec3(
 				(minusOffset.x < plusOffset.x) ? minusOffset.x : plusOffset.x,
 				(minusOffset.y < plusOffset.y) ? minusOffset.y : plusOffset.y,
 				(minusOffset.z < plusOffset.z) ? minusOffset.z : plusOffset.z
-                );
+				);
 
 			vec3 maxOffset = new vec3(
 				(minusOffset.x > plusOffset.x) ? minusOffset.x : plusOffset.x,
 				(minusOffset.y > plusOffset.y) ? minusOffset.y : plusOffset.y,
 				(minusOffset.z > plusOffset.z) ? minusOffset.z : plusOffset.z
-                );
+				);
 
-            return transform.Position.x >= minOffset.x && transform.Position.x <= maxOffset.x
-                && transform.Position.y >= minOffset.y && transform.Position.y <= maxOffset.y
-                && transform.Position.z >= minOffset.z && transform.Position.z <= maxOffset.z;
+			return transform.Position.x >= minOffset.x && transform.Position.x <= maxOffset.x
+				&& transform.Position.y >= minOffset.y && transform.Position.y <= maxOffset.y
+				&& transform.Position.z >= minOffset.z && transform.Position.z <= maxOffset.z;
 		}
 	}
 }
