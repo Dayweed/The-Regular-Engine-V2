@@ -19,6 +19,8 @@ namespace TRE
 
 		private bool UIPopupTutorialStartExist = true;
 
+		private Entity RightHUDRef;
+        private Entity LeftHUDRef;
 
         public void Start()
 		{
@@ -26,7 +28,10 @@ namespace TRE
             UIPopupTutorialStart = ECSManager.FindEntityByName("ControlsPopup");
             HasBeenTriggeredBefore = false;
 			IsActivated = false;
-		}
+
+            RightHUDRef = ECSManager.FindEntityByName("RightCharacter_HUD");
+            LeftHUDRef = ECSManager.FindEntityByName("LeftCharacter_HUD");
+        }
 
 		public void Update()
 		{
@@ -34,6 +39,10 @@ namespace TRE
 			{
 				UIPopupTutorialStartExist = false;
 				UIPopupTutorialStart.DestroySelf();
+
+                //Render all the HUD after the popup of control page finishes
+                RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
+                LeftHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
             }
 
 			if (IsActivated)
