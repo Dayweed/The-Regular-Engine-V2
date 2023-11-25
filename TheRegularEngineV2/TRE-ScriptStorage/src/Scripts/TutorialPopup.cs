@@ -12,19 +12,30 @@ namespace TRE
 	public class TutorialPopup : Entity
 	{
 		private Entity UIPopup1;
+		private Entity UIPopupTutorialStart;
 
 		private bool IsActivated = false;
 		private bool HasBeenTriggeredBefore = false;
 
-		public void Start()
+		private bool UIPopupTutorialStartExist = true;
+
+
+        public void Start()
 		{
 			UIPopup1 = ECSManager.FindEntityByName("PopupUI1");
-			HasBeenTriggeredBefore = false;
+            UIPopupTutorialStart = ECSManager.FindEntityByName("ControlsPopup");
+            HasBeenTriggeredBefore = false;
 			IsActivated = false;
 		}
 
 		public void Update()
 		{
+			if (UIPopupTutorialStartExist && InputSystem.GetKeyDown(InputKeys.Space))
+			{
+				UIPopupTutorialStartExist = false;
+				UIPopupTutorialStart.DestroySelf();
+            }
+
 			if (IsActivated)
 			{
 				UIPopup1.GetComponent<SpriteRenderer>().isVisible = true;
