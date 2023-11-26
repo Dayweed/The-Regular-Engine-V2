@@ -29,6 +29,8 @@ namespace TRE
 
 			std::shared_ptr<UniformBuffer> m_UBO;
 			std::shared_ptr<Material> m_ShadowAnimationMaterial;
+			
+			int m_FPS = 60;
 			AnimationUBO m_BufferData;
 			bool m_IsAnimating = true;
 
@@ -39,14 +41,19 @@ namespace TRE
 				j = nlohmann::json
 				{
 					{ "m_IsAnimating", t.m_IsAnimating },
+					{ "m_FPS", t.m_FPS },
 				};
 			}
 
 			friend void from_json(const nlohmann::json& j, AnimationComponent& t)
 			{
-				if (j.contains("m_IsVisible"))
+				if (j.contains("m_IsAnimating"))
 				{
 					t.m_IsAnimating = j.at("m_IsAnimating").get<bool>();
+				}
+				if (j.contains("m_FPS"))
+				{
+					t.m_FPS = j.at("m_FPS").get<int>();
 				}
 			}
 	};
@@ -55,24 +62,6 @@ namespace TRE
 
 property_begin(TRE::AnimationComponent)
 {
-	//property_var_fnbegin("AnimationSource", resource_ref)
-	//{
-	//	if (isRead)
-	//	{
-	//		if (Self.m_AnimationSource)
-	//			InOut.m_Value = Self.m_AnimationSource->GetHandle();
-	//		else
-	//			InOut.m_Value = 0;
-	//	}
-	//	else
-	//	{
-	//		if (InOut.m_Value)
-	//			Self.m_AnimationSource = TRE::ResourceManager::Instance().GetResource<TRE::RenderObject>(InOut.m_Value);
-	//		else
-	//			Self.m_AnimationSource = nullptr;
-	//	}
-
-	//} property_var_fnend(),
 	property_var(m_IsAnimating),
-
+	property_var(m_FPS)
 } property_vend_h(TRE::AnimationComponent)
