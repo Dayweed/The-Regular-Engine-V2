@@ -33,9 +33,11 @@ namespace TRE
 				vec3 newPos = playerObj.transform.Position;
 				newPos.y += (playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
 						+ offset.y) * 1.2f;
+				
 				//Right Cactus Values
 				if (this.CompareTag(rightCactus))
 					newPos.x += playerObj.GetComponent<HoleyController>().currentRadius * 1.3f;
+				
 				//Left Cactus Values
 				else if (this.CompareTag(leftCactus))
 					newPos.x -= playerObj.GetComponent<HoleyController>().currentRadius * 1.3f;

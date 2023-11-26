@@ -10,8 +10,10 @@ using GlmSharp;
 
 namespace TRE
 {
-	using PS = PhysicsSystem;
 	using CS = CameraSystem;
+	using PS = PhysicsSystem;
+	using TS = TransformSystem;
+
 	class HoleyController : Entity
 	{
 		public PowerUpUI MyPowerUpUI;
@@ -44,18 +46,22 @@ namespace TRE
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
 		public float defaultRadius = 2f;
-		public float blueberrysuperRadius = 4.8f;
-		public float strawberrysuperRadius = 2.4f;
-		public float currentRadius = 2f;
 		public float defaultHeight = 1f;
+		
+		public float blueberrysuperRadius = 4.8f;
 		public float blueberrysuperHeight = 4.8f;
+		
+		public float strawberrysuperRadius = 2.4f;
 		public float strawberrysuperHeight = 1.2f;
+		
+		public float currentRadius = 2f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
+		
 		//Transform Scale
 		public vec3 defaultXform = new vec3(75f, 75f, 75f);
 		public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
-		public vec3 strawberryscaledXform = new vec3(0.5f, 1.5f, 1f);
+		public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
 		public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
 		private int playerDirection = 0;
@@ -404,7 +410,7 @@ namespace TRE
 
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
-				TransformSystem.SetScaling(this.ID, currentXform);
+				TS.SetScaling(this.ID, currentXform);
 
 			}
 			else if (mainBlueberry)
@@ -423,7 +429,7 @@ namespace TRE
 
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
-				TransformSystem.SetScaling(this.ID, currentXform);
+				TS.SetScaling(this.ID, currentXform);
 			}
 			else if (mainStrawberry)
 			{
@@ -431,16 +437,14 @@ namespace TRE
 				if (GetComponent<MeshRenderer>().Mesh != "7b85b0617e121a4e")
 					GetComponent<MeshRenderer>().Mesh = "7b85b0617e121a4e";
 				
-				// huhhh
-				// GetComponent<MeshRenderer>().AnimMaterial = string.Empty; // ?????
-
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+
 				currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
 				currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed * Time.deltaTime);
 				currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed * Time.deltaTime);
-				TransformSystem.SetScaling(this.ID, currentXform);
+				TS.SetScaling(this.ID, currentXform);
 			}
 
 			#endregion
