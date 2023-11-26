@@ -135,6 +135,12 @@ namespace TRE
 						ImGui::SameLine();
 						ImGui::InputFloat("##EditorZoom", &m_ZoomSensitivity);
 						EventHandler::getEventHandlerInstance().Publish(EditorCameraEvent{ m_PanSpeed, m_ZoomSensitivity, m_RotationSensitivity });
+
+						if (ImGui::Button("Save Editor Camera"))
+						{
+							EditorSystemManager::Instance().GetSystem<EditorSystem>()->Serialize();
+						}
+
 						ImGui::EndMenu();
 					}
 
