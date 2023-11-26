@@ -129,6 +129,8 @@ namespace TRE
 					m_Assets.emplace_back(newAsset);
 			}
 		}
+		//std::sort(m_Assets.begin(), m_Assets.end(), [](const Asset& a1, const Asset& a2) { return a1.m_FileName < a2.m_FileName; });
+		std::ranges::sort(m_Assets, [](const Asset& a1, const Asset& a2) { return a1.m_FileName < a2.m_FileName; });
 	}
 
 	void ContentBrowserPanel::BrowseProjectFiles()
