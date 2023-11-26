@@ -22,8 +22,8 @@ namespace TRE
 			if (AnimComp.InitialSet)
 				continue;
 
-			AnimComp.m_FPS = MRComp.m_RenderObject->GetAnimation().m_FPS;
-			AnimComp.m_AnimationSpeed = MRComp.m_RenderObject->GetAnimation().m_TimeLength;
+			//AnimComp.m_FPS = MRComp.m_RenderObject->GetAnimation().m_FPS;
+			//AnimComp.m_AnimationSpeed = MRComp.m_RenderObject->GetAnimation().m_TimeLength;
 		}
 	}
 
