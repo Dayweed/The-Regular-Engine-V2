@@ -284,6 +284,8 @@ namespace TRE
 		L2W = scale * rotationX * rotationY * rotationZ * translationMatrix;
 
 		RecurseScene(*m_Scene->mRootNode, L2W);
+
+		std::cout << "Number of Meshes: " << m_Scene->mNumMeshes << std::endl;
 	}
 
 	bool GeomCompiler::ImportGeometryValidateMesh(const aiMesh& AssimpMesh, int& iTexture, int& iColor)

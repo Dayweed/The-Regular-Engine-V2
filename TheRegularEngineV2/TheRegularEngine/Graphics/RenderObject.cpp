@@ -49,8 +49,11 @@ namespace TRE
 			m_Skeleton = geom->m_Skeleton;
 			m_AnimationPlayer = AnimationPlayer(m_Skeleton, m_Animations);
 
-			if (m_Animations.size() > 0)
-				m_IsRigged = true;
+			m_IsRigged = true;
+		}
+		else
+		{
+			m_IsRigged = false;
 		}
 
 		m_VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()), UINT32_T_CAST(vertices.size() * sizeof(Vertex)));
