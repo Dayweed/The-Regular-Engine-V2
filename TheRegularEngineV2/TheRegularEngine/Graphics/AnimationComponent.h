@@ -34,6 +34,7 @@ namespace TRE
 			float m_AnimationSpeed = 1.f;
 			AnimationUBO m_BufferData;
 			bool m_IsAnimating = true;
+			bool InitialSet = false;
 
 			property_vtable()
 

@@ -15,7 +15,16 @@ namespace TRE
 
 	void AnimationSystem::Update()
 	{
+		for (auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
+		{
+			auto& MRComp = Entity->GetComponent<MeshRenderer>();
+			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			if (AnimComp.InitialSet)
+				continue;
 
+			AnimComp.m_FPS = MRComp.m_RenderObject->GetAnimation().m_FPS;
+			AnimComp.m_AnimationSpeed = MRComp.m_RenderObject->GetAnimation().m_TimeLength;
+		}
 	}
 
 	void AnimationSystem::GameUpdate()
@@ -25,18 +34,7 @@ namespace TRE
 
 	void AnimationSystem::LateUpdate()
 	{
-		for (auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent>())
-		{
-			//const auto& TransformComp = Entity->GetComponent<Transform>();
-			auto& MRComp = Entity->GetComponent<MeshRenderer>();
-			//auto& AnimComp = Entity->GetComponent<AnimationComponent>();
-			if (!MRComp.m_IsVisible)
-				continue;
 
-			//MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, glm::identity<glm::mat4>());
-			//AnimComp.m_BufferData.ProjView = editorCamera.GetViewProjectionMatrix();
-			//AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
-		}
 	}
 	
 	void AnimationSystem::BeforeReset()
