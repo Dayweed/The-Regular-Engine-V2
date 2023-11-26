@@ -44,7 +44,7 @@ namespace TRE
 				j = nlohmann::json
 				{
 					{ "m_IsAnimating", t.m_IsAnimating },
-					//{ "m_FPS", t.m_FPS },
+					{ "m_FPS", t.m_FPS },
 					//{ "m_AnimationSpeed", t.m_AnimationSpeed },
 				};
 			}
@@ -55,10 +55,10 @@ namespace TRE
 				{
 					t.m_IsAnimating = j.at("m_IsAnimating").get<bool>();
 				}
-				//if (j.contains("m_FPS"))
-				//{
-				//	t.m_FPS = j.at("m_FPS").get<int>();
-				//}
+				if (j.contains("m_FPS"))
+				{
+					t.m_FPS = j.at("m_FPS").get<int>();
+				}
 				//if (j.contains("m_AnimationSpeed"))
 				//{
 				//	t.m_AnimationSpeed = j.at("m_AnimationSpeed").get<float>();

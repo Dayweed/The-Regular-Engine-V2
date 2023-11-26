@@ -382,7 +382,7 @@ namespace TRE
 
 			if (AnimComp.m_IsAnimating)
 			{
-				//AnimComp.m_AnimationSpeed <= 0 ? AnimComp.m_AnimationSpeed = 0.01f : AnimComp.m_AnimationSpeed;
+				AnimComp.m_FPS = AnimComp.m_FPS > 60 ? 60 : AnimComp.m_FPS;
 				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform, AnimComp.m_FPS);
 			}
 
