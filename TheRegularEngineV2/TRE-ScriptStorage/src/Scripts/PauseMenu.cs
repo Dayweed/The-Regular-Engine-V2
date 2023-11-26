@@ -27,7 +27,6 @@ namespace TRE
 
         // Pause menu options
         private List<Entity> options;
-
         private List<Entity> DestructiveActionConfirmations;
 
         private Entity Menu1;
@@ -37,6 +36,9 @@ namespace TRE
 
         public void Start()
         {
+            options = new List<Entity>();
+            DestructiveActionConfirmations = new List<Entity>();
+
             pointer = ECSManager.FindEntityByName("pauseMenu_Pointer");
             pointerTransform = pointer.GetComponent<Transform>();
             options.Add(ECSManager.FindEntityByName("pauseMenu_Resume"));
