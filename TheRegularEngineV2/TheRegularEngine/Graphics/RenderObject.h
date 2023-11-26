@@ -66,7 +66,7 @@ namespace TRE
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
 
-		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS);
+		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS, float speed);
 		void BindAnimation(VkCommandBuffer commandBuffer);
 
 	private:

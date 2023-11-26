@@ -165,11 +165,11 @@ namespace TRE
 		return std::move(ResourceManager::Instance().GetResource<RenderObject>(assetHandle));
 	}
 
-	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS)
+	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS, float speed)
 	{
 		if (m_AnimationPlayer.m_Animations.size() != 0)
 		{
-			m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+			m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime() * speed);
 			m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W, FPS);
 		}
 	}
