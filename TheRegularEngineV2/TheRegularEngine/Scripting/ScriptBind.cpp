@@ -785,6 +785,35 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region Animation
+
+	static void BindSetAnimationSpeed(CSEntityID ID, float animationSpeed)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return;
+
+		if (!Temp->HasComponent<AnimationComponent>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have Animation Component!");
+			return;
+		}
+
+		Temp->GetComponent<AnimationComponent>().m_AnimationSpeed = animationSpeed;
+	}
+
+	static float BindGetAnimationSpeed(CSEntityID ID)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return 0.0f;
+		if (!Temp->HasComponent<AnimationComponent>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have Animation Component!");
+			return 0.0f;
+		}
+		return Temp->GetComponent<AnimationComponent>().m_AnimationSpeed;
+	}
+
+#pragma endregion
 #pragma region CameraBindings
 	static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
 	{
@@ -1803,6 +1832,12 @@ namespace TRE
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMesh", BindGetMesh);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshVisibility", BindSetMeshVisibility);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMeshVisibility", BindGetMeshVisibility);
+		}
+
+		//Animation Bindings
+		{
+			mono_add_internal_call("TRE.AnimationSystem::Engine_SetAnimationSpeed", BindSetAnimationSpeed);
+			mono_add_internal_call("TRE.AnimationSystem::Engine_GetAnimationSpeed", BindGetAnimationSpeed);
 		}
 
 		// Camera Bindings

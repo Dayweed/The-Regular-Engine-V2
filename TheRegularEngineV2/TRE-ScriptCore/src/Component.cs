@@ -182,7 +182,17 @@ namespace TRE
 
 	public class Animation : Component
 	{
-
+		public float AnimationSpeed
+		{
+			get
+			{
+				return AnimationSystem.Engine_GetAnimationSpeed(entity.ID);
+			}
+			set
+			{
+				AnimationSystem.Engine_SetAnimationSpeed(entity.ID, value);
+			}
+		}
 	}
 
 

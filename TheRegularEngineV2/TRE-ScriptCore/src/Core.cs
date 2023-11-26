@@ -900,12 +900,21 @@ namespace TRE
 		{
 			Engine_SetMesh(entityid, meshGUID);
 		}
-
 		public static void SetMaterial(EntityID entityid, string instanceGUID)
 		{
 			Engine_SetMaterialInstance(entityid, instanceGUID);
 		}
 	}
+
+	public class AnimationSystem
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetAnimationSpeed(EntityID entityid, float aniamtionSpeed);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetAnimationSpeed(EntityID entityid);
+	}
+
 
 	public enum ForceMode
 	{

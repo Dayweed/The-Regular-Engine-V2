@@ -388,18 +388,25 @@ namespace TRE
 					//Walking state
 					GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					if(HasComponent<Animation>())
+						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else if (!isGrounded)
 				{
 					dirVec = dirVec.NormalizedSafe;
 					GetComponent<MeshRenderer>().Mesh = "a124f8de20c124b6";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					if (HasComponent<Animation>())
+						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else
 				{
 					//Red Animation Material
 					GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					if (HasComponent<Animation>())
+						GetComponent<Animation>().AnimationSpeed = 0.25f;
+
 					//TransformSystem.SetScaling(this.ID, new vec3(0.03f, 0.03f, 0.03f));
 				}
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
