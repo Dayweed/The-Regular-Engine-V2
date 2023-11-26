@@ -14,8 +14,8 @@ namespace TRE
 
 		public List<HoleCheckTrigger> triggersComp;
 
-		private string deactivatedMaterialGUID = "b67077a64edeaafc";
-        private string activatedMaterialGUID = "18cf136263b2c948";
+		private string deactivatedMaterialGUID = "68c4196bec193ec8";
+        private string activatedMaterialGUID = "595f4b7e14fed1b";
 
 		public HoleCheckDisplay()
 		{
