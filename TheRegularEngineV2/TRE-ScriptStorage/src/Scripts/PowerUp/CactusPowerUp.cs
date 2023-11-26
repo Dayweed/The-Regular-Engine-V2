@@ -82,7 +82,7 @@ namespace TRE
 		public void Update()
 		{
 			// set to Holey's position
-			SetToPlayer();
+			// SetToPlayer();
 			//Check if Holey has strawberry then allow scaling
 			ScaleChange();
 		}

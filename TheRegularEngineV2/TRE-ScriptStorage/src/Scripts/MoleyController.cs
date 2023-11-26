@@ -56,7 +56,7 @@ namespace TRE
 		//Player Scallings
 		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
 		private vec3 blueberryscaledXform = new vec3(40f, 40f, 40f);
-		private vec3 strawberryscaledXform = new vec3(2f, 1f, 0.5f);
+		private vec3 strawberryscaledXform = new vec3(0.5f, 0.5f, 0.5f);
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
 		private int playerDirection = 0;

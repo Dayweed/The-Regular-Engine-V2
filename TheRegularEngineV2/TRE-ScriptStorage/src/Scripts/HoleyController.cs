@@ -424,6 +424,12 @@ namespace TRE
 			else if (mainStrawberry)
 			{
 				//Cactus Model
+				if (GetComponent<MeshRenderer>().Mesh != "7b85b0617e121a4e")
+					GetComponent<MeshRenderer>().Mesh = "7b85b0617e121a4e";
+				
+				// huhhh
+				// GetComponent<MeshRenderer>().AnimMaterial = string.Empty; // ?????
+
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
