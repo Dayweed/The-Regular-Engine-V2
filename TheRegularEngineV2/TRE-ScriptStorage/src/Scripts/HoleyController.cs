@@ -89,6 +89,8 @@ namespace TRE
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
+		private ulong fallingMaracaSFX;
+		private ulong fallingHatSFX;
 
 		//Transfrom Component
 		private Transform holeyTransform;
@@ -118,6 +120,8 @@ namespace TRE
 			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Tall");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
+			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
+			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 
 			RespawnPoint = holeyTransform.Position;
 			RespawnPoint.y += 10.0f;
@@ -535,6 +539,22 @@ namespace TRE
 			if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
 			{
 				TakeDamage();
+
+				if (other.ID == ECSManager.FindIDFromName("FallingMaracca"))
+				{
+					if (ECSManager.IsValidEntity(fallingMaracaSFX))
+						AudioSystem.Play(fallingMaracaSFX);
+				}
+				else if (other.ID == ECSManager.FindIDFromName("FallingHat"))
+				{
+					if (ECSManager.IsValidEntity(fallingHatSFX))
+						AudioSystem.Play(fallingHatSFX);
+				}
+				else
+				{
+					//rollingobstaclesfx
+				}
+
 			}
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))
