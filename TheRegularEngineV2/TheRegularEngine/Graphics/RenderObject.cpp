@@ -50,6 +50,8 @@ namespace TRE
 			m_AnimationPlayer = AnimationPlayer(m_Skeleton, m_Animations);
 
 			m_IsRigged = true;
+
+			std::cout << "Time Length: " << geom->m_Animation[0].m_TimeLength << std::endl;
 		}
 		else
 		{
@@ -163,21 +165,21 @@ namespace TRE
 		return std::move(ResourceManager::Instance().GetResource<RenderObject>(assetHandle));
 	}
 
-	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int AnimationFPS)
+	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int AnimationFPS, float TimeLength)
 	{
 		if (m_AnimationPlayer.m_Animations.size() != 0)
 		{
-			m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
+			m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime(), TimeLength);
 			m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W, AnimationFPS);
 		}
 	}
 
-	void AnimationPlayer::Update(float DT)
+	void AnimationPlayer::Update(float DT, float TimeLength)
 	{
 		auto& Anim = m_Animations[m_iCurAnim];
 		// advance time
 		m_Time += DT;
-		while (m_Time >= Anim.m_TimeLength) m_Time -= Anim.m_TimeLength;
+		while (m_Time >= TimeLength) m_Time -= TimeLength;
 	}
 	void AnimationPlayer::ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int AnimationFPS) const
 	{

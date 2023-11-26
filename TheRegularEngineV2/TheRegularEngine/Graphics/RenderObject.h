@@ -15,7 +15,7 @@ namespace TRE
 
 		}
 
-		void Update(float DT);
+		void Update(float DT, float TimeLength);
 		void ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int AnimationFPS) const;
 
 		Skeleton m_Skeleton;
@@ -65,7 +65,7 @@ namespace TRE
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
 
-		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int AnimationFPS);
+		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int AnimationFPS, float TimeLength);
 		void BindAnimation(VkCommandBuffer commandBuffer);
 
 	private:
