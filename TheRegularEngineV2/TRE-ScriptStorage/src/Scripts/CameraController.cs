@@ -39,7 +39,7 @@ namespace TRE
 
 		public void Update()
 		{
-			CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.001f);
+			CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.0005f);
 			distance = MathF.Lerp(distance, expectedDistance, lerpTime);
 
 			vec3 pos = Player1Transform.Position + Player2Transform.Position;

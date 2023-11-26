@@ -13,11 +13,11 @@ namespace TRE
 		public vec3[] positions;
 		public int currentIndex;
 
-		private float moveSpeed = 7.5f;
+		private float moveSpeed = 25f;
 		private float offset = 0.1f;
 
 		private float currentTime = 0.0f;
-		private float delay = 2.0f;
+		private float delay = 1f;
 
 		public PlatformLogic()
 		{

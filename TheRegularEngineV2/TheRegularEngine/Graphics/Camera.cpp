@@ -151,7 +151,6 @@ namespace TRE
 		return cameraFrustum;
 	}
 
-
 	void CameraSystem::LateUpdate()
 	{
 		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
@@ -190,7 +189,13 @@ namespace TRE
 
 	void CameraSystem::AfterReset()
 	{
-
+		for (Entity& go : ECSManager::Instance().GetEntities<Camera>())
+		{
+			Camera& camera = go->GetComponent<Camera>();
+			camera.m_IsTransitioning = false;
+			camera.m_InterpolationValue = 0.f;
+			camera.m_IsDirty = true;
+		}
 	}
 
 	void CameraSystem::OnDestroyEntities()
