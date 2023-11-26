@@ -136,7 +136,15 @@ namespace TRE
 				if (a1.m_Folder && !a2.m_Folder) return true;
 				if (!a1.m_Folder && a2.m_Folder) return false;
 
-				return a1.m_FileName < a2.m_FileName;
+				std::string name1{ a1.m_FileName };
+				for (unsigned i = 0; i < name1.length(); ++i)
+					name1[i] = static_cast<char>(tolower(name1[i]));
+
+				std::string name2{ a2.m_FileName };
+				for (unsigned i = 0; i < name2.length(); ++i)
+					name2[i] = static_cast<char>(tolower(name2[i]));
+
+				return name1 < name2;
 			});
 	}
 
