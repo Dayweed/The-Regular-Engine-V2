@@ -136,13 +136,13 @@ namespace TRE
 				if (a1.m_Folder && !a2.m_Folder) return true;
 				if (!a1.m_Folder && a2.m_Folder) return false;
 
-				std::string name1 = { a1.m_FileName };
-				for (int i = 0; i < name1.length(); ++i)
-					name1[i] = tolower(name1[i]);
+				std::string name1{ a1.m_FileName };
+				for (unsigned i = 0; i < name1.length(); ++i)
+					name1[i] = static_cast<char>(tolower(name1[i]));
 
-				std::string name2 = { a2.m_FileName };
-				for (int i = 0; i < name2.length(); ++i)
-					name2[i] = tolower(name2[i]);
+				std::string name2{ a2.m_FileName };
+				for (unsigned i = 0; i < name2.length(); ++i)
+					name2[i] = static_cast<char>(tolower(name2[i]));
 
 				return name1 < name2;
 			});
