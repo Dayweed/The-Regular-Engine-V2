@@ -392,10 +392,10 @@ namespace TRE
 		std::multimap<ResourceHandle, Entity> materialSort;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
-			if (go_mr->HasComponent<AnimationComponent>())
+			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
+			if (go_mr->HasComponent<AnimationComponent>() && mr.m_RenderObject->IsRigged())
 				continue;
 
-			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
