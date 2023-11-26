@@ -430,7 +430,10 @@ namespace TRE
 			{
 				//flat model
 				if (GetComponent<MeshRenderer>().Mesh != "44ee4ae04937492b")
+				{
 					GetComponent<MeshRenderer>().Mesh = "44ee4ae04937492b";
+					GetComponent<MeshRenderer>().Material = "69e15d0a6ed36cb9";
+				}
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
