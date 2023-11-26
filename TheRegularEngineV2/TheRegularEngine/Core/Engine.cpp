@@ -16,6 +16,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
 #include "SceneManager.h"
+#include "Graphics/AnimationSystem.h"
 
 namespace TRE
 {
@@ -146,6 +147,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
+		ECSSystemManager::Instance().RegisterSystem<AnimationSystem>();
 
 		// Allocate Default Size for Memory Manager
 		//MemoryManager::Instance().AllocateEntitySize(MemoryManager::Instance().GetConfigSize());

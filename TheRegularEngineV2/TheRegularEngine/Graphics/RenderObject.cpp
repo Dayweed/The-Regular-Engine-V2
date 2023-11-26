@@ -51,7 +51,7 @@ namespace TRE
 
 			m_IsRigged = true;
 
-			std::cout << "Time Length: " << geom->m_Animation[0].m_TimeLength << std::endl;
+			// std::cout << "Time Length: " << geom->m_Animation[0].m_TimeLength << std::endl;
 		}
 		else
 		{

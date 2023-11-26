@@ -61,6 +61,7 @@ namespace TRE
 
 		static ResourceType GetType() { return ResourceType::Mesh; }
 		bool IsRigged() { return m_IsRigged; }
+		Animation GetAnimation() { return m_Animations[0]; }
 
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
