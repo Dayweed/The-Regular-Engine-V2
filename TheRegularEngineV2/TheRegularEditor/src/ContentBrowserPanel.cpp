@@ -130,7 +130,14 @@ namespace TRE
 			}
 		}
 		//std::sort(m_Assets.begin(), m_Assets.end(), [](const Asset& a1, const Asset& a2) { return a1.m_FileName < a2.m_FileName; });
-		std::ranges::sort(m_Assets, [](const Asset& a1, const Asset& a2) { return a1.m_FileName < a2.m_FileName; });
+		std::ranges::sort(m_Assets, [](const Asset& a1, const Asset& a2)
+			{
+				// place the folders first
+				if (a1.m_Folder && !a2.m_Folder) return true;
+				if (!a1.m_Folder && a2.m_Folder) return false;
+
+				return a1.m_FileName < a2.m_FileName;
+			});
 	}
 
 	void ContentBrowserPanel::BrowseProjectFiles()
