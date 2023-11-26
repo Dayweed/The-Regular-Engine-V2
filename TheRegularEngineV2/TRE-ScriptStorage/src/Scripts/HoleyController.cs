@@ -411,7 +411,11 @@ namespace TRE
 			{
 				//Tall model
 				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
+				{
 					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
+					if(HasComponent<Animation>())
+						RemoveComponent<Animation>();
+				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
