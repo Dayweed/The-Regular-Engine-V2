@@ -30,7 +30,8 @@ namespace TRE
 			std::shared_ptr<UniformBuffer> m_UBO;
 			std::shared_ptr<Material> m_ShadowAnimationMaterial;
 			
-			//int m_FPS = 60;
+			int InitialFPS = 0;
+			int m_FPS = 60;
 			//float m_AnimationSpeed = 1.f;
 			AnimationUBO m_BufferData;
 			bool m_IsAnimating = true;
@@ -69,7 +70,7 @@ namespace TRE
 
 property_begin(TRE::AnimationComponent)
 {
-	property_var(m_IsAnimating)
-	//property_var(m_FPS),
+	property_var(m_IsAnimating),
+	property_var(m_FPS),
 	//property_var(m_AnimationSpeed)
 } property_vend_h(TRE::AnimationComponent)

@@ -383,7 +383,7 @@ namespace TRE
 			if (AnimComp.m_IsAnimating)
 			{
 				//AnimComp.m_AnimationSpeed <= 0 ? AnimComp.m_AnimationSpeed = 0.01f : AnimComp.m_AnimationSpeed;
-				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform);
+				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform, AnimComp.m_FPS);
 			}
 
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));

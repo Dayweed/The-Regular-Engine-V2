@@ -151,7 +151,7 @@ namespace TRE
 
 	void RenderObject::Serialize()
 	{
-		
+
 	}
 
 	std::shared_ptr<RenderObject> RenderObject::Deserialize(const std::string& assetHexGUID)
@@ -165,12 +165,12 @@ namespace TRE
 		return std::move(ResourceManager::Instance().GetResource<RenderObject>(assetHandle));
 	}
 
-	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W)
+	void RenderObject::UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS)
 	{
 		if (m_AnimationPlayer.m_Animations.size() != 0)
 		{
 			m_AnimationPlayer.Update(Engine::GetInstance().GetWindow()->GetDeltaTime());
-			m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W);
+			m_AnimationPlayer.ComputeMatrices(FinalL2W, L2W, FPS);
 		}
 	}
 
@@ -181,10 +181,10 @@ namespace TRE
 		m_Time += DT;
 		while (m_Time >= Anim.m_TimeLength) m_Time -= Anim.m_TimeLength;
 	}
-	void AnimationPlayer::ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W) const
+	void AnimationPlayer::ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS) const
 	{
 		auto& Anim = m_Animations[m_iCurAnim];
-		const float FrameTime = m_Time * Anim.m_FPS;
+		const float FrameTime = m_Time * FPS;
 		const int   iFrameT0 = static_cast<int>(FrameTime);
 		const int   iFrameT1 = static_cast<int>((iFrameT0 + 1) % Anim.m_BoneKeyFrames[0].m_Scale.size());
 		// compute hierarchy matrices
