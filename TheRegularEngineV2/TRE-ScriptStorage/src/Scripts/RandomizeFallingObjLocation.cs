@@ -103,6 +103,10 @@ namespace TRE
 
 		public void Start()
 		{
+			itemsToSpawn.Clear();
+			itemsTimer.Clear();
+			itemsPos.Clear();
+			itemsDefRot.Clear();
 			//canSpawnObjs = true;
 
 			// ID for prefabs are based on resource prefab GUID
@@ -115,6 +119,7 @@ namespace TRE
 			canSpawnObjs = true;
 			dropDuration = 3.5f;
 			minRange = 5.5f;
+			noOfObjects = 0;
 		}
 
 		// Update is called once per frame

@@ -31,17 +31,19 @@ namespace TRE
 
             RightHUDRef = ECSManager.FindEntityByName("RightCharacter_HUD");
             LeftHUDRef = ECSManager.FindEntityByName("LeftCharacter_HUD");
-        }
+
+			UIPopupTutorialStartExist = true;
+		}
 
 		public void Update()
 		{
 			if (UIPopupTutorialStartExist && InputSystem.GetKeyDown(InputKeys.Space))
 			{
 				UIPopupTutorialStartExist = false;
-				UIPopupTutorialStart.DestroySelf();
+				UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = false;
 
-                //Render all the HUD after the popup of control page finishes
-                RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
+				//Render all the HUD after the popup of control page finishes
+				RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
                 LeftHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
             }
 
