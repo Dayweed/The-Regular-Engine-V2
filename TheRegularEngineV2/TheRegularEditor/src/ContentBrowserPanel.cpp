@@ -18,7 +18,7 @@ namespace TRE
 	{
 		m_SelectionManager = Selection_Manager;
 		m_AssetSelector = assetSelector;
-		
+
 		m_AssetDirectory = std::filesystem::current_path().parent_path();
 		m_AssetDirectory += "\\Assets";
 		m_PrefabDirectory = std::filesystem::current_path().parent_path();
@@ -58,12 +58,12 @@ namespace TRE
 		for (auto& p : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const std::filesystem::path path = p.path();
-			const std::filesystem::path relativePath =	std::filesystem::relative(path, m_AssetDirectory);
+			const std::filesystem::path relativePath = std::filesystem::relative(path, m_AssetDirectory);
 			const std::string filenameString = relativePath.filename().string();
 			if (p.is_directory())
 			{
 				//if the asset is a file
-				m_Assets.emplace_back(Asset{ true, m_FolderIconID ,"m_Invalid", filenameString, p.path()});
+				m_Assets.emplace_back(Asset{ true, m_FolderIconID ,"m_Invalid", filenameString, p.path() });
 			}
 			else
 			{
@@ -123,13 +123,12 @@ namespace TRE
 					newAsset.m_Path = path;
 					newAsset.m_FileName = filenameString;
 				}
-				
+
 				//Add the asset to the list if not a descriptor file
-				if(!isDesc)
+				if (!isDesc)
 					m_Assets.emplace_back(newAsset);
 			}
 		}
-		//std::sort(m_Assets.begin(), m_Assets.end(), [](const Asset& a1, const Asset& a2) { return a1.m_FileName < a2.m_FileName; });
 		std::ranges::sort(m_Assets, [](const Asset& a1, const Asset& a2)
 			{
 				// place the folders first
@@ -137,12 +136,12 @@ namespace TRE
 				if (!a1.m_Folder && a2.m_Folder) return false;
 
 				std::string name1{ a1.m_FileName };
-				for (unsigned i = 0; i < name1.length(); ++i)
-					name1[i] = static_cast<char>(tolower(name1[i]));
+				for (char& ch : name1)
+					ch = static_cast<char>(tolower(ch));
 
 				std::string name2{ a2.m_FileName };
-				for (unsigned i = 0; i < name2.length(); ++i)
-					name2[i] = static_cast<char>(tolower(name2[i]));
+				for (char& ch : name2)
+					ch = static_cast<char>(tolower(ch));
 
 				return name1 < name2;
 			});
@@ -221,7 +220,7 @@ namespace TRE
 					{
 						MaterialDescriptorFile descriptorFileMaterial;
 						descriptorFileMaterial.Generate();
-						
+
 						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetShaderHandle());
 						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
 						newMaterial->Invalidate();
@@ -230,7 +229,7 @@ namespace TRE
 
 						m_AssetSelector->SelectAsset(AssetManager::Instance().GetName(descriptorFileMaterial.GetResourceHandle()), AssetSelectorEvent::AssetType::Material);
 					}
-					
+
 					if (ImGui::MenuItem("Animation"))
 					{
 						MaterialDescriptorFile descriptorFileMaterial;
@@ -247,7 +246,7 @@ namespace TRE
 
 					if (ImGui::MenuItem("Others"))
 					{
-	
+
 					}
 
 					ImGui::EndMenu();
@@ -255,7 +254,7 @@ namespace TRE
 				ImGui::EndPopup();
 			}
 
-			
+
 			const float panelWidth = ImGui::GetContentRegionAvail().x;
 			int cols = static_cast<int>(panelWidth / m_CellSize);
 			if (cols < 1)
@@ -274,7 +273,7 @@ namespace TRE
 				//click on folder
 				if (item.m_Folder)
 				{
-					if (ImGui::ImageButton(item.m_TextureID,{m_ImgSize, m_ImgSize}, { 0,0 }, { 1,1 }))
+					if (ImGui::ImageButton(item.m_TextureID, { m_ImgSize, m_ImgSize }, { 0,0 }, { 1,1 }))
 					{
 						//step into folder selected
 						m_CurrentDirectory /= item.m_Path.filename();
@@ -339,7 +338,7 @@ namespace TRE
 				m_InvalidResourcePopUp = false;
 			}
 
-			if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_AssetClicked == false)
+			if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_AssetClicked == false)
 			{
 				m_AssetSelector->ClearSelectedAsset();
 			}
@@ -387,19 +386,19 @@ namespace TRE
 			std::string geomFileName{};
 			std::string pngFileName{};
 			std::string ddsFileName{};
-			FileType caseNum{FileType::none};
+			FileType caseNum{ FileType::none };
 			std::ifstream readFile{};
 			const size_t pos = assetsFileName.find_first_of('.');
 
 			//if there's a dot in the string
 			if (pos != std::string::npos)
 			{
-				fileType = assetsFileName.substr(pos+1);
+				fileType = assetsFileName.substr(pos + 1);
 				readFile.open(descFilePath, std::ios::in);
 				if (fileType.find("geom") != std::string::npos) caseNum = FileType::geom;
 				else if (fileType.find("texture") != std::string::npos) caseNum = FileType::texture;
 			}
-			
+
 			switch (caseNum)
 			{
 			case FileType::geom:
@@ -415,14 +414,14 @@ namespace TRE
 					std::getline(readFile, geomFileName);
 					std::getline(readFile, geomFileName);
 					//std::cout << geomFileName << "\n";
-				
+
 					const std::filesystem::path fbxFilePath = fbxFileName;
 					const std::filesystem::path geomFilePath = geomFileName;
 
 					const std::filesystem::file_time_type tDescFile = std::filesystem::last_write_time(descFilePath);
 					const std::filesystem::file_time_type tFbxFile = std::filesystem::last_write_time(fbxFilePath);
 					const std::filesystem::file_time_type tGeomFile = std::filesystem::last_write_time(geomFilePath);
-					
+
 					//std::cout << "desc timing: " << std::format("File write time is {}\n", tDescFile);
 					//std::cout << "fbx timing: " << std::format("File write time is {}\n", tFbxFile);
 					//std::cout << "geom timing: " << std::format("File write time is {}\n", tGeomFile);
@@ -505,7 +504,7 @@ namespace TRE
 
 			const std::filesystem::file_time_type tGlslFile = std::filesystem::last_write_time(glslFilePath);
 			const std::filesystem::file_time_type tBinaryFile = std::filesystem::last_write_time(binaryFilePath);
-			
+
 			//binary file does not exist or glsl file is newer than binary file
 			if (!std::filesystem::exists(binaryFilePath) || tGlslFile > tBinaryFile)
 			{
@@ -570,30 +569,30 @@ namespace TRE
 
 		m_TmpTextures = Util::CreateIcon("prefab_icon.png");
 		m_PrefabIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
-		
+
 		m_TmpTextures = Util::CreateIcon("png_icon.png");
-		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
-		
+		m_ImageIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("wav_icon.png");
-		m_AudioIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
-		
+		m_AudioIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("ttf_icon.png");
-		m_FontIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
-		
+		m_FontIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("meta_icon.png");
-		m_MetaIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
-		
+		m_MetaIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("mat_icon.png");
-		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());		
-		
+		m_MaterialIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("fbx_icon.png");
-		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());	
-		
+		m_3DObjIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
+
 		m_TmpTextures = Util::CreateIcon("cs_icon.png");
 		m_CSScriptIconID = Util::GetTextureID(m_TmpTextures->GetDescriptorImageInfo());
 #endif
 	}
-	
+
 	void ContentBrowserPanel::Update()
 	{
 		if (m_CurrentTimer <= m_RefreshRate)

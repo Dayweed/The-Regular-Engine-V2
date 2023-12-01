@@ -132,7 +132,7 @@ namespace TRE
 				//std::cout << "properties: " << List.first.c_str() << "\n";
 				for (size_t c{}; c < List.first.size(); ++c)
 				{
-					std::string charac { List.first[c]  };
+					std::string charac{ List.first[c] };
 					float diff{ static_cast<float>(c) / static_cast<float>(List.first.size()) };
 					ImGui::TextColored({ 1, diff, 0, 1 }, charac.c_str());
 					ImGui::SameLine(0, 0);
@@ -231,7 +231,7 @@ namespace TRE
 							{
 								float data[4]{ Value.x, Value.y, Value.z, Value.w };
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat4(NameField.c_str(), data);
-								Value = { data[0], data[1], data[2], data[3]};
+								Value = { data[0], data[1], data[2], data[3] };
 							}
 							else if constexpr (std::is_same_v <T, Color>)
 							{
@@ -296,7 +296,7 @@ namespace TRE
 							{
 								std::string imguiHandle = "##" + std::to_string(Value.m_Value);
 								std::string selected = AssetManager::Instance().GetName(Value.m_Value);
-			
+
 								if (ImGui::BeginCombo(imguiHandle.c_str(), selected.c_str()))
 								{
 									if (ImGui::Selectable("None", false))
@@ -306,10 +306,24 @@ namespace TRE
 
 									if (Value.m_Type == "MATERIAL")
 									{
-										for (const auto& material : AssetManager::Instance().GetAssetsOfType<Material>())
+										auto vec = AssetManager::Instance().GetAssetsOfType<Material>();
+										std::ranges::sort(vec, [](const auto& mat1, const auto& mat2)
+											{
+												std::string mat1Name{ AssetManager::Instance().GetName(mat1->GetHandle()) };
+												for (char& ch : mat1Name)
+													ch = static_cast<char>(tolower(ch));
+
+												std::string mat2Name{ AssetManager::Instance().GetName(mat2->GetHandle()) };
+												for (char& ch : mat2Name)
+													ch = static_cast<char>(tolower(ch));
+
+												return mat1Name < mat2Name;
+											});
+
+										for (const auto& material : vec)
 										{
-											std::string name = AssetManager::Instance().GetName(material->GetHandle());
 											ResourceHandle handle = material->GetHandle();
+											std::string name = AssetManager::Instance().GetName(handle);
 											bool isSelected = (selected == name);
 											if (ImGui::Selectable(name.c_str(), isSelected))
 											{
@@ -321,21 +335,32 @@ namespace TRE
 												ImGui::SetItemDefaultFocus();
 										}
 									}
-									else if (Value.m_Type == "TEXTURE")
-									{
-
-									}
 									else if (Value.m_Type == "MESH")
 									{
-										for (const auto& material : AssetManager::Instance().GetAssetsOfType<RenderObject>())
+										auto vec = AssetManager::Instance().GetAssetsOfType<RenderObject>();
+										std::ranges::sort(vec, [](const auto& mesh1, const auto& mesh2)
+											{
+												std::string mesh1Name{ AssetManager::Instance().GetName(mesh1->GetHandle()) };
+												for (char& ch : mesh1Name)
+													ch = static_cast<char>(tolower(ch));
+
+												std::string mesh2Name{ AssetManager::Instance().GetName(mesh2->GetHandle()) };
+												for (char& ch : mesh2Name)
+													ch = static_cast<char>(tolower(ch));
+
+												return mesh1Name < mesh2Name;
+											});
+
+										for (const auto& mesh : vec)
 										{
-											std::string name = AssetManager::Instance().GetName(material->GetHandle());
-											ResourceHandle handle = material->GetHandle();
+											ResourceHandle handle = mesh->GetHandle();
+											std::string name = AssetManager::Instance().GetName(handle);
 											bool isSelected = (selected == name);
 											if (ImGui::Selectable(name.c_str(), isSelected))
 											{
 												selected = name;
 												Value.m_Value = handle;
+												break;
 											}
 											if (isSelected)
 												ImGui::SetItemDefaultFocus();
@@ -384,7 +409,7 @@ namespace TRE
 							// Display all the data in that script (GUID, ScriptFieldMap)
 							std::shared_ptr<ScriptInstance> instance = ScriptEngine::GetEntityInstance(entity->GetGUID());
 
-							if(instance )
+							if (instance)
 							{
 								const auto& fields = instance->GetScriptClass()->GetFields();
 								for (const auto& [name, inst] : fields)
@@ -498,7 +523,7 @@ namespace TRE
 						//the green part is to make the button bigger
 						if (ImGui::Button("Reload"/*, ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(*/))
 						{
-							
+
 						}
 					}
 #pragma endregion
@@ -624,7 +649,7 @@ namespace TRE
 
 		ImGui::End();
 	}
-	
+
 	void InspectorPanel::Shutdown()
 	{
 
