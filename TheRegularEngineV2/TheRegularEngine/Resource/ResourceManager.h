@@ -27,6 +27,8 @@ namespace TRE
 		template <typename T>
 		std::shared_ptr<T> GetResource(ResourceHandle Handle);
 		template <typename T>
+		std::shared_ptr<T> GetResource(const std::string& assetName);
+		template <typename T>
 		std::vector<std::shared_ptr<T>> GetResourcesOfType();
 
 		template <typename N>
@@ -92,6 +94,14 @@ namespace TRE
 			}
 		}
 		return std::dynamic_pointer_cast<T>(m_Resources[Handle]);
+	}
+
+	template <typename T>
+	std::shared_ptr<T> ResourceManager::GetResource(const std::string& assetName)
+	{
+		const auto handle = Resource::GenerateGUID(assetName);
+
+		return GetResource<T>(handle);
 	}
 
 	template <typename T>

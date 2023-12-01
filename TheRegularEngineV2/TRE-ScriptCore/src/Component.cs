@@ -143,6 +143,15 @@ namespace TRE
 				return MeshRendererSystem.Engine_GetMesh(entity.ID);
 			}
 		}
+
+		public string MeshName
+		{
+			set 
+			{
+				MeshRendererSystem.Engine_SetMeshName(entity.ID, value);
+			}
+		}
+
 		public string Material
 		{
 			set

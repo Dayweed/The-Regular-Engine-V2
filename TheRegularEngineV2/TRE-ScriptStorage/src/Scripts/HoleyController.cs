@@ -429,10 +429,11 @@ namespace TRE
 			else if (mainBlueberry)
 			{
 				//Tall model
-				if (GetComponent<MeshRenderer>().Mesh != "d373a6ee7e8767b4")
+				if (GetComponent<MeshRenderer>().Mesh != "2b805761b92e210b")
 				{
-					GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
-					if(HasComponent<Animation>())
+					//GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
+					GetComponent<MeshRenderer>().MeshName = "Holey_Blueberry.fbx";
+					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);

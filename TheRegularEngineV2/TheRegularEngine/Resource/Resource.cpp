@@ -19,6 +19,12 @@ namespace TRE
 		return hashedValue;
 	}
 
+	ResourceHandle Resource::GenerateGUID(const std::string& assetName)
+	{
+		std::hash<std::string> hasher;
+		return hasher(assetName);
+	}
+
 	std::string Resource::GetGUIDHex(const ResourceHandle assetHandle)
 	{
 		std::stringstream ss;

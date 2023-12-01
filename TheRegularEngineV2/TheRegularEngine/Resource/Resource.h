@@ -21,6 +21,7 @@ namespace TRE
 		Resource() = default;
 		virtual ~Resource() {}
 		static ResourceHandle GenerateGUID();
+		static ResourceHandle GenerateGUID(const std::string& assetName);
 		static std::string GetGUIDHex(const ResourceHandle assetHandle);
 		static ResourceHandle GetGUIDFromHex(const std::string& GUID);
 		static ResourceHandle GetGUIDFromPath(const std::string& path);

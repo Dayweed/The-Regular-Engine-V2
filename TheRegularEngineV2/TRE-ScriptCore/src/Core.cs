@@ -888,6 +888,9 @@ namespace TRE
 		internal extern static void Engine_SetMesh(EntityID entityid, string meshGUID);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetMeshName(EntityID entityid, string meshName);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string Engine_GetMesh(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -903,6 +906,11 @@ namespace TRE
 		public static void SetMaterial(EntityID entityid, string instanceGUID)
 		{
 			Engine_SetMaterialInstance(entityid, instanceGUID);
+		}
+
+		public static void SetMeshName(EntityID entityID, string meshName)
+		{
+			Engine_SetMeshName(entityID, meshName);
 		}
 	}
 
