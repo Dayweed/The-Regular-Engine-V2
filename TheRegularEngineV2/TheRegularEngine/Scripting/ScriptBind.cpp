@@ -819,6 +819,24 @@ namespace TRE
 		return mono_string_new(mono_domain_get(), mr.m_RenderObject->GetHandleHex().c_str());
 	}
 
+	static bool BindIsMesh(CSEntityID ID, MonoString* meshName)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+		
+		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(meshName));
+
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		if (mr.m_RenderObject == nullptr)
+			return false;
+		return mr.m_RenderObject->GetHandle() == handle;
+	}
+
 #pragma endregion
 
 #pragma region Animation
@@ -1867,6 +1885,7 @@ namespace TRE
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMesh", BindSetMesh);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshName", BindSetMeshName);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMesh", BindGetMesh);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_IsCurrentMesh", BindIsMesh);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshVisibility", BindSetMeshVisibility);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMeshVisibility", BindGetMeshVisibility);
 		}

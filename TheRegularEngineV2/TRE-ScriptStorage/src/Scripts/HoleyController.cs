@@ -13,6 +13,7 @@ namespace TRE
 	using CS = CameraSystem;
 	using PS = PhysicsSystem;
 	using TS = TransformSystem;
+	using MS = MeshRendererSystem;
 
 	class HoleyController : Entity
 	{
@@ -429,9 +430,8 @@ namespace TRE
 			else if (mainBlueberry)
 			{
 				//Tall model
-				if (GetComponent<MeshRenderer>().Mesh != "2b805761b92e210b")
+				if (MS.IsCurrentMesh(this.ID, "Holey_Blueberry.fbx") == false)
 				{
-					//GetComponent<MeshRenderer>().Mesh = "d373a6ee7e8767b4";
 					GetComponent<MeshRenderer>().MeshName = "Holey_Blueberry.fbx";
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();

@@ -899,18 +899,11 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetMeshVisibility(EntityID entityid);
 
-		public static void SetMesh(EntityID entityid, string meshGUID)
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_IsCurrentMesh(EntityID entityid, string meshName);
+		public static bool IsCurrentMesh(EntityID entityID, string meshName)
 		{
-			Engine_SetMesh(entityid, meshGUID);
-		}
-		public static void SetMaterial(EntityID entityid, string instanceGUID)
-		{
-			Engine_SetMaterialInstance(entityid, instanceGUID);
-		}
-
-		public static void SetMeshName(EntityID entityID, string meshName)
-		{
-			Engine_SetMeshName(entityID, meshName);
+			return Engine_IsCurrentMesh(entityID, meshName);
 		}
 	}
 
