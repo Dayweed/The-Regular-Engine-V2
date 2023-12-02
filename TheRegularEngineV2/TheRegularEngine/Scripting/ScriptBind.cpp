@@ -648,7 +648,7 @@ namespace TRE
 			PUBLISHERROR("Unable to find material " + str);
 	}
 
-	static MonoString* BindGetMaterialInstance(CSEntityID ID)
+	/*static MonoString* BindGetMaterialInstance(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return mono_string_new(mono_domain_get(), "");
@@ -661,7 +661,7 @@ namespace TRE
 		if (mr.m_MaterialInstance == nullptr)
 			return mono_string_new(mono_domain_get(), "");
 		return mono_string_new(mono_domain_get(), mr.m_MaterialInstance->GetHandleHex().c_str());
-	}
+	}*/
 
 	static void BindSetAnimMaterialInstance(CSEntityID ID, MonoString* animMaterialInstanceName)
 	{
@@ -677,14 +677,14 @@ namespace TRE
 		std::string str = MonoStringToString(animMaterialInstanceName);
 
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
-		mr.m_AnimationMaterialInstance = ResourceManager::Instance().GetResource<Material>(Resource::GetGUIDFromHex(str));
+		mr.m_AnimationMaterialInstance = ResourceManager::Instance().GetResource<Material>(str);
 		mr.m_IsDirty = true;
 
 		if (mr.m_AnimationMaterialInstance == nullptr)
 			PUBLISHERROR("Unable to find animation material " + str);
 	}
 
-	static MonoString* BindGetAnimMaterialInstance(CSEntityID ID)
+	/*static MonoString* BindGetAnimMaterialInstance(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return mono_string_new(mono_domain_get(), "");
@@ -697,7 +697,7 @@ namespace TRE
 		if (mr.m_AnimationMaterialInstance == nullptr)
 			return mono_string_new(mono_domain_get(), "");
 		return mono_string_new(mono_domain_get(), mr.m_AnimationMaterialInstance->GetHandleHex().c_str());
-	}
+	}*/
 
 	static void BindSetMeshVisibility(CSEntityID ID, bool isVisible)
 	{
@@ -746,42 +746,6 @@ namespace TRE
 		std::string str = MonoStringToString(meshName);
 
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
-		mr.m_RenderObject = ResourceManager::Instance().GetResource<RenderObject>(Resource::GetGUIDFromHex(str));
-		mr.m_IsDirty = true;
-
-		if (mr.m_RenderObject->IsRigged())
-		{
-			if (Temp->HasComponent<AnimationComponent>() == false)
-			{
-				Temp->AddComponent<AnimationComponent>();
-			}
-		}
-		else
-		{
-			if (Temp->HasComponent<AnimationComponent>())
-			{
-				Temp->RemoveComponent<AnimationComponent>();
-			}
-		}
-
-		if (mr.m_RenderObject == nullptr)
-			PUBLISHERROR("Unable to find mesh " + str);
-	}
-
-	static void BindSetMeshName(CSEntityID ID, MonoString* meshName)
-	{
-		Entity Temp = VALIDATEENTITY(ID);
-		if (!Temp) return;
-
-		if (!Temp->HasComponent<MeshRenderer>())
-		{
-			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
-			return;
-		}
-
-		std::string str = MonoStringToString(meshName);
-
-		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
 		mr.m_RenderObject = ResourceManager::Instance().GetResource<RenderObject>(str);
 		mr.m_IsDirty = true;
 
@@ -804,7 +768,7 @@ namespace TRE
 			PUBLISHERROR("Unable to find mesh " + str);
 	}
 
-	static MonoString* BindGetMesh(CSEntityID ID)
+	/*static MonoString* BindGetMesh(CSEntityID ID)
 	{
 		Entity Temp = VALIDATEENTITY(ID);
 		if (!Temp) return mono_string_new(mono_domain_get(), "");
@@ -817,7 +781,7 @@ namespace TRE
 		if (mr.m_RenderObject == nullptr)
 			return mono_string_new(mono_domain_get(), "");
 		return mono_string_new(mono_domain_get(), mr.m_RenderObject->GetHandleHex().c_str());
-	}
+	}*/
 
 	static bool BindIsMesh(CSEntityID ID, MonoString* meshName)
 	{
@@ -835,6 +799,42 @@ namespace TRE
 		if (mr.m_RenderObject == nullptr)
 			return false;
 		return mr.m_RenderObject->GetHandle() == handle;
+	}
+
+	static bool BindIsMaterialInstance(CSEntityID ID, MonoString* materialInstanceName)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+
+		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(materialInstanceName));
+		
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		if (mr.m_MaterialInstance == nullptr)
+			return false;
+		return mr.m_MaterialInstance->GetHandle() == handle;
+	}
+
+	static bool BindIsAnimMaterialInstance(CSEntityID ID, MonoString* animMaterialInstanceName)
+	{
+		Entity Temp = VALIDATEENTITY(ID);
+		if (!Temp) return false;
+		if (!Temp->HasComponent<MeshRenderer>())
+		{
+			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
+			return false;
+		}
+
+		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(animMaterialInstanceName));
+
+		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
+		if (mr.m_AnimationMaterialInstance == nullptr)
+			return false;
+		return mr.m_AnimationMaterialInstance->GetHandle() == handle;
 	}
 
 #pragma endregion
@@ -1879,13 +1879,15 @@ namespace TRE
 		// Mesh Renderer Bindings
 		{
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMaterialInstance", BindSetMaterialInstance);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialInstance", BindGetMaterialInstance);
+			//mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMaterialInstance", BindGetMaterialInstance);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetAnimMaterialInstance", BindSetAnimMaterialInstance);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetAnimMaterialInstance", BindGetAnimMaterialInstance);
+			//mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetAnimMaterialInstance", BindGetAnimMaterialInstance);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMesh", BindSetMesh);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshName", BindSetMeshName);
-			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMesh", BindGetMesh);
+			//mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshName", BindSetMeshName);
+			//mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMesh", BindGetMesh);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_IsCurrentMesh", BindIsMesh);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_IsCurrentMaterial", BindIsMaterialInstance);
+			mono_add_internal_call("TRE.MeshRendererSystem::Engine_IsCurrentAnimMaterial", BindIsAnimMaterialInstance);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_SetMeshVisibility", BindSetMeshVisibility);
 			mono_add_internal_call("TRE.MeshRendererSystem::Engine_GetMeshVisibility", BindGetMeshVisibility);
 		}

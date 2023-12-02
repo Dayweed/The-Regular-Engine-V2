@@ -875,23 +875,20 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetMaterialInstance(EntityID entityid, string instanceGUID);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string Engine_GetMaterialInstance(EntityID entityid);
+		//[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		//internal extern static string Engine_GetMaterialInstance(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetAnimMaterialInstance(EntityID entityid, string instanceGUID);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string Engine_GetAnimMaterialInstance(EntityID entityid);
+		//[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		//internal extern static string Engine_GetAnimMaterialInstance(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetMesh(EntityID entityid, string meshGUID);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void Engine_SetMeshName(EntityID entityid, string meshName);
-
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static string Engine_GetMesh(EntityID entityid);
+		//[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		//internal extern static string Engine_GetMesh(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetMeshVisibility(EntityID entityid, bool visibility);
@@ -901,9 +898,26 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_IsCurrentMesh(EntityID entityid, string meshName);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_IsCurrentMaterial(EntityID entityid, string materialName);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_IsCurrentAnimMaterial(EntityID entityid, string animMaterialName);
+
 		public static bool IsCurrentMesh(EntityID entityID, string meshName)
 		{
 			return Engine_IsCurrentMesh(entityID, meshName);
+		}
+
+		public static bool IsCurrentMaterial(EntityID entityID, string materialName)
+		{
+			return Engine_IsCurrentMaterial(entityID, materialName);
+		}
+
+		public static bool IsCurrentAnimMaterial(EntityID entityID, string animMaterialName)
+		{
+			return Engine_IsCurrentAnimMaterial(entityID, animMaterialName);
 		}
 	}
 

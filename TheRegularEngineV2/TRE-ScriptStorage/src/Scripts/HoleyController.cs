@@ -394,8 +394,8 @@ namespace TRE
 					dirVec = dirVec.Normalized;
 
 					//Walking animation
-					GetComponent<MeshRenderer>().MeshName = "mole_walk.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+					GetComponent<MeshRenderer>().Mesh = "mole_walk.fbx";
+					GetComponent<MeshRenderer>().AnimMaterial = "BlueCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 
@@ -403,19 +403,18 @@ namespace TRE
 				else if (!isGrounded)
 				{
 					dirVec = dirVec.NormalizedSafe;
-					GetComponent<MeshRenderer>().MeshName = "mole_jump.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+					GetComponent<MeshRenderer>().Mesh = "mole_jump.fbx";
+					GetComponent<MeshRenderer>().AnimMaterial = "BlueCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 
 				}
 				else
 				{
-					GetComponent<MeshRenderer>().MeshName = "mole_idle.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "a97f76b02cdc0a63";
+					GetComponent<MeshRenderer>().Mesh = "mole_idle.fbx";
+					GetComponent<MeshRenderer>().AnimMaterial = "BlueCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.25f;
-
 				}
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
@@ -432,7 +431,7 @@ namespace TRE
 				//Tall model
 				if (MS.IsCurrentMesh(this.ID, "Holey_Blueberry.fbx") == false)
 				{
-					GetComponent<MeshRenderer>().MeshName = "Holey_Blueberry.fbx";
+					GetComponent<MeshRenderer>().Mesh = "Holey_Blueberry.fbx";
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}
@@ -449,7 +448,7 @@ namespace TRE
 			{
 				//Cactus Model
 				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
-					GetComponent<MeshRenderer>().MeshName = "Holey_Strawberry.fbx";
+					GetComponent<MeshRenderer>().Mesh = "Holey_Strawberry.fbx";
 				
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);

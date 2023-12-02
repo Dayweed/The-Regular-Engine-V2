@@ -385,23 +385,23 @@ namespace TRE
 				if (dirVec != vec3.Zero && isGrounded)
 				{
 					//Walking state
-					GetComponent<MeshRenderer>().MeshName = "mole_walk.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					GetComponent<MeshRenderer>().Mesh = "mole_walk.fbx";
+					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
 					if(HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else if (!isGrounded)
 				{
-					GetComponent<MeshRenderer>().MeshName = "mole_jump.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					GetComponent<MeshRenderer>().Mesh = "mole_jump.fbx";
+					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else
 				{
 					//Red Animation Material
-					GetComponent<MeshRenderer>().MeshName = "mole_idle.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
+					GetComponent<MeshRenderer>().Mesh = "mole_idle.fbx";
+					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.25f;
 
@@ -421,7 +421,7 @@ namespace TRE
 				//Fat model
 				if (MS.IsCurrentMesh(this.ID, "Moley_Blueberry.fbx") == false)
 				{
-					GetComponent<MeshRenderer>().MeshName = "Moley_Blueberry.fbx";
+					GetComponent<MeshRenderer>().Mesh = "Moley_Blueberry.fbx";
 					GetComponent<MeshRenderer>().Material = "Moley_Blueberry.material";
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
@@ -438,7 +438,7 @@ namespace TRE
 				//flat model
 				if (MS.IsCurrentMesh(this.ID, "Moley_Strawberry.fbx") == false)
 				{
-					GetComponent<MeshRenderer>().MeshName = "Moley_Strawberry.fbx";
+					GetComponent<MeshRenderer>().Mesh = "Moley_Strawberry.fbx";
 					GetComponent<MeshRenderer>().Material = "Moley_Strawberry.material";
 				}
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);

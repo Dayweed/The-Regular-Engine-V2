@@ -138,18 +138,10 @@ namespace TRE
 			{
 				MeshRendererSystem.Engine_SetMesh(entity.ID, value);
 			}
-			get
-			{
-				return MeshRendererSystem.Engine_GetMesh(entity.ID);
-			}
-		}
-
-		public string MeshName
-		{
-			set 
-			{
-				MeshRendererSystem.Engine_SetMeshName(entity.ID, value);
-			}
+			//get
+			//{
+			//	//return MeshRendererSystem.Engine_GetMesh(entity.ID);
+			//}
 		}
 
 		public string Material
@@ -158,10 +150,10 @@ namespace TRE
 			{
 				MeshRendererSystem.Engine_SetMaterialInstance(entity.ID, value);
 			}
-			get
-			{
-				return MeshRendererSystem.Engine_GetMaterialInstance(entity.ID);
-			}
+			//get
+			//{
+			//	return MeshRendererSystem.Engine_GetMaterialInstance(entity.ID);
+			//}
 		}
 
 		public string AnimMaterial
@@ -170,10 +162,10 @@ namespace TRE
 			{
 				MeshRendererSystem.Engine_SetAnimMaterialInstance(entity.ID, value);
 			}
-			get
-			{
-				return MeshRendererSystem.Engine_GetAnimMaterialInstance(entity.ID);
-			}
+			//get
+			//{
+			//	return MeshRendererSystem.Engine_GetAnimMaterialInstance(entity.ID);
+			//}
 		}
 
 		public bool Visible
