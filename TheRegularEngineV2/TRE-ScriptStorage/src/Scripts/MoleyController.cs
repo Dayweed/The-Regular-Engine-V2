@@ -386,7 +386,7 @@ namespace TRE
 					dirVec = dirVec.Normalized;
 
 					//Walking state
-					GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
+					GetComponent<MeshRenderer>().MeshName = "mole_walk.fbx";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
 					if(HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
@@ -394,7 +394,7 @@ namespace TRE
 				else if (!isGrounded)
 				{
 					dirVec = dirVec.NormalizedSafe;
-					GetComponent<MeshRenderer>().Mesh = "a124f8de20c124b6";
+					GetComponent<MeshRenderer>().MeshName = "mole_jump.fbx";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
@@ -402,7 +402,7 @@ namespace TRE
 				else
 				{
 					//Red Animation Material
-					GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
+					GetComponent<MeshRenderer>().MeshName = "mole_idle.fbx";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.25f;
