@@ -448,8 +448,8 @@ namespace TRE
 			else if (mainStrawberry)
 			{
 				//Cactus Model
-				if (GetComponent<MeshRenderer>().Mesh != "7b85b0617e121a4e")
-					GetComponent<MeshRenderer>().Mesh = "7b85b0617e121a4e";
+				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
+					GetComponent<MeshRenderer>().MeshName = "Holey_Strawberry.fbx";
 				
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
@@ -464,32 +464,7 @@ namespace TRE
 			#endregion
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
-			if (dirVec != vec3.Zero)
-			{
-				dirVec = dirVec.Normalized;
-
-				//Walking animation
-				//if (GetComponent<MeshRenderer>().Mesh != "7c45522179c4a49c")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
-				//	if (HasComponent<Animation>() == false)
-				//	{
-				//		AddComponent<Animation>();
-				//	}
-				//}
-			}
-			else
-			{
-				//Idle animation
-				//if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
-				//	//if (HasComponent<Animation>() == false)
-				//	//{
-				//	//	AddComponent<Animation>();
-				//	//}
-				//}
-			}
+			dirVec = dirVec.NormalizedSafe;
 
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);

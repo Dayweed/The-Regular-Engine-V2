@@ -11,6 +11,7 @@ namespace TRE
 {
 	using PS = PhysicsSystem;
 	using CS = CameraSystem;
+	using MS = MeshRendererSystem;
 
 	public class MoleyController : Entity
 	{
@@ -421,9 +422,9 @@ namespace TRE
 			else if (mainBlueberry)
 			{
 				//Fat model
-				if (GetComponent<MeshRenderer>().Mesh != "4f4b81a656732e21")
+				if (MS.IsCurrentMesh(this.ID, "Moley_Blueberry.fbx") == false)
 				{
-					GetComponent<MeshRenderer>().Mesh = "4f4b81a656732e21";
+					GetComponent<MeshRenderer>().MeshName = "Moley_Blueberry.fbx";
 					GetComponent<MeshRenderer>().Material = "a8e7782a23bd1acf";
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
@@ -438,9 +439,9 @@ namespace TRE
 			else if (mainStrawberry)
 			{
 				//flat model
-				if (GetComponent<MeshRenderer>().Mesh != "44ee4ae04937492b")
+				if (MS.IsCurrentMesh(this.ID, "Moley_Strawberry.fbx") == false)
 				{
-					GetComponent<MeshRenderer>().Mesh = "44ee4ae04937492b";
+					GetComponent<MeshRenderer>().MeshName = "Moley_Strawberry.fbx";
 					GetComponent<MeshRenderer>().Material = "69e15d0a6ed36cb9";
 				}
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
@@ -456,32 +457,7 @@ namespace TRE
 
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
-			if (dirVec != vec3.Zero)
-			{
-				dirVec = dirVec.Normalized;
-
-				//Walking animation
-				//if (GetComponent<MeshRenderer>().Mesh != "7c45522179c4a49c")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "7c45522179c4a49c";
-				//	if (HasComponent<Animation>() == false)
-				//	{
-				//		AddComponent<Animation>();
-				//	}
-				//}
-			}
-			else
-			{
-				//Idle animation
-				//if (GetComponent<MeshRenderer>().Mesh != "6ee6fad4e6ecaab8")
-				//{
-				//	GetComponent<MeshRenderer>().Mesh = "6ee6fad4e6ecaab8";
-				//	//if (HasComponent<Animation>() == false)
-				//	//{
-				//	//	AddComponent<Animation>();
-				//	//}
-				//}
-			}
+			dirVec = dirVec.NormalizedSafe;
 
 			#region CHEATS
 			// Close Game
@@ -490,7 +466,6 @@ namespace TRE
 				Game.CloseGame();
 			}
 			#endregion
-
 
 
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
