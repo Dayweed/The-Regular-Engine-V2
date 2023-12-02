@@ -380,12 +380,10 @@ namespace TRE
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
 				//Default model
-				GetComponent<MeshRenderer>().Material = "b67077a64edeaafc";
+				GetComponent<MeshRenderer>().Material = "Red_Moley.material";
 				dirVec.y = 0;
-				if (dirVec != new vec3() && isGrounded)
+				if (dirVec != vec3.Zero && isGrounded)
 				{
-					dirVec = dirVec.Normalized;
-
 					//Walking state
 					GetComponent<MeshRenderer>().MeshName = "mole_walk.fbx";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
@@ -394,7 +392,6 @@ namespace TRE
 				}
 				else if (!isGrounded)
 				{
-					dirVec = dirVec.NormalizedSafe;
 					GetComponent<MeshRenderer>().MeshName = "mole_jump.fbx";
 					GetComponent<MeshRenderer>().AnimMaterial = "e9d3220411627c5e";
 					if (HasComponent<Animation>())
@@ -425,7 +422,7 @@ namespace TRE
 				if (MS.IsCurrentMesh(this.ID, "Moley_Blueberry.fbx") == false)
 				{
 					GetComponent<MeshRenderer>().MeshName = "Moley_Blueberry.fbx";
-					GetComponent<MeshRenderer>().Material = "a8e7782a23bd1acf";
+					GetComponent<MeshRenderer>().Material = "Moley_Blueberry.material";
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
@@ -442,7 +439,7 @@ namespace TRE
 				if (MS.IsCurrentMesh(this.ID, "Moley_Strawberry.fbx") == false)
 				{
 					GetComponent<MeshRenderer>().MeshName = "Moley_Strawberry.fbx";
-					GetComponent<MeshRenderer>().Material = "69e15d0a6ed36cb9";
+					GetComponent<MeshRenderer>().Material = "Moley_Strawberry.material";
 				}
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);

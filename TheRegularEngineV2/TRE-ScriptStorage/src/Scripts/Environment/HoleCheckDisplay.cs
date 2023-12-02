@@ -14,8 +14,8 @@ namespace TRE
 
 		public List<HoleCheckTrigger> triggersComp;
 
-		private string deactivatedMaterialGUID = "90f50852803d7f89";
-        private string activatedMaterialGUID = "595f4b7e14fed1b";
+		private string deactivatedMaterial = "HITW_Center.material";
+        private string activatedMaterial = "HoleCheck_Green.material";
 
 		public HoleCheckDisplay()
 		{
@@ -24,7 +24,7 @@ namespace TRE
 
 		public void Start()
         {
-            GetComponent<MeshRenderer>().Material = deactivatedMaterialGUID;
+            GetComponent<MeshRenderer>().Material = deactivatedMaterial;
 
             // Add triggers that are it's child as triggers
             for (int i = 0; i < NoOfTriggers; i++)
@@ -77,7 +77,7 @@ namespace TRE
 				AudioSystem.Play(1325263638198634131);
 			}
 
-			GetComponent<MeshRenderer>().Material = activatedMaterialGUID;
+			GetComponent<MeshRenderer>().Material = activatedMaterial;
 
 			/* Material instances GUID
 				> 18cf136263b2c948

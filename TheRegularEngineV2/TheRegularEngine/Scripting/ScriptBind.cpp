@@ -641,7 +641,7 @@ namespace TRE
 		std::string str = MonoStringToString(materialInstanceName);
 
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
-		mr.m_MaterialInstance = ResourceManager::Instance().GetResource<Material>(Resource::GetGUIDFromHex(str));
+		mr.m_MaterialInstance = ResourceManager::Instance().GetResource<Material>(str);
 		mr.m_IsDirty = true;
 
 		if(mr.m_MaterialInstance == nullptr)
