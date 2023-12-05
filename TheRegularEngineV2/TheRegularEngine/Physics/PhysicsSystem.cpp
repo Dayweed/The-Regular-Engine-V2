@@ -148,7 +148,7 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(299999999999999999999999999999999999999.f, 299999999999999999999999999999999999999.f, 0.f);
+		m_DefaultMaterial = m_Physics->createMaterial(1.f, 1.f, 0.f);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
@@ -886,6 +886,7 @@ namespace TRE
 
 	void PhysicsSystem::UpdateAllComponents() const
 	{
+
 		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
 			UpdateRigidbody(entity);
 
