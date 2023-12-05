@@ -171,8 +171,7 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName() + "##" + CurrentEntity->GetGUID();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		size_t vectorSize = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity).size();
-		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | (vectorSize ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
+		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | (!childrenVector.empty() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
 
 		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4( 0, 1, 1, 1 ) : ImVec4(1, 1, 1, 1);
 		ImGui::PushStyleColor(0, color);
@@ -189,7 +188,7 @@ namespace TRE
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
 				{
-					TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+					TRE::Entity payload_n = *static_cast<const TRE::Entity*>(payload->Data); //this will be child of currententity
 						
 					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
 				}
@@ -214,12 +213,9 @@ namespace TRE
 
 			ImGui::TreePop();
 		}
-		else
+		else if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 		{
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-			{
-				m_SelectionManager->SelectEntity(CurrentEntity);
-			}
+			m_SelectionManager->SelectEntity(CurrentEntity);
 		}
 
 		ImGui::PopStyleColor();
