@@ -148,7 +148,7 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(1.f, 1.f, 0.f);
+		m_DefaultMaterial = m_Physics->createMaterial(PX_MAX_F32, PX_MAX_F32, 0.f);
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}

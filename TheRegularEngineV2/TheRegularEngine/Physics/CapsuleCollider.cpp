@@ -132,6 +132,8 @@ namespace TRE
 
 		UpdateActorPose(entity, capsuleCollider.m_Offset);
 
+		PxRigidBodyExt::updateMassAndInertia(*m_Actors[entity->GetGUID()].m_RigidDynamic, 1.0f);
+
 		SetCapsuleColliderTrigger(entity, capsuleCollider.m_IsTrigger);
 	}
 
