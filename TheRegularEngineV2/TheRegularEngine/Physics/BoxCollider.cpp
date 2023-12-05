@@ -165,25 +165,28 @@ namespace TRE
 
 		boxCollider.m_IsTrigger = isTrigger;
 
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		constexpr unsigned maxNbShapes = 3; // sphere, box, capsule
+		PxShape* shapes[maxNbShapes] = { nullptr };
+		rigidDynamic->getShapes(shapes, maxNbShapes);
 
 		// obtain the index of the box shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
+		for (auto& shape : shapes)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
+			if (!shape)
+				continue;
+
+			if (shape->getGeometryType() != PxGeometryType::eBOX)
+				continue;
 
 			if (boxCollider.m_IsTrigger)
 			{
-				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
 			}
 			else
 			{
-				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
-				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 			}
 			break;
 		}
