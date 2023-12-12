@@ -65,6 +65,7 @@ namespace TRE
 		}
 
 		m_AllEntityList[id]->GetComponent<Properties>().m_GUID = GenerateGUIDStr();
+		m_AllEntityList[id]->GetComponent<Properties>().m_Index = m_AllEntityList.size() - 1;
 
 		return m_AllEntityList[id];
 	}
@@ -219,51 +220,42 @@ namespace TRE
 	void MemoryManager::UpdateECSManager(entt::registry& reg, bool flip)
 	{
 		// Update ECS Manager based on current registry
-		std::vector<entt::entity> toFlip;
-		toFlip.reserve(reg.size());
-		reg.each([&](entt::entity srcEntity) {
-			toFlip.emplace_back(srcEntity);
-		});
-
-		if (flip)
-		{
-			//std::reverse(toFlip.begin(), toFlip.end());
-		}
-
-		for (entt::entity srcEntity : toFlip)
-		{
-			// Only accept valid entities that are not orphan/deleted
-			if (reg.valid(srcEntity) && !reg.orphan(srcEntity) && reg.any_of<Properties>(srcEntity))
+		reg.each([&](entt::entity srcEntity)
 			{
-				Entity obj{ std::make_shared<Ent>() };
-				obj->m_Entity = ECSManager::Instance().GetRegistry().create();
-
-				m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
-				//m_DeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
-
-				for (auto [id, source_storage] : reg.storage())
+				// Only accept valid entities that are not orphan/deleted
+				if (reg.valid(srcEntity) && !reg.orphan(srcEntity) && reg.any_of<Properties>(srcEntity))
 				{
-					auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
-					if (destination_storage != nullptr && source_storage.contains(srcEntity))
+					Entity obj{ std::make_shared<Ent>() };
+					obj->m_Entity = ECSManager::Instance().GetRegistry().create();
+
+					m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
+					//m_DeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
+
+					for (auto [id, source_storage] : reg.storage())
 					{
-						if (!destination_storage->contains(obj->m_Entity))
+						auto destination_storage = ECSManager::Instance().GetRegistry().storage(id);
+						if (destination_storage != nullptr && source_storage.contains(srcEntity))
 						{
-							destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
-						}
-						// Overwrite m_Entity if m_Entity already contains the component
-						else
-						{
-							destination_storage->erase(obj->m_Entity);
-							destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
+							if (!destination_storage->contains(obj->m_Entity))
+							{
+								destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
+							}
+							// Overwrite m_Entity if m_Entity already contains the component
+							else
+							{
+								destination_storage->erase(obj->m_Entity);
+								destination_storage->emplace(obj->m_Entity, source_storage.get(srcEntity));
+							}
 						}
 					}
-				}
 
-				ECSManager::Instance().m_EntityOrder.emplace_back(obj->GetComponent<Properties>().m_GUID);
-				ECSManager::Instance().m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
-				ECSManager::Instance().m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
-			}
-		}
+					ECSManager::Instance().m_EntityOrder.emplace_back(obj->GetComponent<Properties>().m_GUID);
+					ECSManager::Instance().m_EntityList.emplace(obj->GetComponent<Properties>().m_GUID, obj);
+					ECSManager::Instance().m_EnttIDList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
+				}
+			});
+
+		ECSManager::Instance().SortEntityOrder();
 
 		//ResetToConfig();
 	}

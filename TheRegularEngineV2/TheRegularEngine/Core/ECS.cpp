@@ -28,7 +28,9 @@ namespace TRE
 
 	void ECSManager::DeleteRemovalEntities()
 	{
-		for (Entity& object : GetEntities<Removal>())
+		std::vector<Entity> RemovalEntities{ GetEntities<Removal>() };
+		bool haveEntities{ !RemovalEntities.empty() };
+		for (Entity& object : RemovalEntities)
 		{
 			// Remove from m_EntityList
 			m_EntityOrder.erase(std::find(m_EntityOrder.begin(), m_EntityOrder.end(), object->GetComponent<Properties>().m_GUID));
@@ -36,6 +38,7 @@ namespace TRE
 			m_EnttIDList.erase(m_EnttIDList.find(static_cast<ENTTID>(object->m_Entity)));
 			MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
 		}
+		if (haveEntities) UpdateEntityOrder();
 	}
 
 	void ECSManager::DestroyAll()
@@ -65,6 +68,7 @@ namespace TRE
 		m_EntityList.erase(m_EntityList.find(object->GetComponent<Properties>().m_GUID));
 		m_EnttIDList.erase(m_EnttIDList.find(static_cast<ENTTID>(object->m_Entity)));
 		MemoryManager::Instance().ReleaseDeployedEntity(static_cast<ENTTID>(object->m_Entity));
+		UpdateEntityOrder();
 	}
 
 	void ECSManager::MarkForDeletion(Entity& object)
@@ -140,6 +144,25 @@ namespace TRE
 			CapsuleCollider& cc{ parent->GetComponent<CapsuleCollider>() };
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(parent, cc.m_Radius, cc.m_HalfHeight);
 		}
+	}
+
+	void ECSManager::UpdateEntityOrder()
+	{
+		for (int i{}; i < m_EntityOrder.size(); ++i)
+		{
+			m_EntityList[m_EntityOrder[i]]->GetComponent<Properties>().m_Index = i;
+		}
+	}
+
+	void ECSManager::SortEntityOrder()
+	{
+		// Sort
+		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(), 
+			[&](std::string& l_GUID, std::string& r_GUID) { 
+				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index; 
+			});
+		// Update their order
+		UpdateEntityOrder();
 	}
 
 	std::vector<Entity> ECSManager::GetAllEntities(bool IncludeNonActive)

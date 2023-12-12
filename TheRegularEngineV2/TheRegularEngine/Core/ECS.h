@@ -57,6 +57,7 @@ namespace TRE
 		std::string m_GUID{};
 		std::string m_Tag{};
 		std::string m_Name{};		// To get the name
+		int m_Index{};			// To find the position of the entity
 		bool m_Active{ true };		// To check if it is active
 		bool m_IsDirty{ false };	// To check if active got changed (Scripting ONLY)
 
@@ -73,7 +74,8 @@ namespace TRE
 				{ "m_Tag", t.m_Tag },
 				{ "m_Active", t.m_Active },
 				{ "m_GUID", t.m_GUID },
-				{ "m_Name", t.m_Name }
+				{ "m_Name", t.m_Name },
+				{ "m_Index", t.m_Index }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, Properties& t) // Deserialize
@@ -86,6 +88,8 @@ namespace TRE
 				t.m_GUID = j.at("m_GUID");
 			if (j.contains("m_Name"))
 				t.m_Name = j.at("m_Name");
+			if (j.contains("m_Index"))
+				t.m_Index = j.at("m_Index");
 		}
 	};
 
@@ -250,6 +254,9 @@ namespace TRE
 
 		// TO CHANGE
 		void ConstructPhysicPrefab(Entity parent);
+
+		void UpdateEntityOrder();	// Update all Entity m_Index based on their current order in the EntityOrder
+		void SortEntityOrder();
 
 		/* !
 		@function		Instance
@@ -875,6 +882,22 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
+	property_var_fnbegin("Index", int)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_Index;
+		}
+		else
+		{
+			if (Self.m_Index != InOut)
+			{
+				Self.m_Index = InOut;
+				TRE::ECSManager::Instance().SortEntityOrder(); // Doing this here to test immediate response after value is editted
+			}
+		}
+
+	} property_var_fnend(),
 	//property_var(m_GUID).Name("GUID"),
 	property_var_fnbegin("GUID", std::string)
 	{
@@ -885,5 +908,5 @@ property_begin(TRE::Properties)
 
 	} property_var_fnend(),
 	property_var(m_Tag).Name("Tag"),
-	property_var(m_Active).Name("Active")
+	property_var(m_Active).Name("Active"),
 } property_vend_h(TRE::Properties)
