@@ -161,6 +161,17 @@ namespace TRE
 			[&](std::string& l_GUID, std::string& r_GUID) { 
 				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index; 
 			});
+
+		// Sort their children also based on order
+		for (int i{}; i < m_EntityOrder.size(); ++i)
+		{
+			std::vector<std::string>& children{ m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Children };
+			std::sort(children.begin(), children.end(),
+				[&](std::string& l_GUID, std::string& r_GUID) {
+					return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
+				});
+		}
+
 		// Update their order
 		UpdateEntityOrder();
 	}
@@ -186,9 +197,6 @@ namespace TRE
 	{
 		// Set up document
 		ECSOutputArchive arc(filePath);
-
-		// Destroys all undeployed entities
-		//MemoryManager::Instance().ClearUndeployed();
 
 		entt::snapshot snapshot{ GetRegistry() };
 		// REMEMBER TO UPDATE Prefab.cpp TOO!!!
@@ -299,8 +307,6 @@ namespace TRE
 		dstRegistry.clear();
 
 		// Ensure it knows these components exists
-		//(void)dstRegistry.view<Prefabing, Parenting, Properties, Transform, MeshRenderer, Camera, Rigidbody, SphereCollider, BoxCollider, CapsuleCollider, Audio, AudioListener, DirectionalLight, ScriptComponent>();
-
 		(void)dstRegistry.view<
 			Prefabing,
 			Parenting,
@@ -432,10 +438,6 @@ namespace TRE
 	void ECSOutputArchive::operator()(entt::entity ent)
 	{
 		m_Current.push_back(static_cast<uint32_t>(ent));
-		/*if (ECSManager::Instance().GetRegistry().valid(ent))
-		{
-			m_Current.push_back(static_cast<uint32_t>(ent));
-		}*/
 	}
 
 	void ECSOutputArchive::operator()(std::underlying_type_t<entt::entity> u)
@@ -443,8 +445,6 @@ namespace TRE
 		// First element of each array keeps the amount of elements. 
 		if (m_Current.empty()) {
 			m_Current = nlohmann::json::array();
-			//m_Current.push_back(1);
-			//m_Current.push_back(ECSManager::Instance().GetAllEntities(true).size()); 	// This somehows kills the entt if too fat
 			m_Current.push_back(u);
 		}
 		else
@@ -452,7 +452,6 @@ namespace TRE
 			m_Root.push_back(m_Current);
 			m_Current = nlohmann::json::array();
 			m_Current.push_back(u);
-			//m_Current.push_back(m_EntityNo++);
 		}
 	}
 

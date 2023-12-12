@@ -120,8 +120,8 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
 		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
 		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);		// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", true, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", false, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
 		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// 
 		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized, reflected

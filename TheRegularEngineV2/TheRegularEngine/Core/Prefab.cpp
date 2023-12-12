@@ -743,6 +743,17 @@ namespace TRE
 		return true;
 	}
 
+	void PrefabSystem::UnPrefabInstance(Entity instance)
+	{
+		// Auto return if it doesn't have prefabing
+		if (!instance->HasComponent<Prefabing>()) return;
+
+		for (std::string childGUID : instance->GetComponent<Parenting>().m_Children)
+		{
+			UnPrefabInstance(ECSManager::Instance().FindEntity(childGUID));
+		}
+		instance->RemoveComponent<Prefabing>();
+	}
 
 	void PrefabSystem::CreatePrefabAssetFile(std::string prefabGUID, std::string fileName, std::string filePath)
 	{

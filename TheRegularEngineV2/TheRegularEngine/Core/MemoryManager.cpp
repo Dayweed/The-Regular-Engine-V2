@@ -28,19 +28,6 @@ namespace TRE
 
 	Entity& MemoryManager::GetUndeployedEntity()
 	{
-		//// Allocate additional space if there is no undeployed
-		//if (m_UndeployedEntityList.empty())
-		//{
-		//	if (m_AllEntityList.empty())
-		//	{
-		//		std::string funcName{ __FUNCTION__ };
-		//		TRE_CORE_ERROR("[" + funcName + "] m_AllEntityList is no empty! (Remember to allocate size for MemoryManager at RegisterECS)");
-		//		assert(!m_AllEntityList.empty());
-		//	}
-
-		//	AllocateEntitySize(m_AllEntityList.size());
-		//}
-
 		Entity obj{ std::make_shared<Ent>() };
 		obj->m_Entity = ECSManager::Instance().GetRegistry().create();
 		ENTTID id{ static_cast<ENTTID>(obj->m_Entity) };
@@ -72,21 +59,6 @@ namespace TRE
 
 	void MemoryManager::ReleaseDeployedEntity(ENTTID id)
 	{
-		/*
-		// Remove id from Deployed and put id back to undeployed
-		m_DeployedEntityList.erase(id);
-		m_UndeployedEntityList.emplace(id);
-		// Remove all components in one entity
-		for (auto&& elem : ECSManager::Instance().GetRegistry().storage()) {
-			elem.second.remove(m_AllEntityList[id]->m_Entity);
-		}
-		// Readd Basic Components
-		m_AllEntityList[id]->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
-		m_AllEntityList[id]->AddComponent<Parenting>();
-		m_AllEntityList[id]->AddComponent<Transform>();
-		m_AllEntityList[id]->AddComponent<Undeployed>();
-		*/
-
 		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(m_AllEntityList[id]);
 
 		// Remove all components in one entity
@@ -101,46 +73,6 @@ namespace TRE
 		m_AllEntityList[id].reset();
 		m_AllEntityList.erase(id);
 	}
-
-	//bool MemoryManager::AllocateEntitySize(size_t size)
-	//{
-	//	//// Reserve size for objects and registry in ECSManager
-	//	//m_AllEntityList.reserve(m_AllEntityList.size() + size);
-	//	//ECSManager::Instance().GetRegistry().reserve(ECSManager::Instance().GetRegistry().size() + size);
-
-	//	//// Resets and create objects based on size
-	//	//for (size_t i{}; i < size; ++i)
-	//	//{
-	//	//	Entity obj{ std::make_shared<Ent>() };
-	//	//	obj->m_Entity = ECSManager::Instance().GetRegistry().create();
-
-	//	//	m_AllEntityList.emplace(static_cast<ENTTID>(obj->m_Entity), obj);
-	//	//	m_UndeployedEntityList.emplace(static_cast<ENTTID>(obj->m_Entity));
-	//	//	if (!obj->HasComponent<Properties>())
-	//	//	{
-	//	//		obj->AddComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
-	//	//	}
-	//	//	else
-	//	//	{
-	//	//		obj->GetComponent<Properties>().m_Name = MEM_MGR_DEFAULT_NAME;
-	//	//	}
-	//	//	if (!obj->HasComponent<Parenting>())
-	//	//	{
-	//	//		obj->AddComponent<Parenting>();
-	//	//	}
-	//	//	if (!obj->HasComponent<Transform>())
-	//	//	{
-	//	//		obj->AddComponent<Transform>();
-	//	//	}
-	//	//	if (!obj->HasComponent<Undeployed>())
-	//	//	{
-	//	//		obj->AddComponent<Undeployed>();
-	//	//	}
-	//	//}
-
-	//	// Successful Allocation
-	//	return true;
-	//}
 
 	bool MemoryManager::DeleteEntities()
 	{
@@ -170,52 +102,6 @@ namespace TRE
 		// Successful deletion
 		return true;
 	}
-
-	//void MemoryManager::ResetToConfig()
-	//{
-	//	//// Auto clear all the Undeployed Entities if m_ConfigSize exceeds deployed size
-	//	//if (m_ConfigSize <= m_DeployedEntityList.size())
-	//	//{
-	//	//	for (ENTTID id : m_UndeployedEntityList)
-	//	//	{
-	//	//		ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
-	//	//		// Free unique ptr from the object
-	//	//		m_AllEntityList[id].reset();
-	//	//		m_AllEntityList.erase(id);
-	//	//	}
-	//	//	m_UndeployedEntityList.clear();
-	//	//}
-	//	//else if (!m_UndeployedEntityList.empty())
-	//	//{
-	//	//	size_t remainingSize{ m_ConfigSize - m_DeployedEntityList.size() };
-
-	//	//	for (size_t i{}; i < remainingSize && !m_UndeployedEntityList.empty(); ++i)
-	//	//	{
-	//	//		ENTTID id{ *m_UndeployedEntityList.rbegin() };
-	//	//		ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
-	//	//		// Free unique ptr from the object
-	//	//		m_AllEntityList[id].reset();
-	//	//		m_AllEntityList.erase(id);
-	//	//		// Remove from undeployed
-	//	//		m_UndeployedEntityList.erase(id);
-	//	//	}
-	//	//}
-
-	//	//AllocateEntitySize(m_ConfigSize);
-	//}
-
-
-	//void MemoryManager::ClearUndeployed()
-	//{
-	//	//for (ENTTID id : m_UndeployedEntityList)
-	//	//{
-	//	//	ECSManager::Instance().GetRegistry().destroy(m_AllEntityList[id]->m_Entity);
-	//	//	// Free unique ptr from the object
-	//	//	m_AllEntityList[id].reset();
-	//	//	m_AllEntityList.erase(id);
-	//	//}
-	//	//m_UndeployedEntityList.clear();
-	//}
 
 	void MemoryManager::UpdateECSManager(entt::registry& reg, bool flip)
 	{
@@ -256,8 +142,6 @@ namespace TRE
 			});
 
 		ECSManager::Instance().SortEntityOrder();
-
-		//ResetToConfig();
 	}
 
 	std::string MemoryManager::GenerateGUIDStr()
@@ -273,22 +157,5 @@ namespace TRE
 		std::size_t hashedValue = hasher(combinedString);
 
 		return std::to_string(hashedValue);
-
-		/*GUID guid;
-		HRESULT result{ CoCreateGuid(&guid) };
-		LPOLESTR guidLPOLEStr;
-		result = StringFromCLSID(guid, &guidLPOLEStr);
-		USES_CONVERSION;
-		return OLE2CA(guidLPOLEStr);*/
 	}
-
-	//void MemoryManager::SetConfigSize(size_t configSize)
-	//{
-	//	//m_ConfigSize = configSize;
-	//}
-
-	//size_t MemoryManager::GetConfigSize() const
-	//{
-	//	//return m_ConfigSize;
-	//}
 }

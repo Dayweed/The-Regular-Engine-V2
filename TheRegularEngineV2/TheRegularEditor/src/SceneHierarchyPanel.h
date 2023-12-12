@@ -36,5 +36,9 @@ namespace TRE
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			bool m_ShortcutCopyEntity = false;
 			bool m_ShortcutPasteEntity = false;
+			bool m_ShortcutDuplicateEntity = false;
+			bool m_ShortcutDeleteEntity = false;
+
+			std::string temp_ParentOpen = "";
 	};
 }

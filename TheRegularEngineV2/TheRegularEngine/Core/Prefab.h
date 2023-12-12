@@ -116,6 +116,8 @@ namespace TRE
 
 		bool RevertInstance(Entity instance, std::string prefabGUID);							// Revert instance back to same data as prefab
 
+		void UnPrefabInstance(Entity instance);													// UnPrefab children then instance (Recursive Function)
+
 		std::string ReadPrefabAssetFile(std::string filePathName);								// Returns GUID if file exist and GUID exist in prefab directory, else return empty string
 
 	private:

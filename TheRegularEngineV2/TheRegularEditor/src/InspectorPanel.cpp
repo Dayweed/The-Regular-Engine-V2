@@ -110,7 +110,7 @@ namespace TRE
 				ImGui::SameLine();
 				if (ImGui::Button("UnPrefab"))
 				{
-					entity->RemoveComponent<Prefabing>();
+					ECSSystemManager::Instance().GetSystem<PrefabSystem>()->UnPrefabInstance(entity);
 					isPrefabInstance = false;
 				}
 				bool haveEdits{ !pref.m_Overrides.empty() || !pref.m_AddeddComps.empty() || !pref.m_RemovedComps.empty() };
@@ -123,6 +123,21 @@ namespace TRE
 				else if (!haveEdits)
 				{
 					ImGui::NewLine();
+				}
+			}
+
+			// Right Click to Add Component
+			bool openAddComp = false;
+			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+			{
+				//Remove Component
+				if (ImGui::BeginPopupContextWindow())
+				{
+					if (ImGui::Selectable("AddComponent"))
+					{
+						openAddComp = true;
+					}
+					ImGui::EndPopup();
 				}
 			}
 
@@ -153,6 +168,31 @@ namespace TRE
 						ECSManager::Instance().RemCompFromName(entity, List.first);
 						m_SelectionManager->UpdateSelectedEntity();
 						break;
+					}
+
+					// Right Click to Remove Component
+					if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+					{
+						//Remove Component
+						if (ImGui::BeginPopupContextWindow())
+						{
+							bool tobreak = false;
+							std::string buttonString{ "Remove " + List.first };
+							if (ImGui::Selectable(buttonString.c_str()))
+							{
+								// Update Prefabing if have
+								if (isPrefabInstance)
+								{
+									entity->GetComponent<Prefabing>().m_RemovedComps.emplace(List.first);
+								}
+
+								ECSManager::Instance().RemCompFromName(entity, List.first);
+								m_SelectionManager->UpdateSelectedEntity();
+								tobreak = true;
+							}
+							ImGui::EndPopup();
+							if (tobreak) break;
+						}
 					}
 				}
 
@@ -573,7 +613,7 @@ namespace TRE
 			}
 
 			// Add additional components
-			if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 0.0f)))
+			if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 0.0f)) || openAddComp)
 			{
 				ImGui::OpenPopup("AddComponent");
 			}

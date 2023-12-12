@@ -596,12 +596,6 @@ namespace TRE
 			ent->RemoveComponent<T>();
 		}
 
-		/*template <typename T>
-		static void TESTFUNCTION(int ent)
-		{
-			std::cout << ">>>> " << typeid(T).name() << "|" << ent << "\n";
-		}*/
-
 		/* !
 		@function		DestroyEntity
 		@author			Isaiah Lim (lim.i@digipen.edu)

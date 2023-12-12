@@ -147,17 +147,32 @@ namespace TRE
 			ImGui::TreePop();
 		}
 
+		Entity SelectedEntity{ EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity() };
 		if (ImGui::IsWindowHovered() && m_ShortcutCopyEntity)
 		{
-			EntityCopier::Instance().CopyEntities(EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity());
+			EntityCopier::Instance().CopyEntities(SelectedEntity);
 		}
 		if (ImGui::IsWindowHovered() && m_ShortcutPasteEntity)
 		{
-			EntityCopier::Instance().PasteEntities();
+			Entity pastedEntity = EntityCopier::Instance().PasteEntities();
+			m_SelectionManager->SelectEntity(pastedEntity);
+		}
+		if (ImGui::IsWindowHovered() && m_ShortcutDuplicateEntity && SelectedEntity)
+		{
+			EntityCopier::Instance().CopyEntities(SelectedEntity);
+			Entity pastedEntity = EntityCopier::Instance().PasteEntities();
+			m_SelectionManager->SelectEntity(pastedEntity);
+		}
+		if (ImGui::IsWindowHovered() && m_ShortcutDeleteEntity && SelectedEntity)
+		{
+			ECSManager::Instance().MarkForDeletion(SelectedEntity);
+			EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 		}
 
 		m_ShortcutCopyEntity = false;
 		m_ShortcutPasteEntity = false;
+		m_ShortcutDuplicateEntity = false;
+		m_ShortcutDeleteEntity = false;
 
 		ImGui::End();
 	}
@@ -175,6 +190,14 @@ namespace TRE
 
 		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4( 0, 1, 1, 1 ) : ImVec4(1, 1, 1, 1);
 		ImGui::PushStyleColor(0, color);
+
+		// Auto Open this node if it added a child in the previous frame
+		if (temp_ParentOpen == entityName)
+		{
+			ImGui::TreeNodeSetOpen(ImGui::GetCurrentWindow()->GetID(temp_ParentOpen.c_str()), true);
+			temp_ParentOpen = "";
+		}
+
 		if (ImGui::TreeNodeEx(entityName.c_str(), Flags))
 		{
 			if (ImGui::BeginDragDropSource())
@@ -182,18 +205,6 @@ namespace TRE
 				ImGui::SetDragDropPayload("Entity", &CurrentEntity, sizeof(TRE::Entity));
 				ImGui::Text("Dragging %s", entityName.c_str());
 				ImGui::EndDragDropSource();
-			}
-
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
-				{
-					TRE::Entity payload_n = *static_cast<const TRE::Entity*>(payload->Data); //this will be child of currententity
-						
-					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
-				}
-
-				ImGui::EndDragDropTarget();
 			}
 
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
@@ -216,6 +227,21 @@ namespace TRE
 		else if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 		{
 			m_SelectionManager->SelectEntity(CurrentEntity);
+		}
+
+		// Drag and Drop Parent
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
+			{
+				TRE::Entity payload_n = *static_cast<const TRE::Entity*>(payload->Data); //this will be child of currententity
+
+				// Set parent
+				ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(payload_n, CurrentEntity);
+				temp_ParentOpen = entityName;
+			}
+
+			ImGui::EndDragDropTarget();
 		}
 
 		ImGui::PopStyleColor();
@@ -253,6 +279,8 @@ namespace TRE
 		{
 			m_ShortcutCopyEntity = key == KeyButton::C;
 			m_ShortcutPasteEntity = key == KeyButton::V;
+			m_ShortcutDuplicateEntity = key == KeyButton::D;
 		}
+		m_ShortcutDeleteEntity = key == KeyButton::Delete;
 	}
 }

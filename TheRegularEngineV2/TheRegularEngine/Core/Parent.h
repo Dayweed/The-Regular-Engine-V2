@@ -4,7 +4,7 @@
 
 namespace TRE
 {
-	struct Parenting
+	struct Parenting : property::base
 	{
 		std::string m_Parent{};
 		std::vector<std::string> m_Children{};
@@ -12,6 +12,8 @@ namespace TRE
 
 		Parenting() = default;
 		~Parenting() = default;
+
+		property_vtable()           // Allows the base class to get these properties  
 
 		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Parenting, m_Parent, m_Children)
 
@@ -182,3 +184,32 @@ namespace TRE
 		void UpdateLocalData(Entity current);
 	};
 }
+
+property_begin(TRE::Parenting)
+{
+	property_var_fnbegin("Parent", std::string)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_Parent;
+		}
+
+	} property_var_fnend(),
+	property_var_fnbegin("Parent Name", std::string)
+	{
+		if (isRead)
+		{
+			TRE::Entity parent{ TRE::ECSManager::Instance().FindEntity(Self.m_Parent) };
+			InOut = parent ? parent->GetName() : "";
+		}
+
+	} property_var_fnend(),
+	property_var_fnbegin("Children Size", int)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_Children.size();
+		}
+
+	} property_var_fnend(),
+} property_vend_h(TRE::Parenting)
