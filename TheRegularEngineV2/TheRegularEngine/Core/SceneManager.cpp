@@ -4,6 +4,7 @@
 #include "GameLoop.h"
 #include "PostProcessing/Vignette.h"
 
+#include "Scripting/ScriptEngine.h"
 
 namespace TRE
 {
@@ -54,6 +55,7 @@ namespace TRE
 			return;
 		}
 
+		ScriptEngine::ReloadAssembly();
 		ECSSystemManager::Instance().AfterReset(); 
 
 		//ResourceManager::Instance().UnloadUnusedResources();
