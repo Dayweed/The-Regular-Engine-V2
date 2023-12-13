@@ -39,6 +39,8 @@ namespace TRE
 		const bool IsResourceLoaded(ResourceHandle handle);
 		const bool IsResourceLoaded(const std::string& hexHandle);
 
+		void RenameResource(ResourceHandle oldHandle, ResourceHandle newHandle);
+
 		template<typename T>
 		void SerializeResource(ResourceHandle handle);
 		void SerializeAll();

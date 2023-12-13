@@ -3,7 +3,6 @@
 
 #include"Scripting/ScriptEngine.h"
 #include "Core/ECS.h"
-#include "Demo/Demo.h"
 #include "Core/Transform.h"
 #include "Core/GameLoop.h"
 
@@ -495,13 +494,6 @@ namespace TRE
 			return false;
 		}
 	}
-
-	/*
-	static void BindTestFunction()
-	{
-		Demo::SpawnObject();
-	}
-	*/
 
 	static std::unordered_map<std::string, std::string> GetAllSceneObjects()
 	{

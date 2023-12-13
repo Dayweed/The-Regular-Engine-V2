@@ -63,4 +63,11 @@ namespace TRE
 	{
 		return IsResourceLoaded(Resource::GetGUIDFromHex(hexHandle));
 	}
+
+	void ResourceManager::RenameResource(ResourceHandle oldHandle, ResourceHandle newHandle)
+	{
+		m_Resources[newHandle] = m_Resources[oldHandle];
+		m_Resources.erase(oldHandle);
+		m_Resources[newHandle]->SetHandle(newHandle);
+	}
 }

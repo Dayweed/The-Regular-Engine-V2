@@ -96,11 +96,12 @@ namespace TRE
 
 	void AssetManager::RenameAsset(const std::string& oldName, const std::string& newName)
 	{
-		m_AssetNameToHandle[newName] = m_AssetNameToHandle[oldName];
-		m_AssetNameToHandle.erase(oldName);
+		//Regenerate new handle based on new name
+		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[oldName].first);
+		const ResourceHandle newHandle = Resource::GenerateGUID(newName);
 
-		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[newName].first);
 		//Only type geom, texture and audio has physical asset file
+		//Renaming of intermediate file
 		if (assetType != ResourceType::Material)
 		{
 			//Rename asset file and update descriptor file
@@ -118,7 +119,7 @@ namespace TRE
 
 		std::filesystem::path oldDescriptorPath = "../Assets/";
 		//Update descriptor file
-		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[newName].first);
+		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[oldName].first);
 		//Check for asset type
 		if (assetType == ResourceType::Material)
 			oldDescriptorPath += ".material";
@@ -135,40 +136,72 @@ namespace TRE
 		
 		oldDescriptorPath += ".desc";
 
+		//Rename old descriptor file
 		if (std::filesystem::exists(oldDescriptorPath))
 		{
-			std::ifstream file(oldDescriptorPath);
-
-			//Create new descriptor file temporarily for copying
-			std::filesystem::path newDescriptorPath = oldDescriptorPath;
-			newDescriptorPath += ".temp";
-
-			std::ofstream newFile(newDescriptorPath);
-			std::string line;
-			while (std::getline(file, line))
+			const std::string oldDescriptorPathString = oldDescriptorPath.string();
+			std::string assetPath;
+			std::string oldResourcePath;
+			std::string resourcePath;
+			const std::string hexHandle = Resource::GetGUIDHex(newHandle);
+			std::string newDescriptorPath = oldDescriptorPathString.substr(0, oldDescriptorPathString.find_last_of('/') + 1);
+			newDescriptorPath += hexHandle;
+			if (assetType == ResourceType::Material)
 			{
-				if (line == "Asset File Path:")
-				{
-					newFile << line << std::endl;
-					std::getline(file, line);
-					line = line.substr(0, line.find_last_of('/') + 1);
-					line += newName;
-					newFile << line << std::endl;
-				}
-				else
-				{
-					newFile << line << std::endl;
-				}
+				newDescriptorPath += ".material";
+				MaterialDescriptorFile materialDescriptor;
+				materialDescriptor.ReadDescriptorFile(oldDescriptorPathString);
+				assetPath = materialDescriptor.GetAssetPath();
+				assetPath = assetPath.substr(0, assetPath.find_last_of('/') + 1);
+				assetPath += newName;
+				materialDescriptor.SetAssetPath(assetPath);
+				oldResourcePath = materialDescriptor.GetResourcePath();
+				resourcePath = oldResourcePath.substr(0, oldResourcePath.find_last_of('/') + 1);
+				resourcePath += hexHandle;
+				resourcePath += ".material";
+				materialDescriptor.SetResourcePath(resourcePath);
+				materialDescriptor.SetDescriptorPath(newDescriptorPath);
+				materialDescriptor.Generate(newName);
 			}
-			file.close();
-			newFile.close();
+
+			//std::ifstream file(oldDescriptorPath);
+
+			////Create new descriptor file temporarily for copying
+			//std::filesystem::path newDescriptorPath = oldDescriptorPath;
+			//newDescriptorPath += ".temp";
+
+			////Write into this new temporary descriptor file
+			//std::ofstream newFile(newDescriptorPath);
+			//std::string line;
+			//while (std::getline(file, line))
+			//{
+			//	if (line == "Asset File Path:")
+			//	{
+			//		newFile << line << std::endl;
+			//		std::getline(file, line);
+			//		line = line.substr(0, line.find_last_of('/') + 1);
+			//		line += newName;
+			//		newFile << line << std::endl;
+			//	}
+			//	else
+			//	{
+			//		newFile << line << std::endl;
+			//	}
+			//}
+			//file.close();
+			//newFile.close();
 
 			//Delete old descriptor file and rename new one
 			std::filesystem::remove(oldDescriptorPath);
-			std::filesystem::rename(newDescriptorPath, oldDescriptorPath);
+			//std::filesystem::rename(newDescriptorPath, oldDescriptorPath);
 		}
 		else
 			TRE_ERROR("AssetManager::RenameAsset: Asset descriptor with name {0} does not exist", oldName);
+
+		m_AssetNameToHandle[newName] = { newHandle, m_AssetNameToHandle[oldName].second };
+		//Update resource manager
+		ResourceManager::Instance().RenameResource(m_AssetNameToHandle[oldName].first, newHandle);
+		m_AssetNameToHandle.erase(oldName);
 	}
 
 	void AssetManager::RenameAsset(const ResourceHandle resourceHandle, const std::string& newName)

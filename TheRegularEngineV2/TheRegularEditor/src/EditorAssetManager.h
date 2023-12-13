@@ -94,11 +94,16 @@ namespace TRE
 		//Compile
 		//Load
 
+		//Ensure its jus purely the name of the asset
+		std::string pureName = assetName;
+		if(const std::size_t pos = assetName.find_last_of('\\'); pos != std::string::npos)
+			pureName = assetName.substr(pos + 1);
+
 		ResourceHandle handle;
 		if(m_AssetNameToHandle.contains(assetName))
 			handle = m_AssetNameToHandle.at(assetName).first;
 		else
-			handle = Resource::GenerateGUID(assetName);
+			handle = Resource::GenerateGUID(pureName);
 		const std::string hex = Resource::GetGUIDHex(handle);
 		const std::string assetFolderPath = "../Assets/";
 		const std::string resourceFolderPath = "../Resources/";

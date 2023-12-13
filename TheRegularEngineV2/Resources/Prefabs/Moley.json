@@ -99,6 +99,7 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
+         "ASSET_MAT_m_AnimationMaterialInstance": "b95e6d6bda90700d",
          "ASSET_MAT_m_MaterialInstance": "b08363e4f6cc86cc",
          "m_IsVisible": true
       }

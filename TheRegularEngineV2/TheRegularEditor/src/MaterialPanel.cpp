@@ -120,6 +120,7 @@ namespace TRE
 				name = materialName;
 				name += ".material";
 				AssetManager::Instance().RenameAsset(material->GetHandle(), name);
+				m_AssetSelector->SelectAsset(name, AssetSelectorEvent::AssetType::Material);
 			}
 		}
 		else

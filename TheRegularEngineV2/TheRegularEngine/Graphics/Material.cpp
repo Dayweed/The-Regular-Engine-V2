@@ -354,16 +354,16 @@ namespace TRE
 		}
 	}
 
-	void MaterialDescriptorFile::Generate()
+	void MaterialDescriptorFile::Generate(const std::string& assetName)
 	{
-		const std::string& handleHex = Resource::GetGUIDHex(Resource::GenerateGUID());
+		const std::string& handleHex = Resource::GetGUIDHex(Resource::GenerateGUID(assetName));
 
 		const std::string assetFolderPath = "../Assets/";
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = handleHex + ".material";
 		const std::string descPath = assetFolderPath + resource + ".desc";
 		const std::string resourcePath = resourceFolderPath + resource;
-		SetAssetPath("Material_Instance.material");
+		SetAssetPath(assetName);
 		SetDescriptorPath(descPath);
 		SetResourcePath(resourcePath);
 		GenerateDescriptorFile();
@@ -371,8 +371,7 @@ namespace TRE
 
 	void MaterialDescriptorFile::Rename(const std::string& newName)
 	{
-		(void)newName;
-		SetAssetPath("Material_Instance.material");
+		SetAssetPath(newName + ".material");
 		GenerateDescriptorFile();
 	}
 

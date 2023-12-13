@@ -16,7 +16,7 @@ namespace TRE
 	{
 	public:
 		//Asset path will act as material name 
-		void Generate();
+		void Generate(const std::string& assetName = "Material_Instance.material");
 		void Rename(const std::string& newName);
 		ResourceHandle GetResourceHandle();
 	protected:
