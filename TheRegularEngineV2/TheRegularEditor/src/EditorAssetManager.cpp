@@ -163,37 +163,48 @@ namespace TRE
 				materialDescriptor.SetDescriptorPath(newDescriptorPath);
 				materialDescriptor.Generate(newName);
 			}
+			else if (assetType == ResourceType::Mesh)
+			{
+				newDescriptorPath += ".geom";
+				GeomDescriptorFile geometryDescriptor;
+				geometryDescriptor.ReadDescriptorFile(oldDescriptorPathString);
+				assetPath = geometryDescriptor.GetAssetPath();
+				assetPath = assetPath.substr(0, assetPath.find_last_of('/') + 1);
+				assetPath += newName;
+				geometryDescriptor.SetAssetPath(assetPath);
+				oldResourcePath = geometryDescriptor.GetResourcePath();
+				resourcePath = oldResourcePath.substr(0, oldResourcePath.find_last_of('/') + 1);
+				resourcePath += hexHandle;
+				resourcePath += ".geom";
+				geometryDescriptor.SetResourcePath(resourcePath);
+				geometryDescriptor.SetDescriptorPath(newDescriptorPath);
+				geometryDescriptor.GenerateDescriptorFile();
+			}
+			else if (assetType == ResourceType::Texture)
+			{
+				newDescriptorPath += ".texture";
+				TextureDescriptorFile textureDescriptor;
+				textureDescriptor.ReadDescriptorFile(oldDescriptorPathString);
+				assetPath = textureDescriptor.GetAssetPath();
+				assetPath = assetPath.substr(0, assetPath.find_last_of('/') + 1);
+				assetPath += newName;
+				textureDescriptor.SetAssetPath(assetPath);
+				oldResourcePath = textureDescriptor.GetResourcePath();
+				resourcePath = oldResourcePath.substr(0, oldResourcePath.find_last_of('/') + 1);
+				resourcePath += hexHandle;
+				resourcePath += ".texture";
+				textureDescriptor.SetResourcePath(resourcePath);
+				textureDescriptor.SetDescriptorPath(newDescriptorPath);
+				textureDescriptor.GenerateDescriptorFile();
+			}
+			
 
-			//std::ifstream file(oldDescriptorPath);
 
-			////Create new descriptor file temporarily for copying
-			//std::filesystem::path newDescriptorPath = oldDescriptorPath;
-			//newDescriptorPath += ".temp";
-
-			////Write into this new temporary descriptor file
-			//std::ofstream newFile(newDescriptorPath);
-			//std::string line;
-			//while (std::getline(file, line))
-			//{
-			//	if (line == "Asset File Path:")
-			//	{
-			//		newFile << line << std::endl;
-			//		std::getline(file, line);
-			//		line = line.substr(0, line.find_last_of('/') + 1);
-			//		line += newName;
-			//		newFile << line << std::endl;
-			//	}
-			//	else
-			//	{
-			//		newFile << line << std::endl;
-			//	}
-			//}
-			//file.close();
-			//newFile.close();
-
-			//Delete old descriptor file and rename new one
+			//Delete old descriptor file
 			std::filesystem::remove(oldDescriptorPath);
-			//std::filesystem::rename(newDescriptorPath, oldDescriptorPath);
+			//Rename resource file if compiled already
+			if(m_AssetNameToHandle[oldName].second)
+				std::filesystem::rename(oldResourcePath, resourcePath);
 		}
 		else
 			TRE_ERROR("AssetManager::RenameAsset: Asset descriptor with name {0} does not exist", oldName);
