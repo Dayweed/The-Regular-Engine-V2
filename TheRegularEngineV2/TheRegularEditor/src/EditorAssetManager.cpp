@@ -197,8 +197,6 @@ namespace TRE
 				textureDescriptor.SetDescriptorPath(newDescriptorPath);
 				textureDescriptor.GenerateDescriptorFile();
 			}
-			
-
 
 			//Delete old descriptor file
 			std::filesystem::remove(oldDescriptorPath);

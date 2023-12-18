@@ -119,6 +119,8 @@ layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
+const int CelShadingLevels = 6;
+const float CelScaleFactor = 1.0 / float(CelShadingLevels);
 
 float Shadow(in vec3 lightCoords, in vec3 normal)
 {
@@ -173,7 +175,7 @@ void main()
 	//const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
 
 	//Diffuse intensity
-	const float diffuseIntensity = max(dot(normal, -In.DirectionalLightDirection.xyz), 0.0);
+	float diffuseIntensity = max(dot(normal, -In.DirectionalLightDirection.xyz), 0.0);
 
 	//Eye to texel direction
 	//const vec3 eyeDirection = normalize(In.PosWorld.xyz - In.CamearPos.xyz);
@@ -184,13 +186,17 @@ void main()
 	
 	//Diffuse color
 	vec4 diffuseColor = vec4(In.VertColor, 1.0) * texture(DiffuseMap, In.TexCoord);
+	if(diffuseIntensity > 0.0)
+		diffuseIntensity = floor(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
 
-	//outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a + diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
+	outColor.rgb = In.AmbientColor.rgb * In.AmbientColor.a + diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a;
 	outColor.rgb = diffuseColor.rgb * texture(AOMap, In.TexCoord).rgb * In.Color.rgb * In.Color.a + In.AmbientColor.rgb * In.AmbientColor.a;
 
 	vec3 lightModel = In.DirectionalLightColor.rgb * (diffuseIntensity.rrr * diffuseColor.rgb) * In.DirectionalLightColor.a * (1.0 - shadow);
 
 	outColor.rgb += lightModel;
+
+	//outColor.rgb = diffuseColor.rgb * diffuseIntensity.rrr;
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
