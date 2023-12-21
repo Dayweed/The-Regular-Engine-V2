@@ -418,6 +418,10 @@ namespace TRE
 							{
 								; // UpdatedData and stuff for audio_file_dropdown here
 							}
+							else if constexpr (std::is_same_v<T, waypoint>)
+							{
+							; // UpdatedData and stuff for waypoint here
+							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);

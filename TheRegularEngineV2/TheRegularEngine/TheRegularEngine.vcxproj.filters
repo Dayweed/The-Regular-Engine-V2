@@ -25,6 +25,9 @@
     <Filter Include="InputHandler">
       <UniqueIdentifier>{7392D63B-5FF5-65E0-087B-9E96F4BC3163}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MiscComponents">
+      <UniqueIdentifier>{F7DD06DE-E3AB-FAE3-CC3F-6B0AB8ACD648}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
     </Filter>
@@ -229,6 +232,9 @@
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
     </ClInclude>
+    <ClInclude Include="MiscComponents\DirectPathfinding.h">
+      <Filter>MiscComponents</Filter>
+    </ClInclude>
     <ClInclude Include="Physics\BoxCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -431,6 +437,9 @@
     </ClCompile>
     <ClCompile Include="InputHandler\InputHandler.cpp">
       <Filter>InputHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="MiscComponents\DirectPathfinding.cpp">
+      <Filter>MiscComponents</Filter>
     </ClCompile>
     <ClCompile Include="Physics\BoxCollider.cpp">
       <Filter>Physics</Filter>

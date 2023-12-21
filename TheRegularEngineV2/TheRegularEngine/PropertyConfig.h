@@ -24,6 +24,11 @@ struct audio_file_dropdown
     std::string m_File;
 };
 
+struct waypoint
+{
+    glm::vec3 m_Value;
+};
+
 struct Color
 {
 	glm::vec4 m_Value;
@@ -167,6 +172,7 @@ namespace property
             , resource_list
             , audio_file_dropdown
             , FMOD_VECTOR
+            , waypoint
         >;
     
         //--------------------------------------------------------------------------------------------

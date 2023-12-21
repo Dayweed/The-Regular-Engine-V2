@@ -46,3 +46,6 @@
 
 //-------------------Audio-------------------//
 #include "Audio/AudioSystem.h"
+
+//-------------------Misc Components-------------------//
+#include "MiscComponents/DirectPathfinding.h"
