@@ -1384,4 +1384,21 @@ namespace TRE
 		public extern static bool Engine_GetVisible(EntityID ID);
     }
 
+	public class DirectPathfindingSystem
+    {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool Engine_GetPathfindingRunning(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_StartPathfinding(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool Engine_PausePathfinding(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool Engine_ResumePathfinding(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool Engine_ResetPathfinding(EntityID ID);
+    }
 }

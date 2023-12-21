@@ -136,7 +136,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// 
 		ECSManager::Instance().RegisterComponent<ParticleComponent>("Particle Component");					// Serialized, reflected
-		//ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
@@ -148,7 +148,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<LightSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ScriptingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
-		//ECSSystemManager::Instance().RegisterSystem<DirectPathfindingSystem>();
+		ECSSystemManager::Instance().RegisterSystem<DirectPathfindingSystem>();
 		//ECSSystemManager::Instance().RegisterSystem<AnimationSystem>();
 
 		// Allocate Default Size for Memory Manager

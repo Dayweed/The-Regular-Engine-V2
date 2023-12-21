@@ -40,6 +40,7 @@ namespace TRE
 		SpriteRenderer,
 		Parenting,
 		Animation,
+		DirectPathfinding,
 		None
 	};
 	std::unordered_map<std::string, ComponentsID> ComponentsMap
@@ -56,7 +57,8 @@ namespace TRE
 		{"TRE.SpriteRenderer", ComponentsID::SpriteRenderer},
 		{"TRE.Parenting", ComponentsID::Parenting},
 		{"TRE.Script", ComponentsID::Script},
-		{"TRE.Animation", ComponentsID::Animation}
+		{"TRE.Animation", ComponentsID::Animation},
+		{"TRE.DirectPathfinding", ComponentsID::DirectPathfinding}
 	};
 
 	namespace Tools
@@ -382,6 +384,10 @@ namespace TRE
 			Temp->AddComponent<AnimationComponent>();
 			TRE_INFO("Animation added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::DirectPathfinding:
+			Temp->AddComponent<DirectPathfinding>();
+			TRE_INFO("DirectPathfinding added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -443,6 +449,10 @@ namespace TRE
 			Temp->RemoveComponent<AnimationComponent>();
 			TRE_INFO("Animation Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::DirectPathfinding:
+			Temp->RemoveComponent<DirectPathfinding>();
+			TRE_INFO("DirectPathfinding Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -489,6 +499,8 @@ namespace TRE
 			return entity->HasComponent<Parenting>();
 		case ComponentsID::Animation:
 			return entity->HasComponent<AnimationComponent>();
+		case ComponentsID::DirectPathfinding:
+			return entity->HasComponent<DirectPathfinding>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -1815,6 +1827,84 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region DirectPathfindingBinding
+	static bool Engine_GetPathfindingRunning(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<DirectPathfinding>().m_IsRunning;
+	}
+
+	static void Engine_StartPathfinding(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<DirectPathfindingSystem>()->StartPathfinding(entity);
+	}
+
+	static void Engine_PausePathfinding(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return;
+		}
+
+		// Dont do anything if it is already paused
+		if (!entity->GetComponent<DirectPathfinding>().m_IsRunning) return;
+
+		ECSSystemManager::Instance().GetSystem<DirectPathfindingSystem>()->TogglePausePathfinding(entity);
+	}
+
+	static void Engine_ResumePathfinding(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return;
+		}
+
+		// Dont do anything if it is already running
+		if (entity->GetComponent<DirectPathfinding>().m_IsRunning) return;
+
+		ECSSystemManager::Instance().GetSystem<DirectPathfindingSystem>()->TogglePausePathfinding(entity);
+	}
+
+	static void Engine_ResetPathfinding(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<DirectPathfindingSystem>()->ResetPathfinding(entity);
+	}
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2050,6 +2140,15 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.UISystem::Engine_SetVisible", Engine_SetVisible);
 			mono_add_internal_call("TRE.UISystem::Engine_GetVisible", Engine_GetVisible);
+		}
+
+		// Direct Pathfinding
+		{
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_GetPathfindingRunning", Engine_GetPathfindingRunning);
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_StartPathfinding", Engine_StartPathfinding);
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_PausePathfinding", Engine_PausePathfinding);
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResumePathfinding", Engine_ResumePathfinding);
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
 		}
 	}
 }

@@ -110,7 +110,7 @@ namespace TRE
 		@brief			Copies entt::entities from the Source Registry to the
 						ECSManager m_Registry
 		*//*__________________________________________________________________________*/
-		void UpdateECSManager(entt::registry& reg, bool flip = true);
+		void UpdateECSManager(entt::registry& reg);
 
 		/* !
 		@function		GenerateGUIDStr

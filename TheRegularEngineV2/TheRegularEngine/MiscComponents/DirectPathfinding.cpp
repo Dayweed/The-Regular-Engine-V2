@@ -12,7 +12,6 @@ namespace TRE
 		{
 			for (Entity& go : ECSManager::Instance().GetEntities<Transform, DirectPathfinding>())
 			{
-				Transform& transform{ go->GetComponent<Transform>() };
 				DirectPathfinding& path{ go->GetComponent<DirectPathfinding>() };
 
 				if (path.m_StartOnPlay)
@@ -41,8 +40,8 @@ namespace TRE
 			if (path.m_CurrentIndex < 0 || path.m_CurrentIndex >= path.m_WayPoints.size()) continue;
 
 			glm::vec3 dir = path.m_WayPoints[path.m_CurrentIndex].m_Value - transform.m_Position;
-			glm::vec3 normDir{};
-			if (dir.length() > 0)
+			glm::vec3 normDir{0,0,0};
+			if (glm::length(dir) > 0)
 			{
 				normDir = glm::normalize(dir);
 			}
@@ -50,6 +49,7 @@ namespace TRE
 			// Lerps through each positions
 			if (path.m_CurrentTime <= 0.0f)
 			{
+				glm::vec3 ww{ normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime() };
 				transform.m_Position += normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime();
 				transform.m_IsDirty = true;
 
@@ -65,6 +65,7 @@ namespace TRE
 						}
 						else
 						{
+							path.m_CurrentIndex = path.m_CurrentIndex < 0 ? 0 : path.m_WayPoints.size() - 1;
 							path.m_Direction = !path.m_Direction;
 						}
 					}
@@ -116,7 +117,9 @@ namespace TRE
 		if (!go->HasComponent<DirectPathfinding>()) return;
 
 		DirectPathfinding& path{ go->GetComponent<DirectPathfinding>() };
-		path.m_WayPoints.emplace_back(point);
+		waypoint wp{};
+		wp.m_Value = point;
+		path.m_WayPoints.push_back(wp);
 	}
 
 	bool DirectPathfindingSystem::RemoveIndex(Entity go, int index)

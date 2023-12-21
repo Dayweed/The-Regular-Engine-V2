@@ -20,10 +20,12 @@ namespace TRE
 		bool m_Repeat = true;
 		bool m_Reverse = true; // Will loop from start if false [Disabled if m_Repeat is false]
 
+		// Hidden from inspector
+		bool m_IsRunning = false;	// Check if it is running
+
 	private:
 		float m_CurrentTime = 0.f;	// To track delay timing
 		bool m_Direction = true;	// Direction to move index [True: ++; False: --]
-		bool m_IsRunning = false;	// Check if it is running
 
 		friend class DirectPathfindingSystem;
 
@@ -117,12 +119,32 @@ namespace TRE
 
 property_begin(TRE::DirectPathfinding)
 {
-		property_var(m_WayPoints)
-		, property_var(m_Delay)
+		property_var(m_Delay)
 		, property_var(m_Speed)
-		, property_var(m_CurrentIndex)
+		//, property_var(m_CurrentIndex)
+		, property_var_fnbegin("m_CurrentIndex", int)
+		{
+			if (isRead)
+			{
+				InOut = Self.m_CurrentIndex;
+			}
+
+		} property_var_fnend()
+		, property_var(m_StartOnPlay)
 		, property_var(m_Repeat)
 		, property_var(m_Reverse)
-		, property_var(m_StartOnPlay)
+		//, property_var(m_WayPoints)
+		, property_var_fnbegin("m_WayPoints", std::vector<waypoint>)
+		{
+			if (isRead)
+			{
+				InOut = Self.m_WayPoints;
+			}
+			else
+			{
+				Self.m_WayPoints = InOut;
+			}
+
+		} property_var_fnend()
 
 } property_vend_h(TRE::DirectPathfinding)

@@ -327,6 +327,9 @@
     <ClCompile Include="Core\Prefab.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Prefab_2.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
       <Filter>Core</Filter>
     </ClCompile>

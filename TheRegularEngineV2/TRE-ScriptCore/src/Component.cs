@@ -453,4 +453,36 @@ namespace TRE
         }
     }
 
+	public class DirectPathfinding : Component
+	{
+		public bool isRunning
+		{
+			get
+			{
+				return DirectPathfindingSystem.Engine_GetPathfindingRunning(entity.ID);
+
+            }
+			set
+			{
+				if (value)
+				{
+					DirectPathfindingSystem.Engine_ResumePathfinding(entity.ID);
+                }
+				else
+                {
+                    DirectPathfindingSystem.Engine_PausePathfinding(entity.ID);
+                }
+			}
+		}
+
+		public void Start()
+		{
+			DirectPathfindingSystem.Engine_StartPathfinding(entity.ID);
+		}
+
+		public void Reset()
+		{
+            DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
+        }
+	}
 }

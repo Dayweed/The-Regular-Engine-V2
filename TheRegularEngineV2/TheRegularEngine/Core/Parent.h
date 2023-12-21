@@ -208,7 +208,7 @@ property_begin(TRE::Parenting)
 	{
 		if (isRead)
 		{
-			InOut = Self.m_Children.size();
+			InOut = static_cast<int>(Self.m_Children.size());
 		}
 
 	} property_var_fnend(),

@@ -52,7 +52,7 @@ namespace TRE
 		}
 
 		m_AllEntityList[id]->GetComponent<Properties>().m_GUID = GenerateGUIDStr();
-		m_AllEntityList[id]->GetComponent<Properties>().m_Index = m_AllEntityList.size() - 1;
+		m_AllEntityList[id]->GetComponent<Properties>().m_Index = static_cast<int>(m_AllEntityList.size() - 1);
 
 		return m_AllEntityList[id];
 	}
@@ -103,7 +103,7 @@ namespace TRE
 		return true;
 	}
 
-	void MemoryManager::UpdateECSManager(entt::registry& reg, bool flip)
+	void MemoryManager::UpdateECSManager(entt::registry& reg)
 	{
 		// Update ECS Manager based on current registry
 		reg.each([&](entt::entity srcEntity)

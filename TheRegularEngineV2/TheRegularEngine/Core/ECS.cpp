@@ -219,7 +219,9 @@ namespace TRE
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
 			.component<AnimationComponent>(arc)
-			.component<ParticleComponent>(arc);
+			.component<ParticleComponent>(arc)
+			.component<DirectPathfinding>(arc)
+			;
 
 		arc.Close();
 
@@ -252,7 +254,9 @@ namespace TRE
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
 			.component<AnimationComponent>(arc)
-			.component<ParticleComponent>(arc);
+			.component<ParticleComponent>(arc)
+			.component<DirectPathfinding>(arc)
+			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
 	}
@@ -324,7 +328,8 @@ namespace TRE
 			ScriptComponent,
 			UIComponent,
 			AnimationComponent,
-			ParticleComponent
+			ParticleComponent,
+			DirectPathfinding
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)
@@ -356,13 +361,13 @@ namespace TRE
 		MemoryManager::Instance().DeleteEntities();
 
 		// Copy 
-		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
+		MemoryManager::Instance().UpdateECSManager(srcRegistry);
 	}
 
 	void ECSManager::AddToRegistry(entt::registry& srcRegistry)
 	{
 		// Keep adding into it 
-		MemoryManager::Instance().UpdateECSManager(srcRegistry, false);
+		MemoryManager::Instance().UpdateECSManager(srcRegistry);
 	}
 
 	bool ECSManager::IsValidEntity(Entity ent)

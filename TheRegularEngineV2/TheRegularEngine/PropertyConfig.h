@@ -1,5 +1,6 @@
 #pragma once
 #include <variant>
+#include <vector>
 
 #include "glm/glm.hpp"
 #include "Vector3.h"
@@ -172,7 +173,7 @@ namespace property
             , resource_list
             , audio_file_dropdown
             , FMOD_VECTOR
-            , waypoint
+            , std::vector<waypoint>
         >;
     
         //--------------------------------------------------------------------------------------------

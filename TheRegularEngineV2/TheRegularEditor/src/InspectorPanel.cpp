@@ -420,7 +420,77 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, waypoint>)
 							{
-							; // UpdatedData and stuff for waypoint here
+								float pos[3]{ Value.m_Value.x, Value.m_Value.y, Value.m_Value.z };
+								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
+								Value.m_Value = { pos[0], pos[1], pos[2] };
+							}
+							else if constexpr (std::is_same_v<T, std::vector<waypoint>>)
+							{
+								ImGui::SameLine();
+								std::string label{ "Add New Waypoint##" + entity->GetGUID() };
+								if (ImGui::Button(label.c_str()))
+								{
+									waypoint wp{};
+									wp.m_Value = entity->GetComponent<Transform>().m_Position;
+									Value.push_back(wp);
+									UpdatedData = true;
+								}
+
+								std::vector<int> deleteInd{};
+								for (size_t i{}; i < Value.size(); ++i)
+								{
+									float pos[3]{ Value[i].m_Value.x, Value[i].m_Value.y, Value[i].m_Value.z };
+									UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
+									Value[i].m_Value = { pos[0], pos[1], pos[2] };
+									ImGui::SameLine();
+									//// Teleport to that position (Removed since it does not work since the position of Transform will get overwritten)
+									//if (ImGui::Button("O"))
+									//{
+									//	entity->GetComponent<Transform>().m_Position = Value[i].m_Value;
+									//	entity->GetComponent<Transform>().m_IsDirty = true;
+									//	UpdatedData = true;
+									//}
+									//ImGui::SameLine();
+									// Move waypoint up
+									std::string uplabel{ "^##" + entity->GetGUID() + std::to_string(i) };
+									if (ImGui::Button(uplabel.c_str()))
+									{
+										if (i > 0)
+										{
+											waypoint wp{ Value[i - 1] };
+											Value[i - 1] = Value[i];
+											Value[i] = wp;
+											UpdatedData = true;
+										}
+									}
+									ImGui::SameLine();
+									// Move waypoint down
+									std::string downlabel{ "v##" + entity->GetGUID() + std::to_string(i) };
+									if (ImGui::Button(downlabel.c_str()))
+									{
+										if (i < Value.size() - 1)
+										{
+											waypoint wp{ Value[i] };
+											Value[i] = Value[i + 1];
+											Value[i + 1] = wp;
+											UpdatedData = true;
+										}
+									}
+									ImGui::SameLine();
+									// Delete waypoint
+									std::string xlabel{ "x##" + entity->GetGUID() + std::to_string(i) };
+									if (ImGui::Button(xlabel.c_str()))
+									{
+										deleteInd.emplace_back(i);
+										UpdatedData = true;
+									}
+								}
+
+								// Delete each index
+								for (int i{ static_cast<int>(deleteInd.size() - 1) }; i >= 0; --i)
+								{
+									Value.erase(Value.begin() + deleteInd[i]);
+								}
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
