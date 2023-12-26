@@ -77,6 +77,11 @@ namespace TRE
 		bool m_IsTrigger = false;
 		bool m_IsVisible = false; // For rendering of debug collider lines
 		glm::vec3 m_Offset = {};
-		// physx::PxMaterial* m_PhysicsMaterial = nullptr;
+
+		//int m_Layer = 0; // collision layer of object
+		//std::string m_LayerString = "Default";
+
+		//enum class my_enum { THING1, THING2, THING3 };
+		//my_enum what = my_enum::THING1;
 	};
 }

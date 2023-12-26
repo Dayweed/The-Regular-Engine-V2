@@ -292,6 +292,12 @@ namespace TRE
 
 		void CreatePhysXScene();
 
+		//std::array<std::string, 32> m_LayerStrings{ "Default", "Layer 1", "Layer 2" };
+
+		//void SetLayer(const Entity& entity, const int layer) const;
+		//int GetLayer(const Entity& entity) const;
+		//int GetLayerFromLayerString(const std::string& layerString) const;
+
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
 
 		physx::PxDefaultAllocator       m_Allocator;

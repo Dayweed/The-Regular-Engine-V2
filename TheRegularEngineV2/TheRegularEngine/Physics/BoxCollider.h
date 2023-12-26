@@ -23,6 +23,8 @@ property_begin(TRE::BoxCollider)
 {
 	property_var(m_IsVisible),
 	property_var(m_IsActive),
+	// property_var(m_LayerString),
+	//property_var(what),
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
 	property_var(m_HalfExtents),

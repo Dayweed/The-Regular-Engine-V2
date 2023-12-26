@@ -13,6 +13,7 @@ namespace TRE
 		j = nlohmann::json{
 			// WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
+			// WriteMemberToJSON(m_Layer),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 			WriteMemberToJSON(m_HalfHeight),
@@ -23,6 +24,7 @@ namespace TRE
 	{
 		// ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
+		// ReadMemberFromJSON(m_Layer);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
@@ -47,6 +49,7 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+			// PxSetGroup(*tempSharedData.m_RigidDynamic, 0);
 
 #ifdef _DEBUG
 			tempSharedData.m_RigidDynamic->setName("CapsuleCollider");
@@ -135,6 +138,13 @@ namespace TRE
 		PxRigidBodyExt::updateMassAndInertia(*m_Actors[entity->GetGUID()].m_RigidDynamic, 1.0f);
 
 		SetCapsuleColliderTrigger(entity, capsuleCollider.m_IsTrigger);
+
+		//if (capsuleCollider.m_IsDirty)
+		//{
+		//	// set the new layer here
+		//}
+
+		//capsuleCollider.m_IsDirty = false;
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const

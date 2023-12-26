@@ -321,7 +321,7 @@ namespace TRE
 		// HOW THE HECK DID THIS MAGICALLY WORK ?!?
 		// WAIT I FOUND OUT.
 		// NEVER CLOSE THE PVD BEFORE THE APPLICATION AAAAAAAAAAAAA
-		
+
 		m_Actors.clear();
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Dispatcher);
@@ -934,13 +934,55 @@ namespace TRE
 		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
 
 		//A thread that will do collision management
-
-		// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 		sceneDesc.filterShader = SimulationFilterShader;
+
+		sceneDesc.broadPhaseType = PxBroadPhaseType::eABP;
 
 		m_Scene = m_Physics->createScene(sceneDesc);
 		assert(m_Scene);
 	}
+
+	//void PhysicsSystem::SetLayer(const Entity& entity, const int layer) const
+	//{
+	//	// ensure that it's between 0 and 31
+	//	const PxU16 value = static_cast<PxU16>(layer);
+	//	const PxU16 group = value <= 31 ? value : 0;
+
+	//	PxSetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic, group);
+
+	//	// get the collider component and change the layer string associated with it
+	//	const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+	//	if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+	//	{
+	//		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+	//		boxCollider.m_LayerString = m_LayerStrings[group];
+	//	}
+	//	else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+	//	{
+	//		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
+	//		capsuleCollider.m_LayerString = m_LayerStrings[group];
+	//	}
+	//}
+
+	//int PhysicsSystem::GetLayer(const Entity& entity) const
+	//{
+	//	return PxGetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic);
+	//}
+
+	//int PhysicsSystem::GetLayerFromLayerString(const std::string& layerString) const
+	//{
+	//	int i = 0;
+	//	for (; i < static_cast<int>(m_LayerStrings.size()); ++i)
+	//	{
+	//		if (m_LayerStrings[i].empty())
+	//			break;
+	//		if (layerString == m_LayerStrings[i])
+	//			return i;
+	//	}
+
+	//	// new layer was created!
+	//	return i;
+	//}
 
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
 	{

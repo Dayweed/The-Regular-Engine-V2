@@ -13,6 +13,7 @@ namespace TRE
 		j = nlohmann::json{
 			// WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
+			// WriteMemberToJSON(m_Layer),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteVec3MemberToJSON(m_HalfExtents),
 		};
@@ -22,6 +23,7 @@ namespace TRE
 	{
 		// ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
+		// ReadMemberFromJSON(m_Layer);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadVec3MemberFromJSON(m_HalfExtents);
 	}
@@ -45,6 +47,8 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+			// PxSetGroup(*tempSharedData.m_RigidDynamic, 0);
+
 #ifdef _DEBUG
 			tempSharedData.m_RigidDynamic->setName("BoxCollider");
 #endif
@@ -117,13 +121,22 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(BoxCollider);
 
-		const BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
 
 		boxCollider.m_IsInitialized || ConstructBoxCollider(entity);
 
 		UpdateActorPose(entity, boxCollider.m_Offset);
 
 		SetBoxColliderTrigger(entity, boxCollider.m_IsTrigger);
+
+		//if (boxCollider.m_IsDirty)
+		//{
+		//	// set the new layer(determined by the string) here
+		//	const int newLayer = GetLayerFromLayerString(boxCollider.m_LayerString);
+		//	SetLayer(entity, newLayer);
+		//}
+
+		//boxCollider.m_IsDirty = false;
 	}
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const
