@@ -13,7 +13,7 @@ namespace TRE
 		j = nlohmann::json{
 			// WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
-			// WriteMemberToJSON(m_Layer),
+			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteVec3MemberToJSON(m_HalfExtents),
 		};
@@ -23,7 +23,7 @@ namespace TRE
 	{
 		// ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
-		// ReadMemberFromJSON(m_Layer);
+		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadVec3MemberFromJSON(m_HalfExtents);
 	}
@@ -137,6 +137,8 @@ namespace TRE
 		//}
 
 		//boxCollider.m_IsDirty = false;
+
+		// printf("Name: |%s| Layer: %d\n", entity->GetName().c_str(), static_cast<int>(boxCollider.m_CollisionLayer.m_LayerID));
 	}
 
 	void PhysicsSystem::DestructBoxCollider(const Entity& entity) const

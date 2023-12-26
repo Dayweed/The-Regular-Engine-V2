@@ -3,15 +3,14 @@
 #include <vector>
 
 #include "glm/glm.hpp"
-#include "Vector3.h"
 #include "fmod/fmod.hpp"
+#include "Physics/PhysicsComponent.h" // for CollisionLayer
 
-#pragma once
 using string_t = std::string;
 
 struct resource_ref
 {
-    std::uint64_t m_Value;
+	std::uint64_t m_Value;
 };
 
 struct resource_list
@@ -22,12 +21,12 @@ struct resource_list
 
 struct audio_file_dropdown
 {
-    std::string m_File;
+	std::string m_File;
 };
 
 struct waypoint
 {
-    glm::vec3 m_Value;
+	glm::vec3 m_Value;
 };
 
 struct Color
@@ -174,6 +173,7 @@ namespace property
             , audio_file_dropdown
             , FMOD_VECTOR
             , std::vector<waypoint>
+            , CollisionLayer
         >;
     
         //--------------------------------------------------------------------------------------------

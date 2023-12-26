@@ -267,19 +267,19 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
 								Value = { pos[0], pos[1], pos[2] };
 							}
-							else if constexpr (std::is_same_v <T, glm::vec4>)
+							else if constexpr (std::is_same_v<T, glm::vec4>)
 							{
 								float data[4]{ Value.x, Value.y, Value.z, Value.w };
 								UpdatedData = UpdatedData ? true : ImGui::DragFloat4(NameField.c_str(), data);
 								Value = { data[0], data[1], data[2], data[3] };
 							}
-							else if constexpr (std::is_same_v <T, Color>)
+							else if constexpr (std::is_same_v<T, Color>)
 							{
 								float color[4]{ Value.m_Value.r, Value.m_Value.g, Value.m_Value.b, Value.m_Value.a };
 								UpdatedData = UpdatedData ? true : ImGui::ColorEdit4(NameField.c_str(), color);
 								Value.m_Value = { color[0], color[1], color[2], color[3] };
 							}
-							else if constexpr (std::is_same_v <T, Color3>)
+							else if constexpr (std::is_same_v<T, Color3>)
 							{
 								float color[3]{ Value.m_Value.r, Value.m_Value.g, Value.m_Value.b };
 								UpdatedData = UpdatedData ? true : ImGui::ColorEdit3(NameField.c_str(), color);
@@ -490,6 +490,19 @@ namespace TRE
 								for (int i{ static_cast<int>(deleteInd.size() - 1) }; i >= 0; --i)
 								{
 									Value.erase(Value.begin() + deleteInd[i]);
+								}
+							}
+							else if constexpr (std::is_same_v<T, CollisionLayer>)
+							{
+								// display the name of the layer currently being used by the entity in the dropdown
+								if (ImGui::BeginCombo("##CollisionLayerDropdown", CollisionLayer::m_LayerNameList[static_cast<int>(Value.m_LayerID)].first))
+								{
+									for (auto& element : CollisionLayer::m_LayerNameList)
+									{
+										if (ImGui::Selectable(element.first))
+											Value.m_LayerID = element.second;
+									}
+									ImGui::EndCombo();
 								}
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");

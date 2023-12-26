@@ -14,6 +14,8 @@ namespace TRE
 		// Deserialize
 		friend void from_json(const nlohmann::json& j, BoxCollider& t);
 
+		CollisionLayer m_CollisionLayer;
+
 		// Allows the base class to get these properties  
 		property_vtable()
 	};
@@ -21,11 +23,10 @@ namespace TRE
 
 property_begin(TRE::BoxCollider)
 {
-	property_var(m_IsVisible),
-	property_var(m_IsActive),
-	// property_var(m_LayerString),
-	//property_var(what),
-	property_var(m_IsTrigger),
-	property_var(m_Offset),
-	property_var(m_HalfExtents),
+	property_var(m_IsVisible)      .Name("Is Visible"),
+	property_var(m_IsActive)       .Name("Is Active"),
+	property_var(m_CollisionLayer) .Name("Layer"),
+	property_var(m_IsTrigger)      .Name("Is Trigger"),
+	property_var(m_Offset)         .Name("Offset"),
+	property_var(m_HalfExtents)    .Name("Half Extents"),
 } property_vend_h(TRE::BoxCollider)

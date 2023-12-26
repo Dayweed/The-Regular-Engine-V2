@@ -13,7 +13,7 @@ namespace TRE
 		j = nlohmann::json{
 			// WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
-			// WriteMemberToJSON(m_Layer),
+			// WriteMemberToJSON(m_CollisionLayer.m_LayerID),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 			WriteMemberToJSON(m_HalfHeight),
@@ -24,7 +24,7 @@ namespace TRE
 	{
 		// ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
-		// ReadMemberFromJSON(m_Layer);
+		// ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
