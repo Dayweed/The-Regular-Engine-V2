@@ -90,6 +90,11 @@ namespace TRE
 				{
 					EventHandler::getEventHandlerInstance().Publish(AssetPanelEvent{ m_ShowAssetPanel });
 				}
+				if (ImGui::MenuItem("Collision Matrix", nullptr, &m_ShowCollisionMatrixPanel))
+				{
+					// tell the collision matrix panel to toggle visibility
+					EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });
+				}
 				ImGui::PopItemFlag();
 				ImGui::EndMenu();
 			}
@@ -268,6 +273,13 @@ namespace TRE
 			m_ShortcutNewScene	= key == KeyButton::N;
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
+		}
+
+		// TO REMOVE (Quick Shortcut to Collision Matrix Panel)
+		if (key == KeyButton::GraveAccent)
+		{
+			m_ShowCollisionMatrixPanel = !m_ShowCollisionMatrixPanel;
+			EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });
 		}
 	}
 

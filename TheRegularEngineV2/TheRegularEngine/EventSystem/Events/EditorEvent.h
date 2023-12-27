@@ -88,4 +88,10 @@ namespace TRE
 		AssetPanelEvent() = delete;
 		AssetPanelEvent(bool showAssetPanel) : m_ShowAssetPanel(showAssetPanel) {}
 	};
+
+	struct CollisionMatrixEvent : Event
+	{
+		bool m_ShowCollisionMatrixPanel = false;
+		CollisionMatrixEvent(bool showPanel) : m_ShowCollisionMatrixPanel(showPanel) {}
+	};
 }

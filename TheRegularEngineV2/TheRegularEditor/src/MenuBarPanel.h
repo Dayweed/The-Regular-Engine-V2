@@ -39,6 +39,7 @@ namespace TRE
 			bool GetShowGamePanel() const { return m_ShowGamePanel; }
 			bool GetShowConsolePanel() const { return m_ShowConsolePanel; }
 			bool GetShowAssetPanel() const { return m_ShowAssetPanel; }
+			bool GetShowCollisionMatrixPanel() const { return m_ShowCollisionMatrixPanel; }
 			bool GetExitPrompt() const { return m_ExitPrompt; }
 
 			void HandleShortcuts(TypingEvent& event);
@@ -55,6 +56,7 @@ namespace TRE
 			bool m_ShowGamePanel = true;
 			bool m_ShowConsolePanel = true;
 			bool m_ShowAssetPanel = false;
+			bool m_ShowCollisionMatrixPanel = false;
 
 			//bool for options
 			bool m_Test = false;

@@ -18,8 +18,7 @@
 #include "Graphics/EditorCamera.h"
 #include "ModelPanel.h"
 #include "AssetPanel.h"
-
-#include "InputHandler/InputHandler.h"
+#include "CollisionMatrixPanel.h"
 
 namespace TRE
 {
@@ -47,6 +46,7 @@ namespace TRE
 		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
 		m_PanelManager->InsertPanel<ModelPanel>("Model Panel", m_AssetSelector);
 		m_PanelManager->InsertPanel<AssetPanel>("Asset Panel", m_AssetSelector);
+		m_PanelManager->InsertPanel<CollisionMatrixPanel>("Collision Matrix Panel");
 		m_PanelManager->Init();
 
 		Deserialize();
