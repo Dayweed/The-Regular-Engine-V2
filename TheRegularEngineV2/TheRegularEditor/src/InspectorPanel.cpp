@@ -500,7 +500,10 @@ namespace TRE
 									for (auto& element : CollisionLayer::m_LayerNameList)
 									{
 										if (ImGui::Selectable(element.first))
+										{
+											UpdatedData = true;
 											Value.m_LayerID = element.second;
+										}
 									}
 									ImGui::EndCombo();
 								}

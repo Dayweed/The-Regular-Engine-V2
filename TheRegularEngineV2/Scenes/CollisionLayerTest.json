@@ -360,7 +360,7 @@
       2,
       2097296,
       {
-         "m_CollisionLayer.m_LayerID": 7,
+         "m_CollisionLayer.m_LayerID": 2,
          "m_HalfExtents": [
             10.0,
             1.0,
@@ -375,7 +375,7 @@
       },
       2097298,
       {
-         "m_CollisionLayer.m_LayerID": 2,
+         "m_CollisionLayer.m_LayerID": 1,
          "m_HalfExtents": [
             0.5,
             2.5,

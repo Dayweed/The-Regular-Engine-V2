@@ -22,11 +22,11 @@ namespace TRE
 
 property_begin(TRE::CapsuleCollider)
 {
-	property_var(m_IsVisible),
-	property_var(m_IsActive),
-	// property_var(m_CollisionLayer),
-	property_var(m_IsTrigger),
-	property_var(m_Offset),
-	property_var(m_Radius),
-	property_var(m_HalfHeight),
+	property_var(m_IsVisible)      .Name("Is Visible"),
+	property_var(m_IsActive)       .Name("Is Active"),
+	property_var(m_CollisionLayer) .Name("Layer"),
+	property_var(m_IsTrigger)      .Name("Is Trigger"),
+	property_var(m_Offset)         .Name("Offset"),
+	property_var(m_Radius)         .Name("Radius"),
+	property_var(m_HalfHeight)     .Name("Half Height"),
 } property_vend_h(TRE::CapsuleCollider)

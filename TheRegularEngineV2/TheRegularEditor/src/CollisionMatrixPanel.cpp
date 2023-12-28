@@ -15,11 +15,19 @@ namespace TRE
 		if (!m_ShowPanel)
 			return;
 
+		// green corner grip :D
 		ImGui::PushStyleColor(ImGuiCol_ResizeGrip, { 0, 1, 0, 1 });
 
 		ImGui::Begin("Collision Matrix", &m_ShowPanel);
 
-		// TODO: save/load matrix here!!!
+		PhysicsSystem* system = ECSSystemManager::Instance().GetSystem<PhysicsSystem>();
+		static PhysicsSystem::CollisionMatrix matrix = system->GetCollisionMatrix();
+		if (ImGui::Button("Apply Changes"))
+		{
+			system->SetCollisionMatrix(matrix);
+			system->ApplyCollisionMatrix();
+			system->SaveCollisionMatrix();
+		}
 
 		// green help text :D
 		ImGui::TextColored(ImVec4{ 0, 1, 0, 1 }, "For help, hover over this! -->\n");
@@ -27,16 +35,15 @@ namespace TRE
 
 		static const std::string helpText
 		{
-			"Below are the various collision layers.\n"
-			"Select the various radio buttons to toggle collision between layers.\n"
-			"Entities without any layer set will be treated as Default.\n"
-			"Double clicking the bottom-right corner of the window (in green) will adjust this window to fit perfectly.\n"
+			"- Below are the various collision layers.\n"
+			"- Select the various radio buttons to toggle collision between layers.\n"
+			"- Entities without any layer set will be treated as Default.\n"
+			"- Double clicking the bottom-right corner of the window (in green) will adjust this window to fit perfectly.\n"
 		};
 		HelpMarker("(?)", helpText.c_str());
 		ImGui::Spacing();
 
-		constexpr int layerNameListSize = CollisionLayer::m_LayerNameList.size();
-		static bool arr[layerNameListSize][layerNameListSize] = { {true} }; // only temporary
+		constexpr int layerNameListSize = CollisionLayer::TOTAL;
 
 		constexpr int tableSize = layerNameListSize + 1;
 
@@ -80,16 +87,20 @@ namespace TRE
 					}
 					else
 					{
+						// e.g. "  ##12-1", "  ##6-7"
 						const std::string buttonLabel = "  ##" + std::to_string(i - 1) + "-" + std::to_string(j - 1);
 						// hacky way to center the buttons - throw some spaces in there!
 						ImGui::Text("  ");
 						ImGui::AlignTextToFramePadding();
 						ImGui::SameLine();
 
-						if (ImGui::RadioButton(buttonLabel.c_str(), arr[i - 1][j - 1]))
+						if (ImGui::RadioButton(buttonLabel.c_str(), matrix[i - 1][j - 1]))
 						{
-							arr[i - 1][j - 1] = !arr[i - 1][j - 1];
-							arr[j - 1][i - 1] = arr[i - 1][j - 1];
+							// arr[i - 1][j - 1] = !arr[i - 1][j - 1];
+							matrix[i - 1].flip(j - 1);
+
+							// arr[j - 1][i - 1] = arr[i - 1][j - 1];
+							matrix[j - 1].set(i - 1, matrix[i - 1].test(j - 1));
 						}
 
 						const std::string hoverText = CreateLayerAcronym(i - 1) + "-" + CreateLayerAcronym(j - 1);
@@ -136,6 +147,13 @@ namespace TRE
 	{
 		if (layerID == 0)
 			return "DEF";
+
+		std::string layerName = CollisionLayer::m_LayerNameList[layerID].first;
+
+		// checks if the layer name doesn't have the form of "LayerXX"
+		// if so, use all non-lowercase characters as its acronym
+		if (!(layerName.find("Layer") == 0 && layerName.size() == std::string("LayerXX").size()))
+			return (std::erase_if(layerName, [](const char ch) {return islower(ch); }), layerName);
 
 		std::stringstream temp;
 		temp << std::setw(2) << std::setfill('0') << layerID;

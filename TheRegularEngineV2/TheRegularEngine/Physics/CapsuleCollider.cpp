@@ -13,7 +13,7 @@ namespace TRE
 		j = nlohmann::json{
 			// WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
-			// WriteMemberToJSON(m_CollisionLayer.m_LayerID),
+			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 			WriteMemberToJSON(m_HalfHeight),
@@ -24,7 +24,7 @@ namespace TRE
 	{
 		// ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
-		// ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
+		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
@@ -61,15 +61,15 @@ namespace TRE
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
 
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		auto& [rigidDynamic, attachedComponents, GUID, _unused] = m_Actors[entity->GetGUID()];
 
 		PxShape* capsuleShape;
 
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 		if (capsuleCollider.m_IsTrigger)
-			capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			capsuleShape = PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		// making the capsule stand upright by default
 		// thank you nick!!!
@@ -77,23 +77,25 @@ namespace TRE
 		const PxQuat pxLocalRotQuat(localRotQuat.x, localRotQuat.y, localRotQuat.z, localRotQuat.w);
 		capsuleShape->setLocalPose(PxTransform(pxLocalRotQuat));
 
+		PxSetGroup(*rigidDynamic, static_cast<PxU16>(capsuleCollider.m_CollisionLayer.m_LayerID));
+
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
-		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
+		if (!(attachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+			rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			rigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
+			PxRigidBodyExt::updateMassAndInertia(*rigidDynamic, 1.0f);
+			rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 		}
 
-		sharedData.m_AttachedComponents |= PhysicsComponentTypes::CapsuleCollider;
+		attachedComponents |= PhysicsComponentTypes::CapsuleCollider;
 
 		// TODO: assign more data here
 		// capsuleCollider.m_IsTrigger = ...
@@ -139,12 +141,8 @@ namespace TRE
 
 		SetCapsuleColliderTrigger(entity, capsuleCollider.m_IsTrigger);
 
-		//if (capsuleCollider.m_IsDirty)
-		//{
-		//	// set the new layer here
-		//}
-
-		//capsuleCollider.m_IsDirty = false;
+		if (capsuleCollider.m_IsDirty)
+			ChangeCollisionLayer(entity);
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const

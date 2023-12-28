@@ -125,7 +125,7 @@ namespace TRE
 
 					ImGui::EndMenu();
 				}
-				
+
 				if (ImGui::BeginMenu("Editor Camera"))
 				{
 					if (ImGui::BeginMenu("Sensitivity"))
@@ -270,17 +270,19 @@ namespace TRE
 
 		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
 		{
-			m_ShortcutNewScene	= key == KeyButton::N;
+			m_ShortcutNewScene  = key == KeyButton::N;
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
 		}
 
-		// TO REMOVE (Quick Shortcut to Collision Matrix Panel)
+#if 0
+		// Quick Shortcut to Collision Matrix Panel
 		if (key == KeyButton::GraveAccent)
 		{
 			m_ShowCollisionMatrixPanel = !m_ShowCollisionMatrixPanel;
 			EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });
 		}
+#endif
 	}
 
 	void MenuBarPanel::Serialize(std::ofstream& file)

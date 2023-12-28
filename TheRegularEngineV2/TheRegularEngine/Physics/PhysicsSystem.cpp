@@ -14,11 +14,10 @@
 #include "Core/Engine.h"
 #include "Core/Transform.h"
 #include "PhysicsSystem.h"
-
-// #include "TREIncludes.h"
 #include "Physics/SphereCollider.h"
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
+#include "Core/Serialization.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
@@ -45,6 +44,16 @@ namespace TRE
 		{
 			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
 			return PxFilterFlags();
+		}
+
+		// Group vs Group Collision Suppression
+		// .word0 is guaranteed to be the group (I dove into PhysX's source for this info :_) )
+
+		// I'll be exceptionally upset if this works.
+		if (!PxGetGroupCollisionFlag(static_cast<PxU16>(filterData0.word0), static_cast<PxU16>(filterData1.word0)))
+		{
+			// I am now exceptionally upset.
+			return PxFilterFlag::eSUPPRESS;
 		}
 
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT
@@ -150,6 +159,13 @@ namespace TRE
 		//Create material gives the object a static, dynamic and restitution.
 		m_DefaultMaterial = m_Physics->createMaterial(PX_MAX_F32, PX_MAX_F32, 0.f);
 
+		// initialize collision matrix
+		for (auto& row : m_CollisionMatrix)
+			row = 0;
+
+		LoadCollisionMatrix();
+		ApplyCollisionMatrix();
+
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
 
@@ -179,12 +195,26 @@ namespace TRE
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
 
-		if (result >= 5)
+		if (result >= 1)
 		{
-			// do a test thingy here
-			auto e1 = ECSManager::Instance().GetEntities<SphereCollider>().front();
+			const auto vec = ECSManager::Instance().GetEntities<BoxCollider>();
 
-			AddForce(e1, { -100, 0, 0 });
+			if (!vec.empty())
+			{
+				auto cube = vec.front();
+				auto ground = vec.front();
+
+				if (vec.front()->GetName() == "Cube")
+					ground = vec[1];
+				else
+					cube = vec[1];
+
+				// this is for the CollisionLayerTest scene
+				int x = PxGetGroup(*m_Actors[cube->GetGUID()].m_RigidDynamic);
+				int y = PxGetGroup(*m_Actors[ground->GetGUID()].m_RigidDynamic);
+				bool yes = PxGetGroupCollisionFlag(x, y);
+			}
+
 			printf("====================================================\n");
 
 			// reset timer
@@ -886,7 +916,6 @@ namespace TRE
 
 	void PhysicsSystem::UpdateAllComponents() const
 	{
-
 		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
 			UpdateRigidbody(entity);
 
@@ -942,47 +971,86 @@ namespace TRE
 		assert(m_Scene);
 	}
 
-	//void PhysicsSystem::SetLayer(const Entity& entity, const int layer) const
-	//{
-	//	// ensure that it's between 0 and 31
-	//	const PxU16 value = static_cast<PxU16>(layer);
-	//	const PxU16 group = value <= 31 ? value : 0;
+#pragma region Collision Layers
+	void PhysicsSystem::SetCollisionMatrix(const CollisionMatrix& matrix)
+	{
+		m_CollisionMatrix = matrix;
+	}
 
-	//	PxSetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic, group);
+	PhysicsSystem::CollisionMatrix PhysicsSystem::GetCollisionMatrix()
+	{
+		return m_CollisionMatrix;
+	}
 
-	//	// get the collider component and change the layer string associated with it
-	//	const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
-	//	if (attachedComponents & PhysicsComponentTypes::BoxCollider)
-	//	{
-	//		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
-	//		boxCollider.m_LayerString = m_LayerStrings[group];
-	//	}
-	//	else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
-	//	{
-	//		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
-	//		capsuleCollider.m_LayerString = m_LayerStrings[group];
-	//	}
-	//}
+	void PhysicsSystem::SaveCollisionMatrix()
+	{
+		constexpr const char* collisionMatrixFileName = "Resources/CollisionMatrix.json";
+		constexpr const char* collisionMatrixObjectName = "Collision Matrix Values";
 
-	//int PhysicsSystem::GetLayer(const Entity& entity) const
-	//{
-	//	return PxGetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic);
-	//}
+		rapidjson::Document doc;
+		doc.SetObject();
+		WriteToExternalFile(doc, collisionMatrixFileName);
 
-	//int PhysicsSystem::GetLayerFromLayerString(const std::string& layerString) const
-	//{
-	//	int i = 0;
-	//	for (; i < static_cast<int>(m_LayerStrings.size()); ++i)
-	//	{
-	//		if (m_LayerStrings[i].empty())
-	//			break;
-	//		if (layerString == m_LayerStrings[i])
-	//			return i;
-	//	}
+		ObjectSerializer serializer(collisionMatrixFileName);
+		ObjectBuilder objBuilder;
+		Allocator& allocator = serializer.getDoc().GetAllocator();
 
-	//	// new layer was created!
-	//	return i;
-	//}
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
+		{
+			const char* variableName = CollisionLayer::m_LayerNameList[i].first;
+			const int value = static_cast<int>(m_CollisionMatrix[i].to_ullong());
+			objBuilder.insertValue(variableName, value, allocator);
+		}
+
+		serializer.AddObjectToDoc(objBuilder.getValue(), collisionMatrixObjectName);
+		serializer.writeToDoc(collisionMatrixFileName);
+	}
+
+	void PhysicsSystem::LoadCollisionMatrix()
+	{
+		constexpr const char* collisionMatrixFileName = "Resources/CollisionMatrix.json";
+		constexpr const char* collisionMatrixObjectName = "Collision Matrix Values";
+
+		rapidjson::Document doc;
+		doc.SetObject();
+		ReadExternalFile(doc, collisionMatrixFileName);
+
+		const ObjectDeserializer deserializer(collisionMatrixFileName);
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
+		{
+			const char* variableName = CollisionLayer::m_LayerNameList[i].first;
+			int value = 0;
+			if (!deserializer.get_value(collisionMatrixObjectName, variableName, value))
+				TRE_CORE_ERROR("Unable to read value with name \"{0}.{1}\"", collisionMatrixObjectName, variableName);
+			m_CollisionMatrix[i] = value;
+		}
+	}
+
+	void PhysicsSystem::ApplyCollisionMatrix()
+	{
+		for (PxU16 i = 0; i < m_CollisionMatrix.size(); ++i)
+			for (PxU16 j = 0; j < m_CollisionMatrix.size(); ++j)
+				PxSetGroupCollisionFlag(i, j, m_CollisionMatrix[i].test(j));
+	}
+
+	void PhysicsSystem::ChangeCollisionLayer(const Entity& entity) const
+	{
+		// get the collider component and obtain the new layer from it
+		int layer = 0;
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			layer = entity->GetComponent<BoxCollider>().m_CollisionLayer.m_LayerID;
+
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			layer = entity->GetComponent<CapsuleCollider>().m_CollisionLayer.m_LayerID;
+
+		// ensure that it's between 0 and 31
+		const PxU16 value = static_cast<PxU16>(layer);
+		const PxU16 group = value <= 31 ? value : 0;
+
+		PxSetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic, group);
+	}
+#pragma endregion
 
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
 	{
@@ -1012,7 +1080,5 @@ namespace TRE
 		}
 	}
 }
-
-// collision layering!! -> PxSetGroupCollisionFlag()
 
 // DISCO RGB FONT FOR EDITOR COMPONENTS?????

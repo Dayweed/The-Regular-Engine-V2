@@ -14,8 +14,6 @@ namespace TRE
 		// Deserialize
 		friend void from_json(const nlohmann::json& j, BoxCollider& t);
 
-		CollisionLayer m_CollisionLayer;
-
 		// Allows the base class to get these properties  
 		property_vtable()
 	};

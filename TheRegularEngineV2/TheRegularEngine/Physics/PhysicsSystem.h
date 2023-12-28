@@ -278,8 +278,19 @@ namespace TRE
 		bool IsTriggerStay(const Entity& entity_1, const Entity& entity_2) const;
 
 		bool IsTriggerExit(const Entity& entity_1, const Entity& entity_2) const;
-		
+
 		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
+
+		void ChangeCollisionLayer(const Entity& entity) const;
+
+		void SaveCollisionMatrix();
+		void LoadCollisionMatrix();
+		void ApplyCollisionMatrix();
+
+		using CollisionMatrix = std::array<std::bitset<CollisionLayer::TOTAL>, CollisionLayer::TOTAL>;
+
+		void SetCollisionMatrix(const CollisionMatrix& matrix);
+		CollisionMatrix GetCollisionMatrix();
 	private:
 
 		void ResizeAllColliders();
@@ -292,13 +303,8 @@ namespace TRE
 
 		void CreatePhysXScene();
 
-		//std::array<std::string, 32> m_LayerStrings{ "Default", "Layer 1", "Layer 2" };
-
-		//void SetLayer(const Entity& entity, const int layer) const;
-		//int GetLayer(const Entity& entity) const;
-		//int GetLayerFromLayerString(const std::string& layerString) const;
-
 		mutable std::unordered_map<std::string, SharedData> m_Actors;
+		CollisionMatrix m_CollisionMatrix;
 
 		physx::PxDefaultAllocator       m_Allocator;
 		ErrorCallback                   m_ErrorCallback;
