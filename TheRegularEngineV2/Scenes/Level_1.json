@@ -7464,6 +7464,7 @@
       12,
       1048741,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7474,6 +7475,7 @@
       },
       2097165,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7484,6 +7486,7 @@
       },
       2097211,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
@@ -7494,6 +7497,7 @@
       },
       2097186,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
@@ -7504,6 +7508,7 @@
       },
       2097200,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7514,6 +7519,7 @@
       },
       2097199,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
@@ -7524,6 +7530,7 @@
       },
       2097219,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7534,6 +7541,7 @@
       },
       2097223,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7544,6 +7552,7 @@
       },
       2097261,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7554,6 +7563,7 @@
       },
       2097254,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7564,6 +7574,7 @@
       },
       2097235,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7574,6 +7585,7 @@
       },
       2097234,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
@@ -7587,6 +7599,7 @@
       110,
       1048753,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7601,6 +7614,7 @@
       },
       1048752,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             48.0,
             6.0,
@@ -7615,6 +7629,7 @@
       },
       1048751,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -7629,6 +7644,7 @@
       },
       1048750,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -7643,6 +7659,7 @@
       },
       1048748,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             17.5,
             7.0,
@@ -7657,6 +7674,7 @@
       },
       1048746,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             7.0,
             2.0,
@@ -7671,6 +7689,7 @@
       },
       1048745,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7685,6 +7704,7 @@
       },
       1048744,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             8.0,
@@ -7699,6 +7719,7 @@
       },
       1048743,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             14.0,
@@ -7713,6 +7734,7 @@
       },
       1048739,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             15.0,
             5.5,
@@ -7727,6 +7749,7 @@
       },
       1048738,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.0,
             4.0,
@@ -7741,6 +7764,7 @@
       },
       1048737,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
@@ -7755,6 +7779,7 @@
       },
       1048736,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             2.0,
@@ -7769,6 +7794,7 @@
       },
       1048731,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.0,
             8.0,
@@ -7783,6 +7809,7 @@
       },
       1048730,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             4.0,
@@ -7797,6 +7824,7 @@
       },
       1048728,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             23.0,
             5.5,
@@ -7811,6 +7839,7 @@
       },
       2097157,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             13.0,
             17.0,
@@ -7825,6 +7854,7 @@
       },
       2097205,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7839,6 +7869,7 @@
       },
       2097187,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7853,6 +7884,7 @@
       },
       8388609,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7867,6 +7899,7 @@
       },
       5242883,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             0.0,
             0.0,
@@ -7881,6 +7914,7 @@
       },
       2097159,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.0,
             1.0,
@@ -7895,6 +7929,7 @@
       },
       10485760,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.5,
             6.0,
@@ -7909,6 +7944,7 @@
       },
       2097301,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             8.0,
@@ -7923,6 +7959,7 @@
       },
       2097164,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7937,6 +7974,7 @@
       },
       2097160,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             24.0,
             6.0,
@@ -7951,6 +7989,7 @@
       },
       2097198,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7965,6 +8004,7 @@
       },
       2097276,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7979,6 +8019,7 @@
       },
       2097161,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             8.0,
@@ -7993,6 +8034,7 @@
       },
       1048742,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             7.0,
             6.0,
@@ -8007,6 +8049,7 @@
       },
       2097249,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             9.0,
             5.5,
@@ -8021,6 +8064,7 @@
       },
       2097163,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
@@ -8035,6 +8079,7 @@
       },
       2097206,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8049,6 +8094,7 @@
       },
       2097168,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.0,
             5.5,
@@ -8063,6 +8109,7 @@
       },
       2097170,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             23.0,
             5.0,
@@ -8077,6 +8124,7 @@
       },
       1048727,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             8.199999809265137,
             5.5,
@@ -8091,6 +8139,7 @@
       },
       2097172,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8105,6 +8154,7 @@
       },
       1048732,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8119,6 +8169,7 @@
       },
       2097231,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             42.0,
             6.0,
@@ -8133,6 +8184,7 @@
       },
       2097178,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             14.0,
@@ -8147,6 +8199,7 @@
       },
       2097179,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             14.0,
             4.0,
@@ -8161,6 +8214,7 @@
       },
       2097300,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             33.5,
             18.5,
@@ -8175,6 +8229,7 @@
       },
       1048740,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             0.5,
@@ -8189,6 +8244,7 @@
       },
       2097184,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8203,6 +8259,7 @@
       },
       2097181,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8217,6 +8274,7 @@
       },
       2097182,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             24.0,
             6.0,
@@ -8231,6 +8289,7 @@
       },
       2097299,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             8.0,
@@ -8245,6 +8304,7 @@
       },
       2097195,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.199999809265137,
             5.5,
@@ -8259,6 +8319,7 @@
       },
       2097185,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             0.0,
             0.0,
@@ -8273,6 +8334,7 @@
       },
       2097196,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             1.5,
@@ -8287,6 +8349,7 @@
       },
       2097258,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.0,
             6.0,
@@ -8301,6 +8364,7 @@
       },
       2097210,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             19.200000762939453,
             5.5,
@@ -8315,6 +8379,7 @@
       },
       2097203,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             41.5,
             25.5,
@@ -8329,6 +8394,7 @@
       },
       2097197,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             4.0,
@@ -8343,6 +8409,7 @@
       },
       2097274,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8357,6 +8424,7 @@
       },
       2097221,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.5,
             6.0,
@@ -8371,6 +8439,7 @@
       },
       2097204,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             24.0,
             2.0,
@@ -8385,6 +8454,7 @@
       },
       2097208,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -8399,6 +8469,7 @@
       },
       2097209,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             0.5,
@@ -8413,6 +8484,7 @@
       },
       2097212,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             8.5,
@@ -8427,6 +8499,7 @@
       },
       2097213,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             19.200000762939453,
             5.5,
@@ -8441,6 +8514,7 @@
       },
       2097215,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.199999809265137,
             5.5,
@@ -8455,6 +8529,7 @@
       },
       2097216,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8469,6 +8544,7 @@
       },
       2097218,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8483,6 +8559,7 @@
       },
       2097222,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8497,6 +8574,7 @@
       },
       2097224,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             23.0,
             6.0,
@@ -8511,6 +8589,7 @@
       },
       2097228,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8525,6 +8604,7 @@
       },
       2097230,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             2.0,
@@ -8539,6 +8619,7 @@
       },
       2097294,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8553,6 +8634,7 @@
       },
       2097239,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             17.0,
             5.0,
@@ -8567,6 +8649,7 @@
       },
       2097292,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
@@ -8581,6 +8664,7 @@
       },
       2097166,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             23.0,
             6.0,
@@ -8595,6 +8679,7 @@
       },
       2097248,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             17.5,
             2.5,
@@ -8609,6 +8694,7 @@
       },
       2097241,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             14.0,
@@ -8623,6 +8709,7 @@
       },
       2097297,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.0,
             1.0,
@@ -8637,6 +8724,7 @@
       },
       2097256,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             18.0,
             5.0,
@@ -8651,6 +8739,7 @@
       },
       2097259,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8665,6 +8754,7 @@
       },
       2097260,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.5,
             8.0,
@@ -8679,6 +8769,7 @@
       },
       2097291,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -8693,6 +8784,7 @@
       },
       2097268,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8707,6 +8799,7 @@
       },
       2097162,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             12.0,
@@ -8721,6 +8814,7 @@
       },
       2097270,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8735,6 +8829,7 @@
       },
       2097271,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             1.5,
@@ -8749,6 +8844,7 @@
       },
       2097233,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             50.0,
             6.0,
@@ -8763,6 +8859,7 @@
       },
       2097272,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             6.0,
@@ -8777,6 +8874,7 @@
       },
       2097285,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             100.0,
             8.0,
@@ -8791,6 +8889,7 @@
       },
       2097273,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             12.0,
@@ -8805,6 +8904,7 @@
       },
       2097275,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8819,6 +8919,7 @@
       },
       2097277,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.0,
             8.0,
@@ -8833,6 +8934,7 @@
       },
       2097278,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -8847,6 +8949,7 @@
       },
       2097279,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8861,6 +8964,7 @@
       },
       2097280,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             36.0,
             6.0,
@@ -8875,6 +8979,7 @@
       },
       2097282,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             4.0,
@@ -8889,6 +8994,7 @@
       },
       2097262,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8903,6 +9009,7 @@
       },
       2097287,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             12.0,
             7.5,
@@ -8917,6 +9024,7 @@
       },
       2097252,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             8.0,
@@ -8931,6 +9039,7 @@
       },
       2097288,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8945,6 +9054,7 @@
       },
       2097265,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8959,6 +9069,7 @@
       },
       2097240,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8973,6 +9084,7 @@
       },
       2097289,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             12.0,
@@ -8987,6 +9099,7 @@
       },
       2097290,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             14.0,
             4.0,
@@ -9001,6 +9114,7 @@
       },
       3145874,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             2.0,
@@ -9015,6 +9129,7 @@
       },
       2097269,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             0.5,
@@ -9029,6 +9144,7 @@
       },
       2097286,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             5.0,
@@ -9043,6 +9159,7 @@
       },
       2097246,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             14.0,
             4.0,
@@ -9057,6 +9174,7 @@
       },
       3145872,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -9071,6 +9189,7 @@
       },
       2097267,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.0,
             4.0,
@@ -9085,6 +9204,7 @@
       },
       5242882,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             17.5,
             7.0,
@@ -9099,6 +9219,7 @@
       },
       2097263,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.5,
             8.0,
@@ -9113,6 +9234,7 @@
       },
       12583026,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             4.0,
             6.0,
@@ -9130,6 +9252,7 @@
       2,
       2097253,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -9141,6 +9264,7 @@
       },
       2097191,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfHeight": 1.0,
          "m_IsTrigger": false,
          "m_Offset": [

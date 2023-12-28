@@ -35,7 +35,7 @@ namespace TRE
 
 		static const std::string helpText
 		{
-			"- Below are the various collision layers.\n"
+			"- Below are the various collision layers, with their acronyms as headers in the first row.\n"
 			"- Select the various radio buttons to toggle collision between layers.\n"
 			"- Entities without any layer set will be treated as Default.\n"
 			"- Double clicking the bottom-right corner of the window (in green) will adjust this window to fit perfectly.\n"
@@ -73,7 +73,20 @@ namespace TRE
 				{
 					if (!i && !j)
 					{
-						// do nothing, advance to the next cell in the table
+						// we have a little fun here :)
+						const std::string text = "Hello! :D";
+						ImVec4 startColor{ 1.0f, 0.0f, 0.0f, 1.0f };
+						ImVec4 endColor{ 1.0f, 1.0f, 0.0f, 1.0f };
+						ImGui::AlignTextToFramePadding();
+
+						for (unsigned ch = 0; ch < text.size(); ++ch)
+						{
+							ImVec4 lerpColor = ImLerp(startColor, endColor, static_cast<float>(ch) / text.size());
+							ImGui::TextColored(lerpColor, std::string(1, text[ch]).c_str());
+							ImGui::SameLine(0, 0);
+							// ^ leaving the spacing as the default value of -1 does weird stuff
+							// but 0 ensures there are no gaps! :D
+						}
 					}
 					else if (!i) // header row
 					{

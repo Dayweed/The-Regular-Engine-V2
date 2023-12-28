@@ -13,6 +13,7 @@ namespace TRE
 		j = nlohmann::json{
 			// WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
+			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 		};
@@ -22,6 +23,7 @@ namespace TRE
 	{
 		// ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
+		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 	}
@@ -55,31 +57,33 @@ namespace TRE
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
 
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		auto& [rigidDynamic, attachedComponents, GUID, _unused] = m_Actors[entity->GetGUID()];
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 
 		if (sphereCollider.m_IsTrigger)
-			PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+
+		PxSetGroup(*rigidDynamic, static_cast<PxU16>(sphereCollider.m_CollisionLayer.m_LayerID));
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
-		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
+		if (!(attachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+			rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			rigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
+			PxRigidBodyExt::updateMassAndInertia(*rigidDynamic, 1.0f);
+			rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 		}
 
-		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
+		attachedComponents |= PhysicsComponentTypes::SphereCollider;
 		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		// TODO: assign more data here
@@ -122,6 +126,9 @@ namespace TRE
 		UpdateActorPose(entity, sphereCollider.m_Offset);
 
 		SetSphereColliderTrigger(entity, sphereCollider.m_IsTrigger);
+
+		if (sphereCollider.m_IsDirty)
+			ChangeCollisionLayer(entity);
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const

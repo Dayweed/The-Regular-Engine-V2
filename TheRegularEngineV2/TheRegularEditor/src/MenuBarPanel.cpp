@@ -90,7 +90,7 @@ namespace TRE
 				{
 					EventHandler::getEventHandlerInstance().Publish(AssetPanelEvent{ m_ShowAssetPanel });
 				}
-				if (ImGui::MenuItem("Collision Matrix", nullptr, &m_ShowCollisionMatrixPanel))
+				if (ImGui::MenuItem("Collision Matrix", "Grave(`)", &m_ShowCollisionMatrixPanel))
 				{
 					// tell the collision matrix panel to toggle visibility
 					EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });
@@ -275,7 +275,7 @@ namespace TRE
 			m_ShortcutSaveScene = key == KeyButton::S;
 		}
 
-#if 0
+#if 1
 		// Quick Shortcut to Collision Matrix Panel
 		if (key == KeyButton::GraveAccent)
 		{
