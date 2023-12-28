@@ -1162,6 +1162,11 @@ namespace TRE
 		return InputHandler::GetKeyTrigger(key);
 	}
 
+	static bool GetKeyRelease(int key)
+	{
+		return InputHandler::GetKeyRelease(key);
+	}
+
 #pragma endregion
 
 #pragma region Logging
@@ -2057,6 +2062,7 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyDown", GetKeyDown);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyTrigger", GetKeyTrigger);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyRelease", GetKeyRelease);
 		}
 
 		// Logging

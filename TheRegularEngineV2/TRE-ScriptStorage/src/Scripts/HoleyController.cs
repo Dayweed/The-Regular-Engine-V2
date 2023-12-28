@@ -186,6 +186,11 @@ namespace TRE
 
 			#region Movement
 
+			if(InputSystem.GetKeyRelease(InputKeys.Comma))
+			{
+				Debug.Log("Released");
+			}
+
 			if (DroppingOutOfMap)
 			{
 				dirVec.x = 0.0f;

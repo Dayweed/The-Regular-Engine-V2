@@ -67,6 +67,8 @@ namespace TRE
 
 		static bool GetKeyPress(int key);
 		static bool GetKeyTrigger(int key);
+		static bool GetKeyRelease(int key);
+
 	private:
 		static std::unordered_map<int, int> m_keyMap;
 		//static std::unordered_map<int, int> m_keyTriggerMap;

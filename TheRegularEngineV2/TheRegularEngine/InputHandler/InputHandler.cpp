@@ -100,4 +100,18 @@ namespace TRE
 
 		return false;
 	}
+
+	bool InputHandler::GetKeyRelease(int key)
+	{
+		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS && m_keyPreviousPress[key] == false)
+		{
+			m_keyPreviousPress[key] = 1;
+		}
+		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE && m_keyPreviousPress[key] == true)
+		{
+			m_keyPreviousPress[key] = 0;
+			return true;
+		}
+		return false;
+	}
 }
