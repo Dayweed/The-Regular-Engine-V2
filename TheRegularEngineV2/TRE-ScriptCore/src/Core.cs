@@ -1119,11 +1119,19 @@ namespace TRE
 			return Engine_GetKeyTrigger(keycode);
 		}
 
+		public static bool GetKeyRelease(InputKeys keycode)
+		{
+            return Engine_GetKeyRelease(keycode);
+        }
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyDown(InputKeys keycode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyTrigger(InputKeys keycode);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetKeyRelease(InputKeys keycode);
 	}
 
 	public class MathF
