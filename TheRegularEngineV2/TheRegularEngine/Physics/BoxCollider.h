@@ -19,12 +19,14 @@ namespace TRE
 	};
 }
 
+// I don't know how. I don't know why. But using .Name() after property_var() (like you're meant to) ruined several colliders.
+// I SPENT OVER TWO HOURS TRACKING THIS BUG DOWN, LINE BY LINE, CHANGE BY CHANGE. TOMAS WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 property_begin(TRE::BoxCollider)
 {
-	property_var(m_IsVisible)      .Name("Is Visible"),
-	property_var(m_IsActive)       .Name("Is Active"),
-	property_var(m_CollisionLayer) .Name("Layer"),
-	property_var(m_IsTrigger)      .Name("Is Trigger"),
-	property_var(m_Offset)         .Name("Offset"),
-	property_var(m_HalfExtents)    .Name("Half Extents"),
+	property_var(m_IsVisible),
+	property_var(m_IsActive),
+	property_var(m_CollisionLayer),
+	property_var(m_IsTrigger),
+	property_var(m_Offset),
+	property_var(m_HalfExtents)
 } property_vend_h(TRE::BoxCollider)
