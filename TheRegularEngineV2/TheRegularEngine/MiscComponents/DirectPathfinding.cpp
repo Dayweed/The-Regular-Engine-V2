@@ -65,7 +65,7 @@ namespace TRE
 						}
 						else
 						{
-							path.m_CurrentIndex = path.m_CurrentIndex < 0 ? 0 : path.m_WayPoints.size() - 1;
+							path.m_CurrentIndex = path.m_CurrentIndex < 0 ? 0 : static_cast<int>(path.m_WayPoints.size() - 1);
 							path.m_Direction = !path.m_Direction;
 						}
 					}

@@ -47,11 +47,11 @@ namespace TRE
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDeviceWaitIdle(Device);
 
-		vkFreeDescriptorSets(Device, Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->GetPool(), m_DescriptorSets.size(), m_DescriptorSets.data());
+		vkFreeDescriptorSets(Device, Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->GetPool(), UINT32_T_CAST(m_DescriptorSets.size()), m_DescriptorSets.data());
 
 		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			vkFreeDescriptorSets(Device, Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->GetPool(), m_EditorDescriptorSets.size(), m_EditorDescriptorSets.data());
+			vkFreeDescriptorSets(Device, Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->GetPool(), UINT32_T_CAST(m_EditorDescriptorSets.size()), m_EditorDescriptorSets.data());
 		}
 	}
 
