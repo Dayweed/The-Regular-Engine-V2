@@ -356,7 +356,8 @@ namespace TRE
 		PX_RELEASE(m_DefaultMaterial);
 		PX_RELEASE(m_Dispatcher);
 		PX_RELEASE(m_Scene);
-		PxCloseExtensions();
+		if (m_Physics)
+			PxCloseExtensions();
 		PX_RELEASE(m_Physics);
 		PX_RELEASE(m_Transport);
 		PX_RELEASE(m_Pvd);
