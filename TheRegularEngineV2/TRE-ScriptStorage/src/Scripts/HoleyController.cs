@@ -42,6 +42,16 @@ namespace TRE
 
 		private float lerpSpeed = 5f;
 
+		//Jump Variables
+		//Check if player is jumping at all
+		public bool isJumping = false;
+		//how long you hold the jump button to reach max jump height
+		public float maxJumpButtomTime = 0.5f;
+		public float currentJumpTime;
+		//How fast the player falls after jumping
+		public float cancelRate = 40;
+		public bool jumpCancelled = false;
+
 		//Capsule Collider
 		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
@@ -269,7 +279,32 @@ namespace TRE
 								AudioSystem.Play(jumpSFX);
 							}
 						}
+
+						isJumping = true;
+						jumpCancelled = false;
+						currentJumpTime = 0;
 					}
+				}
+
+				if (isJumping)
+				{
+					currentJumpTime += Time.deltaTime;
+					if (InputSystem.GetKeyRelease(InputKeys.Enter))
+					{
+						Debug.Log("cancelled jump");
+						jumpCancelled = true;
+					}
+					if (currentJumpTime > maxJumpButtomTime)
+					{
+                        Debug.Log("maxed out jump");
+                        isJumping = false;
+					}
+				}
+
+				if (jumpCancelled && isJumping && currVelocity.y > 0)
+				{
+					vec3 downVec = new vec3(0, -1, 0);
+					PS.AddForce(this.ID, downVec * cancelRate, ForceMode.Force);
 				}
 			}
 
