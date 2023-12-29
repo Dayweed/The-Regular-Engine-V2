@@ -103,6 +103,7 @@ namespace TRE
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDeviceWaitIdle(Device);
 		delete s_FinalRenderData;
+		s_FinalRenderData = nullptr;
 		m_CommandBuffer = nullptr;
 	}
 
