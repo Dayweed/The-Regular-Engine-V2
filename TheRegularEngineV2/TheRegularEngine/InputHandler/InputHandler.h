@@ -65,8 +65,8 @@ namespace TRE
 		*******************************************************************************/
 		static void CheckMouseEvent(GLFWwindow* win_ptr, int button, int action);
 
+		static bool GetKeyHold(int key);
 		static bool GetKeyPress(int key);
-		static bool GetKeyTrigger(int key);
 		static bool GetKeyRelease(int key);
 
 	private:

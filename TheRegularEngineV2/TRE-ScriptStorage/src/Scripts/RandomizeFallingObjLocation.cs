@@ -127,7 +127,7 @@ namespace TRE
 		{
 			if (ID == 0) return;
 
-			if (InputSystem.GetKeyDown(InputKeys.T))
+			if (InputSystem.GetKeyHold(InputKeys.T))
 			{
 				canSpawnObjs = !canSpawnObjs;
 			}

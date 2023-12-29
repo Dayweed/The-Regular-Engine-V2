@@ -1109,14 +1109,14 @@ namespace TRE
 
 	public class InputSystem
 	{
-		public static bool GetKeyDown(InputKeys keycode)
+		public static bool GetKeyHold(InputKeys keycode)
 		{
-			return Engine_GetKeyDown(keycode);
+			return Engine_GetKeyHold(keycode);
 		}
 
-		public static bool GetKeyTrigger(InputKeys keycode)
+		public static bool GetKeyPress(InputKeys keycode)
 		{
-			return Engine_GetKeyTrigger(keycode);
+			return Engine_GetKeyPress(keycode);
 		}
 
 		public static bool GetKeyRelease(InputKeys keycode)
@@ -1125,10 +1125,10 @@ namespace TRE
         }
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool Engine_GetKeyDown(InputKeys keycode);
+		internal extern static bool Engine_GetKeyHold(InputKeys keycode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool Engine_GetKeyTrigger(InputKeys keycode);
+		internal extern static bool Engine_GetKeyPress(InputKeys keycode);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyRelease(InputKeys keycode);

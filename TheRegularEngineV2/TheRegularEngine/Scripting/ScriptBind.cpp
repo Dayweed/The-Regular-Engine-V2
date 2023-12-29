@@ -1152,14 +1152,14 @@ namespace TRE
 		_state = event._state;
 	}
 
-	static bool GetKeyDown(int key)
+	static bool GetKeyHold(int key)
 	{
-		return InputHandler::GetKeyPress(key);
+		return InputHandler::GetKeyHold(key);
 	}
 
-	static bool GetKeyTrigger(int key)
+	static bool GetKeyPress(int key)
 	{
-		return InputHandler::GetKeyTrigger(key);
+		return InputHandler::GetKeyPress(key);
 	}
 
 	static bool GetKeyRelease(int key)
@@ -2060,8 +2060,8 @@ namespace TRE
 
 		// Input Binding
 		{
-			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyDown", GetKeyDown);
-			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyTrigger", GetKeyTrigger);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyHold", GetKeyHold);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyPress", GetKeyPress);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyRelease", GetKeyRelease);
 		}
 

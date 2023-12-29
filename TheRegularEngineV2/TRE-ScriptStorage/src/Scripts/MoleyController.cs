@@ -216,55 +216,55 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (InputSystem.GetKeyDown(InputKeys.W))
+				if (InputSystem.GetKeyHold(InputKeys.W))
 				{
 					dirVec += CS.GetMainCameraForwardVec();
 					lastPlayerDirection = 0;
 				}
 
-				if (InputSystem.GetKeyDown(InputKeys.S))
+				if (InputSystem.GetKeyHold(InputKeys.S))
 				{
 					dirVec -= CS.GetMainCameraForwardVec();
 					lastPlayerDirection = 180;
 				}
 
-				if (InputSystem.GetKeyDown(InputKeys.A))
+				if (InputSystem.GetKeyHold(InputKeys.A))
 				{
 					dirVec += CS.GetMainCameraRightVec();
 					lastPlayerDirection = 90;
 				}
 
-				if (InputSystem.GetKeyDown(InputKeys.D))
+				if (InputSystem.GetKeyHold(InputKeys.D))
 				{
 					dirVec -= CS.GetMainCameraRightVec();
 					lastPlayerDirection = 270;
 				}
 
-				if (InputSystem.GetKeyDown(InputKeys.W))
+				if (InputSystem.GetKeyHold(InputKeys.W))
 				{
-					if (InputSystem.GetKeyDown(InputKeys.D))
+					if (InputSystem.GetKeyHold(InputKeys.D))
 					{
 						lastPlayerDirection = 315;
 					}
-					if (InputSystem.GetKeyDown(InputKeys.A))
+					if (InputSystem.GetKeyHold(InputKeys.A))
 					{
 						lastPlayerDirection = 45;
 					}
 				}
 
-				if (InputSystem.GetKeyDown(InputKeys.S))
+				if (InputSystem.GetKeyHold(InputKeys.S))
 				{
-					if (InputSystem.GetKeyDown(InputKeys.D))
+					if (InputSystem.GetKeyHold(InputKeys.D))
 					{
 						lastPlayerDirection = 225;
 					}
-					if (InputSystem.GetKeyDown(InputKeys.A))
+					if (InputSystem.GetKeyHold(InputKeys.A))
 					{
 						lastPlayerDirection = 135;
 					}
 				}
 
-				if (InputSystem.GetKeyTrigger(InputKeys.Space))
+				if (InputSystem.GetKeyPress(InputKeys.Space))
 				{
 
 					isWalking = false;
@@ -296,14 +296,14 @@ namespace TRE
 			#endregion
 
 			#region Audio
-			if (InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
-			InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D))
+			if (InputSystem.GetKeyHold(InputKeys.W) || InputSystem.GetKeyHold(InputKeys.S) ||
+			InputSystem.GetKeyHold(InputKeys.A) || InputSystem.GetKeyHold(InputKeys.D))
 			{
 				isWalking = true;
 			}
 
-			if (!(InputSystem.GetKeyDown(InputKeys.W) || InputSystem.GetKeyDown(InputKeys.S) ||
-				InputSystem.GetKeyDown(InputKeys.A) || InputSystem.GetKeyDown(InputKeys.D)))
+			if (!(InputSystem.GetKeyHold(InputKeys.W) || InputSystem.GetKeyHold(InputKeys.S) ||
+				InputSystem.GetKeyHold(InputKeys.A) || InputSystem.GetKeyHold(InputKeys.D)))
 			{
 				isWalking = false;
 			}
@@ -327,7 +327,7 @@ namespace TRE
 
 			#region Swap
 			// Check if can swap ability
-			if (InputSystem.GetKeyTrigger(InputKeys.Q))
+			if (InputSystem.GetKeyPress(InputKeys.Q))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -337,7 +337,7 @@ namespace TRE
 
 			#region Drop
 			// Check if can trigger ability
-			if (InputSystem.GetKeyTrigger(InputKeys.LeftShift))
+			if (InputSystem.GetKeyPress(InputKeys.LeftShift))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
@@ -354,7 +354,7 @@ namespace TRE
 			}
 
 			// Check if can trigger ability
-			if (InputSystem.GetKeyTrigger(InputKeys.E))
+			if (InputSystem.GetKeyPress(InputKeys.E))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -458,7 +458,7 @@ namespace TRE
 
 			#region CHEATS
 			// Close Game
-			if (InputSystem.GetKeyDown(InputKeys.Escape))
+			if (InputSystem.GetKeyHold(InputKeys.Escape))
 			{
 				Game.CloseGame();
 			}
@@ -516,7 +516,7 @@ namespace TRE
 					UIPopup2.GetComponent<SpriteRenderer>().isVisible = true;
 				}
 
-				if (IsActivated && InputSystem.GetKeyDown(InputKeys.Space))
+				if (IsActivated && InputSystem.GetKeyHold(InputKeys.Space))
 				{
 					UIPopup2.GetComponent<SpriteRenderer>().isVisible = false;
 					HasBeenTriggeredBefore = true;

@@ -62,7 +62,7 @@ namespace TRE
 		public void Update()
 		{
 			#region CHEATS
-			if (InputSystem.GetKeyTrigger(InputKeys.D1))
+			if (InputSystem.GetKeyPress(InputKeys.D1))
 			{
 				forceGoToNextScene = true;
 			}

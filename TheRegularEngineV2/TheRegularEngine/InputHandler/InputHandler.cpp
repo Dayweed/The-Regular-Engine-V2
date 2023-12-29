@@ -81,12 +81,12 @@ namespace TRE
 		}
 	}
 
-	bool InputHandler::GetKeyPress(int key)
+	bool InputHandler::GetKeyHold(int key)
 	{
 		return m_keyMap[key];
 	}
 
-	bool InputHandler::GetKeyTrigger(int key)
+	bool InputHandler::GetKeyPress(int key)
 	{
 		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE)
 		{

@@ -58,7 +58,7 @@ namespace TRE
 				SlappedOn = true;
 			}
 
-			if (InputSystem.GetKeyTrigger(InputKeys.Enter) || InputSystem.GetKeyTrigger(InputKeys.Space))
+			if (InputSystem.GetKeyPress(InputKeys.Enter) || InputSystem.GetKeyPress(InputKeys.Space))
 			{
 				// Determine which scene to go next
 				if (PersistentSystem.GetValue("PrevScene") == "Tutorial")
@@ -68,7 +68,7 @@ namespace TRE
 			}
 
 			// Close Game
-			if (InputSystem.GetKeyDown(InputKeys.Escape))
+			if (InputSystem.GetKeyHold(InputKeys.Escape))
 			{
 				Game.CloseGame();
 			}

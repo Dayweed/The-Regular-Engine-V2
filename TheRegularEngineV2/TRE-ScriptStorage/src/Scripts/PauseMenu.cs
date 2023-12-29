@@ -70,7 +70,7 @@ namespace TRE
             if (menustate == 0)
             {
                 //we are assuming that pause menu entering is handled by game logic
-                if (InputSystem.GetKeyDown(InputKeys.W))
+                if (InputSystem.GetKeyHold(InputKeys.W))
                 {
                     if (currentOption == 0)
                         currentOption -= 1;
@@ -80,7 +80,7 @@ namespace TRE
                         currentOption += 1;
                 }
 
-                if (InputSystem.GetKeyDown(InputKeys.S))
+                if (InputSystem.GetKeyHold(InputKeys.S))
                 {
                     if (currentOption == 0)
                         currentOption += 1;
@@ -90,7 +90,7 @@ namespace TRE
                         currentOption -= 1;
                 }
 
-                if (InputSystem.GetKeyDown(InputKeys.Enter))
+                if (InputSystem.GetKeyHold(InputKeys.Enter))
                 {
                     if (currentOption == 0) // resume game
                     {
@@ -116,7 +116,7 @@ namespace TRE
                     }
                 }
 
-                if (InputSystem.GetKeyDown(InputKeys.Escape))
+                if (InputSystem.GetKeyHold(InputKeys.Escape))
                 {
                     isPaused = false;
                     menustate = 0;
@@ -148,7 +148,7 @@ namespace TRE
             // confirmation menu logic
             if (menustate == 2)
             {
-                if (InputSystem.GetKeyDown(InputKeys.W))
+                if (InputSystem.GetKeyHold(InputKeys.W))
                 {
                     if (currentOption == 0)
                         currentOption -= 1;
@@ -156,7 +156,7 @@ namespace TRE
                         currentOption = 0;
                 }
 
-                if (InputSystem.GetKeyDown(InputKeys.S))
+                if (InputSystem.GetKeyHold(InputKeys.S))
                 {
                     if (currentOption == 0)
                         currentOption += 1;

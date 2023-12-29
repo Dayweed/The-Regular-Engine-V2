@@ -37,7 +37,7 @@ namespace TRE
 
 		public void Update()
 		{
-			if (UIPopupTutorialStartExist && InputSystem.GetKeyDown(InputKeys.Space))
+			if (UIPopupTutorialStartExist && InputSystem.GetKeyHold(InputKeys.Space))
 			{
 				UIPopupTutorialStartExist = false;
 				UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = false;
@@ -52,7 +52,7 @@ namespace TRE
 				UIPopup1.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 
-			if (IsActivated && InputSystem.GetKeyDown(InputKeys.Space))
+			if (IsActivated && InputSystem.GetKeyHold(InputKeys.Space))
 			{
 				UIPopup1.GetComponent<SpriteRenderer>().isVisible = false;
 				IsActivated = !IsActivated;

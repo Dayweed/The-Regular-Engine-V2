@@ -25,12 +25,12 @@ namespace TRE
 		public void Update()
 		{
 			// Close Game
-			if (InputSystem.GetKeyDown(InputKeys.Escape))
+			if (InputSystem.GetKeyHold(InputKeys.Escape))
 			{
 				Game.CloseGame();
 			}
 
-			if (InputSystem.GetKeyTrigger(InputKeys.Space))
+			if (InputSystem.GetKeyPress(InputKeys.Space))
 			{
 				spacePressed = true;
 				if (ECSManager.IsValidEntity(13376208322872696703))
@@ -39,7 +39,7 @@ namespace TRE
 				}
 			}
 
-			if (InputSystem.GetKeyTrigger(InputKeys.Enter))
+			if (InputSystem.GetKeyPress(InputKeys.Enter))
 			{
 				enterPressed = true;
 				if (ECSManager.IsValidEntity(13376208322872696703))
