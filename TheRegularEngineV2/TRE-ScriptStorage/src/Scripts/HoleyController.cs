@@ -255,8 +255,9 @@ namespace TRE
 
                 if (jumpCancelled && isJumping && currVelocity.y > 0)
                 {
-                    vec3 downVec = new vec3(0, -400, 0);
-                    PS.AddForce(this.ID, downVec, ForceMode.Force);
+					currVelocity.y = 0;
+                    /*vec3 downVec = new vec3(0, -400, 0);
+                    PS.AddForce(this.ID, downVec, ForceMode.Force);*/
                 }
 
                 if (isJumping)
