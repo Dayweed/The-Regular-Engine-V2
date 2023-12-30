@@ -256,13 +256,10 @@ namespace TRE
                 if (jumpCancelled && isJumping && currVelocity.y > 0)
                 {
 					currVelocity.y = 0;
-                    /*vec3 downVec = new vec3(0, -400, 0);
-                    PS.AddForce(this.ID, downVec, ForceMode.Force);*/
                 }
 
                 if (isJumping)
 				{
-					currentJumpTime += Time.deltaTime;
 					if (InputSystem.GetKeyRelease(InputKeys.Enter))
 					{
 						Debug.Log("cancelled jump");
@@ -273,33 +270,26 @@ namespace TRE
                         Debug.Log("maxed out jump");
                         isJumping = false;
 					}
+					currentJumpTime += Time.deltaTime;
 				}
 
 				if (InputSystem.GetKeyPress(InputKeys.Enter))
 				{
-
 					isWalking = false;
 
 					if (isGrounded)
 					{
+						vec3 maxHeight = new vec3(0, 70, 0);
 						// Boosted Jump
 						if (isBoostedJump)
 						{
-							vec3 maxHeight = new vec3(0, 150, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
+							maxHeight = new vec3(0, 150, 0);
 						}
-						else
+
+						Jump(maxHeight);
+						if (ECSManager.IsValidEntity(jumpSFX))
 						{
-							vec3 maxHeight = new vec3(0, 70, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
+							AudioSystem.Play(jumpSFX);
 						}
 
 						isJumping = true;
@@ -504,26 +494,18 @@ namespace TRE
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
 
-			if (dirVec != vec3.Zero)
+
+			if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) <= maxVelocity)
 			{
-				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) <= maxVelocity)
-				{
-					finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-				else
-				{
-					vec3 tmp = dirVec * maxVelocity;
-					finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-			}
-			/*else if (dirVec.x == 0 && dirVec.z == 0)
-			{
-				// If no input, slow down
-				finalVelocity = currVelocity * 0.9f;
+				finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
 				PS.SetLinearVelocity(this.ID, finalVelocity);
-			}*/
+			}
+			else
+			{
+				vec3 tmp = dirVec * maxVelocity;
+				finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+				PS.SetLinearVelocity(this.ID, finalVelocity);
+			}
 
 			holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
