@@ -253,6 +253,27 @@ namespace TRE
 					}
 				}
 
+                if (jumpCancelled && isJumping && currVelocity.y > 0)
+                {
+                    vec3 downVec = new vec3(0, -400, 0);
+                    PS.AddForce(this.ID, downVec, ForceMode.Force);
+                }
+
+                if (isJumping)
+				{
+					currentJumpTime += Time.deltaTime;
+					if (InputSystem.GetKeyRelease(InputKeys.Enter))
+					{
+						Debug.Log("cancelled jump");
+						jumpCancelled = true;
+					}
+					if (currentJumpTime > maxJumpButtomTime)
+					{
+                        Debug.Log("maxed out jump");
+                        isJumping = false;
+					}
+				}
+
 				if (InputSystem.GetKeyPress(InputKeys.Enter))
 				{
 
@@ -284,27 +305,6 @@ namespace TRE
 						jumpCancelled = false;
 						currentJumpTime = 0;
 					}
-				}
-
-				if (isJumping)
-				{
-					currentJumpTime += Time.deltaTime;
-					if (InputSystem.GetKeyRelease(InputKeys.Enter))
-					{
-						Debug.Log("cancelled jump");
-						jumpCancelled = true;
-					}
-					if (currentJumpTime > maxJumpButtomTime)
-					{
-                        Debug.Log("maxed out jump");
-                        isJumping = false;
-					}
-				}
-
-				if (jumpCancelled && isJumping && currVelocity.y > 0)
-				{
-					vec3 downVec = new vec3(0, -1, 0);
-					PS.AddForce(this.ID, downVec * cancelRate, ForceMode.Force);
 				}
 			}
 
