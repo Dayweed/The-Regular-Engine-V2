@@ -375,7 +375,7 @@ namespace TRE
 			}
 			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
 			instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
-			s_ScriptEngineData->ScriptInstances[GUID] = instance;
+			s_ScriptEngineData->ScriptInstances[GUID].emplace_back(instance);
 
 			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
 
@@ -424,8 +424,12 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnEnableInvoke();
+			// here loop though all the scripts that is attached to the entity and call the OnEnableInvoke
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnEnableInvoke();
+			}
+			
 		}
 		else
 		{
@@ -439,8 +443,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnDisableInvoke();
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnDisableInvoke();
+			}
 		}
 		else
 		{
@@ -454,8 +460,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnDestroyInvoke();
+			for(auto t :s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnDestroyInvoke();
+			}
 		}
 		else
 		{
@@ -476,8 +484,11 @@ namespace TRE
 				CreateCSEntityData(entity);
 			}
 
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			s_ScriptEngineData->ScriptInstances[GUID]->OnCreateInvoke();
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnCreateInvoke();
+			}
+			
 		}
 		else
 		{
@@ -497,8 +508,10 @@ namespace TRE
 
 		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnStartInvoke();
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnStartInvoke();
+			}
 		}
 		else
 		{
@@ -512,8 +525,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnUpdateInvoke();
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnUpdateInvoke();
+			}
 		}
 		else
 		{
@@ -527,8 +542,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if(s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnLateUpdateInvoke();
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnLateUpdateInvoke();
+			}
 		}
 		else
 		{
@@ -542,8 +559,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnTriggerEnterInvoke(other);
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnTriggerEnterInvoke(other);
+			}
 		}
 		else
 		{
@@ -557,8 +576,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnTriggerStayInvoke(other);
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnTriggerStayInvoke(other);
+			}
 		}
 		else
 		{
@@ -572,8 +593,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnTriggerExitInvoke(other);
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnTriggerExitInvoke(other);
+			}
 		}
 		else
 		{
@@ -587,8 +610,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnCollisionEnterInvoke(other);
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnCollisionEnterInvoke(other);
+			}
 		}
 		else
 		{
@@ -602,8 +627,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnCollisionStayInvoke(other);
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnCollisionStayInvoke(other);
+			}
 		}
 		else
 		{
@@ -617,8 +644,10 @@ namespace TRE
 		std::string GUID = e->GetGUID();
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::shared_ptr<ScriptInstance> instance = s_ScriptEngineData->ScriptInstances[GUID];
-			instance->OnCollisionExitInvoke(other);
+			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
+			{
+				t->OnCollisionExitInvoke(other);
+			}
 		}
 		else
 		{
@@ -637,7 +666,7 @@ namespace TRE
 		Tools::PrintAllContainers();
 	}
 
-	MonoObject* ScriptEngine::GetManagedInstance(std::string GUID)
+	/*MonoObject* ScriptEngine::GetManagedInstance(std::string GUID)
 	{
 		if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
 		{
@@ -647,9 +676,9 @@ namespace TRE
 		{
 			return s_ScriptEngineData->ScriptInstances[GUID]->m_Instance;
 		}
-	}
+	}*/
 
-	std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityInstance(std::string GUID)
+	/*std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityInstance(std::string GUID)
 	{
 		auto it = s_ScriptEngineData->ScriptInstances.find(GUID);
 		if(it == s_ScriptEngineData->ScriptInstances.end())
@@ -658,6 +687,18 @@ namespace TRE
 		}
 
 		return it->second;
+	}*/
+
+	std::vector<std::shared_ptr<ScriptInstance>> ScriptEngine::GetAllEntityScripts(std::string GUID)
+	{
+		auto it = s_ScriptEngineData->ScriptInstances.find(GUID);
+		if(it == s_ScriptEngineData->ScriptInstances.end())
+		{
+			return {};
+		}
+
+		return it->second;
+	
 	}
 
 #pragma endregion

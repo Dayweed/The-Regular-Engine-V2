@@ -185,7 +185,8 @@ namespace TRE
 		ScriptClass MainClass;
 
 		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptClasses;
-		std::unordered_map<std::string, std::shared_ptr<ScriptInstance>> ScriptInstances;
+		// This map will contain the ObjectID, and a Vector of all the scriptinstances that are attached to that object.
+		std::unordered_map<std::string, std::vector<std::shared_ptr<ScriptInstance>>> ScriptInstances;
 		std::unordered_map<std::string, ScriptFieldMap> EntityFieldMap;
 
 		std::string MonoAssemblyPath;
@@ -239,6 +240,8 @@ namespace TRE
 		static MonoObject* GetManagedInstance(std::string GUID);
 
 		static std::shared_ptr<ScriptInstance> GetEntityInstance(std::string GUID);
+
+		static std::vector<std::shared_ptr<ScriptInstance>> GetAllEntityScripts(std::string GUID);
 
 
 	private:
