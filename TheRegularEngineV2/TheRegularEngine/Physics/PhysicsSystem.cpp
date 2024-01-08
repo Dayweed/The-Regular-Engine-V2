@@ -163,6 +163,7 @@ namespace TRE
 		for (auto& row : m_CollisionMatrix)
 			row = 0;
 
+		SetLayerNames();
 		LoadCollisionMatrix();
 		ApplyCollisionMatrix();
 
@@ -998,7 +999,7 @@ namespace TRE
 
 		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
 		{
-			const char* variableName = CollisionLayer::m_LayerNameList[i].first;
+			std::string variableName = CollisionLayer::m_LayerNameList[i].first;
 			const int value = static_cast<int>(m_CollisionMatrix[i].to_ullong());
 			objBuilder.insertValue(variableName, value, allocator);
 		}
@@ -1019,9 +1020,9 @@ namespace TRE
 		const ObjectDeserializer deserializer(collisionMatrixFileName);
 		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
 		{
-			const char* variableName = CollisionLayer::m_LayerNameList[i].first;
+			std::string variableName = CollisionLayer::m_LayerNameList[i].first;
 			int value = 0;
-			if (!deserializer.get_value(collisionMatrixObjectName, variableName, value))
+			if (!deserializer.get_value(collisionMatrixObjectName, variableName.c_str(), value))
 				TRE_CORE_ERROR("Unable to read value with name \"{0}.{1}\"", collisionMatrixObjectName, variableName);
 			m_CollisionMatrix[i] = value;
 		}
@@ -1050,6 +1051,23 @@ namespace TRE
 		const PxU16 group = value <= 31 ? value : 0;
 
 		PxSetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic, group);
+	}
+
+	void PhysicsSystem::SetLayerNames()
+	{
+		constexpr const char* collisionLayerFileName = "../Resources/CollisionLayerNames.txt";
+		std::ifstream file(collisionLayerFileName);
+		if (!file)
+			return;
+
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
+		{
+			std::string huh;
+			file >> huh;
+			CollisionLayer::m_LayerNameList[i].first = huh;
+		}
+
+		file.close();
 	}
 #pragma endregion
 

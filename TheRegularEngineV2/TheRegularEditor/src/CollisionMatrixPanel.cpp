@@ -96,7 +96,7 @@ namespace TRE
 					else if (!j) // left-most column - meant for full layer names
 					{
 						ImGui::AlignTextToFramePadding();
-						ImGui::Text(CollisionLayer::m_LayerNameList[i - 1].first);
+						ImGui::Text(CollisionLayer::m_LayerNameList[i - 1].first.c_str());
 					}
 					else
 					{

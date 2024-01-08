@@ -283,6 +283,7 @@ namespace TRE
 
 		void ChangeCollisionLayer(const Entity& entity) const;
 
+		void SetLayerNames();
 		void SaveCollisionMatrix();
 		void LoadCollisionMatrix();
 		void ApplyCollisionMatrix();

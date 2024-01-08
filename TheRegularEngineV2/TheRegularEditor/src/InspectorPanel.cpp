@@ -495,11 +495,11 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, CollisionLayer>)
 							{
 								// display the name of the layer currently being used by the entity in the dropdown
-								if (ImGui::BeginCombo("##CollisionLayerDropdown", CollisionLayer::m_LayerNameList[static_cast<int>(Value.m_LayerID)].first))
+								if (ImGui::BeginCombo("##CollisionLayerDropdown", CollisionLayer::m_LayerNameList[static_cast<int>(Value.m_LayerID)].first.c_str()))
 								{
 									for (auto& element : CollisionLayer::m_LayerNameList)
 									{
-										if (ImGui::Selectable(element.first))
+										if (ImGui::Selectable(element.first.c_str()))
 										{
 											UpdatedData = true;
 											Value.m_LayerID = element.second;

@@ -53,13 +53,11 @@ struct CollisionLayer
 	};
 
 	// first = name, second = enum value (i'm not sure i like this...)
-	constexpr static std::array m_LayerNameList
+	inline static std::array<std::pair<std::string, CollisionLayer::Layer>, Layer::TOTAL> m_LayerNameList
 	{
-		std::pair { "Default", Default },
-		std::pair { "Holey", Layer01 }, std::pair { "HoleyHeadCol", Layer02 },
-		std::pair { "Moley", Layer03 }, std::pair { "MoleyHeadCol", Layer04 },
-		std::pair { "Layer05", Layer05 }, std::pair { "Layer06", Layer06 }, std::pair { "Layer07", Layer07 },
-		std::pair { "Layer08", Layer08 }, std::pair { "Layer09", Layer09 }, std::pair { "Layer10", Layer10 }, std::pair { "Layer11", Layer11 },
+		std::pair { "Default", Default }, std::pair { "", Layer01 }, std::pair { "", Layer02 }, std::pair { "", Layer03 },
+		std::pair { "", Layer04 }, std::pair { "", Layer05 }, std::pair { "", Layer06 }, std::pair { "", Layer07 },
+		std::pair { "", Layer08 }, std::pair { "", Layer09 }, std::pair { "", Layer10 }, std::pair { "", Layer11 },
 		// std::pair { "Layer12", Layer12 }, std::pair { "Layer13", Layer13 }, std::pair { "Layer14", Layer14 }, std::pair { "Layer15", Layer15 },
 		// std::pair { "Layer16", Layer16 }, std::pair { "Layer17", Layer17 }, std::pair { "Layer18", Layer18 }, std::pair { "Layer19", Layer19 },
 		// std::pair { "Layer20", Layer20 }, std::pair { "Layer21", Layer21 }, std::pair { "Layer22", Layer22 }, std::pair { "Layer23", Layer23 },
