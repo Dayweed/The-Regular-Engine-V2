@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
 using GlmSharp;
+using System.Diagnostics;
 
 namespace TRE
 {
@@ -65,12 +66,22 @@ namespace TRE
 
 		private float lerpSpeed = 5f;
 
-		//For camera controller
-		//private Entity Key;
-		//private Entity FinalPlatform;
+        //Jump Variables
+        //Check if player is jumping at all
+        public bool isJumping = false;
+        //how long you hold the jump button to reach max jump height
+        public float maxJumpButtomTime = 0.5f;
+        public float currentJumpTime;
+        //How fast the player falls after jumping
+        public float cancelRate = 40;
+        public bool jumpCancelled = false;
 
-		//For audio
-		private ulong walkingSFX;
+        //For camera controller
+        //private Entity Key;
+        //private Entity FinalPlatform;
+
+        //For audio
+        private ulong walkingSFX;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
@@ -264,35 +275,53 @@ namespace TRE
 					}
 				}
 
-				if (InputSystem.GetKeyPress(InputKeys.Space))
-				{
+                if (jumpCancelled && isJumping && currVelocity.y > 0)
+                {
+					Debug.Log("HEY");
+                    currVelocity.y = 0;
+                }
 
-					isWalking = false;
+                if (isJumping)
+                {
+                    if (InputSystem.GetKeyRelease(InputKeys.Space))
+                    {
+                        Debug.Log("cancelled jump");
+                        jumpCancelled = true;
+                    }
+                    if (currentJumpTime > maxJumpButtomTime)
+                    {
+                        Debug.Log("maxed out jump");
+                        isJumping = false;
+                    }
+                    currentJumpTime += Time.deltaTime;
+                }
 
-					if (isGrounded)
-					{
-						// Boosted Jump
-						if (isBoostedJump)
-						{
-							vec3 maxHeight = new vec3(0, 150, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
-						}
-						else
-						{
-							vec3 maxHeight = new vec3(0, 70, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
-						}
-					}
-				}
-			}
+
+                if (InputSystem.GetKeyPress(InputKeys.Space))
+                {
+                    isWalking = false;
+
+                    if (isGrounded)
+                    {
+                        vec3 maxHeight = new vec3(0, 70, 0);
+                        // Boosted Jump
+                        if (isBoostedJump)
+                        {
+                            maxHeight = new vec3(0, 150, 0);
+                        }
+
+                        Jump(maxHeight);
+                        if (ECSManager.IsValidEntity(jumpSFX))
+                        {
+                            AudioSystem.Play(jumpSFX);
+                        }
+
+                        isJumping = true;
+                        jumpCancelled = false;
+                        currentJumpTime = 0;
+                    }
+                }
+            }
 			#endregion
 
 			#region Audio
@@ -470,26 +499,38 @@ namespace TRE
 
 			if (dirVec != vec3.Zero)
 			{
-				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
-				{
-					finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-				else
-				{
-					vec3 tmp = dirVec * maxVelocity;
-					finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 			}
-			/*else if (dirVec.x == 0 && dirVec.z == 0)
+            /*else if (dirVec.x == 0 && dirVec.z == 0)
 			{
 				// If no input, slow down
 				finalVelocity = currVelocity * 0.9f;
 				PS.SetLinearVelocity(this.ID, finalVelocity);
 			}*/
 
-			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
+            if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
+            {
+                finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+                PS.SetLinearVelocity(this.ID, finalVelocity);
+            }
+            else
+            {
+                vec3 tmp = dirVec * maxVelocity;
+                finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+                PS.SetLinearVelocity(this.ID, finalVelocity);
+            }
+
+            TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
 			isGrounded = false;
 
