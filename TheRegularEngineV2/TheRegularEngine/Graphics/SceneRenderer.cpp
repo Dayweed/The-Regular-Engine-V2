@@ -237,11 +237,13 @@ namespace TRE
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
 		glm::mat4 depthViewMatrix(1.f);
-		const bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		recalculateShadowFrustum = true;
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
+			//std::cout << std::fixed  << "Light Direction: " << light.m_Direction.x << ", " << light.m_Direction.y << ", " << light.m_Direction.z << std::endl;
 			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
 			ubo.m_LightAmbientColor = light.m_AmbientColor;
@@ -813,7 +815,7 @@ namespace TRE
 				glm::mat4 model(1.f);
 				const float scale = 10.f;
 				model = glm::translate(model, tr.m_Position);
-				model = model * glm::mat4_cast(glm::quat(glm::radians(glm::vec3(-tr.m_Rotation.x, tr.m_Rotation.y, tr.m_Rotation.z))));
+				model = model * glm::mat4_cast(glm::quat(glm::radians(glm::vec3(tr.m_Rotation.x, tr.m_Rotation.y, tr.m_Rotation.z))));
 				model = glm::scale(model, glm::vec3(scale, scale, scale));
 				pc.m_Model = model;
 
