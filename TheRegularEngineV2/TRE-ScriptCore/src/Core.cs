@@ -930,7 +930,6 @@ namespace TRE
 		internal extern static float Engine_GetAnimationSpeed(EntityID entityid);
 	}
 
-
 	public enum ForceMode
 	{
 		Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
@@ -1127,8 +1126,8 @@ namespace TRE
 
 		public static bool GetKeyRelease(InputKeys keycode)
 		{
-            return Engine_GetKeyRelease(keycode);
-        }
+			return Engine_GetKeyRelease(keycode);
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyHold(InputKeys keycode);
@@ -1388,31 +1387,31 @@ namespace TRE
 		public extern static void Engine_SetPersistentValue(string VariableName, string VariableValue);
 	}
 
-    public class UISystem
-    {
+	public class UISystem
+	{
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetVisible(EntityID ID);
-    }
+	}
 
 	public class DirectPathfindingSystem
-    {
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetPathfindingRunning(EntityID ID);
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetPathfindingRunning(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_StartPathfinding(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_StartPathfinding(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_PausePathfinding(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_PausePathfinding(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_ResumePathfinding(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_ResumePathfinding(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_ResetPathfinding(EntityID ID);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_ResetPathfinding(EntityID ID);
+	}
 }

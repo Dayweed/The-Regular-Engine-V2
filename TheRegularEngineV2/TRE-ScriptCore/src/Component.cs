@@ -467,24 +467,24 @@ namespace TRE
 		}
 	}
 
-    public class UI : Component
-    {
-        public UI()
-        {
+	public class UI : Component
+	{
+		public UI()
+		{
 
-        }
-        public bool IsVisible
-        {
-            get
-            {
-                return UISystem.Engine_GetVisible(entity.ID);
-            }
-            set
-            {
-                UISystem.Engine_SetVisible(entity.ID, value);
-            }
-        }
-    }
+		}
+		public bool IsVisible
+		{
+			get
+			{
+				return UISystem.Engine_GetVisible(entity.ID);
+			}
+			set
+			{
+				UISystem.Engine_SetVisible(entity.ID, value);
+			}
+		}
+	}
 
 	public class DirectPathfinding : Component
 	{
@@ -494,17 +494,17 @@ namespace TRE
 			{
 				return DirectPathfindingSystem.Engine_GetPathfindingRunning(entity.ID);
 
-            }
+			}
 			set
 			{
 				if (value)
 				{
 					DirectPathfindingSystem.Engine_ResumePathfinding(entity.ID);
-                }
+				}
 				else
-                {
-                    DirectPathfindingSystem.Engine_PausePathfinding(entity.ID);
-                }
+				{
+					DirectPathfindingSystem.Engine_PausePathfinding(entity.ID);
+				}
 			}
 		}
 
@@ -515,7 +515,7 @@ namespace TRE
 
 		public void Reset()
 		{
-            DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
-        }
+			DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
+		}
 	}
 }

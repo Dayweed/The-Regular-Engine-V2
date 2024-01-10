@@ -58,17 +58,17 @@ namespace TRE
 		public bool isScaled = false;
 		public float defaultRadius = 2f;
 		public float defaultHeight = 1f;
-		
+
 		public float blueberrysuperRadius = 4.8f;
 		public float blueberrysuperHeight = 4.8f;
-		
+
 		public float strawberrysuperRadius = 2.4f;
 		public float strawberrysuperHeight = 1.2f;
-		
+
 		public float currentRadius = 2f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
-		
+
 		//Transform Scale
 		public vec3 defaultXform = new vec3(75f, 75f, 75f);
 		public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
@@ -253,12 +253,12 @@ namespace TRE
 					}
 				}
 
-                if (jumpCancelled && isJumping && currVelocity.y > 0)
-                {
+				if (jumpCancelled && isJumping && currVelocity.y > 0)
+				{
 					currVelocity.y = 0;
-                }
+				}
 
-                if (isJumping)
+				if (isJumping)
 				{
 					if (InputSystem.GetKeyRelease(InputKeys.Enter))
 					{
@@ -267,8 +267,8 @@ namespace TRE
 					}
 					if (currentJumpTime > maxJumpButtomTime)
 					{
-                        Debug.Log("maxed out jump");
-                        isJumping = false;
+						Debug.Log("maxed out jump");
+						isJumping = false;
 					}
 					currentJumpTime += Time.deltaTime;
 				}
@@ -475,7 +475,7 @@ namespace TRE
 				//Cactus Model
 				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
 					GetComponent<MeshRenderer>().Mesh = "Holey_Strawberry.fbx";
-				
+
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);

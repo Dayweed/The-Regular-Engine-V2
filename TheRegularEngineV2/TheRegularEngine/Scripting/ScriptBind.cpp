@@ -65,7 +65,7 @@ namespace TRE
 	{
 		ComponentsID ConvertComponentNameToID(std::string componentName)
 		{
-			if(ComponentsMap.find(componentName) != ComponentsMap.end())
+			if (ComponentsMap.find(componentName) != ComponentsMap.end())
 			{
 				return ComponentsMap[componentName];
 			}
@@ -165,7 +165,7 @@ namespace TRE
 		if (!Temp) return;
 		Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
 	}
-	
+
 	static MonoString* BindEntityGetTag(CSEntityID ID)
 	{
 		// Retrieve the entity from the ID
@@ -199,7 +199,7 @@ namespace TRE
 		return EntityID_EngineToCS(prefabInstance->GetGUID());
 	}
 #pragma endregion
-	
+
 #pragma region ParentBindings
 	static void BindParentSetParent(CSEntityID ID, CSEntityID parentID)
 	{
@@ -211,7 +211,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(Temp, parentTemp);
 		}
 	}
-	
+
 	static void BindParentRemoveParent(CSEntityID ID)
 	{
 		// Retrieve the entity from the ID
@@ -219,7 +219,7 @@ namespace TRE
 		if (!Temp) return;
 		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
 	}
-	
+
 	static void BindParentAddChild(CSEntityID ID, CSEntityID childID)
 	{
 		// Retrieve the entity from the ID
@@ -230,7 +230,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(Temp, childTemp);
 		}
 	}
-	
+
 	static void BindParentRemoveChild(CSEntityID ID, CSEntityID childID)
 	{
 		// Retrieve the entity from the ID
@@ -241,7 +241,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
 		}
 	}
-	
+
 	static CSEntityID BindParentGetChildFromIndex(CSEntityID ID, int index)
 	{
 		// Retrieve the entity from the ID
@@ -254,7 +254,7 @@ namespace TRE
 
 		return EntityID_EngineToCS(Temp->GetComponent<Parenting>().m_Children[index]);
 	}
-	
+
 	static CSEntityID BindParentGetChildFromName(CSEntityID ID, MonoString* name)
 	{
 		// Retrieve the entity from the ID
@@ -475,7 +475,7 @@ namespace TRE
 		MonoType* monoType = mono_reflection_type_get_type(type);
 		ComponentsID componentID = Tools::ConvertComponentNameToID(mono_type_get_name(monoType));
 
-		switch(componentID)
+		switch (componentID)
 		{
 		case ComponentsID::Transform:
 			return entity->HasComponent<Transform>();
@@ -512,7 +512,7 @@ namespace TRE
 		std::unordered_map<std::string, std::string > tempMap;
 		std::vector temp = ECSManager::Instance().GetAllEntities(true);
 
-		for(auto& entity : temp)
+		for (auto& entity : temp)
 		{
 			std::string temp1 = entity->GetName();
 			std::string temp2 = entity->GetGUID();
@@ -534,7 +534,7 @@ namespace TRE
 		std::string temp = MonoStringToString(name);
 		std::unordered_map<std::string, std::string> sceneObjects = GetAllSceneObjects();
 		// Search for the name in the map
-		if(sceneObjects.find(temp) != sceneObjects.end())
+		if (sceneObjects.find(temp) != sceneObjects.end())
 		{
 			// Found the name
 			std::string ID = sceneObjects[temp];
@@ -648,7 +648,7 @@ namespace TRE
 		mr.m_MaterialInstance = ResourceManager::Instance().GetResource<Material>(str);
 		mr.m_IsDirty = true;
 
-		if(mr.m_MaterialInstance == nullptr)
+		if (mr.m_MaterialInstance == nullptr)
 			PUBLISHERROR("Unable to find material " + str);
 	}
 
@@ -796,7 +796,7 @@ namespace TRE
 			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
 			return false;
 		}
-		
+
 		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(meshName));
 
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
@@ -816,7 +816,7 @@ namespace TRE
 		}
 
 		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(materialInstanceName));
-		
+
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
 		if (mr.m_MaterialInstance == nullptr)
 			return false;
@@ -1175,7 +1175,7 @@ namespace TRE
 	{
 		std::string str = MonoStringToString(message);
 
-		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str()});
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
 		//TRE_INFO(str);
 	}
 
@@ -1859,7 +1859,7 @@ namespace TRE
 		}
 
 		return entity->GetComponent<UIComponent>().m_IsVisible;
-	
+
 	}
 #pragma endregion
 
@@ -1954,7 +1954,7 @@ namespace TRE
 			mono_add_internal_call("TRE.ECSManager::Engine_FindIDFromName", FindIDFromName);
 			mono_add_internal_call("TRE.ECSManager::Engine_FindNameFromID", FindNameFromID);
 			mono_add_internal_call("TRE.ECSManager::Engine_FindParentIDFromID", FindParentIDFromID);
-			mono_add_internal_call("TRE.ECSManager::Engine_HasComponent",BindHasComponent);
+			mono_add_internal_call("TRE.ECSManager::Engine_HasComponent", BindHasComponent);
 		}
 
 		// Entity Bindings
