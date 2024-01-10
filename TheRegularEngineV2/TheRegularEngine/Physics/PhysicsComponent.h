@@ -107,5 +107,6 @@ namespace TRE
 		glm::vec3 m_Offset = {};
 
 		CollisionLayer m_CollisionLayer; // collision layer of object
+		// ^ BUT WHAT ABOUT THE PREFABSSSSS
 	};
 }

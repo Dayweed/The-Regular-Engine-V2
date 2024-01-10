@@ -11,7 +11,7 @@ namespace TRE
 	void to_json(nlohmann::json& j, const CapsuleCollider& t)
 	{
 		j = nlohmann::json{
-			// WriteMemberToJSON(m_IsActive),
+			WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
 			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
 			WriteVec3MemberToJSON(m_Offset),
@@ -22,7 +22,7 @@ namespace TRE
 
 	void from_json(const nlohmann::json& j, CapsuleCollider& t)
 	{
-		// ReadMemberFromJSON(m_IsActive);
+		ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
 		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
 		ReadVec3MemberFromJSON(m_Offset);
@@ -142,7 +142,10 @@ namespace TRE
 		SetCapsuleColliderTrigger(entity, capsuleCollider.m_IsTrigger);
 
 		if (capsuleCollider.m_IsDirty)
+		{
 			ChangeCollisionLayer(entity);
+			ChangeIsActive(entity);
+		}
 	}
 
 	void PhysicsSystem::DestructCapsuleCollider(const Entity& entity) const

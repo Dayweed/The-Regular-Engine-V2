@@ -292,6 +292,8 @@ namespace TRE
 
 		void SetCollisionMatrix(const CollisionMatrix& matrix);
 		CollisionMatrix GetCollisionMatrix();
+
+		void ChangeIsActive(const Entity& entity) const;
 	private:
 
 		void ResizeAllColliders();

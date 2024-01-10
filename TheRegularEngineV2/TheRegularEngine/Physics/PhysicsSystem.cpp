@@ -1039,10 +1039,12 @@ namespace TRE
 	{
 		// get the collider component and obtain the new layer from it
 		int layer = 0;
+
 		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
 		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
 			layer = entity->GetComponent<BoxCollider>().m_CollisionLayer.m_LayerID;
-
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			layer = entity->GetComponent<SphereCollider>().m_CollisionLayer.m_LayerID;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			layer = entity->GetComponent<CapsuleCollider>().m_CollisionLayer.m_LayerID;
 
@@ -1070,6 +1072,23 @@ namespace TRE
 		file.close();
 	}
 #pragma endregion
+
+	void PhysicsSystem::ChangeIsActive(const Entity& entity) const
+	{
+		auto& [rigidDynamic, attachedComponents, _unused1, _unused2] = m_Actors[entity->GetGUID()];
+		UNUSED_VALUE(_unused1);
+		UNUSED_VALUE(_unused2);
+		bool isActive = true;
+
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			isActive = entity->GetComponent<BoxCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			isActive = entity->GetComponent<SphereCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			isActive = entity->GetComponent<CapsuleCollider>().m_IsActive;
+
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !isActive);
+	}
 
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
 	{

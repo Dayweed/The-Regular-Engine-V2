@@ -23,8 +23,8 @@ namespace TRE
 // I SPENT OVER TWO HOURS TRACKING THIS BUG DOWN, LINE BY LINE, CHANGE BY CHANGE. TOMAS WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 property_begin(TRE::BoxCollider)
 {
-	property_var(m_IsVisible),
 	property_var(m_IsActive),
+	property_var(m_IsVisible),
 	property_var(m_CollisionLayer),
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
