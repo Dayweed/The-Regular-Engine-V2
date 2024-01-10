@@ -1090,6 +1090,33 @@ namespace TRE
 		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !isActive);
 	}
 
+	void PhysicsSystem::SetIsActive(const Entity& entity, bool state) const
+	{
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			entity->GetComponent<BoxCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			entity->GetComponent<SphereCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			entity->GetComponent<CapsuleCollider>().m_IsActive = state;
+
+		// now that the bool inside the component has been changed, the change function can be called
+		ChangeIsActive(entity);
+	}
+
+	bool PhysicsSystem::GetIsActive(const Entity& entity) const
+	{
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			return entity->GetComponent<BoxCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			return entity->GetComponent<SphereCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			return entity->GetComponent<CapsuleCollider>().m_IsActive;
+		else
+			return false;
+	}
+
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
 	{
 		if (m_Actors.contains(entity->GetGUID()) == false)

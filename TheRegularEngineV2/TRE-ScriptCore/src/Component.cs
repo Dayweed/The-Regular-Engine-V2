@@ -263,6 +263,17 @@ namespace TRE
 				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
 			}
 		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
+			}
+		}
 	}
 
 	public class SphereCollider : Component
@@ -291,6 +302,17 @@ namespace TRE
 			set
 			{
 				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+			}
+		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
 		}
 	}
@@ -332,6 +354,17 @@ namespace TRE
 			set
 			{
 				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+			}
+		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
 		}
 	}

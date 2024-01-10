@@ -872,6 +872,7 @@ namespace TRE
 	}
 
 #pragma endregion
+
 #pragma region CameraBindings
 	static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
 	{
@@ -1470,6 +1471,36 @@ namespace TRE
 
 		return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerExit(entity1, entity2);
 	}
+
+	static void BindSetIsActive(CSEntityID ID, bool isActive)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		// ensure that there is an existing collider on this entity
+		if (!(entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() || entity->HasComponent<CapsuleCollider>()))
+		{
+			PUBLISHERROR("There is no collider component in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetIsActive(entity, isActive);
+	}
+
+	static bool BindGetIsActive(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		// ensure that there is an existing collider on this entity
+		if (!(entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() || entity->HasComponent<CapsuleCollider>()))
+		{
+			PUBLISHERROR("There is no collider component in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetIsActive(entity);
+	}
 #pragma endregion
 
 #pragma region RigidBodyBindings
@@ -2048,6 +2079,8 @@ namespace TRE
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerEnter", BindIsTriggerEnter);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerStay", BindIsTriggerStay);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerExit", BindIsTriggerExit);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetIsActive", BindSetIsActive);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetIsActive", BindGetIsActive);
 		}
 
 		// RigidBody Binding

@@ -1088,6 +1088,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_IsTriggerExit(EntityID entityid1, EntityID entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetIsActive(EntityID entity, bool isActive);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetIsActive(EntityID entity);
 	}
 
 	public class RigidBodySystem
