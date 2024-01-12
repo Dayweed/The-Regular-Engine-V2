@@ -48,8 +48,6 @@ namespace TRE
 		//how long you hold the jump button to reach max jump height
 		public float maxJumpButtomTime = 0.5f;
 		public float currentJumpTime;
-		//How fast the player falls after jumping
-		public float cancelRate = 40;
 		public bool jumpCancelled = false;
 
 		//Capsule Collider

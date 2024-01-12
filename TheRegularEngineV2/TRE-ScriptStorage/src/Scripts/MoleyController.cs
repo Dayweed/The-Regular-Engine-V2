@@ -72,9 +72,13 @@ namespace TRE
 		//how long you hold the jump button to reach max jump height
 		public float maxJumpButtomTime = 0.5f;
 		public float currentJumpTime;
-		//How fast the player falls after jumping
-		public float cancelRate = 40;
 		public bool jumpCancelled = false;
+		//how long after the player walks off the ground can he still jump
+		private float coyoteTime = 0.2f;
+		public float coyoteTimeCounter;
+		//if player press space within this buffer time, they will still be able to jump even if they havent landed
+		private float jumpBufferTime = 0.25f;
+		public float jumpBufferCounter;
 
 		//For camera controller
 		//private Entity Key;
@@ -281,47 +285,62 @@ namespace TRE
 					currVelocity.y = 0;
 				}
 
-				if (isJumping)
+				if (isGrounded)
+				{
+					coyoteTimeCounter = coyoteTime;
+				}
+				else
+				{
+					coyoteTimeCounter -= Time.deltaTime;
+				}
+
+                if (isJumping)
 				{
 					if (InputSystem.GetKeyRelease(InputKeys.Space))
 					{
-						Debug.Log("cancelled jump");
 						jumpCancelled = true;
+
+						coyoteTimeCounter = 0f;
 					}
 					if (currentJumpTime > maxJumpButtomTime)
 					{
-						Debug.Log("maxed out jump");
 						isJumping = false;
 					}
 					currentJumpTime += Time.deltaTime;
 				}
 
+                if (coyoteTimeCounter > 0f && jumpBufferCounter >= 0f)
+                {
+                    isWalking = false;
 
-				if (InputSystem.GetKeyPress(InputKeys.Space))
-				{
-					isWalking = false;
+                    vec3 maxHeight = new vec3(0, 70, 0);
+                    // Boosted Jump
+                    if (isBoostedJump)
+                    {
+                        maxHeight = new vec3(0, 150, 0);
+                    }
 
-					if (isGrounded)
-					{
-						vec3 maxHeight = new vec3(0, 70, 0);
-						// Boosted Jump
-						if (isBoostedJump)
-						{
-							maxHeight = new vec3(0, 150, 0);
-						}
+                    Jump(maxHeight);
+                    if (ECSManager.IsValidEntity(jumpSFX))
+                    {
+                        AudioSystem.Play(jumpSFX);
+                    }
 
-						Jump(maxHeight);
-						if (ECSManager.IsValidEntity(jumpSFX))
-						{
-							AudioSystem.Play(jumpSFX);
-						}
+                    isJumping = true;
+                    jumpCancelled = false;
+                    currentJumpTime = 0;
+					jumpBufferCounter = 0;
+                }
 
-						isJumping = true;
-						jumpCancelled = false;
-						currentJumpTime = 0;
-					}
-				}
-			}
+                if (InputSystem.GetKeyPress(InputKeys.Space))
+                {
+                    jumpBufferCounter = jumpBufferTime;
+                }
+                else
+                {
+                    jumpBufferCounter -= Time.deltaTime;
+                }
+            }
 			#endregion
 
 			#region Audio
@@ -497,20 +516,6 @@ namespace TRE
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
 
-			if (dirVec != vec3.Zero)
-			{
-
-
-
-
-
-
-
-
-
-
-
-			}
 			/*else if (dirVec.x == 0 && dirVec.z == 0)
 			{
 				// If no input, slow down
