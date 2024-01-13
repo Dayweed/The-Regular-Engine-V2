@@ -294,7 +294,7 @@ namespace TRE
 					coyoteTimeCounter -= Time.deltaTime;
 				}
 
-                if (isJumping)
+				if (isJumping)
 				{
 					if (InputSystem.GetKeyRelease(InputKeys.Space))
 					{
@@ -309,38 +309,38 @@ namespace TRE
 					currentJumpTime += Time.deltaTime;
 				}
 
-                if (coyoteTimeCounter > 0f && jumpBufferCounter >= 0f)
-                {
-                    isWalking = false;
+				if (coyoteTimeCounter > 0f && jumpBufferCounter >= 0f)
+				{
+					isWalking = false;
 
-                    vec3 maxHeight = new vec3(0, 70, 0);
-                    // Boosted Jump
-                    if (isBoostedJump)
-                    {
-                        maxHeight = new vec3(0, 150, 0);
-                    }
+					vec3 maxHeight = new vec3(0, 70, 0);
+					// Boosted Jump
+					if (isBoostedJump)
+					{
+						maxHeight = new vec3(0, 150, 0);
+					}
 
-                    Jump(maxHeight);
-                    if (ECSManager.IsValidEntity(jumpSFX))
-                    {
-                        AudioSystem.Play(jumpSFX);
-                    }
+					Jump(maxHeight);
+					if (ECSManager.IsValidEntity(jumpSFX))
+					{
+						AudioSystem.Play(jumpSFX);
+					}
 
-                    isJumping = true;
-                    jumpCancelled = false;
-                    currentJumpTime = 0;
+					isJumping = true;
+					jumpCancelled = false;
+					currentJumpTime = 0;
 					jumpBufferCounter = 0;
-                }
+				}
 
-                if (InputSystem.GetKeyPress(InputKeys.Space))
-                {
-                    jumpBufferCounter = jumpBufferTime;
-                }
-                else
-                {
-                    jumpBufferCounter -= Time.deltaTime;
-                }
-            }
+				if (InputSystem.GetKeyPress(InputKeys.Space))
+				{
+					jumpBufferCounter = jumpBufferTime;
+				}
+				else
+				{
+					jumpBufferCounter -= Time.deltaTime;
+				}
+			}
 			#endregion
 
 			#region Audio

@@ -15,7 +15,7 @@ namespace TRE
 		public List<HoleCheckTrigger> triggersComp;
 
 		private string deactivatedMaterial = "HITW_Center.material";
-        private string activatedMaterial = "HoleCheck_Green.material";
+		private string activatedMaterial = "HoleCheck_Green.material";
 
 		public HoleCheckDisplay()
 		{
@@ -23,11 +23,11 @@ namespace TRE
 		}
 
 		public void Start()
-        {
-            GetComponent<MeshRenderer>().Material = deactivatedMaterial;
+		{
+			GetComponent<MeshRenderer>().Material = deactivatedMaterial;
 
-            // Add triggers that are it's child as triggers
-            for (int i = 0; i < NoOfTriggers; i++)
+			// Add triggers that are it's child as triggers
+			for (int i = 0; i < NoOfTriggers; i++)
 			{
 				Entity trigger = parenting.GetChild(i);
 
