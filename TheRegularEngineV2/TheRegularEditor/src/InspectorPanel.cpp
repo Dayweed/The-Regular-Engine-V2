@@ -508,6 +508,22 @@ namespace TRE
 									ImGui::EndCombo();
 								}
 							}
+							else if constexpr (std::is_same_v<T, PhysicsMaterial>)
+							{
+								// display the name of the layer currently being used by the entity in the dropdown
+								if (ImGui::BeginCombo("##PhysicsMaterialDropdown", PhysicsMaterial::m_LayerNameList[static_cast<int>(Value.m_MaterialID)].first.c_str()))
+								{
+									for (auto& element : PhysicsMaterial::m_LayerNameList)
+									{
+										if (ImGui::Selectable(element.first.c_str()))
+										{
+											UpdatedData = true;
+											Value.m_MaterialID = element.second;
+										}
+									}
+									ImGui::EndCombo();
+								}
+							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
 					, Data);

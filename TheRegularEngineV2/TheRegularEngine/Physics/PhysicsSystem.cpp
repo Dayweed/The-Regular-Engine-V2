@@ -159,6 +159,8 @@ namespace TRE
 		//Create material gives the object a static, dynamic and restitution.
 		m_DefaultMaterial = m_Physics->createMaterial(PX_MAX_F32, PX_MAX_F32, 0.f);
 
+		m_FrictionlessMaterial = m_Physics->createMaterial(0, 0, 0);
+
 		// initialize collision matrix
 		for (auto& row : m_CollisionMatrix)
 			row = 0;
@@ -1088,6 +1090,34 @@ namespace TRE
 			isActive = entity->GetComponent<CapsuleCollider>().m_IsActive;
 
 		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !isActive);
+	}
+
+	void PhysicsSystem::ChangeMaterial(const Entity& entity) const
+	{
+		auto& [rigidDynamic, attachedComponents, _unused1, _unused2] = m_Actors[entity->GetGUID()];
+		UNUSED_VALUE(_unused1);
+		UNUSED_VALUE(_unused2);
+
+		int material = PhysicsMaterial::Default;
+
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			material = entity->GetComponent<BoxCollider>().m_PhysicsMaterial.m_MaterialID;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			material = entity->GetComponent<SphereCollider>().m_PhysicsMaterial.m_MaterialID;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			material = entity->GetComponent<CapsuleCollider>().m_PhysicsMaterial.m_MaterialID;
+
+		// there are only 3 shapes that can possibly be added - Sphere, Box & Capsule
+		PxShape* shapes[3] = { nullptr };
+		unsigned numberOfShapes = rigidDynamic->getShapes(shapes, 3);
+
+		for (unsigned i = 0; i < numberOfShapes; ++i)
+		{
+			if (material == PhysicsMaterial::Default)
+				shapes[i]->setMaterials(&m_DefaultMaterial, 1);
+			else if (material == PhysicsMaterial::Frictionless)
+				shapes[i]->setMaterials(&m_FrictionlessMaterial, 1);
+		}
 	}
 
 	void PhysicsSystem::SetIsActive(const Entity& entity, bool state) const

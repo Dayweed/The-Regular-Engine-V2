@@ -68,6 +68,17 @@ struct CollisionLayer
 	Layer m_LayerID = Default;
 };
 
+struct PhysicsMaterial
+{
+	enum Material { Default, Frictionless, TOTAL };
+	inline static std::array<std::pair<std::string, PhysicsMaterial::Material>, Material::TOTAL> m_LayerNameList
+	{
+		std::pair{ "Default", Default },
+		std::pair{ "Frictionless", Frictionless }
+	};
+	Material m_MaterialID = Default;
+};
+
 namespace TRE
 {
 	struct PhysicsComponentTypes
@@ -108,5 +119,7 @@ namespace TRE
 
 		CollisionLayer m_CollisionLayer; // collision layer of object
 		// ^ BUT WHAT ABOUT THE PREFABSSSSS
+
+		PhysicsMaterial m_PhysicsMaterial;
 	};
 }

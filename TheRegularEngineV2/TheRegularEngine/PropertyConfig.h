@@ -4,7 +4,7 @@
 
 #include "glm/glm.hpp"
 #include "fmod/fmod.hpp"
-#include "Physics/PhysicsComponent.h" // for CollisionLayer
+#include "Physics/PhysicsComponent.h" // for CollisionLayer & PhysicsMaterial
 
 using string_t = std::string;
 
@@ -174,6 +174,7 @@ namespace property
             , FMOD_VECTOR
             , std::vector<waypoint>
             , CollisionLayer
+            , PhysicsMaterial
         >;
     
         //--------------------------------------------------------------------------------------------
