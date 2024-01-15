@@ -283,6 +283,7 @@ namespace TRE
 
 		void ChangeCollisionLayer(const Entity& entity) const;
 
+		void SetLayerNames();
 		void SaveCollisionMatrix();
 		void LoadCollisionMatrix();
 		void ApplyCollisionMatrix();
@@ -291,6 +292,10 @@ namespace TRE
 
 		void SetCollisionMatrix(const CollisionMatrix& matrix);
 		CollisionMatrix GetCollisionMatrix();
+
+		void ChangeIsActive(const Entity& entity) const;
+		void SetIsActive(const Entity& entity, bool state) const;
+		bool GetIsActive(const Entity& entity) const;
 	private:
 
 		void ResizeAllColliders();

@@ -48,27 +48,31 @@ namespace TRE
 		//how long you hold the jump button to reach max jump height
 		public float maxJumpButtomTime = 0.5f;
 		public float currentJumpTime;
-		//How fast the player falls after jumping
-		public float cancelRate = 40;
 		public bool jumpCancelled = false;
+        //how long after the player walks off the ground can he still jump
+        private float coyoteTime = 0.2f;
+        public float coyoteTimeCounter;
+        //if player press space within this buffer time, they will still be able to jump even if they havent landed
+        private float jumpBufferTime = 0.25f;
+        public float jumpBufferCounter;
 
-		//Capsule Collider
-		public bool mainBlueberry = false;  // Scaling
+        //Capsule Collider
+        public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
 		public float defaultRadius = 2f;
 		public float defaultHeight = 1f;
-		
+
 		public float blueberrysuperRadius = 4.8f;
 		public float blueberrysuperHeight = 4.8f;
-		
+
 		public float strawberrysuperRadius = 2.4f;
 		public float strawberrysuperHeight = 1.2f;
-		
+
 		public float currentRadius = 2f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
-		
+
 		//Transform Scale
 		public vec3 defaultXform = new vec3(75f, 75f, 75f);
 		public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
@@ -253,50 +257,74 @@ namespace TRE
 					}
 				}
 
-                if (jumpCancelled && isJumping && currVelocity.y > 0)
-                {
-					currVelocity.y = 0;
-                }
-
-                if (isJumping)
+				if (jumpCancelled && isJumping && currVelocity.y > 0)
 				{
-					if (InputSystem.GetKeyRelease(InputKeys.Enter))
-					{
-						Debug.Log("cancelled jump");
-						jumpCancelled = true;
-					}
-					if (currentJumpTime > maxJumpButtomTime)
-					{
-                        Debug.Log("maxed out jump");
-                        isJumping = false;
-					}
-					currentJumpTime += Time.deltaTime;
+					currVelocity.y = 0;
+				}
+
+				if (isGrounded)
+				{
+					coyoteTimeCounter = coyoteTime;
+				}
+				else
+				{
+					coyoteTimeCounter -= Time.deltaTime;
 				}
 
 				if (InputSystem.GetKeyPress(InputKeys.Enter))
 				{
-					isWalking = false;
+					jumpBufferCounter = jumpBufferTime;
+				}
+				else
+				{
+					jumpBufferCounter -= Time.deltaTime;
+				}
 
-					if (isGrounded)
+				if (isJumping)
+				{
+					if (InputSystem.GetKeyRelease(InputKeys.Enter))
 					{
-						vec3 maxHeight = new vec3(0, 70, 0);
-						// Boosted Jump
-						if (isBoostedJump)
-						{
-							maxHeight = new vec3(0, 150, 0);
-						}
-
-						Jump(maxHeight);
-						if (ECSManager.IsValidEntity(jumpSFX))
-						{
-							AudioSystem.Play(jumpSFX);
-						}
-
-						isJumping = true;
-						jumpCancelled = false;
-						currentJumpTime = 0;
+						//Debug.Log("cancelled jump");
+						jumpCancelled = true;
+						coyoteTimeCounter = 0f;
+					}
+					if (currentJumpTime > maxJumpButtomTime)
+					{
+						//Debug.Log("maxed out jump");
+						isJumping = false;
+					}
+					currentJumpTime += Time.deltaTime;
+				}
+				else
+				{
+					if (InputSystem.GetKeyRelease(InputKeys.Enter))
+					{
+						isJumping = false;
 					}
 				}
+
+				if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+				{
+					isWalking = false;
+
+                    vec3 maxHeight = new vec3(0, 70, 0);
+                    // Boosted Jump
+                    if (isBoostedJump)
+                    {
+                        maxHeight = new vec3(0, 150, 0);
+                    }
+
+                    Jump(maxHeight);
+                    if (ECSManager.IsValidEntity(jumpSFX))
+                    {
+                        AudioSystem.Play(jumpSFX);
+                    }
+
+                    isJumping = true;
+                    jumpCancelled = false;
+                    currentJumpTime = 0;
+                    jumpBufferCounter = 0;
+                }
 			}
 
 			#endregion
@@ -475,7 +503,7 @@ namespace TRE
 				//Cactus Model
 				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
 					GetComponent<MeshRenderer>().Mesh = "Holey_Strawberry.fbx";
-				
+
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);

@@ -930,7 +930,6 @@ namespace TRE
 		internal extern static float Engine_GetAnimationSpeed(EntityID entityid);
 	}
 
-
 	public enum ForceMode
 	{
 		Force,              //!< parameter has unit of mass * length / time^2, i.e., a force
@@ -1088,6 +1087,12 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_IsTriggerExit(EntityID entityid1, EntityID entityid2);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetIsActive(EntityID entity, bool isActive);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetIsActive(EntityID entity);
 	}
 
 	public class RigidBodySystem
@@ -1121,8 +1126,8 @@ namespace TRE
 
 		public static bool GetKeyRelease(InputKeys keycode)
 		{
-            return Engine_GetKeyRelease(keycode);
-        }
+			return Engine_GetKeyRelease(keycode);
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyHold(InputKeys keycode);
@@ -1382,31 +1387,60 @@ namespace TRE
 		public extern static void Engine_SetPersistentValue(string VariableName, string VariableValue);
 	}
 
-    public class UISystem
-    {
+	public class UISystem
+	{
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetVisible(EntityID ID);
-    }
+	}
 
 	public class DirectPathfindingSystem
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetPathfindingRunning(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_StartPathfinding(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_PausePathfinding(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_ResumePathfinding(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_ResetPathfinding(EntityID ID);
+	}
+
+	public class ScenePostEffectsSystem
     {
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetPathfindingRunning(EntityID ID);
+		public enum STATE
+		{
+			NONE,
+			IN,
+			OUT
+		}
+
+        public static STATE VignetteState
+        {
+            get
+            {
+				if (Engine_GetVignetteStateIn()) return STATE.IN;
+				if (Engine_GetVignetteStateOut()) return STATE.OUT;
+				return STATE.NONE;
+            }
+        }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_StartPathfinding(EntityID ID);
+        public extern static void Engine_ShrinkVignette(float duration);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_PausePathfinding(EntityID ID);
+        private extern static bool Engine_GetVignetteStateIn();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_ResumePathfinding(EntityID ID);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_ResetPathfinding(EntityID ID);
+        private extern static bool Engine_GetVignetteStateOut();
     }
 }

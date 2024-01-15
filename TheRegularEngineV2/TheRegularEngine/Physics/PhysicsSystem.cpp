@@ -163,6 +163,7 @@ namespace TRE
 		for (auto& row : m_CollisionMatrix)
 			row = 0;
 
+		SetLayerNames();
 		LoadCollisionMatrix();
 		ApplyCollisionMatrix();
 
@@ -998,7 +999,7 @@ namespace TRE
 
 		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
 		{
-			const char* variableName = CollisionLayer::m_LayerNameList[i].first;
+			std::string variableName = CollisionLayer::m_LayerNameList[i].first;
 			const int value = static_cast<int>(m_CollisionMatrix[i].to_ullong());
 			objBuilder.insertValue(variableName, value, allocator);
 		}
@@ -1019,9 +1020,9 @@ namespace TRE
 		const ObjectDeserializer deserializer(collisionMatrixFileName);
 		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
 		{
-			const char* variableName = CollisionLayer::m_LayerNameList[i].first;
+			std::string variableName = CollisionLayer::m_LayerNameList[i].first;
 			int value = 0;
-			if (!deserializer.get_value(collisionMatrixObjectName, variableName, value))
+			if (!deserializer.get_value(collisionMatrixObjectName, variableName.c_str(), value))
 				TRE_CORE_ERROR("Unable to read value with name \"{0}.{1}\"", collisionMatrixObjectName, variableName);
 			m_CollisionMatrix[i] = value;
 		}
@@ -1038,10 +1039,12 @@ namespace TRE
 	{
 		// get the collider component and obtain the new layer from it
 		int layer = 0;
+
 		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
 		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
 			layer = entity->GetComponent<BoxCollider>().m_CollisionLayer.m_LayerID;
-
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			layer = entity->GetComponent<SphereCollider>().m_CollisionLayer.m_LayerID;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			layer = entity->GetComponent<CapsuleCollider>().m_CollisionLayer.m_LayerID;
 
@@ -1051,7 +1054,68 @@ namespace TRE
 
 		PxSetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic, group);
 	}
+
+	void PhysicsSystem::SetLayerNames()
+	{
+		constexpr const char* collisionLayerFileName = "../Resources/CollisionLayerNames.txt";
+		std::ifstream file(collisionLayerFileName);
+		if (!file)
+			return;
+
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
+		{
+			std::string huh;
+			file >> huh;
+			CollisionLayer::m_LayerNameList[i].first = huh;
+		}
+
+		file.close();
+	}
 #pragma endregion
+
+	void PhysicsSystem::ChangeIsActive(const Entity& entity) const
+	{
+		auto& [rigidDynamic, attachedComponents, _unused1, _unused2] = m_Actors[entity->GetGUID()];
+		UNUSED_VALUE(_unused1);
+		UNUSED_VALUE(_unused2);
+		bool isActive = true;
+
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			isActive = entity->GetComponent<BoxCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			isActive = entity->GetComponent<SphereCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			isActive = entity->GetComponent<CapsuleCollider>().m_IsActive;
+
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !isActive);
+	}
+
+	void PhysicsSystem::SetIsActive(const Entity& entity, bool state) const
+	{
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			entity->GetComponent<BoxCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			entity->GetComponent<SphereCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			entity->GetComponent<CapsuleCollider>().m_IsActive = state;
+
+		// now that the bool inside the component has been changed, the change function can be called
+		ChangeIsActive(entity);
+	}
+
+	bool PhysicsSystem::GetIsActive(const Entity& entity) const
+	{
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			return entity->GetComponent<BoxCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			return entity->GetComponent<SphereCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			return entity->GetComponent<CapsuleCollider>().m_IsActive;
+		else
+			return false;
+	}
 
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
 	{

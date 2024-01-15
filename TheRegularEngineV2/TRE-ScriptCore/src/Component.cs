@@ -196,7 +196,6 @@ namespace TRE
 		}
 	}
 
-
 	public class Camera : Component
 	{
 		// use transform component as template
@@ -263,6 +262,17 @@ namespace TRE
 				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
 			}
 		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
+			}
+		}
 	}
 
 	public class SphereCollider : Component
@@ -291,6 +301,17 @@ namespace TRE
 			set
 			{
 				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+			}
+		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
 		}
 	}
@@ -332,6 +353,17 @@ namespace TRE
 			set
 			{
 				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+			}
+		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
 		}
 	}
@@ -434,24 +466,24 @@ namespace TRE
 		}
 	}
 
-    public class UI : Component
-    {
-        public UI()
-        {
+	public class UI : Component
+	{
+		public UI()
+		{
 
-        }
-        public bool IsVisible
-        {
-            get
-            {
-                return UISystem.Engine_GetVisible(entity.ID);
-            }
-            set
-            {
-                UISystem.Engine_SetVisible(entity.ID, value);
-            }
-        }
-    }
+		}
+		public bool IsVisible
+		{
+			get
+			{
+				return UISystem.Engine_GetVisible(entity.ID);
+			}
+			set
+			{
+				UISystem.Engine_SetVisible(entity.ID, value);
+			}
+		}
+	}
 
 	public class DirectPathfinding : Component
 	{
@@ -461,17 +493,17 @@ namespace TRE
 			{
 				return DirectPathfindingSystem.Engine_GetPathfindingRunning(entity.ID);
 
-            }
+			}
 			set
 			{
 				if (value)
 				{
 					DirectPathfindingSystem.Engine_ResumePathfinding(entity.ID);
-                }
+				}
 				else
-                {
-                    DirectPathfindingSystem.Engine_PausePathfinding(entity.ID);
-                }
+				{
+					DirectPathfindingSystem.Engine_PausePathfinding(entity.ID);
+				}
 			}
 		}
 
@@ -482,7 +514,7 @@ namespace TRE
 
 		public void Reset()
 		{
-            DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
-        }
+			DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
+		}
 	}
 }

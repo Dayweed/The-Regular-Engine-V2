@@ -6,11 +6,8 @@ using Coroutine;
 
 namespace TRE
 {
-	using PS = PhysicsSystem;
-
 	public class Main
 	{
-
 		public void Start()
 		{
 
@@ -27,8 +24,5 @@ namespace TRE
 				Thread.Sleep(1);
 			}
 		}
-
-
 	}
-
 }

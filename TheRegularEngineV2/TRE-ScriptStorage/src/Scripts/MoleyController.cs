@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
 using GlmSharp;
+using System.Diagnostics;
 
 namespace TRE
 {
@@ -18,25 +19,25 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
-        //Check if player is boosted jump
-        public bool isBoostedJump = false;
-        //check if player is on the ground (for now , just a plane)
-        public bool isGrounded = true;
-        //direction vector
-        private vec3 dirVec;
-        //Max Velocity vector
-        private float maxVelocity = 30f;
-        //Max Air Velocity vector
-        //private float maxAirVelocity = 25f;
-        //Acceleration
-        private float acceleration = 700f;
-        //final velocity
-        private vec3 finalVelocity = vec3.Zero;
-        //maxJumpHeight
-        private float maxJumpHeight = 70f;
-        //Check if player is walking
-        private bool isWalking = false;
-        private bool walkingSFXPlayed = false;
+		//Check if player is boosted jump
+		public bool isBoostedJump = false;
+		//check if player is on the ground (for now , just a plane)
+		public bool isGrounded = true;
+		//direction vector
+		private vec3 dirVec;
+		//Max Velocity vector
+		private float maxVelocity = 30f;
+		//Max Air Velocity vector
+		//private float maxAirVelocity = 25f;
+		//Acceleration
+		private float acceleration = 700f;
+		//final velocity
+		private vec3 finalVelocity = vec3.Zero;
+		//maxJumpHeight
+		private float maxJumpHeight = 70f;
+		//Check if player is walking
+		private bool isWalking = false;
+		private bool walkingSFXPlayed = false;
 
 		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling
@@ -64,6 +65,20 @@ namespace TRE
 		private int lastPlayerDirection = 0;
 
 		private float lerpSpeed = 5f;
+
+		//Jump Variables
+		//Check if player is jumping at all
+		public bool isJumping = false;
+		//how long you hold the jump button to reach max jump height
+		public float maxJumpButtomTime = 0.5f;
+		public float currentJumpTime;
+		public bool jumpCancelled = false;
+		//how long after the player walks off the ground can he still jump
+		private float coyoteTime = 0.2f;
+		public float coyoteTimeCounter;
+		//if player press space within this buffer time, they will still be able to jump even if they havent landed
+		private float jumpBufferTime = 0.25f;
+		public float jumpBufferCounter;
 
 		//For camera controller
 		//private Entity Key;
@@ -264,34 +279,79 @@ namespace TRE
 					}
 				}
 
-				if (InputSystem.GetKeyPress(InputKeys.Space))
+				if (jumpCancelled && isJumping && currVelocity.y > 0)
 				{
+					currVelocity.y = 0;
+				}
 
+				if (isGrounded)
+				{
+					coyoteTimeCounter = coyoteTime;
+				}
+				else
+				{
+					coyoteTimeCounter -= Time.deltaTime;
+				}
+
+				if (InputSystem.GetKeyPress(InputKeys.Space))
+                {
+                    jumpBufferCounter = jumpBufferTime;
+					//Debug.Log("Jump Pressed");
+                }
+                else
+                {
+                    jumpBufferCounter -= Time.deltaTime;
+                    //Debug.Log("Jump Buffer Time 2: " + jumpBufferCounter);
+                }
+
+				if (isJumping)
+				{
+					if (InputSystem.GetKeyRelease(InputKeys.Space))
+					{
+						jumpCancelled = true;
+						coyoteTimeCounter = 0f;
+						//Debug.Log("Jump Cancelled");
+					}
+					if (currentJumpTime > maxJumpButtomTime)
+					{
+						isJumping = false;
+
+						//Debug.Log("Jump ran out");
+                    }
+					currentJumpTime += Time.deltaTime;
+				}
+				else
+				{
+                    if (InputSystem.GetKeyRelease(InputKeys.Space))
+                    {
+						isJumping = false;
+                    }
+                }
+
+                
+
+                if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+				{
 					isWalking = false;
 
-					if (isGrounded)
+					vec3 maxHeight = new vec3(0, 70, 0);
+					// Boosted Jump
+					if (isBoostedJump)
 					{
-						// Boosted Jump
-						if (isBoostedJump)
-						{
-							vec3 maxHeight = new vec3(0, 150, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
-						}
-						else
-						{
-							vec3 maxHeight = new vec3(0, 70, 0);
-							Jump(maxHeight);
-							if (ECSManager.IsValidEntity(jumpSFX))
-							{
-								AudioSystem.Play(jumpSFX);
-							}
-						}
+						maxHeight = new vec3(0, 150, 0);
 					}
-				}
+
+					Jump(maxHeight);
+					if (ECSManager.IsValidEntity(jumpSFX))
+					{
+						AudioSystem.Play(jumpSFX);
+					}
+
+					isJumping = true;
+					jumpCancelled = false;
+					currentJumpTime = 0;
+					jumpBufferCounter = 0;
+                }
 			}
 			#endregion
 
@@ -387,7 +447,7 @@ namespace TRE
 					//Walking state
 					GetComponent<MeshRenderer>().Mesh = "mole_walk.fbx";
 					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
-					if(HasComponent<Animation>())
+					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else if (!isGrounded)
@@ -468,26 +528,24 @@ namespace TRE
 			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
 			playerDirection = (playerDirection % 360);
 
-			if (dirVec != vec3.Zero)
-			{
-				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
-				{
-					finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-				else
-				{
-					vec3 tmp = dirVec * maxVelocity;
-					finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-					PS.SetLinearVelocity(this.ID, finalVelocity);
-				}
-			}
 			/*else if (dirVec.x == 0 && dirVec.z == 0)
 			{
 				// If no input, slow down
 				finalVelocity = currVelocity * 0.9f;
 				PS.SetLinearVelocity(this.ID, finalVelocity);
 			}*/
+
+			if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) < maxVelocity)
+			{
+				finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+				PS.SetLinearVelocity(this.ID, finalVelocity);
+			}
+			else
+			{
+				vec3 tmp = dirVec * maxVelocity;
+				finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+				PS.SetLinearVelocity(this.ID, finalVelocity);
+			}
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 

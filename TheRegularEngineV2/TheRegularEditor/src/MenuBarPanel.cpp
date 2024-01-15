@@ -90,7 +90,7 @@ namespace TRE
 				{
 					EventHandler::getEventHandlerInstance().Publish(AssetPanelEvent{ m_ShowAssetPanel });
 				}
-				if (ImGui::MenuItem("Collision Matrix", "Grave(`)", &m_ShowCollisionMatrixPanel))
+				if (ImGui::MenuItem("Collision Matrix", "Tilde(`)", &m_ShowCollisionMatrixPanel))
 				{
 					// tell the collision matrix panel to toggle visibility
 					EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });

@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Core/Transform.h"
 #include "Core/GameLoop.h"
+#include "Resource/Resource.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
@@ -65,7 +66,7 @@ namespace TRE
 	{
 		ComponentsID ConvertComponentNameToID(std::string componentName)
 		{
-			if(ComponentsMap.find(componentName) != ComponentsMap.end())
+			if (ComponentsMap.find(componentName) != ComponentsMap.end())
 			{
 				return ComponentsMap[componentName];
 			}
@@ -165,7 +166,7 @@ namespace TRE
 		if (!Temp) return;
 		Temp->GetComponent<Properties>().m_Tag = mono_string_to_utf8(tag);
 	}
-	
+
 	static MonoString* BindEntityGetTag(CSEntityID ID)
 	{
 		// Retrieve the entity from the ID
@@ -199,7 +200,7 @@ namespace TRE
 		return EntityID_EngineToCS(prefabInstance->GetGUID());
 	}
 #pragma endregion
-	
+
 #pragma region ParentBindings
 	static void BindParentSetParent(CSEntityID ID, CSEntityID parentID)
 	{
@@ -211,7 +212,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(Temp, parentTemp);
 		}
 	}
-	
+
 	static void BindParentRemoveParent(CSEntityID ID)
 	{
 		// Retrieve the entity from the ID
@@ -219,7 +220,7 @@ namespace TRE
 		if (!Temp) return;
 		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(Temp);
 	}
-	
+
 	static void BindParentAddChild(CSEntityID ID, CSEntityID childID)
 	{
 		// Retrieve the entity from the ID
@@ -230,7 +231,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AddChild(Temp, childTemp);
 		}
 	}
-	
+
 	static void BindParentRemoveChild(CSEntityID ID, CSEntityID childID)
 	{
 		// Retrieve the entity from the ID
@@ -241,7 +242,7 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChild(Temp, childTemp);
 		}
 	}
-	
+
 	static CSEntityID BindParentGetChildFromIndex(CSEntityID ID, int index)
 	{
 		// Retrieve the entity from the ID
@@ -254,7 +255,7 @@ namespace TRE
 
 		return EntityID_EngineToCS(Temp->GetComponent<Parenting>().m_Children[index]);
 	}
-	
+
 	static CSEntityID BindParentGetChildFromName(CSEntityID ID, MonoString* name)
 	{
 		// Retrieve the entity from the ID
@@ -475,7 +476,7 @@ namespace TRE
 		MonoType* monoType = mono_reflection_type_get_type(type);
 		ComponentsID componentID = Tools::ConvertComponentNameToID(mono_type_get_name(monoType));
 
-		switch(componentID)
+		switch (componentID)
 		{
 		case ComponentsID::Transform:
 			return entity->HasComponent<Transform>();
@@ -512,7 +513,7 @@ namespace TRE
 		std::unordered_map<std::string, std::string > tempMap;
 		std::vector temp = ECSManager::Instance().GetAllEntities(true);
 
-		for(auto& entity : temp)
+		for (auto& entity : temp)
 		{
 			std::string temp1 = entity->GetName();
 			std::string temp2 = entity->GetGUID();
@@ -534,7 +535,7 @@ namespace TRE
 		std::string temp = MonoStringToString(name);
 		std::unordered_map<std::string, std::string> sceneObjects = GetAllSceneObjects();
 		// Search for the name in the map
-		if(sceneObjects.find(temp) != sceneObjects.end())
+		if (sceneObjects.find(temp) != sceneObjects.end())
 		{
 			// Found the name
 			std::string ID = sceneObjects[temp];
@@ -648,7 +649,7 @@ namespace TRE
 		mr.m_MaterialInstance = ResourceManager::Instance().GetResource<Material>(str);
 		mr.m_IsDirty = true;
 
-		if(mr.m_MaterialInstance == nullptr)
+		if (mr.m_MaterialInstance == nullptr)
 			PUBLISHERROR("Unable to find material " + str);
 	}
 
@@ -796,7 +797,7 @@ namespace TRE
 			PUBLISHERROR("Entity " + Temp->GetName() + " does not have MeshRenderer!");
 			return false;
 		}
-		
+
 		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(meshName));
 
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
@@ -816,7 +817,7 @@ namespace TRE
 		}
 
 		const ResourceHandle handle = Resource::GenerateGUID(MonoStringToString(materialInstanceName));
-		
+
 		MeshRenderer& mr = Temp->GetComponent<MeshRenderer>();
 		if (mr.m_MaterialInstance == nullptr)
 			return false;
@@ -872,6 +873,7 @@ namespace TRE
 	}
 
 #pragma endregion
+
 #pragma region CameraBindings
 	static void BindCamSetViewportSize(CSEntityID ID, glm::vec2 newSize)
 	{
@@ -1174,7 +1176,7 @@ namespace TRE
 	{
 		std::string str = MonoStringToString(message);
 
-		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str()});
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ str.c_str() });
 		//TRE_INFO(str);
 	}
 
@@ -1470,6 +1472,36 @@ namespace TRE
 
 		return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->IsTriggerExit(entity1, entity2);
 	}
+
+	static void BindSetIsActive(CSEntityID ID, bool isActive)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		// ensure that there is an existing collider on this entity
+		if (!(entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() || entity->HasComponent<CapsuleCollider>()))
+		{
+			PUBLISHERROR("There is no collider component in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetIsActive(entity, isActive);
+	}
+
+	static bool BindGetIsActive(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		// ensure that there is an existing collider on this entity
+		if (!(entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() || entity->HasComponent<CapsuleCollider>()))
+		{
+			PUBLISHERROR("There is no collider component in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetIsActive(entity);
+	}
 #pragma endregion
 
 #pragma region RigidBodyBindings
@@ -1619,7 +1651,7 @@ namespace TRE
 	{
 		std::string sceneName = MonoStringToString(id);
 		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
-		SceneTransitioner::Instance().TransitionToScene(scenePath, totalDuration);
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->TransitionToScene(scenePath, totalDuration);
 	}
 
 	static MonoString* BindGetSceneName()
@@ -1758,16 +1790,17 @@ namespace TRE
 		if (!Temp->HasComponent<UIComponent>()) return;
 		UIComponent& uiComp = Temp->GetComponent<UIComponent>();
 		std::string texturestr = MonoStringToString(texture);
-		ResourceHandle textureHdl = Resource::GetGUIDFromHex(texturestr);
-		if (textureHdl != 0)
+
+		if (texturestr != "")
 		{
-			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHdl); Texture)
+			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(texturestr); Texture)
 			{
 				uiComp.m_Texture = Texture;
 			}
 			else
 			{
-				uiComp.m_Texture = VulkanTexture::Deserialize(texturestr);
+				std::string hexCode = Resource::GetGUIDHex(Resource::GenerateGUID(texturestr));
+				uiComp.m_Texture = VulkanTexture::Deserialize(hexCode);
 
 				if (uiComp.m_Texture == nullptr)
 					PUBLISHERROR("Texture (" + texturestr + ") failed to load in UI Component");
@@ -1842,7 +1875,7 @@ namespace TRE
 		}
 
 		return entity->GetComponent<UIComponent>().m_IsVisible;
-	
+
 	}
 #pragma endregion
 
@@ -1924,6 +1957,27 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region PostProcessing
+	static void Engine_ShrinkVignette(float duration)
+	{
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->VignetteShrink(duration);
+	}
+
+	static bool Engine_GetVignetteStateIn()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_IN;
+	}
+
+	static bool Engine_GetVignetteStateOut()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_OUT;
+	}
+
+
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -1937,7 +1991,7 @@ namespace TRE
 			mono_add_internal_call("TRE.ECSManager::Engine_FindIDFromName", FindIDFromName);
 			mono_add_internal_call("TRE.ECSManager::Engine_FindNameFromID", FindNameFromID);
 			mono_add_internal_call("TRE.ECSManager::Engine_FindParentIDFromID", FindParentIDFromID);
-			mono_add_internal_call("TRE.ECSManager::Engine_HasComponent",BindHasComponent);
+			mono_add_internal_call("TRE.ECSManager::Engine_HasComponent", BindHasComponent);
 		}
 
 		// Entity Bindings
@@ -2062,6 +2116,8 @@ namespace TRE
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerEnter", BindIsTriggerEnter);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerStay", BindIsTriggerStay);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerExit", BindIsTriggerExit);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetIsActive", BindSetIsActive);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetIsActive", BindGetIsActive);
 		}
 
 		// RigidBody Binding
@@ -2169,6 +2225,13 @@ namespace TRE
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_PausePathfinding", Engine_PausePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResumePathfinding", Engine_ResumePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
+		}
+
+		// Post Effects
+		{
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_ShrinkVignette", Engine_ShrinkVignette);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateIn", Engine_GetVignetteStateIn);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateOut", Engine_GetVignetteStateOut);
 		}
 	}
 }

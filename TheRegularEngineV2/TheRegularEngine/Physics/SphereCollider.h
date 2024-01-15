@@ -21,8 +21,8 @@ namespace TRE
 
 property_begin(TRE::SphereCollider)
 {
-	property_var(m_IsVisible),
 	property_var(m_IsActive),
+	property_var(m_IsVisible),
 	property_var(m_CollisionLayer),
 	property_var(m_IsTrigger),
 	property_var(m_Offset),
