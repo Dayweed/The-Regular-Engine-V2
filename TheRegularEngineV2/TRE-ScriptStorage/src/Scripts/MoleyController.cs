@@ -296,6 +296,7 @@ namespace TRE
 				if (InputSystem.GetKeyPress(InputKeys.Space))
                 {
                     jumpBufferCounter = jumpBufferTime;
+					Debug.Log("Jump Pressed");
                 }
                 else
                 {
@@ -308,8 +309,8 @@ namespace TRE
 					if (InputSystem.GetKeyRelease(InputKeys.Space))
 					{
 						jumpCancelled = true;
-
 						coyoteTimeCounter = 0f;
+						Debug.Log("Jump Cancelled");
 					}
 					if (currentJumpTime > maxJumpButtomTime)
 					{
