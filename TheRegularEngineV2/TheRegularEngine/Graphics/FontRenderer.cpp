@@ -38,5 +38,7 @@ namespace TRE
 		size_t Final = (End1 < End2) ? End1 : End2;
 		std::string FontType = Filepath.substr(Start, Final - Start);
 		TRE_CORE_INFO("Font Type Loaded: {0}", FontType);
+
+		return FontType;
 	}
 }
