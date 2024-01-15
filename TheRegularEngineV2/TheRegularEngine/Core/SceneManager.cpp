@@ -207,7 +207,5 @@ namespace TRE
 		vignetteTransition.m_Duration = totalDuration;
 		vignetteTransition.m_HalfDuration = vignetteTransition.m_Duration / 2.0f;
 		vignetteTransition.m_IsTransitioning = true;
-
-		std::cout << "Called shrink\n";
 	}
 }
