@@ -12,8 +12,8 @@ namespace TRE
 		SpriteRenderer activePowerUp;
 		SpriteRenderer notactivePowerUp;
 
-		string strawberryTexture = "b47b5e31695b436d";
-		string blueberryTexture = "248738ca8104694";
+		string strawberryTexture = "Strawberry_HUD.png";
+		string blueberryTexture = "Blueberry_HUD.png";
 
 		public void Start()
 		{

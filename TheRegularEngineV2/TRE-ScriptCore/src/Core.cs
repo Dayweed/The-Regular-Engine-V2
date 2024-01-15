@@ -1414,4 +1414,33 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_ResetPathfinding(EntityID ID);
 	}
+
+	public class ScenePostEffectsSystem
+    {
+		public enum STATE
+		{
+			NONE,
+			IN,
+			OUT
+		}
+
+        public static STATE VignetteState
+        {
+            get
+            {
+				if (Engine_GetVignetteStateIn()) return STATE.IN;
+				if (Engine_GetVignetteStateOut()) return STATE.OUT;
+				return STATE.NONE;
+            }
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_ShrinkVignette(float duration);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern static bool Engine_GetVignetteStateIn();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern static bool Engine_GetVignetteStateOut();
+    }
 }

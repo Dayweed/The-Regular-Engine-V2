@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Core/Transform.h"
 #include "Core/GameLoop.h"
+#include "Resource/Resource.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
@@ -1650,7 +1651,7 @@ namespace TRE
 	{
 		std::string sceneName = MonoStringToString(id);
 		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
-		SceneTransitioner::Instance().TransitionToScene(scenePath, totalDuration);
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->TransitionToScene(scenePath, totalDuration);
 	}
 
 	static MonoString* BindGetSceneName()
@@ -1775,16 +1776,17 @@ namespace TRE
 		if (!Temp->HasComponent<UIComponent>()) return;
 		UIComponent& uiComp = Temp->GetComponent<UIComponent>();
 		std::string texturestr = MonoStringToString(texture);
-		ResourceHandle textureHdl = Resource::GetGUIDFromHex(texturestr);
-		if (textureHdl != 0)
+
+		if (texturestr != "")
 		{
-			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHdl); Texture)
+			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(texturestr); Texture)
 			{
 				uiComp.m_Texture = Texture;
 			}
 			else
 			{
-				uiComp.m_Texture = VulkanTexture::Deserialize(texturestr);
+				std::string hexCode = Resource::GetGUIDHex(Resource::GenerateGUID(texturestr));
+				uiComp.m_Texture = VulkanTexture::Deserialize(hexCode);
 
 				if (uiComp.m_Texture == nullptr)
 					PUBLISHERROR("Texture (" + texturestr + ") failed to load in UI Component");
@@ -1939,6 +1941,27 @@ namespace TRE
 
 		ECSSystemManager::Instance().GetSystem<DirectPathfindingSystem>()->ResetPathfinding(entity);
 	}
+#pragma endregion
+
+#pragma region PostProcessing
+	static void Engine_ShrinkVignette(float duration)
+	{
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->VignetteShrink(duration);
+	}
+
+	static bool Engine_GetVignetteStateIn()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_IN;
+	}
+
+	static bool Engine_GetVignetteStateOut()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_OUT;
+	}
+
+
 #pragma endregion
 
 	void ScriptBind::RegisterFunctions()
@@ -2188,6 +2211,13 @@ namespace TRE
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_PausePathfinding", Engine_PausePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResumePathfinding", Engine_ResumePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
+		}
+
+		// Post Effects
+		{
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_ShrinkVignette", Engine_ShrinkVignette);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateIn", Engine_GetVignetteStateIn);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateOut", Engine_GetVignetteStateOut);
 		}
 	}
 }

@@ -11,6 +11,7 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 
+#include "System.h"
 #include "FileSystem.h"
 
 #define SCENE_DEFAULT_NAME "New Scene"
@@ -90,31 +91,56 @@ namespace TRE
 		int m_DupDefaultName{};
 	};
 
-	class SceneTransitioner
+	class ScenePostEffectsSystem : public ECSSystem
 	{
 	public:
-		static SceneTransitioner& Instance()
+		// Handles index in m_TransitonStateArray
+		enum TransitionTypeIndex
 		{
-			static SceneTransitioner instance;
-			return instance;
-		}
+			TYPE_VIGNETTE,
+			TYPE_FADE,
+			TYPE_SIZE
+		};
 
-		void Init();
-		void Update();
+		enum TransitionState
+		{
+			STATE_NONE,
+			STATE_IN,
+			STATE_GOINGIN,
+			STATE_OUT,
+			STATE_GOINGOUT,
+			STATE_SIZE
+		};
+
+		ScenePostEffectsSystem() = default;
+		~ScenePostEffectsSystem() = default;
+
+		void Init() override;
+		void Update() override;
+
+		TransitionState GetTransitionState(TransitionTypeIndex index);
 
 		void TransitionToScene(const std::string& sceneName, const float totalDuration);
+		void VignetteShrink(const float totalDuration);
+
 	private:
-		SceneTransitioner() {};
-		SceneTransitioner(SceneTransitioner const&) = delete;
-		void operator=(SceneTransitioner const&) = delete;
-		void* operator new(size_t) = delete;
+		// Vignette Effect
+		void VignetteCalc();	// Returns if it is closing or opening
 
-		float m_Duration;
-		float m_HalfDuration;
-		float m_ElapsedTime;
-		bool m_IsTransitioning;
-		bool m_LoadedNewScene;
+		struct Transition
+		{
+			TransitionState m_State;
 
-		std::string m_TransitionSceneName;
+			float m_Duration;
+			float m_HalfDuration;
+			float m_ElapsedTime;
+
+			bool m_IsTransitioning;
+
+			bool m_LoadedNewScene;
+			std::string m_TransitionSceneName;
+		};
+
+		Transition m_Transitions[2];
 	};
 }
