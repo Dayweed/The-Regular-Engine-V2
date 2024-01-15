@@ -1650,7 +1650,7 @@ namespace TRE
 	{
 		std::string sceneName = MonoStringToString(id);
 		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
-		SceneTransitioner::Instance().TransitionToScene(scenePath, totalDuration);
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->TransitionToScene(scenePath, totalDuration);
 	}
 
 	static MonoString* BindGetSceneName()
@@ -1941,6 +1941,27 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region PostProcessing
+	static void Engine_ShrinkVignette(float duration)
+	{
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->VignetteShrink(duration);
+	}
+
+	static bool Engine_GetVignetteStateIn()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_IN;
+	}
+
+	static bool Engine_GetVignetteStateOut()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_OUT;
+	}
+
+
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2188,6 +2209,13 @@ namespace TRE
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_PausePathfinding", Engine_PausePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResumePathfinding", Engine_ResumePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
+		}
+
+		// Post Effects
+		{
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_ShrinkVignette", Engine_ShrinkVignette);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateIn", Engine_GetVignetteStateIn);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateOut", Engine_GetVignetteStateOut);
 		}
 	}
 }

@@ -86,60 +86,130 @@ namespace TRE
 		return sceneName;
 	}
 
-	void SceneTransitioner::Init()
+	void ScenePostEffectsSystem::Init()
 	{
-		m_Duration = 0.0f;
-		m_HalfDuration = 0.0f;
-		m_ElapsedTime = 0.0f;
-		m_IsTransitioning = false;
-		m_LoadedNewScene = false;
-
-		m_TransitionSceneName = "";
+		for (Transition& transition : m_Transitions)
+		{
+			transition.m_Duration = 0.0f;
+			transition.m_HalfDuration = 0.0f;
+			transition.m_ElapsedTime = 0.0f;
+			transition.m_IsTransitioning = false;
+			transition.m_LoadedNewScene = false;
+			transition.m_TransitionSceneName = "";
+		}
 	}
 
-	void SceneTransitioner::Update()
+	void ScenePostEffectsSystem::Update()
 	{
-		if (m_IsTransitioning)
+		for (size_t i{}; i < TYPE_SIZE; ++i)
 		{
-			if (m_ElapsedTime < m_Duration)
+			Transition& transition = m_Transitions[i];
+			if (transition.m_IsTransitioning)
 			{
-				auto vignette = PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette");
-				//Close vignette
-				if (m_ElapsedTime < m_HalfDuration)
+				if (transition.m_ElapsedTime < transition.m_Duration)
 				{
-					vignette->SetRadius(1.0f - (m_ElapsedTime / m_HalfDuration));
-				}
-				//Open vignette
-				else
-				{
-					if (m_LoadedNewScene == false)
+					// Finish transition
+					switch ((TransitionTypeIndex)i)
 					{
-						SceneManager::Instance().LoadScene(m_TransitionSceneName);
-						m_LoadedNewScene = true;
+					case TYPE_VIGNETTE:
+						VignetteCalc();
+						break;
+					case TYPE_FADE:
+						break;
+					default:
+						break;
 					}
 
-					vignette->SetRadius((m_ElapsedTime - m_HalfDuration) / m_HalfDuration);
+					transition.m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
 				}
-
-				m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
-			}
-			else
-			{
-				PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette")->SetRadius(1.0f);
-				m_ElapsedTime = 0.0f;
-				m_Duration = 0.0f;
-				m_IsTransitioning = false;
-				m_LoadedNewScene = false;
-				m_TransitionSceneName = "";
+				else
+				{
+					transition.m_ElapsedTime = 0.0f;
+					transition.m_Duration = 0.0f;
+					transition.m_IsTransitioning = false;
+					transition.m_LoadedNewScene = false;
+					transition.m_TransitionSceneName = "";
+					transition.m_State = STATE_NONE;
+				}
 			}
 		}
 	}
 
-	void SceneTransitioner::TransitionToScene(const std::string& sceneName, const float totalDuration)
+	ScenePostEffectsSystem::TransitionState ScenePostEffectsSystem::GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex index)
 	{
-		m_TransitionSceneName = sceneName;
-		m_Duration = totalDuration;
-		m_HalfDuration = m_Duration / 2.0f;
-		m_IsTransitioning = true;
+		return m_Transitions[index].m_State;
+	}
+
+	void ScenePostEffectsSystem::VignetteCalc()
+	{
+		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
+		auto vignette = PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette");
+		// Close vignette
+		if (vignetteTransition.m_ElapsedTime < vignetteTransition.m_HalfDuration)
+		{	
+			vignette->SetRadius(1.0f - (vignetteTransition.m_ElapsedTime / vignetteTransition.m_HalfDuration));
+
+			// Transition State
+			vignetteTransition.m_State = STATE_GOINGIN;
+
+			// Check if complete closing state after this
+			if (Engine::GetInstance().GetWindow()->GetDeltaTime() + vignetteTransition.m_ElapsedTime >= vignetteTransition.m_HalfDuration)
+			{
+				vignette->SetRadius(0.0f);
+				vignetteTransition.m_State = STATE_IN;
+			}
+		}
+		// Open vignette
+		else
+		{
+			// Transition State
+			if (vignetteTransition.m_State == STATE_IN)
+			{
+				vignetteTransition.m_State = STATE_GOINGOUT;
+			}
+
+			vignette->SetRadius((vignetteTransition.m_ElapsedTime - vignetteTransition.m_HalfDuration) / vignetteTransition.m_HalfDuration);
+
+
+			if (vignetteTransition.m_LoadedNewScene == false && vignetteTransition.m_TransitionSceneName != "")
+			{
+				SceneManager::Instance().LoadScene(vignetteTransition.m_TransitionSceneName);
+				vignetteTransition.m_LoadedNewScene = true;
+			}
+
+			// Check if complete opening state after this
+			if (Engine::GetInstance().GetWindow()->GetDeltaTime() + vignetteTransition.m_ElapsedTime >= vignetteTransition.m_Duration)
+			{
+				vignette->SetRadius(1.0f);
+				vignetteTransition.m_State = STATE_OUT;
+			}
+		}
+	}
+
+	void ScenePostEffectsSystem::TransitionToScene(const std::string& sceneName, const float totalDuration)
+	{
+		// Auto use vignette
+		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
+
+		// Ignores if is already transitioning
+		if (vignetteTransition.m_IsTransitioning) return;
+
+		vignetteTransition.m_TransitionSceneName = sceneName;
+		vignetteTransition.m_Duration = totalDuration;
+		vignetteTransition.m_HalfDuration = vignetteTransition.m_Duration / 2.0f;
+		vignetteTransition.m_IsTransitioning = true;
+	}
+
+	void ScenePostEffectsSystem::VignetteShrink(const float totalDuration)
+	{
+		// Auto use vignette
+		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
+
+		// Ignores if is already transitioning
+		if (vignetteTransition.m_IsTransitioning) return;
+
+		vignetteTransition.m_Duration = totalDuration;
+		vignetteTransition.m_HalfDuration = vignetteTransition.m_Duration / 2.0f;
+		vignetteTransition.m_IsTransitioning = true;
 	}
 }

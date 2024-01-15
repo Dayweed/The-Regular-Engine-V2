@@ -139,6 +139,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
@@ -167,7 +168,6 @@ namespace TRE
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
-			SceneTransitioner::Instance().Update();
 			ECSSystemManager::Instance().UpdateSystem();
 			Profiler::Instance().EndTimer("UpdateSystem");
 
