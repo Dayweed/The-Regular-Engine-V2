@@ -7527,6 +7527,7 @@
       55574827,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7539,6 +7540,7 @@
       58720278,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7551,6 +7553,7 @@
       32506136,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7563,6 +7566,7 @@
       17825870,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7575,6 +7579,7 @@
       17825845,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7587,6 +7592,7 @@
       25165933,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7599,6 +7605,7 @@
       16777374,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7611,6 +7618,7 @@
       42991779,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
@@ -7623,6 +7631,7 @@
       29360329,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7635,6 +7644,7 @@
       56623249,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
@@ -7647,6 +7657,7 @@
       24117383,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
@@ -7659,6 +7670,7 @@
       57671834,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
@@ -7674,6 +7686,7 @@
       56623220,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7690,6 +7703,7 @@
       22020188,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             48.0,
             6.0,
@@ -7706,6 +7720,7 @@
       55574648,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -7722,6 +7737,7 @@
       41943391,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -7738,6 +7754,7 @@
       67109100,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             17.5,
             7.0,
@@ -7754,6 +7771,7 @@
       39846037,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             7.0,
             2.0,
@@ -7770,6 +7788,7 @@
       40894837,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7786,6 +7805,7 @@
       55574727,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             8.0,
@@ -7802,6 +7822,7 @@
       42991950,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             14.0,
@@ -7818,6 +7839,7 @@
       46137716,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             7.0,
             6.0,
@@ -7834,6 +7856,7 @@
       70254786,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             0.5,
@@ -7850,6 +7873,7 @@
       70254885,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             15.0,
             5.5,
@@ -7866,6 +7890,7 @@
       44040528,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.0,
             4.0,
@@ -7882,6 +7907,7 @@
       72352006,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
@@ -7898,6 +7924,7 @@
       48234615,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.0,
             2.0,
@@ -7914,6 +7941,7 @@
       40894500,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -7930,6 +7958,7 @@
       47185928,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.0,
             8.0,
@@ -7946,6 +7975,7 @@
       45088977,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.0,
             4.0,
@@ -7962,6 +7992,7 @@
       47186147,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             23.0,
             5.5,
@@ -7978,6 +8009,7 @@
       55574616,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             8.199999809265137,
             5.5,
@@ -7994,6 +8026,7 @@
       57671841,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             8.0,
@@ -8010,6 +8043,7 @@
       56623158,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             33.5,
             18.5,
@@ -8026,6 +8060,7 @@
       85983473,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             8.0,
@@ -8042,6 +8077,7 @@
       47185997,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             2.0,
@@ -8058,6 +8094,7 @@
       92274787,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.0,
             1.0,
@@ -8074,6 +8111,7 @@
       59769070,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8090,6 +8128,7 @@
       51380508,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8106,6 +8145,7 @@
       74449099,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
@@ -8122,6 +8162,7 @@
       44040362,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -8138,6 +8179,7 @@
       57671759,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             14.0,
             4.0,
@@ -8154,6 +8196,7 @@
       45088851,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             12.0,
@@ -8170,6 +8213,7 @@
       82837595,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8186,6 +8230,7 @@
       49283100,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             7.5,
@@ -8202,6 +8247,7 @@
       57671760,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             5.0,
@@ -8218,6 +8264,7 @@
       50331933,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             100.0,
             8.0,
@@ -8234,6 +8281,7 @@
       82837682,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             4.0,
@@ -8250,6 +8298,7 @@
       66060521,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             36.0,
             6.0,
@@ -8266,6 +8315,7 @@
       50331671,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8282,6 +8332,7 @@
       45089148,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -8298,6 +8349,7 @@
       39845897,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.0,
             8.0,
@@ -8314,6 +8366,7 @@
       78643406,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8330,6 +8383,7 @@
       17825832,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8346,6 +8400,7 @@
       17825859,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8362,6 +8417,7 @@
       32506173,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             12.0,
@@ -8378,6 +8434,7 @@
       17825850,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             6.0,
@@ -8394,6 +8451,7 @@
       15728660,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             1.5,
@@ -8410,6 +8468,7 @@
       17825829,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8426,6 +8485,7 @@
       17825855,
       {
          "m_CollisionLayer.m_LayerID": 4,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.0,
             0.5,
@@ -8442,6 +8502,7 @@
       24117365,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8458,6 +8519,7 @@
       25165870,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.0,
             4.0,
@@ -8474,6 +8536,7 @@
       17825913,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             6.0,
@@ -8490,6 +8553,7 @@
       26214474,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8506,6 +8570,7 @@
       32506103,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.5,
             8.0,
@@ -8522,6 +8587,7 @@
       25166053,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8538,6 +8604,7 @@
       17825830,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.5,
             8.0,
@@ -8554,6 +8621,7 @@
       42991930,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8570,6 +8638,7 @@
       49283405,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.0,
             6.0,
@@ -8586,6 +8655,7 @@
       17825849,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             18.0,
             5.0,
@@ -8602,6 +8672,7 @@
       22020370,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             8.0,
@@ -8618,6 +8689,7 @@
       17825802,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             9.0,
             5.5,
@@ -8634,6 +8706,7 @@
       50331860,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             17.5,
             2.5,
@@ -8650,6 +8723,7 @@
       41943296,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             14.0,
             4.0,
@@ -8666,6 +8740,7 @@
       15728673,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             14.0,
@@ -8682,6 +8757,7 @@
       15728799,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8698,6 +8774,7 @@
       17825824,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             17.0,
             5.0,
@@ -8714,6 +8791,7 @@
       17825835,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             50.0,
             6.0,
@@ -8730,6 +8808,7 @@
       17825808,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             42.0,
             6.0,
@@ -8746,6 +8825,7 @@
       22020467,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.0,
             2.0,
@@ -8762,6 +8842,7 @@
       17825842,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8778,6 +8859,7 @@
       47185968,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             23.0,
             6.0,
@@ -8794,6 +8876,7 @@
       27262979,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8810,6 +8893,7 @@
       27263041,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.5,
             6.0,
@@ -8826,6 +8910,7 @@
       44040507,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -8842,6 +8927,7 @@
       17825876,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -8858,6 +8944,7 @@
       24117437,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.199999809265137,
             5.5,
@@ -8874,6 +8961,7 @@
       24117444,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             19.200000762939453,
             5.5,
@@ -8890,6 +8978,7 @@
       22020326,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             8.5,
@@ -8906,6 +8995,7 @@
       15729023,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             19.200000762939453,
             5.5,
@@ -8922,6 +9012,7 @@
       16777267,
       {
          "m_CollisionLayer.m_LayerID": 2,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.0,
             0.5,
@@ -8938,6 +9029,7 @@
       44040495,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             4.0,
@@ -8954,6 +9046,7 @@
       30409032,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8970,6 +9063,7 @@
       33554619,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -8986,6 +9080,7 @@
       24117358,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             24.0,
             2.0,
@@ -9002,6 +9097,7 @@
       24117277,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             41.5,
             25.5,
@@ -9018,6 +9114,7 @@
       35651896,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -9034,6 +9131,7 @@
       24117496,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             4.0,
@@ -9050,6 +9148,7 @@
       17825863,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             1.5,
@@ -9066,6 +9165,7 @@
       16777387,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.199999809265137,
             5.5,
@@ -9082,6 +9182,7 @@
       23068963,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -9098,6 +9199,7 @@
       30408971,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             0.0,
             0.0,
@@ -9114,6 +9216,7 @@
       17825823,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -9130,6 +9233,7 @@
       22020345,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             24.0,
             6.0,
@@ -9146,6 +9250,7 @@
       56623452,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             6.0,
@@ -9162,6 +9267,7 @@
       17825887,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             14.0,
             4.0,
@@ -9178,6 +9284,7 @@
       61866272,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.0,
             14.0,
@@ -9194,6 +9301,7 @@
       49283309,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             10.0,
             4.0,
@@ -9210,6 +9318,7 @@
       18874516,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             23.0,
             5.0,
@@ -9226,6 +9335,7 @@
       35651876,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.0,
             5.5,
@@ -9242,6 +9352,7 @@
       19923293,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             23.0,
             6.0,
@@ -9258,6 +9369,7 @@
       17825856,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -9274,6 +9386,7 @@
       16777334,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
@@ -9290,6 +9403,7 @@
       22020348,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             2.0,
             12.0,
@@ -9306,6 +9420,7 @@
       25166099,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             4.0,
             8.0,
@@ -9322,6 +9437,7 @@
       34603052,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             24.0,
             6.0,
@@ -9338,6 +9454,7 @@
       27262994,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.0,
             1.0,
@@ -9354,6 +9471,7 @@
       30408798,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             13.0,
             17.0,
@@ -9370,6 +9488,7 @@
       34603144,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             0.0,
             0.0,
@@ -9386,6 +9505,7 @@
       30408850,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             17.5,
             7.0,
@@ -9402,6 +9522,7 @@
       35651714,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
@@ -9418,6 +9539,7 @@
       34603268,
       {
          "m_CollisionLayer.m_LayerID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfExtents": [
             12.5,
             6.0,
@@ -9437,6 +9559,7 @@
       17825861,
       {
          "m_CollisionLayer.m_LayerID": 1,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfHeight": 1.0,
          "m_IsActive": true,
          "m_IsTrigger": false,
@@ -9450,6 +9573,7 @@
       22020235,
       {
          "m_CollisionLayer.m_LayerID": 3,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfHeight": 1.0,
          "m_IsActive": true,
          "m_IsTrigger": false,
