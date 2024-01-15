@@ -77,7 +77,7 @@ namespace TRE
 		private float coyoteTime = 0.2f;
 		public float coyoteTimeCounter;
 		//if player press space within this buffer time, they will still be able to jump even if they havent landed
-		private float jumpBufferTime = 0.2f;
+		private float jumpBufferTime = 0.25f;
 		public float jumpBufferCounter;
 
 		//For camera controller
@@ -296,7 +296,7 @@ namespace TRE
 				if (InputSystem.GetKeyPress(InputKeys.Space))
                 {
                     jumpBufferCounter = jumpBufferTime;
-					Debug.Log("Jump Pressed");
+					//Debug.Log("Jump Pressed");
                 }
                 else
                 {
@@ -310,20 +310,27 @@ namespace TRE
 					{
 						jumpCancelled = true;
 						coyoteTimeCounter = 0f;
-						Debug.Log("Jump Cancelled");
+						//Debug.Log("Jump Cancelled");
 					}
 					if (currentJumpTime > maxJumpButtomTime)
 					{
 						isJumping = false;
 
-                        coyoteTimeCounter = 0f;
+						//Debug.Log("Jump ran out");
                     }
 					currentJumpTime += Time.deltaTime;
 				}
+				else
+				{
+                    if (InputSystem.GetKeyRelease(InputKeys.Space))
+                    {
+						isJumping = false;
+                    }
+                }
 
                 
 
-                if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && currVelocity.y <= 0)
+                if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
 				{
 					isWalking = false;
 
