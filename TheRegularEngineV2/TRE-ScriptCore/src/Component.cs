@@ -196,7 +196,6 @@ namespace TRE
 		}
 	}
 
-
 	public class Camera : Component
 	{
 		// use transform component as template
