@@ -238,6 +238,7 @@ namespace TRE
 				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
 				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
+				transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ALL;
 				spawn->AddComponent<MeshRenderer>();
 				
 				//Check if asset is already compiled
@@ -294,6 +295,7 @@ namespace TRE
 					Entity prefabInstance{ prefabsystem->CreatePrefabEntityInstance(prefabGUID) };
 					prefabInstance->GetComponent<Transform>().m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
 					prefabInstance->GetComponent<Transform>().m_IsDirty = true;
+					prefabInstance->GetComponent<Transform>().m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION;
 					//prefabInstance->GetComponent<Transform>().CalculateWorldMatrix();
 					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildTransform(prefabInstance, true);
 					m_SelectionManager->SelectEntity(prefabInstance);
@@ -481,6 +483,7 @@ namespace TRE
 				{
 				case ImGuizmo::OPERATION::SCALE:
 					transform.m_Scale = Scale;
+					transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_SCALE;
 					if (needUpdatingToPrefab)
 					{
 						// See if can emplace back
@@ -490,13 +493,11 @@ namespace TRE
 						{
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
 						}
-						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-						// If gizmo doesn't update prefab, check Transform.h
-						prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
 					}
 					break;
 				case ImGuizmo::OPERATION::ROTATE:
 					transform.m_Rotation = Rotation;
+					transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ROTATION;
 					if (needUpdatingToPrefab)
 					{
 						// See if can emplace back
@@ -506,13 +507,11 @@ namespace TRE
 						{
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
 						}
-						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-						// If gizmo doesn't update prefab, check Transform.h
-						prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
 					}
 					break;
 				case ImGuizmo::OPERATION::TRANSLATE:
 					transform.m_Position = Translate;
+					transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION;
 					if (needUpdatingToPrefab)
 					{
 						// See if can emplace back
@@ -522,9 +521,6 @@ namespace TRE
 						{
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
 						}
-						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-						// If gizmo doesn't update prefab, check Transform.h
-						prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
 					}
 					break;
 				}

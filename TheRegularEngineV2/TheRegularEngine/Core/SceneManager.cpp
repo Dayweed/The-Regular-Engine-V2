@@ -21,6 +21,7 @@ namespace TRE
 		MainLight->AddComponent<DirectionalLight>();
 		MainLight->GetComponent<Transform>().m_Rotation = glm::vec3(45.0f, 45.0f, 0.0f);
 		MainLight->GetComponent<Transform>().m_IsDirty = true;
+		MainLight->GetComponent<Transform>().m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ROTATION;
 
 		// Generate new Scene Name
 		m_CurrentScene = sceneName;
@@ -188,8 +189,13 @@ namespace TRE
 
 	void ScenePostEffectsSystem::TransitionToScene(const std::string& sceneName, const float totalDuration)
 	{
+		// Can overwrite vignette only if it is not trying to go to another scene
+
 		// Auto use vignette
 		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
+
+		// Return if vignette is preparing to load into another scene
+		if (vignetteTransition.m_TransitionSceneName != "") return;
 
 		vignetteTransition.m_ElapsedTime = 0;
 		vignetteTransition.m_TransitionSceneName = sceneName;
@@ -200,6 +206,8 @@ namespace TRE
 
 	void ScenePostEffectsSystem::VignetteShrink(const float totalDuration)
 	{
+		// Can overwrite vignette, if it overwrites TransitionToScene, it will load into the scene after finishing this transition
+
 		// Auto use vignette
 		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
 

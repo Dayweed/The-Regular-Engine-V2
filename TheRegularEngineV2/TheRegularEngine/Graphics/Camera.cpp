@@ -464,6 +464,7 @@ namespace TRE
 			cameraComponent.m_IsDirty = true;
 			cameraTransform.m_Position = target - cameraComponent.m_BaseCamera.m_FocalLength * cameraComponent.m_BaseCamera.GetViewDirection();
 			cameraTransform.m_IsDirty = true;
+			cameraTransform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ALL;
 		}
 	}
 

@@ -292,6 +292,7 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+		Temp->GetComponent<Transform>().m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_ALL;
 
 		if (Temp->HasComponent<ScriptComponent>())
 		{
@@ -313,6 +314,7 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+		Temp->GetComponent<Transform>().m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_ALL;
 
 		if (Temp->HasComponent<ScriptComponent>())
 		{
@@ -580,6 +582,7 @@ namespace TRE
 		Transform& transform = Temp->GetComponent<Transform>();
 		transform.m_Position = newPos;
 		transform.m_IsDirty = true;
+		transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_POSITION;
 	}
 
 	static void BindSetRotation(CSEntityID ID, glm::vec3 newRot)
@@ -590,6 +593,7 @@ namespace TRE
 		Transform& transform = Temp->GetComponent<Transform>();
 		transform.m_Rotation = newRot;
 		transform.m_IsDirty = true;
+		transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_ROTATION;
 	}
 
 	static void BindSetScaling(CSEntityID ID, glm::vec3 newSca)
@@ -600,6 +604,7 @@ namespace TRE
 		Transform& transform = Temp->GetComponent<Transform>();
 		transform.m_Scale = newSca;
 		transform.m_IsDirty = true;
+		transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_SCALE;
 	}
 
 	static void BindGetPosition(CSEntityID ID, glm::vec3* output)

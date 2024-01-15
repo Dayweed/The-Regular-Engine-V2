@@ -51,6 +51,7 @@ namespace TRE
 			{
 				glm::vec3 ww{ normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime() };
 				transform.m_Position += normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime();
+				transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION;
 				transform.m_IsDirty = true;
 
 				// Move to next index, if it is very close to the ideal position
