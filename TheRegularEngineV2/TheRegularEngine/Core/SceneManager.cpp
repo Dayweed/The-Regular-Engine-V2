@@ -146,7 +146,7 @@ namespace TRE
 		auto vignette = PostProcessingManager::Instance().GetPostEffect<Vignette>("Vignette");
 		// Close vignette
 		if (vignetteTransition.m_ElapsedTime < vignetteTransition.m_HalfDuration)
-		{	
+		{
 			vignette->SetRadius(1.0f - (vignetteTransition.m_ElapsedTime / vignetteTransition.m_HalfDuration));
 
 			// Transition State
@@ -191,9 +191,7 @@ namespace TRE
 		// Auto use vignette
 		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
 
-		// Ignores if is already transitioning
-		if (vignetteTransition.m_IsTransitioning) return;
-
+		vignetteTransition.m_ElapsedTime = 0;
 		vignetteTransition.m_TransitionSceneName = sceneName;
 		vignetteTransition.m_Duration = totalDuration;
 		vignetteTransition.m_HalfDuration = vignetteTransition.m_Duration / 2.0f;
@@ -205,11 +203,11 @@ namespace TRE
 		// Auto use vignette
 		Transition& vignetteTransition = m_Transitions[TYPE_VIGNETTE];
 
-		// Ignores if is already transitioning
-		if (vignetteTransition.m_IsTransitioning) return;
-
+		vignetteTransition.m_ElapsedTime = 0;
 		vignetteTransition.m_Duration = totalDuration;
 		vignetteTransition.m_HalfDuration = vignetteTransition.m_Duration / 2.0f;
 		vignetteTransition.m_IsTransitioning = true;
+
+		std::cout << "Called shrink\n";
 	}
 }
