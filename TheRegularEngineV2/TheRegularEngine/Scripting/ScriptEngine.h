@@ -78,6 +78,7 @@ namespace TRE
 		MonoClass* GetMonoClass();
 
 		std::map<std::string, ScriptField>& GetFields() { return m_Fields; }
+		std::string GetScriptClassName() { return m_ClassName; }
 
 
 	private:

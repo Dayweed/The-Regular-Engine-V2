@@ -1643,6 +1643,7 @@ namespace TRE
 		return classes.find(classNameStr) != classes.end();
 	}
 
+	// redo this code to allow for the searching of the script instance
 	static bool BindHaveScript(CSEntityID ID, MonoString* className)
 	{
 		Entity Temp{ VALIDATEENTITY(ID) };
@@ -1656,7 +1657,14 @@ namespace TRE
 		}
 		std::string classNameStr{ MonoStringToString(className) };
 
-		return Temp->GetComponent<ScriptComponent>().m_StoredClass == classNameStr;
+		//find if there is a script with the same name under the registered scripts
+		if(Temp->GetComponent<ScriptComponent>().m_RegisteredScripts.find(classNameStr) == Temp->GetComponent<ScriptComponent>().m_RegisteredScripts.end())
+		{
+			return false;
+		}
+
+		return true;
+
 	}
 
 	static MonoObject* BindGetScript(CSEntityID ID, MonoString* className)
@@ -1665,10 +1673,16 @@ namespace TRE
 
 		std::string IDStr{ EntityID_CSToEngine(ID) };
 		std::string classNameStr{ MonoStringToString(className) };
+			
+		auto instances = ScriptEngine::GetAllEntityScripts(IDStr);
 
-		auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
-
-		return instances[IDStr]->GetScriptObject();
+		for (auto i : instances)
+		{
+			if (i->GetScriptClass()->GetScriptClassName() == classNameStr)
+			{
+				return i->GetScriptObject();
+			}
+		}
 	}
 #pragma endregion
 

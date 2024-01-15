@@ -15,6 +15,7 @@ namespace TRE
 		bool m_RanStart{ false };
 
 		std::map<std::string, bool> m_RegisteredScripts;
+
 		property_vtable() 
 
 		ScriptComponent()= default;
