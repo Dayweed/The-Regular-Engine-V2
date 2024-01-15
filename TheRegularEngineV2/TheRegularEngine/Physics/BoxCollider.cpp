@@ -28,6 +28,11 @@ namespace TRE
 		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadVec3MemberFromJSON(m_HalfExtents);
+
+		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
+		//{
+		//	printf("oh hello box");
+		//}
 	}
 
 	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
@@ -62,11 +67,19 @@ namespace TRE
 
 		auto& [rigidDynamic, attachedComponents, GUID, _unused] = m_Actors[entity->GetGUID()];
 		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
+
+		// determine physics material being used
+		PxMaterial* shapeMaterial = nullptr;
+		if (boxCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
+			shapeMaterial = m_DefaultMaterial;
+		else if (boxCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
+			shapeMaterial = m_FrictionlessMaterial;
+
 		if (boxCollider.m_IsTrigger)
-			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_DefaultMaterial,
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *shapeMaterial,
 				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *m_DefaultMaterial,
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxBoxGeometry(VEC3_CAST(PxVec3, halfExtents)), *shapeMaterial,
 				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		PxSetGroup(*rigidDynamic, static_cast<PxU16>(boxCollider.m_CollisionLayer.m_LayerID));

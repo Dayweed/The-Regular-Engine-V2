@@ -28,6 +28,11 @@ namespace TRE
 		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
+
+		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
+		//{
+		//	printf("oh hello ball");
+		//}
 	}
 
 	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const
@@ -62,10 +67,19 @@ namespace TRE
 		auto& [rigidDynamic, attachedComponents, GUID, _unused] = m_Actors[entity->GetGUID()];
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 
+		// determine physics material being used
+		PxMaterial* shapeMaterial = nullptr;
+		if (sphereCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
+			shapeMaterial = m_DefaultMaterial;
+		else if (sphereCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
+			shapeMaterial = m_FrictionlessMaterial;
+
 		if (sphereCollider.m_IsTrigger)
-			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		PxSetGroup(*rigidDynamic, static_cast<PxU16>(sphereCollider.m_CollisionLayer.m_LayerID));
 

@@ -30,6 +30,14 @@ namespace TRE
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
+
+		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
+		//{
+		//	if (t.m_CollisionLayer.m_LayerID == 5)
+		//		printf("oh hello...slippery capsule");
+		//	else
+		//		printf("oh hello...capsule");
+		//}
 	}
 
 	bool PhysicsSystem::ConstructCapsuleCollider(const Entity& entity, const float radius, const float halfHeight, const glm::vec3& offset) const
@@ -68,10 +76,20 @@ namespace TRE
 		PxShape* capsuleShape;
 
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
+
+		// determine physics material being used
+		PxMaterial* shapeMaterial = nullptr;
+		if (capsuleCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
+			shapeMaterial = m_DefaultMaterial;
+		else if (capsuleCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
+			shapeMaterial = m_FrictionlessMaterial;
+
 		if (capsuleCollider.m_IsTrigger)
-			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		// making the capsule stand upright by default
 		// thank you nick!!!
@@ -80,7 +98,7 @@ namespace TRE
 		capsuleShape->setLocalPose(PxTransform(pxLocalRotQuat));
 
 		PxSetGroup(*rigidDynamic, static_cast<PxU16>(capsuleCollider.m_CollisionLayer.m_LayerID));
-
+		
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(attachedComponents & PhysicsComponentTypes::Rigidbody))
 		{

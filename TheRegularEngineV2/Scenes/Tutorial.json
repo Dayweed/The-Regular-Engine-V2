@@ -13558,7 +13558,7 @@
       55574613,
       {
          "m_CollisionLayer.m_LayerID": 5,
-         "m_PhysicsMaterial.m_MaterialID": 0,
+         "m_PhysicsMaterial.m_MaterialID": 1,
          "m_HalfHeight": 0.800000011920929,
          "m_IsActive": true,
          "m_IsTrigger": false,
