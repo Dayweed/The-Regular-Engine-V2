@@ -9,7 +9,7 @@ namespace TRE
 	public class SplashScreen : Entity
 	{
 		SpriteRenderer spriteRenderer;
-		private string[] splashArray = { "Strawberry_HUD.png", "Blueberry_HUD.png" };
+		private string[] splashArray = { "scene_digipen.png", "scene_fmod.png" };
 		private int splashIndex = 0;
 
 		public void Start()
