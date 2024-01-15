@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Core/Transform.h"
 #include "Core/GameLoop.h"
+#include "Resource/Resource.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
@@ -1775,16 +1776,17 @@ namespace TRE
 		if (!Temp->HasComponent<UIComponent>()) return;
 		UIComponent& uiComp = Temp->GetComponent<UIComponent>();
 		std::string texturestr = MonoStringToString(texture);
-		ResourceHandle textureHdl = Resource::GetGUIDFromHex(texturestr);
-		if (textureHdl != 0)
+
+		if (texturestr != "")
 		{
-			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHdl); Texture)
+			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(texturestr); Texture)
 			{
 				uiComp.m_Texture = Texture;
 			}
 			else
 			{
-				uiComp.m_Texture = VulkanTexture::Deserialize(texturestr);
+				std::string hexCode = Resource::GetGUIDHex(Resource::GenerateGUID(texturestr));
+				uiComp.m_Texture = VulkanTexture::Deserialize(hexCode);
 
 				if (uiComp.m_Texture == nullptr)
 					PUBLISHERROR("Texture (" + texturestr + ") failed to load in UI Component");
