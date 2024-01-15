@@ -101,6 +101,7 @@ namespace TRE
 		{
 			return false;
 		}
+		return false;
 	}
 
 	bool InputHandler::GetKeyRelease(int key)
@@ -114,5 +115,6 @@ namespace TRE
 		{
 			return false;
 		}
+		return false;
 	}
 }
