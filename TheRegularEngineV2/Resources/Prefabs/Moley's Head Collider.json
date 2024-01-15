@@ -8,9 +8,9 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "1602117609852196109",
+         "m_MainPrefabGUID": "1007489266501454300",
          "m_Overrides": {},
-         "m_PrefabGUID": "1602117609852196109",
+         "m_PrefabGUID": "1007489266501454300",
          "m_RemovedComps": []
       }
    ],
@@ -27,10 +27,10 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "14356347856875235637",
-         "m_Index": 52,
-         "m_Name": "Holey's Head Collider",
-         "m_Tag": "BlueCollider"
+         "m_GUID": "13274126784880512786",
+         "m_Index": 161,
+         "m_Name": "Moley's Head Collider",
+         "m_Tag": "RedCollider"
       }
    ],
    [
@@ -70,7 +70,7 @@
       1,
       0,
       {
-         "m_CollisionLayer.m_LayerID": 2,
+         "m_CollisionLayer.m_LayerID": 4,
          "m_HalfExtents": [
             2.0,
             0.5,
