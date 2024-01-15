@@ -296,6 +296,8 @@ namespace TRE
 		void ChangeIsActive(const Entity& entity) const;
 		void SetIsActive(const Entity& entity, bool state) const;
 		bool GetIsActive(const Entity& entity) const;
+
+		void ChangeMaterial(const Entity& entity) const;
 	private:
 
 		void ResizeAllColliders();
@@ -323,6 +325,7 @@ namespace TRE
 		physx::PxDefaultCpuDispatcher*  m_Dispatcher = nullptr;
 		physx::PxScene*                 m_Scene = nullptr;
 		physx::PxMaterial*              m_DefaultMaterial = nullptr;
+		physx::PxMaterial*              m_FrictionlessMaterial = nullptr;
 
 		bool m_DrawDebugLines = false;
 	};

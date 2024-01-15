@@ -14,6 +14,7 @@ namespace TRE
 			WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
 			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
+			WriteMemberToJSON(m_PhysicsMaterial.m_MaterialID),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 		};
@@ -24,6 +25,7 @@ namespace TRE
 		ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
 		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
+		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 	}
@@ -131,6 +133,7 @@ namespace TRE
 		{
 			ChangeCollisionLayer(entity);
 			ChangeIsActive(entity);
+			ChangeMaterial(entity);
 		}
 	}
 
