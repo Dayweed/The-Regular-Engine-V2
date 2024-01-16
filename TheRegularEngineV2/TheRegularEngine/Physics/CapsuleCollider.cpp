@@ -30,14 +30,6 @@ namespace TRE
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
-
-		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
-		//{
-		//	if (t.m_CollisionLayer.m_LayerID == 5)
-		//		printf("oh hello...slippery capsule");
-		//	else
-		//		printf("oh hello...capsule");
-		//}
 	}
 
 	bool PhysicsSystem::ConstructCapsuleCollider(const Entity& entity, const float radius, const float halfHeight, const glm::vec3& offset) const

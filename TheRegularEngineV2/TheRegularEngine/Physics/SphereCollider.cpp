@@ -28,11 +28,6 @@ namespace TRE
 		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
-
-		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
-		//{
-		//	printf("oh hello ball");
-		//}
 	}
 
 	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const

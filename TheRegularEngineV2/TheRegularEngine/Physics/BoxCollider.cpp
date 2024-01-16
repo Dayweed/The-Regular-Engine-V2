@@ -28,11 +28,6 @@ namespace TRE
 		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadVec3MemberFromJSON(m_HalfExtents);
-
-		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
-		//{
-		//	printf("oh hello box");
-		//}
 	}
 
 	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
