@@ -133,11 +133,11 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(CapsuleCollider);
 
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+		nbShapes = rigidDynamic->getShapes(shapes, nbShapes);
 
 		for (unsigned i = 0; i < nbShapes; ++i)
 		{
@@ -188,8 +188,8 @@ namespace TRE
 		else // there's still more attached physics components
 		{
 			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
+			PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes, nbShapes);
 
 			for (unsigned i = 0; i < nbShapes; ++i)
 			{

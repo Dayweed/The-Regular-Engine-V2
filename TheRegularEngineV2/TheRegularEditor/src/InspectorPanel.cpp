@@ -481,7 +481,7 @@ namespace TRE
 									std::string xlabel{ "x##" + entity->GetGUID() + std::to_string(i) };
 									if (ImGui::Button(xlabel.c_str()))
 									{
-										deleteInd.emplace_back(i);
+										deleteInd.emplace_back(static_cast<int>(i));
 										UpdatedData = true;
 									}
 								}
