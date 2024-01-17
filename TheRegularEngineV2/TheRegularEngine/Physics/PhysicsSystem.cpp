@@ -34,8 +34,6 @@ namespace TRE
 		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 	{
-		UNUSED_VALUE(filterData0);
-		UNUSED_VALUE(filterData1);
 		UNUSED_VALUE(constantBlock);
 		UNUSED_VALUE(constantBlockSize);
 
@@ -200,23 +198,12 @@ namespace TRE
 
 		if (result >= 1)
 		{
-			const auto vec = ECSManager::Instance().GetEntities<BoxCollider>();
-
-			if (!vec.empty())
-			{
-				auto cube = vec.front();
-				auto ground = vec.front();
-
-				if (vec.front()->GetName() == "Cube")
-					ground = vec[1];
-				else
-					cube = vec[1];
-
-				// this is for the CollisionLayerTest scene
-				int x = PxGetGroup(*m_Actors[cube->GetGUID()].m_RigidDynamic);
-				int y = PxGetGroup(*m_Actors[ground->GetGUID()].m_RigidDynamic);
-				bool yes = PxGetGroupCollisionFlag(x, y);
-			}
+			// place this line somewhere
+			PxShape* colShape = m_Physics->createShape(PxConvexMeshGeometry(CreateCylinderMesh()), *m_DefaultMaterial, true);
+			PxTransform transform{ PxVec3(10, 10, 10) };
+			auto actor = m_Physics->createRigidDynamic(transform);
+			actor->attachShape(*colShape);
+			m_Scene->addActor(*actor);
 
 			printf("====================================================\n");
 
@@ -1173,6 +1160,44 @@ namespace TRE
 		{
 			entity->GetComponent<CapsuleCollider>().m_Offset = offset;
 		}
+	}
+
+	physx::PxConvexMesh* PhysicsSystem::CreateCylinderMesh()
+	{
+		constexpr int iterations = 24;
+		constexpr float radius = 0.5f;
+		constexpr float halfHeight = 0.5f;
+		// the multiple of PI used for each iteration
+		constexpr float angleStep = 2.0f / iterations;
+		std::vector<PxVec3> vertices;
+		vertices.reserve((iterations + 1) * 2);
+
+		for (int i = 0; i < iterations; ++i)
+		{
+			float x = radius * cos(i * angleStep * PI);
+			float y = halfHeight;
+			float z = radius * sin(i * angleStep * PI);
+			vertices.emplace_back(x, y, z);
+			vertices.emplace_back(x, -y, z);
+		}
+
+		// add back first vertices as ending points (?)
+		vertices.emplace_back(radius, halfHeight, 0.0f);
+		vertices.emplace_back(radius, -halfHeight, 0.0f);
+
+		PxConvexMeshDesc convexDesc;
+		convexDesc.points.count = static_cast<PxU32>(vertices.size());
+		convexDesc.points.data = vertices.data();
+		convexDesc.points.stride = static_cast<PxU32>(sizeof(PxVec3));
+		convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
+
+		const PxCookingParams params(m_Physics->getTolerancesScale());
+		PxDefaultMemoryOutputStream buf;
+		PxConvexMeshCookingResult::Enum result;
+		PxCookConvexMesh(params, convexDesc, buf, &result);
+
+		PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
+		return m_Physics->createConvexMesh(input);
 	}
 }
 

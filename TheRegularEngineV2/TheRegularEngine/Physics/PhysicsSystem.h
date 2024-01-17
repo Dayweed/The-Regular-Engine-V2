@@ -298,6 +298,8 @@ namespace TRE
 		bool GetIsActive(const Entity& entity) const;
 
 		void ChangeMaterial(const Entity& entity) const;
+		
+		physx::PxConvexMesh* CreateCylinderMesh();
 	private:
 
 		void ResizeAllColliders();

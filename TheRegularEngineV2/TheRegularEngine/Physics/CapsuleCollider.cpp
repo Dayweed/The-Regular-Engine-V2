@@ -51,10 +51,21 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
-			// PxSetGroup(*tempSharedData.m_RigidDynamic, 0);
 
 #ifdef _DEBUG
-			tempSharedData.m_RigidDynamic->setName("CapsuleCollider");
+			{
+				char* string = nullptr;
+				if (entity->GetName() == "Holey")
+					string = (char*)"Holey";
+				else if (entity->GetName() == "Moley")
+					string = (char*)"Moley";
+				else if (entity->GetName() == "Slippery Body")
+					string = (char*)"Slippery Body";
+				else
+					string = (char*)"CapsuleCollider";
+
+				tempSharedData.m_RigidDynamic->setName(string);
+			}
 #endif
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
@@ -90,7 +101,7 @@ namespace TRE
 		capsuleShape->setLocalPose(PxTransform(pxLocalRotQuat));
 
 		PxSetGroup(*rigidDynamic, static_cast<PxU16>(capsuleCollider.m_CollisionLayer.m_LayerID));
-		
+
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
 		if (!(attachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
