@@ -43,12 +43,21 @@ namespace TRE
 
 	void ECSManager::DestroyAll()
 	{
+#ifdef _DEBUG
+		// Do proper abadoning children and deletion if debug
 		for (auto& pair : m_EntityList)
 		{
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(pair.second);
 			MarkForDeletion(pair.second);
 		}
 		DeleteRemovalEntities();
+#else
+		// Clear everything
+		m_EntityOrder.clear();
+		m_EntityList.clear();
+		m_EnttIDList.clear();
+		MemoryManager::Instance().DeleteEntities();
+#endif
 	}
 
 	Entity ECSManager::CreateEntity(std::string name)
