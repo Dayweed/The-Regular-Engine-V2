@@ -147,7 +147,7 @@ void main()
 	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 	normal = normalize(In.TBN * normal); //Transform normal to world space
 	//normal = mix(In.NormTest, normal, 0.15);
-	normal = normalize(normal);
+	//normal = normalize(normal);
 
 	float shadow = Shadow(In.ShadowCoord.xyz / In.ShadowCoord.w, normal);
 	
@@ -181,7 +181,7 @@ void main()
 	//Diffuse color
 	if(diffuseIntensity > 0.0)
 	{
-		diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
+		//diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
 		const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 		const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
 		shadow = 0;
