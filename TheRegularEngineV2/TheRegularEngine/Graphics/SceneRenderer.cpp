@@ -17,6 +17,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
 #include "AnimationComponent.h"
+#include "FontRenderer.h"
 
 //To be removed
 #include "EditorCamera.h"
@@ -104,6 +105,7 @@ namespace TRE
 		m_ShadowMaterial->Invalidate();
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
+		m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
 
 		PostProcessingManager::Instance().Init();
 
@@ -456,6 +458,7 @@ namespace TRE
 		if (m_IsEditorScene == false)
 		{
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
 

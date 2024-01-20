@@ -20,6 +20,7 @@ namespace TRE
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
 	class BaseCamera;
+	class FontRenderer;
 
 	struct PushConstant
 	{
@@ -151,6 +152,9 @@ namespace TRE
 
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
+
+			//Font Renderer
+			std::shared_ptr<FontRenderer> m_FontRenderer;
 
 			bool m_IsEditorScene = false;
 	};
