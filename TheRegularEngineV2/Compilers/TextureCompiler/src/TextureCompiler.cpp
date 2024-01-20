@@ -77,7 +77,7 @@ namespace TRE
 			vkFormat = 44; // VK_FORMAT_R8G8B8A8_UNORM
 		}
 
-		loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; //I am assuming all textures that come in are sRGB
+		loadFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		//compileFormat = loadFormat;
 
@@ -90,25 +90,20 @@ namespace TRE
 			image.rowPitch = width * 4;
 			image.slicePitch = image.rowPitch * height;
 			image.pixels = pixels;
+			image.format = loadFormat;
 
 			DirectX::ScratchImage scratchImage{};
 			DirectX::TexMetadata metadata{};
 			metadata.width = width;
 			metadata.height = height;
-			metadata.depth = 1;
-			metadata.arraySize = 1;
-			metadata.mipLevels = 1;
-			metadata.miscFlags = 0;
-			metadata.miscFlags2 = 0;
 			metadata.format = loadFormat;
 			metadata.dimension = DirectX::TEX_DIMENSION_TEXTURE2D;
-			scratchImage.Initialize(metadata);
 
 			int BCn = descriptor.GetBCn();
 			switch (BCn)
 			{
 			case (1):
-				compileFormat = DXGI_FORMAT_BC1_UNORM_SRGB;//issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
+				compileFormat = DXGI_FORMAT_BC1_UNORM;//issRGB ? DXGI_FORMAT_BC1_UNORM_SRGB : DXGI_FORMAT_BC1_UNORM;
 				if (issRGB)
 				{
 					vkFormat = isTransparent ? 134 : 132; // VK_FORMAT_BC1_RGBA_SRGB_BLOCK : VK_FORMAT_BC1_RGB_SRGB_BLOCK
@@ -119,8 +114,8 @@ namespace TRE
 				}
 				break;
 			case (3):
-				compileFormat = DXGI_FORMAT_BC3_UNORM_SRGB;//issRGB ?  DXGI_FORMAT_BC3_UNORM : DXGI_FORMAT_BC3_UNORM_SRGB;
-				vkFormat = issRGB ? 138 : 137; // VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_BC3_UNORM_BLOCK 
+				compileFormat = DXGI_FORMAT_BC3_UNORM;//issRGB ?  DXGI_FORMAT_BC3_UNORM : DXGI_FORMAT_BC3_UNORM_SRGB;
+				vkFormat = 137;// issRGB ? 138 : 137; // VK_FORMAT_BC3_SRGB_BLOCK  : VK_FORMAT_BC3_UNORM_BLOCK 
 				break;
 			case(5):
 				compileFormat = DXGI_FORMAT_BC5_UNORM;
@@ -135,8 +130,10 @@ namespace TRE
 				return;
 			}
 
-			HRESULT hr = DirectX::Compress(image, compileFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, scratchImage);
-			if (FAILED(hr))
+
+			HRESULT hr2 = DirectX::Compress(image, compileFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, scratchImage);
+
+			if (FAILED(hr2))
 			{
 				std::cout << "Failed to compress texture image: " << descriptor.GetAssetPath() << std::endl;
 				return;

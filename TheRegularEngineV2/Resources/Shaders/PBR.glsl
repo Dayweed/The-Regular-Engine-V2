@@ -104,7 +104,7 @@ layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
-const int CelShadingLevels = 3;
+const int CelShadingLevels = 4;
 const float CelScaleFactor = 1.0 / float(CelShadingLevels);
 
 float Shadow(in vec3 lightCoords, in vec3 normal)
@@ -146,7 +146,7 @@ void main()
 	normal.rg = (texture(NormalMap, In.TexCoord).gr) * 2.0 - 1.0;
 	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 	normal = normalize(In.TBN * normal); //Transform normal to world space
-	normal = mix(In.NormTest, normal, 0.15);
+	//normal = mix(In.NormTest, normal, 0.15);
 	normal = normalize(normal);
 
 	float shadow = Shadow(In.ShadowCoord.xyz / In.ShadowCoord.w, normal);
@@ -176,18 +176,23 @@ void main()
 	//Shininess
 	//const float shininess = mix(1, 100, 1 - texture(RoughnessMap, In.TexCoord).r);
 	//const float specularIntensity = pow(max(dot(reflect(-In.DirectionalLightDirection, normal), eyeDirection), 0.0), shininess);
+	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
 	
 	//Diffuse color
 	if(diffuseIntensity > 0.0)
+	{
 		diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
-
-	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
-	const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
-	const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
+		const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
+		const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
+		shadow = 0;
+		outColor.rgb = ambient + (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a);
+	}
+	else
+	{
+		outColor.rgb = ambient;
+	}
 	
 	//outColor.rgb = ambient + (diffuse * texture(DiffuseMap, In.TexCoord).a);
-	shadow = 0;
-	outColor.rgb = ambient + (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a);
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
 
