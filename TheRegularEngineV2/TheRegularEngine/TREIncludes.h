@@ -40,6 +40,7 @@
 #include "Graphics/UIComponent.h"
 #include "Graphics/AnimationComponent.h"
 #include "Graphics/ParticleComponent.h"
+#include "Graphics/TextComponent.h"
 
 //-----------------Scripting-----------------//
 #include "Scripting/ScriptComponent.h"

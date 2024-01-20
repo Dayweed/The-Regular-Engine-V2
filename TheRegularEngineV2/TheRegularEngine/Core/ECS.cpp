@@ -5,6 +5,7 @@
 #include "SystemManager.h"
 #include "TREIncludes.h"
 #include "Graphics/UIComponent.h"
+#include "Graphics/TextComponent.h"
 
 #define TO DELETE
 #include "Transform.h"
@@ -230,6 +231,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<TextComponent>(arc)
 			;
 
 		arc.Close();
@@ -265,6 +267,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<TextComponent>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -338,7 +341,8 @@ namespace TRE
 			UIComponent,
 			AnimationComponent,
 			ParticleComponent,
-			DirectPathfinding
+			DirectPathfinding,
+			TextComponent
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)

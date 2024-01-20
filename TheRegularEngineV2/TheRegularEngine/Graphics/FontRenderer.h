@@ -6,10 +6,10 @@ namespace TRE
 {
 	struct Character
 	{
-		unsigned int TexID;
 		glm::ivec2	 Size;
 		glm::ivec2	 Bearing;
-		unsigned int Advance;
+		uint32_t	 Offset;
+		uint32_t	 Advance;
 	};
 
 	struct FontVertex {
@@ -34,8 +34,11 @@ namespace TRE
 			FT_Library m_FTLibrary;
 			std::unordered_map<std::string, FT_Face> m_Faces{};
 			std::vector<std::string> m_AvailableFonts;
-			std::unordered_map<std::string, std::map<char, Character>> m_Characters{};
+			std::unordered_map<char, Character> m_Characters{};
 
 			std::string m_DefaultFontFilepath = "";
+
+			float invBmpWidth;
+			uint32_t bmpHeight;
 	};
 }
