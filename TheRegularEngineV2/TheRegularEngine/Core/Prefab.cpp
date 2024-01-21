@@ -373,6 +373,7 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
+			CylinderCollider,
 			Audio,
 			AudioListener,
 			DirectionalLight,
@@ -404,6 +405,7 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
+			.component<CylinderCollider>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)
@@ -442,6 +444,7 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
+			.component<CylinderCollider>(arc) // WHY DO I HAVE TO DO THIS?!?
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)

@@ -213,6 +213,7 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
+			.component<CylinderCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
@@ -248,6 +249,7 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
+			.component<CylinderCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
@@ -322,6 +324,7 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
+			CylinderCollider,
 			Audio,
 			AudioListener,
 			DirectionalLight,

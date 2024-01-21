@@ -260,6 +260,12 @@ namespace TRE
 		void SetCapsuleColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
+#pragma region CylinderCollider Function Declarations
+		bool ConstructCylinderCollider(const Entity& entity, const float radius = 1.0f, const float height = 1.0f, const glm::vec3& offset = glm::vec3{ 0 }) const;
+
+		void ResizeCylinderCollider(const Entity& entity, const float newRadius, const float newHeight) const;
+#pragma endregion
+
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
 
@@ -299,7 +305,7 @@ namespace TRE
 
 		void ChangeMaterial(const Entity& entity) const;
 		
-		physx::PxConvexMesh* CreateCylinderMesh();
+		physx::PxConvexMesh* CreateCylinderMesh(const float radius = 0.5f, const float height = 1.0f) const;
 	private:
 
 		void ResizeAllColliders();

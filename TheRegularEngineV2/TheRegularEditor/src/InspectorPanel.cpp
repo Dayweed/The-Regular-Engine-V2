@@ -695,6 +695,7 @@ namespace TRE
 						SetIsDirty.operator() < SphereCollider > (entity);
 						SetIsDirty.operator() < BoxCollider > (entity);
 						SetIsDirty.operator() < CapsuleCollider > (entity);
+						SetIsDirty.operator() < CylinderCollider > (entity);
 						SetIsDirty.operator() < ScriptComponent > (entity);
 						SetIsDirty.operator() < Camera > (entity);
 						// add more of your components here! :)

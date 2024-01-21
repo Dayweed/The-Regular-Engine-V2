@@ -17,6 +17,7 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
+			CylinderCollider,
 			DirectionalLight,
 			ScriptComponent,
 			Audio,

@@ -17,6 +17,7 @@
 #include "Physics/SphereCollider.h"
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
+#include "Physics/CylinderCollider.h"
 #include "Core/Serialization.h"
 
 // USE_PHYSX_PVD is not defined in Release
@@ -198,12 +199,22 @@ namespace TRE
 
 		if (result >= 1)
 		{
-			// place this line somewhere
-			PxShape* colShape = m_Physics->createShape(PxConvexMeshGeometry(CreateCylinderMesh()), *m_DefaultMaterial, true);
-			PxTransform transform{ PxVec3(10, 10, 10) };
-			auto actor = m_Physics->createRigidDynamic(transform);
-			actor->attachShape(*colShape);
-			m_Scene->addActor(*actor);
+			try
+			{
+				Entity e1 = ECSManager::Instance().CreateEntity("cylin");
+				e1->GetComponent<Transform>().m_Position = glm::vec3(10, 10, 10);
+				e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
+				e1->AddComponent<CylinderCollider>(); ConstructCylinderCollider(e1);
+			}
+			catch (std::exception& e)
+			{
+				std::cout << e.what() << "\n";
+			}
+			catch (...)
+			{
+				std::cout << "ummmmmm" << "\n";
+			}
+
 
 			printf("====================================================\n");
 
@@ -1160,44 +1171,6 @@ namespace TRE
 		{
 			entity->GetComponent<CapsuleCollider>().m_Offset = offset;
 		}
-	}
-
-	physx::PxConvexMesh* PhysicsSystem::CreateCylinderMesh()
-	{
-		constexpr int iterations = 24;
-		constexpr float radius = 0.5f;
-		constexpr float halfHeight = 0.5f;
-		// the multiple of PI used for each iteration
-		constexpr float angleStep = 2.0f / iterations;
-		std::vector<PxVec3> vertices;
-		vertices.reserve((iterations + 1) * 2);
-
-		for (int i = 0; i < iterations; ++i)
-		{
-			float x = radius * cos(i * angleStep * PI);
-			float y = halfHeight;
-			float z = radius * sin(i * angleStep * PI);
-			vertices.emplace_back(x, y, z);
-			vertices.emplace_back(x, -y, z);
-		}
-
-		// add back first vertices as ending points (?)
-		vertices.emplace_back(radius, halfHeight, 0.0f);
-		vertices.emplace_back(radius, -halfHeight, 0.0f);
-
-		PxConvexMeshDesc convexDesc;
-		convexDesc.points.count = static_cast<PxU32>(vertices.size());
-		convexDesc.points.data = vertices.data();
-		convexDesc.points.stride = static_cast<PxU32>(sizeof(PxVec3));
-		convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
-
-		const PxCookingParams params(m_Physics->getTolerancesScale());
-		PxDefaultMemoryOutputStream buf;
-		PxConvexMeshCookingResult::Enum result;
-		PxCookConvexMesh(params, convexDesc, buf, &result);
-
-		PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
-		return m_Physics->createConvexMesh(input);
 	}
 }
 
