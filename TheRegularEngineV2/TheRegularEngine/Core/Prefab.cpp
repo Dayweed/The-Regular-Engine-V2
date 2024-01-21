@@ -373,7 +373,6 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
-			CylinderCollider,
 			Audio,
 			AudioListener,
 			DirectionalLight,
@@ -381,7 +380,8 @@ namespace TRE
 			UIComponent,
 			AnimationComponent,
 			ParticleComponent,
-			DirectPathfinding
+			DirectPathfinding,
+			CylinderCollider
 		>();
 	}
 
@@ -405,7 +405,6 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
-			.component<CylinderCollider>(arc)
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)
@@ -414,6 +413,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<CylinderCollider>(arc)
 			;
 
 		arc.Close();
@@ -444,7 +444,6 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
-			.component<CylinderCollider>(arc) // WHY DO I HAVE TO DO THIS?!?
 			.component<Audio>(arc)
 			.component<AudioListener>(arc)
 			.component<DirectionalLight>(arc)
@@ -453,6 +452,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<CylinderCollider>(arc) // WHY DO I HAVE TO DO THIS?!?
 			;
 
 		// Clone each component of the object into the prefab

@@ -213,7 +213,6 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
-			.component<CylinderCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
@@ -222,6 +221,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<CylinderCollider>(arc)
 			;
 
 		arc.Close();
@@ -249,7 +249,6 @@ namespace TRE
 			.component<SphereCollider>(arc)
 			.component<BoxCollider>(arc)
 			.component<CapsuleCollider>(arc)
-			.component<CylinderCollider>(arc)
 			.component<DirectionalLight>(arc)
 			.component<AudioListener>(arc)
 			.component<Audio>(arc)
@@ -258,6 +257,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<CylinderCollider>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
