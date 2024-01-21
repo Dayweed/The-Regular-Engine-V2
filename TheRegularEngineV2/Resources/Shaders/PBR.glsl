@@ -115,7 +115,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		lightCoords.xy = lightCoords.xy * 0.5 + 0.5;
 
 		float currentDepth = lightCoords.z;
-		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.001);
+		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
 		
 		int sampleRadius = 2;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -137,7 +137,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 	}
 
 	shadow = clamp(shadow, 0.0, 1.0);
-	shadow -= 0.2;
+	shadow -= 0.1;
 
 	return shadow;
 }
@@ -194,7 +194,6 @@ void main()
 		diffuseIntensity = mix(diffuseIntensity, dp, 0.7);
 		const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 		const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-		
 		
 		outColor.rgb = ambient + (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}
