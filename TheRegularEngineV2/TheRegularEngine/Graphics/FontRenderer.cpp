@@ -31,9 +31,11 @@ namespace TRE
 		m_FontRenderPass = std::make_shared<RenderPass>(m_Device, RPConfig);
 
 		PipelineConfigurations FontPipeConfig{};
+		FontPipeConfig.Primitive = PrimitiveType::Triangles;
+		FontPipeConfig.CullMode = VK_CULL_MODE_NONE;
 		FontPipeConfig.EnableBlending = true;
+		FontPipeConfig.EnableDepthTest = false;
 		FontPipeConfig.Shader = ResourceManager::Instance().GetResource<Shader>(11);
-		//FontPipeConfig.CullMode = VK_CULL_MODE_FRONT_BIT;
 		m_FontPipeline = std::make_shared<Pipeline>(FontPipeConfig, m_FontRenderPass);
 	}
 
@@ -102,34 +104,34 @@ namespace TRE
 		FT_Error Error = FT_Done_Face(NewFace);
 		assert(Error == 0 && "Error calling Done Face on font");
 
-		invBmpWidth = 1 / (float)bmpWidth;
+		//invBmpWidth = 1 / (float)bmpWidth;
 
-		uint8_t* buffer = new uint8_t[bmpHeight * bmpWidth];
-		memset(buffer, 0, bmpHeight * bmpWidth);
+		//uint8_t* buffer = new uint8_t[bmpHeight * bmpWidth];
+		//memset(buffer, 0, bmpHeight * bmpWidth);
 
-		uint32_t xpos = 0;
-		for (unsigned char c = 0; c < 128; c++)
-		{
-			Character& character = m_Characters[c];
+		//uint32_t xpos = 0;
+		//for (unsigned char c = 0; c < 128; c++)
+		//{
+		//	Character& character = m_Characters[c];
 
-			std::vector<uint8_t>& charData = data[c];
-			uint32_t width = character.Size.x;
-			uint32_t height = character.Size.y;
-			for (uint32_t i = 0; i < height; i++) 
-			{
-				for (uint32_t j = 0; j < width; j++) 
-				{
-					uint8_t byte = charData[i * width + j];
-					buffer[i * bmpWidth + xpos + j] = byte;
-				}
-			}
-			xpos += width;
-		}
+		//	std::vector<uint8_t>& charData = data[c];
+		//	uint32_t width = character.Size.x;
+		//	uint32_t height = character.Size.y;
+		//	for (uint32_t i = 0; i < height; i++) 
+		//	{
+		//		for (uint32_t j = 0; j < width; j++) 
+		//		{
+		//			uint8_t byte = charData[i * width + j];
+		//			buffer[i * bmpWidth + xpos + j] = byte;
+		//		}
+		//	}
+		//	xpos += width;
+		//}
 
-		VkDeviceSize pixelsize = 1;
-		bool enablelod = false;
+		//VkDeviceSize pixelsize = 1;
+		//bool enablelod = false;
 
-		VkDeviceSize ImageSize = (uint64_t)bmpWidth * (uint64_t)bmpHeight * pixelsize;
+		//VkDeviceSize ImageSize = (uint64_t)bmpWidth * (uint64_t)bmpHeight * pixelsize;
 		
 		
 	}

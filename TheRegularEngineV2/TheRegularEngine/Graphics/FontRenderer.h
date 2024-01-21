@@ -4,6 +4,8 @@
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Pipeline.h"
+#include "RenderPass.h"
 
 namespace TRE
 {
@@ -51,8 +53,8 @@ namespace TRE
 
 			std::string m_DefaultFontFilepath = "../Resources/Fonts/Inter-Black.ttf";
 
-			float invBmpWidth;
-			uint32_t bmpHeight;
+			float invBmpWidth = 0.f;
+			uint32_t bmpHeight = 0;
 
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;

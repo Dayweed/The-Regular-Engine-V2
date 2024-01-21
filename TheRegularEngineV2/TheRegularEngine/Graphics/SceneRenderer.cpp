@@ -105,7 +105,7 @@ namespace TRE
 		m_ShadowMaterial->Invalidate();
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
-		//m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
+		m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
 
 		PostProcessingManager::Instance().Init();
 

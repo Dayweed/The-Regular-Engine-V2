@@ -21,7 +21,8 @@ namespace TRE
 			ScriptComponent,
 			Audio,
 			AudioListener,
-			DirectPathfinding
+			DirectPathfinding,
+			TextComponent
 		>();
 	};
 
