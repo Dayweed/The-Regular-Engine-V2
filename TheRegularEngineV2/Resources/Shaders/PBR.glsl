@@ -104,7 +104,7 @@ layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 layout(location = 0) out vec4 outColor;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
-const int CelShadingLevels = 4;
+const int CelShadingLevels = 2;
 const float CelScaleFactor = 1.0 / float(CelShadingLevels);
 
 float Shadow(in vec3 lightCoords, in vec3 normal)
@@ -115,7 +115,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		lightCoords.xy = lightCoords.xy * 0.5 + 0.5;
 
 		float currentDepth = lightCoords.z;
-		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
+		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.001);
 		
 		int sampleRadius = 2;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -184,12 +184,18 @@ void main()
 	//Diffuse color
 	//if(diffuseIntensity > 0.0)
 	{
+		if(diffuseIntensity < 0.1)
+		{
+			shadow = 0.0;
+		}
 		diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
 		dp = smoothstep(0.1, 1.0, dp) * float(CelShadingLevels);
 		dp = ceil(dp) * CelScaleFactor;
 		diffuseIntensity = mix(diffuseIntensity, dp, 0.7);
 		const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 		const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
+		
+		
 		outColor.rgb = ambient + (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}
 	//else

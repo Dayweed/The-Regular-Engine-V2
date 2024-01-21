@@ -91,7 +91,7 @@ namespace TRE
 		PipelineConfigurations ShadowAnimationPipelineConfig{};
 		ShadowAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
 		ShadowAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
-		ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_FRONT_BIT;
+		ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
 		ShadowAnimationPipelineConfig.UseAutoShaderVertexInput = false;
 		ShadowAnimationPipelineConfig.CustomVertexBufferInputLayout =
 		{
@@ -310,8 +310,7 @@ namespace TRE
 		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
 
 		glm::mat4 depthViewMatrix(1.f);
-		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
-		recalculateShadowFrustum = true;
+		const bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
@@ -322,17 +321,16 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.085f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1185f));
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
-				//depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 			}
 		}
 
 		if (recalculateShadowFrustum)
 		{
-			//std::cout << "Recalculating Shadow Frustum" << std::endl;
+			std::cout << "Recalculating Shadow Frustum" << std::endl;
 			ShadowUBO UBO_Shadow;
 			glm::mat4 depthProjectionMatrix;
 			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
@@ -950,7 +948,7 @@ namespace TRE
 			}
 			else
 			{
-				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.08f);
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.1f);
 
 				if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
 					cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||

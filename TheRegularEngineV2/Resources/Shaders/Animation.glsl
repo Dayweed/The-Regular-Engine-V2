@@ -115,7 +115,7 @@ layout(set = 0, binding = 5) uniform sampler2D Metalness;
 layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
-const int CelShadingLevels = 4;
+const int CelShadingLevels = 2;
 const float CelScaleFactor = 1.0 / float(CelShadingLevels);
 
 float Shadow(in vec3 lightCoords, in vec3 normal)
