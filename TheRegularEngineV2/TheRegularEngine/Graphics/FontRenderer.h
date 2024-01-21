@@ -1,11 +1,13 @@
 #pragma once
-#include "freetype/freetype.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "Pipeline.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Pipeline.h"
 #include "RenderPass.h"
+#include "VulkanTexture.h"
 
 namespace TRE
 {
@@ -13,10 +15,10 @@ namespace TRE
 
 	struct Character
 	{
-		glm::ivec2	 Size;
-		glm::ivec2	 Bearing;
-		uint32_t	 Offset;
-		uint32_t	 Advance;
+		glm::vec2	 Size;
+		glm::vec2	 Bearing;
+		glm::vec2	 UV[4];
+		unsigned int Advance;
 	};
 
 	struct FontVertex 
@@ -47,16 +49,15 @@ namespace TRE
 
 		private:
 			FT_Library m_FTLibrary;
-			std::unordered_map<std::string, FT_Face> m_Faces{};
 			std::vector<std::string> m_AvailableFonts;
 			std::unordered_map<char, Character> m_Characters{};
 
-			std::string m_DefaultFontFilepath = "../Resources/Fonts/Inter-Black.ttf";
-
-			float invBmpWidth = 0.f;
-			uint32_t bmpHeight = 0;
+			std::string m_DefaultFontFilepath = "../Resources/Fonts/arial.ttf";
 
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
+
+		private: //To be removed
+			std::shared_ptr<VulkanTexture> m_FontTexture;
 	};
 }

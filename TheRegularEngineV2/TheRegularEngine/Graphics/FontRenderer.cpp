@@ -46,94 +46,77 @@ namespace TRE
 
 	void FontRenderer::CreateNewFontFace(std::string Filepath, std::string FontType)
 	{
-		FT_Face NewFace;
-		if (FT_Error Error = FT_New_Face(m_FTLibrary, Filepath.c_str(), 0, &NewFace); Error)
+		FT_Face face;
+		if (FT_New_Face(m_FTLibrary, Filepath.c_str(), 0, &face))
 		{
-			assert(false && "Unable to create new FT Face");
+			TRE_CORE_ERROR("Unable to load font: {0}", FontType);
 		}
 
-		m_Faces[FontType] = NewFace;
-		m_AvailableFonts.push_back(FontType);
+		FT_Set_Pixel_Sizes(face, 0, 48); //Scale the font size using transform comp
 
-		FT_Set_Pixel_Sizes(m_Faces[FontType], 0, 48);
-
-		uint32_t bmpWidth = 0;
-		std::vector<uint8_t> pixels;
-		std::unordered_map<char, std::vector<uint8_t>> data;
-
+		int width = 0;
+		int height = 0;
 		for (unsigned char c = 0; c < 128; c++)
 		{
-			FT_Error Error = FT_Load_Char(NewFace, c, FT_LOAD_RENDER);
-			assert(Error == 0);
-
-			uint32_t bmpHeight = std::max(bmpHeight, NewFace->glyph->bitmap.rows);
-
-			unsigned int pitch = NewFace->glyph->bitmap.pitch;
-
-			Character character =
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				glm::ivec2(NewFace->glyph->bitmap.width, NewFace->glyph->bitmap.rows),
-				glm::ivec2(NewFace->glyph->bitmap_left, NewFace->glyph->bitmap_top),
-				bmpWidth,
-				static_cast<unsigned int>(NewFace->glyph->advance.x)
+				assert(false && "Unable to load Char");
+			}
+
+			width += face->glyph->bitmap.width;
+			
+			if (static_cast<unsigned int>(height) < face->glyph->bitmap.rows)
+				height = face->glyph->bitmap.rows;
+		}
+
+		uint8_t* data = new uint8_t[width * height * 4];
+
+		std::vector<uint8_t> Buffer(48);
+		int x = 0;
+		int offset = 0;
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			{
+				assert(false && "Unable to load Char");
+			}
+
+			int TempOffset = offset;
+			for (unsigned int x = 0; x < face->glyph->bitmap.rows; x++)
+			{
+				std::copy(face->glyph->bitmap.buffer + x * face->glyph->bitmap.width, face->glyph->bitmap.buffer + (x + 1) * face->glyph->bitmap.width, Buffer.data());
+
+				for (unsigned int y = 0; y < face->glyph->bitmap.width; y++)
+				{
+					const uint8_t& letter = Buffer[y];
+					int Index = TempOffset + y * 4;
+					for (int z = 0; z < 4; z++)
+						data[Index + z] = letter;
+				}
+				TempOffset += width * 4;
+			}
+			offset += face->glyph->bitmap.width * 4;
+
+			float xpos = static_cast<float>(x) / width ;
+			float w = static_cast<float>(face->glyph->bitmap.width) / static_cast<float>(width);
+			float ypos = static_cast<float>(face->glyph->bitmap.rows) / static_cast<float>(height);
+			
+			Character character = 
+			{
+				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+				{{xpos, ypos}, { xpos + w,  ypos }, { xpos + w,  0.f }, { xpos,  0.f }},
+				face->glyph->advance.x
 			};
 
 			m_Characters.insert(std::pair<char, Character>(c, character));
-			if (NewFace->glyph->bitmap.width > 0)
-			{
-				void* ptr = NewFace->glyph->bitmap.buffer;
 
-				std::vector<uint8_t> Data(NewFace->glyph->bitmap.width * NewFace->glyph->bitmap.rows);
-
-				int rows = NewFace->glyph->bitmap.rows;
-				int width = NewFace->glyph->bitmap.width;
-				for (int x = 0; x < rows; x++)
-				{
-					for (int y = 0; y < width; y++)
-					{
-						uint8_t byte = NewFace->glyph->bitmap.buffer[x * pitch + y];
-						Data[x * pitch + y] = byte;
-					}
-				}
-
-				data.insert(std::pair<char, std::vector<uint8_t>>(c, Data));
-			}
-			bmpWidth += NewFace->glyph->bitmap.width;
+			x += static_cast<int>(face->glyph->bitmap.width);
 		}
 
-		FT_Error Error = FT_Done_Face(NewFace);
-		assert(Error == 0 && "Error calling Done Face on font");
 
-		//invBmpWidth = 1 / (float)bmpWidth;
-
-		//uint8_t* buffer = new uint8_t[bmpHeight * bmpWidth];
-		//memset(buffer, 0, bmpHeight * bmpWidth);
-
-		//uint32_t xpos = 0;
-		//for (unsigned char c = 0; c < 128; c++)
-		//{
-		//	Character& character = m_Characters[c];
-
-		//	std::vector<uint8_t>& charData = data[c];
-		//	uint32_t width = character.Size.x;
-		//	uint32_t height = character.Size.y;
-		//	for (uint32_t i = 0; i < height; i++) 
-		//	{
-		//		for (uint32_t j = 0; j < width; j++) 
-		//		{
-		//			uint8_t byte = charData[i * width + j];
-		//			buffer[i * bmpWidth + xpos + j] = byte;
-		//		}
-		//	}
-		//	xpos += width;
-		//}
-
-		//VkDeviceSize pixelsize = 1;
-		//bool enablelod = false;
-
-		//VkDeviceSize ImageSize = (uint64_t)bmpWidth * (uint64_t)bmpHeight * pixelsize;
-		
-		
+		delete[] data;
+		FT_Done_Face(face);
 	}
 
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
