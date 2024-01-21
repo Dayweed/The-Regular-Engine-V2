@@ -240,7 +240,6 @@ namespace TRE
 
 		glm::mat4 depthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
-		recalculateShadowFrustum = true;
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entity->GetComponent<Transform>();
@@ -291,8 +290,6 @@ namespace TRE
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
-
-
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -313,7 +310,8 @@ namespace TRE
 		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
 
 		glm::mat4 depthViewMatrix(1.f);
-		const bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		recalculateShadowFrustum = true;
 		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
@@ -324,13 +322,17 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1f));
-				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.085f));
+				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
+				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
+				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
+				//depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 			}
 		}
 
 		if (recalculateShadowFrustum)
 		{
+			//std::cout << "Recalculating Shadow Frustum" << std::endl;
 			ShadowUBO UBO_Shadow;
 			glm::mat4 depthProjectionMatrix;
 			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
@@ -363,15 +365,6 @@ namespace TRE
 		
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
-
-		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
-		{
-			//const auto& TransformComp = Entity->GetComponent<Transform>();
-			auto& MRComp = Entity->GetComponent<MeshRenderer>();
-			//auto& AnimComp = Entity->GetComponent<AnimationComponent>();
-			if (!MRComp.m_IsVisible)
-				continue;
-		}
 	}
 
 	void SceneRenderer::EndFrame()
@@ -906,8 +899,8 @@ namespace TRE
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "Shadow Pass";
 		ImgConfig.Format = ImageFormat::DEPTH16UN;
-		ImgConfig.Width = SC->GetWidth();
-		ImgConfig.Height = SC->GetHeight();
+		ImgConfig.Width = m_ShadowMapWidth;
+		ImgConfig.Height = m_ShadowMapHeight;
 		ImgConfig.Usage = ImageUsage::Attachment;
 		ImgConfig.CreateSampler = true;
 		ImgConfig.Transfer = false;

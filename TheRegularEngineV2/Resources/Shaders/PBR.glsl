@@ -20,7 +20,7 @@ layout(location = 0) out struct
 	vec4 ShadowCoord;
 	vec4 DirectionalLightDirection;
 	vec4 DirectionalLightColor;
-	vec3 NormTest;
+	vec3 VertNormal;
 	vec3 CameraWorldPos;
 } Out;
 
@@ -61,7 +61,7 @@ void main()
 	vec3 tangent = normalize(rot * inTangent);	
 	vec3 bitangent = normalize(rot * inBitangent);
 
-	Out.NormTest = normal;
+	Out.VertNormal = normal;
 
 	Out.TBN = mat3( tangent, bitangent, normal);
 	Out.PosWorld = push.m_Model * vec4(inPosition, 1.0);
@@ -90,7 +90,7 @@ layout(location = 0) in struct
 	vec4 ShadowCoord;
 	vec4 DirectionalLightDirection;
 	vec4 DirectionalLightColor;
-	vec3 NormTest;
+	vec3 VertNormal;
 	vec3 CameraWorldPos;
 } In;
 
@@ -116,7 +116,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 
 		float currentDepth = lightCoords.z;
 		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
-
+		
 		int sampleRadius = 2;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
 
@@ -135,6 +135,9 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 
 		shadow /= pow(float((sampleRadius * 2 + 1)), 2.0);
 	}
+
+	shadow = clamp(shadow, 0.0, 1.0);
+	shadow -= 0.2;
 
 	return shadow;
 }
@@ -176,7 +179,7 @@ void main()
 	//const float specularIntensity = pow(max(dot(reflect(-In.DirectionalLightDirection, normal), eyeDirection), 0.0), shininess);
 	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
 	
-	float dp = max(dot(normalize(In.NormTest), -normalize(In.DirectionalLightDirection.xyz)), 0.0);
+	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0);
 
 	//Diffuse color
 	//if(diffuseIntensity > 0.0)
@@ -187,7 +190,6 @@ void main()
 		diffuseIntensity = mix(diffuseIntensity, dp, 0.7);
 		const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 		const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-		shadow = 0;
 		outColor.rgb = ambient + (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}
 	//else
