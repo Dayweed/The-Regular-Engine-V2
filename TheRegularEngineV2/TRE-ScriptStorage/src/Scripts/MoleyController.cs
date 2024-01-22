@@ -660,23 +660,37 @@ namespace TRE
 
 		public void TakeDamage()
 		{
-			if (Invulnerability)
-			{
-				IsActivated = true;
-				return;
-			}
+            if (Invulnerability) return;
+            if (MyPowerManager.powerUps.Count > 0)
+            {
+                MyPowerManager.LoseMain();
+                isScaled = false;
+            }
+            else
+            {
+                RespawnPlayer = true;
+                isDead = true;
+            }
+            Invulnerability = true;
 
-			if (MyPowerManager.powerUps.Count > 0)
-			{
-				MyPowerManager.LoseMain();
-				isScaled = false;
-			}
-			else
-			{
-				isDead = true;
-				RespawnPlayer = true;
-			}
-			Invulnerability = true;
+			// Commenting out for now until IsActivated is cfm not needed
+            //if (Invulnerability)
+            //{
+            //	IsActivated = true;
+            //	return;
+            //}
+
+            //if (MyPowerManager.powerUps.Count > 0)
+            //{
+            //	MyPowerManager.LoseMain();
+            //	isScaled = false;
+            //}
+            //else
+            //{
+            //	isDead = true;
+            //	RespawnPlayer = true;
+            //}
+            //Invulnerability = true;
 		}
 
 		public void ResetToInitialPos()

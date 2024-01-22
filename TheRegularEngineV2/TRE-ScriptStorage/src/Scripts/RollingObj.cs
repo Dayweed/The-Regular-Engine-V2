@@ -77,9 +77,9 @@ namespace TRE
 		{
 			Entity other = new Entity(otherID);
 			if (other.CompareTag("Red"))
-			{
-				// Bounce back if the Moley is using their strawberry powerUp
-				MoleyController ctrl = other.GetComponent<MoleyController>();
+            {
+                // Bounce back if the Moley is using their strawberry powerUp
+                MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
 				{
 					Bounceback();
@@ -87,12 +87,12 @@ namespace TRE
 				else
 				{
 					ctrl.TakeDamage();
-				}
-			}
+                }
+            }
 			else if (other.CompareTag("Blue"))
 			{
 				other.GetComponent<HoleyController>().TakeDamage();
-			}
+            }
 			else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
 				Bounceback();
