@@ -41,8 +41,8 @@ namespace TRE
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
 
-        #region Collider Variables
-        private float defaultRadius = 2f;
+		#region Collider Variables
+		private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 4f;
 		private float strawberrysuperRadius = 4f;
 		public float currentRadius = 2f;
@@ -51,69 +51,69 @@ namespace TRE
 		private float strawberrysuperHeight = 4.8f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
-        #endregion
-        #region Player Transform Variables
-        private Transform moleyTransform;
-        private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
+		#endregion
+		#region Player Transform Variables
+		private Transform moleyTransform;
+		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
 		private vec3 blueberryscaledXform = new vec3(40f, 40f, 40f);
 		private vec3 strawberryscaledXform = new vec3(0.5f, 0.5f, 0.5f);
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
-        #endregion
+		#endregion
 
-        private int playerDirection = 0;
+		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
 		private float lerpSpeed = 5f;
 
-        #region Jump Variables
-        //Check if player is jumping at all
-        public bool isJumping = false;
+		#region Jump Variables
+		//Check if player is jumping at all
+		public bool isJumping = false;
 		//how long you hold the jump button to reach max jump height
 		public float maxJumpButtomTime = 0.5f;
 		public float currentJumpTime;
 		public bool jumpCancelled = false;
 		//how long after the player walks off the ground can he still jump
-		private float coyoteTime = 0.2f;
+		private float coyoteTime = 9990.2f;
 		public float coyoteTimeCounter;
 		//if player press space within this buffer time, they will still be able to jump even if they havent landed
 		private float jumpBufferTime = 0.25f;
 		public float jumpBufferCounter;
-        private float maxJumpHeight = 70f;
-        private float jumpHeight = 25f;
-        #endregion
+		private float maxJumpHeight = 70f;
+		private float jumpHeight = 25f;
+		#endregion
 
-        //For camera controller
-        //private Entity Key;
-        //private Entity FinalPlatform;
+		//For camera controller
+		//private Entity Key;
+		//private Entity FinalPlatform;
 
-        #region Audio Variables
-        private ulong walkingSFX;
+		#region Audio Variables
+		private ulong walkingSFX;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
-        #endregion
+		#endregion
 
-        public float elapsedTime = 0.0f;
+		public float elapsedTime = 0.0f;
 
-        #region Respawn Variables
-        private vec3 RespawnPoint = new vec3(0, 0, 0);
+		#region Respawn Variables
+		private vec3 RespawnPoint = new vec3(0, 0, 0);
 		private bool RespawnPlayer = false;
 		private float RespawnTimer = 1.5f;
-        public bool isDead = false;
-        private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
-        private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
-        private bool DroppingOutOfMap = false;
-        #endregion
+		public bool isDead = false;
+		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
+		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
+		private bool DroppingOutOfMap = false;
+		#endregion
 
-        #region Invulnerability Variables
-        private bool Invulnerability = false;
+		#region Invulnerability Variables
+		private bool Invulnerability = false;
 		private float InvulCurrent = 1.0f;
 		private float InvulPeriod = 1.0f;
 		private float InvulBlinkCurrent = 0.1f;
 		private float InvulBlinkPeriod = 0.1f;
-        #endregion
+		#endregion
 
 		private Entity UIPopup2;
 		private bool IsActivated = false;
@@ -124,43 +124,43 @@ namespace TRE
 
 		public void Start()
 		{
-            #region UI variables
-            MyPowerUpUI = ECSManager.FindEntityByName("LeftCharacter_HUD").GetComponent<PowerUpUI>();
+			#region UI variables
+			MyPowerUpUI = ECSManager.FindEntityByName("LeftCharacter_HUD").GetComponent<PowerUpUI>();
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 
-            UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
-            IsActivated = false;
-            HasBeenTriggeredBefore = false;
-            #endregion
+			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
+			IsActivated = false;
+			HasBeenTriggeredBefore = false;
+			#endregion
 
-            #region player Transform and Physics variables
-            TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
+			#region player Transform and Physics variables
+			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
-            #endregion
+			#endregion
 
-            #region Respawn Variables
-            TransformSystem.GetPosition(this.ID, out vec3 InitialPos);
+			#region Respawn Variables
+			TransformSystem.GetPosition(this.ID, out vec3 InitialPos);
 			InitialPosition = InitialPos;
 			OutofMapPos = InitialPos;
 			OutofMapPos.y = InitialPos.y - 50.0f;
 			moleyTransform = GetComponent<Transform>();
 
-            RespawnPoint = moleyTransform.Position;
-            RespawnPoint.y += 10.0f;
-            #endregion
+			RespawnPoint = moleyTransform.Position;
+			RespawnPoint.y += 10.0f;
+			#endregion
 
-            #region Sound Variables
-            walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
+			#region Sound Variables
+			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
 			jumpSFX = ECSManager.FindIDFromName("SFX_MoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
-            #endregion
+			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
 		}
@@ -194,8 +194,8 @@ namespace TRE
 			//Movement variables
 			PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
 
-            #region respawn mechanics
-            if (pos.y < OutofMapPos.y)
+			#region respawn mechanics
+			if (pos.y < OutofMapPos.y)
 			{
 				isDead = true;
 				DroppingOutOfMap = true;
@@ -218,11 +218,11 @@ namespace TRE
 				}
 				// else do not respawn player since both are dead
 			}
-            #endregion
-            #region Movement
+			#endregion
+			#region Movement
 			dirVec = vec3.Zero;
 
-            if (DroppingOutOfMap)
+			if (DroppingOutOfMap)
 			{
 				dirVec.x = 0.0f;
 				dirVec.z = 0.0f;
@@ -290,16 +290,16 @@ namespace TRE
 				}
 				//check if space is pressed within the buffer time
 				if (InputSystem.GetKeyPress(InputKeys.Space))
-                {
-                    jumpBufferCounter = jumpBufferTime;
+				{
+					jumpHeight += Time.deltaTime;
+					jumpBufferCounter = jumpBufferTime;
 					//Debug.Log("Jump Pressed");
-                }
+				}
 				//count down the buffer time
-                else
-                {
-                    jumpBufferCounter -= Time.deltaTime;
-                    //Debug.Log("Jump Buffer Time 2: " + jumpBufferCounter);
-                }
+				else
+				{
+					jumpBufferCounter -= Time.deltaTime;
+				}
 				//check if player is jumping
 				if (isJumping)
 				{
@@ -316,21 +316,23 @@ namespace TRE
 						isJumping = false;
 
 						//Debug.Log("Jump ran out");
-                    }
+					}
 					currentJumpTime += Time.deltaTime;
 				}
 				//check if player is on the ground and space is not released
 				else
 				{
-                    if (InputSystem.GetKeyRelease(InputKeys.Space))
-                    {
+					if (InputSystem.GetKeyRelease(InputKeys.Space))
+					{
 						isJumping = false;
-                    }
-                }
+					}
+				}
 				//jump buffer time and coyote time is still active
-                if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+				if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
 				{
 					isWalking = false;
+					//if something break comment this line below out
+						currVelocity.y = 0;
 
 					vec3 maxHeight = new vec3(0, 70, 0);
 					// Boosted Jump
@@ -349,7 +351,7 @@ namespace TRE
 					jumpCancelled = false;
 					currentJumpTime = 0;
 					jumpBufferCounter = 0;
-                }
+				}
 			}
 			#endregion
 
