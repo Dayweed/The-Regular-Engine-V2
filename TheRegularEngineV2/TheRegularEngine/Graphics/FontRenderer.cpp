@@ -151,8 +151,10 @@ namespace TRE
 
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
-		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(960.f, 540.f, 0.f)); //Translate by viewport width or height / 2
-		glm::mat4 TempProj = glm::ortho(0.f, 1920.f, 0.f, 1080.f) * TranslateToMid;
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(static_cast<float>(SC->GetWidth()) / 2.f, static_cast<float>(SC->GetHeight()) / 2.f, 0.f)); //Translate by viewport width or height / 2
+		glm::mat4 TempProj = glm::ortho(0.f, static_cast<float>(SC->GetWidth()), 0.f, static_cast<float>(SC->GetHeight())) * TranslateToMid;
 
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
