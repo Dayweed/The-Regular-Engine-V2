@@ -360,10 +360,51 @@ namespace TRE
 		//InitScriptingMain();
 	}
 
+	// This function needs to be rewritten too
 	void ScriptEngine::CreateCSEntityData(Entity entity)
 	{
 		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
-		if (EntityClassExists(scriptComponent.m_StoredClass))
+		// rewrite to accomodate for multiple scripts
+		if(!scriptComponent.m_RegisteredScripts.empty())
+		{
+			std::string GUID = entity->GetGUID();
+			// check which scripts are not initialized and initialize them
+			for(auto i : scriptComponent.m_RegisteredScripts)
+			{
+				if(i.second == false)
+				{
+					if(EntityClassExists(i.first))
+					{
+						std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[i.first], GUID);
+						instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
+						s_ScriptEngineData->ScriptInstances[GUID].emplace_back(instance);
+
+						if(s_ScriptEngineData->EntityFieldMap[GUID].find(i.first) == s_ScriptEngineData->EntityFieldMap[GUID].end())
+						{
+							// create the field map for the entity
+							ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID][i.first];
+							const auto& fields{ instance->GetScriptClass()->GetFields() };
+							for (const auto& [name, field] : fields)
+							{
+								fieldMap[name].m_Field.m_Name = name;
+								fieldMap[name].m_Field.m_Type = field.m_Type;
+							}
+						}
+						else
+						{
+							std::string function{ __FUNCTION__ };
+							TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
+							continue;
+						}
+					}
+					// set the script to be initialized
+					i.second = true;
+				} 
+			}
+		}
+
+
+		/*if (EntityClassExists(scriptComponent.m_StoredClass))
 		{
 			std::string GUID = entity->GetGUID();
 
@@ -385,7 +426,7 @@ namespace TRE
 				fieldMap[name].m_Field.m_Name = name;
 				fieldMap[name].m_Field.m_Type = field.m_Type;
 			}
-		}
+		}*/
 	}
 
 	void ScriptEngine::InitScriptingMain()
@@ -698,7 +739,6 @@ namespace TRE
 		}
 
 		return it->second;
-	
 	}
 
 #pragma endregion

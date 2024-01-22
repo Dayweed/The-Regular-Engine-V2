@@ -185,10 +185,13 @@ namespace TRE
 
 		ScriptClass MainClass;
 
+		// used to create dropdown box to choose what scripts that can be attached to an entity
+		std::vector<std::string> RegisteredScriptClasses;
+
 		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptClasses;
 		// This map will contain the ObjectID, and a Vector of all the scriptinstances that are attached to that object.
 		std::unordered_map<std::string, std::vector<std::shared_ptr<ScriptInstance>>> ScriptInstances;
-		std::unordered_map<std::string, ScriptFieldMap> EntityFieldMap;
+		std::unordered_map<std::string, std::unordered_map<std::string ,ScriptFieldMap>> EntityFieldMap;
 
 		std::string MonoAssemblyPath;
 		std::string MonoProjectPath;

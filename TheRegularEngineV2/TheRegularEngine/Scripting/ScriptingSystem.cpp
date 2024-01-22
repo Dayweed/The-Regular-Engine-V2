@@ -214,8 +214,6 @@ namespace TRE
 
 		m_ScriptEntities.clear();
 		m_ScriptEntities = ECSManager::Instance().GetEntities<ScriptComponent>(true);
-
-
 	}
 
 	void ScriptingSystem::RemoveScriptableObject(Entity entity)
@@ -267,6 +265,12 @@ namespace TRE
 		//		}
 		//	}
 		//}
+	}
+
+	//Scripting system porting
+	void ScriptingSystem::CopyScriptsToNewContainer()
+	{
+
 	}
 
 	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)
