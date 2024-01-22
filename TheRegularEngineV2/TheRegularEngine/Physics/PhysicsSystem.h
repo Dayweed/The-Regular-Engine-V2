@@ -264,6 +264,12 @@ namespace TRE
 		bool ConstructCylinderCollider(const Entity& entity, const float radius = 1.0f, const float height = 1.0f, const glm::vec3& offset = glm::vec3{ 0 }) const;
 
 		void ResizeCylinderCollider(const Entity& entity, const float newRadius, const float newHeight) const;
+
+		void UpdateCylinderCollider(const Entity& entity) const;
+
+		void DestructCylinderCollider(const Entity& entity) const;
+
+		void SetCylinderColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
 		//This test function creates a stack of shapes

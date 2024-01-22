@@ -452,7 +452,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
-			.component<CylinderCollider>(arc) // WHY DO I HAVE TO DO THIS?!?
+			.component<CylinderCollider>(arc)
 			;
 
 		// Clone each component of the object into the prefab

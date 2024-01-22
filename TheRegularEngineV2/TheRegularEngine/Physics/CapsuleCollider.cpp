@@ -81,7 +81,7 @@ namespace TRE
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 
 		// determine physics material being used
-		PxMaterial* shapeMaterial = nullptr;
+		PxMaterial* shapeMaterial = m_DefaultMaterial;
 		if (capsuleCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
 			shapeMaterial = m_DefaultMaterial;
 		else if (capsuleCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
@@ -141,9 +141,11 @@ namespace TRE
 
 		for (unsigned i = 0; i < nbShapes; ++i)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+			if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE)
+				continue;
 
-			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight))); break;
+			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight)));
+			break;
 		}
 
 		entity->GetComponent<CapsuleCollider>().m_Radius = fabs(newRadius);
@@ -193,10 +195,12 @@ namespace TRE
 
 			for (unsigned i = 0; i < nbShapes; ++i)
 			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+				if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE)
+					continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*shapes[i]);
+				break;
 			}
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
@@ -211,17 +215,14 @@ namespace TRE
 
 		capsuleCollider.m_IsTrigger = isTrigger;
 
-		constexpr unsigned maxNbShapes = 3; // sphere, box, capsule
+		constexpr unsigned maxNbShapes = 4; // sphere, box, capsule, cylinder
 		PxShape* shapes[maxNbShapes] = { nullptr };
 		rigidDynamic->getShapes(shapes, maxNbShapes);
 
 		// obtain the index of the box shape
 		for (auto& shape : shapes)
 		{
-			if (!shape)
-				continue;
-
-			if (shape->getGeometryType() != PxGeometryType::eCAPSULE)
+			if (!shape || shape->getGeometryType() != PxGeometryType::eCAPSULE)
 				continue;
 
 			if (capsuleCollider.m_IsTrigger)

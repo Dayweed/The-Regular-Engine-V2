@@ -76,7 +76,7 @@ namespace TRE
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 
 		// determine physics material being used
-		PxMaterial* shapeMaterial = nullptr;
+		PxMaterial* shapeMaterial = m_DefaultMaterial;
 		if (sphereCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
 			shapeMaterial = m_DefaultMaterial;
 		else if (sphereCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
@@ -131,9 +131,11 @@ namespace TRE
 
 		for (unsigned i = 0; i < nbShapes; ++i)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+			if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eSPHERE)
+				continue;
 
-			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius))); break;
+			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius)));
+			break;
 		}
 
 		entity->GetComponent<SphereCollider>().m_Radius = fabs(newRadius);
@@ -180,10 +182,12 @@ namespace TRE
 
 			for (unsigned i = 0; i < nbShapes; ++i)
 			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+				if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eSPHERE)
+					continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*shapes[i]);
+				break;
 			}
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
@@ -198,17 +202,14 @@ namespace TRE
 
 		sphereCollider.m_IsTrigger = isTrigger;
 
-		constexpr unsigned maxNbShapes = 3; // sphere, box, capsule
+		constexpr unsigned maxNbShapes = 4; // sphere, box, capsule, cylinder
 		PxShape* shapes[maxNbShapes] = { nullptr };
 		rigidDynamic->getShapes(shapes, maxNbShapes);
 
 		// obtain the index of the box shape
 		for (auto& shape : shapes)
 		{
-			if (!shape)
-				continue;
-
-			if (shape->getGeometryType() != PxGeometryType::eSPHERE)
+			if (!shape || shape->getGeometryType() != PxGeometryType::eSPHERE)
 				continue;
 
 			if (sphereCollider.m_IsTrigger)

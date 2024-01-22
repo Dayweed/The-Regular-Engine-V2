@@ -278,6 +278,11 @@ namespace TRE
 				const CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 				offset = capsuleCollider.m_Offset;
 			}
+			else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			{
+				const CylinderCollider& cylinderCollider = entity->GetComponent<CylinderCollider>();
+				offset = cylinderCollider.m_Offset;
+			}
 
 			Transform& transform = entity->GetComponent<Transform>();
 			const PxVec3 pos = sharedData.m_RigidDynamic->getGlobalPose().p;
@@ -309,6 +314,9 @@ namespace TRE
 
 			if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 				DestructCapsuleCollider(entity);
+
+			if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+				DestructCylinderCollider(entity);
 		}
 		m_Actors.clear();
 		PX_RELEASE(m_Scene);
@@ -344,6 +352,12 @@ namespace TRE
 		{
 			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
 			UNUSED_VALUE(ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset));
+		}
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+		{
+			CylinderCollider& component{ entity->GetComponent<CylinderCollider>() };
+			UNUSED_VALUE(ConstructCylinderCollider(entity, component.m_Radius, component.m_Height, component.m_Offset));
 		}
 	}
 
@@ -566,6 +580,7 @@ namespace TRE
 		MarkAsTrigger.operator() < SphereCollider > (entity);
 		MarkAsTrigger.operator() < BoxCollider > (entity);
 		MarkAsTrigger.operator() < CapsuleCollider > (entity);
+		MarkAsTrigger.operator() < CylinderCollider > (entity);
 	}
 
 	// if one shape on an entity is a collider, they're all colliders now :)
@@ -606,6 +621,7 @@ namespace TRE
 		MarkAsCollider.operator() < SphereCollider > (entity);
 		MarkAsCollider.operator() < BoxCollider > (entity);
 		MarkAsCollider.operator() < CapsuleCollider > (entity);
+		MarkAsCollider.operator() < CylinderCollider > (entity);
 	}
 
 	bool PhysicsSystem::IsCollisionEnter(const Entity& entity_1, const Entity& entity_2) const
@@ -837,6 +853,24 @@ namespace TRE
 				}
 			}
 		}
+
+		// Update the Update UPDATE if the Update Update
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+		{
+			auto& collider = entity->GetComponent<CylinderCollider>();
+			const auto& transform = entity->GetComponent<Transform>();
+
+			if (transform.m_IsDirty || collider.m_IsDirty)
+			{
+				UpdateColliderData(entity, collider.m_Offset);
+
+				if (collider.m_IsDirty)
+				{
+					ResizeCylinderCollider(entity, collider.m_Radius, collider.m_Height);
+					collider.m_IsDirty = false;
+				}
+			}
+		}
 	}
 
 	void PhysicsSystem::DestroyOutdatedComponents() const
@@ -899,6 +933,15 @@ namespace TRE
 				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
 					DestructCapsuleCollider(entity);
 			}
+
+			// CylinderCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::CylinderCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<CylinderCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructCylinderCollider(entity);
+			}
+
 		}
 
 		// erasing elements in a map: https://stackoverflow.com/a/8234813
@@ -929,6 +972,9 @@ namespace TRE
 
 		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 			UpdateCapsuleCollider(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+			UpdateCylinderCollider(entity);
 	}
 
 	void PhysicsSystem::UpdateActorPose(const Entity& entity, const glm::vec3& offset) const
@@ -1047,6 +1093,8 @@ namespace TRE
 			layer = entity->GetComponent<SphereCollider>().m_CollisionLayer.m_LayerID;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			layer = entity->GetComponent<CapsuleCollider>().m_CollisionLayer.m_LayerID;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			layer = entity->GetComponent<CylinderCollider>().m_CollisionLayer.m_LayerID;
 
 		// ensure that it's between 0 and 31
 		const PxU16 value = static_cast<PxU16>(layer);
@@ -1086,6 +1134,8 @@ namespace TRE
 			isActive = entity->GetComponent<SphereCollider>().m_IsActive;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			isActive = entity->GetComponent<CapsuleCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			isActive = entity->GetComponent<CylinderCollider>().m_IsActive;
 
 		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !isActive);
 	}
@@ -1104,10 +1154,12 @@ namespace TRE
 			material = entity->GetComponent<SphereCollider>().m_PhysicsMaterial.m_MaterialID;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			material = entity->GetComponent<CapsuleCollider>().m_PhysicsMaterial.m_MaterialID;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			material = entity->GetComponent<CylinderCollider>().m_PhysicsMaterial.m_MaterialID;
 
-		// there are only 3 shapes that can possibly be added - Sphere, Box & Capsule
-		PxShape* shapes[3] = { nullptr };
-		unsigned numberOfShapes = rigidDynamic->getShapes(shapes, 3);
+		// there are only 4 shapes that can possibly be added - Sphere, Box, Capsule & Cylinder
+		PxShape* shapes[4] = { nullptr };
+		unsigned numberOfShapes = rigidDynamic->getShapes(shapes, 4);
 
 		for (unsigned i = 0; i < numberOfShapes; ++i)
 		{
@@ -1127,6 +1179,8 @@ namespace TRE
 			entity->GetComponent<SphereCollider>().m_IsActive = state;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			entity->GetComponent<CapsuleCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			entity->GetComponent<CylinderCollider>().m_IsActive = state;
 
 		// now that the bool inside the component has been changed, the change function can be called
 		ChangeIsActive(entity);
@@ -1141,6 +1195,8 @@ namespace TRE
 			return entity->GetComponent<SphereCollider>().m_IsActive;
 		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 			return entity->GetComponent<CapsuleCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			return entity->GetComponent<CylinderCollider>().m_IsActive;
 		else
 			return false;
 	}
@@ -1160,17 +1216,16 @@ namespace TRE
 		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
 
 		if (attachedComponents & PhysicsComponentTypes::SphereCollider)
-		{
 			entity->GetComponent<SphereCollider>().m_Offset = offset;
-		}
+
 		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
-		{
 			entity->GetComponent<BoxCollider>().m_Offset = offset;
-		}
+
 		if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
-		{
 			entity->GetComponent<CapsuleCollider>().m_Offset = offset;
-		}
+
+		if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			entity->GetComponent<CylinderCollider>().m_Offset = offset;
 	}
 }
 

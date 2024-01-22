@@ -115,10 +115,10 @@ namespace TRE
 
 		auto& [rigidDynamic, attachedComponents, GUID, _unused] = m_Actors[entity->GetGUID()];
 
-		CylinderCollider& cylinderCollider= entity->GetComponent<CylinderCollider>();
+		CylinderCollider& cylinderCollider = entity->GetComponent<CylinderCollider>();
 
 		// determine physics material being used
-		PxMaterial* shapeMaterial = nullptr;
+		PxMaterial* shapeMaterial = m_DefaultMaterial;
 		if (cylinderCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
 			shapeMaterial = m_DefaultMaterial;
 		else if (cylinderCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
@@ -157,7 +157,7 @@ namespace TRE
 
 		return cylinderCollider.m_IsInitialized = true;
 	}
-	
+
 	void PhysicsSystem::ResizeCylinderCollider(const Entity& entity, const float newRadius, const float newHeight) const
 	{
 		PhysicsComponentAssertion(CylinderCollider);
@@ -168,6 +168,103 @@ namespace TRE
 		PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
 		nbShapes = rigidDynamic->getShapes(shapes, nbShapes);
 
-		// sdsd;
+		for (unsigned i = 0; i < nbShapes; ++i)
+		{
+			if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eCONVEXMESH)
+				continue;
+
+			shapes[i]->setGeometry(PxConvexMeshGeometry(CreateCylinderMesh(fabs(newRadius), fabs(newHeight))));
+			break;
+		}
+
+		entity->GetComponent<CylinderCollider>().m_Radius = fabs(newRadius);
+		entity->GetComponent<CylinderCollider>().m_Height = fabs(newHeight);
+	}
+
+	void PhysicsSystem::UpdateCylinderCollider(const Entity& entity) const
+	{
+		PhysicsComponentAssertion(CylinderCollider);
+
+		CylinderCollider& cylinderCollider = entity->GetComponent<CylinderCollider>();
+
+		cylinderCollider.m_IsInitialized || ConstructCylinderCollider(entity);
+
+		UpdateActorPose(entity, cylinderCollider.m_Offset);
+
+		PxRigidBodyExt::updateMassAndInertia(*m_Actors[entity->GetGUID()].m_RigidDynamic, 1.0f);
+
+		SetCylinderColliderTrigger(entity, cylinderCollider.m_IsTrigger);
+
+		if (cylinderCollider.m_IsDirty)
+		{
+			ChangeCollisionLayer(entity);
+			ChangeIsActive(entity);
+			ChangeMaterial(entity);
+		}
+	}
+
+	void PhysicsSystem::DestructCylinderCollider(const Entity& entity) const
+	{
+		SharedData& sharedData = m_Actors[entity->GetGUID()];
+
+		// reset bit for this component
+		sharedData.m_AttachedComponents &= ~PhysicsComponentTypes::CylinderCollider;
+
+		if (!sharedData.m_AttachedComponents)
+		{
+			m_Scene->removeActor(*sharedData.m_RigidDynamic);
+			sharedData.m_RigidDynamic->release();
+			sharedData.m_MarkForRemoval = true;
+		}
+		else // there's still more attached physics components
+		{
+			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
+			PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes, nbShapes);
+
+			for (unsigned i = 0; i < nbShapes; ++i)
+			{
+				if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eCONVEXMESH)
+					continue;
+
+				// there should only be ONE of each physics component, so it's safe to stop looping here
+				sharedData.m_RigidDynamic->detachShape(*shapes[i]);
+				break;
+			}
+
+			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
+		}
+		//entity->RemoveComponent<CylinderCollider>();
+	}
+
+	void PhysicsSystem::SetCylinderColliderTrigger(const Entity& entity, const bool isTrigger) const
+	{
+		CylinderCollider& cylinderCollider = entity->GetComponent<CylinderCollider>();
+		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic->is<PxRigidDynamic>();
+
+		cylinderCollider.m_IsTrigger = isTrigger;
+
+		constexpr unsigned maxNbShapes = 4; // sphere, box, capsule, cylinder
+		PxShape* shapes[maxNbShapes] = { nullptr };
+		rigidDynamic->getShapes(shapes, maxNbShapes);
+
+		// obtain the index of the box shape
+		for (auto& shape : shapes)
+		{
+			if (!shape || shape->getGeometryType() != PxGeometryType::eCONVEXMESH)
+				continue;
+
+			if (cylinderCollider.m_IsTrigger)
+			{
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+			}
+			else
+			{
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+			}
+			break;
+		}
 	}
 }
