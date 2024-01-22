@@ -1,6 +1,4 @@
 #pragma once
-#include <ft2build.h>
-#include FT_FREETYPE_H
 #include "Pipeline.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
@@ -8,6 +6,9 @@
 #include "Pipeline.h"
 #include "RenderPass.h"
 #include "VulkanTexture.h"
+#include "Material.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace TRE
 {
@@ -24,13 +25,13 @@ namespace TRE
 	struct FontVertex 
 	{
 		glm::vec3 Pos;
-		glm::vec4 Color;
 		glm::vec2 UV;
 	};
 
 	struct Font_PushConstant
 	{
 		glm::mat4 Proj;
+		glm::vec4 Color;
 	};
 
 	class FontRenderer
@@ -44,20 +45,25 @@ namespace TRE
 
 			void RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
 
+			static std::vector<std::string>& GetLoadedFonts();
+
 		private:
 			std::shared_ptr<Device> m_Device;
 
 		private:
-			FT_Library m_FTLibrary;
-			std::vector<std::string> m_AvailableFonts;
-			std::unordered_map<char, Character> m_Characters{};
+			static std::vector<std::string> m_AvailableFonts;
+			std::unordered_map<char, Character> m_Characters{}; //Per Font Type
 
 			std::string m_DefaultFontFilepath = "../Resources/Fonts/arial.ttf";
 
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
 
+			std::shared_ptr<VertexBuffer> m_FontVertexBuffer;
+			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
+
 		private: //To be removed
 			std::shared_ptr<VulkanTexture> m_FontTexture;
+			std::shared_ptr<Material> m_FontMaterial;
 	};
 }

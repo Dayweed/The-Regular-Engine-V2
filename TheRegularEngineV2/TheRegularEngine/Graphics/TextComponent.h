@@ -69,6 +69,10 @@ property_begin(TRE::TextComponent)
 			Self.m_Color = InOut.m_Value;
 		}
 	} property_var_fnend(),
-	property_var(m_FontType)
+	property_var_fnbegin("FontType", FontType)
+	{
+		InOut.m_Type = "FontType";
+		
+	} property_var_fnend()
 
 } property_vend_h(TRE::TextComponent)

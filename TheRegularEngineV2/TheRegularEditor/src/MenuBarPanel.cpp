@@ -167,6 +167,9 @@ namespace TRE
 					for (Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 						entity->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
 
+					for (Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+						entity->GetComponent<CylinderCollider>().m_IsVisible = m_ShowAllColliders;
+
 					ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetDrawDebug(m_ShowAllColliders);
 				}
 

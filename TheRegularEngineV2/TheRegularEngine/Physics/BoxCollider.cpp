@@ -28,11 +28,6 @@ namespace TRE
 		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadVec3MemberFromJSON(m_HalfExtents);
-
-		//if (t.m_PhysicsMaterial.m_MaterialID != 0)
-		//{
-		//	printf("oh hello box");
-		//}
 	}
 
 	bool PhysicsSystem::ConstructBoxCollider(const Entity& entity, const glm::vec3& halfExtents, const glm::vec3& offset) const
@@ -56,7 +51,19 @@ namespace TRE
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
 
 #ifdef _DEBUG
-			tempSharedData.m_RigidDynamic->setName("BoxCollider");
+			{
+				char* string = nullptr;
+				if (entity->GetName() == "Holey")
+					string = (char*)"Holey";
+				else if (entity->GetName() == "Moley")
+					string = (char*)"Moley";
+				else if (entity->GetName() == "Slippery Body")
+					string = (char*)"Slippery Body";
+				else
+					string = (char*)"BoxCollider";
+
+				tempSharedData.m_RigidDynamic->setName(string);
+			}
 #endif
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
@@ -69,7 +76,7 @@ namespace TRE
 		BoxCollider& boxCollider = entity->GetComponent<BoxCollider>();
 
 		// determine physics material being used
-		PxMaterial* shapeMaterial = nullptr;
+		PxMaterial* shapeMaterial = m_DefaultMaterial;
 		if (boxCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
 			shapeMaterial = m_DefaultMaterial;
 		else if (boxCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
@@ -116,12 +123,13 @@ namespace TRE
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+		nbShapes = rigidDynamic->getShapes(shapes, nbShapes);
 
 		for (unsigned i = 0; i < nbShapes; ++i)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
+			if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eBOX)
+				continue;
 
 			shapes[i]->setGeometry(PxBoxGeometry(
 				fabs(newHalfExtents.x),
@@ -169,15 +177,17 @@ namespace TRE
 		else // there's still more attached physics components
 		{
 			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
+			PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes, nbShapes);
 
 			for (unsigned i = 0; i < nbShapes; ++i)
 			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eBOX) continue;
+				if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eBOX)
+					continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*shapes[i]);
+				break;
 			}
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
@@ -192,17 +202,14 @@ namespace TRE
 
 		boxCollider.m_IsTrigger = isTrigger;
 
-		constexpr unsigned maxNbShapes = 3; // sphere, box, capsule
+		constexpr unsigned maxNbShapes = 4; // sphere, box, capsule, cylinder
 		PxShape* shapes[maxNbShapes] = { nullptr };
 		rigidDynamic->getShapes(shapes, maxNbShapes);
 
 		// obtain the index of the box shape
 		for (auto& shape : shapes)
 		{
-			if (!shape)
-				continue;
-
-			if (shape->getGeometryType() != PxGeometryType::eBOX)
+			if (!shape || shape->getGeometryType() != PxGeometryType::eBOX)
 				continue;
 
 			if (boxCollider.m_IsTrigger)
