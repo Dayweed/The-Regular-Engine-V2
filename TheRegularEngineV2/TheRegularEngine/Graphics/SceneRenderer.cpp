@@ -11,6 +11,7 @@
 #include "Physics/SphereCollider.h"
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
+#include "Physics/CylinderCollider.h"
 #include "Light.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -732,8 +733,8 @@ namespace TRE
 			for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
 			{
 				const Transform& tr = capsule->GetComponent<Transform>();
-				const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
-				if (cc.m_IsVisible == false)
+				const CapsuleCollider& cpc = capsule->GetComponent<CapsuleCollider>();
+				if (cpc.m_IsVisible == false)
 					continue;
 
 				for (int i = 0; i < 2; ++i)
@@ -742,12 +743,12 @@ namespace TRE
 					{
 						PushConstant pc{};
 						glm::mat4 model(1.f);
-						const float radius = cc.m_Radius;
-						const float halfExtent = cc.m_HalfHeight;
+						const float radius = cpc.m_Radius;
+						const float halfExtent = cpc.m_HalfHeight;
 						if (i == 0)
-							model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, halfExtent, 0));
+							model = glm::translate(model, tr.m_Position + cpc.m_Offset + glm::vec3(0, halfExtent, 0));
 						else
-							model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, -halfExtent, 0));
+							model = glm::translate(model, tr.m_Position + cpc.m_Offset + glm::vec3(0, -halfExtent, 0));
 						model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
 						model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(1, 0, 0));
 						model = glm::rotate(model, glm::radians(90.f * j), glm::vec3(0, 1, 0));
@@ -763,7 +764,7 @@ namespace TRE
 
 						PushConstant pc2{};
 						glm::mat4 model2(1.f);
-						model2 = glm::translate(model2, tr.m_Position + cc.m_Offset);
+						model2 = glm::translate(model2, tr.m_Position + cpc.m_Offset);
 						model2 = model2 * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
 						model2 = glm::rotate(model2, glm::radians(180.f * i), glm::vec3(1, 0, 0));
 						model2 = glm::rotate(model2, glm::radians(90.f * j), glm::vec3(0, 1, 0));
@@ -778,6 +779,16 @@ namespace TRE
 						m_DebugRenderer->DrawDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
 					}
 				}
+			}
+
+			for (const auto& cylinder : ECSManager::Instance().GetEntities<CylinderCollider>())
+			{
+				const Transform& tr = cylinder->GetComponent<Transform>();
+				const CylinderCollider& cyc = cylinder->GetComponent<CylinderCollider>();
+				if (cyc.m_IsVisible == false)
+					continue;
+
+				; // debug draw for cylinders? :P
 			}
 
 			for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())

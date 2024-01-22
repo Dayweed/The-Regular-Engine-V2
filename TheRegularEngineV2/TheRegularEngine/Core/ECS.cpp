@@ -151,8 +151,13 @@ namespace TRE
 		}
 		if (parent->HasComponent<CapsuleCollider>())
 		{
-			CapsuleCollider& cc{ parent->GetComponent<CapsuleCollider>() };
-			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(parent, cc.m_Radius, cc.m_HalfHeight);
+			CapsuleCollider& cpc{ parent->GetComponent<CapsuleCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(parent, cpc.m_Radius, cpc.m_HalfHeight);
+		}
+		if (parent->HasComponent<CylinderCollider>())
+		{
+			CylinderCollider& cyc{ parent->GetComponent<CylinderCollider>() };
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCylinderCollider(parent, cyc.m_Radius, cyc.m_Height);
 		}
 	}
 
