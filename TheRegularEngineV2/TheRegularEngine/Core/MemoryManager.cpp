@@ -78,13 +78,10 @@ namespace TRE
 	{
 		for (auto& object : m_AllEntityList)
 		{
-			// Remove from m_EntityList
+#ifdef _DEBUG
+			// Properly abandon children
 			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(object.second);
-		}
-		for (auto& object : m_AllEntityList)
-		{
-			// Remove from m_EntityList
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(object.second);
+#endif
 			// Release all components and entity itself
 			if (ECSManager::Instance().GetRegistry().valid(object.second->m_Entity))
 				ECSManager::Instance().GetRegistry().destroy(object.second->m_Entity);

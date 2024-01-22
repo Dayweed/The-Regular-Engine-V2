@@ -7,7 +7,7 @@ namespace TRE
 	#ifdef _DEBUG
 		static const bool EnableValidationLayer = true;
 	#else
-		static const bool EnableValidationLayer = false;
+		static const bool EnableValidationLayer = true;
 	#endif
 
 	class RendererContext

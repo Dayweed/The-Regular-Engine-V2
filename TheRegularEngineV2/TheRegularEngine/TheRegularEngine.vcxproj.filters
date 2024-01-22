@@ -208,6 +208,9 @@
     <ClInclude Include="Graphics\SwapChain.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\TextComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\UIComponent.h">
       <Filter>Graphics</Filter>
     </ClInclude>

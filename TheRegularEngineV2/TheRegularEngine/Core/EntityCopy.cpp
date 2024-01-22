@@ -21,7 +21,9 @@ namespace TRE
 			DirectionalLight,
 			ScriptComponent,
 			Audio,
-			AudioListener
+			AudioListener,
+			DirectPathfinding,
+			TextComponent
 		>();
 	};
 

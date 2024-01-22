@@ -1,33 +1,208 @@
 #include "pch.h"
 #include "FontRenderer.h"
 #include "Core/Logger.h"
+#include "Device.h"
+#include "Core/Engine.h"
+#include "TextComponent.h"
+#include "Core/ECS.h"
+#include "Core/Transform.h"
 
 namespace TRE
 {
-	FontRenderer::FontRenderer()
+	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
 		if (FT_Error Error = FT_Init_FreeType(&m_FTLibrary); !Error)
 		{
 			TRE_CORE_INFO("Free Type Init");
 		}
 
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		RenderPassInfo RPConfig{};
+		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RPConfig.ImageFormat = SC->GetColorFormat();
+		RPConfig.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		RPConfig.DepthImageFormat = SC->GetDepthFormat();
+		RPConfig.DepthEnabled = true;
+		RPConfig.ClearColor = false;
+		m_FontRenderPass = std::make_shared<RenderPass>(m_Device, RPConfig);
+
+		PipelineConfigurations FontPipeConfig{};
+		FontPipeConfig.Primitive = PrimitiveType::Triangles;
+		FontPipeConfig.CullMode = VK_CULL_MODE_NONE;
+		FontPipeConfig.EnableBlending = true;
+		FontPipeConfig.EnableDepthTest = false;
+		FontPipeConfig.Shader = ResourceManager::Instance().GetResource<Shader>(11);
+		m_FontPipeline = std::make_shared<Pipeline>(FontPipeConfig, m_FontRenderPass);
+
+		m_FontMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(11));
+		m_FontMaterial->Invalidate();
+
 		//Initialize a default font to render with
 		std::string FontType = GetFontType(m_DefaultFontFilepath);
 		CreateNewFontFace(m_DefaultFontFilepath, FontType);
+
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::vector<FontVertex> data(4);
+
+		data[0].Pos = glm::vec3(x, y, 0.0f);
+		data[0].UV = glm::vec2(0, 0);
+
+		data[1].Pos = glm::vec3(x + width, y, 0.0f);
+		data[1].UV = glm::vec2(1, 0);
+
+		data[2].Pos = glm::vec3(x + width, y + height, 0.0f);
+		data[2].UV = glm::vec2(1, 1);
+
+		data[3].Pos = glm::vec3(x, y + height, 0.0f);
+		data[3].UV = glm::vec2(0, 1);
+
+		std::vector<int> indices = { 0,1,2,2,3,0 };
+
+		m_FontIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_FontVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(FontVertex)));
+	}
+
+	FontRenderer::~FontRenderer()
+	{
+
 	}
 
 	void FontRenderer::CreateNewFontFace(std::string Filepath, std::string FontType)
 	{
-		FT_Face NewFace;
-		if (FT_Error Error = FT_New_Face(m_FTLibrary, Filepath.c_str(), 0, &NewFace); Error)
+		FT_Face face;
+		if (FT_New_Face(m_FTLibrary, Filepath.c_str(), 0, &face))
 		{
-			assert(false && "Unable to create new FT Face");
+			TRE_CORE_ERROR("Unable to load font: {0}", FontType);
 		}
 
-		m_Faces[FontType] = NewFace;
-		m_AvailableFonts.push_back(FontType);
+		FT_Set_Pixel_Sizes(face, 0, 48); //Scale the font size using transform comp
 
-		FT_Set_Pixel_Sizes(m_Faces[FontType], 0, 48);
+		int width = 0;
+		int height = 0;
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			{
+				assert(false && "Unable to load Char");
+			}
+
+			width += face->glyph->bitmap.width;
+			
+			if (static_cast<unsigned int>(height) < face->glyph->bitmap.rows)
+				height = face->glyph->bitmap.rows;
+		}
+
+		uint8_t* data = new uint8_t[width * height * 4];
+
+		std::vector<uint8_t> Buffer(48);
+		int x = 0;
+		int offset = 0;
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			{
+				assert(false && "Unable to load Char");
+			}
+
+			int TempOffset = offset;
+			for (unsigned int x = 0; x < face->glyph->bitmap.rows; x++)
+			{
+				std::copy(face->glyph->bitmap.buffer + x * face->glyph->bitmap.width, face->glyph->bitmap.buffer + (x + 1) * face->glyph->bitmap.width, Buffer.data());
+
+				for (unsigned int y = 0; y < face->glyph->bitmap.width; y++)
+				{
+					const uint8_t& letter = Buffer[y];
+					int Index = TempOffset + y * 4;
+					for (int z = 0; z < 4; z++)
+						data[Index + z] = letter;
+				}
+				TempOffset += width * 4;
+			}
+			offset += face->glyph->bitmap.width * 4;
+
+			float xpos = static_cast<float>(x) / width ;
+			float w = static_cast<float>(face->glyph->bitmap.width) / static_cast<float>(width);
+			float ypos = static_cast<float>(face->glyph->bitmap.rows) / static_cast<float>(height);
+			
+			Character character = 
+			{
+				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+				{{xpos, ypos}, { xpos + w,  ypos }, { xpos + w,  0.f }, { xpos,  0.f }},
+				face->glyph->advance.x
+			};
+
+			m_Characters.insert(std::pair<char, Character>(c, character));
+
+			x += static_cast<int>(face->glyph->bitmap.width);
+		}
+
+		m_FontTexture = std::make_shared<VulkanTexture>(data, width * height * 4, width, height);
+		m_FontMaterial->SetTexture("FontTexture", m_FontTexture);
+
+		delete[] data;
+		FT_Done_Face(face);
+	}
+
+	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
+	{
+		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_FontRenderPass->GetHandle();
+		renderPassInfo.framebuffer = TargetFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+
+		vkCmdBeginRenderPass(CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.f;
+		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
+		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		vkCmdSetScissor(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
+
+		Renderer::BindPipeline(CommandBuffer, m_FontPipeline);
+		m_FontMaterial->UpdateForRendering(nullptr, Index);
+		for (auto Entity : ECSManager::Instance().GetEntities<TextComponent>())
+		{
+			auto& TextComp = Entity->GetComponent<TextComponent>();
+			if (!TextComp.m_IsVisible)
+				continue;
+
+			for (auto Letter : TextComp.m_TextContent)
+			{
+				Font_PushConstant pc{};
+				auto TransformComp = Entity->GetComponent<Transform>();
+				pc.Proj = TransformComp.m_WorldXform;
+
+				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);
+
+				VkDeviceSize offsets[] = { 0 };
+				auto VB = m_FontVertexBuffer->GetBuffer();
+				vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+				vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+				vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			}
+		}
+
+		Renderer::EndRenderPass(CommandBuffer);
 	}
 
 	std::string FontRenderer::GetFontType(std::string Filepath)

@@ -381,6 +381,7 @@ namespace TRE
 			AnimationComponent,
 			ParticleComponent,
 			DirectPathfinding,
+			TextComponent,
 			CylinderCollider
 		>();
 	}
@@ -413,6 +414,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			;
 
@@ -452,6 +454,7 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			;
 
