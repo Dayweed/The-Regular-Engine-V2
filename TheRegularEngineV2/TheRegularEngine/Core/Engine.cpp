@@ -129,6 +129,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// serialized, reflected
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// serialized, reflected
 		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
+		ECSManager::Instance().RegisterComponent<CylinderCollider>("CylinderCollider");						// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected

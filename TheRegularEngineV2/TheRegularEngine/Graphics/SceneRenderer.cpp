@@ -11,6 +11,7 @@
 #include "Physics/SphereCollider.h"
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
+#include "Physics/CylinderCollider.h"
 #include "Light.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -321,7 +322,7 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1185f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
@@ -449,7 +450,7 @@ namespace TRE
 		if (m_IsEditorScene == false)
 		{
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
-			//m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
 
@@ -594,6 +595,8 @@ namespace TRE
 
 	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
+		m_ShadowMapWidth = 8192;
+		m_ShadowMapHeight = 8192;
 		VkClearValue clearValues[2];
 		clearValues[0].depthStencil = { 1.0f, 0 };
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -610,8 +613,6 @@ namespace TRE
 		VkViewport viewport2{};
 		viewport2.x = 0.0f;
 		viewport2.y = 0.0f;
-		m_ShadowMapWidth = Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth();
-		m_ShadowMapHeight = Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight();
 		viewport2.width = (float)m_ShadowMapWidth;
 		viewport2.height = (float)m_ShadowMapHeight;
 		viewport2.minDepth = 0.0f;
@@ -732,8 +733,8 @@ namespace TRE
 			for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
 			{
 				const Transform& tr = capsule->GetComponent<Transform>();
-				const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
-				if (cc.m_IsVisible == false)
+				const CapsuleCollider& cpc = capsule->GetComponent<CapsuleCollider>();
+				if (cpc.m_IsVisible == false)
 					continue;
 
 				for (int i = 0; i < 2; ++i)
@@ -742,12 +743,12 @@ namespace TRE
 					{
 						PushConstant pc{};
 						glm::mat4 model(1.f);
-						const float radius = cc.m_Radius;
-						const float halfExtent = cc.m_HalfHeight;
+						const float radius = cpc.m_Radius;
+						const float halfExtent = cpc.m_HalfHeight;
 						if (i == 0)
-							model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, halfExtent, 0));
+							model = glm::translate(model, tr.m_Position + cpc.m_Offset + glm::vec3(0, halfExtent, 0));
 						else
-							model = glm::translate(model, tr.m_Position + cc.m_Offset + glm::vec3(0, -halfExtent, 0));
+							model = glm::translate(model, tr.m_Position + cpc.m_Offset + glm::vec3(0, -halfExtent, 0));
 						model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
 						model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(1, 0, 0));
 						model = glm::rotate(model, glm::radians(90.f * j), glm::vec3(0, 1, 0));
@@ -763,7 +764,7 @@ namespace TRE
 
 						PushConstant pc2{};
 						glm::mat4 model2(1.f);
-						model2 = glm::translate(model2, tr.m_Position + cc.m_Offset);
+						model2 = glm::translate(model2, tr.m_Position + cpc.m_Offset);
 						model2 = model2 * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
 						model2 = glm::rotate(model2, glm::radians(180.f * i), glm::vec3(1, 0, 0));
 						model2 = glm::rotate(model2, glm::radians(90.f * j), glm::vec3(0, 1, 0));
@@ -778,6 +779,16 @@ namespace TRE
 						m_DebugRenderer->DrawDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
 					}
 				}
+			}
+
+			for (const auto& cylinder : ECSManager::Instance().GetEntities<CylinderCollider>())
+			{
+				const Transform& tr = cylinder->GetComponent<Transform>();
+				const CylinderCollider& cyc = cylinder->GetComponent<CylinderCollider>();
+				if (cyc.m_IsVisible == false)
+					continue;
+
+				; // debug draw for cylinders? :P
 			}
 
 			for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
@@ -890,9 +901,8 @@ namespace TRE
 
 	void SceneRenderer::ShadowPassInit()
 	{
-		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
-		m_ShadowMapWidth = SC->GetWidth();
-		m_ShadowMapHeight = SC->GetHeight();
+		m_ShadowMapWidth = 8192;
+		m_ShadowMapHeight = 8192;
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "Shadow Pass";
@@ -948,7 +958,8 @@ namespace TRE
 			}
 			else
 			{
-				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.1f);
+				//Actual camera frustum
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.03f);
 
 				if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
 					cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||

@@ -120,7 +120,7 @@ namespace TRE
 			renderRatio = (m_FocalLength * 2.f) / (m_Far - m_Near);
 		else
 			renderRatio = ratio;
-		const float newFar = m_Far * renderRatio;
+		const float newFar = m_Near + (m_Far - m_Near) * renderRatio;
 		float yTopFar = tan(glm::radians(m_Fov / 2.f)) * newFar;
 		float yBottomFar = -yTopFar;
 		float xRightFar = yTopFar * m_AspectRatio;

@@ -20,6 +20,7 @@ namespace TRE
 	{
 	public:
 		VulkanTexture();
+		VulkanTexture(uint8_t* imagedata, uint32_t imagesize, uint32_t width, uint32_t height); //Used for creating image with raw data
 		VulkanTexture(CubeMapConfig& Config); //Only used to create cubemap for now
 		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();

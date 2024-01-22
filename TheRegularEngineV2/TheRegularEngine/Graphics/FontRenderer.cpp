@@ -16,10 +16,6 @@ namespace TRE
 			TRE_CORE_INFO("Free Type Init");
 		}
 
-		//Initialize a default font to render with
-		std::string FontType = GetFontType(m_DefaultFontFilepath);
-		CreateNewFontFace(m_DefaultFontFilepath, FontType);
-
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -37,6 +33,38 @@ namespace TRE
 		FontPipeConfig.EnableDepthTest = false;
 		FontPipeConfig.Shader = ResourceManager::Instance().GetResource<Shader>(11);
 		m_FontPipeline = std::make_shared<Pipeline>(FontPipeConfig, m_FontRenderPass);
+
+		m_FontMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(11));
+		m_FontMaterial->Invalidate();
+
+		//Initialize a default font to render with
+		std::string FontType = GetFontType(m_DefaultFontFilepath);
+		CreateNewFontFace(m_DefaultFontFilepath, FontType);
+
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::vector<FontVertex> data(4);
+
+		data[0].Pos = glm::vec3(x, y, 0.0f);
+		data[0].UV = m_Characters['r'].UV[3];
+
+		data[1].Pos = glm::vec3(x + width, y, 0.0f);
+		data[1].UV = m_Characters['r'].UV[2];
+
+		data[2].Pos = glm::vec3(x + width, y + height, 0.0f);
+		data[2].UV = m_Characters['r'].UV[1];
+
+		data[3].Pos = glm::vec3(x, y + height, 0.0f);
+		data[3].UV = m_Characters['r'].UV[0];
+
+		std::vector<int> indices = { 0,1,2,2,3,0 };
+
+		m_FontIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_FontVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(FontVertex)));
 	}
 
 	FontRenderer::~FontRenderer()
@@ -114,6 +142,8 @@ namespace TRE
 			x += static_cast<int>(face->glyph->bitmap.width);
 		}
 
+		m_FontTexture = std::make_shared<VulkanTexture>(data, width * height * 4, width, height);
+		m_FontMaterial->SetTexture("FontTexture", m_FontTexture);
 
 		delete[] data;
 		FT_Done_Face(face);
@@ -121,6 +151,11 @@ namespace TRE
 
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(static_cast<float>(SC->GetWidth()) / 2.f, static_cast<float>(SC->GetHeight()) / 2.f, 0.f)); //Translate by viewport width or height / 2
+		glm::mat4 TempProj = glm::ortho(0.f, static_cast<float>(SC->GetWidth()), 0.f, static_cast<float>(SC->GetHeight())) * TranslateToMid;
+
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -147,27 +182,29 @@ namespace TRE
 		vkCmdSetScissor(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		Renderer::BindPipeline(CommandBuffer, m_FontPipeline);
+		m_FontMaterial->UpdateForRendering(nullptr, Index);
 		for (auto Entity : ECSManager::Instance().GetEntities<TextComponent>())
 		{
 			auto& TextComp = Entity->GetComponent<TextComponent>();
 			if (!TextComp.m_IsVisible)
 				continue;
 
-			Font_PushConstant pc{};
-			auto TransformComp = Entity->GetComponent<Transform>();
-			pc.Proj = TransformComp.m_WorldXform;
+			for (auto Letter : TextComp.m_TextContent)
+			{
+				Font_PushConstant pc{};
+				auto TransformComp = Entity->GetComponent<Transform>();
+				pc.Proj = TempProj * TransformComp.m_WorldXform;
 
-			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
+				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);
 
-			//UIComp.m_Material->UpdateForRendering(m_UIUBO, Index);
-			//vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &UIComp.m_Material->GetDescriptor(Index), 0, NULL);
+				VkDeviceSize offsets[] = { 0 };
+				auto VB = m_FontVertexBuffer->GetBuffer();
+				vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+				vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-			VkDeviceSize offsets[] = { 0 };
-			//auto VB = m_TestVertexBuffer->GetBuffer();
-			//vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
-			//vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_TestIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			//vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_TestIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+				vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			}
 		}
 
 		Renderer::EndRenderPass(CommandBuffer);

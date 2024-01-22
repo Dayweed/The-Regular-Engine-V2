@@ -8,6 +8,7 @@
 #include "Pipeline.h"
 #include "RenderPass.h"
 #include "VulkanTexture.h"
+#include "Material.h"
 
 namespace TRE
 {
@@ -24,7 +25,7 @@ namespace TRE
 	struct FontVertex 
 	{
 		glm::vec3 Pos;
-		glm::vec4 Color;
+		glm::vec4 Color = glm::vec4(255.f, 0.f, 0.f, 1.f);
 		glm::vec2 UV;
 	};
 
@@ -57,7 +58,11 @@ namespace TRE
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
 
+			std::shared_ptr<VertexBuffer> m_FontVertexBuffer;
+			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
+
 		private: //To be removed
 			std::shared_ptr<VulkanTexture> m_FontTexture;
+			std::shared_ptr<Material> m_FontMaterial;
 	};
 }
