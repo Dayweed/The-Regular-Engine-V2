@@ -194,6 +194,7 @@ namespace TRE
 				Font_PushConstant pc{};
 				auto TransformComp = Entity->GetComponent<Transform>();
 				pc.Proj = TempProj * TransformComp.m_WorldXform;
+				pc.Color = TextComp.m_Color;
 
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);

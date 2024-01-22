@@ -2,12 +2,12 @@
 #pragma stage : vert
 
 layout(location = 0) in vec3 in_Position;
-layout(location = 1) in vec4 in_Color;
-layout(location = 2) in vec2 in_UV;
+layout(location = 1) in vec2 in_UV;
 
 layout(push_constant) uniform PushConst
 {
 	mat4 Proj;
+	vec4 Color;
 };
 
 layout (location = 0) out vec2 outUV;
@@ -17,7 +17,7 @@ void main()
 {
 	gl_Position = Proj * vec4(in_Position, 1.0);
 	outUV = in_UV;
-	outColor = in_Color;
+	outColor = Color;
 }
 
 #version 450

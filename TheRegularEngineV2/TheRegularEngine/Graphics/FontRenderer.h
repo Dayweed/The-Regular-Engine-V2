@@ -25,13 +25,13 @@ namespace TRE
 	struct FontVertex 
 	{
 		glm::vec3 Pos;
-		glm::vec4 Color = glm::vec4(255.f, 0.f, 0.f, 1.f);
 		glm::vec2 UV;
 	};
 
 	struct Font_PushConstant
 	{
 		glm::mat4 Proj;
+		glm::vec4 Color;
 	};
 
 	class FontRenderer
