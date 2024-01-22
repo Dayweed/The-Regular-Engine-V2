@@ -944,15 +944,22 @@ namespace TRE
 		{
 			Engine_ResizeSphereCollider(entityid, newRadius);
 		}
+
 		public static void ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents)
 		{
 			Engine_ResizeBoxCollider(entityid, newHalfExtents);
 		}
+		
 		public static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight)
 		{
 			Engine_ResizeCapsuleCollider(entityid, newRadius, newHelfHeight);
 		}
 
+		public static void ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight)
+		{
+			Engine_ResizeCylinderCollider(entityid, newRadius, newHeight);
+		}
+		
 		public static void UpdateColliderOffset(EntityID entityid, vec3 offset)
 		{
 			Engine_UpdateColliderOffset(entityid, offset);
@@ -1045,6 +1052,15 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCapsuleColliderHalfHeight(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetCylinderColliderRadius(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetCylinderColliderHeight(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_UpdateColliderOffset(EntityID entityid, vec3 offset);
@@ -1414,4 +1430,33 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_ResetPathfinding(EntityID ID);
 	}
+
+	public class ScenePostEffectsSystem
+    {
+		public enum STATE
+		{
+			NONE,
+			IN,
+			OUT
+		}
+
+        public static STATE VignetteState
+        {
+            get
+            {
+				if (Engine_GetVignetteStateIn()) return STATE.IN;
+				if (Engine_GetVignetteStateOut()) return STATE.OUT;
+				return STATE.NONE;
+            }
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_ShrinkVignette(float duration);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern static bool Engine_GetVignetteStateIn();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern static bool Engine_GetVignetteStateOut();
+    }
 }

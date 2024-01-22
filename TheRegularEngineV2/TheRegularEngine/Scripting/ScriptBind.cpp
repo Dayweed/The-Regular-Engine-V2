@@ -5,6 +5,7 @@
 #include "Core/ECS.h"
 #include "Core/Transform.h"
 #include "Core/GameLoop.h"
+#include "Resource/Resource.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
@@ -34,6 +35,7 @@ namespace TRE
 		SphereCollider,
 		BoxCollider,
 		CapsuleCollider,
+		CylinderCollider,
 		AudioListener,
 		Script,
 		Transform,
@@ -53,6 +55,7 @@ namespace TRE
 		{"TRE.SphereCollider", ComponentsID::SphereCollider},
 		{"TRE.BoxCollider", ComponentsID::BoxCollider},
 		{"TRE.CapsuleCollider", ComponentsID::CapsuleCollider},
+		{"TRE.CyclinderCollider", ComponentsID::CylinderCollider},
 		{"TRE.AudioListener", ComponentsID::AudioListener},
 		{"TRE.SpriteRenderer", ComponentsID::SpriteRenderer},
 		{"TRE.Parenting", ComponentsID::Parenting},
@@ -291,6 +294,7 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+		Temp->GetComponent<Transform>().m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_ALL;
 
 		if (Temp->HasComponent<ScriptComponent>())
 		{
@@ -312,6 +316,7 @@ namespace TRE
 		Temp->GetComponent<Transform>().m_Rotation = rot;
 		Temp->GetComponent<Transform>().m_Scale = sca;
 		Temp->GetComponent<Transform>().m_IsDirty = true;
+		Temp->GetComponent<Transform>().m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_ALL;
 
 		if (Temp->HasComponent<ScriptComponent>())
 		{
@@ -371,6 +376,11 @@ namespace TRE
 			Temp->AddComponent<CapsuleCollider>().m_IsDirty = true;
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCapsuleCollider(Temp);
 			TRE_INFO("Capsule Collider added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
+		case ComponentsID::CylinderCollider:
+			Temp->AddComponent<CylinderCollider>().m_IsDirty = true;
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ConstructCylinderCollider(Temp);
+			TRE_INFO("Cylinder Collider added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::SpriteRenderer:
 			Temp->AddComponent<UIComponent>();
@@ -437,6 +447,11 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructCapsuleCollider(Temp);
 			TRE_INFO("Capsule Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::CylinderCollider:
+			Temp->RemoveComponent<CylinderCollider>();
+			ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->DestructCylinderCollider(Temp);
+			TRE_INFO("Cylinder Collider Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		case ComponentsID::SpriteRenderer:
 			Temp->RemoveComponent<UIComponent>();
 			TRE_INFO("Sprite Renderer (UI Component) Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
@@ -491,6 +506,8 @@ namespace TRE
 			return entity->HasComponent<SphereCollider>();
 		case ComponentsID::CapsuleCollider:
 			return entity->HasComponent<CapsuleCollider>();
+		case ComponentsID::CylinderCollider:
+			return entity->HasComponent<CylinderCollider>();
 		case ComponentsID::Audio:
 			return entity->HasComponent<Audio>();
 		case ComponentsID::SpriteRenderer:
@@ -579,6 +596,7 @@ namespace TRE
 		Transform& transform = Temp->GetComponent<Transform>();
 		transform.m_Position = newPos;
 		transform.m_IsDirty = true;
+		transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_POSITION;
 	}
 
 	static void BindSetRotation(CSEntityID ID, glm::vec3 newRot)
@@ -589,6 +607,7 @@ namespace TRE
 		Transform& transform = Temp->GetComponent<Transform>();
 		transform.m_Rotation = newRot;
 		transform.m_IsDirty = true;
+		transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_ROTATION;
 	}
 
 	static void BindSetScaling(CSEntityID ID, glm::vec3 newSca)
@@ -599,6 +618,7 @@ namespace TRE
 		Transform& transform = Temp->GetComponent<Transform>();
 		transform.m_Scale = newSca;
 		transform.m_IsDirty = true;
+		transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_SCALE;
 	}
 
 	static void BindGetPosition(CSEntityID ID, glm::vec3* output)
@@ -1304,12 +1324,56 @@ namespace TRE
 		return entity->GetComponent<CapsuleCollider>().m_HalfHeight;
 	}
 
+	static void BindResizeCylinderCollider(CSEntityID ID, float radius, float height)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->ResizeCylinderCollider(entity, radius, height);
+	}
+
+	static float BindGetCylinderColliderRadius(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<CylinderCollider>().m_Radius;
+	}
+
+	static float BindGetCylinderColliderHeight(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<CylinderCollider>().m_Height;
+	}
+
 	static void BindOffsetCollider(CSEntityID ID, Vector3 offset)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return;
 
-		if (!entity->HasComponent<CapsuleCollider>() && !entity->HasComponent<SphereCollider>() && !entity->HasComponent<BoxCollider>())
+		bool hasCollider = entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() ||
+			entity->HasComponent<CapsuleCollider>() || entity->HasComponent<CylinderCollider>();
+		if (!hasCollider)
 		{
 			PUBLISHERROR("There is no Collider in " + entity->GetName() + "!");
 			return;
@@ -1323,14 +1387,17 @@ namespace TRE
 		const Entity& entity = VALIDATEENTITY(ID);
 		if (!entity) return {};
 
-		if (!entity->HasComponent<CapsuleCollider>() && !entity->HasComponent<SphereCollider>() && !entity->HasComponent<BoxCollider>())
+		bool hasCollider = entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() ||
+			entity->HasComponent<CapsuleCollider>() || entity->HasComponent<CylinderCollider>();
+		if (!hasCollider)
 		{
 			PUBLISHERROR("There is no Collider in " + entity->GetName() + "!");
 			return {};
 		}
 
 		if (entity->HasComponent<CapsuleCollider>()) return entity->GetComponent<CapsuleCollider>().m_Offset;
-		if (entity->HasComponent<SphereCollider>())	return entity->GetComponent<SphereCollider>().m_Offset;
+		if (entity->HasComponent<CylinderCollider>()) return entity->GetComponent<CylinderCollider>().m_Offset;
+		if (entity->HasComponent<SphereCollider>()) return entity->GetComponent<SphereCollider>().m_Offset;
 		return entity->GetComponent<BoxCollider>().m_Offset;
 	}
 
@@ -1478,7 +1545,9 @@ namespace TRE
 		if (!entity) return;
 
 		// ensure that there is an existing collider on this entity
-		if (!(entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() || entity->HasComponent<CapsuleCollider>()))
+		bool hasCollider = entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() ||
+			entity->HasComponent<CapsuleCollider>() || entity->HasComponent<CylinderCollider>();
+		if (!hasCollider)
 		{
 			PUBLISHERROR("There is no collider component in " + entity->GetName() + "!");
 			return;
@@ -1493,7 +1562,9 @@ namespace TRE
 		if (!entity) return false;
 
 		// ensure that there is an existing collider on this entity
-		if (!(entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() || entity->HasComponent<CapsuleCollider>()))
+		bool hasCollider = entity->HasComponent<BoxCollider>() || entity->HasComponent<SphereCollider>() ||
+			entity->HasComponent<CapsuleCollider>() || entity->HasComponent<CylinderCollider>();
+		if (!hasCollider)
 		{
 			PUBLISHERROR("There is no collider component in " + entity->GetName() + "!");
 			return false;
@@ -1650,7 +1721,7 @@ namespace TRE
 	{
 		std::string sceneName = MonoStringToString(id);
 		std::string scenePath = GETFOLDER(FILESYS_SCENE) + sceneName + GETFILE(FILESYS_SCENE);
-		SceneTransitioner::Instance().TransitionToScene(scenePath, totalDuration);
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->TransitionToScene(scenePath, totalDuration);
 	}
 
 	static MonoString* BindGetSceneName()
@@ -1775,16 +1846,17 @@ namespace TRE
 		if (!Temp->HasComponent<UIComponent>()) return;
 		UIComponent& uiComp = Temp->GetComponent<UIComponent>();
 		std::string texturestr = MonoStringToString(texture);
-		ResourceHandle textureHdl = Resource::GetGUIDFromHex(texturestr);
-		if (textureHdl != 0)
+
+		if (texturestr != "")
 		{
-			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHdl); Texture)
+			if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(texturestr); Texture)
 			{
 				uiComp.m_Texture = Texture;
 			}
 			else
 			{
-				uiComp.m_Texture = VulkanTexture::Deserialize(texturestr);
+				std::string hexCode = Resource::GetGUIDHex(Resource::GenerateGUID(texturestr));
+				uiComp.m_Texture = VulkanTexture::Deserialize(hexCode);
 
 				if (uiComp.m_Texture == nullptr)
 					PUBLISHERROR("Texture (" + texturestr + ") failed to load in UI Component");
@@ -1941,6 +2013,27 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region PostProcessing
+	static void Engine_ShrinkVignette(float duration)
+	{
+		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->VignetteShrink(duration);
+	}
+
+	static bool Engine_GetVignetteStateIn()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_IN;
+	}
+
+	static bool Engine_GetVignetteStateOut()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
+			== ScenePostEffectsSystem::STATE_OUT;
+	}
+
+
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2060,11 +2153,18 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeSphereCollider", BindResizeSphereCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetSphereColliderRadius", BindGetSphereColliderRadius);
+
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeBoxCollider", BindResizeBoxCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxColliderHalfExtents", BindGetBoxColliderHalfExtents);
+			
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCapsuleCollider", BindResizeCapsuleCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderRadius", BindGetCapsuleColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderHalfHeight", BindGetCapsuleColliderHalfHeight);
+
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCylinderCollider", BindResizeCylinderCollider);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderColliderRadius", BindGetCylinderColliderRadius);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderColliderHeight", BindGetCylinderColliderHeight);
+
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_UpdateColliderOffset", BindOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetColliderOffset", BindGetOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_AddForce", BindAddForce);
@@ -2073,12 +2173,14 @@ namespace TRE
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationZ", BindConstrainRotationZ);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetLinearVelocity", BindGetLinearVelocity);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetLinearVelocity", BindSetLinearVelocity);
+			
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionEnter", BindIsCollisionEnter);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionStay", BindIsCollisionStay);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionExit", BindIsCollisionExit);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerEnter", BindIsTriggerEnter);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerStay", BindIsTriggerStay);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerExit", BindIsTriggerExit);
+			
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetIsActive", BindSetIsActive);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetIsActive", BindGetIsActive);
 		}
@@ -2175,7 +2277,7 @@ namespace TRE
 			mono_add_internal_call("TRE.PersistentSystem::Engine_SetPersistentValue", BindSetPersistentVarVal);
 		}
 
-		// Ui
+		// UI
 		{
 			mono_add_internal_call("TRE.UISystem::Engine_SetVisible", Engine_SetVisible);
 			mono_add_internal_call("TRE.UISystem::Engine_GetVisible", Engine_GetVisible);
@@ -2188,6 +2290,13 @@ namespace TRE
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_PausePathfinding", Engine_PausePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResumePathfinding", Engine_ResumePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
+		}
+
+		// Post Effects
+		{
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_ShrinkVignette", Engine_ShrinkVignette);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateIn", Engine_GetVignetteStateIn);
+			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateOut", Engine_GetVignetteStateOut);
 		}
 	}
 }

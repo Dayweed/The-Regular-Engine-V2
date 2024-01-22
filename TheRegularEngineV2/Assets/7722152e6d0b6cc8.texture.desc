@@ -1,8 +1,8 @@
 Asset File Path:
-../Assets/Strawberry_HUD.png
+../Assets/Level1_Section_00_Normal.png
 
 Texture File Path:
-../Resources/b47b5e31695b436d.DDS
+../Resources/7722152e6d0b6cc8.DDS
 
 Compress:
 1
@@ -11,11 +11,11 @@ GL_Linear:
 1
 
 BCn:
-1
+5
 
 sRGB:
-1
+0
 
 Transparent:
-1
+0
 

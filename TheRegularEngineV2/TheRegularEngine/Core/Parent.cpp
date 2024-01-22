@@ -218,6 +218,7 @@ namespace TRE
 				UpdateChildLocalData(parent, child);
 			}
 			childTransform.m_IsDirty = true;
+			childTransform.m_DirtyFlags |= parentTransform.m_DirtyFlags;
 			//std::cout << "Chi Pos: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
 			//std::cout << "Chi Loc: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";
 
@@ -235,6 +236,7 @@ namespace TRE
 
 		childTransform.UpdateLocalData(parentTransform);
 		childTransform.m_IsDirty = true;
+		childTransform.m_DirtyFlags |= parentTransform.m_DirtyFlags;
 	}
 
 	void ParentingSystem::UpdateLocalData(Entity current)

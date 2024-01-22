@@ -129,16 +129,19 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// serialized, reflected
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// serialized, reflected
 		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
+		ECSManager::Instance().RegisterComponent<CylinderCollider>("CylinderCollider");						// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// Serialized, reflected
-		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// 
+		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<ParticleComponent>("Particle Component");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<TextComponent>("Text Component");							// Serialized, reflected
 
 		// Register Systems
+		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PrefabSystem>();
 		ECSSystemManager::Instance().RegisterSystem<PhysicsSystem>();
 		ECSSystemManager::Instance().RegisterSystem<ParentingSystem>();
@@ -167,7 +170,6 @@ namespace TRE
 
 			// Update
 			Profiler::Instance().StartTimer("UpdateSystem");
-			SceneTransitioner::Instance().Update();
 			ECSSystemManager::Instance().UpdateSystem();
 			Profiler::Instance().EndTimer("UpdateSystem");
 

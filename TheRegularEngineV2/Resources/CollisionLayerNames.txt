@@ -3,7 +3,7 @@ Holey
 HoleyHeadCol
 Moley
 MoleyHeadCol
-Layer05
+SlipperyBody
 Layer06
 Layer07
 Layer08

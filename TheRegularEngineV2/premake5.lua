@@ -98,7 +98,7 @@ project "TheRegularEngine"
 		"%{Library.PhysX_64}",
 		"%{Library.PhysX_Character}",
 		"%{Library.PhysX_Common}",
-		--"%{Library.PhysX_Cooking}",
+		"%{Library.PhysX_Cooking}",
 		"%{Library.PhysX_Extension}",
 		"%{Library.PhysX_Foundation}",
 		"%{Library.PhysX_Pvd}",

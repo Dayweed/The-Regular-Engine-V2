@@ -380,7 +380,9 @@ namespace TRE
 			UIComponent,
 			AnimationComponent,
 			ParticleComponent,
-			DirectPathfinding
+			DirectPathfinding,
+			TextComponent,
+			CylinderCollider
 		>();
 	}
 
@@ -412,6 +414,8 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<TextComponent>(arc)
+			.component<CylinderCollider>(arc)
 			;
 
 		arc.Close();
@@ -450,6 +454,8 @@ namespace TRE
 			.component<AnimationComponent>(arc)
 			.component<ParticleComponent>(arc)
 			.component<DirectPathfinding>(arc)
+			.component<TextComponent>(arc)
+			.component<CylinderCollider>(arc)
 			;
 
 		// Clone each component of the object into the prefab

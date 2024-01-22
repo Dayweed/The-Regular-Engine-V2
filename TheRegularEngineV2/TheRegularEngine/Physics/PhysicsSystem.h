@@ -260,6 +260,18 @@ namespace TRE
 		void SetCapsuleColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
+#pragma region CylinderCollider Function Declarations
+		bool ConstructCylinderCollider(const Entity& entity, const float radius = 1.0f, const float height = 1.0f, const glm::vec3& offset = glm::vec3{ 0 }) const;
+
+		void ResizeCylinderCollider(const Entity& entity, const float newRadius, const float newHeight) const;
+
+		void UpdateCylinderCollider(const Entity& entity) const;
+
+		void DestructCylinderCollider(const Entity& entity) const;
+
+		void SetCylinderColliderTrigger(const Entity& entity, const bool isTrigger) const;
+#pragma endregion
+
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
 
@@ -296,6 +308,10 @@ namespace TRE
 		void ChangeIsActive(const Entity& entity) const;
 		void SetIsActive(const Entity& entity, bool state) const;
 		bool GetIsActive(const Entity& entity) const;
+
+		void ChangeMaterial(const Entity& entity) const;
+		
+		physx::PxConvexMesh* CreateCylinderMesh(const float radius = 0.5f, const float height = 1.0f) const;
 	private:
 
 		void ResizeAllColliders();
@@ -323,6 +339,7 @@ namespace TRE
 		physx::PxDefaultCpuDispatcher*  m_Dispatcher = nullptr;
 		physx::PxScene*                 m_Scene = nullptr;
 		physx::PxMaterial*              m_DefaultMaterial = nullptr;
+		physx::PxMaterial*              m_FrictionlessMaterial = nullptr;
 
 		bool m_DrawDebugLines = false;
 	};

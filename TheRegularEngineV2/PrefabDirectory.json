@@ -1,36 +1,42 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
         "m_ExistingPrefabsKey": [
-            "11822093139939255162",
             "7670209894207584463",
-            "15526886209253662016",
+            "11822093139939255162",
             "8829880216004354162",
+            "15526886209253662016",
             "6452796380767818092",
             "13004780274330328106",
             "1091796284315141664",
             "6338820077763806458",
-            "7226326221621054613",
             "13405510363890397293",
             "3902543711165755485",
             "6140392063845837423",
             "12595427909806929522",
-            "14145613366203719285"
+            "14145613366203719285",
+            "14996146687328681090",
+            "1007489266501454300",
+            "1602117609852196109",
+            "16600941906949858638"
         ],
         "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/FallingMaracca.json",
             "../Resources/Prefabs/Blueberry.json",
-            "../Resources/Prefabs/Holey.json",
+            "../Resources/Prefabs/FallingMaracca.json",
             "../Resources/Prefabs/FallingHat.json",
+            "../Resources/Prefabs/Holey.json",
             "../Resources/Prefabs/JumpPad.json",
             "../Resources/Prefabs/Strawberry.json",
             "../Resources/Prefabs/TriggerDisplay.json",
             "../Resources/Prefabs/Moley.json",
-            "../Resources/Prefabs/Holey's Head Collider.json",
             "../Resources/Prefabs/PowerUpSpawner.json",
             "../Resources/Prefabs/RollingObject.json",
             "../Resources/Prefabs/CactusRight.json",
             "../Resources/Prefabs/Star_VFX.json",
-            "../Resources/Prefabs/Tutorial_Environment.json"
+            "../Resources/Prefabs/Tutorial_Environment.json",
+            "../Resources/Prefabs/Basic Cube.json",
+            "../Resources/Prefabs/Moley's Head Collider.json",
+            "../Resources/Prefabs/Holey's Head Collider.json",
+            "../Resources/Prefabs/Pinata.json"
         ]
     }
 }

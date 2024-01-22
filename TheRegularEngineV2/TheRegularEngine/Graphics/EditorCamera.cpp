@@ -101,6 +101,7 @@ namespace TRE
 			transform.m_Position = m_Position;
 			transform.m_Rotation = m_Rotation;
 			transform.m_IsDirty = true;
+			transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION | TransformDirtyFlags::TRE_DIRTY_ROTATION;
 		}
 	}
 

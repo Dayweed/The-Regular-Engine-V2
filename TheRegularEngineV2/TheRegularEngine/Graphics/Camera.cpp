@@ -120,7 +120,7 @@ namespace TRE
 			renderRatio = (m_FocalLength * 2.f) / (m_Far - m_Near);
 		else
 			renderRatio = ratio;
-		const float newFar = m_Far * renderRatio;
+		const float newFar = m_Near + (m_Far - m_Near) * renderRatio;
 		float yTopFar = tan(glm::radians(m_Fov / 2.f)) * newFar;
 		float yBottomFar = -yTopFar;
 		float xRightFar = yTopFar * m_AspectRatio;
@@ -464,6 +464,7 @@ namespace TRE
 			cameraComponent.m_IsDirty = true;
 			cameraTransform.m_Position = target - cameraComponent.m_BaseCamera.m_FocalLength * cameraComponent.m_BaseCamera.GetViewDirection();
 			cameraTransform.m_IsDirty = true;
+			cameraTransform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ALL;
 		}
 	}
 

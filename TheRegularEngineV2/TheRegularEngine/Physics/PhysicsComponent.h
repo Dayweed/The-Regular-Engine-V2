@@ -68,16 +68,31 @@ struct CollisionLayer
 	Layer m_LayerID = Default;
 };
 
+struct PhysicsMaterial
+{
+	enum Material { Default, Frictionless, TOTAL };
+
+	inline static std::array<std::pair<std::string, PhysicsMaterial::Material>, Material::TOTAL> m_LayerNameList
+	{
+		std::pair{ "Default", Default },
+		std::pair{ "Frictionless", Frictionless }
+	};
+
+	Material m_MaterialID = Default;
+};
+
 namespace TRE
 {
 	struct PhysicsComponentTypes
 	{
 		enum Enum : short
 		{
-			Rigidbody       = 1 << 0,
-			SphereCollider  = 1 << 1,
-			BoxCollider     = 1 << 2,
-			CapsuleCollider = 1 << 3,
+			Rigidbody        = 1 << 0,
+			SphereCollider   = 1 << 1,
+			BoxCollider      = 1 << 2,
+			CapsuleCollider  = 1 << 3,
+			CylinderCollider = 1 << 4,
+			TOTAL            = 5
 		};
 	};
 
@@ -108,5 +123,7 @@ namespace TRE
 
 		CollisionLayer m_CollisionLayer; // collision layer of object
 		// ^ BUT WHAT ABOUT THE PREFABSSSSS
+
+		PhysicsMaterial m_PhysicsMaterial; // whether it's normal or slippery
 	};
 }

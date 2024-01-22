@@ -18,6 +18,7 @@ namespace TRE
 		public vec3 threesixty = new vec3(0, 0, 360);
 
 		// For checking ledges
+		Entity parent;
 		Entity lLedge;
 		Entity rLedge;
 
@@ -34,11 +35,12 @@ namespace TRE
 
 		public void Start()
 		{
-			lLedge = parenting.parent.parenting.GetChildFromName("LeftLedge");
+			parent = parenting.parent;
+            lLedge = parenting.parent.parenting.GetChildFromName("LeftLedge");
 			rLedge = parenting.parent.parenting.GetChildFromName("RightLedge");
 
 			// Rotate moveVector based on angle
-			moveVector = TransformSystem.RotateVector(defaultVector, transform.Rotation);
+			moveVector = TransformSystem.RotateVector(defaultVector, parent.transform.Rotation);
 			rotateVector = new vec3(moveVector.z, moveVector.y, -moveVector.x);
 		}
 
@@ -75,9 +77,9 @@ namespace TRE
 		{
 			Entity other = new Entity(otherID);
 			if (other.CompareTag("Red"))
-			{
-				// Bounce back if the Moley is using their strawberry powerUp
-				MoleyController ctrl = other.GetComponent<MoleyController>();
+            {
+                // Bounce back if the Moley is using their strawberry powerUp
+                MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
 				{
 					Bounceback();
@@ -85,12 +87,12 @@ namespace TRE
 				else
 				{
 					ctrl.TakeDamage();
-				}
-			}
+                }
+            }
 			else if (other.CompareTag("Blue"))
 			{
 				other.GetComponent<HoleyController>().TakeDamage();
-			}
+            }
 			else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
 				Bounceback();

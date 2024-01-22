@@ -10,7 +10,9 @@ namespace TRE
 {
 	std::unordered_map<int, int> InputHandler::m_keyMap;
 	//std::unordered_map<int, int> InputHandler::m_keyTriggerMap;
-	std::unordered_map<int, int> InputHandler::m_keyPreviousPress;
+	std::unordered_map<int, bool> InputHandler::m_keyPreviousPress;
+	std::unordered_map<int, bool> InputHandler::m_keyPreviousRelease;
+
 
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
@@ -90,23 +92,26 @@ namespace TRE
 	{
 		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE)
 		{
-			m_keyPreviousPress[key] = 0;
+			m_keyPreviousPress[key] = false;
 		}
 		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS && m_keyPreviousPress[key] == false)
 		{
-			m_keyPreviousPress[key] = 1;
+			m_keyPreviousPress[key] = true;
 			return true;
 		}
-
 		return false;
 	}
 
 	bool InputHandler::GetKeyRelease(int key)
 	{
-		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE && m_keyPreviousPress[key] == true)
+		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
 		{
-			m_keyPreviousPress[key] = 0;
+			m_keyPreviousRelease[key] = false;
 			return true;
+		}
+		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS)
+		{
+			m_keyPreviousRelease[key] = true;
 		}
 		return false;
 	}
