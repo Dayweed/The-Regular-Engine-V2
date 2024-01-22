@@ -187,6 +187,10 @@ namespace TRE
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
+			std::vector<Asset> filteredAssets{};
+			static char inputTextBuffer[128] = "";
+			ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
+
 			if (ImGui::IsWindowHovered())
 			{
 				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
@@ -266,7 +270,23 @@ namespace TRE
 
 			isHovered = ImGui::IsWindowHovered();
 
-			for (int count{}; auto & item: m_Assets)
+			auto iteration = m_Assets.begin();
+			while (iteration != m_Assets.end())
+			{
+				std::string fileNameLower = iteration->m_FileName;
+				std::transform(iteration->m_FileName.begin(), iteration->m_FileName.end(), fileNameLower.begin(), [](unsigned char c) {return std::tolower(c); });
+				size_t found = fileNameLower.find(inputTextBuffer);
+
+				if (found != std::string::npos)
+				{
+					filteredAssets.push_back(*iteration);
+				}
+
+				++iteration;
+			}
+
+			//for (int count{}; auto & item: m_Assets)
+			for (int count{}; auto & item: filteredAssets)
 			{
 				ImGui::PushID(count++);
 
@@ -513,6 +533,24 @@ namespace TRE
 				//std::cout << "binary timing: " << std::format("File write time is {}\n", tBinaryFile);
 			}
 		}
+	}
+
+	void ContentBrowserPanel::SearchBar()
+	{
+		std::string buf1{};
+		std::vector<std::string> files;
+
+		for (auto& p : std::filesystem::directory_iterator(m_CurrentDirectory))
+		{
+			const std::filesystem::path descFilePath = p.path();
+			const std::filesystem::path relativePath = std::filesystem::relative(descFilePath, m_CurrentDirectory);
+
+			buf1 = relativePath.string();
+			files.push_back(buf1);
+		}
+
+		static char inputTextBuffer[128] = "";
+		ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
 	}
 
 	void ContentBrowserPanel::Init()
