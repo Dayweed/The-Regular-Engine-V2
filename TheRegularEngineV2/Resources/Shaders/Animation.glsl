@@ -181,6 +181,7 @@ void main()
 	{
 		shadow = 0.0;
 	}
+	shadow = 0.0;
 	diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
 	dp = smoothstep(0.1, 1.0, dp) * float(CelShadingLevels);
 	dp = ceil(dp) * CelScaleFactor;

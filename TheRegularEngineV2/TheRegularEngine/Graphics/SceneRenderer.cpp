@@ -322,7 +322,7 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1185f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
@@ -595,6 +595,8 @@ namespace TRE
 
 	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
+		m_ShadowMapWidth = 8192;
+		m_ShadowMapHeight = 8192;
 		VkClearValue clearValues[2];
 		clearValues[0].depthStencil = { 1.0f, 0 };
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -611,8 +613,6 @@ namespace TRE
 		VkViewport viewport2{};
 		viewport2.x = 0.0f;
 		viewport2.y = 0.0f;
-		m_ShadowMapWidth = Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth();
-		m_ShadowMapHeight = Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight();
 		viewport2.width = (float)m_ShadowMapWidth;
 		viewport2.height = (float)m_ShadowMapHeight;
 		viewport2.minDepth = 0.0f;
@@ -901,9 +901,8 @@ namespace TRE
 
 	void SceneRenderer::ShadowPassInit()
 	{
-		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
-		m_ShadowMapWidth = SC->GetWidth();
-		m_ShadowMapHeight = SC->GetHeight();
+		m_ShadowMapWidth = 8192;
+		m_ShadowMapHeight = 8192;
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "Shadow Pass";
@@ -959,7 +958,8 @@ namespace TRE
 			}
 			else
 			{
-				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.1f);
+				//Actual camera frustum
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.03f);
 
 				if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
 					cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||

@@ -46,16 +46,16 @@ namespace TRE
 		std::vector<FontVertex> data(4);
 
 		data[0].Pos = glm::vec3(x, y, 0.0f);
-		data[0].UV = glm::vec2(0, 0);
+		data[0].UV = m_Characters['r'].UV[3];
 
 		data[1].Pos = glm::vec3(x + width, y, 0.0f);
-		data[1].UV = glm::vec2(1, 0);
+		data[1].UV = m_Characters['r'].UV[2];
 
 		data[2].Pos = glm::vec3(x + width, y + height, 0.0f);
-		data[2].UV = glm::vec2(1, 1);
+		data[2].UV = m_Characters['r'].UV[1];
 
 		data[3].Pos = glm::vec3(x, y + height, 0.0f);
-		data[3].UV = glm::vec2(0, 1);
+		data[3].UV = m_Characters['r'].UV[0];
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
@@ -151,6 +151,9 @@ namespace TRE
 
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(960.f, 540.f, 0.f)); //Translate by viewport width or height / 2
+		glm::mat4 TempProj = glm::ortho(0.f, 1920.f, 0.f, 1080.f) * TranslateToMid;
+
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -188,7 +191,7 @@ namespace TRE
 			{
 				Font_PushConstant pc{};
 				auto TransformComp = Entity->GetComponent<Transform>();
-				pc.Proj = TransformComp.m_WorldXform;
+				pc.Proj = TempProj * TransformComp.m_WorldXform;
 
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);
