@@ -87,10 +87,12 @@ namespace TRE
 	{
 		enum Enum : short
 		{
-			Rigidbody       = 1 << 0,
-			SphereCollider  = 1 << 1,
-			BoxCollider     = 1 << 2,
-			CapsuleCollider = 1 << 3,
+			Rigidbody        = 1 << 0,
+			SphereCollider   = 1 << 1,
+			BoxCollider      = 1 << 2,
+			CapsuleCollider  = 1 << 3,
+			CylinderCollider = 1 << 4,
+			TOTAL            = 5
 		};
 	};
 

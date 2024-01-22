@@ -29,6 +29,7 @@
 #include "Physics/SphereCollider.h"
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
+#include "Physics/CylinderCollider.h"
 #include "Physics/PhysicsSystem.h"
 
 //-----------------Graphics-----------------//

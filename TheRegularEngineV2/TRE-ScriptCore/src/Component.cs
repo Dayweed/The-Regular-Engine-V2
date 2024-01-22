@@ -368,6 +368,58 @@ namespace TRE
 		}
 	}
 
+	public class CylinderCollider : Component
+	{
+		public CylinderCollider()
+		{
+			// LEAVE AS BLANK
+		}
+		public float Radius
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetCylinderColliderRadius(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_ResizeCylinderCollider(entity.ID, value, PhysicsSystem.Engine_GetCylinderColliderHeight(entity.ID));
+			}
+		}
+		public float Height
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetCylinderColliderHeight(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_ResizeCylinderCollider(entity.ID, PhysicsSystem.Engine_GetCylinderColliderRadius(entity.ID), value);
+			}
+		}
+		public vec3 Offset // SET DOES NOT WORK
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetColliderOffset(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_UpdateColliderOffset(entity.ID, value);
+			}
+		}
+		public bool IsActive
+		{
+			get
+			{
+				return PhysicsSystem.Engine_GetIsActive(entity.ID);
+			}
+			set
+			{
+				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
+			}
+		}
+	}
+
 	public class Audio : Component
 	{
 		public Audio()
