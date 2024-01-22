@@ -9,7 +9,7 @@
 
 namespace TRE
 {
-	std::vector<std::string> FontRenderer::m_AvailableFonts;
+	std::vector<std::string> FontRenderer::m_AvailableFonts{};
 
 	std::vector<std::string>& FontRenderer::GetLoadedFonts()
 	{

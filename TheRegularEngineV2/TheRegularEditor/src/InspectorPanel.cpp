@@ -527,18 +527,19 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, FontType>)
 							{
-								std::string selected = Value.m_Type;
+								std::string selected = Value.m_Value;
 
 								if (ImGui::BeginCombo("Font Type", selected.c_str()))
 								{
 									if (ImGui::Selectable("None", false))
 									{
-										Value.m_Type = "";
+										Value.m_Value = "";
 									}
 
 									if (Value.m_Type == "FontType")
 									{
 										std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
+										std::cout << "Loaded Font Count: " << LoadFontTypes.size() << std::endl;
 										std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
 											{
 												for (char ch : type1)
@@ -556,7 +557,7 @@ namespace TRE
 											if (ImGui::Selectable(material.c_str(), isSelected))
 											{
 												selected = material;
-												Value.m_Type = material;
+												Value.m_Value = material;
 												break;
 											}
 											if (isSelected)

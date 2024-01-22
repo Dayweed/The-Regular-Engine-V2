@@ -22,6 +22,7 @@ struct resource_list
 struct FontType
 {
     std::string m_Type;
+    std::string m_Value;
 };
 
 struct audio_file_dropdown
