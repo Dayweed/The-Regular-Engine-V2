@@ -31,15 +31,14 @@ namespace TRE
 						std::string assetName = line;
 						assetName = assetName.substr(line.find_last_of('/') + 1);
 						std::string assetHandle = entry.path().stem().string();
-						const std::string type = assetHandle.substr(assetHandle.find_first_of('.') + 1);
 						assetHandle = assetHandle.substr(0, assetHandle.find_first_of('.'));
 						std::string resourceCheck = resourcePath.string() + '/' + assetHandle;
-
 						std::pair rscCheck = std::make_pair(Resource::GetGUIDFromHex(assetHandle), false);
+						
+						/*const std::string type = assetHandle.substr(assetHandle.find_first_of('.') + 1);
 						bool normal = false;
 						if (type == "texture")
 						{
-							//std::cout << entry.path().string() << std::endl;
 							TextureDescriptorFile descriptor;
 							descriptor.ReadDescriptorFile(entry.path().string());
 							const std::string aPath = descriptor.GetAssetPath();
@@ -50,22 +49,19 @@ namespace TRE
 								descriptor.GenerateDescriptorFile();
 								std::cout << "Normal map found" << aPath<<std::endl;
 							}
-						}
+						}*/
 
 						for (const auto& rscEntry : std::filesystem::directory_iterator(resourcePath))
 						{
-							// std::string rscHandle = rscEntry.path().stem().string();
 							if (rscEntry.path().stem().string() == assetHandle)
 							{
-								
-								
 								rscCheck.second = true;
 								m_AssetNameToHandle[assetName] = rscCheck;
-								if (normal == true)
+								/*if (normal == true)
 								{
 									std::cout << assetName << std::endl;
-									///CompileAndLoad<VulkanTexture>(assetName);
-								}
+									CompileAndLoad<VulkanTexture>(assetName);
+								}*/
 								break;
 							}
 						}
