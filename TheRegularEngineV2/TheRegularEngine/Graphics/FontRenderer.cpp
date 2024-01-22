@@ -9,13 +9,15 @@
 
 namespace TRE
 {
+	std::vector<std::string> FontRenderer::m_AvailableFonts;
+
+	std::vector<std::string>& FontRenderer::GetLoadedFonts()
+	{
+		return m_AvailableFonts;
+	}
+
 	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		if (FT_Error Error = FT_Init_FreeType(&m_FTLibrary); !Error)
-		{
-			TRE_CORE_INFO("Free Type Init");
-		}
-
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -74,11 +76,19 @@ namespace TRE
 
 	void FontRenderer::CreateNewFontFace(std::string Filepath, std::string FontType)
 	{
+		FT_Library m_FTLibrary;
+		if (FT_Error Error = FT_Init_FreeType(&m_FTLibrary); !Error)
+		{
+			TRE_CORE_INFO("Free Type Init");
+		}
+
 		FT_Face face;
 		if (FT_New_Face(m_FTLibrary, Filepath.c_str(), 0, &face))
 		{
 			TRE_CORE_ERROR("Unable to load font: {0}", FontType);
 		}
+
+		FontRenderer::GetLoadedFonts().push_back(FontType);
 
 		FT_Set_Pixel_Sizes(face, 0, 48); //Scale the font size using transform comp
 
@@ -147,6 +157,7 @@ namespace TRE
 
 		delete[] data;
 		FT_Done_Face(face);
+		FT_Done_FreeType(m_FTLibrary);
 	}
 
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)

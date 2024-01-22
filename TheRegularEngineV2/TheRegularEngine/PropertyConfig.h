@@ -19,6 +19,11 @@ struct resource_list
 	std::string m_Type;
 };
 
+struct FontType
+{
+    std::string m_Type;
+};
+
 struct audio_file_dropdown
 {
 	std::string m_File;
@@ -175,6 +180,7 @@ namespace property
             , std::vector<waypoint>
             , CollisionLayer
             , PhysicsMaterial
+            , FontType
         >;
     
         //--------------------------------------------------------------------------------------------

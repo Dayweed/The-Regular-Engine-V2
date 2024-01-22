@@ -6,6 +6,7 @@
 #include "TREIncludes.h"
 #include "Scripting/ScriptEngine.h"
 #include "EditorAssetManager.h"
+#include "Graphics/FontRenderer.h"
 
 namespace TRE
 {
@@ -521,6 +522,48 @@ namespace TRE
 											Value.m_MaterialID = element.second;
 										}
 									}
+									ImGui::EndCombo();
+								}
+							}
+							else if constexpr (std::is_same_v<T, FontType>)
+							{
+								std::string selected = Value.m_Type;
+
+								if (ImGui::BeginCombo("Font Type", selected.c_str()))
+								{
+									if (ImGui::Selectable("None", false))
+									{
+										Value.m_Type = "";
+									}
+
+									if (Value.m_Type == "FontType")
+									{
+										std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
+										std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
+											{
+												for (char ch : type1)
+													ch = static_cast<char>(tolower(ch));
+
+												for (char ch : type2)
+													ch = static_cast<char>(tolower(ch));
+
+												return type1 < type2;
+											});
+
+										for (const auto& material : LoadFontTypes)
+										{
+											bool isSelected = (selected == material);
+											if (ImGui::Selectable(material.c_str(), isSelected))
+											{
+												selected = material;
+												Value.m_Type = material;
+												break;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
+
 									ImGui::EndCombo();
 								}
 							}

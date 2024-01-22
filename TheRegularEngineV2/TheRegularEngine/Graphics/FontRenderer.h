@@ -1,6 +1,4 @@
 #pragma once
-#include <ft2build.h>
-#include FT_FREETYPE_H
 #include "Pipeline.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
@@ -9,6 +7,8 @@
 #include "RenderPass.h"
 #include "VulkanTexture.h"
 #include "Material.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace TRE
 {
@@ -45,13 +45,14 @@ namespace TRE
 
 			void RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
 
+			static std::vector<std::string>& GetLoadedFonts();
+
 		private:
 			std::shared_ptr<Device> m_Device;
 
 		private:
-			FT_Library m_FTLibrary;
-			std::vector<std::string> m_AvailableFonts;
-			std::unordered_map<char, Character> m_Characters{};
+			static std::vector<std::string> m_AvailableFonts;
+			std::unordered_map<char, Character> m_Characters{}; //Per Font Type
 
 			std::string m_DefaultFontFilepath = "../Resources/Fonts/arial.ttf";
 
