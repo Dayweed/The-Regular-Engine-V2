@@ -13,9 +13,7 @@ namespace TRE
 	{
 		// Colliders to keep eye on
         public Entity mDetector;
-        //public Entity mPredictor;
         public Entity mGround;
-        private vec3 lastValidPosition;
 
 		// Target Variables
 		public Entity mHoley;
@@ -29,6 +27,7 @@ namespace TRE
         public vec3 defaultVector = new vec3(1, 0, 0);
         public vec3 moveVector = new vec3(1, 0, 0);
         private float moveSpeed = 50.0f;
+        private float maxVelocity = 50.0f;
 
         public void Start()
 		{
@@ -38,7 +37,6 @@ namespace TRE
             mTarget = new Entity(); // Invalid ID
             mGround = new Entity(); // Invalid ID
             mDetector = parenting.GetChildFromName("Detector");
-            //mPredictor = parenting.GetChildFromName("Predictor");
         }
 
 		public void Update()
@@ -46,15 +44,17 @@ namespace TRE
             transform.Rotation = new vec3(0, transform.Rotation.y, 0);
 
             // Check if foundTarget
-            if (!mFoundTarget)
+            if (!mFoundTarget || !mCanChaseTarget)
             {
+                float distanceFromHoley = (transform.Position - mHoley.transform.Position).Length;
+                float distanceFromMoley = (transform.Position - mMoley.transform.Position).Length;
                 // Check if collide with moley or holey
                 if (PhysicsSystem.IsTriggerStay(mDetector.ID, mHoley.ID))
                 {
                     mTarget = mHoley;
                     mFoundTarget = true;
                 }
-                else if (PhysicsSystem.IsTriggerStay(mDetector.ID, mMoley.ID))
+                if (PhysicsSystem.IsTriggerStay(mDetector.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
                 {
                     mTarget = mMoley;
                     mFoundTarget = true;
@@ -67,25 +67,48 @@ namespace TRE
                 float distanceFromSpawn = (transform.Position - mTarget.transform.Position).Length;
                 if (PhysicsSystem.IsTriggerExit(mDetector.ID, mTarget.ID) || distanceFromSpawn > maxDistFromSpawn)
                 {
-                    transform.Rotation = new vec3 (transform.Rotation.x, 0, transform.Rotation.z);
                     PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
                     mFoundTarget = false;
                 }
             }
 
             // Check if player is within detect sphere
-            if (mFoundTarget)
+            if (mFoundTarget && mGround.ID != 0)
 			{
-                // Rotate moveVector based on angle
+                // Set moveVector based on angle
                 moveVector = mTarget.transform.Position - transform.Position;
+
                 // Ignore y-axis
                 PhysicsSystem.GetLinearVelocity(ID, out vec3 currVelocity);
                 moveVector = new vec3(moveVector.x, 0, moveVector.z);
                 moveVector = moveVector.NormalizedSafe;
                 vec3 moveDir = moveVector * moveSpeed * Time.deltaTime;
 
+                // Rotate Character to look at target
+                // TODO
+
                 // Determine if it can chase the target if it move that direction
-                PhysicsSystem.SetLinearVelocity(ID, currVelocity + moveDir);
+                vec3 predictedPos = transform.Position + currVelocity + moveDir;
+                predictedPos = new vec3(predictedPos.x, mGround.transform.Position.y, predictedPos.z);
+
+                BoxCollider grndCdr = mGround.GetComponent<BoxCollider>();
+                vec3 min = new vec3(mGround.transform.Position.x - grndCdr.HalfExtents.x, mGround.transform.Position.y - grndCdr.HalfExtents.y, mGround.transform.Position.z - grndCdr.HalfExtents.z);
+                vec3 max = new vec3(mGround.transform.Position.x + grndCdr.HalfExtents.x, mGround.transform.Position.y + grndCdr.HalfExtents.y, mGround.transform.Position.z + grndCdr.HalfExtents.z);
+
+                if (PtAABB(predictedPos, min, max))
+                {
+                    if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) >= maxVelocity)
+                    {
+                        currVelocity = moveDir * maxVelocity;
+                    }
+                    PhysicsSystem.SetLinearVelocity(ID, currVelocity + moveDir);
+                    mCanChaseTarget = true;
+                }
+                else
+                {
+                    PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+                    mCanChaseTarget = false;
+                }
 
 
                 //mPredictor.transform.Position = transform.Position + moveDir;
@@ -107,46 +130,29 @@ namespace TRE
         {
             // Assign ground if valid
             Entity other = new Entity(otherID);
-            if (mGround.ID == 0 && other.CompareTag("Ground"))
+            if (mGround.ID == 0 && other.CompareTag("Ground") && other.HasComponent<BoxCollider>())
             {
                 mGround = other;
                 mCanChaseTarget = true;
-            }
-            return;
-            if (mGround.ID != 0)
-            {
-                lastValidPosition = transform.Position;
             }
         }
 
         private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
         {
-            // Assign ground if valid
-            if (mGround.ID == otherID)
-            {
-                //lastValidPosition = transform.Position;
-                mCanChaseTarget = true;
-            }
+
         }
 
         private void OnCollisionExit(System.UInt64 otherID)
         {
-            return;
-            // Make sure it cannot chase anymore if leave ground
-            if (mGround.ID == otherID)
-            {
-                mCanChaseTarget = false;
-                transform.Position = lastValidPosition;
-                transform.Rotation = new vec3(transform.Rotation.x, 0, transform.Rotation.z);
-                PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
-            }
+
         }
 
-        bool PtAABB(vec2 pt, vec2 aabbMin, vec2 aabbMax)
+        bool PtAABB(vec3 pt, vec3 aabbMin, vec3 aabbMax)
         {
             bool withinX = aabbMin.x < pt.x && pt.x < aabbMax.x;
             bool withinY = aabbMin.y < pt.y && pt.y < aabbMax.y;
-            return withinX && withinY;
+            bool withinZ = aabbMin.z < pt.z && pt.z < aabbMax.z;
+            return withinX && withinY && withinZ;
         }
     }
 }
