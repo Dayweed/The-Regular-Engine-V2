@@ -272,6 +272,9 @@ namespace TRE
 	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)
 	{
 		UNREFERENCED_PARAMETER(event);
+
+		return;	// Adding this here since it keep recompiling even when not suppose to, will remove if guarentee no bugs from the fix
+
 		//Hot reload only when not game mode
 #ifdef GAME
 		

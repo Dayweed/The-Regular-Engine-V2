@@ -49,15 +49,15 @@ namespace TRE
 		public float maxJumpButtomTime = 0.5f;
 		public float currentJumpTime;
 		public bool jumpCancelled = false;
-        //how long after the player walks off the ground can he still jump
-        private float coyoteTime = 0.2f;
-        public float coyoteTimeCounter;
-        //if player press space within this buffer time, they will still be able to jump even if they havent landed
-        private float jumpBufferTime = 0.25f;
-        public float jumpBufferCounter;
+		//how long after the player walks off the ground can he still jump
+		private float coyoteTime = 0.2f;
+		public float coyoteTimeCounter;
+		//if player press space within this buffer time, they will still be able to jump even if they havent landed
+		private float jumpBufferTime = 0.25f;
+		public float jumpBufferCounter;
 
-        //Capsule Collider
-        public bool mainBlueberry = false;  // Scaling
+		//Capsule Collider
+		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
 		public float defaultRadius = 2f;
@@ -307,24 +307,24 @@ namespace TRE
 				{
 					isWalking = false;
 
-                    vec3 maxHeight = new vec3(0, 70, 0);
-                    // Boosted Jump
-                    if (isBoostedJump)
-                    {
-                        maxHeight = new vec3(0, 150, 0);
-                    }
+					vec3 maxHeight = new vec3(0, 70, 0);
+					// Boosted Jump
+					if (isBoostedJump)
+					{
+						maxHeight = new vec3(0, 150, 0);
+					}
 
-                    Jump(maxHeight);
-                    if (ECSManager.IsValidEntity(jumpSFX))
-                    {
-                        AudioSystem.Play(jumpSFX);
-                    }
+					Jump(maxHeight);
+					if (ECSManager.IsValidEntity(jumpSFX))
+					{
+						AudioSystem.Play(jumpSFX);
+					}
 
-                    isJumping = true;
-                    jumpCancelled = false;
-                    currentJumpTime = 0;
-                    jumpBufferCounter = 0;
-                }
+					isJumping = true;
+					jumpCancelled = false;
+					currentJumpTime = 0;
+					jumpBufferCounter = 0;
+				}
 			}
 
 			#endregion
