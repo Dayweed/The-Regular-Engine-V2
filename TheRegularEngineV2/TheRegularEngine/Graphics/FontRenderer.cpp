@@ -200,13 +200,19 @@ namespace TRE
 			if (!TextComp.m_IsVisible)
 				continue;
 
+			float offset = 0.f;
 			for (auto Letter : TextComp.m_TextContent)
 			{
+				float textwidth = (m_Characters[Letter].Advance >> 6) / 48.f;
+				glm::vec2 fontscale = glm::vec2(m_Characters[Letter].Size.x / 48.f, m_Characters[Letter].Size.y / 48.f);
+				offset += textwidth;
+
 				Font_PushConstant pc{};
 				auto TransformComp = Entity->GetComponent<Transform>();
-				pc.Proj = TempProj * TransformComp.m_WorldXform;
+				pc.Proj = TempProj * TransformComp.m_WorldXform * glm::translate(glm::mat4(1.f), glm::vec3(offset, 0.f, 0.f)) * glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
 				pc.Color = TextComp.m_Color;
 
+				
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);
 
@@ -216,6 +222,8 @@ namespace TRE
 				vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 				vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+
+				offset += textwidth;
 			}
 		}
 
