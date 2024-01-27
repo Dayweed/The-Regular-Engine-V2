@@ -71,6 +71,7 @@ namespace TRE
 		void SaveScene();
 
 		std::string GetCurrentSceneName();
+		bool SceneExistInFile();
 
 	private:
 		friend class GameLoop;
@@ -89,6 +90,8 @@ namespace TRE
 		std::string m_CurrentScene{ SCENE_DEFAULT_NAME };
 		std::string m_CurrentSceneFilePath{ GETFOLDER(FILESYS_SCENE) + SCENE_DEFAULT_NAME + GETFILE(FILESYS_SCENE) };
 		int m_DupDefaultName{};
+
+		bool m_NewScene{ true }; // Checks if this scene has been saved before
 	};
 
 	class ScenePostEffectsSystem : public ECSSystem

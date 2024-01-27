@@ -266,7 +266,7 @@ namespace TRE
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
 		{
-			if (SceneManager::Instance().GetCurrentSceneName() != SCENE_DEFAULT_NAME)
+			if (SceneManager::Instance().SceneExistInFile())
 			{
 				SceneManager::Instance().SaveScene();
 			}
@@ -306,10 +306,11 @@ namespace TRE
 			m_ShortcutNewScene  = key == KeyButton::N;
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
-			// Check if shift key mods is also pressed
-			if (mods == KeyMods::SHIFT) {
-				m_ShortcutSaveSceneAs = key == KeyButton::S;
-			}
+		}
+		// Check if shift key mods is also pressed
+		if (mods == static_cast<KeyMods>(static_cast<int>(KeyMods::CONTROL) + static_cast<int>(KeyMods::SHIFT)))
+		{
+			m_ShortcutSaveSceneAs = key == KeyButton::S;
 		}
 
 #if 1

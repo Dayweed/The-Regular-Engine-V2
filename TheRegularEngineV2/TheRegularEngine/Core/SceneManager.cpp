@@ -80,6 +80,11 @@ namespace TRE
 		return m_CurrentScene;
 	}
 
+	bool SceneManager::SceneExistInFile()
+	{
+		return std::filesystem::exists(m_CurrentSceneFilePath);
+	}
+
 	std::string SceneManager::GetSceneName(std::string filePath)
 	{
 		std::string sceneName = filePath.substr(filePath.find_last_of('\\') + 1);
