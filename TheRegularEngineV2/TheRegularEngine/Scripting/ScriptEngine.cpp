@@ -378,7 +378,6 @@ namespace TRE
 						std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[i.first], GUID);
 						instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
 						s_ScriptEngineData->ScriptInstances[GUID].emplace_back(instance);
-
 						if(s_ScriptEngineData->EntityFieldMap[GUID].find(i.first) == s_ScriptEngineData->EntityFieldMap[GUID].end())
 						{
 							// create the field map for the entity
@@ -516,6 +515,7 @@ namespace TRE
 	void ScriptEngine::OnCreateEntity(Entity entity)
 	{
 		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+
 		if(EntityClassExists(scriptComponent.m_StoredClass))
 		{
 			std::string GUID = entity->GetGUID();
@@ -717,9 +717,9 @@ namespace TRE
 		{
 			return s_ScriptEngineData->ScriptInstances[GUID]->m_Instance;
 		}
-	}*/
+	}
 
-	/*std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityInstance(std::string GUID)
+	std::shared_ptr<ScriptInstance> ScriptEngine::GetEntityInstance(std::string GUID)
 	{
 		auto it = s_ScriptEngineData->ScriptInstances.find(GUID);
 		if(it == s_ScriptEngineData->ScriptInstances.end())
@@ -810,6 +810,7 @@ namespace TRE
 			unsigned long long id = std::stoull(entity);
 			void* param = &id;
 			m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
+			TRE_CORE_INFO("Created script instance for entity {0}", entity);
 		}
 	}
 

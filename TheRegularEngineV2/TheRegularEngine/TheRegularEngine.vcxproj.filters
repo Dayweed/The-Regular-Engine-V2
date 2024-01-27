@@ -154,6 +154,9 @@
     <ClInclude Include="Graphics\EditorCamera.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\FontRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\FrameBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -292,9 +295,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Graphics\FontRenderer.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -376,6 +376,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\EditorCamera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\FontRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\FrameBuffer.cpp">
@@ -499,8 +502,5 @@
       <Filter>ShaderTypes</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Graphics\FontRenderer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

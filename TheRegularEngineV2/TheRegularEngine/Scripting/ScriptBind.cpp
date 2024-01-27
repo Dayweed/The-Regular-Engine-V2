@@ -539,6 +539,7 @@ namespace TRE
 		{
 			// Found the name
 			std::string ID = sceneObjects[temp];
+			TRE_CORE_INFO("{0} : {1}", temp, ID );
 			return EntityID_EngineToCS(ID);
 		}
 		else
