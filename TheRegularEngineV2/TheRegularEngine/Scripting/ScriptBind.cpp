@@ -1702,7 +1702,13 @@ namespace TRE
 
 	static MonoObject* BindGetScript(CSEntityID ID, MonoString* className)
 	{
-		if (!BindHaveScript(ID, className)) return NULL;
+		if (!BindHaveScript(ID, className))
+		{
+			std::string error{  };
+			error = "ID " + std::to_string(ID) + " does not have script " + MonoStringToString(className);
+			PUBLISHERROR(error.c_str());
+			return NULL;
+		}
 
 		std::string IDStr{ EntityID_CSToEngine(ID) };
 		std::string classNameStr{ MonoStringToString(className) };
