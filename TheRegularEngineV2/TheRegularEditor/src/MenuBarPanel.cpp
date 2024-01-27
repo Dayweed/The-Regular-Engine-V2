@@ -52,6 +52,10 @@ namespace TRE
 				{
 					SaveScene();
 				}
+				if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
+				{
+					SaveSceneAs();
+				}
 
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))
@@ -212,6 +216,11 @@ namespace TRE
 			SaveScene();
 			m_ShortcutSaveScene = false;
 		}
+		if (m_ShortcutSaveSceneAs)
+		{
+			SaveSceneAs();
+			m_ShortcutSaveSceneAs = false;
+		}
 	}
 
 	void MenuBarPanel::Shutdown()
@@ -257,6 +266,27 @@ namespace TRE
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
 		{
+			if (SceneManager::Instance().GetCurrentSceneName() != SCENE_DEFAULT_NAME)
+			{
+				SceneManager::Instance().SaveScene();
+			}
+			else
+			{
+				const std::string path = FileExplorer::SaveFileExplorer("Scene(*.json)\0*.json\0");
+				if (!path.empty())
+				{
+					SceneManager::Instance().SaveSceneAs(path);
+				}
+			}
+		}
+		return;
+	}
+
+	void MenuBarPanel::SaveSceneAs()
+	{
+		// Only save and load when it is not running
+		if (!GameLoop::Instance().IsGameRunning())
+		{
 			const std::string path = FileExplorer::SaveFileExplorer("Scene(*.json)\0*.json\0");
 			if (!path.empty())
 			{
@@ -276,6 +306,10 @@ namespace TRE
 			m_ShortcutNewScene  = key == KeyButton::N;
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
+			// Check if shift key mods is also pressed
+			if (mods == KeyMods::SHIFT) {
+				m_ShortcutSaveSceneAs = key == KeyButton::S;
+			}
 		}
 
 #if 1
