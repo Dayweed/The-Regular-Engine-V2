@@ -14,6 +14,8 @@
 namespace TRE
 {
 	static std::string lastSceneClicked;
+	static char inputTextBuffer[128] = "";
+
 	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -184,13 +186,12 @@ namespace TRE
 		ImGui::SameLine();
 
 		bool isHovered = false;
+
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
 			std::vector<Asset> filteredAssets{};
-			static char inputTextBuffer[128] = "";
-			ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
-
+		
 			if (ImGui::IsWindowHovered())
 			{
 				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
@@ -213,7 +214,6 @@ namespace TRE
 					PollItems();
 				}
 			}
-			ImGui::Separator();
 
 			//right click to open popup menu
 			if (ImGui::BeginPopupContextWindow())
@@ -270,6 +270,7 @@ namespace TRE
 
 			isHovered = ImGui::IsWindowHovered();
 
+			//search bar
 			auto iteration = m_Assets.begin();
 			while (iteration != m_Assets.end())
 			{
@@ -535,24 +536,6 @@ namespace TRE
 		}
 	}
 
-	void ContentBrowserPanel::SearchBar()
-	{
-		std::string buf1{};
-		std::vector<std::string> files;
-
-		for (auto& p : std::filesystem::directory_iterator(m_CurrentDirectory))
-		{
-			const std::filesystem::path descFilePath = p.path();
-			const std::filesystem::path relativePath = std::filesystem::relative(descFilePath, m_CurrentDirectory);
-
-			buf1 = relativePath.string();
-			files.push_back(buf1);
-		}
-
-		static char inputTextBuffer[128] = "";
-		ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
-	}
-
 	void ContentBrowserPanel::Init()
 	{
 		// Late April Fools Joke (Activate this for sum humor in Content Browser)
@@ -646,6 +629,8 @@ namespace TRE
 
 		if (ImGui::Begin("Content Browser", nullptr, ImGuiWindowFlags_NoCollapse))
 		{
+			ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
+
 			BrowseProjectFiles();
 			AssetManager::Instance().Poll();
 		}

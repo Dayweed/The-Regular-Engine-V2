@@ -27,7 +27,6 @@ namespace TRE
 			void PollItems();
 			void BrowseProjectFiles();
 			void FileWatcher();
-			void SearchBar();
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
