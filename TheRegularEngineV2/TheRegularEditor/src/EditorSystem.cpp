@@ -118,8 +118,6 @@ namespace TRE
 		m_PanelManager->Update();
 		EditorCamera::Instance().Update();
 
-		ImGui::ShowDemoWindow();
-
 		ImGui::End(); //Dockspace
 	}
 
