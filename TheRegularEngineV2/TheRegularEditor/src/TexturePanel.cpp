@@ -114,6 +114,12 @@ namespace TRE
 						}
 					}
 				}
+
+				if (ImGui::Button("Delete Texture"))
+				{
+					AssetManager::Instance().RemoveAsset(assetName);
+					m_TextureSelected = false;
+				}
 			}
 			else
 			{

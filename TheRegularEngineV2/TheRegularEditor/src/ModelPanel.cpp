@@ -66,6 +66,12 @@ namespace TRE
 						}
 					}
 				}
+
+				if (ImGui::Button("Delete Model"))
+				{
+					AssetManager::Instance().RemoveAsset(assetName);
+					m_MeshSelected = false;
+				}
 			}
 			else
 			{

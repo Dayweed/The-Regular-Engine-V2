@@ -23,6 +23,7 @@ namespace TRE
 	private:
 		std::shared_ptr<SelectionManager> m_SelectionManager;
 		std::shared_ptr<AssetSelector> m_AssetSelector;
+		std::string m_Name;
 
 		bool m_EnterPressed = false;
 	};
