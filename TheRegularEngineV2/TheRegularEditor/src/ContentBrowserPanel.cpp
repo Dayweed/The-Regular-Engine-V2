@@ -14,6 +14,8 @@
 namespace TRE
 {
 	static std::string lastSceneClicked;
+	static char inputTextBuffer[128] = "";
+
 	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -184,9 +186,12 @@ namespace TRE
 		ImGui::SameLine();
 
 		bool isHovered = false;
+
 		//Item List Display
 		if (ImGui::BeginChild("ItemList", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true))
 		{
+			std::vector<Asset> filteredAssets{};
+		
 			if (ImGui::IsWindowHovered())
 			{
 				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
@@ -209,7 +214,6 @@ namespace TRE
 					PollItems();
 				}
 			}
-			ImGui::Separator();
 
 			//right click to open popup menu
 			if (ImGui::BeginPopupContextWindow())
@@ -266,7 +270,24 @@ namespace TRE
 
 			isHovered = ImGui::IsWindowHovered();
 
-			for (int count{}; auto & item: m_Assets)
+			//search bar
+			auto iteration = m_Assets.begin();
+			while (iteration != m_Assets.end())
+			{
+				std::string fileNameLower = iteration->m_FileName;
+				std::transform(iteration->m_FileName.begin(), iteration->m_FileName.end(), fileNameLower.begin(), [](unsigned char c) {return std::tolower(c); });
+				size_t found = fileNameLower.find(inputTextBuffer);
+
+				if (found != std::string::npos)
+				{
+					filteredAssets.push_back(*iteration);
+				}
+
+				++iteration;
+			}
+
+			//for (int count{}; auto & item: m_Assets)
+			for (int count{}; auto & item: filteredAssets)
 			{
 				ImGui::PushID(count++);
 
@@ -608,6 +629,8 @@ namespace TRE
 
 		if (ImGui::Begin("Content Browser", nullptr, ImGuiWindowFlags_NoCollapse))
 		{
+			ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
+
 			BrowseProjectFiles();
 			AssetManager::Instance().Poll();
 		}

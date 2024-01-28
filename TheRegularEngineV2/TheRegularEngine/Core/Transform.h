@@ -7,6 +7,15 @@
 
 namespace TRE
 {
+	enum TransformDirtyFlags
+	{
+		TRE_DIRTY_NONE = 0,	// binary 0000
+		TRE_DIRTY_POSITION = 1 << 0, // binary 0001
+		TRE_DIRTY_ROTATION = 1 << 1, // binary 0010
+		TRE_DIRTY_SCALE = 1 << 2, // binary 0100
+		TRE_DIRTY_ALL = 1 << 3 // binary 0101
+	};
+
 	class Transform : property::base
 	{
 	public:
@@ -21,6 +30,7 @@ namespace TRE
 		glm::vec3	m_LocalRotation{ 0.f,0.f,0.f };
 		glm::vec3	m_LocalScale{ 1.f,1.f,1.f };
 
+		int			m_DirtyFlags{};
 		bool		m_IsDirty{ true };
 	private:
 		glm::vec3	m_RotationOld{ 0,0,0 };

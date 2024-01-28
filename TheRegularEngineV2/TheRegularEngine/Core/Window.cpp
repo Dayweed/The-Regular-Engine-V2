@@ -100,11 +100,11 @@ namespace TRE
 		glfwPollEvents();
 		/*CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_1, GLFW_PRESS);
 		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_2, GLFW_PRESS);
-		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_3, GLFW_PRESS);*/
+		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_3, GLFW_PRESS);
 		for (int i{}; i < 5; ++i)
 		{
 			InputHandler::CheckMouseEvent(m_WindowHandle, i, GLFW_PRESS);
-		}
+		}*/
 	}
 
 	int Window::ShouldWindowClose()

@@ -208,6 +208,9 @@
     <ClInclude Include="Graphics\SwapChain.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\TextComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\UIComponent.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -242,6 +245,9 @@
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="Physics\CapsuleCollider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\CylinderCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="Physics\ErrorCallback.h">
@@ -454,6 +460,9 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\CapsuleCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\CylinderCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\ErrorCallback.cpp">

@@ -65,6 +65,7 @@ namespace TRE
 			bool m_ShortcutNewScene = false;
 			bool m_ShortcutOpenScene = false;
 			bool m_ShortcutSaveScene = false;
+			bool m_ShortcutSaveSceneAs = false;
 
 			//bool for exit prompt
 			bool m_ExitPrompt = false;
@@ -100,9 +101,15 @@ namespace TRE
 			*******************************************************************************/
 			void OpenScene();
 			/*!*****************************************************************************
-			*\brief 	Opens the file explorer and allows the user to save over a scene.
+			*\brief 	Opens the file explorer and allows the user to save over a scene if
+			*			scene isn't created before else auto save into same scene
 			*
 			*******************************************************************************/
 			void SaveScene();
+			/*!*****************************************************************************
+			*\brief 	Always Opens the file explorer and allows the user to save over a scene.
+			*
+			*******************************************************************************/
+			void SaveSceneAs();
 	};
 }

@@ -29,6 +29,7 @@
 #include "Physics/SphereCollider.h"
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
+#include "Physics/CylinderCollider.h"
 #include "Physics/PhysicsSystem.h"
 
 //-----------------Graphics-----------------//
@@ -40,6 +41,8 @@
 #include "Graphics/UIComponent.h"
 #include "Graphics/AnimationComponent.h"
 #include "Graphics/ParticleComponent.h"
+#include "Graphics/TextComponent.h"
+#include "Graphics/Slideshow.h"
 
 //-----------------Scripting-----------------//
 #include "Scripting/ScriptComponent.h"

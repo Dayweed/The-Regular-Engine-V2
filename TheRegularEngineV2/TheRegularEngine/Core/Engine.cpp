@@ -69,8 +69,8 @@ namespace TRE
 		}
 
 		GameLoop::Instance().Init();
-		RegisterECS();
 		Shader::SetupShaders();
+		RegisterECS();
 
 
 		//DemoScene();
@@ -104,6 +104,8 @@ namespace TRE
 		}
 		else
 			SceneManager::Instance().NewScene();
+
+		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	Engine::~Engine()
@@ -129,14 +131,17 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// serialized, reflected
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// serialized, reflected
 		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
+		ECSManager::Instance().RegisterComponent<CylinderCollider>("CylinderCollider");						// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
 		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
 		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
 		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// Serialized, reflected
-		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// 
+		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<ParticleComponent>("Particle Component");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<TextComponent>("Text Component");							// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<SlideshowComponent>("Slideshow Component");				// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();

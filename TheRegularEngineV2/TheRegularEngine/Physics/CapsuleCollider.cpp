@@ -14,6 +14,7 @@ namespace TRE
 			WriteMemberToJSON(m_IsActive),
 			WriteMemberToJSON(m_IsTrigger),
 			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
+			WriteMemberToJSON(m_PhysicsMaterial.m_MaterialID),
 			WriteVec3MemberToJSON(m_Offset),
 			WriteMemberToJSON(m_Radius),
 			WriteMemberToJSON(m_HalfHeight),
@@ -25,6 +26,7 @@ namespace TRE
 		ReadMemberFromJSON(m_IsActive);
 		ReadMemberFromJSON(m_IsTrigger);
 		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
+		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
 		ReadVec3MemberFromJSON(m_Offset);
 		ReadMemberFromJSON(m_Radius);
 		ReadMemberFromJSON(m_HalfHeight);
@@ -49,10 +51,21 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
-			// PxSetGroup(*tempSharedData.m_RigidDynamic, 0);
 
 #ifdef _DEBUG
-			tempSharedData.m_RigidDynamic->setName("CapsuleCollider");
+			{
+				char* string = nullptr;
+				if (entity->GetName() == "Holey")
+					string = (char*)"Holey";
+				else if (entity->GetName() == "Moley")
+					string = (char*)"Moley";
+				else if (entity->GetName() == "Slippery Body")
+					string = (char*)"Slippery Body";
+				else
+					string = (char*)"CapsuleCollider";
+
+				tempSharedData.m_RigidDynamic->setName(string);
+			}
 #endif
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
@@ -66,10 +79,20 @@ namespace TRE
 		PxShape* capsuleShape;
 
 		CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
+
+		// determine physics material being used
+		PxMaterial* shapeMaterial = m_DefaultMaterial;
+		if (capsuleCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
+			shapeMaterial = m_DefaultMaterial;
+		else if (capsuleCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
+			shapeMaterial = m_FrictionlessMaterial;
+
 		if (capsuleCollider.m_IsTrigger)
-			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+			capsuleShape = PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxCapsuleGeometry(radius, halfHeight), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
 
 		// making the capsule stand upright by default
 		// thank you nick!!!
@@ -110,17 +133,19 @@ namespace TRE
 	{
 		PhysicsComponentAssertion(CapsuleCollider);
 
-		PxRigidDynamic* rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
+		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+		nbShapes = rigidDynamic->getShapes(shapes, nbShapes);
 
 		for (unsigned i = 0; i < nbShapes; ++i)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+			if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE)
+				continue;
 
-			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight))); break;
+			shapes[i]->setGeometry(PxCapsuleGeometry(fabs(newRadius), fabs(newHalfHeight)));
+			break;
 		}
 
 		entity->GetComponent<CapsuleCollider>().m_Radius = fabs(newRadius);
@@ -145,6 +170,7 @@ namespace TRE
 		{
 			ChangeCollisionLayer(entity);
 			ChangeIsActive(entity);
+			ChangeMaterial(entity);
 		}
 	}
 
@@ -164,15 +190,17 @@ namespace TRE
 		else // there's still more attached physics components
 		{
 			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
+			PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes, nbShapes);
 
 			for (unsigned i = 0; i < nbShapes; ++i)
 			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE) continue;
+				if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eCAPSULE)
+					continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*shapes[i]);
+				break;
 			}
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
@@ -187,17 +215,14 @@ namespace TRE
 
 		capsuleCollider.m_IsTrigger = isTrigger;
 
-		constexpr unsigned maxNbShapes = 3; // sphere, box, capsule
+		constexpr unsigned maxNbShapes = 4; // sphere, box, capsule, cylinder
 		PxShape* shapes[maxNbShapes] = { nullptr };
 		rigidDynamic->getShapes(shapes, maxNbShapes);
 
 		// obtain the index of the box shape
 		for (auto& shape : shapes)
 		{
-			if (!shape)
-				continue;
-
-			if (shape->getGeometryType() != PxGeometryType::eCAPSULE)
+			if (!shape || shape->getGeometryType() != PxGeometryType::eCAPSULE)
 				continue;
 
 			if (capsuleCollider.m_IsTrigger)

@@ -944,15 +944,22 @@ namespace TRE
 		{
 			Engine_ResizeSphereCollider(entityid, newRadius);
 		}
+
 		public static void ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents)
 		{
 			Engine_ResizeBoxCollider(entityid, newHalfExtents);
 		}
+		
 		public static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight)
 		{
 			Engine_ResizeCapsuleCollider(entityid, newRadius, newHelfHeight);
 		}
 
+		public static void ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight)
+		{
+			Engine_ResizeCylinderCollider(entityid, newRadius, newHeight);
+		}
+		
 		public static void UpdateColliderOffset(EntityID entityid, vec3 offset)
 		{
 			Engine_UpdateColliderOffset(entityid, offset);
@@ -1045,6 +1052,15 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCapsuleColliderHalfHeight(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetCylinderColliderRadius(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetCylinderColliderHeight(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_UpdateColliderOffset(EntityID entityid, vec3 offset);
@@ -1160,6 +1176,42 @@ namespace TRE
 		{
 			// return Engine_Sin(value);
 			return (float)System.Math.Sin(value);
+		}
+
+		// Returns (x-Axis Rotation, y-Axis Rotation)
+		// Thanks Prashanth!
+		public static vec2 GetLookAtAxis(vec3 from, vec3 to)
+		{
+			vec2 frontVector = new vec2(0, 1);
+
+			// ignore different heights (y component)
+			vec2 from2D = new vec2(from.x, from.z);
+			vec2 to2D = new vec2(to.x, to.z);
+
+			vec2 distance = to2D - from2D;
+
+			float dotProduct = vec2.Dot(distance, frontVector);
+
+			if (distance.Length == 0)
+			{
+				// the distance between the points was zero!!! AAA!!!
+				return new vec2();
+			}
+
+			float angleCosineGround = dotProduct / (distance.Length * frontVector.Length);
+			double angleRadiansGround = Math.Acos((double)angleCosineGround);
+			double angleDegreesGround = angleRadiansGround / Math.PI * 180.0;
+
+			// Determine angle based on dot product
+			angleDegreesGround = vec3.Dot(to - from, new vec3(1, 0, 0)) < 0 ? -angleDegreesGround : angleDegreesGround;
+
+			// Do for height (y component)
+			float heightDiff = to.y - from.y;
+			float angleTangentHeight = heightDiff / distance.Length;
+			double angleRadiansHeight = Math.Atan((double)angleTangentHeight);
+			double angleDegreesHeight = -angleRadiansHeight / Math.PI * 180.0;
+
+			return new vec2((float)angleDegreesHeight, (float)angleDegreesGround);
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1416,7 +1468,7 @@ namespace TRE
 	}
 
 	public class ScenePostEffectsSystem
-    {
+	{
 		public enum STATE
 		{
 			NONE,
@@ -1424,23 +1476,23 @@ namespace TRE
 			OUT
 		}
 
-        public static STATE VignetteState
-        {
-            get
-            {
+		public static STATE VignetteState
+		{
+			get
+			{
 				if (Engine_GetVignetteStateIn()) return STATE.IN;
 				if (Engine_GetVignetteStateOut()) return STATE.OUT;
 				return STATE.NONE;
-            }
-        }
+			}
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_ShrinkVignette(float duration);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_ShrinkVignette(float duration);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern static bool Engine_GetVignetteStateIn();
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		private extern static bool Engine_GetVignetteStateIn();
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern static bool Engine_GetVignetteStateOut();
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		private extern static bool Engine_GetVignetteStateOut();
+	}
 }

@@ -27,14 +27,14 @@ namespace TRE
 			if (this.CompareTag(mole1tag))
 			{
 				vec3 newPos = playerObj.transform.Position;
-				newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 3f;
+				newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
 
 				transform.Position = newPos;
 			}
 			else if (this.CompareTag(mole2tag))
 			{
 				vec3 newPos = playerObj.transform.Position;
-				newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 2f; //+ playerObj.GetComponent<HoleyController>().currentRadius
+				newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f; //+ playerObj.GetComponent<HoleyController>().currentRadius
 																																				   //+ offset.y;
 				transform.Position = newPos;
 			}

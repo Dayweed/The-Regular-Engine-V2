@@ -39,28 +39,28 @@ namespace TRE
 
 		float x = -1.f; float y = -1.f;
 		float width = 2, height = 2;
-		std::vector<UIVertex> data(4);
+		std::vector<QuadVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
-		data[0].UV = glm::vec2(0, 0);
+		data[0].TexCoord = glm::vec2(0, 0);
 
 		data[1].Position = glm::vec3(x + width, y, 0.0f);
-		data[1].UV = glm::vec2(1, 0);
+		data[1].TexCoord = glm::vec2(1, 0);
 
 		data[2].Position = glm::vec3(x + width, y + height, 0.0f);
-		data[2].UV = glm::vec2(1, 1);
+		data[2].TexCoord = glm::vec2(1, 1);
 
 		data[3].Position = glm::vec3(x, y + height, 0.0f);
-		data[3].UV = glm::vec2(0, 1);
+		data[3].TexCoord = glm::vec2(0, 1);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
-		m_TestIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+		m_IndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
 			UINT32_T_CAST(sizeof(int) * indices.size()),
 			UINT32_T_CAST(indices.size()));
 
-		m_TestVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
-			UINT32_T_CAST(data.size() * sizeof(UIVertex)));
+		m_VertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
 
 		auto TextureHandle = Resource::GetGUIDFromHex("d180b66ce70dea24");
 		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(TextureHandle);
@@ -74,8 +74,11 @@ namespace TRE
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor)
 	{
 		UIUBO UBO{};
-		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(960.f, 540.f, 0.f)); //Translate by viewport width or height / 2
-		UBO.m_ProjView2DSpace = glm::ortho(0.f, 1920.f, 0.f, 1080.f) * TranslateToMid;
+		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		const auto width = 1920.f;//(float)SC->GetWidth();
+		const auto height = 1080.f;// (float)SC->GetHeight();
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f)); //Translate by viewport width or height / 2
+		UBO.m_ProjView2DSpace = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
 
 		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
 
@@ -147,11 +150,19 @@ namespace TRE
 
 
 			VkDeviceSize offsets[] = { 0 };
-			auto VB = m_TestVertexBuffer->GetBuffer();
+			VkBuffer VB = VK_NULL_HANDLE;
+			//If slideshow
+			//if (true)
+			//{
+			//	VB = m_SlicedVertexBuffer->GetBuffer();
+			//}
+			//else
+				VB = m_VertexBuffer->GetBuffer();
+				
 			vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
-			vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_TestIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+			vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-			vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_TestIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
 
 		Renderer::EndRenderPass(CommandBuffer);

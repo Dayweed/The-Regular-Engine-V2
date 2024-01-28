@@ -1,41 +1,74 @@
 #pragma once
-#include "freetype/freetype.h"
+#include "Pipeline.h"
+#include "CommandBuffer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "Pipeline.h"
+#include "RenderPass.h"
+#include "VulkanTexture.h"
+#include "Material.h"
+#include <ft2build.h>
 #include FT_FREETYPE_H
 
 namespace TRE
 {
+	class Device;
+
 	struct Character
 	{
-		unsigned int TexID;
-		glm::ivec2	 Size;
-		glm::ivec2	 Bearing;
+		glm::vec2	 Size;
+		glm::vec2	 Bearing;
+		glm::vec2	 UV[4];
 		unsigned int Advance;
 	};
 
-	struct FontVertex {
-		glm::vec3 pos;
-		glm::vec4 color;
-		glm::vec2 uv;
+	struct FontVertex 
+	{
+		glm::vec3 Pos;
+		glm::vec2 UV;
+	};
+
+	struct Font_PushConstant
+	{
+		glm::mat4 Proj;
+		glm::vec4 Color;
 	};
 
 	class FontRenderer
 	{
 		public:
-			FontRenderer();
+			FontRenderer(const std::shared_ptr<Device>& Device);
 			~FontRenderer();
 
 			void CreateNewFontFace(std::string Filepath, std::string FontType);
-			void PopulateFont(const char*);
 			std::string GetFontType(std::string Filepath);
 
-			void RenderFont();
+			void RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
+
+			static std::vector<std::string>& GetLoadedFonts();
 
 		private:
-			FT_Library m_FTLibrary;
-			std::unordered_map<std::string, FT_Face> m_Faces{};
-			std::vector<std::string> m_AvailableFonts;
-			std::unordered_map<std::string, std::map<char, Character>> m_Characters{};
+			void CreateFontData(std::string FontType);
 
-			std::string m_DefaultFontFilepath = "";
+		private:
+			std::shared_ptr<Device> m_Device;
+
+		private:
+			static std::vector<std::string> m_AvailableFonts;
+			std::unordered_map<char, Character> m_Characters{}; //Per Font Type
+
+			std::string m_DefaultFontFilepath = "../Resources/Fonts/arial.ttf";
+
+			std::shared_ptr<RenderPass> m_FontRenderPass;
+			std::shared_ptr<Pipeline> m_FontPipeline;
+
+			std::shared_ptr<VertexBuffer> m_FontVertexBuffer;
+			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
+
+			std::unordered_map<std::string, std::map<char, std::vector<FontVertex>>> m_VertexData; //Key = Font Type //Each FontType has a map characters, each characters have a vector of quad
+
+		private: //To be removed
+			std::shared_ptr<VulkanTexture> m_FontTexture;
+			std::shared_ptr<Material> m_FontMaterial;
 	};
 }

@@ -6,6 +6,7 @@
 #include "TREIncludes.h"
 #include "Scripting/ScriptEngine.h"
 #include "EditorAssetManager.h"
+#include "Graphics/FontRenderer.h"
 
 namespace TRE
 {
@@ -481,7 +482,7 @@ namespace TRE
 									std::string xlabel{ "x##" + entity->GetGUID() + std::to_string(i) };
 									if (ImGui::Button(xlabel.c_str()))
 									{
-										deleteInd.emplace_back(i);
+										deleteInd.emplace_back(static_cast<int>(i));
 										UpdatedData = true;
 									}
 								}
@@ -505,6 +506,65 @@ namespace TRE
 											Value.m_LayerID = element.second;
 										}
 									}
+									ImGui::EndCombo();
+								}
+							}
+							else if constexpr (std::is_same_v<T, PhysicsMaterial>)
+							{
+								// display the name of the layer currently being used by the entity in the dropdown
+								if (ImGui::BeginCombo("##PhysicsMaterialDropdown", PhysicsMaterial::m_LayerNameList[static_cast<int>(Value.m_MaterialID)].first.c_str()))
+								{
+									for (auto& element : PhysicsMaterial::m_LayerNameList)
+									{
+										if (ImGui::Selectable(element.first.c_str()))
+										{
+											UpdatedData = true;
+											Value.m_MaterialID = element.second;
+										}
+									}
+									ImGui::EndCombo();
+								}
+							}
+							else if constexpr (std::is_same_v<T, FontType>)
+							{
+								std::string selected = Value.m_Value;
+
+								if (ImGui::BeginCombo("Font Type", selected.c_str()))
+								{
+									if (ImGui::Selectable("None", false))
+									{
+										Value.m_Value = "";
+									}
+
+									if (Value.m_Type == "FontType")
+									{
+										std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
+										std::cout << "Loaded Font Count: " << LoadFontTypes.size() << std::endl;
+										std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
+											{
+												for (char ch : type1)
+													ch = static_cast<char>(tolower(ch));
+
+												for (char ch : type2)
+													ch = static_cast<char>(tolower(ch));
+
+												return type1 < type2;
+											});
+
+										for (const auto& material : LoadFontTypes)
+										{
+											bool isSelected = (selected == material);
+											if (ImGui::Selectable(material.c_str(), isSelected))
+											{
+												selected = material;
+												Value.m_Value = material;
+												break;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
+
 									ImGui::EndCombo();
 								}
 							}
@@ -691,6 +751,7 @@ namespace TRE
 						SetIsDirty.operator() < SphereCollider > (entity);
 						SetIsDirty.operator() < BoxCollider > (entity);
 						SetIsDirty.operator() < CapsuleCollider > (entity);
+						SetIsDirty.operator() < CylinderCollider > (entity);
 						SetIsDirty.operator() < ScriptComponent > (entity);
 						SetIsDirty.operator() < Camera > (entity);
 						// add more of your components here! :)

@@ -46,26 +46,26 @@
       0,
       {
          "m_Children": [
-            "10009100062694239672",
-            "8949378909894678502",
-            "1183978155612272581"
+            "3083259007177850352",
+            "11518382206132652059",
+            "6073855367204383153"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "9849388884675812301"
+         "m_Parent": "5459800490222354112"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "9849388884675812301"
+         "m_Parent": "5459800490222354112"
       },
       3,
       {
          "m_Children": [],
-         "m_Parent": "9849388884675812301"
+         "m_Parent": "5459800490222354112"
       }
    ],
    [
@@ -73,28 +73,32 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "9849388884675812301",
-         "m_Name": "RollingObject",
+         "m_GUID": "5459800490222354112",
+         "m_Index": 0,
+         "m_Name": "RollingObject 1",
          "m_Tag": "RollingObstacle"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "10009100062694239672",
+         "m_GUID": "3083259007177850352",
+         "m_Index": 3,
          "m_Name": "RollingObjectRender",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "8949378909894678502",
+         "m_GUID": "11518382206132652059",
+         "m_Index": 20,
          "m_Name": "LeftLedge",
          "m_Tag": ""
       },
       3,
       {
          "m_Active": true,
-         "m_GUID": "1183978155612272581",
+         "m_GUID": "6073855367204383153",
+         "m_Index": 27,
          "m_Name": "RightLedge",
          "m_Tag": ""
       }
@@ -104,13 +108,13 @@
       0,
       {
          "m_Position": [
-            0.0,
-            0.0,
-            0.0
+            206.0835723876953,
+            24.790420532226563,
+            -325.32562255859375
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            90.0,
             0.0
          ],
          "m_Scale": [
@@ -122,55 +126,55 @@
       1,
       {
          "m_Position": [
-            0.0,
-            0.0,
-            0.0
+            206.08285522460938,
+            27.56800079345703,
+            -308.71160888671875
          ],
          "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
+            1.1785789865825791e-05,
+            -7.67668004783649e-20,
+            3.512454541630683e-13
          ],
          "m_Scale": [
-            2.5,
-            2.5,
-            2.5
+            1.0,
+            1.0,
+            1.0
          ]
       },
       2,
       {
          "m_Position": [
-            -8.0,
-            0.0,
-            0.0
+            206.17010498046875,
+            24.790420532226563,
+            -300.3263854980469
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            89.95154571533203,
             0.0
          ],
          "m_Scale": [
+            0.9999999403953552,
             1.0,
-            1.0,
-            1.0
+            0.9999999403953552
          ]
       },
       3,
       {
          "m_Position": [
-            8.0,
-            0.0,
-            0.0
+            205.99557495117188,
+            24.790420532226563,
+            -362.3248596191406
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            89.95154571533203,
             0.0
          ],
          "m_Scale": [
+            0.9999999403953552,
             1.0,
-            1.0,
-            1.0
+            0.9999999403953552
          ]
       }
    ],
@@ -178,9 +182,9 @@
       1,
       1,
       {
-         "ASSET_GEOM_m_RenderObject": "3ed0886db6021295",
+         "ASSET_GEOM_m_RenderObject": "eb507560ae53f22d",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "ASSET_MAT_m_MaterialInstance": "d21e786df9c3f3ba",
          "m_IsVisible": true
       }
    ],
@@ -194,12 +198,15 @@
       1,
       1,
       {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
-            0.0,
-            0.0,
+            0.5,
+            -0.5,
             0.0
          ],
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_Radius": 5.0
       }
    ],
@@ -207,31 +214,37 @@
       2,
       2,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
             4.0
          ],
+         "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
             0.0,
             0.0
-         ]
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
       },
       3,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.5,
             4.0,
             4.0
          ],
+         "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
             0.0,
             0.0
-         ]
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
       }
    ],
    [
@@ -252,6 +265,15 @@
       {
          "m_StoredClass": "TRE.RollingObj"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

@@ -4,7 +4,7 @@
 
 #include "glm/glm.hpp"
 #include "fmod/fmod.hpp"
-#include "Physics/PhysicsComponent.h" // for CollisionLayer
+#include "Physics/PhysicsComponent.h" // for CollisionLayer & PhysicsMaterial
 
 using string_t = std::string;
 
@@ -17,6 +17,12 @@ struct resource_list
 {
 	std::uint64_t m_Value;
 	std::string m_Type;
+};
+
+struct FontType
+{
+    std::string m_Type;
+    std::string m_Value;
 };
 
 struct audio_file_dropdown
@@ -174,6 +180,8 @@ namespace property
             , FMOD_VECTOR
             , std::vector<waypoint>
             , CollisionLayer
+            , PhysicsMaterial
+            , FontType
         >;
     
         //--------------------------------------------------------------------------------------------

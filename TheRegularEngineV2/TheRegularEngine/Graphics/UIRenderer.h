@@ -14,12 +14,6 @@ namespace TRE
 	class Ent;
 	typedef std::shared_ptr<Ent> Entity;
 
-	struct UIVertex
-	{
-		glm::vec3 Position;
-		glm::vec2 UV;
-	};
-
 	struct UIUBO
 	{
 		glm::mat4 m_ProjView2DSpace;
@@ -47,8 +41,8 @@ namespace TRE
 			std::shared_ptr<UniformBuffer> m_UIUBO;
 
 		private:
-			std::shared_ptr<VertexBuffer> m_TestVertexBuffer;
-			std::shared_ptr<IndexBuffer> m_TestIndexBuffer;
+			std::shared_ptr<VertexBuffer> m_VertexBuffer;
+			std::shared_ptr<IndexBuffer> m_IndexBuffer;
 			std::vector<std::pair<int, Entity>> m_UIEntities;
 	};
 }

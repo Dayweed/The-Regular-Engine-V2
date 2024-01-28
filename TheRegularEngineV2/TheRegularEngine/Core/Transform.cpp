@@ -84,17 +84,21 @@ namespace TRE
 		{
 			Transform& transform = go.get()->GetComponent<Transform>();
 			if (transform.m_IsDirty)
-			{
-				transform.CalculateWorldMatrix();
-				transform.m_IsDirty = false;
-
-				// Overwrite prefab ["TRE::Transform/Position"] if it is a prefab
+			{				// Overwrite prefab ["TRE::Transform/Position"] if it is a prefab
 				if (go->HasComponent<Prefabing>())
 				{
-					go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Position");
-					go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Rotation");
-					go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Scale");
+					if (transform.m_DirtyFlags & TransformDirtyFlags::TRE_DIRTY_POSITION)
+						go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Position");
+					if (transform.m_DirtyFlags & TransformDirtyFlags::TRE_DIRTY_ROTATION)
+						go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Rotation");
+					if (transform.m_DirtyFlags & TransformDirtyFlags::TRE_DIRTY_SCALE)
+						go->GetComponent<Prefabing>().m_Overrides["Transform"].emplace("TRE::Transform/Scale");
 				}
+
+				// Calculate and update
+				transform.CalculateWorldMatrix();
+				transform.m_IsDirty = false;
+				transform.m_DirtyFlags = TransformDirtyFlags::TRE_DIRTY_NONE;
 			}
 		}
 	}
