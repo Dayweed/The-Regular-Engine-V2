@@ -23,7 +23,8 @@ namespace TRE
 			Audio,
 			AudioListener,
 			DirectPathfinding,
-			TextComponent
+			TextComponent,
+			SlideshowComponent
 		>();
 	};
 

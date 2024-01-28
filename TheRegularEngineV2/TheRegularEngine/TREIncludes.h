@@ -42,6 +42,7 @@
 #include "Graphics/AnimationComponent.h"
 #include "Graphics/ParticleComponent.h"
 #include "Graphics/TextComponent.h"
+#include "Graphics/Slideshow.h"
 
 //-----------------Scripting-----------------//
 #include "Scripting/ScriptComponent.h"

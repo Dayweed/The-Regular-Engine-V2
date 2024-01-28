@@ -332,7 +332,7 @@ namespace TRE
 		if (recalculateShadowFrustum)
 		{
 			std::cout << "Recalculating Shadow Frustum" << std::endl;
-			ShadowUBO UBO_Shadow;
+			ShadowUBO UBO_Shadow{};
 			glm::mat4 depthProjectionMatrix;
 			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
 			const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;

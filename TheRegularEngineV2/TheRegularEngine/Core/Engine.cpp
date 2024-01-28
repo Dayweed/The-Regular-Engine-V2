@@ -69,8 +69,8 @@ namespace TRE
 		}
 
 		GameLoop::Instance().Init();
-		RegisterECS();
 		Shader::SetupShaders();
+		RegisterECS();
 
 
 		//DemoScene();
@@ -104,6 +104,8 @@ namespace TRE
 		}
 		else
 			SceneManager::Instance().NewScene();
+
+		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	Engine::~Engine()
@@ -139,6 +141,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<ParticleComponent>("Particle Component");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<TextComponent>("Text Component");							// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<SlideshowComponent>("Slideshow Component");				// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();
