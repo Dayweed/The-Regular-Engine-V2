@@ -16,6 +16,32 @@ namespace TRE
 		return m_AvailableFonts;
 	}
 
+	void FontRenderer::CreateFontData(std::string FontType)
+	{
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::map<char, std::vector<FontVertex>> CharactersContainer;
+		std::vector<FontVertex> NewVertex(4);
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			NewVertex[0].Pos = glm::vec3(x, y, 0.0f);
+			NewVertex[0].UV = m_Characters[c].UV[0];
+
+			NewVertex[1].Pos = glm::vec3(x + width, y, 0.0f);
+			NewVertex[1].UV = m_Characters[c].UV[1];
+
+			NewVertex[2].Pos = glm::vec3(x + width, y + height, 0.0f);
+			NewVertex[2].UV = m_Characters[c].UV[2];
+
+			NewVertex[3].Pos = glm::vec3(x, y + height, 0.0f);
+			NewVertex[3].UV = m_Characters[c].UV[3];
+
+			CharactersContainer[c] = NewVertex;
+		}
+		
+		m_VertexData[FontType] = CharactersContainer;
+	}
+
 	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
@@ -42,22 +68,7 @@ namespace TRE
 		//Initialize a default font to render with
 		std::string FontType = GetFontType(m_DefaultFontFilepath);
 		CreateNewFontFace(m_DefaultFontFilepath, FontType);
-
-		float x = -1.f; float y = -1.f;
-		float width = 2, height = 2;
-		std::vector<FontVertex> data(4);
-
-		data[0].Pos = glm::vec3(x, y, 0.0f);
-		data[0].UV = m_Characters['r'].UV[3];
-
-		data[1].Pos = glm::vec3(x + width, y, 0.0f);
-		data[1].UV = m_Characters['r'].UV[2];
-
-		data[2].Pos = glm::vec3(x + width, y + height, 0.0f);
-		data[2].UV = m_Characters['r'].UV[1];
-
-		data[3].Pos = glm::vec3(x, y + height, 0.0f);
-		data[3].UV = m_Characters['r'].UV[0];
+		CreateFontData(FontType);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
@@ -65,8 +76,8 @@ namespace TRE
 			UINT32_T_CAST(sizeof(int) * indices.size()),
 			UINT32_T_CAST(indices.size()));
 
-		m_FontVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
-			UINT32_T_CAST(data.size() * sizeof(FontVertex)));
+		m_FontVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(m_VertexData[FontType]['h'].data()),
+			UINT32_T_CAST(m_VertexData[FontType]['h'].size() * sizeof(FontVertex)));
 	}
 
 	FontRenderer::~FontRenderer()
@@ -143,7 +154,7 @@ namespace TRE
 			{
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				{{xpos, ypos}, { xpos + w,  ypos }, { xpos + w,  0.f }, { xpos,  0.f }},
+				{{ xpos,  0.f }, { xpos + w,  0.f }, { xpos + w,  ypos }, {xpos, ypos} },
 				face->glyph->advance.x
 			};
 
@@ -164,7 +175,7 @@ namespace TRE
 	{
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 
-		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(static_cast<float>(SC->GetWidth()) / 2.f, static_cast<float>(SC->GetHeight()) / 2.f, 0.f)); //Translate by viewport width or height / 2
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(static_cast<float>(SC->GetWidth()) / 2.f, static_cast<float>(SC->GetHeight()) / 2.f, 0.f));
 		glm::mat4 TempProj = glm::ortho(0.f, static_cast<float>(SC->GetWidth()), 0.f, static_cast<float>(SC->GetHeight())) * TranslateToMid;
 
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();

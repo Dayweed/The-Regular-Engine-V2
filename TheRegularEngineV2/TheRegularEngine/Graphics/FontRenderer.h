@@ -48,6 +48,9 @@ namespace TRE
 			static std::vector<std::string>& GetLoadedFonts();
 
 		private:
+			void CreateFontData(std::string FontType);
+
+		private:
 			std::shared_ptr<Device> m_Device;
 
 		private:
@@ -61,6 +64,8 @@ namespace TRE
 
 			std::shared_ptr<VertexBuffer> m_FontVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
+
+			std::unordered_map<std::string, std::map<char, std::vector<FontVertex>>> m_VertexData; //Key = Font Type //Each FontType has a map characters, each characters have a vector of quad
 
 		private: //To be removed
 			std::shared_ptr<VulkanTexture> m_FontTexture;
