@@ -29,5 +29,22 @@ namespace TRE
 		return true;
 	}
 
+	bool ScriptComponent::RemoveScriptFromComponent(std::string _class)
+	{
+		//check if the script exists, if yes remove it
+		for(int i = 0; i < m_RegisteredScripts.size(); i++)
+		{
+			if(m_RegisteredScripts[i] == _class)
+			{
+				m_RegisteredScripts.erase(m_RegisteredScripts.begin() + i);
+				return true;
+			}
+		}
+
+		// if not return false
+		TRE_INFO("Script {0} does not exist in the script component", _class);
+		return false;
+	}
+
 
 }

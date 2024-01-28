@@ -22,6 +22,7 @@ namespace TRE
 		ScriptComponent(const std::string&);
 
 		bool AddScriptToComponent(std::string);
+		bool RemoveScriptFromComponent(std::string);
 
 
 		friend void to_json(nlohmann::json& j, const ScriptComponent& s) // Serialize
