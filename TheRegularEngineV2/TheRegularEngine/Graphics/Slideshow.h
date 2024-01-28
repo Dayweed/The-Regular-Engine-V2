@@ -9,14 +9,17 @@ namespace TRE
 	public:
 		SlideshowComponent();
 		void GenerateVertexBuffer();
+		std::shared_ptr<VertexBuffer> GetCurrentVertexBuffer();
+		int VertexContainerSize();
 
 	public:
 		int m_Slices = 1;
-		float m_Speed = 1.f;
+		int m_CurrentSlice = 0;
+		float m_AnimationDuration = 1.f;
+		float m_ElapsedTime = 0.f;
 
 	private:
 		std::vector<std::shared_ptr<VertexBuffer>> m_VertexBuffers;
-		int m_CurrentSlice = 0;
 
 	public:
 		property_vtable()
@@ -26,7 +29,7 @@ namespace TRE
 			j = nlohmann::json
 			{
 				{ "Slices", t.m_Slices },
-				{ "Speed", t.m_Speed }
+				{ "Animation Duration", t.m_AnimationDuration }
 			};
 		}
 
@@ -36,48 +39,22 @@ namespace TRE
 			{
 				t.m_Slices = j.at("Slices").get<int>();
 			}
-			if (j.contains("Speed"))
+			if (j.contains("Animation Duration"))
 			{
-				t.m_Speed = j.at("Speed").get<float>();
+				t.m_AnimationDuration = j.at("Animation Duration").get<float>();
 			}
 		}
+	};
+
+	class SlideshowSystem : public ECSSystem
+	{
+	public:
+		void LateUpdate() override;
 	};
 }
 
 property_begin(TRE::SlideshowComponent)
 {
-	/*property_var_fnbegin("Texture", resource_ref)
-	{
-		if (isRead)
-		{
-			if (Self.m_Texture)
-				InOut.m_Value = Self.m_Texture->GetHandle();
-			else
-				InOut.m_Value = 0;
-		}
-		else
-		{
-			if (InOut.m_Value)
-				Self.m_Texture = TRE::ResourceManager::Instance().GetResource<TRE::VulkanTexture>(InOut.m_Value);
-			else
-				Self.m_Texture = nullptr;
-		}
-
-	} property_var_fnend(),
-		property_var(m_IsVisible),
-		property_var_fnbegin("Color", Color)
-	{
-		if (isRead)
-		{
-			InOut.m_Value = Self.m_Color;
-		}
-		else
-		{
-			Self.m_Color = InOut.m_Value;
-		}
-	} property_var_fnend(),
-		property_var(m_Width),
-		property_var(m_Height),
-		property_var(m_RenderLayer)*/
-
+	property_var(m_Slices),
+	property_var(m_AnimationDuration).Name("Total Duration")
 } property_vend_h(TRE::SlideshowComponent)

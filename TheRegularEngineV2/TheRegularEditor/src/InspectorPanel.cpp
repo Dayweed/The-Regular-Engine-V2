@@ -407,6 +407,37 @@ namespace TRE
 												ImGui::SetItemDefaultFocus();
 										}
 									}
+									else if (Value.m_Type == "TEXTURE")
+									{
+										auto vec = AssetManager::Instance().GetAssetsOfType<VulkanTexture>();
+										std::ranges::sort(vec, [](const auto& texture1, const auto& texture2)
+											{
+												std::string texture1Name{ AssetManager::Instance().GetName(texture1->GetHandle()) };
+												for (char& ch : texture1Name)
+													ch = static_cast<char>(tolower(ch));
+
+												std::string texture2Name{ AssetManager::Instance().GetName(texture2->GetHandle()) };
+												for (char& ch : texture2Name)
+													ch = static_cast<char>(tolower(ch));
+
+												return texture1Name < texture2Name;
+											});
+
+										for (const auto& texture : vec)
+										{
+											ResourceHandle handle = texture->GetHandle();
+											std::string name = AssetManager::Instance().GetName(handle);
+											bool isSelected = (selected == name);
+											if (ImGui::Selectable(name.c_str(), isSelected))
+											{
+												selected = name;
+												Value.m_Value = handle;
+												break;
+											}
+											if (isSelected)
+												ImGui::SetItemDefaultFocus();
+										}
+									}
 									else
 									{
 
