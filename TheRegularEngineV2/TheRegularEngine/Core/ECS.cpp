@@ -46,12 +46,12 @@ namespace TRE
 	{
 #ifdef _DEBUG
 		// Do proper abadoning children and deletion if debug
-		for (auto& pair : m_EntityList)
-		{
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(pair.second);
-			MarkForDeletion(pair.second);
-		}
-		DeleteRemovalEntities();
+		//for (auto& pair : m_EntityList)
+		//{
+		//	ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(pair.second);
+		//	MarkForDeletion(pair.second);
+		//}
+		//DeleteRemovalEntities();
 #else
 		// Clear everything
 		m_EntityOrder.clear();

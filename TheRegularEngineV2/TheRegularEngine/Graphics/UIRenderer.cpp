@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
+#include "Slideshow.h"
 #include "Core/Logger.h"
 
 namespace TRE
@@ -152,11 +153,9 @@ namespace TRE
 			VkDeviceSize offsets[] = { 0 };
 			VkBuffer VB = VK_NULL_HANDLE;
 			//If slideshow
-			//if (true)
-			//{
-			//	VB = m_SlicedVertexBuffer->GetBuffer();
-			//}
-			//else
+			if (Entity->HasComponent<SlideshowComponent>())
+				VB = Entity->GetComponent<SlideshowComponent>().GetCurrentVertexBuffer()->GetBuffer();
+			else
 				VB = m_VertexBuffer->GetBuffer();
 				
 			vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);

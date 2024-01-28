@@ -311,7 +311,8 @@ namespace TRE
 		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
 
 		glm::mat4 depthViewMatrix(1.f);
-		const bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		recalculateShadowFrustum = true;
 		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
 			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
@@ -319,10 +320,13 @@ namespace TRE
 			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
 			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
 			ubo.m_LightAmbientColor = light.m_AmbientColor;
+			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
 
 			if (recalculateShadowFrustum)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
+				//RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1f));
+				m_ShadowRenderPoint.y = lightTransform.m_Position.y;
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
@@ -331,7 +335,6 @@ namespace TRE
 
 		if (recalculateShadowFrustum)
 		{
-			std::cout << "Recalculating Shadow Frustum" << std::endl;
 			ShadowUBO UBO_Shadow{};
 			glm::mat4 depthProjectionMatrix;
 			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;

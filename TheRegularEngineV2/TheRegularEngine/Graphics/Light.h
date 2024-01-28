@@ -12,6 +12,7 @@ namespace TRE
 		glm::vec3 m_Direction{ 1,-1,1 };
 		glm::vec4 m_DirectionalColor{ 1,1,1,1 }; ///RGB, A = Intensity
 		glm::vec4 m_AmbientColor{ 1,1,1,0.05 }; ///RGB, A = Intensity
+		float m_ShadowIntensity{ 0.85f }; //Shadow intensity
 
 		glm::vec3 GetUpVec() const;
 
@@ -29,7 +30,8 @@ namespace TRE
 			j = nlohmann::json{
 				{ "m_Direction", v_dir },
 				{ "m_DirectionalColor", v_directionalColor },
-				{ "m_AmbientColor", v_ambientColor }
+				{ "m_AmbientColor", v_ambientColor },
+				{ "m_ShadowIntensity", t.m_ShadowIntensity }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, DirectionalLight& t)
@@ -54,6 +56,9 @@ namespace TRE
 				float a_ambientColor[4]{ v_ambientColor[0], v_ambientColor[1], v_ambientColor[2], v_ambientColor[3] };
 				t.m_AmbientColor = glm::make_vec4(a_ambientColor);
 			}
+
+			if (j.contains("m_ShadowIntensity"))
+				t.m_ShadowIntensity = j.at("m_ShadowIntensity").get<float>();
 		}
 	};
 
@@ -112,6 +117,13 @@ property_begin(TRE::DirectionalLight)
 			InOut = Self.m_AmbientColor.w;
 		else
 			Self.m_AmbientColor.w = InOut;
+	}property_var_fnend()
+	, property_var_fnbegin("Shadow Intensity", float)
+	{
+		if (isRead)
+			InOut = Self.m_ShadowIntensity;
+		else
+			Self.m_ShadowIntensity = InOut;
 	}property_var_fnend()
 
 } property_vend_h(TRE::DirectionalLight)

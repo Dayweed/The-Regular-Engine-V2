@@ -80,7 +80,7 @@ namespace TRE
 		{
 #ifdef _DEBUG
 			// Properly abandon children
-			ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(object.second);
+			//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->AbandonChildren(object.second);
 #endif
 			// Release all components and entity itself
 			if (ECSManager::Instance().GetRegistry().valid(object.second->m_Entity))

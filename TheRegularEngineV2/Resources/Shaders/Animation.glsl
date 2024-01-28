@@ -24,6 +24,7 @@ layout(location = 0) out struct
 	vec4 DirectionalLightColor;
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
+	float ShadowIntensity;
 } Out;
 
 layout(set = 0, binding = 0) uniform UBO
@@ -36,6 +37,7 @@ layout(set = 0, binding = 0) uniform UBO
 	vec4 m_DirectionalLightDirection;
 	vec4 m_DirectionalLightColor;
 	vec4 m_AmbientLight;
+	float m_ShadowIntensity;
 } ubo;
 
 layout (set = 0, binding = 8) uniform UBOAnimation
@@ -83,6 +85,7 @@ void main()
 	Out.ShadowCoord = ubo.m_LightSpaceMatrix * push.m_Model * vec4(inPosition, 1.0);
 	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection;
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor;
+	Out.ShadowIntensity = ubo.m_ShadowIntensity;
 }
 
 
@@ -103,6 +106,7 @@ layout(location = 0) in struct
 	vec4 DirectionalLightColor;
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
+	float ShadowIntensity;
 } In;
 
 layout(location = 0) out vec4 outColor;
@@ -128,7 +132,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		float currentDepth = lightCoords.z;
 		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
 		
-		int sampleRadius = 2;
+		int sampleRadius = 4;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
 
 		for(int y = -sampleRadius; y <= sampleRadius; y++)
@@ -147,8 +151,16 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		shadow /= pow(float((sampleRadius * 2 + 1)), 2.0);
 	}
 
+	if(shadow < 0.05)
+	{
+		shadow = 0.0;
+	}
+	else
+	{
+		shadow = In.ShadowIntensity;
+		shadow *= 0.25;
+	}
 	shadow = clamp(shadow, 0.0, 1.0);
-	shadow -= 0.1;
 
 	return shadow;
 }
@@ -177,18 +189,17 @@ void main()
 	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0);
 
 	//Diffuse color
-	if(diffuseIntensity < 0.1)
+	if(dp <= 0.05)
 	{
 		shadow = 0.0;
 	}
-	shadow = 0.0;
 	diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
 	dp = smoothstep(0.1, 1.0, dp) * float(CelShadingLevels);
 	dp = ceil(dp) * CelScaleFactor;
-	diffuseIntensity = mix(diffuseIntensity, dp, 0.7);
-	const vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
-	const vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	outColor.rgb = ambient + (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
+	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
+	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
+	outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
