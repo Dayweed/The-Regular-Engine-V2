@@ -14,12 +14,14 @@ namespace TRE
 		bool m_IsDirty{ false };
 		bool m_RanStart{ false };
 
-		std::map<std::string, bool> m_RegisteredScripts;
+		std::vector<std::string> m_RegisteredScripts;
 
 		property_vtable() 
 
 		ScriptComponent()= default;
 		ScriptComponent(const std::string&);
+
+		bool AddScriptToComponent(std::string);
 
 
 		friend void to_json(nlohmann::json& j, const ScriptComponent& s) // Serialize
@@ -39,13 +41,6 @@ namespace TRE
 			s.m_IsDirty = true;
 		}
 
-	private:
-
-		std::string m_NameSpace;
-		std::string m_ClassName;
-
-		std::string ExtractNameSpace(const std::string&);
-		std::string ExtractClassName(const std::string&);
 
 	};
 }

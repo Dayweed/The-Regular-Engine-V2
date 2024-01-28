@@ -534,6 +534,8 @@ namespace TRE
 #pragma region Script Component
 					if (List.first == ComponentManager::Instance().GetComponentName<ScriptComponent>())
 					{
+						// here we will have a portion of the 
+						
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
 							// Displaying all the script data in the entity

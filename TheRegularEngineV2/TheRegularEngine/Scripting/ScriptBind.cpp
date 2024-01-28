@@ -1690,13 +1690,16 @@ namespace TRE
 		}
 		std::string classNameStr{ MonoStringToString(className) };
 
-		//find if there is a script with the same name under the registered scripts
-		if(Temp->GetComponent<ScriptComponent>().m_RegisteredScripts.find(classNameStr) == Temp->GetComponent<ScriptComponent>().m_RegisteredScripts.end())
+		for(auto i : Temp->GetComponent<ScriptComponent>().m_RegisteredScripts)
 		{
-			return false;
+			if (i == classNameStr)
+			{
+				TRE_CORE_INFO("Found script with name {0} in entity {1}", classNameStr, Temp->GetName());
+				return true;
+			}
 		}
 
-		return true;
+		return false;
 
 	}
 
@@ -1717,11 +1720,16 @@ namespace TRE
 
 		for (auto i : instances)
 		{
-			if (i->GetScriptClass()->GetScriptClassName() == classNameStr)
+			std::string temp ="TRE."+ i->GetScriptClass()->GetScriptClassName();
+			if (temp == classNameStr)
 			{
+				//TRE_CORE_INFO("Found script with name {0} in entity {1}", classNameStr, IDStr);
 				return i->GetScriptObject();
 			}
 		}
+
+		// Script is not found
+		TRE_CORE_WARN("Script with name {0} does not exist in entity {1}", classNameStr, IDStr);
 	}
 #pragma endregion
 

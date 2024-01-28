@@ -276,11 +276,21 @@ namespace TRE
 		for(auto i : m_ScriptEntities)
 		{
 			std::string temp = i->GetComponent<ScriptComponent>().m_StoredClass;
+			bool alreadyExists = false;
 
-			if(temp != "" && i->GetComponent<ScriptComponent>().m_RegisteredScripts.find(temp) == 
-				i->GetComponent<ScriptComponent>().m_RegisteredScripts.end())
+			//use a for loop to check if the item already exists
+			for(auto j : i->GetComponent<ScriptComponent>().m_RegisteredScripts)
 			{
-				i->GetComponent<ScriptComponent>().m_RegisteredScripts.insert({temp, false});
+				if (j == temp)
+				{
+					//TRE_CORE_INFO("Scripts that is not copied {0} since it already exists ", temp);
+					alreadyExists = true;
+				}
+			}
+
+			if(temp != "" && alreadyExists == false)
+			{
+				i->GetComponent<ScriptComponent>().m_RegisteredScripts.push_back(temp);
 				TRE_CORE_INFO("Scripts that is copied {0}", temp);
 				TRE_CORE_INFO("Number of Scripts that is copied {0}", i->GetComponent<ScriptComponent>().m_RegisteredScripts.size());
 			}

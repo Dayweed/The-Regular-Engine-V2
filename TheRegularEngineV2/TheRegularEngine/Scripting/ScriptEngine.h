@@ -214,6 +214,7 @@ namespace TRE
 		static void ReloadAssembly();
 
 		static void CreateCSEntityData(Entity e);
+		static void ResetAllEntityStatus();
 
 		static void InitScriptingMain();
 		static void UpdateScriptingMain();

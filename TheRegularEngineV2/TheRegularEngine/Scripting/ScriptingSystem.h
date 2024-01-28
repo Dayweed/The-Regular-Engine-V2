@@ -22,7 +22,7 @@ namespace TRE
 		void InitializeScriptableObjects();
 
 		// this is a temp function to copy all the scripts over to the new container
-		void CopyScriptsToNewContainer(); 
+		void CopyScriptsToNewContainer();
 
 		void UpdateScriptableObjects();
 		void CheckForNewScriptableObjects();

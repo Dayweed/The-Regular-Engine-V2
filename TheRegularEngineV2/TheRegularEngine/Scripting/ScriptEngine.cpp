@@ -175,6 +175,7 @@ namespace TRE
 		s_ScriptEngineData->MainClass = ScriptClass("TRE", "Entity", true);
 
 		s_ScriptEngineData->ScriptInstances.clear();
+		
 		for (Entity entity : ECSManager::Instance().GetEntities<ScriptComponent>(true))
 		{
 			CreateCSEntityData(entity);
@@ -251,6 +252,7 @@ namespace TRE
 	{
 		// clear the unordered map
 		s_ScriptEngineData->ScriptClasses.clear();
+		s_ScriptEngineData->RegisteredScriptClasses.clear();
 
 		// Change the CoreAssemblyImage to AppCoreAssemblyImage when project script and core script is separated.
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(s_ScriptEngineData->ProjectAssemblyImage , MONO_TABLE_TYPEDEF);
@@ -286,6 +288,8 @@ namespace TRE
 			TRE_CORE_INFO("Found class: {0}", className);
 			std::shared_ptr<ScriptClass> scriptClass = std::make_shared<ScriptClass>(nameSpace, name, false);
 			s_ScriptEngineData->ScriptClasses.insert(std::make_pair(className, scriptClass));
+			s_ScriptEngineData->RegisteredScriptClasses.push_back(className);
+
 
 			// Load fields of each of the classes that is not the entity class
 
@@ -305,6 +309,12 @@ namespace TRE
 				}
 			}
 			
+		}
+
+		//print out the classes in the registered script classes
+		for(auto i : s_ScriptEngineData->RegisteredScriptClasses)
+		{
+			TRE_CORE_INFO("Registered Script Classes: {0}", i);
 		}
 	}
 
@@ -371,61 +381,31 @@ namespace TRE
 			// check which scripts are not initialized and initialize them
 			for(auto i : scriptComponent.m_RegisteredScripts)
 			{
-				if(i.second == false)
+				if(EntityClassExists(i))
 				{
-					if(EntityClassExists(i.first))
+					std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[i], GUID);
+					instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
+					s_ScriptEngineData->ScriptInstances[GUID].emplace_back(instance);
+					if(s_ScriptEngineData->EntityFieldMap[GUID].find(i) == s_ScriptEngineData->EntityFieldMap[GUID].end())
 					{
-						std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[i.first], GUID);
-						instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
-						s_ScriptEngineData->ScriptInstances[GUID].emplace_back(instance);
-						if(s_ScriptEngineData->EntityFieldMap[GUID].find(i.first) == s_ScriptEngineData->EntityFieldMap[GUID].end())
+						// create the field map for the entity
+						ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID][i];
+						const auto& fields{ instance->GetScriptClass()->GetFields() };
+						for (const auto& [name, field] : fields)
 						{
-							// create the field map for the entity
-							ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID][i.first];
-							const auto& fields{ instance->GetScriptClass()->GetFields() };
-							for (const auto& [name, field] : fields)
-							{
-								fieldMap[name].m_Field.m_Name = name;
-								fieldMap[name].m_Field.m_Type = field.m_Type;
-							}
-						}
-						else
-						{
-							std::string function{ __FUNCTION__ };
-							TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
-							continue;
+							fieldMap[name].m_Field.m_Name = name;
+							fieldMap[name].m_Field.m_Type = field.m_Type;
 						}
 					}
-					// set the script to be initialized
-					i.second = true;
-				} 
+					else
+					{
+						std::string function{ __FUNCTION__ };
+						TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
+						continue;
+					}
+				}
 			}
 		}
-
-
-		/*if (EntityClassExists(scriptComponent.m_StoredClass))
-		{
-			std::string GUID = entity->GetGUID();
-
-			if (s_ScriptEngineData->ScriptInstances.find(GUID) != s_ScriptEngineData->ScriptInstances.end())
-			{
-				std::string function{ __FUNCTION__ };
-				TRE_CORE_WARN("[" + function + "] Found Entity " + entity->GetName() + " in s_ScriptEngineData->ScriptInstances!\n");
-				return;
-			}
-			std::shared_ptr<ScriptInstance> instance = std::make_shared<ScriptInstance>(s_ScriptEngineData->ScriptClasses[scriptComponent.m_StoredClass], GUID);
-			instance->m_GCHandle = mono_gchandle_new(instance->m_Instance, true);
-			s_ScriptEngineData->ScriptInstances[GUID].emplace_back(instance);
-
-			ScriptFieldMap& fieldMap = s_ScriptEngineData->EntityFieldMap[GUID];
-
-			const auto& fields{ instance->GetScriptClass()->GetFields() };
-			for (const auto& [name, field] : fields)
-			{
-				fieldMap[name].m_Field.m_Name = name;
-				fieldMap[name].m_Field.m_Type = field.m_Type;
-			}
-		}*/
 	}
 
 	void ScriptEngine::InitScriptingMain()
@@ -594,6 +574,8 @@ namespace TRE
 			TRE_CORE_ERROR("[" + function + "] Cannot find ScriptInstance for entity {}", e->GetName());
 		}
 	}
+
+	
 
 	void ScriptEngine::OnTriggerEnter(Entity e, Entity other)
 	{
