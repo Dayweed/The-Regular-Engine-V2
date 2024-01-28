@@ -108,17 +108,18 @@ namespace TRE
 	void MaterialPanel::Rename(std::shared_ptr<Material> material)
 	{
 		static char materialName[256];
-		m_Name = AssetManager::Instance().GetName(material->GetHandle());
-		m_Name = m_Name.substr(0, m_Name.find_last_of('.'));
-		strcpy_s(materialName, m_Name.c_str());
-		m_Name = materialName;
-		m_Name += ".material";
+		std::string tempName = AssetManager::Instance().GetName(material->GetHandle());
+		tempName = tempName.substr(0, m_Name.find_last_of('.'));
+		strcpy_s(materialName, tempName.c_str());
+		
 		ImGui::Text("Material Name");
 		if (ImGui::InputText("##MaterialName", materialName, sizeof(materialName)))
 		{
 			//Rename asset
 			if (m_EnterPressed)
 			{
+				m_Name = materialName;
+				m_Name += ".material";
 				AssetManager::Instance().RenameAsset(material->GetHandle(), m_Name);
 				m_AssetSelector->SelectAsset(m_Name, AssetSelectorEvent::AssetType::Material);
 			}
