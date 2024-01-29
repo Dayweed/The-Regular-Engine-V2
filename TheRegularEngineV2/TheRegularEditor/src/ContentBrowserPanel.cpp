@@ -324,7 +324,10 @@ namespace TRE
 								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
 								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
 								Entity prefabInstance = prefabsystem->DisplayPrefabInNewScene(prefabGUID);
-								m_SelectionManager->SelectEntity(prefabInstance);
+								if (prefabInstance != nullptr)
+								{
+									m_SelectionManager->SelectEntity(prefabInstance);
+								}
 							}
 						}
 						else if (item.m_ResourceType == "m_Scene")
