@@ -28,14 +28,14 @@
       0,
       {
          "m_Children": [
-            "4904662332731004175"
+            "1778974190903405465"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "3858503632863994244"
+         "m_Parent": "489885819194562330"
       }
    ],
    [
@@ -43,7 +43,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "3858503632863994244",
+         "m_GUID": "489885819194562330",
          "m_Index": 248,
          "m_Name": "Pinata",
          "m_Tag": ""
@@ -51,7 +51,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "4904662332731004175",
+         "m_GUID": "1778974190903405465",
          "m_Index": 249,
          "m_Name": "Detector",
          "m_Tag": ""
@@ -175,8 +175,14 @@
       1,
       0,
       {
+         "m_RegisteredScripts": [
+            "TRE.SimpleAI"
+         ],
          "m_StoredClass": "TRE.SimpleAI"
       }
+   ],
+   [
+      0
    ],
    [
       0
