@@ -807,7 +807,7 @@ namespace TRE
 						//the green part is to make the button bigger
 						if (ImGui::Button("Reload"/*, ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(*/))
 						{
-
+							ScriptEngine::RecompileScripts();
 						}
 					}
 #pragma endregion
