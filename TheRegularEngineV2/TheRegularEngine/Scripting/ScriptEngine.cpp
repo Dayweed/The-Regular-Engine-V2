@@ -494,27 +494,17 @@ namespace TRE
 
 	void ScriptEngine::OnCreateEntity(Entity entity)
 	{
-		const auto& scriptComponent = entity->GetComponent<ScriptComponent>();
+		
+		std::string GUID = entity->GetGUID();
 
-		if(EntityClassExists(scriptComponent.m_StoredClass))
+		if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
 		{
-			std::string GUID = entity->GetGUID();
-
-			if (s_ScriptEngineData->ScriptInstances.find(GUID) == s_ScriptEngineData->ScriptInstances.end())
-			{
-				CreateCSEntityData(entity);
-			}
-
-			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
-			{
-				t->OnCreateInvoke();
-			}
-			
+			CreateCSEntityData(entity);
 		}
-		else
+
+		for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 		{
-			std::string function{ __FUNCTION__ };
-			TRE_CORE_ERROR("[" + function + "] Cannot find EntityClass for entity {}", entity->GetName());
+			t->OnCreateInvoke();
 		}
 	}
 

@@ -38,7 +38,7 @@ namespace TRE
 		{
 			
 			s.m_StoredClass = j.at("m_StoredClass").get<std::string>();
-			//s.m_RegisteredScripts = j.at("m_RegisteredScripts").get<std::map<std::string, bool>>();
+			s.m_RegisteredScripts = j.at("m_RegisteredScripts").get<std::vector<std::string>>();
 			s.m_IsDirty = true;
 		}
 
@@ -48,6 +48,13 @@ namespace TRE
 
 property_begin(TRE::ScriptComponent)
 {
-	property_var(m_StoredClass)
+	property_var_fnbegin("Stored Class", std::string)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_StoredClass;
+		}
+
+	} property_var_fnend(),
 
 } property_vend_h(TRE::ScriptComponent)

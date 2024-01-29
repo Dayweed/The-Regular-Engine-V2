@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "4239656665369945922",
-            "11720505264336094968"
+            "11975759477026021857",
+            "1452400649214932687"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "13984256800886543801"
+         "m_Parent": "3193244966318519924"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "13984256800886543801"
+         "m_Parent": "3193244966318519924"
       }
    ],
    [
@@ -58,21 +58,24 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "13984256800886543801",
+         "m_GUID": "3193244966318519924",
+         "m_Index": 0,
          "m_Name": "TriggerDisplay",
          "m_Tag": ""
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "4239656665369945922",
+         "m_GUID": "11975759477026021857",
+         "m_Index": 0,
          "m_Name": "Trigger_1",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "11720505264336094968",
+         "m_GUID": "1452400649214932687",
+         "m_Index": 0,
          "m_Name": "Trigger_2",
          "m_Tag": ""
       }
@@ -139,6 +142,7 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       }
@@ -156,31 +160,37 @@
       2,
       1,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             2.0,
             5.0
          ],
+         "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
             0.0,
             0.0
-         ]
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
       },
       2,
       {
+         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             2.0,
             2.0,
             5.0
          ],
+         "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
             0.0,
             0.0
-         ]
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
       }
    ],
    [
@@ -199,16 +209,37 @@
       3,
       0,
       {
+         "m_RegisteredScripts": [
+            "TRE.HoleCheckDisplay"
+         ],
          "m_StoredClass": "TRE.HoleCheckDisplay"
       },
       1,
       {
+         "m_RegisteredScripts": [
+            "TRE.HoleCheckTrigger"
+         ],
          "m_StoredClass": "TRE.HoleCheckTrigger"
       },
       2,
       {
+         "m_RegisteredScripts": [
+            "TRE.HoleCheckTrigger"
+         ],
          "m_StoredClass": "TRE.HoleCheckTrigger"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

@@ -17,7 +17,7 @@ namespace TRE
 		m_IsRunning = true;
 		m_ScriptableUpdate = true;
 
-		CopyScriptsToNewContainer();
+		//CopyScriptsToNewContainer();
 
 		EventHandler::getEventHandlerInstance().subscribe(this, &ScriptingSystem::CallRecompile);
 	}
@@ -32,7 +32,7 @@ namespace TRE
 		CheckForNewScriptableObjects();
 		UpdateScriptableObjects();
 		//ScriptEngine::UpdateScriptingMain();
-		CopyScriptsToNewContainer();
+		//CopyScriptsToNewContainer();
 	}
 
 	void ScriptingSystem::GameUpdate()
