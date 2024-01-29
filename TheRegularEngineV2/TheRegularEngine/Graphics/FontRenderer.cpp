@@ -7,8 +7,11 @@
 #include "Core/ECS.h"
 #include "Core/Transform.h"
 
+#define FONT_FILEDIRECTORY 
+
 namespace TRE
 {
+	FontRenderer* FontRenderer::s_Instance = nullptr;
 	std::vector<std::string> FontRenderer::m_AvailableFonts{};
 
 	std::vector<std::string>& FontRenderer::GetLoadedFonts()
@@ -25,16 +28,16 @@ namespace TRE
 		for (unsigned char c = 0; c < 128; c++)
 		{
 			NewVertex[0].Pos = glm::vec3(x, y, 0.0f);
-			NewVertex[0].UV = m_Characters[c].UV[0];
+			NewVertex[0].UV = m_Characters[FontType][c].UV[0];
 
 			NewVertex[1].Pos = glm::vec3(x + width, y, 0.0f);
-			NewVertex[1].UV = m_Characters[c].UV[1];
+			NewVertex[1].UV = m_Characters[FontType][c].UV[1];
 
 			NewVertex[2].Pos = glm::vec3(x + width, y + height, 0.0f);
-			NewVertex[2].UV = m_Characters[c].UV[2];
+			NewVertex[2].UV = m_Characters[FontType][c].UV[2];
 
 			NewVertex[3].Pos = glm::vec3(x, y + height, 0.0f);
-			NewVertex[3].UV = m_Characters[c].UV[3];
+			NewVertex[3].UV = m_Characters[FontType][c].UV[3];
 			
 			m_VertexData[FontType][c] = std::make_shared<VertexBuffer>(static_cast<void*>(NewVertex.data()),
 				UINT32_T_CAST(NewVertex.size() * sizeof(FontVertex)));
@@ -43,6 +46,8 @@ namespace TRE
 
 	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
+		s_Instance = this;
+
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -61,17 +66,20 @@ namespace TRE
 		FontPipeConfig.Shader = ResourceManager::Instance().GetResource<Shader>(11);
 		m_FontPipeline = std::make_shared<Pipeline>(FontPipeConfig, m_FontRenderPass);
 
-		m_FontMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(11));
-		m_FontMaterial->Invalidate();
-
 		//Initialize a default font to render with
 		std::string FontType = GetFontType(m_DefaultFontFilepath);
 		CreateNewFontFace(m_DefaultFontFilepath, FontType);
 		CreateFontData(FontType);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
-
 		m_FontIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()), UINT32_T_CAST(sizeof(int) * indices.size()), UINT32_T_CAST(indices.size()));
+	}
+
+	void FontRenderer::LoadFont(std::string FilePath)
+	{
+		std::string FontType = FontRenderer::GetInstance()->GetFontType(FilePath);
+		FontRenderer::GetInstance()->CreateNewFontFace(FilePath, FontType);
+		FontRenderer::GetInstance()->CreateFontData(FontType);
 	}
 
 	FontRenderer::~FontRenderer()
@@ -114,13 +122,16 @@ namespace TRE
 
 		uint8_t* data = new uint8_t[width * height * 4];
 
+		std::unordered_map<char, Character> LetterStorage;
 		std::vector<uint8_t> Buffer(48);
 		int x = 0;
 		int offset = 0;
 		for (unsigned char c = 0; c < 128; c++)
 		{
-			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 			{
+				TRE_CORE_WARN("Unable to load Char");
+				continue;
 				assert(false && "Unable to load Char");
 			}
 
@@ -152,13 +163,17 @@ namespace TRE
 				face->glyph->advance.x
 			};
 
-			m_Characters.insert(std::pair<char, Character>(c, character));
+			LetterStorage[c] = character;
 
 			x += static_cast<int>(face->glyph->bitmap.width);
 		}
 
-		m_FontTexture = std::make_shared<VulkanTexture>(data, width * height * 4, width, height);
-		m_FontMaterial->SetTexture("FontTexture", m_FontTexture);
+		m_Characters[FontType] = LetterStorage;
+		m_FontTexture[FontType] = std::make_shared<VulkanTexture>(data, width * height * 4, width, height);
+		
+		m_FontMaterial[FontType] = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(11));
+		m_FontMaterial[FontType]->Invalidate();
+		m_FontMaterial[FontType]->SetTexture("FontTexture", m_FontTexture[FontType]);
 
 		delete[] data;
 		FT_Done_Face(face);
@@ -197,7 +212,11 @@ namespace TRE
 		vkCmdSetScissor(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		Renderer::BindPipeline(CommandBuffer, m_FontPipeline);
-		m_FontMaterial->UpdateForRendering(nullptr, Index);
+		for (const auto& FontType : m_AvailableFonts)
+		{
+			m_FontMaterial[FontType]->UpdateForRendering(nullptr, Index);
+		}
+
 		for (auto Entity : ECSManager::Instance().GetEntities<TextComponent>())
 		{
 			auto& TextComp = Entity->GetComponent<TextComponent>();
@@ -207,8 +226,8 @@ namespace TRE
 			float offset = 0.f;
 			for (auto Letter : TextComp.m_TextContent)
 			{
-				float textwidth = (m_Characters[Letter].Advance >> 6) / 48.f;
-				glm::vec2 fontscale = glm::vec2(m_Characters[Letter].Size.x / 48.f, m_Characters[Letter].Size.y / 48.f);
+				float textwidth = (m_Characters[TextComp.m_FontType][Letter].Advance >> 6) / 48.f;
+				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontType][Letter].Size.x / 48.f, m_Characters[TextComp.m_FontType][Letter].Size.y / 48.f);
 				offset += textwidth;
 
 				Font_PushConstant pc{};
@@ -218,7 +237,7 @@ namespace TRE
 
 				
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
-				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial[TextComp.m_FontType]->GetDescriptor(Index), 0, NULL);
 
 				VkDeviceSize offsets[] = { 0 };
 				auto VB = m_VertexData[TextComp.m_FontType][Letter]->GetBuffer();

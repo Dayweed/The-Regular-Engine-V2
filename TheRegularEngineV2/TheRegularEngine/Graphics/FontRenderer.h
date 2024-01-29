@@ -45,7 +45,13 @@ namespace TRE
 
 			void RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
 
+
+			static void LoadFont(std::string FilePath);
 			static std::vector<std::string>& GetLoadedFonts();
+			static FontRenderer* GetInstance()
+			{
+				return s_Instance;
+			}
 
 		private:
 			void CreateFontData(std::string FontType);
@@ -55,20 +61,23 @@ namespace TRE
 
 		private:
 			static std::vector<std::string> m_AvailableFonts;
-			std::unordered_map<char, Character> m_Characters{}; //Per Font Type
+			std::unordered_map<std::string, std::unordered_map<char, Character>> m_Characters{}; //Per Font Type
 
-			std::string m_DefaultFontFilepath = "../Resources/Fonts/arial.ttf";
+			std::string m_DefaultFontFilepath = "../Assets/Font/arial.ttf";
 
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
 
-			std::shared_ptr<VertexBuffer> m_FontVertexBuffer;
+			std::unordered_map<std::string, std::map<char, std::shared_ptr<VertexBuffer>>> m_VertexData; //Key = Font Type //Each FontType has a map characters, each characters have a vector of quad
 			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
 
-			std::unordered_map<std::string, std::map<char, std::shared_ptr<VertexBuffer>>> m_VertexData; //Key = Font Type //Each FontType has a map characters, each characters have a vector of quad
+		private:
+			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_FontTexture;
+			std::unordered_map<std::string, std::shared_ptr<Material>> m_FontMaterial;
 
-		private: //To be removed
-			std::shared_ptr<VulkanTexture> m_FontTexture;
-			std::shared_ptr<Material> m_FontMaterial;
+			static FontRenderer* s_Instance;
+
+			FontRenderer(FontRenderer&) = delete;
+			void operator=(const FontRenderer&) = delete;
 	};
 }

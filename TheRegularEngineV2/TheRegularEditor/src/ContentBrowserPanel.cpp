@@ -96,18 +96,18 @@ namespace TRE
 				newAsset.m_TextureID = isMaterial						? m_MaterialIconID : newAsset.m_TextureID;
 				newAsset.m_TextureID = isScript							? m_CSScriptIconID : newAsset.m_TextureID;
 
-				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj || isMaterial || isScript)
+				if (isImage || isAudio || isShader || isScene || isPrefab || isFont || is3DObj || isMaterial || isScript || isFont)
 				{
 					//Allow Dragging of these file types
 					newAsset.m_ResourceType = isImage		? "m_TextureResource" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isAudio		? "m_AudioResource" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isShader		? "m_ShaderResource" : newAsset.m_ResourceType;
-					newAsset.m_ResourceType = isFont		? "m_FontResource" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isScene		? "m_Scene" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isPrefab		? "m_Prefab" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = is3DObj		? "m_3DObject" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isMaterial	? "m_Material" : newAsset.m_ResourceType;
 					newAsset.m_ResourceType = isScript		? "m_Script" : newAsset.m_ResourceType;
+					newAsset.m_ResourceType = isFont		? "m_Font" : newAsset.m_ResourceType;
 				}
 
 				if (isMaterial)

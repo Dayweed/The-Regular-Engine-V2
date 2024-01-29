@@ -598,6 +598,29 @@ namespace TRE
 
 									ImGui::EndCombo();
 								}
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Font"))
+									{
+										std::string assetName = (const char*)payload->Data;
+										assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+										assetName.erase(assetName.find(".ttf")); 	// This is to remove unneeded data at the end after ".fbx"
+										assetName += ".ttf";
+										
+										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Assets/Font/" + assetName;
+										
+										//Load Font here
+										FontRenderer::LoadFont(FilePath);
+
+										Value.m_Value = FilePath;
+									}
+									else
+									{
+										TRE_CORE_ERROR("Failed to get drag drop font");
+									}
+									ImGui::EndDragDropTarget();
+								}
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
 						}
