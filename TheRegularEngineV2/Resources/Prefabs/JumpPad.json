@@ -27,8 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "9213833045821806306",
-         "m_Index": 0,
+         "m_GUID": "14833618419152447917",
          "m_Name": "JumpPad",
          "m_Tag": "JumpPad"
       }
@@ -59,7 +58,6 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
-         "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
@@ -77,20 +75,17 @@
       1,
       0,
       {
-         "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             6.199999809265137,
             1.0,
             6.199999809265137
          ],
-         "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
             0.20000000298023224,
             0.0
-         ],
-         "m_PhysicsMaterial.m_MaterialID": 0
+         ]
       }
    ],
    [
@@ -109,23 +104,8 @@
       1,
       0,
       {
-         "m_RegisteredScripts": [
-            "TRE.JumpPad"
-         ],
          "m_StoredClass": "TRE.JumpPad"
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       0

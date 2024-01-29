@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "17517191209797491087",
-            "1392412717281695431"
+            "3300270754760836079",
+            "7655364354395628792"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "8656424112323697566"
+         "m_Parent": "9807111944178381151"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "8656424112323697566"
+         "m_Parent": "9807111944178381151"
       }
    ],
    [
@@ -58,7 +58,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "8656424112323697566",
+         "m_GUID": "9807111944178381151",
          "m_Index": 163,
          "m_Name": "Holey",
          "m_Tag": "Blue"
@@ -66,7 +66,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "17517191209797491087",
+         "m_GUID": "3300270754760836079",
          "m_Index": 164,
          "m_Name": "Power Manager",
          "m_Tag": ""
@@ -74,7 +74,7 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "1392412717281695431",
+         "m_GUID": "7655364354395628792",
          "m_Index": 5,
          "m_Name": "Slippery Body",
          "m_Tag": ""
@@ -178,6 +178,7 @@
       0,
       {
          "m_CollisionLayer.m_LayerID": 1,
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfHeight": 1.0,
          "m_IsActive": true,
          "m_IsTrigger": false,
@@ -186,12 +187,12 @@
             0.0,
             0.0
          ],
-         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_Radius": 2.0
       },
       2,
       {
          "m_CollisionLayer.m_LayerID": 5,
+         "m_PhysicsMaterial.m_MaterialID": 1,
          "m_HalfHeight": 0.800000011920929,
          "m_IsActive": true,
          "m_IsTrigger": false,
@@ -200,7 +201,6 @@
             0.0,
             0.0
          ],
-         "m_PhysicsMaterial.m_MaterialID": 1,
          "m_Radius": 2.200000047683716
       }
    ],
@@ -217,27 +217,12 @@
       2,
       0,
       {
-         "m_RegisteredScripts": [
-            "TRE.HoleyController"
-         ],
          "m_StoredClass": "TRE.HoleyController"
       },
       1,
       {
-         "m_RegisteredScripts": [
-            "TRE.PowerUpManager"
-         ],
          "m_StoredClass": "TRE.PowerUpManager"
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       0

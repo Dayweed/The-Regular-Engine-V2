@@ -1,8 +1,5 @@
 #include "pch.h"
 #include "ScriptComponent.h"
-
-#include <cmath>
-
 #include "ScriptEngine.h"
 
 
@@ -13,70 +10,27 @@ namespace TRE
 		// Split the string
 		m_StoredClass = _class;
 
+		// Since we want users to type in with the format of {namespace}.{classname} , we will split the string by
+		// the dot and store it separately
+		m_NameSpace = ExtractNameSpace(_class);
+		m_ClassName = ExtractClassName(_class);
+
 	}
 
-	bool ScriptComponent::AddScriptToComponent(std::string _class)
+	std::string ScriptComponent::ExtractNameSpace(const std::string& _class)
 	{
-		//check if the script is already added
-		for(auto i : m_RegisteredScripts)
-		{
-			if(i == _class)
-			{
-				TRE_INFO("Script {0} already exists in the script component", _class);
-				return false;
-			}
-		}
-
-		// add in the script
-		m_RegisteredScripts.push_back(_class);
-		// update the m_storedClass
-		m_StoredClass = "";
-		for(auto j: m_RegisteredScripts)
-		{
-			if(j == m_RegisteredScripts.back())
-			{
-				m_StoredClass += j;
-			}
-			else
-			{
-				m_StoredClass += j + ",";
-			}
-		}
-
-		TRE_INFO("Script {0} added to the script component", _class);
-
-		return true;
+		// Split the string, take the first part
+		std::string delimiter = ".";
+		std::string token = _class.substr(0, _class.find(delimiter));
+		return token;
 	}
 
-	bool ScriptComponent::RemoveScriptFromComponent(std::string _class)
+	std::string ScriptComponent::ExtractClassName(const std::string& _class)
 	{
-		//check if the script exists, if yes remove it
-		for(int i = 0; i < m_RegisteredScripts.size(); i++)
-		{
-			if(m_RegisteredScripts[i] == _class)
-			{
-				m_RegisteredScripts.erase(m_RegisteredScripts.begin() + i);
-
-				m_StoredClass = "";
-				for(auto j: m_RegisteredScripts)
-				{
-					if(j == m_RegisteredScripts.back())
-					{
-						m_StoredClass += j;
-					}
-					else
-					{
-						m_StoredClass += j + ",";
-					}
-				}
-
-				return true;
-			}
-		}
-
-		// if not return false
-		TRE_INFO("Script {0} does not exist in the script component", _class);
-		return false;
+		std::string delimiter = ".";
+		std::string temp = _class;
+		temp.erase(0, temp.find(delimiter) + delimiter.length());
+		return temp;
 	}
 
 

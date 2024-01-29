@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "13647411563928873760",
+         "m_GUID": "13274126784880512786",
          "m_Index": 161,
          "m_Name": "Moley's Head Collider",
          "m_Tag": "RedCollider"
@@ -82,8 +82,7 @@
             0.0,
             0.0,
             0.0
-         ],
-         "m_PhysicsMaterial.m_MaterialID": 0
+         ]
       }
    ],
    [
@@ -102,20 +101,8 @@
       1,
       0,
       {
-         "m_RegisteredScripts": [
-            "TRE.PlayerHeadCollider"
-         ],
          "m_StoredClass": "TRE.PlayerHeadCollider"
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       0

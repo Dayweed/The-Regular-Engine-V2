@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "17224452687217734564",
+         "m_GUID": "14356347856875235637",
          "m_Index": 52,
          "m_Name": "Holey's Head Collider",
          "m_Tag": "BlueCollider"
@@ -82,8 +82,7 @@
             0.0,
             0.0,
             0.0
-         ],
-         "m_PhysicsMaterial.m_MaterialID": 0
+         ]
       }
    ],
    [
@@ -102,20 +101,8 @@
       1,
       0,
       {
-         "m_RegisteredScripts": [
-            "TRE.PlayerHeadCollider"
-         ],
          "m_StoredClass": "TRE.PlayerHeadCollider"
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       0

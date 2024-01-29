@@ -555,7 +555,6 @@ namespace TRE
 		{
 			// Found the name
 			std::string ID = sceneObjects[temp];
-			TRE_CORE_INFO("{0} : {1}", temp, ID );
 			return EntityID_EngineToCS(ID);
 		}
 		else
@@ -1746,7 +1745,6 @@ namespace TRE
 		return classes.find(classNameStr) != classes.end();
 	}
 
-	// redo this code to allow for the searching of the script instance
 	static bool BindHaveScript(CSEntityID ID, MonoString* className)
 	{
 		Entity Temp{ VALIDATEENTITY(ID) };
@@ -1760,46 +1758,19 @@ namespace TRE
 		}
 		std::string classNameStr{ MonoStringToString(className) };
 
-		for(auto i : Temp->GetComponent<ScriptComponent>().m_RegisteredScripts)
-		{
-			if (i == classNameStr)
-			{
-				TRE_CORE_INFO("Found script with name {0} in entity {1}", classNameStr, Temp->GetName());
-				return true;
-			}
-		}
-
-		return false;
-
+		return Temp->GetComponent<ScriptComponent>().m_StoredClass == classNameStr;
 	}
 
 	static MonoObject* BindGetScript(CSEntityID ID, MonoString* className)
 	{
-		if (!BindHaveScript(ID, className))
-		{
-			std::string error{  };
-			error = "ID " + std::to_string(ID) + " does not have script " + MonoStringToString(className);
-			PUBLISHERROR(error.c_str());
-			return NULL;
-		}
+		if (!BindHaveScript(ID, className)) return NULL;
 
 		std::string IDStr{ EntityID_CSToEngine(ID) };
 		std::string classNameStr{ MonoStringToString(className) };
-			
-		auto instances = ScriptEngine::GetAllEntityScripts(IDStr);
 
-		for (auto i : instances)
-		{
-			std::string temp ="TRE."+ i->GetScriptClass()->GetScriptClassName();
-			if (temp == classNameStr)
-			{
-				//TRE_CORE_INFO("Found script with name {0} in entity {1}", classNameStr, IDStr);
-				return i->GetScriptObject();
-			}
-		}
+		auto instances{ ScriptEngine::s_ScriptEngineData->ScriptInstances };
 
-		// Script is not found
-		TRE_CORE_WARN("Script with name {0} does not exist in entity {1}", classNameStr, IDStr);
+		return instances[IDStr]->GetScriptObject();
 	}
 #pragma endregion
 

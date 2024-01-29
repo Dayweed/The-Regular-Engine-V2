@@ -21,9 +21,6 @@ namespace TRE
 		void RemoveScriptableObject(Entity entity);
 		void InitializeScriptableObjects();
 
-		// this is a temp function to copy all the scripts over to the new container
-		void CopyScriptsToNewContainer();
-
 		void UpdateScriptableObjects();
 		void CheckForNewScriptableObjects();
 		void CallRecompile(const ToggleRunEvent&);
@@ -38,4 +35,3 @@ namespace TRE
 		bool m_IsRunning;
 	};
 }
- 

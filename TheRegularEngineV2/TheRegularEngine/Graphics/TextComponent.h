@@ -9,9 +9,9 @@ namespace TRE
 	{
 	public:
 		bool m_IsVisible = false;
-		std::string m_TextContent = "Text";
-		glm::vec4 m_Color = { 0.f, 0.f, 0.f, 1.f };
-		std::string m_FontType = "arial";
+		std::string m_TextContent;
+		glm::vec4 m_Color;
+		std::string m_FontType;
 
 
 		property_vtable()

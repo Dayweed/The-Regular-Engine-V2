@@ -27,8 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "4230666922612045814",
-         "m_Index": 0,
+         "m_GUID": "5168006195789158554",
          "m_Name": "PowerUpSpawner",
          "m_Tag": ""
       }
@@ -59,7 +58,6 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
-         "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_IsVisible": true
       }
@@ -92,23 +90,8 @@
       1,
       0,
       {
-         "m_RegisteredScripts": [
-            "TRE.PowerUpSpawner"
-         ],
          "m_StoredClass": "TRE.PowerUpSpawner"
       }
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      0
    ],
    [
       0

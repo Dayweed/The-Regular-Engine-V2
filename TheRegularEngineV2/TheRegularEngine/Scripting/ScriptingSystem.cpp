@@ -17,8 +17,6 @@ namespace TRE
 		m_IsRunning = true;
 		m_ScriptableUpdate = true;
 
-		//CopyScriptsToNewContainer();
-
 		EventHandler::getEventHandlerInstance().subscribe(this, &ScriptingSystem::CallRecompile);
 	}
 
@@ -32,7 +30,6 @@ namespace TRE
 		CheckForNewScriptableObjects();
 		UpdateScriptableObjects();
 		//ScriptEngine::UpdateScriptingMain();
-		//CopyScriptsToNewContainer();
 	}
 
 	void ScriptingSystem::GameUpdate()
@@ -217,6 +214,8 @@ namespace TRE
 
 		m_ScriptEntities.clear();
 		m_ScriptEntities = ECSManager::Instance().GetEntities<ScriptComponent>(true);
+
+
 	}
 
 	void ScriptingSystem::RemoveScriptableObject(Entity entity)
@@ -268,37 +267,6 @@ namespace TRE
 		//		}
 		//	}
 		//}
-	}
-
-	//Scripting system porting
-	void ScriptingSystem::CopyScriptsToNewContainer()
-	{
-		for(auto i : m_ScriptEntities)
-		{
-			std::string temp = i->GetComponent<ScriptComponent>().m_StoredClass;
-			bool alreadyExists = false;
-
-			//use a for loop to check if the item already exists
-			for(auto j : i->GetComponent<ScriptComponent>().m_RegisteredScripts)
-			{
-				if (j == temp)
-				{
-					//TRE_CORE_INFO("Scripts that is not copied {0} since it already exists ", temp);
-					alreadyExists = true;
-				}
-			}
-
-			if(temp != "" && alreadyExists == false)
-			{
-				i->GetComponent<ScriptComponent>().m_RegisteredScripts.push_back(temp);
-				TRE_CORE_INFO("Scripts that is copied {0}", temp);
-				TRE_CORE_INFO("Number of Scripts that is copied {0}", i->GetComponent<ScriptComponent>().m_RegisteredScripts.size());
-			}
-			else
-			{
-				//TRE_CORE_INFO("Scripts that is not copied {0} since it already exists ", temp);
-			}
-		}
 	}
 
 	void ScriptingSystem::CallRecompile(const ToggleRunEvent& event)

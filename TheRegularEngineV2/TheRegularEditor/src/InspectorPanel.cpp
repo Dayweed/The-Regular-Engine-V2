@@ -625,189 +625,126 @@ namespace TRE
 #pragma region Script Component
 					if (List.first == ComponentManager::Instance().GetComponentName<ScriptComponent>())
 					{
-						// here we will have a portion of the
-
-						if(ImGui::Button("Add Script"))
-						{
-							ImGui::OpenPopup("AddScript");
-						}
-
-						if(ImGui::Button("Remove Script"))
-						{
-							ImGui::OpenPopup("RemoveScript");
-						}
-
-						if(ImGui::BeginPopup("AddScript"))
-						{
-
-							if(ImGui::BeginCombo("##Scripts", "Scripts"))
-							{
-								std::vector<std::string> scripts = ScriptEngine::s_ScriptEngineData->RegisteredScriptClasses;
-								std::sort(scripts.begin(), scripts.end());
-								for (auto& script : scripts)
-								{
-									if (ImGui::Selectable(script.c_str()))
-									{
-										entity->GetComponent<ScriptComponent>().AddScriptToComponent(script);
-									}
-								}
-								ImGui::EndCombo();
-							}
-							ImGui::EndPopup();
-						}
-
-						if(ImGui::BeginPopup("RemoveScript"))
-						{
-							if(ImGui::BeginCombo("##ActiveScripts", "Active Scripts"))
-							{
-								std::vector<std::string> scripts = entity->GetComponent<ScriptComponent>().m_RegisteredScripts;
-								for (auto& script : scripts)
-								{
-									if (ImGui::Selectable(script.c_str()))
-									{
-										entity->GetComponent<ScriptComponent>().RemoveScriptFromComponent(script);
-									}
-								}
-								ImGui::EndCombo();
-							}
-							ImGui::EndPopup();
-						}
-						
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
-							// Displaying all the script data in the entity
-							std::vector<std::shared_ptr<ScriptInstance>> instances = ScriptEngine::GetAllEntityScripts(entity->GetGUID());
+							// Display all the data in that script (GUID, ScriptFieldMap)
+							std::shared_ptr<ScriptInstance> instance = ScriptEngine::GetEntityInstance(entity->GetGUID());
 
-							//check if the vector is empty
-							if(instances.empty())
-{
-								ImGui::Text("No Scripts");
-							}
-
-							else
+							if (instance)
 							{
-								//display all the scripts
-								for (auto& instance : instances)
+								const auto& fields = instance->GetScriptClass()->GetFields();
+								for (const auto& [name, inst] : fields)
 								{
-									
-									if(ImGui::CollapsingHeader(instance->GetScriptClass()->GetScriptClassName().c_str(),ImGuiTreeNodeFlags_DefaultOpen))
+									ImGui::Text(name.c_str());
+									ImGui::SameLine();
+
+									if (inst.m_Type == ScriptFieldTypes::None)
 									{
-										const auto& fields = instance->GetScriptClass()->GetFields();
-										for (const auto& [name, inst] : fields)
-										{
-											ImGui::Text(name.c_str());
-											ImGui::SameLine();
-
-											if (inst.m_Type == ScriptFieldTypes::None)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Float)
-											{
-												float Value = instance->GetFieldValue<float>(name);
-												UpdatedData = UpdatedData ? true : ImGui::DragFloat(NameField.c_str(), &Value);
-												instance->SetFieldValue<float>(name, Value);
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Double)
-											{
-												double Value = instance->GetFieldValue<double>(name);
-												UpdatedData = UpdatedData ? true : ImGui::InputDouble(NameField.c_str(), &Value);
-												instance->SetFieldValue<double>(name, Value);
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Boolean)
-											{
-												bool Value = instance->GetFieldValue<bool>(name);
-												UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameField.c_str(), &Value);
-												instance->SetFieldValue<bool>(name, Value);
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Char)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Char");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Byte)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Byte");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Short)
-											{
-												short data = instance->GetFieldValue<short>(name);
-												int Value = static_cast<int>(data);
-												UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
-												instance->SetFieldValue<short>(name, static_cast<short>(Value));
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Int)
-											{
-												int Value = instance->GetFieldValue<int>(name);
-												UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
-												instance->SetFieldValue<int>(name, Value);
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Long)
-											{
-												long data = instance->GetFieldValue<long>(name);
-												int Value = static_cast<int>(data);
-												UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
-												instance->SetFieldValue<long>(name, static_cast<long>(Value));
-											}
-											else if (inst.m_Type == ScriptFieldTypes::UnsignedChar)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::UnsignedInt)
-											{
-												unsigned int data = instance->GetFieldValue<unsigned int>(name);
-												int Value = static_cast<int>(data);
-												UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
-												instance->SetFieldValue<unsigned int>(name, static_cast<unsigned int>(Value));
-											}
-											else if (inst.m_Type == ScriptFieldTypes::UnsignedLong)
-											{
-												unsigned long data = instance->GetFieldValue<unsigned long>(name);
-												int Value = static_cast<int>(data);
-												UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
-												instance->SetFieldValue<unsigned long>(name, static_cast<unsigned long>(Value));
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Vector2)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector2");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Vector3)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector3");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Vector4)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector4");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::Entity)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Entity");
-											}
-											else if (inst.m_Type == ScriptFieldTypes::String)
-											{
-												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::String TOO LAGGY TO LET IT RUN");
-												/*MonoString* data = instance->GetFieldValue<MonoString*>(name);
-												std::string Value = mono_string_to_utf8(data);
-												UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
-												instance->SetFieldValue<MonoString*>(name, mono_string_new(mono_domain_get(), Value.c_str()));*/
-											}
-											else
-											{
-												std::string function{ __FUNCTION__ };
-												TRE_ERROR("[" + function + "] Not all ScriptFieldTypes is accounted!");
-												assert(false && "Refer to Error above");
-											}
-										
-										}
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
 									}
-
+									else if (inst.m_Type == ScriptFieldTypes::Float)
+									{
+										float Value = instance->GetFieldValue<float>(name);
+										UpdatedData = UpdatedData ? true : ImGui::DragFloat(NameField.c_str(), &Value);
+										instance->SetFieldValue<float>(name, Value);
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Double)
+									{
+										double Value = instance->GetFieldValue<double>(name);
+										UpdatedData = UpdatedData ? true : ImGui::InputDouble(NameField.c_str(), &Value);
+										instance->SetFieldValue<double>(name, Value);
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Boolean)
+									{
+										bool Value = instance->GetFieldValue<bool>(name);
+										UpdatedData = UpdatedData ? true : ImGui::Checkbox(NameField.c_str(), &Value);
+										instance->SetFieldValue<bool>(name, Value);
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Char)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Char");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Byte)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Byte");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Short)
+									{
+										short data = instance->GetFieldValue<short>(name);
+										int Value = static_cast<int>(data);
+										UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+										instance->SetFieldValue<short>(name, static_cast<short>(Value));
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Int)
+									{
+										int Value = instance->GetFieldValue<int>(name);
+										UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+										instance->SetFieldValue<int>(name, Value);
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Long)
+									{
+										long data = instance->GetFieldValue<long>(name);
+										int Value = static_cast<int>(data);
+										UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+										instance->SetFieldValue<long>(name, static_cast<long>(Value));
+									}
+									else if (inst.m_Type == ScriptFieldTypes::UnsignedChar)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::None");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::UnsignedInt)
+									{
+										unsigned int data = instance->GetFieldValue<unsigned int>(name);
+										int Value = static_cast<int>(data);
+										UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+										instance->SetFieldValue<unsigned int>(name, static_cast<unsigned int>(Value));
+									}
+									else if (inst.m_Type == ScriptFieldTypes::UnsignedLong)
+									{
+										unsigned long data = instance->GetFieldValue<unsigned long>(name);
+										int Value = static_cast<int>(data);
+										UpdatedData = UpdatedData ? true : ImGui::InputInt(NameField.c_str(), &Value);
+										instance->SetFieldValue<unsigned long>(name, static_cast<unsigned long>(Value));
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Vector2)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector2");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Vector3)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector3");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Vector4)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector4");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::Entity)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Entity");
+									}
+									else if (inst.m_Type == ScriptFieldTypes::String)
+									{
+										ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::String TOO LAGGY TO LET IT RUN");
+										/*MonoString* data = instance->GetFieldValue<MonoString*>(name);
+										std::string Value = mono_string_to_utf8(data);
+										UpdatedData = UpdatedData ? true : ImGui::InputText(NameField.c_str(), &Value);
+										instance->SetFieldValue<MonoString*>(name, mono_string_new(mono_domain_get(), Value.c_str()));*/
+									}
+									else
+									{
+										std::string function{ __FUNCTION__ };
+										TRE_ERROR("[" + function + "] Not all ScriptFieldTypes is accounted!");
+										assert(false && "Refer to Error above");
+									}
 								}
 							}
+
 						}
 
 						//the green part is to make the button bigger
 						if (ImGui::Button("Reload"/*, ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(*/))
 						{
-							ScriptEngine::RecompileScripts();
+
 						}
 					}
 #pragma endregion
