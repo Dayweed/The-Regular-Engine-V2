@@ -212,7 +212,7 @@ namespace TRE
 		if (m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not exist in m_ExistingPrefabs...");
+			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabGUID + ") does not exist in m_ExistingPrefabs...");
 			return false;
 		}
 
