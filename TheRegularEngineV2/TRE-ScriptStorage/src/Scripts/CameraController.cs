@@ -45,6 +45,7 @@ namespace TRE
 			vec3 pos = Player1Transform.Position + Player2Transform.Position;
 			pos /= 2;
 
+			//make it fixed y so if both players jump, the camera doesnt keep bobbing up and down
 			pos.y = (Math.Max(Player1Transform.Position.y, Player2Transform.Position.y) + pos.y) / 2;
 
 			CameraSystem.SetMainCameraLookAt(pos, distance);
