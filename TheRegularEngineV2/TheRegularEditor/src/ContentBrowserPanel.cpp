@@ -228,6 +228,7 @@ namespace TRE
 						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetShaderHandle());
 						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
 						newMaterial->Invalidate();
+						newMaterial->Serialize();
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
 
@@ -242,6 +243,7 @@ namespace TRE
 						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(PBR::GetAnimationShaderHandle());
 						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
 						newMaterial->Invalidate();
+						newMaterial->Serialize();
 
 						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
 

@@ -104,15 +104,33 @@ namespace TRE
 		//For physical files with intermediate, remove the intermediate file, descriptor file and resource file
 		if (assetType == ResourceType::Mesh)
 		{
-			assetsPath += hexHandle + ".desc" + ".geom";
+			assetsPath += hexHandle + ".geom" + ".desc";
 			std::filesystem::remove(assetsPath);
 			assetsPath = "../Assets/";
-			assetsPath += assetName + ".fbx";
+			assetsPath += assetName;
 			std::filesystem::remove(assetsPath);
 			resourcePath += hexHandle + ".geom";
 			std::filesystem::remove(resourcePath);
 		}
+		else if (assetType == ResourceType::Texture)
+		{
+			assetsPath += hexHandle + ".texture" + ".desc";
+			std::filesystem::remove(assetsPath);
+			assetsPath = "../Assets/";
+			assetsPath += assetName;
+			std::filesystem::remove(assetsPath);
+			resourcePath += hexHandle + ".DDS";
+			std::filesystem::remove(resourcePath);
+		}
+		else if (assetType == ResourceType::Material)
+		{
+			assetsPath += hexHandle + ".material" + ".desc";
+			std::filesystem::remove(assetsPath);
+			resourcePath += hexHandle + ".material";
+			std::filesystem::remove(resourcePath);
+		}
 		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName].first);
+		m_AssetNameToHandle.erase(assetName);
 	}
 
 	void AssetManager::RenameAsset(const std::string& oldName, const std::string& newName)

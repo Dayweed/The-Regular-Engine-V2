@@ -71,6 +71,9 @@ property_begin(TRE::TextComponent)
 	} property_var_fnend(),
 	property_var_fnbegin("FontType", FontType)
 	{
+		// unused variables
+		static_cast<void>(isRead);
+		static_cast<void>(Self);
 		InOut.m_Type = "FontType";
 		
 	} property_var_fnend()

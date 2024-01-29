@@ -108,19 +108,20 @@ namespace TRE
 	void MaterialPanel::Rename(std::shared_ptr<Material> material)
 	{
 		static char materialName[256];
-		std::string name = AssetManager::Instance().GetName(material->GetHandle());
-		name = name.substr(0, name.find_last_of('.'));
-		strcpy_s(materialName, name.c_str());
+		std::string tempName = AssetManager::Instance().GetName(material->GetHandle());
+		tempName = tempName.substr(0, m_Name.find_last_of('.'));
+		strcpy_s(materialName, tempName.c_str());
+		
 		ImGui::Text("Material Name");
 		if (ImGui::InputText("##MaterialName", materialName, sizeof(materialName)))
 		{
 			//Rename asset
 			if (m_EnterPressed)
 			{
-				name = materialName;
-				name += ".material";
-				AssetManager::Instance().RenameAsset(material->GetHandle(), name);
-				m_AssetSelector->SelectAsset(name, AssetSelectorEvent::AssetType::Material);
+				m_Name = materialName;
+				m_Name += ".material";
+				AssetManager::Instance().RenameAsset(material->GetHandle(), m_Name);
+				m_AssetSelector->SelectAsset(m_Name, AssetSelectorEvent::AssetType::Material);
 			}
 		}
 		else
@@ -153,6 +154,11 @@ namespace TRE
 		if (ImGui::Button("Save"))
 		{
 			ResourceManager::Instance().SerializeResource<Material>(material->GetHandle());
+		}
+
+		if (ImGui::Button("Delete Material"))
+		{
+			AssetManager::Instance().RemoveAsset(m_Name);
 		}
 
 		if (material->IsValid() == false)
