@@ -7,6 +7,7 @@
 #include "RenderPass.h"
 #include "VulkanTexture.h"
 #include "Material.h"
+#include "RendererContext.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -50,6 +51,11 @@ namespace TRE
 			static std::vector<std::string>& GetLoadedFonts();
 			static FontRenderer* GetInstance()
 			{
+				if (s_Instance == nullptr)
+				{
+					s_Instance = new FontRenderer(RendererContext::GetDevice());
+				}
+
 				return s_Instance;
 			}
 

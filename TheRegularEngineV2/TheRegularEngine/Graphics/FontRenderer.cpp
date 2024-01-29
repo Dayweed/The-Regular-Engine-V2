@@ -102,6 +102,7 @@ namespace TRE
 		}
 
 		FontRenderer::GetLoadedFonts().push_back(FontType);
+		std::cout << "Creating Font Face" << std::endl;
 
 		FT_Set_Pixel_Sizes(face, 0, 48); //Scale the font size using transform comp
 
@@ -226,8 +227,8 @@ namespace TRE
 			float offset = 0.f;
 			for (auto Letter : TextComp.m_TextContent)
 			{
-				float textwidth = (m_Characters[TextComp.m_FontType][Letter].Advance >> 6) / 48.f;
-				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontType][Letter].Size.x / 48.f, m_Characters[TextComp.m_FontType][Letter].Size.y / 48.f);
+				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / 48.f;
+				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.x / 48.f, m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / 48.f);
 				offset += textwidth;
 
 				Font_PushConstant pc{};
@@ -237,10 +238,10 @@ namespace TRE
 
 				
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
-				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial[TextComp.m_FontType]->GetDescriptor(Index), 0, NULL);
+				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial[TextComp.m_FontName.m_FontType]->GetDescriptor(Index), 0, NULL);
 
 				VkDeviceSize offsets[] = { 0 };
-				auto VB = m_VertexData[TextComp.m_FontType][Letter]->GetBuffer();
+				auto VB = m_VertexData[TextComp.m_FontName.m_FontType][Letter]->GetBuffer();
 				vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
 				vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 

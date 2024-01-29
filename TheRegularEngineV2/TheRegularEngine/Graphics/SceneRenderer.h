@@ -154,9 +154,6 @@ namespace TRE
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
 
-			//Font Renderer
-			FontRenderer* m_FontRenderer = nullptr;
-
 			bool m_IsEditorScene = false;
 	};
 }

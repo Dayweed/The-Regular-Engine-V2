@@ -6,6 +6,7 @@
 #include "Pipeline.h"
 #include "Resource/ResourceManager.h"
 #include "Material.h"
+#include "FontRenderer.h"
 
 namespace TRE
 {
@@ -96,6 +97,8 @@ namespace TRE
 		}
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
+
+		FontRenderer::GetInstance(); //Initialize the singleton
 	}
 
 	void Renderer::Shutdown()

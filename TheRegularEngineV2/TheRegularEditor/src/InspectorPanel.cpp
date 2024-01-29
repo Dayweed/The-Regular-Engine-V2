@@ -558,41 +558,27 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, FontType>)
 							{
-								std::string selected = Value.m_Value;
-
-								if (ImGui::BeginCombo("Font Type", selected.c_str()))
+								std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
+		
+								if (ImGui::BeginCombo("##FontType", Value.m_FontType.c_str()))
 								{
-									if (ImGui::Selectable("None", false))
+									std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
 									{
-										Value.m_Value = "";
-									}
+										for (char ch : type1)
+											ch = static_cast<char>(tolower(ch));
 
-									if (Value.m_Type == "FontType")
+										for (char ch : type2)
+											ch = static_cast<char>(tolower(ch));
+
+										return type1 < type2;
+									});
+
+									for (auto& FontName : LoadFontTypes)
 									{
-										std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
-										std::cout << "Loaded Font Count: " << LoadFontTypes.size() << std::endl;
-										std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
-											{
-												for (char ch : type1)
-													ch = static_cast<char>(tolower(ch));
-
-												for (char ch : type2)
-													ch = static_cast<char>(tolower(ch));
-
-												return type1 < type2;
-											});
-
-										for (const auto& material : LoadFontTypes)
+										if (ImGui::Selectable(FontName.c_str()))
 										{
-											bool isSelected = (selected == material);
-											if (ImGui::Selectable(material.c_str(), isSelected))
-											{
-												selected = material;
-												Value.m_Value = material;
-												break;
-											}
-											if (isSelected)
-												ImGui::SetItemDefaultFocus();
+											UpdatedData = true;
+											Value.m_FontType = FontName;
 										}
 									}
 
@@ -605,15 +591,13 @@ namespace TRE
 									{
 										std::string assetName = (const char*)payload->Data;
 										assetName = assetName.substr(assetName.find_last_of('\\') + 1);
-										assetName.erase(assetName.find(".ttf")); 	// This is to remove unneeded data at the end after ".fbx"
+										assetName.erase(assetName.find(".ttf"));
 										assetName += ".ttf";
 										
 										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Assets/Font/" + assetName;
 										
 										//Load Font here
 										FontRenderer::LoadFont(FilePath);
-
-										Value.m_Value = FilePath;
 									}
 									else
 									{

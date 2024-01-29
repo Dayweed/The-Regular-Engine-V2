@@ -11,8 +11,7 @@ namespace TRE
 		bool m_IsVisible = false;
 		std::string m_TextContent = "Text";
 		glm::vec4 m_Color = { 0.f, 0.f, 0.f, 1.f };
-		std::string m_FontType = "arial";
-
+		FontType m_FontName = { "arial" };
 
 		property_vtable()
 
@@ -26,7 +25,7 @@ namespace TRE
 				{ "m_IsVisible", t.m_IsVisible },
 				{ "m_TextContent", t.m_TextContent },
 				{ "m_Color", StoredColor },
-				{ "m_FontType", t.m_FontType }
+				{ "m_FontType", t.m_FontName.m_FontType }
 			};
 		}
 
@@ -48,7 +47,7 @@ namespace TRE
 			}
 			if (j.contains("m_FontType"))
 			{
-				t.m_FontType = j.at("m_FontType").get<std::string>();
+				t.m_FontName.m_FontType = j.at("m_FontType").get<std::string>();
 			}
 		}
 	};
@@ -69,13 +68,6 @@ property_begin(TRE::TextComponent)
 			Self.m_Color = InOut.m_Value;
 		}
 	} property_var_fnend(),
-	property_var_fnbegin("FontType", FontType)
-	{
-		// unused variables
-		static_cast<void>(isRead);
-		static_cast<void>(Self);
-		InOut.m_Type = "FontType";
-		
-	} property_var_fnend()
+	property_var(m_FontName)
 
 } property_vend_h(TRE::TextComponent)
