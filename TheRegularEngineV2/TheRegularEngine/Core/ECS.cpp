@@ -29,7 +29,7 @@ namespace TRE
 
 	void ECSManager::DeleteRemovalEntities()
 	{
-		std::vector<Entity> RemovalEntities{ GetEntities<Removal>() };
+		std::vector<Entity> RemovalEntities{ GetEntities<Removal>(true) };
 		bool haveEntities{ !RemovalEntities.empty() };
 		for (Entity& object : RemovalEntities)
 		{
@@ -44,7 +44,6 @@ namespace TRE
 
 	void ECSManager::DestroyAll()
 	{
-#ifdef _DEBUG
 		// Do proper abadoning children and deletion if debug
 		//for (auto& pair : m_EntityList)
 		//{
@@ -52,13 +51,12 @@ namespace TRE
 		//	MarkForDeletion(pair.second);
 		//}
 		//DeleteRemovalEntities();
-#else
+		
 		// Clear everything
 		m_EntityOrder.clear();
 		m_EntityList.clear();
 		m_EnttIDList.clear();
 		MemoryManager::Instance().DeleteEntities();
-#endif
 	}
 
 	Entity ECSManager::CreateEntity(std::string name)

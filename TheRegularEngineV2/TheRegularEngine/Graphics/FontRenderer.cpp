@@ -35,11 +35,10 @@ namespace TRE
 
 			NewVertex[3].Pos = glm::vec3(x, y + height, 0.0f);
 			NewVertex[3].UV = m_Characters[c].UV[3];
-
-			CharactersContainer[c] = NewVertex;
+			
+			m_VertexData[FontType][c] = std::make_shared<VertexBuffer>(static_cast<void*>(NewVertex.data()),
+				UINT32_T_CAST(NewVertex.size() * sizeof(FontVertex)));
 		}
-		
-		m_VertexData[FontType] = CharactersContainer;
 	}
 
 	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
@@ -72,12 +71,7 @@ namespace TRE
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
-		m_FontIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
-			UINT32_T_CAST(sizeof(int) * indices.size()),
-			UINT32_T_CAST(indices.size()));
-
-		m_FontVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(m_VertexData[FontType]['h'].data()),
-			UINT32_T_CAST(m_VertexData[FontType]['h'].size() * sizeof(FontVertex)));
+		m_FontIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()), UINT32_T_CAST(sizeof(int) * indices.size()), UINT32_T_CAST(indices.size()));
 	}
 
 	FontRenderer::~FontRenderer()
@@ -174,11 +168,10 @@ namespace TRE
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
 		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(static_cast<float>(SC->GetWidth()) / 2.f, static_cast<float>(SC->GetHeight()) / 2.f, 0.f));
 		glm::mat4 TempProj = glm::ortho(0.f, static_cast<float>(SC->GetWidth()), 0.f, static_cast<float>(SC->GetHeight())) * TranslateToMid;
-
-		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -228,7 +221,7 @@ namespace TRE
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial->GetDescriptor(Index), 0, NULL);
 
 				VkDeviceSize offsets[] = { 0 };
-				auto VB = m_FontVertexBuffer->GetBuffer();
+				auto VB = m_VertexData[TextComp.m_FontType][Letter]->GetBuffer();
 				vkCmdBindVertexBuffers(CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
 				vkCmdBindIndexBuffer(CommandBuffer->GetInUseCommandBuffer(), m_FontIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 

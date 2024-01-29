@@ -122,6 +122,8 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
+		// Make sure the prefab GUID is still valid
+		if (!IsValidPrefabResource(prefabGUID)) return nullptr;
 
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
@@ -209,6 +211,8 @@ namespace TRE
 		// Find if it exists in existingPrefabs
 		if (m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
 		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabID + ") does not exist in m_ExistingPrefabs...");
 			return false;
 		}
 
