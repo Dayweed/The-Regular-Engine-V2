@@ -643,6 +643,7 @@ namespace TRE
 							if(ImGui::BeginCombo("##Scripts", "Scripts"))
 							{
 								std::vector<std::string> scripts = ScriptEngine::s_ScriptEngineData->RegisteredScriptClasses;
+								std::sort(scripts.begin(), scripts.end());
 								for (auto& script : scripts)
 								{
 									if (ImGui::Selectable(script.c_str()))
