@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "ScriptComponent.h"
+
+#include <cmath>
+
 #include "ScriptEngine.h"
 
 
@@ -26,6 +29,22 @@ namespace TRE
 
 		// add in the script
 		m_RegisteredScripts.push_back(_class);
+		// update the m_storedClass
+		m_StoredClass = "";
+		for(auto j: m_RegisteredScripts)
+		{
+			if(j == m_RegisteredScripts.back())
+			{
+				m_StoredClass += j;
+			}
+			else
+			{
+				m_StoredClass += j + ",";
+			}
+		}
+
+		TRE_INFO("Script {0} added to the script component", _class);
+
 		return true;
 	}
 
@@ -37,6 +56,20 @@ namespace TRE
 			if(m_RegisteredScripts[i] == _class)
 			{
 				m_RegisteredScripts.erase(m_RegisteredScripts.begin() + i);
+
+				m_StoredClass = "";
+				for(auto j: m_RegisteredScripts)
+				{
+					if(j == m_RegisteredScripts.back())
+					{
+						m_StoredClass += j;
+					}
+					else
+					{
+						m_StoredClass += j + ",";
+					}
+				}
+
 				return true;
 			}
 		}

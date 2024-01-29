@@ -666,6 +666,7 @@ namespace TRE
 							if(ImGui::BeginCombo("##Scripts", "Scripts"))
 							{
 								std::vector<std::string> scripts = ScriptEngine::s_ScriptEngineData->RegisteredScriptClasses;
+								std::sort(scripts.begin(), scripts.end());
 								for (auto& script : scripts)
 								{
 									if (ImGui::Selectable(script.c_str()))
@@ -829,7 +830,7 @@ namespace TRE
 						//the green part is to make the button bigger
 						if (ImGui::Button("Reload"/*, ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(*/))
 						{
-
+							ScriptEngine::RecompileScripts();
 						}
 					}
 #pragma endregion

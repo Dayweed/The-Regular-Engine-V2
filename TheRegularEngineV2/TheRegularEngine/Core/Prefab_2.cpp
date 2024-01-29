@@ -311,7 +311,8 @@ namespace TRE
 		if (m_ExistingPrefabs.find(GUID) == m_ExistingPrefabs.end())
 		{
 			std::string funcName{ __FUNCTION__ };
-			TRE_CORE_WARN("[" + funcName + "] GUID (" + GUID + ") does not exist in m_ExistingPrefabs! Returning empty string...");
+			TRE_CORE_WARN("[" + funcName + "] GUID (" + GUID + ") does not exist in m_ExistingPrefabs! Deleting file and returning empty string...");
+			std::filesystem::remove(filePathName);
 			return "";
 		}
 
@@ -356,7 +357,7 @@ namespace TRE
 
 			// Try opening filePath
 			std::ifstream file(prefabPath);
-			
+
 			if (!file.is_open())
 			{
 				std::string funcName{ __FUNCTION__ };

@@ -288,7 +288,6 @@ namespace TRE
 				++iteration;
 			}
 
-			//for (int count{}; auto & item: m_Assets)
 			for (int count{}; auto & item: filteredAssets)
 			{
 				ImGui::PushID(count++);
@@ -324,7 +323,10 @@ namespace TRE
 								PrefabSystem* prefabsystem{ ECSSystemManager::Instance().GetSystem<PrefabSystem>() };
 								std::string prefabGUID{ prefabsystem->ReadPrefabAssetFile(item.m_Path.string()) };
 								Entity prefabInstance = prefabsystem->DisplayPrefabInNewScene(prefabGUID);
-								m_SelectionManager->SelectEntity(prefabInstance);
+								if (prefabInstance != nullptr)
+								{
+									m_SelectionManager->SelectEntity(prefabInstance);
+								}
 							}
 						}
 						else if (item.m_ResourceType == "m_Scene")

@@ -7,6 +7,8 @@
 
 namespace TRE
 {
+	static bool hasInput{};
+
 	SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -36,15 +38,21 @@ namespace TRE
 			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 		}
 
+		static char inputTextBuffer[128] = "";
+		ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
+
+		if (inputTextBuffer[0] == '\0')
+		{
+			hasInput = false;
+		}
+
+		else
+		{
+			hasInput = true;
+		}
+
 		if (ImGui::TreeNodeEx(SceneDisplay.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			//create new entities individually
-			//if (ImGui::Button("Create Entity"))
-			//{
-			//	Entity GameObject = ECSManager::Instance().CreateEntity();
-			//	GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
-			//}
-
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
@@ -60,18 +68,6 @@ namespace TRE
 
 				ImGui::EndDragDropTarget();
 			}
-
-			//theres no more drag and drop receive from content browser?
-			//if (ImGui::BeginDragDropTarget())
-			//{
-			//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
-			//	{
-			//		Entity GameObject = ECSManager::Instance().CreateEntity();
-			//		GameObject->GetComponent<Properties>().m_Name = (const char*)payload->Data;
-			//	}
-
-			//	ImGui::EndDragDropTarget();
-			//}
 
 			// Choose between getting all entities or just the prefab if it is displaying prefab
 			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
@@ -136,7 +132,24 @@ namespace TRE
 				}
 			}
 
-			for (auto& currentEntity : entities)
+			std::vector<TRE::Entity> filteredEntities{};
+			//search bar
+			for (size_t i{}; i < entities.size(); ++i)
+			{
+				std::string fileNameLower = entities[i]->GetName();
+
+				std::transform(fileNameLower.begin(), fileNameLower.end(), fileNameLower.begin(), [](unsigned char c) {return std::tolower(c); });
+				size_t found = fileNameLower.find(inputTextBuffer);
+
+				if (found != std::string::npos)
+				{
+					//add parent
+					AddParent(entities[i], filteredEntities);
+					//filteredEntities.push_back(entities[i]);
+				}
+			}
+
+			for (auto& currentEntity : filteredEntities)
 			{
 				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
 				{
@@ -186,7 +199,9 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName() + "##" + CurrentEntity->GetGUID();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | (!childrenVector.empty() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
+		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) 
+									| (!childrenVector.empty() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf)
+									| (hasInput ? ImGuiTreeNodeFlags_DefaultOpen : 0);
 
 		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4( 0, 1, 1, 1 ) : ImVec4(1, 1, 1, 1);
 		ImGui::PushStyleColor(0, color);
@@ -282,5 +297,27 @@ namespace TRE
 			m_ShortcutDuplicateEntity = key == KeyButton::D;
 		}
 		m_ShortcutDeleteEntity = key == KeyButton::Delete;
+	}
+
+	void SceneHierarchyPanel::AddParent(TRE::Entity& CurrentEntity, std::vector<TRE::Entity>& vec)
+	{
+		TRE::Entity childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(CurrentEntity);
+		
+		//if no child
+		if (childrenVector == nullptr)
+		{
+			//remove duplicates
+			auto it = std::find(vec.begin(), vec.end(), CurrentEntity);
+
+			if (it == std::end(vec))
+			{
+				vec.push_back(CurrentEntity);
+			}
+		}
+
+		else
+		{
+			AddParent(childrenVector, vec);
+		}
 	}
 }
