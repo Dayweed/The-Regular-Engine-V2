@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "4407361121660703960",
-            "4975916345542446697"
+            "3887190081926596950",
+            "15229430419230735048"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "3126979523034742026"
+         "m_Parent": "7020063604557606"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "3126979523034742026"
+         "m_Parent": "7020063604557606"
       }
    ],
    [
@@ -58,7 +58,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "3126979523034742026",
+         "m_GUID": "7020063604557606",
          "m_Index": 149,
          "m_Name": "Moley",
          "m_Tag": "Red"
@@ -66,7 +66,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "4407361121660703960",
+         "m_GUID": "3887190081926596950",
          "m_Index": 150,
          "m_Name": "Power Manager",
          "m_Tag": ""
@@ -74,7 +74,7 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "4975916345542446697",
+         "m_GUID": "15229430419230735048",
          "m_Index": 248,
          "m_Name": "Slippery Outershell",
          "m_Tag": ""
@@ -109,7 +109,7 @@
          ],
          "m_Rotation": [
             0.0,
-            4.1373165744068574e-13,
+            2.8995694192034127e-13,
             0.0
          ],
          "m_Scale": [
@@ -178,7 +178,6 @@
       0,
       {
          "m_CollisionLayer.m_LayerID": 3,
-         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_HalfHeight": 1.0,
          "m_IsActive": true,
          "m_IsTrigger": false,
@@ -187,12 +186,12 @@
             0.0,
             0.0
          ],
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_Radius": 2.0
       },
       2,
       {
          "m_CollisionLayer.m_LayerID": 5,
-         "m_PhysicsMaterial.m_MaterialID": 1,
          "m_HalfHeight": 0.800000011920929,
          "m_IsActive": true,
          "m_IsTrigger": false,
@@ -201,6 +200,7 @@
             0.0,
             0.0
          ],
+         "m_PhysicsMaterial.m_MaterialID": 1,
          "m_Radius": 2.200000047683716
       }
    ],
@@ -217,12 +217,27 @@
       2,
       0,
       {
+         "m_RegisteredScripts": [
+            "TRE.MoleyController"
+         ],
          "m_StoredClass": "TRE.MoleyController"
       },
       1,
       {
+         "m_RegisteredScripts": [
+            "TRE.PowerUpManager"
+         ],
          "m_StoredClass": "TRE.PowerUpManager"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

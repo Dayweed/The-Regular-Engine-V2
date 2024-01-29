@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "15927108684211226501",
+         "m_GUID": "6274033764364005424",
          "m_Index": 0,
          "m_Name": "FallingHat",
          "m_Tag": "FallingObstacle"
@@ -123,6 +123,9 @@
       1,
       0,
       {
+         "m_RegisteredScripts": [
+            "TRE.FallingObj"
+         ],
          "m_StoredClass": "TRE.FallingObj"
       }
    ],
