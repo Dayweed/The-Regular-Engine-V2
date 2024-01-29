@@ -288,7 +288,6 @@ namespace TRE
 				++iteration;
 			}
 
-			//for (int count{}; auto & item: m_Assets)
 			for (int count{}; auto & item: filteredAssets)
 			{
 				ImGui::PushID(count++);
