@@ -27,7 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "11753537330237744667",
+         "m_GUID": "10197643925488472712",
+         "m_Index": 0,
          "m_Name": "Strawberry",
          "m_Tag": "Strawberry"
       }
@@ -58,6 +59,7 @@
       0,
       {
          "ASSET_GEOM_m_RenderObject": "6a670b9d30fba191",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
          "m_IsVisible": true
       }
@@ -86,12 +88,15 @@
       1,
       0,
       {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_IsActive": true,
          "m_IsTrigger": true,
          "m_Offset": [
             0.0,
             0.0,
             0.0
          ],
+         "m_PhysicsMaterial.m_MaterialID": 0,
          "m_Radius": 1.5
       }
    ],
@@ -114,8 +119,23 @@
       1,
       0,
       {
+         "m_RegisteredScripts": [
+            "TRE.GetPowerUp"
+         ],
          "m_StoredClass": "TRE.GetPowerUp"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

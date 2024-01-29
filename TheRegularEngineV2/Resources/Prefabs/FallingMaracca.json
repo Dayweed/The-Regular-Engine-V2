@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "17754500310393622934",
+         "m_GUID": "16798030147369323235",
          "m_Index": 0,
          "m_Name": "FallingMaracca",
          "m_Tag": "FallingObstacle"
@@ -123,6 +123,9 @@
       1,
       0,
       {
+         "m_RegisteredScripts": [
+            "TRE.FallingObj"
+         ],
          "m_StoredClass": "TRE.FallingObj"
       }
    ],
