@@ -22,6 +22,7 @@ namespace TRE
 			ScriptComponent,
 			Audio,
 			AudioListener,
+			ParticleComponent,
 			DirectPathfinding,
 			TextComponent,
 			SlideshowComponent

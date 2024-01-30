@@ -182,8 +182,11 @@ namespace TRE
 		const bool IsPerspective(const Entity& go) const;
 		const bool IsMainCamera(const Entity& go) const;
 
-		void MainCameraLookAt(const glm::vec3& target, const float distance);
+		void MainCameraLookAt(const glm::vec3& target);
+		void MainCameraFollow(const glm::vec3& target, const float distance);
 		void TransitionCamera(const glm::vec3& targetPosition, const glm::vec3& targetRotation, const float speed);
+		void TransitionCameraPosition(const glm::vec3& targetPosition, const float speed);
+		void TransitionCameraRotation(const glm::vec3& targetRotation, const float speed);
 
 		Entity GetMainCamera();
 

@@ -699,14 +699,29 @@ namespace TRE
 			Engine_GetIsMainCamera(entity, out output);
 		}
 
-		public static void SetMainCameraLookAt(vec3 target, float distance)
+		public static void SetMainCameraLookAt(vec3 target)
 		{
-			Engine_SetMainCameraLookAt(target, distance);
+			Engine_SetMainCameraLookAt(target);
+		}
+
+		public static void SetMainCameraFollow(vec3 target, float distance)
+		{
+			Engine_SetMainCameraFollow(target, distance);
 		}
 
 		public static void TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float speed)
 		{
 			Engine_TransitionMainCamera(targetPosition, targetRotation, speed);
+		}
+
+		public static void TransitionMainCameraPosition(vec3 targetPosition, float speed)
+		{
+			Engine_TransitionMainCameraPosition(targetPosition, speed);
+		}
+
+		public static void TransitionMainCameraRotation(vec3 targetRotation, float speed)
+		{
+			Engine_TransitionMainCameraRotation(targetRotation, speed);
 		}
 
 		public static vec3 GetMainCameraForwardVec()
@@ -852,10 +867,19 @@ namespace TRE
 		internal extern static void Engine_GetIsMainCamera(EntityID entityid, out bool output);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void Engine_SetMainCameraLookAt(vec3 target, float distance);
+		internal extern static void Engine_SetMainCameraLookAt(vec3 target);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetMainCameraFollow (vec3 target, float distance);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float speed);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_TransitionMainCameraPosition(vec3 targetPosition, float speed);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_TransitionMainCameraRotation(vec3 targetRotation, float speed);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetMainCameraForwardVec();

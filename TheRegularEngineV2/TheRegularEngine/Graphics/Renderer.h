@@ -3,12 +3,6 @@
 
 namespace TRE
 {
-	struct QuadVertex
-	{
-		glm::vec3 Position;
-		glm::vec2 TexCoord;
-	};
-
 	struct FinalRenderData
 	{
 		std::unique_ptr<VertexBuffer> VertexBuffer;

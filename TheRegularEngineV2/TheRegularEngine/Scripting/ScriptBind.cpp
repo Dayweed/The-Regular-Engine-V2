@@ -1130,14 +1130,29 @@ namespace TRE
 		*result = ECSSystemManager::Instance().GetSystem<CameraSystem>()->IsMainCamera(Temp);
 	}
 
-	static void BindCamMainSetLookAt(glm::vec3* target, float distance)
+	static void BindCamMainSetLookAt(glm::vec3* target)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraLookAt(*target, distance);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraLookAt(*target);
+	}
+
+	static void BindCamMainSetFollow(glm::vec3* target, float distance)
+	{
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraFollow(*target, distance);
 	}
 
 	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
 	{
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+	}
+
+	static void BindTransitionMainCameraPosition(glm::vec3* targetPosition, float speed)
+	{
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraPosition(*targetPosition, speed);
+	}
+
+	static void BindTransitionMainCameraRotation(glm::vec3* targetRotation, float speed)
+	{
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraRotation(*targetRotation, speed);
 	}
 
 	static Vector3 BindCameraForwardVector()
@@ -2171,7 +2186,10 @@ namespace TRE
 			mono_add_internal_call("TRE.CameraSystem::Engine_IsPerspective", BindCamIsPerspective);
 			mono_add_internal_call("TRE.CameraSystem::Engine_IsMainCamera", BindCamIsMainCamera);
 			mono_add_internal_call("TRE.CameraSystem::Engine_SetMainCameraLookAt", BindCamMainSetLookAt);
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetMainCameraFollow", BindCamMainSetFollow);
 			mono_add_internal_call("TRE.CameraSystem::Engine_TransitionMainCamera", BindTransitionMainCamera);
+			mono_add_internal_call("TRE.CameraSystem::Engine_TransitionMainCameraPosition", BindTransitionMainCameraPosition);
+			mono_add_internal_call("TRE.CameraSystem::Engine_TransitionMainCameraRotation", BindTransitionMainCameraRotation);
 
 			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraForwardVec", BindCameraForwardVector);
 			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraRightVec", BindCameraRightVector);
