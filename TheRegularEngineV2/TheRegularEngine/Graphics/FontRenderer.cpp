@@ -229,7 +229,7 @@ namespace TRE
 				continue;
 
 			float offset = 0.f;
-			float y_offset = m_Characters[TextComp.m_FontName.m_FontType]['T'].Size.y;
+			//float y_offset = m_Characters[TextComp.m_FontName.m_FontType]['T'].Size.y;
 			for (auto Letter : TextComp.m_TextContent)
 			{
 				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x;
@@ -242,7 +242,7 @@ namespace TRE
 			
 				pc.Proj = TempProj
 					* TransformComp.m_WorldXform
-					* glm::translate(glm::mat4(1.f), glm::vec3(offset, -(m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y), 0.f))
+					* glm::translate(glm::mat4(1.f), glm::vec3(offset, (m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y - 2 * m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y), 0.f))
 					* glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
 				pc.Color = TextComp.m_Color;
 				
