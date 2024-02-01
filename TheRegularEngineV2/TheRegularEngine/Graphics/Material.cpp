@@ -100,7 +100,12 @@ namespace TRE
 				if (Write.dstBinding == 7)
 					Write.pImageInfo = &ShadowMap;
 				else
-					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				{
+					if(m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
 			}
 			Write.dstSet = m_DescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -127,7 +132,12 @@ namespace TRE
 				if (Write.dstBinding == 7)
 					Write.pImageInfo = &ShadowMap;
 				else
-					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				{
+					if (m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
 			}
 			Write.dstSet = m_EditorDescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -159,7 +169,12 @@ namespace TRE
 				if (Write.dstBinding == 7)
 					Write.pImageInfo = &ShadowMap;
 				else
-					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				{
+					if (m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
 			}
 			Write.dstSet = m_DescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -188,7 +203,12 @@ namespace TRE
 				if (Write.dstBinding == 7)
 					Write.pImageInfo = &ShadowMap;
 				else
-					Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				{
+					if (m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
 			}
 			Write.dstSet = m_EditorDescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);

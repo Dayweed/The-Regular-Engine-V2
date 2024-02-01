@@ -22,7 +22,7 @@ namespace TRE
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
+		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(12);
 		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
 		PipelineConfig.EnableBlending = true;
 		PipelineConfig.EnableDepthTest = false;
@@ -57,6 +57,7 @@ namespace TRE
 	
 		m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
 		m_Material->Invalidate();
+
 	}
 
 	ParticleRenderer::~ParticleRenderer()
@@ -69,6 +70,7 @@ namespace TRE
 		ParticleUBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
+		ubo.Color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 
 		m_UBO->SetData(&ubo, sizeof(ParticleUBO));
 
@@ -111,7 +113,6 @@ namespace TRE
 				{
 					Particle_PushConstant pc{};
 					pc.L2W = particle.L2W;
-					pc.Color = glm::vec4(1.f,1.f,1.f, 1.f);
 
 					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(),
 						VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);

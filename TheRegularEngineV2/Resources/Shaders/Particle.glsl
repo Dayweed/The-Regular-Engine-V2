@@ -11,7 +11,7 @@ layout(set = 0, binding = 0) uniform ParticleUBO
 
 layout (push_constant) uniform PushConstants
 {
-    mat4 Transform;
+    mat4 L2W;
     vec4 Color;
 } PC;
 
@@ -25,7 +25,7 @@ void main()
 {
 	Out.Color = PC.Color;
     Out.UV = in_UV;
-    gl_Position = ubo.m_ProjView * PC.Transform * vec4(in_Position, 1.0);
+    gl_Position = ubo.m_ProjView * PC.L2W * vec4(in_Position, 1.0);
 }
 
 #version 450
@@ -45,4 +45,5 @@ void main()
 {
     outColor = texture(DiffuseMap, In.UV) * In.Color;
     outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
+    outColor.a = 1.0;
 }

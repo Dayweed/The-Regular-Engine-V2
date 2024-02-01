@@ -27,7 +27,7 @@ namespace TRE
 			const glm::vec3 randomSpeed = glm::vec3(disSpeed(gen), disSpeed(gen), disSpeed(gen));
 			particle.Position += randomSpeed * m_Velocity * deltaTime;
 			
-			const glm::vec3 randomSize = glm::vec3(disSize(gen), disSize(gen), 0.f);
+			const glm::vec3 randomSize = glm::vec3(disSize(gen), disSize(gen), disSize(gen));
 
 			/*auto scale = glm::scale(glm::mat4(1.f), randomSize);
 			auto translate = glm::translate(glm::mat4(1.f), particle.Position);

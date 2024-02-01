@@ -11,14 +11,12 @@ namespace TRE
 	struct Particle_PushConstant
 	{
 		glm::mat4 L2W{ glm::mat4(1.f) };
-		glm::vec4 Color{ 1.f,1.f,1.f,1.f };
 	};
 
 	struct ParticleUBO
 	{
-		/*glm::mat4 View;
-		glm::mat4 Proj;*/
 		glm::mat4 ProjView{glm::mat4(1.f)};
+		glm::vec4 Color{ 1.f,1.f,1.f,1.f };
 	};
 
 	class ParticleRenderer

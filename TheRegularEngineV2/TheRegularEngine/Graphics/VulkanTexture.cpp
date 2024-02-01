@@ -648,4 +648,9 @@ namespace TRE
 
 		return m_DefaultTextureID;
 	}
+
+	const std::shared_ptr<VulkanTexture> VulkanTexture::GetDefaultTexture()
+	{
+		return ResourceManager::Instance().GetResource<VulkanTexture>(GetDefaultTextureID());
+	}
 }
