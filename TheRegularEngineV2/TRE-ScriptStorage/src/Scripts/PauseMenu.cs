@@ -11,25 +11,29 @@ namespace TRE
 {
 	public class PauseMenu : Entity
 	{
-		public bool isPaused = true;
+		public bool isPaused = false;
 		public bool isConfirming = false;
+		public bool isChangeMenu = false;
 
 		public int mainMenuOption = 0; // for confirmation menu to know which option to execute
-		public int cfmMenuOption = 0; // for main update logic to know what to execute with destructive action
 		public int currentOption = 0;
-		public int menustate = 0; //0 = main menu, 1 = options menu, 2 = confirmation menu
-		public int previousMenuState = 0;
+		public int menuOption = 1;
+		public int menustate = 0; //0 = main menu, 1 = show controls,2 = confirmation menu
+
 
 
 		// Pause menu pointer
 		private Entity pointer;
 		private Transform pointerTransform;
 
+        private Entity destructivePointer;
+		private Transform destructivePointerTransform;
+
 		// Pause menu options
 		private List<Entity> options;
 		private List<Entity> DestructiveActionConfirmations;
 
-		private Entity Menu1;
+		private Entity pauseMenu;
 		private Entity cfmMenu;
 
 
@@ -39,18 +43,21 @@ namespace TRE
 			options = new List<Entity>();
 			DestructiveActionConfirmations = new List<Entity>();
 
-			pointer = ECSManager.FindEntityByName("pauseMenu_Pointer");
+			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
-			options.Add(ECSManager.FindEntityByName("pauseMenu_Resume"));
-			options.Add(ECSManager.FindEntityByName("pauseMenu_Options"));
-			options.Add(ECSManager.FindEntityByName("pauseMenu_return"));
-			options.Add(ECSManager.FindEntityByName("pauseMenu_Quit"));
 
-			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("pauseMenu_cfmYes"));
-			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("pauseMenu_cfmNo"));
+			options.Add(ECSManager.FindEntityByName("main_continue"));
+			options.Add(ECSManager.FindEntityByName("main_controls"));
+			options.Add(ECSManager.FindEntityByName("main_quit"));
 
-			Menu1 = ECSManager.FindEntityByName("PauseMenu");
-			cfmMenu = ECSManager.FindEntityByName("pauseMenu_cfmMenu");
+			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
+			destructivePointerTransform= destructivePointer.GetComponent<Transform>();
+
+			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("destructive_yes"));
+			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("destructive_no"));
+
+			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
+			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 		}
 
 		public void OnCreate()
@@ -60,139 +67,185 @@ namespace TRE
 
 		public void Update()
 		{
+            if (InputSystem.GetKeyPress(InputKeys.P))
+            {
+                isPaused = !isPaused;
+				isChangeMenu = true;
+                menustate = 0;
+				currentOption = 0;
+            }   
 
-			// pointer Handler
-			vec3 position = new vec3(0, 0, 0);
-			position.x = pointerTransform.Position.x;
+            if (isPaused)
+            {
+                // Pause menu logic
+			    if (menustate == 0)
+			    {
+				    //we are assuming that pause menu entering is handled by game logic
+				    if (InputSystem.GetKeyPress(InputKeys.Up))
+				    {
+					    if (currentOption == 0)
+						    currentOption = 2;
+					    else 
+						    currentOption -= 1;
+				    }
+
+				    if (InputSystem.GetKeyPress(InputKeys.Down))
+                    {
+                        if (currentOption == 2)
+                            currentOption = 0;
+                        else
+                            currentOption += 1;
+                    }
+
+				    if (InputSystem.GetKeyPress(InputKeys.Enter))
+				    {
+					    if (currentOption == 0) // resume game
+					    {
+						    isPaused = false;
+						    menustate = 0;
+							isChangeMenu = true;
+					    }
+					    else if (currentOption == 1) // Controls
+					    {
+						    menustate = 1;
+					    }
+					    else if (currentOption == 2) // Quit Gane
+					    {
+						    isConfirming = true;
+						    mainMenuOption = 2;
+						    menustate = 2;
+							currentOption = 1;
+							isChangeMenu = true;
+					    }
+				    }
+				    
+				    switch (currentOption)
+				    {
+					    case 0: // resume
+						    pointerTransform.Position = options[0].GetComponent<Transform>().Position;
+						    break;
+					    case 1: // 
+                            pointerTransform.Position = options[1].GetComponent<Transform>().Position;
+						    break;
+					    case 2:
+                            pointerTransform.Position = options[2].GetComponent<Transform>().Position;
+						    break;
+				    }
+			    }
+			    
+			    // control menu logic
+			    else if(menustate == 1)
+			    {
+
+			    }
+
+			    // confirmation menu logic
+			    else
+			    {
+				    if (InputSystem.GetKeyPress(InputKeys.Left))
+				    {
+					    if (menuOption == 0)
+                            menuOption = 1;
+					    else if (menuOption == 1)
+                            menuOption = 0;
+				    }
+
+				    if (InputSystem.GetKeyPress(InputKeys.Right))
+				    {
+					    if (menuOption == 0)
+						    menuOption = 1;
+					    else if (menuOption == 1)
+						    menuOption = 0;
+				    }
+
+                    if (InputSystem.GetKeyPress(InputKeys.Enter))
+                    {
+                        if (menuOption == 0) // yes
+                        {
+							// Quit game
+                        }
+						else if (menuOption == 1) // no
+                        {
+                            isConfirming = false;
+                            menustate = 0;
+							isChangeMenu = true;
+							menuOption = 1;
+                        }
+                    }
+
+				    switch (menuOption)
+				    {
+					    case 0: // yes
+						    destructivePointerTransform.Position = DestructiveActionConfirmations[0].GetComponent<Transform>().Position;
+						    break;
+					    case 1: // no
+                            destructivePointerTransform.Position = DestructiveActionConfirmations[1].GetComponent<Transform>().Position;
+						    break;
+				    }
+
+			    }
 
 
-			// Pause menu logic
-			if (menustate == 0)
-			{
-				//we are assuming that pause menu entering is handled by game logic
-				if (InputSystem.GetKeyHold(InputKeys.W))
-				{
-					if (currentOption == 0)
-						currentOption -= 1;
-					else if (currentOption == 3)
-						currentOption = 0;
-					else
-						currentOption += 1;
-				}
+			    if (isChangeMenu)
+			    {
+				    // change menu visibilities
+				    switch (menustate)
+				    {
+					    case 0:
+							// Show main pause menu
+							UISystem.SetVisible(pauseMenu.ID, true);
+							UISystem.SetVisible(cfmMenu.ID, false);
+                            for (int i = 0; i < options.Count; i++)
+                            {
+								UISystem.SetVisible(options[i].ID, true);
+                            }
+                            for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
+                            {
+								UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
+                            }
+							// show the pointer
+							UISystem.SetVisible(pointer.ID, true);
+							UISystem.SetVisible(destructivePointer.ID, false);
+						    break;
+					    case 1:
+						    
+						    break;
+					    case 2:
+						    // only show the confirmation menu since destructive action UI is transparent
+							UISystem.SetVisible(cfmMenu.ID, true);
+                            for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
+                            {
+                                UISystem.SetVisible(DestructiveActionConfirmations[i].ID, true);
+                            }
+							// show the pointer
+							UISystem.SetVisible(destructivePointer.ID, true);
+						    break;
+				    }
+					isChangeMenu = false;
+			    }
+            }
 
-				if (InputSystem.GetKeyHold(InputKeys.S))
-				{
-					if (currentOption == 0)
-						currentOption += 1;
-					else if (currentOption == 3)
-						currentOption = 0;
-					else
-						currentOption -= 1;
-				}
+            if (!isPaused && isChangeMenu)
+            {
+				// hide the whole pause menu
+				UISystem.SetVisible(pauseMenu.ID, false);
+				UISystem.SetVisible(cfmMenu.ID, false);
 
-				if (InputSystem.GetKeyHold(InputKeys.Enter))
-				{
-					if (currentOption == 0) // resume game
-					{
-						isPaused = false;
-						menustate = 0;
-					}
-					else if (currentOption == 1) // options
-					{
-						menustate = 1;
-					}
-					else if (currentOption == 2) // return to title
-					{
-						isConfirming = true;
-						mainMenuOption = 2;
-						menustate = 2;
-					}
-					else if (currentOption == 3) // quit game
-					{
-						//quit game
-						isConfirming = true;
-						mainMenuOption = 3;
-						menustate = 2;
-					}
-				}
+				// hide the pointer
+				UISystem.SetVisible(pointer.ID, false);
+				UISystem.SetVisible(destructivePointer.ID, false);
 
-				if (InputSystem.GetKeyHold(InputKeys.Escape))
-				{
-					isPaused = false;
-					menustate = 0;
-				}   
-				
-				switch (currentOption)
-				{
-					case 0: // resume
-						position.y = options[0].GetComponent<Transform>().Position.y;
-						break;
-					case 1: // 
-						position.y = options[1].GetComponent<Transform>().Position.y;
-						break;
-					case 2:
-						position.y = options[2].GetComponent<Transform>().Position.y;
-						break;
-					case 3:
-						position.y = options[3].GetComponent<Transform>().Position.y;
-						break;
-				}
-			}
-			
-			// options menu logic
-			if(menustate == 1)
-			{
+                for (int i = 0; i < options.Count; i++)
+                {
+					UISystem.SetVisible(options[i].ID, false);
+                }
 
-			}
-
-			// confirmation menu logic
-			if (menustate == 2)
-			{
-				if (InputSystem.GetKeyHold(InputKeys.W))
-				{
-					if (currentOption == 0)
-						currentOption -= 1;
-					else if (currentOption == 1)
-						currentOption = 0;
-				}
-
-				if (InputSystem.GetKeyHold(InputKeys.S))
-				{
-					if (currentOption == 0)
-						currentOption += 1;
-					else if (currentOption == 1)
-						currentOption = 0;
-				}
-
-				switch (currentOption)
-				{
-					case 0: // yes
-						position.y = DestructiveActionConfirmations[0].GetComponent<Transform>().Position.y;
-						break;
-					case 1: // no
-						position.y = DestructiveActionConfirmations[1].GetComponent<Transform>().Position.y;
-						break;
-				}
-
-			}
-
-
-			if (previousMenuState != menustate)
-			{
-				switch (menustate)
-				{
-					case 0:
-						
-						break;
-					case 1:
-						
-						break;
-					case 2:
-						
-						break;
-				}
-			}
-
+                for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
+                {
+					UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
+                }
+				isChangeMenu = false;
+            }
 		}
 	}
 }
