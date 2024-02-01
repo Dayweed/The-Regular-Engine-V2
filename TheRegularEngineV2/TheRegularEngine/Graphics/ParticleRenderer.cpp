@@ -3,10 +3,12 @@
 #include "Core/Engine.h"
 #include "Core/ECS.h"
 #include "Particle.h"
+#include "Camera.h"
+#include "Core/ECS.h"
 
 namespace TRE
 {
-	ParticleRenderer::ParticleRenderer(const std::shared_ptr<Device>& device) : m_Device{device}
+	ParticleRenderer::ParticleRenderer(const std::shared_ptr<Device>& device)
 	{
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
@@ -16,7 +18,7 @@ namespace TRE
 		RPConfig.DepthImageFormat = SC->GetDepthFormat();
 		RPConfig.DepthEnabled = true;
 		RPConfig.ClearColor = false;
-		m_Renderpass = std::make_shared<RenderPass>(m_Device, RPConfig);
+		m_Renderpass = std::make_shared<RenderPass>(device, RPConfig);
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
@@ -28,8 +30,8 @@ namespace TRE
 
 		m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 
-		float x = -1.f; float y = -1.f;
-		float width = 2, height = 2;
+		float x = -0.5f; float y = -0.5f;
+		float width = 1, height = 1;
 		std::vector<QuadVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
@@ -53,7 +55,7 @@ namespace TRE
 		m_VertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
 			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
 	
-		m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(6));
+		m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
 		m_Material->Invalidate();
 	}
 
@@ -65,10 +67,8 @@ namespace TRE
 	void ParticleRenderer::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
 	{
 		ParticleUBO ubo{};
-		const auto width = 1920.f;//(float)SC->GetWidth();
-		const auto height = 1080.f;// (float)SC->GetHeight();
-		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f)); //Translate by viewport width or height / 2
-		ubo.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
 
 		m_UBO->SetData(&ubo, sizeof(ParticleUBO));
 
@@ -105,7 +105,7 @@ namespace TRE
 		for (const auto& emitter : ECSManager::Instance().GetEntities<ParticleComponent>())
 		{
 			const ParticleComponent& particleComp = emitter->GetComponent<ParticleComponent>();
-			if (particleComp.m_IsVisible)
+			if (particleComp.m_Running)
 			{
 				for (auto& particle : particleComp.m_Particles)
 				{
@@ -115,14 +115,9 @@ namespace TRE
 
 					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(),
 						VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
-					
-					
-					
 
 					VkDeviceSize offsets[] = { 0 };
 					VkBuffer VB = m_VertexBuffer->GetBuffer();
-
-					//std::cout << "renering particles\n";
 
 					vkCmdBindVertexBuffers(commandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
 					vkCmdBindIndexBuffer(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);

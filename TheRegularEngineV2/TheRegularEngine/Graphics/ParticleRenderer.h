@@ -29,7 +29,6 @@ namespace TRE
 
 		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
 	private:
-		std::shared_ptr<Device> m_Device;
 		std::shared_ptr<Pipeline> m_Pipeline;
 		std::shared_ptr<RenderPass> m_Renderpass;
 		std::shared_ptr<UniformBuffer> m_UBO;

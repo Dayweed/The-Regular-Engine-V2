@@ -3,6 +3,7 @@
 #include "Random.h"
 #include "Core/Transform.h"
 #include "Core/Engine.h"
+#include "Camera.h"
 
 namespace TRE
 {
@@ -10,34 +11,58 @@ namespace TRE
 	{
 		m_Particles.clear();
 		m_Particles.resize(m_ParticleCount);
-		std::random_device rd;
-		std::mt19937 gen(rd());	
-		const float multipler = 30.f;
-		std::uniform_real_distribution<> dis(-1.0 * multipler, 1.0 * multipler);
-		for (int i = 0; i < m_ParticleCount; ++i)
-		{
-			const glm::vec3 randomVec = glm::vec3(dis(gen), dis(gen), dis(gen));
-			Particle& particle = m_Particles[i];
-			particle.Position = emitterPos + randomVec;
-			particle.Velocity = randomVec * m_Speed;
-			particle.LifeTime = m_LifeTime;
-		}
+		ResetParticlesPosition(emitterPos);
 	}
 
-	void ParticleComponent::UpdateParticle()
+	void ParticleComponent::UpdateParticles()
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> dis(m_Variation.x * m_Speed, m_Variation.y * m_Speed);
+		std::uniform_real_distribution<> disSpeed(m_VariationSpeed.x * m_Speed, m_VariationSpeed.y * m_Speed);
+		std::uniform_real_distribution<> disSize(m_VariationSize.x * m_Size, m_VariationSize.y * m_Size);
+		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
+		const Transform& mainCameraTransform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		for (auto& particle : m_Particles)
 		{
-			const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
-			particle.LifeTime -= deltaTime;
-			particle.Position += glm::vec3(dis(gen), dis(gen), dis(gen)) * m_Velocity * deltaTime;
+			const glm::vec3 randomSpeed = glm::vec3(disSpeed(gen), disSpeed(gen), disSpeed(gen));
+			particle.Position += randomSpeed * m_Velocity * deltaTime;
+			
+			const glm::vec3 randomSize = glm::vec3(disSize(gen), disSize(gen), 0.f);
 
-			auto scale = glm::scale(glm::mat4(1.f), glm::vec3(100.f, 100.f, 0.f));
+			/*auto scale = glm::scale(glm::mat4(1.f), randomSize);
 			auto translate = glm::translate(glm::mat4(1.f), particle.Position);
-			particle.L2W = translate * scale;
+			particle.L2W = translate * scale;*/
+
+			glm::vec3 forward = glm::normalize(mainCameraTransform.m_Position - particle.Position);
+			glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
+			glm::vec3 up = glm::cross(forward, right);
+
+			glm::mat4 billboardMatrix(1.0f);
+			billboardMatrix[0] = glm::vec4(right * m_Size, 0.0f);
+			billboardMatrix[1] = glm::vec4(up * m_Size, 0.0f);
+			billboardMatrix[2] = glm::vec4(-forward * m_Size, 0.0f);
+			billboardMatrix[3] = glm::vec4(particle.Position, 1.0f);
+
+			particle.L2W = billboardMatrix;
+		}
+
+		m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
+	}
+
+	void ParticleComponent::ResetParticles(const glm::vec3& emitterPos)
+	{
+		m_ElapsedTime = 0.f;
+		ResetParticlesPosition(emitterPos);
+	}
+
+	void ParticleComponent::ResetParticlesPosition(const glm::vec3 emitterPos)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<> dis(-1.0 * m_SpawnRadius, 1.0 * m_SpawnRadius);
+		for (int i = 0; i < m_ParticleCount; ++i)
+		{
+			m_Particles[i].Position = emitterPos + glm::vec3(dis(gen), dis(gen), dis(gen));
 		}
 	}
 
@@ -52,7 +77,12 @@ namespace TRE
 				particleComponent.GenerateParticles(transform.m_Position);
 			}
 
-			particleComponent.UpdateParticle();
+			particleComponent.UpdateParticles();
+
+			if (particleComponent.m_ElapsedTime >= particleComponent.m_LifeTime)
+			{
+				particleComponent.ResetParticles(transform.m_Position);
+			}
 		}
 	}
 }
