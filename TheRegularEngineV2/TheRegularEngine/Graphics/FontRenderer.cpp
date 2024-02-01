@@ -11,8 +11,11 @@
 
 namespace TRE
 {
-	FontRenderer* FontRenderer::s_Instance = nullptr;
 	std::vector<std::string> FontRenderer::m_AvailableFonts{};
+	std::unordered_map<std::string, std::unordered_map<char, Character>> FontRenderer::m_Characters;
+	std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> FontRenderer::m_FontTexture;
+	std::unordered_map<std::string, std::shared_ptr<Material>> FontRenderer::m_FontMaterial;
+	std::unordered_map<std::string, std::map<char, std::shared_ptr<VertexBuffer>>> FontRenderer::m_VertexData;
 
 	std::vector<std::string>& FontRenderer::GetLoadedFonts()
 	{
@@ -46,8 +49,6 @@ namespace TRE
 
 	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
-		s_Instance = this;
-
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -77,14 +78,19 @@ namespace TRE
 
 	void FontRenderer::LoadFont(std::string FilePath)
 	{
-		std::string FontType = FontRenderer::GetInstance()->GetFontType(FilePath);
-		FontRenderer::GetInstance()->CreateNewFontFace(FilePath, FontType);
-		FontRenderer::GetInstance()->CreateFontData(FontType);
+		std::string FontType = GetFontType(FilePath);
+		CreateNewFontFace(FilePath, FontType);
+		CreateFontData(FontType);
 	}
 
 	FontRenderer::~FontRenderer()
 	{
-
+		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
+		m_AvailableFonts.clear();
+		m_Characters.clear();
+		m_FontTexture.clear();
+		m_FontMaterial.clear();
+		m_VertexData.clear();
 	}
 
 	void FontRenderer::CreateNewFontFace(std::string Filepath, std::string FontType)

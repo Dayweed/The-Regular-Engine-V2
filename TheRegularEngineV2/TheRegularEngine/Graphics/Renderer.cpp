@@ -97,8 +97,6 @@ namespace TRE
 		}
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
-
-		FontRenderer::GetInstance(); //Initialize the singleton
 	}
 
 	void Renderer::Shutdown()

@@ -41,47 +41,36 @@ namespace TRE
 			FontRenderer(const std::shared_ptr<Device>& Device);
 			~FontRenderer();
 
-			void CreateNewFontFace(std::string Filepath, std::string FontType);
-			std::string GetFontType(std::string Filepath);
+			static void CreateNewFontFace(std::string Filepath, std::string FontType);
+			static std::string GetFontType(std::string Filepath);
 
 			void RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
 
 
 			static void LoadFont(std::string FilePath);
 			static std::vector<std::string>& GetLoadedFonts();
-			static FontRenderer* GetInstance()
-			{
-				if (s_Instance == nullptr)
-				{
-					s_Instance = new FontRenderer(RendererContext::GetDevice());
-				}
-
-				return s_Instance;
-			}
 
 		private:
-			void CreateFontData(std::string FontType);
+			static void CreateFontData(std::string FontType);
 
 		private:
 			std::shared_ptr<Device> m_Device;
 
 		private:
 			static std::vector<std::string> m_AvailableFonts;
-			std::unordered_map<std::string, std::unordered_map<char, Character>> m_Characters{}; //Per Font Type
+			static std::unordered_map<std::string, std::unordered_map<char, Character>> m_Characters; //Per Font Type
 
 			std::string m_DefaultFontFilepath = "../Assets/Font/arial.ttf";
 
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
 
-			std::unordered_map<std::string, std::map<char, std::shared_ptr<VertexBuffer>>> m_VertexData; //Key = Font Type //Each FontType has a map characters, each characters have a vector of quad
+			static std::unordered_map<std::string, std::map<char, std::shared_ptr<VertexBuffer>>> m_VertexData; //Key = Font Type //Each FontType has a map characters, each characters have a vector of quad
 			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
 
 		private:
-			std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_FontTexture;
-			std::unordered_map<std::string, std::shared_ptr<Material>> m_FontMaterial;
-
-			static FontRenderer* s_Instance;
+			static std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_FontTexture;
+			static std::unordered_map<std::string, std::shared_ptr<Material>> m_FontMaterial;
 
 			FontRenderer(FontRenderer&) = delete;
 			void operator=(const FontRenderer&) = delete;

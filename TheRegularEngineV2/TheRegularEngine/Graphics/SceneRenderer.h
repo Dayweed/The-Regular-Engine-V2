@@ -156,6 +156,9 @@ namespace TRE
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
 
+			//Font Renderer
+			std::shared_ptr<FontRenderer> m_FontRenderer;
+
 			//Particle Renderer
 			std::shared_ptr<ParticleRenderer> m_ParticleRenderer;
 
