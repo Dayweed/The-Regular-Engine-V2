@@ -75,7 +75,7 @@ namespace TRE
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor)
 	{
 		UIUBO UBO{};
-		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		//const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		const auto width = 1920.f;//(float)SC->GetWidth();
 		const auto height = 1080.f;// (float)SC->GetHeight();
 		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f)); //Translate by viewport width or height / 2

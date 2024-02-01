@@ -4,13 +4,28 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "CommandBuffer.h"
+#include "Material.h"
 
 namespace TRE
 {
+	struct Particle_PushConstant
+	{
+		glm::mat4 L2W{ glm::mat4(1.f) };
+		glm::vec4 Color{ 1.f,1.f,1.f,1.f };
+	};
+
+	struct ParticleUBO
+	{
+		/*glm::mat4 View;
+		glm::mat4 Proj;*/
+		glm::mat4 ProjView{glm::mat4(1.f)};
+	};
+
 	class ParticleRenderer
 	{
 	public:
 		ParticleRenderer(const std::shared_ptr<Device>& device);
+		~ParticleRenderer();
 
 		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
 	private:
@@ -20,5 +35,7 @@ namespace TRE
 		std::shared_ptr<UniformBuffer> m_UBO;
 		std::shared_ptr<VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
+
+		std::shared_ptr<Material> m_Material;
 	};
 }

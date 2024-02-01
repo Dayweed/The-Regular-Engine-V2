@@ -106,6 +106,7 @@ namespace TRE
 		m_ShadowMaterial->Invalidate();
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
+		m_ParticleRenderer = std::make_shared<ParticleRenderer>(m_Device);
 
 		PostProcessingManager::Instance().Init();
 
@@ -452,6 +453,7 @@ namespace TRE
 		if (m_IsEditorScene == false)
 		{
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+			m_ParticleRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 			FontRenderer::GetInstance()->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}

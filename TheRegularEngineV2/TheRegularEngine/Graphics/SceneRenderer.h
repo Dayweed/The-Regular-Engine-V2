@@ -14,6 +14,8 @@
 #include "Resource/ResourceManager.h"
 #include "UIRenderer.h"
 #include "PostProcessing/PostProcessing.h"
+#include "ParticleRenderer.h"
+
 
 namespace TRE
 {
@@ -153,6 +155,9 @@ namespace TRE
 
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
+
+			//Particle Renderer
+			std::shared_ptr<ParticleRenderer> m_ParticleRenderer;
 
 			bool m_IsEditorScene = false;
 	};

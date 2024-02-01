@@ -4,17 +4,26 @@
 
 namespace TRE
 {
+	struct Particle
+	{
+		glm::mat4 L2W;
+		glm::vec3 Position;
+		glm::vec3 Velocity;
+		float LifeTime;
+	};
+
 	class ParticleComponent : property::base
 	{
 	public:
+		std::vector<Particle> m_Particles;
 		glm::vec3 m_Velocity = glm::vec3(0.f, 1.f, 0.f);
 		glm::vec2 m_Variation = glm::vec2(0.8f, 1.f);
 		float m_Speed = 1.f;
 		float m_LifeTime = 1.f;
 		int m_ParticleCount = 100;
-		bool m_IsVisible = false;
+		bool m_IsVisible = true;
 
-		int GetParticlesSize() const { return m_Particles.size(); }
+	public:
 		void GenerateParticles(const glm::vec3& emitterPos);
 		void UpdateParticle();
 
@@ -35,8 +44,6 @@ namespace TRE
 				t.m_IsVisible = j.at("m_IsVisible").get<bool>();
 			}
 		}
-	private:
-		std::vector<glm::vec3> m_Particles;
 	};
 
 	class ParticleSystem : public ECSSystem

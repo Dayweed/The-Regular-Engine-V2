@@ -17,7 +17,10 @@ namespace TRE
 		for (int i = 0; i < m_ParticleCount; ++i)
 		{
 			const glm::vec3 randomVec = glm::vec3(dis(gen), dis(gen), dis(gen));
-			m_Particles[i] = emitterPos + randomVec;
+			Particle& particle = m_Particles[i];
+			particle.Position = emitterPos + randomVec;
+			particle.Velocity = randomVec * m_Speed;
+			particle.LifeTime = m_LifeTime;
 		}
 	}
 
@@ -29,10 +32,14 @@ namespace TRE
 		for (auto& particle : m_Particles)
 		{
 			const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
-			particle += glm::vec3(dis(gen), dis(gen), dis(gen)) * m_Velocity * deltaTime;
+			particle.LifeTime -= deltaTime;
+			particle.Position += glm::vec3(dis(gen), dis(gen), dis(gen)) * m_Velocity * deltaTime;
+
+			auto scale = glm::scale(glm::mat4(1.f), glm::vec3(100.f, 100.f, 0.f));
+			auto translate = glm::translate(glm::mat4(1.f), particle.Position);
+			particle.L2W = translate * scale;
 		}
 	}
-
 
 	void ParticleSystem::LateUpdate()
 	{
@@ -40,15 +47,12 @@ namespace TRE
 		{
 			auto& particleComponent = emitters->GetComponent<ParticleComponent>();
 			const auto& transform = emitters->GetComponent<Transform>();
-			if (particleComponent.GetParticlesSize() != particleComponent.m_ParticleCount)
+			if (particleComponent.m_Particles.size() != particleComponent.m_ParticleCount)
 			{
 				particleComponent.GenerateParticles(transform.m_Position);
 			}
 
-			if (particleComponent.m_IsVisible)
-			{
-				particleComponent.UpdateParticle();
-			}
+			particleComponent.UpdateParticle();
 		}
 	}
 }

@@ -103,7 +103,11 @@ namespace TRE
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 		else
+		{
 			SceneManager::Instance().NewScene();
+			//auto particle = ECSManager::Instance().CreateEntity("particle");
+			//particle->AddComponent<ParticleComponent>();
+		}
 
 		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
@@ -156,6 +160,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<DirectPathfindingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<SlideshowSystem>();
+		ECSSystemManager::Instance().RegisterSystem<ParticleSystem>();
 		//ECSSystemManager::Instance().RegisterSystem<AnimationSystem>();
 
 		// Allocate Default Size for Memory Manager
