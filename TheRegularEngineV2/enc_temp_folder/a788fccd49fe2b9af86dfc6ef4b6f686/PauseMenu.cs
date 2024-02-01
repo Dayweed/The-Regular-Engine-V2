@@ -67,7 +67,7 @@ namespace TRE
 
 		public void Update()
 		{
-            if (InputSystem.GetKeyPress(InputKeys.Escape))
+            if (InputSystem.GetKeyPress(InputKeys.P))
             {
                 isPaused = !isPaused;
 				isChangeMenu = true;

@@ -19,6 +19,7 @@ namespace TRE
 	{
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
+		public PauseMenu MyPauseMenu;
 
 		//Check if player is boosted jump
 		public bool isBoostedJump = false;
@@ -115,6 +116,7 @@ namespace TRE
 
 		public void Start()
 		{
+			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 			MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
@@ -207,124 +209,129 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (InputSystem.GetKeyHold(InputKeys.I))
-				{
-					dirVec += CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 0;
-				}
+                if (!MyPauseMenu.isPaused)
+                {
+					    
+				    if (InputSystem.GetKeyHold(InputKeys.I))
+				    {
+					    dirVec += CS.GetMainCameraForwardVec();
+					    lastPlayerDirection = 0;
+				    }
 
-				if (InputSystem.GetKeyHold(InputKeys.K))
-				{
-					dirVec -= CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 180;
-				}
+				    if (InputSystem.GetKeyHold(InputKeys.K))
+				    {
+					    dirVec -= CS.GetMainCameraForwardVec();
+					    lastPlayerDirection = 180;
+				    }
 
-				if (InputSystem.GetKeyHold(InputKeys.J))
-				{
-					dirVec += CS.GetMainCameraRightVec();
-					lastPlayerDirection = 90;
-				}
+				    if (InputSystem.GetKeyHold(InputKeys.J))
+				    {
+					    dirVec += CS.GetMainCameraRightVec();
+					    lastPlayerDirection = 90;
+				    }
 
-				if (InputSystem.GetKeyHold(InputKeys.L))
-				{
-					dirVec -= CS.GetMainCameraRightVec();
-					lastPlayerDirection = 270;
-				}
+				    if (InputSystem.GetKeyHold(InputKeys.L))
+				    {
+					    dirVec -= CS.GetMainCameraRightVec();
+					    lastPlayerDirection = 270;
+				    }
 
-				if (InputSystem.GetKeyHold(InputKeys.I))
-				{
-					if (InputSystem.GetKeyHold(InputKeys.L))
-					{
-						lastPlayerDirection = 315;
-					}
+				    if (InputSystem.GetKeyHold(InputKeys.I))
+				    {
+					    if (InputSystem.GetKeyHold(InputKeys.L))
+					    {
+						    lastPlayerDirection = 315;
+					    }
 
-					if (InputSystem.GetKeyHold(InputKeys.J))
-					{
-						lastPlayerDirection = 45;
-					}
-				}
+					    if (InputSystem.GetKeyHold(InputKeys.J))
+					    {
+						    lastPlayerDirection = 45;
+					    }
+				    }
 
-				if (InputSystem.GetKeyHold(InputKeys.K))
-				{
-					if (InputSystem.GetKeyHold(InputKeys.L))
-					{
-						lastPlayerDirection = 225;
-					}
+				    if (InputSystem.GetKeyHold(InputKeys.K))
+				    {
+					    if (InputSystem.GetKeyHold(InputKeys.L))
+					    {
+						    lastPlayerDirection = 225;
+					    }
 
-					if (InputSystem.GetKeyHold(InputKeys.J))
-					{
-						lastPlayerDirection = 135;
-					}
-				}
+					    if (InputSystem.GetKeyHold(InputKeys.J))
+					    {
+						    lastPlayerDirection = 135;
+					    }
+				    }
 
-				if (jumpCancelled && isJumping && currVelocity.y > 0)
-				{
-					currVelocity.y = 0;
-				}
+				    if (jumpCancelled && isJumping && currVelocity.y > 0)
+				    {
+					    currVelocity.y = 0;
+				    }
 
-				if (isGrounded)
-				{
-					coyoteTimeCounter = coyoteTime;
-				}
-				else
-				{
-					coyoteTimeCounter -= Time.deltaTime;
-				}
+				    if (isGrounded)
+				    {
+					    coyoteTimeCounter = coyoteTime;
+				    }
+				    else
+				    {
+					    coyoteTimeCounter -= Time.deltaTime;
+				    }
 
-				if (InputSystem.GetKeyPress(InputKeys.Enter))
-				{
-					jumpBufferCounter = jumpBufferTime;
-				}
-				else
-				{
-					jumpBufferCounter -= Time.deltaTime;
-				}
+				    if (InputSystem.GetKeyPress(InputKeys.Enter))
+				    {
+					    jumpBufferCounter = jumpBufferTime;
+				    }
+				    else
+				    {
+					    jumpBufferCounter -= Time.deltaTime;
+				    }
 
-				if (isJumping)
-				{
-					if (InputSystem.GetKeyRelease(InputKeys.Enter))
-					{
-						//Debug.Log("cancelled jump");
-						jumpCancelled = true;
-						coyoteTimeCounter = 0f;
-					}
-					if (currentJumpTime > maxJumpButtomTime)
-					{
-						//Debug.Log("maxed out jump");
-						isJumping = false;
-					}
-					currentJumpTime += Time.deltaTime;
-				}
-				else
-				{
-					if (InputSystem.GetKeyRelease(InputKeys.Enter))
-					{
-						isJumping = false;
-					}
-				}
+				    if (isJumping)
+				    {
+					    if (InputSystem.GetKeyRelease(InputKeys.Enter))
+					    {
+						    //Debug.Log("cancelled jump");
+						    jumpCancelled = true;
+						    coyoteTimeCounter = 0f;
+					    }
+					    if (currentJumpTime > maxJumpButtomTime)
+					    {
+						    //Debug.Log("maxed out jump");
+						    isJumping = false;
+					    }
+					    currentJumpTime += Time.deltaTime;
+				    }
+				    else
+				    {
+					    if (InputSystem.GetKeyRelease(InputKeys.Enter))
+					    {
+						    isJumping = false;
+					    }
+				    }
 
-				if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
-				{
-					isWalking = false;
+				    if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+				    {
+					    isWalking = false;
 
-					vec3 maxHeight = new vec3(0, 70, 0);
-					// Boosted Jump
-					if (isBoostedJump)
-					{
-						maxHeight = new vec3(0, 150, 0);
-					}
+					    vec3 maxHeight = new vec3(0, 70, 0);
+					    // Boosted Jump
+					    if (isBoostedJump)
+					    {
+						    maxHeight = new vec3(0, 150, 0);
+					    }
 
-					Jump(maxHeight);
-					if (ECSManager.IsValidEntity(jumpSFX))
-					{
-						AudioSystem.Play(jumpSFX);
-					}
+					    Jump(maxHeight);
+					    if (ECSManager.IsValidEntity(jumpSFX))
+					    {
+						    AudioSystem.Play(jumpSFX);
+					    }
 
-					isJumping = true;
-					jumpCancelled = false;
-					currentJumpTime = 0;
-					jumpBufferCounter = 0;
-				}
+					    isJumping = true;
+					    jumpCancelled = false;
+					    currentJumpTime = 0;
+					    jumpBufferCounter = 0;
+				    }
+                }
+
 			}
 
 			#endregion

@@ -16,6 +16,7 @@ namespace TRE
 
 	public class MoleyController : Entity
 	{
+		public PauseMenu MyPauseMenu;
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
@@ -124,6 +125,8 @@ namespace TRE
 
 		public void Start()
 		{
+			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
+
 			#region UI variables
 			MyPowerUpUI = ECSManager.FindEntityByName("LeftCharacter_HUD").GetComponent<PowerUpUI>();
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
@@ -229,129 +232,133 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (InputSystem.GetKeyHold(InputKeys.W))
-				{
-					dirVec += CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 0;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.S))
-				{
-					dirVec -= CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 180;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.A))
-				{
-					dirVec += CS.GetMainCameraRightVec();
-					lastPlayerDirection = 90;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.D))
-				{
-					dirVec -= CS.GetMainCameraRightVec();
-					lastPlayerDirection = 270;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.W))
-				{
-					if (InputSystem.GetKeyHold(InputKeys.D))
-					{
-						lastPlayerDirection = 315;
-					}
-					if (InputSystem.GetKeyHold(InputKeys.A))
-					{
-						lastPlayerDirection = 45;
-					}
-				}
+                if (!MyPauseMenu.isPaused)
+                {
+                    if (InputSystem.GetKeyHold(InputKeys.W))
+				    {
+					    dirVec += CS.GetMainCameraForwardVec();
+					    lastPlayerDirection = 0;
+				    }
+				    if (InputSystem.GetKeyHold(InputKeys.S))
+				    {
+					    dirVec -= CS.GetMainCameraForwardVec();
+					    lastPlayerDirection = 180;
+				    }
+				    if (InputSystem.GetKeyHold(InputKeys.A))
+				    {
+					    dirVec += CS.GetMainCameraRightVec();
+					    lastPlayerDirection = 90;
+				    }
+				    if (InputSystem.GetKeyHold(InputKeys.D))
+				    {
+					    dirVec -= CS.GetMainCameraRightVec();
+					    lastPlayerDirection = 270;
+				    }
+				    if (InputSystem.GetKeyHold(InputKeys.W))
+				    {
+					    if (InputSystem.GetKeyHold(InputKeys.D))
+					    {
+						    lastPlayerDirection = 315;
+					    }
+					    if (InputSystem.GetKeyHold(InputKeys.A))
+					    {
+						    lastPlayerDirection = 45;
+					    }
+				    }
 
-				if (InputSystem.GetKeyHold(InputKeys.S))
-				{
-					if (InputSystem.GetKeyHold(InputKeys.D))
-					{
-						lastPlayerDirection = 225;
-					}
-					if (InputSystem.GetKeyHold(InputKeys.A))
-					{
-						lastPlayerDirection = 135;
-					}
-				}
+				    if (InputSystem.GetKeyHold(InputKeys.S))
+				    {
+					    if (InputSystem.GetKeyHold(InputKeys.D))
+					    {
+						    lastPlayerDirection = 225;
+					    }
+					    if (InputSystem.GetKeyHold(InputKeys.A))
+					    {
+						    lastPlayerDirection = 135;
+					    }
+				    }
 
-				//When the space bar is released, the player will stop mid jump
-				if (jumpCancelled && isJumping && currVelocity.y > 0)
-				{
-					currVelocity.y = 0;
-				}
-				//check if player is on the ground then reset coyote time
-				if (isGrounded)
-				{
-					coyoteTimeCounter = coyoteTime;
-				}
-				//check if player is not on the ground then reduce coyote time
-				else
-				{
-					coyoteTimeCounter -= Time.deltaTime;
-				}
-				//check if space is pressed within the buffer time
-				if (InputSystem.GetKeyPress(InputKeys.Space))
-				{
-					jumpHeight += Time.deltaTime;
-					jumpBufferCounter = jumpBufferTime;
-					//Debug.Log("Jump Pressed");
-				}
-				//count down the buffer time
-				else
-				{
-					jumpBufferCounter -= Time.deltaTime;
-				}
-				//check if player is jumping
-				if (isJumping)
-				{
-					//check if space is released then cancel jump
-					if (InputSystem.GetKeyRelease(InputKeys.Space))
-					{
-						jumpCancelled = true;
-						coyoteTimeCounter = 0f;
-						//Debug.Log("Jump Cancelled");
-					}
-					//check if space is held down and jump time is not over
-					if (currentJumpTime > maxJumpButtomTime)
-					{
-						isJumping = false;
+				    //When the space bar is released, the player will stop mid jump
+				    if (jumpCancelled && isJumping && currVelocity.y > 0)
+				    {
+					    currVelocity.y = 0;
+				    }
+				    //check if player is on the ground then reset coyote time
+				    if (isGrounded)
+				    {
+					    coyoteTimeCounter = coyoteTime;
+				    }
+				    //check if player is not on the ground then reduce coyote time
+				    else
+				    {
+					    coyoteTimeCounter -= Time.deltaTime;
+				    }
+				    //check if space is pressed within the buffer time
+				    if (InputSystem.GetKeyPress(InputKeys.Space))
+				    {
+					    jumpHeight += Time.deltaTime;
+					    jumpBufferCounter = jumpBufferTime;
+					    //Debug.Log("Jump Pressed");
+				    }
+				    //count down the buffer time
+				    else
+				    {
+					    jumpBufferCounter -= Time.deltaTime;
+				    }
+				    //check if player is jumping
+				    if (isJumping)
+				    {
+					    //check if space is released then cancel jump
+					    if (InputSystem.GetKeyRelease(InputKeys.Space))
+					    {
+						    jumpCancelled = true;
+						    coyoteTimeCounter = 0f;
+						    //Debug.Log("Jump Cancelled");
+					    }
+					    //check if space is held down and jump time is not over
+					    if (currentJumpTime > maxJumpButtomTime)
+					    {
+						    isJumping = false;
 
-						//Debug.Log("Jump ran out");
-					}
-					currentJumpTime += Time.deltaTime;
-				}
-				//check if player is on the ground and space is not released
-				else
-				{
-					if (InputSystem.GetKeyRelease(InputKeys.Space))
-					{
-						isJumping = false;
-					}
-				}
-				//jump buffer time and coyote time is still active
-				if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
-				{
-					isWalking = false;
-					//if something break comment this line below out
-						currVelocity.y = 0;
+						    //Debug.Log("Jump ran out");
+					    }
+					    currentJumpTime += Time.deltaTime;
+				    }
+				    //check if player is on the ground and space is not released
+				    else
+				    {
+					    if (InputSystem.GetKeyRelease(InputKeys.Space))
+					    {
+						    isJumping = false;
+					    }
+				    }
+				    //jump buffer time and coyote time is still active
+				    if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+				    {
+					    isWalking = false;
+					    //if something break comment this line below out
+						    currVelocity.y = 0;
 
-					vec3 maxHeight = new vec3(0, 70, 0);
-					// Boosted Jump
-					if (isBoostedJump)
-					{
-						maxHeight = new vec3(0, 150, 0);
-					}
+					    vec3 maxHeight = new vec3(0, 70, 0);
+					    // Boosted Jump
+					    if (isBoostedJump)
+					    {
+						    maxHeight = new vec3(0, 150, 0);
+					    }
 
-					Jump(maxHeight);
-					if (ECSManager.IsValidEntity(jumpSFX))
-					{
-						AudioSystem.Play(jumpSFX);
-					}
+					    Jump(maxHeight);
+					    if (ECSManager.IsValidEntity(jumpSFX))
+					    {
+						    AudioSystem.Play(jumpSFX);
+					    }
 
-					isJumping = true;
-					jumpCancelled = false;
-					currentJumpTime = 0;
-					jumpBufferCounter = 0;
-				}
+					    isJumping = true;
+					    jumpCancelled = false;
+					    currentJumpTime = 0;
+					    jumpBufferCounter = 0;
+				    }
+                }
+				
 			}
 			#endregion
 
@@ -518,10 +525,10 @@ namespace TRE
 
 			#region CHEATS
 			// Close Game
-			if (InputSystem.GetKeyHold(InputKeys.Escape))
-			{
-				Game.CloseGame();
-			}
+			//if (InputSystem.GetKeyHold(InputKeys.Escape))
+			//{
+			//	Game.CloseGame();
+			//}
 			#endregion
 
 
