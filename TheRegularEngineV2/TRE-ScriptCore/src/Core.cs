@@ -1466,6 +1466,16 @@ namespace TRE
 	public class UISystem
 	{
 
+        public static void SetVisible(EntityID ID, bool isVisible)
+        {
+            Engine_SetVisible(ID, isVisible);
+        }
+
+        public static bool GetVisible(EntityID ID)
+        {
+            return Engine_GetVisible(ID);
+        }
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 
