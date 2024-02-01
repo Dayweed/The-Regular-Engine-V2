@@ -71,8 +71,5 @@ namespace TRE
 		private:
 			static std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> m_FontTexture;
 			static std::unordered_map<std::string, std::shared_ptr<Material>> m_FontMaterial;
-
-			FontRenderer(FontRenderer&) = delete;
-			void operator=(const FontRenderer&) = delete;
 	};
 }

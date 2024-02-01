@@ -110,10 +110,10 @@ namespace TRE
 		FontRenderer::GetLoadedFonts().push_back(FontType);
 		std::cout << "Creating Font Face" << std::endl;
 
-		FT_Set_Pixel_Sizes(face, 0, 48); //Scale the font size using transform comp
+		FT_Set_Pixel_Sizes(face, 0, 64); //Scale the font size using transform comp
 
 		int width = 0;
-		int height = 0;
+		unsigned int height = 0;
 		for (unsigned char c = 0; c < 128; c++)
 		{
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
@@ -122,16 +122,14 @@ namespace TRE
 			}
 
 			width += face->glyph->bitmap.width;
-			
-			if (static_cast<unsigned int>(height) < face->glyph->bitmap.rows)
-				height = face->glyph->bitmap.rows;
+			height = std::max(height, face->glyph->bitmap.rows);
 		}
 
 		uint8_t* data = new uint8_t[width * height * 4];
 
 		std::unordered_map<char, Character> LetterStorage;
-		std::vector<uint8_t> Buffer(48);
-		int x = 0;
+		std::vector<uint8_t> Buffer(64);
+		int zxcv = 0;
 		int offset = 0;
 		for (unsigned char c = 0; c < 128; c++)
 		{
@@ -158,7 +156,7 @@ namespace TRE
 			}
 			offset += face->glyph->bitmap.width * 4;
 
-			float xpos = static_cast<float>(x) / width ;
+			float xpos = static_cast<float>(zxcv) / width ;
 			float w = static_cast<float>(face->glyph->bitmap.width) / static_cast<float>(width);
 			float ypos = static_cast<float>(face->glyph->bitmap.rows) / static_cast<float>(height);
 			
@@ -172,7 +170,7 @@ namespace TRE
 
 			LetterStorage[c] = character;
 
-			x += static_cast<int>(face->glyph->bitmap.width);
+			zxcv += static_cast<int>(face->glyph->bitmap.width);
 		}
 
 		m_Characters[FontType] = LetterStorage;
@@ -231,17 +229,23 @@ namespace TRE
 				continue;
 
 			float offset = 0.f;
+			float y_offset = m_Characters[TextComp.m_FontName.m_FontType]['T'].Size.y;
 			for (auto Letter : TextComp.m_TextContent)
 			{
-				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / 48.f;
-				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.x / 48.f, m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / 48.f);
+				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x;
+				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.x, m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y);
 				offset += textwidth;
 
 				Font_PushConstant pc{};
-				auto TransformComp = Entity->GetComponent<Transform>();
-				pc.Proj = TempProj * TransformComp.m_WorldXform * glm::translate(glm::mat4(1.f), glm::vec3(offset, 0.f, 0.f)) * glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
-				pc.Color = TextComp.m_Color;
+				auto TransformComp = Entity->GetComponent<Transform>(); 
 
+			
+				pc.Proj = TempProj
+					* TransformComp.m_WorldXform
+					* glm::translate(glm::mat4(1.f), glm::vec3(offset, -(m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y), 0.f))
+					* glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
+				pc.Color = TextComp.m_Color;
+				
 				
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial[TextComp.m_FontName.m_FontType]->GetDescriptor(Index), 0, NULL);
