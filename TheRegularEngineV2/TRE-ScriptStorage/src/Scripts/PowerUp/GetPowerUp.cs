@@ -18,6 +18,11 @@ namespace TRE
 
 		public bool collected = false;
 
+		// VFX variables
+		private bool vfxCollectComplete = false;
+		private float vfxLerpSpeed = 1.5f;
+		private vec3 originalScale;
+
 		public float cooldownDuration = 1.5f;
 		public float cooldownCurrent = 0f;
 
@@ -37,10 +42,11 @@ namespace TRE
 
 		}
 
-		public void OnCreate()
+		public void Start()
 		{
 			collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
-		}
+			originalScale = GetComponent<Transform>().Scale;
+        }
 
 		private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
 		{
@@ -105,7 +111,10 @@ namespace TRE
 
 				GetComponent<Rigidbody>().useGravity = false;
 				PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
-			}
+
+				vfxCollectComplete = false;
+                RunCollectingVFX();
+            }
 		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
@@ -116,6 +125,11 @@ namespace TRE
 
 		public void Update()
 		{
+			// Run Collecting vfx
+			if (collected && !vfxCollectComplete)
+			{
+				RunCollectingVFX();
+            }
 			if (!collected)
 			{
 				// Spin blueberry
@@ -127,6 +141,25 @@ namespace TRE
 			SetToPlayer();
 		}
 
+		private void RunCollectingVFX()
+		{
+			Transform myTransform = GetComponent<Transform>();
+            float x = MathF.Lerp(myTransform.Scale.x, 0, vfxLerpSpeed * Time.deltaTime);
+            float y = MathF.Lerp(myTransform.Scale.y, 0, vfxLerpSpeed * Time.deltaTime);
+            float z = MathF.Lerp(myTransform.Scale.z, 0, vfxLerpSpeed * Time.deltaTime);
+			myTransform.Scale = new vec3(x, y, z);
+			// Deactivate Mesh if < 0
+			if (x <= 0 || y <= 0 || z <= 0)
+			{
+				GetComponent<MeshRenderer>().Visible = false;
+
+                // Reset size
+                GetComponent<Transform>().Scale = originalScale;
+
+				vfxCollectComplete = true;
+            }
+        }
+
 		private void SetToPlayer()
 		{
 			//move the power up gameobj to the player's position
@@ -136,19 +169,19 @@ namespace TRE
 
 			if (!collected || playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false) return;
 
-			GetComponent<MeshRenderer>().Visible = false;
+			//GetComponent<MeshRenderer>().Visible = false;
 
 			vec3 newPos = playerObj.transform.Position;
 			int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
 			//newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
 			if (playerObj.CompareTag(mole1tag))
 			{
-				newPos.y += playerObj.GetComponent<MoleyController>().currentHeight + playerObj.GetComponent<MoleyController>().currentRadius;
+				newPos.y += 6f;// playerObj.GetComponent<MoleyController>().currentHeight * 1.5f + 5f;
 			}
 
 			if (playerObj.CompareTag(mole2tag))
 			{
-				newPos.y += playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius;
+				newPos.y += 6f;// playerObj.GetComponent<HoleyController>().currentHeight * 1.5f + 5f;
 			}
 			transform.Position = newPos;
 			//transform.Position = newPos;
@@ -161,11 +194,21 @@ namespace TRE
 
 		public void ReleasePowerUp()
 		{
-			GetComponent<MeshRenderer>().Visible = true;
-			playerObj = null;
+            // Reset size
+            GetComponent<Transform>().Scale = originalScale;
+            GetComponent<MeshRenderer>().Visible = true;
+
+            // Get player facing direction
+            vec2 dir = new vec2(0, -1);
+            float angle = -playerObj.GetComponent<Transform>().Rotation.y;
+            dir.x = (float)(Math.Cos(angle) * dir.x - Math.Sin(angle) * dir.y);
+            dir.y = (float)(Math.Sin(angle) * dir.x + Math.Cos(angle) * dir.y);
+            dir = dir.Normalized;
+
+            playerObj = null;
 			collected = false;
 			GetComponent<Rigidbody>().useGravity = true;
-			PhysicsSystem.AddForce(this.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
+			PhysicsSystem.AddForce(this.ID, new vec3(dir.x * 10, 50, dir.y * 10), ForceMode.VelocityChange);
 			cooldownCurrent = cooldownDuration;
 		}
 

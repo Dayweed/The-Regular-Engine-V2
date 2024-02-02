@@ -15,18 +15,29 @@ namespace TRE
 		float height = 10f;
 		float period = 5f;
 
+		int dir = 1;
+
 		public void Start()
 		{
 			timer = 0;
 			TransformSystem.GetPosition(this.ID, out vec3 pos);
 			initialYPos = pos.y;
-		}
+
+            // Custom direction for result logic
+            if (Scene.GetSceneName() == "ResultScreen")
+            {
+				if (name == "BackgroundTitle")
+				{
+					dir = -1;
+                }
+            }
+        }
 
 		public void Update()
 		{
 			timer += Time.GetDeltaTime();
 			TransformSystem.GetPosition(this.ID, out vec3 pos);
-			float value = initialYPos + height * MathF.Sin(period * timer);
+			float value = initialYPos + height * MathF.Sin(period * timer) * dir;
 			pos.y = value;
 			TransformSystem.SetPosition(this.ID, pos);
 		}

@@ -20,6 +20,7 @@ namespace TRE
 			CylinderCollider,
 			DirectionalLight,
 			ScriptComponent,
+			UIComponent,
 			Audio,
 			AudioListener,
 			ParticleComponent,

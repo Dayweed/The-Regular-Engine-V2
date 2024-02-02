@@ -192,7 +192,7 @@ namespace TRE
 
 			//Transform variables
 			TransformSystem.GetPosition(this.ID, out vec3 pos);
-			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
+			//TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 
 			//Movement variables
 			PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
