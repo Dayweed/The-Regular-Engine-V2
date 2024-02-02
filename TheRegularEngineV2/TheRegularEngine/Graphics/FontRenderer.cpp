@@ -7,7 +7,8 @@
 #include "Core/ECS.h"
 #include "Core/Transform.h"
 
-#define FONT_FILEDIRECTORY 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace TRE
 {
@@ -16,6 +17,7 @@ namespace TRE
 	std::unordered_map<std::string, std::shared_ptr<VulkanTexture>> FontRenderer::m_FontTexture;
 	std::unordered_map<std::string, std::shared_ptr<Material>> FontRenderer::m_FontMaterial;
 	std::unordered_map<std::string, std::map<char, std::shared_ptr<VertexBuffer>>> FontRenderer::m_VertexData;
+	static constexpr float s_DefaultFontSize = 64.f;
 
 	std::vector<std::string>& FontRenderer::GetLoadedFonts()
 	{
@@ -68,9 +70,7 @@ namespace TRE
 		m_FontPipeline = std::make_shared<Pipeline>(FontPipeConfig, m_FontRenderPass);
 
 		//Initialize a default font to render with
-		std::string FontType = GetFontType(m_DefaultFontFilepath);
-		CreateNewFontFace(m_DefaultFontFilepath, FontType);
-		CreateFontData(FontType);
+		LoadFont(m_DefaultFontFilepath);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 		m_FontIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()), UINT32_T_CAST(sizeof(int) * indices.size()), UINT32_T_CAST(indices.size()));
@@ -79,8 +79,17 @@ namespace TRE
 	void FontRenderer::LoadFont(std::string FilePath)
 	{
 		std::string FontType = GetFontType(FilePath);
-		CreateNewFontFace(FilePath, FontType);
-		CreateFontData(FontType);
+		if (std::find(m_AvailableFonts.begin(), m_AvailableFonts.end(), FontType) != m_AvailableFonts.end())
+		{
+			TRE_CORE_INFO("Font Type {0} is already loaded, skipping the load!", FontType);
+		}
+		else
+		{
+			CreateNewFontFace(FilePath, FontType);
+			CreateFontData(FontType);
+			TRE_CORE_INFO("Font Type {0} is loaded!", FontType);
+
+		}
 	}
 
 	FontRenderer::~FontRenderer()
@@ -108,9 +117,8 @@ namespace TRE
 		}
 
 		FontRenderer::GetLoadedFonts().push_back(FontType);
-		std::cout << "Creating Font Face" << std::endl;
 
-		FT_Set_Pixel_Sizes(face, 0, 64); //Scale the font size using transform comp
+		FT_Set_Pixel_Sizes(face, 0, s_DefaultFontSize); //Scale the font size using transform comp
 
 		int width = 0;
 		unsigned int height = 0;
@@ -128,7 +136,7 @@ namespace TRE
 		uint8_t* data = new uint8_t[width * height * 4];
 
 		std::unordered_map<char, Character> LetterStorage;
-		std::vector<uint8_t> Buffer(64);
+		std::vector<uint8_t> Buffer(s_DefaultFontSize);
 		int zxcv = 0;
 		int offset = 0;
 		for (unsigned char c = 0; c < 128; c++)
@@ -232,8 +240,8 @@ namespace TRE
 			//float y_offset = m_Characters[TextComp.m_FontName.m_FontType]['T'].Size.y;
 			for (auto Letter : TextComp.m_TextContent)
 			{
-				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / 64.f + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x / 64.f;
-				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.x / 64.f, m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / 64.f);
+				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / s_DefaultFontSize + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x / s_DefaultFontSize;
+				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.x / s_DefaultFontSize, m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / s_DefaultFontSize);
 				offset += textwidth;
 
 				Font_PushConstant pc{};
@@ -242,7 +250,7 @@ namespace TRE
 			
 				pc.Proj = TempProj
 					* TransformComp.m_WorldXform
-					* glm::translate(glm::mat4(1.f), glm::vec3(offset, (m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / 64.f - 2 * (m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y / 64.f)), 0.f))
+					* glm::translate(glm::mat4(1.f), glm::vec3(offset, (m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / s_DefaultFontSize - 2 * (m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y / s_DefaultFontSize)), 0.f))
 					* glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
 				pc.Color = TextComp.m_Color;
 				

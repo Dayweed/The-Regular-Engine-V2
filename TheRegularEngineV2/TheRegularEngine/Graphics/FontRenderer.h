@@ -8,8 +8,6 @@
 #include "VulkanTexture.h"
 #include "Material.h"
 #include "RendererContext.h"
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 namespace TRE
 {

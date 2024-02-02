@@ -2,6 +2,7 @@
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "Graphics/FontRenderer.h"
 
 namespace TRE
 {
@@ -48,6 +49,8 @@ namespace TRE
 			if (j.contains("m_FontType"))
 			{
 				t.m_FontName.m_FontType = j.at("m_FontType").get<std::string>();
+				std::string Filepath = "../Assets/Font/" + t.m_FontName.m_FontType + ".ttf"; //This should not be hardcoded
+				FontRenderer::LoadFont(Filepath); //Try to load in case its not loaded yet, auto skips the loading if its loaded
 			}
 		}
 	};
