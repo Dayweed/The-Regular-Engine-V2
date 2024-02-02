@@ -19,6 +19,7 @@ namespace TRE
 		glm::vec2	 Bearing;
 		glm::vec2	 UV[4];
 		unsigned int Advance;
+		unsigned int HeightAdvance; //To be remove, just making it easy now
 	};
 
 	struct FontVertex 

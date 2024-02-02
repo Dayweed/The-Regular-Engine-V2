@@ -173,7 +173,8 @@ namespace TRE
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 				{{ xpos,  0.f }, { xpos + w,  0.f }, { xpos + w,  ypos }, {xpos, ypos} },
-				face->glyph->advance.x
+				face->glyph->advance.x,
+				face->size->metrics.height
 			};
 
 			LetterStorage[c] = character;
@@ -237,20 +238,26 @@ namespace TRE
 				continue;
 
 			float offset = 0.f;
-			//float y_offset = m_Characters[TextComp.m_FontName.m_FontType]['T'].Size.y;
-			for (auto Letter : TextComp.m_TextContent)
+			float y_offset = 0.f;
+			for (auto Letter : TextComp.m_TextContent.Text)
 			{
+
 				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / s_DefaultFontSize + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x / s_DefaultFontSize;
+				if (Letter == '\n')
+				{
+					y_offset += 2 * (m_Characters[TextComp.m_FontName.m_FontType][Letter].HeightAdvance >> 6) / s_DefaultFontSize;
+					offset = 0;
+					continue;
+				}
 				glm::vec2 fontscale = glm::vec2(m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.x / s_DefaultFontSize, m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / s_DefaultFontSize);
 				offset += textwidth;
 
 				Font_PushConstant pc{};
-				auto TransformComp = Entity->GetComponent<Transform>(); 
-
+				auto TransformComp = Entity->GetComponent<Transform>();
 			
 				pc.Proj = TempProj
 					* TransformComp.m_WorldXform
-					* glm::translate(glm::mat4(1.f), glm::vec3(offset, (m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / s_DefaultFontSize - 2 * (m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y / s_DefaultFontSize)), 0.f))
+					* glm::translate(glm::mat4(1.f), glm::vec3(offset, (m_Characters[TextComp.m_FontName.m_FontType][Letter].Size.y / s_DefaultFontSize - 2 * (m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.y / s_DefaultFontSize)) + y_offset, 0.f))
 					* glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
 				pc.Color = TextComp.m_Color;
 				
