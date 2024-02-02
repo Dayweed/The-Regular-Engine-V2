@@ -10,7 +10,7 @@ namespace TRE
 	{
 	public:
 		bool m_IsVisible = false;
-		std::string m_TextContent = "Text";
+		MultiLineString m_TextContent = { "Text" };
 		glm::vec4 m_Color = { 0.f, 0.f, 0.f, 1.f };
 		FontType m_FontName = { "arial" };
 
@@ -24,7 +24,7 @@ namespace TRE
 			j = nlohmann::json
 			{
 				{ "m_IsVisible", t.m_IsVisible },
-				{ "m_TextContent", t.m_TextContent },
+				{ "m_TextContent", t.m_TextContent.Text },
 				{ "m_Color", StoredColor },
 				{ "m_FontType", t.m_FontName.m_FontType }
 			};
@@ -38,7 +38,7 @@ namespace TRE
 			}
 			if (j.contains("m_TextContent"))
 			{
-				t.m_TextContent = j.at("m_TextContent").get<std::string>();
+				t.m_TextContent.Text = j.at("m_TextContent").get<std::string>();
 			}
 			if (j.contains("m_Color"))
 			{

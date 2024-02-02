@@ -286,6 +286,16 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::ColorEdit3(NameField.c_str(), color);
 								Value.m_Value = { color[0], color[1], color[2] };
 							}
+							else if constexpr (std::is_same_v<T, MultiLineString>)
+							{
+								std::string Text = Value.Text.c_str();
+								char buffer[512];
+								std::strcpy(buffer, Text.c_str());
+								if (ImGui::InputTextMultiline("##Text", buffer, sizeof(buffer)))
+								{
+									Value.Text = std::string(buffer);
+								}
+							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
 								static char resourceName[200];
