@@ -34,6 +34,7 @@ namespace TRE
 
 		friend void to_json(nlohmann::json& j, const ParticleComponent& t)
 		{
+			static_cast<void>(t); // because t is currently unused
 			j = nlohmann::json
 			{
 				//{ "m_IsVisible", t.m_IsVisible },
@@ -42,6 +43,7 @@ namespace TRE
 
 		friend void from_json(const nlohmann::json& j, ParticleComponent& t)
 		{
+			static_cast<void>(t); // because t is currently unused
 			if (j.contains("m_IsVisible"))
 			{
 				//t.m_IsVisible = j.at("m_IsVisible").get<bool>();
