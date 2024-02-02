@@ -29,10 +29,6 @@ namespace TRE
 			
 			const glm::vec3 randomSize = glm::vec3(disSize(gen), disSize(gen), disSize(gen));
 
-			/*auto scale = glm::scale(glm::mat4(1.f), randomSize);
-			auto translate = glm::translate(glm::mat4(1.f), particle.Position);
-			particle.L2W = translate * scale;*/
-
 			glm::vec3 forward = glm::normalize(mainCameraTransform.m_Position - particle.Position);
 			glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
 			glm::vec3 up = glm::cross(forward, right);

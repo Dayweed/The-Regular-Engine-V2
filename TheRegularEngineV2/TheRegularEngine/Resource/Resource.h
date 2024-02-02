@@ -18,7 +18,9 @@ namespace TRE
 	class Resource
 	{
 	public:
-		Resource() = default;
+		Resource() {
+			m_Handle = GenerateGUID();
+		}
 		virtual ~Resource() {}
 		static ResourceHandle GenerateGUID();
 		static ResourceHandle GenerateGUID(const std::string& assetName);

@@ -13,6 +13,7 @@ namespace TRE
 	class ParticleComponent : property::base
 	{
 	public:
+		std::shared_ptr<Material> m_Material;
 		glm::vec3 m_Velocity = glm::vec3(0.f, 1.f, 0.f);
 		glm::vec2 m_VariationSpeed = glm::vec2(0.8f, 1.f);	//Variation in the speed of the particles
 		glm::vec2 m_VariationSize = glm::vec2(0.8f, 1.f);	//Variation in the size of the particles

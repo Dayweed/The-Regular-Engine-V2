@@ -55,14 +55,8 @@ namespace TRE
 		m_VertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
 			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
 	
-		m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
-		m_Material->Invalidate();
-
-	}
-
-	ParticleRenderer::~ParticleRenderer()
-	{
-
+		m_DefaultMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
+		m_DefaultMaterial->Invalidate();
 	}
 
 	void ParticleRenderer::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
@@ -70,7 +64,6 @@ namespace TRE
 		ParticleUBO ubo{};
 		const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 		ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
-		ubo.Color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 
 		m_UBO->SetData(&ubo, sizeof(ParticleUBO));
 
@@ -83,32 +76,56 @@ namespace TRE
 
 		vkCmdBeginRenderPass(commandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.width = static_cast<float>(SC->GetWidth());
+		viewport.height = static_cast<float>(SC->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(commandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
-
-		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
 		scissor.extent = SC->GetSwapChainExtent();
 		vkCmdSetScissor(commandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		auto index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-
-		Renderer::BindPipeline(commandBuffer, m_Pipeline);
-		m_Material->UpdateForRendering(m_UBO, index);
-		vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_Material->GetDescriptor(index), 0, NULL);
+		std::multimap<ResourceHandle, const Entity&> sortedParticles;
 		for (const auto& emitter : ECSManager::Instance().GetEntities<ParticleComponent>())
 		{
 			const ParticleComponent& particleComp = emitter->GetComponent<ParticleComponent>();
+			if (particleComp.m_Material)
+				sortedParticles.insert(std::make_pair(particleComp.m_Material->GetHandle(), emitter));
+			else
+				sortedParticles.insert(std::make_pair(m_DefaultMaterial->GetHandle(), emitter));
+		}
+
+		auto index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+		Renderer::BindPipeline(commandBuffer, m_Pipeline);
+		for (const auto& ent: sortedParticles)
+		{
+			const Entity& emitter = ent.second;
+			const ParticleComponent& particleComp = emitter->GetComponent<ParticleComponent>();
 			if (particleComp.m_Running)
 			{
+				if (particleComp.m_Material)
+				{
+					if (particleComp.m_Material->GetHandle() != m_PreviousMaterialHandle)
+					{
+						particleComp.m_Material->UpdateForRendering(m_UBO, index);
+						vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
+					}
+				}
+				else
+				{
+					if (m_DefaultMaterial->GetHandle() != m_PreviousMaterialHandle)
+					{
+						m_DefaultMaterial->UpdateForRendering(m_UBO, index);
+						vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultMaterial->GetDescriptor(index), 0, NULL);
+					}
+				}
+				
 				for (auto& particle : particleComp.m_Particles)
 				{
 					Particle_PushConstant pc{};
@@ -125,9 +142,11 @@ namespace TRE
 
 					vkCmdDrawIndexed(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 				}
+
+				m_PreviousMaterialHandle = particleComp.m_Material ? particleComp.m_Material->GetHandle() : m_DefaultMaterial->GetHandle();
 			}
 		}
-
+		m_PreviousMaterialHandle = 0;
 		Renderer::EndRenderPass(commandBuffer);
 	}
 }

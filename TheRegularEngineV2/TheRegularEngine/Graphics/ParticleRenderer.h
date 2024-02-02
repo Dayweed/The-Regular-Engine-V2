@@ -16,14 +16,13 @@ namespace TRE
 	struct ParticleUBO
 	{
 		glm::mat4 ProjView{glm::mat4(1.f)};
-		glm::vec4 Color{ 1.f,1.f,1.f,1.f };
+		//glm::vec4 Color{ 1.f,1.f,1.f,1.f };
 	};
 
 	class ParticleRenderer
 	{
 	public:
 		ParticleRenderer(const std::shared_ptr<Device>& device);
-		~ParticleRenderer();
 
 		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
 	private:
@@ -33,6 +32,7 @@ namespace TRE
 		std::shared_ptr<VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 
-		std::shared_ptr<Material> m_Material;
+		std::shared_ptr<Material> m_DefaultMaterial;
+		ResourceHandle m_PreviousMaterialHandle{0};
 	};
 }
