@@ -64,7 +64,7 @@ namespace TRE
             Star_2.SetActive(false);
             Star_3.SetActive(false);
 
-            currentTimer = delayBufferStart; numStars = 3;
+            currentTimer = delayBufferStart;
 
         }
 
