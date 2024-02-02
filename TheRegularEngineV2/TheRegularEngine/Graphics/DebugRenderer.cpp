@@ -30,7 +30,8 @@ namespace TRE
 		DebugDrawPipelineConfig.Primitive = PrimitiveType::Lines;
 		DebugDrawPipelineConfig.Shader = DebugDrawShader;
 		DebugDrawPipelineConfig.LineWidth = 2.5f;
-		DebugDrawPipelineConfig.EnableDepthTest = false;
+		DebugDrawPipelineConfig.EnableDepthTest = true;
+		DebugDrawPipelineConfig.EnableBlending = true;
 		m_DebugDrawPipeline = std::make_shared<Pipeline>(DebugDrawPipelineConfig, m_RenderPass);
 
 		m_DebugMaterialInstance = std::make_shared<Material>(DebugDrawShader);
@@ -49,14 +50,14 @@ namespace TRE
 
 		std::vector<DebugVertex> DebugAABBVertices =
 		{
-			DebugVertex(glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(-0.5f,0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.5f,0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.5f,-0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(-0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(-0.5f,0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.5f,0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f)),
-			DebugVertex(glm::vec3(0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 1.f))
+			DebugVertex(glm::vec3(-0.5f,-0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(-0.5f,0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(0.5f,0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(0.5f,-0.5f,-0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(-0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(-0.5f,0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(0.5f,0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f)),
+			DebugVertex(glm::vec3(0.5f,-0.5f,0.5f), glm::vec4(0.f, 1.f, 0.f, 0.85f))
 		};
 
 		std::vector<int> DebugAABBIndices = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 4, 4, 5, 5, 1, 1, 2, 2, 6, 6, 5, 5, 4, 4, 7, 7, 3, 7, 6 };
