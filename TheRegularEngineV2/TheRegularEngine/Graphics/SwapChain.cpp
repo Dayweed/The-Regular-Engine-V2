@@ -363,6 +363,7 @@ namespace TRE
 		Info.FinalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		Info.ImageFormat = m_SwapChainSettings.m_SurfaceFormat;
 		Info.DepthEnabled = false;
+		Info.IsSwapChain = true;
 		m_Renderpass = std::make_shared<RenderPass>(m_LogicalDevice, Info);
 	}
 

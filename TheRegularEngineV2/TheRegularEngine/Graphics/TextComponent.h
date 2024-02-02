@@ -10,6 +10,7 @@ namespace TRE
 	{
 	public:
 		bool m_IsVisible = false;
+		bool m_IsDialogue = false;
 		MultiLineString m_TextContent = { "Text" };
 		glm::vec4 m_Color = { 0.f, 0.f, 0.f, 1.f };
 		FontType m_FontName = { "arial" };
@@ -24,6 +25,7 @@ namespace TRE
 			j = nlohmann::json
 			{
 				{ "m_IsVisible", t.m_IsVisible },
+				{ "m_IsVisible", t.m_IsDialogue },
 				{ "m_TextContent", t.m_TextContent.Text },
 				{ "m_Color", StoredColor },
 				{ "m_FontType", t.m_FontName.m_FontType }
@@ -35,6 +37,10 @@ namespace TRE
 			if (j.contains("m_IsVisible"))
 			{
 				t.m_IsVisible = j.at("m_IsVisible").get<bool>();
+			}
+			if (j.contains("m_IsDialogue"))
+			{
+				t.m_IsDialogue = j.at("m_IsDialogue").get<bool>();
 			}
 			if (j.contains("m_TextContent"))
 			{
@@ -59,6 +65,7 @@ namespace TRE
 property_begin(TRE::TextComponent)
 {
 	property_var(m_IsVisible),
+	property_var(m_IsDialogue),
 	property_var(m_TextContent),
 	property_var_fnbegin("Color", Color)
 	{
