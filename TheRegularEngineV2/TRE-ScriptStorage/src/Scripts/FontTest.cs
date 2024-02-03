@@ -18,7 +18,7 @@ namespace TRE
         public void Update()
         {
             float time = Time.GetDeltaTime();
-            TextSystem.SetVisible(fonttest.ID, false);
+            TextSystem.SetTextMessage(fonttest.ID, "It works");
         }
     }
 }

@@ -1991,7 +1991,7 @@ namespace TRE
 	}
 #pragma endregion
 
-#pragma region FontBindings
+#pragma region TextBindings
 	static void Engine_SetTextVisible(CSEntityID id, bool visible)
 	{
 		Entity entity = VALIDATEENTITY(id);
@@ -2020,6 +2020,34 @@ namespace TRE
 		return entity->GetComponent<TextComponent>().m_IsVisible;
 	}
 
+	static void Engine_SetTextMessage(CSEntityID id, MonoString* TextMessage)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+			return;
+		}
+		
+		entity->GetComponent<TextComponent>().m_TextContent.Text = MonoStringToString(TextMessage);
+	}
+
+	static MonoString* Engine_GetTextMessage(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return nullptr;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+			return nullptr;
+		}
+		MonoString* monotext = mono_string_new(mono_domain_get(), entity->GetComponent<TextComponent>().m_TextContent.Text.c_str());
+
+		return monotext;
+	}
 
 #pragma endregion
 
@@ -2378,6 +2406,8 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.TextSystem::Engine_SetTextVisible", Engine_SetTextVisible);
 			mono_add_internal_call("TRE.TextSystem::Engine_GetTextVisible", Engine_GetTextVisible);
+			mono_add_internal_call("TRE.TextSystem::Engine_SetTextMessage", Engine_SetTextMessage);
+			mono_add_internal_call("TRE.TextSystem::Engine_GetTextMessage", Engine_GetTextMessage);
 		}
 
 		// Direct Pathfinding

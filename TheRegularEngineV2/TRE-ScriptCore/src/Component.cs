@@ -588,5 +588,17 @@ namespace TRE
                 TextSystem.Engine_SetTextVisible(entity.ID, value);
             }
         }
-	}
+
+        public string TextMessage
+        {
+            get
+            {
+                return TextSystem.Engine_GetTextMessage(entity.ID);
+            }
+            set
+            {
+                TextSystem.Engine_SetTextMessage(entity.ID, value);
+            }
+        }
+    }
 }

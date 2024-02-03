@@ -1495,11 +1495,28 @@ namespace TRE
             return Engine_GetTextVisible(ID);
         }
 
+        public static void SetTextMessage(EntityID ID, string message)
+        {
+            Engine_SetTextMessage(ID, message);
+        }
+
+        public static string GetTextMessage(EntityID ID)
+        {
+            return Engine_GetTextMessage(ID);
+        }
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static bool Engine_GetTextVisible(EntityID ID);
+
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetTextMessage(EntityID ID, string message);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static string Engine_GetTextMessage(EntityID ID);
     }
 
     public class DirectPathfindingSystem
