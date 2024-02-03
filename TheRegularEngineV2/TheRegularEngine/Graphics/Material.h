@@ -51,7 +51,7 @@ namespace TRE
 
 			MaterialUBO& GetMaterialUBO() { return m_UBO; }
 			void SetMaterialUBO() { m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO)); }
-			void SetUBOData(glm::vec4 Test) { m_UBO.m_Color = Test; }
+			void SetUBOData(glm::vec4 Color) { m_UBO.m_Color = Color; }
 
 			static ResourceType GetType() { return ResourceType::Material; }
 

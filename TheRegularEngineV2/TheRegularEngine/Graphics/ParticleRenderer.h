@@ -23,11 +23,10 @@ namespace TRE
 	public:
 		ParticleRenderer(const std::shared_ptr<Device>& device);
 
-		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
+		void Render(std::shared_ptr<UniformBuffer> ubo, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
 	private:
 		std::shared_ptr<Pipeline> m_Pipeline;
 		std::shared_ptr<RenderPass> m_Renderpass;
-		std::shared_ptr<UniformBuffer> m_UBO;
 		std::shared_ptr<VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 

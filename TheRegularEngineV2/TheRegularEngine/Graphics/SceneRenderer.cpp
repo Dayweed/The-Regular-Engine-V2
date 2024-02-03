@@ -46,6 +46,7 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_ParticleUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
 
 	void SceneRenderer::Initialize() 
@@ -292,6 +293,14 @@ namespace TRE
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+
+		{
+			ParticleUBO particleUBO{};
+			const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+
+			m_ParticleUBO->SetData(&ubo, sizeof(ParticleUBO));
+		}
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -368,6 +377,14 @@ namespace TRE
 		
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+
+		{
+			ParticleUBO particleUBO{};
+			const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+
+			m_ParticleUBO->SetData(&ubo, sizeof(ParticleUBO));
+		}
 	}
 
 	void SceneRenderer::EndFrame()
@@ -448,7 +465,7 @@ namespace TRE
 		GeometryAnimationPass(Index, materialSort);
 		DebugDrawPass(Index);
 		SkyBoxPass(Index);
-		m_ParticleRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 

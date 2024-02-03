@@ -155,6 +155,7 @@ namespace TRE
 
 			//Particle Renderer
 			std::shared_ptr<ParticleRenderer> m_ParticleRenderer;
+			std::shared_ptr<UniformBuffer> m_ParticleUBO;
 
 			bool m_IsEditorScene = false;
 	};

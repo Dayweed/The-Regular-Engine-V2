@@ -29,7 +29,7 @@ namespace TRE
 		PipelineConfig.EnableDepthTest = false;
 		m_Pipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);
 
-		m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
+		//m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 
 		float x = -0.5f; float y = -0.5f;
 		float width = 1, height = 1;
@@ -61,22 +61,22 @@ namespace TRE
 		m_DefaultMaterial->SetTexture("DiffuseMap", VulkanTexture::GetDefaultTexture());
 	}
 
-	void ParticleRenderer::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
+	void ParticleRenderer::Render(std::shared_ptr<UniformBuffer> ubo, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
 	{
-		ParticleUBO ubo{};
-		if (isEditor)
-		{
-			//ubo.ProjView = EditorCamera::Instance().GetViewProjectionMatrix();
-			const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-			ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
-		}
-		else
-		{
-			const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-			ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
-		}
+		//ParticleUBO ubo{};
+		//if (isEditor)
+		//{
+		//	//ubo.ProjView = EditorCamera::Instance().GetViewProjectionMatrix();
+		//	const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		//	ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
+		//}
+		//else
+		//{
+		//	const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
+		//	ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
+		//}
 
-		m_UBO->SetData(&ubo, sizeof(ParticleUBO));
+		//m_UBO->SetData(&ubo, sizeof(ParticleUBO));
 
 		std::multimap<ResourceHandle, Entity> sortedParticles;
 		for (const auto& emitter : ECSManager::Instance().GetEntities<ParticleComponent>())
@@ -84,10 +84,12 @@ namespace TRE
 			const ParticleComponent& particleComp = emitter->GetComponent<ParticleComponent>();
 			if (particleComp.m_Material)
 			{
-				sortedParticles.insert(std::make_pair(particleComp.m_Material->GetHandle(), emitter));
+				particleComp.m_Material->SetUBOData(particleComp.m_Color);
+				particleComp.m_Material->SetMaterialUBO();
 
 				if (particleComp.m_Texture)
 					particleComp.m_Material->SetTexture("DiffuseMap", particleComp.m_Texture);
+				sortedParticles.insert(std::make_pair(particleComp.m_Material->GetHandle(), emitter));
 			}
 			else
 				sortedParticles.insert(std::make_pair(m_DefaultMaterial->GetHandle(), emitter));
@@ -108,12 +110,12 @@ namespace TRE
 					{
 						if (isEditor)
 						{
-							particleComp.m_Material->UpdateForEditorSceneRendering(m_UBO, index);
+							particleComp.m_Material->UpdateForEditorSceneRendering(ubo, index);
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetEditorDescriptor(index), 0, NULL);
 						}
 						else
 						{
-							particleComp.m_Material->UpdateForRendering(m_UBO, index);
+							particleComp.m_Material->UpdateForRendering(ubo, index);
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
 						}
 					}
@@ -121,12 +123,12 @@ namespace TRE
 					{
 						if (isEditor)
 						{
-							m_DefaultMaterial->UpdateForEditorSceneRendering(m_UBO, index);
+							m_DefaultMaterial->UpdateForEditorSceneRendering(ubo, index);
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultMaterial->GetEditorDescriptor(index), 0, NULL);
 						}
 						else
 						{
-							m_DefaultMaterial->UpdateForRendering(m_UBO, index);
+							m_DefaultMaterial->UpdateForRendering(ubo, index);
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultMaterial->GetDescriptor(index), 0, NULL);
 						}
 					}

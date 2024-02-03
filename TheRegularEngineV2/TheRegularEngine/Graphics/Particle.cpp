@@ -11,7 +11,7 @@ namespace TRE
 	{
 		m_Particles.clear();
 		m_Particles.resize(m_ParticleCount);
-		ResetParticlesPosition(emitterPos);
+		ResetParticlesData(emitterPos);
 	}
 
 	void ParticleComponent::UpdateParticles()
@@ -19,17 +19,20 @@ namespace TRE
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_real_distribution<> disSpeed(m_VariationSpeed.x * m_Speed, m_VariationSpeed.y * m_Speed);
-		std::uniform_real_distribution<> disSize(m_VariationSize.x * m_Size, m_VariationSize.y * m_Size);
+		
 		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
 		const Transform& mainCameraTransform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		for (auto& particle : m_Particles)
 		{
 			const glm::vec3 randomSpeed = glm::vec3(disSpeed(gen), disSpeed(gen), disSpeed(gen));
 			particle.Position += randomSpeed * m_Velocity * deltaTime;
-			
-			const glm::vec3 randomSize = glm::vec3(disSize(gen), disSize(gen), disSize(gen));
 
-			glm::vec3 forward = glm::normalize(mainCameraTransform.m_Position - particle.Position);
+			const glm::mat4 rot = glm::mat3(glm::lookAt(particle.Position, mainCameraTransform.m_Position, glm::vec3(0.f, 1.f, 0.f)));
+
+			particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * glm::scale(glm::mat4(1.0f), particle.Scale);
+
+			//Billboard
+			/*glm::vec3 forward = glm::normalize(mainCameraTransform.m_Position - particle.Position);
 			glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
 			glm::vec3 up = glm::cross(forward, right);
 
@@ -39,7 +42,7 @@ namespace TRE
 			billboardMatrix[2] = glm::vec4(-forward * m_Size, 0.0f);
 			billboardMatrix[3] = glm::vec4(particle.Position, 1.0f);
 
-			particle.L2W = billboardMatrix;
+			particle.L2W = billboardMatrix;*/
 		}
 
 		m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
@@ -48,17 +51,19 @@ namespace TRE
 	void ParticleComponent::ResetParticles(const glm::vec3& emitterPos)
 	{
 		m_ElapsedTime = 0.f;
-		ResetParticlesPosition(emitterPos);
+		ResetParticlesData(emitterPos);
 	}
 
-	void ParticleComponent::ResetParticlesPosition(const glm::vec3 emitterPos)
+	void ParticleComponent::ResetParticlesData(const glm::vec3 emitterPos)
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> dis(-1.0 * m_SpawnRadius, 1.0 * m_SpawnRadius);
+		std::uniform_real_distribution<> disPos(-1.0 * m_SpawnRadius, 1.0 * m_SpawnRadius);
+		std::uniform_real_distribution<> disSize(m_VariationSize.x * m_Size, m_VariationSize.y * m_Size);
 		for (int i = 0; i < m_ParticleCount; ++i)
 		{
-			m_Particles[i].Position = emitterPos + glm::vec3(dis(gen), dis(gen), dis(gen));
+			m_Particles[i].Position = emitterPos + glm::vec3(disPos(gen), disPos(gen), disPos(gen));
+			m_Particles[i].Scale = glm::vec3(disSize(gen), disSize(gen), disSize(gen));
 		}
 	}
 
