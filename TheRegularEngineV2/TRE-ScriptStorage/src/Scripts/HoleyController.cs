@@ -108,6 +108,7 @@ namespace TRE
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
+		private ulong fallSFX;
 
 		//Transfrom Component
 		private Transform holeyTransform;
@@ -140,6 +141,7 @@ namespace TRE
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
+			fallSFX = ECSManager.FindIDFromName("SFX_HoleyFall");
 
 			RespawnPoint = holeyTransform.Position;
 			RespawnPoint.y += 10.0f;
@@ -177,6 +179,11 @@ namespace TRE
 			{
 				isDead = true;
 				DroppingOutOfMap = true;
+
+				if (ECSManager.IsValidEntity(fallSFX))
+				{
+					AudioSystem.Play(fallSFX);
+				}
 				//Debug.Log("Out of map");
 			}
 			else

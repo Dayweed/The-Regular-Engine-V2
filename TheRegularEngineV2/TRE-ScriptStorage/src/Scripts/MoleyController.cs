@@ -90,11 +90,16 @@ namespace TRE
 
 		#region Audio Variables
 		private ulong walkingSFX;
+		private ulong walkingSFX1;
+		private ulong walkingSFX2;
+		private ulong walkingSFX3;
+		private ulong walkingSFX4;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
+		private ulong fallSFX;
 		#endregion
 
 		public float elapsedTime = 0.0f;
@@ -159,11 +164,16 @@ namespace TRE
 
 			#region Sound Variables
 			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
+			walkingSFX1 = ECSManager.FindIDFromName("SFX_Footsteps1");
+			walkingSFX2 = ECSManager.FindIDFromName("SFX_Footsteps2");
+			walkingSFX3 = ECSManager.FindIDFromName("SFX_Footsteps3");
+			walkingSFX4 = ECSManager.FindIDFromName("SFX_Footsteps4");
 			jumpSFX = ECSManager.FindIDFromName("SFX_MoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
+			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
@@ -203,6 +213,11 @@ namespace TRE
 			{
 				isDead = true;
 				DroppingOutOfMap = true;
+
+				if (ECSManager.IsValidEntity(fallSFX))
+				{
+					AudioSystem.Play(fallSFX);
+				}
 			}
 			else
 			{
@@ -376,17 +391,42 @@ namespace TRE
 				isWalking = false;
 			}
 
-			if (ECSManager.IsValidEntity(walkingSFX))
+			if (ECSManager.IsValidEntity(walkingSFX1) && ECSManager.IsValidEntity(walkingSFX2)
+				&& ECSManager.IsValidEntity(walkingSFX3) && ECSManager.IsValidEntity(walkingSFX4)
+				&& ECSManager.IsValidEntity(walkingSFX))
 			{
 				if (isWalking && walkingSFXPlayed == false)
 				{
 					AudioSystem.Play(walkingSFX);
-					walkingSFXPlayed = true;
+
+						//int rand = Random.Range(0, 4);
+						//switch (rand)
+						//{
+						//	case 0:
+						//		AudioSystem.Play(walkingSFX1);
+						//		break;
+						//	case 1:
+						//		AudioSystem.Play(walkingSFX2);
+						//		break;
+						//	case 2:
+						//		AudioSystem.Play(walkingSFX3);
+						//		break;
+						//	case 3:
+						//		AudioSystem.Play(walkingSFX4);
+						//		break;
+						//}
+
+						walkingSFXPlayed = true;
+					
 				}
 
 				if (!isWalking || !isGrounded)
 				{
 					AudioSystem.Stop(walkingSFX);
+					//AudioSystem.Stop(walkingSFX1);
+					//AudioSystem.Stop(walkingSFX2);
+					//AudioSystem.Stop(walkingSFX3);
+					//AudioSystem.Stop(walkingSFX4);
 					walkingSFXPlayed = false;
 				}
 			}
