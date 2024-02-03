@@ -448,12 +448,12 @@ namespace TRE
 		GeometryAnimationPass(Index, materialSort);
 		DebugDrawPass(Index);
 		SkyBoxPass(Index);
+		m_ParticleRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
 		if (m_IsEditorScene == false)
 		{
-			m_ParticleRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);

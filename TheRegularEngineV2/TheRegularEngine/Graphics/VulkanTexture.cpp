@@ -443,7 +443,7 @@ namespace TRE
 		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 4);
 
 		std::unique_ptr<std::uint8_t[]> data = std::make_unique<std::uint8_t[]>(imageSize);
-		memset(data.get(), 220, imageSize);
+		memset(data.get(), 240, imageSize);
 
 		stagingBuffer.Map();
 		stagingBuffer.WriteToBuffer(data.get(), imageSize);

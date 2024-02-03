@@ -67,6 +67,9 @@ namespace TRE
 		for (auto& emitters : ECSManager::Instance().GetEntities<ParticleComponent>())
 		{
 			auto& particleComponent = emitters->GetComponent<ParticleComponent>();
+			if(particleComponent.m_Running == false)
+				continue;
+
 			const auto& transform = emitters->GetComponent<Transform>();
 			if (particleComponent.m_Particles.size() != particleComponent.m_ParticleCount)
 			{
@@ -77,7 +80,10 @@ namespace TRE
 
 			if (particleComponent.m_ElapsedTime >= particleComponent.m_LifeTime)
 			{
-				particleComponent.ResetParticles(transform.m_Position);
+				if(particleComponent.m_Loop)
+					particleComponent.ResetParticles(transform.m_Position);
+				else
+					particleComponent.m_Running = false;
 			}
 		}
 	}
