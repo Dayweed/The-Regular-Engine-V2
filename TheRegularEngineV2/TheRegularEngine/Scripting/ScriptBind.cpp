@@ -567,7 +567,7 @@ namespace TRE
 		{
 			// Found the name
 			std::string ID = sceneObjects[temp];
-			TRE_CORE_INFO("{0} : {1}", temp, ID );
+			TRE_CORE_INFO("{0} : {1}", temp, ID);
 			return EntityID_EngineToCS(ID);
 		}
 		else
@@ -1600,6 +1600,16 @@ namespace TRE
 
 		return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetIsActive(entity);
 	}
+
+	static void BindSetPauseState(bool state)
+	{
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetPauseState(state);
+	}
+
+	static bool BindGetPauseState()
+	{
+		return ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetPauseState();
+	}
 #pragma endregion
 
 #pragma region RigidBodyBindings
@@ -1787,7 +1797,7 @@ namespace TRE
 		}
 		std::string classNameStr{ MonoStringToString(className) };
 
-		for(auto i : Temp->GetComponent<ScriptComponent>().m_RegisteredScripts)
+		for (auto i : Temp->GetComponent<ScriptComponent>().m_RegisteredScripts)
 		{
 			if (i == classNameStr)
 			{
@@ -1812,12 +1822,12 @@ namespace TRE
 
 		std::string IDStr{ EntityID_CSToEngine(ID) };
 		std::string classNameStr{ MonoStringToString(className) };
-			
+
 		auto instances = ScriptEngine::GetAllEntityScripts(IDStr);
 
 		for (auto i : instances)
 		{
-			std::string temp ="TRE."+ i->GetScriptClass()->GetScriptClassName();
+			std::string temp = "TRE." + i->GetScriptClass()->GetScriptClassName();
 			if (temp == classNameStr)
 			{
 				//TRE_CORE_INFO("Found script with name {0} in entity {1}", classNameStr, IDStr);
@@ -2030,7 +2040,7 @@ namespace TRE
 			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
 			return;
 		}
-		
+
 		entity->GetComponent<TextComponent>().m_TextContent.Text = MonoStringToString(TextMessage);
 	}
 
@@ -2275,7 +2285,7 @@ namespace TRE
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeBoxCollider", BindResizeBoxCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxColliderHalfExtents", BindGetBoxColliderHalfExtents);
-			
+
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCapsuleCollider", BindResizeCapsuleCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderRadius", BindGetCapsuleColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderHalfHeight", BindGetCapsuleColliderHalfHeight);
@@ -2292,16 +2302,19 @@ namespace TRE
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ConstrainRotationZ", BindConstrainRotationZ);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetLinearVelocity", BindGetLinearVelocity);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetLinearVelocity", BindSetLinearVelocity);
-			
+
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionEnter", BindIsCollisionEnter);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionStay", BindIsCollisionStay);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsCollisionExit", BindIsCollisionExit);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerEnter", BindIsTriggerEnter);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerStay", BindIsTriggerStay);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_IsTriggerExit", BindIsTriggerExit);
-			
+
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetIsActive", BindSetIsActive);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetIsActive", BindGetIsActive);
+
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetPauseState", BindSetPauseState);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetPauseState", BindGetPauseState);
 		}
 
 		// RigidBody Binding
@@ -2346,7 +2359,7 @@ namespace TRE
 			mono_add_internal_call("TRE.Time::Engine_GetDeltaTime", BindGetDeltaTime);
 		}
 
-		//Audio
+		// Audio
 		{
 			mono_add_internal_call("TRE.AudioSystem::Engine_Play", BindSetPlaySound);
 			mono_add_internal_call("TRE.AudioSystem::Engine_PlayOnce", BindSetPlaySound);

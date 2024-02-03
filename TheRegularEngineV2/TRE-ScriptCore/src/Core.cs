@@ -870,7 +870,7 @@ namespace TRE
 		internal extern static void Engine_SetMainCameraLookAt(vec3 target);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static void Engine_SetMainCameraFollow (vec3 target, float distance);
+		internal extern static void Engine_SetMainCameraFollow(vec3 target, float distance);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float speed);
@@ -973,7 +973,7 @@ namespace TRE
 		{
 			Engine_ResizeBoxCollider(entityid, newHalfExtents);
 		}
-		
+
 		public static void ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight)
 		{
 			Engine_ResizeCapsuleCollider(entityid, newRadius, newHelfHeight);
@@ -983,7 +983,7 @@ namespace TRE
 		{
 			Engine_ResizeCylinderCollider(entityid, newRadius, newHeight);
 		}
-		
+
 		public static void UpdateColliderOffset(EntityID entityid, vec3 offset)
 		{
 			Engine_UpdateColliderOffset(entityid, offset);
@@ -1054,8 +1054,17 @@ namespace TRE
 			return Engine_IsTriggerExit(entityid1, entityid2);
 		}
 
+		public static void SetPauseState(bool state)
+		{
+			Engine_SetPauseState(state);
+		}
 
+		public static bool GetPauseState()
+		{
+			return Engine_GetPauseState();
+		}
 
+		#region Engine Function Declarations
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeSphereCollider(EntityID entityid, float newRadius);
 
@@ -1133,6 +1142,13 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetIsActive(EntityID entity);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetPauseState(bool isActive);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetPauseState();
+		#endregion
 	}
 
 	public class RigidBodySystem
@@ -1466,15 +1482,15 @@ namespace TRE
 	public class UISystem
 	{
 
-        public static void SetVisible(EntityID ID, bool isVisible)
-        {
-            Engine_SetVisible(ID, isVisible);
-        }
+		public static void SetVisible(EntityID ID, bool isVisible)
+		{
+			Engine_SetVisible(ID, isVisible);
+		}
 
-        public static bool GetVisible(EntityID ID)
-        {
-            return Engine_GetVisible(ID);
-        }
+		public static bool GetVisible(EntityID ID)
+		{
+			return Engine_GetVisible(ID);
+		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
@@ -1483,43 +1499,43 @@ namespace TRE
 		public extern static bool Engine_GetVisible(EntityID ID);
 	}
 
-    public class TextSystem
-    {
-        public static void SetVisible(EntityID ID, bool isVisible)
-        {
-            Engine_SetTextVisible(ID, isVisible);
-        }
+	public class TextSystem
+	{
+		public static void SetVisible(EntityID ID, bool isVisible)
+		{
+			Engine_SetTextVisible(ID, isVisible);
+		}
 
-        public static bool GetVisible(EntityID ID)
-        {
-            return Engine_GetTextVisible(ID);
-        }
+		public static bool GetVisible(EntityID ID)
+		{
+			return Engine_GetTextVisible(ID);
+		}
 
-        public static void SetTextMessage(EntityID ID, string message)
-        {
-            Engine_SetTextMessage(ID, message);
-        }
+		public static void SetTextMessage(EntityID ID, string message)
+		{
+			Engine_SetTextMessage(ID, message);
+		}
 
-        public static string GetTextMessage(EntityID ID)
-        {
-            return Engine_GetTextMessage(ID);
-        }
+		public static string GetTextMessage(EntityID ID)
+		{
+			return Engine_GetTextMessage(ID);
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetTextVisible(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetTextVisible(EntityID ID);
 
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetTextMessage(EntityID ID, string message);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetTextMessage(EntityID ID, string message);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static string Engine_GetTextMessage(EntityID ID);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static string Engine_GetTextMessage(EntityID ID);
+	}
 
-    public class DirectPathfindingSystem
+	public class DirectPathfindingSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetPathfindingRunning(EntityID ID);
@@ -1537,7 +1553,7 @@ namespace TRE
 		public extern static bool Engine_ResetPathfinding(EntityID ID);
 	}
 
-    public class ScenePostEffectsSystem
+	public class ScenePostEffectsSystem
 	{
 		public enum STATE
 		{
