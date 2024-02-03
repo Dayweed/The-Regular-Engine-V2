@@ -1,21 +1,21 @@
 Asset File Path:
-../Assets/ui-controls.png
+../Assets/skybox3-desert.png
 
 Texture File Path:
-../Resources/fbefdb34370a265b.DDS
+../Resources/122584dd5ff52c3f.DDS
 
 Compress:
-0
+1
 
 GL_Linear:
 1
 
 BCn:
-3
+1
 
 sRGB:
 1
 
 Transparent:
-1
+0
 
