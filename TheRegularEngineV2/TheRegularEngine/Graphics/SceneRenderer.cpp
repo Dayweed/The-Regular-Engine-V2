@@ -80,7 +80,7 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
-		SkyBoxPassInit();
+		//m_SkyboxEnvironment = std::make_shared<Skybox>();
 		ShadowPassInit();
 
 		PipelineConfigurations Config{};
@@ -577,25 +577,26 @@ namespace TRE
 
 	void SceneRenderer::SkyBoxPass(uint32_t Index)
 	{
+		auto Skybox = Renderer::GetSkybox();
 		Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
 		if (m_IsEditorScene)
 		{
-			m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
+			Skybox->UpdateMaterial(m_UBOSkybox, Index, m_ShadowDescriptInfo, m_IsEditorScene);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &Skybox->GetMaterial()->GetEditorDescriptor(Index), 0, NULL);
 		}
 		else
 		{
-			m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
+			Skybox->UpdateMaterial(m_UBOSkybox, Index, m_ShadowDescriptInfo, m_IsEditorScene);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &Skybox->GetMaterial()->GetDescriptor(Index), 0, NULL);
 		}
 
-		VkBuffer vertexBuffers[] = { m_SkyboxVertexBuffer->GetBuffer() };
+		VkBuffer vertexBuffers[] = { Skybox->GetVertexBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, vertexBuffers, offsets);
 
-		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), Skybox->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), Skybox->GetIndexCount(), 1, 0, 0, 0);
 	}
 
 	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
@@ -837,71 +838,6 @@ namespace TRE
 			}
 
 		}
-	}
-
-	void SceneRenderer::SkyBoxPassInit()
-	{
-		auto Skybox1 = Resource::GetGUIDFromHex("86e229134d7c2f4e");
-		auto Skybox2 = Resource::GetGUIDFromHex("584d1fc06a88a4a6");
-		auto Skybox3 = Resource::GetGUIDFromHex("b0551365b3b9c5c2");
-		auto Skybox4 = Resource::GetGUIDFromHex("8ffa171d290d63db");
-		auto Skybox5 = Resource::GetGUIDFromHex("c3ed8c144c6f7bb4");
-		auto Skybox6 = Resource::GetGUIDFromHex("855ecfb3bc347f5d");
-		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
-		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
-		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);
-		auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox4);
-		auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox5);
-		auto Texture6 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox6);
-
-		CubeMapConfig CubeConfig{};
-		CubeConfig.Filter = VK_FILTER_NEAREST;
-		CubeConfig.Format = Texture1->GetFormat();
-		CubeConfig.Height = Texture1->GetHeight();
-		CubeConfig.Width = Texture1->GetWidth();
-		CubeConfig.SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		CubeConfig.Textures = { Texture4, Texture2, Texture6, Texture5, Texture1, Texture3 };
-
-		m_SkyboxTexture = std::make_shared<VulkanTexture>(CubeConfig);
-		
-		//Backface culling
-		std::vector<glm::vec3> vertices
-		{
-				glm::vec3(-0.5f, -0.5f, -0.5f), // Vertex 0
-				glm::vec3(0.5f, -0.5f, -0.5f), // Vertex 1
-				glm::vec3(0.5f, 0.5f, -0.5f), // Vertex 2
-				glm::vec3(-0.5f, 0.5f, -0.5f), // Vertex 3
-				glm::vec3(-0.5f, -0.5f, 0.5f), // Vertex 4
-				glm::vec3(0.5f, -0.5f, 0.5f), // Vertex 5
-				glm::vec3(0.5f, 0.5f, 0.5f), // Vertex 6
-				glm::vec3(-0.5f, 0.5f, 0.5f) // Vertex 7
-		};
-		std::vector<uint32_t> indices
-		{
-			0, 1, 2, // Triangle 1 (front face)
-			2, 3, 0, // Triangle 2 (front face)
-			1, 5, 6, // Triangle 3 (right face)
-			6, 2, 1, // Triangle 4 (right face)
-			7, 6, 5, // Triangle 5 (back face)
-			5, 4, 7, // Triangle 6 (back face)
-			4, 0, 3, // Triangle 7 (left face)
-			3, 7, 4, // Triangle 8 (left face)
-			4, 5, 1, // Triangle 9 (bottom face)
-			1, 0, 4, // Triangle 10 (bottom face)
-			3, 2, 6, // Triangle 11 (top face)
-			6, 7, 3  // Triangle 12 (top face)
-		};
-
-		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()),
-			UINT32_T_CAST(vertices.size() * sizeof(vertices[0])));
-
-		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
-			UINT32_T_CAST(indices.size() * sizeof(uint32_t)),
-			UINT32_T_CAST(indices.size()));
-
-		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
-		m_SkyboxMaterial->Invalidate();
-		m_SkyboxMaterial->SetTexture("SamplerCubeMap", m_SkyboxTexture);
 	}
 
 	void SceneRenderer::ShadowPassInit()

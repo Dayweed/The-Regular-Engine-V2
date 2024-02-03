@@ -15,7 +15,7 @@
 #include "UIRenderer.h"
 #include "PostProcessing/PostProcessing.h"
 #include "ParticleRenderer.h"
-
+#include "Skybox.h"
 
 namespace TRE
 {
@@ -80,8 +80,6 @@ namespace TRE
 			void DebugDrawPass(uint32_t Index);
 			void SkyBoxPass(uint32_t Index);
 
-			void SkyBoxPassInit();
-
 		public:
 			std::vector<std::shared_ptr<Image2D>> GetColorImages();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
@@ -112,11 +110,8 @@ namespace TRE
 
 			//Skybox
 			std::shared_ptr<Pipeline> m_SkyboxPipeline;
-			std::shared_ptr<VulkanTexture> m_SkyboxTexture;
-			std::unique_ptr<Material> m_SkyboxMaterial;
-			std::unique_ptr<VertexBuffer> m_SkyboxVertexBuffer;
-			std::unique_ptr<IndexBuffer> m_SkyboxIndexBuffer;
 			std::shared_ptr<UniformBuffer> m_UBOSkybox;
+			//std::shared_ptr<Skybox> m_SkyboxEnvironment;
 			//Skybox
 
 			//Shadow

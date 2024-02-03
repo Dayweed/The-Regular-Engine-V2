@@ -13,6 +13,8 @@ namespace TRE
         public void Start()
         {
             fonttest = ECSManager.FindEntityByName("fonttest");
+
+            RendererSystem.Engine_SetSkyboxEnvironment("Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png");
         }
 
         public void Update()
