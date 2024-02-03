@@ -128,6 +128,11 @@ namespace TRE
 			Entity child = new Entity(childID, childName);
 			return child;
 		}
+
+		public int GetTotalChildren()
+		{
+			return ParentingSystem.Engine_GetTotalChildren(entity.ID);
+        }
 	}
 
 	public class MeshRenderer : Component

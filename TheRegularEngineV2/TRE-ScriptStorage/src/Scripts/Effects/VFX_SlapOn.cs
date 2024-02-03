@@ -124,7 +124,7 @@ namespace TRE
                     float x = MathF.Lerp(MyRenderer.Color.x, EndColor.x, colorSpeed * Time.deltaTime);
                     float y = MathF.Lerp(MyRenderer.Color.y, EndColor.y, colorSpeed * Time.deltaTime);
                     float z = MathF.Lerp(MyRenderer.Color.z, EndColor.z, colorSpeed * Time.deltaTime);
-                    float w = MathF.Lerp(MyRenderer.Color.z, EndColor.z, colorSpeed * Time.deltaTime);
+                    float w = MathF.Lerp(MyRenderer.Color.w, EndColor.w, colorSpeed * Time.deltaTime);
                     MyRenderer.Color = new vec4(x, y, z, w);
                 }
 

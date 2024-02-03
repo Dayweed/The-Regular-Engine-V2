@@ -277,6 +277,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ParentRemoveChild(EntityID _id, EntityID _child_id);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static int Engine_GetTotalChildren(EntityID _id);
 	}
 
 	public class Debug

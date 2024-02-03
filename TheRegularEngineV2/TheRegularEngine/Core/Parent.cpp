@@ -251,4 +251,14 @@ namespace TRE
 
 		currentTransform.m_IsDirty = true;
 	}
+
+	void ParentingSystem::UpdateChildActive(Entity parent)
+	{
+		bool parentActive = parent->GetComponent<Properties>().m_Active;
+		for (Entity& child : GetChildren(parent))
+		{
+			child->GetComponent<Properties>().m_Active = parentActive;
+			UpdateChildActive(child);
+		}
+	}
 }

@@ -255,6 +255,8 @@ namespace TRE
 		// TO CHANGE
 		void ConstructPhysicPrefab(Entity parent);
 
+		void UpdateEntityChildProperties(std::string parentGUID);
+
 		void UpdateEntityOrder();	// Update all Entity m_Index based on their current order in the EntityOrder
 		void SortEntityOrder();
 
@@ -897,10 +899,24 @@ property_begin(TRE::Properties)
 	{
 		if (isRead)
 		{
-			InOut = Self.m_GUID;
+			InOut = Self.m_GUID;//			
 		}
 
 	} property_var_fnend(),
 	property_var(m_Tag).Name("Tag"),
-	property_var(m_Active).Name("Active"),
+	property_var_fnbegin("Active", bool)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_Active;
+		}
+		else
+		{
+			if (Self.m_Active != InOut)
+			{
+				Self.m_Active = InOut;
+				TRE::ECSManager::Instance().UpdateEntityChildProperties(Self.m_GUID);
+			}
+		}
+	} property_var_fnend(),
 } property_vend_h(TRE::Properties)

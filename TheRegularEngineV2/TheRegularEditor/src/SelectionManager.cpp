@@ -42,6 +42,8 @@ namespace TRE
 
 	void SelectionManager::SelectEntity(Entity& EntityObject)
 	{
+		if (EntityObject == nullptr) return;
+
 		m_SelectedEntity = EntityObject;
 
 		UpdateSelectedEntity();

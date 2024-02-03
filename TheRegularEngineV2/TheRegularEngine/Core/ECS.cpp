@@ -159,6 +159,11 @@ namespace TRE
 		}
 	}
 
+	void ECSManager::UpdateEntityChildProperties(std::string parentGUID)
+	{
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildActive(FindEntity(parentGUID));
+	}
+
 	void ECSManager::UpdateEntityOrder()
 	{
 		for (int i{}; i < m_EntityOrder.size(); ++i)

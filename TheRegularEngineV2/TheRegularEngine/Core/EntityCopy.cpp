@@ -51,6 +51,10 @@ namespace TRE
 			pastedGUIDs.emplace_back(GenerateNewGUID(srcEntity, m_CopierRegistry));
 		});
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
+
+		// Force return nullptr if no entity to paste
+		if (pastedGUIDs.empty()) return nullptr;
+
 		// Add these entities to their parents
 		ParentingSystem* parentSystem{ ECSSystemManager::Instance().GetSystem<ParentingSystem>() };
 		for (size_t i{}; i < pastedGUIDs.size(); ++i)

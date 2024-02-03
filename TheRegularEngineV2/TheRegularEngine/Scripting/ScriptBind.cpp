@@ -153,6 +153,7 @@ namespace TRE
 		if (!Temp) return;
 		Temp->GetComponent<Properties>().m_IsDirty = (Temp->GetComponent<Properties>().m_Active != (bool)isActive);
 		Temp->GetComponent<Properties>().m_Active = (bool)isActive;
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildActive(Temp);
 	}
 
 	static bool BindEntityGetActive(CSEntityID ID)
@@ -274,6 +275,14 @@ namespace TRE
 
 		PUBLISHERROR("ID (" + searchID + ") is not found in " + Temp->GetName() + "!");
 		return {};
+	}
+
+	static int BindParentGetTotalChildren(CSEntityID ID)
+	{
+		// Retrieve the entity from the ID
+		Entity Temp = VALIDATEENTITY(ID);
+
+		return Temp->GetComponent<Parenting>().m_Children.size();
 	}
 
 	static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
@@ -2200,6 +2209,7 @@ namespace TRE
 			mono_add_internal_call("TRE.ParentingSystem::Engine_ParentRemoveChild", BindParentRemoveChild);
 			mono_add_internal_call("TRE.ParentingSystem::Engine_GetChildID", BindParentGetChildFromIndex);
 			mono_add_internal_call("TRE.ParentingSystem::Engine_GetChildIDFromName", BindParentGetChildFromName);
+			mono_add_internal_call("TRE.ParentingSystem::Engine_GetTotalChildren", BindParentGetTotalChildren);
 		}
 
 		// Transform Bindings
