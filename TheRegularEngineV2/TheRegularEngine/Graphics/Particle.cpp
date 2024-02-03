@@ -11,16 +11,34 @@ namespace TRE
 	{
 		m_Particles.clear();
 		m_Particles.resize(m_ParticleCount);
-		ResetParticlesData(emitterPos);
+		ResetParticles(emitterPos);
 	}
 
 	void ParticleComponent::UpdateParticles()
 	{
+		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
+
+		if (m_Fade)
+		{
+			const float fadeInCutOff = m_LifeTime * m_FadeDuration.x;
+			const float fadeInIncrement = 1.f / fadeInCutOff;
+			const float fadeOutCutOff = m_LifeTime * m_FadeDuration.y;
+			const float fadeOutIncrement = 1.f / (m_LifeTime - fadeOutCutOff);
+
+			if (m_ElapsedTime < fadeInCutOff)
+			{
+				m_Color.a += fadeInIncrement * deltaTime;
+			}
+			else if (m_ElapsedTime > fadeOutCutOff)
+			{
+				m_Color.a -= fadeOutIncrement * deltaTime;
+			}
+		}
+
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_real_distribution<> disSpeed(m_VariationSpeed.x * m_Speed, m_VariationSpeed.y * m_Speed);
 		
-		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
 		const Transform& mainCameraTransform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		for (auto& particle : m_Particles)
 		{
@@ -52,6 +70,8 @@ namespace TRE
 	{
 		m_ElapsedTime = 0.f;
 		ResetParticlesData(emitterPos);
+		if (m_Fade)
+			m_Color.a = 0.f;
 	}
 
 	void ParticleComponent::ResetParticlesData(const glm::vec3 emitterPos)
@@ -63,7 +83,8 @@ namespace TRE
 		for (int i = 0; i < m_ParticleCount; ++i)
 		{
 			m_Particles[i].Position = emitterPos + glm::vec3(disPos(gen), disPos(gen), disPos(gen));
-			m_Particles[i].Scale = glm::vec3(disSize(gen), disSize(gen), disSize(gen));
+			const float scale = static_cast<float>(disSize(gen));
+			m_Particles[i].Scale = glm::vec3(scale, scale, scale);
 		}
 	}
 

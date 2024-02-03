@@ -25,8 +25,9 @@ namespace TRE
 		std::shared_ptr<VulkanTexture> m_Texture;
 		glm::vec4 m_Color{ glm::vec4(1.f, 1.f, 1.f, 1.f) };
 		glm::vec3 m_Velocity = glm::vec3(0.f, 1.f, 0.f);
-		glm::vec2 m_VariationSpeed = glm::vec2(0.05f, 1.f);	//Variation in the speed of the particles
-		glm::vec2 m_VariationSize = glm::vec2(0.2f, 1.f);	//Variation in the size of the particles
+		glm::vec2 m_VariationSpeed = glm::vec2(0.15f, 1.f);	//Variation in the speed of the particles
+		glm::vec2 m_VariationSize = glm::vec2(0.8f, 1.f);	//Variation in the size of the particles
+		glm::vec2 m_FadeDuration = glm::vec2(0.25f, 0.75f);	//Percentage for fade in and fade out
 		float m_SpawnRadius = 1.f;
 		float m_Speed = 5.f;
 		float m_LifeTime = 10.f;
@@ -36,6 +37,8 @@ namespace TRE
 		bool m_Running = true;
 		bool m_Loop = true;
 		bool m_PlayOnStart = true;
+		bool m_Fade = true;
+		bool m_Show = true;
 
 		std::vector<Particle> m_Particles;
 	public:
@@ -55,6 +58,8 @@ namespace TRE
 			std::vector<float> storedVarSpeed{ varSpeed[0], varSpeed[1] };
 			const float* varSize = glm::value_ptr(t.m_VariationSize);
 			std::vector<float> storedVarSize{ varSize[0], varSize[1] };
+			const float* fadeDuration = glm::value_ptr(t.m_FadeDuration);
+			std::vector<float> storedFadeDuration{ fadeDuration[0], fadeDuration[1] };
 
 			j = nlohmann::json
 			{
@@ -63,6 +68,7 @@ namespace TRE
 				{ "Velocity", storedVelocity },
 				{ "VariationSpeed", storedVarSpeed },
 				{ "VariationSize", storedVarSize },
+				{ "FadeDuration", storedFadeDuration },
 				{ "SpawnRadius", t.m_SpawnRadius },
 				{ "Speed", t.m_Speed },
 				{ "LifeTime", t.m_LifeTime },
@@ -70,6 +76,7 @@ namespace TRE
 				{ "ParticleCount", t.m_ParticleCount },
 				{ "Loop", t.m_Loop },
 				{ "PlayOnStart", t.m_PlayOnStart },
+				{ "Fade", t.m_Fade }
 			};
 		}
 
@@ -123,6 +130,11 @@ namespace TRE
 				std::vector<float> varSize = j.at("VariationSize").get<std::vector<float>>();
 				t.m_VariationSize = glm::vec2(varSize[0], varSize[1]);
 			}
+			if (j.contains("FadeDuration"))
+			{
+				std::vector<float> fadeDuration = j.at("FadeDuration").get<std::vector<float>>();
+				t.m_FadeDuration = glm::vec2(fadeDuration[0], fadeDuration[1]);
+			}
 			if (j.contains("SpawnRadius"))
 				t.m_SpawnRadius = j.at("SpawnRadius").get<float>();
 			if (j.contains("Speed"))
@@ -136,7 +148,19 @@ namespace TRE
 			if (j.contains("Loop"))
 				t.m_Loop = j.at("Loop").get<bool>();
 			if (j.contains("PlayOnStart"))
+			{
 				t.m_PlayOnStart = j.at("PlayOnStart").get<bool>();
+				if(t.m_PlayOnStart)
+					t.m_Running = true;
+				else
+					t.m_Running = false;
+			}
+			if (j.contains("Fade"))
+			{
+				t.m_Fade = j.at("Fade").get<bool>();
+				if(t.m_Fade)
+					t.m_Color.a = 0.0f;
+			}
 		}
 	private:
 		void ResetParticlesData(const glm::vec3 emitterPos);
@@ -191,5 +215,8 @@ property_begin(TRE::ParticleComponent)
 	property_var(m_PlayOnStart).Name("PlayOnStart"),	
 	property_var(m_VariationSpeed).Name("VariationSpeed"),
 	property_var(m_VariationSize).Name("VariationSize"),
+	property_var(m_Fade).Name("Fade"),
+	property_var(m_FadeDuration).Name("FadeDuration"),
+	property_var(m_Show).Name("Show Spawn Point"),
 
 } property_vend_h(TRE::ParticleComponent)

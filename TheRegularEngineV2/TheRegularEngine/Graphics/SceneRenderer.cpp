@@ -19,6 +19,7 @@
 #include "VulkanUtilities.h"
 #include "AnimationComponent.h"
 #include "FontRenderer.h"
+#include "Particle.h"
 
 //To be removed
 #include "EditorCamera.h"
@@ -296,10 +297,9 @@ namespace TRE
 
 		{
 			ParticleUBO particleUBO{};
-			const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 
-			m_ParticleUBO->SetData(&ubo, sizeof(ParticleUBO));
+			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
 		}
 	}
 
@@ -380,10 +380,9 @@ namespace TRE
 
 		{
 			ParticleUBO particleUBO{};
-			const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 
-			m_ParticleUBO->SetData(&ubo, sizeof(ParticleUBO));
+			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
 		}
 	}
 
@@ -406,8 +405,9 @@ namespace TRE
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
 
-		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
+		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		uint32_t Index = SC->GetCurrentBufferIndex();
+		uint32_t ImageIndex = SC->GetCurrentImageIndex();
 
 		std::multimap<ResourceHandle, Entity> materialSort;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
@@ -450,21 +450,21 @@ namespace TRE
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.width = static_cast<float>(SC->GetWidth());
+		viewport.height = static_cast<float>(SC->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		scissor.extent = SC->GetSwapChainExtent();
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
+		SkyBoxPass(Index);
 		GeometryPass(Index, materialSort);
 		GeometryAnimationPass(Index, materialSort);
 		DebugDrawPass(Index);
-		SkyBoxPass(Index);
 		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
@@ -854,6 +854,26 @@ namespace TRE
 				m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
 			}
 
+			for (const auto& particles : ECSManager::Instance().GetEntities<ParticleComponent>())
+			{
+				const Transform& tr = particles->GetComponent<Transform>();
+				const ParticleComponent& particleComp = particles->GetComponent<ParticleComponent>();
+
+				if(particleComp.m_Show == false)
+					continue;
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				model = glm::translate(model, tr.m_Position);
+				model = glm::scale(model, glm::vec3(particleComp.m_SpawnRadius, particleComp.m_SpawnRadius, particleComp.m_SpawnRadius));
+				pc.m_Model = model;
+
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+				m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			}
 		}
 	}
 
