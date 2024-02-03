@@ -237,9 +237,27 @@ namespace TRE
 			if (!TextComp.m_IsVisible)
 				continue;
 
+			std::string TextToRender; 
+			if (TextComp.m_IsDialogue) //If dialogue we handle what to print here
+			{
+				TextComp.m_Timer += Engine::GetInstance().GetWindow()->GetDeltaTime();
+				int RenderSize = TextComp.m_Timer * TextComp.m_Speed;
+				if (RenderSize <= TextComp.m_TextContent.Text.size())
+					TextToRender = TextComp.m_TextContent.Text.substr(0, RenderSize);
+				else
+				{
+					TextToRender = TextComp.m_TextContent.Text;
+					TextComp.m_IsDialogue = false;
+				}
+			}
+			else //Non dialogue so we render straight
+			{
+				TextToRender = TextComp.m_TextContent.Text;
+			}
+
 			float offset = 0.f;
 			float y_offset = 0.f;
-			for (auto Letter : TextComp.m_TextContent.Text)
+			for (auto Letter : TextToRender)
 			{
 
 				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / s_DefaultFontSize + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x / s_DefaultFontSize;

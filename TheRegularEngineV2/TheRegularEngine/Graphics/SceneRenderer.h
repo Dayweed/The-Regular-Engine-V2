@@ -111,7 +111,6 @@ namespace TRE
 			//Skybox
 			std::shared_ptr<Pipeline> m_SkyboxPipeline;
 			std::shared_ptr<UniformBuffer> m_UBOSkybox;
-			//std::shared_ptr<Skybox> m_SkyboxEnvironment;
 			//Skybox
 
 			//Shadow
