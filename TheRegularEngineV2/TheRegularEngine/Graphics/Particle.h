@@ -88,7 +88,7 @@ namespace TRE
 				ResourceHandle textureHandle = Resource::GetGUIDFromHex(textureHex);
 				if (!t.m_Material)
 				{
-					t.m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(6));
+					t.m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
 					t.m_Material->Invalidate();
 				}
 				if (textureHandle)
@@ -102,7 +102,7 @@ namespace TRE
 						t.m_Texture = VulkanTexture::Deserialize(textureHex);
 
 						if (t.m_Texture == nullptr)
-							TRE_CORE_CRITICAL(String + "Texture failed to load in particle Component");
+							TRE_CORE_CRITICAL(textureHex + "Texture failed to load in particle Component");
 					}
 				}
 				else
