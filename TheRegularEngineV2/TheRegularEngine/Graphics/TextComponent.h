@@ -16,6 +16,8 @@ namespace TRE
 		glm::vec4 m_Color = { 0.f, 0.f, 0.f, 1.f };
 		FontType m_FontName = { "arial" };
 
+		std::string m_BackupTextContent = ""; //Not to be reflected
+
 		property_vtable()
 
 		friend void to_json(nlohmann::json& j, const TextComponent& t)
