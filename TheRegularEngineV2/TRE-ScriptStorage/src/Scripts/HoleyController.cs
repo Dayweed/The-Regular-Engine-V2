@@ -80,6 +80,7 @@ namespace TRE
 		public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
 		public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
+		public int turnDirection = 0;
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
@@ -526,7 +527,7 @@ namespace TRE
 			dirVec.y = 0;
 			dirVec = dirVec.NormalizedSafe;
 
-			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+			playerDirection = lastPlayerDirection + turnDirection;
 			playerDirection = (playerDirection % 360);
 
 

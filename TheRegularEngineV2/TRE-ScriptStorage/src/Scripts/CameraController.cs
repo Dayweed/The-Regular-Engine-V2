@@ -52,11 +52,16 @@ namespace TRE
 			{
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
 				CameraSystem.SetMainCameraLookAt(pos);
+				Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
+				Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
 			}
 			else
 			{
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
 				CameraSystem.SetMainCameraFollow(pos, distance);
+
+                Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
+                Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
 			}
 		}
 	}
