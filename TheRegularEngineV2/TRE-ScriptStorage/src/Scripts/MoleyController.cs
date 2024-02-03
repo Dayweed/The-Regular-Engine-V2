@@ -61,6 +61,7 @@ namespace TRE
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 		#endregion
 
+        public int turnDirection = 0;
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
@@ -532,7 +533,7 @@ namespace TRE
 			#endregion
 
 
-			playerDirection = (int)lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+			playerDirection = (int)lastPlayerDirection + turnDirection;
 			playerDirection = (playerDirection % 360);
 
 			/*else if (dirVec.x == 0 && dirVec.z == 0)

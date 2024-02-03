@@ -10,6 +10,7 @@
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
 #include "Graphics/MeshRenderer.h"
+#include "Graphics/Renderer.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 
@@ -2169,6 +2170,22 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region Renderer
+	static void Engine_SetSkyboxEnvironment(MonoString* Texture0, MonoString* Texture1, MonoString* Texture2, MonoString* Texture3, MonoString* Texture4, MonoString* Texture5)
+	{
+		std::string cpptexture0 = MonoStringToString(Texture0);
+		std::string cpptexture1 = MonoStringToString(Texture1);
+		std::string cpptexture2 = MonoStringToString(Texture2);
+		std::string cpptexture3 = MonoStringToString(Texture3);
+		std::string cpptexture4 = MonoStringToString(Texture4);
+		std::string cpptexture5 = MonoStringToString(Texture5);
+
+		Renderer::SetSkyboxEnvironment(cpptexture0, cpptexture1, cpptexture2, cpptexture3, cpptexture4, cpptexture5);
+	}
+
+
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2447,6 +2464,11 @@ namespace TRE
 			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_ShrinkVignette", Engine_ShrinkVignette);
 			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateIn", Engine_GetVignetteStateIn);
 			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateOut", Engine_GetVignetteStateOut);
+		}
+
+		// Renderer
+		{
+			mono_add_internal_call("TRE.RendererSystem::Engine_SetSkyboxEnvironment", Engine_SetSkyboxEnvironment);
 		}
 	}
 }

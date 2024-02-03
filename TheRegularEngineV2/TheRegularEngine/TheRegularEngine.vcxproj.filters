@@ -208,6 +208,9 @@
     <ClInclude Include="Graphics\ShaderResource.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Skybox.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Slideshow.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -439,6 +442,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\ShaderReflection.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Skybox.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Slideshow.cpp">

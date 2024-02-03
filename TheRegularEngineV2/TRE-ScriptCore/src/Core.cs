@@ -1584,4 +1584,10 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		private extern static bool Engine_GetVignetteStateOut();
 	}
+
+	public class RendererSystem
+	{
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetSkyboxEnvironment(string texture0, string texture1, string texture2, string texture3, string texture4, string texture5);
+    }
 }

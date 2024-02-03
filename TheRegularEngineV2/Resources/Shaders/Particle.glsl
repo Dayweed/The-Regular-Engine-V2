@@ -7,8 +7,12 @@ layout(location = 1) in vec2 in_UV;
 layout(set = 0, binding = 0) uniform ParticleUBO
 {
 	mat4 m_ProjView;
-    vec4 Color;
 } ubo;
+
+layout(set = 0, binding = 6) uniform MaterialUBO
+{
+	vec4 m_Color;
+} material;
 
 layout (push_constant) uniform PushConstants
 {
@@ -23,7 +27,7 @@ layout(location = 0) out struct
 
 void main() 
 {
-	Out.Color = vec4(1.0,1.0,1.0,1.0);//PC.Color;
+	Out.Color = material.m_Color;
     Out.UV = in_UV;
     gl_Position = ubo.m_ProjView * PC.L2W * vec4(in_Position, 1.0);
 }
@@ -44,5 +48,4 @@ void main()
 {
     outColor = texture(DiffuseMap, In.UV) * In.Color;
     outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
-    outColor.a = 1.0;
 }
