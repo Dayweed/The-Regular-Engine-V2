@@ -1483,7 +1483,26 @@ namespace TRE
 		public extern static bool Engine_GetVisible(EntityID ID);
 	}
 
-	public class DirectPathfindingSystem
+    public class TextSystem
+    {
+        public static void SetVisible(EntityID ID, bool isVisible)
+        {
+            Engine_SetTextVisible(ID, isVisible);
+        }
+
+        public static bool GetVisible(EntityID ID)
+        {
+            return Engine_GetTextVisible(ID);
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool Engine_GetTextVisible(EntityID ID);
+    }
+
+    public class DirectPathfindingSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetPathfindingRunning(EntityID ID);
@@ -1501,7 +1520,7 @@ namespace TRE
 		public extern static bool Engine_ResetPathfinding(EntityID ID);
 	}
 
-	public class ScenePostEffectsSystem
+    public class ScenePostEffectsSystem
 	{
 		public enum STATE
 		{

@@ -43,6 +43,7 @@ namespace TRE
 		Parenting,
 		Animation,
 		DirectPathfinding,
+		Text,
 		None
 	};
 	std::unordered_map<std::string, ComponentsID> ComponentsMap
@@ -61,7 +62,8 @@ namespace TRE
 		{"TRE.Parenting", ComponentsID::Parenting},
 		{"TRE.Script", ComponentsID::Script},
 		{"TRE.Animation", ComponentsID::Animation},
-		{"TRE.DirectPathfinding", ComponentsID::DirectPathfinding}
+		{"TRE.DirectPathfinding", ComponentsID::DirectPathfinding},
+		{"TRE.Text", ComponentsID::Text}
 	};
 
 	namespace Tools
@@ -398,6 +400,10 @@ namespace TRE
 			Temp->AddComponent<DirectPathfinding>();
 			TRE_INFO("DirectPathfinding added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Text:
+			Temp->AddComponent<TextComponent>();
+			TRE_INFO("TextComponent added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -468,6 +474,10 @@ namespace TRE
 			Temp->RemoveComponent<DirectPathfinding>();
 			TRE_INFO("DirectPathfinding Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Text:
+			Temp->RemoveComponent<TextComponent>();
+			TRE_INFO("TextComponent Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -518,6 +528,8 @@ namespace TRE
 			return entity->HasComponent<AnimationComponent>();
 		case ComponentsID::DirectPathfinding:
 			return entity->HasComponent<DirectPathfinding>();
+		case ComponentsID::Text:
+			return entity->HasComponent<TextComponent>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -1979,6 +1991,38 @@ namespace TRE
 	}
 #pragma endregion
 
+#pragma region FontBindings
+	static void Engine_SetTextVisible(CSEntityID id, bool visible)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<TextComponent>().m_IsVisible = visible;
+	}
+
+	static bool Engine_GetTextVisible(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<TextComponent>().m_IsVisible;
+	}
+
+
+#pragma endregion
+
 #pragma region DirectPathfindingBinding
 	static bool Engine_GetPathfindingRunning(CSEntityID id)
 	{
@@ -2328,6 +2372,12 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.UISystem::Engine_SetVisible", Engine_SetVisible);
 			mono_add_internal_call("TRE.UISystem::Engine_GetVisible", Engine_GetVisible);
+		}
+
+		// Text
+		{
+			mono_add_internal_call("TRE.TextSystem::Engine_SetTextVisible", Engine_SetTextVisible);
+			mono_add_internal_call("TRE.TextSystem::Engine_GetTextVisible", Engine_GetTextVisible);
 		}
 
 		// Direct Pathfinding

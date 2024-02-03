@@ -569,4 +569,24 @@ namespace TRE
 			DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
 		}
 	}
+
+	public class Text : Component
+	{
+		public Text()
+		{
+
+		}
+
+		public bool IsVisible
+		{
+            get
+            {
+                return TextSystem.Engine_GetTextVisible(entity.ID);
+            }
+            set
+            {
+                TextSystem.Engine_SetTextVisible(entity.ID, value);
+            }
+        }
+	}
 }
