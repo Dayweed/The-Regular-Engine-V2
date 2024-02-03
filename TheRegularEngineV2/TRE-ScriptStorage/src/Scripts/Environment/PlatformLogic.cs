@@ -39,25 +39,25 @@ namespace TRE
 				if (name == "MovingPlatform_1")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(16.394f, 14.422f, -227), new vec3(16.394f, 14.422f, -178) };
+					positions = new vec3[] { new vec3(16.394f, 13.403f, -227), new vec3(16.394f, 13.403f, -178) };
 				}
 
 				if (name == "MovingPlatform_2")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(146.419f, 14.422f, -237), new vec3(146.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(150.419f, 14.422f, -237), new vec3(150.419f, 14.422f, -169) };
 				}
 
 				if (name == "MovingPlatform_3")
 				{
 					currentIndex = 1;
-					positions = new vec3[] { new vec3(174.419f, 14.422f, -237), new vec3(174.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(178.419f, 14.422f, -237), new vec3(178.419f, 14.422f, -169) };
 				}
 
 				if (name == "MovingPlatform_4")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(200.419f, 14.422f, -237), new vec3(200.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(206.419f, 14.422f, -237), new vec3(206.419f, 14.422f, -169) };
 				}
 
 				if (name == "MovingPlatform_5")
