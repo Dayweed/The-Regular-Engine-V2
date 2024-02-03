@@ -1524,7 +1524,16 @@ namespace TRE
 			return Engine_GetTextMessage(ID);
 		}
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public static void StartDialogue(EntityID ID)
+		{
+            Engine_StartDialogue(ID);
+		}
+        public static void ResetDialogue(EntityID ID)
+        {
+            Engine_ResetDialogue(ID);
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1536,7 +1545,13 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static string Engine_GetTextMessage(EntityID ID);
-	}
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_StartDialogue(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_ResetDialogue(EntityID ID);
+    }
 
 	public class DirectPathfindingSystem
 	{

@@ -13,14 +13,18 @@ namespace TRE
         public void Start()
         {
             fonttest = ECSManager.FindEntityByName("fonttest");
-
-            RendererSystem.Engine_SetSkyboxEnvironment("Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png");
+            TextSystem.StartDialogue(fonttest.ID);
+            //RendererSystem.Engine_SetSkyboxEnvironment("Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png", "Skybox5.png");
         }
 
         public void Update()
         {
-            float time = Time.GetDeltaTime();
-            TextSystem.SetTextMessage(fonttest.ID, "It works");
+            //TextSystem.SetTextMessage(fonttest.ID, "It works");
+
+            if (InputSystem.GetKeyPress(InputKeys.Space))
+            {
+                TextSystem.ResetDialogue(fonttest.ID);
+            }
         }
     }
 }
