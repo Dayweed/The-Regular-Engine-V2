@@ -2060,6 +2060,32 @@ namespace TRE
 		return monotext;
 	}
 
+	static void Engine_StartDialogue(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+		}
+		
+		entity->GetComponent<TextComponent>().m_IsDialogue = true;
+	}
+
+	static void Engine_ResetDialogue(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+		}
+
+		entity->GetComponent<TextComponent>().m_IsDialogue = false;
+	}
+
 #pragma endregion
 
 #pragma region DirectPathfindingBinding
@@ -2437,7 +2463,9 @@ namespace TRE
 			mono_add_internal_call("TRE.TextSystem::Engine_SetTextVisible", Engine_SetTextVisible);
 			mono_add_internal_call("TRE.TextSystem::Engine_GetTextVisible", Engine_GetTextVisible);
 			mono_add_internal_call("TRE.TextSystem::Engine_SetTextMessage", Engine_SetTextMessage);
-			mono_add_internal_call("TRE.TextSystem::Engine_GetTextMessage", Engine_GetTextMessage);
+			mono_add_internal_call("TRE.TextSystem::Engine_GetTextMessage", Engine_GetTextMessage); 
+			mono_add_internal_call("TRE.TextSystem::Engine_StartDialogue", Engine_StartDialogue);
+			mono_add_internal_call("TRE.TextSystem::Engine_ResetDialogue", Engine_ResetDialogue);
 		}
 
 		// Direct Pathfinding
