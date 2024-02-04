@@ -3,7 +3,7 @@ Shader:
 Textures:
 AOMap | 0
 RoughnessMap | 0
-DiffuseMap | 0
+DiffuseMap | a361df51c753e12e
 Metalness | 0
 NormalMap | 0
 End of Textures
