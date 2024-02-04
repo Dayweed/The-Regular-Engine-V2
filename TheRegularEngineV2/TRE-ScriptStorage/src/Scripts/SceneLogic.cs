@@ -54,6 +54,24 @@ namespace TRE
 
 				nextSceneName = "ResultScreen";
 			}
+			else if (currentSceneName == "Level_1")
+			{
+				// Add for course complete triggers
+				// triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
+				// triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
+
+				// Add for optional stars triggers
+				List<HoleCheckDisplay> holeCheckDisplays = new List<HoleCheckDisplay>
+				{
+					ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>(),
+					ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>()
+				};
+				triggerStars.Add(holeCheckDisplays);
+
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
+
+				nextSceneName = "ResultScreen";
+			}
 			courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
 
 			StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
