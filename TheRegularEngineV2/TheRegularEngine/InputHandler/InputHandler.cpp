@@ -31,8 +31,8 @@ namespace TRE
 		{
 			event.Publish(InputEvent {key, action});
 		}
-
 		m_keyMap[key] = action;
+		std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
 	}
 
 	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -49,6 +49,7 @@ namespace TRE
 		{
 			//TRE_CORE_INFO("Mouse Released:x {0}", key);
 			//event.Publish(InputEvent {button, action});
+			
 		}
 	}
 
@@ -104,15 +105,13 @@ namespace TRE
 
 	bool InputHandler::GetKeyRelease(int key)
 	{
-		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
+		if (m_keyMap[key] == GLFW_RELEASE)
 		{
-			m_keyPreviousRelease[key] = false;
 			return true;
 		}
-		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS)
+		else
 		{
-			m_keyPreviousRelease[key] = true;
+			return false;
 		}
-		return false;
 	}
 }
