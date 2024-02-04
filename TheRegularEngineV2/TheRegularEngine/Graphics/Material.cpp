@@ -355,8 +355,14 @@ namespace TRE
 			}
 		}
 
+		if (mat->IsValid() == false)
+			mat->Invalidate();
+		
 		if (HasColor)
+		{
 			mat->SetUBOData(Color);
+			mat->SetMaterialUBO();
+		}
 
 		ResourceManager::Instance().AddResource(std::move(mat));
 
