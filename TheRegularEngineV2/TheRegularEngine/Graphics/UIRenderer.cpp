@@ -31,9 +31,9 @@ namespace TRE
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
-		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
+		PipelineConfig.CullMode = VK_CULL_MODE_FRONT_BIT;
 		PipelineConfig.EnableBlending = true;
-		PipelineConfig.EnableDepthTest = false;
+		PipelineConfig.EnableDepthTest = true;
 		m_UIPipeline = std::make_shared<Pipeline>(PipelineConfig, m_UIRenderpass);
 
 		m_UIUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
@@ -42,16 +42,16 @@ namespace TRE
 		float width = 2, height = 2;
 		std::vector<QuadVertex> data(4);
 
-		data[0].Position = glm::vec3(x, y, 0.0f);
+		data[0].Position = glm::vec3(x, y, 1.0f);
 		data[0].TexCoord = glm::vec2(0, 0);
 
-		data[1].Position = glm::vec3(x + width, y, 0.0f);
+		data[1].Position = glm::vec3(x + width, y, 1.0f);
 		data[1].TexCoord = glm::vec2(1, 0);
 
-		data[2].Position = glm::vec3(x + width, y + height, 0.0f);
+		data[2].Position = glm::vec3(x + width, y + height, 1.0f);
 		data[2].TexCoord = glm::vec2(1, 1);
 
-		data[3].Position = glm::vec3(x, y + height, 0.0f);
+		data[3].Position = glm::vec3(x, y + height, 1.0f);
 		data[3].TexCoord = glm::vec2(0, 1);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
@@ -72,14 +72,15 @@ namespace TRE
 
 	}
 
-	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor)
+	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor, glm::mat4 ProjView)
 	{
 		UIUBO UBO{};
 		//const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		const auto width = 1920.f;//(float)SC->GetWidth();
 		const auto height = 1080.f;// (float)SC->GetHeight();
 		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f)); //Translate by viewport width or height / 2
-		UBO.m_ProjView2DSpace = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+		//UBO.m_ProjView2DSpace = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+		UBO.m_ProjView2DSpace = ProjView;
 
 		m_UIUBO->SetData(&UBO, sizeof(UIUBO));
 
@@ -104,7 +105,7 @@ namespace TRE
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
 
-		vkCmdBeginRenderPass(CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		//vkCmdBeginRenderPass(CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -130,7 +131,7 @@ namespace TRE
 			UI_PushConstant pc{};
 			auto TransformComp = Entity->GetComponent<Transform>();
 			pc.L2W = TransformComp.m_WorldXform;
-			pc.L2W = glm::scale(pc.L2W, glm::vec3(UIComp.m_Width, UIComp.m_Height, 0.f));
+			//pc.L2W = glm::scale(pc.L2W, glm::vec3(UIComp.m_Width, UIComp.m_Height, 0.f));
 			pc.Color = UIComp.m_Color;
 
 			vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_UIPipeline->GetPipelineLayout(), 
@@ -164,6 +165,6 @@ namespace TRE
 			vkCmdDrawIndexed(CommandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
 
-		Renderer::EndRenderPass(CommandBuffer);
+		//Renderer::EndRenderPass(CommandBuffer);
 	}
 }

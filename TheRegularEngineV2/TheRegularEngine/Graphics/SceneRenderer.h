@@ -149,6 +149,7 @@ namespace TRE
 
 			//UI Renderer
 			std::shared_ptr<UIRenderer> m_UIRenderer;
+			glm::mat4 m_ProjView3D;
 
 			//Font Renderer
 			std::shared_ptr<FontRenderer> m_FontRenderer;
