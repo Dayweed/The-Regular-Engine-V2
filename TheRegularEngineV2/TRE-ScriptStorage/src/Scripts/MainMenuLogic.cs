@@ -167,19 +167,19 @@ namespace TRE
                 {
                     selectedTutorial = false;
 
-                    Scene.TransitionScene("Tutorial", 7f);
+                    Scene.TransitionScene("Tutorial", 5f);
                 }
                 if (selectedLevel1)
                 {
                     selectedLevel1 = false;
 
-                    Scene.TransitionScene("Level_1", 7f);
+                    Scene.TransitionScene("Level_1", 5f);
                 }
                 if (selectedLevel2)
                 {
                     selectedLevel2 = false;
 
-                    Scene.TransitionScene("Level_1", 7f);
+                    Scene.TransitionScene("Level_1", 5f);
                 }
             }
         }
