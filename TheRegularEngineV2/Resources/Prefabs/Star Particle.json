@@ -1,0 +1,143 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "8119697912220926596",
+         "m_Overrides": {},
+         "m_PrefabGUID": "8119697912220926596",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "13506111392206162135",
+         "m_Index": 269,
+         "m_Name": "Star Particle",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0004863739013672
+         ],
+         "Fade": false,
+         "FadeDuration": [
+            0.25,
+            0.75
+         ],
+         "LifeTime": 10.0,
+         "Loop": false,
+         "ParticleCount": 50,
+         "PlayOnStart": true,
+         "Size": 1.0,
+         "SpawnRadius": 3.0,
+         "Speed": 10.0,
+         "Texture": "92618220a6c79a0e",
+         "VariationSize": [
+            0.800000011920929,
+            1.0
+         ],
+         "VariationSpeed": [
+            0.15000000596046448,
+            1.0
+         ],
+         "Velocity": [
+            0.0,
+            1.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

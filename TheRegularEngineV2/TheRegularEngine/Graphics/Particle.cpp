@@ -68,6 +68,8 @@ namespace TRE
 
 	void ParticleComponent::ResetParticles(const glm::vec3& emitterPos)
 	{
+		if(m_Particles.size() != m_ParticleCount)
+			GenerateParticles(emitterPos);
 		m_ElapsedTime = 0.f;
 		ResetParticlesData(emitterPos);
 		if (m_Fade)
@@ -93,15 +95,14 @@ namespace TRE
 		for (auto& emitters : ECSManager::Instance().GetEntities<ParticleComponent>())
 		{
 			auto& particleComponent = emitters->GetComponent<ParticleComponent>();
-			if(particleComponent.m_Running == false)
-				continue;
-
 			const auto& transform = emitters->GetComponent<Transform>();
 			if (particleComponent.m_Particles.size() != particleComponent.m_ParticleCount)
 			{
 				particleComponent.GenerateParticles(transform.m_Position);
 			}
 
+			if(particleComponent.m_Running == false)
+				continue;
 			particleComponent.UpdateParticles();
 
 			if (particleComponent.m_ElapsedTime >= particleComponent.m_LifeTime)

@@ -648,6 +648,23 @@ namespace TRE
             {
                 TextSystem.Engine_SetTextMessage(entity.ID, value);
             }
-        }
-    }
+		}
+	}
+
+	public class Particle : Component
+	{
+		public bool IsActive
+		{
+			get
+			{
+				return ParticleSystem.GetActive(entity.ID);
+			}
+			set
+			{
+				ParticleSystem.SetActive(entity.ID, value);
+			}
+		}
+
+	}
+
 }
