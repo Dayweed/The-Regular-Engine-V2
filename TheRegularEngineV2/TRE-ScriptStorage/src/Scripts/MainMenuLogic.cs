@@ -256,7 +256,7 @@ namespace TRE
 				{
 					selectedTutorial = false;
 
-					Scene.TransitionScene("MainMenu", 7f);
+					Scene.TransitionScene("Tutorial", 7f);
 				}
 				if (selectedLevel1)
 				{
