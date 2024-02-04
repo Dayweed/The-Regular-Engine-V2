@@ -171,37 +171,37 @@ namespace TRE
 					JumpIntoHole();
 					ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-				if (ToLevelSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel)
+				else if (ToLevelSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel)
 				{
 					selectedLevel = true;
 					JumpIntoHole();
 					ToLevelSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-				if (ToQuitSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedQuit)
+                else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedQuit)
 				{
 					selectedQuit = true;
 					JumpIntoHole();
 					ToQuitSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-				if (ToReturnSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedReturn)
+                else if (ToReturnSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedReturn)
 				{
 					selectedReturn = true;
 					JumpIntoHole();
 					ToReturnSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-				if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedTutorial)
+                else if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedTutorial)
 				{
 					selectedTutorial = true;
 					JumpIntoHole();
 					ToTutorialSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-				if (ToLevel1Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel1)
+                else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel1)
 				{
 					selectedLevel1 = true;
 					JumpIntoHole();
 					ToLevel1Select.GetComponent<TunnelLogic>().ResetMoles();
 				}
-				if (ToLevel2Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel2)
+                else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel2)
 				{
 					selectedLevel2 = true;
 					JumpIntoHole();
@@ -224,67 +224,83 @@ namespace TRE
 				{
 					selectedOption = false;
 				}
-				if (selectedLevel)
+				else if (selectedLevel)
 				{
 					selectedLevel = false;
 
 					// Teleport Moley and Holey to another location
 					vec3 teleportPos = ToReturnSelect.GetComponent<Transform>().Position;
-					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
-					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z - 20);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z - 20);
 
 					JumpOutHole();
 				}
-				if (selectedQuit)
+                else if (selectedQuit)
 				{
 					selectedQuit = false;
 					Game.CloseGame();
 				}
-				if (selectedReturn)
+                else if (selectedReturn)
 				{
 					selectedReturn = false;
 
 					// Teleport Moley and Holey to another location
 					vec3 teleportPos = ToLevelSelect.GetComponent<Transform>().Position;
-					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 25, teleportPos.z);
-					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 25, teleportPos.z);
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 25, teleportPos.z + 20);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 25, teleportPos.z + 20);
 
 					JumpOutHole();
 				}
-				if (selectedTutorial)
+                else if (selectedTutorial)
 				{
 					selectedTutorial = false;
 
 					Scene.TransitionScene("Tutorial", 5f);
 				}
-				if (selectedLevel1)
+                else if (selectedLevel1)
 				{
 					selectedLevel1 = false;
 
 					Scene.TransitionScene("Level_1", 5f);
 				}
-				if (selectedLevel2)
+                else if (selectedLevel2)
 				{
 					selectedLevel2 = false;
 
 					Scene.TransitionScene("Level_1", 5f);
 				}
 			}
+
+			// Return controls to moles if they land on the ground
+			Debug.Log("- " + Moley.GetComponent<MoleyController>().isGrounded);
+			if (!Moley.GetComponent<MoleyController>().isControllable && Moley.GetComponent<MoleyController>().isGrounded && !Moley.GetComponent<CapsuleCollider>().IsTrigger)
+			{
+				Moley.GetComponent<MoleyController>().isControllable = true;
+            }
+			if (!Holey.GetComponent<HoleyController>().isControllable && Holey.GetComponent<HoleyController>().isGrounded && !Holey.GetComponent<CapsuleCollider>().IsTrigger)
+			{
+				Holey.GetComponent<HoleyController>().isControllable = true;
+            }
 		}
 
 		private void JumpIntoHole()
 		{
+			if (currentTimer > 0) return;
+
 			Moley.GetComponent<MoleyController>().isControllable = false;
 			Holey.GetComponent<HoleyController>().isControllable = false;
 
 			PhysicsSystem.GetLinearVelocity(Moley.ID, out vec3 MoleyVel);
 			PhysicsSystem.GetLinearVelocity(Holey.ID, out vec3 HoleyVel);
 
-			if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
+            Moley.GetComponent<MoleyController>().jumpCancelled = true;
+            Holey.GetComponent<HoleyController>().jumpCancelled = true;
+
+            if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
 				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 70, 0));
 			}
-			if (HoleyVel.y < 0 || !Holey.GetComponent<MoleyController>().isJumping)
+			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
 			{
 				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 70, 0));
 			}
@@ -295,15 +311,23 @@ namespace TRE
 		}
 
 		private void JumpOutHole()
-		{
-			// Give controls back to Moley and Holey
-			Moley.GetComponent<Rigidbody>().useGravity = true;
+        {
+            if (currentTimer > 0) return;
+
+            // Give controls back to Moley and Holey
+            Moley.GetComponent<Rigidbody>().useGravity = true;
 			Holey.GetComponent<Rigidbody>().useGravity = true;
 
-			Moley.GetComponent<MoleyController>().isControllable = true;
-			Holey.GetComponent<HoleyController>().isControllable = true;
+			//Moley.GetComponent<MoleyController>().isControllable = true;
+			//Holey.GetComponent<HoleyController>().isControllable = true;
 
-			Moley.GetComponent<CapsuleCollider>().IsTrigger = false;
+            Moley.GetComponent<MoleyController>().isJumping = false;
+            Holey.GetComponent<HoleyController>().isJumping = false;
+
+            Moley.GetComponent<MoleyController>().jumpCancelled = true;
+            Holey.GetComponent<HoleyController>().jumpCancelled = true;
+
+            Moley.GetComponent<CapsuleCollider>().IsTrigger = false;
 			Holey.GetComponent<CapsuleCollider>().IsTrigger = false;
 
 			PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);

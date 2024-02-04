@@ -52,11 +52,11 @@ namespace TRE
 
 		public void Update()
 		{
-            if (MoleyInside && InputSystem.GetKeyHold(InputKeys.Space) && !MoleyApprove)
+            if (MoleyInside && InputSystem.GetKeyHold(InputKeys.Space) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
             {
                 MoleyApprove = true;
             }
-            if (HoleyInside && InputSystem.GetKeyHold(InputKeys.Enter) && !HoleyApprove)
+            if (HoleyInside && InputSystem.GetKeyHold(InputKeys.Enter) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
             {
                 HoleyApprove = true;
             }
