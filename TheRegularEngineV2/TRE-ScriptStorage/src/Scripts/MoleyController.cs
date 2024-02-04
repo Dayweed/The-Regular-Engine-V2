@@ -97,6 +97,8 @@ namespace TRE
 		private ulong walkingSFX2;
 		private ulong walkingSFX3;
 		private ulong walkingSFX4;
+		private ulong walkingSFX5;
+		private ulong walkingSFX6;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
@@ -167,10 +169,12 @@ namespace TRE
 
 			#region Sound Variables
 			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
-			walkingSFX1 = ECSManager.FindIDFromName("SFX_Footsteps1");
-			walkingSFX2 = ECSManager.FindIDFromName("SFX_Footsteps2");
-			walkingSFX3 = ECSManager.FindIDFromName("SFX_Footsteps3");
-			walkingSFX4 = ECSManager.FindIDFromName("SFX_Footsteps4");
+			//walkingSFX1 = ECSManager.FindIDFromName("SFX_Footsteps1");
+			//walkingSFX2 = ECSManager.FindIDFromName("SFX_Footsteps2");
+			//walkingSFX3 = ECSManager.FindIDFromName("SFX_Footsteps3");
+			//walkingSFX4 = ECSManager.FindIDFromName("SFX_Footsteps4");
+			//walkingSFX5 = ECSManager.FindIDFromName("SFX_Footsteps5");
+			//walkingSFX6 = ECSManager.FindIDFromName("SFX_Footsteps6");
 			jumpSFX = ECSManager.FindIDFromName("SFX_MoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
@@ -402,24 +406,30 @@ namespace TRE
 				{
 					AudioSystem.Play(walkingSFX);
 
-						//int rand = Random.Range(0, 4);
-						//switch (rand)
-						//{
-						//	case 0:
-						//		AudioSystem.Play(walkingSFX1);
-						//		break;
-						//	case 1:
-						//		AudioSystem.Play(walkingSFX2);
-						//		break;
-						//	case 2:
-						//		AudioSystem.Play(walkingSFX3);
-						//		break;
-						//	case 3:
-						//		AudioSystem.Play(walkingSFX4);
-						//		break;
-						//}
+					//int rand = Random.Range(0, 6);
+					//switch (rand)
+					//{
+					//	case 0:
+					//		AudioSystem.Play(walkingSFX1);
+					//		break;
+					//	case 1:
+					//		AudioSystem.Play(walkingSFX2);
+					//		break;
+					//	case 2:
+					//		AudioSystem.Play(walkingSFX3);
+					//		break;
+					//	case 3:
+					//		AudioSystem.Play(walkingSFX4);
+					//		break;
+					//	case 4:
+					//		AudioSystem.Play(walkingSFX5);
+					//		break;
+					//	case 5:
+					//		AudioSystem.Play(walkingSFX6);
+					//		break;
+					//}
 
-						walkingSFXPlayed = true;
+					walkingSFXPlayed = true;
 					
 				}
 
@@ -430,6 +440,8 @@ namespace TRE
 					//AudioSystem.Stop(walkingSFX2);
 					//AudioSystem.Stop(walkingSFX3);
 					//AudioSystem.Stop(walkingSFX4);
+					//AudioSystem.Stop(walkingSFX5);
+					//AudioSystem.Stop(walkingSFX6);
 					walkingSFXPlayed = false;
 				}
 			}
