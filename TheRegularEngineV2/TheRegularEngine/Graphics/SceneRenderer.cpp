@@ -82,7 +82,6 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
-		//m_SkyboxEnvironment = std::make_shared<Skybox>();
 		ShadowPassInit();
 
 		PipelineConfigurations Config{};
@@ -238,6 +237,8 @@ namespace TRE
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
 
+		m_ProjView3D = ubo.m_ProjView;
+
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
@@ -316,6 +317,8 @@ namespace TRE
 		ubo.m_LightPosition = cameraTransform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
+		m_ProjView3D = ubo.m_ProjView;
+
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = baseCamera.m_ProjectionMatrix;
 		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
@@ -467,11 +470,12 @@ namespace TRE
 		DebugDrawPass(Index);
 		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
+		if (m_IsEditorScene == false)
+			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene, m_ProjView3D);
 		Renderer::EndRenderPass(m_CommandBuffer);
 
 		if (m_IsEditorScene == false)
 		{
-			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
