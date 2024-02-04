@@ -272,14 +272,17 @@ namespace TRE
 			}
 
 			// Return controls to moles if they land on the ground
-			if (!Moley.GetComponent<MoleyController>().isControllable && Moley.GetComponent<MoleyController>().isGrounded && !Moley.GetComponent<CapsuleCollider>().IsTrigger)
+			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2))
 			{
-				Moley.GetComponent<MoleyController>().isControllable = true;
-            }
-			if (!Holey.GetComponent<HoleyController>().isControllable && Holey.GetComponent<HoleyController>().isGrounded && !Holey.GetComponent<CapsuleCollider>().IsTrigger)
-			{
-				Holey.GetComponent<HoleyController>().isControllable = true;
-            }
+				if (!Moley.GetComponent<MoleyController>().isControllable && Moley.GetComponent<MoleyController>().isGrounded && !Moley.GetComponent<CapsuleCollider>().IsTrigger)
+				{
+					Moley.GetComponent<MoleyController>().isControllable = true;
+				}
+				if (!Holey.GetComponent<HoleyController>().isControllable && Holey.GetComponent<HoleyController>().isGrounded && !Holey.GetComponent<CapsuleCollider>().IsTrigger)
+				{
+					Holey.GetComponent<HoleyController>().isControllable = true;
+				}
+			}
 		}
 
 		private void JumpIntoHole()
@@ -295,13 +298,16 @@ namespace TRE
             Moley.GetComponent<MoleyController>().jumpCancelled = true;
             Holey.GetComponent<HoleyController>().jumpCancelled = true;
 
-            if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
+            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+            PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+
+            //if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 70, 0));
+				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 30, 0));
 			}
-			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
+			//if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 70, 0));
+				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 30, 0));
 			}
 
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = true;
