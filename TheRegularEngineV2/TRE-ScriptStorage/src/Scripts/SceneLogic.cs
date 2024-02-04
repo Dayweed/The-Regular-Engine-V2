@@ -25,6 +25,8 @@ namespace TRE
 
 		VFX_Emerge StarEmerge;
 
+		Entity StarParticle;
+
 		public void Start()
 		{
 			currentTime = 0.0f;
@@ -57,6 +59,10 @@ namespace TRE
 			courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
 
 			StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
+
+			//Star VFX
+			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
+			StarParticle.GetComponent<Particle>().IsActive = false;
 		}
 
 		public void Update()
@@ -87,6 +93,11 @@ namespace TRE
 					if (StarEmerge != null)
 					{
 						StarEmerge.Emerge();
+						StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
+						StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec() * 2.0f;
+						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 15f, StarParticle.GetComponent<Transform>().Position.z);
+
+						StarParticle.GetComponent<Particle>().IsActive = true;
 					}
 				}
 			}

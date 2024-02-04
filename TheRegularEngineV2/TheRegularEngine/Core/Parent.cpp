@@ -96,6 +96,9 @@ namespace TRE
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
 			UpdateChildLocalData(parent, child);
 		}
+
+		// Resort the entities again
+		ECSManager::Instance().SortEntityOrder();
 	}
 
 	Entity ParentingSystem::GetParent(Entity child)

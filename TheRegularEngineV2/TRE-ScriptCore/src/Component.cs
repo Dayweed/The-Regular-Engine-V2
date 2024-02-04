@@ -278,6 +278,17 @@ namespace TRE
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
 		}
+		public bool IsTrigger
+		{
+            get
+            {
+                return PhysicsSystem.Engine_GetBoxTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetBoxTrigger(entity.ID, value);
+            }
+        }
 	}
 
 	public class SphereCollider : Component
@@ -318,8 +329,19 @@ namespace TRE
 			{
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
-		}
-	}
+        }
+        public bool IsTrigger
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetSphereTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetSphereTrigger(entity.ID, value);
+            }
+        }
+    }
 
 	public class CapsuleCollider : Component
 	{
@@ -370,8 +392,19 @@ namespace TRE
 			{
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
-		}
-	}
+        }
+        public bool IsTrigger
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetCapsuleTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetCapsuleTrigger(entity.ID, value);
+            }
+        }
+    }
 
 	public class CylinderCollider : Component
 	{
@@ -422,8 +455,19 @@ namespace TRE
 			{
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
-		}
-	}
+        }
+        public bool IsTrigger
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetCylinderTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetCylinderTrigger(entity.ID, value);
+            }
+        }
+    }
 
 	public class Audio : Component
 	{
@@ -604,6 +648,23 @@ namespace TRE
             {
                 TextSystem.Engine_SetTextMessage(entity.ID, value);
             }
-        }
-    }
+		}
+	}
+
+	public class Particle : Component
+	{
+		public bool IsActive
+		{
+			get
+			{
+				return ParticleSystem.GetActive(entity.ID);
+			}
+			set
+			{
+				ParticleSystem.SetActive(entity.ID, value);
+			}
+		}
+
+	}
+
 }

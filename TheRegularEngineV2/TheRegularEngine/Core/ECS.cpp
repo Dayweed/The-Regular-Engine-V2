@@ -422,8 +422,15 @@ namespace TRE
 		std::vector<std::string>& children{ child->GetComponent<Parenting>().m_Children };
 		for (int c{}; c < children.size(); ++c)
 		{
-			m_EntityList[children[c]]->GetComponent<Properties>().m_Index = order++;
-			UpdateChildrenOrder(m_EntityList[children[c]], order);
+			if (ECSManager::Instance().IsValidEntity(m_EntityList[children[c]]))
+			{
+				m_EntityList[children[c]]->GetComponent<Properties>().m_Index = order++;
+				UpdateChildrenOrder(m_EntityList[children[c]], order);
+			}
+			else
+			{
+				TRE_WARN("[ECSManager::UpdateChildrenOrder] Entity (" + child->GetComponent<Properties>().m_Name ") have an invalid child at " + c + "!");
+			}
 		}
 	}
 

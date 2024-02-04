@@ -63,37 +63,39 @@ namespace TRE
 				if (name == "MovingPlatform_5")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(380.419f, 42.422f, -353), new vec3(380.419f, 42.422f, -309) };
+					positions = new vec3[] { new vec3(380.419f, 42.422f, -349.472f), new vec3(380.419f, 42.422f, -309.694f) };
 				}
 
 				if (name == "MovingPlatform_6")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(380.419f, 42.422f, -257), new vec3(446.419f, 42.422f, -257) };
+					delay = 2;
+					positions = new vec3[] { new vec3(380.419f, 42.422f, -252.370f), new vec3(454.655f, 42.422f, -252.370f) };
 				}
 
-				if (name == "Collider_MovingHITW")
+				if (name == "Level1_HitW_02")
 				{
 					currentIndex = 1;
-					positions = new vec3[] { new vec3(446.419f, 42.422f, -227.107f), new vec3(528.400f, 42.422f, -227.107f) };
+					delay = 2;
+					positions = new vec3[] { new vec3(454.655f, 60.340f, -220.529f), new vec3(528.892f, 60.340f, -220.529f) };
 				}
 
 				if (name == "MovingPlatform_7")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(566.419f, 42.422f, -171), new vec3(566.419f, 90.422f, -171) };
+					positions = new vec3[] { new vec3(567.379f, 42.422f, -169), new vec3(567.379f, 90.913f, -169) };
 				}
 
 				if (name == "MovingPlatform_8")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(642.419f, 90.422f, -171), new vec3(756.419f, 90.422f, -171) };
+					positions = new vec3[] { new vec3(647.419f, 90.422f, -168), new vec3(756.419f, 90.422f, -168) };
 				}
 
 				if (name == "MovingPlatform_9")
 				{
 					currentIndex = 1;
-					positions = new vec3[] { new vec3(832.419f, 90.422f, -171), new vec3(894.419f, 90.422f, -171) };
+					positions = new vec3[] { new vec3(832.419f, 90.422f, -168), new vec3(894.419f, 90.422f, -168) };
 				}
 			}
 

@@ -9,6 +9,11 @@
 
 namespace TRE
 {
+	struct ConsoleStartEvent : Event
+	{
+		bool m_Called;
+	};
+
 	struct ConsoleDebugEvent : Event
 	{
 		std::string m_Msg;

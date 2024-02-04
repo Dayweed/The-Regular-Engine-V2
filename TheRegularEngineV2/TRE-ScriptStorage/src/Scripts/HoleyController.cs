@@ -37,8 +37,8 @@ namespace TRE
 		private vec3 finalVelocity = vec3.Zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
-		//Check if player is walking
-		private bool isWalking = false;
+        //Check if player is walking
+        public bool isWalking = false;
 		private bool walkingSFXPlayed = false;
 
 		private float lerpSpeed = 5f;
@@ -92,6 +92,9 @@ namespace TRE
 		// Is Dead
 		public bool isDead = false;
 
+		// Controllable
+		public bool isControllable = true;
+
 		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
 		private bool DroppingOutOfMap = false;
@@ -133,7 +136,7 @@ namespace TRE
 
 			InitialPosition = holeyTransform.Position;
 			OutofMapPos = holeyTransform.Position;
-			OutofMapPos.y = holeyTransform.Position.y - 50.0f;
+			OutofMapPos.y = holeyTransform.Position.y - 100.0f;
 
 			walkingSFX = ECSManager.FindIDFromName("SFX_HoleyFootsteps");
 			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
@@ -217,7 +220,7 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (!MyPauseMenu.isPaused)
+				if (!MyPauseMenu.isPaused && isControllable)
 				{
 
 					if (InputSystem.GetKeyHold(InputKeys.I))

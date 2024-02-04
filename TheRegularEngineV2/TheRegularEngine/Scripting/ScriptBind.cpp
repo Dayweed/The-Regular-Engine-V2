@@ -11,6 +11,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Renderer.h"
+#include "Graphics/Particle.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 
@@ -45,6 +46,7 @@ namespace TRE
 		Animation,
 		DirectPathfinding,
 		Text,
+		Particle,
 		None
 	};
 	std::unordered_map<std::string, ComponentsID> ComponentsMap
@@ -64,7 +66,8 @@ namespace TRE
 		{"TRE.Script", ComponentsID::Script},
 		{"TRE.Animation", ComponentsID::Animation},
 		{"TRE.DirectPathfinding", ComponentsID::DirectPathfinding},
-		{"TRE.Text", ComponentsID::Text}
+		{"TRE.Text", ComponentsID::Text},
+		{"TRE.Particle", ComponentsID::Particle}
 	};
 
 	namespace Tools
@@ -414,6 +417,10 @@ namespace TRE
 			Temp->AddComponent<TextComponent>();
 			TRE_INFO("TextComponent added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Particle:
+			Temp->AddComponent<ParticleComponent>();
+			TRE_INFO("Particle Component added to {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -488,6 +495,10 @@ namespace TRE
 			Temp->RemoveComponent<TextComponent>();
 			TRE_INFO("TextComponent Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
+		case ComponentsID::Particle:
+			Temp->RemoveComponent<ParticleComponent>();
+			TRE_INFO("ParticleComponent Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
+			break;
 		default:
 			std::cout << "The component does not exist!" << std::endl;
 			break;
@@ -540,6 +551,8 @@ namespace TRE
 			return entity->HasComponent<DirectPathfinding>();
 		case ComponentsID::Text:
 			return entity->HasComponent<TextComponent>();
+		case ComponentsID::Particle:
+			return entity->HasComponent<ParticleComponent>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -1177,6 +1190,13 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraRotation(*targetRotation, speed);
 	}
 
+	static Vector3 BindGetMainCameraPosition()
+	{
+		//return ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Position;
+		const BaseCamera& camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera;
+		return camera.m_FocalPoint + camera.GetViewDirection() * camera.m_FocalLength;
+	}
+
 	static Vector3 BindCameraForwardVector()
 	{
 		glm::vec3 fwd = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera.GetViewDirection();
@@ -1193,6 +1213,11 @@ namespace TRE
 	{
 		glm::vec3 rotation = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Rotation;
 		return Vector3(rotation.x, rotation.y, rotation.z);
+	}
+
+	static void BindSetMainCameraPosition(glm::vec3* position)
+	{
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Position = *position;
 	}
 
 #pragma endregion
@@ -1292,6 +1317,34 @@ namespace TRE
 		return entity->GetComponent<SphereCollider>().m_Radius;
 	}
 
+	static void Engine_SetSphereTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<SphereCollider>())
+		{
+			PUBLISHERROR("There is no SphereCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetSphereColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetSphereTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<SphereCollider>())
+		{
+			PUBLISHERROR("There is no SphereCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<SphereCollider>().m_IsTrigger;
+	}
+
 	static void BindResizeBoxCollider(CSEntityID ID, glm::vec3 halfExtents)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -1318,6 +1371,34 @@ namespace TRE
 		}
 
 		return entity->GetComponent<BoxCollider>().m_HalfExtents;
+	}
+
+	static void Engine_SetBoxTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no BoxCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetBoxColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetBoxTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no BoxCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<BoxCollider>().m_IsTrigger;
 	}
 
 	static void BindResizeCapsuleCollider(CSEntityID ID, float radius, float halfHeight)
@@ -1362,6 +1443,34 @@ namespace TRE
 		return entity->GetComponent<CapsuleCollider>().m_HalfHeight;
 	}
 
+	static void Engine_SetCapsuleTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CapsuleCollider>())
+		{
+			PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetCapsuleColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetCapsuleTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<CapsuleCollider>())
+		{
+			PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<CapsuleCollider>().m_IsTrigger;
+	}
+
 	static void BindResizeCylinderCollider(CSEntityID ID, float radius, float height)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -1402,6 +1511,34 @@ namespace TRE
 		}
 
 		return entity->GetComponent<CylinderCollider>().m_Height;
+	}
+
+	static void Engine_SetCylinderTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetCylinderColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetCylinderTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<CylinderCollider>().m_IsTrigger;
 	}
 
 	static void BindOffsetCollider(CSEntityID ID, Vector3 offset)
@@ -2192,8 +2329,6 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
 			== ScenePostEffectsSystem::STATE_OUT;
 	}
-
-
 #pragma endregion
 
 #pragma region Renderer
@@ -2208,9 +2343,33 @@ namespace TRE
 
 		Renderer::SetSkyboxEnvironment(cpptexture0, cpptexture1, cpptexture2, cpptexture3, cpptexture4, cpptexture5);
 	}
-
-
 #pragma endregion
+
+#pragma region Particle
+	static void Engine_SetParticleEmitterActive(CSEntityID id, bool active)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+		if (!entity->HasComponent<ParticleComponent>())
+		{
+			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
+			return;
+		}
+		entity->GetComponent<ParticleComponent>().ResetParticles(entity->GetComponent<Transform>().m_Position);
+		entity->GetComponent<ParticleComponent>().m_Running = active;
+	}
+
+	static bool Engine_GetParticleEmitterActive(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+		if (!entity->HasComponent<ParticleComponent>())
+		{
+			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
+			return false;
+		}
+		return entity->GetComponent<ParticleComponent>().m_Running;
+	}
 
 	void ScriptBind::RegisterFunctions()
 	{
@@ -2326,26 +2485,37 @@ namespace TRE
 			mono_add_internal_call("TRE.CameraSystem::Engine_TransitionMainCameraPosition", BindTransitionMainCameraPosition);
 			mono_add_internal_call("TRE.CameraSystem::Engine_TransitionMainCameraRotation", BindTransitionMainCameraRotation);
 
+			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraPosition", BindGetMainCameraPosition);
 			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraForwardVec", BindCameraForwardVector);
 			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraRightVec", BindCameraRightVector);
 			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraRotation", BindCameraRotation);
+
+			mono_add_internal_call("TRE.CameraSystem::Engine_SetMainCameraPosition", BindSetMainCameraPosition);
 		}
 
 		// Physics Bindings
 		{
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeSphereCollider", BindResizeSphereCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetSphereColliderRadius", BindGetSphereColliderRadius);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetSphereTrigger", Engine_SetSphereTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetSphereTrigger", Engine_GetSphereTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeBoxCollider", BindResizeBoxCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxColliderHalfExtents", BindGetBoxColliderHalfExtents);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetBoxTrigger", Engine_SetBoxTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxTrigger", Engine_GetBoxTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCapsuleCollider", BindResizeCapsuleCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderRadius", BindGetCapsuleColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderHalfHeight", BindGetCapsuleColliderHalfHeight);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetCapsuleTrigger", Engine_SetCapsuleTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleTrigger", Engine_GetCapsuleTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCylinderCollider", BindResizeCylinderCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderColliderRadius", BindGetCylinderColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderColliderHeight", BindGetCylinderColliderHeight);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetCylinderTrigger", Engine_SetCylinderTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderTrigger", Engine_GetCylinderTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_UpdateColliderOffset", BindOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetColliderOffset", BindGetOffsetCollider);
@@ -2497,6 +2667,12 @@ namespace TRE
 		// Renderer
 		{
 			mono_add_internal_call("TRE.RendererSystem::Engine_SetSkyboxEnvironment", Engine_SetSkyboxEnvironment);
+		}
+
+		//Particle
+		{
+			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleEmitterActive", Engine_SetParticleEmitterActive);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleEmitterActive", Engine_GetParticleEmitterActive);
 		}
 	}
 }

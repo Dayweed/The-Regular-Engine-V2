@@ -167,9 +167,11 @@ namespace TRE
 			}
 			if (camera.m_IsDirty)
 			{
+				transform.m_Position = camera.m_BaseCamera.m_FocalPoint - camera.m_BaseCamera.GetForwardVec() * camera.m_BaseCamera.m_FocalLength;
 				CameraHelper::UpdateViewMatrix(camera.m_BaseCamera, transform.m_Position);
 				CameraHelper::UpdateProjectionMatrix(camera.m_BaseCamera);
 				camera.m_IsDirty = false;
+				transform.m_IsDirty = true;
 
 				m_IsDirty = true;	//To update descriptor set then reset back after
 			}

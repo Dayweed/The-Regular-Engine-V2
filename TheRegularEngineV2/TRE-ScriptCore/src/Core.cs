@@ -727,6 +727,11 @@ namespace TRE
 			Engine_TransitionMainCameraRotation(targetRotation, speed);
 		}
 
+		public static vec3 GetMainCameraPosition()
+		{
+			return Engine_GetMainCameraPosition();
+		}
+
 		public static vec3 GetMainCameraForwardVec()
 		{
 			return Engine_GetMainCameraForwardVec();
@@ -740,6 +745,11 @@ namespace TRE
 		public static vec3 GetMainCameraRotation()
 		{
 			return Engine_GetMainCameraRotation();
+		}
+
+		public static void SetMainCameraPosition(vec3 newPos)
+		{
+			Engine_SetMainCameraPosition(newPos);
 		}
 
 		#region Setters
@@ -883,7 +893,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_TransitionMainCameraRotation(vec3 targetRotation, float speed);
-
+		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static vec3 Engine_GetMainCameraPosition();
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetMainCameraForwardVec();
 
@@ -892,6 +904,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetMainCameraRotation();
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetMainCameraPosition(vec3 position);
 
 		#endregion
 
@@ -1074,13 +1089,29 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetSphereColliderRadius(EntityID entityid);
 
+		// dumplicate (incorrect) declaration
+		// [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		// internal extern static float Engine_SetSphereTrigger(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetSphereTrigger(EntityID entityid, bool isTrigger);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetSphereTrigger(EntityID entityid);
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetBoxColliderHalfExtents(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetBoxTrigger(EntityID entityid, bool isTrigger);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetBoxTrigger(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1089,7 +1120,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCapsuleColliderHalfHeight(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetCapsuleTrigger(EntityID entityid, bool isTrigger);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetCapsuleTrigger(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1098,7 +1135,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCylinderColliderHeight(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetCylinderTrigger(EntityID entityid, bool isTrigger);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetCylinderTrigger(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_UpdateColliderOffset(EntityID entityid, vec3 offset);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1605,4 +1648,20 @@ namespace TRE
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Engine_SetSkyboxEnvironment(string texture0, string texture1, string texture2, string texture3, string texture4, string texture5);
     }
+
+	public class ParticleSystem
+	{
+		public static void SetActive(EntityID ID, bool isActive)
+		{
+			Engine_SetParticleEmitterActive(ID, isActive);
+		}
+		public static bool GetActive(EntityID ID)
+		{
+			return Engine_GetParticleEmitterActive(ID);
+		}
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetParticleEmitterActive(EntityID ID, bool isVisible);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetParticleEmitterActive(EntityID ID);
+	}
 }

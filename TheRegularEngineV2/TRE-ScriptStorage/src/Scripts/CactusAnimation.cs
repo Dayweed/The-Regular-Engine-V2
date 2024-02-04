@@ -23,6 +23,8 @@ namespace TRE
         private float lerpSpeed = 5f;
         private bool isBig = false;
         private bool isSmall = true;
+        private bool isLeft;
+        private bool isRight;
         private float left = 10f;
         private float right = -10f;
 
@@ -33,6 +35,16 @@ namespace TRE
             initialScale = cactusXform.Scale;
             currentScale = initialScale;
             currentRotation = cactusXform.Rotation;
+            if (this.ID % 3 == 0)
+            {
+                isLeft = true;
+                isRight = false;
+            }
+            else
+            {
+                isLeft = false;
+                isRight = true;
+            }
         }
 
         public void Update()
@@ -41,27 +53,28 @@ namespace TRE
             if(isSmall)
             {
                 currentScale.y = MathF.Lerp(currentScale.y, bigScale, lerpSpeed * Time.deltaTime);
-                currentRotation.z = MathF.Lerp(currentRotation.z, left, lerpSpeed * Time.deltaTime);
-                Debug.Log("Cactus scale: " + cactusXform.Scale);
+                currentRotation.z = MathF.Lerp(currentRotation.z, isLeft ? left : right, lerpSpeed * Time.deltaTime);
                 TS.SetScaling(this.ID, currentScale);
                 TS.SetRotation(this.ID, currentRotation);
                 if(currentScale.y >= bigScale - 0.01f)
                 {
                     isSmall = false;
                     isBig = true;
+                    isLeft = !isLeft;
                 }
+                
             }
             else if(isBig)
             {
                 currentScale.y = MathF.Lerp(currentScale.y, smallScale, lerpSpeed * Time.deltaTime);
-                currentRotation.z = MathF.Lerp(currentRotation.z, right, lerpSpeed * Time.deltaTime);
-                Debug.Log("Cactus scale: " + cactusXform.Scale);
+                currentRotation.z = MathF.Lerp(currentRotation.z, isLeft ? left : right, lerpSpeed * Time.deltaTime);
                 TS.SetScaling(this.ID, currentScale);
                 TS.SetRotation(this.ID, currentRotation);
                 if(currentScale.y <= smallScale + 0.01f)
                 {
                     isBig = false;
                     isSmall = true;
+                    isLeft = !isLeft;
                 }
             }
         }

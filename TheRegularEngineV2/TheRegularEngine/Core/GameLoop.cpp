@@ -131,7 +131,7 @@ namespace TRE
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
 		(void)event;
-		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Resetting scene..." });
 		ResetScene();
 	}
 
