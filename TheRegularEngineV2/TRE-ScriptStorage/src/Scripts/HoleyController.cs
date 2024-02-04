@@ -37,8 +37,8 @@ namespace TRE
 		private vec3 finalVelocity = vec3.Zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
-		//Check if player is walking
-		private bool isWalking = false;
+        //Check if player is walking
+        public bool isWalking = false;
 		private bool walkingSFXPlayed = false;
 
 		private float lerpSpeed = 5f;
@@ -91,6 +91,9 @@ namespace TRE
 
 		// Is Dead
 		public bool isDead = false;
+
+		// Controllable
+		public bool isControllable = true;
 
 		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
@@ -217,7 +220,7 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (!MyPauseMenu.isPaused)
+				if (!MyPauseMenu.isPaused && isControllable)
 				{
 
 					if (InputSystem.GetKeyHold(InputKeys.I))

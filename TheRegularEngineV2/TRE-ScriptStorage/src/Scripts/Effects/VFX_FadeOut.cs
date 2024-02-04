@@ -28,16 +28,19 @@ namespace TRE
 		{
             if (!fading) return;
 
-            //float w = MathF.Lerp(MyRenderer.Color.w, 0, fadingSpeed * Time.deltaTime);
-            float w = MyRenderer.Color.w - fadingSpeed * Time.deltaTime;
-            MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, w);
-
-            // Make sure all its children also fade
-            UpdateChildren(this, w);
-
-            if (MyRenderer.Color.w <= 0)
+            if (HasComponent<SpriteRenderer>())
             {
-                ForceComplete();
+                //float w = MathF.Lerp(MyRenderer.Color.w, 0, fadingSpeed * Time.deltaTime);
+                float w = MyRenderer.Color.w - fadingSpeed * Time.deltaTime;
+                MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, w);
+
+                // Make sure all its children also fade
+                UpdateChildren(this, w);
+
+                if (MyRenderer.Color.w <= 0)
+                {
+                    ForceComplete();
+                }
             }
         }
 
@@ -46,8 +49,11 @@ namespace TRE
             for (int i = 0; i < entity.parenting.GetTotalChildren(); ++i)
             {
                 Entity child = entity.parenting.GetChild(i);
-                SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
-                spriteRenderer.Color = new vec4(spriteRenderer.Color.x, spriteRenderer.Color.y, spriteRenderer.Color.z, alpha);
+                if (HasComponent<SpriteRenderer>())
+                {
+                    SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
+                    spriteRenderer.Color = new vec4(spriteRenderer.Color.x, spriteRenderer.Color.y, spriteRenderer.Color.z, alpha);
+                }
                 UpdateChildren(child, alpha);
             }
         }
@@ -75,6 +81,11 @@ namespace TRE
             UpdateChildren(this, 0);
             fading = false;
             doneFading = true;
+        }
+
+        public void ForceStop()
+        {
+            fading = false;
         }
     }
 }
