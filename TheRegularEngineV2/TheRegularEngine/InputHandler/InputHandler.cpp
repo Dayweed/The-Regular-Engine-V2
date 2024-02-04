@@ -105,13 +105,15 @@ namespace TRE
 
 	bool InputHandler::GetKeyRelease(int key)
 	{
-		if (m_keyMap[key] == GLFW_RELEASE)
+		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
 		{
+			m_keyPreviousRelease[key] = false;
 			return true;
 		}
-		else
+		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS)
 		{
-			return false;
+			m_keyPreviousRelease[key] = true;
 		}
+		return false;
 	}
 }

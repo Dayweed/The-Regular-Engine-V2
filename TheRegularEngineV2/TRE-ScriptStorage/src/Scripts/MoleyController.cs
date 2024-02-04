@@ -47,7 +47,7 @@ namespace TRE
 
         #region Collider Variables
         private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 4f;
+		private float blueberrysuperRadius = 2f;
 		private float strawberrysuperRadius = 4f;
 		public float currentRadius = 2f;
 		private float defaultHeight = 1f;
@@ -537,7 +537,7 @@ namespace TRE
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 1.2f, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, -1.2f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
 				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));

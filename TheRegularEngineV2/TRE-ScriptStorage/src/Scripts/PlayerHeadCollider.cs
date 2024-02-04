@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace TRE
 {
+	using PS = PhysicsSystem;
+
 	class PlayerHeadCollider : Entity
 	{
 		private Entity playerObj;
@@ -30,12 +32,14 @@ namespace TRE
 				if (!playerObj.GetComponent<MoleyController>().isScaled)
 				{
 					newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+					PS.ResizeBoxCollider(this.ID, new vec3(2, 0.5f, 2));
 				}
 				else
 				{
 					if (playerObj.GetComponent<MoleyController>().mainBlueberry)
 					{
-						newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+						newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f;
+						PS.ResizeBoxCollider(this.ID, new vec3(4, 2, 4));
 					}
 
 					if (playerObj.GetComponent<MoleyController>().mainStrawberry)
