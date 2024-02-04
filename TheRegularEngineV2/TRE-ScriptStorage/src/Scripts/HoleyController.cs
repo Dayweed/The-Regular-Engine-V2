@@ -319,7 +319,7 @@ namespace TRE
 						}
 					}
 
-					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
 					{
 						isWalking = false;
 

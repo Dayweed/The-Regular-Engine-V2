@@ -45,7 +45,6 @@ namespace TRE
 		Entity Stars1;
 		Entity Stars2;
 		Entity Stars3;
-		Entity Stars4;
 
 		float hiddenYPos = -800f;
 		float displayYPos = -400f;
@@ -281,11 +280,11 @@ namespace TRE
 			PhysicsSystem.GetLinearVelocity(Moley.ID, out vec3 MoleyVel);
 			PhysicsSystem.GetLinearVelocity(Holey.ID, out vec3 HoleyVel);
 
-			if (!Moley.GetComponent<MoleyController>().isJumping)
+			if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
 				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 70, 0));
 			}
-			if (!Holey.GetComponent<HoleyController>().isJumping)
+			if (HoleyVel.y < 0 || !Holey.GetComponent<MoleyController>().isJumping)
 			{
 				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 70, 0));
 			}
