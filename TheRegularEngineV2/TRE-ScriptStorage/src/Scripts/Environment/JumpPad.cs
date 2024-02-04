@@ -10,8 +10,8 @@ namespace TRE
 	public class JumpPad : Entity
 	{
 		public bool isActivated = false;
-		private string activatedMat = "Red_Moley.material";
-		private string deactivatedMat = "HITW_Center.material";
+		private string activatedMat = "JumpPadActivated.material";
+		private string deactivatedMat = "JumpPad.material";
 
 		public JumpPad()
 		{
