@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "EntityCopy.h"
 #include "TREIncludes.h"
+#include "Graphics/Sprite3DComponent.h"
 
 namespace TRE
 {
@@ -26,7 +27,8 @@ namespace TRE
 			ParticleComponent,
 			DirectPathfinding,
 			TextComponent,
-			SlideshowComponent
+			SlideshowComponent,
+			Sprite3DComponent
 		>();
 	};
 

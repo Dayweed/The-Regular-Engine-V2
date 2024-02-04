@@ -17,6 +17,7 @@
 #include "Graphics/EditorCamera.h"
 #include "SceneManager.h"
 #include "Graphics/AnimationSystem.h"
+#include "Graphics/Sprite3DComponent.h"
 
 namespace TRE
 {
@@ -146,6 +147,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<TextComponent>("Text Component");							// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<SlideshowComponent>("Slideshow Component");				// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<Sprite3DComponent>("Sprite3D Component");					// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();

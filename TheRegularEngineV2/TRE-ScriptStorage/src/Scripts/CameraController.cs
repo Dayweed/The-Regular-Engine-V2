@@ -25,7 +25,7 @@ namespace TRE
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
-		private float lerpSpeed = 0.0005f;
+		private float lerpSpeed = 0.001f;
 
 		public void Start()
 		{

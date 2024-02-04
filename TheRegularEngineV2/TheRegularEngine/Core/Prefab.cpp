@@ -5,7 +5,7 @@
 #include "TREIncludes.h"
 #include "Serialization.h"
 #include "GameLoop.h"
-
+#include "Graphics/Sprite3DComponent.h"
 namespace TRE
 {
 	PrefabOutputArchive::PrefabOutputArchive(std::string fileName, entt::registry& registry, int noOfEntities) : m_FileName(fileName), m_Registry(registry), m_TotalEntities(noOfEntities)
@@ -387,7 +387,8 @@ namespace TRE
 			DirectPathfinding,
 			TextComponent,
 			CylinderCollider,
-			SlideshowComponent
+			SlideshowComponent,
+			Sprite3DComponent
 		>();
 	}
 
@@ -422,6 +423,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		arc.Close();
@@ -463,6 +465,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		// Clone each component of the object into the prefab
