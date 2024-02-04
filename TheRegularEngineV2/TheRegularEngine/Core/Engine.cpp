@@ -100,17 +100,11 @@ namespace TRE
 
 		if (m_EngineInfo.EnableGame)
 		{
-			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Start.json");
+			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "SplashScreen.json");
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 		else
-		{
 			SceneManager::Instance().NewScene();
-			//auto particle = ECSManager::Instance().CreateEntity("particle");
-			//particle->AddComponent<ParticleComponent>();
-		}
-
-		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	Engine::~Engine()
