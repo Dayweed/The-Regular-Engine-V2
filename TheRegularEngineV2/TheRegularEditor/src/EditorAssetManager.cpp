@@ -96,6 +96,8 @@ namespace TRE
 
 	void AssetManager::RemoveAsset(const std::string& assetName)
 	{
+		if (m_AssetNameToHandle[assetName].second == false)
+			return;
 		const ResourceHandle handle = m_AssetNameToHandle[assetName].first;
 		ResourceType assetType = ResourceManager::Instance().GetResourceType(handle);
 		std::filesystem::path assetsPath = "../Assets/";

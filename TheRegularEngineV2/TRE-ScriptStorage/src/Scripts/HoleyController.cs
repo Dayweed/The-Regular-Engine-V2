@@ -520,7 +520,12 @@ namespace TRE
 			{
 				//Cactus Model
 				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
+				{
 					GetComponent<MeshRenderer>().Mesh = "Holey_Strawberry.fbx";
+					GetComponent<MeshRenderer>().Material = "Holey_Strawberry.material";
+					if (HasComponent<Animation>())
+						RemoveComponent<Animation>();
+				}
 
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);

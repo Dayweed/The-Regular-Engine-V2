@@ -66,7 +66,7 @@ namespace TRE
 		public void Update()
 		{
 			#region CHEATS
-			if (InputSystem.GetKeyPress(InputKeys.D1))
+			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 			{
 				forceGoToNextScene = true;
 			}
