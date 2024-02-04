@@ -112,6 +112,7 @@ namespace TRE
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
 		private ulong fallSFX;
+		private ulong cheeringSFX;
 
 		//Transfrom Component
 		private Transform holeyTransform;
@@ -145,6 +146,7 @@ namespace TRE
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 			fallSFX = ECSManager.FindIDFromName("SFX_HoleyFall");
+			cheeringSFX = ECSManager.FindIDFromName("SFX_Holey_BoostedJump");
 
 			RespawnPoint = holeyTransform.Position;
 			RespawnPoint.y += 10.0f;
@@ -327,9 +329,17 @@ namespace TRE
 						}
 
 						Jump(maxHeight);
-						if (ECSManager.IsValidEntity(jumpSFX))
+
+						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
 						{
-							AudioSystem.Play(jumpSFX);
+							if (isBoostedJump)
+							{
+								AudioSystem.Play(cheeringSFX);
+							}
+							else
+							{
+								AudioSystem.Play(jumpSFX);
+							}
 						}
 
 						isJumping = true;

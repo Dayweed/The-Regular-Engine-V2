@@ -93,18 +93,19 @@ namespace TRE
 
 		#region Audio Variables
 		private ulong walkingSFX;
-		private ulong walkingSFX1;
-		private ulong walkingSFX2;
-		private ulong walkingSFX3;
-		private ulong walkingSFX4;
-		private ulong walkingSFX5;
-		private ulong walkingSFX6;
+		//private ulong walkingSFX1;
+		//private ulong walkingSFX2;
+		//private ulong walkingSFX3;
+		//private ulong walkingSFX4;
+		//private ulong walkingSFX5;
+		//private ulong walkingSFX6;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
 		private ulong fallSFX;
+		private ulong cheeringSFX;
 		#endregion
 
 		public float elapsedTime = 0.0f;
@@ -181,6 +182,7 @@ namespace TRE
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
+			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
@@ -365,9 +367,17 @@ namespace TRE
 						}
 
 						Jump(maxHeight);
-						if (ECSManager.IsValidEntity(jumpSFX))
+
+						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
 						{
-							AudioSystem.Play(jumpSFX);
+							if (isBoostedJump)
+							{
+								AudioSystem.Play(cheeringSFX);
+							}
+							else
+							{
+								AudioSystem.Play(jumpSFX);
+							}
 						}
 
 						isJumping = true;
