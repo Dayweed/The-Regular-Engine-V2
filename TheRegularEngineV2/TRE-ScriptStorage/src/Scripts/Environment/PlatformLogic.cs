@@ -31,7 +31,7 @@ namespace TRE
 			if (Scene.GetSceneName() == "TODELETE")
 			{
 				currentIndex = 0;
-				positions = new vec3[] { new vec3(16.394f, 14.422f, -227), new vec3(16.394f, 14.422f, -178) };
+				positions = new vec3[] { new vec3(16.394f, 14.422f, -230), new vec3(16.394f, 14.422f, -175) };
 			}
 			if (Scene.GetSceneName() == "Level_1")
 			{
@@ -39,7 +39,7 @@ namespace TRE
 				if (name == "MovingPlatform_1")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(16.394f, 13.403f, -227), new vec3(16.394f, 13.403f, -178) };
+					positions = new vec3[] { new vec3(16.394f, 13.403f, -230), new vec3(16.394f, 13.403f, -175) };
 				}
 
 				if (name == "MovingPlatform_2")
@@ -83,19 +83,21 @@ namespace TRE
 				if (name == "MovingPlatform_7")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(567.379f, 42.422f, -169), new vec3(567.379f, 90.913f, -169) };
+					positions = new vec3[] { new vec3(567.380f, 42.422f, -169), new vec3(567.380f, 90.913f, -169) };
 				}
 
 				if (name == "MovingPlatform_8")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(647.419f, 90.422f, -168), new vec3(756.419f, 90.422f, -168) };
+					delay = 2;
+					positions = new vec3[] { new vec3(648.877f, 90.422f, -168), new vec3(757.419f, 90.422f, -168) };
 				}
 
 				if (name == "MovingPlatform_9")
 				{
 					currentIndex = 1;
-					positions = new vec3[] { new vec3(832.419f, 90.422f, -168), new vec3(894.419f, 90.422f, -168) };
+					delay = 2;
+					positions = new vec3[] { new vec3(847.419f, 90.422f, -168), new vec3(890.419f, 90.422f, -168) };
 				}
 			}
 
