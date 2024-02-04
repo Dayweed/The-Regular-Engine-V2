@@ -17,6 +17,7 @@ namespace TRE
 
 	void ConsolePanel::Init()
 	{
+        EventHandler::getEventHandlerInstance().subscribe(this, &ConsolePanel::StartConsole);
         EventHandler::getEventHandlerInstance().subscribe(this, &ConsolePanel::OnConsole);
 	}
 	
@@ -26,7 +27,7 @@ namespace TRE
 		{
 			ImGui::Checkbox("Auto-scroll", &m_AutoScroll);
 			ImGui::SameLine();
-			ImGui::Checkbox("Auto-clear", &m_AutoClear);
+			ImGui::Checkbox("Auto-clear On Start", &m_AutoClear);
 			ImGui::SameLine();
 			if (ImGui::Button("Clear##Console"))
 			{
@@ -72,6 +73,15 @@ namespace TRE
         }
 		ImGui::End();
 	}
+
+    void ConsolePanel::StartConsole(ConsoleStartEvent& event)
+    {
+        (void)event;
+        if (m_AutoClear)
+        {
+            m_ConsoleLog.clear();
+        }
+    }
 
     void ConsolePanel::OnConsole(ConsoleDebugEvent& event)
     {

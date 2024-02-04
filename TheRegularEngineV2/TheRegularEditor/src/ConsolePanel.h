@@ -26,6 +26,7 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
+			void StartConsole(ConsoleStartEvent& event);
 			void OnConsole(ConsoleDebugEvent& event);
 
 		private:
