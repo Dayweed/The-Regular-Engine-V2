@@ -9,14 +9,14 @@ namespace TRE
 {
 	public class MainMenuSceneTransition : Entity
 	{
-		private string TutorialSceneName;
+		private string nextSceneName;
 		//private string ControlsDisplaySceneName;
 		public bool spacePressed;
 		public bool enterPressed;
 
 		public void Start()
 		{
-			TutorialSceneName = "Tutorial";
+			nextSceneName = "MainMenu";
 			//ControlsDisplaySceneName = "ControlsDisplay";
 			spacePressed = false;
 			enterPressed = false;
@@ -55,7 +55,7 @@ namespace TRE
 					AudioSystem.Play(6154957411926925810);
 				}
 
-				Scene.TransitionScene(TutorialSceneName, 4.0f);
+				Scene.TransitionScene(nextSceneName, 5.0f);
 
 				spacePressed = false;
 				enterPressed = false;

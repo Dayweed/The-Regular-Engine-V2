@@ -88,7 +88,7 @@ namespace TRE
 		PipelineConfigurations Config{};
 		Config.Primitive = PrimitiveType::Triangles;
 		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
-		Config.CullMode = VK_CULL_MODE_FRONT_BIT;
+		Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
 		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
 		PipelineConfigurations ShadowAnimationPipelineConfig{};
@@ -376,8 +376,8 @@ namespace TRE
 			if (recalculateShadowFrustum)
 			{
 				//RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1f));
-				m_ShadowRenderPoint.y = lightTransform.m_Position.y;
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.135f));
+				//m_ShadowRenderPoint.y = lightTransform.m_Position.y;
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
