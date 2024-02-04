@@ -90,6 +90,7 @@ namespace TRE
 		Config.Primitive = PrimitiveType::Triangles;
 		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
 		Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+		Config.EnableBlending = true;
 		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
 		PipelineConfigurations ShadowAnimationPipelineConfig{};
@@ -128,9 +129,9 @@ namespace TRE
 		PipelineConfigurations Sprite3DPipelineConfig{};
 		Sprite3DPipelineConfig.Primitive = PrimitiveType::Triangles;
 		Sprite3DPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
-		Sprite3DPipelineConfig.CullMode = VK_CULL_MODE_FRONT_BIT;
+		Sprite3DPipelineConfig.CullMode = VK_CULL_MODE_NONE;
 		Sprite3DPipelineConfig.EnableBlending = true;
-		Sprite3DPipelineConfig.EnableDepthTest = false;
+		Sprite3DPipelineConfig.EnableDepthTest = true;
 		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
 
 		//To be remove later.....
@@ -516,12 +517,12 @@ namespace TRE
 		SkyBoxPass(Index);
 		GeometryPass(Index, materialSort);
 		GeometryAnimationPass(Index, materialSort);
+		Sprite3DPass(Index);
 		DebugDrawPass(Index);
 		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
-		Sprite3DPass(Index);
 		if (m_IsEditorScene == false)
 		{
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
@@ -539,11 +540,20 @@ namespace TRE
 		ubo.m_ProjView2DSpace = m_ProjView3D;
 		m_Sprite3DUBO->SetData(&ubo, sizeof(UIUBO));
 
+		auto AllSprites = ECSManager::Instance().GetEntities<Sprite3DComponent>();
+		std::sort(AllSprites.begin(), AllSprites.end(), [](const Entity& e1, const Entity& e2)
+			{
+				auto Comp1 = e1->GetComponent<Transform>();
+				auto Comp2 = e2->GetComponent<Transform>();
+
+				return Comp1.m_Position.z < Comp2.m_Position.z;
+			});
+
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageIndex = SC->GetCurrentImageIndex();
 		m_Sprite3DRenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
 		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
-		for (auto Entity : ECSManager::Instance().GetEntities<Sprite3DComponent>())
+		for (auto Entity : AllSprites)
 		{
 			auto Comp = Entity->GetComponent<Sprite3DComponent>();
 			if (!Comp.m_IsVisible || !Comp.m_Texture || !Comp.m_Material) continue;
@@ -577,8 +587,6 @@ namespace TRE
 
 			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		}
-
-		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
 	void SceneRenderer::GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
