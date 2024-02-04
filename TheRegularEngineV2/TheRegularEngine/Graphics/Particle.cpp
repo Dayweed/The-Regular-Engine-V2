@@ -40,30 +40,29 @@ namespace TRE
 		std::uniform_real_distribution<> disSpeed(m_VariationSpeed.x * m_Speed, m_VariationSpeed.y * m_Speed);
 		
 		const Transform& mainCameraTransform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
+		const BaseCamera& camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera;
+		const auto mainCamPos = camera.m_FocalPoint - camera.GetViewDirection() * camera.m_FocalLength;
 		for (auto& particle : m_Particles)
 		{
 			const glm::vec3 randomSpeed = glm::vec3(disSpeed(gen), disSpeed(gen), disSpeed(gen));
 			particle.Position += randomSpeed * m_Velocity * deltaTime;
 
-			const glm::mat4 rot = glm::mat3(glm::lookAt(particle.Position, mainCameraTransform.m_Position, glm::vec3(0.f, 1.f, 0.f)));
-
-			particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * glm::scale(glm::mat4(1.0f), particle.Scale);
-
 			//Billboard
-			/*glm::vec3 forward = glm::normalize(mainCameraTransform.m_Position - particle.Position);
+			glm::vec3 forward = glm::normalize(mainCamPos - particle.Position);
 			glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
 			glm::vec3 up = glm::cross(forward, right);
 
 			glm::mat4 billboardMatrix(1.0f);
-			billboardMatrix[0] = glm::vec4(right * m_Size, 0.0f);
-			billboardMatrix[1] = glm::vec4(up * m_Size, 0.0f);
-			billboardMatrix[2] = glm::vec4(-forward * m_Size, 0.0f);
-			billboardMatrix[3] = glm::vec4(particle.Position, 1.0f);
-
-			particle.L2W = billboardMatrix;*/
+			billboardMatrix[0] = glm::vec4(right, 0.0f);
+			billboardMatrix[1] = glm::vec4(up, 0.0f);
+			billboardMatrix[2] = glm::vec4(-forward, 0.0f);
+			particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * billboardMatrix * glm::scale(glm::mat4(1.0f), particle.Scale);
+			//billboardMatrix[3] = glm::vec4(particle.Position, 1.0f);
+			//particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * glm::scale(glm::mat4(1.0f), particle.Scale);
+			//particle.L2W = billboardMatrix;
 		}
 
-		m_ElapsedTime += Engine::GetInstance().GetWindow()->GetDeltaTime();
+		m_ElapsedTime += deltaTime;
 	}
 
 	void ParticleComponent::ResetParticles(const glm::vec3& emitterPos)
