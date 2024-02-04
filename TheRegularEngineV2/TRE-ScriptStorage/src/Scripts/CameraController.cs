@@ -19,6 +19,8 @@ namespace TRE
 
 		private float distance = 20;
 
+		public vec3 staticPosition;
+
 		public vec3 expectedPosition;
 		public vec3 expectedRotation;
 		public float expectedDistance;
@@ -51,7 +53,9 @@ namespace TRE
 			if (lookOnlyBool)
 			{
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
-				CameraSystem.SetMainCameraLookAt(pos);
+				//CameraSystem.SetMainCameraLookAt(pos);
+				CameraSystem.SetMainCameraFollow(staticPosition, distance);
+
 				Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
 				Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
 			}

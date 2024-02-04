@@ -14,9 +14,17 @@ namespace TRE
 
 		private Entity Trigger_A;
 		private Entity Trigger_B;
+		private Entity Trigger_C;
+		private Entity Trigger_D;
+		private Entity Trigger_E;
+		private Entity Trigger_F;
 
 		private bool regionA;
 		private bool regionB;
+		private bool regionC;
+		private bool regionD;
+		private bool regionE;
+		private bool regionF;
 
 		CameraController cameraController;
 
@@ -35,6 +43,12 @@ namespace TRE
 			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
 			Debug.Log("Trigger_B ID is " + Trigger_B.ID);
 
+			Trigger_C = ECSManager.FindEntityByName("Trigger_C");
+			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
+			Trigger_E = ECSManager.FindEntityByName("Trigger_E");
+			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
+
+
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 			Debug.Log("CameraController ID is " + cameraController.ID);
 
@@ -48,6 +62,10 @@ namespace TRE
 		{
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsInsideTrigger(Trigger_B);
+			regionC = IsInsideTrigger(Trigger_C);
+			regionD = IsInsideTrigger(Trigger_D);
+			regionE = IsInsideTrigger(Trigger_E);
+			regionF = IsInsideTrigger(Trigger_F);
 
 			if (regionA)
 			{
@@ -60,7 +78,41 @@ namespace TRE
 			{
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(45, 90, 0);
-				expectedDistance = 60;
+				expectedDistance = 50;
+			}
+
+			if (regionC)
+			{
+				cameraController.staticPosition = new vec3(150, 50, -204);
+				cameraController.lookOnlyBool = true;
+				expectedPosition = new vec3(121, 82, -207);
+				expectedRotation = new vec3(50, 90, 0);
+				expectedDistance = 80;
+			}
+			else
+			{
+				cameraController.lookOnlyBool = false;
+			}
+
+			if (regionD)
+			{
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 0, 0);
+				expectedDistance = 110;
+			}
+
+			if (regionE)
+			{
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 180, 0);
+				expectedDistance = 80;
+			}
+
+			if (regionF)
+			{
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 90, 0);
+				expectedDistance = 50;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
