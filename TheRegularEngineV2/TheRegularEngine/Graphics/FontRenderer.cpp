@@ -237,7 +237,7 @@ namespace TRE
 			if (!TextComp.m_IsVisible)
 				continue;
 
-			std::string TextToRender; 
+			std::string TextToRender;
 			if (TextComp.m_IsDialogue) //If dialogue we handle what to print here
 			{
 				TextComp.m_Timer += Engine::GetInstance().GetWindow()->GetDeltaTime();
@@ -255,11 +255,24 @@ namespace TRE
 				TextToRender = TextComp.m_TextContent.Text;
 			}
 
+			if (TextComp.m_IsFading)
+			{
+				if (TextComp.m_Color.w < 1)
+				{
+					TextComp.m_Color.w += ((Engine::GetInstance().GetWindow()->GetDeltaTime() * TextComp.m_FadingSpeed) / 255.f);
+				}
+				else
+				{
+					TextComp.m_Color.w = 1.f;
+					TextComp.m_IsFading = false;
+				}
+			}
+
 			float offset = 0.f;
 			float y_offset = 0.f;
-			for (auto Letter : TextToRender)
+			for (int x = 0; x < TextToRender.size(); x++)
 			{
-
+				char Letter = TextToRender[x];
 				float textwidth = (m_Characters[TextComp.m_FontName.m_FontType][Letter].Advance >> 6) / s_DefaultFontSize + m_Characters[TextComp.m_FontName.m_FontType][Letter].Bearing.x / s_DefaultFontSize;
 				if (Letter == '\n')
 				{
@@ -279,7 +292,11 @@ namespace TRE
 					* glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
 				pc.Color = TextComp.m_Color;
 				
-				
+				//if (TextComp.m_IsDialogue) //Fading letter by letter with dialogue in
+				//{
+				//	pc.Color.w *= (TextToRender.size() - x);
+				//}
+
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &m_FontMaterial[TextComp.m_FontName.m_FontType]->GetDescriptor(Index), 0, NULL);
 
