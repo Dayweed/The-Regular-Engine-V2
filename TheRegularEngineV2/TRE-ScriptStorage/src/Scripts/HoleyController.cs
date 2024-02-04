@@ -64,8 +64,8 @@ namespace TRE
 		public float defaultRadius = 2f;
 		public float defaultHeight = 1f;
 
-		public float blueberrysuperRadius = 4.8f;
-		public float blueberrysuperHeight = 4.8f;
+		public float blueberrysuperRadius = 2.4f;
+		public float blueberrysuperHeight = 3.6f;
 
 		public float strawberrysuperRadius = 2.4f;
 		public float strawberrysuperHeight = 1.2f;
@@ -509,7 +509,7 @@ namespace TRE
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 5.8f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
