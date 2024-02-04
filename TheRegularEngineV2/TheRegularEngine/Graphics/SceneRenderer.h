@@ -79,6 +79,7 @@ namespace TRE
 			void GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DebugDrawPass(uint32_t Index);
 			void SkyBoxPass(uint32_t Index);
+			void Sprite3DPass(uint32_t Index);
 
 		public:
 			std::vector<std::shared_ptr<Image2D>> GetColorImages();
@@ -157,6 +158,12 @@ namespace TRE
 			//Particle Renderer
 			std::shared_ptr<ParticleRenderer> m_ParticleRenderer;
 			std::shared_ptr<UniformBuffer> m_ParticleUBO;
+
+			//Sprite 3D Renderer
+			std::shared_ptr<Pipeline> m_Sprite3DPipeline;
+			std::shared_ptr<UniformBuffer> m_Sprite3DUBO;
+			std::shared_ptr<VertexBuffer> m_Sprite3DVertexBuffer;
+			std::shared_ptr<IndexBuffer> m_Sprite3DIndexBuffer;
 
 			bool m_IsEditorScene = false;
 	};

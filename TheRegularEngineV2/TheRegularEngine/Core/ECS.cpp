@@ -256,6 +256,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		arc.Close();
@@ -294,6 +295,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -370,7 +372,8 @@ namespace TRE
 			ParticleComponent,
 			DirectPathfinding,
 			TextComponent,
-			SlideshowComponent
+			SlideshowComponent,
+			Sprite3DComponent
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)
@@ -429,7 +432,7 @@ namespace TRE
 			}
 			else
 			{
-				TRE_WARN("[ECSManager::UpdateChildrenOrder] Entity (" + child->GetComponent<Properties>().m_Name ") have an invalid child at " + c + "!");
+				//TRE_WARN("[ECSManager::UpdateChildrenOrder] Entity (" + child->GetComponent<Properties>().m_Name ") have an invalid child at " + c + "!");
 			}
 		}
 	}

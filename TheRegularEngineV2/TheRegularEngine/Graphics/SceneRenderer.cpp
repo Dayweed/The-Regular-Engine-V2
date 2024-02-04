@@ -1,9 +1,5 @@
 #include "pch.h"
-#include "Core/Engine.h"
-#include "Core/Transform.h"
 #include "SceneRenderer.h"
-#include "RendererContext.h"
-#include "MeshRenderer.h"
 #include "Camera.h"
 #include "Core/Logger.h"
 #include "VulkanTexture.h"
@@ -19,6 +15,11 @@
 #include "VulkanUtilities.h"
 #include "AnimationComponent.h"
 #include "FontRenderer.h"
+#include "Sprite3DComponent.h"
+#include "Core/Transform.h"
+#include "Renderer.h"
+#include "Core/Engine.h"
+#include "MeshRenderer.h"
 #include "Particle.h"
 
 //To be removed
@@ -122,6 +123,43 @@ namespace TRE
 			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
 		};
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
+
+		PipelineConfigurations Sprite3DPipelineConfig{};
+		Sprite3DPipelineConfig.Primitive = PrimitiveType::Triangles;
+		Sprite3DPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
+		Sprite3DPipelineConfig.CullMode = VK_CULL_MODE_NONE;
+		Sprite3DPipelineConfig.EnableBlending = true;
+		Sprite3DPipelineConfig.EnableDepthTest = true;
+		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
+
+		//To be remove later.....
+
+		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
+
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::vector<QuadVertex> data(4);
+
+		data[0].Position = glm::vec3(x, y, 0.f);
+		data[0].TexCoord = glm::vec2(0, 0);
+
+		data[1].Position = glm::vec3(x + width, y, 0.f);
+		data[1].TexCoord = glm::vec2(1, 0);
+
+		data[2].Position = glm::vec3(x + width, y + height, 0.f);
+		data[2].TexCoord = glm::vec2(1, 1);
+
+		data[3].Position = glm::vec3(x, y + height, 0.f);
+		data[3].TexCoord = glm::vec2(0, 1);
+
+		std::vector<int> indices = { 0,1,2,2,3,0 };
+
+		m_Sprite3DIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -467,6 +505,7 @@ namespace TRE
 		SkyBoxPass(Index);
 		GeometryPass(Index, materialSort);
 		GeometryAnimationPass(Index, materialSort);
+		Sprite3DPass(Index);
 		DebugDrawPass(Index);
 		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
@@ -481,6 +520,49 @@ namespace TRE
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
+	}
+
+	void SceneRenderer::Sprite3DPass(uint32_t Index)
+	{
+		UIUBO ubo{};
+		ubo.m_ProjView2DSpace = m_ProjView3D;
+		m_Sprite3DUBO->SetData(&ubo, sizeof(UIUBO));
+
+		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
+		for (auto Entity : ECSManager::Instance().GetEntities<Sprite3DComponent>())
+		{
+			auto Comp = Entity->GetComponent<Sprite3DComponent>();
+			if (!Comp.m_IsVisible || !Comp.m_Texture || !Comp.m_Material) continue;
+
+			UI_PushConstant pc{};
+			auto TransformComp = Entity->GetComponent<Transform>();
+			pc.L2W = TransformComp.m_WorldXform;
+			pc.Color = Comp.m_Color;
+
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(UI_PushConstant), &pc);
+
+			Comp.m_Material->SetTexture("UI_Texture", Comp.m_Texture);
+
+			if (m_IsEditorScene)
+			{
+				Comp.m_Material->UpdateForEditorSceneRendering(m_Sprite3DUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Sprite3DPipeline->GetPipelineLayout(), 0, 1, &Comp.m_Material->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				Comp.m_Material->UpdateForRendering(m_Sprite3DUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Sprite3DPipeline->GetPipelineLayout(), 0, 1, &Comp.m_Material->GetDescriptor(Index), 0, NULL);
+			}
+
+			VkDeviceSize offsets[] = { 0 };
+			VkBuffer VB = VK_NULL_HANDLE;
+			VB = m_Sprite3DVertexBuffer->GetBuffer();
+
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		}
 	}
 
 	void SceneRenderer::GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
