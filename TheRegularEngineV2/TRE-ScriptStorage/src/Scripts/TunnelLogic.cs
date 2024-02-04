@@ -28,7 +28,7 @@ namespace TRE
         float SignpostHiddenPosY = -28;
         float SignpostDisplayPosY = -14;
         float SignpostMoveSpeed = 5f;
-        float SignpostOffset = 0.5f;
+        float SignpostOffset = 0.05f;
 
         public void Start()
 		{
@@ -79,25 +79,31 @@ namespace TRE
 
                 // Move signpost to position
                 vec3 SignpostMoleyPos = SignpostMoley.GetComponent<Transform>().Position;
+                vec3 SignpostHoleyPos = SignpostHoley.GetComponent<Transform>().Position;
                 if (Math.Abs(SignpostMoleyPos.y - SignpostGoalMoleyPosY) > SignpostOffset && SignpostMoley.GetComponent<VFX_SignPostBounce>().IsPaused())
                 {
                     float SignpostMoleyPosY = MathF.Lerp(SignpostMoleyPos.y, SignpostGoalMoleyPosY, SignpostMoveSpeed * Time.deltaTime);
                     SignpostMoley.GetComponent<Transform>().Position = new vec3(SignpostMoleyPos.x, SignpostMoleyPosY, SignpostMoleyPos.z);
-                    //Debug.Log("MOVE " + Math.Abs(SignpostMoleyPos.y - SignpostGoalMoleyPosY) + ", " + SignpostMoleyPos.y + ", " + SignpostGoalMoleyPosY);
                 }
-                vec3 SignpostHoleyPos = SignpostHoley.GetComponent<Transform>().Position;
+                else if (SignpostMoley.GetComponent<VFX_SignPostBounce>().IsPaused())
+                {
+                    SignpostMoley.GetComponent<Transform>().Position = new vec3(SignpostMoleyPos.x, SignpostGoalMoleyPosY, SignpostMoleyPos.z);
+                }
                 if (Math.Abs(SignpostHoleyPos.y - SignpostGoalHoleyPosY) > SignpostOffset && SignpostHoley.GetComponent<VFX_SignPostBounce>().IsPaused())
                 {
                     float SignpostHoleyPosY = MathF.Lerp(SignpostHoleyPos.y, SignpostGoalHoleyPosY, SignpostMoveSpeed * Time.deltaTime);
                     SignpostHoley.GetComponent<Transform>().Position = new vec3(SignpostHoleyPos.x, SignpostHoleyPosY, SignpostHoleyPos.z);
                 }
+                else if (SignpostHoley.GetComponent<VFX_SignPostBounce>().IsPaused())
+                {
+                    SignpostHoley.GetComponent<Transform>().Position = new vec3(SignpostHoleyPos.x, SignpostGoalHoleyPosY, SignpostHoleyPos.z);
+                }
 
                 if (MoleyApprove && Math.Abs(SignpostMoleyPos.y - SignpostDisplayPosY) <= SignpostOffset)
                 {
                     SignpostMoley.GetComponent<VFX_SignPostBounce>().Resume();
-                    //Debug.Log("RESUME");
                 }
-                else
+                else if (!MoleyApprove)
                 {
                     SignpostMoley.GetComponent<VFX_SignPostBounce>().Pause();
                 }
@@ -105,7 +111,7 @@ namespace TRE
                 {
                     SignpostHoley.GetComponent<VFX_SignPostBounce>().Resume();
                 }
-                else
+                else if (!HoleyApprove)
                 {
                     SignpostHoley.GetComponent<VFX_SignPostBounce>().Pause();
                 }
