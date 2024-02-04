@@ -68,6 +68,11 @@ namespace TRE
             return MoleyApprove && HoleyApprove;
         }
 
+        public bool MolesInside()
+        {
+            return MoleyInside && HoleyInside;
+        }
+
         public void ResetMoles()
         {
             MoleyInside = false;

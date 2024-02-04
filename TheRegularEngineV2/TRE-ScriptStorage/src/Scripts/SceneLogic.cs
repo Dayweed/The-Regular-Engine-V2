@@ -38,8 +38,6 @@ namespace TRE
 
 			PersistentSystem.SetValue("PrevScene", currentSceneName);
 
-			PersistentSystem.SetValue("StarsObtained", "0");
-
 			if (currentSceneName == "Tutorial")
 			{
 				// Add for course complete triggers
@@ -52,7 +50,7 @@ namespace TRE
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
 				triggerStars.Add(holeCheckDisplays);
 
-				PersistentSystem.SetValue("MaxStarsObtained", "1");
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
 
 				nextSceneName = "ResultScreen";
 			}
@@ -88,7 +86,7 @@ namespace TRE
 				}
 				if (isCompleted)
 				{
-					IncrementStars();
+					IncrementStars(currentSceneName);
 					triggerStars.RemoveAt(i);
 					if (StarEmerge != null)
 					{
@@ -151,15 +149,23 @@ namespace TRE
 			}
 		}
 
-		public void IncrementStars()
+		public void IncrementStars(String mapName)
 		{
 			int numStars = 0;
 
-			if (Int32.TryParse(PersistentSystem.GetValue("StarsObtained"), out numStars))
+			if (Int32.TryParse(PersistentSystem.GetValue("TotalStarsObtained"), out numStars))
 			{
 				++numStars;
-				PersistentSystem.SetValue("StarsObtained", numStars.ToString());
-				Debug.Log("Stars " + PersistentSystem.GetValue("StarsObtained"));
+				PersistentSystem.SetValue("TotalStarsObtained", numStars.ToString());
+				Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
+			}
+
+			int mapStars = 0;
+			if (Int32.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out mapStars))
+			{
+				++mapStars;
+				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
+				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
 			}
 		}
 	}

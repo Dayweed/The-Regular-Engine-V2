@@ -37,7 +37,8 @@ namespace TRE
             Star_2_BG = ECSManager.FindEntityByName("Star_2_BG");
             Star_3_BG = ECSManager.FindEntityByName("Star_3_BG");
 
-			if (Int32.TryParse(PersistentSystem.GetValue("StarsObtained"), out numStars) && Int32.TryParse(PersistentSystem.GetValue("MaxStarsObtained"), out maxStars))
+            String prevSceneName = PersistentSystem.GetValue("PrevScene");
+            if (Int32.TryParse(PersistentSystem.GetValue(prevSceneName + "StarsObtained"), out numStars) && Int32.TryParse(PersistentSystem.GetValue(prevSceneName + "MaxStarsObtained"), out maxStars))
 			{
                 if (maxStars <= 2)
 				{
