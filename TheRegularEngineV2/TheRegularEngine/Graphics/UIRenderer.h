@@ -31,7 +31,7 @@ namespace TRE
 			UIRenderer(const std::shared_ptr<Device>& Device);
 			~UIRenderer();
 
-			void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor, glm::mat4 ProjView);
+			void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor);
 
 		private:
 			std::shared_ptr<Device> m_Device;

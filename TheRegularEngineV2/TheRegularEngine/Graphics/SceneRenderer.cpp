@@ -470,12 +470,11 @@ namespace TRE
 		DebugDrawPass(Index);
 		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
-		if (m_IsEditorScene == false)
-			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene, m_ProjView3D);
 		Renderer::EndRenderPass(m_CommandBuffer);
 
 		if (m_IsEditorScene == false)
 		{
+			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
