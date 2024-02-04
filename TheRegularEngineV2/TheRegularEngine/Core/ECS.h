@@ -563,6 +563,8 @@ namespace TRE
 
 		bool IsValidEntity(Entity ent);
 
+		void UpdateChildrenOrder(Entity child, int& order);
+
 	private:
 		friend class MemoryManager;
 		friend class GameLoop;

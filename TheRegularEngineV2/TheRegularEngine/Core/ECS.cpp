@@ -175,20 +175,34 @@ namespace TRE
 	void ECSManager::SortEntityOrder()
 	{
 		// Sort
-		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(), 
-			[&](std::string& l_GUID, std::string& r_GUID) { 
-				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index; 
+		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(),
+			[&](std::string& l_GUID, std::string& r_GUID) {
+				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
 			});
 
+		int currentIndex = 0;
 		// Sort their children also based on order
 		for (int i{}; i < m_EntityOrder.size(); ++i)
 		{
-			std::vector<std::string>& children{ m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Children };
-			std::sort(children.begin(), children.end(),
-				[&](std::string& l_GUID, std::string& r_GUID) {
-					return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
-				});
+			// Only for main parent
+			if (m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Parent == "")
+			{
+				std::vector<std::string>& children{ m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Children };
+				std::sort(children.begin(), children.end(),
+					[&](std::string& l_GUID, std::string& r_GUID) {
+						return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
+					});
+				// Change it be index based on the parent
+				m_EntityList[m_EntityOrder[i]]->GetComponent<Properties>().m_Index = currentIndex++;
+				UpdateChildrenOrder(m_EntityList[m_EntityOrder[i]], currentIndex);
+			}
 		}
+
+		// Sort
+		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(),
+			[&](std::string& l_GUID, std::string& r_GUID) {
+				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
+			});
 
 		// Update their order
 		UpdateEntityOrder();
@@ -401,6 +415,16 @@ namespace TRE
 	{
 		// Checks if it is in the scene
 		return ent->HasComponent<Properties>() && m_EntityList.find(ent->GetGUID()) != m_EntityList.end() && std::find(m_EntityOrder.begin(), m_EntityOrder.end(), ent->GetGUID()) != m_EntityOrder.end();
+	}
+
+	void ECSManager::UpdateChildrenOrder(Entity child, int& order)
+	{
+		std::vector<std::string>& children{ child->GetComponent<Parenting>().m_Children };
+		for (int c{}; c < children.size(); ++c)
+		{
+			m_EntityList[children[c]]->GetComponent<Properties>().m_Index = order++;
+			UpdateChildrenOrder(m_EntityList[children[c]], order);
+		}
 	}
 
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)
