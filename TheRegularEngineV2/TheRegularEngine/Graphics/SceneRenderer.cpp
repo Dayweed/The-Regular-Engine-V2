@@ -69,6 +69,7 @@ namespace TRE
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = PBRShader;
+		PipelineConfig.EnableBlending = true;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
 		PipelineConfigurations SkyboxPipelineConfig{};

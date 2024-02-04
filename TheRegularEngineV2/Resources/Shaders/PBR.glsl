@@ -210,5 +210,5 @@ void main()
 
 	//Gamma correction
 	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / In.PosWorld.w)));
-	outColor.a = 1.0;
+	outColor.a = texture(DiffuseMap, In.TexCoord).a * In.MaterialColor.a;
 }
