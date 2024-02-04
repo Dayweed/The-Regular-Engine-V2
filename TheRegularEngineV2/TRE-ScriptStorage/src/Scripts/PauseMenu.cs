@@ -102,9 +102,10 @@ namespace TRE
 						if (currentOption == 0) // resume game
 						{
 							isPaused = false;
-							menustate = 0;
 							isChangeMenu = true;
-						}
+							menustate = 0;
+                            currentOption = 0;
+                        }
 						else if (currentOption == 1) // Controls
 						{
 							menustate = 1;
@@ -187,7 +188,7 @@ namespace TRE
 				}
 
 
-				if (isChangeMenu)
+				if (isChangeMenu && isPaused)
 				{
 					// change menu visibilities
 					switch (menustate)
@@ -226,7 +227,7 @@ namespace TRE
 				}
 			}
 
-			if (!isPaused && isChangeMenu)
+			else if(isChangeMenu && !isPaused)
 			{
 				// hide the whole pause menu
 				UISystem.SetVisible(pauseMenu.ID, false);
@@ -245,7 +246,9 @@ namespace TRE
 				{
 					UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
 				}
-				isChangeMenu = false;
+
+                isChangeMenu = false;
+                
 			}
 		}
 
