@@ -29,8 +29,9 @@ namespace TRE
 		SpriteRenderer MyRenderer;
 
 		float rotationSpeed = 8.5f;
-		float scaleSpeed = 12.0f;
-		float colorSpeed = 0.5f;
+		float scaleSpeed = 10.0f;
+		float colorSpeed = 2f;
+		float offsetMult = 0.05f;
 
 		vec3 MinRotateOffset;
 		vec3 MinScaleOffset;
@@ -176,7 +177,7 @@ namespace TRE
 			MyRenderer.Color = StartColor;
 
 
-			vec3 rotOff = RotateVec * rotationSpeed * 0.5f * Time.deltaTime;
+			vec3 rotOff = RotateVec * offsetMult * Time.deltaTime;
 			MinRotateOffset = new vec3(
 				(EndRotation.x - rotOff.x < EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x * OffsetScale : EndRotation.x + rotOff.x * OffsetScale,
 				(EndRotation.y - rotOff.y < EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y * OffsetScale : EndRotation.y + rotOff.y * OffsetScale,
@@ -188,7 +189,7 @@ namespace TRE
 				(EndRotation.z - rotOff.z > EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z * OffsetScale : EndRotation.z + rotOff.z * OffsetScale
                 );
 
-			vec3 scaOff = ScaleVec * scaleSpeed * 0.5f * Time.deltaTime;
+			vec3 scaOff = ScaleVec * offsetMult * Time.deltaTime;
 			MinScaleOffset = new vec3(
 				(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x * OffsetScale : EndScale.x + scaOff.x * OffsetScale,
 				(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y * OffsetScale : EndScale.y + scaOff.y * OffsetScale,
@@ -200,7 +201,7 @@ namespace TRE
 				(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z * OffsetScale : EndScale.z + scaOff.z * OffsetScale
                 );
 
-			vec4 colOff = ColorVec * colorSpeed * 0.5f * Time.deltaTime;
+			vec4 colOff = ColorVec * offsetMult * Time.deltaTime;
 			MinColorOffset = new vec4(
 				(EndColor.x - colOff.x < EndColor.x + colOff.x) ? EndColor.x - colOff.x * OffsetScale : EndColor.x + colOff.x * OffsetScale,
 				(EndColor.y - colOff.y < EndColor.y + colOff.y) ? EndColor.y - colOff.y * OffsetScale : EndColor.y + colOff.y * OffsetScale,
