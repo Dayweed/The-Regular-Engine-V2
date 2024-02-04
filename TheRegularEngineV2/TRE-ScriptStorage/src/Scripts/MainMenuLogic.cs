@@ -230,8 +230,8 @@ namespace TRE
 
 					// Teleport Moley and Holey to another location
 					vec3 teleportPos = ToReturnSelect.GetComponent<Transform>().Position;
-					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z - 20);
-					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z - 20);
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
 
 					JumpOutHole();
 				}
@@ -246,8 +246,8 @@ namespace TRE
 
 					// Teleport Moley and Holey to another location
 					vec3 teleportPos = ToLevelSelect.GetComponent<Transform>().Position;
-					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 25, teleportPos.z + 20);
-					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 25, teleportPos.z + 20);
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 25, teleportPos.z);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 25, teleportPos.z);
 
 					JumpOutHole();
 				}
@@ -272,7 +272,6 @@ namespace TRE
 			}
 
 			// Return controls to moles if they land on the ground
-			Debug.Log("- " + Moley.GetComponent<MoleyController>().isGrounded);
 			if (!Moley.GetComponent<MoleyController>().isControllable && Moley.GetComponent<MoleyController>().isGrounded && !Moley.GetComponent<CapsuleCollider>().IsTrigger)
 			{
 				Moley.GetComponent<MoleyController>().isControllable = true;

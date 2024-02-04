@@ -600,7 +600,7 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
-			isGrounded = false;
+			//isGrounded = false;
 
 			if (RespawnPlayer)
 			{

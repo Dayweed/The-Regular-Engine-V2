@@ -560,7 +560,7 @@ namespace TRE
 
 			holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
-			isGrounded = false;
+			//isGrounded = false;
 
 			if (RespawnPlayer)
 			{
