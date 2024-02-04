@@ -1074,8 +1074,9 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetSphereColliderRadius(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static float Engine_SetSphereTrigger(EntityID entityid);
+		// dumplicate (incorrect) declaration
+		// [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		// internal extern static float Engine_SetSphereTrigger(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetSphereTrigger(EntityID entityid, bool isTrigger);
