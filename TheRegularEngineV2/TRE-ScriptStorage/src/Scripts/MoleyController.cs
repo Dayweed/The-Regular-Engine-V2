@@ -220,11 +220,6 @@ namespace TRE
 			{
 				isDead = true;
 				DroppingOutOfMap = true;
-
-				if (ECSManager.IsValidEntity(fallSFX))
-				{
-					AudioSystem.Play(fallSFX);
-				}
 			}
 			else
 			{
@@ -398,9 +393,7 @@ namespace TRE
 				isWalking = false;
 			}
 
-			if (ECSManager.IsValidEntity(walkingSFX1) && ECSManager.IsValidEntity(walkingSFX2)
-				&& ECSManager.IsValidEntity(walkingSFX3) && ECSManager.IsValidEntity(walkingSFX4)
-				&& ECSManager.IsValidEntity(walkingSFX))
+			if (ECSManager.IsValidEntity(walkingSFX))
 			{
 				if (isWalking && walkingSFXPlayed == false)
 				{
@@ -443,6 +436,14 @@ namespace TRE
 					//AudioSystem.Stop(walkingSFX5);
 					//AudioSystem.Stop(walkingSFX6);
 					walkingSFXPlayed = false;
+				}
+			}
+
+			if(DroppingOutOfMap)
+			{
+				if (ECSManager.IsValidEntity(fallSFX))
+				{
+					AudioSystem.Play(fallSFX);
 				}
 			}
 

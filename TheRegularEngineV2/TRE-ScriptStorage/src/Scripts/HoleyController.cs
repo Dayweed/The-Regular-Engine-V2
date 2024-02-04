@@ -183,10 +183,6 @@ namespace TRE
 				isDead = true;
 				DroppingOutOfMap = true;
 
-				if (ECSManager.IsValidEntity(fallSFX))
-				{
-					AudioSystem.Play(fallSFX);
-				}
 				//Debug.Log("Out of map");
 			}
 			else
@@ -376,6 +372,13 @@ namespace TRE
 				}
 			}
 
+			if (DroppingOutOfMap)
+			{
+				if (ECSManager.IsValidEntity(fallSFX))
+				{
+					AudioSystem.Play(fallSFX);
+				}
+			}
 
 			#endregion
 
