@@ -161,6 +161,7 @@ namespace TRE
 
 			//Sprite 3D Renderer
 			std::shared_ptr<Pipeline> m_Sprite3DPipeline;
+			std::shared_ptr<RenderPass> m_Sprite3DRenderPass;
 			std::shared_ptr<UniformBuffer> m_Sprite3DUBO;
 			std::shared_ptr<VertexBuffer> m_Sprite3DVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_Sprite3DIndexBuffer;
