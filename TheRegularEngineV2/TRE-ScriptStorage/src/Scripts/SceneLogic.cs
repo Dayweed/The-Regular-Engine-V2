@@ -90,6 +90,10 @@ namespace TRE
 			}
 			#endregion
 
+			StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
+			StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec();
+			StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
+
 			// Check if any of the list 
 			for (int i = triggerStars.Count - 1; i >= 0; --i)
 			{
@@ -109,9 +113,7 @@ namespace TRE
 					if (StarEmerge != null)
 					{
 						StarEmerge.Emerge();
-						StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-						StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec() * 2.0f;
-						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 15f, StarParticle.GetComponent<Transform>().Position.z);
+						
 
 						StarParticle.GetComponent<Particle>().IsActive = true;
 					}

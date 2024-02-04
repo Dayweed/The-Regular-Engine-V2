@@ -504,6 +504,7 @@ namespace TRE
 				if (MS.IsCurrentMesh(this.ID, "Holey_Blueberry.fbx") == false)
 				{
 					GetComponent<MeshRenderer>().Mesh = "Holey_Blueberry.fbx";
+					GetComponent<MeshRenderer>().Material = "BlueCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}

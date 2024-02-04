@@ -1194,7 +1194,7 @@ namespace TRE
 	{
 		//return ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Position;
 		const BaseCamera& camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera;
-		return camera.m_FocalPoint + camera.GetViewDirection() * camera.m_FocalLength;
+		return camera.m_FocalPoint - camera.GetViewDirection() * camera.m_FocalLength;
 	}
 
 	static Vector3 BindCameraForwardVector()
