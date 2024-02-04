@@ -51,7 +51,7 @@ namespace TRE
 		private float strawberrysuperRadius = 4f;
 		public float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 2.4f;
+		private float blueberrysuperHeight = 1f;
 		private float strawberrysuperHeight = 4.8f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
@@ -537,7 +537,7 @@ namespace TRE
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 1, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 1.2f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
 				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));

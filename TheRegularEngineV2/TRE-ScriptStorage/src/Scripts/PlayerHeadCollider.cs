@@ -27,15 +27,45 @@ namespace TRE
 			if (this.CompareTag(mole1tag))
 			{
 				vec3 newPos = playerObj.transform.Position;
-				newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+				if (!playerObj.GetComponent<MoleyController>().isScaled)
+				{
+					newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+				}
+				else
+				{
+					if (playerObj.GetComponent<MoleyController>().mainBlueberry)
+					{
+						newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+					}
+
+					if (playerObj.GetComponent<MoleyController>().mainStrawberry)
+					{
+
+					}
+				}
 
 				transform.Position = newPos;
 			}
 			else if (this.CompareTag(mole2tag))
 			{
 				vec3 newPos = playerObj.transform.Position;
-				newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f; //+ playerObj.GetComponent<HoleyController>().currentRadius
-																																				   //+ offset.y;
+				if (!playerObj.GetComponent<HoleyController>().isScaled)
+				{
+					newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+				}
+				else
+				{
+					if (playerObj.GetComponent<HoleyController>().mainBlueberry)
+					{
+						newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 0.5f;
+					}
+
+					if (playerObj.GetComponent<HoleyController>().mainStrawberry)
+					{
+
+					}
+				}
+
 				transform.Position = newPos;
 			}
 
