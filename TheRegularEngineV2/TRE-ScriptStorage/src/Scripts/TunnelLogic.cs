@@ -14,6 +14,9 @@ namespace TRE
         bool MoleyApprove = false;
         bool HoleyApprove = false;
 
+        bool MoleyInside = false;
+        bool HoleyInside = false;
+
         public void Start()
 		{
             Moley = ECSManager.FindEntityByName("Moley");
@@ -22,19 +25,26 @@ namespace TRE
 
 		public void Update()
 		{
-			
-        }
-
-        private void OnTriggerStay(System.UInt64 otherID)
-        {
-            // Check if Moley or Holey is insdie
-            if (otherID == Moley.ID && Moley.GetComponent<MoleyController>().isJumping)
+            if (MoleyInside && InputSystem.GetKeyHold(InputKeys.Space) && !MoleyApprove)
             {
                 MoleyApprove = true;
             }
-            if (otherID == Holey.ID && Holey.GetComponent<HoleyController>().isJumping)
+            if (HoleyInside && InputSystem.GetKeyHold(InputKeys.Enter) && !HoleyApprove)
             {
                 HoleyApprove = true;
+            }
+        }
+
+        private void OnTriggerEnter(System.UInt64 otherID)
+        {
+            // Check if Moley or Holey is inside
+            if (otherID == Moley.ID)
+            {
+                MoleyInside = true;
+            }
+            if (otherID == Holey.ID)
+            {
+                HoleyInside = true;
             }
         }
 
@@ -43,10 +53,12 @@ namespace TRE
             // Check if Moley or Holey left
             if (otherID == Moley.ID)
             {
+                MoleyInside = false;
                 MoleyApprove = false;
             }
             if (otherID == Holey.ID)
             {
+                HoleyInside = false;
                 HoleyApprove = false;
             }
         }
@@ -54,6 +66,14 @@ namespace TRE
         public bool MolesApproved()
         {
             return MoleyApprove && HoleyApprove;
+        }
+
+        public void ResetMoles()
+        {
+            MoleyInside = false;
+            HoleyInside = false;
+            MoleyApprove = false;
+            HoleyApprove = false;
         }
     }
 }

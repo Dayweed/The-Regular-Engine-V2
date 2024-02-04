@@ -1292,6 +1292,34 @@ namespace TRE
 		return entity->GetComponent<SphereCollider>().m_Radius;
 	}
 
+	static void Engine_SetSphereTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<SphereCollider>())
+		{
+			PUBLISHERROR("There is no SphereCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetSphereColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetSphereTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<SphereCollider>())
+		{
+			PUBLISHERROR("There is no SphereCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<SphereCollider>().m_IsTrigger;
+	}
+
 	static void BindResizeBoxCollider(CSEntityID ID, glm::vec3 halfExtents)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -1318,6 +1346,34 @@ namespace TRE
 		}
 
 		return entity->GetComponent<BoxCollider>().m_HalfExtents;
+	}
+
+	static void Engine_SetBoxTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no BoxCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetBoxColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetBoxTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<BoxCollider>())
+		{
+			PUBLISHERROR("There is no BoxCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<BoxCollider>().m_IsTrigger;
 	}
 
 	static void BindResizeCapsuleCollider(CSEntityID ID, float radius, float halfHeight)
@@ -1362,6 +1418,34 @@ namespace TRE
 		return entity->GetComponent<CapsuleCollider>().m_HalfHeight;
 	}
 
+	static void Engine_SetCapsuleTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CapsuleCollider>())
+		{
+			PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetCapsuleColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetCapsuleTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<CapsuleCollider>())
+		{
+			PUBLISHERROR("There is no CapsuleCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<CapsuleCollider>().m_IsTrigger;
+	}
+
 	static void BindResizeCylinderCollider(CSEntityID ID, float radius, float height)
 	{
 		const Entity& entity = VALIDATEENTITY(ID);
@@ -1402,6 +1486,34 @@ namespace TRE
 		}
 
 		return entity->GetComponent<CylinderCollider>().m_Height;
+	}
+
+	static void Engine_SetCylinderTrigger(CSEntityID ID, bool isTrigger)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return;
+		}
+
+		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetCylinderColliderTrigger(entity, isTrigger);
+	}
+
+	static bool Engine_GetCylinderTrigger(CSEntityID ID)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<CylinderCollider>())
+		{
+			PUBLISHERROR("There is no CylinderCollider in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<CylinderCollider>().m_IsTrigger;
 	}
 
 	static void BindOffsetCollider(CSEntityID ID, Vector3 offset)
@@ -2335,17 +2447,25 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeSphereCollider", BindResizeSphereCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetSphereColliderRadius", BindGetSphereColliderRadius);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetSphereTrigger", Engine_SetSphereTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetSphereTrigger", Engine_GetSphereTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeBoxCollider", BindResizeBoxCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxColliderHalfExtents", BindGetBoxColliderHalfExtents);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetBoxTrigger", Engine_SetBoxTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetBoxTrigger", Engine_GetBoxTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCapsuleCollider", BindResizeCapsuleCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderRadius", BindGetCapsuleColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleColliderHalfHeight", BindGetCapsuleColliderHalfHeight);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetCapsuleTrigger", Engine_SetCapsuleTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCapsuleTrigger", Engine_GetCapsuleTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_ResizeCylinderCollider", BindResizeCylinderCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderColliderRadius", BindGetCylinderColliderRadius);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderColliderHeight", BindGetCylinderColliderHeight);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_SetCylinderTrigger", Engine_SetCylinderTrigger);
+			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetCylinderTrigger", Engine_GetCylinderTrigger);
 
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_UpdateColliderOffset", BindOffsetCollider);
 			mono_add_internal_call("TRE.PhysicsSystem::Engine_GetColliderOffset", BindGetOffsetCollider);

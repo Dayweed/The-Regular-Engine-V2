@@ -158,7 +158,7 @@ namespace TRE
 			TransformSystem.GetPosition(this.ID, out vec3 InitialPos);
 			InitialPosition = InitialPos;
 			OutofMapPos = InitialPos;
-			OutofMapPos.y = InitialPos.y - 50.0f;
+			OutofMapPos.y = InitialPos.y - 100.0f;
 			moleyTransform = GetComponent<Transform>();
 
 			RespawnPoint = moleyTransform.Position;

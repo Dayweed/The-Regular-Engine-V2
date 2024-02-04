@@ -1075,12 +1075,27 @@ namespace TRE
 		internal extern static float Engine_GetSphereColliderRadius(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_SetSphereTrigger(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetSphereTrigger(EntityID entityid, bool isTrigger);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetSphereTrigger(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeBoxCollider(EntityID entityid, vec3 newHalfExtents);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetBoxColliderHalfExtents(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetBoxTrigger(EntityID entityid, bool isTrigger);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetBoxTrigger(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1089,7 +1104,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCapsuleColliderHalfHeight(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetCapsuleTrigger(EntityID entityid, bool isTrigger);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetCapsuleTrigger(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1098,7 +1119,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCylinderColliderHeight(EntityID entityid);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Engine_SetCylinderTrigger(EntityID entityid, bool isTrigger);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetCylinderTrigger(EntityID entityid);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_UpdateColliderOffset(EntityID entityid, vec3 offset);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
