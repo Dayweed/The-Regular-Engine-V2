@@ -76,6 +76,36 @@ namespace TRE
 			TitleLevelSelect.GetComponent<TextBounce>().Pause();
 			TitleQuitGame.GetComponent<TextBounce>().Pause();
 			TitleStarsCollected.GetComponent<TextBounce>().Pause();
+
+            // Determine where to spawn the moles based on previous scene
+            String prevScene = PersistentSystem.GetValue("PrevScene");
+            if (prevScene == "Tutorial")
+            {
+                // Teleport Moley and Holey to another location
+                vec3 teleportPos = ToTutorialSelect.GetComponent<Transform>().Position;
+                Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+                Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+                JumpOutHole();
+            }
+            else if (prevScene == "Level_1")
+            {
+                // Teleport Moley and Holey to another location
+                vec3 teleportPos = ToLevel1Select.GetComponent<Transform>().Position;
+                Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+                Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+                JumpOutHole();
+            }
+            else if (prevScene == "Level_2")
+            {
+                // Teleport Moley and Holey to another location
+                vec3 teleportPos = ToLevel2Select.GetComponent<Transform>().Position;
+                Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+                Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+                JumpOutHole();
+            }
         }
 
 		public void Update()
