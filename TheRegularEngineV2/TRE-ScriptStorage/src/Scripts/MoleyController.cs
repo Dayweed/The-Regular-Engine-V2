@@ -48,11 +48,11 @@ namespace TRE
         #region Collider Variables
         private float defaultRadius = 2f;
 		private float blueberrysuperRadius = 2f;
-		private float strawberrysuperRadius = 4f;
+		private float strawberrysuperRadius = 2f;
 		public float currentRadius = 2f;
 		private float defaultHeight = 1f;
 		private float blueberrysuperHeight = 1f;
-		private float strawberrysuperHeight = 4.8f;
+		private float strawberrysuperHeight = 2f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
 		#endregion
@@ -60,7 +60,7 @@ namespace TRE
 		private Transform moleyTransform;
 		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
 		private vec3 blueberryscaledXform = new vec3(40f, 40f, 40f);
-		private vec3 strawberryscaledXform = new vec3(0.5f, 0.5f, 0.5f);
+		private vec3 strawberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 		#endregion
 
@@ -579,10 +579,12 @@ namespace TRE
 				}
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, -3f, lerpSpeed * Time.deltaTime);
 				currentXform.x = MathF.Lerp(currentXform.x, strawberryscaledXform.x, lerpSpeed * Time.deltaTime);
 				currentXform.y = MathF.Lerp(currentXform.y, strawberryscaledXform.y, lerpSpeed * Time.deltaTime);
 				currentXform.z = MathF.Lerp(currentXform.z, strawberryscaledXform.z, lerpSpeed * Time.deltaTime);
 
+				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
 				TransformSystem.SetScaling(this.ID, currentXform);
 			}
