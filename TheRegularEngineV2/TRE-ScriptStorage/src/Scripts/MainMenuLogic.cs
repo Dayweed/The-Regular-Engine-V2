@@ -336,11 +336,11 @@ namespace TRE
 
             if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 20, 0));
+				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 40, 0));
 			}
 			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 20, 0));
+				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 40, 0));
 			}
 
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = true;
