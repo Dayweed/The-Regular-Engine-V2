@@ -22,8 +22,8 @@ namespace TRE
 		Entity lLedge;
 		Entity rLedge;
 
-		private float moveSpeed = 5.0f;
-		private float rotateSpeed = 100.0f;
+		private float moveSpeed = 15.0f;
+		private float rotateSpeed = 200.0f;
 
 		private float cooldown = 0f;
 		private float cooldownDefault = 2.0f;
@@ -67,7 +67,7 @@ namespace TRE
 
 		private void OnTriggerEnter(System.UInt64 otherID)
 		{
-			if (PhysicsSystem.IsTriggerEnter(ID, lLedge.ID) || PhysicsSystem.IsTriggerEnter(ID, rLedge.ID))
+			if (otherID == lLedge.ID || otherID == rLedge.ID)
 			{
 				Bounceback();
 			}
@@ -95,7 +95,7 @@ namespace TRE
 			}
 			else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
-				Bounceback();
+				//Bounceback();
 			}
 		}
 	}
