@@ -88,6 +88,7 @@ namespace TRE
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 35;
+				//cameraController.lookOnlyBool = true;
 			}
 
 			if (regionB)
@@ -95,6 +96,7 @@ namespace TRE
 				expectedPosition = new vec3(0, 35, 50);
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 50;
+				//cameraController.lookOnlyBool = false;
 			}
 
 			if (regionC)

@@ -81,10 +81,6 @@ namespace TRE
 			// Remember current scene and scenepath
 			m_BackUpSceneName = SceneManager::Instance().m_CurrentScene;
 			m_BackUpSceneFilePath = SceneManager::Instance().m_CurrentSceneFilePath;
-
-			// Recompile scripts
-			ScriptEngine::RecompileScripts();
-			ScriptEngine::ReloadAssembly();
 		}
 
 		m_GameRunning = isRunning;
@@ -131,7 +127,7 @@ namespace TRE
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
 		(void)event;
-		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Resetting scene..." });
 		ResetScene();
 	}
 

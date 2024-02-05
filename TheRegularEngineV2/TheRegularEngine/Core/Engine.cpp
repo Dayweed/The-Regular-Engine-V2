@@ -17,6 +17,7 @@
 #include "Graphics/EditorCamera.h"
 #include "SceneManager.h"
 #include "Graphics/AnimationSystem.h"
+#include "Graphics/Sprite3DComponent.h"
 
 namespace TRE
 {
@@ -99,13 +100,11 @@ namespace TRE
 
 		if (m_EngineInfo.EnableGame)
 		{
-			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Start.json");
+			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "SplashScreen.json");
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 		}
 		else
 			SceneManager::Instance().NewScene();
-
-		//SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "Tutorial.json");
 	}
 
 	Engine::~Engine()
@@ -142,6 +141,7 @@ namespace TRE
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<TextComponent>("Text Component");							// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<SlideshowComponent>("Slideshow Component");				// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<Sprite3DComponent>("Sprite3D Component");					// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();
@@ -156,6 +156,7 @@ namespace TRE
 		ECSSystemManager::Instance().RegisterSystem<TransformSystem>();
 		ECSSystemManager::Instance().RegisterSystem<DirectPathfindingSystem>();
 		ECSSystemManager::Instance().RegisterSystem<SlideshowSystem>();
+		ECSSystemManager::Instance().RegisterSystem<ParticleSystem>();
 		//ECSSystemManager::Instance().RegisterSystem<AnimationSystem>();
 
 		// Allocate Default Size for Memory Manager

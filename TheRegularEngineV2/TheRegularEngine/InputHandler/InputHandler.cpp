@@ -31,8 +31,8 @@ namespace TRE
 		{
 			event.Publish(InputEvent {key, action});
 		}
-
 		m_keyMap[key] = action;
+		std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
 	}
 
 	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -49,6 +49,7 @@ namespace TRE
 		{
 			//TRE_CORE_INFO("Mouse Released:x {0}", key);
 			//event.Publish(InputEvent {button, action});
+			
 		}
 	}
 

@@ -1,0 +1,654 @@
+[
+   [
+      11,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+   ],
+   [
+      11,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "6494385196695225489",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "5920254295627062101",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1727302344374243970",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "359978389771183801",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10431439347111182241",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4244439141222075723",
+         "m_RemovedComps": []
+      },
+      6,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15315507836994962334",
+         "m_RemovedComps": []
+      },
+      7,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15202127768678038524",
+         "m_RemovedComps": []
+      },
+      8,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9928166767870908671",
+         "m_RemovedComps": []
+      },
+      9,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11245164950014278480",
+         "m_RemovedComps": []
+      },
+      10,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6494385196695225489",
+         "m_Overrides": {},
+         "m_PrefabGUID": "113720599275006901",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      11,
+      0,
+      {
+         "m_Children": [
+            "11287710626177197711",
+            "11161467628352030818",
+            "7133156967175783280"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [
+            "7668569488306847907",
+            "9270870640775277899",
+            "3314473811206999991",
+            "12041829705427390600"
+         ],
+         "m_Parent": "3875072458367045107"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "11287710626177197711"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "11287710626177197711"
+      },
+      4,
+      {
+         "m_Children": [],
+         "m_Parent": "11287710626177197711"
+      },
+      5,
+      {
+         "m_Children": [],
+         "m_Parent": "11287710626177197711"
+      },
+      6,
+      {
+         "m_Children": [],
+         "m_Parent": "3875072458367045107"
+      },
+      7,
+      {
+         "m_Children": [
+            "800947961265464400",
+            "4464857643603103930",
+            "2756523747465292906"
+         ],
+         "m_Parent": "3875072458367045107"
+      },
+      8,
+      {
+         "m_Children": [],
+         "m_Parent": "7133156967175783280"
+      },
+      9,
+      {
+         "m_Children": [],
+         "m_Parent": "7133156967175783280"
+      },
+      10,
+      {
+         "m_Children": [],
+         "m_Parent": "7133156967175783280"
+      }
+   ],
+   [
+      11,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "3875072458367045107",
+         "m_Index": 249,
+         "m_Name": "PauseMenu",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "11287710626177197711",
+         "m_Index": 250,
+         "m_Name": "pauseMenu_Main",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "7668569488306847907",
+         "m_Index": 256,
+         "m_Name": "main_continue",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "9270870640775277899",
+         "m_Index": 257,
+         "m_Name": "main_controls",
+         "m_Tag": ""
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "3314473811206999991",
+         "m_Index": 258,
+         "m_Name": "main_quit",
+         "m_Tag": ""
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "12041829705427390600",
+         "m_Index": 259,
+         "m_Name": "main_pointer",
+         "m_Tag": ""
+      },
+      6,
+      {
+         "m_Active": true,
+         "m_GUID": "11161467628352030818",
+         "m_Index": 251,
+         "m_Name": "pauseMenu_controls",
+         "m_Tag": ""
+      },
+      7,
+      {
+         "m_Active": true,
+         "m_GUID": "7133156967175783280",
+         "m_Index": 252,
+         "m_Name": "pauseMenu_destructive",
+         "m_Tag": ""
+      },
+      8,
+      {
+         "m_Active": true,
+         "m_GUID": "800947961265464400",
+         "m_Index": 253,
+         "m_Name": "destructive_yes",
+         "m_Tag": ""
+      },
+      9,
+      {
+         "m_Active": true,
+         "m_GUID": "4464857643603103930",
+         "m_Index": 254,
+         "m_Name": "destructive_no",
+         "m_Tag": ""
+      },
+      10,
+      {
+         "m_Active": true,
+         "m_GUID": "2756523747465292906",
+         "m_Index": 255,
+         "m_Name": "destructive_Pointer",
+         "m_Tag": ""
+      }
+   ],
+   [
+      11,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            -110.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            0.0,
+            70.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            0.0,
+            250.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            0.0,
+            -110.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8,
+      {
+         "m_Position": [
+            -200.0,
+            60.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9,
+      {
+         "m_Position": [
+            200.0,
+            60.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      10,
+      {
+         "m_Position": [
+            200.0,
+            60.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.PauseMenu"
+         ],
+         "m_StoredClass": "TRE.PauseMenu"
+      }
+   ],
+   [
+      9,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 7,
+         "Texture": "eb6d30faad6d003f",
+         "Width": 960,
+         "m_IsVisible": false
+      },
+      2,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 125,
+         "RenderLayer": 8,
+         "Texture": "96a5cb2256a6ed7c",
+         "Width": 430,
+         "m_IsVisible": false
+      },
+      3,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 125,
+         "RenderLayer": 8,
+         "Texture": "9452d794d5737ef7",
+         "Width": 430,
+         "m_IsVisible": false
+      },
+      4,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 125,
+         "RenderLayer": 8,
+         "Texture": "47c420986824d93d",
+         "Width": 430,
+         "m_IsVisible": false
+      },
+      5,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 125,
+         "RenderLayer": 9,
+         "Texture": "faa8aad1a93cd5e7",
+         "Width": 430,
+         "m_IsVisible": false
+      },
+      7,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 10,
+         "Texture": "8e3ffcb62d1aca6a",
+         "Width": 960,
+         "m_IsVisible": false
+      },
+      8,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 90,
+         "RenderLayer": 11,
+         "Texture": "bb7e6295231ce0d7",
+         "Width": 210,
+         "m_IsVisible": false
+      },
+      9,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 90,
+         "RenderLayer": 11,
+         "Texture": "cdd8136474ba4e3b",
+         "Width": 210,
+         "m_IsVisible": false
+      },
+      10,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 90,
+         "RenderLayer": 12,
+         "Texture": "c3530da79324df0f",
+         "Width": 210,
+         "m_IsVisible": false
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

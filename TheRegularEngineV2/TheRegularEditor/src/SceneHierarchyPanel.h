@@ -29,7 +29,7 @@ namespace TRE
 			void Shutdown() override;
 			void DisplayChildren(TRE::Entity& CurrentEntity);
 			void DeleteChildren(TRE::Entity& CurrentEntity);
-
+			void AddParent(TRE::Entity& CurrentEntity, std::vector<TRE::Entity>& vec);
 			void HandleShortcuts(TypingEvent& event);
 
 		private:

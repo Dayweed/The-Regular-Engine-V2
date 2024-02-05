@@ -5,7 +5,7 @@
 #include "TREIncludes.h"
 #include "Serialization.h"
 #include "GameLoop.h"
-
+#include "Graphics/Sprite3DComponent.h"
 namespace TRE
 {
 	PrefabOutputArchive::PrefabOutputArchive(std::string fileName, entt::registry& registry, int noOfEntities) : m_FileName(fileName), m_Registry(registry), m_TotalEntities(noOfEntities)
@@ -122,6 +122,8 @@ namespace TRE
 
 	Entity PrefabSystem::DisplayPrefabInNewScene(std::string prefabGUID)
 	{
+		// Make sure the prefab GUID is still valid
+		if (!IsValidPrefabResource(prefabGUID)) return nullptr;
 
 		// Store the scene if it wasn't displaying a prefab
 		if (!GameLoop::Instance().GetDisplayingPrefab())
@@ -209,6 +211,8 @@ namespace TRE
 		// Find if it exists in existingPrefabs
 		if (m_ExistingPrefabs.find(prefabGUID) == m_ExistingPrefabs.end())
 		{
+			std::string funcName{ __FUNCTION__ };
+			TRE_CORE_WARN("[" + funcName + "] PrefabDirectory GUID (" + prefabGUID + ") does not exist in m_ExistingPrefabs...");
 			return false;
 		}
 
@@ -383,7 +387,8 @@ namespace TRE
 			DirectPathfinding,
 			TextComponent,
 			CylinderCollider,
-			SlideshowComponent
+			SlideshowComponent,
+			Sprite3DComponent
 		>();
 	}
 
@@ -418,6 +423,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		arc.Close();
@@ -459,6 +465,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		// Clone each component of the object into the prefab

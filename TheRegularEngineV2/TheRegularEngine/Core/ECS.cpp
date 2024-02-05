@@ -29,7 +29,7 @@ namespace TRE
 
 	void ECSManager::DeleteRemovalEntities()
 	{
-		std::vector<Entity> RemovalEntities{ GetEntities<Removal>() };
+		std::vector<Entity> RemovalEntities{ GetEntities<Removal>(true) };
 		bool haveEntities{ !RemovalEntities.empty() };
 		for (Entity& object : RemovalEntities)
 		{
@@ -44,7 +44,6 @@ namespace TRE
 
 	void ECSManager::DestroyAll()
 	{
-#ifdef _DEBUG
 		// Do proper abadoning children and deletion if debug
 		//for (auto& pair : m_EntityList)
 		//{
@@ -52,13 +51,12 @@ namespace TRE
 		//	MarkForDeletion(pair.second);
 		//}
 		//DeleteRemovalEntities();
-#else
+		
 		// Clear everything
 		m_EntityOrder.clear();
 		m_EntityList.clear();
 		m_EnttIDList.clear();
 		MemoryManager::Instance().DeleteEntities();
-#endif
 	}
 
 	Entity ECSManager::CreateEntity(std::string name)
@@ -161,6 +159,11 @@ namespace TRE
 		}
 	}
 
+	void ECSManager::UpdateEntityChildProperties(std::string parentGUID)
+	{
+		ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildActive(FindEntity(parentGUID));
+	}
+
 	void ECSManager::UpdateEntityOrder()
 	{
 		for (int i{}; i < m_EntityOrder.size(); ++i)
@@ -172,20 +175,34 @@ namespace TRE
 	void ECSManager::SortEntityOrder()
 	{
 		// Sort
-		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(), 
-			[&](std::string& l_GUID, std::string& r_GUID) { 
-				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index; 
+		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(),
+			[&](std::string& l_GUID, std::string& r_GUID) {
+				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
 			});
 
+		int currentIndex = 0;
 		// Sort their children also based on order
 		for (int i{}; i < m_EntityOrder.size(); ++i)
 		{
-			std::vector<std::string>& children{ m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Children };
-			std::sort(children.begin(), children.end(),
-				[&](std::string& l_GUID, std::string& r_GUID) {
-					return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
-				});
+			// Only for main parent
+			if (m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Parent == "")
+			{
+				std::vector<std::string>& children{ m_EntityList[m_EntityOrder[i]]->GetComponent<Parenting>().m_Children };
+				std::sort(children.begin(), children.end(),
+					[&](std::string& l_GUID, std::string& r_GUID) {
+						return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
+					});
+				// Change it be index based on the parent
+				m_EntityList[m_EntityOrder[i]]->GetComponent<Properties>().m_Index = currentIndex++;
+				UpdateChildrenOrder(m_EntityList[m_EntityOrder[i]], currentIndex);
+			}
 		}
+
+		// Sort
+		std::sort(m_EntityOrder.begin(), m_EntityOrder.end(),
+			[&](std::string& l_GUID, std::string& r_GUID) {
+				return m_EntityList[l_GUID]->GetComponent<Properties>().m_Index < m_EntityList[r_GUID]->GetComponent<Properties>().m_Index;
+			});
 
 		// Update their order
 		UpdateEntityOrder();
@@ -239,6 +256,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		arc.Close();
@@ -277,6 +295,7 @@ namespace TRE
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
+			.component<Sprite3DComponent>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -353,7 +372,8 @@ namespace TRE
 			ParticleComponent,
 			DirectPathfinding,
 			TextComponent,
-			SlideshowComponent
+			SlideshowComponent,
+			Sprite3DComponent
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)
@@ -398,6 +418,23 @@ namespace TRE
 	{
 		// Checks if it is in the scene
 		return ent->HasComponent<Properties>() && m_EntityList.find(ent->GetGUID()) != m_EntityList.end() && std::find(m_EntityOrder.begin(), m_EntityOrder.end(), ent->GetGUID()) != m_EntityOrder.end();
+	}
+
+	void ECSManager::UpdateChildrenOrder(Entity child, int& order)
+	{
+		std::vector<std::string>& children{ child->GetComponent<Parenting>().m_Children };
+		for (int c{}; c < children.size(); ++c)
+		{
+			if (ECSManager::Instance().IsValidEntity(m_EntityList[children[c]]))
+			{
+				m_EntityList[children[c]]->GetComponent<Properties>().m_Index = order++;
+				UpdateChildrenOrder(m_EntityList[children[c]], order);
+			}
+			else
+			{
+				//TRE_WARN("[ECSManager::UpdateChildrenOrder] Entity (" + child->GetComponent<Properties>().m_Name ") have an invalid child at " + c + "!");
+			}
+		}
 	}
 
 	std::vector<std::pair<std::string, property::base*>> ECSManager::GetAllInspectableComponents(Entity object)

@@ -16,6 +16,7 @@ namespace TRE
 
 	public class MoleyController : Entity
 	{
+		public PauseMenu MyPauseMenu;
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
@@ -32,8 +33,8 @@ namespace TRE
 		//final velocity
 		private vec3 finalVelocity = vec3.Zero;
 
-		//Check if player is walking
-		private bool isWalking = false;
+        //Check if player is walking
+        public bool isWalking = false;
 		private bool walkingSFXPlayed = false;
 
 		//check if player used super power
@@ -41,13 +42,16 @@ namespace TRE
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
 
-		#region Collider Variables
-		private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 4f;
+        // Controllable
+        public bool isControllable = true;
+
+        #region Collider Variables
+        private float defaultRadius = 2f;
+		private float blueberrysuperRadius = 2f;
 		private float strawberrysuperRadius = 4f;
 		public float currentRadius = 2f;
 		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 2.4f;
+		private float blueberrysuperHeight = 1f;
 		private float strawberrysuperHeight = 4.8f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
@@ -60,6 +64,7 @@ namespace TRE
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 		#endregion
 
+        public int turnDirection = 0;
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
@@ -88,11 +93,20 @@ namespace TRE
 
 		#region Audio Variables
 		private ulong walkingSFX;
+		//private ulong walkingSFX1;
+		//private ulong walkingSFX2;
+		//private ulong walkingSFX3;
+		//private ulong walkingSFX4;
+		//private ulong walkingSFX5;
+		//private ulong walkingSFX6;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
+		private ulong fallSFX;
+		private ulong cheeringSFX;
+		private ulong hurtSFX;
 		#endregion
 
 		public float elapsedTime = 0.0f;
@@ -124,6 +138,8 @@ namespace TRE
 
 		public void Start()
 		{
+			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
+
 			#region UI variables
 			MyPowerUpUI = ECSManager.FindEntityByName("LeftCharacter_HUD").GetComponent<PowerUpUI>();
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
@@ -146,7 +162,7 @@ namespace TRE
 			TransformSystem.GetPosition(this.ID, out vec3 InitialPos);
 			InitialPosition = InitialPos;
 			OutofMapPos = InitialPos;
-			OutofMapPos.y = InitialPos.y - 50.0f;
+			OutofMapPos.y = InitialPos.y - 200.0f;
 			moleyTransform = GetComponent<Transform>();
 
 			RespawnPoint = moleyTransform.Position;
@@ -155,11 +171,20 @@ namespace TRE
 
 			#region Sound Variables
 			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
+			//walkingSFX1 = ECSManager.FindIDFromName("SFX_Footsteps1");
+			//walkingSFX2 = ECSManager.FindIDFromName("SFX_Footsteps2");
+			//walkingSFX3 = ECSManager.FindIDFromName("SFX_Footsteps3");
+			//walkingSFX4 = ECSManager.FindIDFromName("SFX_Footsteps4");
+			//walkingSFX5 = ECSManager.FindIDFromName("SFX_Footsteps5");
+			//walkingSFX6 = ECSManager.FindIDFromName("SFX_Footsteps6");
 			jumpSFX = ECSManager.FindIDFromName("SFX_MoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
+			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
+			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
+			hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
@@ -189,7 +214,7 @@ namespace TRE
 
 			//Transform variables
 			TransformSystem.GetPosition(this.ID, out vec3 pos);
-			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
+			//TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
 
 			//Movement variables
 			PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
@@ -229,129 +254,141 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (InputSystem.GetKeyHold(InputKeys.W))
+				if (!MyPauseMenu.isPaused && isControllable)
 				{
-					dirVec += CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 0;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.S))
-				{
-					dirVec -= CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 180;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.A))
-				{
-					dirVec += CS.GetMainCameraRightVec();
-					lastPlayerDirection = 90;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.D))
-				{
-					dirVec -= CS.GetMainCameraRightVec();
-					lastPlayerDirection = 270;
-				}
-				if (InputSystem.GetKeyHold(InputKeys.W))
-				{
-					if (InputSystem.GetKeyHold(InputKeys.D))
+					if (InputSystem.GetKeyHold(InputKeys.W))
 					{
-						lastPlayerDirection = 315;
+						dirVec += CS.GetMainCameraForwardVec();
+						lastPlayerDirection = 0;
+					}
+					if (InputSystem.GetKeyHold(InputKeys.S))
+					{
+						dirVec -= CS.GetMainCameraForwardVec();
+						lastPlayerDirection = 180;
 					}
 					if (InputSystem.GetKeyHold(InputKeys.A))
 					{
-						lastPlayerDirection = 45;
+						dirVec += CS.GetMainCameraRightVec();
+						lastPlayerDirection = 90;
 					}
-				}
-
-				if (InputSystem.GetKeyHold(InputKeys.S))
-				{
 					if (InputSystem.GetKeyHold(InputKeys.D))
 					{
-						lastPlayerDirection = 225;
+						dirVec -= CS.GetMainCameraRightVec();
+						lastPlayerDirection = 270;
 					}
-					if (InputSystem.GetKeyHold(InputKeys.A))
+					if (InputSystem.GetKeyHold(InputKeys.W))
 					{
-						lastPlayerDirection = 135;
+						if (InputSystem.GetKeyHold(InputKeys.D))
+						{
+							lastPlayerDirection = 315;
+						}
+						if (InputSystem.GetKeyHold(InputKeys.A))
+						{
+							lastPlayerDirection = 45;
+						}
 					}
-				}
 
-				//When the space bar is released, the player will stop mid jump
-				if (jumpCancelled && isJumping && currVelocity.y > 0)
-				{
-					currVelocity.y = 0;
-				}
-				//check if player is on the ground then reset coyote time
-				if (isGrounded)
-				{
-					coyoteTimeCounter = coyoteTime;
-				}
-				//check if player is not on the ground then reduce coyote time
-				else
-				{
-					coyoteTimeCounter -= Time.deltaTime;
-				}
-				//check if space is pressed within the buffer time
-				if (InputSystem.GetKeyPress(InputKeys.Space))
-				{
-					jumpHeight += Time.deltaTime;
-					jumpBufferCounter = jumpBufferTime;
-					//Debug.Log("Jump Pressed");
-				}
-				//count down the buffer time
-				else
-				{
-					jumpBufferCounter -= Time.deltaTime;
-				}
-				//check if player is jumping
-				if (isJumping)
-				{
-					//check if space is released then cancel jump
-					if (InputSystem.GetKeyRelease(InputKeys.Space))
+					if (InputSystem.GetKeyHold(InputKeys.S))
 					{
-						jumpCancelled = true;
-						coyoteTimeCounter = 0f;
-						//Debug.Log("Jump Cancelled");
+						if (InputSystem.GetKeyHold(InputKeys.D))
+						{
+							lastPlayerDirection = 225;
+						}
+						if (InputSystem.GetKeyHold(InputKeys.A))
+						{
+							lastPlayerDirection = 135;
+						}
 					}
-					//check if space is held down and jump time is not over
-					if (currentJumpTime > maxJumpButtomTime)
-					{
-						isJumping = false;
 
-						//Debug.Log("Jump ran out");
-					}
-					currentJumpTime += Time.deltaTime;
-				}
-				//check if player is on the ground and space is not released
-				else
-				{
-					if (InputSystem.GetKeyRelease(InputKeys.Space))
+					//When the space bar is released, the player will stop mid jump
+					if (jumpCancelled && isJumping && currVelocity.y > 0)
 					{
-						isJumping = false;
+						currVelocity.y = 0;
 					}
-				}
-				//jump buffer time and coyote time is still active
-				if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
-				{
-					isWalking = false;
-					//if something break comment this line below out
+					//check if player is on the ground then reset coyote time
+					if (isGrounded)
+					{
+						coyoteTimeCounter = coyoteTime;
+					}
+					//check if player is not on the ground then reduce coyote time
+					else
+					{
+						coyoteTimeCounter -= Time.deltaTime;
+					}
+					//check if space is pressed within the buffer time
+					if (InputSystem.GetKeyPress(InputKeys.Space))
+					{
+						jumpHeight += Time.deltaTime;
+						jumpBufferCounter = jumpBufferTime;
+						//Debug.Log("Jump Pressed");
+					}
+					//count down the buffer time
+					else
+					{
+						jumpBufferCounter -= Time.deltaTime;
+					}
+					//check if player is jumping
+					if (isJumping)
+					{
+						//check if space is released then cancel jump
+						if (InputSystem.GetKeyRelease(InputKeys.Space))
+						{
+							jumpCancelled = true;
+							coyoteTimeCounter = 0f;
+							//Debug.Log("Jump Cancelled");
+						}
+						//check if space is held down and jump time is not over
+						if (currentJumpTime > maxJumpButtomTime)
+						{
+							isJumping = false;
+
+							//Debug.Log("Jump ran out");
+						}
+						currentJumpTime += Time.deltaTime;
+					}
+					//check if player is on the ground and space is not released
+					else
+					{
+						if (InputSystem.GetKeyRelease(InputKeys.Space))
+						{
+							isJumping = false;
+						}
+					}
+					//jump buffer time and coyote time is still active
+					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
+					{
+						isWalking = false;
+						//if something break comment this line below out
 						currVelocity.y = 0;
 
-					vec3 maxHeight = new vec3(0, 70, 0);
-					// Boosted Jump
-					if (isBoostedJump)
-					{
-						maxHeight = new vec3(0, 150, 0);
-					}
+						vec3 maxHeight = new vec3(0, 70, 0);
+						// Boosted Jump
+						if (isBoostedJump)
+						{
+							maxHeight = new vec3(0, 150, 0);
+						}
 
-					Jump(maxHeight);
-					if (ECSManager.IsValidEntity(jumpSFX))
-					{
-						AudioSystem.Play(jumpSFX);
-					}
+						Jump(maxHeight);
 
-					isJumping = true;
-					jumpCancelled = false;
-					currentJumpTime = 0;
-					jumpBufferCounter = 0;
+						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
+						{
+							if (isBoostedJump)
+							{
+								AudioSystem.Play(cheeringSFX);
+							}
+							else
+							{
+								AudioSystem.Play(jumpSFX);
+							}
+						}
+
+						isJumping = true;
+						jumpCancelled = false;
+						currentJumpTime = 0;
+						jumpBufferCounter = 0;
+					}
 				}
+
 			}
 			#endregion
 
@@ -373,13 +410,52 @@ namespace TRE
 				if (isWalking && walkingSFXPlayed == false)
 				{
 					AudioSystem.Play(walkingSFX);
+
+					//int rand = Random.Range(0, 6);
+					//switch (rand)
+					//{
+					//	case 0:
+					//		AudioSystem.Play(walkingSFX1);
+					//		break;
+					//	case 1:
+					//		AudioSystem.Play(walkingSFX2);
+					//		break;
+					//	case 2:
+					//		AudioSystem.Play(walkingSFX3);
+					//		break;
+					//	case 3:
+					//		AudioSystem.Play(walkingSFX4);
+					//		break;
+					//	case 4:
+					//		AudioSystem.Play(walkingSFX5);
+					//		break;
+					//	case 5:
+					//		AudioSystem.Play(walkingSFX6);
+					//		break;
+					//}
+
 					walkingSFXPlayed = true;
+					
 				}
 
 				if (!isWalking || !isGrounded)
 				{
 					AudioSystem.Stop(walkingSFX);
+					//AudioSystem.Stop(walkingSFX1);
+					//AudioSystem.Stop(walkingSFX2);
+					//AudioSystem.Stop(walkingSFX3);
+					//AudioSystem.Stop(walkingSFX4);
+					//AudioSystem.Stop(walkingSFX5);
+					//AudioSystem.Stop(walkingSFX6);
 					walkingSFXPlayed = false;
+				}
+			}
+
+			if(DroppingOutOfMap)
+			{
+				if (ECSManager.IsValidEntity(fallSFX))
+				{
+					AudioSystem.Play(fallSFX);
 				}
 			}
 
@@ -486,7 +562,7 @@ namespace TRE
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 1, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, -1.2f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
 				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
@@ -518,14 +594,14 @@ namespace TRE
 
 			#region CHEATS
 			// Close Game
-			if (InputSystem.GetKeyHold(InputKeys.Escape))
-			{
-				Game.CloseGame();
-			}
+			//if (InputSystem.GetKeyHold(InputKeys.Escape))
+			//{
+			//	Game.CloseGame();
+			//}
 			#endregion
 
 
-			playerDirection = (int)lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+			playerDirection = (int)lastPlayerDirection + turnDirection;
 			playerDirection = (playerDirection % 360);
 
 			/*else if (dirVec.x == 0 && dirVec.z == 0)
@@ -549,7 +625,7 @@ namespace TRE
 
 			TransformSystem.SetRotation(this.ID, new vec3(0, playerDirection, 0));
 
-			isGrounded = false;
+			//isGrounded = false;
 
 			if (RespawnPlayer)
 			{

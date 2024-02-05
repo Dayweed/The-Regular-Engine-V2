@@ -1,0 +1,1214 @@
+[
+   [
+      170,
+      4293918829,
+      10485772,
+      8388625,
+      9437191,
+      6291457,
+      3145872,
+      3145799,
+      3145794,
+      3145807,
+      3145780,
+      3145736,
+      3145845,
+      3145789,
+      3145864,
+      3145849,
+      3145786,
+      3145741,
+      3145777,
+      3145801,
+      3145748,
+      3145768,
+      3145861,
+      3145796,
+      3145844,
+      3145766,
+      3145773,
+      3145751,
+      3145819,
+      3145759,
+      3145793,
+      3145815,
+      3145835,
+      3145896,
+      3145758,
+      3145848,
+      3145761,
+      3145753,
+      3145762,
+      3145750,
+      3145765,
+      3145784,
+      3145744,
+      3145738,
+      3145821,
+      3145764,
+      3145795,
+      3145772,
+      3145742,
+      3145774,
+      3145775,
+      3145743,
+      3145891,
+      3145778,
+      3145814,
+      3145754,
+      3145882,
+      3145879,
+      3145860,
+      3145760,
+      3145752,
+      3145790,
+      3145817,
+      3145769,
+      3145816,
+      3145892,
+      3145787,
+      3145832,
+      3145756,
+      3145791,
+      3145894,
+      3145734,
+      3145797,
+      3145730,
+      3145854,
+      3145878,
+      3145828,
+      3145877,
+      3145803,
+      3145804,
+      3145838,
+      3145728,
+      3145805,
+      3145806,
+      3145842,
+      3145810,
+      3145811,
+      3145812,
+      3145732,
+      3145788,
+      3145847,
+      3145889,
+      3145757,
+      3145737,
+      3145818,
+      3145820,
+      4194415,
+      3145770,
+      3145823,
+      3145830,
+      3145825,
+      3145763,
+      3145826,
+      3145776,
+      3145824,
+      3145802,
+      3145792,
+      3145831,
+      3145833,
+      3145755,
+      8388702,
+      5242988,
+      3145827,
+      4194416,
+      4194419,
+      4194446,
+      3145808,
+      4194456,
+      3145747,
+      3145781,
+      4194417,
+      6291511,
+      10485905,
+      7340043,
+      11534442,
+      1048699,
+      1048700,
+      1048701,
+      3145798,
+      1048703,
+      1048704,
+      1048705,
+      1048706,
+      1048707,
+      3145809,
+      3145731,
+      7340166,
+      4194439,
+      3145746,
+      2097289,
+      2097290,
+      2097291,
+      2097292,
+      2097293,
+      4194426,
+      2097295,
+      3145733,
+      3145785,
+      2097298,
+      2097299,
+      2097300,
+      3145800,
+      2097319,
+      2097203,
+      3145846,
+      11534498,
+      11534493,
+      2097311,
+      10485913,
+      7340031,
+      3145884,
+      3145886,
+      3145883,
+      2097237,
+      3145782,
+      2097253,
+      2097195,
+      3145888,
+      3145893,
+      3145749,
+      2097191
+   ],
+   [
+      0
+   ],
+   [
+      19,
+      7340166,
+      {
+         "m_Children": [
+            "1016836630051144605"
+         ],
+         "m_Parent": ""
+      },
+      4194439,
+      {
+         "m_Children": [
+            "10509983312603211974",
+            "11183254074830409399"
+         ],
+         "m_Parent": ""
+      },
+      2097289,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097290,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097291,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097292,
+      {
+         "m_Children": [
+            "6901260880769456738",
+            "13532880202510778061"
+         ],
+         "m_Parent": ""
+      },
+      2097293,
+      {
+         "m_Children": [
+            "15713678243113056892"
+         ],
+         "m_Parent": ""
+      },
+      2097295,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097298,
+      {
+         "m_Children": [
+            "12240050361697776836"
+         ],
+         "m_Parent": ""
+      },
+      2097299,
+      {
+         "m_Children": [
+            "1906000498434737128",
+            "12357215472430049702"
+         ],
+         "m_Parent": ""
+      },
+      2097300,
+      {
+         "m_Children": [],
+         "m_Parent": "7139267631116052954"
+      },
+      1048707,
+      {
+         "m_Children": [],
+         "m_Parent": "9262580962873091563"
+      },
+      1048706,
+      {
+         "m_Children": [],
+         "m_Parent": "10214686609734549272"
+      },
+      1048705,
+      {
+         "m_Children": [],
+         "m_Parent": "11400480438197261567"
+      },
+      1048704,
+      {
+         "m_Children": [],
+         "m_Parent": "7139267631116052954"
+      },
+      1048703,
+      {
+         "m_Children": [],
+         "m_Parent": "17241056601820338248"
+      },
+      1048701,
+      {
+         "m_Children": [],
+         "m_Parent": "10214686609734549272"
+      },
+      1048700,
+      {
+         "m_Children": [],
+         "m_Parent": "17241056601820338248"
+      },
+      1048699,
+      {
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
+      }
+   ],
+   [
+      19,
+      7340166,
+      {
+         "m_Active": true,
+         "m_GUID": "3433984361522152253",
+         "m_Index": 6,
+         "m_Name": "Frame4",
+         "m_Tag": ""
+      },
+      4194439,
+      {
+         "m_Active": true,
+         "m_GUID": "17241056601820338248",
+         "m_Index": 7,
+         "m_Name": "Frame5",
+         "m_Tag": ""
+      },
+      2097289,
+      {
+         "m_Active": true,
+         "m_GUID": "15445797279152701459",
+         "m_Index": 1,
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      2097290,
+      {
+         "m_Active": true,
+         "m_GUID": "10686246506118743920",
+         "m_Index": 0,
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      2097291,
+      {
+         "m_Active": true,
+         "m_GUID": "12103431087554446731",
+         "m_Index": 2,
+         "m_Name": "Background",
+         "m_Tag": ""
+      },
+      2097292,
+      {
+         "m_Active": true,
+         "m_GUID": "7139267631116052954",
+         "m_Index": 8,
+         "m_Name": "Frame6",
+         "m_Tag": ""
+      },
+      2097293,
+      {
+         "m_Active": true,
+         "m_GUID": "9262580962873091563",
+         "m_Index": 3,
+         "m_Name": "Frame1",
+         "m_Tag": ""
+      },
+      2097295,
+      {
+         "m_Active": true,
+         "m_GUID": "5085728504128975660",
+         "m_Index": 9,
+         "m_Name": "SpaceToContinue",
+         "m_Tag": ""
+      },
+      2097298,
+      {
+         "m_Active": true,
+         "m_GUID": "11400480438197261567",
+         "m_Index": 5,
+         "m_Name": "Frame3",
+         "m_Tag": ""
+      },
+      2097299,
+      {
+         "m_Active": true,
+         "m_GUID": "10214686609734549272",
+         "m_Index": 4,
+         "m_Name": "Frame2",
+         "m_Tag": ""
+      },
+      2097300,
+      {
+         "m_Active": true,
+         "m_GUID": "13532880202510778061",
+         "m_Index": 18,
+         "m_Name": "MolesBack",
+         "m_Tag": ""
+      },
+      1048707,
+      {
+         "m_Active": true,
+         "m_GUID": "15713678243113056892",
+         "m_Index": 10,
+         "m_Name": "Bird",
+         "m_Tag": ""
+      },
+      1048706,
+      {
+         "m_Active": true,
+         "m_GUID": "12357215472430049702",
+         "m_Index": 12,
+         "m_Name": "MolesFront",
+         "m_Tag": ""
+      },
+      1048705,
+      {
+         "m_Active": true,
+         "m_GUID": "12240050361697776836",
+         "m_Index": 13,
+         "m_Name": "Letter",
+         "m_Tag": ""
+      },
+      1048704,
+      {
+         "m_Active": true,
+         "m_GUID": "6901260880769456738",
+         "m_Index": 17,
+         "m_Name": "Landscape",
+         "m_Tag": ""
+      },
+      1048703,
+      {
+         "m_Active": true,
+         "m_GUID": "11183254074830409399",
+         "m_Index": 16,
+         "m_Name": "PartyStuff",
+         "m_Tag": ""
+      },
+      1048701,
+      {
+         "m_Active": true,
+         "m_GUID": "1906000498434737128",
+         "m_Index": 11,
+         "m_Name": "Door",
+         "m_Tag": ""
+      },
+      1048700,
+      {
+         "m_Active": true,
+         "m_GUID": "10509983312603211974",
+         "m_Index": 15,
+         "m_Name": "MolesThinking",
+         "m_Tag": ""
+      },
+      1048699,
+      {
+         "m_Active": true,
+         "m_GUID": "1016836630051144605",
+         "m_Index": 14,
+         "m_Name": "LetterOpen",
+         "m_Tag": ""
+      }
+   ],
+   [
+      19,
+      7340166,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194439,
+      {
+         "m_Position": [
+            -400.0,
+            150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097289,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097290,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097291,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097292,
+      {
+         "m_Position": [
+            400.0,
+            -150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097293,
+      {
+         "m_Position": [
+            -400.0,
+            -150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097295,
+      {
+         "m_Position": [
+            675.0,
+            500.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097298,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097299,
+      {
+         "m_Position": [
+            400.0,
+            150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097300,
+      {
+         "m_Position": [
+            350.0,
+            -50.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048707,
+      {
+         "m_Position": [
+            -325.0,
+            -200.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048706,
+      {
+         "m_Position": [
+            400.0,
+            150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048705,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048704,
+      {
+         "m_Position": [
+            400.0,
+            -150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048703,
+      {
+         "m_Position": [
+            -350.0,
+            70.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048701,
+      {
+         "m_Position": [
+            400.0,
+            150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048700,
+      {
+         "m_Position": [
+            -400.0,
+            150.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048699,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      2097290,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 100.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            -100.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Right": 1.0,
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      2097289,
+      {
+         "m_AmbientColor": [
+            1.0,
+            1.0,
+            1.0,
+            0.05000000074505806
+         ],
+         "m_Direction": [
+            0.7071067690849304,
+            -0.4999999701976776,
+            0.4999999701976776
+         ],
+         "m_DirectionalColor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "m_ShadowIntensity": 0.8500000238418579
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      12,
+      7340166,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      4194439,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097291,
+      {
+         "m_RegisteredScripts": [
+            "TRE.CutsceneStartLogic"
+         ],
+         "m_StoredClass": "TRE.CutsceneStartLogic"
+      },
+      2097292,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097293,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097295,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      2097298,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097299,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      1048707,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048706,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048703,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      2097300,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      }
+   ],
+   [
+      17,
+      7340166,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 400,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 400,
+         "m_IsVisible": true
+      },
+      4194439,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      2097291,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 1080,
+         "RenderLayer": 0,
+         "Texture": "42417b1f6a921655",
+         "Width": 1920,
+         "m_IsVisible": true
+      },
+      2097292,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      2097293,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 1,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      2097295,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "RenderLayer": 2,
+         "Texture": "1ce7be912b11ab28",
+         "Width": 340,
+         "m_IsVisible": true
+      },
+      2097298,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 400,
+         "RenderLayer": 4,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 400,
+         "m_IsVisible": true
+      },
+      2097299,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 1,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      2097300,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 200,
+         "RenderLayer": 10,
+         "Texture": "7151c2b18273b0a9",
+         "Width": 200,
+         "m_IsVisible": true
+      },
+      1048707,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 100,
+         "RenderLayer": 2,
+         "Texture": "cf0e088507f3f72b",
+         "Width": 100,
+         "m_IsVisible": true
+      },
+      1048706,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 150,
+         "RenderLayer": 3,
+         "Texture": "8ff4fab97e78c4a7",
+         "Width": 150,
+         "m_IsVisible": true
+      },
+      1048705,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 400,
+         "RenderLayer": 5,
+         "Texture": "67c0c8d2245caf10",
+         "Width": 400,
+         "m_IsVisible": true
+      },
+      1048704,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 9,
+         "Texture": "92faf3a7d995082b",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      1048703,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 150,
+         "RenderLayer": 10,
+         "Texture": "189c808f9cb598ee",
+         "Width": 150,
+         "m_IsVisible": true
+      },
+      1048701,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 2,
+         "Texture": "9701acc48b1900e4",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      1048700,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 300,
+         "RenderLayer": 9,
+         "Texture": "bdf53fc56088468a",
+         "Width": 300,
+         "m_IsVisible": true
+      },
+      1048699,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 400,
+         "RenderLayer": 7,
+         "Texture": "e3e9800518388dd3",
+         "Width": 400,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

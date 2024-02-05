@@ -12,6 +12,9 @@ namespace TRE
 		public Entity JumpPad;
 		public Entity JumpPad_1;
 
+		public Entity UpButton;
+		public Entity UpButton_1;
+
 		public JumpPadSwitch()
 		{
 
@@ -19,6 +22,9 @@ namespace TRE
 
 		public void OnCreate()
 		{
+			UpButton = ECSManager.FindEntityByName("UpButton");
+			UpButton_1 = ECSManager.FindEntityByName("UpButton_1");
+
 			JumpPad = ECSManager.FindEntityByName("JumpPad");
 			JumpPad_1 = ECSManager.FindEntityByName("JumpPad_1");
 			if (JumpPad == null)
@@ -46,6 +52,8 @@ namespace TRE
 			{
 				JumpPad.GetComponent<JumpPad>().ActivatePad(true);
 				JumpPad_1.GetComponent<JumpPad>().ActivatePad(true);
+				UpButton.SetActive(false);
+				UpButton_1.SetActive(false);
 			}
 		}
 
@@ -57,6 +65,8 @@ namespace TRE
 			{
 				JumpPad.GetComponent<JumpPad>().ActivatePad(false);
 				JumpPad_1.GetComponent<JumpPad>().ActivatePad(false);
+				UpButton.SetActive(true);
+				UpButton_1.SetActive(true);
 			}
 		}
 	}

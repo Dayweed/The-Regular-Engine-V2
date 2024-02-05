@@ -186,6 +186,7 @@ namespace TRE
 
 	void PhysicsSystem::GameUpdate()
 	{
+		if (m_PauseState) return;
 		// Accumulator, courtesy of 
 		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
 		static float accumulator = 0.0f;
@@ -1226,6 +1227,16 @@ namespace TRE
 
 		if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
 			entity->GetComponent<CylinderCollider>().m_Offset = offset;
+	}
+
+	void PhysicsSystem::SetPauseState(bool state)
+	{
+		m_PauseState = state;
+	}
+
+	bool PhysicsSystem::GetPauseState()
+	{
+		return m_PauseState;
 	}
 }
 

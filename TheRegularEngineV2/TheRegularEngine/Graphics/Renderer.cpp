@@ -6,12 +6,14 @@
 #include "Pipeline.h"
 #include "Resource/ResourceManager.h"
 #include "Material.h"
+#include "FontRenderer.h"
 
 namespace TRE
 {
 	std::shared_ptr<SceneRenderer> Renderer::s_MainRenderer = nullptr;
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
 	FinalRenderData* Renderer::s_FinalRenderData = nullptr;
+	std::shared_ptr<Skybox> Renderer::m_SkyboxEnvironment = nullptr;
 
 	std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
@@ -95,6 +97,8 @@ namespace TRE
 			s_FinalRenderData->Material->Invalidate();
 		}
 
+		m_SkyboxEnvironment = std::make_shared<Skybox>();
+
 		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
 	}
 
@@ -105,6 +109,8 @@ namespace TRE
 		delete s_FinalRenderData;
 		s_FinalRenderData = nullptr;
 		m_CommandBuffer = nullptr;
+		m_SkyboxEnvironment.reset();
+		m_SkyboxEnvironment = nullptr;
 	}
 
 	void Renderer::RenderToSwapChain()
@@ -194,5 +200,37 @@ namespace TRE
 			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline->GetPipeline());
 		else
 			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, Pipeline->GetPipeline());
+	}
+
+	std::shared_ptr<Skybox> Renderer::GetSkybox()
+	{
+		return m_SkyboxEnvironment;
+	}
+
+	void Renderer::SetSkyboxEnvironment(std::string texture0, std::string texture1, std::string texture2, std::string texture3, std::string texture4, std::string texture5)
+	{
+		const ResourceHandle handle0 = Resource::GenerateGUID(texture0);
+		const ResourceHandle handle1 = Resource::GenerateGUID(texture1);
+		const ResourceHandle handle2 = Resource::GenerateGUID(texture2);
+		const ResourceHandle handle3 = Resource::GenerateGUID(texture3);
+		const ResourceHandle handle4 = Resource::GenerateGUID(texture4);
+		const ResourceHandle handle5 = Resource::GenerateGUID(texture5);
+
+		auto NewTexture0 = ResourceManager::Instance().GetResource<VulkanTexture>(handle0);
+		auto NewTexture1 = ResourceManager::Instance().GetResource<VulkanTexture>(handle1);
+		auto NewTexture2 = ResourceManager::Instance().GetResource<VulkanTexture>(handle2);
+		auto NewTexture3 = ResourceManager::Instance().GetResource<VulkanTexture>(handle3);
+		auto NewTexture4 = ResourceManager::Instance().GetResource<VulkanTexture>(handle4);
+		auto NewTexture5 = ResourceManager::Instance().GetResource<VulkanTexture>(handle5);
+
+		m_SkyboxEnvironment->SetTexture(0, NewTexture0);
+		m_SkyboxEnvironment->SetTexture(1, NewTexture1);
+		m_SkyboxEnvironment->SetTexture(2, NewTexture2);
+		m_SkyboxEnvironment->SetTexture(3, NewTexture3);
+		m_SkyboxEnvironment->SetTexture(4, NewTexture4);
+		m_SkyboxEnvironment->SetTexture(5, NewTexture5);
+
+		m_SkyboxEnvironment->RecreateCubeMap();
+		m_SkyboxEnvironment->ReloadCubeMap();
 	}
 }

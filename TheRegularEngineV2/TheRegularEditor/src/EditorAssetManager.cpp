@@ -109,8 +109,11 @@ namespace TRE
 			assetsPath = "../Assets/";
 			assetsPath += assetName;
 			std::filesystem::remove(assetsPath);
-			resourcePath += hexHandle + ".geom";
-			std::filesystem::remove(resourcePath);
+			if (m_AssetNameToHandle[assetName].second)
+			{
+				resourcePath += hexHandle + ".geom";
+				std::filesystem::remove(resourcePath);
+			}
 		}
 		else if (assetType == ResourceType::Texture)
 		{
@@ -119,15 +122,21 @@ namespace TRE
 			assetsPath = "../Assets/";
 			assetsPath += assetName;
 			std::filesystem::remove(assetsPath);
-			resourcePath += hexHandle + ".DDS";
-			std::filesystem::remove(resourcePath);
+			if (m_AssetNameToHandle[assetName].second)
+			{
+				resourcePath += hexHandle + ".DDS";
+				std::filesystem::remove(resourcePath);
+			}
 		}
 		else if (assetType == ResourceType::Material)
 		{
-			assetsPath += hexHandle + ".material" + ".desc";
-			std::filesystem::remove(assetsPath);
-			resourcePath += hexHandle + ".material";
-			std::filesystem::remove(resourcePath);
+			if (m_AssetNameToHandle[assetName].second)
+			{
+				assetsPath += hexHandle + ".material" + ".desc";
+				std::filesystem::remove(assetsPath);
+				resourcePath += hexHandle + ".material";
+				std::filesystem::remove(resourcePath);
+			}
 		}
 		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName].first);
 		m_AssetNameToHandle.erase(assetName);

@@ -94,9 +94,9 @@ namespace TRE
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 		samplerInfo.magFilter = VK_FILTER_NEAREST;
 		samplerInfo.minFilter = VK_FILTER_NEAREST;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 		samplerInfo.anisotropyEnable = VK_TRUE;
 
 		VkPhysicalDeviceProperties properties{};
@@ -443,7 +443,7 @@ namespace TRE
 		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 4);
 
 		std::unique_ptr<std::uint8_t[]> data = std::make_unique<std::uint8_t[]>(imageSize);
-		memset(data.get(), 220, imageSize);
+		memset(data.get(), 240, imageSize);
 
 		stagingBuffer.Map();
 		stagingBuffer.WriteToBuffer(data.get(), imageSize);
@@ -647,5 +647,10 @@ namespace TRE
 		}
 
 		return m_DefaultTextureID;
+	}
+
+	const std::shared_ptr<VulkanTexture> VulkanTexture::GetDefaultTexture()
+	{
+		return ResourceManager::Instance().GetResource<VulkanTexture>(GetDefaultTextureID());
 	}
 }

@@ -11,6 +11,7 @@ namespace TRE
 		VkImageLayout DepthFinalLayout;
 		bool DepthEnabled = false;
 		bool ClearColor = true;
+		bool IsSwapChain = false;
 	};
 
 	class RenderPass

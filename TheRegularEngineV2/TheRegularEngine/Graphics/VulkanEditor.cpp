@@ -91,6 +91,9 @@ namespace TRE
 
 		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain()->GetRenderPass()->GetHandle());
 
+		auto& io = ImGui::GetIO();
+		ImFont* font = io.Fonts->AddFontFromFileTTF("../Assets/Font/InterRegular.ttf", 18.f, NULL, io.Fonts->GetGlyphRangesDefault());
+
 		auto cmdbuffer = LogicalDevice->AllocateCommandBuffer(true);
 		ImGui_ImplVulkan_CreateFontsTexture(cmdbuffer);
 		LogicalDevice->SubmitCommands(cmdbuffer);

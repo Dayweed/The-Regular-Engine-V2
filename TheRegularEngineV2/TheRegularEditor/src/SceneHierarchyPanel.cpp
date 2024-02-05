@@ -7,6 +7,8 @@
 
 namespace TRE
 {
+	static bool hasInput{};
+
 	SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<SelectionManager>& Selection_Manager)
 	{
 		m_SelectionManager = Selection_Manager;
@@ -25,78 +27,103 @@ namespace TRE
 	void SceneHierarchyPanel::Update()
 	{
 		ImGui::Begin("Hierarchy");
+		static char inputTextBuffer[128] = "";
 
-		bool displayingPrefab{ GameLoop::Instance().GetDisplayingPrefab() };
-		std::string SceneDisplay = displayingPrefab ? "Prefab" : SceneManager::Instance().GetCurrentSceneName();
-
-		// Display button to return to scene
-		if (displayingPrefab && ImGui::Button("Return to Scene", ImVec2(-FLT_MIN, 0.0f)))
+		if (ImGui::BeginChild("Search Bar", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y * 0.029f), false, ImGuiWindowFlags_NoScrollbar))
 		{
-			m_SelectionManager->ClearSelectedEntity();
-			ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+			ImGui::InputText("##input", inputTextBuffer, sizeof(inputTextBuffer));
 		}
+		ImGui::EndChild();
 
-		if (ImGui::TreeNodeEx(SceneDisplay.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::BeginChild("Show entities", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y)))
 		{
-			//create new entities individually
-			//if (ImGui::Button("Create Entity"))
-			//{
-			//	Entity GameObject = ECSManager::Instance().CreateEntity();
-			//	GameObject->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(ECSManager::Instance().GetEntities<Properties>().size()) + ")";
-			//}
+			bool displayingPrefab{ GameLoop::Instance().GetDisplayingPrefab() };
+			std::string SceneDisplay = displayingPrefab ? "Prefab" : SceneManager::Instance().GetCurrentSceneName();
 
-			if (ImGui::BeginDragDropTarget())
+			// Display button to return to scene
+			if (displayingPrefab && ImGui::Button("Return to Scene", ImVec2(-FLT_MIN, 0.0f)))
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
-				{
-					TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+				m_SelectionManager->ClearSelectedEntity();
+				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+			}
 
-					//if the child entity has parent
-					if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(payload_n))
+
+			if (inputTextBuffer[0] == '\0')
+			{
+				hasInput = false;
+			}
+
+			else
+			{
+				hasInput = true;
+			}
+
+			if (ImGui::TreeNodeEx(SceneDisplay.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity"))
 					{
-						ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(payload_n);
+						TRE::Entity payload_n = *(const TRE::Entity*)payload->Data; //this will be child of currententity
+
+						//if the child entity has parent
+						if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(payload_n))
+						{
+							ECSSystemManager::Instance().GetSystem<ParentingSystem>()->RemoveParent(payload_n);
+						}
 					}
+
+					ImGui::EndDragDropTarget();
 				}
 
-				ImGui::EndDragDropTarget();
-			}
-
-			//theres no more drag and drop receive from content browser?
-			//if (ImGui::BeginDragDropTarget())
-			//{
-			//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Content Browser item"))
-			//	{
-			//		Entity GameObject = ECSManager::Instance().CreateEntity();
-			//		GameObject->GetComponent<Properties>().m_Name = (const char*)payload->Data;
-			//	}
-
-			//	ImGui::EndDragDropTarget();
-			//}
-
-			// Choose between getting all entities or just the prefab if it is displaying prefab
-			std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
-			if (GameLoop::Instance().GetDisplayingPrefab())
-			{
-				entities.clear();
-				entities.emplace_back(ECSSystemManager::Instance().GetSystem<PrefabSystem>()->GetDisplayedPrefab());
-			}
-
-			if (ImGui::IsWindowHovered())
-			{
-				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-					ImGui::SetWindowFocus();
-
-				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-					m_SelectionManager->ClearSelectedEntity();
-			}
-
-			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
-			{
-				if (m_SelectionManager->GetSelectedEntity())
+				// Choose between getting all entities or just the prefab if it is displaying prefab
+				std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
+				if (GameLoop::Instance().GetDisplayingPrefab())
 				{
-					if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
+					entities.clear();
+					entities.emplace_back(ECSSystemManager::Instance().GetSystem<PrefabSystem>()->GetDisplayedPrefab());
+				}
+
+				if (ImGui::IsWindowHovered())
+				{
+					if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+						ImGui::SetWindowFocus();
+
+					if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+						m_SelectionManager->ClearSelectedEntity();
+				}
+
+				if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+				{
+					if (m_SelectionManager->GetSelectedEntity())
 					{
-						//create and delete entity
+						if (!m_SelectionManager->GetSelectedEntity()->HasComponent<Camera>())
+						{
+							//create and delete entity
+							if (ImGui::BeginPopupContextWindow())
+							{
+								//create new entities as entity's children
+								if (ImGui::Selectable("Create Entity"))
+								{
+									Entity entityChild = ECSManager::Instance().CreateEntity();
+									entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
+									ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
+									m_SelectionManager->SelectEntity(entityChild);
+								}
+
+								if (ImGui::Selectable("Delete Entity"))
+								{
+									TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
+									DeleteChildren(entityToDelete);
+									m_SelectionManager->ClearSelectedEntity();
+								}
+								ImGui::EndPopup();
+							}
+						}
+					}
+
+					else
+					{
 						if (ImGui::BeginPopupContextWindow())
 						{
 							//create new entities as entity's children
@@ -104,75 +131,70 @@ namespace TRE
 							{
 								Entity entityChild = ECSManager::Instance().CreateEntity();
 								entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
-								ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
 								m_SelectionManager->SelectEntity(entityChild);
-							}
-
-							if (ImGui::Selectable("Delete Entity"))
-							{
-								TRE::Entity entityToDelete = m_SelectionManager->GetSelectedEntity();
-								DeleteChildren(entityToDelete);
-								m_SelectionManager->ClearSelectedEntity();
+								//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
 							}
 							ImGui::EndPopup();
 						}
 					}
 				}
 
-				else
+				std::vector<TRE::Entity> filteredEntities{};
+				//search bar
+				for (size_t i{}; i < entities.size(); ++i)
 				{
-					if (ImGui::BeginPopupContextWindow())
+					std::string fileNameLower = entities[i]->GetName();
+
+					std::transform(fileNameLower.begin(), fileNameLower.end(), fileNameLower.begin(), [](unsigned char c) {return std::tolower(c); });
+					size_t found = fileNameLower.find(inputTextBuffer);
+
+					if (found != std::string::npos)
 					{
-						//create new entities as entity's children
-						if (ImGui::Selectable("Create Entity"))
-						{
-							Entity entityChild = ECSManager::Instance().CreateEntity();
-							entityChild->GetComponent<Properties>().m_Name = "GameObject (" + std::to_string(entities.size()) + ")";
-							m_SelectionManager->SelectEntity(entityChild);
-							//ECSSystemManager::Instance().GetSystem<ParentingSystem>()->SetParent(entityChild, m_SelectionManager->GetSelectedEntity());
-						}
-						ImGui::EndPopup();
+						//add parent
+						AddParent(entities[i], filteredEntities);
+						//filteredEntities.push_back(entities[i]);
 					}
 				}
-			}
 
-			for (auto& currentEntity : entities)
-			{
-				if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
+				for (auto& currentEntity : filteredEntities)
 				{
-					DisplayChildren(currentEntity);
+					if (ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(currentEntity) == nullptr)
+					{
+						DisplayChildren(currentEntity);
+					}
 				}
+
+				ImGui::TreePop();
 			}
 
-			ImGui::TreePop();
-		}
+			Entity SelectedEntity{ EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity() };
+			if (ImGui::IsWindowHovered() && m_ShortcutCopyEntity)
+			{
+				EntityCopier::Instance().CopyEntities(SelectedEntity);
+			}
+			if (ImGui::IsWindowHovered() && m_ShortcutPasteEntity)
+			{
+				Entity pastedEntity = EntityCopier::Instance().PasteEntities();
+				m_SelectionManager->SelectEntity(pastedEntity);
+			}
+			if (ImGui::IsWindowHovered() && m_ShortcutDuplicateEntity && SelectedEntity)
+			{
+				EntityCopier::Instance().CopyEntities(SelectedEntity);
+				Entity pastedEntity = EntityCopier::Instance().PasteEntities();
+				m_SelectionManager->SelectEntity(pastedEntity);
+			}
+			if (ImGui::IsWindowHovered() && m_ShortcutDeleteEntity && SelectedEntity)
+			{
+				ECSManager::Instance().MarkForDeletion(SelectedEntity);
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+			}
 
-		Entity SelectedEntity{ EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity() };
-		if (ImGui::IsWindowHovered() && m_ShortcutCopyEntity)
-		{
-			EntityCopier::Instance().CopyEntities(SelectedEntity);
+			m_ShortcutCopyEntity = false;
+			m_ShortcutPasteEntity = false;
+			m_ShortcutDuplicateEntity = false;
+			m_ShortcutDeleteEntity = false;
 		}
-		if (ImGui::IsWindowHovered() && m_ShortcutPasteEntity)
-		{
-			Entity pastedEntity = EntityCopier::Instance().PasteEntities();
-			m_SelectionManager->SelectEntity(pastedEntity);
-		}
-		if (ImGui::IsWindowHovered() && m_ShortcutDuplicateEntity && SelectedEntity)
-		{
-			EntityCopier::Instance().CopyEntities(SelectedEntity);
-			Entity pastedEntity = EntityCopier::Instance().PasteEntities();
-			m_SelectionManager->SelectEntity(pastedEntity);
-		}
-		if (ImGui::IsWindowHovered() && m_ShortcutDeleteEntity && SelectedEntity)
-		{
-			ECSManager::Instance().MarkForDeletion(SelectedEntity);
-			EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
-		}
-
-		m_ShortcutCopyEntity = false;
-		m_ShortcutPasteEntity = false;
-		m_ShortcutDuplicateEntity = false;
-		m_ShortcutDeleteEntity = false;
+		ImGui::EndChild();
 
 		ImGui::End();
 	}
@@ -186,7 +208,9 @@ namespace TRE
 	{
 		const std::string entityName = CurrentEntity->GetName() + "##" + CurrentEntity->GetGUID();
 		std::vector<TRE::Entity> childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetChildren(CurrentEntity);
-		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) | (!childrenVector.empty() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf);
+		ImGuiTreeNodeFlags Flags = ((m_SelectionManager->GetSelectedEntity() == CurrentEntity) ? ImGuiTreeNodeFlags_Selected : 0) 
+									| (!childrenVector.empty() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf)
+									| (hasInput ? ImGuiTreeNodeFlags_DefaultOpen : 0);
 
 		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4( 0, 1, 1, 1 ) : ImVec4(1, 1, 1, 1);
 		ImGui::PushStyleColor(0, color);
@@ -282,5 +306,27 @@ namespace TRE
 			m_ShortcutDuplicateEntity = key == KeyButton::D;
 		}
 		m_ShortcutDeleteEntity = key == KeyButton::Delete;
+	}
+
+	void SceneHierarchyPanel::AddParent(TRE::Entity& CurrentEntity, std::vector<TRE::Entity>& vec)
+	{
+		TRE::Entity childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(CurrentEntity);
+		
+		//if no child
+		if (childrenVector == nullptr)
+		{
+			//remove duplicates
+			auto it = std::find(vec.begin(), vec.end(), CurrentEntity);
+
+			if (it == std::end(vec))
+			{
+				vec.push_back(CurrentEntity);
+			}
+		}
+
+		else
+		{
+			AddParent(childrenVector, vec);
+		}
 	}
 }

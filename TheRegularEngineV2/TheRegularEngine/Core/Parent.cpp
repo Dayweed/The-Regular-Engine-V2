@@ -20,7 +20,7 @@ namespace TRE
 
 	void ParentingSystem::LateUpdate()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
 		{
 			//For startup
 			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
@@ -39,7 +39,7 @@ namespace TRE
 			}
 		}
 
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
 		{
 			//Update world data
 			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
@@ -96,6 +96,9 @@ namespace TRE
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
 			UpdateChildLocalData(parent, child);
 		}
+
+		// Resort the entities again
+		ECSManager::Instance().SortEntityOrder();
 	}
 
 	Entity ParentingSystem::GetParent(Entity child)
@@ -250,5 +253,15 @@ namespace TRE
 		}
 
 		currentTransform.m_IsDirty = true;
+	}
+
+	void ParentingSystem::UpdateChildActive(Entity parent)
+	{
+		bool parentActive = parent->GetComponent<Properties>().m_Active;
+		for (Entity& child : GetChildren(parent))
+		{
+			child->GetComponent<Properties>().m_Active = parentActive;
+			UpdateChildActive(child);
+		}
 	}
 }

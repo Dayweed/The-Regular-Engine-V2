@@ -286,6 +286,16 @@ namespace TRE
 								UpdatedData = UpdatedData ? true : ImGui::ColorEdit3(NameField.c_str(), color);
 								Value.m_Value = { color[0], color[1], color[2] };
 							}
+							else if constexpr (std::is_same_v<T, MultiLineString>)
+							{
+								std::string Text = Value.Text.c_str();
+								char buffer[512];
+								std::strcpy(buffer, Text.c_str());
+								if (ImGui::InputTextMultiline("##Text", buffer, sizeof(buffer)))
+								{
+									Value.Text = std::string(buffer);
+								}
+							}
 							else if constexpr (std::is_same_v<T, resource_ref>)
 							{
 								static char resourceName[200];
@@ -558,45 +568,52 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, FontType>)
 							{
-								std::string selected = Value.m_Value;
-
-								if (ImGui::BeginCombo("Font Type", selected.c_str()))
+								std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
+		
+								if (ImGui::BeginCombo("##FontType", Value.m_FontType.c_str()))
 								{
-									if (ImGui::Selectable("None", false))
+									std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
 									{
-										Value.m_Value = "";
-									}
+										for (char ch : type1)
+											ch = static_cast<char>(tolower(ch));
 
-									if (Value.m_Type == "FontType")
+										for (char ch : type2)
+											ch = static_cast<char>(tolower(ch));
+
+										return type1 < type2;
+									});
+
+									for (auto& FontName : LoadFontTypes)
 									{
-										std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
-										std::cout << "Loaded Font Count: " << LoadFontTypes.size() << std::endl;
-										std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
-											{
-												for (char ch : type1)
-													ch = static_cast<char>(tolower(ch));
-
-												for (char ch : type2)
-													ch = static_cast<char>(tolower(ch));
-
-												return type1 < type2;
-											});
-
-										for (const auto& material : LoadFontTypes)
+										if (ImGui::Selectable(FontName.c_str()))
 										{
-											bool isSelected = (selected == material);
-											if (ImGui::Selectable(material.c_str(), isSelected))
-											{
-												selected = material;
-												Value.m_Value = material;
-												break;
-											}
-											if (isSelected)
-												ImGui::SetItemDefaultFocus();
+											UpdatedData = true;
+											Value.m_FontType = FontName;
 										}
 									}
 
 									ImGui::EndCombo();
+								}
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_Font"))
+									{
+										std::string assetName = (const char*)payload->Data;
+										assetName = assetName.substr(assetName.find_last_of('\\') + 1);
+										assetName.erase(assetName.find(".ttf"));
+										assetName += ".ttf";
+										
+										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Assets/Font/" + assetName;
+										
+										//Load Font here
+										FontRenderer::LoadFont(FilePath);
+									}
+									else
+									{
+										TRE_CORE_ERROR("Failed to get drag drop font");
+									}
+									ImGui::EndDragDropTarget();
 								}
 							}
 							else static_assert(always_false<T>::value, "We are not covering all the cases!");
@@ -643,6 +660,7 @@ namespace TRE
 							if(ImGui::BeginCombo("##Scripts", "Scripts"))
 							{
 								std::vector<std::string> scripts = ScriptEngine::s_ScriptEngineData->RegisteredScriptClasses;
+								std::sort(scripts.begin(), scripts.end());
 								for (auto& script : scripts)
 								{
 									if (ImGui::Selectable(script.c_str()))
@@ -806,7 +824,7 @@ namespace TRE
 						//the green part is to make the button bigger
 						if (ImGui::Button("Reload"/*, ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(*/))
 						{
-
+							ScriptEngine::RecompileScripts();
 						}
 					}
 #pragma endregion

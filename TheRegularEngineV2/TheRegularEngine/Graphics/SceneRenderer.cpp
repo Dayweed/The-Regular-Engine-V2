@@ -1,9 +1,5 @@
 #include "pch.h"
-#include "Core/Engine.h"
-#include "Core/Transform.h"
 #include "SceneRenderer.h"
-#include "RendererContext.h"
-#include "MeshRenderer.h"
 #include "Camera.h"
 #include "Core/Logger.h"
 #include "VulkanTexture.h"
@@ -19,6 +15,12 @@
 #include "VulkanUtilities.h"
 #include "AnimationComponent.h"
 #include "FontRenderer.h"
+#include "Sprite3DComponent.h"
+#include "Core/Transform.h"
+#include "Renderer.h"
+#include "Core/Engine.h"
+#include "MeshRenderer.h"
+#include "Particle.h"
 
 //To be removed
 #include "EditorCamera.h"
@@ -46,6 +48,7 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_ParticleUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
 
 	void SceneRenderer::Initialize() 
@@ -66,6 +69,7 @@ namespace TRE
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = PBRShader;
+		PipelineConfig.EnableBlending = true;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
 		PipelineConfigurations SkyboxPipelineConfig{};
@@ -80,13 +84,13 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
-		SkyBoxPassInit();
 		ShadowPassInit();
 
 		PipelineConfigurations Config{};
 		Config.Primitive = PrimitiveType::Triangles;
 		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
-		Config.CullMode = VK_CULL_MODE_FRONT_BIT;
+		Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+		Config.EnableBlending = true;
 		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
 		PipelineConfigurations ShadowAnimationPipelineConfig{};
@@ -107,6 +111,7 @@ namespace TRE
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
 		m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
+		m_ParticleRenderer = std::make_shared<ParticleRenderer>(m_Device);
 
 		PostProcessingManager::Instance().Init();
 
@@ -120,6 +125,53 @@ namespace TRE
 			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
 		};
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
+
+		PipelineConfigurations Sprite3DPipelineConfig{};
+		Sprite3DPipelineConfig.Primitive = PrimitiveType::Triangles;
+		Sprite3DPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
+		Sprite3DPipelineConfig.CullMode = VK_CULL_MODE_NONE;
+		Sprite3DPipelineConfig.EnableBlending = true;
+		Sprite3DPipelineConfig.EnableDepthTest = true;
+		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
+
+		//To be remove later.....
+
+		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
+
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::vector<QuadVertex> data(4);
+
+		data[0].Position = glm::vec3(x, y, 0.f);
+		data[0].TexCoord = glm::vec2(0, 0);
+
+		data[1].Position = glm::vec3(x + width, y, 0.f);
+		data[1].TexCoord = glm::vec2(1, 0);
+
+		data[2].Position = glm::vec3(x + width, y + height, 0.f);
+		data[2].TexCoord = glm::vec2(1, 1);
+
+		data[3].Position = glm::vec3(x, y + height, 0.f);
+		data[3].TexCoord = glm::vec2(0, 1);
+
+		std::vector<int> indices = { 0,1,2,2,3,0 };
+
+		m_Sprite3DIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
+
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		RenderPassInfo RPConfig{};
+		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RPConfig.ImageFormat = SC->GetColorFormat();
+		RPConfig.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		RPConfig.DepthImageFormat = SC->GetDepthFormat();
+		RPConfig.DepthEnabled = true;
+		RPConfig.ClearColor = false;
+		m_Sprite3DRenderPass = std::make_shared<RenderPass>(m_Device, RPConfig);
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -235,6 +287,8 @@ namespace TRE
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
 
+		m_ProjView3D = ubo.m_ProjView;
+
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
@@ -291,6 +345,13 @@ namespace TRE
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+
+		{
+			ParticleUBO particleUBO{};
+			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+
+			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
+		}
 	}
 
 	void SceneRenderer::BeginFrame()
@@ -306,6 +367,8 @@ namespace TRE
 		ubo.m_LightPosition = cameraTransform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
+		m_ProjView3D = ubo.m_ProjView;
+
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = baseCamera.m_ProjectionMatrix;
 		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
@@ -325,8 +388,8 @@ namespace TRE
 			if (recalculateShadowFrustum)
 			{
 				//RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.1f));
-				m_ShadowRenderPoint.y = lightTransform.m_Position.y;
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.15f));
+				//m_ShadowRenderPoint.y = lightTransform.m_Position.y;
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
@@ -367,6 +430,13 @@ namespace TRE
 		
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+
+		{
+			ParticleUBO particleUBO{};
+			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+
+			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
+		}
 	}
 
 	void SceneRenderer::EndFrame()
@@ -388,8 +458,9 @@ namespace TRE
 			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
 		}
 
-		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
+		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		uint32_t Index = SC->GetCurrentBufferIndex();
+		uint32_t ImageIndex = SC->GetCurrentImageIndex();
 
 		std::multimap<ResourceHandle, Entity> materialSort;
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
@@ -432,21 +503,23 @@ namespace TRE
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.width = static_cast<float>(SC->GetWidth());
+		viewport.height = static_cast<float>(SC->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		scissor.extent = SC->GetSwapChainExtent();
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
+		SkyBoxPass(Index);
 		GeometryPass(Index, materialSort);
 		GeometryAnimationPass(Index, materialSort);
+		Sprite3DPass(Index);
 		DebugDrawPass(Index);
-		SkyBoxPass(Index);
+		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
@@ -459,6 +532,61 @@ namespace TRE
 
 		m_CommandBuffer->End();
 		m_CommandBuffer->Submit();
+	}
+
+	void SceneRenderer::Sprite3DPass(uint32_t Index)
+	{
+		UIUBO ubo{};
+		ubo.m_ProjView2DSpace = m_ProjView3D;
+		m_Sprite3DUBO->SetData(&ubo, sizeof(UIUBO));
+
+		auto AllSprites = ECSManager::Instance().GetEntities<Sprite3DComponent>();
+		std::sort(AllSprites.begin(), AllSprites.end(), [](const Entity& e1, const Entity& e2)
+			{
+				auto Comp1 = e1->GetComponent<Transform>();
+				auto Comp2 = e2->GetComponent<Transform>();
+
+				return Comp1.m_Position.z < Comp2.m_Position.z;
+			});
+
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		uint32_t ImageIndex = SC->GetCurrentImageIndex();
+		m_Sprite3DRenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
+		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
+		for (auto Entity : AllSprites)
+		{
+			auto Comp = Entity->GetComponent<Sprite3DComponent>();
+			if (!Comp.m_IsVisible || !Comp.m_Texture || !Comp.m_Material) continue;
+
+			UI_PushConstant pc{};
+			auto TransformComp = Entity->GetComponent<Transform>();
+			pc.L2W = TransformComp.m_WorldXform;
+			pc.Color = Comp.m_Color;
+
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(UI_PushConstant), &pc);
+
+			Comp.m_Material->SetTexture("UI_Texture", Comp.m_Texture);
+
+			if (m_IsEditorScene)
+			{
+				Comp.m_Material->UpdateForEditorSceneRendering(m_Sprite3DUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Sprite3DPipeline->GetPipelineLayout(), 0, 1, &Comp.m_Material->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				Comp.m_Material->UpdateForRendering(m_Sprite3DUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Sprite3DPipeline->GetPipelineLayout(), 0, 1, &Comp.m_Material->GetDescriptor(Index), 0, NULL);
+			}
+
+			VkDeviceSize offsets[] = { 0 };
+			VkBuffer VB = VK_NULL_HANDLE;
+			VB = m_Sprite3DVertexBuffer->GetBuffer();
+
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		}
 	}
 
 	void SceneRenderer::GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
@@ -575,25 +703,26 @@ namespace TRE
 
 	void SceneRenderer::SkyBoxPass(uint32_t Index)
 	{
+		auto Skybox = Renderer::GetSkybox();
 		Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
 		if (m_IsEditorScene)
 		{
-			m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
+			Skybox->UpdateMaterial(m_UBOSkybox, Index, m_ShadowDescriptInfo, m_IsEditorScene);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &Skybox->GetMaterial()->GetEditorDescriptor(Index), 0, NULL);
 		}
 		else
 		{
-			m_SkyboxMaterial->UpdateForRendering(m_UBOSkybox, Index, m_ShadowDescriptInfo);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
+			Skybox->UpdateMaterial(m_UBOSkybox, Index, m_ShadowDescriptInfo, m_IsEditorScene);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &Skybox->GetMaterial()->GetDescriptor(Index), 0, NULL);
 		}
 
-		VkBuffer vertexBuffers[] = { m_SkyboxVertexBuffer->GetBuffer() };
+		VkBuffer vertexBuffers[] = { Skybox->GetVertexBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, vertexBuffers, offsets);
 
-		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), Skybox->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), Skybox->GetIndexCount(), 1, 0, 0, 0);
 	}
 
 	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
@@ -834,72 +963,27 @@ namespace TRE
 				m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
 			}
 
+			for (const auto& particles : ECSManager::Instance().GetEntities<ParticleComponent>())
+			{
+				const Transform& tr = particles->GetComponent<Transform>();
+				const ParticleComponent& particleComp = particles->GetComponent<ParticleComponent>();
+
+				if(particleComp.m_Show == false)
+					continue;
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				model = glm::translate(model, tr.m_Position);
+				model = glm::scale(model, glm::vec3(particleComp.m_SpawnRadius, particleComp.m_SpawnRadius, particleComp.m_SpawnRadius));
+				pc.m_Model = model;
+
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+				m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			}
 		}
-	}
-
-	void SceneRenderer::SkyBoxPassInit()
-	{
-		auto Skybox1 = Resource::GetGUIDFromHex("86e229134d7c2f4e");
-		auto Skybox2 = Resource::GetGUIDFromHex("584d1fc06a88a4a6");
-		auto Skybox3 = Resource::GetGUIDFromHex("b0551365b3b9c5c2");
-		auto Skybox4 = Resource::GetGUIDFromHex("8ffa171d290d63db");
-		auto Skybox5 = Resource::GetGUIDFromHex("c3ed8c144c6f7bb4");
-		auto Skybox6 = Resource::GetGUIDFromHex("855ecfb3bc347f5d");
-		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
-		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
-		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);
-		auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox4);
-		auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox5);
-		auto Texture6 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox6);
-
-		CubeMapConfig CubeConfig{};
-		CubeConfig.Filter = VK_FILTER_NEAREST;
-		CubeConfig.Format = Texture1->GetFormat();
-		CubeConfig.Height = Texture1->GetHeight();
-		CubeConfig.Width = Texture1->GetWidth();
-		CubeConfig.SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		CubeConfig.Textures = { Texture4, Texture2, Texture6, Texture5, Texture1, Texture3 };
-
-		m_SkyboxTexture = std::make_shared<VulkanTexture>(CubeConfig);
-		
-		//Backface culling
-		std::vector<glm::vec3> vertices
-		{
-				glm::vec3(-0.5f, -0.5f, -0.5f), // Vertex 0
-				glm::vec3(0.5f, -0.5f, -0.5f), // Vertex 1
-				glm::vec3(0.5f, 0.5f, -0.5f), // Vertex 2
-				glm::vec3(-0.5f, 0.5f, -0.5f), // Vertex 3
-				glm::vec3(-0.5f, -0.5f, 0.5f), // Vertex 4
-				glm::vec3(0.5f, -0.5f, 0.5f), // Vertex 5
-				glm::vec3(0.5f, 0.5f, 0.5f), // Vertex 6
-				glm::vec3(-0.5f, 0.5f, 0.5f) // Vertex 7
-		};
-		std::vector<uint32_t> indices
-		{
-			0, 1, 2, // Triangle 1 (front face)
-			2, 3, 0, // Triangle 2 (front face)
-			1, 5, 6, // Triangle 3 (right face)
-			6, 2, 1, // Triangle 4 (right face)
-			7, 6, 5, // Triangle 5 (back face)
-			5, 4, 7, // Triangle 6 (back face)
-			4, 0, 3, // Triangle 7 (left face)
-			3, 7, 4, // Triangle 8 (left face)
-			4, 5, 1, // Triangle 9 (bottom face)
-			1, 0, 4, // Triangle 10 (bottom face)
-			3, 2, 6, // Triangle 11 (top face)
-			6, 7, 3  // Triangle 12 (top face)
-		};
-
-		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(vertices.data()),
-			UINT32_T_CAST(vertices.size() * sizeof(vertices[0])));
-
-		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
-			UINT32_T_CAST(indices.size() * sizeof(uint32_t)),
-			UINT32_T_CAST(indices.size()));
-
-		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
-		m_SkyboxMaterial->Invalidate();
-		m_SkyboxMaterial->SetTexture("SamplerCubeMap", m_SkyboxTexture);
 	}
 
 	void SceneRenderer::ShadowPassInit()

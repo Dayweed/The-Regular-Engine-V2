@@ -310,8 +310,11 @@ namespace TRE
 		bool GetIsActive(const Entity& entity) const;
 
 		void ChangeMaterial(const Entity& entity) const;
-		
+
 		physx::PxConvexMesh* CreateCylinderMesh(const float radius = 0.5f, const float height = 1.0f) const;
+
+		void SetPauseState(bool state);
+		bool GetPauseState();
 	private:
 
 		void ResizeAllColliders();
@@ -342,5 +345,6 @@ namespace TRE
 		physx::PxMaterial*              m_FrictionlessMaterial = nullptr;
 
 		bool m_DrawDebugLines = false;
+		bool m_PauseState = false;
 	};
 }

@@ -1,0 +1,132 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "5575559471271865232",
+         "m_Overrides": {},
+         "m_PrefabGUID": "5575559471271865232",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "15844783175102802930",
+         "m_Index": 212,
+         "m_Name": "CourseComplete",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            -20.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            2.5
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_SlapOn"
+         ],
+         "m_StoredClass": "TRE.VFX_SlapOn"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 125,
+         "RenderLayer": 0,
+         "Texture": "3bc53b5dc777ce59",
+         "Width": 780,
+         "m_IsVisible": false
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

@@ -17,6 +17,8 @@ namespace TRE
 		private string deactivatedMaterial = "HITW_Center.material";
 		private string activatedMaterial = "HoleCheck_Green.material";
 
+		private ulong HoleCheckSFX;
+
 		public HoleCheckDisplay()
 		{
 			triggersComp = new List<HoleCheckTrigger>();
@@ -50,6 +52,8 @@ namespace TRE
 				trigger.GetComponent<HoleCheckTrigger>().triggerDisplay = this;
 				triggersComp.Add(trigger.GetComponent<HoleCheckTrigger>());
 			}
+
+			HoleCheckSFX = ECSManager.FindIDFromName("SFX_HoleCheck");
 		}
 
 		public void Update()
@@ -72,9 +76,9 @@ namespace TRE
 			Debug.Log("I HAVE BEEN TRIGGERED!");
 			isCompleted = true;
 
-			if (ECSManager.IsValidEntity(1325263638198634131))
+			if (ECSManager.IsValidEntity(HoleCheckSFX))
 			{
-				AudioSystem.Play(1325263638198634131);
+				AudioSystem.Play(HoleCheckSFX);
 			}
 
 			GetComponent<MeshRenderer>().Material = activatedMaterial;

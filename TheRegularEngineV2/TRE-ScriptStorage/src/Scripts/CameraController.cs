@@ -19,11 +19,15 @@ namespace TRE
 
 		private float distance = 20;
 
+		public vec3 staticPosition;
+
 		public vec3 expectedPosition;
 		public vec3 expectedRotation;
 		public float expectedDistance;
 
-		private float lerpTime = 0.01f;
+		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
+
+		private float lerpSpeed = 0.001f;
 
 		public void Start()
 		{
@@ -39,15 +43,30 @@ namespace TRE
 
 		public void Update()
 		{
-			CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.0005f);
-			distance = MathF.Lerp(distance, expectedDistance, lerpTime);
-
 			vec3 pos = Player1Transform.Position + Player2Transform.Position;
 			pos /= 2;
 
+			//make it fixed y so if both players jump, the camera doesnt keep bobbing up and down
 			pos.y = (Math.Max(Player1Transform.Position.y, Player2Transform.Position.y) + pos.y) / 2;
+			distance = MathF.Lerp(distance, expectedDistance, lerpSpeed);
 
-			CameraSystem.SetMainCameraLookAt(pos, distance);
+			if (lookOnlyBool)
+			{
+				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
+				//CameraSystem.SetMainCameraLookAt(pos);
+				CameraSystem.SetMainCameraFollow(staticPosition, distance);
+
+				Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
+				Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
+			}
+			else
+			{
+				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
+				CameraSystem.SetMainCameraFollow(pos, distance);
+
+                Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
+                Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
+			}
 		}
 	}
 }

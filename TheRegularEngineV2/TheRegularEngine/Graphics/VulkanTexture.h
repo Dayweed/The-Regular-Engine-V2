@@ -40,6 +40,7 @@ namespace TRE
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
 
 		static const ResourceHandle& GetDefaultTextureID();
+		static const std::shared_ptr<VulkanTexture> GetDefaultTexture();
 	private:
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);

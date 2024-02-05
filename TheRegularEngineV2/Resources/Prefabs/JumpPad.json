@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "9213833045821806306",
+         "m_GUID": "14942977486078560577",
          "m_Index": 0,
          "m_Name": "JumpPad",
          "m_Tag": "JumpPad"
@@ -49,7 +49,7 @@
          ],
          "m_Scale": [
             1.0,
-            0.25,
+            1.0,
             1.0
          ]
       }
@@ -58,9 +58,9 @@
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "77a56b95b74ba2a8",
+         "ASSET_GEOM_m_RenderObject": "e6d3d6913b48d35c",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "7ef9ba03dea6f24d",
          "m_IsVisible": true
       }
    ],
@@ -114,6 +114,9 @@
          ],
          "m_StoredClass": "TRE.JumpPad"
       }
+   ],
+   [
+      0
    ],
    [
       0

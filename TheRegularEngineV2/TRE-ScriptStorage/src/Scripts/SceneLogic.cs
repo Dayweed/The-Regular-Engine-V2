@@ -25,6 +25,11 @@ namespace TRE
 
 		VFX_Emerge StarEmerge;
 
+		Entity StarParticle;
+
+		private ulong endsceneBGM;
+		private ulong mainBGM;
+
 		public void Start()
 		{
 			currentTime = 0.0f;
@@ -35,8 +40,6 @@ namespace TRE
 			Debug.Log("Name " + currentSceneName);
 
 			PersistentSystem.SetValue("PrevScene", currentSceneName);
-
-			PersistentSystem.SetValue("StarsObtained", "0");
 
 			if (currentSceneName == "Tutorial")
 			{
@@ -50,24 +53,49 @@ namespace TRE
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
 				triggerStars.Add(holeCheckDisplays);
 
-				PersistentSystem.SetValue("MaxStarsObtained", "1");
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
+
+				nextSceneName = "ResultScreen";
+			}
+			else if (currentSceneName == "Level_1")
+			{
+				// Add for course complete triggers
+				// triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
+				// triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
+
+				// Add for optional stars triggers
+				List<HoleCheckDisplay> holeCheckDisplays = new List<HoleCheckDisplay>
+				{
+					ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>(),
+					ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>()
+				};
+				triggerStars.Add(holeCheckDisplays);
+
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
 
 				nextSceneName = "ResultScreen";
 			}
 			courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
 
 			StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
+
+			//Star VFX
+			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
+			StarParticle.GetComponent<Particle>().IsActive = false;
+
+			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
+			mainBGM = ECSManager.FindIDFromName("BGM");
 		}
 
 		public void Update()
 		{
 			#region CHEATS
-			if (InputSystem.GetKeyPress(InputKeys.D1))
+			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 			{
 				forceGoToNextScene = true;
 			}
 			#endregion
-
+			
 			// Check if any of the list 
 			for (int i = triggerStars.Count - 1; i >= 0; --i)
 			{
@@ -82,11 +110,20 @@ namespace TRE
 				}
 				if (isCompleted)
 				{
-					IncrementStars();
+					IncrementStars(currentSceneName);
 					triggerStars.RemoveAt(i);
 					if (StarEmerge != null)
 					{
 						StarEmerge.Emerge();
+
+						if (currentSceneName == "Tutorial")
+						{
+							StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
+							StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
+							StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
+
+							StarParticle.GetComponent<Particle>().IsActive = true;
+						}
 					}
 				}
 			}
@@ -127,28 +164,36 @@ namespace TRE
 					currentTime += Time.deltaTime;
 				}
 
-				//temp only!! not a very smooth transition atm
-				if (ECSManager.IsValidEntity(12557813022109059017))
+				
+				if (ECSManager.IsValidEntity(endsceneBGM))
 				{
-					AudioSystem.Play(12557813022109059017);
-					AudioSystem.Stop(677401345089954524);
+					AudioSystem.Play(endsceneBGM);
+					AudioSystem.Stop(mainBGM);
 				}
 				else
 				{
-					AudioSystem.Stop(12557813022109059017);
+					AudioSystem.Stop(endsceneBGM);
 				}
 			}
 		}
 
-		public void IncrementStars()
+		public void IncrementStars(String mapName)
 		{
 			int numStars = 0;
 
-			if (Int32.TryParse(PersistentSystem.GetValue("StarsObtained"), out numStars))
+			if (Int32.TryParse(PersistentSystem.GetValue("TotalStarsObtained"), out numStars))
 			{
 				++numStars;
-				PersistentSystem.SetValue("StarsObtained", numStars.ToString());
-				Debug.Log("Stars " + PersistentSystem.GetValue("StarsObtained"));
+				PersistentSystem.SetValue("TotalStarsObtained", numStars.ToString());
+				Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
+			}
+
+			int mapStars = 0;
+			if (Int32.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out mapStars))
+			{
+				++mapStars;
+				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
+				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
 			}
 		}
 	}

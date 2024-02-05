@@ -205,6 +205,8 @@ namespace TRE
 	{
 		Audio& audio = go->GetComponent<Audio>();
 
+		//std::cout << "Playing: " << audio.m_FileName << std::endl;
+
 		if (audio.m_isPlaying || !shouldPlay)
 			return;
 

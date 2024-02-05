@@ -19,6 +19,7 @@ namespace TRE
 	{
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
+		public PauseMenu MyPauseMenu;
 
 		//Check if player is boosted jump
 		public bool isBoostedJump = false;
@@ -36,8 +37,8 @@ namespace TRE
 		private vec3 finalVelocity = vec3.Zero;
 		//maxJumpHeight
 		private float maxJumpHeight = 70f;
-		//Check if player is walking
-		private bool isWalking = false;
+        //Check if player is walking
+        public bool isWalking = false;
 		private bool walkingSFXPlayed = false;
 
 		private float lerpSpeed = 5f;
@@ -63,8 +64,8 @@ namespace TRE
 		public float defaultRadius = 2f;
 		public float defaultHeight = 1f;
 
-		public float blueberrysuperRadius = 4.8f;
-		public float blueberrysuperHeight = 4.8f;
+		public float blueberrysuperRadius = 2.4f;
+		public float blueberrysuperHeight = 3.6f;
 
 		public float strawberrysuperRadius = 2.4f;
 		public float strawberrysuperHeight = 1.2f;
@@ -79,6 +80,7 @@ namespace TRE
 		public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
 		public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 
+		public int turnDirection = 0;
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
@@ -89,6 +91,9 @@ namespace TRE
 
 		// Is Dead
 		public bool isDead = false;
+
+		// Controllable
+		public bool isControllable = true;
 
 		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
 		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
@@ -106,6 +111,9 @@ namespace TRE
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
 		private ulong fallingHatSFX;
+		private ulong fallSFX;
+		private ulong cheeringSFX;
+		private ulong hurtSFX;
 
 		//Transfrom Component
 		private Transform holeyTransform;
@@ -115,6 +123,7 @@ namespace TRE
 
 		public void Start()
 		{
+			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 			MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
@@ -129,7 +138,7 @@ namespace TRE
 
 			InitialPosition = holeyTransform.Position;
 			OutofMapPos = holeyTransform.Position;
-			OutofMapPos.y = holeyTransform.Position.y - 50.0f;
+			OutofMapPos.y = holeyTransform.Position.y - 200.0f;
 
 			walkingSFX = ECSManager.FindIDFromName("SFX_HoleyFootsteps");
 			jumpSFX = ECSManager.FindIDFromName("SFX_HoleyJump");
@@ -137,6 +146,9 @@ namespace TRE
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
+			fallSFX = ECSManager.FindIDFromName("SFX_HoleyFall");
+			cheeringSFX = ECSManager.FindIDFromName("SFX_Holey_BoostedJump");
+			hurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt1");
 
 			RespawnPoint = holeyTransform.Position;
 			RespawnPoint.y += 10.0f;
@@ -174,6 +186,7 @@ namespace TRE
 			{
 				isDead = true;
 				DroppingOutOfMap = true;
+
 				//Debug.Log("Out of map");
 			}
 			else
@@ -207,124 +220,137 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				if (InputSystem.GetKeyHold(InputKeys.I))
+				if (!MyPauseMenu.isPaused && isControllable)
 				{
-					dirVec += CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 0;
-				}
 
-				if (InputSystem.GetKeyHold(InputKeys.K))
-				{
-					dirVec -= CS.GetMainCameraForwardVec();
-					lastPlayerDirection = 180;
-				}
-
-				if (InputSystem.GetKeyHold(InputKeys.J))
-				{
-					dirVec += CS.GetMainCameraRightVec();
-					lastPlayerDirection = 90;
-				}
-
-				if (InputSystem.GetKeyHold(InputKeys.L))
-				{
-					dirVec -= CS.GetMainCameraRightVec();
-					lastPlayerDirection = 270;
-				}
-
-				if (InputSystem.GetKeyHold(InputKeys.I))
-				{
-					if (InputSystem.GetKeyHold(InputKeys.L))
+					if (InputSystem.GetKeyHold(InputKeys.I))
 					{
-						lastPlayerDirection = 315;
+						dirVec += CS.GetMainCameraForwardVec();
+						lastPlayerDirection = 0;
+					}
+
+					if (InputSystem.GetKeyHold(InputKeys.K))
+					{
+						dirVec -= CS.GetMainCameraForwardVec();
+						lastPlayerDirection = 180;
 					}
 
 					if (InputSystem.GetKeyHold(InputKeys.J))
 					{
-						lastPlayerDirection = 45;
+						dirVec += CS.GetMainCameraRightVec();
+						lastPlayerDirection = 90;
 					}
-				}
 
-				if (InputSystem.GetKeyHold(InputKeys.K))
-				{
 					if (InputSystem.GetKeyHold(InputKeys.L))
 					{
-						lastPlayerDirection = 225;
+						dirVec -= CS.GetMainCameraRightVec();
+						lastPlayerDirection = 270;
 					}
 
-					if (InputSystem.GetKeyHold(InputKeys.J))
+					if (InputSystem.GetKeyHold(InputKeys.I))
 					{
-						lastPlayerDirection = 135;
+						if (InputSystem.GetKeyHold(InputKeys.L))
+						{
+							lastPlayerDirection = 315;
+						}
+
+						if (InputSystem.GetKeyHold(InputKeys.J))
+						{
+							lastPlayerDirection = 45;
+						}
 					}
-				}
 
-				if (jumpCancelled && isJumping && currVelocity.y > 0)
-				{
-					currVelocity.y = 0;
-				}
-
-				if (isGrounded)
-				{
-					coyoteTimeCounter = coyoteTime;
-				}
-				else
-				{
-					coyoteTimeCounter -= Time.deltaTime;
-				}
-
-				if (InputSystem.GetKeyPress(InputKeys.Enter))
-				{
-					jumpBufferCounter = jumpBufferTime;
-				}
-				else
-				{
-					jumpBufferCounter -= Time.deltaTime;
-				}
-
-				if (isJumping)
-				{
-					if (InputSystem.GetKeyRelease(InputKeys.Enter))
+					if (InputSystem.GetKeyHold(InputKeys.K))
 					{
-						//Debug.Log("cancelled jump");
-						jumpCancelled = true;
-						coyoteTimeCounter = 0f;
+						if (InputSystem.GetKeyHold(InputKeys.L))
+						{
+							lastPlayerDirection = 225;
+						}
+
+						if (InputSystem.GetKeyHold(InputKeys.J))
+						{
+							lastPlayerDirection = 135;
+						}
 					}
-					if (currentJumpTime > maxJumpButtomTime)
+
+					if (jumpCancelled && isJumping && currVelocity.y > 0)
 					{
-						//Debug.Log("maxed out jump");
-						isJumping = false;
+						currVelocity.y = 0;
 					}
-					currentJumpTime += Time.deltaTime;
+
+					if (isGrounded)
+					{
+						coyoteTimeCounter = coyoteTime;
+					}
+					else
+					{
+						coyoteTimeCounter -= Time.deltaTime;
+					}
+
+					if (InputSystem.GetKeyPress(InputKeys.Enter))
+					{
+						jumpBufferCounter = jumpBufferTime;
+					}
+					else
+					{
+						jumpBufferCounter -= Time.deltaTime;
+					}
+
+					if (isJumping)
+					{
+						if (InputSystem.GetKeyRelease(InputKeys.Enter))
+						{
+							//Debug.Log("cancelled jump");
+							jumpCancelled = true;
+							coyoteTimeCounter = 0f;
+						}
+						if (currentJumpTime > maxJumpButtomTime)
+						{
+							//Debug.Log("maxed out jump");
+							isJumping = false;
+						}
+						currentJumpTime += Time.deltaTime;
+					}
+					else
+					{
+						if (InputSystem.GetKeyRelease(InputKeys.Enter))
+						{
+							isJumping = false;
+						}
+					}
+
+					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
+					{
+						isWalking = false;
+
+						vec3 maxHeight = new vec3(0, 70, 0);
+						// Boosted Jump
+						if (isBoostedJump)
+						{
+							maxHeight = new vec3(0, 150, 0);
+						}
+
+						Jump(maxHeight);
+
+						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
+						{
+							if (isBoostedJump)
+							{
+								AudioSystem.Play(cheeringSFX);
+							}
+							else
+							{
+								AudioSystem.Play(jumpSFX);
+							}
+						}
+
+						isJumping = true;
+						jumpCancelled = false;
+						currentJumpTime = 0;
+						jumpBufferCounter = 0;
+					}
 				}
-				else
-				{
-					if (InputSystem.GetKeyRelease(InputKeys.Enter))
-					{
-						isJumping = false;
-					}
-				}
 
-				if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
-				{
-					isWalking = false;
-
-					vec3 maxHeight = new vec3(0, 70, 0);
-					// Boosted Jump
-					if (isBoostedJump)
-					{
-						maxHeight = new vec3(0, 150, 0);
-					}
-
-					Jump(maxHeight);
-					if (ECSManager.IsValidEntity(jumpSFX))
-					{
-						AudioSystem.Play(jumpSFX);
-					}
-
-					isJumping = true;
-					jumpCancelled = false;
-					currentJumpTime = 0;
-					jumpBufferCounter = 0;
-				}
 			}
 
 			#endregion
@@ -358,6 +384,13 @@ namespace TRE
 				}
 			}
 
+			if (DroppingOutOfMap)
+			{
+				if (ECSManager.IsValidEntity(fallSFX))
+				{
+					AudioSystem.Play(fallSFX);
+				}
+			}
 
 			#endregion
 
@@ -486,12 +519,13 @@ namespace TRE
 				if (MS.IsCurrentMesh(this.ID, "Holey_Blueberry.fbx") == false)
 				{
 					GetComponent<MeshRenderer>().Mesh = "Holey_Blueberry.fbx";
+					GetComponent<MeshRenderer>().Material = "BlueCharacter_Animation.material";
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
-				currOffset = MathF.Lerp(currOffset, 8.5f, lerpSpeed * Time.deltaTime);
+				currOffset = MathF.Lerp(currOffset, 5.8f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
@@ -502,7 +536,12 @@ namespace TRE
 			{
 				//Cactus Model
 				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
+				{
 					GetComponent<MeshRenderer>().Mesh = "Holey_Strawberry.fbx";
+					GetComponent<MeshRenderer>().Material = "Holey_Strawberry.material";
+					if (HasComponent<Animation>())
+						RemoveComponent<Animation>();
+				}
 
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
@@ -519,7 +558,7 @@ namespace TRE
 			dirVec.y = 0;
 			dirVec = dirVec.NormalizedSafe;
 
-			playerDirection = lastPlayerDirection + (int)CS.GetMainCameraRotation().y;
+			playerDirection = lastPlayerDirection + turnDirection;
 			playerDirection = (playerDirection % 360);
 
 
@@ -537,7 +576,7 @@ namespace TRE
 
 			holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
-			isGrounded = false;
+			//isGrounded = false;
 
 			if (RespawnPlayer)
 			{
@@ -582,8 +621,13 @@ namespace TRE
 				}
 				else
 				{
-					//rollingobstaclesfx
+
 				}
+				//else if (other.ID == ECSManager.FindIDFromName("RollingObjectRender"))
+				//{
+				//	if (ECSManager.IsValidEntity(hurtSFX))
+				//		AudioSystem.Play(hurtSFX);
+				//}
 
 			}
 			// Check is activated jumppad

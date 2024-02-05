@@ -21,8 +21,12 @@ struct resource_list
 
 struct FontType
 {
-    std::string m_Type;
-    std::string m_Value;
+    std::string m_FontType;
+};
+
+struct MultiLineString
+{
+    std::string Text;
 };
 
 struct audio_file_dropdown
@@ -182,6 +186,7 @@ namespace property
             , CollisionLayer
             , PhysicsMaterial
             , FontType
+            , MultiLineString
         >;
     
         //--------------------------------------------------------------------------------------------

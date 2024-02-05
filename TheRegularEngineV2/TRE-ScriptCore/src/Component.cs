@@ -128,6 +128,11 @@ namespace TRE
 			Entity child = new Entity(childID, childName);
 			return child;
 		}
+
+		public int GetTotalChildren()
+		{
+			return ParentingSystem.Engine_GetTotalChildren(entity.ID);
+        }
 	}
 
 	public class MeshRenderer : Component
@@ -273,6 +278,17 @@ namespace TRE
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
 		}
+		public bool IsTrigger
+		{
+            get
+            {
+                return PhysicsSystem.Engine_GetBoxTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetBoxTrigger(entity.ID, value);
+            }
+        }
 	}
 
 	public class SphereCollider : Component
@@ -313,8 +329,19 @@ namespace TRE
 			{
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
-		}
-	}
+        }
+        public bool IsTrigger
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetSphereTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetSphereTrigger(entity.ID, value);
+            }
+        }
+    }
 
 	public class CapsuleCollider : Component
 	{
@@ -365,8 +392,19 @@ namespace TRE
 			{
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
-		}
-	}
+        }
+        public bool IsTrigger
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetCapsuleTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetCapsuleTrigger(entity.ID, value);
+            }
+        }
+    }
 
 	public class CylinderCollider : Component
 	{
@@ -417,8 +455,19 @@ namespace TRE
 			{
 				PhysicsSystem.Engine_SetIsActive(entity.ID, value);
 			}
-		}
-	}
+        }
+        public bool IsTrigger
+        {
+            get
+            {
+                return PhysicsSystem.Engine_GetCylinderTrigger(entity.ID);
+            }
+            set
+            {
+                PhysicsSystem.Engine_SetCylinderTrigger(entity.ID, value);
+            }
+        }
+    }
 
 	public class Audio : Component
 	{
@@ -569,4 +618,53 @@ namespace TRE
 			DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
 		}
 	}
+
+	public class Text : Component
+	{
+		public Text()
+		{
+
+		}
+
+		public bool IsVisible
+		{
+            get
+            {
+                return TextSystem.Engine_GetTextVisible(entity.ID);
+            }
+            set
+            {
+                TextSystem.Engine_SetTextVisible(entity.ID, value);
+            }
+        }
+
+        public string TextMessage
+        {
+            get
+            {
+                return TextSystem.Engine_GetTextMessage(entity.ID);
+            }
+            set
+            {
+                TextSystem.Engine_SetTextMessage(entity.ID, value);
+            }
+		}
+	}
+
+	public class Particle : Component
+	{
+		public bool IsActive
+		{
+			get
+			{
+				return ParticleSystem.GetActive(entity.ID);
+			}
+			set
+			{
+				ParticleSystem.SetActive(entity.ID, value);
+			}
+		}
+
+	}
+
 }
