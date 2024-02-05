@@ -111,10 +111,10 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
-					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(925, 100, -170);
+					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -170);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(925, 100, -150);
+					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -150);
 				}
 			}
 
@@ -123,20 +123,22 @@ namespace TRE
 				Entity moley = ECSManager.FindEntityByName("Moley");
 
 				Entity blueberry = ECSManager.Instantiate(new Entity(7670209894207584463));
-				blueberry.GetComponent<Transform>().Position = moley.GetComponent<Transform>().Position;
+				GlmSharp.vec3 newPos = new GlmSharp.vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 30f, moley.GetComponent<Transform>().Position.z);
+				blueberry.GetComponent<Transform>().Position = newPos;
 
 				Entity strawberry = ECSManager.Instantiate(new Entity(13004780274330328106));
-				strawberry.GetComponent<Transform>().Position = moley.GetComponent<Transform>().Position;
+				strawberry.GetComponent<Transform>().Position = newPos;
 			}
 
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D4))
 			{
 				Entity holey = ECSManager.FindEntityByName("Holey");
 				Entity blueberry = ECSManager.Instantiate(new Entity(7670209894207584463));
-				blueberry.GetComponent<Transform>().Position = holey.GetComponent<Transform>().Position;
+				GlmSharp.vec3 newPos = new GlmSharp.vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 30f, holey.GetComponent<Transform>().Position.z);
+				blueberry.GetComponent<Transform>().Position = newPos;
 
 				Entity strawberry = ECSManager.Instantiate(new Entity(13004780274330328106));
-				strawberry.GetComponent<Transform>().Position = holey.GetComponent<Transform>().Position;
+				strawberry.GetComponent<Transform>().Position = newPos;
 			}
 			#endregion
 
