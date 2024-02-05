@@ -39,7 +39,7 @@ namespace TRE
 			}
 		}
 
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
 		{
 			//Update world data
 			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
