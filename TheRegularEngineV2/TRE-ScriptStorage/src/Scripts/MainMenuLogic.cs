@@ -36,7 +36,7 @@ namespace TRE
 
 		// Timer for animation
 		float currentTimer = 0;
-		float delayJumpingHole = 0.7f;
+		float delayJumpingHole = 0.68f;
 
 		// Title to display
 		Entity TitleLevelSelect;
@@ -216,8 +216,11 @@ namespace TRE
 			{
 				currentTimer = 0;
 
-				// Force Holey and Moley to stop dropping to do stuff
-				Moley.GetComponent<Rigidbody>().useGravity = false;
+                PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+                PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+
+                // Force Holey and Moley to stop dropping to do stuff
+                Moley.GetComponent<Rigidbody>().useGravity = false;
 				Holey.GetComponent<Rigidbody>().useGravity = false;
 
 				if (selectedOption)
@@ -301,13 +304,13 @@ namespace TRE
             PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
             PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
 
-            //if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
+            if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 30, 0));
+				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 20, 0));
 			}
-			//if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
+			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 30, 0));
+				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 20, 0));
 			}
 
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = true;
