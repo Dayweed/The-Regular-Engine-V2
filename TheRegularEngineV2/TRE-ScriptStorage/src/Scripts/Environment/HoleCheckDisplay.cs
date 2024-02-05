@@ -10,7 +10,7 @@ namespace TRE
 	public class HoleCheckDisplay : Entity
 	{
 		public bool isCompleted = false;
-		public int NoOfTriggers = 2;    // Number of triggers needed
+		public int NoOfTriggers = 1;    // Number of triggers needed
 
 		public List<HoleCheckTrigger> triggersComp;
 
