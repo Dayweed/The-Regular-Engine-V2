@@ -17,111 +17,110 @@ namespace TRE
 
 	class HoleyController : Entity
 	{
-		public PowerUpUI MyPowerUpUI;
-		public PowerUpManager MyPowerManager;
-		public PauseMenu MyPauseMenu;
+        public PauseMenu MyPauseMenu;
+        public PowerUpUI MyPowerUpUI;
+        public PowerUpManager MyPowerManager;
 
-		//Check if player is boosted jump
-		public bool isBoostedJump = false;
-		//Check if player is on the ground
-		public bool isGrounded = true;
-		//direction vector
-		private vec3 dirVec;
-		//Max velocity
-		private float maxVelocity = 30f;
-		//Max Air Velocity vector
-		//private float maxAirVelocity = 25f;
-		//Acceleration
-		private float acceleration = 700f;
-		//final velocity
-		private vec3 finalVelocity = vec3.Zero;
-		//maxJumpHeight
-		private float maxJumpHeight = 70f;
+        //Check if player is boosted jump
+        public bool isBoostedJump = false;
+        //Check if player is on the ground
+        public bool isGrounded = true;
+        //direction vector
+        private vec3 dirVec;
+        //Max velocity
+        private float maxVelocity = 30f;
+        //Acceleration
+        private float acceleration = 700f;
+        //final velocity
+        private vec3 finalVelocity = vec3.Zero;
         //Check if player is walking
         public bool isWalking = false;
-		private bool walkingSFXPlayed = false;
+        private bool walkingSFXPlayed = false;
 
-		private float lerpSpeed = 5f;
+        //check if player used super power
+        public bool mainBlueberry = false;  // Scaling
+        public bool mainStrawberry = false; // Shape
+        public bool isScaled = false;
 
-		//Jump Variables
-		//Check if player is jumping at all
-		public bool isJumping = false;
-		//how long you hold the jump button to reach max jump height
-		public float maxJumpButtomTime = 0.5f;
-		public float currentJumpTime;
-		public bool jumpCancelled = false;
-		//how long after the player walks off the ground can he still jump
-		private float coyoteTime = 0.2f;
-		public float coyoteTimeCounter;
-		//if player press space within this buffer time, they will still be able to jump even if they havent landed
-		private float jumpBufferTime = 0.25f;
-		public float jumpBufferCounter;
+        // Controllable
+        public bool isControllable = true;
 
-		//Capsule Collider
-		public bool mainBlueberry = false;  // Scaling
-		public bool mainStrawberry = false; // Shape
-		public bool isScaled = false;
-		public float defaultRadius = 2f;
-		public float defaultHeight = 1f;
+        #region Collider Variables
+        public float defaultRadius = 2f;
+        public float blueberrysuperRadius = 2.4f;
+        public float strawberrysuperRadius = 2.4f;
+        public float currentRadius = 2f;
+        public float defaultHeight = 1f;
+        public float blueberrysuperHeight = 3.6f;
+        public float strawberrysuperHeight = 1.2f;
+        public float currentHeight = 1f;
+        public float currOffset = 3f;
+        #endregion
+        #region Player Transform Region
+        private Transform holeyTransform;
+        public vec3 defaultXform = new vec3(75f, 75f, 75f);
+        public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
+        public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
+        public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
+        #endregion
 
-		public float blueberrysuperRadius = 2.4f;
-		public float blueberrysuperHeight = 3.6f;
+        public int turnDirection = 0;
+        private int playerDirection = 0;
+        private int lastPlayerDirection = 0;
 
-		public float strawberrysuperRadius = 2.4f;
-		public float strawberrysuperHeight = 1.2f;
+        private float lerpSpeed = 5f;
 
-		public float currentRadius = 2f;
-		public float currentHeight = 1f;
-		public float currOffset = 3f;
+        #region Jump Variables
+        private float maxJumpHeight = 70f;
+        //Check if player is jumping at all
+        public bool isJumping = false;
+        //how long you hold the jump button to reach max jump height
+        public float maxJumpButtomTime = 0.5f;
+        public float currentJumpTime;
+        public bool jumpCancelled = false;
+        //how long after the player walks off the ground can he still jump
+        private float coyoteTime = 0.2f;
+        public float coyoteTimeCounter;
+        //if player press space within this buffer time, they will still be able to jump even if they havent landed
+        private float jumpBufferTime = 0.25f;
+        public float jumpBufferCounter;
+        private float jumpHeight = 25f;
+        #endregion
 
-		//Transform Scale
-		public vec3 defaultXform = new vec3(75f, 75f, 75f);
-		public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
-		public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
-		public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
+        #region Audio Variables
+        private ulong walkingSFX;
+        private ulong jumpSFX;
+        private ulong changesizeSFX;
+        private ulong normalsizeSFX;
+        private ulong fallingMaracaSFX;
+        private ulong fallingHatSFX;
+        private ulong fallSFX;
+        private ulong cheeringSFX;
+        private ulong hurtSFX;
+        #endregion
 
-		public int turnDirection = 0;
-		private int playerDirection = 0;
-		private int lastPlayerDirection = 0;
+        #region Respawn Variables
+        private vec3 RespawnPoint = new vec3(0, 0, 0);
+        private bool RespawnPlayer = false;
+        private float RespawnTimer = 1.5f;
+        public bool isDead = false;
+        private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
+        private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
+        private bool DroppingOutOfMap = false;
+        #endregion
 
-		//Respawn variables
-		private vec3 RespawnPoint = new vec3(0, 0, 0);
-		private bool RespawnPlayer = false;
-		private float RespawnTimer = 1.5f;
+        #region Invulnerability Variables
+        private bool Invulnerability = false;
+        private float InvulCurrent = 1.0f;
+        private float InvulPeriod = 1.0f;
+        private float InvulBlinkCurrent = 0.1f;
+        private float InvulBlinkPeriod = 0.1f;
+        #endregion
 
-		// Is Dead
-		public bool isDead = false;
+        //Moley Reference 
+        private Entity moley_ref;
 
-		// Controllable
-		public bool isControllable = true;
-
-		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
-		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
-		private bool DroppingOutOfMap = false;
-
-		private bool Invulnerability = false;
-		private float InvulCurrent = 1.0f;
-		private float InvulPeriod = 1.0f;
-		private float InvulBlinkCurrent = 0.1f;
-		private float InvulBlinkPeriod = 0.1f;
-
-		private ulong walkingSFX;
-		private ulong jumpSFX;
-		private ulong changesizeSFX;
-		private ulong normalsizeSFX;
-		private ulong fallingMaracaSFX;
-		private ulong fallingHatSFX;
-		private ulong fallSFX;
-		private ulong cheeringSFX;
-		private ulong hurtSFX;
-
-		//Transfrom Component
-		private Transform holeyTransform;
-
-		//Moley Reference 
-		private Entity moley_ref;
-
-		public void Start()
+        public void Start()
 		{
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 			MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();

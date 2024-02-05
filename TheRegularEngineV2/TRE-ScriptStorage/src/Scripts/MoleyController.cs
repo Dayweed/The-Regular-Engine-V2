@@ -10,133 +10,134 @@ using System.Diagnostics;
 
 namespace TRE
 {
-	using PS = PhysicsSystem;
 	using CS = CameraSystem;
+	using PS = PhysicsSystem;
+	using TS = TransformSystem;
 	using MS = MeshRendererSystem;
 
 	public class MoleyController : Entity
 	{
-		public PauseMenu MyPauseMenu;
-		public PowerUpUI MyPowerUpUI;
-		public PowerUpManager MyPowerManager;
+        public PauseMenu MyPauseMenu;
+        public PowerUpUI MyPowerUpUI;
+        public PowerUpManager MyPowerManager;
 
-		//Check if player is boosted jump
-		public bool isBoostedJump = false;
-		//check if player is on the ground (for now , just a plane)
-		public bool isGrounded = true;
-		//direction vector
-		private vec3 dirVec;
-		//Max Velocity vector
-		private float maxVelocity = 30f;
-		//Acceleration
-		private float acceleration = 700f;
-		//final velocity
-		private vec3 finalVelocity = vec3.Zero;
+        //Check if player is boosted jump
+        public bool isBoostedJump = false;
+        //Check if player is on the ground
+        public bool isGrounded = true;
+        //direction vector
+        private vec3 dirVec;
+        //Max Velocity vector
+        private float maxVelocity = 30f;
+        //Acceleration
+        private float acceleration = 700f;
+        //final velocity
+        private vec3 finalVelocity = vec3.Zero;
 
         //Check if player is walking
         public bool isWalking = false;
-		private bool walkingSFXPlayed = false;
+        private bool walkingSFXPlayed = false;
 
-		//check if player used super power
-		public bool mainBlueberry = false;  // Scaling
-		public bool mainStrawberry = false; // Shape
-		public bool isScaled = false;
+        //check if player used super power
+        public bool mainBlueberry = false;  // Scaling
+        public bool mainStrawberry = false; // Shape
+        public bool isScaled = false;
 
         // Controllable
         public bool isControllable = true;
 
         #region Collider Variables
         private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 2f;
-		private float strawberrysuperRadius = 2f;
-		public float currentRadius = 2f;
-		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 1f;
-		private float strawberrysuperHeight = 2f;
-		public float currentHeight = 1f;
-		public float currOffset = 3f;
-		#endregion
-		#region Player Transform Variables
-		private Transform moleyTransform;
-		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
-		private vec3 blueberryscaledXform = new vec3(40f, 40f, 40f);
-		private vec3 strawberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
-		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
-		#endregion
+        private float blueberrysuperRadius = 2f;
+        private float strawberrysuperRadius = 2f;
+        public float currentRadius = 2f;
+        private float defaultHeight = 1f;
+        private float blueberrysuperHeight = 1f;
+        private float strawberrysuperHeight = 2f;
+        public float currentHeight = 1f;
+        public float currOffset = 3f;
+        #endregion
+        #region Player Transform Variables
+        private Transform moleyTransform;
+        private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
+        private vec3 blueberryscaledXform = new vec3(40f, 40f, 40f);
+        private vec3 strawberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
+        private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
+        #endregion
 
         public int turnDirection = 0;
-		private int playerDirection = 0;
-		private int lastPlayerDirection = 0;
+        private int playerDirection = 0;
+        private int lastPlayerDirection = 0;
 
-		private float lerpSpeed = 5f;
+        private float lerpSpeed = 5f;
 
-		#region Jump Variables
-		//Check if player is jumping at all
-		public bool isJumping = false;
-		//how long you hold the jump button to reach max jump height
-		public float maxJumpButtomTime = 0.5f;
-		public float currentJumpTime;
-		public bool jumpCancelled = false;
-		//how long after the player walks off the ground can he still jump
-		private float coyoteTime = 9990.2f;
-		public float coyoteTimeCounter;
-		//if player press space within this buffer time, they will still be able to jump even if they havent landed
-		private float jumpBufferTime = 0.25f;
-		public float jumpBufferCounter;
-		private float maxJumpHeight = 70f;
-		private float jumpHeight = 25f;
-		#endregion
+        #region Jump Variables
+        private float maxJumpHeight = 70f;
+        //Check if player is jumping at all
+        public bool isJumping = false;
+        //how long you hold the jump button to reach max jump height
+        public float maxJumpButtomTime = 0.5f;
+        public float currentJumpTime;
+        public bool jumpCancelled = false;
+        //how long after the player walks off the ground can he still jump
+        private float coyoteTime = 9990.2f;
+        public float coyoteTimeCounter;
+        //if player press space within this buffer time, they will still be able to jump even if they havent landed
+        private float jumpBufferTime = 0.25f;
+        public float jumpBufferCounter;
+        private float jumpHeight = 25f;
+        #endregion
 
-		//For camera controller
-		//private Entity Key;
-		//private Entity FinalPlatform;
+        //For camera controller
+        //private Entity Key;
+        //private Entity FinalPlatform;
 
-		#region Audio Variables
-		private ulong walkingSFX;
-		//private ulong walkingSFX1;
-		//private ulong walkingSFX2;
-		//private ulong walkingSFX3;
-		//private ulong walkingSFX4;
-		//private ulong walkingSFX5;
-		//private ulong walkingSFX6;
-		private ulong jumpSFX;
-		private ulong changesizeSFX;
-		private ulong normalsizeSFX;
-		private ulong fallingMaracaSFX;
-		private ulong fallingHatSFX;
-		private ulong fallSFX;
-		private ulong cheeringSFX;
-		private ulong hurtSFX;
-		#endregion
+        #region Audio Variables
+        private ulong walkingSFX;
+        //private ulong walkingSFX1;
+        //private ulong walkingSFX2;
+        //private ulong walkingSFX3;
+        //private ulong walkingSFX4;
+        //private ulong walkingSFX5;
+        //private ulong walkingSFX6;
+        private ulong jumpSFX;
+        private ulong changesizeSFX;
+        private ulong normalsizeSFX;
+        private ulong fallingMaracaSFX;
+        private ulong fallingHatSFX;
+        private ulong fallSFX;
+        private ulong cheeringSFX;
+        private ulong hurtSFX;
+        #endregion
 
-		public float elapsedTime = 0.0f;
+        #region Respawn Variables
+        private vec3 RespawnPoint = new vec3(0, 0, 0);
+        private bool RespawnPlayer = false;
+        private float RespawnTimer = 1.5f;
+        public bool isDead = false;
+        private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
+        private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
+        private bool DroppingOutOfMap = false;
+        #endregion
 
-		#region Respawn Variables
-		private vec3 RespawnPoint = new vec3(0, 0, 0);
-		private bool RespawnPlayer = false;
-		private float RespawnTimer = 1.5f;
-		public bool isDead = false;
-		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
-		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
-		private bool DroppingOutOfMap = false;
-		#endregion
+        #region Invulnerability Variables
+        private bool Invulnerability = false;
+        private float InvulCurrent = 1.0f;
+        private float InvulPeriod = 1.0f;
+        private float InvulBlinkCurrent = 0.1f;
+        private float InvulBlinkPeriod = 0.1f;
+        #endregion
 
-		#region Invulnerability Variables
-		private bool Invulnerability = false;
-		private float InvulCurrent = 1.0f;
-		private float InvulPeriod = 1.0f;
-		private float InvulBlinkCurrent = 0.1f;
-		private float InvulBlinkPeriod = 0.1f;
-		#endregion
+        //reference to holey
+        private Entity holey_ref;
 
-		private Entity UIPopup2;
-		private bool IsActivated = false;
-		private bool HasBeenTriggeredBefore = false;
+        //these variables are enclusive to Moley
+        private Entity UIPopup2;
+        private bool IsActivated = false;
+        private bool HasBeenTriggeredBefore = false;
 
-		//reference to holey
-		private Entity holey_ref;
 
-		public void Start()
+        public void Start()
 		{
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 
@@ -152,7 +153,7 @@ namespace TRE
 			#endregion
 
 			#region player Transform and Physics variables
-			TransformSystem.SetRotation(this.ID, new vec3(0, 0, 0));
+			TS.SetRotation(this.ID, new vec3(0, 0, 0));
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
 			PS.ConstrainRotationZ(this.ID, true);
