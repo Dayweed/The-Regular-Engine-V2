@@ -574,7 +574,10 @@ namespace TRE
 		{
 			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 			{
-				t->OnTriggerEnterInvoke(other);
+				//if (other != nullptr && ECSManager::Instance().IsValidEntity(other))
+				{
+					t->OnTriggerEnterInvoke(other);
+				}
 			}
 		}
 		else
@@ -591,7 +594,10 @@ namespace TRE
 		{
 			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 			{
-				t->OnTriggerStayInvoke(other);
+				//if (other != nullptr && ECSManager::Instance().IsValidEntity(other))
+				{
+					t->OnTriggerStayInvoke(other);
+				}
 			}
 		}
 		else
@@ -608,7 +614,10 @@ namespace TRE
 		{
 			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 			{
-				t->OnTriggerExitInvoke(other);
+				//if (other != nullptr && ECSManager::Instance().IsValidEntity(other))
+				{
+					t->OnTriggerExitInvoke(other);
+				}
 			}
 		}
 		else
@@ -625,7 +634,10 @@ namespace TRE
 		{
 			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 			{
-				t->OnCollisionEnterInvoke(other);
+				//if (other != nullptr && ECSManager::Instance().IsValidEntity(other))
+				{
+					t->OnCollisionEnterInvoke(other);
+				}
 			}
 		}
 		else
@@ -642,7 +654,10 @@ namespace TRE
 		{
 			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 			{
-				t->OnCollisionStayInvoke(other);
+				//if (other != nullptr && ECSManager::Instance().IsValidEntity(other))
+				{
+					t->OnCollisionStayInvoke(other);
+				}
 			}
 		}
 		else
@@ -659,7 +674,10 @@ namespace TRE
 		{
 			for(auto t: s_ScriptEngineData->ScriptInstances[GUID])
 			{
-				t->OnCollisionExitInvoke(other);
+				//if (other != nullptr && ECSManager::Instance().IsValidEntity(other))
+				{
+					t->OnCollisionExitInvoke(other);
+				}
 			}
 		}
 		else
