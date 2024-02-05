@@ -434,15 +434,27 @@ namespace TRE
 		// Find Entity
 		for (auto IDs : CollisionsStayID)
 		{
-			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 		for (auto IDs : CollisionsEnterID)
 		{
-			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 		for (auto IDs : CollisionsExitID)
 		{
-			onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 	}
 
@@ -482,15 +494,27 @@ namespace TRE
 		// Find Entity
 		for (auto IDs : CollisionsStayID)
 		{
-			onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 		for (auto IDs : CollisionsEnterID)
 		{
-			onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 		for (auto IDs : CollisionsExitID)
 		{
-			onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 	}
 
@@ -514,7 +538,12 @@ namespace TRE
 		Collisions.reserve(CollisionsID.size());
 		for (auto IDs : CollisionsID)
 		{
-			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		// Make sure the entities still exists
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+			&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 
 		return Collisions;

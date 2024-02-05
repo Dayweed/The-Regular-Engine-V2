@@ -80,7 +80,7 @@ namespace TRE
 
 	void TransformSystem::LateUpdate()
 	{
-		for (Entity& go : ECSManager::Instance().GetEntities<Transform>(true))
+		for (Entity& go : ECSManager::Instance().GetEntities<Transform>())
 		{
 			Transform& transform = go.get()->GetComponent<Transform>();
 			if (transform.m_IsDirty)

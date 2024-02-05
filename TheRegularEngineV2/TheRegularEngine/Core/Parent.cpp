@@ -20,7 +20,7 @@ namespace TRE
 
 	void ParentingSystem::LateUpdate()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
 		{
 			//For startup
 			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
