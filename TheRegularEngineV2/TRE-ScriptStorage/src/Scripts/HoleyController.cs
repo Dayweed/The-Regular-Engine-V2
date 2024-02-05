@@ -113,6 +113,7 @@ namespace TRE
 		private ulong fallingHatSFX;
 		private ulong fallSFX;
 		private ulong cheeringSFX;
+		private ulong hurtSFX;
 
 		//Transfrom Component
 		private Transform holeyTransform;
@@ -147,6 +148,7 @@ namespace TRE
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 			fallSFX = ECSManager.FindIDFromName("SFX_HoleyFall");
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Holey_BoostedJump");
+			hurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt1");
 
 			RespawnPoint = holeyTransform.Position;
 			RespawnPoint.y += 10.0f;
@@ -619,8 +621,13 @@ namespace TRE
 				}
 				else
 				{
-					//rollingobstaclesfx
+
 				}
+				//else if (other.ID == ECSManager.FindIDFromName("RollingObjectRender"))
+				//{
+				//	if (ECSManager.IsValidEntity(hurtSFX))
+				//		AudioSystem.Play(hurtSFX);
+				//}
 
 			}
 			// Check is activated jumppad

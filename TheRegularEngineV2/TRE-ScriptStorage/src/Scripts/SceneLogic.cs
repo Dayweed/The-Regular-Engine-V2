@@ -27,6 +27,9 @@ namespace TRE
 
 		Entity StarParticle;
 
+		private ulong endsceneBGM;
+		private ulong mainBGM;
+
 		public void Start()
 		{
 			currentTime = 0.0f;
@@ -79,6 +82,9 @@ namespace TRE
 			//Star VFX
 			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
 			StarParticle.GetComponent<Particle>().IsActive = false;
+
+			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
+			mainBGM = ECSManager.FindIDFromName("BGM");
 		}
 
 		public void Update()
@@ -158,15 +164,15 @@ namespace TRE
 					currentTime += Time.deltaTime;
 				}
 
-				//temp only!! not a very smooth transition atm
-				if (ECSManager.IsValidEntity(12557813022109059017))
+				
+				if (ECSManager.IsValidEntity(endsceneBGM))
 				{
-					AudioSystem.Play(12557813022109059017);
-					AudioSystem.Stop(677401345089954524);
+					AudioSystem.Play(endsceneBGM);
+					AudioSystem.Stop(mainBGM);
 				}
 				else
 				{
-					AudioSystem.Stop(12557813022109059017);
+					AudioSystem.Stop(endsceneBGM);
 				}
 			}
 		}

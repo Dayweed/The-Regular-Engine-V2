@@ -106,6 +106,7 @@ namespace TRE
 		private ulong fallingHatSFX;
 		private ulong fallSFX;
 		private ulong cheeringSFX;
+		private ulong hurtSFX;
 		#endregion
 
 		public float elapsedTime = 0.0f;
@@ -183,6 +184,7 @@ namespace TRE
 			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
+			hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
