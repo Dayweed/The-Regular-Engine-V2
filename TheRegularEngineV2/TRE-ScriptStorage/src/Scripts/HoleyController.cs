@@ -17,110 +17,123 @@ namespace TRE
 
 	class HoleyController : Entity
 	{
-        public PauseMenu MyPauseMenu;
-        public PowerUpUI MyPowerUpUI;
-        public PowerUpManager MyPowerManager;
+		public PauseMenu MyPauseMenu;
+		public PowerUpUI MyPowerUpUI;
+		public PowerUpManager MyPowerManager;
 
-        //Check if player is boosted jump
-        public bool isBoostedJump = false;
-        //Check if player is on the ground
-        public bool isGrounded = true;
-        //direction vector
-        private vec3 dirVec;
-        //Max velocity
-        private float maxVelocity = 30f;
-        //Acceleration
-        private float acceleration = 700f;
-        //final velocity
-        private vec3 finalVelocity = vec3.Zero;
-        //Check if player is walking
-        public bool isWalking = false;
-        private bool walkingSFXPlayed = false;
+		//Check if player is boosted jump
+		public bool isBoostedJump = false;
+		//Check if player is on the ground
+		public bool isGrounded = true;
+		//direction vector
+		private vec3 dirVec;
+		//Max velocity
+		private float maxVelocity = 30f;
+		//Acceleration
+		private float acceleration = 700f;
+		//final velocity
+		private vec3 finalVelocity = vec3.Zero;
+		//Check if player is walking
+		public bool isWalking = false;
+		private bool walkingSFXPlayed = false;
 
-        //check if player used super power
-        public bool mainBlueberry = false;  // Scaling
-        public bool mainStrawberry = false; // Shape
-        public bool isScaled = false;
+		//check if player used super power
+		public bool mainBlueberry = false;  // Scaling
+		public bool mainStrawberry = false; // Shape
+		public bool isScaled = false;
 
-        // Controllable
-        public bool isControllable = true;
+		// Controllable
+		public bool isControllable = true;
 
-        #region Collider Variables
-        public float defaultRadius = 2f;
-        public float blueberrysuperRadius = 2.4f;
-        public float strawberrysuperRadius = 2.4f;
-        public float currentRadius = 2f;
-        public float defaultHeight = 1f;
-        public float blueberrysuperHeight = 3.6f;
-        public float strawberrysuperHeight = 1.2f;
-        public float currentHeight = 1f;
-        public float currOffset = 3f;
-        #endregion
-        #region Player Transform Region
-        private Transform holeyTransform;
-        public vec3 defaultXform = new vec3(75f, 75f, 75f);
-        public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
-        public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
-        public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
-        #endregion
+		// the controls/keys that THIS player (Holey) will use
+		#region Player Controls
+		const InputKeys playerUpKey = InputKeys.I;
+		const InputKeys playerDownKey = InputKeys.K;
+		const InputKeys playerLeftKey = InputKeys.J;
+		const InputKeys playerRightKey = InputKeys.L;
+		const InputKeys playerJumpKey = InputKeys.Enter;
+		const InputKeys playerSwapKey = InputKeys.Backslash;
+		const InputKeys playerDropKey = InputKeys.RightShift;
+		const InputKeys playerAbilityKey = InputKeys.Backspace;
+		#endregion
 
-        public int turnDirection = 0;
-        private int playerDirection = 0;
-        private int lastPlayerDirection = 0;
+		#region Collider Variables
+		public float defaultRadius = 2f;
+		public float blueberrysuperRadius = 2.4f;
+		public float strawberrysuperRadius = 2.4f;
+		public float currentRadius = 2f;
+		public float defaultHeight = 1f;
+		public float blueberrysuperHeight = 3.6f;
+		public float strawberrysuperHeight = 1.2f;
+		public float currentHeight = 1f;
+		public float currOffset = 3f;
+		#endregion
 
-        private float lerpSpeed = 5f;
+		#region Player Transform Region
+		private Transform holeyTransform;
+		public vec3 defaultXform = new vec3(75f, 75f, 75f);
+		public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
+		public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
+		public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
+		#endregion
 
-        #region Jump Variables
-        private float maxJumpHeight = 70f;
-        //Check if player is jumping at all
-        public bool isJumping = false;
-        //how long you hold the jump button to reach max jump height
-        public float maxJumpButtomTime = 0.5f;
-        public float currentJumpTime;
-        public bool jumpCancelled = false;
-        //how long after the player walks off the ground can he still jump
-        private float coyoteTime = 0.2f;
-        public float coyoteTimeCounter;
-        //if player press space within this buffer time, they will still be able to jump even if they havent landed
-        private float jumpBufferTime = 0.25f;
-        public float jumpBufferCounter;
-        private float jumpHeight = 25f;
-        #endregion
+		public int turnDirection = 0;
+		private int playerDirection = 0;
+		private int lastPlayerDirection = 0;
 
-        #region Audio Variables
-        private ulong walkingSFX;
-        private ulong jumpSFX;
-        private ulong changesizeSFX;
-        private ulong normalsizeSFX;
-        private ulong fallingMaracaSFX;
-        private ulong fallingHatSFX;
-        private ulong fallSFX;
-        private ulong cheeringSFX;
-        private ulong hurtSFX;
-        #endregion
+		private float lerpSpeed = 5f;
 
-        #region Respawn Variables
-        private vec3 RespawnPoint = new vec3(0, 0, 0);
-        private bool RespawnPlayer = false;
-        private float RespawnTimer = 1.5f;
-        public bool isDead = false;
-        private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
-        private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
-        private bool DroppingOutOfMap = false;
-        #endregion
+		#region Jump Variables
+		private float maxJumpHeight = 70f;
+		//Check if player is jumping at all
+		public bool isJumping = false;
+		//how long you hold the jump button to reach max jump height
+		public float maxJumpButtomTime = 0.5f;
+		public float currentJumpTime;
+		public bool jumpCancelled = false;
+		//how long after the player walks off the ground can he still jump
+		private float coyoteTime = 0.2f;
+		public float coyoteTimeCounter;
+		//if player press space within this buffer time, they will still be able to jump even if they havent landed
+		private float jumpBufferTime = 0.25f;
+		public float jumpBufferCounter;
+		private float jumpHeight = 25f;
+		#endregion
 
-        #region Invulnerability Variables
-        private bool Invulnerability = false;
-        private float InvulCurrent = 1.0f;
-        private float InvulPeriod = 1.0f;
-        private float InvulBlinkCurrent = 0.1f;
-        private float InvulBlinkPeriod = 0.1f;
-        #endregion
+		#region Audio Variables
+		private ulong walkingSFX;
+		private ulong jumpSFX;
+		private ulong changesizeSFX;
+		private ulong normalsizeSFX;
+		private ulong fallingMaracaSFX;
+		private ulong fallingHatSFX;
+		private ulong fallSFX;
+		private ulong cheeringSFX;
+		private ulong hurtSFX;
+		#endregion
 
-        //Moley Reference 
-        private Entity moley_ref;
+		#region Respawn Variables
+		private vec3 RespawnPoint = new vec3(0, 0, 0);
+		private bool RespawnPlayer = false;
+		private float RespawnTimer = 1.5f;
+		public bool isDead = false;
+		private vec3 InitialPosition = new vec3(0.0f, 0.0f, 0.0f);
+		private vec3 OutofMapPos = new vec3(0.0f, 0.0f, 0.0f);
+		private bool DroppingOutOfMap = false;
+		#endregion
 
-        public void Start()
+		#region Invulnerability Variables
+		private bool Invulnerability = false;
+		private float InvulCurrent = 1.0f;
+		private float InvulPeriod = 1.0f;
+		private float InvulBlinkCurrent = 0.1f;
+		private float InvulBlinkPeriod = 0.1f;
+		#endregion
+
+		//Moley Reference 
+		private Entity moley_ref;
+
+		public void Start()
 		{
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 			MyPowerUpUI = ECSManager.FindEntityByName("RightCharacter_HUD").GetComponent<PowerUpUI>();
@@ -204,11 +217,10 @@ namespace TRE
 						MyPowerManager.LoseMain();
 						isScaled = false;
 					}
-
 				}
 			}
 
-			dirVec = new vec3(0, 0, 0);
+			dirVec = vec3.Zero;
 
 			#region Movement
 
@@ -222,51 +234,51 @@ namespace TRE
 				if (!MyPauseMenu.isPaused && isControllable)
 				{
 
-					if (InputSystem.GetKeyHold(InputKeys.I))
+					if (InputSystem.GetKeyHold(playerUpKey))
 					{
 						dirVec += CS.GetMainCameraForwardVec();
 						lastPlayerDirection = 0;
 					}
 
-					if (InputSystem.GetKeyHold(InputKeys.K))
+					if (InputSystem.GetKeyHold(playerDownKey))
 					{
 						dirVec -= CS.GetMainCameraForwardVec();
 						lastPlayerDirection = 180;
 					}
 
-					if (InputSystem.GetKeyHold(InputKeys.J))
+					if (InputSystem.GetKeyHold(playerLeftKey))
 					{
 						dirVec += CS.GetMainCameraRightVec();
 						lastPlayerDirection = 90;
 					}
 
-					if (InputSystem.GetKeyHold(InputKeys.L))
+					if (InputSystem.GetKeyHold(playerRightKey))
 					{
 						dirVec -= CS.GetMainCameraRightVec();
 						lastPlayerDirection = 270;
 					}
 
-					if (InputSystem.GetKeyHold(InputKeys.I))
+					if (InputSystem.GetKeyHold(playerUpKey))
 					{
-						if (InputSystem.GetKeyHold(InputKeys.L))
+						if (InputSystem.GetKeyHold(playerRightKey))
 						{
 							lastPlayerDirection = 315;
 						}
 
-						if (InputSystem.GetKeyHold(InputKeys.J))
+						if (InputSystem.GetKeyHold(playerLeftKey))
 						{
 							lastPlayerDirection = 45;
 						}
 					}
 
-					if (InputSystem.GetKeyHold(InputKeys.K))
+					if (InputSystem.GetKeyHold(playerDownKey))
 					{
-						if (InputSystem.GetKeyHold(InputKeys.L))
+						if (InputSystem.GetKeyHold(playerRightKey))
 						{
 							lastPlayerDirection = 225;
 						}
 
-						if (InputSystem.GetKeyHold(InputKeys.J))
+						if (InputSystem.GetKeyHold(playerLeftKey))
 						{
 							lastPlayerDirection = 135;
 						}
@@ -286,7 +298,7 @@ namespace TRE
 						coyoteTimeCounter -= Time.deltaTime;
 					}
 
-					if (InputSystem.GetKeyPress(InputKeys.Enter))
+					if (InputSystem.GetKeyPress(playerJumpKey))
 					{
 						jumpBufferCounter = jumpBufferTime;
 					}
@@ -297,7 +309,7 @@ namespace TRE
 
 					if (isJumping)
 					{
-						if (InputSystem.GetKeyRelease(InputKeys.Enter))
+						if (InputSystem.GetKeyRelease(playerJumpKey))
 						{
 							//Debug.Log("cancelled jump");
 							jumpCancelled = true;
@@ -312,7 +324,7 @@ namespace TRE
 					}
 					else
 					{
-						if (InputSystem.GetKeyRelease(InputKeys.Enter))
+						if (InputSystem.GetKeyRelease(playerJumpKey))
 						{
 							isJumping = false;
 						}
@@ -349,24 +361,17 @@ namespace TRE
 						jumpBufferCounter = 0;
 					}
 				}
-
 			}
 
 			#endregion
 
 			#region Audio
 
-			if (InputSystem.GetKeyHold(InputKeys.I) || InputSystem.GetKeyHold(InputKeys.K) ||
-				InputSystem.GetKeyHold(InputKeys.J) || InputSystem.GetKeyHold(InputKeys.L))
-			{
-				isWalking = true;
-			}
+			bool isMovementKeyHeld = InputSystem.GetKeyHold(playerUpKey) || InputSystem.GetKeyHold(playerDownKey) ||
+				InputSystem.GetKeyHold(playerLeftKey) || InputSystem.GetKeyHold(playerRightKey);
 
-			if (!(InputSystem.GetKeyHold(InputKeys.I) || InputSystem.GetKeyHold(InputKeys.J) ||
-				  InputSystem.GetKeyHold(InputKeys.K) || InputSystem.GetKeyHold(InputKeys.L)))
-			{
-				isWalking = false;
-			}
+			// if the player holds any movement key, they are walking
+			isWalking = isMovementKeyHeld;
 
 			if (ECSManager.IsValidEntity(walkingSFX))
 			{
@@ -396,7 +401,7 @@ namespace TRE
 			#region Swap
 
 			// Check if can swap ability
-			if (InputSystem.GetKeyPress(InputKeys.Backslash))
+			if (InputSystem.GetKeyPress(playerSwapKey))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -408,7 +413,7 @@ namespace TRE
 			#region Drop
 
 			// Check if can trigger ability
-			if (InputSystem.GetKeyPress(InputKeys.RightShift))
+			if (InputSystem.GetKeyPress(playerDropKey))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
@@ -426,7 +431,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (InputSystem.GetKeyPress(InputKeys.Backspace))
+			if (InputSystem.GetKeyPress(playerAbilityKey))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -457,16 +462,12 @@ namespace TRE
 					if (isScaled)
 					{
 						if (ECSManager.IsValidEntity(changesizeSFX))
-						{
 							AudioSystem.Play(changesizeSFX);
-						}
 					}
 					else
 					{
 						if (ECSManager.IsValidEntity(normalsizeSFX))
-						{
 							AudioSystem.Play(normalsizeSFX);
-						}
 					}
 				}
 			}
