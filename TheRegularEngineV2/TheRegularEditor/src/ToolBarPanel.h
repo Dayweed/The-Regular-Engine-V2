@@ -15,6 +15,7 @@
 #include "TREIncludes.h"
 #include "Panel.h"
 #include "EventSystem/Events/EditorEvent.h"
+#include "EventSystem/Events/InputEvent.h"
 
 namespace TRE
 {
@@ -26,6 +27,8 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
+			void HandleShortcuts(TypingEvent& event);
+			void MuteAudio();
 
 		private:
 			std::shared_ptr<VulkanTexture> m_PlayButtonTexture;
@@ -39,5 +42,6 @@ namespace TRE
 			bool m_Start{ false };
 			static inline bool m_Play{ false };
 			bool m_Once{ false };
+			bool m_ShortcutMuteAudio = false;
 	};
 }

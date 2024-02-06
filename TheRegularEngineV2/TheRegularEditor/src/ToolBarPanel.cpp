@@ -22,6 +22,8 @@ namespace TRE
 
 	void ToolBarPanel::Init()
 	{
+		EventHandler::getEventHandlerInstance().subscribe(this, &ToolBarPanel::HandleShortcuts);
+
 		const auto playGUID = AssetManager::Instance().GetAssetHandle("icon-play.png");
 		const auto playHexGUID = Resource::GetGUIDHex(playGUID);
 		std::unique_ptr<VulkanTexture> playButton = std::make_unique<VulkanTexture>("../Resources/" + playHexGUID + ".DDS");
@@ -91,6 +93,12 @@ namespace TRE
 			}
 		}
 
+		if (m_ShortcutMuteAudio)
+		{
+			MuteAudio();
+			m_ShortcutMuteAudio = false;
+		}
+
 		ImGui::PopStyleColor(2);
 
 		ImGui::End();
@@ -101,5 +109,31 @@ namespace TRE
 		m_PlayButtonTexture.reset();
 		m_PauseButtonTexture.reset();
 		m_StopButtonTexture.reset();
+	}
+
+	void ToolBarPanel::HandleShortcuts(TypingEvent& event)
+	{
+		const KeyButton key = static_cast<KeyButton>(event.m_Key);
+		const KeyMods mods = static_cast<KeyMods>(event.m_Mod);
+
+		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
+		{
+			m_ShortcutMuteAudio = key == KeyButton::M;
+		}
+	}
+
+	void ToolBarPanel::MuteAudio()
+	{
+		std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
+
+		for (size_t i{}; i < entities.size(); ++i)
+		{
+			if (entities[i]->HasComponent<AudioSystem>())
+			{
+				//put the mute audio function here
+			}
+		}
+
+		return;
 	}
 }
