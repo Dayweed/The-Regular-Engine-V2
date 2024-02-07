@@ -62,7 +62,7 @@ namespace TRE
 				{
 					if (playerObj.GetComponent<HoleyController>().mainBlueberry)
 					{
-						newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 0.5f;
+						newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 2.25f;
 					}
 
 					if (playerObj.GetComponent<HoleyController>().mainStrawberry)
