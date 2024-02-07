@@ -21,7 +21,8 @@
             "1602117609852196109",
             "16600941906949858638",
             "8119697912220926596",
-            "5575559471271865232"
+            "5575559471271865232",
+            "7020514881095836200"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/Blueberry.json",
@@ -44,7 +45,8 @@
             "../Resources/Prefabs/Holey's Head Collider.json",
             "../Resources/Prefabs/Pinata.json",
             "../Resources/Prefabs/Star Particle.json",
-            "../Resources/Prefabs/CourseComplete.json"
+            "../Resources/Prefabs/CourseComplete.json",
+            "../Resources/Prefabs/SandTerrain.json"
         ]
     }
 }

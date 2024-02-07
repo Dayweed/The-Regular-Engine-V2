@@ -77,7 +77,7 @@ namespace TRE
 				// Determine which scene to go next
 				if (PersistentSystem.GetValue("PrevScene") == "Tutorial")
 				{
-					Scene.TransitionScene("Level_1", 7f);
+					Scene.TransitionScene("MainMenu", 4f);
 				}
             }
 

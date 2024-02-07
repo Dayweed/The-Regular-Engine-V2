@@ -18,6 +18,7 @@
 #include "SceneManager.h"
 #include "Graphics/AnimationSystem.h"
 #include "Graphics/Sprite3DComponent.h"
+#include "InputHandler/InputHandler.h"
 
 namespace TRE
 {
@@ -236,6 +237,9 @@ namespace TRE
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
+
+			// This calls the inputHandler to clear the keys
+			//InputHandler::ClearKeys();
 			
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
