@@ -8,9 +8,9 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3471907381084056612",
+         "m_MainPrefabGUID": "10580679118866751667",
          "m_Overrides": {},
-         "m_PrefabGUID": "3471907381084056612",
+         "m_PrefabGUID": "10580679118866751667",
          "m_RemovedComps": []
       }
    ],
@@ -27,9 +27,9 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "10995187815247839459",
-         "m_Index": 107,
-         "m_Name": "Basic Cube",
+         "m_GUID": "833717330641946898",
+         "m_Index": 106,
+         "m_Name": "Double Cube",
          "m_Tag": ""
       }
    ],
@@ -38,9 +38,9 @@
       0,
       {
          "m_Position": [
-            516.645263671875,
-            44.40299987792969,
-            -197.96060180664063
+            908.160400390625,
+            97.0,
+            -168.0301971435547
          ],
          "m_Rotation": [
             0.0,
@@ -72,9 +72,9 @@
       {
          "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
-            2.0,
-            2.0,
-            2.0
+            4.0,
+            4.0,
+            4.0
          ],
          "m_IsActive": true,
          "m_IsTrigger": true,

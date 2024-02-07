@@ -68,8 +68,8 @@ namespace TRE
 		#region Player Transform Variables
 		private Transform holeyTransform;
 		public vec3 defaultXform = new vec3(75f, 75f, 75f);
-		public vec3 blueberryscaledXform = new vec3(0.040f, 0.0354f, 0.040f);
-		public vec3 strawberryscaledXform = new vec3(0.025f, 0.025f, 0.025f);
+		public vec3 blueberryscaledXform = new vec3(0.040f, 0.040f, 0.040f);
+		public vec3 strawberryscaledXform = new vec3(0.040f, 0.040f, 0.040f);
 		public vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 		#endregion
 

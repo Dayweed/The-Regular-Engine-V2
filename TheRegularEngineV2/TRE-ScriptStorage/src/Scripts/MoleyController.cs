@@ -68,7 +68,7 @@ namespace TRE
 		#region Player Transform Variables
 		private Transform moleyTransform;
 		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
-		private vec3 blueberryscaledXform = new vec3(40f, 40f, 40f);
+		private vec3 blueberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
 		private vec3 strawberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
 		#endregion
