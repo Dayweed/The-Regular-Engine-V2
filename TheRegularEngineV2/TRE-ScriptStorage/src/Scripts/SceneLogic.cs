@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Security.Policy;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Threading;
+using GlmSharp;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace TRE
 {
@@ -24,6 +26,20 @@ namespace TRE
 		public bool forceGoToNextScene = false;
 
 		VFX_Emerge StarEmerge;
+
+		// Star Title
+		Entity StarsCollected;
+		Entity Stars1;
+		Entity Stars2;
+		Entity Stars3;
+		float goalYPos = 0f;
+		float hiddenYPos = -650f;
+		float displayYPos = -400f;
+		float titleMoveSpeed = 2f;
+		float titleOffset = 0.05f;
+		float timerCurrent = 0.0f;
+		float timerDisplay = 3.0f;
+		bool displayStars = false;
 
 		Entity StarParticle;
 
@@ -78,6 +94,14 @@ namespace TRE
 			courseComplete = ECSManager.FindEntityByName("CourseComplete").GetComponent<SpriteRenderer>();
 
 			StarEmerge = ECSManager.FindEntityByName("Star_VFX").GetComponent<VFX_Emerge>();
+
+			StarsCollected = ECSManager.FindEntityByName("TitleStarsCollected");
+			Stars1 = ECSManager.FindEntityByName("Star1");
+			Stars2 = ECSManager.FindEntityByName("Star2");
+			Stars3 = ECSManager.FindEntityByName("Star3");
+			DetermineStarsDisplay(currentSceneName);
+			goalYPos = displayYPos;
+            timerCurrent = timerDisplay;
 
 			//Star VFX
 			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
@@ -142,7 +166,7 @@ namespace TRE
 			}
 			#endregion
 
-			// Check if any of the list 
+			// Check if any of the list
 			for (int i = triggerStars.Count - 1; i >= 0; --i)
 			{
 				List<HoleCheckDisplay> holeCheckDisplays = triggerStars[i];
@@ -173,6 +197,35 @@ namespace TRE
 					}
 				}
 			}
+
+
+			#region Stars
+			if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
+			// Do for stars collected
+			vec3 titleStarsCollectedPos = StarsCollected.GetComponent<Transform>().Position;
+			if (StarEmerge != null && StarEmerge.ReachEndPosition())
+			{
+                goalYPos = displayYPos;
+				// Determine which stars to display
+				DetermineStarsDisplay(currentSceneName);
+                timerCurrent = timerDisplay;
+                displayStars = true;
+			}
+			else if (!displayStars && timerCurrent <= 0.0f)
+			{
+                goalYPos = hiddenYPos;
+            }
+			// Lerp title to pos
+			float titleStarsCollectedPosY = MathF.Lerp(StarsCollected.GetComponent<Transform>().Position.y, goalYPos, titleMoveSpeed * Time.deltaTime);
+			StarsCollected.GetComponent<Transform>().Position = new vec3(titleStarsCollectedPos.x, titleStarsCollectedPosY, titleStarsCollectedPos.z);
+			// Resume Text Bounce if it is close to the position
+			if (goalYPos == displayYPos && Math.Abs(titleStarsCollectedPosY - titleStarsCollectedPos.y) < titleOffset)
+			{
+				displayStars = false;
+            }
+			#endregion
+
+
 
 			// Go to next scene if list of triggers are completed
 			bool goToNextScene = triggerComplete.Count == 0 ? false : true;
@@ -240,6 +293,32 @@ namespace TRE
 				++mapStars;
 				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
 				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
+			}
+		}
+
+
+
+		private void DetermineStarsDisplay(String mapName)
+		{
+			Stars1.SetActive(false);
+			Stars2.SetActive(false);
+			Stars3.SetActive(false);
+			int mapStars = 0;
+			if (Int32.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out mapStars))
+			{
+				//Debug.Log(mapName + "StarsObtained: " + mapStars);
+			}
+			if (mapStars >= 3)
+			{
+				Stars3.SetActive(true);
+			}
+			if (mapStars >= 2)
+			{
+				Stars2.SetActive(true);
+			}
+			if (mapStars >= 1)
+			{
+				Stars1.SetActive(true);
 			}
 		}
 	}
