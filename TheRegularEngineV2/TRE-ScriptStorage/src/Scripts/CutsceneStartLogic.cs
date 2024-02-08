@@ -24,8 +24,11 @@ namespace TRE
 
         int currentFrame = 0;
 
+        bool endCutscene = false;
+
         List<Entity> frames = new List<Entity>();
         List<string> nextScenes = new List<string>();
+        List<string> forcedScenes = new List<string>(); // This requires the user to press space manually to go to the next scene
 
 
         public void Start()
@@ -48,6 +51,7 @@ namespace TRE
 
             frames = new List<Entity>() { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6 };
             nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5" };
+            forcedScenes = new List<string>() { "Frame4" };
 
             currentFrame = 0;
             frames[currentFrame].SetActive(true);
@@ -60,9 +64,10 @@ namespace TRE
             bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 
             // Go to next scene
-            if (pressedSpace && SpaceToContinue.GetActive())
+            if (pressedSpace && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
             {
-                Scene.TransitionScene("Tutorial", delayScene);
+                Scene.TransitionScene("MainMenu", delayScene);
+                endCutscene = true;
             }
 
             // Close Game
@@ -80,32 +85,39 @@ namespace TRE
                 currentTime -= Time.deltaTime;
             }
 
-            if (pressedSpace || (currentFrame < frames.Count && frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
+            if (!endCutscene)
             {
-                frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
-                ++currentFrame;
-
-                if (currentFrame >= frames.Count - 1)
+                if (pressedSpace || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
                 {
-                    SpaceToContinue.SetActive(true);
-                }
+                    frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
+                    ++currentFrame;
 
-                if (currentFrame >= frames.Count) return;
+                    if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
+                    {
+                        SpaceToContinue.SetActive(true);
+                    }
+                    else if (SpaceToContinue.GetActive())
+                    {
+                        SpaceToContinue.SetActive(false);
+                    }
 
-                // Check if deactivate all frames if counted as next scene
-                if (nextScenes.Contains(frames[currentFrame].name))
-                {
-                    FadeAllActive();
-                    currentTime = delayScene;
-                }
-                else
-                {
-                    currentTime = delayFrame;
-                }
+                    if (currentFrame >= frames.Count) return;
 
-                // Fade In next frame
-                frames[currentFrame].SetActive(true);
-                frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
+                    // Check if deactivate all frames if counted as next scene
+                    if (nextScenes.Contains(frames[currentFrame].name))
+                    {
+                        FadeAllActive();
+                        currentTime = delayScene;
+                    }
+                    else
+                    {
+                        currentTime = delayFrame;
+                    }
+
+                    // Fade In next frame
+                    frames[currentFrame].SetActive(true);
+                    frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
+                }
             }
         }
 
