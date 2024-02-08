@@ -62,16 +62,15 @@ namespace TRE
 				//PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
 				cooldownCurrent = 0;
 				return;
-			}
+            }
 
-			if (collected || cooldownCurrent > 0) return;
+            if (collected || cooldownCurrent > 0) return;
 
 			if (other.CompareTag(mole1tag) || other.CompareTag(mole2tag))
 			{
 				//headPiece = other.GetComponent<Renderer>();                           // THIS CANT BE DONE YET!
 				//playerModel = other.parenting.GetParent();                              // playerModel = other.transform.parent;
 				//playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
-
 				playerObj = other;
 				PowerUpManagerObj = playerObj.parenting.GetChildFromName("Power Manager");
 

@@ -29,7 +29,9 @@ namespace TRE
 			GetComponent<MeshRenderer>().Material = deactivatedMaterial;
 
 			// Add triggers that are it's child as triggers
-			for (int i = 0; i < NoOfTriggers; i++)
+			NoOfTriggers = parenting.GetTotalChildren();
+
+            for (int i = 0; i < NoOfTriggers; i++)
 			{
 				Entity trigger = parenting.GetChild(i);
 
