@@ -243,7 +243,7 @@ namespace TRE
 
 		private void OnCollisionStay(System.UInt64 otherID)
 		{
-			isGrounded = false;
+			//isGrounded = false;
 
 			Entity other = new Entity(otherID);
 			// Make it loose one of it's powerups
