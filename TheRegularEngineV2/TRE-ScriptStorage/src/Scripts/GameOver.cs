@@ -23,7 +23,7 @@ namespace TRE
 
 			oops = ECSManager.FindEntityByName("oops").GetComponent<SpriteRenderer>();
 
-			PersistentSystem.SetValue("PrevScene", Scene.GetSceneName());
+			//PersistentSystem.SetValue("PrevScene", Scene.GetSceneName());
 			PersistentSystem.SetValue(Scene.GetSceneName()+"StarsObtained", "0");
 
 		}

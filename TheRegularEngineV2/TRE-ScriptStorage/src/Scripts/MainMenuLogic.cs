@@ -79,6 +79,7 @@ namespace TRE
 
             // Determine where to spawn the moles based on previous scene
             String prevScene = PersistentSystem.GetValue("PrevScene");
+            Debug.Log("START " + prevScene);
             if (prevScene == "Tutorial")
             {
                 // Teleport Moley and Holey to another location
