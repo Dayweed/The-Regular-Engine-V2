@@ -79,6 +79,10 @@ namespace TRE
 				{
 					Scene.TransitionScene("MainMenu", 4f);
 				}
+				else if (PersistentSystem.GetValue("PrevScene") == "Level_1")
+				{
+					Scene.TransitionScene("MainMenu", 4f);
+				}
             }
 
             // Close Game
