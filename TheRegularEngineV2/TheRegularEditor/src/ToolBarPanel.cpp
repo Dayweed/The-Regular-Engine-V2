@@ -65,6 +65,7 @@ namespace TRE
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 			}
 
+			if (!GameLoop::Instance().IsGameRunning())
 			{
 				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent());
 				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });

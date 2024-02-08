@@ -309,7 +309,7 @@ namespace TRE
 #ifdef GAME
 		
 #else
-		if (!GameLoop::Instance().IsGameRunning() && event.m_Playing == true)
+		if (event.m_Playing == true)
 		{
 			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
