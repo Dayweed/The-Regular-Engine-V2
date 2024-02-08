@@ -66,8 +66,8 @@ namespace TRE
 			}
 
 			{
-				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent());
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
 			}
 		}
 

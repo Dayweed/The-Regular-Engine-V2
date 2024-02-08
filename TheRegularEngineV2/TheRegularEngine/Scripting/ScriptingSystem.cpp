@@ -9,6 +9,7 @@
 #include "EventSystem/Events/EditorEvent.h"
 #include"Scripting/ScriptComponent.h"
 #include "Scripting/ScriptEngine.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -308,7 +309,7 @@ namespace TRE
 #ifdef GAME
 		
 #else
-		if (event.m_Playing == true)
+		if (!GameLoop::Instance().IsGameRunning() && event.m_Playing == true)
 		{
 			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
