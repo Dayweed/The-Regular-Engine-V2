@@ -48,7 +48,12 @@ namespace TRE
 		private ulong endsceneBGM;
 		private ulong mainBGM;
 
-		public void Start()
+        Entity blueberryPrefab = new Entity(7670209894207584463);
+        Entity strawberryPrefab = new Entity(13004780274330328106);
+		Entity blueberryCheat;
+		Entity strawberryCheat;
+
+        public void Start()
 		{
 			currentTime = 0.0f;
 			currentSceneName = Scene.GetSceneName();
@@ -146,36 +151,80 @@ namespace TRE
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D3))
 			{
 				Entity moley = ECSManager.FindEntityByName("Moley");
-
-				Entity blueberryCheat = new Entity(7670209894207584463);
-				Entity strawberryCheat = new Entity(13004780274330328106);
-
-				Entity blueberry = ECSManager.Instantiate(blueberryCheat);
-				blueberry.Rename("Blueberry_" + Random.Engine_IntRange(0, 1000));
-				GlmSharp.vec3 newPos = new GlmSharp.vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 5f, moley.GetComponent<Transform>().Position.z);
-				blueberry.GetComponent<Transform>().Position = newPos;
-
-				Entity strawberry = ECSManager.Instantiate(strawberryCheat);
-				strawberry.Rename("Strawberry_" + Random.Engine_IntRange(0, 1000));
-				strawberry.GetComponent<Transform>().Position = newPos;
-			}
-
-			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D4))
-			{
 				Entity holey = ECSManager.FindEntityByName("Holey");
 
-				Entity blueberryCheat = new Entity(7670209894207584463);
-				Entity strawberryCheat = new Entity(13004780274330328106);
+				if (ECSManager.IsValidEntity(moley.ID))
+				{
+					moley.GetComponent<MoleyController>().keepInventory = !moley.GetComponent<MoleyController>().keepInventory;
+				}
+				if (ECSManager.IsValidEntity(holey.ID))
+				{
+                    holey.GetComponent<HoleyController>().keepInventory = !holey.GetComponent<HoleyController>().keepInventory;
+                    Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
+                }
 
-				Entity blueberry = ECSManager.Instantiate(blueberryCheat);
+
+                // This also doesnt work
+                /*
+                blueberryCheat = ECSManager.Instantiate(blueberryPrefab);
+                blueberryCheat.Rename("Blueberry_" + Random.Engine_IntRange(0, 1000));
+                blueberryCheat.transform.Position = moley.GetComponent<Transform>().Position;
+                blueberryCheat.transform.Rotation = transform.Rotation;
+                blueberryCheat.GetComponent<Rigidbody>().useGravity = true;
+                //Debug.Log("blueberryCheat NAME? " + blueberryCheat.name);
+                //Debug.Log("===========================================================================================================================");
+                blueberryCheat.parenting.SetParent(this);
+                PhysicsSystem.SetLinearVelocity(blueberryCheat.ID, vec3.Zero);
+                PhysicsSystem.AddForce(blueberryCheat.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
+				*/
+
+                /*
+                Entity blueberry = ECSManager.Instantiate(blueberryCheat);
 				blueberry.Rename("Blueberry_" + Random.Engine_IntRange(0, 1000));
-				GlmSharp.vec3 newPos = new GlmSharp.vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 5f, holey.GetComponent<Transform>().Position.z);
+				Debug.Log("BB have GetPowerUp? " + blueberry.HasComponent<GetPowerUp>());
+				GlmSharp.vec3 newPos = new GlmSharp.vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 5f, moley.GetComponent<Transform>().Position.z);
 				blueberry.GetComponent<Transform>().Position = newPos;
+                blueberry.GetComponent<Rigidbody>().useGravity = false;
+                PhysicsSystem.SetLinearVelocity(blueberry.ID, vec3.Zero);
 
-				Entity strawberry = ECSManager.Instantiate(strawberryCheat);
+                Entity strawberry = ECSManager.Instantiate(strawberryCheat);
 				strawberry.Rename("Strawberry_" + Random.Engine_IntRange(0, 1000));
-				strawberry.GetComponent<Transform>().Position = newPos;
-			}
+                Debug.Log("ST have GetPowerUp? " + strawberry.HasComponent<GetPowerUp>());
+                strawberry.GetComponent<Transform>().Position = newPos;
+                strawberry.GetComponent<Rigidbody>().useGravity = false;
+                PhysicsSystem.SetLinearVelocity(strawberry.ID, vec3.Zero);
+				*/
+            }
+
+            if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D4))
+			{
+                Entity moley = ECSManager.FindEntityByName("Moley");
+                Entity holey = ECSManager.FindEntityByName("Holey");
+
+                if (ECSManager.IsValidEntity(moley.ID))
+                {
+                    moley.GetComponent<MoleyController>().creativeMode = !moley.GetComponent<MoleyController>().creativeMode;
+                }
+                if (ECSManager.IsValidEntity(holey.ID))
+                {
+                    holey.GetComponent<HoleyController>().creativeMode = !holey.GetComponent<HoleyController>().creativeMode;
+                    Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
+                }
+
+                //Entity holey = ECSManager.FindEntityByName("Holey");
+
+                //Entity blueberryCheat = new Entity(7670209894207584463);
+                //Entity strawberryCheat = new Entity(13004780274330328106);
+
+                //Entity blueberry = ECSManager.Instantiate(blueberryCheat);
+                //blueberry.Rename("Blueberry_" + Random.Engine_IntRange(0, 1000));
+                //GlmSharp.vec3 newPos = new GlmSharp.vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 5f, holey.GetComponent<Transform>().Position.z);
+                //blueberry.GetComponent<Transform>().Position = newPos;
+
+                //Entity strawberry = ECSManager.Instantiate(strawberryCheat);
+                //strawberry.Rename("Strawberry_" + Random.Engine_IntRange(0, 1000));
+                //strawberry.GetComponent<Transform>().Position = newPos;
+            }
 			#endregion
 
 

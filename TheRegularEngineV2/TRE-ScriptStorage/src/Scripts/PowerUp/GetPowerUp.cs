@@ -46,14 +46,15 @@ namespace TRE
 		{
 			collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
 			originalScale = GetComponent<Transform>().Scale;
+            //Debug.Log("MY NAME IS " + name);
         }
 
 		private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
-			//Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
+            //Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
 
-			if (GetComponent<Rigidbody>().useGravity == true && other.CompareTag("Ground"))
+            if (GetComponent<Rigidbody>().useGravity == true && other.CompareTag("Ground"))
 			{
 				//RemoveComponent<Rigidbody>();
 				GetComponent<Rigidbody>().useGravity = false;
@@ -122,10 +123,16 @@ namespace TRE
 			//Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
 		}
 
-		public void Update()
+		public String ReturnName()
 		{
-			// Run Collecting vfx
-			if (collected && !vfxCollectComplete)
+			return name;
+		}
+
+		public void Update()
+        {
+            //Debug.Log("GetPowerUp Entity Name: " + name + " " + PhysicsSystem.IsTriggerStay(ID, ECSManager.FindIDFromName("Moley")));
+            // Run Collecting vfx
+            if (collected && !vfxCollectComplete)
 			{
 				RunCollectingVFX();
             }

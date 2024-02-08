@@ -102,7 +102,7 @@ namespace TRE
 		if (m_EngineInfo.EnableGame)
 		{
 			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "SplashScreen.json");
-			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true, GameLoop::Instance().GetGameSimulating() });
 		}
 		else
 			SceneManager::Instance().NewScene();

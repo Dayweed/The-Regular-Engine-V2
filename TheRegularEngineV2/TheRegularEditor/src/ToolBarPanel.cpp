@@ -65,10 +65,9 @@ namespace TRE
 				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
 			}
 
-			if (!GameLoop::Instance().IsGameRunning())
 			{
-				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent());
-				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent(GameLoop::Instance().GetGameSimulating()));
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true, GameLoop::Instance().GetGameSimulating() });
 			}
 		}
 
@@ -78,7 +77,7 @@ namespace TRE
 		{
 			if (!GameLoop::Instance().GetDisplayingPrefab())
 			{
-				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false, GameLoop::Instance().GetGameSimulating() });
 			}
 		}
 

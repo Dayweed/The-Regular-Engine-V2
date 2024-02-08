@@ -21,6 +21,8 @@ namespace TRE
 		public float cooldownCurrent;
 		public float cooldownDuration = 5.0f;
 
+		private int numSpawn = 0;
+
 		public void OnCreate()
 		{
 			if (CompareTag("SpawnStrawberry"))
@@ -66,8 +68,12 @@ namespace TRE
 			spawnedPowerUp.transform.Position = transform.Position + spawnedPowerUp.transform.Scale.y + positionOffset;
 			spawnedPowerUp.transform.Rotation = transform.Rotation;
 			spawnedPowerUp.GetComponent<Rigidbody>().useGravity = true;
+			spawnedPowerUp.Rename("Spawned Powerup " + spawnedPowerUp.name + " " + numSpawn++);
 			spawnedPowerUp.parenting.SetParent(this);
-			PhysicsSystem.SetLinearVelocity(spawnedPowerUp.ID, vec3.Zero);
+            //Debug.Log("spawnedPowerUp have GetPowerUp? " + spawnedPowerUp.HasComponent<GetPowerUp>());
+            //Debug.Log("But can I access its values? collected = " + spawnedPowerUp.GetComponent<GetPowerUp>().collected);
+            //Debug.Log("Is my name the same? " + spawnedPowerUp.name + " = " + spawnedPowerUp.GetComponent<GetPowerUp>().ReturnName());
+            PhysicsSystem.SetLinearVelocity(spawnedPowerUp.ID, vec3.Zero);
 			PhysicsSystem.AddForce(spawnedPowerUp.ID, new vec3(0, 50, 0), ForceMode.VelocityChange);
 		}
 	}

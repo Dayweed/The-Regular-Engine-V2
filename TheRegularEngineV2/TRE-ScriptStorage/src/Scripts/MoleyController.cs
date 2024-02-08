@@ -144,6 +144,10 @@ namespace TRE
 		//private Entity Key;
 		//private Entity FinalPlatform;
 
+		// Cheats
+		public bool keepInventory = false;
+        public bool creativeMode = false;
+
 		public void Start()
 		{
 			#region UI Variables
@@ -402,7 +406,7 @@ namespace TRE
 				if (!holey_ref.GetComponent<HoleyController>().GetIsDead() && isDead)
 				{
 					RespawnPlayer = true;
-					if (MyPowerManager.powerUps.Count > 0)
+					if (MyPowerManager.powerUps.Count > 0 && !keepInventory)
 					{
 						MyPowerManager.LoseMain();
 						isScaled = false;
@@ -747,8 +751,8 @@ namespace TRE
 
 		public void TakeDamage()
 		{
-			if (Invulnerability) return;
-			if (MyPowerManager.powerUps.Count > 0)
+			if (Invulnerability || creativeMode) return;
+			if (MyPowerManager.powerUps.Count > 0 && !keepInventory)
 			{
 				MyPowerManager.LoseMain();
 				isScaled = false;

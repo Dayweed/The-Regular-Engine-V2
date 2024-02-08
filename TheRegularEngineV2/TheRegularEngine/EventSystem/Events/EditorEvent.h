@@ -11,7 +11,9 @@ namespace TRE
 {
 	struct ConsoleStartEvent : Event
 	{
-		bool m_Called;
+		bool m_IsSimulating{ false };
+		ConsoleStartEvent() = delete;
+		ConsoleStartEvent(bool gameIsSimulating) : m_IsSimulating(gameIsSimulating) {}
 	};
 
 	struct ConsoleDebugEvent : Event
@@ -32,8 +34,9 @@ namespace TRE
 	struct ToggleRunEvent : Event
 	{
 		bool m_Playing{ false };
+		bool m_IsSimulating{ false };
 		ToggleRunEvent() = delete;
-		ToggleRunEvent(bool playing) : m_Playing(playing) {}
+		ToggleRunEvent(bool playing, bool gameIsSimulating) : m_Playing(playing), m_IsSimulating(gameIsSimulating) {}
 	};
 
 	struct ResetSceneEvent : Event

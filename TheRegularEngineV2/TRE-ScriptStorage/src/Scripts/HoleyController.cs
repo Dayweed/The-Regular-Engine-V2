@@ -129,7 +129,11 @@ namespace TRE
 		//Moley Reference
 		private Entity moley_ref;
 
-		public void Start()
+        // Cheats
+        public bool keepInventory = false;
+        public bool creativeMode = false;
+
+        public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -352,7 +356,7 @@ namespace TRE
 				if (!moley_ref.GetComponent<MoleyController>().GetIsDead() && isDead)
 				{
 					RespawnPlayer = true;
-					if (MyPowerManager.powerUps.Count > 0)
+					if (MyPowerManager.powerUps.Count > 0 && !keepInventory)
 					{
 						MyPowerManager.LoseMain();
 						isScaled = false;
@@ -678,8 +682,8 @@ namespace TRE
 
 		public void TakeDamage()
 		{
-			if (Invulnerability) return;
-			if (MyPowerManager.powerUps.Count > 0)
+			if (Invulnerability || creativeMode) return;
+			if (MyPowerManager.powerUps.Count > 0 && !keepInventory)
 			{
 				MyPowerManager.LoseMain();
 				isScaled = false;

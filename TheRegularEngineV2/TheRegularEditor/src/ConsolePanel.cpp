@@ -78,7 +78,7 @@ namespace TRE
     void ConsolePanel::StartConsole(ConsoleStartEvent& event)
     {
         (void)event;
-        if (m_AutoClear && !GameLoop::Instance().IsGameRunning())
+        if (m_AutoClear && !event.m_IsSimulating)
         {
             m_ConsoleLog.clear();
         }

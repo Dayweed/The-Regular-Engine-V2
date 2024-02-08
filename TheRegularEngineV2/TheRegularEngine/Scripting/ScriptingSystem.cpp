@@ -309,7 +309,7 @@ namespace TRE
 #ifdef GAME
 		
 #else
-		if (event.m_Playing == true)
+		if (!event.m_IsSimulating && event.m_Playing == true)
 		{
 			ScriptEngine::RecompileScripts();
 			ScriptEngine::ReloadAssembly();
