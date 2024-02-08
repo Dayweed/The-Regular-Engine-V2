@@ -12,6 +12,8 @@ namespace TRE
 {
 	public class SceneLogic : Entity
 	{
+		private int lateStart = 0;
+
 		private string currentSceneName;
 		private string nextSceneName;
 
@@ -99,10 +101,6 @@ namespace TRE
 			Stars1 = ECSManager.FindEntityByName("Star1");
 			Stars2 = ECSManager.FindEntityByName("Star2");
 			Stars3 = ECSManager.FindEntityByName("Star3");
-			if (ECSManager.IsValidEntity(StarsCollected.ID))
-			{
-				DetermineStarsDisplay(currentSceneName);
-			}
 			goalYPos = displayYPos;
             timerCurrent = timerDisplay;
 
@@ -180,8 +178,17 @@ namespace TRE
 			}
 			#endregion
 
-			// Check if any of the list
-			for (int i = triggerStars.Count - 1; i >= 0; --i)
+
+			// Late Start to ensure transform for stars arent screwed by parenting
+			if (lateStart < 2) ++lateStart;
+            if (lateStart == 2 && ECSManager.IsValidEntity(StarsCollected.ID) && ECSManager.IsValidEntity(Stars1.ID) && ECSManager.IsValidEntity(Stars2.ID) && ECSManager.IsValidEntity(Stars3.ID))
+            {
+                DetermineStarsDisplay(currentSceneName);
+				++lateStart;
+            }
+
+            // Check if any of the list
+            for (int i = triggerStars.Count - 1; i >= 0; --i)
 			{
 				List<HoleCheckDisplay> holeCheckDisplays = triggerStars[i];
 				bool isCompleted = true;
@@ -210,8 +217,8 @@ namespace TRE
 			}
 
 
-			#region Stars
-			if (ECSManager.IsValidEntity(StarsCollected.ID))
+            #region Stars
+            if (ECSManager.IsValidEntity(StarsCollected.ID))
 			{
 				if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
 				// Do for stars collected
