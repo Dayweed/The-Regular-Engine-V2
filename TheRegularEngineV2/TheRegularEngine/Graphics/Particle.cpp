@@ -14,7 +14,7 @@ namespace TRE
 		ResetParticles(emitterPos);
 	}
 
-	void ParticleComponent::UpdateParticles()
+	void ParticleComponent::UpdateParticles(const bool is3D)
 	{
 		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
 
@@ -47,19 +47,24 @@ namespace TRE
 			const glm::vec3 randomSpeed = glm::vec3(disSpeed(gen), disSpeed(gen), disSpeed(gen));
 			particle.Position += randomSpeed * m_Velocity * deltaTime;
 
-			//Billboard
-			glm::vec3 forward = glm::normalize(mainCamPos - particle.Position);
-			glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
-			glm::vec3 up = glm::cross(forward, right);
+			if (is3D)
+			{
+				//Billboard
+				glm::vec3 forward = glm::normalize(mainCamPos - particle.Position);
+				glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
+				glm::vec3 up = glm::cross(forward, right);
 
-			glm::mat4 billboardMatrix(1.0f);
-			billboardMatrix[0] = glm::vec4(right, 0.0f);
-			billboardMatrix[1] = glm::vec4(up, 0.0f);
-			billboardMatrix[2] = glm::vec4(-forward, 0.0f);
-			particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * billboardMatrix * glm::scale(glm::mat4(1.0f), particle.Scale);
-			//billboardMatrix[3] = glm::vec4(particle.Position, 1.0f);
-			//particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * glm::scale(glm::mat4(1.0f), particle.Scale);
-			//particle.L2W = billboardMatrix;
+				glm::mat4 billboardMatrix(1.0f);
+				billboardMatrix[0] = glm::vec4(right, 0.0f);
+				billboardMatrix[1] = glm::vec4(up, 0.0f);
+				billboardMatrix[2] = glm::vec4(-forward, 0.0f);
+				particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * billboardMatrix * glm::scale(glm::mat4(1.0f), particle.Scale);
+			}
+			else
+			{
+				const glm::vec3 postiion2D = glm::vec3(particle.Position.x, particle.Position.y, 0.f);
+				particle.L2W = glm::translate(glm::mat4(1.f), postiion2D) * glm::scale(glm::mat4(1.0f), particle.Scale);
+			}
 		}
 
 		m_ElapsedTime += deltaTime;
@@ -102,7 +107,7 @@ namespace TRE
 
 			if(particleComponent.m_Running == false)
 				continue;
-			particleComponent.UpdateParticles();
+			particleComponent.UpdateParticles(particleComponent.m_3DWorld);
 
 			if (particleComponent.m_ElapsedTime >= particleComponent.m_LifeTime)
 			{

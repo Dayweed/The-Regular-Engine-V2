@@ -48,7 +48,8 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
-		m_ParticleUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
+		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
+		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
 
 	void SceneRenderer::Initialize() 
@@ -350,7 +351,15 @@ namespace TRE
 			ParticleUBO particleUBO{};
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 
-			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
+			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
+
+			ParticleUBO particleUBO2D{};
+			//Why so hardcoded (:
+			const auto width = 1920.f;
+			const auto height = 1080.f;
+			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
+			particleUBO2D.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+			m_ParticleUBO2D->SetData(&particleUBO2D, sizeof(ParticleUBO));
 		}
 	}
 
@@ -435,7 +444,14 @@ namespace TRE
 			ParticleUBO particleUBO{};
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 
-			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
+			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
+
+			ParticleUBO particleUBO2D{};
+			const auto width = 1920.f;
+			const auto height = 1080.f;
+			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
+			particleUBO2D.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+			m_ParticleUBO2D->SetData(&particleUBO2D, sizeof(ParticleUBO));
 		}
 	}
 
@@ -519,7 +535,7 @@ namespace TRE
 		GeometryAnimationPass(Index, materialSort);
 		Sprite3DPass(Index);
 		DebugDrawPass(Index);
-		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
+		m_ParticleRenderer->Render(m_ParticleUBO2D, m_ParticleUBO3D, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 

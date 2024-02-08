@@ -157,7 +157,8 @@ namespace TRE
 
 			//Particle Renderer
 			std::shared_ptr<ParticleRenderer> m_ParticleRenderer;
-			std::shared_ptr<UniformBuffer> m_ParticleUBO;
+			std::shared_ptr<UniformBuffer> m_ParticleUBO2D;
+			std::shared_ptr<UniformBuffer> m_ParticleUBO3D;
 
 			//Sprite 3D Renderer
 			std::shared_ptr<Pipeline> m_Sprite3DPipeline;

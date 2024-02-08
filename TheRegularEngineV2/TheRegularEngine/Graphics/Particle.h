@@ -39,11 +39,12 @@ namespace TRE
 		bool m_PlayOnStart = true;
 		bool m_Fade = true;
 		bool m_Show = true;
+		bool m_3DWorld = true;
 
 		std::vector<Particle> m_Particles;
 	public:
 		void GenerateParticles(const glm::vec3& emitterPos);
-		void UpdateParticles();
+		void UpdateParticles(const bool is3D);
 		void ResetParticles(const glm::vec3& emitterPos);
 
 		property_vtable()
@@ -76,7 +77,8 @@ namespace TRE
 				{ "ParticleCount", t.m_ParticleCount },
 				{ "Loop", t.m_Loop },
 				{ "PlayOnStart", t.m_PlayOnStart },
-				{ "Fade", t.m_Fade }
+				{ "Fade", t.m_Fade },
+				{ "3DWorld", t.m_3DWorld }
 			};
 		}
 
@@ -161,6 +163,8 @@ namespace TRE
 				if(t.m_Fade)
 					t.m_Color.a = 0.0f;
 			}
+			if (j.contains("3DWorld"))
+				t.m_3DWorld = j.at("3DWorld").get<bool>();
 		}
 	private:
 		void ResetParticlesData(const glm::vec3 emitterPos);
@@ -218,5 +222,6 @@ property_begin(TRE::ParticleComponent)
 	property_var(m_Fade).Name("Fade"),
 	property_var(m_FadeDuration).Name("FadeDuration"),
 	property_var(m_Show).Name("Show Spawn Point"),
+	property_var(m_3DWorld).Name("3DWorld")
 
 } property_vend_h(TRE::ParticleComponent)

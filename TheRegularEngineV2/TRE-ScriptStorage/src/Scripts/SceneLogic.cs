@@ -149,22 +149,33 @@ namespace TRE
 			{
 				Entity moley = ECSManager.FindEntityByName("Moley");
 
-				Entity blueberry = ECSManager.Instantiate(new Entity(7670209894207584463));
-				GlmSharp.vec3 newPos = new GlmSharp.vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 30f, moley.GetComponent<Transform>().Position.z);
+				Entity blueberryCheat = new Entity(7670209894207584463);
+				Entity strawberryCheat = new Entity(13004780274330328106);
+
+				Entity blueberry = ECSManager.Instantiate(blueberryCheat);
+				blueberry.Rename("Blueberry_" + Random.Engine_IntRange(0, 1000));
+				GlmSharp.vec3 newPos = new GlmSharp.vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 5f, moley.GetComponent<Transform>().Position.z);
 				blueberry.GetComponent<Transform>().Position = newPos;
 
-				Entity strawberry = ECSManager.Instantiate(new Entity(13004780274330328106));
+				Entity strawberry = ECSManager.Instantiate(strawberryCheat);
+				strawberry.Rename("Strawberry_" + Random.Engine_IntRange(0, 1000));
 				strawberry.GetComponent<Transform>().Position = newPos;
 			}
 
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D4))
 			{
 				Entity holey = ECSManager.FindEntityByName("Holey");
-				Entity blueberry = ECSManager.Instantiate(new Entity(7670209894207584463));
-				GlmSharp.vec3 newPos = new GlmSharp.vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 30f, holey.GetComponent<Transform>().Position.z);
+
+				Entity blueberryCheat = new Entity(7670209894207584463);
+				Entity strawberryCheat = new Entity(13004780274330328106);
+
+				Entity blueberry = ECSManager.Instantiate(blueberryCheat);
+				blueberry.Rename("Blueberry_" + Random.Engine_IntRange(0, 1000));
+				GlmSharp.vec3 newPos = new GlmSharp.vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 5f, holey.GetComponent<Transform>().Position.z);
 				blueberry.GetComponent<Transform>().Position = newPos;
 
-				Entity strawberry = ECSManager.Instantiate(new Entity(13004780274330328106));
+				Entity strawberry = ECSManager.Instantiate(strawberryCheat);
+				strawberry.Rename("Strawberry_" + Random.Engine_IntRange(0, 1000));
 				strawberry.GetComponent<Transform>().Position = newPos;
 			}
 			#endregion
@@ -189,14 +200,11 @@ namespace TRE
 					{
 						StarEmerge.Emerge();
 
-						if (currentSceneName == "Tutorial")
-						{
-							StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-							StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
-							StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
-
-							StarParticle.GetComponent<Particle>().IsActive = true;
-						}
+						//StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
+						//	StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
+						//StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
+						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f,0f);
+						StarParticle.GetComponent<Particle>().IsActive = true;
 					}
 				}
 			}

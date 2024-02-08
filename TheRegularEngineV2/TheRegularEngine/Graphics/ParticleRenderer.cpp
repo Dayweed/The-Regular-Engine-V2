@@ -63,23 +63,8 @@ namespace TRE
 		m_DefaultMaterial->SetTexture("DiffuseMap", VulkanTexture::GetDefaultTexture());
 	}
 
-	void ParticleRenderer::Render(std::shared_ptr<UniformBuffer> ubo, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
+	void ParticleRenderer::Render(std::shared_ptr<UniformBuffer> ubo2D, std::shared_ptr<UniformBuffer> ubo3D, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
 	{
-		//ParticleUBO ubo{};
-		//if (isEditor)
-		//{
-		//	//ubo.ProjView = EditorCamera::Instance().GetViewProjectionMatrix();
-		//	const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-		//	ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
-		//}
-		//else
-		//{
-		//	const Camera& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>();
-		//	ubo.ProjView = mainCamera.m_BaseCamera.m_ProjectionMatrix * mainCamera.m_BaseCamera.m_ViewMatrix;
-		//}
-
-		//m_UBO->SetData(&ubo, sizeof(ParticleUBO));
-
 		std::multimap<ResourceHandle, Entity> sortedParticles;
 		for (const auto& emitter : ECSManager::Instance().GetEntities<ParticleComponent>())
 		{
@@ -108,6 +93,7 @@ namespace TRE
 			{
 				if (currentHandle != m_PreviousMaterialHandle)
 				{
+					std::shared_ptr<UniformBuffer> ubo = particleComp.m_3DWorld ? ubo3D : ubo2D;
 					if (particleComp.m_Material)
 					{
 						if (isEditor)
