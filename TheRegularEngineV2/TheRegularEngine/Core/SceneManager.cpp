@@ -55,6 +55,7 @@ namespace TRE
 			TRE_CORE_CRITICAL("Scene file not found!");
 			return;
 		}
+		ECSManager::Instance().SortEntityOrder();
 
 		ScriptEngine::ReloadAssembly();
 		ECSSystemManager::Instance().AfterReset(); 

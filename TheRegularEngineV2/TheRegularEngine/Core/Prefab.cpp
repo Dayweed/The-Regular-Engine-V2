@@ -6,6 +6,7 @@
 #include "Serialization.h"
 #include "GameLoop.h"
 #include "Graphics/Sprite3DComponent.h"
+#include "Scripting/ScriptEngine.h"
 namespace TRE
 {
 	PrefabOutputArchive::PrefabOutputArchive(std::string fileName, entt::registry& registry, int noOfEntities) : m_FileName(fileName), m_Registry(registry), m_TotalEntities(noOfEntities)
@@ -152,6 +153,8 @@ namespace TRE
 		m_DisplayedPrefab = nullptr;
 		m_DisplayedPrefab = ECSSystemManager::Instance().GetSystem<PrefabSystem>()->CreatePrefabEntityInstance(prefabGUID);
 
+		ECSManager::Instance().SortEntityOrder();
+		ScriptEngine::ReloadAssembly();
 		ECSSystemManager::Instance().AfterReset();
 
 		return m_DisplayedPrefab;
