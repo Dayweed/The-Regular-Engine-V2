@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SimulationEventCallback.h"
+#include "Core/Logger.h"
 
 using namespace physx;
 // to save my dwindling sanity
@@ -47,6 +48,12 @@ namespace TRE
 			if (pair.events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
 				flags |= CollisionHistoryEntryEnum::Stay;
 
+			if (actor0Index >= (1ULL << MAX_ENTITIES_BIT) || actor1Index >= (1ULL << MAX_ENTITIES_BIT))
+			{
+				TRE_ERROR("[SimulationEventCallback] There are more actors/entities than allocated memory, increase MAX_ENTITIES_BIT to change HistoryEntry::m_First and HistoryEntry::m_Second!");
+				assert(false && "Refer to Error above");
+			}
+
 			m_CollisionHistory.emplace_back(actor0Index, actor1Index, flags);
 		}
 	}
@@ -83,6 +90,12 @@ namespace TRE
 
 			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
 				flags |= TriggerHistoryEntryEnum::Exit;
+
+			if (actor0Index >= (1ULL << MAX_ENTITIES_BIT) || actor1Index >= (1ULL << MAX_ENTITIES_BIT))
+			{
+				TRE_ERROR("[SimulationEventCallback] There are more actors/entities than allocated memory, increase MAX_ENTITIES_BIT to change HistoryEntry::m_First and HistoryEntry::m_Second!");
+				assert(false && "Refer to Error above");
+			}
 
 			// Because of https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/struct_px_pair_flag.html?highlight=enotify_touch_persists#_CPPv4N10PxPairFlag4Enum22eNOTIFY_TOUCH_PERSISTSE,
 			// IsTriggerStay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST, which is done in GameUpdate().
