@@ -8,6 +8,7 @@
 #include "Scripting/ScriptEngine.h"
 #include "Core/GameLoop.h"
 #include "ViewportPanel.h"
+#include "Audio/AudioSystem.h"
 
 namespace TRE
 {
@@ -124,16 +125,7 @@ namespace TRE
 
 	void ToolBarPanel::MuteAudio()
 	{
-		std::vector<Entity> entities{ ECSManager::Instance().GetAllEntities(true) };
-
-		for (size_t i{}; i < entities.size(); ++i)
-		{
-			if (entities[i]->HasComponent<AudioSystem>())
-			{
-				//put the mute audio function here
-			}
-		}
-
-		return;
+		AudioSystem& audioSystem = AudioSystem::Instance();
+		audioSystem.MuteAll();
 	}
 }

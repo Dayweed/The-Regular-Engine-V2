@@ -146,6 +146,12 @@ namespace TRE
 		AudioSystem();
 		~AudioSystem() override;
 
+		static AudioSystem& Instance()
+		{
+			static AudioSystem instance;
+			return instance;
+		}
+
 		void Init() override;
 		void GameUpdate() override;
 		void LateUpdate() override;
@@ -163,6 +169,7 @@ namespace TRE
 		void ToggleMute(Entity& go);
 		void Stop(Entity& go);
 		void CompileAudio(Entity& go);
+		void MuteAll();
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
 
@@ -190,6 +197,8 @@ namespace TRE
 			fmodVector.z = glmVector.z;
 			return fmodVector;
 		}
+
+		bool m_MuteAll{ true };
 
 	private:
 		FMOD::System* m_System = nullptr;
