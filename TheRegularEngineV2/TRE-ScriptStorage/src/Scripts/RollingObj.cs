@@ -26,7 +26,7 @@ namespace TRE
 		private float rotateSpeed = 200.0f;
 
 		private float cooldown = 0f;
-		private float cooldownDefault = 2.0f;
+		private float cooldownDefault = 0.05f;
 
 		public RollingObj()
 		{
@@ -67,11 +67,35 @@ namespace TRE
 
 		private void OnTriggerEnter(System.UInt64 otherID)
 		{
-			if (otherID == lLedge.ID || otherID == rLedge.ID)
-			{
-				Bounceback();
-			}
-		}
+            Entity other = new Entity(otherID);
+            if (other.ID == lLedge.ID || other.ID == rLedge.ID)
+            {
+                Bounceback();
+            }
+        }
+
+		private void OnCollisionEnter(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+            if (other.CompareTag("Red"))
+            {
+                // Bounce back if the Moley is using their strawberry powerUp
+                MoleyController ctrl = other.GetComponent<MoleyController>();
+                if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
+                {
+                    Bounceback();
+                }
+                else
+                {
+                    ctrl.TakeDamage();
+                }
+            }
+            else if (other.CompareTag("Blue"))
+            {
+                other.GetComponent<HoleyController>().TakeDamage();
+            }
+
+        }
 
 		private void OnCollisionStay(System.UInt64 otherID)
 		{
@@ -82,7 +106,11 @@ namespace TRE
 				MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
 				{
-					Bounceback();
+					// Not colliding with other ledges
+					if (NotAtLedge())
+                    {
+                        Bounceback();
+                    }
 				}
 				else
 				{
@@ -95,8 +123,15 @@ namespace TRE
 			}
 			else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
-				//Bounceback();
+				Bounceback();
 			}
 		}
+
+		private bool NotAtLedge()
+		{
+			bool atLLedge = PhysicsSystem.IsCollisionEnter(this.ID, lLedge.ID) || PhysicsSystem.IsCollisionStay(this.ID, lLedge.ID) || PhysicsSystem.IsCollisionExit(this.ID, lLedge.ID);
+			bool atRLedge = PhysicsSystem.IsCollisionEnter(this.ID, rLedge.ID) || PhysicsSystem.IsCollisionStay(this.ID, rLedge.ID) || PhysicsSystem.IsCollisionExit(this.ID, rLedge.ID);
+			return !atLLedge && !atRLedge;
+        }
 	}
 }

@@ -50,6 +50,7 @@ namespace TRE
 
 			if (actor0Index >= (1ULL << MAX_ENTITIES_BIT) || actor1Index >= (1ULL << MAX_ENTITIES_BIT))
 			{
+				std::cout << "[SimulationEventCallback] There are more actors/entities than allocated memory, increase MAX_ENTITIES_BIT to change HistoryEntry::m_First and HistoryEntry::m_Second!\n";
 				TRE_ERROR("[SimulationEventCallback] There are more actors/entities than allocated memory, increase MAX_ENTITIES_BIT to change HistoryEntry::m_First and HistoryEntry::m_Second!");
 				assert(false && "Refer to Error above");
 			}
@@ -93,6 +94,7 @@ namespace TRE
 
 			if (actor0Index >= (1ULL << MAX_ENTITIES_BIT) || actor1Index >= (1ULL << MAX_ENTITIES_BIT))
 			{
+				std::cout << "[SimulationEventCallback] There are more actors/entities than allocated memory, increase MAX_ENTITIES_BIT to change HistoryEntry::m_First and HistoryEntry::m_Second!\n";
 				TRE_ERROR("[SimulationEventCallback] There are more actors/entities than allocated memory, increase MAX_ENTITIES_BIT to change HistoryEntry::m_First and HistoryEntry::m_Second!");
 				assert(false && "Refer to Error above");
 			}

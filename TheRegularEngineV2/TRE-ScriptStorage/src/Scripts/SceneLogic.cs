@@ -133,24 +133,25 @@ namespace TRE
                 {
                     forceGoToNextScene = true;
                 }
-                //if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
-                //{
-                //	MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
-                //	moley.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -330);
 
-                //	HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-                //	holey.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -310);
-                //}
+				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
+				{
+					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
+					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -330);
 
-                //if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
-                //{
-                //	MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
-                //	moley.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -170);
+					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
+					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -310);
+				}
 
-                //	HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-                //	holey.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -150);
-                //}
-            }
+				//if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
+				//{
+				//	MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
+				//	moley.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -170);
+
+				//	HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
+				//	holey.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -150);
+				//}
+			}
 
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D3))
 			{
