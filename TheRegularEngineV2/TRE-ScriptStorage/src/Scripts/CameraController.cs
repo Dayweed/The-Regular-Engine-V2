@@ -47,12 +47,12 @@ namespace TRE
 			pos /= 2;
 
 			//make it fixed y so if both players jump, the camera doesnt keep bobbing up and down
-			pos.y = (Math.Max(Player1Transform.Position.y, Player2Transform.Position.y) + pos.y) / 2;
+			pos.y = (Math.Max(Player1Transform.Position.y, Player2Transform.Position.y) + pos.y) / 2f;
 			distance = MathF.Lerp(distance, expectedDistance, lerpSpeed);
 
 			if (lookOnlyBool)
 			{
-				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
+				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
 				//CameraSystem.SetMainCameraLookAt(pos);
 				CameraSystem.SetMainCameraFollow(staticPosition, distance);
 
@@ -61,7 +61,7 @@ namespace TRE
 			}
 			else
 			{
-				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, lerpSpeed);
+				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
 				CameraSystem.SetMainCameraFollow(pos, distance);
 
                 Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;

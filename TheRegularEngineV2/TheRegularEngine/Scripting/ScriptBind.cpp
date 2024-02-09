@@ -1175,19 +1175,19 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraFollow(*target, distance);
 	}
 
-	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
+	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float duration)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, duration);
 	}
 
-	static void BindTransitionMainCameraPosition(glm::vec3* targetPosition, float speed)
+	static void BindTransitionMainCameraPosition(glm::vec3* targetPosition, float duration)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraPosition(*targetPosition, speed);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraPosition(*targetPosition, duration);
 	}
 
-	static void BindTransitionMainCameraRotation(glm::vec3* targetRotation, float speed)
+	static void BindTransitionMainCameraRotation(glm::vec3* targetRotation, float duration)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraRotation(*targetRotation, speed);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraRotation(*targetRotation, duration);
 	}
 
 	static Vector3 BindGetMainCameraPosition()

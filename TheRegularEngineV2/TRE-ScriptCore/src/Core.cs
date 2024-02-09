@@ -712,19 +712,19 @@ namespace TRE
 			Engine_SetMainCameraFollow(target, distance);
 		}
 
-		public static void TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float speed)
+		public static void TransitionMainCamera(vec3 targetPosition, vec3 targetRotation, float duration)
 		{
-			Engine_TransitionMainCamera(targetPosition, targetRotation, speed);
+			Engine_TransitionMainCamera(targetPosition, targetRotation, duration);
 		}
 
-		public static void TransitionMainCameraPosition(vec3 targetPosition, float speed)
+		public static void TransitionMainCameraPosition(vec3 targetPosition, float duration)
 		{
-			Engine_TransitionMainCameraPosition(targetPosition, speed);
+			Engine_TransitionMainCameraPosition(targetPosition, duration);
 		}
 
-		public static void TransitionMainCameraRotation(vec3 targetRotation, float speed)
+		public static void TransitionMainCameraRotation(vec3 targetRotation, float duration)
 		{
-			Engine_TransitionMainCameraRotation(targetRotation, speed);
+			Engine_TransitionMainCameraRotation(targetRotation, duration);
 		}
 
 		public static vec3 GetMainCameraPosition()

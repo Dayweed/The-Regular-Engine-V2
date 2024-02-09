@@ -184,9 +184,9 @@ namespace TRE
 
 		void MainCameraLookAt(const glm::vec3& target);
 		void MainCameraFollow(const glm::vec3& target, const float distance);
-		void TransitionCamera(const glm::vec3& targetPosition, const glm::vec3& targetRotation, const float speed);
-		void TransitionCameraPosition(const glm::vec3& targetPosition, const float speed);
-		void TransitionCameraRotation(const glm::vec3& targetRotation, const float speed);
+		void TransitionCamera(const glm::vec3& targetPosition, const glm::vec3& targetRotation, const float duration);
+		void TransitionCameraPosition(const glm::vec3& targetPosition, const float duration);
+		void TransitionCameraRotation(const glm::vec3& targetRotation, const float duration);
 
 		Entity GetMainCamera();
 

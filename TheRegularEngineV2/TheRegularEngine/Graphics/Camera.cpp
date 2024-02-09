@@ -177,9 +177,11 @@ namespace TRE
 			}
 			if (camera.m_IsTransitioning)
 			{
-				transform.m_Position = glm::mix(camera.m_StartPosition, camera.m_TransitionPosition, camera.m_InterpolationValue);
-				transform.m_Rotation = glm::mix(camera.m_StartRotation, camera.m_TransitionRotation, camera.m_InterpolationValue);
-				camera.m_InterpolationValue += camera.m_InterpolationSpeed * Engine::GetInstance().GetWindow()->GetDeltaTime();
+				const auto dt = Engine::GetInstance().GetWindow()->GetDeltaTime();
+				transform.m_Position = glm::mix(camera.m_StartPosition, camera.m_TransitionPosition, camera.m_InterpolationSpeed * dt);
+				transform.m_Rotation = glm::mix(camera.m_StartRotation, camera.m_TransitionRotation, camera.m_InterpolationSpeed * dt);
+				transform.m_IsDirty = true;
+				//camera.m_InterpolationValue += camera.m_InterpolationSpeed * Engine::GetInstance().GetWindow()->GetDeltaTime();
 				if (camera.m_InterpolationValue >= 1.f)
 				{
 					camera.m_IsTransitioning = false;
@@ -490,7 +492,7 @@ namespace TRE
 		}
 	}
 
-	void CameraSystem::TransitionCamera(const glm::vec3& targetPosition, const glm::vec3& targetRotation, const float speed)
+	void CameraSystem::TransitionCamera(const glm::vec3& targetPosition, const glm::vec3& targetRotation, const float duration)
 	{
 		auto mainCamera = GetMainCamera();
 		if (mainCamera)
@@ -502,11 +504,11 @@ namespace TRE
 			cameraComponent.m_TransitionPosition = targetPosition;
 			cameraComponent.m_StartRotation = cameraTransform.m_Rotation;
 			cameraComponent.m_TransitionRotation = targetRotation;
-			cameraComponent.m_InterpolationSpeed = speed;
+			cameraComponent.m_InterpolationSpeed = 1.f / duration;
 		}
 	}
 
-	void CameraSystem::TransitionCameraPosition(const glm::vec3& targetPosition, const float speed)
+	void CameraSystem::TransitionCameraPosition(const glm::vec3& targetPosition, const float duration)
 	{
 		auto mainCamera = GetMainCamera();
 		if (mainCamera)
@@ -518,11 +520,11 @@ namespace TRE
 			cameraComponent.m_TransitionPosition = targetPosition;
 			cameraComponent.m_StartRotation = cameraTransform.m_Rotation;
 			cameraComponent.m_TransitionRotation = cameraComponent.m_StartRotation;
-			cameraComponent.m_InterpolationSpeed = speed;
+			cameraComponent.m_InterpolationSpeed = 1.f / duration;
 		}
 	}
 
-	void CameraSystem::TransitionCameraRotation(const glm::vec3& targetRotation, const float speed)
+	void CameraSystem::TransitionCameraRotation(const glm::vec3& targetRotation, const float duration)
 	{
 		auto mainCamera = GetMainCamera();
 		if (mainCamera)
@@ -534,7 +536,7 @@ namespace TRE
 			cameraComponent.m_TransitionPosition = cameraComponent.m_StartPosition;
 			cameraComponent.m_StartRotation = cameraTransform.m_Rotation;
 			cameraComponent.m_TransitionRotation = targetRotation;
-			cameraComponent.m_InterpolationSpeed = speed;
+			cameraComponent.m_InterpolationSpeed = 1.f / duration;
 		}
 	}
 
