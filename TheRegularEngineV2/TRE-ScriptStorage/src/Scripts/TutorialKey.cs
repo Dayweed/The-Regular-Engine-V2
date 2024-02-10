@@ -26,6 +26,8 @@ namespace TRE
 
 			if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
 			{
+
+
 				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(80.439f, 12.572f, -424.979f));
 				UpButton.SetActive(false);
 
