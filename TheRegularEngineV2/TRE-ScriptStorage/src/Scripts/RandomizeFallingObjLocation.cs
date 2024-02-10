@@ -107,10 +107,10 @@ namespace TRE
 					size = new vec3(48, 0, 70);
 				}
 
-				if (name == "FallingObj_Spawner_02")
+				/*if (name == "FallingObj_Spawner_02")
 				{
 					size = new vec3(80, 0, 32);
-				}
+				}*/
 			}
 
 
@@ -125,10 +125,9 @@ namespace TRE
 			fallingObjRNG = new List<Entity>(fallingObjPrefabs);
 			maxAmountToSpawn = 3;
 			maxObjects = 3;
-			timeBetweenSpawns = 10;
-			size = new vec3(20, 0, 50);
+			timeBetweenSpawns = 6;
 			canSpawnObjs = true;
-			dropDuration = 2f;
+			dropDuration = 3;
 			minRange = 5.5f;
 			noOfObjects = 0;
 

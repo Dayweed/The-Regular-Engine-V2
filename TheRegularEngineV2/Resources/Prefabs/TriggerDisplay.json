@@ -1,12 +1,13 @@
 [
    [
-      3,
+      4,
       0,
       1,
-      2
+      2,
+      3
    ],
    [
-      3,
+      4,
       0,
       {
          "m_IsMainPrefab": true,
@@ -30,58 +31,80 @@
          "m_Overrides": {},
          "m_PrefabGUID": "12390844818649132362",
          "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "1091796284315141664",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9248190714712775252",
+         "m_RemovedComps": []
       }
    ],
    [
-      3,
+      4,
       0,
       {
          "m_Children": [
-            "11975759477026021857",
-            "1452400649214932687"
+            "18201893757904641042",
+            "15338489667324065802",
+            "11386537736736811606"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "3193244966318519924"
+         "m_Parent": "17884190661208720728"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "3193244966318519924"
+         "m_Parent": "17884190661208720728"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "17884190661208720728"
       }
    ],
    [
-      3,
+      4,
       0,
       {
          "m_Active": true,
-         "m_GUID": "3193244966318519924",
-         "m_Index": 0,
+         "m_GUID": "17884190661208720728",
+         "m_Index": 1,
          "m_Name": "TriggerDisplay",
          "m_Tag": ""
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "11975759477026021857",
-         "m_Index": 0,
+         "m_GUID": "18201893757904641042",
+         "m_Index": 2,
          "m_Name": "Trigger_1",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "1452400649214932687",
-         "m_Index": 0,
+         "m_GUID": "15338489667324065802",
+         "m_Index": 3,
          "m_Name": "Trigger_2",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "11386537736736811606",
+         "m_Index": 4,
+         "m_Name": "Mesh",
          "m_Tag": ""
       }
    ],
    [
-      3,
+      4,
       0,
       {
          "m_Position": [
@@ -95,8 +118,8 @@
             0.0
          ],
          "m_Scale": [
-            5.0,
-            5.0,
+            1.0,
+            1.0,
             1.0
          ]
       },
@@ -113,8 +136,8 @@
             0.0
          ],
          "m_Scale": [
-            4.999999046325684,
-            4.999999046325684,
+            0.9999997615814209,
+            0.9999997615814209,
             1.0
          ]
       },
@@ -131,19 +154,37 @@
             0.0
          ],
          "m_Scale": [
-            4.999999046325684,
-            4.999999046325684,
+            0.9999997615814209,
+            0.9999997615814209,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            90.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
             1.0
          ]
       }
    ],
    [
       1,
-      0,
+      3,
       {
-         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_GEOM_m_RenderObject": "5fe50a36531911e0",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "ASSET_MAT_m_MaterialInstance": "a9dbb363a77ceb51",
          "m_IsVisible": true
       }
    ],
@@ -228,6 +269,9 @@
          ],
          "m_StoredClass": "TRE.HoleCheckTrigger"
       }
+   ],
+   [
+      0
    ],
    [
       0

@@ -14,8 +14,8 @@ namespace TRE
 
 		public List<HoleCheckTrigger> triggersComp;
 
-		private string deactivatedMaterial = "HITW_Center.material";
-		private string activatedMaterial = "HoleCheck_Green.material";
+		private string deactivatedMaterial = "HITW_Display.material";
+		private string activatedMaterial = "HITW_Display_Correct.material";
 
 		private ulong HoleCheckSFX;
 
@@ -26,7 +26,7 @@ namespace TRE
 
 		public void Start()
 		{
-			GetComponent<MeshRenderer>().Material = deactivatedMaterial;
+			parenting.GetChild(2).GetComponent<MeshRenderer>().Material = deactivatedMaterial;
 
 			// Add triggers that are it's child as triggers
 			NoOfTriggers = parenting.GetTotalChildren();
@@ -83,7 +83,7 @@ namespace TRE
 				AudioSystem.Play(HoleCheckSFX);
 			}
 
-			GetComponent<MeshRenderer>().Material = activatedMaterial;
+			parenting.GetChild(2).GetComponent<MeshRenderer>().Material = activatedMaterial;
 
 			/* Material instances GUID
 				> 18cf136263b2c948
