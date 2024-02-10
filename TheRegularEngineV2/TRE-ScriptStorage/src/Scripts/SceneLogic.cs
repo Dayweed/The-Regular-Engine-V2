@@ -74,6 +74,8 @@ namespace TRE
 				List<HoleCheckDisplay> holeCheckDisplays = new List<HoleCheckDisplay>();
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
+				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
+				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 				triggerStars.Add(holeCheckDisplays);
 
 				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
