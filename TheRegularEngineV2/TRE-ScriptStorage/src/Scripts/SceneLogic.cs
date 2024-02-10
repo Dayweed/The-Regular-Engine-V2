@@ -67,8 +67,8 @@ namespace TRE
 			if (currentSceneName == "Tutorial")
 			{
 				// Add for course complete triggers
-				triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
-				triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
+				//triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
+				//triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 
 				// Add for optional stars triggers
 				List<HoleCheckDisplay> holeCheckDisplays = new List<HoleCheckDisplay>();
@@ -76,6 +76,8 @@ namespace TRE
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
+				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_5").GetComponent<HoleCheckDisplay>());
+				holeCheckDisplays.Add(ECSManager.FindEntityByName("TriggerDisplay_6").GetComponent<HoleCheckDisplay>());
 				triggerStars.Add(holeCheckDisplays);
 
 				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
