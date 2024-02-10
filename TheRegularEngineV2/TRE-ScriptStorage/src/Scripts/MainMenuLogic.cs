@@ -24,9 +24,10 @@ namespace TRE
         Entity QuitConfirmationYes;
         Entity QuitConfirmationNo;
 
+		Entity QuitYesNoPointer;
+
 		bool PopupQuitConfirmation = false;
 		bool CurrentButtonSelected = false;
-		bool ConfirmToQuit = false;
         bool selectedOption = false;
 		bool selectedLevel = false;
 		bool selectedQuit = false;
@@ -76,6 +77,7 @@ namespace TRE
             QuitConfirmation = ECSManager.FindEntityByName("QuitConfirmationPopup");
             QuitConfirmationYes = ECSManager.FindEntityByName("YesQuit");
             QuitConfirmationNo = ECSManager.FindEntityByName("NoQuit");
+            QuitYesNoPointer = ECSManager.FindEntityByName("CurrentButtonPointer");
 
             TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
 			TitleQuitGame = ECSManager.FindEntityByName("TitleQuitGame");
@@ -287,8 +289,9 @@ namespace TRE
                     QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = true;
                     QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = true;
                     QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = true;
-					//JumpOutHole();
-				}
+                    QuitYesNoPointer.GetComponent<SpriteRenderer>().isVisible = true;
+
+                }
                 else if (selectedReturn)
 				{
 					selectedReturn = false;
@@ -328,7 +331,8 @@ namespace TRE
                     QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = false;
                     QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = false;
                     QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = false;
-					PopupQuitConfirmation = false;
+                    QuitYesNoPointer.GetComponent<SpriteRenderer>().isVisible = false;
+                    PopupQuitConfirmation = false;
 					
 					vec3 teleportPos = ToQuitSelect.GetComponent<Transform>().Position;
 					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
@@ -340,11 +344,13 @@ namespace TRE
                 if (InputSystem.GetKeyPress(InputKeys.A))
                 {
                     CurrentButtonSelected = true;
+					QuitYesNoPointer.GetComponent<Transform>().Position = QuitConfirmationYes.GetComponent<Transform>().Position;
                 }
 
                 if (InputSystem.GetKeyPress(InputKeys.D))
                 {
                     CurrentButtonSelected = false;
+                    QuitYesNoPointer.GetComponent<Transform>().Position = QuitConfirmationNo.GetComponent<Transform>().Position;
                 }
 
                 if (CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter))
