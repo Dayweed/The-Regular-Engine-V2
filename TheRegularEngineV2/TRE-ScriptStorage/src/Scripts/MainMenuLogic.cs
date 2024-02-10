@@ -287,6 +287,7 @@ namespace TRE
                     QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = true;
                     QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = true;
                     QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = true;
+					//JumpOutHole();
 				}
                 else if (selectedReturn)
 				{
@@ -328,7 +329,12 @@ namespace TRE
                     QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = false;
                     QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = false;
 					PopupQuitConfirmation = false;
-					//There should be a reset camera and holey moley here
+					
+					vec3 teleportPos = ToQuitSelect.GetComponent<Transform>().Position;
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+					JumpOutHole();
+
                 }
 
                 if (InputSystem.GetKeyPress(InputKeys.A))
