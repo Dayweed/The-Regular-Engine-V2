@@ -20,7 +20,14 @@ namespace TRE
 		Entity ToQuitSelect;
 		Entity ToReturnSelect;
 
-		bool selectedOption = false;
+        Entity QuitConfirmation;
+        Entity QuitConfirmationYes;
+        Entity QuitConfirmationNo;
+
+		bool PopupQuitConfirmation = false;
+		bool CurrentButtonSelected = false;
+		bool ConfirmToQuit = false;
+        bool selectedOption = false;
 		bool selectedLevel = false;
 		bool selectedQuit = false;
 		bool selectedReturn = false;
@@ -66,7 +73,11 @@ namespace TRE
 			ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select");
 			ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select");
 
-			TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
+            QuitConfirmation = ECSManager.FindEntityByName("QuitConfirmationPopup");
+            QuitConfirmationYes = ECSManager.FindEntityByName("YesQuit");
+            QuitConfirmationNo = ECSManager.FindEntityByName("NoQuit");
+
+            TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
 			TitleQuitGame = ECSManager.FindEntityByName("TitleQuitGame");
 			TitleStarsCollected = ECSManager.FindEntityByName("TitleStarsCollected");
             Stars1 = ECSManager.FindEntityByName("Star1");
@@ -272,7 +283,10 @@ namespace TRE
                 else if (selectedQuit)
 				{
 					selectedQuit = false;
-					Game.CloseGame();
+					PopupQuitConfirmation = true;
+                    QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = true;
+                    QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = true;
+                    QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = true;
 				}
                 else if (selectedReturn)
 				{
@@ -304,6 +318,34 @@ namespace TRE
 					Scene.TransitionScene("Level_1", 5f);
 				}
 			}
+
+			if (PopupQuitConfirmation)
+            {
+                if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
+                {
+                    CurrentButtonSelected = false;
+                    QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = false;
+                    QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = false;
+                    QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = false;
+					PopupQuitConfirmation = false;
+					//There should be a reset camera and holey moley here
+                }
+
+                if (InputSystem.GetKeyPress(InputKeys.A))
+                {
+                    CurrentButtonSelected = true;
+                }
+
+                if (InputSystem.GetKeyPress(InputKeys.D))
+                {
+                    CurrentButtonSelected = false;
+                }
+
+                if (CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter))
+                {
+                    Game.CloseGame();
+                }
+            }
 
 			// Return controls to moles if they land on the ground
 			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2))
