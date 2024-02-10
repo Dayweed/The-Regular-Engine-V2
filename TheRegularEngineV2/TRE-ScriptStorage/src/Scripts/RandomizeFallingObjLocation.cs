@@ -76,7 +76,9 @@ namespace TRE
 		public int maxObjects;
 		public float dropDuration;
 
-		private float currentTimeBetweenSpawns;
+		public float currentTimeBetweenSpawns;
+
+		public int searchCount;
 		private bool canSpawnObjs = false;
 
 		private float minRange;
@@ -98,6 +100,20 @@ namespace TRE
 
 		public void Start()
 		{
+			if (Scene.GetSceneName() == "Tutorial")
+			{
+				if (name == "FallingObj_Spawner_01")
+				{
+					size = new vec3(48, 0, 70);
+				}
+
+				if (name == "FallingObj_Spawner_02")
+				{
+					size = new vec3(80, 0, 32);
+				}
+			}
+
+
 			itemsToSpawn.Clear();
 			itemsTimer.Clear();
 			itemsPos.Clear();
@@ -109,12 +125,13 @@ namespace TRE
 			fallingObjRNG = new List<Entity>(fallingObjPrefabs);
 			maxAmountToSpawn = 3;
 			maxObjects = 3;
-			timeBetweenSpawns = 2;
-			size = new vec3(20, 0, 50);
+			timeBetweenSpawns = 4;
 			canSpawnObjs = true;
-			dropDuration = 3.5f;
+			dropDuration = 2f;
 			minRange = 5.5f;
 			noOfObjects = 0;
+
+			currentTimeBetweenSpawns = timeBetweenSpawns;
 		}
 
 		// Update is called once per frame
@@ -124,7 +141,7 @@ namespace TRE
 
 			if (InputSystem.GetKeyHold(InputKeys.T))
 			{
-				canSpawnObjs = !canSpawnObjs;
+				//canSpawnObjs = !canSpawnObjs;
 			}
 
 			StartTimer();
@@ -212,7 +229,7 @@ namespace TRE
 
 		public void StartTimer()
 		{
-			if (!canSpawnObjs) return;
+			//if (!canSpawnObjs) return;
 
 			if (currentTimeBetweenSpawns > 0)
 			{
