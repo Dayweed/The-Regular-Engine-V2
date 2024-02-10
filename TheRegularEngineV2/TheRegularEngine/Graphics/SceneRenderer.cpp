@@ -163,16 +163,6 @@ namespace TRE
 
 		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
 			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
-
-		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
-		RenderPassInfo RPConfig{};
-		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		RPConfig.ImageFormat = SC->GetColorFormat();
-		RPConfig.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		RPConfig.DepthImageFormat = SC->GetDepthFormat();
-		RPConfig.DepthEnabled = true;
-		RPConfig.ClearColor = false;
-		m_Sprite3DRenderPass = std::make_shared<RenderPass>(m_Device, RPConfig);
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -542,7 +532,11 @@ namespace TRE
 		if (m_IsEditorScene == false)
 		{
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+
+			Profiler::Instance().StartTimer("FontPass");
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+			Profiler::Instance().EndTimer("FontPass");
+
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
 
@@ -558,16 +552,15 @@ namespace TRE
 
 		auto AllSprites = ECSManager::Instance().GetEntities<Sprite3DComponent>();
 		std::sort(AllSprites.begin(), AllSprites.end(), [](const Entity& e1, const Entity& e2)
-			{
-				auto Comp1 = e1->GetComponent<Transform>();
-				auto Comp2 = e2->GetComponent<Transform>();
+		{
+			auto Comp1 = e1->GetComponent<Transform>();
+			auto Comp2 = e2->GetComponent<Transform>();
 
-				return Comp1.m_Position.z < Comp2.m_Position.z;
-			});
+			return Comp1.m_Position.z < Comp2.m_Position.z;
+		});
 
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageIndex = SC->GetCurrentImageIndex();
-		m_Sprite3DRenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
 		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
 		for (auto Entity : AllSprites)
 		{
