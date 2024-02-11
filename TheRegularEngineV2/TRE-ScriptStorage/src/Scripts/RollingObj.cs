@@ -22,7 +22,7 @@ namespace TRE
 		Entity lLedge;
 		Entity rLedge;
 
-		private float moveSpeed = 15.0f;
+		private float moveSpeed = 18.0f;
 		private float rotateSpeed = 200.0f;
 
 		private float cooldown = 0f;
@@ -42,6 +42,19 @@ namespace TRE
 			// Rotate moveVector based on angle
 			moveVector = TransformSystem.RotateVector(defaultVector, parent.transform.Rotation);
 			rotateVector = new vec3(moveVector.z, moveVector.y, -moveVector.x);
+
+			if (Scene.GetSceneName() == "Level_1")
+			{
+				if (parent.name == "RollingObject_4" || parent.name == "RollingObject_5" || parent.name == "RollingObject_6")
+				{
+					moveSpeed = 25.0f;
+				}
+
+				if (parent.name == "RollingObject_7" || parent.name == "RollingObject_8" || parent.name == "RollingObject_9" || parent.name == "RollingObject_10")
+				{
+					moveSpeed = 32.0f;
+				}
+			}
 		}
 
 		public void Update()

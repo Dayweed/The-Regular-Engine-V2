@@ -110,11 +110,11 @@ namespace TRE
 
 			if (regionE)
 			{
-				cameraController.staticPosition = new vec3(130, 50, -204);
+				cameraController.staticPosition = new vec3(320, 45, -330);
 				cameraController.lookOnlyBool = true;
-				expectedPosition = new vec3(112, 82, -207);
-				expectedRotation = new vec3(50, 90, 0);
-				expectedDistance = 60;
+				expectedPosition = new vec3(260, 99, -335);
+				expectedRotation = new vec3(45, 90, 0);
+				expectedDistance = 80;
 			}
 
 			if (regionF)
