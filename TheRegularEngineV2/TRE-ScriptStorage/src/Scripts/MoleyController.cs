@@ -32,6 +32,7 @@ namespace TRE
 		//Check if player is walking
 		public bool isWalking = false;
 		private bool walkingSFXPlayed = false;
+		private bool fallingSFXPlayed = false;
 
 		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling
@@ -277,7 +278,8 @@ namespace TRE
 					isDead = false;
 					RespawnPlayer = false;
 					RespawnTimer = 1.5f;
-				}
+                    fallingSFXPlayed = false;
+                }
 			}
 
 			#region UI Popup Region
@@ -611,8 +613,11 @@ namespace TRE
 
 			if (DroppingOutOfMap)
 			{
-				if (ECSManager.IsValidEntity(fallSFX))
-					AS.Play(fallSFX);
+				if (ECSManager.IsValidEntity(fallSFX) && !fallingSFXPlayed)
+				{
+					fallingSFXPlayed = true;
+                    AS.Play(fallSFX);
+                }
 			}
 		}
 
@@ -761,7 +766,7 @@ namespace TRE
 			{
 				RespawnPlayer = true;
 				isDead = true;
-			}
+            }
 			Invulnerability = true;
 
 			// Commenting out for now until IsActivated is cfm not needed
