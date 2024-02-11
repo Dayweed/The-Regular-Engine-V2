@@ -272,7 +272,7 @@ namespace TRE
             #region Stars
             if (ECSManager.IsValidEntity(StarsCollected.ID))
 			{
-				if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
+				//if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
 				// Do for stars collected
 				vec3 titleStarsCollectedPos = StarsCollected.GetComponent<Transform>().Position;
 				if (StarEmerge != null && StarEmerge.ReachEndPosition())
@@ -283,18 +283,18 @@ namespace TRE
 					timerCurrent = timerDisplay;
 					displayStars = true;
 				}
-				else if (!displayStars && timerCurrent <= 0.0f)
-				{
-					goalYPos = hiddenYPos;
-				}
+				//else if (!displayStars && timerCurrent <= 0.0f)
+				//{
+				//	goalYPos = hiddenYPos;
+				//}
 				// Lerp title to pos
-				float titleStarsCollectedPosY = MathF.Lerp(StarsCollected.GetComponent<Transform>().Position.y, goalYPos, titleMoveSpeed * Time.deltaTime);
-				StarsCollected.GetComponent<Transform>().Position = new vec3(titleStarsCollectedPos.x, titleStarsCollectedPosY, titleStarsCollectedPos.z);
+				//float titleStarsCollectedPosY = MathF.Lerp(StarsCollected.GetComponent<Transform>().Position.y, goalYPos, titleMoveSpeed * Time.deltaTime);
+				//StarsCollected.GetComponent<Transform>().Position = new vec3(titleStarsCollectedPos.x, titleStarsCollectedPosY, titleStarsCollectedPos.z);
 				// Resume Text Bounce if it is close to the position
-				if (goalYPos == displayYPos && Math.Abs(titleStarsCollectedPosY - titleStarsCollectedPos.y) < titleOffset)
-				{
-					displayStars = false;
-				}
+				//if (goalYPos == displayYPos && Math.Abs(titleStarsCollectedPosY - titleStarsCollectedPos.y) < titleOffset)
+				//{
+				//	displayStars = false;
+				//}
 			}
 			#endregion
 
