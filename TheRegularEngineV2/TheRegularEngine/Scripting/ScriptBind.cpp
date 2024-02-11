@@ -1908,7 +1908,7 @@ namespace TRE
 		if (!entity->HasComponent<Audio>())
 		{
 			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
-			return;
+			return mono_string_new(mono_domain_get(), "");
 		}
 
 		return mono_string_new(mono_domain_get(), ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetFileName(entity).c_str());
@@ -1922,7 +1922,7 @@ namespace TRE
 		if (!entity->HasComponent<Audio>())
 		{
 			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
-			return;
+			return false;
 		}
 
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
