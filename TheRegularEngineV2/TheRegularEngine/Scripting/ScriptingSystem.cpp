@@ -309,10 +309,13 @@ namespace TRE
 #ifdef GAME
 		
 #else
-		if (!event.m_IsSimulating && event.m_Playing == true)
+		if (Engine::GetInstance().GetEngineInfo().EnableGame == false)
 		{
-			ScriptEngine::RecompileScripts();
-			ScriptEngine::ReloadAssembly();
+			if (!event.m_IsSimulating && event.m_Playing == true)
+			{
+				ScriptEngine::RecompileScripts();
+				ScriptEngine::ReloadAssembly();
+			}
 		}
 #endif
 	}
