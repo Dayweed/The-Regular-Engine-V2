@@ -20,6 +20,7 @@ namespace TRE
 		private float distance = 20;
 
 		public vec3 staticPosition;
+		private vec3 finalStaticPosition;
 
 		public vec3 expectedPosition;
 		public vec3 expectedRotation;
@@ -54,19 +55,22 @@ namespace TRE
 			{
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
 				//CameraSystem.SetMainCameraLookAt(pos);
-				CameraSystem.SetMainCameraFollow(staticPosition, distance);
-
-				Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
-				Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
+				//finalStaticPosition = pos;
+				finalStaticPosition.x = MathF.Lerp(finalStaticPosition.x, staticPosition.x, lerpSpeed);
+				finalStaticPosition.y = MathF.Lerp(finalStaticPosition.y, staticPosition.y, lerpSpeed);
+				finalStaticPosition.z = MathF.Lerp(finalStaticPosition.z, staticPosition.z, lerpSpeed);
+				//CameraSystem.SetMainCameraFollow(finalStaticPosition, distance);
+				CameraSystem.SetMainCameraFollow(finalStaticPosition, distance);
 			}
 			else
 			{
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
 				CameraSystem.SetMainCameraFollow(pos, distance);
-
-                Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
-                Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
+				finalStaticPosition = pos;
 			}
+
+			Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
+			Player2.GetComponent<HoleyController>().turnDirection = (int)expectedRotation.y;
 		}
 	}
 }
