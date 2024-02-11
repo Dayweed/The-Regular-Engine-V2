@@ -604,7 +604,7 @@ namespace TRE
 										assetName.erase(assetName.find(".ttf"));
 										assetName += ".ttf";
 										
-										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Assets/Font/" + assetName;
+										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Resources/Font/" + assetName;
 										
 										//Load Font here
 										FontRenderer::LoadFont(FilePath);

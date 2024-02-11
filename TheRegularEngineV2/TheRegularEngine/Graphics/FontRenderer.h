@@ -59,7 +59,7 @@ namespace TRE
 			static std::vector<std::string> m_AvailableFonts;
 			static std::unordered_map<std::string, std::unordered_map<char, Character>> m_Characters; //Per Font Type
 
-			std::string m_DefaultFontFilepath = "../Assets/Font/arial.ttf";
+			std::string m_DefaultFontFilepath = "../Resources/Font/arial.ttf";
 
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
