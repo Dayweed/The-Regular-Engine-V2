@@ -18,6 +18,7 @@ namespace TRE
 		std::shared_ptr<Material>		m_AnimationMaterialInstance;
 		Collision::Sphere3D				m_BoundingSphere;
 		bool							m_IsVisible{ true };
+		bool							m_DrawShadow{ true };
 		bool							m_IsCulled{ false };
 		bool							m_IsDirty{ false };
 
@@ -30,6 +31,7 @@ namespace TRE
 				{ "ASSET_MAT_m_MaterialInstance", t.m_MaterialInstance ? t.m_MaterialInstance->GetHandleHex() : "0" },
 				{ "ASSET_MAT_m_AnimationMaterialInstance", t.m_AnimationMaterialInstance ? t.m_AnimationMaterialInstance->GetHandleHex() : "0" },
 				{ "m_IsVisible", t.m_IsVisible },	
+				{ "m_DrawShadow", t.m_DrawShadow }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, MeshRenderer& t)
@@ -112,6 +114,10 @@ namespace TRE
 
 			if(j.contains("m_IsVisible"))
 				t.m_IsVisible = j.at("m_IsVisible").get<bool>();
+
+			if(j.contains("m_DrawShadow"))
+				t.m_DrawShadow = j.at("m_DrawShadow").get<bool>();
+
 			t.m_IsDirty = true;
 		}
 	};
@@ -207,6 +213,7 @@ property_begin(TRE::MeshRenderer)
 		}
 
 	} property_var_fnend(),
-	property_var(m_IsVisible)
+	property_var(m_IsVisible),
+	property_var(m_DrawShadow)
 
 } property_vend_h(TRE::MeshRenderer)

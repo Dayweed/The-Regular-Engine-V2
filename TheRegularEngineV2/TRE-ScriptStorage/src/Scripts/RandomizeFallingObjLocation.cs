@@ -234,12 +234,12 @@ namespace TRE
 			if (currentTimeBetweenSpawns > 0)
 			{
 				//itemsToSpawn.Clear();
-				Debug.Log("Time Between Spawn = " + currentTimeBetweenSpawns);
+				//Debug.Log("Time Between Spawn = " + currentTimeBetweenSpawns);
 				currentTimeBetweenSpawns -= Time.deltaTime;
 			}
 			else
 			{
-                Debug.Log("Create New Random Spawns");
+                //Debug.Log("Create New Random Spawns");
                 for (int i = 0; i < maxAmountToSpawn; i++)
 				{
 					CreateItems(maxAmountToSpawn);

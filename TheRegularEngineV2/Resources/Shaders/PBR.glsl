@@ -23,11 +23,13 @@ layout(location = 0) out struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
+	bool DrawShadow;
 } Out;
 
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
+	bool m_DrawShadow;
 } push;
 
 layout(set = 0, binding = 0) uniform UBO
@@ -76,6 +78,7 @@ void main()
 	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection;
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor;
 	Out.ShadowIntensity = ubo.m_ShadowIntensity;
+	Out.DrawShadow = push.m_DrawShadow;
 }
 
 #version 450
@@ -88,7 +91,7 @@ layout(location = 0) in struct
 	vec4 PosWorld; //w for gamma correction
 	vec3 VertColor;
 	vec2 TexCoord;
-	vec4 MaterialColor;
+	vec4 MaterialColor; //Material color
 	vec4 AmbientColor;
 	vec4 ShadowCoord;
 	vec4 DirectionalLightDirection;
@@ -96,7 +99,14 @@ layout(location = 0) in struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
+	bool DrawShadow;
 } In;
+
+layout(push_constant) uniform Push
+{
+	mat4 m_Model;
+	bool m_DrawShadow;
+} push;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
@@ -203,7 +213,14 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	if(push.m_DrawShadow)
+	{
+		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	}
+	else
+	{
+		outColor.rgb = ambient * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	}
 
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );

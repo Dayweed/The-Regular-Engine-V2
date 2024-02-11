@@ -24,6 +24,13 @@ namespace TRE
 	class BaseCamera;
 	class FontRenderer;
 
+	//To be used by normmal geometry and animation geometry
+	struct PushConstantGeometry
+	{
+		glm::mat4 m_Model;
+		bool m_DrawShadow{ true };
+	};
+
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world

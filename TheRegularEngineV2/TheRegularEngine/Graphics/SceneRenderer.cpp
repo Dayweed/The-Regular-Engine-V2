@@ -610,9 +610,10 @@ namespace TRE
 
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
-			PushConstant pc{};
+			PushConstantGeometry pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			pc.m_DrawShadow = mr.m_DrawShadow;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			ResourceHandle currentMaterialHandle = go_mr.first;
 
@@ -668,9 +669,10 @@ namespace TRE
 
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 
-			PushConstant pc{};
+			PushConstantGeometry pc{};
 			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			pc.m_DrawShadow = MeshRendererComp.m_DrawShadow;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			if (MeshRendererComp.m_AnimationMaterialInstance == nullptr)
 			{
