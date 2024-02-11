@@ -48,10 +48,12 @@ namespace TRE
 		private ulong endsceneBGM;
 		private ulong mainBGM;
 
-        Entity blueberryPrefab = new Entity(7670209894207584463);
-        Entity strawberryPrefab = new Entity(13004780274330328106);
-		Entity blueberryCheat;
-		Entity strawberryCheat;
+        //Entity blueberryPrefab = new Entity(7670209894207584463);
+        //Entity strawberryPrefab = new Entity(13004780274330328106);
+
+		Entity EndingFlagTrigger;
+        Entity Holey;
+        Entity Moley;
 
         public void Start()
 		{
@@ -127,7 +129,12 @@ namespace TRE
 			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
 			StarParticle.GetComponent<Particle>().IsActive = false;
 
-			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
+			//For ending flag
+			EndingFlagTrigger = ECSManager.FindEntityByName("EndingTrigger");
+			Holey = ECSManager.FindEntityByName("Holey's Head Collider");
+            Moley = ECSManager.FindEntityByName("Moley's Head Collider");
+
+            endsceneBGM = ECSManager.FindIDFromName("BGM_End");
 			mainBGM = ECSManager.FindIDFromName("BGM");
 		}
 
@@ -307,6 +314,12 @@ namespace TRE
 						return;
 					}
 				}
+			}
+
+			if (PhysicsSystem.IsTriggerStay(Holey.ID, EndingFlagTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, EndingFlagTrigger.ID))
+			{
+				//Debug.Log("NEXT SCENE");
+				goToNextScene = true;
 			}
 
 			//go to next scene after a while
