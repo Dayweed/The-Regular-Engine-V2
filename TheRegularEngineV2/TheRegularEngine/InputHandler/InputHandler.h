@@ -76,5 +76,7 @@ namespace TRE
 		//static std::unordered_map<int, int> m_keyTriggerMap;
 		static std::unordered_map<int, bool> m_keyPreviousPress;
 		static std::unordered_map<int, bool> m_keyPreviousRelease;
+		//static std::unordered_map<int, bool> m_keyPress;
+		//static std::unordered_map<int , bool> m_keyRelease;
 	};
 }
