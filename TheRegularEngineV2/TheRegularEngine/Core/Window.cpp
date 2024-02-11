@@ -43,15 +43,15 @@ namespace TRE
 			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
 
-			glfwWindowHint(GLFW_DECORATED, false);
+			//glfwWindowHint(GLFW_DECORATED, false);
 			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-			glfwWindowHint(GLFW_AUTO_ICONIFY, false);
+			//glfwWindowHint(GLFW_AUTO_ICONIFY, false);
 			m_WindowHandle = glfwCreateWindow(mode->width, mode->height, m_Config.Title.c_str(), primaryMonitor, nullptr);
 
-			glfwFocusWindow(m_WindowHandle);
+			//glfwFocusWindow(m_WindowHandle);
 		}
 		else
 			m_WindowHandle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.Title.c_str(), nullptr, nullptr);
