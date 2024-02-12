@@ -289,7 +289,7 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, MultiLineString>)
 							{
 								std::string Text = Value.Text.c_str();
-								char buffer[512];
+								char buffer[2048];
 								std::strcpy(buffer, Text.c_str());
 								if (ImGui::InputTextMultiline("##Text", buffer, sizeof(buffer)))
 								{
