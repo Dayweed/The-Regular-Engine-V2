@@ -49,12 +49,16 @@ namespace TRE
 			for (int i = 0; i < entity.parenting.GetTotalChildren(); ++i)
 			{
 				Entity child = entity.parenting.GetChild(i);
-				if (HasComponent<SpriteRenderer>())
+				if (child.HasComponent<SpriteRenderer>())
 				{
 					SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
 					spriteRenderer.Color = new vec4(spriteRenderer.Color.x, spriteRenderer.Color.y, spriteRenderer.Color.z, alpha);
-				}
-				UpdateChildren(child, alpha);
+                }
+                else if (child.HasComponent<Text>())
+                {
+                    child.GetComponent<Text>().IsVisible = true;
+                }
+                UpdateChildren(child, alpha);
             }
 		}
 
@@ -62,15 +66,19 @@ namespace TRE
         {
             if (fading) return;
 
-            MyRenderer = GetComponent<SpriteRenderer>();
-            OriginalColor = MyRenderer.Color;
 
-            MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, 0);
-			UpdateChildren(this, 0);
+			if (HasComponent<SpriteRenderer>())
+			{
+				MyRenderer = GetComponent<SpriteRenderer>();
+				OriginalColor = MyRenderer.Color;
 
-            MyRenderer.isVisible = true;
-			fading = true;
-			doneFading = false;
+				MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, 0);
+				UpdateChildren(this, 0);
+
+				MyRenderer.isVisible = true;
+				fading = true;
+				doneFading = false;
+			}
         }
 
 		public bool DoneFading()

@@ -212,33 +212,35 @@
       20,
       4194476,
       {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      7340205,
-      {
          "m_Children": [
-            "15713678243113056892"
+            "12240050361697776836"
          ],
          "m_Parent": ""
       },
-      3145899,
-      {
-         "m_Children": [],
-         "m_Parent": "17241056601820338248"
-      },
-      3145898,
-      {
-         "m_Children": [],
-         "m_Parent": "10214686609734549272"
-      },
-      7340199,
+      7340205,
       {
          "m_Children": [
             "6901260880769456738",
             "13532880202510778061"
          ],
          "m_Parent": ""
+      },
+      3145899,
+      {
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
+      },
+      3145898,
+      {
+         "m_Children": [
+            "15713678243113056892"
+         ],
+         "m_Parent": ""
+      },
+      7340199,
+      {
+         "m_Children": [],
+         "m_Parent": "17241056601820338248"
       },
       6291624,
       {
@@ -248,20 +250,23 @@
       2097326,
       {
          "m_Children": [],
-         "m_Parent": "3433984361522152253"
+         "m_Parent": ""
       },
       2097328,
+      {
+         "m_Children": [
+            "10509983312603211974",
+            "11183254074830409399"
+         ],
+         "m_Parent": ""
+      },
+      2097329,
       {
          "m_Children": [
             "1906000498434737128",
             "12357215472430049702"
          ],
          "m_Parent": ""
-      },
-      2097329,
-      {
-         "m_Children": [],
-         "m_Parent": "10214686609734549272"
       },
       2097330,
       {
@@ -276,54 +281,49 @@
       1048742,
       {
          "m_Children": [],
-         "m_Parent": ""
+         "m_Parent": "7139267631116052954"
       },
       1048740,
       {
          "m_Children": [],
-         "m_Parent": "11400480438197261567"
+         "m_Parent": ""
       },
       1048739,
       {
          "m_Children": [],
-         "m_Parent": ""
+         "m_Parent": "10214686609734549272"
       },
       1048738,
       {
          "m_Children": [],
-         "m_Parent": ""
+         "m_Parent": "10214686609734549272"
       },
       1048737,
-      {
-         "m_Children": [
-            "12240050361697776836"
-         ],
-         "m_Parent": ""
-      },
-      1048736,
-      {
-         "m_Children": [
-            "10509983312603211974",
-            "11183254074830409399"
-         ],
-         "m_Parent": ""
-      },
-      1048735,
-      {
-         "m_Children": [],
-         "m_Parent": "7139267631116052954"
-      },
-      1048733,
       {
          "m_Children": [],
          "m_Parent": "9262580962873091563"
       },
-      1048732,
+      1048736,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048735,
       {
          "m_Children": [
             "1016836630051144605",
             "3563870734590726976"
          ],
+         "m_Parent": ""
+      },
+      1048733,
+      {
+         "m_Children": [],
+         "m_Parent": "11400480438197261567"
+      },
+      1048732,
+      {
+         "m_Children": [],
          "m_Parent": ""
       }
    ],
@@ -332,12 +332,28 @@
       4194476,
       {
          "m_Active": true,
-         "m_GUID": "12103431087554446731",
-         "m_Index": 2,
-         "m_Name": "Background",
+         "m_GUID": "11400480438197261567",
+         "m_Index": 8,
+         "m_Name": "Frame3",
          "m_Tag": ""
       },
       7340205,
+      {
+         "m_Active": false,
+         "m_GUID": "7139267631116052954",
+         "m_Index": 16,
+         "m_Name": "Frame6",
+         "m_Tag": ""
+      },
+      3145899,
+      {
+         "m_Active": true,
+         "m_GUID": "3563870734590726976",
+         "m_Index": 12,
+         "m_Name": "InvitationDialogue",
+         "m_Tag": ""
+      },
+      3145898,
       {
          "m_Active": true,
          "m_GUID": "9262580962873091563",
@@ -345,28 +361,12 @@
          "m_Name": "Frame1",
          "m_Tag": ""
       },
-      3145899,
+      7340199,
       {
          "m_Active": false,
          "m_GUID": "10509983312603211974",
          "m_Index": 14,
          "m_Name": "MolesThinking",
-         "m_Tag": ""
-      },
-      3145898,
-      {
-         "m_Active": true,
-         "m_GUID": "12357215472430049702",
-         "m_Index": 7,
-         "m_Name": "MolesFront",
-         "m_Tag": ""
-      },
-      7340199,
-      {
-         "m_Active": false,
-         "m_GUID": "7139267631116052954",
-         "m_Index": 16,
-         "m_Name": "Frame6",
          "m_Tag": ""
       },
       6291624,
@@ -380,25 +380,25 @@
       2097326,
       {
          "m_Active": true,
-         "m_GUID": "3563870734590726976",
-         "m_Index": 12,
-         "m_Name": "InvitationDialogue",
+         "m_GUID": "5085728504128975660",
+         "m_Index": 19,
+         "m_Name": "SpaceToContinue",
          "m_Tag": ""
       },
       2097328,
       {
-         "m_Active": true,
-         "m_GUID": "10214686609734549272",
-         "m_Index": 5,
-         "m_Name": "Frame2",
+         "m_Active": false,
+         "m_GUID": "17241056601820338248",
+         "m_Index": 13,
+         "m_Name": "Frame5",
          "m_Tag": ""
       },
       2097329,
       {
          "m_Active": true,
-         "m_GUID": "1906000498434737128",
-         "m_Index": 6,
-         "m_Name": "Door",
+         "m_GUID": "10214686609734549272",
+         "m_Index": 5,
+         "m_Name": "Frame2",
          "m_Tag": ""
       },
       2097330,
@@ -419,61 +419,37 @@
       },
       1048742,
       {
-         "m_Active": true,
-         "m_GUID": "10686246506118743920",
-         "m_Index": 0,
-         "m_Name": "Main Camera",
-         "m_Tag": ""
-      },
-      1048740,
-      {
-         "m_Active": true,
-         "m_GUID": "12240050361697776836",
-         "m_Index": 9,
-         "m_Name": "Letter",
-         "m_Tag": ""
-      },
-      1048739,
-      {
-         "m_Active": true,
-         "m_GUID": "15445797279152701459",
-         "m_Index": 1,
-         "m_Name": "Directional Light",
-         "m_Tag": ""
-      },
-      1048738,
-      {
-         "m_Active": true,
-         "m_GUID": "5085728504128975660",
-         "m_Index": 19,
-         "m_Name": "SpaceToContinue",
-         "m_Tag": ""
-      },
-      1048737,
-      {
-         "m_Active": true,
-         "m_GUID": "11400480438197261567",
-         "m_Index": 8,
-         "m_Name": "Frame3",
-         "m_Tag": ""
-      },
-      1048736,
-      {
-         "m_Active": false,
-         "m_GUID": "17241056601820338248",
-         "m_Index": 13,
-         "m_Name": "Frame5",
-         "m_Tag": ""
-      },
-      1048735,
-      {
          "m_Active": false,
          "m_GUID": "13532880202510778061",
          "m_Index": 18,
          "m_Name": "MolesBack",
          "m_Tag": ""
       },
-      1048733,
+      1048740,
+      {
+         "m_Active": true,
+         "m_GUID": "12103431087554446731",
+         "m_Index": 2,
+         "m_Name": "Background",
+         "m_Tag": ""
+      },
+      1048739,
+      {
+         "m_Active": true,
+         "m_GUID": "1906000498434737128",
+         "m_Index": 6,
+         "m_Name": "Door",
+         "m_Tag": ""
+      },
+      1048738,
+      {
+         "m_Active": true,
+         "m_GUID": "12357215472430049702",
+         "m_Index": 7,
+         "m_Name": "MolesFront",
+         "m_Tag": ""
+      },
+      1048737,
       {
          "m_Active": true,
          "m_GUID": "15713678243113056892",
@@ -481,12 +457,36 @@
          "m_Name": "Bird",
          "m_Tag": ""
       },
-      1048732,
+      1048736,
+      {
+         "m_Active": true,
+         "m_GUID": "15445797279152701459",
+         "m_Index": 1,
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      1048735,
       {
          "m_Active": true,
          "m_GUID": "3433984361522152253",
          "m_Index": 10,
          "m_Name": "Frame4",
+         "m_Tag": ""
+      },
+      1048733,
+      {
+         "m_Active": true,
+         "m_GUID": "12240050361697776836",
+         "m_Index": 9,
+         "m_Name": "Letter",
+         "m_Tag": ""
+      },
+      1048732,
+      {
+         "m_Active": true,
+         "m_GUID": "10686246506118743920",
+         "m_Index": 0,
+         "m_Name": "Main Camera",
          "m_Tag": ""
       }
    ],
@@ -513,7 +513,7 @@
       7340205,
       {
          "m_Position": [
-            -400.0,
+            400.0,
             -100.0,
             0.0
          ],
@@ -531,8 +531,8 @@
       3145899,
       {
          "m_Position": [
-            -400.0,
-            100.0,
+            -872.0,
+            -409.0,
             0.0
          ],
          "m_Rotation": [
@@ -541,21 +541,21 @@
             0.0
          ],
          "m_Scale": [
-            1.0,
-            1.0,
+            17.0,
+            17.0,
             1.0
          ]
       },
       3145898,
       {
          "m_Position": [
-            400.0,
-            96.47633361816406,
+            -400.0,
+            -100.0,
             0.0
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
@@ -567,13 +567,13 @@
       7340199,
       {
          "m_Position": [
-            400.0,
-            -100.0,
+            -400.0,
+            100.0,
             0.0
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -603,25 +603,25 @@
       2097326,
       {
          "m_Position": [
-            -1130.0,
-            -590.0,
+            675.0,
+            489.9150085449219,
             0.0
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
-            24.0,
-            24.0,
+            1.0,
+            1.0,
             1.0
          ]
       },
       2097328,
       {
          "m_Position": [
-            400.0,
+            -400.0,
             100.0,
             0.0
          ],
@@ -645,7 +645,7 @@
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
@@ -693,13 +693,13 @@
       1048742,
       {
          "m_Position": [
-            0.0,
-            0.0,
+            400.0,
+            -103.52366638183594,
             0.0
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -717,7 +717,7 @@
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
@@ -729,13 +729,13 @@
       1048739,
       {
          "m_Position": [
-            0.0,
-            0.0,
+            400.0,
+            100.0,
             0.0
          ],
          "m_Rotation": [
-            45.0,
-            45.0,
+            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -747,13 +747,13 @@
       1048738,
       {
          "m_Position": [
-            675.0,
-            489.9150085449219,
+            400.0,
+            96.47633361816406,
             0.0
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            -0.0,
             0.0
          ],
          "m_Scale": [
@@ -765,43 +765,7 @@
       1048737,
       {
          "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048736,
-      {
-         "m_Position": [
             -400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048735,
-      {
-         "m_Position": [
-            400.0,
             -103.52366638183594,
             0.0
          ],
@@ -816,11 +780,47 @@
             1.0
          ]
       },
+      1048736,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048735,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
       1048733,
       {
          "m_Position": [
-            -400.0,
-            -103.52366638183594,
+            0.0,
+            0.0,
             0.0
          ],
          "m_Rotation": [
@@ -858,7 +858,7 @@
    ],
    [
       1,
-      1048742,
+      1048732,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -896,7 +896,7 @@
    ],
    [
       1,
-      1048739,
+      1048736,
       {
          "m_AmbientColor": [
             1.0,
@@ -929,9 +929,10 @@
       4194476,
       {
          "m_RegisteredScripts": [
-            "TRE.CutsceneStartLogic"
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
          ],
-         "m_StoredClass": "TRE.CutsceneStartLogic"
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       },
       7340205,
       {
@@ -944,11 +945,19 @@
       3145898,
       {
          "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097326,
+      {
+         "m_RegisteredScripts": [
             "TRE.TextBounce"
          ],
          "m_StoredClass": "TRE.TextBounce"
       },
-      7340199,
+      2097328,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -956,7 +965,7 @@
          ],
          "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       },
-      2097328,
+      2097329,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -971,6 +980,20 @@
          ],
          "m_StoredClass": "TRE.TextBounce"
       },
+      1048742,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048740,
+      {
+         "m_RegisteredScripts": [
+            "TRE.CutsceneStartLogic"
+         ],
+         "m_StoredClass": "TRE.CutsceneStartLogic"
+      },
       1048738,
       {
          "m_RegisteredScripts": [
@@ -981,34 +1004,11 @@
       1048737,
       {
          "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      1048736,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+         "m_StoredClass": "TRE.TextBounce"
       },
       1048735,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      1048733,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      1048732,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -1025,15 +1025,29 @@
             0.0,
             0.0,
             0.0,
-            1.0
+            0.0
          ],
-         "Height": 1080,
-         "RenderLayer": 0,
-         "Texture": "42417b1f6a921655",
-         "Width": 1920,
+         "Height": 340,
+         "RenderLayer": 4,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 450,
          "m_IsVisible": true
       },
       7340205,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      3145898,
       {
          "Color": [
             1.0,
@@ -1047,7 +1061,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      3145899,
+      7340199,
       {
          "Color": [
             1.0,
@@ -1060,34 +1074,6 @@
          "Texture": "d2b7b9330e97ab54",
          "Width": 325,
          "m_IsVisible": true
-      },
-      3145898,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 3,
-         "Texture": "8fe33bdf2b002fea",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      7340199,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 8,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": false
       },
       6291624,
       {
@@ -1103,7 +1089,35 @@
          "Width": 960,
          "m_IsVisible": true
       },
+      2097326,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "RenderLayer": 10,
+         "Texture": "1ce7be912b11ab28",
+         "Width": 340,
+         "m_IsVisible": true
+      },
       2097328,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      2097329,
       {
          "Color": [
             0.0,
@@ -1114,20 +1128,6 @@
          "Height": 340,
          "RenderLayer": 0,
          "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      2097329,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 2,
-         "Texture": "fa5fd90239c7140e",
          "Width": 325,
          "m_IsVisible": true
       },
@@ -1159,63 +1159,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      1048740,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 5,
-         "Texture": "4fb260cc2440d17f",
-         "Width": 450,
-         "m_IsVisible": true
-      },
-      1048738,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 42,
-         "RenderLayer": 5,
-         "Texture": "1ce7be912b11ab28",
-         "Width": 340,
-         "m_IsVisible": true
-      },
-      1048737,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 4,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 450,
-         "m_IsVisible": true
-      },
-      1048736,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 8,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": false
-      },
-      1048735,
+      1048742,
       {
          "Color": [
             1.0,
@@ -1229,7 +1173,49 @@
          "Width": 325,
          "m_IsVisible": false
       },
-      1048733,
+      1048740,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 1080,
+         "RenderLayer": 0,
+         "Texture": "42417b1f6a921655",
+         "Width": 1920,
+         "m_IsVisible": true
+      },
+      1048739,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 2,
+         "Texture": "fa5fd90239c7140e",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      1048738,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 3,
+         "Texture": "8fe33bdf2b002fea",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      1048737,
       {
          "Color": [
             1.0,
@@ -1243,7 +1229,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      1048732,
+      1048735,
       {
          "Color": [
             0.0,
@@ -1255,6 +1241,20 @@
          "RenderLayer": 6,
          "Texture": "37faee16ba9f9e67",
          "Width": 960,
+         "m_IsVisible": true
+      },
+      1048733,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 5,
+         "Texture": "4fb260cc2440d17f",
+         "Width": 450,
          "m_IsVisible": true
       }
    ],
@@ -1269,7 +1269,7 @@
    ],
    [
       1,
-      2097326,
+      3145899,
       {
          "m_Color": [
             0.15830117464065552,
