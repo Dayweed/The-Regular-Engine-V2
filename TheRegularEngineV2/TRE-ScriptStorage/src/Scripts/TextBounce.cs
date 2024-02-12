@@ -25,15 +25,15 @@ namespace TRE
 			TransformSystem.GetPosition(this.ID, out vec3 pos);
 			initialYPos = pos.y;
 
-            // Custom direction for result logic
-            if (Scene.GetSceneName() == "ResultScreen")
-            {
+			// Custom direction for result logic
+			if (Scene.GetSceneName() == "ResultScreen")
+			{
 				if (name == "BackgroundTitle")
 				{
 					dir = -1;
-                }
-            }
-        }
+				}
+			}
+		}
 
 		public void Update()
 		{
@@ -53,21 +53,21 @@ namespace TRE
 
 		public void Resume()
 		{
-            pause = false;
+			pause = false;
 
-            timer = 0;
-            TransformSystem.GetPosition(this.ID, out vec3 pos);
-            initialYPos = pos.y;
+			timer = 0;
+			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			initialYPos = pos.y;
 
-            // Custom direction for result logic
-            if (Scene.GetSceneName() == "ResultScreen")
-            {
-                if (name == "BackgroundTitle")
-                {
-                    dir = -1;
-                }
-            }
-        }
+			// Custom direction for result logic
+			if (Scene.GetSceneName() == "ResultScreen")
+			{
+				if (name == "BackgroundTitle")
+				{
+					dir = -1;
+				}
+			}
+		}
 
 		public bool IsPaused()
 		{

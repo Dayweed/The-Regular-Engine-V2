@@ -62,7 +62,7 @@ namespace TRE
 			//PositionVec = new vec3(-16, -9, 0);
 			PositionVec = new vec3(-10, -6, 0);
 			EndPosition = new vec3(-880, -575, 0);
-        }
+		}
 
 		public void Update()
 		{
@@ -98,22 +98,22 @@ namespace TRE
 				else
 				{
 					transform.Scale += ScaleVec * scaleSpeed * Time.deltaTime;
-                }
+				}
 
 				// Move based if it is shrinking
-                if (shrinking && !ReachEndPosition())
-                {
-                    float x = MathF.Lerp(transform.Position.x, EndPosition.x, moveSpeed * Time.deltaTime);
-                    float y = MathF.Lerp(transform.Position.y, EndPosition.y, moveSpeed * Time.deltaTime);
-                    float z = MathF.Lerp(transform.Position.z, EndPosition.z, moveSpeed * Time.deltaTime);
-                    transform.Position = new vec3(x, y, z);
-                    //transform.Position += PositionVec * moveSpeed * Time.deltaTime;
-                }
+				if (shrinking && !ReachEndPosition())
+				{
+					float x = MathF.Lerp(transform.Position.x, EndPosition.x, moveSpeed * Time.deltaTime);
+					float y = MathF.Lerp(transform.Position.y, EndPosition.y, moveSpeed * Time.deltaTime);
+					float z = MathF.Lerp(transform.Position.z, EndPosition.z, moveSpeed * Time.deltaTime);
+					transform.Position = new vec3(x, y, z);
+					//transform.Position += PositionVec * moveSpeed * Time.deltaTime;
+				}
 				else if (shrinking && ReachEndPosition())
-                {
-                    Reset();
-                }
-            }
+				{
+					Reset();
+				}
+			}
 			else if (!emerging && !shrinking && !idle && coolDown > 0)
 			{
 				coolDown -= Time.deltaTime;
@@ -186,14 +186,14 @@ namespace TRE
 		public void SetEndPosition(vec3 pos)
 		{
 			EndPosition = pos;
-        }
+		}
 
 		public bool ReachEndPosition()
 		{
 			bool x = Math.Abs(transform.Position.x - EndPosition.x) <= PositionOffset;
 			bool y = Math.Abs(transform.Position.y - EndPosition.y) <= PositionOffset;
 			bool z = Math.Abs(transform.Position.z - EndPosition.z) <= PositionOffset;
-            return x && y && z;
+			return x && y && z;
 		}
 
 		public void Reset()
@@ -204,8 +204,8 @@ namespace TRE
 
 			MyRenderer.isVisible = false;
 
-            idle = true;
-            shrinking = false;
-        }
+			idle = true;
+			shrinking = false;
+		}
 	}
 }

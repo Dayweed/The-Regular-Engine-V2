@@ -57,7 +57,7 @@ namespace TRE
 				else if (child.HasComponent<Text>())
 				{
 					child.GetComponent<Text>().IsVisible = false;
-                }
+				}
 				UpdateChildren(child, alpha);
 			}
 		}
@@ -74,9 +74,9 @@ namespace TRE
 
 				MyRenderer.isVisible = true;
 
-                fading = true;
-                doneFading = false;
-            }
+				fading = true;
+				doneFading = false;
+			}
 		}
 
 		public bool DoneFading()

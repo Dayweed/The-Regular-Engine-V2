@@ -239,8 +239,8 @@ namespace TRE
 			}
 			else
 			{
-                //Debug.Log("Create New Random Spawns");
-                for (int i = 0; i < maxAmountToSpawn; i++)
+				//Debug.Log("Create New Random Spawns");
+				for (int i = 0; i < maxAmountToSpawn; i++)
 				{
 					CreateItems(maxAmountToSpawn);
 				}
@@ -256,36 +256,36 @@ namespace TRE
 				itemsTimer[i] -= Time.deltaTime;
 				if (itemsTimer[i] < 0)
 				{
-                    TransformSystem.SetPosition(itemsToSpawn[i].ID, new vec3(0f, 10000f, 0f)); //Hardcoding a value so people can't see it... It will auto generate the position correctly below
-                    if (currentTimeBetweenSpawns <= 0)
+					TransformSystem.SetPosition(itemsToSpawn[i].ID, new vec3(0f, 10000f, 0f)); //Hardcoding a value so people can't see it... It will auto generate the position correctly below
+					if (currentTimeBetweenSpawns <= 0)
 					{
-                        //is this pos empty
-                        int searchCount = maxAmountToSpawn * 5;
+						//is this pos empty
+						int searchCount = maxAmountToSpawn * 5;
 
-                        while (searchCount-- > 0)
-                        {
-                            //choose random position
-                            vec3 itemToSpawnPos = SpawnObjPos();
+						while (searchCount-- > 0)
+						{
+							//choose random position
+							vec3 itemToSpawnPos = SpawnObjPos();
 
-                            if (IsPosEmpty(itemToSpawnPos))
-                            {
-                                //choose random position
-                                vec3 itemPos = SpawnObjPos();
+							if (IsPosEmpty(itemToSpawnPos))
+							{
+								//choose random position
+								vec3 itemPos = SpawnObjPos();
 
-                                //is this pos empty
-                                if (IsPosEmpty(itemPos))
-                                {
-                                    PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
-                                    TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
-                                    TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
-                                    itemsPos[i] = itemPos;
+								//is this pos empty
+								if (IsPosEmpty(itemPos))
+								{
+									PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
+									TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
+									TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
+									itemsPos[i] = itemPos;
 
-                                    itemsTimer[i] = dropDuration;
+									itemsTimer[i] = dropDuration;
 
-                                }
-                            }
-                        }
-                    }
+								}
+							}
+						}
+					}
 				}
 			}
 		}
