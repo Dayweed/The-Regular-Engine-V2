@@ -1,7 +1,7 @@
 [
    [
       202,
-      4293918867,
+      4293918865,
       9437190,
       8388657,
       10485886,
@@ -149,7 +149,7 @@
       5243023,
       5243024,
       3145738,
-      8388753,
+      8388755,
       4194458,
       4194303,
       6291499,
@@ -159,30 +159,30 @@
       9437340,
       3145789,
       11534387,
-      11534493,
+      1048733,
       3145780,
-      11534495,
-      11534496,
-      11534497,
-      11534498,
-      11534499,
-      11534500,
+      1048735,
+      1048736,
+      1048737,
+      1048738,
+      1048739,
+      1048740,
       3145852,
-      11534502,
-      17825959,
-      16777384,
+      1048742,
+      7340199,
+      6291624,
       3145808,
-      13631658,
-      13631659,
-      14680236,
-      17825965,
-      12583086,
+      3145898,
+      3145899,
+      4194476,
+      7340205,
+      2097326,
       3145731,
-      12583088,
-      12583089,
-      12583090,
+      2097328,
+      2097329,
+      2097330,
       3145858,
-      12583092,
+      2097332,
       3145820,
       2097335,
       2097337,
@@ -208,59 +208,13 @@
       0
    ],
    [
-      19,
-      14680236,
-      {
-         "m_Children": [],
-         "m_Parent": "7139267631116052954"
-      },
-      17825965,
-      {
-         "m_Children": [],
-         "m_Parent": "11400480438197261567"
-      },
-      13631659,
-      {
-         "m_Children": [
-            "12240050361697776836"
-         ],
-         "m_Parent": ""
-      },
-      13631658,
+      20,
+      4194476,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      17825959,
-      {
-         "m_Children": [
-            "15713678243113056892"
-         ],
-         "m_Parent": ""
-      },
-      16777384,
-      {
-         "m_Children": [],
-         "m_Parent": "17241056601820338248"
-      },
-      12583086,
-      {
-         "m_Children": [
-            "1016836630051144605"
-         ],
-         "m_Parent": ""
-      },
-      12583088,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      12583089,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      12583090,
+      7340205,
       {
          "m_Children": [
             "10509983312603211974",
@@ -268,22 +222,68 @@
          ],
          "m_Parent": ""
       },
-      12583092,
+      3145899,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      11534502,
+      3145898,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      7340199,
+      {
+         "m_Children": [
+            "1016836630051144605"
+         ],
+         "m_Parent": ""
+      },
+      6291624,
+      {
+         "m_Children": [],
+         "m_Parent": "11400480438197261567"
+      },
+      2097326,
+      {
+         "m_Children": [],
+         "m_Parent": "7139267631116052954"
+      },
+      2097328,
+      {
+         "m_Children": [
+            "12240050361697776836"
+         ],
+         "m_Parent": ""
+      },
+      2097329,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097330,
+      {
+         "m_Children": [],
+         "m_Parent": "17241056601820338248"
+      },
+      2097332,
+      {
+         "m_Children": [
+            "15713678243113056892"
+         ],
+         "m_Parent": ""
+      },
+      1048742,
       {
          "m_Children": [],
          "m_Parent": "9262580962873091563"
       },
-      11534500,
+      1048740,
       {
          "m_Children": [],
          "m_Parent": "10214686609734549272"
       },
-      11534499,
+      1048739,
       {
          "m_Children": [
             "6901260880769456738",
@@ -291,22 +291,22 @@
          ],
          "m_Parent": ""
       },
-      11534498,
+      1048738,
       {
          "m_Children": [],
          "m_Parent": "7139267631116052954"
       },
-      11534497,
+      1048737,
       {
          "m_Children": [],
          "m_Parent": "17241056601820338248"
       },
-      11534496,
+      1048736,
       {
          "m_Children": [],
          "m_Parent": "10214686609734549272"
       },
-      11534495,
+      1048735,
       {
          "m_Children": [
             "1906000498434737128",
@@ -314,95 +314,22 @@
          ],
          "m_Parent": ""
       },
-      11534493,
+      1048733,
+      {
+         "m_Children": [
+            "18040076428584581745"
+         ],
+         "m_Parent": "3433984361522152253"
+      },
+      8388755,
       {
          "m_Children": [],
-         "m_Parent": "3433984361522152253"
+         "m_Parent": "1016836630051144605"
       }
    ],
    [
-      19,
-      14680236,
-      {
-         "m_Active": false,
-         "m_GUID": "13532880202510778061",
-         "m_Index": 17,
-         "m_Name": "MolesBack",
-         "m_Tag": ""
-      },
-      17825965,
-      {
-         "m_Active": false,
-         "m_GUID": "12240050361697776836",
-         "m_Index": 9,
-         "m_Name": "Letter",
-         "m_Tag": ""
-      },
-      13631659,
-      {
-         "m_Active": false,
-         "m_GUID": "11400480438197261567",
-         "m_Index": 8,
-         "m_Name": "Frame3",
-         "m_Tag": ""
-      },
-      13631658,
-      {
-         "m_Active": false,
-         "m_GUID": "5085728504128975660",
-         "m_Index": 18,
-         "m_Name": "SpaceToContinue",
-         "m_Tag": ""
-      },
-      17825959,
-      {
-         "m_Active": true,
-         "m_GUID": "9262580962873091563",
-         "m_Index": 3,
-         "m_Name": "Frame1",
-         "m_Tag": ""
-      },
-      16777384,
-      {
-         "m_Active": false,
-         "m_GUID": "10509983312603211974",
-         "m_Index": 13,
-         "m_Name": "MolesThinking",
-         "m_Tag": ""
-      },
-      12583086,
-      {
-         "m_Active": false,
-         "m_GUID": "3433984361522152253",
-         "m_Index": 10,
-         "m_Name": "Frame4",
-         "m_Tag": ""
-      },
-      12583088,
-      {
-         "m_Active": true,
-         "m_GUID": "15445797279152701459",
-         "m_Index": 1,
-         "m_Name": "Directional Light",
-         "m_Tag": ""
-      },
-      12583089,
-      {
-         "m_Active": true,
-         "m_GUID": "10686246506118743920",
-         "m_Index": 0,
-         "m_Name": "Main Camera",
-         "m_Tag": ""
-      },
-      12583090,
-      {
-         "m_Active": false,
-         "m_GUID": "17241056601820338248",
-         "m_Index": 12,
-         "m_Name": "Frame5",
-         "m_Tag": ""
-      },
-      12583092,
+      20,
+      4194476,
       {
          "m_Active": true,
          "m_GUID": "12103431087554446731",
@@ -410,7 +337,87 @@
          "m_Name": "Background",
          "m_Tag": ""
       },
-      11534502,
+      7340205,
+      {
+         "m_Active": false,
+         "m_GUID": "17241056601820338248",
+         "m_Index": 13,
+         "m_Name": "Frame5",
+         "m_Tag": ""
+      },
+      3145899,
+      {
+         "m_Active": true,
+         "m_GUID": "10686246506118743920",
+         "m_Index": 0,
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      3145898,
+      {
+         "m_Active": true,
+         "m_GUID": "15445797279152701459",
+         "m_Index": 1,
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      7340199,
+      {
+         "m_Active": true,
+         "m_GUID": "3433984361522152253",
+         "m_Index": 10,
+         "m_Name": "Frame4",
+         "m_Tag": ""
+      },
+      6291624,
+      {
+         "m_Active": true,
+         "m_GUID": "12240050361697776836",
+         "m_Index": 9,
+         "m_Name": "Letter",
+         "m_Tag": ""
+      },
+      2097326,
+      {
+         "m_Active": false,
+         "m_GUID": "13532880202510778061",
+         "m_Index": 18,
+         "m_Name": "MolesBack",
+         "m_Tag": ""
+      },
+      2097328,
+      {
+         "m_Active": true,
+         "m_GUID": "11400480438197261567",
+         "m_Index": 8,
+         "m_Name": "Frame3",
+         "m_Tag": ""
+      },
+      2097329,
+      {
+         "m_Active": true,
+         "m_GUID": "5085728504128975660",
+         "m_Index": 19,
+         "m_Name": "SpaceToContinue",
+         "m_Tag": ""
+      },
+      2097330,
+      {
+         "m_Active": false,
+         "m_GUID": "10509983312603211974",
+         "m_Index": 14,
+         "m_Name": "MolesThinking",
+         "m_Tag": ""
+      },
+      2097332,
+      {
+         "m_Active": true,
+         "m_GUID": "9262580962873091563",
+         "m_Index": 3,
+         "m_Name": "Frame1",
+         "m_Tag": ""
+      },
+      1048742,
       {
          "m_Active": true,
          "m_GUID": "15713678243113056892",
@@ -418,70 +425,186 @@
          "m_Name": "Bird",
          "m_Tag": ""
       },
-      11534500,
+      1048740,
       {
-         "m_Active": false,
+         "m_Active": true,
          "m_GUID": "12357215472430049702",
          "m_Index": 7,
          "m_Name": "MolesFront",
          "m_Tag": ""
       },
-      11534499,
+      1048739,
       {
          "m_Active": false,
          "m_GUID": "7139267631116052954",
-         "m_Index": 15,
+         "m_Index": 16,
          "m_Name": "Frame6",
          "m_Tag": ""
       },
-      11534498,
+      1048738,
       {
          "m_Active": false,
          "m_GUID": "6901260880769456738",
-         "m_Index": 16,
+         "m_Index": 17,
          "m_Name": "Landscape",
          "m_Tag": ""
       },
-      11534497,
+      1048737,
       {
          "m_Active": false,
          "m_GUID": "11183254074830409399",
-         "m_Index": 14,
+         "m_Index": 15,
          "m_Name": "PartyStuff",
          "m_Tag": ""
       },
-      11534496,
+      1048736,
       {
-         "m_Active": false,
+         "m_Active": true,
          "m_GUID": "1906000498434737128",
          "m_Index": 6,
          "m_Name": "Door",
          "m_Tag": ""
       },
-      11534495,
+      1048735,
       {
-         "m_Active": false,
+         "m_Active": true,
          "m_GUID": "10214686609734549272",
          "m_Index": 5,
          "m_Name": "Frame2",
          "m_Tag": ""
       },
-      11534493,
+      1048733,
       {
-         "m_Active": false,
+         "m_Active": true,
          "m_GUID": "1016836630051144605",
          "m_Index": 11,
          "m_Name": "LetterOpen",
          "m_Tag": ""
+      },
+      8388755,
+      {
+         "m_Active": true,
+         "m_GUID": "18040076428584581745",
+         "m_Index": 12,
+         "m_Name": "InvitationDialogue",
+         "m_Tag": ""
       }
    ],
    [
-      19,
-      14680236,
+      20,
+      4194476,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7340205,
+      {
+         "m_Position": [
+            -400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145899,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145898,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7340199,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6291624,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097326,
       {
          "m_Position": [
             400.0,
-            -100.0,
+            -103.52366638183594,
             0.0
          ],
          "m_Rotation": [
@@ -495,25 +618,7 @@
             1.0
          ]
       },
-      17825965,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      13631659,
+      2097328,
       {
          "m_Position": [
             0.0,
@@ -531,11 +636,11 @@
             1.0
          ]
       },
-      13631658,
+      2097329,
       {
          "m_Position": [
             675.0,
-            493.4386901855469,
+            489.9150085449219,
             0.0
          ],
          "m_Rotation": [
@@ -549,7 +654,25 @@
             1.0
          ]
       },
-      17825959,
+      2097330,
+      {
+         "m_Position": [
+            -400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097332,
       {
          "m_Position": [
             -400.0,
@@ -567,11 +690,11 @@
             1.0
          ]
       },
-      16777384,
+      1048742,
       {
          "m_Position": [
             -400.0,
-            100.0,
+            -103.52366638183594,
             0.0
          ],
          "m_Rotation": [
@@ -585,119 +708,11 @@
             1.0
          ]
       },
-      12583086,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      12583088,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            45.0,
-            45.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      12583089,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      12583090,
-      {
-         "m_Position": [
-            -400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      12583092,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534502,
-      {
-         "m_Position": [
-            -400.0,
-            -100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      11534500,
+      1048740,
       {
          "m_Position": [
             400.0,
-            100.0,
+            96.47633361816406,
             0.0
          ],
          "m_Rotation": [
@@ -711,7 +726,7 @@
             1.0
          ]
       },
-      11534499,
+      1048739,
       {
          "m_Position": [
             400.0,
@@ -729,7 +744,7 @@
             1.0
          ]
       },
-      11534498,
+      1048738,
       {
          "m_Position": [
             400.0,
@@ -747,11 +762,11 @@
             1.0
          ]
       },
-      11534497,
+      1048737,
       {
          "m_Position": [
             -400.0,
-            100.0,
+            96.47633361816406,
             0.0
          ],
          "m_Rotation": [
@@ -765,7 +780,7 @@
             1.0
          ]
       },
-      11534496,
+      1048736,
       {
          "m_Position": [
             400.0,
@@ -783,7 +798,7 @@
             1.0
          ]
       },
-      11534495,
+      1048735,
       {
          "m_Position": [
             400.0,
@@ -801,7 +816,7 @@
             1.0
          ]
       },
-      11534493,
+      1048733,
       {
          "m_Position": [
             0.0,
@@ -816,6 +831,24 @@
          "m_Scale": [
             1.0,
             1.0,
+            1.0
+         ]
+      },
+      8388755,
+      {
+         "m_Position": [
+            -1120.0,
+            -550.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            24.0,
+            24.0,
             1.0
          ]
       }
@@ -825,7 +858,7 @@
    ],
    [
       1,
-      12583089,
+      3145899,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -863,7 +896,7 @@
    ],
    [
       1,
-      12583088,
+      3145898,
       {
          "m_AmbientColor": [
             1.0,
@@ -893,74 +926,14 @@
    ],
    [
       12,
-      14680236,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      13631659,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      13631658,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      17825959,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      12583086,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      12583090,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      12583092,
+      4194476,
       {
          "m_RegisteredScripts": [
             "TRE.CutsceneStartLogic"
          ],
          "m_StoredClass": "TRE.CutsceneStartLogic"
       },
-      11534502,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      11534500,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      11534499,
+      7340205,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -968,14 +941,74 @@
          ],
          "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       },
-      11534497,
+      7340199,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097326,
       {
          "m_RegisteredScripts": [
             "TRE.TextBounce"
          ],
          "m_StoredClass": "TRE.TextBounce"
       },
-      11534495,
+      2097328,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      2097329,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      2097332,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      1048742,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048740,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048739,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      1048737,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048735,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -986,119 +1019,7 @@
    ],
    [
       17,
-      14680236,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 10,
-         "Texture": "7151c2b18273b0a9",
-         "Width": 325,
-         "m_IsVisible": false
-      },
-      17825965,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 5,
-         "Texture": "4fb260cc2440d17f",
-         "Width": 450,
-         "m_IsVisible": true
-      },
-      13631659,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 4,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 450,
-         "m_IsVisible": false
-      },
-      13631658,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 42,
-         "RenderLayer": 6,
-         "Texture": "1ce7be912b11ab28",
-         "Width": 340,
-         "m_IsVisible": true
-      },
-      17825959,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 1,
-         "Texture": "665c9506bd94691d",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      16777384,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 9,
-         "Texture": "d2b7b9330e97ab54",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      12583086,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 540,
-         "RenderLayer": 6,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 960,
-         "m_IsVisible": false
-      },
-      12583090,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 8,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": false
-      },
-      12583092,
+      4194476,
       {
          "Color": [
             0.0,
@@ -1112,35 +1033,7 @@
          "Width": 1920,
          "m_IsVisible": true
       },
-      11534502,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 2,
-         "Texture": "327d00d97b56339",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      11534500,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 3,
-         "Texture": "8fe33bdf2b002fea",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      11534499,
+      7340205,
       {
          "Color": [
             0.0,
@@ -1154,7 +1047,147 @@
          "Width": 325,
          "m_IsVisible": false
       },
-      11534498,
+      7340199,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      6291624,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 5,
+         "Texture": "4fb260cc2440d17f",
+         "Width": 450,
+         "m_IsVisible": true
+      },
+      2097326,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 10,
+         "Texture": "7151c2b18273b0a9",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      2097328,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 4,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 450,
+         "m_IsVisible": true
+      },
+      2097329,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "RenderLayer": 5,
+         "Texture": "1ce7be912b11ab28",
+         "Width": 340,
+         "m_IsVisible": true
+      },
+      2097330,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 9,
+         "Texture": "d2b7b9330e97ab54",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      2097332,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 1,
+         "Texture": "665c9506bd94691d",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      1048742,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 2,
+         "Texture": "327d00d97b56339",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      1048740,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 3,
+         "Texture": "8fe33bdf2b002fea",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      1048739,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      1048738,
       {
          "Color": [
             1.0,
@@ -1168,7 +1201,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      11534497,
+      1048737,
       {
          "Color": [
             1.0,
@@ -1182,13 +1215,13 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      11534496,
+      1048736,
       {
          "Color": [
             1.0,
             1.0,
             1.0,
-            1.0
+            0.0
          ],
          "Height": 340,
          "RenderLayer": 2,
@@ -1196,21 +1229,21 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      11534495,
+      1048735,
       {
          "Color": [
             0.0,
             0.0,
             0.0,
-            1.0
+            0.0
          ],
          "Height": 340,
          "RenderLayer": 0,
          "Texture": "37faee16ba9f9e67",
          "Width": 325,
-         "m_IsVisible": false
+         "m_IsVisible": true
       },
-      11534493,
+      1048733,
       {
          "Color": [
             1.0,
@@ -1235,7 +1268,23 @@
       0
    ],
    [
-      0
+      1,
+      8388755,
+      {
+         "m_Color": [
+            0.11583012342453003,
+            0.034883204847574234,
+            0.08294548094272614,
+            1.0
+         ],
+         "m_FadingSpeed": 0.0,
+         "m_FontType": "Jua",
+         "m_IsDialogue": false,
+         "m_IsFading": false,
+         "m_IsVisible": true,
+         "m_Speed": 0.0,
+         "m_TextContent": "Dear Holey & Moley,\n\nGood tidings, mole brethren! I'm holding the grandest of parties at the town\nsquare, but this party is no ordinary one! 'Tis a party only for the most\ndeserving, the most dapper, the most party-centric of mole society!\n\nShould you accept this invitation, there are standards to be met.\n\n1) There are holes in walls scattered around the land, only by fitting through\nthem precisely, will you get closer to the party itself.\n\n2) I expect fashion of the highest calibre! We have a fiesta theme"
+      }
    ],
    [
       0
