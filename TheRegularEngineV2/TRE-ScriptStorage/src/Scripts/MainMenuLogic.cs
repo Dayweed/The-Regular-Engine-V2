@@ -307,7 +307,7 @@ namespace TRE
 				{
 					selectedTutorial = false;
 
-					Scene.TransitionScene("Tutorial", 5f);
+					Scene.TransitionScene("CutsceneStart", 5f);
 				}
                 else if (selectedLevel1)
 				{
