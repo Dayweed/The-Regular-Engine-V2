@@ -2,12 +2,6 @@
 using System;
 
 namespace TRE
-
-
-
-
-
-
 {
 	using AS = AudioSystem;
 	using CS = CameraSystem;
