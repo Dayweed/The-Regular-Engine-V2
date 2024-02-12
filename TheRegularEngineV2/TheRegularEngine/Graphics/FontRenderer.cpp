@@ -199,8 +199,8 @@ namespace TRE
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		auto Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
 
-		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(static_cast<float>(SC->GetWidth()) / 2.f, static_cast<float>(SC->GetHeight()) / 2.f, 0.f));
-		glm::mat4 TempProj = glm::ortho(0.f, static_cast<float>(SC->GetWidth()), 0.f, static_cast<float>(SC->GetHeight())) * TranslateToMid;
+		glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(1920.f / 2.f, 1080.f / 2.f, 0.f));
+		glm::mat4 TempProj = glm::ortho(0.f, 1920.f, 0.f, 1080.f) * TranslateToMid;
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
