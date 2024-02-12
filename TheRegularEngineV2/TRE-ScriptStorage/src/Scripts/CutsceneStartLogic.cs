@@ -17,6 +17,7 @@ namespace TRE
 		Entity Frame_5;
 		Entity Frame_6;
 		Entity SpaceToContinue;
+		Entity SpaceToContinueBlack;
 
 		float currentTime = 0;
 		float delayFrame = 5f;
@@ -40,6 +41,7 @@ namespace TRE
 			Frame_5 = ECSManager.FindEntityByName("Frame5");
 			Frame_6 = ECSManager.FindEntityByName("Frame6");
 			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
+			SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
 
 			Frame_1.SetActive(false);
 			Frame_2.SetActive(false);
@@ -48,6 +50,7 @@ namespace TRE
 			Frame_5.SetActive(false);
 			Frame_6.SetActive(false);
 			SpaceToContinue.SetActive(false);
+			SpaceToContinueBlack.SetActive(false);
 
 			frames = new List<Entity>() { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6 };
 			nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5" };
@@ -87,18 +90,23 @@ namespace TRE
 
 			if (!endCutscene)
 			{
-				if (pressedSpace || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
+				if (pressedSpace || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
+					frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
 					++currentFrame;
 
 					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{
-						SpaceToContinue.SetActive(true);
+						if (currentFrame != 3)
+							SpaceToContinue.SetActive(true);
+						else
+							SpaceToContinueBlack.SetActive(true);
 					}
-					else if (SpaceToContinue.GetActive())
+					else if (SpaceToContinue.GetActive() || SpaceToContinueBlack.GetActive())
 					{
 						SpaceToContinue.SetActive(false);
+						SpaceToContinueBlack.SetActive(false);
 					}
 
 					if (currentFrame >= frames.Count) return;
