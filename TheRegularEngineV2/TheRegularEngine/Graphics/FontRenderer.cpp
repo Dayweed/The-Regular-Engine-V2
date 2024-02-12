@@ -176,7 +176,7 @@ namespace TRE
 				face->glyph->advance.x,
 				face->size->metrics.height
 			};
-
+			
 			LetterStorage[c] = character;
 
 			zxcv += static_cast<int>(face->glyph->bitmap.width);

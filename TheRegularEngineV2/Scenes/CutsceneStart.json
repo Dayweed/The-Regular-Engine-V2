@@ -1278,7 +1278,7 @@
             1.0
          ],
          "m_FadingSpeed": 0.0,
-         "m_FontType": "Jua",
+         "m_FontType": "JuaRegular",
          "m_IsDialogue": false,
          "m_IsFading": false,
          "m_IsVisible": true,

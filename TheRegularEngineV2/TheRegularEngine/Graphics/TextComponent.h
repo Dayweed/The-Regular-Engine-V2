@@ -67,14 +67,14 @@ namespace TRE
 			}
 			if (j.contains("m_Color"))
 			{
-				std::vector<float> Color{ j.at("Color").get<std::vector<float>>() };
+				std::vector<float> Color{ j.at("m_Color").get<std::vector<float>>() };
 				float LoadedColor[4]{ Color[0], Color[1], Color[2], Color[3] };
 				t.m_Color = glm::make_vec4(LoadedColor);
 			}
 			if (j.contains("m_FontType"))
 			{
 				t.m_FontName.m_FontType = j.at("m_FontType").get<std::string>();
-				std::string Filepath = "../Assets/Font/" + t.m_FontName.m_FontType + ".ttf"; //This should not be hardcoded
+				std::string Filepath = "../Resources/Font/" + t.m_FontName.m_FontType + ".ttf"; //This should not be hardcoded
 				FontRenderer::LoadFont(Filepath); //Try to load in case its not loaded yet, auto skips the loading if its loaded
 			}
 		}
