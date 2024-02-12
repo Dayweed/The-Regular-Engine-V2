@@ -25,7 +25,7 @@ namespace TRE
 		public static float currentTime;
 		public float waitingTime = 0.90f;
 
-		public bool forceGoToNextScene = false;
+		private bool forceGoToNextScene = false;
 
 		VFX_Emerge StarEmerge;
 
@@ -329,6 +329,16 @@ namespace TRE
 				{
 					courseComplete.isVisible = true;
 					ECSManager.FindEntityByName("CourseComplete").GetComponent<VFX_SlapOn>().SlapOn();
+					
+					if (ECSManager.IsValidEntity(endsceneBGM))
+					{
+						AudioSystem.Play(endsceneBGM);
+						AudioSystem.Stop(mainBGM);
+					}
+					else
+					{
+						AudioSystem.Stop(endsceneBGM);
+					}
 				}
 
 				if (currentTime >= waitingTime)
@@ -336,21 +346,9 @@ namespace TRE
 					currentTime = 0.0f;
 					Scene.TransitionScene(nextSceneName, 4.5f);
 				}
-
 				else
 				{
 					currentTime += Time.deltaTime;
-				}
-
-				
-				if (ECSManager.IsValidEntity(endsceneBGM))
-				{
-					AudioSystem.Play(endsceneBGM);
-					AudioSystem.Stop(mainBGM);
-				}
-				else
-				{
-					AudioSystem.Stop(endsceneBGM);
 				}
 			}
 		}
