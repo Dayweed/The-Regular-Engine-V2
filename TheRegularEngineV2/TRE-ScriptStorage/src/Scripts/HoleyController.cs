@@ -32,10 +32,10 @@ namespace TRE
 		//Check if player is walking
 		public bool isWalking = false;
 		private bool walkingSFXPlayed = false;
-        private bool fallingSFXPlayed = false;
+		private bool fallingSFXPlayed = false;
 
-        //check if player used super power
-        public bool mainBlueberry = false;  // Scaling
+		//check if player used super power
+		public bool mainBlueberry = false;  // Scaling
 		public bool mainStrawberry = false; // Shape
 		public bool isScaled = false;
 
@@ -130,11 +130,11 @@ namespace TRE
 		//Moley Reference
 		private Entity moley_ref;
 
-        // Cheats
-        public bool keepInventory = false;
-        public bool creativeMode = false;
+		// Cheats
+		public bool keepInventory = false;
+		public bool creativeMode = false;
 
-        public void Start()
+		public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -237,8 +237,8 @@ namespace TRE
 					isDead = false;
 					RespawnPlayer = false;
 					RespawnTimer = 1.5f;
-                    fallingSFXPlayed = false;
-                }
+					fallingSFXPlayed = false;
+				}
 			}
 		}
 
@@ -524,8 +524,8 @@ namespace TRE
 				if (ECSManager.IsValidEntity(fallSFX) && !fallingSFXPlayed)
 				{
 					fallingSFXPlayed = true;
-                    AS.Play(fallSFX);
-                }
+					AS.Play(fallSFX);
+				}
 			}
 		}
 
