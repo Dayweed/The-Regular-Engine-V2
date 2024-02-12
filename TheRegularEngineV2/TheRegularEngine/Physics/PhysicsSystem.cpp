@@ -234,7 +234,7 @@ namespace TRE
 		m_SimulationEventCallback.m_TriggerHistory = std::vector<TriggerHistoryEntry>();
 
 		accumulator -= step;
-		m_Scene->simulate(1.0f / 60.0f);
+		m_Scene->simulate(step);
 		m_Scene->fetchResults(true);
 		// ^ step 3) CTH is overwritten by fetchResults()
 
