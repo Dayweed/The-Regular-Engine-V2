@@ -1,7 +1,7 @@
 [
    [
       517,
-      4293918967,
+      4293918877,
       7340032,
       6291457,
       8388610,
@@ -75,7 +75,7 @@
       1048646,
       1048647,
       1048648,
-      1048649,
+      2097429,
       1048650,
       1048651,
       1048652,
@@ -125,7 +125,7 @@
       1048696,
       1048697,
       1048698,
-      1048699,
+      2097399,
       1048700,
       1048701,
       1048702,
@@ -159,7 +159,7 @@
       1048730,
       1048731,
       1048732,
-      1048733,
+      2097225,
       1048734,
       1048735,
       1048736,
@@ -279,7 +279,7 @@
       274,
       275,
       276,
-      277,
+      1048699,
       278,
       1048907,
       280,
@@ -520,7 +520,7 @@
       2097528
    ],
    [
-      212,
+      208,
       3145898,
       {
          "m_IsMainPrefab": false,
@@ -638,16 +638,16 @@
          "m_PrefabGUID": "2610240272475740789",
          "m_RemovedComps": []
       },
-      1048733,
+      319,
       {
-         "m_IsMainPrefab": false,
+         "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "14145613366203719285",
          "m_Overrides": {
             "Transform": [
                "TRE::Transform/Position"
             ]
          },
-         "m_PrefabGUID": "1584223425060899186",
+         "m_PrefabGUID": "14145613366203719285",
          "m_RemovedComps": []
       },
       1048732,
@@ -905,16 +905,18 @@
          "m_PrefabGUID": "7847631836863196515",
          "m_RemovedComps": []
       },
-      1048699,
+      324,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "14145613366203719285",
+         "m_MainPrefabGUID": "15526886209253662016",
          "m_Overrides": {
             "Transform": [
-               "TRE::Transform/Position"
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
             ]
          },
-         "m_PrefabGUID": "5325551299460488136",
+         "m_PrefabGUID": "15225568713149738293",
          "m_RemovedComps": []
       },
       1048697,
@@ -1782,16 +1784,25 @@
          "m_PrefabGUID": "6251590734034281394",
          "m_RemovedComps": []
       },
-      1048649,
+      322,
       {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "14145613366203719285",
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "13405510363890397293",
          "m_Overrides": {
+            "Mesh Renderer": [
+               "TRE::MeshRenderer/IsVisible"
+            ],
+            "Properties": [
+               "TRE::Properties/Tag",
+               "TRE::Properties/Name"
+            ],
             "Transform": [
-               "TRE::Transform/Position"
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
             ]
          },
-         "m_PrefabGUID": "12941014366334329512",
+         "m_PrefabGUID": "13405510363890397293",
          "m_RemovedComps": []
       },
       1048588,
@@ -2850,7 +2861,7 @@
          "m_PrefabGUID": "5798269499592609815",
          "m_RemovedComps": []
       },
-      277,
+      323,
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "14145613366203719285",
@@ -2859,7 +2870,7 @@
                "TRE::Transform/Position"
             ]
          },
-         "m_PrefabGUID": "4918389046735977806",
+         "m_PrefabGUID": "3979285808735211452",
          "m_RemovedComps": []
       },
       278,
@@ -3229,69 +3240,10 @@
          },
          "m_PrefabGUID": "8152716096747136542",
          "m_RemovedComps": []
-      },
-      319,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "14145613366203719285",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
-         "m_PrefabGUID": "14145613366203719285",
-         "m_RemovedComps": []
-      },
-      322,
-      {
-         "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "13405510363890397293",
-         "m_Overrides": {
-            "Mesh Renderer": [
-               "TRE::MeshRenderer/IsVisible"
-            ],
-            "Properties": [
-               "TRE::Properties/Tag",
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation",
-               "TRE::Transform/Scale"
-            ]
-         },
-         "m_PrefabGUID": "13405510363890397293",
-         "m_RemovedComps": []
-      },
-      323,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "14145613366203719285",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
-         "m_PrefabGUID": "3979285808735211452",
-         "m_RemovedComps": []
-      },
-      324,
-      {
-         "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "15526886209253662016",
-         "m_Overrides": {
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation",
-               "TRE::Transform/Scale"
-            ]
-         },
-         "m_PrefabGUID": "15225568713149738293",
-         "m_RemovedComps": []
       }
    ],
    [
-      330,
+      326,
       4194476,
       {
          "m_Children": [],
@@ -3398,10 +3350,10 @@
          "m_Children": [],
          "m_Parent": "6676286325005183515"
       },
-      1048733,
+      326,
       {
          "m_Children": [],
-         "m_Parent": "14462451085276054978"
+         "m_Parent": "13719718879326929754"
       },
       1048732,
       {
@@ -3546,10 +3498,14 @@
          ],
          "m_Parent": ""
       },
-      1048699,
+      329,
       {
-         "m_Children": [],
-         "m_Parent": "14462451085276054978"
+         "m_Children": [
+            "7900913381838621840",
+            "18187760266377298497",
+            "14040813534541020185"
+         ],
+         "m_Parent": ""
       },
       1048698,
       {
@@ -4246,10 +4202,10 @@
          "m_Children": [],
          "m_Parent": "13852862498108933853"
       },
-      1048649,
+      327,
       {
          "m_Children": [],
-         "m_Parent": "14462451085276054978"
+         "m_Parent": "16389826175120500023"
       },
       1048588,
       {
@@ -4307,16 +4263,12 @@
       1048584,
       {
          "m_Children": [
-            "6168269776158528389",
-            "11719098500699208843",
-            "9938986726973588915",
             "5826870210538111124",
             "1214523084063885598",
             "463130544024933532",
             "6354919693681417016",
             "2919867895069610310",
             "3337073515583694588",
-            "8936172109898747046",
             "18241760973282480200"
          ],
          "m_Parent": "17952244464972744770"
@@ -4972,10 +4924,10 @@
          "m_Children": [],
          "m_Parent": "2837952133591146751"
       },
-      277,
+      328,
       {
          "m_Children": [],
-         "m_Parent": "14462451085276054978"
+         "m_Parent": "18444581321050853381"
       },
       278,
       {
@@ -5258,39 +5210,15 @@
       {
          "m_Children": [],
          "m_Parent": "13719718879326929754"
-      },
-      326,
-      {
-         "m_Children": [],
-         "m_Parent": "13719718879326929754"
-      },
-      327,
-      {
-         "m_Children": [],
-         "m_Parent": "16389826175120500023"
-      },
-      328,
-      {
-         "m_Children": [],
-         "m_Parent": "18444581321050853381"
-      },
-      329,
-      {
-         "m_Children": [
-            "7900913381838621840",
-            "18187760266377298497",
-            "14040813534541020185"
-         ],
-         "m_Parent": ""
       }
    ],
    [
-      330,
+      326,
       4194476,
       {
          "m_Active": true,
          "m_GUID": "6753715630172923450",
-         "m_Index": 260,
+         "m_Index": 256,
          "m_Name": "SFX_MoleyFootsteps",
          "m_Tag": ""
       },
@@ -5298,7 +5226,7 @@
       {
          "m_Active": true,
          "m_GUID": "2890114676928285916",
-         "m_Index": 300,
+         "m_Index": 296,
          "m_Name": "main_controls",
          "m_Tag": ""
       },
@@ -5306,7 +5234,7 @@
       {
          "m_Active": true,
          "m_GUID": "7162209847507481052",
-         "m_Index": 281,
+         "m_Index": 277,
          "m_Name": "SFX_Footsteps2",
          "m_Tag": ""
       },
@@ -5338,7 +5266,7 @@
       {
          "m_Active": true,
          "m_GUID": "6796433177279441040",
-         "m_Index": 187,
+         "m_Index": 183,
          "m_Name": "PowerUpSpawner_1",
          "m_Tag": "SpawnBlueberry"
       },
@@ -5346,7 +5274,7 @@
       {
          "m_Active": true,
          "m_GUID": "2577541451195223345",
-         "m_Index": 217,
+         "m_Index": 213,
          "m_Name": "TitleStarsCollected",
          "m_Tag": ""
       },
@@ -5354,7 +5282,7 @@
       {
          "m_Active": true,
          "m_GUID": "416567000020907801",
-         "m_Index": 295,
+         "m_Index": 291,
          "m_Name": "ActivePowerUp",
          "m_Tag": "LeftHUD"
       },
@@ -5362,7 +5290,7 @@
       {
          "m_Active": true,
          "m_GUID": "13780812094433914366",
-         "m_Index": 308,
+         "m_Index": 304,
          "m_Name": "PopupCollider2",
          "m_Tag": ""
       },
@@ -5370,7 +5298,7 @@
       {
          "m_Active": true,
          "m_GUID": "3523179593085594365",
-         "m_Index": 219,
+         "m_Index": 215,
          "m_Name": "Star2",
          "m_Tag": ""
       },
@@ -5378,7 +5306,7 @@
       {
          "m_Active": true,
          "m_GUID": "15506028568185774542",
-         "m_Index": 312,
+         "m_Index": 308,
          "m_Name": "DecorFlag2",
          "m_Tag": ""
       },
@@ -5402,7 +5330,7 @@
       {
          "m_Active": true,
          "m_GUID": "15872511223650694074",
-         "m_Index": 297,
+         "m_Index": 293,
          "m_Name": "PauseMenu",
          "m_Tag": ""
       },
@@ -5430,19 +5358,19 @@
          "m_Name": "Building_03",
          "m_Tag": ""
       },
-      1048733,
+      326,
       {
          "m_Active": true,
-         "m_GUID": "8936172109898747046",
-         "m_Index": 167,
-         "m_Name": "cactus_02",
+         "m_GUID": "1325263638198634131",
+         "m_Index": 258,
+         "m_Name": "SFX_HoleCheck",
          "m_Tag": ""
       },
       1048732,
       {
          "m_Active": true,
          "m_GUID": "8145079219787889854",
-         "m_Index": 201,
+         "m_Index": 197,
          "m_Name": "Trigger_1",
          "m_Tag": "TriggerMoleyBlueberry"
       },
@@ -5458,7 +5386,7 @@
       {
          "m_Active": true,
          "m_GUID": "13289051518182889373",
-         "m_Index": 291,
+         "m_Index": 287,
          "m_Name": "NotActivePowerUp",
          "m_Tag": "RightHUD"
       },
@@ -5490,7 +5418,7 @@
       {
          "m_Active": true,
          "m_GUID": "785951938492564856",
-         "m_Index": 324,
+         "m_Index": 320,
          "m_Name": "DecorFlag2",
          "m_Tag": ""
       },
@@ -5506,7 +5434,7 @@
       {
          "m_Active": true,
          "m_GUID": "1214523084063885598",
-         "m_Index": 162,
+         "m_Index": 159,
          "m_Name": "cactus_03",
          "m_Tag": ""
       },
@@ -5538,7 +5466,7 @@
       {
          "m_Active": true,
          "m_GUID": "17848231031196257073",
-         "m_Index": 236,
+         "m_Index": 232,
          "m_Name": "Trigger_B",
          "m_Tag": ""
       },
@@ -5554,7 +5482,7 @@
       {
          "m_Active": true,
          "m_GUID": "4829168786024096715",
-         "m_Index": 177,
+         "m_Index": 173,
          "m_Name": "Building_03",
          "m_Tag": ""
       },
@@ -5570,7 +5498,7 @@
       {
          "m_Active": true,
          "m_GUID": "4808013872569026337",
-         "m_Index": 212,
+         "m_Index": 208,
          "m_Name": "Moley",
          "m_Tag": "Red"
       },
@@ -5578,7 +5506,7 @@
       {
          "m_Active": true,
          "m_GUID": "17415746094483107537",
-         "m_Index": 266,
+         "m_Index": 262,
          "m_Name": "SFX_Fat",
          "m_Tag": ""
       },
@@ -5586,7 +5514,7 @@
       {
          "m_Active": true,
          "m_GUID": "6911468734467816659",
-         "m_Index": 251,
+         "m_Index": 247,
          "m_Name": "PopUpCollider",
          "m_Tag": "PopUpCollider"
       },
@@ -5594,7 +5522,7 @@
       {
          "m_Active": true,
          "m_GUID": "1322929011347586507",
-         "m_Index": 180,
+         "m_Index": 176,
          "m_Name": "cactus_01",
          "m_Tag": ""
       },
@@ -5618,7 +5546,7 @@
       {
          "m_Active": true,
          "m_GUID": "5157808939991615198",
-         "m_Index": 216,
+         "m_Index": 212,
          "m_Name": "Slippery Body",
          "m_Tag": ""
       },
@@ -5634,7 +5562,7 @@
       {
          "m_Active": true,
          "m_GUID": "17306928822871501678",
-         "m_Index": 222,
+         "m_Index": 218,
          "m_Name": "Moley's Head Collider",
          "m_Tag": "RedCollider"
       },
@@ -5642,23 +5570,23 @@
       {
          "m_Active": true,
          "m_GUID": "5435030513578143254",
-         "m_Index": 294,
+         "m_Index": 290,
          "m_Name": "LeftCharacter_HUD",
          "m_Tag": ""
       },
-      1048699,
+      329,
       {
          "m_Active": true,
-         "m_GUID": "6168269776158528389",
-         "m_Index": 158,
-         "m_Name": "Lamp Post",
+         "m_GUID": "763055136599610705",
+         "m_Index": 184,
+         "m_Name": "TriggerDisplay_4",
          "m_Tag": ""
       },
       1048698,
       {
          "m_Active": true,
          "m_GUID": "7489215751692806831",
-         "m_Index": 218,
+         "m_Index": 214,
          "m_Name": "Star3",
          "m_Tag": ""
       },
@@ -5674,7 +5602,7 @@
       {
          "m_Active": true,
          "m_GUID": "7000117387915453761",
-         "m_Index": 317,
+         "m_Index": 313,
          "m_Name": "Pole",
          "m_Tag": ""
       },
@@ -5682,7 +5610,7 @@
       {
          "m_Active": true,
          "m_GUID": "1830272650071295416",
-         "m_Index": 328,
+         "m_Index": 324,
          "m_Name": "Pole",
          "m_Tag": ""
       },
@@ -5698,7 +5626,7 @@
       {
          "m_Active": true,
          "m_GUID": "1721643561669291303",
-         "m_Index": 278,
+         "m_Index": 274,
          "m_Name": "SFX_NormalSize",
          "m_Tag": ""
       },
@@ -5706,7 +5634,7 @@
       {
          "m_Active": true,
          "m_GUID": "14889381599349645295",
-         "m_Index": 314,
+         "m_Index": 310,
          "m_Name": "Vase",
          "m_Tag": ""
       },
@@ -5722,7 +5650,7 @@
       {
          "m_Active": true,
          "m_GUID": "8575311758419103568",
-         "m_Index": 287,
+         "m_Index": 283,
          "m_Name": "SFX_MoleyHurt1",
          "m_Tag": ""
       },
@@ -5738,7 +5666,7 @@
       {
          "m_Active": true,
          "m_GUID": "16777059862722321785",
-         "m_Index": 178,
+         "m_Index": 174,
          "m_Name": "SandTerrain",
          "m_Tag": ""
       },
@@ -5754,7 +5682,7 @@
       {
          "m_Active": true,
          "m_GUID": "8534116593687196231",
-         "m_Index": 274,
+         "m_Index": 270,
          "m_Name": "SFX_DropPowerUp",
          "m_Tag": ""
       },
@@ -5770,7 +5698,7 @@
       {
          "m_Active": true,
          "m_GUID": "6001396518782896122",
-         "m_Index": 268,
+         "m_Index": 264,
          "m_Name": "SFX_Sombrero_Land",
          "m_Tag": ""
       },
@@ -5778,7 +5706,7 @@
       {
          "m_Active": true,
          "m_GUID": "12716656387655617568",
-         "m_Index": 296,
+         "m_Index": 292,
          "m_Name": "NotActivePowerUp",
          "m_Tag": "LeftHUD"
       },
@@ -5802,7 +5730,7 @@
       {
          "m_Active": true,
          "m_GUID": "3124906573942981175",
-         "m_Index": 254,
+         "m_Index": 250,
          "m_Name": "PopupUI1",
          "m_Tag": "PopUpUI1"
       },
@@ -5818,7 +5746,7 @@
       {
          "m_Active": true,
          "m_GUID": "3819289162788930261",
-         "m_Index": 183,
+         "m_Index": 179,
          "m_Name": "cactus_01",
          "m_Tag": ""
       },
@@ -5858,7 +5786,7 @@
       {
          "m_Active": true,
          "m_GUID": "6625329983105421442",
-         "m_Index": 243,
+         "m_Index": 239,
          "m_Name": "RespawnPoint8_L0",
          "m_Tag": "respawnPoint"
       },
@@ -5866,7 +5794,7 @@
       {
          "m_Active": true,
          "m_GUID": "10015698751492496313",
-         "m_Index": 292,
+         "m_Index": 288,
          "m_Name": "ActivePowerUp",
          "m_Tag": "RightHUD"
       },
@@ -5874,7 +5802,7 @@
       {
          "m_Active": true,
          "m_GUID": "17127423697150629209",
-         "m_Index": 305,
+         "m_Index": 301,
          "m_Name": "destructive_yes",
          "m_Tag": ""
       },
@@ -5882,7 +5810,7 @@
       {
          "m_Active": true,
          "m_GUID": "631124632134169836",
-         "m_Index": 284,
+         "m_Index": 280,
          "m_Name": "SFX_MoleyFall",
          "m_Tag": ""
       },
@@ -5890,7 +5818,7 @@
       {
          "m_Active": true,
          "m_GUID": "6588030591827777076",
-         "m_Index": 290,
+         "m_Index": 286,
          "m_Name": "RightCharacter_HUD",
          "m_Tag": ""
       },
@@ -5898,7 +5826,7 @@
       {
          "m_Active": true,
          "m_GUID": "4671626741273234052",
-         "m_Index": 202,
+         "m_Index": 198,
          "m_Name": "Trigger_2",
          "m_Tag": "TriggerMoleyBlueberry"
       },
@@ -5922,7 +5850,7 @@
       {
          "m_Active": true,
          "m_GUID": "6503599471310675157",
-         "m_Index": 263,
+         "m_Index": 259,
          "m_Name": "SFX_MoleyJump",
          "m_Tag": ""
       },
@@ -5930,7 +5858,7 @@
       {
          "m_Active": true,
          "m_GUID": "12330890952680733247",
-         "m_Index": 199,
+         "m_Index": 195,
          "m_Name": "Mesh",
          "m_Tag": ""
       },
@@ -5938,7 +5866,7 @@
       {
          "m_Active": true,
          "m_GUID": "10683539694820793451",
-         "m_Index": 318,
+         "m_Index": 314,
          "m_Name": "Pole",
          "m_Tag": ""
       },
@@ -5946,7 +5874,7 @@
       {
          "m_Active": true,
          "m_GUID": "18349827035593957043",
-         "m_Index": 240,
+         "m_Index": 236,
          "m_Name": "RespawnPointManager",
          "m_Tag": ""
       },
@@ -5962,7 +5890,7 @@
       {
          "m_Active": true,
          "m_GUID": "5620909691904141636",
-         "m_Index": 245,
+         "m_Index": 241,
          "m_Name": "RespawnPoint10_L0",
          "m_Tag": "respawnPoint"
       },
@@ -5986,7 +5914,7 @@
       {
          "m_Active": true,
          "m_GUID": "4454688150880881383",
-         "m_Index": 282,
+         "m_Index": 278,
          "m_Name": "SFX_Footsteps3",
          "m_Tag": ""
       },
@@ -6002,7 +5930,7 @@
       {
          "m_Active": true,
          "m_GUID": "15606510606662465533",
-         "m_Index": 273,
+         "m_Index": 269,
          "m_Name": "SFX_FallingHat",
          "m_Tag": ""
       },
@@ -6026,7 +5954,7 @@
       {
          "m_Active": true,
          "m_GUID": "298210438793492994",
-         "m_Index": 244,
+         "m_Index": 240,
          "m_Name": "RespawnPoint9_L0",
          "m_Tag": "respawnPoint"
       },
@@ -6034,7 +5962,7 @@
       {
          "m_Active": true,
          "m_GUID": "5495660984656037310",
-         "m_Index": 299,
+         "m_Index": 295,
          "m_Name": "main_continue",
          "m_Tag": ""
       },
@@ -6042,7 +5970,7 @@
       {
          "m_Active": false,
          "m_GUID": "13220370300297402112",
-         "m_Index": 315,
+         "m_Index": 311,
          "m_Name": "FlagPole",
          "m_Tag": ""
       },
@@ -6058,7 +5986,7 @@
       {
          "m_Active": true,
          "m_GUID": "15244447047443953566",
-         "m_Index": 220,
+         "m_Index": 216,
          "m_Name": "Star1",
          "m_Tag": ""
       },
@@ -6066,7 +5994,7 @@
       {
          "m_Active": true,
          "m_GUID": "16389826175120500023",
-         "m_Index": 208,
+         "m_Index": 204,
          "m_Name": "TriggerDisplay_6",
          "m_Tag": ""
       },
@@ -6074,7 +6002,7 @@
       {
          "m_Active": true,
          "m_GUID": "14640701278721010404",
-         "m_Index": 176,
+         "m_Index": 172,
          "m_Name": "Building_04",
          "m_Tag": ""
       },
@@ -6146,7 +6074,7 @@
       {
          "m_Active": true,
          "m_GUID": "11258004247548084302",
-         "m_Index": 306,
+         "m_Index": 302,
          "m_Name": "destructive_no",
          "m_Tag": ""
       },
@@ -6162,7 +6090,7 @@
       {
          "m_Active": true,
          "m_GUID": "1724842184749884532",
-         "m_Index": 204,
+         "m_Index": 200,
          "m_Name": "TriggerDisplay_2",
          "m_Tag": ""
       },
@@ -6178,7 +6106,7 @@
       {
          "m_Active": true,
          "m_GUID": "7871083552286206375",
-         "m_Index": 195,
+         "m_Index": 191,
          "m_Name": "Mesh",
          "m_Tag": ""
       },
@@ -6186,7 +6114,7 @@
       {
          "m_Active": true,
          "m_GUID": "2255508311352034786",
-         "m_Index": 175,
+         "m_Index": 171,
          "m_Name": "Collider_05",
          "m_Tag": ""
       },
@@ -6210,7 +6138,7 @@
       {
          "m_Active": true,
          "m_GUID": "12704240612569962273",
-         "m_Index": 214,
+         "m_Index": 210,
          "m_Name": "Holey",
          "m_Tag": "Blue"
       },
@@ -6218,7 +6146,7 @@
       {
          "m_Active": true,
          "m_GUID": "13852862498108933853",
-         "m_Index": 228,
+         "m_Index": 224,
          "m_Name": "Camera_Triggers",
          "m_Tag": ""
       },
@@ -6250,7 +6178,7 @@
       {
          "m_Active": true,
          "m_GUID": "9688592927912012123",
-         "m_Index": 210,
+         "m_Index": 206,
          "m_Name": "Trigger_2",
          "m_Tag": "TriggerHoleyBlueberry"
       },
@@ -6274,7 +6202,7 @@
       {
          "m_Active": true,
          "m_GUID": "1705585353817120903",
-         "m_Index": 203,
+         "m_Index": 199,
          "m_Name": "Mesh",
          "m_Tag": ""
       },
@@ -6290,7 +6218,7 @@
       {
          "m_Active": true,
          "m_GUID": "4686029498664065489",
-         "m_Index": 250,
+         "m_Index": 246,
          "m_Name": "RespawnPoint1_L0",
          "m_Tag": "respawnPoint"
       },
@@ -6298,7 +6226,7 @@
       {
          "m_Active": true,
          "m_GUID": "1627464588291715864",
-         "m_Index": 225,
+         "m_Index": 221,
          "m_Name": "DownButton",
          "m_Tag": "Ground"
       },
@@ -6306,7 +6234,7 @@
       {
          "m_Active": true,
          "m_GUID": "9511898782637220982",
-         "m_Index": 319,
+         "m_Index": 315,
          "m_Name": "DecorFlag2",
          "m_Tag": ""
       },
@@ -6314,7 +6242,7 @@
       {
          "m_Active": true,
          "m_GUID": "17837526586795633166",
-         "m_Index": 321,
+         "m_Index": 317,
          "m_Name": "Pot",
          "m_Tag": ""
       },
@@ -6322,7 +6250,7 @@
       {
          "m_Active": true,
          "m_GUID": "8108354674192352855",
-         "m_Index": 237,
+         "m_Index": 233,
          "m_Name": "Scene Transition Logic",
          "m_Tag": ""
       },
@@ -6338,7 +6266,7 @@
       {
          "m_Active": true,
          "m_GUID": "10623832150170936690",
-         "m_Index": 253,
+         "m_Index": 249,
          "m_Name": "Directional Light",
          "m_Tag": ""
       },
@@ -6354,7 +6282,7 @@
       {
          "m_Active": true,
          "m_GUID": "12795070962328173315",
-         "m_Index": 302,
+         "m_Index": 298,
          "m_Name": "main_pointer",
          "m_Tag": ""
       },
@@ -6362,7 +6290,7 @@
       {
          "m_Active": true,
          "m_GUID": "11206554759772689660",
-         "m_Index": 255,
+         "m_Index": 251,
          "m_Name": "oops",
          "m_Tag": ""
       },
@@ -6370,7 +6298,7 @@
       {
          "m_Active": true,
          "m_GUID": "7556094500950320734",
-         "m_Index": 242,
+         "m_Index": 238,
          "m_Name": "RespawnPoint7_L0",
          "m_Tag": "respawnPoint"
       },
@@ -6378,7 +6306,7 @@
       {
          "m_Active": true,
          "m_GUID": "17621029772640774404",
-         "m_Index": 288,
+         "m_Index": 284,
          "m_Name": "SFX_HoleyHurt1",
          "m_Tag": ""
       },
@@ -6386,7 +6314,7 @@
       {
          "m_Active": true,
          "m_GUID": "7748918864017411771",
-         "m_Index": 322,
+         "m_Index": 318,
          "m_Name": "DecorFlag2",
          "m_Tag": ""
       },
@@ -6394,7 +6322,7 @@
       {
          "m_Active": true,
          "m_GUID": "18105104807454731992",
-         "m_Index": 325,
+         "m_Index": 321,
          "m_Name": "Bench",
          "m_Tag": ""
       },
@@ -6402,7 +6330,7 @@
       {
          "m_Active": true,
          "m_GUID": "3204613142384992625",
-         "m_Index": 174,
+         "m_Index": 170,
          "m_Name": "Collider_04",
          "m_Tag": ""
       },
@@ -6418,7 +6346,7 @@
       {
          "m_Active": true,
          "m_GUID": "14648085829441751242",
-         "m_Index": 227,
+         "m_Index": 223,
          "m_Name": "Finish Line",
          "m_Tag": "Key"
       },
@@ -6442,7 +6370,7 @@
       {
          "m_Active": true,
          "m_GUID": "8615565121495410276",
-         "m_Index": 316,
+         "m_Index": 312,
          "m_Name": "FlagPole",
          "m_Tag": ""
       },
@@ -6466,7 +6394,7 @@
       {
          "m_Active": true,
          "m_GUID": "6354919693681417016",
-         "m_Index": 164,
+         "m_Index": 161,
          "m_Name": "cactus_03",
          "m_Tag": ""
       },
@@ -6474,7 +6402,7 @@
       {
          "m_Active": true,
          "m_GUID": "3304659420955921350",
-         "m_Index": 304,
+         "m_Index": 300,
          "m_Name": "pauseMenu_destructive",
          "m_Tag": ""
       },
@@ -6482,7 +6410,7 @@
       {
          "m_Active": true,
          "m_GUID": "1405448775556406574",
-         "m_Index": 200,
+         "m_Index": 196,
          "m_Name": "TriggerDisplay_5",
          "m_Tag": ""
       },
@@ -6538,7 +6466,7 @@
       {
          "m_Active": true,
          "m_GUID": "7900913381838621840",
-         "m_Index": 189,
+         "m_Index": 185,
          "m_Name": "Trigger_1",
          "m_Tag": "TriggerMoleyBlueberry"
       },
@@ -6562,16 +6490,16 @@
       {
          "m_Active": true,
          "m_GUID": "8466599528421819674",
-         "m_Index": 229,
+         "m_Index": 225,
          "m_Name": "Trigger_A",
          "m_Tag": ""
       },
-      1048649,
+      327,
       {
          "m_Active": true,
-         "m_GUID": "9938986726973588915",
-         "m_Index": 160,
-         "m_Name": "Decor_Flag",
+         "m_GUID": "5192903358932899628",
+         "m_Index": 207,
+         "m_Name": "Mesh",
          "m_Tag": ""
       },
       1048588,
@@ -6586,7 +6514,7 @@
       {
          "m_Active": true,
          "m_GUID": "16311738197898284149",
-         "m_Index": 327,
+         "m_Index": 323,
          "m_Name": "Lamp Post",
          "m_Tag": ""
       },
@@ -6594,7 +6522,7 @@
       {
          "m_Active": true,
          "m_GUID": "5467375857122074545",
-         "m_Index": 247,
+         "m_Index": 243,
          "m_Name": "RespawnPoint4_L0",
          "m_Tag": "respawnPoint"
       },
@@ -6602,7 +6530,7 @@
       {
          "m_Active": true,
          "m_GUID": "15709602210736830975",
-         "m_Index": 196,
+         "m_Index": 192,
          "m_Name": "TriggerDisplay_1",
          "m_Tag": ""
       },
@@ -6610,7 +6538,7 @@
       {
          "m_Active": true,
          "m_GUID": "2280572472566064223",
-         "m_Index": 310,
+         "m_Index": 306,
          "m_Name": "PopupUIBeforeHITW",
          "m_Tag": ""
       },
@@ -6642,7 +6570,7 @@
       {
          "m_Active": true,
          "m_GUID": "13334889259894881636",
-         "m_Index": 193,
+         "m_Index": 189,
          "m_Name": "Trigger_1",
          "m_Tag": "TriggerHoleyBlueberry"
       },
@@ -6658,7 +6586,7 @@
       {
          "m_Active": true,
          "m_GUID": "2456140547140729301",
-         "m_Index": 172,
+         "m_Index": 168,
          "m_Name": "Collider_02",
          "m_Tag": ""
       },
@@ -6674,7 +6602,7 @@
       {
          "m_Active": true,
          "m_GUID": "548580649438014782",
-         "m_Index": 171,
+         "m_Index": 167,
          "m_Name": "Collider_01",
          "m_Tag": ""
       },
@@ -6682,7 +6610,7 @@
       {
          "m_Active": true,
          "m_GUID": "10761699082193545006",
-         "m_Index": 213,
+         "m_Index": 209,
          "m_Name": "Power Manager",
          "m_Tag": ""
       },
@@ -6690,7 +6618,7 @@
       {
          "m_Active": true,
          "m_GUID": "16923742776951819942",
-         "m_Index": 205,
+         "m_Index": 201,
          "m_Name": "Trigger_1",
          "m_Tag": "TriggerHoleyBlueberry"
       },
@@ -6698,7 +6626,7 @@
       {
          "m_Active": true,
          "m_GUID": "8278691343969583085",
-         "m_Index": 181,
+         "m_Index": 177,
          "m_Name": "cactus_02",
          "m_Tag": ""
       },
@@ -6714,7 +6642,7 @@
       {
          "m_Active": true,
          "m_GUID": "12164901314276372086",
-         "m_Index": 231,
+         "m_Index": 227,
          "m_Name": "Trigger_F",
          "m_Tag": ""
       },
@@ -6746,7 +6674,7 @@
       {
          "m_Active": true,
          "m_GUID": "9872382845429315364",
-         "m_Index": 209,
+         "m_Index": 205,
          "m_Name": "Trigger_1",
          "m_Tag": "TriggerHoleyBlueberry"
       },
@@ -6762,7 +6690,7 @@
       {
          "m_Active": true,
          "m_GUID": "18110860541925668293",
-         "m_Index": 311,
+         "m_Index": 307,
          "m_Name": "More Props",
          "m_Tag": ""
       },
@@ -6770,7 +6698,7 @@
       {
          "m_Active": true,
          "m_GUID": "11334944379415409317",
-         "m_Index": 293,
+         "m_Index": 289,
          "m_Name": "Final_Platform",
          "m_Tag": "Ground"
       },
@@ -6794,7 +6722,7 @@
       {
          "m_Active": true,
          "m_GUID": "16701265669292981058",
-         "m_Index": 241,
+         "m_Index": 237,
          "m_Name": "RespawnPoint6_L0",
          "m_Tag": "respawnPoint"
       },
@@ -6802,7 +6730,7 @@
       {
          "m_Active": true,
          "m_GUID": "3041831500500030549",
-         "m_Index": 207,
+         "m_Index": 203,
          "m_Name": "Mesh",
          "m_Tag": ""
       },
@@ -6810,7 +6738,7 @@
       {
          "m_Active": true,
          "m_GUID": "1126110602601983549",
-         "m_Index": 233,
+         "m_Index": 229,
          "m_Name": "Trigger_G",
          "m_Tag": ""
       },
@@ -6826,7 +6754,7 @@
       {
          "m_Active": true,
          "m_GUID": "11759476009399817387",
-         "m_Index": 269,
+         "m_Index": 265,
          "m_Name": "SFX_FallingMaracas_Land",
          "m_Tag": ""
       },
@@ -6834,7 +6762,7 @@
       {
          "m_Active": true,
          "m_GUID": "15001542015982162015",
-         "m_Index": 267,
+         "m_Index": 263,
          "m_Name": "SFX_FallingMaracas",
          "m_Tag": ""
       },
@@ -6842,7 +6770,7 @@
       {
          "m_Active": true,
          "m_GUID": "14040813534541020185",
-         "m_Index": 191,
+         "m_Index": 187,
          "m_Name": "Mesh",
          "m_Tag": ""
       },
@@ -6874,7 +6802,7 @@
       {
          "m_Active": true,
          "m_GUID": "632505660139430589",
-         "m_Index": 234,
+         "m_Index": 230,
          "m_Name": "Trigger_C",
          "m_Tag": ""
       },
@@ -6890,7 +6818,7 @@
       {
          "m_Active": true,
          "m_GUID": "18115250954835196304",
-         "m_Index": 326,
+         "m_Index": 322,
          "m_Name": "Bench",
          "m_Tag": ""
       },
@@ -6906,7 +6834,7 @@
       {
          "m_Active": true,
          "m_GUID": "5477680860725561631",
-         "m_Index": 264,
+         "m_Index": 260,
          "m_Name": "SFX_PowerUpsCollected",
          "m_Tag": ""
       },
@@ -6930,7 +6858,7 @@
       {
          "m_Active": true,
          "m_GUID": "8613523875061060734",
-         "m_Index": 221,
+         "m_Index": 217,
          "m_Name": "Holey's Head Collider",
          "m_Tag": "BlueCollider"
       },
@@ -6938,7 +6866,7 @@
       {
          "m_Active": true,
          "m_GUID": "4794607050362366111",
-         "m_Index": 248,
+         "m_Index": 244,
          "m_Name": "RespawnPoint2_L0",
          "m_Tag": "respawnPoint"
       },
@@ -6946,7 +6874,7 @@
       {
          "m_Active": true,
          "m_GUID": "5984074557261926074",
-         "m_Index": 197,
+         "m_Index": 193,
          "m_Name": "Trigger_1",
          "m_Tag": "TriggerMoleyBlueberry"
       },
@@ -6978,7 +6906,7 @@
       {
          "m_Active": true,
          "m_GUID": "12494395417216843177",
-         "m_Index": 252,
+         "m_Index": 248,
          "m_Name": "CourseComplete",
          "m_Tag": ""
       },
@@ -7010,7 +6938,7 @@
       {
          "m_Active": true,
          "m_GUID": "17781216073638250536",
-         "m_Index": 230,
+         "m_Index": 226,
          "m_Name": "Trigger_H",
          "m_Tag": ""
       },
@@ -7034,7 +6962,7 @@
       {
          "m_Active": true,
          "m_GUID": "7540353647587949562",
-         "m_Index": 298,
+         "m_Index": 294,
          "m_Name": "pauseMenu_Main",
          "m_Tag": ""
       },
@@ -7066,7 +6994,7 @@
       {
          "m_Active": true,
          "m_GUID": "5826870210538111124",
-         "m_Index": 161,
+         "m_Index": 158,
          "m_Name": "cactus_04",
          "m_Tag": ""
       },
@@ -7098,7 +7026,7 @@
       {
          "m_Active": true,
          "m_GUID": "13756628153749901778",
-         "m_Index": 313,
+         "m_Index": 309,
          "m_Name": "Vase",
          "m_Tag": ""
       },
@@ -7106,7 +7034,7 @@
       {
          "m_Active": true,
          "m_GUID": "1555338032826614447",
-         "m_Index": 173,
+         "m_Index": 169,
          "m_Name": "Collider_03",
          "m_Tag": ""
       },
@@ -7122,7 +7050,7 @@
       {
          "m_Active": true,
          "m_GUID": "14312534842838982625",
-         "m_Index": 246,
+         "m_Index": 242,
          "m_Name": "RespawnPoint3_L0",
          "m_Tag": "respawnPoint"
       },
@@ -7138,7 +7066,7 @@
       {
          "m_Active": true,
          "m_GUID": "10104296099767472072",
-         "m_Index": 232,
+         "m_Index": 228,
          "m_Name": "Trigger_D",
          "m_Tag": ""
       },
@@ -7162,7 +7090,7 @@
       {
          "m_Active": true,
          "m_GUID": "5229602794923162586",
-         "m_Index": 329,
+         "m_Index": 325,
          "m_Name": "Pole",
          "m_Tag": ""
       },
@@ -7186,7 +7114,7 @@
       {
          "m_Active": true,
          "m_GUID": "12557813022109059017",
-         "m_Index": 265,
+         "m_Index": 261,
          "m_Name": "BGM_End",
          "m_Tag": ""
       },
@@ -7210,7 +7138,7 @@
       {
          "m_Active": true,
          "m_GUID": "263644334207360077",
-         "m_Index": 301,
+         "m_Index": 297,
          "m_Name": "main_quit",
          "m_Tag": ""
       },
@@ -7218,7 +7146,7 @@
       {
          "m_Active": true,
          "m_GUID": "13719718879326929754",
-         "m_Index": 258,
+         "m_Index": 254,
          "m_Name": "Audio",
          "m_Tag": ""
       },
@@ -7226,7 +7154,7 @@
       {
          "m_Active": true,
          "m_GUID": "12947037797211286336",
-         "m_Index": 239,
+         "m_Index": 235,
          "m_Name": "PopupUI2",
          "m_Tag": "PopupUI2"
       },
@@ -7242,7 +7170,7 @@
       {
          "m_Active": true,
          "m_GUID": "8050651862151092093",
-         "m_Index": 323,
+         "m_Index": 319,
          "m_Name": "Pot",
          "m_Tag": ""
       },
@@ -7258,7 +7186,7 @@
       {
          "m_Active": true,
          "m_GUID": "6241496028968524027",
-         "m_Index": 309,
+         "m_Index": 305,
          "m_Name": "HITW_Blocker",
          "m_Tag": ""
       },
@@ -7266,7 +7194,7 @@
       {
          "m_Active": true,
          "m_GUID": "9971677112597536070",
-         "m_Index": 283,
+         "m_Index": 279,
          "m_Name": "SFX_HoleyFall",
          "m_Tag": ""
       },
@@ -7274,7 +7202,7 @@
       {
          "m_Active": true,
          "m_GUID": "6420544443529528634",
-         "m_Index": 307,
+         "m_Index": 303,
          "m_Name": "destructive_Pointer",
          "m_Tag": ""
       },
@@ -7298,7 +7226,7 @@
       {
          "m_Active": true,
          "m_GUID": "64240871297040238",
-         "m_Index": 186,
+         "m_Index": 182,
          "m_Name": "PowerUpSpawner_3",
          "m_Tag": "SpawnBlueberry"
       },
@@ -7314,7 +7242,7 @@
       {
          "m_Active": true,
          "m_GUID": "8840391736431733686",
-         "m_Index": 277,
+         "m_Index": 273,
          "m_Name": "SFX_FallingMaraca",
          "m_Tag": ""
       },
@@ -7354,7 +7282,7 @@
       {
          "m_Active": true,
          "m_GUID": "2006770515810109719",
-         "m_Index": 303,
+         "m_Index": 299,
          "m_Name": "pauseMenu_controls",
          "m_Tag": ""
       },
@@ -7362,7 +7290,7 @@
       {
          "m_Active": true,
          "m_GUID": "7629205235543889099",
-         "m_Index": 275,
+         "m_Index": 271,
          "m_Name": "Ambience",
          "m_Tag": ""
       },
@@ -7394,7 +7322,7 @@
       {
          "m_Active": true,
          "m_GUID": "12051186078887126067",
-         "m_Index": 224,
+         "m_Index": 220,
          "m_Name": "UpButton",
          "m_Tag": ""
       },
@@ -7410,7 +7338,7 @@
       {
          "m_Active": true,
          "m_GUID": "16494487554086442885",
-         "m_Index": 271,
+         "m_Index": 267,
          "m_Name": "SFX_Tall",
          "m_Tag": ""
       },
@@ -7418,7 +7346,7 @@
       {
          "m_Active": true,
          "m_GUID": "5704381599899349384",
-         "m_Index": 170,
+         "m_Index": 166,
          "m_Name": "Tutorial_HITW_Last_Colliders",
          "m_Tag": ""
       },
@@ -7426,7 +7354,7 @@
       {
          "m_Active": true,
          "m_GUID": "12845519833476742229",
-         "m_Index": 279,
+         "m_Index": 275,
          "m_Name": "SFX_Footsteps1",
          "m_Tag": ""
       },
@@ -7442,7 +7370,7 @@
       {
          "m_Active": true,
          "m_GUID": "14535237681242728579",
-         "m_Index": 194,
+         "m_Index": 190,
          "m_Name": "Trigger_2",
          "m_Tag": "TriggerHoleyBlueberry"
       },
@@ -7466,7 +7394,7 @@
       {
          "m_Active": true,
          "m_GUID": "6590156050726675876",
-         "m_Index": 169,
+         "m_Index": 165,
          "m_Name": "Tutorial_HITW_Last",
          "m_Tag": ""
       },
@@ -7482,7 +7410,7 @@
       {
          "m_Active": true,
          "m_GUID": "18286192316425065112",
-         "m_Index": 185,
+         "m_Index": 181,
          "m_Name": "PowerUpSpawner_3",
          "m_Tag": "SpawnBlueberry"
       },
@@ -7502,12 +7430,12 @@
          "m_Name": "Fountain",
          "m_Tag": ""
       },
-      277,
+      328,
       {
          "m_Active": true,
-         "m_GUID": "11719098500699208843",
-         "m_Index": 159,
-         "m_Name": "Lamp Post",
+         "m_GUID": "9935865705668762967",
+         "m_Index": 117,
+         "m_Name": "Basic Cube",
          "m_Tag": ""
       },
       278,
@@ -7538,7 +7466,7 @@
       {
          "m_Active": true,
          "m_GUID": "17648397751551270636",
-         "m_Index": 320,
+         "m_Index": 316,
          "m_Name": "Vase",
          "m_Tag": ""
       },
@@ -7562,7 +7490,7 @@
       {
          "m_Active": true,
          "m_GUID": "18241760973282480200",
-         "m_Index": 168,
+         "m_Index": 164,
          "m_Name": "Decor_Flag",
          "m_Tag": ""
       },
@@ -7570,7 +7498,7 @@
       {
          "m_Active": true,
          "m_GUID": "387379952421145307",
-         "m_Index": 286,
+         "m_Index": 282,
          "m_Name": "SFX_Holey_BoostedJump",
          "m_Tag": ""
       },
@@ -7578,7 +7506,7 @@
       {
          "m_Active": true,
          "m_GUID": "3333909970746711512",
-         "m_Index": 198,
+         "m_Index": 194,
          "m_Name": "Trigger_2",
          "m_Tag": "TriggerMoleyBlueberry"
       },
@@ -7586,7 +7514,7 @@
       {
          "m_Active": true,
          "m_GUID": "9373027949348393389",
-         "m_Index": 257,
+         "m_Index": 253,
          "m_Name": "ControlsPopup",
          "m_Tag": "ControlsPopup"
       },
@@ -7618,7 +7546,7 @@
       {
          "m_Active": true,
          "m_GUID": "10540753769218575687",
-         "m_Index": 192,
+         "m_Index": 188,
          "m_Name": "TriggerDisplay_3",
          "m_Tag": ""
       },
@@ -7626,7 +7554,7 @@
       {
          "m_Active": true,
          "m_GUID": "12597375607403829379",
-         "m_Index": 259,
+         "m_Index": 255,
          "m_Name": "SFX_HoleyFootsteps",
          "m_Tag": ""
       },
@@ -7634,7 +7562,7 @@
       {
          "m_Active": true,
          "m_GUID": "16590708996520336367",
-         "m_Index": 280,
+         "m_Index": 276,
          "m_Name": "SFX_Footsteps4",
          "m_Tag": ""
       },
@@ -7650,7 +7578,7 @@
       {
          "m_Active": true,
          "m_GUID": "4199456365212497507",
-         "m_Index": 256,
+         "m_Index": 252,
          "m_Name": "GameOver Logic",
          "m_Tag": ""
       },
@@ -7658,7 +7586,7 @@
       {
          "m_Active": true,
          "m_GUID": "8102262962075386627",
-         "m_Index": 179,
+         "m_Index": 175,
          "m_Name": "cactus_02",
          "m_Tag": ""
       },
@@ -7666,7 +7594,7 @@
       {
          "m_Active": true,
          "m_GUID": "3446411000876555282",
-         "m_Index": 226,
+         "m_Index": 222,
          "m_Name": "EndingTrigger",
          "m_Tag": "Key"
       },
@@ -7674,7 +7602,7 @@
       {
          "m_Active": true,
          "m_GUID": "5918200844399750609",
-         "m_Index": 261,
+         "m_Index": 257,
          "m_Name": "SFX_ActivatePlatform",
          "m_Tag": ""
       },
@@ -7682,7 +7610,7 @@
       {
          "m_Active": true,
          "m_GUID": "12182656124882712285",
-         "m_Index": 182,
+         "m_Index": 178,
          "m_Name": "cactus_01",
          "m_Tag": ""
       },
@@ -7690,7 +7618,7 @@
       {
          "m_Active": true,
          "m_GUID": "9169969694358689235",
-         "m_Index": 276,
+         "m_Index": 272,
          "m_Name": "SFX_NormalSize",
          "m_Tag": ""
       },
@@ -7698,7 +7626,7 @@
       {
          "m_Active": true,
          "m_GUID": "17009752496929647961",
-         "m_Index": 249,
+         "m_Index": 245,
          "m_Name": "RespawnPoint5_L0",
          "m_Tag": "respawnPoint"
       },
@@ -7714,7 +7642,7 @@
       {
          "m_Active": true,
          "m_GUID": "2919867895069610310",
-         "m_Index": 165,
+         "m_Index": 162,
          "m_Name": "cactus_03",
          "m_Tag": ""
       },
@@ -7722,7 +7650,7 @@
       {
          "m_Active": true,
          "m_GUID": "12963742865210502890",
-         "m_Index": 238,
+         "m_Index": 234,
          "m_Name": "FallingObj_Spawner_01",
          "m_Tag": ""
       },
@@ -7746,7 +7674,7 @@
       {
          "m_Active": true,
          "m_GUID": "18187760266377298497",
-         "m_Index": 190,
+         "m_Index": 186,
          "m_Name": "Trigger_2",
          "m_Tag": "TriggerMoleyBlueberry"
       },
@@ -7762,7 +7690,7 @@
       {
          "m_Active": true,
          "m_GUID": "17045902829452946005",
-         "m_Index": 223,
+         "m_Index": 219,
          "m_Name": "Key",
          "m_Tag": "Key"
       },
@@ -7770,7 +7698,7 @@
       {
          "m_Active": true,
          "m_GUID": "677401345089954524",
-         "m_Index": 272,
+         "m_Index": 268,
          "m_Name": "BGM",
          "m_Tag": ""
       },
@@ -7794,7 +7722,7 @@
       {
          "m_Active": true,
          "m_GUID": "3337073515583694588",
-         "m_Index": 166,
+         "m_Index": 163,
          "m_Name": "cactus_02",
          "m_Tag": ""
       },
@@ -7802,7 +7730,7 @@
       {
          "m_Active": true,
          "m_GUID": "1383110448190298131",
-         "m_Index": 206,
+         "m_Index": 202,
          "m_Name": "Trigger_2",
          "m_Tag": "TriggerHoleyBlueberry"
       },
@@ -7810,7 +7738,7 @@
       {
          "m_Active": true,
          "m_GUID": "3082404526162369346",
-         "m_Index": 235,
+         "m_Index": 231,
          "m_Name": "Trigger_E",
          "m_Tag": ""
       },
@@ -7834,7 +7762,7 @@
       {
          "m_Active": true,
          "m_GUID": "463130544024933532",
-         "m_Index": 163,
+         "m_Index": 160,
          "m_Name": "cactus_04",
          "m_Tag": ""
       },
@@ -7850,7 +7778,7 @@
       {
          "m_Active": true,
          "m_GUID": "15130941546444060673",
-         "m_Index": 270,
+         "m_Index": 266,
          "m_Name": "SFX_HoleyJump",
          "m_Tag": ""
       },
@@ -7858,7 +7786,7 @@
       {
          "m_Active": true,
          "m_GUID": "54686994861242278",
-         "m_Index": 289,
+         "m_Index": 285,
          "m_Name": "CameraManager",
          "m_Tag": ""
       },
@@ -7866,7 +7794,7 @@
       {
          "m_Active": true,
          "m_GUID": "1607118731150744951",
-         "m_Index": 184,
+         "m_Index": 180,
          "m_Name": "PowerUpSpawner_2",
          "m_Tag": "SpawnBlueberry"
       },
@@ -7882,7 +7810,7 @@
       {
          "m_Active": true,
          "m_GUID": "7694931271226598788",
-         "m_Index": 215,
+         "m_Index": 211,
          "m_Name": "Power Manager",
          "m_Tag": ""
       },
@@ -7890,45 +7818,13 @@
       {
          "m_Active": true,
          "m_GUID": "13033253717377991248",
-         "m_Index": 285,
+         "m_Index": 281,
          "m_Name": "SFX_Moley_BoostedJump",
-         "m_Tag": ""
-      },
-      326,
-      {
-         "m_Active": true,
-         "m_GUID": "1325263638198634131",
-         "m_Index": 262,
-         "m_Name": "SFX_HoleCheck",
-         "m_Tag": ""
-      },
-      327,
-      {
-         "m_Active": true,
-         "m_GUID": "5192903358932899628",
-         "m_Index": 211,
-         "m_Name": "Mesh",
-         "m_Tag": ""
-      },
-      328,
-      {
-         "m_Active": true,
-         "m_GUID": "9935865705668762967",
-         "m_Index": 117,
-         "m_Name": "Basic Cube",
-         "m_Tag": ""
-      },
-      329,
-      {
-         "m_Active": true,
-         "m_GUID": "763055136599610705",
-         "m_Index": 188,
-         "m_Name": "TriggerDisplay_4",
          "m_Tag": ""
       }
    ],
    [
-      330,
+      326,
       4194476,
       {
          "m_Position": [
@@ -8253,12 +8149,12 @@
             1.0
          ]
       },
-      1048733,
+      326,
       {
          "m_Position": [
-            413.7872009277344,
-            187.79998779296875,
-            -501.0953369140625
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
@@ -8418,9 +8314,9 @@
       1048720,
       {
          "m_Position": [
-            358.88568115234375,
-            217.458984375,
-            -536.3085327148438
+            91.2394790649414,
+            5.0,
+            -339.3262023925781
          ],
          "m_Rotation": [
             0.0,
@@ -8739,16 +8635,16 @@
             0.800000011920929
          ]
       },
-      1048699,
+      329,
       {
          "m_Position": [
-            429.7293395996094,
-            192.4874267578125,
-            -451.0904541015625
+            128.7266387939453,
+            9.404999732971191,
+            -346.0150146484375
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
@@ -10578,9 +10474,9 @@
       1048617,
       {
          "m_Position": [
-            349.84710693359375,
-            219.4871826171875,
-            -457.29693603515625
+            70.46054077148438,
+            5.0,
+            -391.9163513183594
          ],
          "m_Rotation": [
             0.0,
@@ -10809,22 +10705,22 @@
             1.0
          ]
       },
-      1048649,
+      327,
       {
          "m_Position": [
-            429.7668151855469,
-            197.30169677734375,
-            -469.6558837890625
+            51.66594696044922,
+            27.46591567993164,
+            -455.9324951171875
          ],
          "m_Rotation": [
-            0.0,
-            89.96573638916016,
+            89.99712371826172,
+            -0.0,
             0.0
          ],
          "m_Scale": [
             1.0,
-            1.0,
-            1.0
+            0.999998152256012,
+            0.999998152256012
          ]
       },
       1048588,
@@ -11928,9 +11824,9 @@
       222,
       {
          "m_Position": [
-            362.1768798828125,
-            217.7191162109375,
-            -530.0340576171875
+            134.92530822753906,
+            2.0,
+            -341.2685852050781
          ],
          "m_Rotation": [
             0.0,
@@ -12915,12 +12811,12 @@
             1.0
          ]
       },
-      277,
+      328,
       {
          "m_Position": [
-            429.7293395996094,
-            192.4874267578125,
-            -488.6717529296875
+            115.48857879638672,
+            -4.385890007019043,
+            -335.66436767578125
          ],
          "m_Rotation": [
             0.0,
@@ -13044,9 +12940,9 @@
       284,
       {
          "m_Position": [
-            381.2135009765625,
-            247.734130859375,
-            -538.7211303710938
+            62.099205017089844,
+            60.800575256347656,
+            -456.3196716308594
          ],
          "m_Rotation": [
             0.0,
@@ -13386,9 +13282,9 @@
       303,
       {
          "m_Position": [
-            426.0188903808594,
-            186.80047607421875,
-            -455.11138916015625
+            129.14151000976563,
+            5.0,
+            -414.5930480957031
          ],
          "m_Rotation": [
             0.0,
@@ -13566,9 +13462,9 @@
       313,
       {
          "m_Position": [
-            365.78765869140625,
-            189.84710693359375,
-            -496.80389404296875
+            72.20360565185547,
+            5.0,
+            -450.3072509765625
          ],
          "m_Rotation": [
             0.0,
@@ -13656,9 +13552,9 @@
       318,
       {
          "m_Position": [
-            353.59967041015625,
-            217.7191162109375,
-            -453.647705078125
+            71.28478240966797,
+            2.0,
+            -386.3434143066406
          ],
          "m_Rotation": [
             0.0,
@@ -13796,82 +13692,10 @@
             1.0,
             1.0
          ]
-      },
-      326,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      327,
-      {
-         "m_Position": [
-            51.66594696044922,
-            27.46591567993164,
-            -455.9324951171875
-         ],
-         "m_Rotation": [
-            89.99712371826172,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            0.999998152256012,
-            0.999998152256012
-         ]
-      },
-      328,
-      {
-         "m_Position": [
-            115.48857879638672,
-            -4.385890007019043,
-            -335.66436767578125
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      329,
-      {
-         "m_Position": [
-            128.7266387939453,
-            9.404999732971191,
-            -346.0150146484375
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
       }
    ],
    [
-      127,
+      123,
       6291624,
       {
          "ASSET_GEOM_m_RenderObject": "c3b9f8a6fa8fc7c0",
@@ -13912,11 +13736,11 @@
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
-      1048733,
+      305,
       {
-         "ASSET_GEOM_m_RenderObject": "2993e6e54411973",
+         "ASSET_GEOM_m_RenderObject": "fe9c6f2ea3d97556",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "987dc33dfbf148b9",
+         "ASSET_MAT_m_MaterialInstance": "e8a0873aef588ed8",
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
@@ -14024,13 +13848,13 @@
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
-      1048699,
+      322,
       {
-         "ASSET_GEOM_m_RenderObject": "c3b9f8a6fa8fc7c0",
+         "ASSET_GEOM_m_RenderObject": "789ef5cf219e011e",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "d2ef33c43e438c9b",
+         "ASSET_MAT_m_MaterialInstance": "f28caaeaf199130f",
          "m_DrawShadow": true,
-         "m_IsVisible": true
+         "m_IsVisible": false
       },
       1048696,
       {
@@ -14344,11 +14168,11 @@
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
-      1048649,
+      313,
       {
-         "ASSET_GEOM_m_RenderObject": "3270741ef8bd8c80",
+         "ASSET_GEOM_m_RenderObject": "2993e6e54411973",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "af3397a9bb94c5c2",
+         "ASSET_MAT_m_MaterialInstance": "987dc33dfbf148b9",
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
@@ -14768,11 +14592,11 @@
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
-      277,
+      318,
       {
-         "ASSET_GEOM_m_RenderObject": "c3b9f8a6fa8fc7c0",
+         "ASSET_GEOM_m_RenderObject": "f3b5a1d9e5981b6a",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "d2ef33c43e438c9b",
+         "ASSET_MAT_m_MaterialInstance": "e99fe191f41202dd",
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
@@ -14802,9 +14626,9 @@
       },
       284,
       {
-         "ASSET_GEOM_m_RenderObject": "3270741ef8bd8c80",
+         "ASSET_GEOM_m_RenderObject": "f7f5f572f61823d3",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "af3397a9bb94c5c2",
+         "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
          "m_DrawShadow": true,
          "m_IsVisible": true
       },
@@ -14855,38 +14679,6 @@
          "ASSET_MAT_m_MaterialInstance": "1c942bcea75859a4",
          "m_DrawShadow": true,
          "m_IsVisible": true
-      },
-      305,
-      {
-         "ASSET_GEOM_m_RenderObject": "fe9c6f2ea3d97556",
-         "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "e8a0873aef588ed8",
-         "m_DrawShadow": true,
-         "m_IsVisible": true
-      },
-      313,
-      {
-         "ASSET_GEOM_m_RenderObject": "2993e6e54411973",
-         "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "987dc33dfbf148b9",
-         "m_DrawShadow": true,
-         "m_IsVisible": true
-      },
-      318,
-      {
-         "ASSET_GEOM_m_RenderObject": "f3b5a1d9e5981b6a",
-         "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "e99fe191f41202dd",
-         "m_DrawShadow": true,
-         "m_IsVisible": true
-      },
-      322,
-      {
-         "ASSET_GEOM_m_RenderObject": "789ef5cf219e011e",
-         "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "f28caaeaf199130f",
-         "m_DrawShadow": true,
-         "m_IsVisible": false
       }
    ],
    [
