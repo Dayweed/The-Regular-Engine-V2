@@ -88,7 +88,7 @@ namespace TRE
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 40;
-				//cameraController.lookOnlyBool = true;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionB)
@@ -96,7 +96,7 @@ namespace TRE
 				expectedPosition = new vec3(0, 35, 50);
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 50;
-				//cameraController.lookOnlyBool = false;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionC)
@@ -104,6 +104,7 @@ namespace TRE
 				expectedPosition = new vec3(0, 40, 50);
 				expectedRotation = new vec3(25, 180, 0);
 				expectedDistance = 35;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionD)
@@ -111,13 +112,15 @@ namespace TRE
 				expectedPosition = new vec3(0, 40, 50);
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 55;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionE)
 			{
 				expectedPosition = new vec3(0, 60, 50);
 				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 45;
+				expectedDistance = 55;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionF)
@@ -125,20 +128,24 @@ namespace TRE
 				expectedPosition = new vec3(0, 40, 50);
 				expectedRotation = new vec3(25, 180, 0);
 				expectedDistance = 35;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionG)
 			{
+				cameraController.staticPosition = new vec3(110, 20, -415);
 				expectedPosition = new vec3(50, 40, 50);
 				expectedRotation = new vec3(35, 270, 0);
 				expectedDistance = 45;
+				cameraController.lookOnlyBool = true;
 			}
 
 			if (regionH)
 			{
 				expectedPosition = new vec3(50, 40, 50);
 				expectedRotation = new vec3(25, 180, 0);
-				expectedDistance = 35;
+				expectedDistance = 40;
+				cameraController.lookOnlyBool = false;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
