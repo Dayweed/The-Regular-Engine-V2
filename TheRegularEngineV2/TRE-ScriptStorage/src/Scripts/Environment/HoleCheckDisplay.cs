@@ -33,7 +33,7 @@ namespace TRE
 			// Add triggers that are it's child as triggers
 			NoOfTriggers = parenting.GetTotalChildren();
 
-            for (int i = 0; i < NoOfTriggers; i++)
+			for (int i = 0; i < NoOfTriggers; i++)
 			{
 				Entity trigger = parenting.GetChild(i);
 

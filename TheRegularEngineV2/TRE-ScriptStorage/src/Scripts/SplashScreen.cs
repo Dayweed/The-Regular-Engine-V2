@@ -18,37 +18,37 @@ namespace TRE
 
 			spriteRenderer.Texture = splashArray[splashIndex];
 
-            ScenePostEffectsSystem.Engine_ShrinkVignette(2);
+			ScenePostEffectsSystem.Engine_ShrinkVignette(2);
 
-            // Reset persistent values to zero here
-            PersistentSystem.SetValue("TotalStarsObtained", "0");
-            PersistentSystem.SetValue("Tutorial" + "StarsObtained", "0");
-            PersistentSystem.SetValue("Level_1" + "StarsObtained", "0");
-            PersistentSystem.SetValue("Level_2" + "StarsObtained", "0");
-        }
+			// Reset persistent values to zero here
+			PersistentSystem.SetValue("TotalStarsObtained", "0");
+			PersistentSystem.SetValue("Tutorial" + "StarsObtained", "0");
+			PersistentSystem.SetValue("Level_1" + "StarsObtained", "0");
+			PersistentSystem.SetValue("Level_2" + "StarsObtained", "0");
+		}
 
 		public void Update()
-        {
+		{
 			if (ScenePostEffectsSystem.VignetteState == ScenePostEffectsSystem.STATE.IN)
 			{
 				++splashIndex;
 				if (splashIndex < splashArray.Length)
-                {
-                    spriteRenderer.Texture = splashArray[splashIndex];
-                }
-            }
+				{
+					spriteRenderer.Texture = splashArray[splashIndex];
+				}
+			}
 
-            if (ScenePostEffectsSystem.VignetteState == ScenePostEffectsSystem.STATE.OUT)
-            {
+			if (ScenePostEffectsSystem.VignetteState == ScenePostEffectsSystem.STATE.OUT)
+			{
 				if (splashIndex < splashArray.Length - 1)
-                {
-                    ScenePostEffectsSystem.Engine_ShrinkVignette(2);
+				{
+					ScenePostEffectsSystem.Engine_ShrinkVignette(2);
 				}
 				else
-                {
-                    Scene.TransitionScene("Start", 2.0f);
-                }
-            }
-        }
+				{
+					Scene.TransitionScene("Start", 2.0f);
+				}
+			}
+		}
 	}
 }

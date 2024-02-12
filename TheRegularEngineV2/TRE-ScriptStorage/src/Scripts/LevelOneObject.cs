@@ -19,16 +19,16 @@ namespace TRE
 		public void OnCreate()
 		{
 			LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
-            LvlObjUI = ECSManager.FindEntityByName("LevelObject");
+			LvlObjUI = ECSManager.FindEntityByName("LevelObject");
 
-        }
+		}
 
 		public void Update()
 		{
 			if (pickedUp)
 			{
-                LvlObjUI.GetComponent<SpriteRenderer>().isVisible = true;
-            }
+				LvlObjUI.GetComponent<SpriteRenderer>().isVisible = true;
+			}
 		}
 
 		private void OnTriggerEnter(System.UInt64 otherID)

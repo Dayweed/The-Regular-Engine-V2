@@ -92,10 +92,10 @@ namespace TRE
 				{
 					//transform.Rotation += RotateVec * rotationSpeed * Time.deltaTime;
 					float x = MathF.Lerp(transform.Rotation.x, EndRotation.x, rotationSpeed * Time.deltaTime);
-                    float y = MathF.Lerp(transform.Rotation.y, EndRotation.y, rotationSpeed * Time.deltaTime);
-                    float z = MathF.Lerp(transform.Rotation.z, EndRotation.z, rotationSpeed * Time.deltaTime);
+					float y = MathF.Lerp(transform.Rotation.y, EndRotation.y, rotationSpeed * Time.deltaTime);
+					float z = MathF.Lerp(transform.Rotation.z, EndRotation.z, rotationSpeed * Time.deltaTime);
 					transform.Rotation = new vec3(x, y, z);
-                }
+				}
 
 				if (transform.Scale.x >= MinScaleOffset.x && transform.Scale.x <= MaxScaleOffset.x
 					&& transform.Scale.y >= MinScaleOffset.y && transform.Scale.y <= MaxScaleOffset.y
@@ -106,11 +106,11 @@ namespace TRE
 				else if (!doneScale)
 				{
 					//transform.Scale += ScaleVec * scaleSpeed * Time.deltaTime;
-                    float x = MathF.Lerp(transform.Scale.x, EndScale.x, scaleSpeed * Time.deltaTime);
-                    float y = MathF.Lerp(transform.Scale.y, EndScale.y, scaleSpeed * Time.deltaTime);
-                    float z = MathF.Lerp(transform.Scale.z, EndScale.z, scaleSpeed * Time.deltaTime);
-                    transform.Scale = new vec3(x, y, z);
-                }
+					float x = MathF.Lerp(transform.Scale.x, EndScale.x, scaleSpeed * Time.deltaTime);
+					float y = MathF.Lerp(transform.Scale.y, EndScale.y, scaleSpeed * Time.deltaTime);
+					float z = MathF.Lerp(transform.Scale.z, EndScale.z, scaleSpeed * Time.deltaTime);
+					transform.Scale = new vec3(x, y, z);
+				}
 
 				if (MyRenderer.Color.x >= MinColorOffset.x && MyRenderer.Color.x <= MaxColorOffset.x
 					&& MyRenderer.Color.y >= MinColorOffset.y && MyRenderer.Color.y <= MaxColorOffset.y
@@ -122,17 +122,17 @@ namespace TRE
 				else if (!doneColor)
 				{
 					//MyRenderer.Color += ColorVec * colorSpeed * Time.deltaTime;
-                    float x = MathF.Lerp(MyRenderer.Color.x, EndColor.x, colorSpeed * Time.deltaTime);
-                    float y = MathF.Lerp(MyRenderer.Color.y, EndColor.y, colorSpeed * Time.deltaTime);
-                    float z = MathF.Lerp(MyRenderer.Color.z, EndColor.z, colorSpeed * Time.deltaTime);
-                    float w = MathF.Lerp(MyRenderer.Color.w, EndColor.w, colorSpeed * Time.deltaTime);
-                    MyRenderer.Color = new vec4(x, y, z, w);
-                }
+					float x = MathF.Lerp(MyRenderer.Color.x, EndColor.x, colorSpeed * Time.deltaTime);
+					float y = MathF.Lerp(MyRenderer.Color.y, EndColor.y, colorSpeed * Time.deltaTime);
+					float z = MathF.Lerp(MyRenderer.Color.z, EndColor.z, colorSpeed * Time.deltaTime);
+					float w = MathF.Lerp(MyRenderer.Color.w, EndColor.w, colorSpeed * Time.deltaTime);
+					MyRenderer.Color = new vec4(x, y, z, w);
+				}
 
 				if (doneRotate && doneScale && doneColor)
 				{
 					CompleteVFX = true;
-                    slapping = false;
+					slapping = false;
 					transform.Rotation = EndRotation;
 					transform.Scale = EndScale;
 					MyRenderer.Color = EndColor;
@@ -151,8 +151,8 @@ namespace TRE
 
 			CompleteVFX = false;
 
-            // Force stop
-            TimerToStop = TimerToStopDefault;
+			// Force stop
+			TimerToStop = TimerToStopDefault;
 
 			EndRotation = transform.Rotation;
 			EndScale = transform.Scale;
@@ -182,24 +182,24 @@ namespace TRE
 				(EndRotation.x - rotOff.x < EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x * OffsetScale : EndRotation.x + rotOff.x * OffsetScale,
 				(EndRotation.y - rotOff.y < EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y * OffsetScale : EndRotation.y + rotOff.y * OffsetScale,
 				(EndRotation.z - rotOff.z < EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z * OffsetScale : EndRotation.z + rotOff.z * OffsetScale
-                );
+				);
 			MaxRotateOffset = new vec3(
 				(EndRotation.x - rotOff.x > EndRotation.x + rotOff.x) ? EndRotation.x - rotOff.x * OffsetScale : EndRotation.x + rotOff.x * OffsetScale,
 				(EndRotation.y - rotOff.y > EndRotation.y + rotOff.y) ? EndRotation.y - rotOff.y * OffsetScale : EndRotation.y + rotOff.y * OffsetScale,
 				(EndRotation.z - rotOff.z > EndRotation.z + rotOff.z) ? EndRotation.z - rotOff.z * OffsetScale : EndRotation.z + rotOff.z * OffsetScale
-                );
+				);
 
 			vec3 scaOff = ScaleVec * offsetMult * Time.deltaTime;
 			MinScaleOffset = new vec3(
 				(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x * OffsetScale : EndScale.x + scaOff.x * OffsetScale,
 				(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y * OffsetScale : EndScale.y + scaOff.y * OffsetScale,
 				(EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z * OffsetScale : EndScale.z + scaOff.z * OffsetScale
-                );
+				);
 			MaxScaleOffset = new vec3(
 				(EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x * OffsetScale : EndScale.x + scaOff.x * OffsetScale,
 				(EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y * OffsetScale : EndScale.y + scaOff.y * OffsetScale,
 				(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z * OffsetScale : EndScale.z + scaOff.z * OffsetScale
-                );
+				);
 
 			vec4 colOff = ColorVec * offsetMult * Time.deltaTime;
 			MinColorOffset = new vec4(
@@ -207,13 +207,13 @@ namespace TRE
 				(EndColor.y - colOff.y < EndColor.y + colOff.y) ? EndColor.y - colOff.y * OffsetScale : EndColor.y + colOff.y * OffsetScale,
 				(EndColor.z - colOff.z < EndColor.z + colOff.z) ? EndColor.z - colOff.z * OffsetScale : EndColor.z + colOff.z * OffsetScale,
 				(EndColor.w - colOff.w < EndColor.w + colOff.w) ? EndColor.w - colOff.w * OffsetScale : EndColor.w + colOff.w * OffsetScale
-                );
+				);
 			MaxColorOffset = new vec4(
 				(EndColor.x - colOff.x > EndColor.x + colOff.x) ? EndColor.x - colOff.x * OffsetScale : EndColor.x + colOff.x * OffsetScale,
 				(EndColor.y - colOff.y > EndColor.y + colOff.y) ? EndColor.y - colOff.y * OffsetScale : EndColor.y + colOff.y * OffsetScale,
 				(EndColor.z - colOff.z > EndColor.z + colOff.z) ? EndColor.z - colOff.z * OffsetScale : EndColor.z + colOff.z * OffsetScale,
 				(EndColor.w - colOff.w > EndColor.w + colOff.w) ? EndColor.w - colOff.w * OffsetScale : EndColor.w + colOff.w * OffsetScale
-                );
+				);
 		}
 	}
 }

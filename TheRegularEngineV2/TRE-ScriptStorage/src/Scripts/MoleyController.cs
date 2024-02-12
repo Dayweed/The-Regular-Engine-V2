@@ -147,7 +147,7 @@ namespace TRE
 
 		// Cheats
 		public bool keepInventory = false;
-        public bool creativeMode = false;
+		public bool creativeMode = false;
 
 		public void Start()
 		{
@@ -278,8 +278,8 @@ namespace TRE
 					isDead = false;
 					RespawnPlayer = false;
 					RespawnTimer = 1.5f;
-                    fallingSFXPlayed = false;
-                }
+					fallingSFXPlayed = false;
+				}
 			}
 
 			#region UI Popup Region
@@ -616,8 +616,8 @@ namespace TRE
 				if (ECSManager.IsValidEntity(fallSFX) && !fallingSFXPlayed)
 				{
 					fallingSFXPlayed = true;
-                    AS.Play(fallSFX);
-                }
+					AS.Play(fallSFX);
+				}
 			}
 		}
 
@@ -766,7 +766,7 @@ namespace TRE
 			{
 				RespawnPlayer = true;
 				isDead = true;
-            }
+			}
 			Invulnerability = true;
 
 			// Commenting out for now until IsActivated is cfm not needed
