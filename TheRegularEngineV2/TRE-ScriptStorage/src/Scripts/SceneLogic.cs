@@ -86,7 +86,7 @@ namespace TRE
 				triggerStars.Add(holeCheckDisplay2);
 				triggerStars.Add(holeCheckDisplay3);
 
-				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
 
 				nextSceneName = "ResultScreen";
 			}
@@ -110,7 +110,7 @@ namespace TRE
 				triggerStars.Add(holeCheckDisplay2);
 				triggerStars.Add(holeCheckDisplay3);
 
-				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
 
 				nextSceneName = "ResultScreen";
 			}
