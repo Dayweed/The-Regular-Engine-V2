@@ -28,6 +28,8 @@ namespace TRE
 		{
 			parenting.GetChild(2).GetComponent<MeshRenderer>().Material = deactivatedMaterial;
 
+			HoleCheckSFX = ECSManager.FindIDFromName("SFX_HoleCheck");
+
 			// Add triggers that are it's child as triggers
 			NoOfTriggers = parenting.GetTotalChildren();
 
@@ -55,7 +57,6 @@ namespace TRE
 				triggersComp.Add(trigger.GetComponent<HoleCheckTrigger>());
 			}
 
-			HoleCheckSFX = ECSManager.FindIDFromName("SFX_HoleCheck");
 		}
 
 		public void Update()
