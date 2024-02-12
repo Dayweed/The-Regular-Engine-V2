@@ -69,7 +69,7 @@ namespace TRE
 			// Go to next scene
 			if (pressedSpace && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
-				Scene.TransitionScene("MainMenu", delayScene);
+				Scene.TransitionScene("Tutorial", delayScene);
 				endCutscene = true;
 			}
 
