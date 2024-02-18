@@ -24,6 +24,7 @@ include "Dependencies/Math"
 -- include "Compilers/GeomCompiler"
 -- include "Compilers/TextureCompiler"
 -- include "Compilers/ShaderCompiler"
+-- include "Compilers/FontCompiler"
 group ""
 
 project "TheRegularEngine"
