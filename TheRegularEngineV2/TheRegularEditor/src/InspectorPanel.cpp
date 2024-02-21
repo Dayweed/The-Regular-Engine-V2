@@ -570,7 +570,7 @@ namespace TRE
 							else if constexpr (std::is_same_v<T, FontType>)
 							{
 								std::vector<std::string> LoadFontTypes = FontManager::m_AvailableFonts;
-		
+
 								if (ImGui::BeginCombo("##FontType", Value.m_FontType.c_str()))
 								{
 									std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
@@ -604,9 +604,9 @@ namespace TRE
 										assetName = assetName.substr(assetName.find_last_of('\\') + 1);
 										assetName.erase(assetName.find(".ttf"));
 										assetName += ".ttf";
-										
-										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Resources/Font/" + assetName;
-										
+
+										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\" + "Resources/Font/" + assetName;
+
 										//Load Font here
 										FontManager::LoadFont(FilePath);
 									}
@@ -645,20 +645,20 @@ namespace TRE
 					{
 						// here we will have a portion of the
 
-						if(ImGui::Button("Add Script"))
+						if (ImGui::Button("Add Script"))
 						{
 							ImGui::OpenPopup("AddScript");
 						}
 
-						if(ImGui::Button("Remove Script"))
+						if (ImGui::Button("Remove Script"))
 						{
 							ImGui::OpenPopup("RemoveScript");
 						}
 
-						if(ImGui::BeginPopup("AddScript"))
+						if (ImGui::BeginPopup("AddScript"))
 						{
 
-							if(ImGui::BeginCombo("##Scripts", "Scripts"))
+							if (ImGui::BeginCombo("##Scripts", "Scripts"))
 							{
 								std::vector<std::string> scripts = ScriptEngine::s_ScriptEngineData->RegisteredScriptClasses;
 								std::sort(scripts.begin(), scripts.end());
@@ -674,9 +674,9 @@ namespace TRE
 							ImGui::EndPopup();
 						}
 
-						if(ImGui::BeginPopup("RemoveScript"))
+						if (ImGui::BeginPopup("RemoveScript"))
 						{
-							if(ImGui::BeginCombo("##ActiveScripts", "Active Scripts"))
+							if (ImGui::BeginCombo("##ActiveScripts", "Active Scripts"))
 							{
 								std::vector<std::string> scripts = entity->GetComponent<ScriptComponent>().m_RegisteredScripts;
 								for (auto& script : scripts)
@@ -690,15 +690,15 @@ namespace TRE
 							}
 							ImGui::EndPopup();
 						}
-						
+
 						if (ScriptEngine::s_ScriptEngineData->EntityFieldMap.find(entity->GetGUID()) != ScriptEngine::s_ScriptEngineData->EntityFieldMap.end())
 						{
 							// Displaying all the script data in the entity
 							std::vector<std::shared_ptr<ScriptInstance>> instances = ScriptEngine::GetAllEntityScripts(entity->GetGUID());
 
 							//check if the vector is empty
-							if(instances.empty())
-{
+							if (instances.empty())
+							{
 								ImGui::Text("No Scripts");
 							}
 
@@ -707,8 +707,8 @@ namespace TRE
 								//display all the scripts
 								for (auto& instance : instances)
 								{
-									
-									if(ImGui::CollapsingHeader(instance->GetScriptClass()->GetScriptClassName().c_str(),ImGuiTreeNodeFlags_DefaultOpen))
+
+									if (ImGui::CollapsingHeader(instance->GetScriptClass()->GetScriptClassName().c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 									{
 										const auto& fields = instance->GetScriptClass()->GetFields();
 										for (const auto& [name, inst] : fields)
@@ -814,7 +814,7 @@ namespace TRE
 												TRE_ERROR("[" + function + "] Not all ScriptFieldTypes is accounted!");
 												assert(false && "Refer to Error above");
 											}
-										
+
 										}
 									}
 

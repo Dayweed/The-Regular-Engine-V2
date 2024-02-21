@@ -1339,12 +1339,7 @@ namespace TRE
 		{
 			get
 			{
-				float time = Engine_GetDeltaTime();
-				return time;
-			}
-			set
-			{
-
+				return Engine_GetDeltaTime();
 			}
 		}
 
