@@ -13,6 +13,8 @@ namespace TRE
 			FontManager();
 			~FontManager();
 
+			static void RunCompiler(std::string assetpath);
+
 			static void LoadFont(const std::string& FilePath);
 			static bool IsFontLoaded(std::string FontType);
 

@@ -56,6 +56,12 @@ namespace TRE
 		}
 
 		std::string ResourcePath = "../Resources/Fonts/" + FontType + ".TREfont";
+		if (!std::filesystem::exists(ResourcePath))
+		{
+			RunCompiler("../Assets/Font/" + FontType + ".ttf");
+			TRE_CORE_INFO("Compiled Font Asset of type: {0}", FontType);
+		}
+
 		std::unique_ptr<Font> NewFont = std::make_unique<Font>(ResourcePath);
 		
 		ResourceHandle assetHandle = Resource::GenerateGUID();
@@ -74,5 +80,36 @@ namespace TRE
 			return true;
 
 		return false;
+	}
+
+	void FontManager::RunCompiler(std::string assetpath)
+	{
+		const char* FontExe = "..\\Compilers\\FontCompiler.exe";
+		if (std::filesystem::exists(FontExe) == false)
+		{
+			TRE_CORE_CRITICAL("Error: FontCompiler.exe does not exist");
+			return;
+		}
+
+		char currentDir[FILENAME_MAX];
+		if (_getcwd(currentDir, sizeof(currentDir)))
+		{
+			std::string exePath = FontExe;
+
+			char command[256];
+			snprintf(command, sizeof(command), "\"%s %s\"", exePath.c_str(), assetpath.c_str());
+
+			int result = system(command);
+			if (result != 0)
+			{
+				TRE_CORE_ERROR("Error: FontCompiler.exe failed to run. Code: {0}", result);
+				return;
+			}
+		}
+		else
+		{
+			TRE_CORE_ERROR("Error: could not get current directory");
+			return;
+		}
 	}
 }
