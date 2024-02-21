@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
+﻿using GlmSharp;
 
 namespace TRE
 {
+	using TS = TransformSystem;
+
 	public class TextBounce : Entity
 	{
 		bool pause = false;
@@ -22,7 +18,7 @@ namespace TRE
 		public void Start()
 		{
 			timer = 0;
-			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			TS.GetPosition(this.ID, out vec3 pos);
 			initialYPos = pos.y;
 
 			// Custom direction for result logic
@@ -40,10 +36,10 @@ namespace TRE
 			if (pause) return;
 
 			timer += Time.GetDeltaTime();
-			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			TS.GetPosition(this.ID, out vec3 pos);
 			float value = initialYPos + height * MathF.Sin(period * timer) * dir;
 			pos.y = value;
-			TransformSystem.SetPosition(this.ID, pos);
+			TS.SetPosition(this.ID, pos);
 		}
 
 		public void Pause()
@@ -56,7 +52,7 @@ namespace TRE
 			pause = false;
 
 			timer = 0;
-			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			TS.GetPosition(this.ID, out vec3 pos);
 			initialYPos = pos.y;
 
 			// Custom direction for result logic
