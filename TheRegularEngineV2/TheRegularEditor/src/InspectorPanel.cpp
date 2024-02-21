@@ -7,6 +7,7 @@
 #include "Scripting/ScriptEngine.h"
 #include "EditorAssetManager.h"
 #include "Graphics/FontRenderer.h"
+#include "Graphics/FontManager.h"
 
 namespace TRE
 {
@@ -607,7 +608,7 @@ namespace TRE
 										std::string FilePath = std::filesystem::current_path().parent_path().string() + "\\"  + "Resources/Font/" + assetName;
 										
 										//Load Font here
-										FontRenderer::LoadFont(FilePath);
+										FontManager::LoadFont(FilePath);
 									}
 									else
 									{
