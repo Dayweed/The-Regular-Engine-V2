@@ -114,6 +114,9 @@ namespace TRE
 		m_CommandBuffer = nullptr;
 		m_SkyboxEnvironment.reset();
 		m_SkyboxEnvironment = nullptr;
+
+		if (FontManager::GetInstance() != nullptr)
+			delete FontManager::GetInstance();
 	}
 
 	void Renderer::RenderToSwapChain()

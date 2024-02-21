@@ -7,6 +7,7 @@
 namespace TRE
 {
 	std::unordered_map<std::string, ResourceHandle> FontManager::m_LoadedFonts;
+	std::vector<std::string> FontManager::m_AvailableFonts;
 	std::string FontManager::m_DefaultFontFilepath = DEFAULT_FONT_PATH; //Default to this font unless other font is loaded in
 	FontManager* FontManager::s_Instance = nullptr;
 
@@ -35,7 +36,7 @@ namespace TRE
 	{
 		s_Instance = this;
 		m_LoadedFonts.clear();
-
+		m_AvailableFonts.clear();
 		LoadFont(m_DefaultFontFilepath); //Loads the default arial
 	}
 
@@ -63,7 +64,7 @@ namespace TRE
 		m_LoadedFonts[FontType] = assetHandle;
 
 		ResourceManager::Instance().AddResource(std::move(NewFont));
-
+		m_AvailableFonts.push_back(FontType);
 		TRE_CORE_INFO("{0} has been loaded successfully", FontType);
 	}
 

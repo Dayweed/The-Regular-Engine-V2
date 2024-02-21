@@ -15,13 +15,7 @@
 
 namespace TRE
 {
-	std::vector<std::string> FontRenderer::m_AvailableFonts{};
 	static constexpr float s_DefaultFontSize = 64.f;
-
-	std::vector<std::string>& FontRenderer::GetLoadedFonts()
-	{
-		return m_AvailableFonts;
-	}
 
 	FontRenderer::FontRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
 	{
@@ -49,8 +43,7 @@ namespace TRE
 
 	FontRenderer::~FontRenderer()
 	{
-		vkDeviceWaitIdle(m_Device->GetLogicalDevice());
-		m_AvailableFonts.clear();
+
 	}
 
 	void FontRenderer::RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)

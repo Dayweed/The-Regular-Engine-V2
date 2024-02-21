@@ -569,7 +569,7 @@ namespace TRE
 							}
 							else if constexpr (std::is_same_v<T, FontType>)
 							{
-								std::vector<std::string> LoadFontTypes = FontRenderer::GetLoadedFonts();
+								std::vector<std::string> LoadFontTypes = FontManager::m_AvailableFonts;
 		
 								if (ImGui::BeginCombo("##FontType", Value.m_FontType.c_str()))
 								{

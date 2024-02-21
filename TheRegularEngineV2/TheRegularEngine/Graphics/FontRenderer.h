@@ -27,19 +27,10 @@ namespace TRE
 
 			void RenderFont(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer);
 
-			static std::vector<std::string>& GetLoadedFonts();
-
 		private:
 			std::shared_ptr<Device> m_Device;
-
-		private:
-			static std::vector<std::string> m_AvailableFonts;
-
-			std::string m_DefaultFontFilepath = "../Resources/Font/arial.ttf";
-
 			std::shared_ptr<RenderPass> m_FontRenderPass;
 			std::shared_ptr<Pipeline> m_FontPipeline;
-
 			std::shared_ptr<IndexBuffer> m_FontIndexBuffer;
 	};
 }
