@@ -1,0 +1,143 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "14288387974525608456",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14288387974525608456",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "14177616536041065912",
+         "m_Index": 328,
+         "m_Name": "MidPos",
+         "m_Tag": "MidPos"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            -1.25600004196167,
+            -2.0,
+            -3.053999900817871
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_DrawShadow": true,
+         "m_IsVisible": false
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_CollisionLayer.m_LayerID": 6,
+         "m_HalfExtents": [
+            0.5,
+            0.5,
+            0.5
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.PlayerMidPosition"
+         ],
+         "m_StoredClass": "TRE.PlayerMidPosition"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
