@@ -148,7 +148,7 @@ namespace TRE
 		{
 			Entity other = new Entity(otherID);
 			//if on the platform unchild it
-			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
 			{
 				other.GetComponent<Transform>().Position += transform.Position - oldPosition;
 			}

@@ -54,7 +54,7 @@ namespace TRE
 			Entity other = new Entity(otherID);
 			//Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
 
-			if (GetComponent<Rigidbody>().useGravity == true && other.CompareTag("Ground"))
+			if (GetComponent<Rigidbody>().useGravity == true && (other.CompareTag("Ground") || other.CompareTag("Platform")))
 			{
 				//RemoveComponent<Rigidbody>();
 				GetComponent<Rigidbody>().useGravity = false;
@@ -62,7 +62,10 @@ namespace TRE
 				transform.Position = new vec3(transform.Position.x, transform.Position.y + transform.Scale.y + groundOffset, transform.Position.z);
 				//PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
 				cooldownCurrent = 0;
-				return;
+
+                // Set parent
+                if (other.CompareTag("Platform")) parenting.SetParent(other);
+                return;
 			}
 
 			if (collected || cooldownCurrent > 0) return;
@@ -74,6 +77,7 @@ namespace TRE
 				//playerObj = playerModel.parenting.GetParent();                          // playerObj = playerModel.parent;
 				playerObj = other;
 				PowerUpManagerObj = playerObj.parenting.GetChildFromName("Power Manager");
+				parenting.RemoveParent();
 
 				if (!ECSManager.IsValidEntity(PowerUpManagerObj.ID))
 				{
