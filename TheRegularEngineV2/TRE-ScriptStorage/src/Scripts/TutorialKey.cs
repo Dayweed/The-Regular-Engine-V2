@@ -28,7 +28,7 @@ namespace TRE
 			{
 
 
-				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(80.439f, 12.572f, -424.979f));
+				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(80.439f, 12.572f, -460.979f));
 				UpButton.SetActive(false);
 
 				if (ECSManager.IsValidEntity(5918200844399750609))
