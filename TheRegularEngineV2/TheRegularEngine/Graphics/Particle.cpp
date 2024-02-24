@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "ECS/Components/Particle.h"
 #include "Random.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "Core/Engine.h"
 #include "Camera.h"
+#include "ECS/Components/CameraComponent.h"
 
 namespace TRE
 {

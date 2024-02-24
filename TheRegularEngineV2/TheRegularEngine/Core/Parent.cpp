@@ -1,7 +1,8 @@
 #include "pch.h"
 
 #include "Parent.h"
-#include "Transform.h"
+#include "ECS/Components/ParentingComponent.h"
+#include "ECS/Components/Transform.h"
 #include "Logger.h"
 
 #include <glm/gtc/matrix_inverse.hpp>

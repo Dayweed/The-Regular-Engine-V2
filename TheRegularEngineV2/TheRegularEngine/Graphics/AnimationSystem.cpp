@@ -2,9 +2,9 @@
 #include "AnimationSystem.h"
 #include "Core/ECS.h"
 
-#include "AnimationComponent.h"
-#include "Core/Transform.h"
-#include "Graphics/MeshRenderer.h"
+#include "ECS/Components/AnimationComponent.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/Components/MeshRenderer.h"
 
 namespace TRE
 {

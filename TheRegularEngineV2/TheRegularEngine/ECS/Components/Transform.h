@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
-#include "ECS.h"
-#include "System.h"
+#include "Core/ECS.h"
+#include "Core/System.h"
 
 #include <glm/gtc/type_ptr.hpp>
 

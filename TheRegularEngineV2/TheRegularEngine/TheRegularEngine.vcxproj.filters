@@ -105,9 +105,6 @@
     <ClInclude Include="Core\SystemManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Transform.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Window.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -115,6 +112,12 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\AnimationComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\AudioComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\AudioListenerComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\DirectPathfinding.h">
@@ -139,6 +142,9 @@
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\TextComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Transform.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\UIComponent.h">
@@ -328,10 +334,10 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ECS\Components\AudioComponent.h">
+    <ClInclude Include="ECS\Components\ParentingComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ECS\Components\AudioListenerComponent.h">
+    <ClInclude Include="ECS\Components\CameraComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -381,11 +387,11 @@
     <ClCompile Include="Core\Serialization.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Transform.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Window.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Components\Transform.cpp">
+      <Filter>ECS\Components</Filter>
     </ClCompile>
     <ClCompile Include="Editor\ImGuizmo.cpp">
       <Filter>Editor</Filter>

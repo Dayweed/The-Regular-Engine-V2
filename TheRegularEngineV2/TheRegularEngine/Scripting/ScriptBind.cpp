@@ -3,7 +3,7 @@
 
 #include"Scripting/ScriptEngine.h"
 #include "Core/ECS.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "Core/GameLoop.h"
 #include "Resource/Resource.h"
 

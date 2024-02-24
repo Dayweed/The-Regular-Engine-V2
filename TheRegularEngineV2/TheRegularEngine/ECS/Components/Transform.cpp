@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Transform.h"
-#include "Graphics/MeshRenderer.h"
-#include "SystemManager.h"
+#include "ECS/Components/MeshRenderer.h"
+#include "Core/SystemManager.h"
 #include "TREIncludes.h"
 
 #include <glm/gtx/matrix_decompose.hpp>

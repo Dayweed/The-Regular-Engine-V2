@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "BoxCollider.h"
 #include "PhysicsSystem.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 
 using namespace physx;
 // to save my dwindling sanity

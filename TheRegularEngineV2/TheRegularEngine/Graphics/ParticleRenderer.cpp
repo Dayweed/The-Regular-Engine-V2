@@ -2,7 +2,7 @@
 #include "ParticleRenderer.h"
 #include "Core/Engine.h"
 #include "Core/ECS.h"
-#include "Particle.h"
+#include "ECS/Components/Particle.h"
 #include "Camera.h"
 #include "EditorCamera.h"
 #include "Core/ECS.h"

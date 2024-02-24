@@ -2,16 +2,16 @@
 #include "UIRenderer.h"
 #include "Renderer.h"
 #include "Core/ECS.h"
-#include "UIComponent.h"
+#include "ECS/Components/UIComponent.h"
 #include "Core/Engine.h"
 #include "Resource/ResourceManager.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "EditorCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
-#include "Slideshow.h"
+#include "ECS/Components/Slideshow.h"
 #include "Core/Logger.h"
 
 namespace TRE

@@ -1,6 +1,7 @@
 #include "pch.h"
+#include "ECS/Components/CameraComponent.h"
 #include "Camera.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "Core/Engine.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_access.hpp"

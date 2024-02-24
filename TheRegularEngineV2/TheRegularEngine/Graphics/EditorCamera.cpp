@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "EditorCamera.h"
 #include "Core/SystemManager.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "Core/SceneManager.h"
-#include <iostream>
+#include "ECS/Components/CameraComponent.h"
 
 namespace TRE
 {

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SceneRenderer.h"
-#include "Camera.h"
+#include "ECS/Components/CameraComponent.h"
 #include "Core/Logger.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
@@ -8,19 +8,19 @@
 #include "Physics/BoxCollider.h"
 #include "Physics/CapsuleCollider.h"
 #include "Physics/CylinderCollider.h"
-#include "Light.h"
+#include "ECS/Components/Light.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
-#include "AnimationComponent.h"
+#include "ECS/Components/AnimationComponent.h"
 #include "FontRenderer.h"
-#include "Sprite3DComponent.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Sprite3DComponent.h"
+#include "ECS/Components/Transform.h"
 #include "Renderer.h"
 #include "Core/Engine.h"
-#include "MeshRenderer.h"
-#include "Particle.h"
+#include "ECS/Components/MeshRenderer.h"
+#include "ECS/Components/Particle.h"
 
 //To be removed
 #include "EditorCamera.h"

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Slideshow.h"
+#include "ECS/Components/Slideshow.h"
 #include "SwapChain.h"
 #include "Core/Engine.h"
 #include "RendererContext.h"
