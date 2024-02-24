@@ -120,6 +120,18 @@
     <ClInclude Include="ECS\Components\AudioListenerComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\Components\BoxCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\CameraComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\CapsuleCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\CylinderCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="ECS\Components\DirectPathfinding.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
@@ -129,13 +141,22 @@
     <ClInclude Include="ECS\Components\MeshRenderer.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\Components\ParentingComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="ECS\Components\Particle.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Rigidbody.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\ScriptComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\Slideshow.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\SphereCollider.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\Sprite3DComponent.h">
@@ -277,15 +298,6 @@
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\BoxCollider.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\CapsuleCollider.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\CylinderCollider.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\ErrorCallback.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -295,13 +307,7 @@
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Rigidbody.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\SimulationEventCallback.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\SphereCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessing\PostProcessing.h">
@@ -334,12 +340,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ECS\Components\ParentingComponent.h">
-      <Filter>ECS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ECS\Components\CameraComponent.h">
-      <Filter>ECS\Components</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">

@@ -1,5 +1,5 @@
 #pragma once
-#include "PhysicsComponent.h"
+#include "Physics/PhysicsComponent.h"
 #include "Properties.h"
 
 namespace TRE
@@ -9,10 +9,28 @@ namespace TRE
 		glm::vec3 m_HalfExtents = glm::vec3(0.5f);
 
 		// Serialize
-		friend void to_json(nlohmann::json& j, const BoxCollider& t);
+		friend void to_json(nlohmann::json& j, const BoxCollider& t)
+		{
+			j = nlohmann::json{
+				WriteMemberToJSON(m_IsActive),
+				WriteMemberToJSON(m_IsTrigger),
+				WriteMemberToJSON(m_CollisionLayer.m_LayerID),
+				WriteMemberToJSON(m_PhysicsMaterial.m_MaterialID),
+				WriteVec3MemberToJSON(m_Offset),
+				WriteVec3MemberToJSON(m_HalfExtents),
+			};
+		}
 
 		// Deserialize
-		friend void from_json(const nlohmann::json& j, BoxCollider& t);
+		friend void from_json(const nlohmann::json& j, BoxCollider& t)
+		{
+			ReadMemberFromJSON(m_IsActive);
+			ReadMemberFromJSON(m_IsTrigger);
+			ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
+			ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
+			ReadVec3MemberFromJSON(m_Offset);
+			ReadVec3MemberFromJSON(m_HalfExtents);
+		}
 
 		// Allows the base class to get these properties  
 		property_vtable()

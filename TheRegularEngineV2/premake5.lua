@@ -111,6 +111,8 @@ project "TheRegularEngine"
 		"%{Library.Compiler}",
 	}
 
+	buildoptions{"/bigobj"}
+
 	filter "configurations:Debug"
 		symbols "On"
 

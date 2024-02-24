@@ -19,10 +19,40 @@ namespace TRE
 		bool m_FreezeRotationX = false; bool m_FreezeRotationY = false; bool m_FreezeRotationZ = false;
 
 		// Serialize
-		friend void to_json(nlohmann::json& j, const Rigidbody& t);
+		friend void to_json(nlohmann::json& j, const Rigidbody& t)
+		{
+			j = nlohmann::json{
+				// WriteMemberToJSON(m_IsActive),
+				WriteMemberToJSON(m_Mass),
+				WriteMemberToJSON(m_Drag),
+				WriteMemberToJSON(m_AngularDrag),
+				WriteMemberToJSON(m_UseGravity),
+				WriteMemberToJSON(m_IsKinematic),
+				WriteMemberToJSON(m_FreezePositionX),
+				WriteMemberToJSON(m_FreezePositionY),
+				WriteMemberToJSON(m_FreezePositionZ),
+				WriteMemberToJSON(m_FreezeRotationX),
+				WriteMemberToJSON(m_FreezeRotationY),
+				WriteMemberToJSON(m_FreezeRotationZ),
+			};
+		}
 
 		// Deserialize
-		friend void from_json(const nlohmann::json& j, Rigidbody& t);
+		friend void from_json(const nlohmann::json& j, Rigidbody& t)
+		{
+			// ReadMemberFromJSON(m_IsActive);
+			ReadMemberFromJSON(m_Mass);
+			ReadMemberFromJSON(m_Drag);
+			ReadMemberFromJSON(m_AngularDrag);
+			ReadMemberFromJSON(m_UseGravity);
+			ReadMemberFromJSON(m_IsKinematic);
+			ReadMemberFromJSON(m_FreezePositionX);
+			ReadMemberFromJSON(m_FreezePositionY);
+			ReadMemberFromJSON(m_FreezePositionZ);
+			ReadMemberFromJSON(m_FreezeRotationX);
+			ReadMemberFromJSON(m_FreezeRotationY);
+			ReadMemberFromJSON(m_FreezeRotationZ);
+		}
 
 		// Allows the base class to get these properties  
 		property_vtable()

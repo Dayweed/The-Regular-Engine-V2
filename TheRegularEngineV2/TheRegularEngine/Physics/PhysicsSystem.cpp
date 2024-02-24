@@ -14,10 +14,10 @@
 #include "Core/Engine.h"
 #include "ECS/Components/Transform.h"
 #include "PhysicsSystem.h"
-#include "Physics/SphereCollider.h"
-#include "Physics/BoxCollider.h"
-#include "Physics/CapsuleCollider.h"
-#include "Physics/CylinderCollider.h"
+#include "ECS/Components/SphereCollider.h"
+#include "ECS/Components/BoxCollider.h"
+#include "ECS/Components/CapsuleCollider.h"
+#include "ECS/Components/CylinderCollider.h"
 #include "Core/Serialization.h"
 
 // USE_PHYSX_PVD is not defined in Release

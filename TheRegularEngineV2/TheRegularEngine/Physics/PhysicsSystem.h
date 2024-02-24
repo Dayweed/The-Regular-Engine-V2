@@ -15,7 +15,7 @@
 #include "Core/System.h"
 #include "Core/ECS.h"
 #include "PhysicsComponent.h"
-#include "Rigidbody.h" // For ForceMode::Enum
+#include "ECS/Components/Rigidbody.h" // For ForceMode::Enum
 #include "ErrorCallback.h"
 #include "SimulationEventCallback.h"
 

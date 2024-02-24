@@ -22,6 +22,7 @@
 #pragma region Serialization/Deserialization Helper Macros
 #include "nlohmann/json.hpp"
 #include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 // only for use in to_json() serialization functions, does NOT work with non-standard variables like glm::vec3!!
 #define WriteMemberToJSON(member) {#member, t.member}
