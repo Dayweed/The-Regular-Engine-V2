@@ -121,8 +121,6 @@ namespace TRE
 		Sprite3DPipelineConfig.EnableDepthTest = true;
 		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
 
-		//To be remove later.....
-
 		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
 
 		float x = -1.f; float y = -1.f;

@@ -70,9 +70,6 @@ namespace TRE
 		Shader::SetupShaders();
 		RegisterECS();
 
-
-		//DemoScene();
-
 		m_SceneRenderer = std::make_shared<SceneRenderer>(false);
 		m_SceneRenderer->Initialize();
 		Renderer::Init();

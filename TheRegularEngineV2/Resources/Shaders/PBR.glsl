@@ -102,12 +102,6 @@ layout(location = 0) in struct
 	bool DrawShadow;
 } In;
 
-layout(push_constant) uniform Push
-{
-	mat4 m_Model;
-	bool m_DrawShadow;
-} push;
-
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
@@ -213,7 +207,7 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	if(push.m_DrawShadow)
+	if(In.DrawShadow)
 	{
 		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}
