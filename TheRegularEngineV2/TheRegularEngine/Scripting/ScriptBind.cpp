@@ -9,9 +9,9 @@
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
-#include "Graphics/MeshRenderer.h"
+#include "ECS/Components/MeshRenderer.h"
 #include "Graphics/Renderer.h"
-#include "Graphics/Particle.h"
+#include "ECS/Components/Particle.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 

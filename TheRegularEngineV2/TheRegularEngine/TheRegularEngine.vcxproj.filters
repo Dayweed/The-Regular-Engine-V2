@@ -7,6 +7,12 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{60E1870B-CCEA-877C-5566-9E7CC16E937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\Components">
+      <UniqueIdentifier>{752AA906-61F8-9C0C-4A8C-0D3336F97871}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Editor">
       <UniqueIdentifier>{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}</UniqueIdentifier>
     </Filter>
@@ -108,6 +114,36 @@
     <ClInclude Include="Core\entt.hpp">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\Components\AnimationComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\DirectPathfinding.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Light.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\MeshRenderer.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Particle.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\ScriptComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Slideshow.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Sprite3DComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\TextComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\UIComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Editor\ImGuizmo.h">
       <Filter>Editor</Filter>
     </ClInclude>
@@ -126,9 +162,6 @@
     </ClInclude>
     <ClInclude Include="EventSystem\Events\InputEvent.h">
       <Filter>EventSystem\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\AnimationComponent.h">
-      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\AnimationSystem.h">
       <Filter>Graphics</Filter>
@@ -172,16 +205,7 @@
     <ClInclude Include="Graphics\IndexBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Light.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Material.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\MeshRenderer.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Particle.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\ParticleRenderer.h">
@@ -220,19 +244,7 @@
     <ClInclude Include="Graphics\Skybox.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Slideshow.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Sprite3DComponent.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\SwapChain.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\TextComponent.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\UIComponent.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\UIRenderer.h">
@@ -258,9 +270,6 @@
     </ClInclude>
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
-    </ClInclude>
-    <ClInclude Include="MiscComponents\DirectPathfinding.h">
-      <Filter>MiscComponents</Filter>
     </ClInclude>
     <ClInclude Include="Physics\BoxCollider.h">
       <Filter>Physics</Filter>
@@ -305,9 +314,6 @@
     <ClInclude Include="Scripting\ScriptBind.h">
       <Filter>Scripting</Filter>
     </ClInclude>
-    <ClInclude Include="Scripting\ScriptComponent.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
     <ClInclude Include="Scripting\ScriptEngine.h">
       <Filter>Scripting</Filter>
     </ClInclude>
@@ -322,6 +328,12 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ECS\Components\AudioComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\AudioListenerComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">

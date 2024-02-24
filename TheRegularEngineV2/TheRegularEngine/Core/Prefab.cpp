@@ -5,7 +5,6 @@
 #include "TREIncludes.h"
 #include "Serialization.h"
 #include "GameLoop.h"
-#include "Graphics/Sprite3DComponent.h"
 #include "Scripting/ScriptEngine.h"
 namespace TRE
 {

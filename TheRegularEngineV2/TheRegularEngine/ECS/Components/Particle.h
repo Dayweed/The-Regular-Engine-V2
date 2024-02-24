@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
-#include "Material.h"
+#include "Graphics/Material.h"
 #include "glm/gtc/type_ptr.hpp"
 
 namespace TRE

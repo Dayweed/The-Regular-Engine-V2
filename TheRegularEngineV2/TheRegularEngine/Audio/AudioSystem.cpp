@@ -3,6 +3,8 @@
 #include "AudioSystem.h"
 #include "Core/GameLoop.h"
 #include "InputHandler/InputHandler.h"
+#include "ECS/Components/AudioComponent.h"
+#include "ECS/Components/AudioListenerComponent.h"
 
 namespace TRE
 {

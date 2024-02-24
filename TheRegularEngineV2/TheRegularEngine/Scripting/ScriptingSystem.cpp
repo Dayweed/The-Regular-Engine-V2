@@ -7,7 +7,7 @@
 #include "../../TheRegularEditor/src/ToolBarPanel.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
-#include"Scripting/ScriptComponent.h"
+#include "ECS/Components/ScriptComponent.h"
 #include "Scripting/ScriptEngine.h"
 #include "Core/GameLoop.h"
 

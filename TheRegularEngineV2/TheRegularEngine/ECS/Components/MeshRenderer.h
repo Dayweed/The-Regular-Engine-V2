@@ -1,9 +1,9 @@
 #pragma once
 #include "Core/ECS.h"
 #include "Core/System.h"
-#include "RenderObject.h"
+#include "Graphics/RenderObject.h"
 #include "Sphere3D.h"
-#include "Material.h"
+#include "Graphics/Material.h"
 #include "Resource/ResourceManager.h"
 
 #include "Resource/Resource.h"

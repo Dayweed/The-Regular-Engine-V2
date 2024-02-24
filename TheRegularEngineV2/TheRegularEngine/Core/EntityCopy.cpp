@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "EntityCopy.h"
 #include "TREIncludes.h"
-#include "Graphics/Sprite3DComponent.h"
 
 namespace TRE
 {

@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "Material.h"
-#include "UniformBuffer.h"
+#include "Graphics/VertexBuffer.h"
+#include "Graphics/IndexBuffer.h"
+#include "Graphics/Material.h"
+#include "Graphics/UniformBuffer.h"
 
 #ifndef UINT32_T_CAST // a bit funky that I had to do this but alright...
 #define UINT32_T_CAST(n) static_cast<uint32_t>((n))

@@ -11,13 +11,10 @@
 #include "Audio/AudioSystem.h"
 #include "Scripting/ScriptingSystem.h"
 #include "Scripting/ScriptEngine.h"
-#include "Graphics/Light.h"
-#include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
 #include "SceneManager.h"
 #include "Graphics/AnimationSystem.h"
-#include "Graphics/Sprite3DComponent.h"
 #include "InputHandler/InputHandler.h"
 
 namespace TRE

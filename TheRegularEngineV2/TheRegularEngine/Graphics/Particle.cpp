@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Particle.h"
+#include "ECS/Components/Particle.h"
 #include "Random.h"
 #include "Core/Transform.h"
 #include "Core/Engine.h"

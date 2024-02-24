@@ -35,21 +35,32 @@
 //-----------------Graphics-----------------//
 #include "Graphics/RendererContext.h"
 #include "Graphics/SwapChain.h"
-#include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Light.h"
-#include "Graphics/UIComponent.h"
-#include "Graphics/AnimationComponent.h"
-#include "Graphics/Particle.h"
-#include "Graphics/TextComponent.h"
-#include "Graphics/Slideshow.h"
-#include "Graphics/Sprite3DComponent.h"
-
-//-----------------Scripting-----------------//
-#include "Scripting/ScriptComponent.h"
 
 //-------------------Audio-------------------//
 #include "Audio/AudioSystem.h"
 
-//-------------------Misc Components-------------------//
-#include "MiscComponents/DirectPathfinding.h"
+//-------------------Components-------------------//
+#include "ECS/Components/AnimationComponent.h"
+#include "ECS/Components/AudioComponent.h"
+#include "ECS/Components/AudioListenerComponent.h"
+#include "ECS/Components/DirectPathfinding.h"
+#include "ECS/Components/Light.h"
+#include "ECS/Components/MeshRenderer.h"
+#include "ECS/Components/Particle.h"
+#include "ECS/Components/ScriptComponent.h"
+#include "ECS/Components/Slideshow.h"
+#include "ECS/Components/Sprite3DComponent.h"
+#include "ECS/Components/TextComponent.h"
+#include "ECS/Components/UIComponent.h"
+
+//Components that i havent move: (i will move)
+// Prefab
+// Parenting
+// Properties
+// Transform
+// Camera
+// Rigidbody
+// Boxcollider
+// capsulecollider
+// cylindercollier

@@ -4,8 +4,8 @@
 #include "Parent.h"
 #include "SystemManager.h"
 #include "TREIncludes.h"
-#include "Graphics/UIComponent.h"
-#include "Graphics/TextComponent.h"
+#include "ECS/Components/UIComponent.h"
+#include "ECS/Components/TextComponent.h"
 
 #define TO DELETE
 #include "Transform.h"

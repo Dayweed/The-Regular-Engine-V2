@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/ECS.h"
-#include "VertexBuffer.h"
+#include "Graphics/VertexBuffer.h"
 
 namespace TRE
 {

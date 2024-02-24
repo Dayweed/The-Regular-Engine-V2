@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ScriptComponent.h"
+#include "ECS/Components/ScriptComponent.h"
 
 #include <cmath>
 
