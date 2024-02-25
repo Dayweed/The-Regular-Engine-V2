@@ -63,9 +63,9 @@ namespace TRE
 				//PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
 				cooldownCurrent = 0;
 
-                // Set parent
-                if (other.CompareTag("Platform")) parenting.SetParent(other);
-                return;
+				// Set parent
+				if (other.CompareTag("Platform")) parenting.SetParent(other);
+				return;
 			}
 
 			if (collected || cooldownCurrent > 0) return;

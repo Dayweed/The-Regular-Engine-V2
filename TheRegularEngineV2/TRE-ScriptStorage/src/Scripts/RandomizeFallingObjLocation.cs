@@ -105,14 +105,14 @@ namespace TRE
 				if (name == "FallingObj_Spawner_01")
 				{
 					size = new vec3(24, 0, 11);
-                    timeBetweenSpawns = 5;
-                }
+					timeBetweenSpawns = 5;
+				}
 
 				if (name == "FallingObj_Spawner_02")
 				{
 					size = new vec3(24, 0, 11);
-                    timeBetweenSpawns = 4;
-                }
+					timeBetweenSpawns = 4;
+				}
 			}
 
 

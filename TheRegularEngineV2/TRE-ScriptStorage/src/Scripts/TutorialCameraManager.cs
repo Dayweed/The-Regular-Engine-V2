@@ -39,7 +39,7 @@ namespace TRE
 
 		public void Start()
 		{
-            MidPos = ECSManager.FindEntityByName("MidPos");
+			MidPos = ECSManager.FindEntityByName("MidPos");
 			Debug.Log("MidPos ID is " + MidPos.ID);
 
 			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
@@ -100,8 +100,8 @@ namespace TRE
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
-                cameraController.expectedYPos = -2f;
-            }
+				cameraController.expectedYPos = -2f;
+			}
 
 			if (regionC)
 			{
@@ -110,8 +110,8 @@ namespace TRE
 				expectedRotation = new vec3(25, 180, 0);
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
-                cameraController.expectedYPos = -2f;
-            }
+				cameraController.expectedYPos = -2f;
+			}
 
 			if (regionD)
 			{
@@ -120,8 +120,8 @@ namespace TRE
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
-                cameraController.expectedYPos = 0f;
-            }
+				cameraController.expectedYPos = 0f;
+			}
 
 			if (regionE)
 			{
@@ -130,8 +130,8 @@ namespace TRE
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
-                cameraController.expectedYPos = 0f;
-            }
+				cameraController.expectedYPos = 0f;
+			}
 
 			if (regionF)
 			{
@@ -140,19 +140,19 @@ namespace TRE
 				expectedRotation = new vec3(25, 180, 0);
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
-                cameraController.expectedYPos = 0f;
-            }
+				cameraController.expectedYPos = 0f;
+			}
 
 			if (regionG)
 			{
-                //final section
-                cameraController.staticPosition = new vec3(110, 20, -450);
-                expectedPosition = new vec3(50, 40, 50);
-                expectedRotation = new vec3(35, 220, 0);
-                expectedDistance = 50;
-                cameraController.lookOnlyBool = true;
-                cameraController.expectedYPos = 28f;
-            }
+				//final section
+				cameraController.staticPosition = new vec3(110, 20, -450);
+				expectedPosition = new vec3(50, 40, 50);
+				expectedRotation = new vec3(35, 220, 0);
+				expectedDistance = 50;
+				cameraController.lookOnlyBool = true;
+				cameraController.expectedYPos = 28f;
+			}
 
 			if (regionH)
 			{

@@ -18,9 +18,9 @@ namespace TRE
 
 		public float expectedYPos;
 
-        private float lerpSpeed = 0.001f;
+		private float lerpSpeed = 0.001f;
 
-        public void Start()
+		public void Start()
 		{
 			Player1 = ECSManager.FindEntityByName("Moley");
 			Player2 = ECSManager.FindEntityByName("Holey");
@@ -31,15 +31,15 @@ namespace TRE
 
 		public void Update()
 		{
-            /*thisPos = Player1Transform.Position + Player2Transform.Position;
-            thisPos /= 2;*/
+			/*thisPos = Player1Transform.Position + Player2Transform.Position;
+			thisPos /= 2;*/
 			thisPos.y = MathF.Lerp(thisPos.y, expectedYPos, lerpSpeed);
 
 			thisPos = new vec3((Player1Transform.Position.x + Player2Transform.Position.x) / 2,
 								thisPos.y,
 								(Player1Transform.Position.z + Player2Transform.Position.z) / 2);
 
-            transform.Position = thisPos;
-        }
+			transform.Position = thisPos;
+		}
 	}
 }
