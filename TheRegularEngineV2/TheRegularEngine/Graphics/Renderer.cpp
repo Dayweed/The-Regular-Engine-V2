@@ -7,6 +7,7 @@
 #include "Resource/ResourceManager.h"
 #include "Material.h"
 #include "FontRenderer.h"
+#include "FontManager.h"
 
 namespace TRE
 {
@@ -99,6 +100,8 @@ namespace TRE
 
 		m_SkyboxEnvironment = std::make_shared<Skybox>();
 
+		FontManager::GetInstance(); //Initialize it here
+
 		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
 	}
 
@@ -111,6 +114,9 @@ namespace TRE
 		m_CommandBuffer = nullptr;
 		m_SkyboxEnvironment.reset();
 		m_SkyboxEnvironment = nullptr;
+
+		if (FontManager::GetInstance() != nullptr)
+			delete FontManager::GetInstance();
 	}
 
 	void Renderer::RenderToSwapChain()

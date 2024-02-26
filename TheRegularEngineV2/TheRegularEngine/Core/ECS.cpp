@@ -4,11 +4,8 @@
 #include "Parent.h"
 #include "SystemManager.h"
 #include "TREIncludes.h"
-#include "Graphics/UIComponent.h"
-#include "Graphics/TextComponent.h"
 
 #define TO DELETE
-#include "Transform.h"
 #include "GameLoop.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"

@@ -3,6 +3,7 @@
 #include "PhysX/PxPhysicsAPI.h"
 
 #define UNUSED_VALUE(value) static_cast<void>(value) // (void)value
+#define MAX_ENTITIES_BIT 32
 
 namespace TRE
 {
@@ -18,8 +19,10 @@ namespace TRE
 
 	typedef struct HistoryEntry
 	{
-		unsigned m_First : 7, m_Second : 7, m_Flags : 3;
+		// Increased from 128 (7) to 4294967296 (32) for the sake of my sanity...
+		unsigned m_First : MAX_ENTITIES_BIT, m_Second : MAX_ENTITIES_BIT, m_Flags : 3;
 		// I wonder if these bitfield lengths need to be bigger...
+		// (Yes, yes it needs :))
 	} CollisionHistoryEntry, TriggerHistoryEntry;
 
 	class SimulationEventCallback : public physx::PxSimulationEventCallback

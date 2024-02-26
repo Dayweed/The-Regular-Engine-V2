@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "DirectPathfinding.h"
+#include "ECS/Components/DirectPathfinding.h"
 #include "Core/SystemManager.h"
 #include "TREIncludes.h"
 

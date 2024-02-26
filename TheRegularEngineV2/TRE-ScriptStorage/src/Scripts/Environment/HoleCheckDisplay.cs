@@ -10,12 +10,12 @@ namespace TRE
 	public class HoleCheckDisplay : Entity
 	{
 		public bool isCompleted = false;
-		public int NoOfTriggers = 1;    // Number of triggers needed
+		public int NoOfTriggers = 2;    // Number of triggers needed
 
 		public List<HoleCheckTrigger> triggersComp;
 
-		private string deactivatedMaterial = "HITW_Center.material";
-		private string activatedMaterial = "HoleCheck_Green.material";
+		private string deactivatedMaterial = "HITW_Display.material";
+		private string activatedMaterial = "HITW_Display_Correct.material";
 
 		private ulong HoleCheckSFX;
 
@@ -26,9 +26,13 @@ namespace TRE
 
 		public void Start()
 		{
-			GetComponent<MeshRenderer>().Material = deactivatedMaterial;
+			parenting.GetChild(2).GetComponent<MeshRenderer>().Material = deactivatedMaterial;
+
+			HoleCheckSFX = ECSManager.FindIDFromName("SFX_HoleCheck");
 
 			// Add triggers that are it's child as triggers
+			NoOfTriggers = parenting.GetTotalChildren();
+
 			for (int i = 0; i < NoOfTriggers; i++)
 			{
 				Entity trigger = parenting.GetChild(i);
@@ -53,7 +57,6 @@ namespace TRE
 				triggersComp.Add(trigger.GetComponent<HoleCheckTrigger>());
 			}
 
-			HoleCheckSFX = ECSManager.FindIDFromName("SFX_HoleCheck");
 		}
 
 		public void Update()
@@ -81,7 +84,7 @@ namespace TRE
 				AudioSystem.Play(HoleCheckSFX);
 			}
 
-			GetComponent<MeshRenderer>().Material = activatedMaterial;
+			parenting.GetChild(2).GetComponent<MeshRenderer>().Material = activatedMaterial;
 
 			/* Material instances GUID
 				> 18cf136263b2c948

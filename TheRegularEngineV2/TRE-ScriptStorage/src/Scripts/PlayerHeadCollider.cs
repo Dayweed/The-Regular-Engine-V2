@@ -57,17 +57,19 @@ namespace TRE
 				if (!playerObj.GetComponent<HoleyController>().isScaled)
 				{
 					newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 1f;
+					PS.ResizeBoxCollider(this.ID, new vec3(2, 0.5f, 2));
 				}
 				else
 				{
 					if (playerObj.GetComponent<HoleyController>().mainBlueberry)
 					{
-						newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 0.5f;
+						newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 2.25f;
 					}
 
 					if (playerObj.GetComponent<HoleyController>().mainStrawberry)
 					{
-
+						newPos.y += playerObj.GetComponent<HoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f + 8f;
+						PS.ResizeBoxCollider(this.ID, new vec3(3, 0.5f, 3));
 					}
 				}
 

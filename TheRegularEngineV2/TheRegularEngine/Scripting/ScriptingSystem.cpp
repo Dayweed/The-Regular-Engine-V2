@@ -7,8 +7,9 @@
 #include "../../TheRegularEditor/src/ToolBarPanel.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
-#include"Scripting/ScriptComponent.h"
+#include "ECS/Components/ScriptComponent.h"
 #include "Scripting/ScriptEngine.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -308,10 +309,13 @@ namespace TRE
 #ifdef GAME
 		
 #else
-		if (event.m_Playing == true)
+		if (Engine::GetInstance().GetEngineInfo().EnableGame == false)
 		{
-			ScriptEngine::RecompileScripts();
-			ScriptEngine::ReloadAssembly();
+			if (!event.m_IsSimulating && event.m_Playing == true)
+			{
+				ScriptEngine::RecompileScripts();
+				ScriptEngine::ReloadAssembly();
+			}
 		}
 #endif
 	}

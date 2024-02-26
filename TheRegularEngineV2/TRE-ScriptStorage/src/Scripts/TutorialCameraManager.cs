@@ -11,7 +11,7 @@ namespace TRE
 
 	public class TutorialCameraManager : Entity
 	{
-		private Entity Holey;
+		private Entity MidPos;
 
 		private Entity Trigger_A;
 		private Entity Trigger_B;
@@ -39,8 +39,8 @@ namespace TRE
 
 		public void Start()
 		{
-			Holey = ECSManager.FindEntityByName("Holey");
-			Debug.Log("Holey ID is " + Holey.ID);
+			MidPos = ECSManager.FindEntityByName("MidPos");
+			Debug.Log("MidPos ID is " + MidPos.ID);
 
 			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
 			Debug.Log("Trigger_A ID is " + Trigger_A.ID);
@@ -85,60 +85,83 @@ namespace TRE
 
 			if (regionA)
 			{
+				//starting region
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 35;
-				//cameraController.lookOnlyBool = true;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = -2f;
 			}
 
 			if (regionB)
 			{
-				expectedPosition = new vec3(0, 35, 50);
+				//first platforming section w/ blueberries
+				expectedPosition = new vec3(0, 30, 60);
 				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 50;
-				//cameraController.lookOnlyBool = false;
+				expectedDistance = 55;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = -2f;
 			}
 
 			if (regionC)
 			{
+				//first hitw
 				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(35, 180, 0);
-				expectedDistance = 25;
+				expectedRotation = new vec3(25, 180, 0);
+				expectedDistance = 35;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = -2f;
 			}
 
 			if (regionD)
 			{
+				//falling objs section
 				expectedPosition = new vec3(0, 40, 50);
 				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 50;
+				expectedDistance = 55;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 0f;
 			}
 
 			if (regionE)
 			{
-				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 50;
+				//platforming section
+				expectedPosition = new vec3(0, 60, 50);
+				expectedRotation = new vec3(45, 180, 0);
+				expectedDistance = 60;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 0f;
 			}
 
 			if (regionF)
 			{
+				//second hitw
 				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 65;
+				expectedRotation = new vec3(25, 180, 0);
+				expectedDistance = 35;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 0f;
 			}
 
 			if (regionG)
 			{
+				//final section
+				cameraController.staticPosition = new vec3(110, 20, -450);
 				expectedPosition = new vec3(50, 40, 50);
-				expectedRotation = new vec3(35, 270, 0);
-				expectedDistance = 45;
+				expectedRotation = new vec3(35, 220, 0);
+				expectedDistance = 50;
+				cameraController.lookOnlyBool = true;
+				cameraController.expectedYPos = 28f;
 			}
 
 			if (regionH)
 			{
+				//last hitw
 				expectedPosition = new vec3(50, 40, 50);
-				expectedRotation = new vec3(20, 180, 0);
-				expectedDistance = 20;
+				expectedRotation = new vec3(25, 180, 0);
+				expectedDistance = 40;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 28f;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
@@ -148,7 +171,7 @@ namespace TRE
 
 		private bool IsInsideTrigger(Entity entity)
 		{
-			return PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID);
+			return PS.IsTriggerEnter(MidPos.ID, entity.ID) || PS.IsTriggerStay(MidPos.ID, entity.ID);
 		}
 	}
 }

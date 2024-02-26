@@ -11,7 +11,7 @@
 #include <shellapi.h>
 
 #include "ScriptBind.h"
-#include "ScriptComponent.h"
+#include "ECS/Components/ScriptComponent.h"
 #include "Core/Asserts.h"
 #include "Core/Logger.h"
 #include "Core/Engine.h"

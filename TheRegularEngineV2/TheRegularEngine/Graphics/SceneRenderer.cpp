@@ -1,28 +1,14 @@
 #include "pch.h"
 #include "SceneRenderer.h"
-#include "Camera.h"
-#include "Core/Logger.h"
+#include "TREIncludes.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
-#include "Physics/SphereCollider.h"
-#include "Physics/BoxCollider.h"
-#include "Physics/CapsuleCollider.h"
-#include "Physics/CylinderCollider.h"
-#include "Light.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
-#include "AnimationComponent.h"
 #include "FontRenderer.h"
-#include "Sprite3DComponent.h"
-#include "Core/Transform.h"
 #include "Renderer.h"
-#include "Core/Engine.h"
-#include "MeshRenderer.h"
-#include "Particle.h"
-
-//To be removed
 #include "EditorCamera.h"
 
 namespace TRE
@@ -48,7 +34,8 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
-		m_ParticleUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
+		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
+		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
 
 	void SceneRenderer::Initialize() 
@@ -134,8 +121,6 @@ namespace TRE
 		Sprite3DPipelineConfig.EnableDepthTest = true;
 		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
 
-		//To be remove later.....
-
 		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
 
 		float x = -1.f; float y = -1.f;
@@ -162,16 +147,6 @@ namespace TRE
 
 		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
 			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
-
-		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
-		RenderPassInfo RPConfig{};
-		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		RPConfig.ImageFormat = SC->GetColorFormat();
-		RPConfig.DepthFinalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		RPConfig.DepthImageFormat = SC->GetDepthFormat();
-		RPConfig.DepthEnabled = true;
-		RPConfig.ClearColor = false;
-		m_Sprite3DRenderPass = std::make_shared<RenderPass>(m_Device, RPConfig);
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -350,7 +325,15 @@ namespace TRE
 			ParticleUBO particleUBO{};
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 
-			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
+			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
+
+			ParticleUBO particleUBO2D{};
+			//Why so hardcoded (:
+			const auto width = 1920.f;
+			const auto height = 1080.f;
+			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
+			particleUBO2D.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+			m_ParticleUBO2D->SetData(&particleUBO2D, sizeof(ParticleUBO));
 		}
 	}
 
@@ -435,7 +418,14 @@ namespace TRE
 			ParticleUBO particleUBO{};
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 
-			m_ParticleUBO->SetData(&particleUBO, sizeof(ParticleUBO));
+			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
+
+			ParticleUBO particleUBO2D{};
+			const auto width = 1920.f;
+			const auto height = 1080.f;
+			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
+			particleUBO2D.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+			m_ParticleUBO2D->SetData(&particleUBO2D, sizeof(ParticleUBO));
 		}
 	}
 
@@ -519,14 +509,18 @@ namespace TRE
 		GeometryAnimationPass(Index, materialSort);
 		Sprite3DPass(Index);
 		DebugDrawPass(Index);
-		m_ParticleRenderer->Render(m_ParticleUBO, m_CommandBuffer, m_IsEditorScene);
+		m_ParticleRenderer->Render(m_ParticleUBO2D, m_ParticleUBO3D, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
 		if (m_IsEditorScene == false)
 		{
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+
+			Profiler::Instance().StartTimer("FontPass");
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+			Profiler::Instance().EndTimer("FontPass");
+
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
 
@@ -542,16 +536,15 @@ namespace TRE
 
 		auto AllSprites = ECSManager::Instance().GetEntities<Sprite3DComponent>();
 		std::sort(AllSprites.begin(), AllSprites.end(), [](const Entity& e1, const Entity& e2)
-			{
-				auto Comp1 = e1->GetComponent<Transform>();
-				auto Comp2 = e2->GetComponent<Transform>();
+		{
+			auto Comp1 = e1->GetComponent<Transform>();
+			auto Comp2 = e2->GetComponent<Transform>();
 
-				return Comp1.m_Position.z < Comp2.m_Position.z;
-			});
+			return Comp1.m_Position.z < Comp2.m_Position.z;
+		});
 
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		uint32_t ImageIndex = SC->GetCurrentImageIndex();
-		m_Sprite3DRenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
 		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
 		for (auto Entity : AllSprites)
 		{
@@ -601,9 +594,10 @@ namespace TRE
 
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
-			PushConstant pc{};
+			PushConstantGeometry pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			pc.m_DrawShadow = mr.m_DrawShadow;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			ResourceHandle currentMaterialHandle = go_mr.first;
 
@@ -659,9 +653,10 @@ namespace TRE
 
 			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
 
-			PushConstant pc{};
+			PushConstantGeometry pc{};
 			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			pc.m_DrawShadow = MeshRendererComp.m_DrawShadow;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			if (MeshRendererComp.m_AnimationMaterialInstance == nullptr)
 			{

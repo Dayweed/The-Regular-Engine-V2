@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
+﻿using GlmSharp;
 
 namespace TRE
 {
+	using TS = TransformSystem;
+
 	public class TextBounce : Entity
 	{
 		bool pause = false;
@@ -22,28 +18,28 @@ namespace TRE
 		public void Start()
 		{
 			timer = 0;
-			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			TS.GetPosition(this.ID, out vec3 pos);
 			initialYPos = pos.y;
 
-            // Custom direction for result logic
-            if (Scene.GetSceneName() == "ResultScreen")
-            {
+			// Custom direction for result logic
+			if (Scene.GetSceneName() == "ResultScreen")
+			{
 				if (name == "BackgroundTitle")
 				{
 					dir = -1;
-                }
-            }
-        }
+				}
+			}
+		}
 
 		public void Update()
 		{
 			if (pause) return;
 
 			timer += Time.GetDeltaTime();
-			TransformSystem.GetPosition(this.ID, out vec3 pos);
+			TS.GetPosition(this.ID, out vec3 pos);
 			float value = initialYPos + height * MathF.Sin(period * timer) * dir;
 			pos.y = value;
-			TransformSystem.SetPosition(this.ID, pos);
+			TS.SetPosition(this.ID, pos);
 		}
 
 		public void Pause()
@@ -53,21 +49,21 @@ namespace TRE
 
 		public void Resume()
 		{
-            pause = false;
+			pause = false;
 
-            timer = 0;
-            TransformSystem.GetPosition(this.ID, out vec3 pos);
-            initialYPos = pos.y;
+			timer = 0;
+			TS.GetPosition(this.ID, out vec3 pos);
+			initialYPos = pos.y;
 
-            // Custom direction for result logic
-            if (Scene.GetSceneName() == "ResultScreen")
-            {
-                if (name == "BackgroundTitle")
-                {
-                    dir = -1;
-                }
-            }
-        }
+			// Custom direction for result logic
+			if (Scene.GetSceneName() == "ResultScreen")
+			{
+				if (name == "BackgroundTitle")
+				{
+					dir = -1;
+				}
+			}
+		}
 
 		public bool IsPaused()
 		{

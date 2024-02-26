@@ -13,15 +13,15 @@ namespace TRE
 	{
 		private Entity UIPopup1;
 		private Entity PopupCollier;
-        private bool IsActivated_1 = false;
-        private bool HasBeenTriggeredBefore_1 = false;
+		private bool IsActivated_1 = false;
+		private bool HasBeenTriggeredBefore_1 = false;
 
-        private Entity UIPopupBeforeHITW;
-        private Entity PopupCollier_BeforeHITW;
-        private bool IsActivated_BeforeHITW = false;
+		private Entity UIPopupBeforeHITW;
+		private Entity PopupCollier_BeforeHITW;
+		private bool IsActivated_BeforeHITW = false;
 		private bool HasBeenTriggeredBefore_BeforeHITW = false;
 
-        private Entity UIPopupTutorialStart;
+		private Entity UIPopupTutorialStart;
 		private bool UIPopupTutorialStartExist = true;
 
 		private Entity RightHUDRef;
@@ -30,9 +30,9 @@ namespace TRE
 		public void Start()
 		{
 			UIPopup1 = ECSManager.FindEntityByName("PopupUI1");
-            PopupCollier = ECSManager.FindEntityByName("PopUpCollider");
-            HasBeenTriggeredBefore_1 = false;
-            IsActivated_1 = false;
+			PopupCollier = ECSManager.FindEntityByName("PopUpCollider");
+			HasBeenTriggeredBefore_1 = false;
+			IsActivated_1 = false;
 
 			RightHUDRef = ECSManager.FindEntityByName("RightCharacter_HUD");
 			LeftHUDRef = ECSManager.FindEntityByName("LeftCharacter_HUD");
@@ -40,11 +40,11 @@ namespace TRE
 			UIPopupTutorialStart = ECSManager.FindEntityByName("ControlsPopup");
 			UIPopupTutorialStartExist = true;
 
-            UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
-            PopupCollier_BeforeHITW = ECSManager.FindEntityByName("PopupCollider2");
-            IsActivated_BeforeHITW = false;
+			UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
+			PopupCollier_BeforeHITW = ECSManager.FindEntityByName("PopupCollider2");
+			IsActivated_BeforeHITW = false;
 			HasBeenTriggeredBefore_BeforeHITW = false;
-        }
+		}
 
 		public void Update()
 		{
@@ -63,12 +63,12 @@ namespace TRE
 				UIPopup1.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 
-            if (IsActivated_BeforeHITW)
-            {
-                UIPopupBeforeHITW.GetComponent<SpriteRenderer>().isVisible = true;
-            }
+			if (IsActivated_BeforeHITW)
+			{
+				UIPopupBeforeHITW.GetComponent<SpriteRenderer>().isVisible = true;
+			}
 
-            if (InputSystem.GetKeyHold(InputKeys.Space))
+			if (InputSystem.GetKeyHold(InputKeys.Space))
 			{
 				if (IsActivated_1)
 				{
@@ -77,9 +77,9 @@ namespace TRE
 				}
 				if (IsActivated_BeforeHITW)
 				{
-                    UIPopupBeforeHITW.GetComponent<SpriteRenderer>().isVisible = false;
-                    IsActivated_BeforeHITW = !IsActivated_BeforeHITW;
-                }
+					UIPopupBeforeHITW.GetComponent<SpriteRenderer>().isVisible = false;
+					IsActivated_BeforeHITW = !IsActivated_BeforeHITW;
+				}
 			}
 		}
 
@@ -94,14 +94,14 @@ namespace TRE
 				{
 					IsActivated_1 = true;
 					HasBeenTriggeredBefore_1 = true;
-                    IsActivated_BeforeHITW = false;
-                    HasBeenTriggeredBefore_BeforeHITW = false;
-                }
+					IsActivated_BeforeHITW = false;
+					HasBeenTriggeredBefore_BeforeHITW = false;
+				}
 				if (!HasBeenTriggeredBefore_BeforeHITW && this.ID.Equals(PopupCollier_BeforeHITW.ID))
 				{
-                    IsActivated_BeforeHITW = true;
-                    HasBeenTriggeredBefore_BeforeHITW = true;
-                }
+					IsActivated_BeforeHITW = true;
+					HasBeenTriggeredBefore_BeforeHITW = true;
+				}
 			}
 		}
 	}

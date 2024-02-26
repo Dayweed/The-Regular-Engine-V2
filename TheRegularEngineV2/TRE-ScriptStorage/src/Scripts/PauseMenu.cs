@@ -104,8 +104,8 @@ namespace TRE
 							isPaused = false;
 							isChangeMenu = true;
 							menustate = 0;
-                            currentOption = 0;
-                        }
+							currentOption = 0;
+						}
 						else if (currentOption == 1) // Controls
 						{
 							menustate = 1;
@@ -247,8 +247,8 @@ namespace TRE
 					UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
 				}
 
-                isChangeMenu = false;
-                
+				isChangeMenu = false;
+				
 			}
 		}
 

@@ -8,6 +8,7 @@
 #include "Scripting/ScriptEngine.h"
 #include "Core/GameLoop.h"
 #include "ViewportPanel.h"
+#include "Audio/AudioSystem.h"
 
 namespace TRE
 {
@@ -22,6 +23,8 @@ namespace TRE
 
 	void ToolBarPanel::Init()
 	{
+		EventHandler::getEventHandlerInstance().subscribe(this, &ToolBarPanel::HandleShortcuts);
+
 		const auto playGUID = AssetManager::Instance().GetAssetHandle("icon-play.png");
 		const auto playHexGUID = Resource::GetGUIDHex(playGUID);
 		std::unique_ptr<VulkanTexture> playButton = std::make_unique<VulkanTexture>("../Resources/" + playHexGUID + ".DDS");
@@ -64,8 +67,8 @@ namespace TRE
 			}
 
 			{
-				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
-				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent());
+				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent(GameLoop::Instance().GetGameSimulating()));
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true, GameLoop::Instance().GetGameSimulating() });
 			}
 		}
 
@@ -75,7 +78,7 @@ namespace TRE
 		{
 			if (!GameLoop::Instance().GetDisplayingPrefab())
 			{
-				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false, GameLoop::Instance().GetGameSimulating() });
 			}
 		}
 
@@ -91,6 +94,12 @@ namespace TRE
 			}
 		}
 
+		if (m_ShortcutMuteAudio)
+		{
+			MuteAudio();
+			m_ShortcutMuteAudio = false;
+		}
+
 		ImGui::PopStyleColor(2);
 
 		ImGui::End();
@@ -101,5 +110,22 @@ namespace TRE
 		m_PlayButtonTexture.reset();
 		m_PauseButtonTexture.reset();
 		m_StopButtonTexture.reset();
+	}
+
+	void ToolBarPanel::HandleShortcuts(TypingEvent& event)
+	{
+		const KeyButton key = static_cast<KeyButton>(event.m_Key);
+		const KeyMods mods = static_cast<KeyMods>(event.m_Mod);
+
+		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
+		{
+			m_ShortcutMuteAudio = key == KeyButton::M;
+		}
+	}
+
+	void ToolBarPanel::MuteAudio()
+	{
+		AudioSystem& audioSystem = AudioSystem::Instance();
+		audioSystem.MuteAll();
 	}
 }

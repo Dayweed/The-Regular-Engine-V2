@@ -264,7 +264,7 @@ namespace TRE
 	void MenuBarPanel::SaveScene()
 	{
 		// Only save and load when it is not running
-		if (!GameLoop::Instance().IsGameRunning())
+		if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetDisplayingPrefab())
 		{
 			if (SceneManager::Instance().SceneExistInFile())
 			{

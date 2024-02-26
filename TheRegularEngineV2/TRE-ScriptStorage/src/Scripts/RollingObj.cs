@@ -22,11 +22,11 @@ namespace TRE
 		Entity lLedge;
 		Entity rLedge;
 
-		private float moveSpeed = 5.0f;
-		private float rotateSpeed = 100.0f;
+		private float moveSpeed = 18.0f;
+		private float rotateSpeed = 200.0f;
 
 		private float cooldown = 0f;
-		private float cooldownDefault = 2.0f;
+		private float cooldownDefault = 2f;
 
 		public RollingObj()
 		{
@@ -42,6 +42,20 @@ namespace TRE
 			// Rotate moveVector based on angle
 			moveVector = TransformSystem.RotateVector(defaultVector, parent.transform.Rotation);
 			rotateVector = new vec3(moveVector.z, moveVector.y, -moveVector.x);
+
+			if (Scene.GetSceneName() == "Level_1")
+			{
+				if (parent.name == "RollingObject_4" || parent.name == "RollingObject_5" || parent.name == "RollingObject_6")
+				{
+					moveSpeed = 25.0f;
+				}
+
+				if (parent.name == "RollingObject_7" || parent.name == "RollingObject_8" || parent.name == "RollingObject_9" || parent.name == "RollingObject_10")
+				{
+					moveSpeed = 32.0f;
+				}
+			}
+			cooldown = cooldownDefault;
 		}
 
 		public void Update()
@@ -51,26 +65,53 @@ namespace TRE
 			// Check if the ledges is no longer being triggered
 			if (lLedge == null || rLedge == null) return;
 
+			if (cooldown > 0) return;
+
 			transform.Position += moveVector * moveDir * moveSpeed * Time.deltaTime;
 			transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
 			transform.Rotation = transform.Rotation.z > 360 ? transform.Rotation - threesixty : transform.Rotation;
 			transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
 		}
 
-		public void Bounceback()
+		public void Bounceback(vec3 WallPosition)
 		{
-			if (cooldown > 0) return;
+			// Check if the WallPosition is against the moveDir, else ignore
+			vec3 wallDir = WallPosition - transform.Position;
+			if (vec3.Dot(wallDir, moveVector * moveDir) <= 0) return;
 
 			moveDir = moveDir == 1 ? -1 : 1;
-			cooldown = cooldownDefault;
 		}
 
-		private void OnTriggerEnter(System.UInt64 otherID)
+		private void OnTriggerStay(System.UInt64 otherID)
 		{
-			if (PhysicsSystem.IsTriggerEnter(ID, lLedge.ID) || PhysicsSystem.IsTriggerEnter(ID, rLedge.ID))
+			Entity other = new Entity(otherID);
+			if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
-				Bounceback();
+				Bounceback(other.transform.Position);
 			}
+		}
+
+		private void OnCollisionEnter(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+			if (other.CompareTag("Red"))
+			{
+				// Bounce back if the Moley is using their strawberry powerUp
+				MoleyController ctrl = other.GetComponent<MoleyController>();
+				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
+				{
+					Bounceback(other.transform.Position);
+				}
+				else
+				{
+					ctrl.TakeDamage();
+				}
+			}
+			else if (other.CompareTag("Blue"))
+			{
+				other.GetComponent<HoleyController>().TakeDamage();
+			}
+
 		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
@@ -82,7 +123,11 @@ namespace TRE
 				MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
 				{
-					Bounceback();
+					// Not colliding with other ledges
+					if (NotAtLedge())
+					{
+						Bounceback(other.transform.Position);
+					}
 				}
 				else
 				{
@@ -95,8 +140,15 @@ namespace TRE
 			}
 			else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
-				Bounceback();
+				Bounceback(other.transform.Position);
 			}
+		}
+
+		private bool NotAtLedge()
+		{
+			bool atLLedge = PhysicsSystem.IsCollisionEnter(this.ID, lLedge.ID) || PhysicsSystem.IsCollisionStay(this.ID, lLedge.ID) || PhysicsSystem.IsCollisionExit(this.ID, lLedge.ID);
+			bool atRLedge = PhysicsSystem.IsCollisionEnter(this.ID, rLedge.ID) || PhysicsSystem.IsCollisionStay(this.ID, rLedge.ID) || PhysicsSystem.IsCollisionExit(this.ID, rLedge.ID);
+			return !atLLedge && !atRLedge;
 		}
 	}
 }

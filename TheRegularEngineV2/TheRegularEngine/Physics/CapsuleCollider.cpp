@@ -1,37 +1,13 @@
 #include "pch.h"
-#include "CapsuleCollider.h"
+#include "ECS/Components/CapsuleCollider.h"
 #include "PhysicsSystem.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 
 using namespace physx;
 // to save my dwindling sanity
 
 namespace TRE
 {
-	void to_json(nlohmann::json& j, const CapsuleCollider& t)
-	{
-		j = nlohmann::json{
-			WriteMemberToJSON(m_IsActive),
-			WriteMemberToJSON(m_IsTrigger),
-			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
-			WriteMemberToJSON(m_PhysicsMaterial.m_MaterialID),
-			WriteVec3MemberToJSON(m_Offset),
-			WriteMemberToJSON(m_Radius),
-			WriteMemberToJSON(m_HalfHeight),
-		};
-	}
-
-	void from_json(const nlohmann::json& j, CapsuleCollider& t)
-	{
-		ReadMemberFromJSON(m_IsActive);
-		ReadMemberFromJSON(m_IsTrigger);
-		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
-		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
-		ReadVec3MemberFromJSON(m_Offset);
-		ReadMemberFromJSON(m_Radius);
-		ReadMemberFromJSON(m_HalfHeight);
-	}
-
 	bool PhysicsSystem::ConstructCapsuleCollider(const Entity& entity, const float radius, const float halfHeight, const glm::vec3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(CapsuleCollider);

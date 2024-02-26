@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TRE
 {
@@ -23,9 +19,8 @@ namespace TRE
 
 			oops = ECSManager.FindEntityByName("oops").GetComponent<SpriteRenderer>();
 
-			PersistentSystem.SetValue("PrevScene", Scene.GetSceneName());
-			PersistentSystem.SetValue(Scene.GetSceneName()+"StarsObtained", "0");
-
+			//PersistentSystem.SetValue("PrevScene", Scene.GetSceneName());
+			PersistentSystem.SetValue(Scene.GetSceneName() + "StarsObtained", "0");
 		}
 
 		public void Update()
@@ -50,7 +45,7 @@ namespace TRE
 				if (currentTime >= waitingTime)
 				{
 					currentTime = 0.0f;
-					Scene.TransitionScene(Scene.GetSceneName(), 7f);
+					Scene.TransitionScene("MainMenu", 5f);
 				}
 				else
 				{
@@ -58,7 +53,5 @@ namespace TRE
 				}
 			}
 		}
-
-
 	}
 }

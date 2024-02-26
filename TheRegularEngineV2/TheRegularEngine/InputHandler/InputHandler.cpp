@@ -12,6 +12,8 @@ namespace TRE
 	//std::unordered_map<int, int> InputHandler::m_keyTriggerMap;
 	std::unordered_map<int, bool> InputHandler::m_keyPreviousPress;
 	std::unordered_map<int, bool> InputHandler::m_keyPreviousRelease;
+	//std::unordered_map<int, bool> InputHandler::m_keyPress;
+	//std::unordered_map<int, bool> InputHandler::m_keyRelease;
 
 
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
@@ -32,7 +34,7 @@ namespace TRE
 			event.Publish(InputEvent {key, action});
 		}
 		m_keyMap[key] = action;
-		std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
+		//std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
 	}
 
 	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -48,8 +50,7 @@ namespace TRE
 		else if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
 		{
 			//TRE_CORE_INFO("Mouse Released:x {0}", key);
-			//event.Publish(InputEvent {button, action});
-			
+			//event.Publish(InputEvent {button, action});			
 		}
 	}
 
@@ -91,11 +92,12 @@ namespace TRE
 
 	bool InputHandler::GetKeyPress(int key)
 	{
-		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE)
+		int keyState = glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key);
+		if (keyState == GLFW_RELEASE)
 		{
 			m_keyPreviousPress[key] = false;
 		}
-		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS && m_keyPreviousPress[key] == false)
+		else if (keyState == GLFW_PRESS && m_keyPreviousPress[key] == false)
 		{
 			m_keyPreviousPress[key] = true;
 			return true;
@@ -105,12 +107,13 @@ namespace TRE
 
 	bool InputHandler::GetKeyRelease(int key)
 	{
-		if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
+		int keyState = glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key);
+		if (keyState == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
 		{
 			m_keyPreviousRelease[key] = false;
 			return true;
 		}
-		else if (glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key) == GLFW_PRESS)
+		else if (keyState == GLFW_PRESS)
 		{
 			m_keyPreviousRelease[key] = true;
 		}

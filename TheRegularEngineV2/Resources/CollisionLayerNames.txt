@@ -4,7 +4,7 @@ HoleyHeadCol
 Moley
 MoleyHeadCol
 SlipperyBody
-Layer06
+MidPos
 Layer07
 Layer08
 Layer09

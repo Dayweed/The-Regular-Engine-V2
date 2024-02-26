@@ -1,35 +1,13 @@
 #include "pch.h"
-#include "SphereCollider.h"
+#include "ECS/Components/SphereCollider.h"
 #include "PhysicsSystem.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 
 using namespace physx;
 // to save my dwindling sanity
 
 namespace TRE
 {
-	void to_json(nlohmann::json& j, const SphereCollider& t)
-	{
-		j = nlohmann::json{
-			WriteMemberToJSON(m_IsActive),
-			WriteMemberToJSON(m_IsTrigger),
-			WriteMemberToJSON(m_CollisionLayer.m_LayerID),
-			WriteMemberToJSON(m_PhysicsMaterial.m_MaterialID),
-			WriteVec3MemberToJSON(m_Offset),
-			WriteMemberToJSON(m_Radius),
-		};
-	}
-
-	void from_json(const nlohmann::json& j, SphereCollider& t)
-	{
-		ReadMemberFromJSON(m_IsActive);
-		ReadMemberFromJSON(m_IsTrigger);
-		ReadMemberFromJSON(m_CollisionLayer.m_LayerID);
-		ReadMemberFromJSON(m_PhysicsMaterial.m_MaterialID);
-		ReadVec3MemberFromJSON(m_Offset);
-		ReadMemberFromJSON(m_Radius);
-	}
-
 	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(SphereCollider);

@@ -76,7 +76,9 @@ namespace TRE
 		public int maxObjects;
 		public float dropDuration;
 
-		private float currentTimeBetweenSpawns;
+		public float currentTimeBetweenSpawns;
+
+		public int searchCount;
 		private bool canSpawnObjs = false;
 
 		private float minRange;
@@ -98,6 +100,22 @@ namespace TRE
 
 		public void Start()
 		{
+			if (Scene.GetSceneName() == "Tutorial")
+			{
+				if (name == "FallingObj_Spawner_01")
+				{
+					size = new vec3(24, 0, 11);
+					timeBetweenSpawns = 5;
+				}
+
+				if (name == "FallingObj_Spawner_02")
+				{
+					size = new vec3(24, 0, 11);
+					timeBetweenSpawns = 4;
+				}
+			}
+
+
 			itemsToSpawn.Clear();
 			itemsTimer.Clear();
 			itemsPos.Clear();
@@ -109,12 +127,12 @@ namespace TRE
 			fallingObjRNG = new List<Entity>(fallingObjPrefabs);
 			maxAmountToSpawn = 3;
 			maxObjects = 3;
-			timeBetweenSpawns = 2;
-			size = new vec3(20, 0, 50);
 			canSpawnObjs = true;
-			dropDuration = 3.5f;
+			dropDuration = 3;
 			minRange = 5.5f;
 			noOfObjects = 0;
+
+			currentTimeBetweenSpawns = timeBetweenSpawns;
 		}
 
 		// Update is called once per frame
@@ -124,7 +142,7 @@ namespace TRE
 
 			if (InputSystem.GetKeyHold(InputKeys.T))
 			{
-				canSpawnObjs = !canSpawnObjs;
+				//canSpawnObjs = !canSpawnObjs;
 			}
 
 			StartTimer();
@@ -212,15 +230,17 @@ namespace TRE
 
 		public void StartTimer()
 		{
-			if (!canSpawnObjs) return;
+			//if (!canSpawnObjs) return;
 
 			if (currentTimeBetweenSpawns > 0)
 			{
 				//itemsToSpawn.Clear();
+				//Debug.Log("Time Between Spawn = " + currentTimeBetweenSpawns);
 				currentTimeBetweenSpawns -= Time.deltaTime;
 			}
 			else
 			{
+				//Debug.Log("Create New Random Spawns");
 				for (int i = 0; i < maxAmountToSpawn; i++)
 				{
 					CreateItems(maxAmountToSpawn);
@@ -237,30 +257,33 @@ namespace TRE
 				itemsTimer[i] -= Time.deltaTime;
 				if (itemsTimer[i] < 0)
 				{
-
-					//is this pos empty
-					int searchCount = maxAmountToSpawn * 5;
-
-					while (searchCount-- > 0)
+					TransformSystem.SetPosition(itemsToSpawn[i].ID, new vec3(0f, 10000f, 0f)); //Hardcoding a value so people can't see it... It will auto generate the position correctly below
+					if (currentTimeBetweenSpawns <= 0)
 					{
-						//choose random position
-						vec3 itemToSpawnPos = SpawnObjPos();
+						//is this pos empty
+						int searchCount = maxAmountToSpawn * 5;
 
-						if (IsPosEmpty(itemToSpawnPos))
+						while (searchCount-- > 0)
 						{
 							//choose random position
-							vec3 itemPos = SpawnObjPos();
+							vec3 itemToSpawnPos = SpawnObjPos();
 
-							//is this pos empty
-							if (IsPosEmpty(itemPos))
+							if (IsPosEmpty(itemToSpawnPos))
 							{
-								PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
-								TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
-								TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
-								itemsPos[i] = itemPos;
+								//choose random position
+								vec3 itemPos = SpawnObjPos();
 
-								itemsTimer[i] = dropDuration;
+								//is this pos empty
+								if (IsPosEmpty(itemPos))
+								{
+									PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
+									TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
+									TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
+									itemsPos[i] = itemPos;
 
+									itemsTimer[i] = dropDuration;
+
+								}
 							}
 						}
 					}

@@ -7,11 +7,16 @@ using System.Threading;
 
 namespace TRE
 {
+	using AS = AudioSystem;
+
 	public class JumpPad : Entity
 	{
 		public bool isActivated = false;
 		private string activatedMat = "JumpPadActivated.material";
 		private string deactivatedMat = "JumpPad.material";
+
+		private ulong jumppadSFX;
+		private bool isPlaying = false;
 
 		public JumpPad()
 		{
@@ -25,6 +30,8 @@ namespace TRE
 				isActivated = true;
 			}
 			GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
+
+			jumppadSFX = ECSManager.FindIDFromName("SFX_JumpPad");
 		}
 
 		public void Update()
@@ -37,6 +44,16 @@ namespace TRE
 			// This is to make it actually activate cos for some reason it doesnt now :/
 			isActivated = isActive;
 			GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
+
+			if(isActivated && !isPlaying)
+			{
+				isPlaying = true;
+				AS.Play(jumppadSFX);
+			}
+			else if(!isActivated && isPlaying)
+			{
+				isPlaying = false;
+			}
 		}
 	}
 }

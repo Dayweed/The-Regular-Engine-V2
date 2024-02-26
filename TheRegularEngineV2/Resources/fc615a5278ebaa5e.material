@@ -2,10 +2,10 @@ Shader:
 51e8150cd09be553
 Textures:
 AOMap | 0
-RoughnessMap | 69824a00ba28e72
-DiffuseMap | 18e158570bf5f180
+RoughnessMap | c9b1c978d56762f
+DiffuseMap | 9a3955e4e4d87de1
 Metalness | 0
-NormalMap | 3dae29fd7dc9ab9d
+NormalMap | 948e318ba6d25eae
 End of Textures
 Color Value:
 1 1 1 1

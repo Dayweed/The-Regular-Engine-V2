@@ -47,9 +47,9 @@ namespace TRE
 
 			if (other.CompareTag("Blue")) // Holey
 			{
-                vec3 respawnPoint = vec3.Zero;
-                TransformSystem.GetPosition(this.ID, out respawnPoint);
-                respawnPoint.y += RespawnHeight;
+				vec3 respawnPoint = vec3.Zero;
+				TransformSystem.GetPosition(this.ID, out respawnPoint);
+				respawnPoint.y += RespawnHeight;
 				other.GetComponent<HoleyController>().SetRespawnPoint(respawnPoint);
 			}
 		}

@@ -12,10 +12,12 @@ namespace TRE
 	public class TutorialKey : Entity
 	{
 		private Entity FinalPlatform;
+		public Entity UpButton;
 
 		public void OnCreate()
 		{
 			FinalPlatform = ECSManager.FindEntityByName("Final_Platform");
+			UpButton = ECSManager.FindEntityByName("UpButton");
 		}
 
 		private void OnTriggerEnter(System.UInt64 otherID)
@@ -24,8 +26,10 @@ namespace TRE
 
 			if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
 			{
-				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(78.725f, 9.5f, -326.425f));
-				this.SetActive(false);
+
+
+				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(80.439f, 12.572f, -460.979f));
+				UpButton.SetActive(false);
 
 				if (ECSManager.IsValidEntity(5918200844399750609))
 				{
@@ -33,5 +37,16 @@ namespace TRE
 				}
 			}
 		}
+
+		/*private void OnTriggerExit(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+
+			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			{
+				UpButton.SetActive(true);
+				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(55.439f, 12.572f, -442.979f));
+			}
+		}*/
 	}
 }

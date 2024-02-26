@@ -45,59 +45,59 @@ namespace TRE
 				if (name == "MovingPlatform_2")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(150.419f, 14.422f, -237), new vec3(150.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(146.419f, 14.422f, -237), new vec3(146.419f, 14.422f, -169) };
 				}
 
 				if (name == "MovingPlatform_3")
 				{
 					currentIndex = 1;
-					positions = new vec3[] { new vec3(178.419f, 14.422f, -237), new vec3(178.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(174.419f, 14.422f, -237), new vec3(174.419f, 14.422f, -169) };
 				}
 
 				if (name == "MovingPlatform_4")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(206.419f, 14.422f, -237), new vec3(206.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(202.419f, 14.422f, -237), new vec3(202.419f, 14.422f, -169) };
 				}
 
 				if (name == "MovingPlatform_5")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(380.419f, 42.422f, -349.472f), new vec3(380.419f, 42.422f, -309.694f) };
+					positions = new vec3[] { new vec3(376.419f, 42.422f, -349.472f), new vec3(376.419f, 42.422f, -309.694f) };
 				}
 
 				if (name == "MovingPlatform_6")
 				{
 					currentIndex = 0;
-					delay = 2;
-					positions = new vec3[] { new vec3(380.419f, 42.422f, -252.370f), new vec3(454.655f, 42.422f, -252.370f) };
+					delay = 4;
+					positions = new vec3[] { new vec3(376.419f, 42.422f, -254.370f), new vec3(450.655f, 42.422f, -254.370f) };
 				}
 
 				if (name == "Level1_HitW_02")
 				{
 					currentIndex = 1;
-					delay = 2;
-					positions = new vec3[] { new vec3(454.655f, 60.340f, -220.529f), new vec3(528.892f, 60.340f, -220.529f) };
+					delay = 4;
+					positions = new vec3[] { new vec3(450.655f, 60.340f, -220.529f), new vec3(524.892f, 60.340f, -222.529f) };
 				}
 
 				if (name == "MovingPlatform_7")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(567.380f, 42.422f, -169), new vec3(567.380f, 90.913f, -169) };
+					positions = new vec3[] { new vec3(563.380f, 42.422f, -178), new vec3(563.380f, 90.913f, -178) };
 				}
 
 				if (name == "MovingPlatform_8")
 				{
 					currentIndex = 0;
 					delay = 2;
-					positions = new vec3[] { new vec3(648.877f, 90.422f, -168), new vec3(757.419f, 90.422f, -168) };
+					positions = new vec3[] { new vec3(644.877f, 90.422f, -176), new vec3(757.419f, 90.422f, -176) };
 				}
 
 				if (name == "MovingPlatform_9")
 				{
 					currentIndex = 1;
 					delay = 2;
-					positions = new vec3[] { new vec3(847.419f, 90.422f, -168), new vec3(890.419f, 90.422f, -168) };
+					positions = new vec3[] { new vec3(840.563f, 90.422f, -176), new vec3(888.656f, 90.422f, -176) };
 				}
 			}
 
@@ -148,7 +148,7 @@ namespace TRE
 		{
 			Entity other = new Entity(otherID);
 			//if on the platform unchild it
-			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
 			{
 				other.GetComponent<Transform>().Position += transform.Position - oldPosition;
 			}

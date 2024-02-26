@@ -3,7 +3,6 @@
 #include "Engine.h"
 #include "GameLoop.h"
 #include "ECS.h"
-#include "Transform.h"
 #include "SceneManager.h"
 #include "MemoryManager.h"
 #include "Profiler.h"
@@ -11,13 +10,11 @@
 #include "Audio/AudioSystem.h"
 #include "Scripting/ScriptingSystem.h"
 #include "Scripting/ScriptEngine.h"
-#include "Graphics/Light.h"
-#include "Graphics/MeshRenderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
 #include "SceneManager.h"
 #include "Graphics/AnimationSystem.h"
-#include "Graphics/Sprite3DComponent.h"
+#include "InputHandler/InputHandler.h"
 
 namespace TRE
 {
@@ -73,9 +70,6 @@ namespace TRE
 		Shader::SetupShaders();
 		RegisterECS();
 
-
-		//DemoScene();
-
 		m_SceneRenderer = std::make_shared<SceneRenderer>(false);
 		m_SceneRenderer->Initialize();
 		Renderer::Init();
@@ -101,7 +95,7 @@ namespace TRE
 		if (m_EngineInfo.EnableGame)
 		{
 			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "SplashScreen.json");
-			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true, GameLoop::Instance().GetGameSimulating() });
 		}
 		else
 			SceneManager::Instance().NewScene();
@@ -236,6 +230,9 @@ namespace TRE
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 			Profiler::Instance().EndTimer("Draw");
+
+			// This calls the inputHandler to clear the keys
+			//InputHandler::ClearKeys();
 			
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();

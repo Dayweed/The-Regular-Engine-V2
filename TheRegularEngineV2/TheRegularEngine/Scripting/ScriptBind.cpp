@@ -3,15 +3,15 @@
 
 #include"Scripting/ScriptEngine.h"
 #include "Core/ECS.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "Core/GameLoop.h"
 #include "Resource/Resource.h"
 
 #include "Audio/AudioSystem.h"
 #include "Graphics/Camera.h"
-#include "Graphics/MeshRenderer.h"
+#include "ECS/Components/MeshRenderer.h"
 #include "Graphics/Renderer.h"
-#include "Graphics/Particle.h"
+#include "ECS/Components/Particle.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 
@@ -1175,19 +1175,19 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->MainCameraFollow(*target, distance);
 	}
 
-	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float speed)
+	static void BindTransitionMainCamera(glm::vec3* targetPosition, glm::vec3* targetRotation, float duration)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, speed);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCamera(*targetPosition, *targetRotation, duration);
 	}
 
-	static void BindTransitionMainCameraPosition(glm::vec3* targetPosition, float speed)
+	static void BindTransitionMainCameraPosition(glm::vec3* targetPosition, float duration)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraPosition(*targetPosition, speed);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraPosition(*targetPosition, duration);
 	}
 
-	static void BindTransitionMainCameraRotation(glm::vec3* targetRotation, float speed)
+	static void BindTransitionMainCameraRotation(glm::vec3* targetRotation, float duration)
 	{
-		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraRotation(*targetRotation, speed);
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->TransitionCameraRotation(*targetRotation, duration);
 	}
 
 	static Vector3 BindGetMainCameraPosition()
@@ -1845,6 +1845,12 @@ namespace TRE
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return;
 
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return;
+		}
+
 		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Play(entity, true);
 		entity->GetComponent<Audio>().m_Play = true;
 	}
@@ -1855,6 +1861,12 @@ namespace TRE
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return;
 
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return;
+		}
+
 		ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
 	}
 
@@ -1863,6 +1875,12 @@ namespace TRE
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return;
 
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return;
+		}
+
 		ECSSystemManager::Instance().GetSystem<AudioSystem>()->Stop(entity);
 	}
 
@@ -1870,6 +1888,12 @@ namespace TRE
 	{
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return;
+
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return;
+		}
 
 		std::string str = MonoStringToString(fileName);
 
@@ -1881,6 +1905,12 @@ namespace TRE
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return mono_string_new(mono_domain_get(), "");
 
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return mono_string_new(mono_domain_get(), "");
+		}
+
 		return mono_string_new(mono_domain_get(), ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetFileName(entity).c_str());
 	}
 
@@ -1888,6 +1918,12 @@ namespace TRE
 	{
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return false;
+
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return false;
+		}
 
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
 	}

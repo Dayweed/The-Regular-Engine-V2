@@ -17,11 +17,11 @@ namespace TRE
 		private float lerpSpeed = 5f;
 		private vec3 defaultScale = new vec3(0.00000000001f, 0.00000000001f, 0.00000000001f);
 		private vec3 currScale = new vec3(0f, 0f, 0f);
-		private float separationMultiplier = 1.6f;
-		private float verticalMultiplier = 1.5f;
+		private float separationMultiplier = 2.4f;
+		private float verticalMultiplier = 2.4f;
 
-		private vec3 leftScale = new vec3(1f, 4.2f, 1f); // the taller side
-		private vec3 rightScale = new vec3(1f, 2f, 1f); // the shorter side
+		private vec3 leftScale = new vec3(2.4f, 7f, 2.4f); // the taller side
+		private vec3 rightScale = new vec3(2.4f, 4.5f, 2.4f); // the shorter side
 
 		private int[] directions = new int[7];
 
@@ -36,8 +36,16 @@ namespace TRE
 			{
 				PhysicsSystem.GetColliderOffset(playerObj.ID, out vec3 offset);
 				vec3 newPos = playerObj.transform.Position;
-				newPos.y += (playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
+				if (this.CompareTag(leftCactus))
+				{
+					newPos.y += (playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
 						+ offset.y) * verticalMultiplier;
+				}
+				if (this.CompareTag(rightCactus))
+				{
+					newPos.y += (playerObj.GetComponent<HoleyController>().currentHeight + playerObj.GetComponent<HoleyController>().currentRadius
+						+ offset.y) * verticalMultiplier - 2f;
+				}
 
 				transform.Position = newPos;
 

@@ -2,6 +2,7 @@
 #include "ConsolePanel.h"
 #include "Imgui/imgui.h"
 #include "EventSystem/EventHandler/EventHandler.h"
+#include "Core/GameLoop.h"
 
 namespace TRE
 {
@@ -77,7 +78,7 @@ namespace TRE
     void ConsolePanel::StartConsole(ConsoleStartEvent& event)
     {
         (void)event;
-        if (m_AutoClear)
+        if (m_AutoClear && !event.m_IsSimulating)
         {
             m_ConsoleLog.clear();
         }

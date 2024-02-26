@@ -1,8 +1,10 @@
 #include "pch.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "AudioSystem.h"
 #include "Core/GameLoop.h"
 #include "InputHandler/InputHandler.h"
+#include "ECS/Components/AudioComponent.h"
+#include "ECS/Components/AudioListenerComponent.h"
 
 namespace TRE
 {
@@ -293,7 +295,26 @@ namespace TRE
 
 		audioMap.insert(go);
 		soundToRemove.insert({ go, audio.m_Sound });
+	}
 
+	void AudioSystem::MuteAll()
+	{
+		m_MuteAll = !m_MuteAll;
+
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{ 
+			Audio& audio = go->GetComponent<Audio>();
+			if (m_MuteAll)
+			{
+				audio.m_Channel->setMute(true);
+				audio.m_Mute = true;
+			}
+			else
+			{
+				audio.m_Channel->setMute(false);
+				audio.m_Mute = false;
+			}
+		}
 	}
 
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)

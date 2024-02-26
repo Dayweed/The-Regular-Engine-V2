@@ -20,6 +20,9 @@ namespace TRE
 
 		// End is based on where the entity is at
 		vec3 EndScale;
+		vec3 EndPosition;
+
+		float PositionOffset = 0.5f;
 
 		vec3 RotateVec;
 
@@ -31,7 +34,7 @@ namespace TRE
 
 		float scaleSpeed = 80.0f;
 		float rotateSpeed = 15.0f;
-		float moveSpeed = 65.0f;
+		float moveSpeed = 3f;
 
 		vec3 MinScaleOffset;
 		vec3 MaxScaleOffset;
@@ -40,7 +43,7 @@ namespace TRE
 		float coolDownDefault = 0.45f;
 
 		float TimerToStop;
-		float TimerToStopDefault = 5f;
+		float TimerToStopDefault = 2.4f;
 
 		SpriteRenderer MyRenderer;
 
@@ -56,7 +59,9 @@ namespace TRE
 
 			RotateVec = new vec3(0, 0, 15f);
 
-			PositionVec = new vec3(-16, -9, 0);
+			//PositionVec = new vec3(-16, -9, 0);
+			PositionVec = new vec3(-10, -6, 0);
+			EndPosition = new vec3(-880, -575, 0);
 		}
 
 		public void Update()
@@ -89,22 +94,24 @@ namespace TRE
 						coolDown = coolDownDefault;
 						emerging = false;
 					}
-
-					if (shrinking)
-					{
-						Reset();
-						idle = true;
-						shrinking = false;
-					}
 				}
 				else
 				{
 					transform.Scale += ScaleVec * scaleSpeed * Time.deltaTime;
+				}
 
-					if (shrinking)
-					{
-						transform.Position += PositionVec * moveSpeed * Time.deltaTime;
-					}
+				// Move based if it is shrinking
+				if (shrinking && !ReachEndPosition())
+				{
+					float x = MathF.Lerp(transform.Position.x, EndPosition.x, moveSpeed * Time.deltaTime);
+					float y = MathF.Lerp(transform.Position.y, EndPosition.y, moveSpeed * Time.deltaTime);
+					float z = MathF.Lerp(transform.Position.z, EndPosition.z, moveSpeed * Time.deltaTime);
+					transform.Position = new vec3(x, y, z);
+					//transform.Position += PositionVec * moveSpeed * Time.deltaTime;
+				}
+				else if (shrinking && ReachEndPosition())
+				{
+					Reset();
 				}
 			}
 			else if (!emerging && !shrinking && !idle && coolDown > 0)
@@ -176,6 +183,19 @@ namespace TRE
 				);
 		}
 
+		public void SetEndPosition(vec3 pos)
+		{
+			EndPosition = pos;
+		}
+
+		public bool ReachEndPosition()
+		{
+			bool x = Math.Abs(transform.Position.x - EndPosition.x) <= PositionOffset;
+			bool y = Math.Abs(transform.Position.y - EndPosition.y) <= PositionOffset;
+			bool z = Math.Abs(transform.Position.z - EndPosition.z) <= PositionOffset;
+			return x && y && z;
+		}
+
 		public void Reset()
 		{
 			transform.Position = OriginalPosition;
@@ -183,6 +203,9 @@ namespace TRE
 			transform.Rotation = OriginalRotation;
 
 			MyRenderer.isVisible = false;
+
+			idle = true;
+			shrinking = false;
 		}
 	}
 }

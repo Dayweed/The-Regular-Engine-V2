@@ -18,6 +18,8 @@ namespace TRE
 		private Entity Trigger_D;
 		private Entity Trigger_E;
 		private Entity Trigger_F;
+		private Entity Trigger_G;
+		private Entity Trigger_H;
 
 		private bool regionA;
 		private bool regionB;
@@ -25,6 +27,8 @@ namespace TRE
 		private bool regionD;
 		private bool regionE;
 		private bool regionF;
+		private bool regionG;
+		private bool regionH;
 
 		CameraController cameraController;
 
@@ -47,6 +51,8 @@ namespace TRE
 			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
 			Trigger_E = ECSManager.FindEntityByName("Trigger_E");
 			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
+			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
+			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
 
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
@@ -66,12 +72,15 @@ namespace TRE
 			regionD = IsInsideTrigger(Trigger_D);
 			regionE = IsInsideTrigger(Trigger_E);
 			regionF = IsInsideTrigger(Trigger_F);
+			regionG = IsInsideTrigger(Trigger_G);
+			regionH = IsInsideTrigger(Trigger_H);
 
 			if (regionA)
 			{
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 35;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionB)
@@ -79,40 +88,57 @@ namespace TRE
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(45, 90, 0);
 				expectedDistance = 50;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionC)
 			{
-				cameraController.staticPosition = new vec3(150, 50, -204);
+				cameraController.staticPosition = new vec3(130, 50, -204);
 				cameraController.lookOnlyBool = true;
-				expectedPosition = new vec3(121, 82, -207);
+				expectedPosition = new vec3(112, 82, -207);
 				expectedRotation = new vec3(50, 90, 0);
-				expectedDistance = 80;
-			}
-			else
-			{
-				cameraController.lookOnlyBool = false;
+				expectedDistance = 60;
 			}
 
 			if (regionD)
 			{
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 0, 0);
-				expectedDistance = 110;
+				expectedPosition = new vec3(121, 82, -207);
+				expectedRotation = new vec3(45, 90, 0);
+				expectedDistance = 70;
+				cameraController.lookOnlyBool = false;
 			}
 
 			if (regionE)
 			{
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
+				cameraController.staticPosition = new vec3(320, 45, -330);
+				cameraController.lookOnlyBool = true;
+				expectedPosition = new vec3(260, 99, -335);
+				expectedRotation = new vec3(45, 90, 0);
 				expectedDistance = 80;
 			}
 
 			if (regionF)
 			{
 				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 0, 0);
+				expectedDistance = 110;
+				cameraController.lookOnlyBool = false;
+			}
+
+			if (regionG)
+			{
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 180, 0);
+				expectedDistance = 80;
+				cameraController.lookOnlyBool = false;
+			}
+
+			if (regionH) 
+			{
+				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
+				cameraController.lookOnlyBool = false;
 			}
 
 			cameraController.expectedPosition = expectedPosition;

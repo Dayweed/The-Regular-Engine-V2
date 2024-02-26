@@ -20,6 +20,14 @@ namespace TRE
 		Entity ToQuitSelect;
 		Entity ToReturnSelect;
 
+		Entity QuitConfirmation;
+		Entity QuitConfirmationYes;
+		Entity QuitConfirmationNo;
+
+		Entity QuitYesNoPointer;
+
+		bool PopupQuitConfirmation = false;
+		bool CurrentButtonSelected = false;
 		bool selectedOption = false;
 		bool selectedLevel = false;
 		bool selectedQuit = false;
@@ -66,17 +74,53 @@ namespace TRE
 			ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select");
 			ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select");
 
+			QuitConfirmation = ECSManager.FindEntityByName("QuitConfirmationPopup");
+			QuitConfirmationYes = ECSManager.FindEntityByName("YesQuit");
+			QuitConfirmationNo = ECSManager.FindEntityByName("NoQuit");
+			QuitYesNoPointer = ECSManager.FindEntityByName("CurrentButtonPointer");
+
 			TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
 			TitleQuitGame = ECSManager.FindEntityByName("TitleQuitGame");
 			TitleStarsCollected = ECSManager.FindEntityByName("TitleStarsCollected");
-            Stars1 = ECSManager.FindEntityByName("Star1");
-            Stars2 = ECSManager.FindEntityByName("Star2");
-            Stars3 = ECSManager.FindEntityByName("Star3");
+			Stars1 = ECSManager.FindEntityByName("Star1");
+			Stars2 = ECSManager.FindEntityByName("Star2");
+			Stars3 = ECSManager.FindEntityByName("Star3");
 
 			TitleLevelSelect.GetComponent<TextBounce>().Pause();
 			TitleQuitGame.GetComponent<TextBounce>().Pause();
 			TitleStarsCollected.GetComponent<TextBounce>().Pause();
-        }
+
+			// Determine where to spawn the moles based on previous scene
+			String prevScene = PersistentSystem.GetValue("PrevScene");
+			//Debug.Log("START " + prevScene);
+			if (prevScene == "Tutorial")
+			{
+				// Teleport Moley and Holey to another location
+				vec3 teleportPos = ToTutorialSelect.GetComponent<Transform>().Position;
+				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+				JumpOutHole();
+			}
+			else if (prevScene == "Level_1")
+			{
+				// Teleport Moley and Holey to another location
+				vec3 teleportPos = ToLevel1Select.GetComponent<Transform>().Position;
+				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+				JumpOutHole();
+			}
+			else if (prevScene == "Level_2")
+			{
+				// Teleport Moley and Holey to another location
+				vec3 teleportPos = ToLevel2Select.GetComponent<Transform>().Position;
+				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+				JumpOutHole();
+			}
+		}
 
 		public void Update()
 		{
@@ -136,17 +180,17 @@ namespace TRE
 			{
 				TitleQuitGame.GetComponent<TextBounce>().Resume();
 			}
-            #endregion
+			#endregion
 
-            #region Stars
-            // Do for stars collected
-            vec3 titleStarsCollectedPos = TitleStarsCollected.GetComponent<Transform>().Position;
+			#region Stars
+			// Do for stars collected
+			vec3 titleStarsCollectedPos = TitleStarsCollected.GetComponent<Transform>().Position;
 			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
 			{
 				titleStarsCollectedPos.y = displayYPos;
 				// Determine which stars to display
 				DetermineStarsDisplay();
-            }
+			}
 			else
 			{
 				titleStarsCollectedPos.y = hiddenYPos;
@@ -177,31 +221,31 @@ namespace TRE
 					JumpIntoHole();
 					ToLevelSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-                else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedQuit)
+				else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedQuit)
 				{
 					selectedQuit = true;
 					JumpIntoHole();
 					ToQuitSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-                else if (ToReturnSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedReturn)
+				else if (ToReturnSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedReturn)
 				{
 					selectedReturn = true;
 					JumpIntoHole();
 					ToReturnSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-                else if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedTutorial)
+				else if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedTutorial)
 				{
 					selectedTutorial = true;
 					JumpIntoHole();
 					ToTutorialSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
-                else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel1)
+				else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel1)
 				{
 					selectedLevel1 = true;
 					JumpIntoHole();
 					ToLevel1Select.GetComponent<TunnelLogic>().ResetMoles();
 				}
-                else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel2)
+				else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel2)
 				{
 					selectedLevel2 = true;
 					JumpIntoHole();
@@ -216,11 +260,11 @@ namespace TRE
 			{
 				currentTimer = 0;
 
-                PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
-                PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+				PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+				PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
 
-                // Force Holey and Moley to stop dropping to do stuff
-                Moley.GetComponent<Rigidbody>().useGravity = false;
+				// Force Holey and Moley to stop dropping to do stuff
+				Moley.GetComponent<Rigidbody>().useGravity = false;
 				Holey.GetComponent<Rigidbody>().useGravity = false;
 
 				if (selectedOption)
@@ -238,12 +282,17 @@ namespace TRE
 
 					JumpOutHole();
 				}
-                else if (selectedQuit)
+				else if (selectedQuit)
 				{
 					selectedQuit = false;
-					Game.CloseGame();
+					PopupQuitConfirmation = true;
+					QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = true;
+					QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = true;
+					QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = true;
+					QuitYesNoPointer.GetComponent<SpriteRenderer>().isVisible = true;
+
 				}
-                else if (selectedReturn)
+				else if (selectedReturn)
 				{
 					selectedReturn = false;
 
@@ -254,23 +303,59 @@ namespace TRE
 
 					JumpOutHole();
 				}
-                else if (selectedTutorial)
+				else if (selectedTutorial)
 				{
 					selectedTutorial = false;
 
-					Scene.TransitionScene("Tutorial", 5f);
+					Scene.TransitionScene("CutsceneStart", 5f);
 				}
-                else if (selectedLevel1)
+				else if (selectedLevel1)
 				{
 					selectedLevel1 = false;
 
 					Scene.TransitionScene("Level_1", 5f);
 				}
-                else if (selectedLevel2)
+				else if (selectedLevel2)
 				{
 					selectedLevel2 = false;
 
 					Scene.TransitionScene("Level_1", 5f);
+				}
+			}
+
+			if (PopupQuitConfirmation)
+			{
+				if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
+				{
+					CurrentButtonSelected = false;
+					QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = false;
+					QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = false;
+					QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = false;
+					QuitYesNoPointer.GetComponent<SpriteRenderer>().isVisible = false;
+					PopupQuitConfirmation = false;
+
+					vec3 teleportPos = ToQuitSelect.GetComponent<Transform>().Position;
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+					JumpOutHole();
+
+				}
+
+				if (InputSystem.GetKeyPress(InputKeys.A))
+				{
+					CurrentButtonSelected = true;
+					QuitYesNoPointer.GetComponent<Transform>().Position = QuitConfirmationYes.GetComponent<Transform>().Position;
+				}
+
+				if (InputSystem.GetKeyPress(InputKeys.D))
+				{
+					CurrentButtonSelected = false;
+					QuitYesNoPointer.GetComponent<Transform>().Position = QuitConfirmationNo.GetComponent<Transform>().Position;
+				}
+
+				if (CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter))
+				{
+					Game.CloseGame();
 				}
 			}
 
@@ -298,19 +383,19 @@ namespace TRE
 			PhysicsSystem.GetLinearVelocity(Moley.ID, out vec3 MoleyVel);
 			PhysicsSystem.GetLinearVelocity(Holey.ID, out vec3 HoleyVel);
 
-            Moley.GetComponent<MoleyController>().jumpCancelled = true;
-            Holey.GetComponent<HoleyController>().jumpCancelled = true;
+			Moley.GetComponent<MoleyController>().jumpCancelled = true;
+			Holey.GetComponent<HoleyController>().jumpCancelled = true;
 
-            PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
-            PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+			PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
+			PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
 
-            if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
+			if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 20, 0));
+				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 40, 0));
 			}
 			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 20, 0));
+				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 40, 0));
 			}
 
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = true;
@@ -319,23 +404,23 @@ namespace TRE
 		}
 
 		private void JumpOutHole()
-        {
-            if (currentTimer > 0) return;
+		{
+			if (currentTimer > 0) return;
 
-            // Give controls back to Moley and Holey
-            Moley.GetComponent<Rigidbody>().useGravity = true;
+			// Give controls back to Moley and Holey
+			Moley.GetComponent<Rigidbody>().useGravity = true;
 			Holey.GetComponent<Rigidbody>().useGravity = true;
 
 			//Moley.GetComponent<MoleyController>().isControllable = true;
 			//Holey.GetComponent<HoleyController>().isControllable = true;
 
-            Moley.GetComponent<MoleyController>().isJumping = false;
-            Holey.GetComponent<HoleyController>().isJumping = false;
+			Moley.GetComponent<MoleyController>().isJumping = false;
+			Holey.GetComponent<HoleyController>().isJumping = false;
 
-            Moley.GetComponent<MoleyController>().jumpCancelled = true;
-            Holey.GetComponent<HoleyController>().jumpCancelled = true;
+			Moley.GetComponent<MoleyController>().jumpCancelled = true;
+			Holey.GetComponent<HoleyController>().jumpCancelled = true;
 
-            Moley.GetComponent<CapsuleCollider>().IsTrigger = false;
+			Moley.GetComponent<CapsuleCollider>().IsTrigger = false;
 			Holey.GetComponent<CapsuleCollider>().IsTrigger = false;
 
 			PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
@@ -350,22 +435,22 @@ namespace TRE
 			String holeSceneName = "";
 			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside())
 			{
-                holeSceneName = "Tutorial";
-            }
+				holeSceneName = "Tutorial";
+			}
 			else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesInside())
-            {
-                holeSceneName = "Level_1";
-            }
-            else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
-            {
-                holeSceneName = "Level_2";
+			{
+				holeSceneName = "Level_1";
+			}
+			else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
+			{
+				holeSceneName = "Level_2";
 			}
 
-            Stars1.SetActive(false);
-            Stars2.SetActive(false);
-            Stars3.SetActive(false);
+			Stars1.SetActive(false);
+			Stars2.SetActive(false);
+			Stars3.SetActive(false);
 
-            int mapStars = 0;
+			int mapStars = 0;
 			if (Int32.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out mapStars))
 			{
 				//Debug.Log(holeSceneName + "StarsObtained: " + mapStars);
@@ -382,6 +467,6 @@ namespace TRE
 			{
 				Stars1.SetActive(true);
 			}
-        }
+		}
 	}
 }

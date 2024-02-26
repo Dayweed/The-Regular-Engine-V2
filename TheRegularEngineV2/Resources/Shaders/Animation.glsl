@@ -25,6 +25,7 @@ layout(location = 0) out struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
+	bool DrawShadow;
 } Out;
 
 layout(set = 0, binding = 0) uniform UBO
@@ -53,6 +54,7 @@ layout(set = 0, binding = 6) uniform MaterialColor
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
+	bool m_DrawShadow;
 } push;
 
 const float gamma = 2.2;
@@ -86,6 +88,7 @@ void main()
 	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection;
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor;
 	Out.ShadowIntensity = ubo.m_ShadowIntensity;
+	Out.DrawShadow = push.m_DrawShadow;
 }
 
 
@@ -107,6 +110,7 @@ layout(location = 0) in struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
+	bool DrawShadow;
 } In;
 
 layout(location = 0) out vec4 outColor;
@@ -199,8 +203,10 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
-
+	if(In.DrawShadow)
+		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	else
+		outColor.rgb = ambient * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
 

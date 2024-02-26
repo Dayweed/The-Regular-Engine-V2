@@ -24,6 +24,13 @@ namespace TRE
 	class BaseCamera;
 	class FontRenderer;
 
+	//To be used by normmal geometry and animation geometry
+	struct PushConstantGeometry
+	{
+		glm::mat4 m_Model;
+		bool m_DrawShadow{ true };
+	};
+
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
@@ -157,11 +164,11 @@ namespace TRE
 
 			//Particle Renderer
 			std::shared_ptr<ParticleRenderer> m_ParticleRenderer;
-			std::shared_ptr<UniformBuffer> m_ParticleUBO;
+			std::shared_ptr<UniformBuffer> m_ParticleUBO2D;
+			std::shared_ptr<UniformBuffer> m_ParticleUBO3D;
 
 			//Sprite 3D Renderer
 			std::shared_ptr<Pipeline> m_Sprite3DPipeline;
-			std::shared_ptr<RenderPass> m_Sprite3DRenderPass;
 			std::shared_ptr<UniformBuffer> m_Sprite3DUBO;
 			std::shared_ptr<VertexBuffer> m_Sprite3DVertexBuffer;
 			std::shared_ptr<IndexBuffer> m_Sprite3DIndexBuffer;
