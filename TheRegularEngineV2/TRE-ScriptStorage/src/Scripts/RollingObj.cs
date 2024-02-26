@@ -26,7 +26,7 @@ namespace TRE
 		private float rotateSpeed = 200.0f;
 
 		private float cooldown = 0f;
-		private float cooldownDefault = 0.05f;
+		private float cooldownDefault = 2f;
 
 		public RollingObj()
 		{
@@ -55,6 +55,7 @@ namespace TRE
 					moveSpeed = 32.0f;
 				}
 			}
+			cooldown = cooldownDefault;
 		}
 
 		public void Update()
@@ -64,26 +65,29 @@ namespace TRE
 			// Check if the ledges is no longer being triggered
 			if (lLedge == null || rLedge == null) return;
 
+			if (cooldown > 0) return;
+
 			transform.Position += moveVector * moveDir * moveSpeed * Time.deltaTime;
 			transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
 			transform.Rotation = transform.Rotation.z > 360 ? transform.Rotation - threesixty : transform.Rotation;
 			transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
 		}
 
-		public void Bounceback()
+		public void Bounceback(vec3 WallPosition)
 		{
-			if (cooldown > 0) return;
+			// Check if the WallPosition is against the moveDir, else ignore
+			vec3 wallDir = WallPosition - transform.Position;
+			if (vec3.Dot(wallDir, moveVector * moveDir) <= 0) return;
 
 			moveDir = moveDir == 1 ? -1 : 1;
-			cooldown = cooldownDefault;
 		}
 
-		private void OnTriggerEnter(System.UInt64 otherID)
+		private void OnTriggerStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
-				Bounceback();
+				Bounceback(other.transform.Position);
 			}
 		}
 
@@ -96,7 +100,7 @@ namespace TRE
 				MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
 				{
-					Bounceback();
+					Bounceback(other.transform.Position);
 				}
 				else
 				{
@@ -122,7 +126,7 @@ namespace TRE
 					// Not colliding with other ledges
 					if (NotAtLedge())
 					{
-						Bounceback();
+						Bounceback(other.transform.Position);
 					}
 				}
 				else
@@ -136,7 +140,7 @@ namespace TRE
 			}
 			else if (other.ID == lLedge.ID || other.ID == rLedge.ID)
 			{
-				Bounceback();
+				Bounceback(other.transform.Position);
 			}
 		}
 
