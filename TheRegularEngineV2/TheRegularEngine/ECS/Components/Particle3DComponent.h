@@ -13,10 +13,10 @@ namespace TRE
 		glm::vec3 Scale;
 	};
 
-	class ParticleComponent : property::base
+	class Particle3DComponent : property::base
 	{
 	public:
-		ParticleComponent()
+		Particle3DComponent()
 		{
 			m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
 			m_Material->Invalidate();
@@ -49,7 +49,7 @@ namespace TRE
 
 		property_vtable()
 
-		friend void to_json(nlohmann::json& j, const ParticleComponent& t)
+			friend void to_json(nlohmann::json& j, const Particle3DComponent& t)
 		{
 			const float* color = glm::value_ptr(t.m_Color);
 			std::vector<float> storedColor{ color[0], color[1], color[2], color[3] };
@@ -82,7 +82,7 @@ namespace TRE
 			};
 		}
 
-		friend void from_json(const nlohmann::json& j, ParticleComponent& t)
+		friend void from_json(const nlohmann::json& j, Particle3DComponent& t)
 		{
 			if (j.contains("Texture"))
 			{
@@ -152,7 +152,7 @@ namespace TRE
 			if (j.contains("PlayOnStart"))
 			{
 				t.m_PlayOnStart = j.at("PlayOnStart").get<bool>();
-				if(t.m_PlayOnStart)
+				if (t.m_PlayOnStart)
 					t.m_Running = true;
 				else
 					t.m_Running = false;
@@ -160,7 +160,7 @@ namespace TRE
 			if (j.contains("Fade"))
 			{
 				t.m_Fade = j.at("Fade").get<bool>();
-				if(t.m_Fade)
+				if (t.m_Fade)
 					t.m_Color.a = 0.0f;
 			}
 			if (j.contains("3DWorld"))
@@ -176,7 +176,7 @@ namespace TRE
 	};
 }
 
-property_begin(TRE::ParticleComponent)
+property_begin(TRE::Particle3DComponent)
 {
 	property_var_fnbegin("Texture", resource_list)
 	{
@@ -197,7 +197,7 @@ property_begin(TRE::ParticleComponent)
 		}
 
 	} property_var_fnend(),
-	property_var_fnbegin("Color", Color)
+		property_var_fnbegin("Color", Color)
 	{
 		if (isRead)
 		{
@@ -208,20 +208,20 @@ property_begin(TRE::ParticleComponent)
 			Self.m_Color = InOut.m_Value;
 		}
 	} property_var_fnend(),
-	property_var(m_Running).Name("Running"),
-	property_var(m_ParticleCount).Name("ParticleCount"),
-	property_var(m_Velocity).Name("Velocity"),
-	property_var(m_Speed).Name("Speed"),
-	property_var(m_SpawnRadius).Name("SpawnRadius"),
-	property_var(m_LifeTime).Name("LifeTime"),
-	property_var(m_Size).Name("Size"),
-	property_var(m_Loop).Name("Loop"),
-	property_var(m_PlayOnStart).Name("PlayOnStart"),	
-	property_var(m_VariationSpeed).Name("VariationSpeed"),
-	property_var(m_VariationSize).Name("VariationSize"),
-	property_var(m_Fade).Name("Fade"),
-	property_var(m_FadeDuration).Name("FadeDuration"),
-	property_var(m_Show).Name("Show Spawn Point"),
-	property_var(m_3DWorld).Name("3DWorld")
+		property_var(m_Running).Name("Running"),
+		property_var(m_ParticleCount).Name("ParticleCount"),
+		property_var(m_Velocity).Name("Velocity"),
+		property_var(m_Speed).Name("Speed"),
+		property_var(m_SpawnRadius).Name("SpawnRadius"),
+		property_var(m_LifeTime).Name("LifeTime"),
+		property_var(m_Size).Name("Size"),
+		property_var(m_Loop).Name("Loop"),
+		property_var(m_PlayOnStart).Name("PlayOnStart"),
+		property_var(m_VariationSpeed).Name("VariationSpeed"),
+		property_var(m_VariationSize).Name("VariationSize"),
+		property_var(m_Fade).Name("Fade"),
+		property_var(m_FadeDuration).Name("FadeDuration"),
+		property_var(m_Show).Name("Show Spawn Point"),
+		property_var(m_3DWorld).Name("3DWorld")
 
-} property_vend_h(TRE::ParticleComponent)
+} property_vend_h(TRE::Particle3DComponent)
