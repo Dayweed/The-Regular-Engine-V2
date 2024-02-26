@@ -14,6 +14,7 @@
 #include "ECS/Components/Particle.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
+#include "InputHandler/Controller.h"
 
 #include "InputHandler/InputHandler.h"
 
@@ -1249,6 +1250,21 @@ namespace TRE
 	static bool GetKeyRelease(int key)
 	{
 		return InputHandler::GetKeyRelease(key);
+	}
+
+	static bool GetControllerButtonPress(int controller , int button)
+	{
+		return XInputController::Instance().isButtonPressed(controller ,static_cast<XInputController::Button>(button));
+	}
+
+	static std::pair <float, float> GetControllerStick(int controller, bool rightstick)
+	{
+		return XInputController::Instance().getThumbstickValue(controller, rightstick);
+	}
+
+	static float GetControllerTrigger(int controller, bool righttrigger)
+	{
+		return XInputController::Instance().getTriggerValue(controller, righttrigger);
 	}
 
 #pragma endregion

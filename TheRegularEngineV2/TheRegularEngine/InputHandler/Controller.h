@@ -9,6 +9,20 @@ class XInputController {
 public:
     static const int MAX_CONTROLLERS = 4;
 
+    enum class Button
+    {
+	    A,
+        B,
+        X,
+        Y,
+        LB,
+        RB,
+        Start,
+        Back,
+        LeftThumb,
+        RightThumb
+    };
+
     // singleton the class so that only one instance of the class is created
 	static XInputController& Instance() {
 		static XInputController instance;
@@ -27,6 +41,10 @@ public:
             }
         }
     }
+
+    bool isButtonPressed(int controllerNum, Button button) const {
+		return isButtonPressed(controllerNum, getButtonMask(button));
+	}
 
     bool isButtonPressed(int controllerNum, WORD button) const {
         if (isControllerConnected(controllerNum)) {
@@ -86,6 +104,22 @@ private:
 
     XInputController() {
         controllers.fill({ 0, {}, {}, false });
+    }
+
+     WORD getButtonMask(Button button) const {
+        switch (button) {
+            case Button::A: return XINPUT_GAMEPAD_A;
+            case Button::B: return XINPUT_GAMEPAD_B;
+            case Button::X: return XINPUT_GAMEPAD_X;
+            case Button::Y: return XINPUT_GAMEPAD_Y;
+            case Button::LB: return XINPUT_GAMEPAD_LEFT_SHOULDER;
+            case Button::RB: return XINPUT_GAMEPAD_RIGHT_SHOULDER;
+            case Button::Start: return XINPUT_GAMEPAD_START;
+            case Button::Back: return XINPUT_GAMEPAD_BACK;
+            case Button::LeftThumb: return XINPUT_GAMEPAD_LEFT_THUMB;
+            case Button::RightThumb: return XINPUT_GAMEPAD_RIGHT_THUMB;
+            default: return 0; // Invalid button, handle accordingly
+        }
     }
       
     struct ControllerState {
