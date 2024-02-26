@@ -25,7 +25,9 @@
             "3471907381084056612",
             "10580679118866751667",
             "8954874462232172860",
-            "14288387974525608456"
+            "14288387974525608456",
+            "10538498347507763761",
+            "1526571828553654847"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/Blueberry.json",
@@ -52,7 +54,9 @@
             "../Resources/Prefabs/Basic Cube.json",
             "../Resources/Prefabs/Double Cube.json",
             "../Resources/Prefabs/Half Cube.json",
-            "../Resources/Prefabs/MidPos.json"
+            "../Resources/Prefabs/MidPos.json",
+            "../Resources/Prefabs/LeftCharacter_HUD.json",
+            "../Resources/Prefabs/RightCharacter_HUD.json"
         ]
     }
 }
