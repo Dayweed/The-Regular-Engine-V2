@@ -23,7 +23,7 @@ namespace TRE
 			UIComponent,
 			Audio,
 			AudioListener,
-			ParticleComponent,
+			Particle2DComponent,
 			DirectPathfinding,
 			TextComponent,
 			SlideshowComponent,

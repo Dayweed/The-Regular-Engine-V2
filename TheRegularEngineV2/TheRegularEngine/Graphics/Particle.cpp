@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ECS/Components/Particle.h"
+#include "ECS/Components/Particle2DComponent.h"
 #include "Random.h"
 #include "ECS/Components/Transform.h"
 #include "Core/Engine.h"
@@ -8,14 +8,14 @@
 
 namespace TRE
 {
-	void ParticleComponent::GenerateParticles(const glm::vec3& emitterPos)
+	void Particle2DComponent::GenerateParticles(const glm::vec3& emitterPos)
 	{
 		m_Particles.clear();
 		m_Particles.resize(m_ParticleCount);
 		ResetParticles(emitterPos);
 	}
 
-	void ParticleComponent::UpdateParticles(const bool is3D)
+	void Particle2DComponent::UpdateParticles(const bool is3D)
 	{
 		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
 
@@ -71,7 +71,7 @@ namespace TRE
 		m_ElapsedTime += deltaTime;
 	}
 
-	void ParticleComponent::ResetParticles(const glm::vec3& emitterPos)
+	void Particle2DComponent::ResetParticles(const glm::vec3& emitterPos)
 	{
 		if(m_Particles.size() != m_ParticleCount)
 			GenerateParticles(emitterPos);
@@ -81,7 +81,7 @@ namespace TRE
 			m_Color.a = 0.f;
 	}
 
-	void ParticleComponent::ResetParticlesData(const glm::vec3 emitterPos)
+	void Particle2DComponent::ResetParticlesData(const glm::vec3 emitterPos)
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -97,9 +97,9 @@ namespace TRE
 
 	void ParticleSystem::LateUpdate()
 	{
-		for (auto& emitters : ECSManager::Instance().GetEntities<ParticleComponent>())
+		for (auto& emitters : ECSManager::Instance().GetEntities<Particle2DComponent>())
 		{
-			auto& particleComponent = emitters->GetComponent<ParticleComponent>();
+			auto& particleComponent = emitters->GetComponent<Particle2DComponent>();
 			const auto& transform = emitters->GetComponent<Transform>();
 			if (particleComponent.m_Particles.size() != particleComponent.m_ParticleCount)
 			{

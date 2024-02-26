@@ -958,10 +958,10 @@ namespace TRE
 				m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
 			}
 
-			for (const auto& particles : ECSManager::Instance().GetEntities<ParticleComponent>())
+			for (const auto& particles : ECSManager::Instance().GetEntities<Particle2DComponent>())
 			{
 				const Transform& tr = particles->GetComponent<Transform>();
-				const ParticleComponent& particleComp = particles->GetComponent<ParticleComponent>();
+				const Particle2DComponent& particleComp = particles->GetComponent<Particle2DComponent>();
 
 				if(particleComp.m_Show == false)
 					continue;

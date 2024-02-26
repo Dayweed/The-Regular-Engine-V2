@@ -2,7 +2,7 @@
 #include "ParticleRenderer.h"
 #include "Core/Engine.h"
 #include "Core/ECS.h"
-#include "ECS/Components/Particle.h"
+#include "ECS/Components/Particle2DComponent.h"
 #include "Camera.h"
 #include "EditorCamera.h"
 #include "Core/ECS.h"
@@ -66,9 +66,9 @@ namespace TRE
 	void ParticleRenderer::Render(std::shared_ptr<UniformBuffer> ubo2D, std::shared_ptr<UniformBuffer> ubo3D, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
 	{
 		std::multimap<ResourceHandle, Entity> sortedParticles;
-		for (const auto& emitter : ECSManager::Instance().GetEntities<ParticleComponent>())
+		for (const auto& emitter : ECSManager::Instance().GetEntities<Particle2DComponent>())
 		{
-			const ParticleComponent& particleComp = emitter->GetComponent<ParticleComponent>();
+			const Particle2DComponent& particleComp = emitter->GetComponent<Particle2DComponent>();
 			if (particleComp.m_Material)
 			{
 				particleComp.m_Material->SetUBOData(particleComp.m_Color);
@@ -88,7 +88,7 @@ namespace TRE
 		for (const auto& ent: sortedParticles)
 		{
 			const ResourceHandle currentHandle = ent.first;
-			const ParticleComponent& particleComp = ent.second->GetComponent<ParticleComponent>();
+			const Particle2DComponent& particleComp = ent.second->GetComponent<Particle2DComponent>();
 			if (particleComp.m_Running)
 			{
 				if (currentHandle != m_PreviousMaterialHandle)
