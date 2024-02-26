@@ -12,6 +12,7 @@
 #include "Scripting/ScriptEngine.h"
 #include "Graphics/Camera.h"
 #include "Graphics/EditorCamera.h"
+#include "InputHandler/Controller.h"
 #include "SceneManager.h"
 #include "Graphics/AnimationSystem.h"
 #include "InputHandler/InputHandler.h"
@@ -171,6 +172,8 @@ namespace TRE
 			Profiler::Instance().StartTimer("UpdateSystem");
 			ECSSystemManager::Instance().UpdateSystem();
 			Profiler::Instance().EndTimer("UpdateSystem");
+			XInputController::Instance().update();
+			
 
 			// Game Running Update
 			if (GameLoop::Instance().IsGameRunning())

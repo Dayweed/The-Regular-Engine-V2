@@ -9,11 +9,14 @@ class XInputController {
 public:
     static const int MAX_CONTROLLERS = 4;
 
-    XInputController() {
-        controllers.fill({ 0, {}, {}, false });
-    }
+    // singleton the class so that only one instance of the class is created
+	static XInputController& Instance() {
+		static XInputController instance;
+		return instance;
+	}
 
     void update() {
+        //std::cout << "XInputController::update() Called." << std::endl;
         DWORD dwResult;
         for (DWORD i = 0; i < MAX_CONTROLLERS; ++i) {
             dwResult = XInputGetState(i, &controllers[i].state);
@@ -80,6 +83,11 @@ public:
     }
 
 private:
+
+    XInputController() {
+        controllers.fill({ 0, {}, {}, false });
+    }
+      
     struct ControllerState {
         DWORD dwPacketNumber;
         XINPUT_STATE state;
