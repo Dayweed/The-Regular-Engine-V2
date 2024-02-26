@@ -28,6 +28,8 @@ namespace TRE
 		private float acceleration = 700f;
 		//final velocity
 		private vec3 finalVelocity = vec3.Zero;
+		//Original Scale
+		private vec3 oriScale;
 
 		//Check if player is walking
 		public bool isWalking = false;
@@ -200,6 +202,7 @@ namespace TRE
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
+			oriScale = moleyTransform.Scale;
 		}
 
 		public void Update()
@@ -420,6 +423,9 @@ namespace TRE
 
 		private void HandleMovement(ref vec3 currVelocity)
 		{
+			// Ignores if dead
+			if (isDead) return;
+
 			if (DroppingOutOfMap)
 			{
 				dirVec.x = 0.0f;
@@ -644,6 +650,8 @@ namespace TRE
 
 		private void HandleAbilities()
 		{
+			if (isDead) return;
+
 			mainBlueberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Blueberry");
 			mainStrawberry = MyPowerManager.powerUps.Count > 0 && MyPowerManager.powerUps[0].CompareTag("Strawberry");
 
@@ -766,6 +774,7 @@ namespace TRE
 			{
 				RespawnPlayer = true;
 				isDead = true;
+				moleyTransform.Scale = new vec3(moleyTransform.Scale.x, 0.01f, moleyTransform.Scale.z);
 			}
 			Invulnerability = true;
 
@@ -798,6 +807,7 @@ namespace TRE
 		private void Respawn()
 		{
 			moleyTransform.Position = RespawnPoint;
+			//moleyTransform.Scale = oriScale;
 			Invulnerability = true;
 		}
 
