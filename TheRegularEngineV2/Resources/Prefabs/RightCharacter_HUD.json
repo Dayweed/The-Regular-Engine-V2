@@ -1,0 +1,243 @@
+[
+   [
+      3,
+      0,
+      1,
+      2
+   ],
+   [
+      3,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "1526571828553654847",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1526571828553654847",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "1526571828553654847",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3005684037837835027",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "1526571828553654847",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1891662638132032239",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Children": [
+            "12710647501861452967",
+            "2331732034377012878"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "17446895033929922381"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "17446895033929922381"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "17446895033929922381",
+         "m_Index": 61,
+         "m_Name": "RightCharacter_HUD",
+         "m_Tag": "RightHUD"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "12710647501861452967",
+         "m_Index": 62,
+         "m_Name": "NotActivePowerUp",
+         "m_Tag": "RightHUD"
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "2331732034377012878",
+         "m_Index": 63,
+         "m_Name": "ActivePowerUp",
+         "m_Tag": "RightHUD"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Position": [
+            720.0,
+            375.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            864.0,
+            315.00006103515625,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            744.0,
+            391.00006103515625,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.800000011920929,
+            0.800000011920929,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.PowerUpUI"
+         ],
+         "m_StoredClass": "TRE.PowerUpUI"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 168,
+         "RenderLayer": 0,
+         "Texture": "f50f65a6be0e9bb3",
+         "Width": 272,
+         "m_IsVisible": true
+      },
+      1,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 30,
+         "RenderLayer": 0,
+         "Texture": "1c6110924247f5b3",
+         "Width": 30,
+         "m_IsVisible": true
+      },
+      2,
+      {
+         "Color": [
+            2.0,
+            2.0,
+            2.0,
+            1.0
+         ],
+         "Height": 55,
+         "RenderLayer": 0,
+         "Texture": "7539c236f0a22434",
+         "Width": 55,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
