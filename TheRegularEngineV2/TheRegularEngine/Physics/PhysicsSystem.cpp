@@ -331,31 +331,31 @@ namespace TRE
 	{
 		CreatePhysXScene();
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>(true))
 		{
 			// i just want the squiggly lines to go away...
 			UNUSED_VALUE(ConstructRigidbody(entity));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>(true))
 		{
 			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
 			UNUSED_VALUE(ConstructSphereCollider(entity, component.m_Radius, component.m_Offset));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>(true))
 		{
 			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
 			UNUSED_VALUE(ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>(true))
 		{
 			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
 			UNUSED_VALUE(ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>(true))
 		{
 			CylinderCollider& component{ entity->GetComponent<CylinderCollider>() };
 			UNUSED_VALUE(ConstructCylinderCollider(entity, component.m_Radius, component.m_Height, component.m_Offset));
@@ -831,7 +831,7 @@ namespace TRE
 	void PhysicsSystem::ResizeAllColliders()
 	{
 		// Update Sphere Collider if Dirty
-		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>(true))
 		{
 			auto& collider = entity->GetComponent<SphereCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -849,7 +849,7 @@ namespace TRE
 		}
 
 		// Update Box Collider if Dirty
-		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>(true))
 		{
 			auto& collider = entity->GetComponent<BoxCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -867,7 +867,7 @@ namespace TRE
 		}
 
 		// Update the Update if Update
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>(true))
 		{
 			auto& collider = entity->GetComponent<CapsuleCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -885,7 +885,7 @@ namespace TRE
 		}
 
 		// Update the Update UPDATE if the Update Update
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>(true))
 		{
 			auto& collider = entity->GetComponent<CylinderCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -991,19 +991,19 @@ namespace TRE
 
 	void PhysicsSystem::UpdateAllComponents() const
 	{
-		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>(true))
 			UpdateRigidbody(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>(true))
 			UpdateSphereCollider(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>(true))
 			UpdateBoxCollider(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>(true))
 			UpdateCapsuleCollider(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>(true))
 			UpdateCylinderCollider(entity);
 	}
 

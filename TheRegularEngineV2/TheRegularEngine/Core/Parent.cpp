@@ -21,7 +21,7 @@ namespace TRE
 
 	void ParentingSystem::LateUpdate()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
 		{
 			//For startup
 			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
@@ -40,7 +40,7 @@ namespace TRE
 			}
 		}
 
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
 		{
 			//Update world data
 			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
@@ -66,7 +66,7 @@ namespace TRE
 
 	void ParentingSystem::OnDestroyEntities()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Removal>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Removal>(true))
 		{
 			RemoveParent(object);
 			AbandonChildren(object);
