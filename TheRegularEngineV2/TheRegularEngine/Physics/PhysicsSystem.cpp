@@ -1016,7 +1016,14 @@ namespace TRE
 		const glm::quat rotQuat{ eulerAnglesInRad };
 
 		const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(transform);
+		if (m_Actors.contains(entity->GetGUID()))
+			m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(transform);
+		else
+		{
+			std::string error{ "[PhysicsSystem::UpdateActorPose]: m_Actors does not contain entity " + entity->GetName() };
+			TRE_ASSERT(error.c_str());
+			std::cout << error << "\n";
+		}
 	}
 
 	void PhysicsSystem::CreatePhysXScene()
