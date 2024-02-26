@@ -66,7 +66,7 @@ namespace TRE
 
 		@brief			Adds the additional amount of objects into objects
 		*//*__________________________________________________________________________*/
-		bool AllocateEntitySize(size_t size_);
+		//bool AllocateEntitySize(size_t size_);
 
 		/* !
 		@function		DeleteEntities
@@ -87,7 +87,7 @@ namespace TRE
 						This means it is possible that there are more deployed entities
 						than the config size
 		*//*__________________________________________________________________________*/
-		void ResetToConfig();
+		//void ResetToConfig();
 
 		/* !
 		@function		ClearUndeployed
@@ -99,7 +99,7 @@ namespace TRE
 						This means it is possible that there are more deployed entities
 						than the config size
 		*//*__________________________________________________________________________*/
-		void ClearUndeployed();
+		//void ClearUndeployed();
 
 		/* !
 		@function		UpdateECSManager
@@ -110,7 +110,7 @@ namespace TRE
 		@brief			Copies entt::entities from the Source Registry to the
 						ECSManager m_Registry
 		*//*__________________________________________________________________________*/
-		void UpdateECSManager(entt::registry& reg, bool flip = true);
+		void UpdateECSManager(entt::registry& reg);
 
 		/* !
 		@function		GenerateGUIDStr
@@ -121,8 +121,8 @@ namespace TRE
 		std::string GenerateGUIDStr();
 
 		// Set and Get
-		void SetConfigSize(size_t config_obj_);
-		size_t GetConfigSize() const;
+		//void SetConfigSize(size_t config_obj_);
+		//size_t GetConfigSize() const;
 
 	private:
 		// Delete possible copy ctor and assignment to ensure singleton
@@ -132,10 +132,10 @@ namespace TRE
 		void* operator new(size_t) = delete;
 
 		// Size set in config
-		size_t								m_ConfigSize{ 100 };
+		//size_t								m_ConfigSize{ 100 };
 
 		std::unordered_map<ENTTID, Entity>	m_AllEntityList;
-		std::set<ENTTID>					m_DeployedEntityList;
-		std::set<ENTTID>					m_UndeployedEntityList;
+		//std::set<ENTTID>					m_DeployedEntityList;
+		//std::set<ENTTID>					m_UndeployedEntityList;
 	};
 }

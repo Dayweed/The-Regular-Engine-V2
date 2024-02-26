@@ -2,6 +2,7 @@
 
 #include "Core/System.h"
 #include "Core/ECS.h"
+#include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE
 {
@@ -20,9 +21,12 @@ namespace TRE
 		void RemoveScriptableObject(Entity entity);
 		void InitializeScriptableObjects();
 
+		// this is a temp function to copy all the scripts over to the new container
+		void CopyScriptsToNewContainer();
+
 		void UpdateScriptableObjects();
 		void CheckForNewScriptableObjects();
-
+		void CallRecompile(const ToggleRunEvent&);
 
 		bool DemoInit = true;
 
@@ -34,3 +38,4 @@ namespace TRE
 		bool m_IsRunning;
 	};
 }
+ 

@@ -4,35 +4,6 @@
 
 namespace TRE
 {
-	struct Parenting
-	{
-		std::string m_Parent{};
-		std::vector<std::string> m_Children{};
-		bool m_IsDirty{ false };
-
-		Parenting() = default;
-		~Parenting() = default;
-
-		//NLOHMANN_DEFINE_TYPE_INTRUSIVE(Parenting, m_Parent, m_Children)
-
-		friend void to_json(nlohmann::json& j, const Parenting& t)
-		{
-			j = nlohmann::json{
-				{ "m_Parent", t.m_Parent},
-				{ "m_Children", t.m_Children }
-			};
-		}
-		friend void from_json(const nlohmann::json& j, Parenting& t)
-		{
-			if (j.contains("m_Parent"))
-				t.m_Parent = j.at("m_Parent").get<std::string>();
-			if (j.contains("m_Children"))
-				j.at("m_Children").get<std::vector<std::string>>();
-
-			t.m_IsDirty = true;
-		}
-	};
-
 	class ParentingSystem : public ECSSystem
 	{
 	public:
@@ -41,6 +12,7 @@ namespace TRE
 
 		void Update() override;
 		void GameUpdate() override;
+		void LateUpdate() override;
 		void AfterReset() override;
 		void OnDestroyEntities() override;
 		void Shutdown() override;
@@ -175,8 +147,10 @@ namespace TRE
 
 		void GetTotalEntities(int& noOfEntities, Entity object);
 
+		void UpdateChildTransform(Entity parent, bool updateLocal = false);
+
+		void UpdateChildActive(Entity parent);
 	private:
-		void UpdateChildTransform(Entity parent);
 		void UpdateChildLocalData(Entity parent, Entity child);
 		void UpdateLocalData(Entity current);
 	};

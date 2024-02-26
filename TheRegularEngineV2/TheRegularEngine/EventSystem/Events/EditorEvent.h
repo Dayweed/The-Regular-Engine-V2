@@ -9,6 +9,13 @@
 
 namespace TRE
 {
+	struct ConsoleStartEvent : Event
+	{
+		bool m_IsSimulating{ false };
+		ConsoleStartEvent() = delete;
+		ConsoleStartEvent(bool gameIsSimulating) : m_IsSimulating(gameIsSimulating) {}
+	};
+
 	struct ConsoleDebugEvent : Event
 	{
 		std::string m_Msg;
@@ -27,8 +34,9 @@ namespace TRE
 	struct ToggleRunEvent : Event
 	{
 		bool m_Playing{ false };
+		bool m_IsSimulating{ false };
 		ToggleRunEvent() = delete;
-		ToggleRunEvent(bool playing) : m_Playing(playing) {}
+		ToggleRunEvent(bool playing, bool gameIsSimulating) : m_Playing(playing), m_IsSimulating(gameIsSimulating) {}
 	};
 
 	struct ResetSceneEvent : Event
@@ -52,5 +60,46 @@ namespace TRE
 		bool m_IsLocal{ false };
 		LocalGloalGizmoEvent() = delete;
 		LocalGloalGizmoEvent(bool local) : m_IsLocal(local) {}
+	};
+
+	struct GizmoOperationEvent : Event
+	{
+		int m_Operation{};
+		GizmoOperationEvent() = delete;
+		GizmoOperationEvent(int operation) : m_Operation(operation) {}
+	};
+
+	struct EditorCameraEvent : Event
+	{
+		float m_PanSpeed{};
+		float m_ZoomSensitivity{};
+		float m_RotationSensitivity{};
+		EditorCameraEvent() = delete;
+		EditorCameraEvent(float pan, float zoom, float rot) : m_PanSpeed(pan), m_ZoomSensitivity(zoom), m_RotationSensitivity(rot) {}
+	};;
+
+	struct AssetSelectorEvent : Event
+	{
+		std::string m_AssetName;
+		enum class AssetType
+		{
+			Unknown = 0, Texture, Model, Shader, Material, Scene, Audio, Font, Script, Particle, Prefab
+		};
+		AssetType m_AssetType;
+		AssetSelectorEvent() = delete;
+		AssetSelectorEvent(std::string assetName, AssetType assetType) : m_AssetName(assetName), m_AssetType(assetType) {}
+	};
+
+	struct AssetPanelEvent : Event
+	{
+		bool m_ShowAssetPanel{ false };
+		AssetPanelEvent() = delete;
+		AssetPanelEvent(bool showAssetPanel) : m_ShowAssetPanel(showAssetPanel) {}
+	};
+
+	struct CollisionMatrixEvent : Event
+	{
+		bool m_ShowCollisionMatrixPanel = false;
+		CollisionMatrixEvent(bool showPanel) : m_ShowCollisionMatrixPanel(showPanel) {}
 	};
 }

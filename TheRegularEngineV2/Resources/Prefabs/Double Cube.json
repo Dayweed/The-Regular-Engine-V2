@@ -1,0 +1,128 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "10580679118866751667",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10580679118866751667",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "833717330641946898",
+         "m_Index": 106,
+         "m_Name": "Double Cube",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            908.160400390625,
+            97.0,
+            -168.0301971435547
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            4.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

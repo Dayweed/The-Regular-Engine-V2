@@ -27,6 +27,7 @@ namespace TRE
 		void SetPitch(const float pitch);
 		void SetYaw(const float yaw);
 		void SetRoll(const float roll);
+		void SetViewportSize(const float width, const float height);
 
 		const glm::mat4& GetViewMatrix() const { return m_BaseCamera.m_ViewMatrix; }
 		const glm::mat4 GetInverseViewMatrix() const { return glm::inverse(m_BaseCamera.m_ViewMatrix); }
@@ -41,8 +42,8 @@ namespace TRE
 		void SetDirection(const glm::vec3& position);
 		void AssignToMainCamera();
 
-		void Serialize();
-		void Deserialize();
+		void Serialize(std::ofstream& file);
+		void Deserialize(std::ifstream& file);
 	private:
 		void SetPosition(const glm::vec3& position);
 	private:

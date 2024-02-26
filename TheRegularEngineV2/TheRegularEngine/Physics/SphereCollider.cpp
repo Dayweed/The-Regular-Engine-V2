@@ -1,28 +1,13 @@
 #include "pch.h"
+#include "ECS/Components/SphereCollider.h"
 #include "PhysicsSystem.h"
-#include "TREIncludes.h"
+#include "ECS/Components/Transform.h"
 
 using namespace physx;
 // to save my dwindling sanity
 
 namespace TRE
 {
-	void to_json(nlohmann::json& j, const SphereCollider& t)
-	{
-		j = nlohmann::json{
-			WriteVec3MemberToJSON(m_Offset),
-			WriteMemberToJSON(m_Radius),
-			WriteMemberToJSON(m_IsTrigger),
-		};
-	}
-
-	void from_json(const nlohmann::json& j, SphereCollider& t)
-	{
-		ReadVec3MemberFromJSON(m_Offset);
-		ReadMemberFromJSON(m_IsTrigger);
-		ReadMemberFromJSON(m_Radius);
-	}
-
 	bool PhysicsSystem::ConstructSphereCollider(const Entity& entity, const float radius, const glm::vec3& offset) const
 	{
 		PhysicsComponentConstructorAssertion(SphereCollider);
@@ -42,8 +27,21 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+
 #ifdef _DEBUG
-			tempSharedData.m_RigidDynamic->setName("SphereCollider");
+			{
+				char* string = nullptr;
+				if (entity->GetName() == "Holey")
+					string = (char*)"Holey";
+				else if (entity->GetName() == "Moley")
+					string = (char*)"Moley";
+				else if (entity->GetName() == "Slippery Body")
+					string = (char*)"Slippery Body";
+				else
+					string = (char*)"SphereCollider";
+
+				tempSharedData.m_RigidDynamic->setName(string);
+			}
 #endif
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
@@ -52,30 +50,42 @@ namespace TRE
 			m_Actors[entity->GetGUID()] = tempSharedData;
 		}
 
-		SharedData& sharedData = m_Actors[entity->GetGUID()];
+		auto& [rigidDynamic, attachedComponents, GUID, _unused] = m_Actors[entity->GetGUID()];
 		SphereCollider& sphereCollider = entity->GetComponent<SphereCollider>();
 
+		// determine physics material being used
+		PxMaterial* shapeMaterial = m_DefaultMaterial;
+		if (sphereCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Default)
+			shapeMaterial = m_DefaultMaterial;
+		else if (sphereCollider.m_PhysicsMaterial.m_MaterialID == PhysicsMaterial::Frictionless)
+			shapeMaterial = m_FrictionlessMaterial;
+
 		if (sphereCollider.m_IsTrigger)
-			PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eTRIGGER_SHAPE);
 		else
-			PxRigidActorExt::createExclusiveShape(*sharedData.m_RigidDynamic, PxSphereGeometry(radius), *m_DefaultMaterial, PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+			PxRigidActorExt::createExclusiveShape(*rigidDynamic, PxSphereGeometry(radius), *shapeMaterial,
+				PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE);
+
+		PxSetGroup(*rigidDynamic, static_cast<PxU16>(sphereCollider.m_CollisionLayer.m_LayerID));
 
 		// if no rigidbody, turn the gravity off so that these colliders won't 'fall'
-		if (!(sharedData.m_AttachedComponents & PhysicsComponentTypes::Rigidbody))
+		if (!(attachedComponents & PhysicsComponentTypes::Rigidbody))
 		{
-			sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+			rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 			// so that colliders without rigidbodies will stay put when hit
-			sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+			rigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 		}
 		else
 		{
 			// if there is a rigidbody, we gotta recalculate stuff because we just added a shape (?)
 			// WAIT YES THAT'S ACTUALLY IT YATTA!!!
-			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
+			PxRigidBodyExt::updateMassAndInertia(*rigidDynamic, 1.0f);
+			rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 		}
 
-		sharedData.m_AttachedComponents |= PhysicsComponentTypes::SphereCollider;
+		attachedComponents |= PhysicsComponentTypes::SphereCollider;
 		// assert(entity->GetGUID() == sharedData.m_GUID);
 
 		// TODO: assign more data here
@@ -94,14 +104,16 @@ namespace TRE
 		PxRigidDynamic*& rigidDynamic = m_Actors[entity->GetGUID()].m_RigidDynamic;
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+		nbShapes = rigidDynamic->getShapes(shapes, nbShapes);
 
 		for (unsigned i = 0; i < nbShapes; ++i)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+			if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eSPHERE)
+				continue;
 
-			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius))); break;
+			shapes[i]->setGeometry(PxSphereGeometry(fabs(newRadius)));
+			break;
 		}
 
 		entity->GetComponent<SphereCollider>().m_Radius = fabs(newRadius);
@@ -117,7 +129,14 @@ namespace TRE
 
 		UpdateActorPose(entity, sphereCollider.m_Offset);
 
-		SetCapsuleColliderTrigger(entity, sphereCollider.m_IsTrigger);
+		SetSphereColliderTrigger(entity, sphereCollider.m_IsTrigger);
+
+		if (sphereCollider.m_IsDirty)
+		{
+			ChangeCollisionLayer(entity);
+			ChangeIsActive(entity);
+			ChangeMaterial(entity);
+		}
 	}
 
 	void PhysicsSystem::DestructSphereCollider(const Entity& entity) const
@@ -136,20 +155,22 @@ namespace TRE
 		else // there's still more attached physics components
 		{
 			unsigned nbShapes = sharedData.m_RigidDynamic->getNbShapes();
-			const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes.get(), nbShapes);
+			PxShape* shapes[PhysicsComponentTypes::TOTAL - 1] = { nullptr };
+			nbShapes = sharedData.m_RigidDynamic->getShapes(shapes, nbShapes);
 
 			for (unsigned i = 0; i < nbShapes; ++i)
 			{
-				if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+				if (!shapes[i] || shapes[i]->getGeometryType() != PxGeometryType::eSPHERE)
+					continue;
 
 				// there should only be ONE of each physics component, so it's safe to stop looping here
-				sharedData.m_RigidDynamic->detachShape(*shapes[i]); break;
+				sharedData.m_RigidDynamic->detachShape(*shapes[i]);
+				break;
 			}
 
 			PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0);
 		}
-		entity->RemoveComponent<SphereCollider>();
+		//entity->RemoveComponent<SphereCollider>();
 	}
 
 	void PhysicsSystem::SetSphereColliderTrigger(const Entity& entity, const bool isTrigger) const
@@ -159,25 +180,25 @@ namespace TRE
 
 		sphereCollider.m_IsTrigger = isTrigger;
 
-		unsigned nbShapes = rigidDynamic->getNbShapes();
-		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
-		nbShapes = rigidDynamic->getShapes(shapes.get(), nbShapes);
+		constexpr unsigned maxNbShapes = 4; // sphere, box, capsule, cylinder
+		PxShape* shapes[maxNbShapes] = { nullptr };
+		rigidDynamic->getShapes(shapes, maxNbShapes);
 
 		// obtain the index of the box shape
-		unsigned i = 0;
-		for (; i < nbShapes; ++i)
+		for (auto& shape : shapes)
 		{
-			if (shapes[i]->getGeometryType() != PxGeometryType::eSPHERE) continue;
+			if (!shape || shape->getGeometryType() != PxGeometryType::eSPHERE)
+				continue;
 
 			if (sphereCollider.m_IsTrigger)
 			{
-				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
 			}
 			else
 			{
-				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
-				shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 			}
 			break;
 		}

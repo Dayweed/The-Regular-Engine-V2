@@ -15,9 +15,11 @@
 #include "Scripting/ScriptEngine.h"
 namespace TRE
 {
+	static std::chrono::high_resolution_clock::time_point startTime{};
 	ViewportPanel::ViewportPanel(const std::shared_ptr<SelectionManager>& selection_Manager)
 	{
 		m_SelectionManager = selection_Manager;
+		startTime = std::chrono::high_resolution_clock::now();
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -26,7 +28,7 @@ namespace TRE
 	}
 
 	void ViewportPanel::OnMouseMove(const MouseMoveEvent& event)
-	{
+	{	
 		m_MousePos.x = static_cast<float>(event._xpos);
 		m_MousePos.y = static_cast<float>(event._ypos);
 
@@ -47,40 +49,6 @@ namespace TRE
 		if (event._state == (int)KeyState::keyPressed)
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
-			if (m_IsViewportFocused && (event._key == (int)KeyButton::mouseButtonLeft) && m_GizmoOperation == -1)
-			{
-				//Object picking
-				//Offset mouse position to the middle of the viewport as if in game
-				EditorCamera& editorCamera = EditorCamera::Instance();
-
-				UpdateClickRay();
-
-				const Collision::Ray3D cameraRay = Collision::Ray3D(editorCamera.GetPosition(), m_ClickRay);
-
-				auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
-				auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
-				std::map<float, Entity> entitiesHit;
-				for (auto& mr : ent_mrs)
-				{
-					const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
-					float t = 0.f;
-					if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
-					{
-						entitiesHit[t] = mr;
-					}
-				}
-
-				if (entitiesHit.size() > 0)
-				{
-					//Single click for now
-					m_SelectionManager->SelectEntity(entitiesHit.begin()->second);
-				}
-				else
-				{
-					//Clear
-					m_SelectionManager->ClearSelectedEntity();
-				}
-			}
 		}
 		else if (event._state == (int)KeyState::keyHeld)
 		{
@@ -92,7 +60,7 @@ namespace TRE
 		if (m_IsViewportHovered == false)
 			return;
 
-		//Gizmo
+#pragma region Gizmo
 		if (event._key == (int)KeyButton::Q)
 		{
 			m_GizmoOperation = -1;
@@ -117,16 +85,57 @@ namespace TRE
 		}
 		else
 			m_IsGridAndSnap = false;
+#pragma endregion
 
-		//Look at
+		//Editor camera Look at
+#pragma region EditorCamera
+		EditorCamera& editorCamera = EditorCamera::Instance();
 		if (event._key == (int)KeyButton::F)
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
-				//if(SelectedEntity->HasComponent<MeshRenderer>())
-					EditorCamera::Instance().SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
+				editorCamera.SetDirection(SelectedEntity->GetComponent<Transform>().m_Position);
 			}
 		}
+
+		if (m_IsViewportFocused)
+		{
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+			{
+				const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
+				const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime * editorCamera.m_BaseCamera.m_FocalLength / 10.f * PanSensitivity(m_ImageSize.x, m_ImageSize.y).x;
+
+				if (event._key == (int)KeyButton::W)
+				{
+					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
+
+					if (editorCamera.m_BaseCamera.m_FocalLength < 1.f)
+					{
+						editorCamera.SetFocalDistance(1.f);
+						editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetViewDirection());
+					}
+				}
+				if (event._key == (int)KeyButton::S)
+				{
+					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
+
+					if (editorCamera.m_BaseCamera.m_FocalLength < 1.f)
+					{
+						editorCamera.SetFocalDistance(1.f);
+						editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetViewDirection());
+					}
+				}
+				if (event._key == (int)KeyButton::A)
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
+				if (event._key == (int)KeyButton::D)
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
+			}
+		}
+#pragma endregion
 	}
 
 	void ViewportPanel::OnMouseScroll(const MouseScrollEvent& event)
@@ -136,7 +145,7 @@ namespace TRE
 
 		EditorCamera& editorCamera = EditorCamera::Instance();
 		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
-		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * Engine::GetInstance().GetWindow()->GetDeltaTime();
+		const float zoomSpeed = static_cast<float>(event._yoffset) * m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
 
 		editorCamera.SetFocalDistance(baseCamera.m_FocalLength - zoomSpeed);
 
@@ -159,6 +168,18 @@ namespace TRE
 		m_IsGizmoLocal = event.m_IsLocal;
 	}
 
+	void ViewportPanel::OnGizmoOperation(const GizmoOperationEvent& event)
+	{
+		m_GizmoOperation = event.m_Operation;
+	}
+
+	void ViewportPanel::OnEditorCamera(const EditorCameraEvent& event)
+	{
+		m_ZoomSensitivity = event.m_ZoomSensitivity;
+		m_PanSpeed = event.m_PanSpeed;
+		m_RotationSensitivity = event.m_RotationSensitivity;
+	}
+
 	void ViewportPanel::Init()
 	{
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnMouseMove);
@@ -167,6 +188,8 @@ namespace TRE
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnKeyboardClick);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGridAndSnap);
 		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoLocal);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnGizmoOperation);
+		EventHandler::getEventHandlerInstance().subscribe(this, &ViewportPanel::OnEditorCamera);
 	}
 
 	void ViewportPanel::Update()
@@ -179,9 +202,17 @@ namespace TRE
 		m_ImageSize = m_ViewportSize = ImGui::GetContentRegionAvail();
 		m_WindowPos = ImGui::GetWindowPos();
 		//Window resize -- force to follow 16:9 aspect ratio
+		EditorCamera::Instance().SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 		UpdateViewportSize();
+
 		MouseActions();
 		ImGui::Image(Engine::GetInstance().GetVulkanImgui()->GetEditorSceneDescriptor(), m_ImageSize, ImVec2(0,0), ImVec2(1, 1));
+
+		if (ImGui::IsWindowHovered())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				ImGui::SetWindowFocus();
+		}
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -203,15 +234,16 @@ namespace TRE
 
 				const EditorCamera& camera = EditorCamera::Instance();
 				UpdateClickRay();
-				transform.m_Position = camera.GetPosition() + m_ClickRay / 5.f;
+				transform.m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
 				transform.m_Scale = glm::vec3(1.f, 1.f, 1.f);
 				transform.m_Rotation = glm::vec3(0, 0.f, 0);
 				transform.m_IsDirty = true;
+				transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ALL;
 				spawn->AddComponent<MeshRenderer>();
 				
 				//Check if asset is already compiled
 				//Compiled before
-				if (AssetManager::Instance().Contains(assetName))
+				if (AssetManager::Instance().Compiled(assetName))
 				{
 					//Load into memory
 					if (AssetManager::Instance().GetAsset<RenderObject>(assetName) == nullptr)
@@ -258,8 +290,15 @@ namespace TRE
 				}
 				else
 				{
+					const EditorCamera& camera = EditorCamera::Instance();
+					UpdateClickRay();
 					Entity prefabInstance{ prefabsystem->CreatePrefabEntityInstance(prefabGUID) };
-					EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->SelectEntity(prefabInstance);
+					prefabInstance->GetComponent<Transform>().m_Position = camera.GetPosition() + glm::normalize(m_ClickRay) * 40.f;
+					prefabInstance->GetComponent<Transform>().m_IsDirty = true;
+					prefabInstance->GetComponent<Transform>().m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION;
+					//prefabInstance->GetComponent<Transform>().CalculateWorldMatrix();
+					ECSSystemManager::Instance().GetSystem<ParentingSystem>()->UpdateChildTransform(prefabInstance, true);
+					m_SelectionManager->SelectEntity(prefabInstance);
 				}
 			}
 
@@ -267,6 +306,67 @@ namespace TRE
 		}
 
 		UpdateGizmo();
+
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+		{
+			++m_ClickCount;
+
+			auto currentTime = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime);
+
+			if (duration.count() >= 500)
+			{
+				if (m_IsViewportFocused && m_GizmoOperation == -1)
+				{
+					//Object picking
+					//Offset mouse position to the middle of the viewport as if in game
+					EditorCamera& editorCamera = EditorCamera::Instance();
+
+					UpdateClickRay();
+
+					const Collision::Ray3D cameraRay = Collision::Ray3D(editorCamera.GetPosition(), m_ClickRay);
+
+					auto ent_mrs = ECSManager::Instance().GetEntities<MeshRenderer>();
+					auto meshRendererSystem = ECSSystemManager::Instance().GetSystem<MeshRendererSystem>();
+					std::map<float, Entity> entitiesHit;
+					for (auto& mr : ent_mrs)
+					{
+						const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
+						float t = 0.f;
+						if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
+						{
+							entitiesHit[t] = mr;
+						}
+					}
+
+					if (entitiesHit.size() > 0)
+					{
+						//int offset = m_ClickCount % entitiesHit.size();
+						Entity selectedEntity = (--entitiesHit.end())->second;
+						std::uint32_t counter = 1;
+						for (auto it = entitiesHit.rbegin(); it != entitiesHit.rend(); ++it)
+						{
+							if (m_ClickCount < counter)
+							{
+								selectedEntity = it->second;
+								break;
+							}
+							++counter;
+							--m_ClickCount;
+						}
+						m_SelectionManager->SelectEntity(selectedEntity);
+					}
+					else
+					{
+						//Clear
+						m_SelectionManager->ClearSelectedEntity();
+					}
+				}
+
+				m_ClickCount = 0;
+				startTime = std::chrono::high_resolution_clock::now();
+			}
+		}
 
 		ImGui::End();
 	}
@@ -289,19 +389,6 @@ namespace TRE
 
 	void ViewportPanel::UpdateViewportSize()
 	{
-		const WindowConfig& windowConfig = Engine::GetInstance().GetWindow()->GetWindowConfig();
-		const float aspectRatio = static_cast<float>(windowConfig.width) / windowConfig.height;
-		if ((m_ViewportSize.x / m_ViewportSize.y) < aspectRatio)
-		{
-			m_ImageSize.x = m_ViewportSize.x;
-			m_ImageSize.y = m_ViewportSize.x / aspectRatio;
-		}
-		else
-		{
-			m_ImageSize.y = m_ViewportSize.y;
-			m_ImageSize.x = m_ViewportSize.y * aspectRatio;
-
-		}
 		//Center the image
 		m_ImageOffset = m_ViewportSize - m_ImageSize;
 		m_ImageOffset.x *= 0.5f;
@@ -344,7 +431,7 @@ namespace TRE
 	void ViewportPanel::UpdateGizmo()
 	{
 		Entity SelectedEntity = m_SelectionManager->GetSelectedEntity();
-		if (SelectedEntity && m_GizmoOperation != -1)
+		if (SelectedEntity && ECSManager::Instance().IsValidEntity(SelectedEntity) && m_GizmoOperation != -1)
 		{
 			ImGuizmo::SetOrthographic(true);
 			ImGuizmo::SetDrawlist();
@@ -375,11 +462,13 @@ namespace TRE
 				break;
 			}
 
+			float snapArray[3] = { snapValue, snapValue, snapValue };
+
 			ImGuizmo::MODE mode = ImGuizmo::WORLD;
 			if(m_IsGizmoLocal)
 				mode = ImGuizmo::LOCAL;
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? &snapValue : nullptr);
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? snapArray : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -394,6 +483,7 @@ namespace TRE
 				{
 				case ImGuizmo::OPERATION::SCALE:
 					transform.m_Scale = Scale;
+					transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_SCALE;
 					if (needUpdatingToPrefab)
 					{
 						// See if can emplace back
@@ -403,13 +493,11 @@ namespace TRE
 						{
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
 						}
-						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-						// If gizmo doesn't update prefab, check Transform.h
-						prefab.m_Overrides[compName].emplace("TRE::Transform/Scale");
 					}
 					break;
 				case ImGuizmo::OPERATION::ROTATE:
 					transform.m_Rotation = Rotation;
+					transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ROTATION;
 					if (needUpdatingToPrefab)
 					{
 						// See if can emplace back
@@ -419,13 +507,11 @@ namespace TRE
 						{
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
 						}
-						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-						// If gizmo doesn't update prefab, check Transform.h
-						prefab.m_Overrides[compName].emplace("TRE::Transform/Rotate");
 					}
 					break;
 				case ImGuizmo::OPERATION::TRANSLATE:
 					transform.m_Position = Translate;
+					transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION;
 					if (needUpdatingToPrefab)
 					{
 						// See if can emplace back
@@ -435,9 +521,6 @@ namespace TRE
 						{
 							prefab.m_Overrides.emplace(std::piecewise_construct, std::forward_as_tuple(compName), std::forward_as_tuple());
 						}
-						// This has to be hardcoded cos protperty have a specific way of reading variable name data :/
-						// If gizmo doesn't update prefab, check Transform.h
-						prefab.m_Overrides[compName].emplace("TRE::Transform/Position");
 					}
 					break;
 				}
@@ -448,8 +531,6 @@ namespace TRE
 
 	void ViewportPanel::MouseActions()
 	{
-		ImGui::GetIO().DeltaTime = 1 / Engine::GetInstance().GetWindow()->GetDeltaTime();
-
 		if (m_IsViewportHovered == false)
 			return;
 
@@ -458,10 +539,12 @@ namespace TRE
 		{
 			static glm::vec2 panMouseStartPos{};
 			static glm::vec2 panMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle, true))
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Middle))
 			{
 				panMouseEndPos = m_MousePos;
 				glm::vec2 positionOffset = panMouseEndPos - panMouseStartPos;
+				panMouseStartPos = panMouseEndPos;
+
 				if (glm::length(positionOffset) < 0.1f)
 					return;
 				positionOffset = glm::normalize(positionOffset);
@@ -469,8 +552,8 @@ namespace TRE
 				const auto panSensitivity = PanSensitivity(m_ImageSize.x, m_ImageSize.y);
 				positionOffset.x *= panSensitivity.x;
 				positionOffset.y *= panSensitivity.y;
-				positionOffset *= m_PanSpeed * 10.f/*camera.m_FocalLength / 100.f*/;
-				positionOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+				positionOffset *= m_PanSpeed * editorCamera.m_BaseCamera.m_FocalLength / 10.f;
+				positionOffset *= ImGui::GetIO().DeltaTime;
 
 				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetRightVec() * positionOffset.x);
 				editorCamera.SetFocalPoint(baseCamera.m_FocalPoint + baseCamera.GetUpVec() * positionOffset.y);
@@ -484,16 +567,19 @@ namespace TRE
 		{
 			static glm::vec2 rotMouseStartPos{};
 			static glm::vec2 rotMouseEndPos{};
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right, true))
+
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
 			{
 				rotMouseEndPos = m_MousePos;
 				glm::vec2 rotationOffset = rotMouseEndPos - rotMouseStartPos;
+				rotMouseStartPos = rotMouseEndPos;
+
 				if (glm::length(rotationOffset) < 0.1f)
 					return;
 				rotationOffset = glm::normalize(rotationOffset);
 				rotationOffset *= -1;
 				rotationOffset *= m_RotationSensitivity;
-				rotationOffset *= Engine::GetInstance().GetWindow()->GetDeltaTime();
+				rotationOffset *= ImGui::GetIO().DeltaTime;
 
 				const float yawSign = baseCamera.GetUpVec().y < 0 ? -1.f : 1.f;
 				editorCamera.SetYaw(baseCamera.m_Yaw + yawSign * rotationOffset.x);

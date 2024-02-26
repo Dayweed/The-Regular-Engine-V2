@@ -6,9 +6,16 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "GLFW/glfw3.h"
 
-#define DEBUG 1
 namespace TRE
 {
+	std::unordered_map<int, int> InputHandler::m_keyMap;
+	//std::unordered_map<int, int> InputHandler::m_keyTriggerMap;
+	std::unordered_map<int, bool> InputHandler::m_keyPreviousPress;
+	std::unordered_map<int, bool> InputHandler::m_keyPreviousRelease;
+	//std::unordered_map<int, bool> InputHandler::m_keyPress;
+	//std::unordered_map<int, bool> InputHandler::m_keyRelease;
+
+
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
 	{
 		(void)win_ptr;
@@ -24,8 +31,10 @@ namespace TRE
 		}
 		else if (glfwGetKey(win_ptr, key) == GLFW_RELEASE)
 		{
-			//event.Publish(InputEvent {key, action});
+			event.Publish(InputEvent {key, action});
 		}
+		m_keyMap[key] = action;
+		//std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
 	}
 
 	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -41,7 +50,7 @@ namespace TRE
 		else if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
 		{
 			//TRE_CORE_INFO("Mouse Released:x {0}", key);
-			//event.Publish(InputEvent {button, action});
+			//event.Publish(InputEvent {button, action});			
 		}
 	}
 
@@ -66,7 +75,7 @@ namespace TRE
 		event.Publish(MouseFocusEvent {entered});
 	}
 
-	void TRE::InputHandler::CheckMouseEvent(GLFWwindow* win_ptr, int button, int action)
+	void InputHandler::CheckMouseEvent(GLFWwindow* win_ptr, int button, int action)
 	{
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
@@ -74,5 +83,40 @@ namespace TRE
 			//TRE_CORE_INFO("Mouse Button: {0}", button);
 			event.Publish(MouseHoldEvent {button, action});
 		}
+	}
+
+	bool InputHandler::GetKeyHold(int key)
+	{
+		return m_keyMap[key];
+	}
+
+	bool InputHandler::GetKeyPress(int key)
+	{
+		int keyState = glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key);
+		if (keyState == GLFW_RELEASE)
+		{
+			m_keyPreviousPress[key] = false;
+		}
+		else if (keyState == GLFW_PRESS && m_keyPreviousPress[key] == false)
+		{
+			m_keyPreviousPress[key] = true;
+			return true;
+		}
+		return false;
+	}
+
+	bool InputHandler::GetKeyRelease(int key)
+	{
+		int keyState = glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key);
+		if (keyState == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
+		{
+			m_keyPreviousRelease[key] = false;
+			return true;
+		}
+		else if (keyState == GLFW_PRESS)
+		{
+			m_keyPreviousRelease[key] = true;
+		}
+		return false;
 	}
 }

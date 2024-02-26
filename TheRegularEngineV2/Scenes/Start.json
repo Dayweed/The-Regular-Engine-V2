@@ -1,0 +1,1255 @@
+[
+   [
+      205,
+      4293918875,
+      9437337,
+      8388696,
+      10485812,
+      7340150,
+      3145729,
+      3145732,
+      3145768,
+      3145733,
+      3145794,
+      3145803,
+      3145737,
+      3145730,
+      3145745,
+      4194452,
+      3145789,
+      3145742,
+      3145837,
+      3145739,
+      3145769,
+      3145746,
+      3145759,
+      3145798,
+      3145858,
+      3145903,
+      3145929,
+      3145757,
+      3145826,
+      3145731,
+      3145812,
+      3145841,
+      3145782,
+      3145850,
+      3145758,
+      3145776,
+      3145740,
+      3145847,
+      3145774,
+      3145804,
+      3145852,
+      3145848,
+      3145761,
+      3145915,
+      3145734,
+      3145787,
+      3145797,
+      3145770,
+      3145879,
+      3145764,
+      3145819,
+      3145854,
+      3145821,
+      3145750,
+      3145795,
+      3145728,
+      3145790,
+      3145765,
+      3145907,
+      3145753,
+      3145783,
+      3145875,
+      3145868,
+      3145865,
+      3145754,
+      3145920,
+      3145919,
+      3145840,
+      3145793,
+      3145738,
+      3145736,
+      3145796,
+      3145748,
+      3145772,
+      3145809,
+      3145811,
+      3145800,
+      3145735,
+      3145777,
+      3145802,
+      3145874,
+      3145806,
+      3145807,
+      3145766,
+      3145799,
+      3145897,
+      3145801,
+      3145845,
+      3145813,
+      3145814,
+      3145828,
+      3145779,
+      3145851,
+      3145775,
+      3145815,
+      3145820,
+      3145778,
+      3145781,
+      3145834,
+      3145824,
+      3145749,
+      3145810,
+      3145862,
+      3145931,
+      3145829,
+      3145830,
+      3145913,
+      3145831,
+      3145823,
+      3145833,
+      3145835,
+      3145836,
+      3145893,
+      3145744,
+      3145886,
+      3145784,
+      3145839,
+      3145842,
+      3145843,
+      3145756,
+      3145910,
+      3145752,
+      3145844,
+      3145767,
+      3145747,
+      3145849,
+      3145827,
+      3145818,
+      3145773,
+      3145838,
+      3145855,
+      3145856,
+      3145762,
+      3145857,
+      3145859,
+      3145860,
+      3145751,
+      9437323,
+      3145808,
+      3145817,
+      3145760,
+      8388752,
+      3145785,
+      5243015,
+      5243021,
+      8388751,
+      4194453,
+      4194303,
+      3145805,
+      6291594,
+      11534469,
+      9437334,
+      11534349,
+      3145763,
+      1048728,
+      3145822,
+      1048730,
+      5243022,
+      1048732,
+      1048733,
+      3145792,
+      1048735,
+      1048736,
+      1048737,
+      1048738,
+      1048739,
+      1048740,
+      3145853,
+      1048742,
+      7340199,
+      6291624,
+      3145864,
+      3145898,
+      3145899,
+      4194476,
+      7340205,
+      2097326,
+      3145755,
+      2097328,
+      2097329,
+      2097330,
+      3145786,
+      2097332,
+      3145925,
+      2097335,
+      2097336,
+      2097256,
+      2097338,
+      2097340,
+      2097333,
+      2097354,
+      8388802,
+      7340221,
+      2097212,
+      7340225,
+      11534481,
+      9437379,
+      14680127,
+      3145918,
+      2097167,
+      3145924,
+      3145926,
+      3145927,
+      2097195,
+      3145928,
+      2097249
+   ],
+   [
+      0
+   ],
+   [
+      23,
+      4194476,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      7340205,
+      {
+         "m_Children": [],
+         "m_Parent": "3578688808934460631"
+      },
+      3145899,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      3145898,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      7340199,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      6291624,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097326,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097328,
+      {
+         "m_Children": [],
+         "m_Parent": "3578688808934460631"
+      },
+      2097329,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      2097330,
+      {
+         "m_Children": [],
+         "m_Parent": "15770242785522517336"
+      },
+      2097332,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048742,
+      {
+         "m_Children": [],
+         "m_Parent": "15769480596597578088"
+      },
+      1048740,
+      {
+         "m_Children": [
+            "10323952252653404571",
+            "6674961380956392586",
+            "18084217399207795244"
+         ],
+         "m_Parent": ""
+      },
+      1048739,
+      {
+         "m_Children": [],
+         "m_Parent": "18084217399207795244"
+      },
+      1048738,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048737,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048736,
+      {
+         "m_Children": [],
+         "m_Parent": "15770242785522517336"
+      },
+      1048735,
+      {
+         "m_Children": [
+            "9353012170216082524",
+            "15360182153215818731",
+            "15769480596597578088"
+         ],
+         "m_Parent": ""
+      },
+      1048733,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048732,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048730,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048728,
+      {
+         "m_Children": [
+            "1260238370228655103"
+         ],
+         "m_Parent": "15770242785522517336"
+      },
+      8388751,
+      {
+         "m_Children": [
+            "16945736073498322049"
+         ],
+         "m_Parent": "3578688808934460631"
+      }
+   ],
+   [
+      23,
+      4194476,
+      {
+         "m_Active": true,
+         "m_GUID": "11324172945237626646",
+         "m_Index": 6,
+         "m_Name": "BGM",
+         "m_Tag": ""
+      },
+      7340205,
+      {
+         "m_Active": true,
+         "m_GUID": "9353012170216082524",
+         "m_Index": 18,
+         "m_Name": "Pole",
+         "m_Tag": ""
+      },
+      3145899,
+      {
+         "m_Active": true,
+         "m_GUID": "6154957411926925810",
+         "m_Index": 7,
+         "m_Name": "SFX_Start",
+         "m_Tag": ""
+      },
+      3145898,
+      {
+         "m_Active": true,
+         "m_GUID": "11626224717311790577",
+         "m_Index": 11,
+         "m_Name": "Cactus 3",
+         "m_Tag": ""
+      },
+      7340199,
+      {
+         "m_Active": true,
+         "m_GUID": "12232295300205085691",
+         "m_Index": 2,
+         "m_Name": "Start_Text",
+         "m_Tag": ""
+      },
+      6291624,
+      {
+         "m_Active": true,
+         "m_GUID": "9061182760233303543",
+         "m_Index": 9,
+         "m_Name": "Cactus 2",
+         "m_Tag": ""
+      },
+      2097326,
+      {
+         "m_Active": true,
+         "m_GUID": "13376208322872696703",
+         "m_Index": 4,
+         "m_Name": "SFX_Start/Enter",
+         "m_Tag": ""
+      },
+      2097328,
+      {
+         "m_Active": true,
+         "m_GUID": "15360182153215818731",
+         "m_Index": 19,
+         "m_Name": "Pole",
+         "m_Tag": ""
+      },
+      2097329,
+      {
+         "m_Active": true,
+         "m_GUID": "11326403255607558828",
+         "m_Index": 1,
+         "m_Name": "Game_Logo",
+         "m_Tag": ""
+      },
+      2097330,
+      {
+         "m_Active": true,
+         "m_GUID": "10323952252653404571",
+         "m_Index": 13,
+         "m_Name": "Pole",
+         "m_Tag": ""
+      },
+      2097332,
+      {
+         "m_Active": true,
+         "m_GUID": "719364352508923233",
+         "m_Index": 5,
+         "m_Name": "SceneTransition",
+         "m_Tag": ""
+      },
+      1048742,
+      {
+         "m_Active": true,
+         "m_GUID": "16945736073498322049",
+         "m_Index": 21,
+         "m_Name": "Decor_Flag",
+         "m_Tag": ""
+      },
+      1048740,
+      {
+         "m_Active": true,
+         "m_GUID": "15770242785522517336",
+         "m_Index": 12,
+         "m_Name": "FlagPole",
+         "m_Tag": ""
+      },
+      1048739,
+      {
+         "m_Active": true,
+         "m_GUID": "1260238370228655103",
+         "m_Index": 16,
+         "m_Name": "Decor_Flag",
+         "m_Tag": ""
+      },
+      1048738,
+      {
+         "m_Active": true,
+         "m_GUID": "17109015362096310280",
+         "m_Index": 22,
+         "m_Name": "Credit_Text",
+         "m_Tag": ""
+      },
+      1048737,
+      {
+         "m_Active": true,
+         "m_GUID": "9290128648601350937",
+         "m_Index": 3,
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      1048736,
+      {
+         "m_Active": true,
+         "m_GUID": "6674961380956392586",
+         "m_Index": 14,
+         "m_Name": "Pole",
+         "m_Tag": ""
+      },
+      1048735,
+      {
+         "m_Active": true,
+         "m_GUID": "3578688808934460631",
+         "m_Index": 17,
+         "m_Name": "FlagPole",
+         "m_Tag": ""
+      },
+      1048733,
+      {
+         "m_Active": true,
+         "m_GUID": "7489680315908471670",
+         "m_Index": 8,
+         "m_Name": "Cactus",
+         "m_Tag": ""
+      },
+      1048732,
+      {
+         "m_Active": true,
+         "m_GUID": "8413856686854513123",
+         "m_Index": 10,
+         "m_Name": "Terrain",
+         "m_Tag": ""
+      },
+      1048730,
+      {
+         "m_Active": true,
+         "m_GUID": "14177345381978001509",
+         "m_Index": 0,
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      1048728,
+      {
+         "m_Active": true,
+         "m_GUID": "18084217399207795244",
+         "m_Index": 15,
+         "m_Name": "Decor_Flag_Pivot",
+         "m_Tag": ""
+      },
+      8388751,
+      {
+         "m_Active": true,
+         "m_GUID": "15769480596597578088",
+         "m_Index": 20,
+         "m_Name": "Decor_Flag_Pivot_2",
+         "m_Tag": ""
+      }
+   ],
+   [
+      23,
+      4194476,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7340205,
+      {
+         "m_Position": [
+            10.503608703613281,
+            -8.881366729736328,
+            44.565338134765625
+         ],
+         "m_Rotation": [
+            -5.192170143127441,
+            12.1574068069458,
+            -8.379278182983398
+         ],
+         "m_Scale": [
+            0.9999991655349731,
+            0.9999997019767761,
+            0.9999995827674866
+         ]
+      },
+      3145899,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145898,
+      {
+         "m_Position": [
+            -50.0,
+            -20.0,
+            50.0
+         ],
+         "m_Rotation": [
+            0.0,
+            30.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7340199,
+      {
+         "m_Position": [
+            0.0,
+            310.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6291624,
+      {
+         "m_Position": [
+            -47.0,
+            -20.0,
+            80.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097326,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2097328,
+      {
+         "m_Position": [
+            53.344566345214844,
+            -8.881366729736328,
+            42.63555908203125
+         ],
+         "m_Rotation": [
+            -1.347364068031311,
+            5.7588067054748535,
+            8.350443840026855
+         ],
+         "m_Scale": [
+            0.9999995827674866,
+            1.0,
+            0.9999992251396179
+         ]
+      },
+      2097329,
+      {
+         "m_Position": [
+            0.0,
+            -120.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+         ]
+      },
+      2097330,
+      {
+         "m_Position": [
+            -6.655433654785156,
+            -8.881366729736328,
+            42.63555908203125
+         ],
+         "m_Rotation": [
+            -1.347364068031311,
+            5.7588067054748535,
+            8.350443840026855
+         ],
+         "m_Scale": [
+            0.9999995827674866,
+            1.0,
+            0.9999992251396179
+         ]
+      },
+      2097332,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048742,
+      {
+         "m_Position": [
+            30.295989990234375,
+            10.309040069580078,
+            42.438507080078125
+         ],
+         "m_Rotation": [
+            -8.537737812730484e-06,
+            -4.2688674284363515e-07,
+            5.336086132956552e-07
+         ],
+         "m_Scale": [
+            1.0,
+            0.9999997019767761,
+            0.9999998807907104
+         ]
+      },
+      1048740,
+      {
+         "m_Position": [
+            -30.0,
+            1.0,
+            40.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048739,
+      {
+         "m_Position": [
+            -29.704010009765625,
+            10.309040069580078,
+            42.438507080078125
+         ],
+         "m_Rotation": [
+            -8.537737812730484e-06,
+            -4.2688674284363515e-07,
+            5.336086132956552e-07
+         ],
+         "m_Scale": [
+            1.0,
+            0.9999997019767761,
+            0.9999998807907104
+         ]
+      },
+      1048738,
+      {
+         "m_Position": [
+            0.0,
+            480.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048737,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048736,
+      {
+         "m_Position": [
+            -49.49639129638672,
+            -8.881366729736328,
+            44.565338134765625
+         ],
+         "m_Rotation": [
+            -5.192170143127441,
+            12.1574068069458,
+            -8.379278182983398
+         ],
+         "m_Scale": [
+            0.9999991655349731,
+            0.9999997019767761,
+            0.9999995827674866
+         ]
+      },
+      1048735,
+      {
+         "m_Position": [
+            30.0,
+            1.0,
+            40.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048733,
+      {
+         "m_Position": [
+            40.0,
+            -20.0,
+            50.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048732,
+      {
+         "m_Position": [
+            0.0,
+            -30.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048730,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048728,
+      {
+         "m_Position": [
+            -29.700000762939453,
+            13.878774642944336,
+            42.400001525878906
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8388751,
+      {
+         "m_Position": [
+            30.29599952697754,
+            13.878999710083008,
+            42.43899917602539
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      10,
+      7340205,
+      {
+         "ASSET_GEOM_m_RenderObject": "61e4285022d45091",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "fa9c5f7336f520f6",
+         "m_DrawShadow": true,
+         "m_IsVisible": false
+      },
+      3145898,
+      {
+         "ASSET_GEOM_m_RenderObject": "7c688d318f8fe34b",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "1c942bcea75859a4",
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      6291624,
+      {
+         "ASSET_GEOM_m_RenderObject": "2993e6e54411973",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "987dc33dfbf148b9",
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      2097328,
+      {
+         "ASSET_GEOM_m_RenderObject": "61e4285022d45091",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "fa9c5f7336f520f6",
+         "m_DrawShadow": true,
+         "m_IsVisible": false
+      },
+      2097330,
+      {
+         "ASSET_GEOM_m_RenderObject": "61e4285022d45091",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "fa9c5f7336f520f6",
+         "m_DrawShadow": true,
+         "m_IsVisible": false
+      },
+      1048742,
+      {
+         "ASSET_GEOM_m_RenderObject": "f7f5f572f61823d3",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      1048739,
+      {
+         "ASSET_GEOM_m_RenderObject": "f7f5f572f61823d3",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      1048736,
+      {
+         "ASSET_GEOM_m_RenderObject": "61e4285022d45091",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "fa9c5f7336f520f6",
+         "m_DrawShadow": true,
+         "m_IsVisible": false
+      },
+      1048733,
+      {
+         "ASSET_GEOM_m_RenderObject": "c0498798b1bb08d4",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e8549b79a20373f2",
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      1048732,
+      {
+         "ASSET_GEOM_m_RenderObject": "1095c0fd2686f4bc",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "cd5aec3a7dc7605f",
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      1,
+      1048730,
+      {
+         "m_AspectRatio": 1.7777777910232544,
+         "m_Bottom": -1.0,
+         "m_Far": 1000.0,
+         "m_FocalLength": 100.0,
+         "m_FocalPoint": [
+            0.0,
+            0.0,
+            -100.0
+         ],
+         "m_Fov": 60.0,
+         "m_IsMainCamera": true,
+         "m_IsPerspective": true,
+         "m_Left": -1.0,
+         "m_Near": 0.10000000149011612,
+         "m_Right": 1.0,
+         "m_Top": 1.0,
+         "m_ViewportSize": [
+            1600.0,
+            900.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      1048737,
+      {
+         "m_AmbientColor": [
+            0.9681139588356018,
+            0.9729729890823364,
+            0.7212772965431213,
+            0.20000000298023224
+         ],
+         "m_Direction": [
+            0.7071067690849304,
+            -0.4999999701976776,
+            0.4999999701976776
+         ],
+         "m_DirectionalColor": [
+            0.7335907220840454,
+            1.0,
+            0.9598842859268188,
+            50.0
+         ],
+         "m_ShadowIntensity": 0.8500000238418579
+      }
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      4194476,
+      {
+         "m_FileName": "BGM_Holie Molie_Menu_Latin Salsa_LOOP.wav",
+         "m_Loop": true,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": true,
+         "m_PlayOnStart": true,
+         "m_Priority": 3,
+         "m_Spatialize": false,
+         "m_Volume": 0.4000000059604645,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      3145899,
+      {
+         "m_FileName": "sfx_StartGame.wav",
+         "m_Loop": false,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": false,
+         "m_PlayOnStart": false,
+         "m_Priority": 1,
+         "m_Spatialize": false,
+         "m_Volume": 0.800000011920929,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      2097326,
+      {
+         "m_FileName": "sfx_StartEnter.wav",
+         "m_Loop": false,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": false,
+         "m_PlayOnStart": false,
+         "m_Priority": 2,
+         "m_Spatialize": false,
+         "m_Volume": 0.800000011920929,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
+   ],
+   [
+      4,
+      7340199,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      2097332,
+      {
+         "m_RegisteredScripts": [
+            "TRE.MainMenuSceneTransition"
+         ],
+         "m_StoredClass": "TRE.MainMenuSceneTransition"
+      },
+      1048728,
+      {
+         "m_RegisteredScripts": [
+            "TRE.DecorFlagSwing"
+         ],
+         "m_StoredClass": "TRE.DecorFlagSwing"
+      },
+      8388751,
+      {
+         "m_RegisteredScripts": [
+            "TRE.DecorFlagSwing"
+         ],
+         "m_StoredClass": "TRE.DecorFlagSwing"
+      }
+   ],
+   [
+      3,
+      7340199,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "RenderLayer": 0,
+         "Texture": "e39091bbe8e137c8",
+         "Width": 340,
+         "m_IsVisible": true
+      },
+      2097329,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 405,
+         "RenderLayer": 0,
+         "Texture": "3d8a2183fa1ee1c",
+         "Width": 720,
+         "m_IsVisible": true
+      },
+      1048738,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 30,
+         "RenderLayer": 0,
+         "Texture": "5f1710aa84f7ae42",
+         "Width": 275,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

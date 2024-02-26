@@ -1,0 +1,254 @@
+[
+   [
+      3,
+      0,
+      1,
+      2
+   ],
+   [
+      3,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "6338820077763806458",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11817737584361501891",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "6338820077763806458",
+         "m_Overrides": {},
+         "m_PrefabGUID": "17794021974462321650",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Children": [
+            "3887190081926596950",
+            "15229430419230735048"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "7020063604557606"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "7020063604557606"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "7020063604557606",
+         "m_Index": 149,
+         "m_Name": "Moley",
+         "m_Tag": "Red"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "3887190081926596950",
+         "m_Index": 150,
+         "m_Name": "Power Manager",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "15229430419230735048",
+         "m_Index": 248,
+         "m_Name": "Slippery Outershell",
+         "m_Tag": ""
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Position": [
+            -5.887977600097656,
+            -8.065628051757813,
+            -9.053680419921875
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            13.595775604248047,
+            -1.2131762504577637,
+            -40.84858322143555
+         ],
+         "m_Rotation": [
+            0.0,
+            2.8995694192034127e-13,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            -5.888000011444092,
+            -8.066001892089844,
+            -9.053999900817871
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
+         "ASSET_MAT_m_AnimationMaterialInstance": "b95e6d6bda90700d",
+         "ASSET_MAT_m_MaterialInstance": "b08363e4f6cc86cc",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": true,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": true,
+         "m_IsKinematic": false,
+         "m_Mass": 58.643062591552734,
+         "m_UseGravity": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      0,
+      {
+         "m_CollisionLayer.m_LayerID": 3,
+         "m_HalfHeight": 1.0,
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0,
+         "m_Radius": 2.0
+      },
+      2,
+      {
+         "m_CollisionLayer.m_LayerID": 5,
+         "m_HalfHeight": 0.800000011920929,
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 1,
+         "m_Radius": 2.200000047683716
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.MoleyController"
+         ],
+         "m_StoredClass": "TRE.MoleyController"
+      },
+      1,
+      {
+         "m_RegisteredScripts": [
+            "TRE.PowerUpManager"
+         ],
+         "m_StoredClass": "TRE.PowerUpManager"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

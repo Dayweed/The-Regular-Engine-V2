@@ -16,15 +16,30 @@
 
 extern TRE::Engine* TRE::CreateApp(); //Getting the definition from other projects
 
-int main()
+#ifdef GAME
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	#if defined(DEBUG) | defined(_DEBUG)
-		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	#endif
-
+	(void)hInstance;
+	(void)hPrevInstance;
+	(void)lpCmdLine;
+	(void)nShowCmd;
+#if defined(DEBUG) | defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	TRE::Log::Init();
-
+#endif
 	TRE::Engine* App = TRE::CreateApp();
 	App->Update();
 	delete App;
 }
+#else
+int main()
+{
+#if defined(DEBUG) | defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	TRE::Log::Init();
+#endif
+	TRE::Engine* App = TRE::CreateApp();
+	App->Update();
+	delete App;
+}
+#endif

@@ -1,46 +1,13 @@
 #include "pch.h"
+#include "ECS/Components/Rigidbody.h"
 #include "PhysicsSystem.h"
-#include "TREIncludes.h"
+#include "ECS/Components/Transform.h"
 
 using namespace physx;
 // to save my dwindling sanity
 
 namespace TRE
 {
-	void to_json(nlohmann::json& j, const Rigidbody& t)
-	{
-		j = nlohmann::json{
-			// WriteMemberToJSON(m_IsActive),
-			WriteMemberToJSON(m_Mass),
-			WriteMemberToJSON(m_Drag),
-			WriteMemberToJSON(m_AngularDrag),
-			WriteMemberToJSON(m_UseGravity),
-			WriteMemberToJSON(m_IsKinematic),
-			WriteMemberToJSON(m_FreezePositionX),
-			WriteMemberToJSON(m_FreezePositionY),
-			WriteMemberToJSON(m_FreezePositionZ),
-			WriteMemberToJSON(m_FreezeRotationX),
-			WriteMemberToJSON(m_FreezeRotationY),
-			WriteMemberToJSON(m_FreezeRotationZ),
-		};
-	}
-
-	void from_json(const nlohmann::json& j, Rigidbody& t)
-	{
-		// ReadMemberFromJSON(m_IsActive);
-		ReadMemberFromJSON(m_Mass);
-		ReadMemberFromJSON(m_Drag);
-		ReadMemberFromJSON(m_AngularDrag);
-		ReadMemberFromJSON(m_UseGravity);
-		ReadMemberFromJSON(m_IsKinematic);
-		ReadMemberFromJSON(m_FreezePositionX);
-		ReadMemberFromJSON(m_FreezePositionY);
-		ReadMemberFromJSON(m_FreezePositionZ);
-		ReadMemberFromJSON(m_FreezeRotationX);
-		ReadMemberFromJSON(m_FreezeRotationY);
-		ReadMemberFromJSON(m_FreezeRotationZ);
-	}
-
 	bool PhysicsSystem::ConstructRigidbody(const Entity& entity) const
 	{
 		PhysicsComponentConstructorAssertion(Rigidbody);
@@ -59,8 +26,21 @@ namespace TRE
 
 			tempSharedData.m_RigidDynamic = m_Physics->createRigidDynamic(transform);
 			tempSharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+
 #ifdef _DEBUG
-			tempSharedData.m_RigidDynamic->setName("Rigidbody");
+			{
+				char* string = nullptr;
+				if (entity->GetName() == "Holey")
+					string = (char*)"Holey";
+				else if (entity->GetName() == "Moley")
+					string = (char*)"Moley";
+				else if (entity->GetName() == "Slippery Body")
+					string = (char*)"Slippery Body";
+				else
+					string = (char*)"Rigidbody";
+
+				tempSharedData.m_RigidDynamic->setName(string);
+			}
 #endif
 			m_Scene->addActor(*tempSharedData.m_RigidDynamic);
 
@@ -73,11 +53,12 @@ namespace TRE
 		PxRigidBodyExt::updateMassAndInertia(*sharedData.m_RigidDynamic, 1.0f);
 
 		// activate gravity by default
-		bool useGravity = true; // TODO: disabling gravity
-		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
+		bool useGravity = entity->GetComponent<Rigidbody>().m_UseGravity; // TODO: disabling gravity
+		(void)useGravity;
+		sharedData.m_RigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		// this is necessary to allow the actor to freakin move by physics and forces and such
-		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+		sharedData.m_RigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, entity->GetComponent<Rigidbody>().m_IsKinematic);
 
 		// wake up the sleeping beauty
 		sharedData.m_RigidDynamic->wakeUp();
@@ -107,7 +88,7 @@ namespace TRE
 		case ForceMode::Impulse:        physxForceMode = PxForceMode::eIMPULSE; break;
 		case ForceMode::VelocityChange: physxForceMode = PxForceMode::eVELOCITY_CHANGE; break;
 		case ForceMode::Acceleration:   physxForceMode = PxForceMode::eACCELERATION; break;
-		case ForceMode::Force:
+		case ForceMode::Force:          [[fallthrough]];
 		default:                        physxForceMode = PxForceMode::eFORCE; break;
 		}
 
@@ -184,8 +165,9 @@ namespace TRE
 		rigidbody.m_Mass = rigidDynamic->getMass();
 		// rigidbody.m_Drag = ;
 		// rigidbody.m_AngularDrag = ;
-		rigidbody.m_UseGravity = !rigidDynamic->getActorFlags().isSet(PxActorFlag::eDISABLE_GRAVITY);
-		rigidbody.m_IsKinematic = rigidDynamic->getRigidBodyFlags().isSet(PxRigidBodyFlag::eKINEMATIC);
+		//rigidbody.m_UseGravity = !rigidDynamic->getActorFlags().isSet(PxActorFlag::eDISABLE_GRAVITY);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !rigidbody.m_UseGravity);
+		rigidDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, rigidbody.m_IsKinematic);
 	}
 
 	void PhysicsSystem::DestructRigidbody(const Entity& entity) const
@@ -206,6 +188,6 @@ namespace TRE
 			sharedData.m_RigidDynamic->release();
 			sharedData.m_MarkForRemoval = true;
 		}
-		entity->RemoveComponent<Rigidbody>();
+		//entity->RemoveComponent<Rigidbody>();
 	}
 }

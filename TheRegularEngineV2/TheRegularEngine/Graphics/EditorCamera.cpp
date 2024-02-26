@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "EditorCamera.h"
 #include "Core/SystemManager.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 #include "Core/SceneManager.h"
-#include <iostream>
+#include "ECS/Components/CameraComponent.h"
 
 namespace TRE
 {
@@ -24,7 +24,7 @@ namespace TRE
 
 	void EditorCamera::Shutdown()
 	{
-		Serialize();
+		
 	}
 
 	void EditorCamera::SetFocalPoint(const glm::vec3& focalPoint)
@@ -62,6 +62,12 @@ namespace TRE
 		m_IsDirty = true;
 	}
 
+	void EditorCamera::SetViewportSize(const float width, const float height)
+	{
+		m_BaseCamera.m_AspectRatio = width / height;
+		m_IsDirty = true;
+	}
+
 	void EditorCamera::SetPosition(const glm::vec3& position)
 	{
 		m_Position = position;
@@ -71,7 +77,7 @@ namespace TRE
 	void EditorCamera::SetDirection(const glm::vec3& position)
 	{
 		glm::vec3 direction = glm::normalize(position - m_Position);
-		SetFocalDistance(glm::length(position - m_Position) > 200.f ? glm::length(position - m_Position)/2.f : 100.f);
+		SetFocalDistance(20.f);
 		SetFocalPoint(position);
 		m_IsDirty = true;
 	}
@@ -95,48 +101,22 @@ namespace TRE
 			transform.m_Position = m_Position;
 			transform.m_Rotation = m_Rotation;
 			transform.m_IsDirty = true;
+			transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION | TransformDirtyFlags::TRE_DIRTY_ROTATION;
 		}
 	}
 
-	void EditorCamera::Serialize()
+	void EditorCamera::Serialize(std::ofstream& file)
 	{
-		std::string finalPath = "../EditorData/";
-
-		std::filesystem::directory_entry entry(finalPath);
-		if (!entry.exists())
-		{
-			std::filesystem::create_directory(finalPath);
-		}
-
-		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
-		std::ofstream file(finalPath);
-
-		if (!file.is_open())
-		{
-			std::cout << "Failed to open file" << finalPath << std::endl;
-			return;
-		}
-
 		file << "Position: " << m_Position.x << " " << m_Position.y << " " << m_Position.z << std::endl;
 		file << "Pitch: " << m_BaseCamera.m_Pitch << std::endl;
 		file << "Yaw: " << m_BaseCamera.m_Yaw << std::endl;
 		file << "Roll: " << m_BaseCamera.m_Roll << std::endl;
 		file << "FocalPoint: " << m_BaseCamera.m_FocalPoint.x << " " << m_BaseCamera.m_FocalPoint.y << " " << m_BaseCamera.m_FocalPoint.z << std::endl;
 		file << "FocalLength: " << m_BaseCamera.m_FocalLength << std::endl;
-
-		file.close();
 	}
 
-	void EditorCamera::Deserialize()
+	void EditorCamera::Deserialize(std::ifstream& file)
 	{
-		std::string finalPath = "../EditorData/";
-		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
-		std::ifstream file(finalPath);
-		if (!file.is_open())
-		{
-			return;
-		}
-
 		std::string line;
 		std::getline(file, line);
 		std::istringstream iss(line);
@@ -172,8 +152,6 @@ namespace TRE
 		iss = std::istringstream(line);
 		iss >> focalLength;
 		iss >> m_BaseCamera.m_FocalLength;
-
-		file.close();
 
 		m_IsDirty = true;
 	}

@@ -10,6 +10,7 @@
 #include "Imgui/imgui.h"
 #include "EditorSystem.h"
 #include "Graphics/EditorCamera.h"
+#include "AssetPanel.h"
 
 namespace TRE
 {
@@ -51,6 +52,10 @@ namespace TRE
 				{
 					SaveScene();
 				}
+				if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
+				{
+					SaveSceneAs();
+				}
 
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))
@@ -76,7 +81,6 @@ namespace TRE
 				ImGui::EndMenu();
 			}
 
-
 			if (ImGui::BeginMenu("Windows"))
 			{
 				ImGui::PushItemFlag(ImGuiItemFlags_SelectableDontClosePopup, true);
@@ -86,7 +90,15 @@ namespace TRE
 				ImGui::MenuItem("Scene", nullptr, &m_ShowScenePanel);
 				ImGui::MenuItem("Game", nullptr, &m_ShowGamePanel);
 				ImGui::MenuItem("Console", nullptr, &m_ShowConsolePanel);
-				ImGui::MenuItem("Asset", nullptr, &m_ShowAssetPanel);
+				if (ImGui::MenuItem("Asset", nullptr, &m_ShowAssetPanel))
+				{
+					EventHandler::getEventHandlerInstance().Publish(AssetPanelEvent{ m_ShowAssetPanel });
+				}
+				if (ImGui::MenuItem("Collision Matrix", "Tilde(`)", &m_ShowCollisionMatrixPanel))
+				{
+					// tell the collision matrix panel to toggle visibility
+					EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });
+				}
 				ImGui::PopItemFlag();
 				ImGui::EndMenu();
 			}
@@ -102,19 +114,50 @@ namespace TRE
 					if (ImGui::BeginMenu("Grid and Snap"))
 					{
 						ImGui::MenuItem("Increment Snapping");
-						ImGui::InputFloat("Position", &m_PosIncrement);
-						ImGui::InputFloat("Rotation", &m_RotIncrement);
-						ImGui::InputFloat("Scale", &m_ScaleIncrement);
+						ImGui::Text("Position");
+						ImGui::SameLine();
+						ImGui::InputFloat("##SnapPosition", &m_PosIncrement);
+						ImGui::Text("Rotation");
+						ImGui::SameLine();
+						ImGui::InputFloat("##SnapRotation", &m_RotIncrement);
+						ImGui::Text("Scale");
+						ImGui::SameLine();
+						ImGui::InputFloat("##SnapScale", &m_ScaleIncrement);
 						EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
 						ImGui::EndMenu();
 					}
 
 					ImGui::EndMenu();
 				}
-				
-				if (ImGui::Button("Assign Editor Camera Values"))
+
+				if (ImGui::BeginMenu("Editor Camera"))
 				{
-					EditorCamera::Instance().AssignToMainCamera();
+					if (ImGui::BeginMenu("Sensitivity"))
+					{
+						ImGui::Text("Pan");
+						ImGui::SameLine();
+						ImGui::InputFloat("##EditorPan", &m_PanSpeed);
+						ImGui::Text("Rotation");
+						ImGui::SameLine();
+						ImGui::InputFloat("##EditorRotation", &m_RotationSensitivity);
+						ImGui::Text("Zoom");
+						ImGui::SameLine();
+						ImGui::InputFloat("##EditorZoom", &m_ZoomSensitivity);
+						EventHandler::getEventHandlerInstance().Publish(EditorCameraEvent{ m_PanSpeed, m_ZoomSensitivity, m_RotationSensitivity });
+
+						if (ImGui::Button("Save Editor Camera"))
+						{
+							EditorSystemManager::Instance().GetSystem<EditorSystem>()->Serialize();
+						}
+
+						ImGui::EndMenu();
+					}
+
+					//if (ImGui::Button("Assign Editor Camera Values"))
+					//{
+					//	EditorCamera::Instance().AssignToMainCamera();
+					//}
+					ImGui::EndMenu();
 				}
 
 				if (ImGui::Checkbox("Show All Colliders", &m_ShowAllColliders))
@@ -127,6 +170,9 @@ namespace TRE
 
 					for (Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
 						entity->GetComponent<CapsuleCollider>().m_IsVisible = m_ShowAllColliders;
+
+					for (Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>())
+						entity->GetComponent<CylinderCollider>().m_IsVisible = m_ShowAllColliders;
 
 					ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->SetDrawDebug(m_ShowAllColliders);
 				}
@@ -170,15 +216,10 @@ namespace TRE
 			SaveScene();
 			m_ShortcutSaveScene = false;
 		}
-		if (m_ShortcutCopyEntity)
+		if (m_ShortcutSaveSceneAs)
 		{
-			EntityCopier::Instance().CopyEntities(EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->GetSelectedEntity());
-			m_ShortcutCopyEntity = false;
-		}
-		if (m_ShortcutPasteEntity)
-		{
-			EntityCopier::Instance().PasteEntities();
-			m_ShortcutPasteEntity = false;
+			SaveSceneAs();
+			m_ShortcutSaveSceneAs = false;
 		}
 	}
 
@@ -196,12 +237,14 @@ namespace TRE
 		{
 			SceneManager::Instance().NewScene();
 			EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "New Scene Created" });
+			EventHandler::getEventHandlerInstance().Publish(GizmoOperationEvent{ -1 });
 		}
 	}
 
 	void MenuBarPanel::OpenScene()
 	{
-		EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+		EditorSystem& editorSystem = *EditorSystemManager::Instance().GetSystem<EditorSystem>();
+		editorSystem.GetSelectionManager()->ClearSelectedEntity();
 
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
@@ -211,17 +254,35 @@ namespace TRE
 			const std::string path = FileExplorer::OpenFileExplorer("Scene(*.json)\0*.json\0");
 			if (!path.empty())
 			{
-				ECSSystemManager::Instance().BeforeReset();
-				ECSManager::Instance().DestroyAll();
 				SceneManager::Instance().LoadScene(path);
-				ECSSystemManager::Instance().AfterReset();
-
-				EditorCamera::Instance().Deserialize();
+				editorSystem.Deserialize();
+				EventHandler::getEventHandlerInstance().Publish(GizmoOperationEvent{ -1 });
 			}
 		}
 	}
 
 	void MenuBarPanel::SaveScene()
+	{
+		// Only save and load when it is not running
+		if (!GameLoop::Instance().IsGameRunning() && !GameLoop::Instance().GetDisplayingPrefab())
+		{
+			if (SceneManager::Instance().SceneExistInFile())
+			{
+				SceneManager::Instance().SaveScene();
+			}
+			else
+			{
+				const std::string path = FileExplorer::SaveFileExplorer("Scene(*.json)\0*.json\0");
+				if (!path.empty())
+				{
+					SceneManager::Instance().SaveSceneAs(path);
+				}
+			}
+		}
+		return;
+	}
+
+	void MenuBarPanel::SaveSceneAs()
 	{
 		// Only save and load when it is not running
 		if (!GameLoop::Instance().IsGameRunning())
@@ -242,11 +303,71 @@ namespace TRE
 
 		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
 		{
-			m_ShortcutNewScene	= key == KeyButton::N;
+			m_ShortcutNewScene  = key == KeyButton::N;
 			m_ShortcutOpenScene = key == KeyButton::O;
 			m_ShortcutSaveScene = key == KeyButton::S;
-			m_ShortcutCopyEntity = key == KeyButton::C;
-			m_ShortcutPasteEntity = key == KeyButton::V;
 		}
+		// Check if shift key mods is also pressed
+		if (mods == static_cast<KeyMods>(static_cast<int>(KeyMods::CONTROL) + static_cast<int>(KeyMods::SHIFT)))
+		{
+			m_ShortcutSaveSceneAs = key == KeyButton::S;
+		}
+
+#if 1
+		// Quick Shortcut to Collision Matrix Panel
+		if (key == KeyButton::GraveAccent)
+		{
+			m_ShowCollisionMatrixPanel = !m_ShowCollisionMatrixPanel;
+			EventHandler::getEventHandlerInstance().Publish(CollisionMatrixEvent{ m_ShowCollisionMatrixPanel });
+		}
+#endif
+	}
+
+	void MenuBarPanel::Serialize(std::ofstream& file)
+	{
+		file << "GizmoPosIncrement: " << m_PosIncrement << std::endl;
+		file << "GizmoRotIncrement: " << m_RotIncrement << std::endl;
+		file << "GizmoScaleIncrement: " << m_ScaleIncrement << std::endl;
+		file << "EditorPanSpeed: " << m_PanSpeed << std::endl;
+		file << "EditorZoomSensitivity: " << m_ZoomSensitivity << std::endl;
+		file << "EditorRotationSensitivity: " << m_RotationSensitivity << std::endl;
+	}
+
+	void MenuBarPanel::Deserialize(std::ifstream& file)
+	{
+		std::string line;
+		while (std::getline(file, line))
+		{
+			std::istringstream iss(line);
+			std::string name;
+			iss >> name;
+			if (name == "GizmoPosIncrement:")
+			{
+				iss >> m_PosIncrement;
+			}
+			else if (name == "GizmoRotIncrement:")
+			{
+				iss >> m_RotIncrement;
+			}
+			else if (name == "GizmoScaleIncrement:")
+			{
+				iss >> m_ScaleIncrement;
+			}
+			else if (name == "EditorPanSpeed:")
+			{
+				iss >> m_PanSpeed;
+			}
+			else if (name == "EditorZoomSensitivity:")
+			{
+				iss >> m_ZoomSensitivity;
+			}
+			else if (name == "EditorRotationSensitivity:")
+			{
+				iss >> m_RotationSensitivity;
+			}
+		}
+
+		EventHandler::getEventHandlerInstance().Publish(GridAndSnapEvent{ m_PosIncrement, m_RotIncrement, m_ScaleIncrement });
+		EventHandler::getEventHandlerInstance().Publish(EditorCameraEvent{ m_PanSpeed, m_ZoomSensitivity, m_RotationSensitivity });
 	}
 }

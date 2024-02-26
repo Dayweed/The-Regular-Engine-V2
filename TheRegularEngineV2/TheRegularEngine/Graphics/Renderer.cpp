@@ -6,20 +6,17 @@
 #include "Pipeline.h"
 #include "Resource/ResourceManager.h"
 #include "Material.h"
+#include "FontRenderer.h"
+#include "FontManager.h"
 
 namespace TRE
 {
-	struct QuadVertex
-	{
-		glm::vec3 Position;
-		glm::vec2 TexCoord;
-	};
-
 	std::shared_ptr<SceneRenderer> Renderer::s_MainRenderer = nullptr;
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
 	FinalRenderData* Renderer::s_FinalRenderData = nullptr;
+	std::shared_ptr<Skybox> Renderer::m_SkyboxEnvironment = nullptr;
 
-	static std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
+	std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
 		uint32_t m_VertexCount = static_cast<std::uint32_t>(vertices.size());
 		assert(m_VertexCount >= 3 && "Vertex count must be at least 3");
@@ -40,7 +37,7 @@ namespace TRE
 		return Vbuffer;
 	}
 
-	static std::unique_ptr<Buffer> CreateIndexBuffer(const std::vector<int>& indices)
+	std::unique_ptr<Buffer> CreateIndexBuffer(const std::vector<int>& indices)
 	{
 		uint32_t m_IndexCount = static_cast<std::uint32_t>(indices.size());
 
@@ -62,12 +59,10 @@ namespace TRE
 	void Renderer::Init()
 	{
 		s_FinalRenderData = new FinalRenderData;
-
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-		// auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		
 		float x = -1; float y = -1;
 		float width = 2, height = 2;
-
 		std::vector<QuadVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
@@ -84,19 +79,28 @@ namespace TRE
 
 		if (!Engine::GetInstance().GetEngineInfo().EnableEditor)
 		{
-			s_FinalRenderData->VertexBuffer = CreateVertexBuffer(data);
+			s_FinalRenderData->VertexBuffer = std::make_unique<VertexBuffer>(static_cast<void*>(data.data()),
+				UINT32_T_CAST(sizeof(QuadVertex) * data.size()));
+
 			std::vector<int> indices = { 0,1,2,2,3,0 };
-			s_FinalRenderData->IndexBuffer = CreateIndexBuffer(indices);
-			s_FinalRenderData->RenderPass = SwapChain->GetRenderPassPointer();
+			s_FinalRenderData->IndexBuffer = std::make_unique<IndexBuffer>(static_cast<void*>(indices.data()),
+				UINT32_T_CAST(sizeof(int) * indices.size()),
+				UINT32_T_CAST(indices.size()));
+
+			s_FinalRenderData->RenderPass = SwapChain->GetRenderPass();
 
 			PipelineConfigurations PipelineConfig;
 			PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(4);
 			PipelineConfig.Primitive = PrimitiveType::Triangles;
 			PipelineConfig.VertexStride = PipelineConfig.Shader->GetVertexStrides();
-			s_FinalRenderData->Pipeline = std::make_unique<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
+			s_FinalRenderData->Pipeline = std::make_shared<Pipeline>(PipelineConfig, s_FinalRenderData->RenderPass);
 			s_FinalRenderData->Material = std::make_unique<Material>(PipelineConfig.Shader);
 			s_FinalRenderData->Material->Invalidate();
 		}
+
+		m_SkyboxEnvironment = std::make_shared<Skybox>();
+
+		FontManager::GetInstance(); //Initialize it here
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("Final Pass", true);
 	}
@@ -106,7 +110,13 @@ namespace TRE
 		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
 		vkDeviceWaitIdle(Device);
 		delete s_FinalRenderData;
+		s_FinalRenderData = nullptr;
 		m_CommandBuffer = nullptr;
+		m_SkyboxEnvironment.reset();
+		m_SkyboxEnvironment = nullptr;
+
+		if (FontManager::GetInstance() != nullptr)
+			delete FontManager::GetInstance();
 	}
 
 	void Renderer::RenderToSwapChain()
@@ -126,9 +136,9 @@ namespace TRE
 
 		VkViewport viewport {};
 		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.height = (float)height;
+		viewport.y = (float)height;
 		viewport.width = (float)width;
+		viewport.height = -(float)height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
@@ -140,11 +150,9 @@ namespace TRE
 		scissor.offset.y = 0;
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
-		s_FinalRenderData->ImageInfo = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo();
-		
-		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipeline());
+		Renderer::BindPipeline(m_CommandBuffer, s_FinalRenderData->Pipeline);
 
-		s_FinalRenderData->Material->UpdateCompsitePass(s_FinalRenderData->ImageInfo);
+		s_FinalRenderData->Material->UpdateCompsitePass(Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[swapChain->GetCurrentImageIndex()]->GetDescriptorImageInfo());
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, s_FinalRenderData->Pipeline->GetPipelineLayout(),
 			0, 1, &s_FinalRenderData->Material->GetDescriptor(swapChain->GetCurrentBufferIndex()), 0, NULL);
 
@@ -156,7 +164,79 @@ namespace TRE
 
 		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), 6, 1, 0, 0, 0);
 
-		s_FinalRenderData->RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
-		vkEndCommandBuffer(m_CommandBuffer->GetInUseCommandBuffer());
+		EndRenderPass(m_CommandBuffer);
+		m_CommandBuffer->End();
+	}
+
+	//To be implemented after framebuffer/renderpass abstraction
+	void Renderer::BeginRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<RenderPass>& Renderpass)
+	{
+		(void)CommandBuffer;
+		(void)Renderpass;
+	}
+
+	void Renderer::EndRenderPass(const std::shared_ptr<CommandBuffer>& CommandBuffer)
+	{
+		vkCmdEndRenderPass(CommandBuffer->GetInUseCommandBuffer());
+	}
+
+	void Renderer::BeginFrame()
+	{
+		Engine::GetInstance().GetMainSceneRenderer()->BeginFrame();
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			Engine::GetInstance().GetEditorSceneRenderer()->BeginEditorFrame();
+		}
+	}
+	
+	void Renderer::EndFrame()
+	{
+		Engine::GetInstance().GetMainSceneRenderer()->EndFrame();
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			Engine::GetInstance().GetEditorSceneRenderer()->EndFrame();
+		}
+	}
+
+	void Renderer::BindPipeline(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<Pipeline>& Pipeline, bool IsCompute)
+	{
+		if (!IsCompute)
+			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline->GetPipeline());
+		else
+			vkCmdBindPipeline(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, Pipeline->GetPipeline());
+	}
+
+	std::shared_ptr<Skybox> Renderer::GetSkybox()
+	{
+		return m_SkyboxEnvironment;
+	}
+
+	void Renderer::SetSkyboxEnvironment(std::string texture0, std::string texture1, std::string texture2, std::string texture3, std::string texture4, std::string texture5)
+	{
+		const ResourceHandle handle0 = Resource::GenerateGUID(texture0);
+		const ResourceHandle handle1 = Resource::GenerateGUID(texture1);
+		const ResourceHandle handle2 = Resource::GenerateGUID(texture2);
+		const ResourceHandle handle3 = Resource::GenerateGUID(texture3);
+		const ResourceHandle handle4 = Resource::GenerateGUID(texture4);
+		const ResourceHandle handle5 = Resource::GenerateGUID(texture5);
+
+		auto NewTexture0 = ResourceManager::Instance().GetResource<VulkanTexture>(handle0);
+		auto NewTexture1 = ResourceManager::Instance().GetResource<VulkanTexture>(handle1);
+		auto NewTexture2 = ResourceManager::Instance().GetResource<VulkanTexture>(handle2);
+		auto NewTexture3 = ResourceManager::Instance().GetResource<VulkanTexture>(handle3);
+		auto NewTexture4 = ResourceManager::Instance().GetResource<VulkanTexture>(handle4);
+		auto NewTexture5 = ResourceManager::Instance().GetResource<VulkanTexture>(handle5);
+
+		m_SkyboxEnvironment->SetTexture(0, NewTexture0);
+		m_SkyboxEnvironment->SetTexture(1, NewTexture1);
+		m_SkyboxEnvironment->SetTexture(2, NewTexture2);
+		m_SkyboxEnvironment->SetTexture(3, NewTexture3);
+		m_SkyboxEnvironment->SetTexture(4, NewTexture4);
+		m_SkyboxEnvironment->SetTexture(5, NewTexture5);
+
+		m_SkyboxEnvironment->RecreateCubeMap();
+		m_SkyboxEnvironment->ReloadCubeMap();
 	}
 }

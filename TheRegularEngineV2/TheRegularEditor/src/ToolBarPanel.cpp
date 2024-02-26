@@ -6,6 +6,9 @@
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EditorSystem.h"
 #include "Scripting/ScriptEngine.h"
+#include "Core/GameLoop.h"
+#include "ViewportPanel.h"
+#include "Audio/AudioSystem.h"
 
 namespace TRE
 {
@@ -20,6 +23,8 @@ namespace TRE
 
 	void ToolBarPanel::Init()
 	{
+		EventHandler::getEventHandlerInstance().subscribe(this, &ToolBarPanel::HandleShortcuts);
+
 		const auto playGUID = AssetManager::Instance().GetAssetHandle("icon-play.png");
 		const auto playHexGUID = Resource::GetGUIDHex(playGUID);
 		std::unique_ptr<VulkanTexture> playButton = std::make_unique<VulkanTexture>("../Resources/" + playHexGUID + ".DDS");
@@ -47,28 +52,55 @@ namespace TRE
 
 	void ToolBarPanel::Update()
 	{
-		ImGui::Begin("Tool Bar");
+		ImGui::Begin("Tool Bar", 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x/2 - 25);
 		
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
 		if (ImGui::ImageButton(m_PlayID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F5))
 		{
-			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true });
+			// Display button to return to scene
+			if (GameLoop::Instance().GetDisplayingPrefab())
+			{
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+				ECSSystemManager::Instance().GetSystem<PrefabSystem>()->ReturnToScene();
+			}
+
+			{
+				EventHandler::getEventHandlerInstance().Publish(ConsoleStartEvent(GameLoop::Instance().GetGameSimulating()));
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true, GameLoop::Instance().GetGameSimulating() });
+			}
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2);
 
 		if (ImGui::ImageButton(m_PauseID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F6))
 		{
-			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false });
+			if (!GameLoop::Instance().GetDisplayingPrefab())
+			{
+				EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ false, GameLoop::Instance().GetGameSimulating() });
+			}
 		}
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2 + 25);
 
 		if (ImGui::ImageButton(m_StopID, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1), 0) || ImGui::IsKeyPressed(ImGuiKey_F7))
 		{
-			EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{false});
-			EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+			if (!GameLoop::Instance().GetDisplayingPrefab())
+			{
+				EventHandler::getEventHandlerInstance().Publish(ResetSceneEvent{ false });
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+				EventHandler::getEventHandlerInstance().Publish(GizmoOperationEvent{ -1 });
+			}
 		}
+
+		if (m_ShortcutMuteAudio)
+		{
+			MuteAudio();
+			m_ShortcutMuteAudio = false;
+		}
+
+		ImGui::PopStyleColor(2);
 
 		ImGui::End();
 	}
@@ -78,5 +110,22 @@ namespace TRE
 		m_PlayButtonTexture.reset();
 		m_PauseButtonTexture.reset();
 		m_StopButtonTexture.reset();
+	}
+
+	void ToolBarPanel::HandleShortcuts(TypingEvent& event)
+	{
+		const KeyButton key = static_cast<KeyButton>(event.m_Key);
+		const KeyMods mods = static_cast<KeyMods>(event.m_Mod);
+
+		if (mods == KeyMods::CONTROL || mods == KeyMods::NUMLOCK_CONTROL)
+		{
+			m_ShortcutMuteAudio = key == KeyButton::M;
+		}
+	}
+
+	void ToolBarPanel::MuteAudio()
+	{
+		AudioSystem& audioSystem = AudioSystem::Instance();
+		audioSystem.MuteAll();
 	}
 }

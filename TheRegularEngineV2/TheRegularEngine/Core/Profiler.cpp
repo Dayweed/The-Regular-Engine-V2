@@ -143,20 +143,34 @@ namespace TRE
 		//// Iteration 2 Print by percentage
 		////=========================================================================
 		totalTime = 0;
-		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
+		for (const auto& [_unused, timer] : timers)
 		{
-			totalTime += (*timer).second->GetTime();
+			static_cast<void>(_unused);
+			totalTime += timer->GetTime();
 		}
-		std::string EditLabel = "class TRE::";
-		for (std::unordered_map<std::string, Timer*>::iterator timer{ timers.begin() }; timer != timers.end(); ++timer)
+
+		const std::string EditLabel = "class TRE::";
+		constexpr std::array systemNames = { "Draw", "class TRE::PhysicsSystem", "class TRE::ScriptingSystem" };
+
+		for (const auto& [label, timer] : timers)
 		{
-			std::string label = (*timer).first;
-			if (label.find(EditLabel) != std::string::npos)
-				label.erase(label.find(EditLabel), EditLabel.length());
-			if((*timer).first == "Draw" || (*timer).first == "class TRE::PhysicsSystem")
-				tmp.insert({ label, (*timer).second });
+			for (const auto systemName : systemNames)
+			{
+				if (label == systemName)
+				{
+					std::string substring = label;
+					if (substring.find(EditLabel) != std::string::npos)
+						substring = substring.substr(EditLabel.length());
+
+					tmp.emplace(substring, timer);
+
+					// no need to check if this timer has another matching label/systemName
+					break;
+				}
+			}
 		}
-		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{tmp});
+
+		EventHandler::getEventHandlerInstance().Publish(SendTimeTakenEvent{ tmp });
 		start_delay = std::chrono::steady_clock::now();
 	}
 

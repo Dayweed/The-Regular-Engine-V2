@@ -9,7 +9,119 @@ TRE::ResourceHandle TRE::VulkanTexture::m_DefaultTextureID{ 0 };
 
 namespace TRE
 {
-	VulkanTexture::VulkanTexture(const CubeMapConfig& Config)
+	VulkanTexture::VulkanTexture(uint8_t* imagedata, uint32_t imagesize, uint32_t width, uint32_t height)
+	{
+		assert(imagesize > 0 && "Image size cannot be 0");
+
+		auto Device = RendererContext::GetDevice();
+
+		Buffer stagingBuffer(imagesize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 4);
+
+		stagingBuffer.Map();
+		stagingBuffer.WriteToBuffer((void*)imagedata, imagesize);
+		stagingBuffer.Unmap();
+
+		m_Width = width;
+		m_Height = height;
+		m_Format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_Buffer = new void* [imagesize];
+		memcpy(m_Buffer, imagedata, imagesize);
+
+		VkImageCreateInfo imageInfo{};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+		imageInfo.extent.width = width;
+		imageInfo.extent.height = height;
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.flags = 0;
+
+		auto device = RendererContext::GetDevice()->GetLogicalDevice();
+
+		if (auto result = vkCreateImage(device, &imageInfo, nullptr, &m_Image); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to create image");
+		}
+
+		VkMemoryRequirements memReqs;
+		VkMemoryAllocateInfo memAlloc{};
+		memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		vkGetImageMemoryRequirements(device, m_Image, &memReqs);
+		memAlloc.allocationSize = memReqs.size;
+		memAlloc.memoryTypeIndex = RendererContext::GetDevice()->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		if (auto result = vkAllocateMemory(device, &memAlloc, nullptr, &m_ImageMemory); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to allocate memory for image");
+		}
+		if (auto result = vkBindImageMemory(device, m_Image, m_ImageMemory, 0); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to bind image memory");
+		}
+
+		TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		CopyBufferToImage(stagingBuffer.GetBuffer(), width, height);
+		TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+		VkImageViewCreateInfo viewInfo{};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = m_Image;
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;
+		viewInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+		if (auto result = vkCreateImageView(device, &viewInfo, nullptr, &m_ImageView); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to bind image memory");
+		}
+
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_NEAREST;
+		samplerInfo.minFilter = VK_FILTER_NEAREST;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.anisotropyEnable = VK_TRUE;
+
+		VkPhysicalDeviceProperties properties{};
+		vkGetPhysicalDeviceProperties(RendererContext::GetDevice()->GetPhysicalDevice()->GetPhysicalDevice(), &properties);
+		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = 0.0f;
+
+		if (auto result = vkCreateSampler(device, &samplerInfo, nullptr, &m_Sampler); result != VK_SUCCESS)
+		{
+			assert(result == VK_SUCCESS && "Failed to create texture sampler");
+		}
+
+		m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		m_DescriptorImageInfo.imageView = m_ImageView;
+		m_DescriptorImageInfo.sampler = m_Sampler;
+	}
+
+	VulkanTexture::VulkanTexture(CubeMapConfig& Config)
 	{
 		assert(Config.Textures.size() == 6 && "Cubemap textures not more than 0");
 
@@ -35,7 +147,6 @@ namespace TRE
 
 		VkMemoryAllocateInfo memAllocInfo{};
 		memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		memAllocInfo.allocationSize;
 		memAllocInfo.allocationSize = memReqs.size;
 		memAllocInfo.memoryTypeIndex = Device->FindMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
@@ -55,8 +166,8 @@ namespace TRE
 			assert(Result == VK_SUCCESS && "Unable to map memory for cubemap");
 		}
 
-		VkDeviceSize layersize = ImageCubeMapSize / 6;
-		for (uint32_t x = 0; x < 6; x++)
+		VkDeviceSize layersize = ImageCubeMapSize / Config.Textures.size();
+		for (uint32_t x = 0; x < Config.Textures.size(); x++)
 		{
 			memcpy(data + layersize * x, Config.Textures[x]->GetBuffer(), layersize);
 		}
@@ -119,10 +230,10 @@ namespace TRE
 		range.baseMipLevel = 0;
 		range.levelCount = 1;
 		range.baseArrayLayer = 0;
-		range.layerCount = 6;
+		range.layerCount = static_cast<uint32_t>(Config.Textures.size());
 
 		std::vector<VkBufferImageCopy> bufferCopyRegions;
-		for (int x = 0; x < 6; x++)
+		for (unsigned x = 0; x < Config.Textures.size(); x++)
 		{
 			VkBufferImageCopy bufferCopyRegion = {};
 			bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -307,6 +418,11 @@ namespace TRE
 		vkDestroyImageView(device, m_ImageView, nullptr);
 		vkDestroyImage(device, m_Image, nullptr);
 		vkFreeMemory(device, m_ImageMemory, nullptr);
+		if (m_Buffer)
+		{
+			delete m_Buffer;
+			m_Buffer = nullptr;
+		}
 	}
 
 	const VkDescriptorImageInfo& VulkanTexture::GetDescriptorImageInfo() const
@@ -327,7 +443,7 @@ namespace TRE
 		Buffer stagingBuffer(imageSize, 1, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 4);
 
 		std::unique_ptr<std::uint8_t[]> data = std::make_unique<std::uint8_t[]>(imageSize);
-		memset(data.get(), 255, imageSize);
+		memset(data.get(), 240, imageSize);
 
 		stagingBuffer.Map();
 		stagingBuffer.WriteToBuffer(data.get(), imageSize);
@@ -531,5 +647,10 @@ namespace TRE
 		}
 
 		return m_DefaultTextureID;
+	}
+
+	const std::shared_ptr<VulkanTexture> VulkanTexture::GetDefaultTexture()
+	{
+		return ResourceManager::Instance().GetResource<VulkanTexture>(GetDefaultTextureID());
 	}
 }

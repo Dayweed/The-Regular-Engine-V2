@@ -1,16 +1,16 @@
 #pragma once
 #include <variant>
+#include <vector>
 
 #include "glm/glm.hpp"
-#include "Vector3.h"
 #include "fmod/fmod.hpp"
+#include "Physics/PhysicsComponent.h" // for CollisionLayer & PhysicsMaterial
 
-#pragma once
 using string_t = std::string;
 
 struct resource_ref
 {
-    std::uint64_t m_Value;
+	std::uint64_t m_Value;
 };
 
 struct resource_list
@@ -19,14 +19,34 @@ struct resource_list
 	std::string m_Type;
 };
 
+struct FontType
+{
+    std::string m_FontType;
+};
+
+struct MultiLineString
+{
+    std::string Text;
+};
+
 struct audio_file_dropdown
 {
-    std::string m_File;
+	std::string m_File;
+};
+
+struct waypoint
+{
+	glm::vec3 m_Value;
 };
 
 struct Color
 {
 	glm::vec4 m_Value;
+};
+
+struct Color3
+{
+	glm::vec3 m_Value;
 };
 
 //--------------------------------------------------------------------------------------------
@@ -157,10 +177,16 @@ namespace property
             , glm::vec3
             , glm::vec4
             , Color
+            , Color3
             , resource_ref
             , resource_list
             , audio_file_dropdown
             , FMOD_VECTOR
+            , std::vector<waypoint>
+            , CollisionLayer
+            , PhysicsMaterial
+            , FontType
+            , MultiLineString
         >;
     
         //--------------------------------------------------------------------------------------------

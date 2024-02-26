@@ -14,7 +14,10 @@
 #include "pch.h"
 #include "Core/System.h"
 #include "Core/ECS.h"
-#include "PhysicsComponents.h"
+#include "PhysicsComponent.h"
+#include "ECS/Components/Rigidbody.h" // For ForceMode::Enum
+#include "ErrorCallback.h"
+#include "SimulationEventCallback.h"
 
 // PhysX 5.1.3 Docs: https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/physx_api.html
 
@@ -40,40 +43,6 @@
 
 namespace TRE
 {
-	typedef struct HistoryEntryEnum
-	{
-		enum Enum : unsigned char
-		{
-			Enter = 1 << 0,
-			Stay  = 1 << 1,
-			Exit  = 1 << 2
-		};
-	} CollisionHistoryEntryEnum, TriggerHistoryEntryEnum;
-
-	typedef struct HistoryEntry
-	{
-		unsigned m_First : 7, m_Second : 7, m_Flags : 3;
-		// I wonder if these bitfield lengths need to be bigger...
-	} CollisionHistoryEntry, TriggerHistoryEntry;
-
-	class SimulationEventCallback : public physx::PxSimulationEventCallback
-	{
-	public:
-		void onAdvance(const physx::PxRigidBody* const* bodyBuffer, const physx::PxTransform* poseBuffer, const physx::PxU32 count) override;
-		void onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count) override;
-		void onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs) override;
-		void onSleep(physx::PxActor** actors, physx::PxU32 count) override;
-		void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override;
-		void onWake(physx::PxActor** actors, physx::PxU32 count) override;
-
-		// keeps track of IsCollisionEnter, IsCollisionStay and IsCollisionExit 'results'
-		std::vector<CollisionHistoryEntry> m_CollisionHistory;
-
-		// keeps track of IsTriggerEnter, IsTriggerStay and IsTriggerExit 'results'
-		std::vector<TriggerHistoryEntry> m_TriggerHistory, m_PrevTriggerHistory;
-		// why can't physx just handle this for me? :_)
-	};
-
 	class PhysicsSystem : public ECSSystem
 	{
 	public:
@@ -87,10 +56,14 @@ namespace TRE
 		// void OnDestroyEntities() override;
 		void Shutdown() override;
 
-		std::unordered_map<unsigned, Entity> GenerateEntityActorVector();
-		std::vector<std::pair<Entity, Entity>> GetCollisionHistory();
-		std::vector<std::pair<Entity, Entity>> GetTriggerHistory();
-		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory();
+		// returns a map of <physx internal index, entity> for all entites with physics comps
+		std::unordered_map<unsigned, Entity> GenerateEntityActorVector() const;
+
+		typedef std::vector<std::pair<Entity, Entity>> VectorCollidedEntities;
+
+		void GetCollisionHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit);
+		void GetTriggerHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit);
+		std::vector<std::pair<Entity, Entity>> GetPrevTriggerHistory() const;
 
 		void SetDrawDebug(bool draw);
 #pragma region Rigidbody Function Declarations
@@ -287,6 +260,18 @@ namespace TRE
 		void SetCapsuleColliderTrigger(const Entity& entity, const bool isTrigger) const;
 #pragma endregion
 
+#pragma region CylinderCollider Function Declarations
+		bool ConstructCylinderCollider(const Entity& entity, const float radius = 1.0f, const float height = 1.0f, const glm::vec3& offset = glm::vec3{ 0 }) const;
+
+		void ResizeCylinderCollider(const Entity& entity, const float newRadius, const float newHeight) const;
+
+		void UpdateCylinderCollider(const Entity& entity) const;
+
+		void DestructCylinderCollider(const Entity& entity) const;
+
+		void SetCylinderColliderTrigger(const Entity& entity, const bool isTrigger) const;
+#pragma endregion
+
 		//This test function creates a stack of shapes
 		void CreateStack(const physx::PxTransform& t, unsigned size, float halfExtent) const;
 
@@ -306,10 +291,33 @@ namespace TRE
 
 		bool IsTriggerExit(const Entity& entity_1, const Entity& entity_2) const;
 
+		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
+
+		void ChangeCollisionLayer(const Entity& entity) const;
+
+		void SetLayerNames();
+		void SaveCollisionMatrix();
+		void LoadCollisionMatrix();
+		void ApplyCollisionMatrix();
+
+		using CollisionMatrix = std::array<std::bitset<CollisionLayer::TOTAL>, CollisionLayer::TOTAL>;
+
+		void SetCollisionMatrix(const CollisionMatrix& matrix);
+		CollisionMatrix GetCollisionMatrix();
+
+		void ChangeIsActive(const Entity& entity) const;
+		void SetIsActive(const Entity& entity, bool state) const;
+		bool GetIsActive(const Entity& entity) const;
+
+		void ChangeMaterial(const Entity& entity) const;
+
+		physx::PxConvexMesh* CreateCylinderMesh(const float radius = 0.5f, const float height = 1.0f) const;
+
+		void SetPauseState(bool state);
+		bool GetPauseState();
 	private:
 
 		void ResizeAllColliders();
-		void UpdateColliderData(const Entity& entity, const glm::vec3& offset);
 
 		void DestroyOutdatedComponents() const;
 
@@ -317,21 +325,26 @@ namespace TRE
 
 		void UpdateActorPose(const Entity& entity, const glm::vec3& offset = glm::vec3{ 0 }) const;
 
-		mutable std::unordered_map<std::string, SharedData> m_Actors;
+		void CreatePhysXScene();
 
-		physx::PxDefaultAllocator		m_Allocator;
-		physx::PxDefaultErrorCallback	m_ErrorCallback;
-		SimulationEventCallback			m_SimulationEventCallback;
+		mutable std::unordered_map<std::string, SharedData> m_Actors;
+		CollisionMatrix m_CollisionMatrix;
+
+		physx::PxDefaultAllocator       m_Allocator;
+		ErrorCallback                   m_ErrorCallback;
+		SimulationEventCallback         m_SimulationEventCallback;
 		// OH MY GOD AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-		physx::PxFoundation*			m_Foundation = nullptr;
-		physx::PxPvd*					m_Pvd = nullptr;
-		physx::PxPvdTransport*			m_Transport = nullptr;
-		physx::PxPhysics*				m_Physics = nullptr;
-		physx::PxDefaultCpuDispatcher*	m_Dispatcher = nullptr;
-		physx::PxScene*					m_Scene = nullptr;
-		physx::PxMaterial*				m_DefaultMaterial = nullptr;
+		physx::PxFoundation*            m_Foundation = nullptr;
+		physx::PxPvd*                   m_Pvd = nullptr;
+		physx::PxPvdTransport*          m_Transport = nullptr;
+		physx::PxPhysics*               m_Physics = nullptr;
+		physx::PxDefaultCpuDispatcher*  m_Dispatcher = nullptr;
+		physx::PxScene*                 m_Scene = nullptr;
+		physx::PxMaterial*              m_DefaultMaterial = nullptr;
+		physx::PxMaterial*              m_FrictionlessMaterial = nullptr;
 
 		bool m_DrawDebugLines = false;
+		bool m_PauseState = false;
 	};
 }

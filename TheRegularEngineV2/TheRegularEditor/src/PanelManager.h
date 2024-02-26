@@ -20,6 +20,12 @@ namespace TRE
 				m_StorePanels.insert({ PanelName, ptr1 });
 			}
 
+			template <typename T>
+			std::shared_ptr<T> GetPanel(std::string PanelName)
+			{
+				return std::dynamic_pointer_cast<T>(m_StorePanels[PanelName]);
+			}
+
 			void Init();
 			void Update();
 			void Shutdown();

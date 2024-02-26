@@ -11,36 +11,48 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #include "pch.h"
+#include "Core/Engine.h"
+#include "ECS/Components/Transform.h"
 #include "PhysicsSystem.h"
-#include "TREIncludes.h"
+#include "ECS/Components/SphereCollider.h"
+#include "ECS/Components/BoxCollider.h"
+#include "ECS/Components/CapsuleCollider.h"
+#include "ECS/Components/CylinderCollider.h"
+#include "Core/Serialization.h"
 
 // USE_PHYSX_PVD is not defined in Release
 #ifdef _DEBUG
 #define USE_PHYSX_PVD 1
 #endif
 
-#define UNUSED_PARAM(param) (void)param
-
 using namespace physx;
 // to save my dwindling sanity
 
 namespace TRE
 {
-	// largely identical to PhysX's SnippetTriggers implementation
+	// largely identical to PhysX's SnippetTriggers' implementation
 	PxFilterFlags SimulationFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 		PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 		PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 	{
-		UNUSED_PARAM(filterData0);
-		UNUSED_PARAM(filterData1);
-		UNUSED_PARAM(constantBlock);
-		UNUSED_PARAM(constantBlockSize);
+		UNUSED_VALUE(constantBlock);
+		UNUSED_VALUE(constantBlockSize);
 
 		// let triggers through
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
 			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
 			return PxFilterFlags();
+		}
+
+		// Group vs Group Collision Suppression
+		// .word0 is guaranteed to be the group (I dove into PhysX's source for this info :_) )
+
+		// I'll be exceptionally upset if this works.
+		if (!PxGetGroupCollisionFlag(static_cast<PxU16>(filterData0.word0), static_cast<PxU16>(filterData1.word0)))
+		{
+			// I am now exceptionally upset.
+			return PxFilterFlag::eSUPPRESS;
 		}
 
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT
@@ -126,27 +138,7 @@ namespace TRE
 
 		PxInitExtensions(*m_Physics, m_Pvd);
 
-		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-
-		//A cpu thread for the scene
-		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
-		assert(m_Dispatcher);
-		sceneDesc.cpuDispatcher = m_Dispatcher;
-
-		// SimulationEventCallback must inherit PxSimulationEventCallback
-		// PUBLICLY in order to work, otherwise...
-		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
-		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
-		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
-
-		//A thread that will do collision management
-
-		// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-		sceneDesc.filterShader = SimulationFilterShader;
-
-		m_Scene = m_Physics->createScene(sceneDesc);
-		assert(m_Scene);
+		CreatePhysXScene();
 
 #if USE_PHYSX_PVD
 		if (PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient())
@@ -164,7 +156,17 @@ namespace TRE
 #endif
 
 		//Create material gives the object a static, dynamic and restitution.
-		m_DefaultMaterial = m_Physics->createMaterial(0.5f, 0.5f, 0);
+		m_DefaultMaterial = m_Physics->createMaterial(PX_MAX_F32, PX_MAX_F32, 0.f);
+
+		m_FrictionlessMaterial = m_Physics->createMaterial(0, 0, 0);
+
+		// initialize collision matrix
+		for (auto& row : m_CollisionMatrix)
+			row = 0;
+
+		SetLayerNames();
+		LoadCollisionMatrix();
+		ApplyCollisionMatrix();
 
 		TRE_CORE_INFO("Physics/PhysX systems initialization complete! :D");
 	}
@@ -184,6 +186,7 @@ namespace TRE
 
 	void PhysicsSystem::GameUpdate()
 	{
+		if (m_PauseState) return;
 		// Accumulator, courtesy of 
 		// https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/docs/Simulation.html#the-simulation-loop
 		static float accumulator = 0.0f;
@@ -195,12 +198,25 @@ namespace TRE
 		static std::time_t start_timer = std::time(nullptr);
 		const long long result = std::time(nullptr) - start_timer;
 
-		if (result >= 5)
+		if (result >= 1)
 		{
-			// do a test thingy here
-			auto e1 = ECSManager::Instance().GetEntities<SphereCollider>().front();
+			try
+			{
+				Entity e1 = ECSManager::Instance().CreateEntity("cylin");
+				e1->GetComponent<Transform>().m_Position = glm::vec3(10, 10, 10);
+				e1->AddComponent<Rigidbody>(); ConstructRigidbody(e1);
+				e1->AddComponent<CylinderCollider>(); ConstructCylinderCollider(e1);
+			}
+			catch (std::exception& e)
+			{
+				std::cout << e.what() << "\n";
+			}
+			catch (...)
+			{
+				std::cout << "ummmmmm" << "\n";
+			}
 
-			AddForce(e1, { -100, 0, 0 });
+
 			printf("====================================================\n");
 
 			// reset timer
@@ -218,7 +234,7 @@ namespace TRE
 		m_SimulationEventCallback.m_TriggerHistory = std::vector<TriggerHistoryEntry>();
 
 		accumulator -= step;
-		m_Scene->simulate(1.0f / 60.0f);
+		m_Scene->simulate(step);
 		m_Scene->fetchResults(true);
 		// ^ step 3) CTH is overwritten by fetchResults()
 
@@ -239,7 +255,7 @@ namespace TRE
 				CTH.emplace_back(prevEntry.m_First, prevEntry.m_Second, TriggerHistoryEntryEnum::Stay);
 		}
 #pragma endregion
-	
+
 		for (const auto& pair : m_Actors)
 		{
 			const Entity entity = ECSManager::Instance().FindEntity(pair.first);
@@ -263,6 +279,11 @@ namespace TRE
 				const CapsuleCollider& capsuleCollider = entity->GetComponent<CapsuleCollider>();
 				offset = capsuleCollider.m_Offset;
 			}
+			else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			{
+				const CylinderCollider& cylinderCollider = entity->GetComponent<CylinderCollider>();
+				offset = cylinderCollider.m_Offset;
+			}
 
 			Transform& transform = entity->GetComponent<Transform>();
 			const PxVec3 pos = sharedData.m_RigidDynamic->getGlobalPose().p;
@@ -271,7 +292,7 @@ namespace TRE
 			const PxQuat rotQuat = sharedData.m_RigidDynamic->getGlobalPose().q;
 			const glm::vec3 eulerAnglesInRad = glm::eulerAngles(glm::quat{ rotQuat.w, rotQuat.x, rotQuat.y, rotQuat.z });
 			transform.m_Rotation = eulerAnglesInRad / PI * 180.0f;
-			
+
 			transform.m_IsDirty = true;
 		}
 	}
@@ -294,8 +315,12 @@ namespace TRE
 
 			if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
 				DestructCapsuleCollider(entity);
+
+			if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+				DestructCylinderCollider(entity);
 		}
 		m_Actors.clear();
+		PX_RELEASE(m_Scene);
 
 		m_SimulationEventCallback.m_CollisionHistory.clear();
 		m_SimulationEventCallback.m_TriggerHistory.clear();
@@ -304,27 +329,36 @@ namespace TRE
 
 	void PhysicsSystem::AfterReset()
 	{
-		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
+		CreatePhysXScene();
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>(true))
 		{
-			ConstructRigidbody(entity);
+			// i just want the squiggly lines to go away...
+			UNUSED_VALUE(ConstructRigidbody(entity));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>(true))
 		{
 			SphereCollider& component{ entity->GetComponent<SphereCollider>() };
-			ConstructSphereCollider(entity, component.m_Radius, component.m_Offset);
+			UNUSED_VALUE(ConstructSphereCollider(entity, component.m_Radius, component.m_Offset));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>(true))
 		{
 			BoxCollider& component{ entity->GetComponent<BoxCollider>() };
-			ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset);
+			UNUSED_VALUE(ConstructBoxCollider(entity, component.m_HalfExtents, component.m_Offset));
 		}
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>(true))
 		{
 			CapsuleCollider& component{ entity->GetComponent<CapsuleCollider>() };
-			ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset);
+			UNUSED_VALUE(ConstructCapsuleCollider(entity, component.m_Radius, component.m_HalfHeight, component.m_Offset));
+		}
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>(true))
+		{
+			CylinderCollider& component{ entity->GetComponent<CylinderCollider>() };
+			UNUSED_VALUE(ConstructCylinderCollider(entity, component.m_Radius, component.m_Height, component.m_Offset));
 		}
 	}
 
@@ -336,9 +370,10 @@ namespace TRE
 
 		m_Actors.clear();
 		PX_RELEASE(m_DefaultMaterial);
-		PX_RELEASE(m_Scene);
-		PxCloseExtensions();
 		PX_RELEASE(m_Dispatcher);
+		PX_RELEASE(m_Scene);
+		if (m_Physics)
+			PxCloseExtensions();
 		PX_RELEASE(m_Physics);
 		PX_RELEASE(m_Transport);
 		PX_RELEASE(m_Pvd);
@@ -351,11 +386,11 @@ namespace TRE
 		PX_RELEASE(m_Foundation);
 	}
 
-	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector()
+	std::unordered_map<unsigned, Entity> PhysicsSystem::GenerateEntityActorVector() const
 	{
 		std::unordered_map<unsigned, Entity> vector;
 		vector.reserve(m_Actors.size());
-		for (auto actor : m_Actors)
+		for (const auto& actor : m_Actors)
 		{
 			vector.emplace(actor.second.m_RigidDynamic->getInternalActorIndex(), ECSManager::Instance().FindEntity(actor.first));
 		}
@@ -363,66 +398,134 @@ namespace TRE
 		return vector;
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetCollisionHistory()
+	void PhysicsSystem::GetCollisionHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit)
 	{
-		std::vector<std::pair<unsigned, unsigned>> CollisionsID{};
-		CollisionsID.reserve(m_SimulationEventCallback.m_CollisionHistory.size());
+		onEnter.clear();
+		onStay.clear();
+		onExit.clear();
+
+		std::vector<std::pair<unsigned, unsigned>> CollisionsStayID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsEnterID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsExitID{};
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_CollisionHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
-			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-			CollisionsID.emplace_back(pair);
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_CollisionHistory[i] };
+			if (entry.m_Flags & CollisionHistoryEntryEnum::Enter)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsEnterID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & CollisionHistoryEntryEnum::Stay)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsStayID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & CollisionHistoryEntryEnum::Exit)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsExitID.emplace_back(pair);
+			}
 		}
 
 		// Generate Entity Actor Vector
 		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
 
 		// Find Entity
-		std::vector<std::pair<Entity, Entity>> Collisions;
-		Collisions.reserve(CollisionsID.size());
-		for (auto IDs : CollisionsID)
+		for (auto IDs : CollisionsStayID)
 		{
-			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
-
-		return Collisions;
+		for (auto IDs : CollisionsEnterID)
+		{
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
+		}
+		for (auto IDs : CollisionsExitID)
+		{
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
+		}
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetTriggerHistory()
+	void PhysicsSystem::GetTriggerHistory(VectorCollidedEntities& onEnter, VectorCollidedEntities& onStay, VectorCollidedEntities& onExit)
 	{
-		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
-		CollisionsID.reserve(m_SimulationEventCallback.m_TriggerHistory.size());
+		onEnter.clear();
+		onStay.clear();
+		onExit.clear();
+
+		std::vector<std::pair<unsigned, unsigned>> CollisionsStayID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsEnterID{};
+		std::vector<std::pair<unsigned, unsigned>> CollisionsExitID{};
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_TriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
-			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
-			CollisionsID.emplace_back(pair);
+			const TriggerHistoryEntry& entry{ m_SimulationEventCallback.m_TriggerHistory[i] };
+			if (entry.m_Flags & TriggerHistoryEntryEnum::Enter)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsEnterID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & TriggerHistoryEntryEnum::Stay)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsStayID.emplace_back(pair);
+			}
+			else if (entry.m_Flags & TriggerHistoryEntryEnum::Exit)
+			{
+				std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
+				CollisionsExitID.emplace_back(pair);
+			}
 		}
 
 		// Generate Entity Actor Vector
 		std::unordered_map<unsigned, Entity> EntityActor{ GenerateEntityActorVector() };
 
 		// Find Entity
-		std::vector<std::pair<Entity, Entity>> Collisions;
-		Collisions.reserve(CollisionsID.size());
-		for (auto IDs : CollisionsID)
+		for (auto IDs : CollisionsStayID)
 		{
-			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onStay.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
-
-		return Collisions;
+		for (auto IDs : CollisionsEnterID)
+		{
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onEnter.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
+		}
+		for (auto IDs : CollisionsExitID)
+		{
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+				&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				onExit.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
+		}
 	}
 
-	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory()
+	std::vector<std::pair<Entity, Entity>> PhysicsSystem::GetPrevTriggerHistory() const
 	{
 		std::vector<std::pair<unsigned, unsigned>> CollisionsID;
 		CollisionsID.reserve(m_SimulationEventCallback.m_PrevTriggerHistory.size());
 
 		for (size_t i{}; i < m_SimulationEventCallback.m_PrevTriggerHistory.size(); ++i)	// Doing this way cos the lambda crashes when iterating
 		{
-			TRE::CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
+			const CollisionHistoryEntry& entry{ m_SimulationEventCallback.m_PrevTriggerHistory[i] };
 			std::pair<unsigned, unsigned> pair{ entry.m_First, entry.m_Second };
 			CollisionsID.emplace_back(pair);
 		}
@@ -435,7 +538,12 @@ namespace TRE
 		Collisions.reserve(CollisionsID.size());
 		for (auto IDs : CollisionsID)
 		{
-			Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+		// Make sure the entities still exists
+			if (EntityActor[IDs.first] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.first])
+			&& EntityActor[IDs.second] != nullptr && ECSManager::Instance().IsValidEntity(EntityActor[IDs.second]))
+			{
+				Collisions.emplace_back(EntityActor[IDs.first], EntityActor[IDs.second]);
+			}
 		}
 
 		return Collisions;
@@ -476,9 +584,9 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -502,6 +610,7 @@ namespace TRE
 		MarkAsTrigger.operator() < SphereCollider > (entity);
 		MarkAsTrigger.operator() < BoxCollider > (entity);
 		MarkAsTrigger.operator() < CapsuleCollider > (entity);
+		MarkAsTrigger.operator() < CylinderCollider > (entity);
 	}
 
 	// if one shape on an entity is a collider, they're all colliders now :)
@@ -516,9 +625,9 @@ namespace TRE
 
 		// because Rigidbody is represented by the 1st bit in m_AttachedComponents
 		const bool hasRigidbody = m_Actors[entity->GetGUID()].m_AttachedComponents & PhysicsComponentTypes::Rigidbody;
-
+		(void)hasRigidbody;
 		// if there's a rigidbody attached, enable gravity
-		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !hasRigidbody);
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !entity->GetComponent<Rigidbody>().m_UseGravity);
 
 		unsigned nbShapes = rigidDynamic->getNbShapes();
 		const std::unique_ptr<PxShape* []> shapes(new PxShape * [nbShapes]); // I hate that I have to do this...
@@ -542,6 +651,7 @@ namespace TRE
 		MarkAsCollider.operator() < SphereCollider > (entity);
 		MarkAsCollider.operator() < BoxCollider > (entity);
 		MarkAsCollider.operator() < CapsuleCollider > (entity);
+		MarkAsCollider.operator() < CylinderCollider > (entity);
 	}
 
 	bool PhysicsSystem::IsCollisionEnter(const Entity& entity_1, const Entity& entity_2) const
@@ -721,7 +831,7 @@ namespace TRE
 	void PhysicsSystem::ResizeAllColliders()
 	{
 		// Update Sphere Collider if Dirty
-		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>(true))
 		{
 			auto& collider = entity->GetComponent<SphereCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -729,7 +839,7 @@ namespace TRE
 			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
 				UpdateColliderData(entity, collider.m_Offset);
-				
+
 				if (collider.m_IsDirty)
 				{
 					ResizeSphereCollider(entity, collider.m_Radius);
@@ -739,7 +849,7 @@ namespace TRE
 		}
 
 		// Update Box Collider if Dirty
-		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>(true))
 		{
 			auto& collider = entity->GetComponent<BoxCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -757,7 +867,7 @@ namespace TRE
 		}
 
 		// Update the Update if Update
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>(true))
 		{
 			auto& collider = entity->GetComponent<CapsuleCollider>();
 			const auto& transform = entity->GetComponent<Transform>();
@@ -765,10 +875,28 @@ namespace TRE
 			if (transform.m_IsDirty || collider.m_IsDirty)
 			{
 				UpdateColliderData(entity, collider.m_Offset);
-				
+
 				if (collider.m_IsDirty)
 				{
 					ResizeCapsuleCollider(entity, collider.m_Radius, collider.m_HalfHeight);
+					collider.m_IsDirty = false;
+				}
+			}
+		}
+
+		// Update the Update UPDATE if the Update Update
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>(true))
+		{
+			auto& collider = entity->GetComponent<CylinderCollider>();
+			const auto& transform = entity->GetComponent<Transform>();
+
+			if (transform.m_IsDirty || collider.m_IsDirty)
+			{
+				UpdateColliderData(entity, collider.m_Offset);
+
+				if (collider.m_IsDirty)
+				{
+					ResizeCylinderCollider(entity, collider.m_Radius, collider.m_Height);
 					collider.m_IsDirty = false;
 				}
 			}
@@ -794,6 +922,9 @@ namespace TRE
 			// if (A && X) || (B && !X)
 
 			Entity entity = ECSManager::Instance().FindEntity(guid);
+
+			// Skip this entity if invalid
+			if (entity == nullptr) continue;
 
 			const bool hasRemovalComponent = entity->HasComponent<Removal>();
 
@@ -832,12 +963,22 @@ namespace TRE
 				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
 					DestructCapsuleCollider(entity);
 			}
+
+			// CylinderCollider
+			{
+				const bool isInAttachedComponents = attachedComponents & PhysicsComponentTypes::CylinderCollider;
+				const bool hasPhysicsComponent = entity->HasComponent<CylinderCollider>();
+				if (hasRemovalComponent && hasPhysicsComponent || isInAttachedComponents && !hasPhysicsComponent)
+					DestructCylinderCollider(entity);
+			}
+
 		}
 
 		// erasing elements in a map: https://stackoverflow.com/a/8234813
 		for (auto it = m_Actors.begin(); it != m_Actors.end();)
 		{
-			if (it->second.m_MarkForRemoval)
+			// Remove nullptr entities or mark for removal
+			if (ECSManager::Instance().FindEntity(it->second.m_GUID) == nullptr || it->second.m_MarkForRemoval)
 				it = m_Actors.erase(it);
 			else
 				++it;
@@ -850,17 +991,20 @@ namespace TRE
 
 	void PhysicsSystem::UpdateAllComponents() const
 	{
-		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<Rigidbody>(true))
 			UpdateRigidbody(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>())
-			UpdateSphereCollider(entity); 
+		for (const Entity& entity : ECSManager::Instance().GetEntities<SphereCollider>(true))
+			UpdateSphereCollider(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<BoxCollider>(true))
 			UpdateBoxCollider(entity);
 
-		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>())
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CapsuleCollider>(true))
 			UpdateCapsuleCollider(entity);
+
+		for (const Entity& entity : ECSManager::Instance().GetEntities<CylinderCollider>(true))
+			UpdateCylinderCollider(entity);
 	}
 
 	void PhysicsSystem::UpdateActorPose(const Entity& entity, const glm::vec3& offset) const
@@ -872,83 +1016,226 @@ namespace TRE
 		const glm::quat rotQuat{ eulerAnglesInRad };
 
 		const PxTransform transform(colliderPos, PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(transform);
-	}
-
-	void SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
-	{
-		UNUSED_PARAM(bodyBuffer); UNUSED_PARAM(poseBuffer); UNUSED_PARAM(count);
-	}
-
-	void SimulationEventCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
-	{
-		UNUSED_PARAM(constraints); UNUSED_PARAM(count);
-	}
-
-	void SimulationEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
-	{
-		if (!nbPairs) return;
-
-		for (unsigned i = 0; i < nbPairs; ++i)
+		if (m_Actors.contains(entity->GetGUID()))
+			m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(transform);
+		else
 		{
-			unsigned actor0Index = pairHeader.actors[0]->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned actor1Index = pairHeader.actors[1]->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned flags = 0;
-
-			// ensure that actor0Index is lesser than (<) actor1Index 
-			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
-
-			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH)
-				flags |= CollisionHistoryEntryEnum::Enter;
-
-			if (pairs->flags & PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)
-				flags |= CollisionHistoryEntryEnum::Exit;
-
-			// if (!(pairs->flags & (PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH | PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH)))  // trust...right?
-			if (pairs->events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
-				flags |= CollisionHistoryEntryEnum::Stay;
-
-			m_CollisionHistory.emplace_back(actor0Index, actor1Index, flags);
+			std::string error{ "[PhysicsSystem::UpdateActorPose]: m_Actors does not contain entity " + entity->GetName() };
+			TRE_ASSERT(error.c_str());
+			std::cout << error << "\n";
 		}
 	}
 
-	void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
+	void PhysicsSystem::CreatePhysXScene()
 	{
-		UNUSED_PARAM(actors); UNUSED_PARAM(count);
+		if (m_Scene)
+			PX_RELEASE(m_Scene);
+
+		PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f * 25, 0.0f);
+
+		//A cpu thread for the scene
+		PX_RELEASE(m_Dispatcher);
+
+		m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
+		assert(m_Dispatcher);
+		sceneDesc.cpuDispatcher = m_Dispatcher;
+
+		// SimulationEventCallback must inherit PxSimulationEventCallback
+		// PUBLICLY in order to work, otherwise...
+		// C2243: 'type cast': conversion from 'TRE::SimulationEventCallback *'
+		// to 'physx::PxSimulationEventCallback *' exists, but is inaccessible
+		sceneDesc.simulationEventCallback = &m_SimulationEventCallback;
+
+		//A thread that will do collision management
+		sceneDesc.filterShader = SimulationFilterShader;
+
+		sceneDesc.broadPhaseType = PxBroadPhaseType::eABP;
+
+		m_Scene = m_Physics->createScene(sceneDesc);
+		assert(m_Scene);
 	}
 
-	void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+#pragma region Collision Layers
+	void PhysicsSystem::SetCollisionMatrix(const CollisionMatrix& matrix)
 	{
-		if (!count) return;
+		m_CollisionMatrix = matrix;
+	}
 
-		for (unsigned i = 0; i < count; ++i)
+	PhysicsSystem::CollisionMatrix PhysicsSystem::GetCollisionMatrix()
+	{
+		return m_CollisionMatrix;
+	}
+
+	void PhysicsSystem::SaveCollisionMatrix()
+	{
+		constexpr const char* collisionMatrixFileName = "Resources/CollisionMatrix.json";
+		constexpr const char* collisionMatrixObjectName = "Collision Matrix Values";
+
+		rapidjson::Document doc;
+		doc.SetObject();
+		WriteToExternalFile(doc, collisionMatrixFileName);
+
+		ObjectSerializer serializer(collisionMatrixFileName);
+		ObjectBuilder objBuilder;
+		Allocator& allocator = serializer.getDoc().GetAllocator();
+
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
 		{
-			assert(pairs[i].triggerActor->is<PxRigidActor>());
-			assert(pairs[i].otherActor->is<PxRigidActor>());
+			std::string variableName = CollisionLayer::m_LayerNameList[i].first;
+			const int value = static_cast<int>(m_CollisionMatrix[i].to_ullong());
+			objBuilder.insertValue(variableName, value, allocator);
+		}
 
-			unsigned actor0Index = pairs[i].triggerActor->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned actor1Index = pairs[i].otherActor->is<PxRigidActor>()->getInternalActorIndex();
-			unsigned flags = 0;
+		serializer.AddObjectToDoc(objBuilder.getValue(), collisionMatrixObjectName);
+		serializer.writeToDoc(collisionMatrixFileName);
+	}
 
-			// ensure that actor0Index is lesser than (<) actor1Index 
-			if (actor0Index > actor1Index) std::swap(actor0Index, actor1Index);
+	void PhysicsSystem::LoadCollisionMatrix()
+	{
+		constexpr const char* collisionMatrixFileName = "Resources/CollisionMatrix.json";
+		constexpr const char* collisionMatrixObjectName = "Collision Matrix Values";
 
-			const auto& pair = pairs[i];
-			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
-				flags |= TriggerHistoryEntryEnum::Enter;
+		rapidjson::Document doc;
+		doc.SetObject();
+		ReadExternalFile(doc, collisionMatrixFileName);
 
-			if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
-				flags |= TriggerHistoryEntryEnum::Exit;
-
-			// Because of https://nvidia-omniverse.github.io/PhysX/physx/5.1.3/_build/physx/latest/struct_px_pair_flag.html?highlight=enotify_touch_persists#_CPPv4N10PxPairFlag4Enum22eNOTIFY_TOUCH_PERSISTSE,
-			// IsTriggerStay needs to use the results of eNOTIFY_TOUCH_FOUND and eNOTIFY_TOUCH_LOST, which is done in GameUpdate().
-			m_TriggerHistory.emplace_back(actor0Index, actor1Index, flags);
+		const ObjectDeserializer deserializer(collisionMatrixFileName);
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
+		{
+			std::string variableName = CollisionLayer::m_LayerNameList[i].first;
+			int value = 0;
+			if (!deserializer.get_value(collisionMatrixObjectName, variableName.c_str(), value))
+				TRE_CORE_ERROR("Unable to read value with name \"{0}.{1}\"", collisionMatrixObjectName, variableName);
+			m_CollisionMatrix[i] = value;
 		}
 	}
 
-	void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
+	void PhysicsSystem::ApplyCollisionMatrix()
 	{
-		UNUSED_PARAM(actors); UNUSED_PARAM(count);
+		for (PxU16 i = 0; i < m_CollisionMatrix.size(); ++i)
+			for (PxU16 j = 0; j < m_CollisionMatrix.size(); ++j)
+				PxSetGroupCollisionFlag(i, j, m_CollisionMatrix[i].test(j));
+	}
+
+	void PhysicsSystem::ChangeCollisionLayer(const Entity& entity) const
+	{
+		// get the collider component and obtain the new layer from it
+		int layer = 0;
+
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			layer = entity->GetComponent<BoxCollider>().m_CollisionLayer.m_LayerID;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			layer = entity->GetComponent<SphereCollider>().m_CollisionLayer.m_LayerID;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			layer = entity->GetComponent<CapsuleCollider>().m_CollisionLayer.m_LayerID;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			layer = entity->GetComponent<CylinderCollider>().m_CollisionLayer.m_LayerID;
+
+		// ensure that it's between 0 and 31
+		const PxU16 value = static_cast<PxU16>(layer);
+		const PxU16 group = value <= 31 ? value : 0;
+
+		PxSetGroup(*m_Actors[entity->GetGUID()].m_RigidDynamic, group);
+	}
+
+	void PhysicsSystem::SetLayerNames()
+	{
+		constexpr const char* collisionLayerFileName = "../Resources/CollisionLayerNames.txt";
+		std::ifstream file(collisionLayerFileName);
+		if (!file)
+			return;
+
+		for (int i = 0; i < CollisionLayer::TOTAL; ++i)
+		{
+			std::string huh;
+			file >> huh;
+			CollisionLayer::m_LayerNameList[i].first = huh;
+		}
+
+		file.close();
+	}
+#pragma endregion
+
+	void PhysicsSystem::ChangeIsActive(const Entity& entity) const
+	{
+		auto& [rigidDynamic, attachedComponents, _unused1, _unused2] = m_Actors[entity->GetGUID()];
+		UNUSED_VALUE(_unused1);
+		UNUSED_VALUE(_unused2);
+		bool isActive = true;
+
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			isActive = entity->GetComponent<BoxCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			isActive = entity->GetComponent<SphereCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			isActive = entity->GetComponent<CapsuleCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			isActive = entity->GetComponent<CylinderCollider>().m_IsActive;
+
+		rigidDynamic->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !isActive);
+	}
+
+	void PhysicsSystem::ChangeMaterial(const Entity& entity) const
+	{
+		auto& [rigidDynamic, attachedComponents, _unused1, _unused2] = m_Actors[entity->GetGUID()];
+		UNUSED_VALUE(_unused1);
+		UNUSED_VALUE(_unused2);
+
+		int material = PhysicsMaterial::Default;
+
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			material = entity->GetComponent<BoxCollider>().m_PhysicsMaterial.m_MaterialID;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			material = entity->GetComponent<SphereCollider>().m_PhysicsMaterial.m_MaterialID;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			material = entity->GetComponent<CapsuleCollider>().m_PhysicsMaterial.m_MaterialID;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			material = entity->GetComponent<CylinderCollider>().m_PhysicsMaterial.m_MaterialID;
+
+		// there are only 4 shapes that can possibly be added - Sphere, Box, Capsule & Cylinder
+		PxShape* shapes[4] = { nullptr };
+		unsigned numberOfShapes = rigidDynamic->getShapes(shapes, 4);
+
+		for (unsigned i = 0; i < numberOfShapes; ++i)
+		{
+			if (material == PhysicsMaterial::Default)
+				shapes[i]->setMaterials(&m_DefaultMaterial, 1);
+			else if (material == PhysicsMaterial::Frictionless)
+				shapes[i]->setMaterials(&m_FrictionlessMaterial, 1);
+		}
+	}
+
+	void PhysicsSystem::SetIsActive(const Entity& entity, bool state) const
+	{
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			entity->GetComponent<BoxCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			entity->GetComponent<SphereCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			entity->GetComponent<CapsuleCollider>().m_IsActive = state;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			entity->GetComponent<CylinderCollider>().m_IsActive = state;
+
+		// now that the bool inside the component has been changed, the change function can be called
+		ChangeIsActive(entity);
+	}
+
+	bool PhysicsSystem::GetIsActive(const Entity& entity) const
+	{
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			return entity->GetComponent<BoxCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			return entity->GetComponent<SphereCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			return entity->GetComponent<CapsuleCollider>().m_IsActive;
+		else if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			return entity->GetComponent<CylinderCollider>().m_IsActive;
+		else
+			return false;
 	}
 
 	void PhysicsSystem::UpdateColliderData(const Entity& entity, const glm::vec3& offset)
@@ -960,11 +1247,33 @@ namespace TRE
 		const glm::vec3 eulerAnglesInRad = transform.m_Rotation * PI / 180.0f;
 		const glm::quat rotQuat{ eulerAnglesInRad };
 		const auto xform = PxTransform(VEC3_CAST(PxVec3, transform.m_Position + offset), PxQuat{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w });
-		
+
 		m_Actors[entity->GetGUID()].m_RigidDynamic->setGlobalPose(xform);
+
+		const unsigned attachedComponents = m_Actors[entity->GetGUID()].m_AttachedComponents;
+
+		if (attachedComponents & PhysicsComponentTypes::SphereCollider)
+			entity->GetComponent<SphereCollider>().m_Offset = offset;
+
+		if (attachedComponents & PhysicsComponentTypes::BoxCollider)
+			entity->GetComponent<BoxCollider>().m_Offset = offset;
+
+		if (attachedComponents & PhysicsComponentTypes::CapsuleCollider)
+			entity->GetComponent<CapsuleCollider>().m_Offset = offset;
+
+		if (attachedComponents & PhysicsComponentTypes::CylinderCollider)
+			entity->GetComponent<CylinderCollider>().m_Offset = offset;
+	}
+
+	void PhysicsSystem::SetPauseState(bool state)
+	{
+		m_PauseState = state;
+	}
+
+	bool PhysicsSystem::GetPauseState()
+	{
+		return m_PauseState;
 	}
 }
-
-// collision layering!! -> PxSetGroupCollisionFlag()
 
 // DISCO RGB FONT FOR EDITOR COMPONENTS?????

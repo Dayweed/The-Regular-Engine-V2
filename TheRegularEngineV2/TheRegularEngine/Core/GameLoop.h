@@ -18,6 +18,9 @@ namespace TRE
 
 		bool IsGameRunning();
 
+		// This checks if the game had played and not stopped (true)
+		bool GetGameSimulating();
+
 		bool GetSceneReset();
 		void SetSceneReset(bool reset);
 
@@ -31,9 +34,12 @@ namespace TRE
 		void ToggleRun(ToggleRunEvent& event);
 		void Reset(ResetSceneEvent& event);
 
+		void InstantReset();	// Note! This will force everything to be resetted and deleted!
+
 	private:
 		// Game Loop
 		bool m_GameRunning{ false };
+		bool m_GameSimulating{ false };	// This checks if the game had played and not stopped (true)
 
 		// Game Got Reseted this scene
 		bool m_SceneReset{ false };
@@ -44,6 +50,9 @@ namespace TRE
 		bool m_DisplayingPrefab{ false };
 
 		entt::registry m_BackUp;
+
+		std::string m_BackUpSceneName;
+		std::string m_BackUpSceneFilePath;
 
 		// Delete possible copy ctor and assignment to ensure singleton
 		GameLoop() {};

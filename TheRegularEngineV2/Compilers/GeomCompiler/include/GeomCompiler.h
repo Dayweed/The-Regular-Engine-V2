@@ -5,11 +5,20 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 namespace TRE
 {
 	class GeomCompiler
 	{
 		public:
+			struct anim_package
+			{
+				std::vector<Animation>          m_Animations;
+			};
+
 			static GeomCompiler& Instance()
 			{
 				static GeomCompiler instance;
@@ -19,6 +28,9 @@ namespace TRE
 			void Compile(const GeomDescriptorFile& geomDesc);
 
 			std::unique_ptr<Geom> GetGeom() { return std::move(m_Geom); }
+			const Skeleton& GetSkeleton() { return m_Skeleton; }
+			const anim_package& GetAnimation() { return m_AnimPackage; }
+
 		private:
 			struct Refs
 			{
@@ -37,9 +49,6 @@ namespace TRE
 				IColor Tangent;
 				IColor Bitangent;
 				IColor Color;
-
-				//glm::ivec4 BoneWeights;
-				//glm::ivec4 BoneIndex;
 			};
 
 			struct InputMeshPart
@@ -50,6 +59,8 @@ namespace TRE
 				std::vector<FullVertex> Vertices;
 				std::vector<std::uint32_t> Indices;
 				std::uint32_t MaterialIndex;
+
+				std::vector<BoneInfluence> m_BoneInfluence;
 			};
 
 			struct CompressedMeshPart
@@ -62,13 +73,16 @@ namespace TRE
 				std::vector<std::uint32_t> Indices;
 				std::uint32_t MaterialIndex;
 
+				std::vector<BoneInfluence> m_BoneInfluence;
+
 				glm::vec3 PosCompressionOffset;
 				glm::vec2 UVCompressionOffset;
 			};
+
 		private:
 			bool SanityCheck();
-			void ImportData(const GeomDescriptorFile& geomDesc);
-			void ImportStaticMesh(std::vector<InputMeshPart>& inputMesh);
+			void ImportGeometry(const GeomDescriptorFile& geomDesc);
+			void ImportStaticMesh(std::vector<InputMeshPart>& inputMesh, const GeomDescriptorFile& geomDesc);
 			bool ImportGeometryValidateMesh(const aiMesh& AssimpMesh, int& iTexture, int& iColor);
 			void MergeData(std::vector<InputMeshPart>& inputMesh);
 			void Optimize(std::vector<InputMeshPart>& inputMesh);
@@ -76,59 +90,24 @@ namespace TRE
 			std::unique_ptr<TempGeom> CreateSkinGeom(const std::vector<CompressedMeshPart>&& compressedMesh);
 			void CastToGeom(std::unique_ptr<TempGeom> tempGeom);
 
+			void ImportSkeleton();
+			void ImportAnimations();
+			void ImportGeometrySkin(std::vector<InputMeshPart>& MyNodes);
+
 		private:
 			const aiScene*			m_Scene;
 			std::vector<Refs>		m_References;
 			std::unique_ptr<Geom>	m_Geom;
 			std::string				m_filePath;
+			
+			bool m_IsAnimatable = false;
+			Skeleton m_Skeleton;
+			anim_package m_AnimPackage;
+
 		private:
-			GeomCompiler() {};
+			GeomCompiler() = default;
 			GeomCompiler(GeomCompiler const&) = delete;
 			void operator=(GeomCompiler const&) = delete;
 			void* operator new(size_t) = delete;
-	};
-
-	struct Skeleton
-	{
-		struct Bone
-		{
-			std::string Name;			//Bone Name
-			glm::mat4   InvBind;		//Transform matrix to bone space
-			glm::mat4	NeutralPose;	//idk
-			int			Parent;
-		};
-
-		int FindBone(std::string BoneName) const
-		{
-			int x = 0;
-			for (auto& B : Bones)
-			{
-				if (BoneName == B.Name)
-					return x;
-				else
-					++x;
-			}
-			return -1;
-		}
-
-		std::vector<Bone> Bones;
-	};
-
-	struct Bone_KeyFrames
-	{
-		std::vector<glm::mat3> Transform;
-	};
-
-	struct Animation
-	{
-		std::string					Name;
-		int							FPS;
-		float						TimeLength;
-		std::vector<Bone_KeyFrames> BoneKeyFrames;
-	};
-
-	struct AnimationPackage
-	{
-		std::vector<Animation> Animations;
 	};
 }

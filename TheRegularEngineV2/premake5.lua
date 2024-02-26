@@ -21,9 +21,10 @@ include "Dependencies/ImGui"
 include "Dependencies/Math"
 -- include "Dependencies/MeshOptimizer"
 -- include "Dependencies/CompilerLib"
--- include "Compilers/TextureCompiler"
 -- include "Compilers/GeomCompiler"
+-- include "Compilers/TextureCompiler"
 -- include "Compilers/ShaderCompiler"
+-- include "Compilers/FontCompiler"
 group ""
 
 project "TheRegularEngine"
@@ -33,10 +34,17 @@ project "TheRegularEngine"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings "Extra"
+	
+	-- get the Math project to build by this point
+	dependson {"Math"}
+
 
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
+
+	-- ignore those dang PDB warnings (LNK4099)
+	linkoptions {"/ignore:4099"}
 
 	pchheader "pch.h"
 	pchsource "TheRegularEngine/pch.cpp"
@@ -91,7 +99,7 @@ project "TheRegularEngine"
 		"%{Library.PhysX_64}",
 		"%{Library.PhysX_Character}",
 		"%{Library.PhysX_Common}",
-		--"%{Library.PhysX_Cooking}",
+		"%{Library.PhysX_Cooking}",
 		"%{Library.PhysX_Extension}",
 		"%{Library.PhysX_Foundation}",
 		"%{Library.PhysX_Pvd}",
@@ -102,6 +110,8 @@ project "TheRegularEngine"
 		"%{Library.Math}",
 		"%{Library.Compiler}",
 	}
+
+	buildoptions{"/bigobj"}
 
 	filter "configurations:Debug"
 		symbols "On"
@@ -147,6 +157,11 @@ project "TheRegularEditor"
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
+
+	dependson {"TRE-ScriptStorage"}
+	
+	-- ignore those dang PDB warnings (LNK4099)
+	linkoptions {"/ignore:4099"}
 
 	links 
 	{ 
@@ -224,6 +239,11 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Coroutine}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.GLM}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Tuple}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Core}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Storage}" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -244,22 +264,33 @@ project "TheRegularEditor"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Coroutine}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.GLM}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Tuple}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Core}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Storage}" "%{cfg.targetdir}"',
 		}
-
 
 project "TRE-Runtime"
 	location "TRE-Runtime"
-	kind "ConsoleApp"
+	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
 	warnings "Extra"
-	
+
+	targetname "HoleyMoley"
+
 	-- (DON'T DELETE THIS!)
 	targetdir ("Executable_" .. outputdir .. "/")
 	objdir ("Executable_" .. outputdir .. "/")
 
-	links 
+	dependson {"TRE-ScriptStorage"}
+
+	-- ignore those dang PDB warnings (LNK4099)
+	linkoptions {"/ignore:4099"}
+
+	links
 	{ 
 		"TheRegularEngine",
 		"ImGui"
@@ -267,6 +298,7 @@ project "TRE-Runtime"
 
 	defines 
 	{
+		"GAME",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
@@ -279,13 +311,14 @@ project "TRE-Runtime"
 		"%{prj.name}/src/**.c", 
 		"%{prj.name}/src/**.hpp", 
 		"%{prj.name}/src/**.cpp", 
+		"%{prj.name}/TRE-Runtime.rc",
 	}
 
 	includedirs 
 	{
 		"TheRegularEngine",
 		"Dependencies/Math/include",
-		-- "%{IncludeDir.Assimp}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FMOD}",
 		-- "%{IncludeDir.Freetype}",
 		-- "%{IncludeDir.GLFW}",
@@ -327,6 +360,12 @@ project "TRE-Runtime"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Debug}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			--'{COPY} "%{Binaries.Mono}/Debug/mono-2.0-sgen.pdb" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Coroutine}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.GLM}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Tuple}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Core}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Storage}" "%{cfg.targetdir}"',
 		}
 
 	filter "configurations:Release"
@@ -347,7 +386,14 @@ project "TRE-Runtime"
 			'{COPY} "%{Binaries.Assimp}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.FMOD_Release}" "%{cfg.targetdir}"',
 			'{COPY} "%{Binaries.Mono}/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Coroutine}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.GLM}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Tuple}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Core}" "%{cfg.targetdir}"',
+			-- '{COPY} "%{ResourcesScripts.Storage}" "%{cfg.targetdir}"',
 		}
+
+		
 
 project "TRE-ScriptCore"
 	location "TRE-ScriptCore"
@@ -357,6 +403,10 @@ project "TRE-ScriptCore"
 
 	targetdir ("Resources/Scripts")
 	objdir ("Resources/Scripts")
+	
+	libdirs"Resources/Scripts"
+	links"Coroutine.dll"
+	links"GlmSharp.dll"
 
 	files 
 	{
@@ -378,12 +428,20 @@ project "TRE-ScriptStorage"
 	dotnetframework "4.7.2"
 
 	-- (DON'T DELETE THIS!)
-	targetdir ("Executable_" .. outputdir .. "/")
-	objdir ("Executable_" .. outputdir .. "/")
+	targetdir ("Resources/Scripts")
+	objdir ("Resources/Scripts")
+	
+	libdirs "Resources/Scripts"
+	links "TRE-ScriptCore.dll"
+	links"Coroutine.dll"
+	links"GlmSharp.dll"
+	
+	dependson {"TRE-ScriptCore"}
 
 	files 
 	{
 		"%{prj.name}/src/**.cs",
+		"%{TheRegularEngineV2}/Scripts/**.cs"
 	}
 
 	filter "configurations:Debug"

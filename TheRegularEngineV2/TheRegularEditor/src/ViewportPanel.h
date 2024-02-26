@@ -37,6 +37,9 @@ namespace TRE
 			void OnKeyboardClick(const InputEvent& event);
 			void OnGridAndSnap(const GridAndSnapEvent& event);
 			void OnGizmoLocal(const LocalGloalGizmoEvent& event);
+			void OnGizmoOperation(const GizmoOperationEvent& event);
+			void OnEditorCamera(const EditorCameraEvent& event);
+
 		private:
 			//Gonna rewrite in editor camera next time
 			glm::vec2 PanSensitivity(const float viewportWidth, const float viewportHeight);
@@ -62,10 +65,12 @@ namespace TRE
 			bool m_IsViewportHovered = false;
 			bool m_IsViewportFocused = false;
 			glm::vec2 m_MousePos{};
-			float m_ZoomSensitivity = 200.f;
-			float m_PanSpeed = 20.f;
-			float m_RotationSensitivity = 0.75f;
+			float m_ZoomSensitivity = 1000.f;
+			float m_PanSpeed = 100.f;
+			float m_RotationSensitivity = 4.f;
 
 			glm::vec3 m_ClickRay{};
+
+			std::uint32_t m_ClickCount{};
 	};
 }

@@ -2,6 +2,12 @@
 
 namespace TRE
 {
+	struct QuadVertex
+	{
+		glm::vec3 Position;
+		glm::vec2 TexCoord;
+	};
+
 	class VertexBuffer
 	{
 		public:

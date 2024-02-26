@@ -52,84 +52,12 @@ namespace TRE
 		bool m_Fake; //This value is to ensure it can compile and be registered
 	};
 
-
-	struct NESTCOMP
-	{
-		char arr_c;
-
-		NESTCOMP() = default;
-		~NESTCOMP() = default;
-
-		// Can use NLOHMANN_DEFINE_TYPE_INTRUSIVE even with functions
-		void UselessFunction()
-		{
-			return;
-		}
-
-		// Use this if dont have struct/class variables
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(NESTCOMP, arr_c)
-	};
-
-	struct FEL : property::base
-	{
-		std::vector<float> vec_i{};
-		float arr_i[3]{};
-		NESTCOMP nestedstruct{};
-		std::string tobeignored{ "(>-<)" };
-
-		FEL() = default;
-		~FEL() = default;
-		property_vtable()           // Allows the base class to get these properties  
-
-		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		friend void to_json(nlohmann::json& j, const FEL&f) // Serialize
-		{
-			j = nlohmann::json{
-				{ "vector", f.vec_i },
-				{ "array", f.arr_i },
-				{ "nested", f.nestedstruct }
-			};
-		}
-		friend void from_json(const nlohmann::json& j, FEL& f) // Deserialize
-		{
-			if (j.contains("vector"))
-				f.vec_i = j.at("vector").get<std::vector<float>>();
-			if (j.contains("array"))
-				j.at("array").get_to(f.arr_i);
-			if (j.contains("nested"))
-				j.at("nested").get_to(f.nestedstruct);
-		}
-	};
-
-	struct FAKEFEL : property::base
-	{
-		std::string fakeValue{ "NULL" };
-		int fakeInt{ 120 };
-
-		property_vtable()           // Allows the base class to get these properties  
-
-		// MUST Use BOTH of this if have variables that are struct/class to serialize
-		friend void to_json(nlohmann::json& j, const FAKEFEL& f) // Serialize
-		{
-			j = nlohmann::json{
-				{ "fakeValue", f.fakeValue },
-				{ "fakeInt", f.fakeInt },
-			};
-		}
-		friend void from_json(const nlohmann::json& j, FAKEFEL& f) // Deserialize
-		{
-			if (j.contains("fakeValue"))
-				f.fakeValue = j.at("fakeValue");
-			if (j.contains("nested"))
-				f.fakeInt = j.at("fakeInt");
-		}
-	};
-
 	struct Properties : property::base
 	{
 		std::string m_GUID{};
 		std::string m_Tag{};
 		std::string m_Name{};		// To get the name
+		int m_Index{};			// To find the position of the entity
 		bool m_Active{ true };		// To check if it is active
 		bool m_IsDirty{ false };	// To check if active got changed (Scripting ONLY)
 
@@ -146,7 +74,8 @@ namespace TRE
 				{ "m_Tag", t.m_Tag },
 				{ "m_Active", t.m_Active },
 				{ "m_GUID", t.m_GUID },
-				{ "m_Name", t.m_Name }
+				{ "m_Name", t.m_Name },
+				{ "m_Index", t.m_Index }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, Properties& t) // Deserialize
@@ -159,6 +88,8 @@ namespace TRE
 				t.m_GUID = j.at("m_GUID");
 			if (j.contains("m_Name"))
 				t.m_Name = j.at("m_Name");
+			if (j.contains("m_Index"))
+				t.m_Index = j.at("m_Index");
 		}
 	};
 
@@ -320,6 +251,15 @@ namespace TRE
 	class ECSManager
 	{
 	public:
+
+		// TO CHANGE
+		void ConstructPhysicPrefab(Entity parent);
+
+		void UpdateEntityChildProperties(std::string parentGUID);
+
+		void UpdateEntityOrder();	// Update all Entity m_Index based on their current order in the EntityOrder
+		void SortEntityOrder();
+
 		/* !
 		@function		Instance
 		@author			Isaiah Lim (lim.i@digipen.edu)
@@ -623,9 +563,7 @@ namespace TRE
 
 		bool IsValidEntity(Entity ent);
 
-		// TODELETE
-		void TESTRUN();
-		void STRESSTEST();
+		void UpdateChildrenOrder(Entity child, int& order);
 
 	private:
 		friend class MemoryManager;
@@ -640,6 +578,7 @@ namespace TRE
 		// EnTT stuff
 		entt::registry m_Registry;
 
+		std::vector<std::string> m_EntityOrder;
 		std::unordered_map<std::string, Entity> m_EntityList;
 		std::unordered_map<ENTTID, Entity> m_EnttIDList;
 
@@ -660,12 +599,6 @@ namespace TRE
 		{
 			ent->RemoveComponent<T>();
 		}
-
-		/*template <typename T>
-		static void TESTFUNCTION(int ent)
-		{
-			std::cout << ">>>> " << typeid(T).name() << "|" << ent << "\n";
-		}*/
 
 		/* !
 		@function		DestroyEntity
@@ -707,6 +640,7 @@ namespace TRE
 	private:
 		nlohmann::json m_Root;
 		nlohmann::json m_Current;
+		int m_EntityNo;
 
 		std::string m_FileName;
 	};
@@ -737,7 +671,7 @@ namespace TRE
 		entt::exclude_t<Undeployed> u{};
 
 		auto view = m_Registry.view<Comp, Others...>(u);
-		objects.reserve(m_EntityList.size());
+		objects.reserve(m_EntityOrder.size());
 
 		// Get all Entity owning the entities
 		for (entt::entity obj : view)
@@ -747,6 +681,8 @@ namespace TRE
 				objects.emplace_back(m_EnttIDList[static_cast<ENTTID>(obj)]);
 			}
 		}
+
+		std::reverse(objects.begin(), objects.end());
 
 		return objects;
 	}
@@ -791,7 +727,7 @@ namespace TRE
 	bool Ent::HasComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
-		if (this == nullptr || &m_Entity == nullptr)
+		if (shared_from_this() == nullptr || this == nullptr || &m_Entity == nullptr)
 		{
 			std::string funcName{ __FUNCTION__ };
 			TRE_CORE_ERROR("[" + funcName + "] Object is no longer valid (this or entity is nullptr)");
@@ -834,7 +770,7 @@ namespace TRE
 	T& Ent::GetComponent()
 	{
 		// Ensure cannot get a component from a freed object and entity
-		if (this == nullptr || &m_Entity == nullptr)
+		if (this == nullptr || &m_Entity == nullptr || shared_from_this() == nullptr)
 		{
 			std::string funcName{ __FUNCTION__ };
 			TRE_CORE_ERROR("[" + funcName + "] Object is no longer valid (this or entity is nullptr)");
@@ -856,7 +792,7 @@ namespace TRE
 			std::string compName{ typeid(T).name() };
 			if (typeid(T) == typeid(Properties))
 			{
-				TRE_CORE_ERROR("[" + funcName + "] Object does not have the component " + compName);
+				TRE_CORE_ERROR("[" + funcName + "] Object (ID " + std::to_string(static_cast<ENTTID>(m_Entity)) + ") does not have the component " + compName);
 			}
 			else
 			{
@@ -895,13 +831,17 @@ namespace TRE
 	template <typename T>
 	void ECSOutputArchive::operator()(entt::entity ent, const T& t)
 	{
-		if (ECSManager::Instance().GetRegistry().valid(ent))
-		{
-			m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+		m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
 
-			nlohmann::json json = t;
-			m_Current.push_back(json);
-		}
+		nlohmann::json json = t;
+		m_Current.push_back(json);
+		//if (ECSManager::Instance().GetRegistry().valid(ent))
+		//{
+		//	m_Current.push_back(static_cast<uint32_t>(ent)); // persist the entity id of the following component
+
+		//	nlohmann::json json = t;
+		//	m_Current.push_back(json);
+		//}
 	}
 
 	template <typename T>
@@ -940,19 +880,45 @@ namespace TRE
 property_begin(TRE::Properties)
 {
 	property_var(m_Name).Name("Name"),
+	property_var_fnbegin("Index", int)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_Index;
+		}
+		else
+		{
+			if (Self.m_Index != InOut)
+			{
+				Self.m_Index = InOut;
+				TRE::ECSManager::Instance().SortEntityOrder(); // Doing this here to test immediate response after value is editted
+			}
+		}
+
+	} property_var_fnend(),
 	//property_var(m_GUID).Name("GUID"),
+	property_var_fnbegin("GUID", std::string)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_GUID;//			
+		}
+
+	} property_var_fnend(),
 	property_var(m_Tag).Name("Tag"),
-	property_var(m_Active).Name("Active")
+	property_var_fnbegin("Active", bool)
+	{
+		if (isRead)
+		{
+			InOut = Self.m_Active;
+		}
+		else
+		{
+			if (Self.m_Active != InOut)
+			{
+				Self.m_Active = InOut;
+				TRE::ECSManager::Instance().UpdateEntityChildProperties(Self.m_GUID);
+			}
+		}
+	} property_var_fnend(),
 } property_vend_h(TRE::Properties)
-
-property_begin(TRE::FEL)
-{
-	property_var(vec_i).Name("vec_i"),
-	property_var(tobeignored).Name("tobeignored")
-} property_vend_h(TRE::FEL)
-
-property_begin(TRE::FAKEFEL)
-{
-	property_var(fakeValue).Name("fakeValue"),
-	property_var(fakeInt).Name("fakeInt")
-} property_vend_h(TRE::FAKEFEL)

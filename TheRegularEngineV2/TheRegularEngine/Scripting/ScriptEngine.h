@@ -70,7 +70,7 @@ namespace TRE
 	{
 	public:
 		ScriptClass() = default;
-		ScriptClass(const std::string& classNamespace,const std::string& className);
+		ScriptClass(const std::string& classNamespace,const std::string& className, bool isCore);
 
 		MonoObject* Instantiate();
 		MonoMethod* GetMethod(const std::string& name, int paramCount);
@@ -78,6 +78,7 @@ namespace TRE
 		MonoClass* GetMonoClass();
 
 		std::map<std::string, ScriptField>& GetFields() { return m_Fields; }
+		std::string GetScriptClassName() { return m_ClassName; }
 
 
 	private:
@@ -97,6 +98,7 @@ namespace TRE
 	public:
 
 		ScriptInstance(std::shared_ptr<ScriptClass> scriptClass, std::string entity);
+		~ScriptInstance();
 
 		void OnEnableInvoke();
 		void OnDisableInvoke();
@@ -105,8 +107,12 @@ namespace TRE
 		void OnStartInvoke();
 		void OnUpdateInvoke();
 		void OnLateUpdateInvoke();
+		void OnTriggerEnterInvoke(Entity other);
 		void OnTriggerStayInvoke(Entity other);
+		void OnTriggerExitInvoke(Entity other);
+		void OnCollisionEnterInvoke(Entity other);
 		void OnCollisionStayInvoke(Entity other);
+		void OnCollisionExitInvoke(Entity other);
 
 		std::shared_ptr<ScriptClass> GetScriptClass() { return m_ScriptClass; }
 
@@ -148,8 +154,14 @@ namespace TRE
 		MonoMethod* m_StartMethod = nullptr;
 		MonoMethod* m_UpdateMethod = nullptr;
 		MonoMethod* m_LateUpdateMethod = nullptr;
+		MonoMethod* m_TriggerEnterMethod = nullptr;
 		MonoMethod* m_TriggerStayMethod = nullptr;
+		MonoMethod* m_TriggerExitMethod = nullptr;
+		MonoMethod* m_CollisionEnterMethod = nullptr;
 		MonoMethod* m_CollisionStayMethod = nullptr;
+		MonoMethod* m_CollisionExitMethod = nullptr;
+
+		std::uint32_t m_GCHandle{};
 
 		inline static char s_fieldBuffer[16];
 
@@ -163,24 +175,26 @@ namespace TRE
 		MonoDomain* RootDomain = nullptr;
 		MonoDomain* AppDomain = nullptr;
 
-		MonoAssembly* MonoAssembly = nullptr;
-		MonoImage* AssemblyImage = nullptr;
+		MonoAssembly* MonoCoreAssembly = nullptr;
+		MonoImage* CoreAssemblyImage = nullptr;
+
+		MonoAssembly* MonoProjectAssembly = nullptr;
+		MonoImage* ProjectAssemblyImage = nullptr;
 
 		MonoObject* DemoObject = nullptr;
 
 		ScriptClass MainClass;
 
-#ifdef DEBUG
-		bool EnableDebugging = true;
-#else
-		bool EnableDebugging = false;
-#endif
+		// used to create dropdown box to choose what scripts that can be attached to an entity
+		std::vector<std::string> RegisteredScriptClasses;
 
 		std::unordered_map<std::string, std::shared_ptr<ScriptClass>> ScriptClasses;
-		std::unordered_map<std::string, std::shared_ptr<ScriptInstance>> ScriptInstances;
-		std::unordered_map<std::string, ScriptFieldMap> EntityFieldMap;
+		// This map will contain the ObjectID, and a Vector of all the scriptinstances that are attached to that object.
+		std::unordered_map<std::string, std::vector<std::shared_ptr<ScriptInstance>>> ScriptInstances;
+		std::unordered_map<std::string, std::unordered_map<std::string ,ScriptFieldMap>> EntityFieldMap;
 
 		std::string MonoAssemblyPath;
+		std::string MonoProjectPath;
 
 	};
 
@@ -193,9 +207,14 @@ namespace TRE
 		static void Shutdown();
 
 		static bool LoadAssembly(const std::string& assemblyPath);
+		static bool LoadProjectAssembly(const std::string& projectPath);
 		static void LoadClassesFromAssembly();
 
+		static bool RecompileScripts();
 		static void ReloadAssembly();
+
+		static void CreateCSEntityData(Entity e);
+		static void ResetAllEntityStatus();
 
 		static void InitScriptingMain();
 		static void UpdateScriptingMain();
@@ -210,10 +229,12 @@ namespace TRE
 		static void OnLateUpdateEntity(Entity e	);
 
 		// Collision
+		static void OnTriggerEnter(Entity e, Entity other);
 		static void OnTriggerStay(Entity e, Entity other);
+		static void OnTriggerExit(Entity e, Entity other);
+		static void OnCollisionEnter(Entity e, Entity other);
 		static void OnCollisionStay(Entity e, Entity other);
-
-		static void CreateScriptInstance(const std::string& className,const std::string& entityGUID);
+		static void OnCollisionExit(Entity e, Entity other);
 
 		static void PrintAllContainersHere();
 
@@ -222,6 +243,11 @@ namespace TRE
 		//Getter functions to obtain data from scriptEngineData
 
 		static MonoObject* GetManagedInstance(std::string GUID);
+
+		static std::shared_ptr<ScriptInstance> GetEntityInstance(std::string GUID);
+
+		static std::vector<std::shared_ptr<ScriptInstance>> GetAllEntityScripts(std::string GUID);
+
 
 	private:
 		static void InitMono();

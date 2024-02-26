@@ -22,8 +22,13 @@ int main(int argc, char** argv)
 		return 0;
 	}
 	descriptorFile.ReadDescriptorFile(argv[1]);
+	//std::cout << "Current path: " << std::filesystem::current_path() << std::endl;
+	//descriptorFile.ReadDescriptorFile("../../Assets/ee3e77d6dd0374c7.geom.desc");
 	TRE::GeomCompiler::Instance().Compile(descriptorFile);
-	TRE::Geom::Serialize(descriptorFile.GetResourcePath(), TRE::GeomCompiler::Instance().GetGeom());
+	TRE::Geom::Serialize(descriptorFile.GetResourcePath(), 
+	TRE::GeomCompiler::Instance().GetGeom(), 
+	TRE::GeomCompiler::Instance().GetSkeleton(), 
+	TRE::GeomCompiler::Instance().GetAnimation().m_Animations);
 	std::cout << "===Geom Compiler: Success===" << std::endl;
 
 	return 0;

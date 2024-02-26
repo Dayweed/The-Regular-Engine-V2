@@ -7,8 +7,11 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Demo">
-      <UniqueIdentifier>{6A15847C-564C-850D-FF38-6B10EB4E010F}</UniqueIdentifier>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{60E1870B-CCEA-877C-5566-9E7CC16E937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\Components">
+      <UniqueIdentifier>{752AA906-61F8-9C0C-4A8C-0D3336F97871}</UniqueIdentifier>
     </Filter>
     <Filter Include="Editor">
       <UniqueIdentifier>{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}</UniqueIdentifier>
@@ -28,8 +31,14 @@
     <Filter Include="InputHandler">
       <UniqueIdentifier>{7392D63B-5FF5-65E0-087B-9E96F4BC3163}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MiscComponents">
+      <UniqueIdentifier>{F7DD06DE-E3AB-FAE3-CC3F-6B0AB8ACD648}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcessing">
+      <UniqueIdentifier>{488E05B2-345C-F9B7-1DF0-69DE095DD51C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{ED6CDF9B-D939-3AA7-0253-284FEE7E6F35}</UniqueIdentifier>
@@ -75,6 +84,9 @@
     <ClInclude Include="Core\Parent.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\PersistentManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Prefab.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -93,17 +105,71 @@
     <ClInclude Include="Core\SystemManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Transform.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Window.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\entt.hpp">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Demo\Demo.h">
-      <Filter>Demo</Filter>
+    <ClInclude Include="ECS\Components\AnimationComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\AudioComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\AudioListenerComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\BoxCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\CameraComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\CapsuleCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\CylinderCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\DirectPathfinding.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Light.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\MeshRenderer.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\ParentingComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Particle.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Rigidbody.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\ScriptComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Slideshow.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\SphereCollider.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Sprite3DComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\TextComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Transform.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\UIComponent.h">
+      <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Editor\ImGuizmo.h">
       <Filter>Editor</Filter>
@@ -124,16 +190,7 @@
     <ClInclude Include="EventSystem\Events\InputEvent.h">
       <Filter>EventSystem\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\AnimationImporter.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\AnimationPlayer.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\AnimationStructure.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\AnimationTest.h">
+    <ClInclude Include="Graphics\AnimationSystem.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Buffer.h">
@@ -157,6 +214,15 @@
     <ClInclude Include="Graphics\EditorCamera.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Font.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\FontManager.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\FontRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\FrameBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -166,13 +232,10 @@
     <ClInclude Include="Graphics\IndexBuffer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Light.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Material.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\MeshRenderer.h">
+    <ClInclude Include="Graphics\ParticleRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Pipeline.h">
@@ -185,6 +248,9 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Renderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer2D.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\RendererContext.h">
@@ -202,7 +268,13 @@
     <ClInclude Include="Graphics\ShaderResource.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Skybox.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\SwapChain.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\UIRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\UniformBuffer.h">
@@ -226,11 +298,23 @@
     <ClInclude Include="InputHandler\KeyButton.h">
       <Filter>InputHandler</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\PhysicsComponents.h">
+    <ClInclude Include="Physics\ErrorCallback.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsComponent.h">
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="Physics\PhysicsSystem.h">
       <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\SimulationEventCallback.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\PostProcessing.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing\Vignette.h">
+      <Filter>PostProcessing</Filter>
     </ClInclude>
     <ClInclude Include="PropertyConfig.h" />
     <ClInclude Include="Resource\Resource.h">
@@ -240,9 +324,6 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="Scripting\ScriptBind.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripting\ScriptComponent.h">
       <Filter>Scripting</Filter>
     </ClInclude>
     <ClInclude Include="Scripting\ScriptEngine.h">
@@ -288,7 +369,13 @@
     <ClCompile Include="Core\Parent.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\PersistentManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Prefab.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Prefab_2.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
@@ -300,14 +387,11 @@
     <ClCompile Include="Core\Serialization.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Transform.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Window.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Demo\Demo.cpp">
-      <Filter>Demo</Filter>
+    <ClCompile Include="ECS\Components\Transform.cpp">
+      <Filter>ECS\Components</Filter>
     </ClCompile>
     <ClCompile Include="Editor\ImGuizmo.cpp">
       <Filter>Editor</Filter>
@@ -315,13 +399,7 @@
     <ClCompile Include="Editor\ImguiBuildBackend.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\AnimationImporter.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\AnimationPlayer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\AnimationTest.cpp">
+    <ClCompile Include="Graphics\AnimationSystem.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Buffer.cpp">
@@ -345,6 +423,15 @@
     <ClCompile Include="Graphics\EditorCamera.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Font.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\FontManager.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\FontRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\FrameBuffer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -363,6 +450,12 @@
     <ClCompile Include="Graphics\MeshRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Particle.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ParticleRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\Pipeline.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -373,6 +466,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Renderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer2D.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\RendererContext.cpp">
@@ -387,7 +483,16 @@
     <ClCompile Include="Graphics\ShaderReflection.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Skybox.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Slideshow.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\SwapChain.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\UIRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\UniformBuffer.cpp">
@@ -408,10 +513,19 @@
     <ClCompile Include="InputHandler\InputHandler.cpp">
       <Filter>InputHandler</Filter>
     </ClCompile>
+    <ClCompile Include="MiscComponents\DirectPathfinding.cpp">
+      <Filter>MiscComponents</Filter>
+    </ClCompile>
     <ClCompile Include="Physics\BoxCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\CapsuleCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\CylinderCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\ErrorCallback.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\PhysicsSystem.cpp">
@@ -420,8 +534,17 @@
     <ClCompile Include="Physics\Rigidbody.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\SimulationEventCallback.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing\PostProcessing.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing\Vignette.cpp">
+      <Filter>PostProcessing</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Resource.cpp">
       <Filter>Resource</Filter>

@@ -44,7 +44,15 @@ namespace TRE
 
 	Material::~Material()
 	{
+		auto Device = RendererContext::GetDevice()->GetLogicalDevice();
+		vkDeviceWaitIdle(Device);
 
+		vkFreeDescriptorSets(Device, Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->GetPool(), UINT32_T_CAST(m_DescriptorSets.size()), m_DescriptorSets.data());
+
+		if (Engine::GetInstance().GetEngineInfo().EnableEditor)
+		{
+			vkFreeDescriptorSets(Device, Engine::GetInstance().GetMainSceneRenderer()->GetDescriptorPool()->GetPool(), UINT32_T_CAST(m_EditorDescriptorSets.size()), m_EditorDescriptorSets.data());
+		}
 	}
 
 	void Material::Invalidate()
@@ -63,9 +71,15 @@ namespace TRE
 		}
 
 		m_IsValid = true;
+
+		if (!m_MaterialUBO)
+			m_MaterialUBO = std::make_shared<UniformBuffer>(static_cast<uint32_t>(sizeof(MaterialUBO)), 1);
+
+		m_UBO.m_Color = { 1.f, 1.f, 1.f, 1.f };
+		m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO));
 	}
 
-	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap)
 	{
 		if(m_IsValid == false)
 			Invalidate();
@@ -76,11 +90,22 @@ namespace TRE
 		{
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
 			{
-				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
-				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+				{
+					if(m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
 			}
 			Write.dstSet = m_DescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -89,7 +114,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap)
 	{
 		m_WriteDescriptors.clear();
 
@@ -97,11 +122,93 @@ namespace TRE
 		{
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
 			{
-				Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
 			}
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
-				Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+				{
+					if (m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
+			}
+			Write.dstSet = m_EditorDescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
+	void Material::UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, const VkDescriptorImageInfo& ShadowMap)
+	{
+		if (m_IsValid == false)
+			Invalidate();
+
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+			{
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else if (Write.dstBinding == 8)
+					Write.pBufferInfo = &uboanimation->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+				{
+					if (m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
+			}
+			Write.dstSet = m_DescriptorSets[Index];
+			m_WriteDescriptors.push_back(Write);
+		}
+
+		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
+	}
+
+	void Material::UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, const VkDescriptorImageInfo& ShadowMap)
+	{
+		m_WriteDescriptors.clear();
+
+		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
+		{
+			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+			{
+				if (Write.dstBinding == 6)
+					Write.pBufferInfo = &m_MaterialUBO->GetDescriptorBufferInfo();
+				else if (Write.dstBinding == 8)
+					Write.pBufferInfo = &uboanimation->GetDescriptorBufferInfo();
+				else
+					Write.pBufferInfo = &UBO->GetDescriptorBufferInfo();
+			}
+			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+			{
+				if (Write.dstBinding == 7)
+					Write.pImageInfo = &ShadowMap;
+				else
+				{
+					if (m_Textures[Name] != nullptr)
+						Write.pImageInfo = &m_Textures[Name]->GetDescriptorImageInfo();
+					else
+						Write.pImageInfo = &VulkanTexture::GetDefaultTexture()->GetDescriptorImageInfo();
+				}
 			}
 			Write.dstSet = m_EditorDescriptorSets[Index];
 			m_WriteDescriptors.push_back(Write);
@@ -130,6 +237,19 @@ namespace TRE
 	void Material::SetTexture(std::string Name, std::shared_ptr<VulkanTexture> textures)
 	{
 		m_Textures[Name] = textures;
+	}
+
+	const bool Material::ContainsTexture(const ResourceHandle& resourceHandle, std::string& boundedName)
+	{
+		for (const auto& texture : m_Textures)
+		{
+			if (texture.second->GetHandle() == resourceHandle)
+			{
+				boundedName = texture.first;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	void Material::Serialize()
@@ -167,6 +287,10 @@ namespace TRE
 			else
 				file << texture->GetHandleHex() << std::endl;
 		}
+		file << "End of Textures\n";
+		
+		file << "Color Value:\n";
+		file << m_UBO.m_Color.x << " " << m_UBO.m_Color.y << " " << m_UBO.m_Color.z << " " << m_UBO.m_Color.w;
 
 		file.close();
 	}
@@ -185,6 +309,8 @@ namespace TRE
 		std::string line;
 		std::string ShaderGUID;
 		std::unordered_map<std::string, std::string> textureGUIDs;
+		glm::vec4 Color{};
+		bool HasColor = false;
 
 		while (std::getline(file, line))
 		{
@@ -196,11 +322,19 @@ namespace TRE
 			{
 				while (std::getline(file, line))
 				{
+					if (line == "End of Textures")
+						break;
+
 					//Split line into texture name and texture GUID
 					const std::string name = line.substr(0, line.find(" | "));
 					const std::string textureGUID = line.substr(line.find(" | ") + 3);
 					textureGUIDs[name] = textureGUID;
 				}
+			}
+			else if (line == "Color Value:")
+			{
+				file >> Color.x >> Color.y >> Color.z >> Color.w;
+				HasColor = true;
 			}
 		}
 
@@ -221,6 +355,15 @@ namespace TRE
 			}
 		}
 
+		if (mat->IsValid() == false)
+			mat->Invalidate();
+		
+		if (HasColor)
+		{
+			mat->SetUBOData(Color);
+			mat->SetMaterialUBO();
+		}
+
 		ResourceManager::Instance().AddResource(std::move(mat));
 
 		return std::move(ResourceManager::Instance().GetResource<Material>(assetHandle));
@@ -230,21 +373,23 @@ namespace TRE
 	{
 		for (auto& [Name, Write] : m_Shader->GetWriteDescriptors())
 		{
+			if (Name == "shadowMap")
+				continue;
 			if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				m_Textures[Name] = ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID());
 		}
 	}
 
-	void MaterialDescriptorFile::Generate()
+	void MaterialDescriptorFile::Generate(const std::string& assetName)
 	{
-		const std::string& handleHex = Resource::GetGUIDHex(Resource::GenerateGUID());
+		const std::string& handleHex = Resource::GetGUIDHex(Resource::GenerateGUID(assetName));
 
 		const std::string assetFolderPath = "../Assets/";
 		const std::string resourceFolderPath = "../Resources/";
 		const std::string resource = handleHex + ".material";
 		const std::string descPath = assetFolderPath + resource + ".desc";
 		const std::string resourcePath = resourceFolderPath + resource;
-		SetAssetPath("Material_Instance.material");
+		SetAssetPath(assetName);
 		SetDescriptorPath(descPath);
 		SetResourcePath(resourcePath);
 		GenerateDescriptorFile();
@@ -252,8 +397,7 @@ namespace TRE
 
 	void MaterialDescriptorFile::Rename(const std::string& newName)
 	{
-		(void)newName;
-		SetAssetPath("Material_Instance.material");
+		SetAssetPath(newName + ".material");
 		GenerateDescriptorFile();
 	}
 

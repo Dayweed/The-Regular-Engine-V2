@@ -3,19 +3,24 @@
 
 namespace TRE
 {
-	void AssetManager::Initialize()
+	void AssetManager::Poll()
 	{
-		//Go throught assets folder and link assetname to asset handle based on available descriptor files
-		std::filesystem::path assetsPath = "../Assets";
-		std::filesystem::path resourcePath = "../Resources";
+		// this function must run once at the very beginning to initialise variables
+		static bool runOnce = false;
+
+		// but perhaps, let's not poll every frame... 
+		static std::time_t start_timer = std::time(nullptr);
+		const long long result = std::time(nullptr) - start_timer;
+		if (runOnce && result < 2) return;
+
+		//Go through assets folder and link assetName to asset handle based on available descriptor files
+		const std::filesystem::path assetsPath = "../Assets";
+		const std::filesystem::path resourcePath = "../Resources";
 		for (const auto& entry : std::filesystem::directory_iterator(assetsPath))
 		{
-			std::string extension = entry.path().extension().string();
 			if (entry.path().extension() == ".desc")
 			{
 				std::ifstream file(entry.path());
-				std::string assetHandle = entry.path().stem().string();
-				assetHandle = assetHandle.substr(0, assetHandle.find_first_of('.'));
 				if (file.is_open())
 				{
 					std::string line;
@@ -25,17 +30,42 @@ namespace TRE
 						std::getline(file, line);
 						std::string assetName = line;
 						assetName = assetName.substr(line.find_last_of('/') + 1);
-						std::string resourceCheck = resourcePath.string() + "/" + assetHandle;
+						std::string assetHandle = entry.path().stem().string();
+						assetHandle = assetHandle.substr(0, assetHandle.find_first_of('.'));
+						std::string resourceCheck = resourcePath.string() + '/' + assetHandle;
+						std::pair rscCheck = std::make_pair(Resource::GetGUIDFromHex(assetHandle), false);
+						
+						/*const std::string type = assetHandle.substr(assetHandle.find_first_of('.') + 1);
+						bool normal = false;
+						if (type == "texture")
+						{
+							TextureDescriptorFile descriptor;
+							descriptor.ReadDescriptorFile(entry.path().string());
+							const std::string aPath = descriptor.GetAssetPath();
+							if (aPath.find("Normal") != std::string::npos)
+							{
+								normal = true;
+								descriptor.SetBCn(5);
+								descriptor.GenerateDescriptorFile();
+								std::cout << "Normal map found" << aPath<<std::endl;
+							}
+						}*/
 
 						for (const auto& rscEntry : std::filesystem::directory_iterator(resourcePath))
 						{
-							std::string rscHandle = rscEntry.path().stem().string();
-							if (rscHandle == assetHandle)
+							if (rscEntry.path().stem().string() == assetHandle)
 							{
-								m_AssetNameToHandle[assetName] = Resource::GetGUIDFromHex(assetHandle);
+								rscCheck.second = true;
+								m_AssetNameToHandle[assetName] = rscCheck;
+								/*if (normal == true)
+								{
+									std::cout << assetName << std::endl;
+									CompileAndLoad<VulkanTexture>(assetName);
+								}*/
 								break;
 							}
 						}
+						
 					}
 				}
 				else
@@ -45,6 +75,12 @@ namespace TRE
 				file.close();
 			}
 		}
+
+		//RecompileAssetsOfType(ResourceType::Texture);
+
+		runOnce = true;
+		// reset timer
+		std::time(&start_timer);
 	}
 
 	void AssetManager::Shutdown()
@@ -54,22 +90,66 @@ namespace TRE
 
 	void AssetManager::AddAsset(const std::string& assetName, std::unique_ptr<Resource> asset)
 	{
-		m_AssetNameToHandle[assetName] = asset->GetHandle();
+		m_AssetNameToHandle[assetName] = std::pair(asset->GetHandle(), true);
 		ResourceManager::Instance().AddResource(std::move(asset));
 	}
 
 	void AssetManager::RemoveAsset(const std::string& assetName)
 	{
-		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName]);
+		const ResourceHandle handle = m_AssetNameToHandle[assetName].first;
+		ResourceType assetType = ResourceManager::Instance().GetResourceType(handle);
+		std::filesystem::path assetsPath = "../Assets/";
+		std::filesystem::path resourcePath = "../Resources/";
+		const std::string hexHandle = Resource::GetGUIDHex(handle);
+		//For physical files with intermediate, remove the intermediate file, descriptor file and resource file
+		if (assetType == ResourceType::Mesh)
+		{
+			assetsPath += hexHandle + ".geom" + ".desc";
+			std::filesystem::remove(assetsPath);
+			assetsPath = "../Assets/";
+			assetsPath += assetName;
+			std::filesystem::remove(assetsPath);
+			if (m_AssetNameToHandle[assetName].second)
+			{
+				resourcePath += hexHandle + ".geom";
+				std::filesystem::remove(resourcePath);
+			}
+		}
+		else if (assetType == ResourceType::Texture)
+		{
+			assetsPath += hexHandle + ".texture" + ".desc";
+			std::filesystem::remove(assetsPath);
+			assetsPath = "../Assets/";
+			assetsPath += assetName;
+			std::filesystem::remove(assetsPath);
+			if (m_AssetNameToHandle[assetName].second)
+			{
+				resourcePath += hexHandle + ".DDS";
+				std::filesystem::remove(resourcePath);
+			}
+		}
+		else if (assetType == ResourceType::Material)
+		{
+			if (m_AssetNameToHandle[assetName].second)
+			{
+				assetsPath += hexHandle + ".material" + ".desc";
+				std::filesystem::remove(assetsPath);
+				resourcePath += hexHandle + ".material";
+				std::filesystem::remove(resourcePath);
+			}
+		}
+		ResourceManager::Instance().RemoveResource(m_AssetNameToHandle[assetName].first);
+		m_AssetNameToHandle.erase(assetName);
 	}
 
 	void AssetManager::RenameAsset(const std::string& oldName, const std::string& newName)
 	{
-		m_AssetNameToHandle[newName] = m_AssetNameToHandle[oldName];
-		m_AssetNameToHandle.erase(oldName);
+		//Regenerate new handle based on new name
+		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[oldName].first);
+		const ResourceHandle newHandle = Resource::GenerateGUID(newName);
 
-		const ResourceType assetType = ResourceManager::Instance().GetResourceType(m_AssetNameToHandle[newName]);
 		//Only type geom, texture and audio has physical asset file
+		//Renaming of intermediate file
 		if (assetType != ResourceType::Material)
 		{
 			//Rename asset file and update descriptor file
@@ -87,7 +167,7 @@ namespace TRE
 
 		std::filesystem::path oldDescriptorPath = "../Assets/";
 		//Update descriptor file
-		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[newName]);
+		oldDescriptorPath += Resource::GetGUIDHex(m_AssetNameToHandle[oldName].first);
 		//Check for asset type
 		if (assetType == ResourceType::Material)
 			oldDescriptorPath += ".material";
@@ -104,40 +184,81 @@ namespace TRE
 		
 		oldDescriptorPath += ".desc";
 
+		//Rename old descriptor file
 		if (std::filesystem::exists(oldDescriptorPath))
 		{
-			std::ifstream file(oldDescriptorPath);
-
-			//Create new descriptor file temporarily for copying
-			std::filesystem::path newDescriptorPath = oldDescriptorPath;
-			newDescriptorPath += ".temp";
-
-			std::ofstream newFile(newDescriptorPath);
-			std::string line;
-			while (std::getline(file, line))
+			const std::string oldDescriptorPathString = oldDescriptorPath.string();
+			std::string assetPath;
+			std::string oldResourcePath;
+			std::string resourcePath;
+			const std::string hexHandle = Resource::GetGUIDHex(newHandle);
+			std::string newDescriptorPath = oldDescriptorPathString.substr(0, oldDescriptorPathString.find_last_of('/') + 1);
+			newDescriptorPath += hexHandle;
+			if (assetType == ResourceType::Material)
 			{
-				if (line == "Asset File Path:")
-				{
-					newFile << line << std::endl;
-					std::getline(file, line);
-					line = line.substr(0, line.find_last_of('/') + 1);
-					line += newName;
-					newFile << line << std::endl;
-				}
-				else
-				{
-					newFile << line << std::endl;
-				}
+				newDescriptorPath += ".material";
+				MaterialDescriptorFile materialDescriptor;
+				materialDescriptor.ReadDescriptorFile(oldDescriptorPathString);
+				assetPath = materialDescriptor.GetAssetPath();
+				assetPath = assetPath.substr(0, assetPath.find_last_of('/') + 1);
+				assetPath += newName;
+				materialDescriptor.SetAssetPath(assetPath);
+				oldResourcePath = materialDescriptor.GetResourcePath();
+				resourcePath = oldResourcePath.substr(0, oldResourcePath.find_last_of('/') + 1);
+				resourcePath += hexHandle;
+				resourcePath += ".material";
+				materialDescriptor.SetResourcePath(resourcePath);
+				materialDescriptor.SetDescriptorPath(newDescriptorPath);
+				materialDescriptor.Generate(newName);
 			}
-			file.close();
-			newFile.close();
+			else if (assetType == ResourceType::Mesh)
+			{
+				newDescriptorPath += ".geom";
+				GeomDescriptorFile geometryDescriptor;
+				geometryDescriptor.ReadDescriptorFile(oldDescriptorPathString);
+				assetPath = geometryDescriptor.GetAssetPath();
+				assetPath = assetPath.substr(0, assetPath.find_last_of('/') + 1);
+				assetPath += newName;
+				geometryDescriptor.SetAssetPath(assetPath);
+				oldResourcePath = geometryDescriptor.GetResourcePath();
+				resourcePath = oldResourcePath.substr(0, oldResourcePath.find_last_of('/') + 1);
+				resourcePath += hexHandle;
+				resourcePath += ".geom";
+				geometryDescriptor.SetResourcePath(resourcePath);
+				geometryDescriptor.SetDescriptorPath(newDescriptorPath);
+				geometryDescriptor.GenerateDescriptorFile();
+			}
+			else if (assetType == ResourceType::Texture)
+			{
+				newDescriptorPath += ".texture";
+				TextureDescriptorFile textureDescriptor;
+				textureDescriptor.ReadDescriptorFile(oldDescriptorPathString);
+				assetPath = textureDescriptor.GetAssetPath();
+				assetPath = assetPath.substr(0, assetPath.find_last_of('/') + 1);
+				assetPath += newName;
+				textureDescriptor.SetAssetPath(assetPath);
+				oldResourcePath = textureDescriptor.GetResourcePath();
+				resourcePath = oldResourcePath.substr(0, oldResourcePath.find_last_of('/') + 1);
+				resourcePath += hexHandle;
+				resourcePath += ".texture";
+				textureDescriptor.SetResourcePath(resourcePath);
+				textureDescriptor.SetDescriptorPath(newDescriptorPath);
+				textureDescriptor.GenerateDescriptorFile();
+			}
 
-			//Delete old descriptor file and rename new one
+			//Delete old descriptor file
 			std::filesystem::remove(oldDescriptorPath);
-			std::filesystem::rename(newDescriptorPath, oldDescriptorPath);
+			//Rename resource file if compiled already
+			if(m_AssetNameToHandle[oldName].second)
+				std::filesystem::rename(oldResourcePath, resourcePath);
 		}
 		else
 			TRE_ERROR("AssetManager::RenameAsset: Asset descriptor with name {0} does not exist", oldName);
+
+		m_AssetNameToHandle[newName] = { newHandle, m_AssetNameToHandle[oldName].second };
+		//Update resource manager
+		ResourceManager::Instance().RenameResource(m_AssetNameToHandle[oldName].first, newHandle);
+		m_AssetNameToHandle.erase(oldName);
 	}
 
 	void AssetManager::RenameAsset(const ResourceHandle resourceHandle, const std::string& newName)
@@ -152,10 +273,27 @@ namespace TRE
 
 	bool AssetManager::Contains(const ResourceHandle resourceHandle) const
 	{
-		for (auto x : m_AssetNameToHandle)
+		for (const auto& x : m_AssetNameToHandle)
 		{
-			if (x.second == resourceHandle)
+			if (x.second.first == resourceHandle)
 				return true;
+		}
+		return false;
+	}
+
+	bool AssetManager::Compiled(const std::string& assetName) const
+	{
+		if(Contains(assetName))
+			return m_AssetNameToHandle.at(assetName).second;
+		return false;
+	}
+
+	bool AssetManager::Compiled(const ResourceHandle resourceHandle) const
+	{
+		for (const auto& x : m_AssetNameToHandle)
+		{
+			if (x.second.first == resourceHandle)
+				return x.second.second;
 		}
 		return false;
 	}
@@ -163,7 +301,7 @@ namespace TRE
 	const ResourceHandle AssetManager::GetAssetHandle(const std::string& assetName) const
 	{
 		if(Contains(assetName))
-			return m_AssetNameToHandle.at(assetName);
+			return m_AssetNameToHandle.at(assetName).first;
 		
 		return 0;
 	}
@@ -173,7 +311,7 @@ namespace TRE
 		std::string name;
 		for (const auto& x : m_AssetNameToHandle)
 		{
-			if (x.second == resourceHandle)
+			if (x.second.first == resourceHandle)
 				name = x.first;
 		}
 		return name;
@@ -184,11 +322,41 @@ namespace TRE
 		return GetName(Resource::GetGUIDFromHex(hexHandle));
 	}
 
+	void AssetManager::RecompileAssetsOfType(const ResourceType type)
+	{
+		for (auto& file : m_AssetNameToHandle)
+		{
+			//If compiled before, recompile again
+			if (file.second.second)
+			{
+				if (type == ResourceType::Texture)
+				{
+					//This is wrong next time fix
+					if (file.first.find(".png") != std::string::npos)
+					{
+						std::cout << file.first << " | " << Resource::GetGUIDHex(file.second.first) << std::endl;
+						CompileAndLoad<VulkanTexture>(file.first);
+					}
+				}
+			}
+		}
+
+		if (type == ResourceType::Mesh)
+		{
+			//RecompileMeshes();
+		}
+		else if (type == ResourceType::Texture)
+		{
+			//RecompileTextures();
+			
+		}
+	}
+
 	void AssetManager::PrintAllAssets() const
 	{
 		for (const auto x : m_AssetNameToHandle)
 		{
-			std::cout << x.first << "| " << x.second <<"| " << Resource::GetGUIDHex(x.second) << std::endl;
+			std::cout << x.first << "| " << x.second.first << (x.second.second ? "Compiled" : "Not Compiled") << "| " << Resource::GetGUIDHex(x.second.first) << std::endl;
 		}
 	}
 }

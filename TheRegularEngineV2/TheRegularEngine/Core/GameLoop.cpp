@@ -31,6 +31,11 @@ namespace TRE
 		return m_GameRunning;
 	}
 
+	bool GameLoop::GetGameSimulating()
+	{
+		return m_GameSimulating;
+	}
+
 	bool GameLoop::GetSceneReset()
 	{
 		return m_SceneReset;
@@ -68,13 +73,23 @@ namespace TRE
 			}
 
 			// Destroys all undeployed entities
-			MemoryManager::Instance().ClearUndeployed();
+			//MemoryManager::Instance().ClearUndeployed();
 
 			// Save the registry
 			ECSManager::Instance().SaveRegistry(m_BackUp);
+
+			// Remember current scene and scenepath
+			m_BackUpSceneName = SceneManager::Instance().m_CurrentScene;
+			m_BackUpSceneFilePath = SceneManager::Instance().m_CurrentSceneFilePath;
 		}
 
 		m_GameRunning = isRunning;
+
+		// Start Simulating if it just started
+		if (!m_GameSimulating && isRunning)
+		{
+			m_GameSimulating = true;
+		}
 	}
 
 	void GameLoop::ResetScene()
@@ -82,6 +97,7 @@ namespace TRE
 		if (!m_BackUp.empty())
 		{
 			m_GameRunning = false;
+			m_GameSimulating = false;
 			SetSceneReset(true);
 		}
 	}
@@ -111,7 +127,19 @@ namespace TRE
 	void GameLoop::Reset(ResetSceneEvent& event)
 	{
 		(void)event;
-		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Reseting scene..." });
+		EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Resetting scene..." });
 		ResetScene();
+	}
+
+	void GameLoop::InstantReset()
+	{
+		// Copy registry and components
+		ECSManager::Instance().CopyRegistry(GetBackUpRegistry());
+		// Clear Backup
+		GetBackUpRegistry().clear();
+
+		// Restore current scene and scenepath
+		SceneManager::Instance().m_CurrentScene = m_BackUpSceneName;
+		SceneManager::Instance().m_CurrentSceneFilePath = m_BackUpSceneFilePath;
 	}
 }

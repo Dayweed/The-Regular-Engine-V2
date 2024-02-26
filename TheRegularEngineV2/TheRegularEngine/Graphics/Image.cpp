@@ -121,7 +121,7 @@ namespace TRE
 			samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
 			samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
 			samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-			samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+			samplerCreateInfo.addressModeU = m_Config.AddressMode;
 			samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
 			samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
 			samplerCreateInfo.mipLodBias = 0.0f;
@@ -142,7 +142,10 @@ namespace TRE
 		m_DescriptorImageInfo.imageView = m_ImageData.ImageView;
 		m_DescriptorImageInfo.sampler = m_ImageData.Sampler;
 		
-		if (m_Config.Format == ImageFormat::DEPTH24STENCIL8 || m_Config.Format == ImageFormat::DEPTH32F || m_Config.Format == ImageFormat::DEPTH32FSTENCIL8UINT)
+		if (m_Config.Format == ImageFormat::DEPTH24STENCIL8 || 
+			m_Config.Format == ImageFormat::DEPTH32F || 
+			m_Config.Format == ImageFormat::DEPTH32FSTENCIL8UINT || 
+			m_Config.Format == ImageFormat::DEPTH16UN)
 			m_DescriptorImageInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
 		else
 		{

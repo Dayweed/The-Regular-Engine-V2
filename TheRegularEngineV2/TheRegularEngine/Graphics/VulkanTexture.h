@@ -20,7 +20,8 @@ namespace TRE
 	{
 	public:
 		VulkanTexture();
-		VulkanTexture(const CubeMapConfig& Config); //Only used to create cubemap for now
+		VulkanTexture(uint8_t* imagedata, uint32_t imagesize, uint32_t width, uint32_t height); //Used for creating image with raw data
+		VulkanTexture(CubeMapConfig& Config); //Only used to create cubemap for now
 		VulkanTexture(const std::string& texturePath);
 		~VulkanTexture();
 
@@ -39,6 +40,7 @@ namespace TRE
 		static std::shared_ptr<VulkanTexture> Deserialize(const std::string& assetHexGUID);
 
 		static const ResourceHandle& GetDefaultTextureID();
+		static const std::shared_ptr<VulkanTexture> GetDefaultTexture();
 	private:
 		void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 		void CopyBufferToImage(VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount = 1);

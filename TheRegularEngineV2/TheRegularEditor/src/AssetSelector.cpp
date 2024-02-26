@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "AssetSelector.h"
+#include "EventSystem/EventHandler/EventHandler.h"
 
 namespace TRE
 {
-	AssetSelector::AssetType AssetSelector::FindAssetType(const std::string& typeName)
+	AssetSelectorEvent::AssetType AssetSelector::FindAssetType(const std::string& typeName)
 	{
+		using AssetType = AssetSelectorEvent::AssetType;
 		if (typeName == "m_Material")
 			return AssetType::Material;
 		else if (typeName == "m_TextureResource")
@@ -51,7 +53,7 @@ namespace TRE
 		return m_SelectedAssetName;
 	}
 
-	const AssetSelector::AssetType AssetSelector::GetSelectedAssetType()
+	const AssetSelectorEvent::AssetType AssetSelector::GetSelectedAssetType()
 	{
 		return m_SelectedAssetType;
 	}
@@ -60,7 +62,7 @@ namespace TRE
 	{
 		m_SelectedAsset = 0;
 		m_SelectedAssetName = "";
-		m_SelectedAssetType = AssetType::Unknown;
+		m_SelectedAssetType = AssetSelectorEvent::AssetType::Unknown;
 	}
 	
 	/*void AssetSelector::SelectEntity(const ResourceHandle& resourceHandle, AssetType assetType)
@@ -69,14 +71,16 @@ namespace TRE
 		m_SelectedAssetName = AssetManager::Instance().GetName(resourceHandle);
 	}*/
 
-	void AssetSelector::SelectAsset(const std::string& assetName, AssetType assetType)
+	void AssetSelector::SelectAsset(const std::string& assetName, AssetSelectorEvent::AssetType assetType)
 	{
 		m_SelectedAssetName = assetName;
 		m_SelectedAssetType = assetType;
 		m_SelectedAsset = AssetManager::Instance().GetAssetHandle(assetName);
 
+		EventHandler::getEventHandlerInstance().Publish(AssetSelectorEvent{ m_SelectedAssetName, assetType });
+
 		//Check if material has been loaded for material panel to see
-		if (assetType == AssetType::Material && m_SelectedAsset)
+		if (assetType == AssetSelectorEvent::AssetType::Material && m_SelectedAsset)
 		{
 			const auto rscHandle = AssetManager::Instance().GetAssetHandle(assetName);
 			if (ResourceManager::Instance().IsResourceLoaded(rscHandle) == false)
@@ -85,5 +89,10 @@ namespace TRE
 				(void)material;
 			}
 		}
+	}
+
+	void AssetSelector::UpdateSelectedAssetHandle(const ResourceHandle handle)
+	{
+		m_SelectedAsset = handle;
 	}
 }

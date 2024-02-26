@@ -10,12 +10,15 @@ namespace TRE
 		VkFormat DepthImageFormat;
 		VkImageLayout DepthFinalLayout;
 		bool DepthEnabled = false;
+		bool ClearColor = true;
+		bool IsSwapChain = false;
 	};
 
 	class RenderPass
 	{
 		public:
 			RenderPass(std::shared_ptr<Device> Device, RenderPassInfo Info);
+			RenderPass(std::shared_ptr<Device> Device, bool isshadow);
 			~RenderPass();
 
 			void Recreate();

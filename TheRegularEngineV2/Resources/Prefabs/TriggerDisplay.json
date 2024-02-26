@@ -1,0 +1,297 @@
+[
+   [
+      4,
+      0,
+      1,
+      2,
+      3
+   ],
+   [
+      4,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "1091796284315141664",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1091796284315141664",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "1091796284315141664",
+         "m_Overrides": {},
+         "m_PrefabGUID": "287086510051607685",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "1091796284315141664",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12390844818649132362",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "1091796284315141664",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9248190714712775252",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Children": [
+            "18201893757904641042",
+            "15338489667324065802",
+            "11386537736736811606"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "17884190661208720728"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "17884190661208720728"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "17884190661208720728"
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "17884190661208720728",
+         "m_Index": 1,
+         "m_Name": "TriggerDisplay",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "18201893757904641042",
+         "m_Index": 2,
+         "m_Name": "Trigger_1",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "15338489667324065802",
+         "m_Index": 3,
+         "m_Name": "Trigger_2",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "11386537736736811606",
+         "m_Index": 4,
+         "m_Name": "Mesh",
+         "m_Tag": ""
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            -5.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999997615814209,
+            0.9999997615814209,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            -5.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999997615814209,
+            0.9999997615814209,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            90.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      3,
+      {
+         "ASSET_GEOM_m_RenderObject": "5fe50a36531911e0",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "a9dbb363a77ceb51",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      1,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            2.0,
+            2.0,
+            5.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      2,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            2.0,
+            2.0,
+            5.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      3,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.HoleCheckDisplay"
+         ],
+         "m_StoredClass": "TRE.HoleCheckDisplay"
+      },
+      1,
+      {
+         "m_RegisteredScripts": [
+            "TRE.HoleCheckTrigger"
+         ],
+         "m_StoredClass": "TRE.HoleCheckTrigger"
+      },
+      2,
+      {
+         "m_RegisteredScripts": [
+            "TRE.HoleCheckTrigger"
+         ],
+         "m_StoredClass": "TRE.HoleCheckTrigger"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

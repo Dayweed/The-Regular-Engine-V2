@@ -17,10 +17,17 @@ namespace TRE
 			SphereCollider,
 			BoxCollider,
 			CapsuleCollider,
-			FEL,
-			FAKEFEL,
+			CylinderCollider,
 			DirectionalLight,
-			ScriptComponent
+			ScriptComponent,
+			UIComponent,
+			Audio,
+			AudioListener,
+			ParticleComponent,
+			DirectPathfinding,
+			TextComponent,
+			SlideshowComponent,
+			Sprite3DComponent
 		>();
 	};
 
@@ -36,9 +43,37 @@ namespace TRE
 		SaveEntityInRegistry(srcObj, m_CopierRegistry);
 	}
 
-	void EntityCopier::PasteEntities()
+	Entity EntityCopier::PasteEntities()
 	{
+		ECSSystemManager::Instance().BeforeReset();
+		// Ensure all the copied registry has new guid again jic for duplication
+		std::vector<std::string> pastedGUIDs;
+		m_CopierRegistry.each([&](entt::entity srcEntity) {
+			pastedGUIDs.emplace_back(GenerateNewGUID(srcEntity, m_CopierRegistry));
+		});
 		ECSManager::Instance().AddToRegistry(m_CopierRegistry);
+
+		// Force return nullptr if no entity to paste
+		if (pastedGUIDs.empty()) return nullptr;
+
+		// Add these entities to their parents
+		ParentingSystem* parentSystem{ ECSSystemManager::Instance().GetSystem<ParentingSystem>() };
+		for (size_t i{}; i < pastedGUIDs.size(); ++i)
+		{
+			std::string pastedGUID{ pastedGUIDs[i] };
+			Parenting& parentComp{ ECSManager::Instance().FindEntity(pastedGUID)->GetComponent<Parenting>() };
+			// Assign to parent if it exists
+			if (Entity parent{ ECSManager::Instance().FindEntity(parentComp.m_Parent) }; parent)
+			{
+				parentSystem->AddChild(parent, ECSManager::Instance().FindEntity(pastedGUID));
+			}
+			else
+			{
+				parentComp.m_Parent = "";
+			}
+		}
+		ECSSystemManager::Instance().AfterReset();
+		return ECSManager::Instance().FindEntity(pastedGUIDs.front());
 	}
 
 	void EntityCopier::SaveEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID, entt::entity parentEnt)
@@ -86,5 +121,34 @@ namespace TRE
 		{
 			SaveEntityInRegistry(child, dstReg, entGUID, ent);
 		}
+	}
+
+	std::string EntityCopier::GenerateNewGUID(entt::entity ent, entt::registry& reg)
+	{
+		// Force serialize new guid for the ent
+		std::string prevGUID = reg.get<Properties>(ent).m_GUID;
+		std::string entGUID = MemoryManager::Instance().GenerateGUIDStr();
+		reg.get<Properties>(ent).m_GUID = entGUID;
+
+		reg.each([&](entt::entity srcEntity) {
+			// Replace it's childrens parent
+			if (reg.get<Parenting>(srcEntity).m_Parent == prevGUID)
+			{
+				reg.get<Parenting>(srcEntity).m_Parent = entGUID;
+			}
+			// Replace it's parent's children
+			else
+			{
+				std::vector<std::string>& children{ reg.get<Parenting>(srcEntity).m_Children };
+				auto it = std::find(children.begin(), children.end(), prevGUID);
+				if (it != children.end())
+				{
+					children.erase(it);
+					children.emplace_back(entGUID);
+				}
+			}
+		});
+
+		return entGUID;
 	}
 }

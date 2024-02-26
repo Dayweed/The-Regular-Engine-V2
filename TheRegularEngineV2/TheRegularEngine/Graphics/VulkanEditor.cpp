@@ -14,7 +14,8 @@ namespace TRE
 		m_EditorSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_EditorSceneDescriptorSets.size(); x++)
 		{
-			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(SceneRenderer->GetColorImages()[x]->GetImageData().Sampler, SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(SceneRenderer->GetColorImages()[x]->GetImageData().Sampler, 
+				SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -23,8 +24,8 @@ namespace TRE
 		m_GameSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_GameSceneDescriptorSets.size(); x++)
 		{
-			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(SceneRenderer->GetColorImages()[x]->GetImageData().Sampler
-				, SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(SceneRenderer->GetColorImages()[x]->GetImageData().Sampler, 
+				SceneRenderer->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -71,25 +72,6 @@ namespace TRE
 			assert(Result == VK_SUCCESS);
 		}
 
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerInfo.addressModeV = samplerInfo.addressModeU;
-		samplerInfo.addressModeW = samplerInfo.addressModeU;
-		samplerInfo.mipLodBias = 0.0f;
-		samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.minLod = 0.0f;
-		samplerInfo.maxLod = 1.0f;
-		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-
-		if (auto Result = vkCreateSampler(m_LogicalDevice->GetLogicalDevice(), &samplerInfo, nullptr, &m_Sampler); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS);
-		}
-
 		SetUpImgui();
 		
 		ImGui_ImplGlfw_InitForVulkan(Engine::GetInstance().GetWindow()->GetWindowHandle(), true);
@@ -107,7 +89,10 @@ namespace TRE
 		ImguiVulkanInitInfo.ImageCount = ImageCount;
 		ImguiVulkanInitInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
-		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain()->GetRenderPass());
+		ImGui_ImplVulkan_Init(&ImguiVulkanInitInfo, Engine::GetInstance().GetWindow()->GetSwapChain()->GetRenderPass()->GetHandle());
+
+		auto& io = ImGui::GetIO();
+		ImFont* font = io.Fonts->AddFontFromFileTTF("../Assets/Font/InterRegular.ttf", 18.f, NULL, io.Fonts->GetGlyphRangesDefault());
 
 		auto cmdbuffer = LogicalDevice->AllocateCommandBuffer(true);
 		ImGui_ImplVulkan_CreateFontsTexture(cmdbuffer);
@@ -176,7 +161,7 @@ namespace TRE
 		VkRenderPassBeginInfo renderPassBeginInfo = {};
 		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassBeginInfo.pNext = nullptr;
-		renderPassBeginInfo.renderPass = swapChain->GetRenderPass();
+		renderPassBeginInfo.renderPass = swapChain->GetRenderPass()->GetHandle();
 		renderPassBeginInfo.renderArea.offset.x = 0;
 		renderPassBeginInfo.renderArea.offset.y = 0;
 		renderPassBeginInfo.renderArea.extent.width = width;
@@ -189,7 +174,7 @@ namespace TRE
 
 		VkCommandBufferInheritanceInfo inheritanceInfo = {};
 		inheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-		inheritanceInfo.renderPass = swapChain->GetRenderPass();
+		inheritanceInfo.renderPass = swapChain->GetRenderPass()->GetHandle();
 		inheritanceInfo.framebuffer = swapChain->GetCurrentFrameBuffer();
 
 		VkCommandBufferBeginInfo cmdBufInfo = {};
@@ -247,11 +232,15 @@ namespace TRE
 		m_GameSceneDescriptorSets.resize(RendererContext::GetFramesInFlight());
 		for (int x = 0; x < m_GameSceneDescriptorSets.size(); x++)
 		{
-			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_GameSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageData().Sampler, 
+																	   Engine::GetInstance().GetMainSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, 
+																	   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 		for (int x = 0; x < m_EditorSceneDescriptorSets.size(); x++)
 		{
-			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(m_Sampler, Engine::GetInstance().GetEditorSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			m_EditorSceneDescriptorSets[x] = ImGui_ImplVulkan_AddTexture(Engine::GetInstance().GetEditorSceneRenderer()->GetColorImages()[x]->GetImageData().Sampler, 
+																		 Engine::GetInstance().GetEditorSceneRenderer()->GetColorImages()[x]->GetImageData().ImageView, 
+																		 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
 	}
 
@@ -259,7 +248,6 @@ namespace TRE
 	{
 		vkDeviceWaitIdle(m_LogicalDevice->GetLogicalDevice());
 		vkDestroyDescriptorPool(m_LogicalDevice->GetLogicalDevice(), m_DescriptorPool, nullptr);
-		vkDestroySampler(m_LogicalDevice->GetLogicalDevice(), m_Sampler, nullptr);
 		ImPlot::DestroyContext();
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();

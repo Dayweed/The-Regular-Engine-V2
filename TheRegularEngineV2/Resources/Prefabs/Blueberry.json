@@ -1,0 +1,149 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7670209894207584463",
+         "m_Overrides": {},
+         "m_PrefabGUID": "7670209894207584463",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "7181036292863551589",
+         "m_Index": 0,
+         "m_Name": "Blueberry",
+         "m_Tag": "Blueberry"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "5e5479e60fbcccaf",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_AngularDrag": 0.05000000074505806,
+         "m_Drag": 0.0,
+         "m_FreezePositionX": false,
+         "m_FreezePositionY": false,
+         "m_FreezePositionZ": false,
+         "m_FreezeRotationX": false,
+         "m_FreezeRotationY": false,
+         "m_FreezeRotationZ": false,
+         "m_IsKinematic": false,
+         "m_Mass": 1.0,
+         "m_UseGravity": false
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0,
+         "m_Radius": 2.5
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.GetPowerUp"
+         ],
+         "m_StoredClass": "TRE.GetPowerUp"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

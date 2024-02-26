@@ -1,9 +1,9 @@
 /*!
 	@file      ConsolePanel.h
-	@author    Hu Jun Ning (Code Contribution 100%)
+	@author    Hu Jun Ning (Code Contribution 50%)
 	@email     junning.hu@digipen.edu
-	@coauthor  Co-Author Name (Code Contribution 100%)
-	@email     CoAuthor.tan.d@digipen.edu
+	@coauthor  David Tan Wei Jie (Code Contribution 50%)
+	@email     tan.d@digipen.edu
 	@date      02/09/2023
 	@brief     Console panel
 
@@ -26,6 +26,7 @@ namespace TRE
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
+			void StartConsole(ConsoleStartEvent& event);
 			void OnConsole(ConsoleDebugEvent& event);
 
 		private:

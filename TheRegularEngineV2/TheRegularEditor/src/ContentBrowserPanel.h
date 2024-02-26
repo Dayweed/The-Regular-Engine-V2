@@ -26,6 +26,7 @@ namespace TRE
 			~ContentBrowserPanel();
 			void PollItems();
 			void BrowseProjectFiles();
+			void FileWatcher();
 			void Init() override;
 			void Update() override;
 			void Shutdown() override;
@@ -35,16 +36,33 @@ namespace TRE
 			std::filesystem::path m_CurrentDirectory;
 			//Asset Folder Path
 			std::filesystem::path m_AssetDirectory;
+			//Prefabs Folder Path
+			std::filesystem::path m_PrefabDirectory;
 			//Scenes Folder Path
 			std::filesystem::path m_SceneDirectory;
 			//Scripts Folder Path
 			std::filesystem::path m_ScriptDirectory;
+			//Resources Folder Path
+			std::filesystem::path m_ResourcesDirectory;
+			//Shader Folder Path
+			std::filesystem::path m_ShaderDirectory;
 
 			std::shared_ptr<SelectionManager> m_SelectionManager;
 			std::shared_ptr<AssetSelector> m_AssetSelector;
 
 			//Texture for icons
 			ImTextureID m_TmpTexturesID{};
+			ImTextureID m_FolderIconID{};
+			ImTextureID m_SceneIconID{};
+			ImTextureID m_ImageIconID{};
+			ImTextureID m_PrefabIconID{};
+			ImTextureID m_CubeIconID{};
+			ImTextureID m_AudioIconID{};
+			ImTextureID m_FontIconID{};
+			ImTextureID m_MetaIconID{};
+			ImTextureID m_MaterialIconID{};
+			ImTextureID m_3DObjIconID{};
+			ImTextureID m_CSScriptIconID{};
 
 			//Shared pointer for icons
 			std::shared_ptr<VulkanTexture> m_TmpTextures;
@@ -74,5 +92,11 @@ namespace TRE
 			//PopUp for invalid resources
 			bool m_InvalidResourcePopUp = false;
 			bool m_AssetClicked = false;
+
+			enum class FileType {
+				geom,
+				texture,
+				none
+			};
 	};
 }

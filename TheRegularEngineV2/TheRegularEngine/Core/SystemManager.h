@@ -124,6 +124,7 @@ namespace TRE
 			m_Systems.insert({ hashcode, std::move(system) });
 			m_SystemsName.insert({ hashcode, typeid(T).name()});
 			//m_Systems.emplace(std::piecewise_construct, std::forward_as_tuple(hashcode), std::forward_as_tuple());
+			m_SystemsOrder.emplace_back(hashcode);
 			return system;
 		}
 
@@ -137,6 +138,7 @@ namespace TRE
 			std::shared_ptr<T> system = std::make_shared<T>(std::forward<Arguments>(arg)...);
 			m_Systems.insert({ hashcode, std::move(system) });
 			m_SystemsName.insert({ hashcode, typeid(T).name() });
+			m_SystemsOrder.emplace_back(hashcode);
 			return system;
 		}
 
@@ -147,6 +149,10 @@ namespace TRE
 			if (m_Systems.find(hashcode) != m_Systems.end())
 			{
 				m_Systems.erase(hashcode);
+			}
+			if (std::find(m_SystemsOrder.begin(), m_SystemsOrder.end(), hashcode) != m_SystemsOrder.end())
+			{
+				m_SystemsOrder.erase(hashcode);
 			}
 		}
 
@@ -165,69 +171,69 @@ namespace TRE
 
 		void InitSystem()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				Profiler::Instance().StartTimer(m_SystemsName[system.first]);
-				system.second->Init();
-				Profiler::Instance().EndTimer(m_SystemsName[system.first]);
+				Profiler::Instance().StartTimer(m_SystemsName[hashcode]);
+				m_Systems[hashcode]->Init();
+				Profiler::Instance().EndTimer(m_SystemsName[hashcode]);
 			}
 		}
 
 		void UpdateSystem()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				Profiler::Instance().StartTimer(m_SystemsName[system.first]);
-				system.second->Update();
-				Profiler::Instance().EndTimer(m_SystemsName[system.first]);
+				Profiler::Instance().StartTimer(m_SystemsName[hashcode]);
+				m_Systems[hashcode]->Update();
+				Profiler::Instance().EndTimer(m_SystemsName[hashcode]);
 			}
 		}
 
 		void GameUpdateSystem()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				system.second->GameUpdate();
+				m_Systems[hashcode]->GameUpdate();
 			}
 		}
 
 		void LateUpdateSystem()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				system.second->LateUpdate();
+				m_Systems[hashcode]->LateUpdate();
 			}
 		}
 
 		void BeforeReset()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				system.second->BeforeReset();
+				m_Systems[hashcode]->BeforeReset();
 			}
 		}
 
 		void AfterReset()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				system.second->AfterReset();
+				m_Systems[hashcode]->AfterReset();
 			}
 		}
 
 		void OnDestroyEntities()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				system.second->OnDestroyEntities();
+				m_Systems[hashcode]->OnDestroyEntities();
 			}
 		}
 
 		void ShutdownSystem()
 		{
-			for (auto& system : m_Systems)
+			for (auto& hashcode : m_SystemsOrder)
 			{
-				system.second->Shutdown();
+				m_Systems[hashcode]->Shutdown();
 			}
 		}
 
@@ -240,5 +246,6 @@ namespace TRE
 
 		std::unordered_map<size_t, std::shared_ptr<ECSSystem>> m_Systems;
 		std::unordered_map<size_t, std::string> m_SystemsName;
+		std::vector<size_t> m_SystemsOrder;
 	};
 }

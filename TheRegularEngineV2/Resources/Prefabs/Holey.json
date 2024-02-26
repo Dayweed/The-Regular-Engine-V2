@@ -1,45 +1,111 @@
 [
    [
+      3,
+      0,
       1,
-      0
+      2
    ],
    [
-      1,
+      3,
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "3741173402057846053",
+         "m_MainPrefabGUID": "15526886209253662016",
          "m_Overrides": {},
-         "m_PrefabGUID": "3741173402057846053",
+         "m_PrefabGUID": "15526886209253662016",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15225568713149738293",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15526886209253662016",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1985835002174913377",
          "m_RemovedComps": []
       }
    ],
    [
-      1,
+      3,
       0,
       {
-         "m_Children": [],
+         "m_Children": [
+            "17517191209797491087",
+            "1392412717281695431"
+         ],
          "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "8656424112323697566"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "8656424112323697566"
       }
    ],
    [
-      1,
+      3,
       0,
       {
          "m_Active": true,
-         "m_GUID": "5081965698032620228",
+         "m_GUID": "8656424112323697566",
+         "m_Index": 163,
          "m_Name": "Holey",
+         "m_Tag": "Blue"
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "17517191209797491087",
+         "m_Index": 164,
+         "m_Name": "Power Manager",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "1392412717281695431",
+         "m_Index": 5,
+         "m_Name": "Slippery Body",
          "m_Tag": ""
       }
    ],
    [
-      1,
+      3,
       0,
       {
          "m_Position": [
-            -6.352301120758057,
-            -5.107809066772461,
-            -3.7804908752441406
+            3.375533103942871,
+            -8.471269607543945,
+            -9.581930160522461
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0003600120544433594,
+            -0.7949433326721191,
+            -36.432701110839844
          ],
          "m_Rotation": [
             0.0,
@@ -47,9 +113,27 @@
             0.0
          ],
          "m_Scale": [
-            0.5,
-            0.5,
-            0.5
+            0.75,
+            0.75,
+            0.699999988079071
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            3.375999927520752,
+            -8.470999717712402,
+            -9.581999778747559
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.75,
+            0.75,
+            0.75
          ]
       }
    ],
@@ -57,8 +141,9 @@
       1,
       0,
       {
-         "ASSET_GEOM_m_RenderObject": "cccb842ae51f1c1a",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_GEOM_m_RenderObject": "789db1a40e2484e0",
+         "ASSET_MAT_m_AnimationMaterialInstance": "87451924db9b9984",
+         "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
          "m_IsVisible": true
       }
    ],
@@ -69,8 +154,8 @@
       1,
       0,
       {
-         "m_AngularDrag": 0.05000000074505806,
-         "m_Drag": 0.0,
+         "m_AngularDrag": 0.5,
+         "m_Drag": 0.20000000298023224,
          "m_FreezePositionX": false,
          "m_FreezePositionY": false,
          "m_FreezePositionZ": false,
@@ -78,7 +163,7 @@
          "m_FreezeRotationY": false,
          "m_FreezeRotationZ": false,
          "m_IsKinematic": false,
-         "m_Mass": 10.471975326538086,
+         "m_Mass": 58.643062591552734,
          "m_UseGravity": true
       }
    ],
@@ -86,34 +171,37 @@
       0
    ],
    [
-      1,
-      0,
-      {
-         "m_HalfExtents": [
-            0.0010000000474974513,
-            0.0010000000474974513,
-            0.0010000000474974513
-         ],
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      }
+      0
    ],
    [
-      1,
+      2,
       0,
       {
+         "m_CollisionLayer.m_LayerID": 1,
          "m_HalfHeight": 1.0,
+         "m_IsActive": true,
          "m_IsTrigger": false,
          "m_Offset": [
             0.0,
-            1.899999976158142,
+            0.0,
             0.0
          ],
-         "m_Radius": 1.5
+         "m_PhysicsMaterial.m_MaterialID": 0,
+         "m_Radius": 2.0
+      },
+      2,
+      {
+         "m_CollisionLayer.m_LayerID": 5,
+         "m_HalfHeight": 0.800000011920929,
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 1,
+         "m_Radius": 2.200000047683716
       }
    ],
    [
@@ -126,16 +214,41 @@
       0
    ],
    [
-      0
-   ],
-   [
-      0
-   ],
-   [
-      1,
+      2,
       0,
       {
-         "m_StoredClass": "TRE.MoleController"
+         "m_RegisteredScripts": [
+            "TRE.HoleyController"
+         ],
+         "m_StoredClass": "TRE.HoleyController"
+      },
+      1,
+      {
+         "m_RegisteredScripts": [
+            "TRE.PowerUpManager"
+         ],
+         "m_StoredClass": "TRE.PowerUpManager"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
    ]
 ]

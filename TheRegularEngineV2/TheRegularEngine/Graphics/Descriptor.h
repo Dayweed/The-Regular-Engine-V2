@@ -55,6 +55,7 @@ namespace TRE
 		bool AllocateDescriptorSet(const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet& descriptor) const;
 		bool AllocateDescriptorSet(const std::vector<VkDescriptorSetLayout>& descriptorSetLayout, VkDescriptorSet& descriptor) const;
 		void FreeDescriptorSet(std::vector<VkDescriptorSet>& descriptors) const;
+		const VkDescriptorPool& GetPool() const { return m_DescriptorPool; }
 
 		void ResetPool();
 	private:

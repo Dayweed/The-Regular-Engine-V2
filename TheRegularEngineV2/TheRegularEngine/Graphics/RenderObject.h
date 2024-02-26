@@ -7,6 +7,23 @@
 
 namespace TRE
 {
+	struct AnimationPlayer
+	{
+		AnimationPlayer() = default;
+		AnimationPlayer(const Skeleton& Skel, const std::vector<Animation>& Animations) : m_Skeleton(Skel), m_Animations(Animations)
+		{
+
+		}
+
+		void Update(float DT);
+		void ComputeMatrices(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS) const;
+
+		Skeleton m_Skeleton;
+		std::vector<Animation> m_Animations;
+		int           m_iCurAnim{};
+		float         m_Time{};
+	};
+
 	class RenderObject : public Resource
 	{
 	public:
@@ -28,6 +45,12 @@ namespace TRE
 			}
 		};
 
+		struct BoneVertex
+		{
+			glm::vec4         m_BoneWeights{};
+			glm::uvec4        m_BoneIndex{};
+		};
+
 		RenderObject(const std::string& geomAsset);
 		~RenderObject();
 
@@ -37,9 +60,14 @@ namespace TRE
 		void Draw(VkCommandBuffer commandBuffer);
 
 		static ResourceType GetType() { return ResourceType::Mesh; }
+		bool IsRigged() { return m_IsRigged; }
+		Animation GetAnimation() { return m_Animations[0]; }
 
 		void Serialize() override;
 		static std::shared_ptr<RenderObject> Deserialize(const std::string& assetHexGUID);
+
+		void UpdateAnimation(std::span<glm::mat4> FinalL2W, const glm::mat4& L2W, int FPS, float speed);
+		void BindAnimation(VkCommandBuffer commandBuffer);
 
 	private:
 		void CreateBoundingSphere(const std::vector<Vertex>& vertices);
@@ -49,6 +77,13 @@ namespace TRE
 	private:
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::uint32_t m_VertexCount;
+
+		std::unique_ptr<VertexBuffer> m_BoneVertexBuffer;
+
+		AnimationPlayer m_AnimationPlayer;
+		std::vector<Animation> m_Animations;
+		Skeleton m_Skeleton;
+		bool m_IsRigged = false;;
 
 		bool m_HasIndexBuffer{ false };
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;

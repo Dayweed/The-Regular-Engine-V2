@@ -1,10 +1,16 @@
 #include "pch.h"
-#include "Light.h"
+#include "ECS/Components/Light.h"
 #include "Core/ECS.h"
-#include "Core/Transform.h"
+#include "ECS/Components/Transform.h"
 
 namespace TRE
 {
+	glm::vec3 DirectionalLight::GetUpVec() const
+	{
+		glm::vec3 leftVec = glm::normalize(glm::cross(glm::vec3(0,1,0), m_Direction));
+		return glm::normalize(glm::cross(leftVec, -m_Direction));
+	}
+
 	void LightSystem::LateUpdate()
 	{
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
@@ -24,7 +30,7 @@ namespace TRE
 				rotationMatrix = glm::rotate(rotationMatrix, roll, glm::vec3(0, 0, 1));
 
 				glm::vec4 directionalVec = rotationMatrix * glm::vec4(0, 0, 1, 0);
-				light.Direction = glm::vec3(directionalVec);
+				light.m_Direction = glm::vec3(directionalVec);
 			}
 		}
 	}

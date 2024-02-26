@@ -1,22 +1,14 @@
 #include "pch.h"
-#include "Core/Engine.h"
-#include "Core/Transform.h"
 #include "SceneRenderer.h"
-#include "RendererContext.h"
-#include "MeshRenderer.h"
-#include "Camera.h"
-#include "Core/Logger.h"
-#include "ShaderReflection.h"
+#include "TREIncludes.h"
 #include "VulkanTexture.h"
 #include "Resource/ResourceManager.h"
-#include "Physics/PhysicsComponents.h"
-#include "Light.h"
-
-#include "glm/gtx/transform.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/quaternion.hpp"
 #include "VulkanUtilities.h"
-
-//To be removed
+#include "FontRenderer.h"
+#include "Renderer.h"
 #include "EditorCamera.h"
 
 namespace TRE
@@ -26,33 +18,29 @@ namespace TRE
 		return m_DescriptorPool;
 	}
 
-	std::vector<std::unique_ptr<Image2D>>& SceneRenderer::GetColorImages()
+	std::vector<std::shared_ptr<Image2D>> SceneRenderer::GetColorImages()
 	{
 		return m_ColorImages;
 	}
 
-	SceneRenderer::SceneRenderer(const std::shared_ptr<Device>& Device) : m_Device(Device)
+	SceneRenderer::SceneRenderer(bool IsEditorScene) : m_IsEditorScene(IsEditorScene)
 	{
+		m_Device = RendererContext::GetDevice();
+
 		Create();
 
 		m_CommandBuffer = std::make_shared<CommandBuffer>("SceneRendererCommmandBuffer");
-		m_DescriptorPool = DescriptorPool::Builder().SetMaxSets(100).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100).Build();
-		m_UBOBuffer = std::make_shared<UniformBuffer>(sizeof(UBO), 0);
-
-		//m_AnimationUBO = std::make_shared<UniformBuffer>(sizeof(AnimationUBO), 0);
-		//m_L2W = glm::identity<glm::mat4>();
-		//m_L2W = glm::scale(m_L2W, glm::vec3(0.1f, 0.1f, 0.1f));
-		//m_L2W = glm::translate(m_L2W, glm::vec3(0.1f, -100.f, 150.f));
-		//for (int x = 0; x < 256; x++)
-		//{
-		//	m_AnimationBuffer.L2W[x] = glm::identity<glm::mat4>();
-		//}
+		m_DescriptorPool = DescriptorPool::Builder().SetPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT).SetMaxSets(5000).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10000).Build();
+		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
+		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
+		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
+		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
 
-	void SceneRenderer::Initialize()
+	void SceneRenderer::Initialize() 
 	{
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
-
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		RenderPassCreateInfo.ImageFormat = SwapChain->GetColorFormat();
@@ -68,6 +56,7 @@ namespace TRE
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = PBRShader;
+		PipelineConfig.EnableBlending = true;
 		m_Pipeline = std::make_unique<Pipeline>(PipelineConfig, m_RenderPass);
 
 		PipelineConfigurations SkyboxPipelineConfig{};
@@ -82,9 +71,82 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 
-		//m_Animation = std::make_unique<AnimationTest>(m_RenderPass);
+		ShadowPassInit();
 
-		LoadCubeMap();
+		PipelineConfigurations Config{};
+		Config.Primitive = PrimitiveType::Triangles;
+		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
+		Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+		Config.EnableBlending = true;
+		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
+
+		PipelineConfigurations ShadowAnimationPipelineConfig{};
+		ShadowAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+		ShadowAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
+		ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+		ShadowAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+		ShadowAnimationPipelineConfig.CustomVertexBufferInputLayout =
+		{
+			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+		};
+
+		m_ShadowAnimationPipeline = std::make_shared<Pipeline>(ShadowAnimationPipelineConfig, m_ShadowRenderPass);
+
+		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+		m_ShadowMaterial->Invalidate();
+
+		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
+		m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
+		m_ParticleRenderer = std::make_shared<ParticleRenderer>(m_Device);
+
+		PostProcessingManager::Instance().Init();
+
+		PipelineConfigurations AnimationPipelineConfig{};
+		AnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+		AnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(9);
+		AnimationPipelineConfig.UseAutoShaderVertexInput = false;
+		AnimationPipelineConfig.CustomVertexBufferInputLayout =
+		{
+			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+		};
+		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
+
+		PipelineConfigurations Sprite3DPipelineConfig{};
+		Sprite3DPipelineConfig.Primitive = PrimitiveType::Triangles;
+		Sprite3DPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
+		Sprite3DPipelineConfig.CullMode = VK_CULL_MODE_NONE;
+		Sprite3DPipelineConfig.EnableBlending = true;
+		Sprite3DPipelineConfig.EnableDepthTest = true;
+		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
+
+		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
+
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::vector<QuadVertex> data(4);
+
+		data[0].Position = glm::vec3(x, y, 0.f);
+		data[0].TexCoord = glm::vec2(0, 0);
+
+		data[1].Position = glm::vec3(x + width, y, 0.f);
+		data[1].TexCoord = glm::vec2(1, 0);
+
+		data[2].Position = glm::vec3(x + width, y + height, 0.f);
+		data[2].TexCoord = glm::vec2(1, 1);
+
+		data[3].Position = glm::vec3(x, y + height, 0.f);
+		data[3].TexCoord = glm::vec2(0, 1);
+
+		std::vector<int> indices = { 0,1,2,2,3,0 };
+
+		m_Sprite3DIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+			UINT32_T_CAST(sizeof(int) * indices.size()),
+			UINT32_T_CAST(indices.size()));
+
+		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
@@ -130,7 +192,7 @@ namespace TRE
 		ImageCon.Usage = ImageUsage::Attachment;
 		for (int x = 0; x < m_ColorImages.size(); x++)
 		{
-			m_ColorImages[x] = std::make_unique<Image2D>(ImageCon);
+			m_ColorImages[x] = std::make_shared<Image2D>(ImageCon);
 		}
 
 		ImageConfig ImageCon2{};
@@ -157,6 +219,10 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+
+		ShadowPassInit();
+
 		Create();
 		CreateFrameBuffer(m_RenderPass);
 	}
@@ -168,6 +234,8 @@ namespace TRE
 
 	void SceneRenderer::Shutdown()
 	{
+		PostProcessingManager::Instance().Shutdown();
+
 		auto Device = m_Device->GetLogicalDevice();
 
 		vkDeviceWaitIdle(Device);
@@ -179,91 +247,218 @@ namespace TRE
 
 		m_ColorImages.clear();
 		m_DepthImages.clear();
+
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
 	{
 		const EditorCamera& editorCamera = EditorCamera::Instance();
+		const BaseCamera& baseCamera = editorCamera.m_BaseCamera;
 		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		
 		UBO ubo{};
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
 		ubo.m_LightPosition = transform.m_Position;
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
-		ubo.Proj = editorCamera.GetProjectionMatrix();
-		ubo.View = editorCamera.GetViewMatrix();
 
+		m_ProjView3D = ubo.m_ProjView;
+
+		SkyBoxUBO UBO_SkyBox;
+		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
+		UBO_SkyBox.View = editorCamera.GetViewMatrix();
+
+		glm::mat4 depthViewMatrix(1.f);
+		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
+			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
-			ubo.m_LightDirectionalColor = light.DirectionalColor;
-			ubo.m_LightAmbientColor = light.AmbientColor;
+			//std::cout << std::fixed  << "Light Direction: " << light.m_Direction.x << ", " << light.m_Direction.y << ", " << light.m_Direction.z << std::endl;
+			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
+			ubo.m_LightAmbientColor = light.m_AmbientColor;
+			
+			if (recalculateShadowFrustum)
+			{
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, m_EditorShadowRatio));
+				depthViewMatrix = glm::translate(glm::mat4(1.f), m_EditorShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+			}
 		}
 
+		if (recalculateShadowFrustum)
+		{
+			ShadowUBO UBO_Shadow;
+			glm::mat4 depthProjectionMatrix;
+			const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
+			const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
+			const float deltaZ = m_EditorShadowAABBMax.z - m_EditorShadowAABBMin.z;
+			const float orthoLength = deltaX;
+			const float orthoHeight = deltaY;
+			const float orthoNear = 0.1f;
+			const float orthoFar = orthoNear + deltaZ;
+
+			depthProjectionMatrix = glm::mat4(1.f);
+			depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+			depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+			depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+			depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+			depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+			depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+
+			depthViewMatrix = glm::inverse(depthViewMatrix);
+			m_EditorShadowView = depthViewMatrix;
+			m_EditorShadowProj = depthProjectionMatrix;
+
+			UBO_Shadow.view = m_EditorShadowView;
+			UBO_Shadow.proj = m_EditorShadowProj;
+
+			m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+		}
+		
+		ubo.m_LightSpaceMatrix = m_EditorShadowProj * m_EditorShadowView;
+
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
+		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+
+		{
+			ParticleUBO particleUBO{};
+			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+
+			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
+
+			ParticleUBO particleUBO2D{};
+			//Why so hardcoded (:
+			const auto width = 1920.f;
+			const auto height = 1080.f;
+			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
+			particleUBO2D.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+			m_ParticleUBO2D->SetData(&particleUBO2D, sizeof(ParticleUBO));
+		}
 	}
 
 	void SceneRenderer::BeginFrame()
 	{
 		//UBO
 		const Entity& mainCamera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera();
-		UBO ubo{};
 		const Camera& cameraComponent = mainCamera->GetComponent<Camera>();
-		const Transform& transform = mainCamera->GetComponent<Transform>();
-		ubo.m_ProjView = cameraComponent.m_BaseCamera.m_ProjectionMatrix * cameraComponent.m_BaseCamera.m_ViewMatrix;
-		ubo.m_LightPosition = transform.m_Position;
-		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
+		const BaseCamera& baseCamera = cameraComponent.m_BaseCamera;
+		const Transform& cameraTransform = mainCamera->GetComponent<Transform>();
 
-		ubo.Proj = cameraComponent.m_BaseCamera.m_ProjectionMatrix;
-		ubo.View = cameraComponent.m_BaseCamera.m_ViewMatrix;
+		UBO ubo{};
+		ubo.m_ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+		ubo.m_LightPosition = cameraTransform.m_Position;
+		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
+		
+		m_ProjView3D = ubo.m_ProjView;
 
-		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
+		SkyBoxUBO UBO_SkyBox;
+		UBO_SkyBox.Proj = baseCamera.m_ProjectionMatrix;
+		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
+
+		glm::mat4 depthViewMatrix(1.f);
+		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		recalculateShadowFrustum = true;
+		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
-			const auto& light = entity->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection = glm::vec4(light.Direction, 1.f);
-			ubo.m_LightDirectionalColor = light.DirectionalColor;
-			ubo.m_LightAmbientColor = light.AmbientColor;
+			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
+			const auto& light = entityDirectional->GetComponent<DirectionalLight>();
+			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
+			ubo.m_LightAmbientColor = light.m_AmbientColor;
+			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
+
+			if (recalculateShadowFrustum)
+			{
+				//RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.15f));
+				//m_ShadowRenderPoint.y = lightTransform.m_Position.y;
+				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
+				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
+				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
+			}
 		}
 
+		if (recalculateShadowFrustum)
+		{
+			ShadowUBO UBO_Shadow{};
+			glm::mat4 depthProjectionMatrix;
+			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
+			const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
+			const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
+			const float orthoLength = deltaX;
+			const float orthoHeight = deltaY;
+			const float orthoNear = 0.1f;
+			const float orthoFar = orthoNear + deltaZ;
+
+			depthProjectionMatrix = glm::mat4(1.f);
+			depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+			depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+			depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+			depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+			depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+			depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+
+			depthViewMatrix = glm::inverse(depthViewMatrix);
+			m_ShadowView = depthViewMatrix;
+			m_ShadowProj = depthProjectionMatrix;
+
+			UBO_Shadow.view = m_ShadowView;
+			UBO_Shadow.proj = m_ShadowProj;
+
+			m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+		}
+
+		ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
+		
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
-		//m_AnimationBuffer.ProjView = mainCamera.m_ProjectionMatrix * mainCamera.m_ViewMatrix;
-		//m_Animation->UpdateAnimations(m_AnimationBuffer, m_L2W);
-		//m_AnimationUBO->SetData(&m_AnimationBuffer, sizeof(AnimationUBO));
+		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
+
+		{
+			ParticleUBO particleUBO{};
+			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+
+			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
+
+			ParticleUBO particleUBO2D{};
+			const auto width = 1920.f;
+			const auto height = 1080.f;
+			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
+			particleUBO2D.ProjView = glm::ortho(0.f, width, 0.f, height) * TranslateToMid;
+			m_ParticleUBO2D->SetData(&particleUBO2D, sizeof(ParticleUBO));
+		}
 	}
 
-	void SceneRenderer::EndFrame(bool IsEditorScene)
+	void SceneRenderer::EndFrame()
 	{
-		uint32_t Index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
-		uint32_t ImageIndex = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex();
-		// auto& swapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
+		for (const auto& Entity : ECSManager::Instance().GetEntities<MeshRenderer, AnimationComponent>())
+		{
+			const auto& TransformComp = Entity->GetComponent<Transform>();
+			auto& MRComp = Entity->GetComponent<MeshRenderer>();
+			auto& AnimComp = Entity->GetComponent<AnimationComponent>();
+			if (!MRComp.m_IsVisible)
+				continue;
 
-		m_CommandBuffer->Begin();
+			if (AnimComp.m_IsAnimating)
+			{
+				AnimComp.m_FPS = AnimComp.m_FPS > 60 ? 60 : AnimComp.m_FPS;
+				MRComp.m_RenderObject->UpdateAnimation(AnimComp.m_BufferData.L2W, TransformComp.m_WorldXform, AnimComp.m_FPS, AnimComp.m_AnimationSpeed);
+			}
 
-		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
+			AnimComp.m_UBO->SetData(&AnimComp.m_BufferData, sizeof(AnimationUBO));
+		}
 
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.f;
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		uint32_t Index = SC->GetCurrentBufferIndex();
+		uint32_t ImageIndex = SC->GetCurrentImageIndex();
 
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
-		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
-
-		vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipeline());
-
-		//std::set<ResourceHandle> renderedMaterials;
 		std::multimap<ResourceHandle, Entity> materialSort;
-
 		for (const auto& go_mr : ECSManager::Instance().GetEntities<MeshRenderer>())
 		{
 			const MeshRenderer& mr = go_mr->GetComponent<MeshRenderer>();
+			if (go_mr->HasComponent<AnimationComponent>() && mr.m_RenderObject->IsRigged())
+				continue;
+
 			if(mr.m_RenderObject == nullptr)
 				continue;
 
@@ -289,14 +484,120 @@ namespace TRE
 			materialSort.insert(std::make_pair(materialHandle, go_mr));
 		}
 
-		//Geom Pass
-		for (const auto& go_mr : materialSort)
+		m_CommandBuffer->Begin();
+
+		ShadowPass(Index, materialSort);
+
+		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.f;
+		viewport.width = static_cast<float>(SC->GetWidth());
+		viewport.height = static_cast<float>(SC->GetHeight());
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = SC->GetSwapChainExtent();
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
+
+		SkyBoxPass(Index);
+		GeometryPass(Index, materialSort);
+		GeometryAnimationPass(Index, materialSort);
+		Sprite3DPass(Index);
+		DebugDrawPass(Index);
+		m_ParticleRenderer->Render(m_ParticleUBO2D, m_ParticleUBO3D, m_CommandBuffer, m_IsEditorScene);
+
+		Renderer::EndRenderPass(m_CommandBuffer);
+
+		if (m_IsEditorScene == false)
 		{
+			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
+
+			Profiler::Instance().StartTimer("FontPass");
+			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
+			Profiler::Instance().EndTimer("FontPass");
+
+			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
+		}
+
+		m_CommandBuffer->End();
+		m_CommandBuffer->Submit();
+	}
+
+	void SceneRenderer::Sprite3DPass(uint32_t Index)
+	{
+		UIUBO ubo{};
+		ubo.m_ProjView2DSpace = m_ProjView3D;
+		m_Sprite3DUBO->SetData(&ubo, sizeof(UIUBO));
+
+		auto AllSprites = ECSManager::Instance().GetEntities<Sprite3DComponent>();
+		std::sort(AllSprites.begin(), AllSprites.end(), [](const Entity& e1, const Entity& e2)
+		{
+			auto Comp1 = e1->GetComponent<Transform>();
+			auto Comp2 = e2->GetComponent<Transform>();
+
+			return Comp1.m_Position.z < Comp2.m_Position.z;
+		});
+
+		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+		uint32_t ImageIndex = SC->GetCurrentImageIndex();
+		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
+		for (auto Entity : AllSprites)
+		{
+			auto Comp = Entity->GetComponent<Sprite3DComponent>();
+			if (!Comp.m_IsVisible || !Comp.m_Texture || !Comp.m_Material) continue;
+
+			UI_PushConstant pc{};
+			auto TransformComp = Entity->GetComponent<Transform>();
+			pc.L2W = TransformComp.m_WorldXform;
+			pc.Color = Comp.m_Color;
+
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(UI_PushConstant), &pc);
+
+			Comp.m_Material->SetTexture("UI_Texture", Comp.m_Texture);
+
+			if (m_IsEditorScene)
+			{
+				Comp.m_Material->UpdateForEditorSceneRendering(m_Sprite3DUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Sprite3DPipeline->GetPipelineLayout(), 0, 1, &Comp.m_Material->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				Comp.m_Material->UpdateForRendering(m_Sprite3DUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Sprite3DPipeline->GetPipelineLayout(), 0, 1, &Comp.m_Material->GetDescriptor(Index), 0, NULL);
+			}
+
+			VkDeviceSize offsets[] = { 0 };
+			VkBuffer VB = VK_NULL_HANDLE;
+			VB = m_Sprite3DVertexBuffer->GetBuffer();
+
+			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+		}
+	}
+
+	void SceneRenderer::GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
+		for (const auto& go_mr : MaterialSort)
+		{
+			if (go_mr.second->HasComponent<AnimationComponent>()) //This only render static meshes
+			{
+				continue;
+			}
+
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
-			PushConstant pc{};
+			PushConstantGeometry pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			pc.m_DrawShadow = mr.m_DrawShadow;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			ResourceHandle currentMaterialHandle = go_mr.first;
 
@@ -305,27 +606,27 @@ namespace TRE
 			{
 				if (mr.m_MaterialInstance == nullptr)
 				{
-					if (IsEditorScene)
+					if (m_IsEditorScene)
 					{
-						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 					}
 				}
 				else
 				{
-					if (IsEditorScene)
+					if (m_IsEditorScene)
 					{
-						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -338,206 +639,462 @@ namespace TRE
 		}
 
 		m_PreviousMaterialHandle = 0;
-		
-		//Debug Drawing Pass
+	}
 
-		if (IsEditorScene)
+	void SceneRenderer::GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		(void)MaterialSort;
+		Renderer::BindPipeline(m_CommandBuffer, m_AnimationPipeline);
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
 		{
-			DebugDrawPass(Index);
-		}
+			MeshRenderer& MeshRendererComp = Entity->GetComponent<MeshRenderer>();
+			if (!MeshRendererComp.m_IsVisible)
+				continue;
 
-		//Skybox Pass
-		{
-			vkCmdBindPipeline(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipeline());
-			if (IsEditorScene)
+			AnimationComponent& AnimationComp = Entity->GetComponent<AnimationComponent>();
+
+			PushConstantGeometry pc{};
+			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			pc.m_DrawShadow = MeshRendererComp.m_DrawShadow;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
+
+			if (MeshRendererComp.m_AnimationMaterialInstance == nullptr)
 			{
-				m_SkyboxMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetEditorDescriptor(Index), 0, NULL);
+				ResourceHandle materialHandle = PBR::GetDefaultAnimationMaterial();
+				if (m_DefaultAnimationPBRMaterial == nullptr)
+				{
+					m_DefaultAnimationPBRMaterial = ResourceManager::Instance().GetResource<Material>(materialHandle);
+					m_DefaultAnimationPBRMaterial->Invalidate();
+				}
+
+				if (m_IsEditorScene)
+				{
+					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
+				}
+				else
+				{
+					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetDescriptor(Index), 0, NULL);
+				}
 			}
 			else
 			{
-				m_SkyboxMaterial->UpdateForRendering(m_UBOBuffer, Index);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &m_SkyboxMaterial->GetDescriptor(Index), 0, NULL);
+				if (m_IsEditorScene)
+				{
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetEditorDescriptor(Index), 0, NULL);
+				}
+				else
+				{
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetDescriptor(Index), 0, NULL);
+				}
 			}
 
-			VkBuffer vertexBuffers[] = { m_SkyboxVertexBuffer->GetBuffer() };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, vertexBuffers, offsets);
-
-			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_SkyboxIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			MeshRendererComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
 		}
+	}
 
-		//Animation Pass
+	void SceneRenderer::SkyBoxPass(uint32_t Index)
+	{
+		auto Skybox = Renderer::GetSkybox();
+		Renderer::BindPipeline(m_CommandBuffer, m_SkyboxPipeline);
+		if (m_IsEditorScene)
 		{
-			//m_Animation->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
-			//m_Animation->UpdateMaterial(m_AnimationUBO, Index);
-
-			//vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Animation->GetPipelineLayout(), 0, 1, &m_Animation->GetDescriptorSet(Index), 0, NULL);
-			//m_Animation->BindBuffers(m_CommandBuffer->GetInUseCommandBuffer());
-			//m_Animation->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+			Skybox->UpdateMaterial(m_UBOSkybox, Index, m_ShadowDescriptInfo, m_IsEditorScene);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &Skybox->GetMaterial()->GetEditorDescriptor(Index), 0, NULL);
+		}
+		else
+		{
+			Skybox->UpdateMaterial(m_UBOSkybox, Index, m_ShadowDescriptInfo, m_IsEditorScene);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline->GetPipelineLayout(), 0, 1, &Skybox->GetMaterial()->GetDescriptor(Index), 0, NULL);
 		}
 
-		m_RenderPass->EndRenderPass(m_CommandBuffer->GetInUseCommandBuffer());
+		VkBuffer vertexBuffers[] = { Skybox->GetVertexBuffer() };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, vertexBuffers, offsets);
 
-		m_CommandBuffer->End();
-		m_CommandBuffer->Submit();
+		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), Skybox->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), Skybox->GetIndexCount(), 1, 0, 0, 0);
+	}
+
+	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		m_ShadowMapWidth = 8192;
+		m_ShadowMapHeight = 8192;
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_ShadowFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport2{};
+		viewport2.x = 0.0f;
+		viewport2.y = 0.0f;
+		viewport2.width = (float)m_ShadowMapWidth;
+		viewport2.height = (float)m_ShadowMapHeight;
+		viewport2.minDepth = 0.0f;
+		viewport2.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+		VkRect2D scissor2{};
+		scissor2.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
+
+		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
+
+		if (m_IsEditorScene)
+		{
+			m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
+		}
+		else
+		{
+			m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
+		}
+
+		for (const auto& go_mr : MaterialSort)
+		{
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+			ResourceHandle currentMaterialHandle = go_mr.first;
+
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+			m_PreviousMaterialHandle = currentMaterialHandle;
+		}
+		m_PreviousMaterialHandle = 0; 
+
+		Renderer::BindPipeline(m_CommandBuffer, m_ShadowAnimationPipeline);
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
+		{
+			const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
+			const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
+
+			PushConstant pc{};
+			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			if (m_IsEditorScene)
+			{
+				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
+			}
+
+			MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+		}
+
+		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
 	void SceneRenderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
-		m_DebugRenderer->BindPipeline(m_CommandBuffer->GetInUseCommandBuffer());
-		m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
-		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
-
-		for (const auto& spheres : ECSManager::Instance().GetEntities<SphereCollider>())
+		if (m_IsEditorScene)
 		{
-			const Transform& tr = spheres->GetComponent<Transform>();
-			const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
-			if(sc.m_IsVisible == false)
-				continue;
+			Renderer::BindPipeline(m_CommandBuffer, m_DebugRenderer->GetPipeline());
+			m_DebugRenderer->UpdateMaterial(m_UBOBuffer, Index);
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			model = glm::translate(model, tr.m_Position + sc.m_Offset);
-			const float radius = sc.m_Radius;
-			model = glm::scale(model, glm::vec3(radius, radius, radius));
-			pc.m_Model = model;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-
-		for (const auto& box : ECSManager::Instance().GetEntities<BoxCollider>())
-		{
-			const Transform& tr = box->GetComponent<Transform>();
-			const BoxCollider& bc = box->GetComponent<BoxCollider>();
-			if (bc.m_IsVisible == false)
-				continue;
-
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			model = glm::translate(model, tr.m_Position + bc.m_Offset);
-			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-			const glm::vec3 scale = bc.m_HalfExtents * 2.f;
-			model = model * glm::scale(glm::mat4(1.f), scale);
-			pc.m_Model = model;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			m_DebugRenderer->BindDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-
-		for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
-		{
-			for (int i = 0; i < 2; ++i)
+			for (const auto& spheres : ECSManager::Instance().GetEntities<SphereCollider>())
 			{
-				const Transform& tr = capsule->GetComponent<Transform>();
-				const CapsuleCollider& cc = capsule->GetComponent<CapsuleCollider>();
-				if (cc.m_IsVisible == false)
+				const Transform& tr = spheres->GetComponent<Transform>();
+				const SphereCollider& sc = spheres->GetComponent<SphereCollider>();
+				if (sc.m_IsVisible == false)
 					continue;
 
 				PushConstant pc{};
 				glm::mat4 model(1.f);
-				const float radius = cc.m_Radius * 2.f;
-				const float halfExtent = cc.m_HalfHeight;
-				model = glm::translate(model, tr.m_Position + cc.m_Offset);
-				model = glm::rotate(model, glm::radians(90.f * i), glm::vec3(0, 1, 0));
-				model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(0, 0, 1));
+				model = glm::translate(model, tr.m_Position + sc.m_Offset);
+				const float radius = sc.m_Radius;
 				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-				model = glm::scale(model, glm::vec3(radius, radius + halfExtent, radius));
+				model = glm::scale(model, glm::vec3(radius, radius, radius));
 				pc.m_Model = model;
 				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-				//Bind
+				m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+
+			for (const auto& box : ECSManager::Instance().GetEntities<BoxCollider>())
+			{
+				const Transform& tr = box->GetComponent<Transform>();
+				const BoxCollider& bc = box->GetComponent<BoxCollider>();
+				if (bc.m_IsVisible == false)
+					continue;
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				model = glm::translate(model, tr.m_Position + bc.m_Offset);
+				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+				const glm::vec3 scale = bc.m_HalfExtents * 2.f;
+				model = model * glm::scale(glm::mat4(1.f), scale);
+				pc.m_Model = model;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				m_DebugRenderer->BindDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugAABB(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+
+			for (const auto& capsule : ECSManager::Instance().GetEntities<CapsuleCollider>())
+			{
+				const Transform& tr = capsule->GetComponent<Transform>();
+				const CapsuleCollider& cpc = capsule->GetComponent<CapsuleCollider>();
+				if (cpc.m_IsVisible == false)
+					continue;
+
+				for (int i = 0; i < 2; ++i)
+				{
+					for (int j = 0; j < 2; ++j)
+					{
+						PushConstant pc{};
+						glm::mat4 model(1.f);
+						const float radius = cpc.m_Radius;
+						const float halfExtent = cpc.m_HalfHeight;
+						if (i == 0)
+							model = glm::translate(model, tr.m_Position + cpc.m_Offset + glm::vec3(0, halfExtent, 0));
+						else
+							model = glm::translate(model, tr.m_Position + cpc.m_Offset + glm::vec3(0, -halfExtent, 0));
+						model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+						model = glm::rotate(model, glm::radians(180.f * i), glm::vec3(1, 0, 0));
+						model = glm::rotate(model, glm::radians(90.f * j), glm::vec3(0, 1, 0));
+						model = glm::scale(model, glm::vec3(radius, radius, radius));
+						pc.m_Model = model;
+						vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+						//Bind
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+						m_DebugRenderer->BindDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
+						m_DebugRenderer->DrawDebugCapsuleRadius(m_CommandBuffer->GetInUseCommandBuffer());
+
+						PushConstant pc2{};
+						glm::mat4 model2(1.f);
+						model2 = glm::translate(model2, tr.m_Position + cpc.m_Offset);
+						model2 = model2 * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+						model2 = glm::rotate(model2, glm::radians(180.f * i), glm::vec3(1, 0, 0));
+						model2 = glm::rotate(model2, glm::radians(90.f * j), glm::vec3(0, 1, 0));
+						model2 = glm::scale(model2, glm::vec3(radius, halfExtent * 2.f, radius));
+						pc2.m_Model = model2;
+						vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc2);
+
+						//Bind
+						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+						m_DebugRenderer->BindDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+						m_DebugRenderer->DrawDebugCapsuleHalfExtent(m_CommandBuffer->GetInUseCommandBuffer());
+					}
+				}
+			}
+
+			for (const auto& cylinder : ECSManager::Instance().GetEntities<CylinderCollider>())
+			{
+				const Transform& tr = cylinder->GetComponent<Transform>();
+				const CylinderCollider& cyc = cylinder->GetComponent<CylinderCollider>();
+				if (cyc.m_IsVisible == false)
+					continue;
+
+				; // debug draw for cylinders? :P
+			}
+
+			for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
+			{
+				const Transform& tr = camera->GetComponent<Transform>();
+				const Camera& cc = camera->GetComponent<Camera>();
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				const float scale = cc.m_BaseCamera.m_Far - cc.m_BaseCamera.m_Near;
+				model = glm::translate(model, tr.m_Position);
+				model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
+				model = glm::scale(model, glm::vec3(scale, scale, scale));
+				pc.m_Model = model;
+
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-				m_DebugRenderer->BindDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
-				m_DebugRenderer->DrawDebugCapsule(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->BindDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
 			}
-		}
 
-		for (const auto& camera : ECSManager::Instance().GetEntities<Camera>())
-		{
-			const Transform& tr = camera->GetComponent<Transform>();
-			// const Camera& cc = camera->GetComponent<Camera>();
+			for (const auto& directionalLight : ECSManager::Instance().GetEntities<DirectionalLight>())
+			{
+				const Transform& tr = directionalLight->GetComponent<Transform>();
+				// const DirectionalLight& dl = directionalLight->GetComponent<DirectionalLight>();
 
-			PushConstant pc{};
-			glm::mat4 model(1.f);
-			const float scale = 100.f;/*cc.m_BaseCamera.m_Far - cc.m_BaseCamera.m_Near;*/
-			model = glm::translate(model, tr.m_Position);
-			model = model * glm::mat4_cast(glm::quat(glm::radians(tr.m_Rotation)));
-			model = glm::scale(model, glm::vec3(scale, scale, scale));
-			pc.m_Model = model;
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				const float scale = 10.f;
+				model = glm::translate(model, tr.m_Position);
+				model = model * glm::mat4_cast(glm::quat(glm::radians(glm::vec3(tr.m_Rotation.x, tr.m_Rotation.y, tr.m_Rotation.z))));
+				model = glm::scale(model, glm::vec3(scale, scale, scale));
+				pc.m_Model = model;
 
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
 
-			m_DebugRenderer->BindDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
-			m_DebugRenderer->DrawDebugCameraFrustum(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->BindDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugDirectionalLight(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+
+			for (const auto& particles : ECSManager::Instance().GetEntities<ParticleComponent>())
+			{
+				const Transform& tr = particles->GetComponent<Transform>();
+				const ParticleComponent& particleComp = particles->GetComponent<ParticleComponent>();
+
+				if(particleComp.m_Show == false)
+					continue;
+
+				PushConstant pc{};
+				glm::mat4 model(1.f);
+				model = glm::translate(model, tr.m_Position);
+				model = glm::scale(model, glm::vec3(particleComp.m_SpawnRadius, particleComp.m_SpawnRadius, particleComp.m_SpawnRadius));
+				pc.m_Model = model;
+
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DebugRenderer->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DebugRenderer->GetPipelineLayout(), 0, 1, &m_DebugRenderer->GetDescriptor(Index), 0, NULL);
+
+				m_DebugRenderer->BindDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+				m_DebugRenderer->DrawDebugSphere(m_CommandBuffer->GetInUseCommandBuffer());
+			}
 		}
 	}
 
-	void SceneRenderer::LoadCubeMap()
+	void SceneRenderer::ShadowPassInit()
 	{
-		auto Skybox1 = Resource::GetGUIDFromHex("e562694e2c3833ec");
-		auto Skybox2 = Resource::GetGUIDFromHex("612fbc6691dcd0bb");
-		auto Skybox3 = Resource::GetGUIDFromHex("d7317320914622e8");
-		auto Skybox4 = Resource::GetGUIDFromHex("5994bacabaa99f19");
-		auto Skybox5 = Resource::GetGUIDFromHex("bb22164f64671a56");
-		auto Skybox6 = Resource::GetGUIDFromHex("47335a309e5eef62");
+		m_ShadowMapWidth = 8192;
+		m_ShadowMapHeight = 8192;
 
-		auto Texture1 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox1);
-		auto Texture2 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox2);
-		auto Texture3 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox3);
-		auto Texture4 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox4);
-		auto Texture5 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox5);
-		auto Texture6 = ResourceManager::Instance().GetResource<VulkanTexture>(Skybox6);
+		ImageConfig ImgConfig{};
+		ImgConfig.DebugName = "Shadow Pass";
+		ImgConfig.Format = ImageFormat::DEPTH16UN;
+		ImgConfig.Width = m_ShadowMapWidth;
+		ImgConfig.Height = m_ShadowMapHeight;
+		ImgConfig.Usage = ImageUsage::Attachment;
+		ImgConfig.CreateSampler = true;
+		ImgConfig.Transfer = false;
+		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 
-		CubeMapConfig CubeConfig{};
-		CubeConfig.Filter = VK_FILTER_NEAREST;
-		CubeConfig.Format = Texture1->GetFormat();
-		CubeConfig.Height = Texture1->GetHeight();
-		CubeConfig.Width = Texture1->GetWidth();
-		CubeConfig.SamplerAddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		CubeConfig.Textures = { Texture4, Texture2, Texture6, Texture5, Texture1, Texture3 };
-		m_SkyboxTexture = std::make_shared<VulkanTexture>(CubeConfig);
+		m_ShadowImages = std::make_shared<Image2D>(ImgConfig);
+		m_ShadowRenderPass = std::make_shared<RenderPass>(m_Device, true);
+
+		auto attachments = m_ShadowImages->GetImageData().ImageView;
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.renderPass = m_ShadowRenderPass->GetHandle();
+		framebufferCreateInfo.attachmentCount = 1;
+		framebufferCreateInfo.pAttachments = &attachments;
+		framebufferCreateInfo.width = m_ShadowMapWidth;
+		framebufferCreateInfo.height = m_ShadowMapHeight;
+		framebufferCreateInfo.layers = 1;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
+		}
+
+		const float minFloat = std::numeric_limits<float>::min();
+		const float maxFloat = std::numeric_limits<float>::max();
+		m_ShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);
+		m_ShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
+		m_EditorShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);
+		m_EditorShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
+	}
+
+	bool SceneRenderer::ShadowFrustumCheck(const BaseCamera& baseCamera)
+	{
+		//Check if frustum points outside of shadow AABB
+		for (int i = 0; i < 8; i++)
+		{
+			if (m_IsEditorScene)
+			{
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, m_EditorShadowRatio);
+
+				if (cameraFrustum[i].x < m_EditorShadowAABBMin.x || cameraFrustum[i].x > m_EditorShadowAABBMax.x ||
+					cameraFrustum[i].y < m_EditorShadowAABBMin.y || cameraFrustum[i].y > m_EditorShadowAABBMax.y ||
+					cameraFrustum[i].z < m_EditorShadowAABBMin.z || cameraFrustum[i].z > m_EditorShadowAABBMax.z)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				//Actual camera frustum
+				const auto cameraFrustum = baseCamera.GetFrustumCorners(false, 0.03f);
+
+				if (cameraFrustum[i].x < m_ShadowAABBMin.x || cameraFrustum[i].x > m_ShadowAABBMax.x ||
+					cameraFrustum[i].y < m_ShadowAABBMin.y || cameraFrustum[i].y > m_ShadowAABBMax.y ||
+					cameraFrustum[i].z < m_ShadowAABBMin.z || cameraFrustum[i].z > m_ShadowAABBMax.z)
+				{
+					return true;
+				}
+			}
+		}
 		
-		//Backface culling
-		std::vector<glm::vec3> vertices
-		{
-				glm::vec3(-0.5f, -0.5f, -0.5f), // Vertex 0
-				glm::vec3(0.5f, -0.5f, -0.5f), // Vertex 1
-				glm::vec3(0.5f, 0.5f, -0.5f), // Vertex 2
-				glm::vec3(-0.5f, 0.5f, -0.5f), // Vertex 3
-				glm::vec3(-0.5f, -0.5f, 0.5f), // Vertex 4
-				glm::vec3(0.5f, -0.5f, 0.5f), // Vertex 5
-				glm::vec3(0.5f, 0.5f, 0.5f), // Vertex 6
-				glm::vec3(-0.5f, 0.5f, 0.5f) // Vertex 7
-		};
-		std::vector<uint32_t> indices
-		{
-			0, 1, 2, // Triangle 1 (front face)
-			2, 3, 0, // Triangle 2 (front face)
-			1, 5, 6, // Triangle 3 (right face)
-			6, 2, 1, // Triangle 4 (right face)
-			7, 6, 5, // Triangle 5 (back face)
-			5, 4, 7, // Triangle 6 (back face)
-			4, 0, 3, // Triangle 7 (left face)
-			3, 7, 4, // Triangle 8 (left face)
-			4, 5, 1, // Triangle 9 (bottom face)
-			1, 0, 4, // Triangle 10 (bottom face)
-			3, 2, 6, // Triangle 11 (top face)
-			6, 7, 3  // Triangle 12 (top face)
-		};
+		return false;
+	}
 
-		m_SkyboxVertexBuffer = std::make_unique<VertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(vertices[0]));
-		m_SkyboxIndexBuffer = std::make_unique<IndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
+	void SceneRenderer::RecreateShadowAABB(const std::array<glm::vec3, 8>& cameraFrustum)
+	{
+		//Calculate AABB in world space
+		{
+			float minX = std::numeric_limits<float>::max();
+			float minY = std::numeric_limits<float>::max();
+			float minZ = std::numeric_limits<float>::max();
+			float maxX = std::numeric_limits<float>::min();
+			float maxY = std::numeric_limits<float>::min();
+			float maxZ = std::numeric_limits<float>::min();
 
-		m_SkyboxMaterial = std::make_unique<Material>(m_SkyboxPipeline->GetConfig().Shader);
-		m_SkyboxMaterial->Invalidate();
-		m_SkyboxMaterial->SetTexture("SamplerCubeMap", m_SkyboxTexture);
+			for (int i = 0; i < 8; i++)
+			{
+				minX = std::min(minX, cameraFrustum[i].x);
+				minY = std::min(minY, cameraFrustum[i].y);
+				minZ = std::min(minZ, cameraFrustum[i].z);
+				maxX = std::max(maxX, cameraFrustum[i].x);
+				maxY = std::max(maxY, cameraFrustum[i].y);
+				maxZ = std::max(maxZ, cameraFrustum[i].z);
+			}
+
+			const glm::vec3 padding = glm::vec3(m_ShadowAABBPadding, m_ShadowAABBPadding, m_ShadowAABBPadding);
+			if (m_IsEditorScene)
+			{
+				m_EditorShadowAABBMin = glm::vec3(minX, minY, minZ);
+				m_EditorShadowAABBMin -= padding;
+				m_EditorShadowAABBMax = glm::vec3(maxX, maxY, maxZ);
+				m_EditorShadowAABBMax += padding;
+				m_EditorShadowRenderPoint = (m_EditorShadowAABBMax + m_EditorShadowAABBMin) * 0.5f;
+				m_EditorShadowRenderPoint.y = m_EditorShadowAABBMax.y; //Always render from top of AABB
+			}
+			else
+			{
+				m_ShadowAABBMin = glm::vec3(minX, minY, minZ);
+				m_ShadowAABBMin -= padding;
+				m_ShadowAABBMax = glm::vec3(maxX, maxY, maxZ);
+				m_ShadowAABBMax += padding;
+				m_ShadowRenderPoint = (m_ShadowAABBMax + m_ShadowAABBMin) * 0.5f;
+				m_ShadowRenderPoint.y = m_ShadowAABBMax.y; //Always render from top of AABB
+			}
+		}
 	}
 }

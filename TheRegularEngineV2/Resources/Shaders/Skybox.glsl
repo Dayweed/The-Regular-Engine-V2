@@ -5,14 +5,6 @@ layout(location = 0) in vec3 in_Position;
 
 layout(set = 0, binding = 0) uniform UBO
 {
-	mat4 m_ProjView;
-	vec3 m_LightPosition;
-	vec4 m_LightColor;
-	vec4 m_CameraPosition;
-	vec4 m_DirectionalLightDirection;
-	vec4 m_DirectionalLightColor;
-	vec4 m_AmbientLight;
-
 	mat4 m_Proj;
 	mat4 m_View;
 }ubo;
@@ -37,4 +29,5 @@ layout (set = 0, binding = 1) uniform samplerCube SamplerCubeMap;
 void main() 
 {
     outColor = texture(SamplerCubeMap, inUVW);
+    outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
 }

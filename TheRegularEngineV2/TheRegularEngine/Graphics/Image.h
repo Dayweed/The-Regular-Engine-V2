@@ -20,6 +20,7 @@ namespace TRE
 		RGBA32F,
 		B10R11G11UF,
 		SRGB,
+		DEPTH16UN,
 		DEPTH32FSTENCIL8UINT,
 		DEPTH32F,
 		DEPTH24STENCIL8,
@@ -40,6 +41,7 @@ namespace TRE
 
 		ImageFormat Format = ImageFormat::RGBA;
 		ImageUsage Usage = ImageUsage::Texture;
+		VkSamplerAddressMode AddressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 		bool Transfer = false;
 		uint32_t Width = 1;
 		uint32_t Height = 1;

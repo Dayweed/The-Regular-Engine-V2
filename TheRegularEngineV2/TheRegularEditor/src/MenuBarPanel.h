@@ -39,9 +39,13 @@ namespace TRE
 			bool GetShowGamePanel() const { return m_ShowGamePanel; }
 			bool GetShowConsolePanel() const { return m_ShowConsolePanel; }
 			bool GetShowAssetPanel() const { return m_ShowAssetPanel; }
+			bool GetShowCollisionMatrixPanel() const { return m_ShowCollisionMatrixPanel; }
 			bool GetExitPrompt() const { return m_ExitPrompt; }
 
 			void HandleShortcuts(TypingEvent& event);
+
+			void Serialize(std::ofstream& file);
+			void Deserialize(std::ifstream& file);
 
 		private:
 			//Bool to the status of every menu item
@@ -51,7 +55,8 @@ namespace TRE
 			bool m_ShowScenePanel = true;
 			bool m_ShowGamePanel = true;
 			bool m_ShowConsolePanel = true;
-			bool m_ShowAssetPanel = true;
+			bool m_ShowAssetPanel = false;
+			bool m_ShowCollisionMatrixPanel = false;
 
 			//bool for options
 			bool m_Test = false;
@@ -60,8 +65,7 @@ namespace TRE
 			bool m_ShortcutNewScene = false;
 			bool m_ShortcutOpenScene = false;
 			bool m_ShortcutSaveScene = false;
-			bool m_ShortcutCopyEntity = false;
-			bool m_ShortcutPasteEntity = false;
+			bool m_ShortcutSaveSceneAs = false;
 
 			//bool for exit prompt
 			bool m_ExitPrompt = false;
@@ -74,6 +78,11 @@ namespace TRE
 			float m_ScaleIncrement = 1.0f;
 			//bool for local and global
 			bool m_LocalGizmo = false;
+
+			//Editor camera
+			float m_PanSpeed{ 1000.f };
+			float m_ZoomSensitivity{ 100.f };
+			float m_RotationSensitivity{ 4.f };
 
 			//Bool for show all collider draws
 			bool m_ShowAllColliders = false;
@@ -92,9 +101,15 @@ namespace TRE
 			*******************************************************************************/
 			void OpenScene();
 			/*!*****************************************************************************
-			*\brief 	Opens the file explorer and allows the user to save over a scene.
+			*\brief 	Opens the file explorer and allows the user to save over a scene if
+			*			scene isn't created before else auto save into same scene
 			*
 			*******************************************************************************/
 			void SaveScene();
+			/*!*****************************************************************************
+			*\brief 	Always Opens the file explorer and allows the user to save over a scene.
+			*
+			*******************************************************************************/
+			void SaveSceneAs();
 	};
 }

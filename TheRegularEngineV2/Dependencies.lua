@@ -52,7 +52,7 @@ Library["Mono"] = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
 Library["PhysX_64"] = "%{LibraryDir.PhysX}/PhysX_64.lib"
 Library["PhysX_Character"] = "%{LibraryDir.PhysX}/PhysXCharacterKinematic_static_64.lib"
 Library["PhysX_Common"] = "%{LibraryDir.PhysX}/PhysXCommon_64.lib"
--- Library["PhysX_Cooking"] = "%{LibraryDir.PhysX}/PhysXCooking_64.lib"
+Library["PhysX_Cooking"] = "%{LibraryDir.PhysX}/PhysXCooking_64.lib"
 Library["PhysX_Extension"] = "%{LibraryDir.PhysX}/PhysXExtensions_static_64.lib"
 Library["PhysX_Foundation"] = "%{LibraryDir.PhysX}/PhysXFoundation_64.lib"
 Library["PhysX_Pvd"] = "%{LibraryDir.PhysX}/PhysXPvdSDK_static_64.lib"
@@ -81,3 +81,15 @@ Binaries["PhysX_Common"] = "%{LibraryDir.PhysX}/PhysXCommon_64.dll"
 Binaries["PhysX_Cooking"] = "%{LibraryDir.PhysX}/PhysXCooking_64.dll"
 Binaries["PhysX_Foundation"] = "%{LibraryDir.PhysX}/PhysXFoundation_64.dll"
 -- Binaries["PhysX_Device"] = "%{LibraryDir.PhysX}/PhysXDevice64.dll"
+
+ResourcesScripts = {}
+ResourcesScripts["Coroutine"] = "%{wks.location}/Resources/Scripts/Coroutine.dll"
+ResourcesScripts["GLM"] = "%{wks.location}/Resources/Scripts/GlmSharp.dll"
+ResourcesScripts["Tuple"] = "%{wks.location}/Resources/Scripts/System.ValueTuple.dll"
+ResourcesScripts["Core"] = "%{wks.location}/Resources/Scripts/TRE-ScriptCore.dll"
+ResourcesScripts["Storage"] = "%{wks.location}/Resources/Scripts/TRE-ScriptStorage.dll"
+
+--Resources = {}
+--Resources["Scripts"] = ResourcesScripts;
+
+

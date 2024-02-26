@@ -13,6 +13,8 @@
 #define FILESYS_PREFABDIRGUID	"m_ExistingPrefabsKey"			// Prefab Directory Key		(GUID)
 #define FILESYS_PREFABDIRPATH	"m_ExistingPrefabsValue"		// Prefab Directory Value	(Path)
 
+// hehe travess was here
+
 namespace TRE
 {
 	struct Prefabing
@@ -116,6 +118,8 @@ namespace TRE
 
 		bool RevertInstance(Entity instance, std::string prefabGUID);							// Revert instance back to same data as prefab
 
+		void UnPrefabInstance(Entity instance);													// UnPrefab children then instance (Recursive Function)
+
 		std::string ReadPrefabAssetFile(std::string filePathName);								// Returns GUID if file exist and GUID exist in prefab directory, else return empty string
 
 	private:
@@ -132,14 +136,15 @@ namespace TRE
 
 		void SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID);
 
-		void CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
+		Entity CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
 
 		void UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});	// Similar to SaveEntityInRegistry but for m_TempPrefabs
 
 		// Deserializing list in prefabs directory into m_ExistingPrefabs
-		void DeserializePrefabDirectory();														// If a prefabFilePath no longer exist while checking:
+		bool DeserializePrefabDirectory();														// If a prefabFilePath no longer exist while checking:
 																								// - All instances with Prefabing::m_Base == Prefabing::m_PrefabGUID will have their Prefabing Component removed
 																								// - Remove Prefabing::m_PrefabGUID and prefabFilePath from the directory and reserialize immediately
+																								// Returns true if it needs to serialize again
 
 		void SerializePrefabDirectory();														// Auto serialize m_ExistingPrefabs into PrefabDirectory
 

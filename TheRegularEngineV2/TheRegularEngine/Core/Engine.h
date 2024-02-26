@@ -11,6 +11,7 @@ namespace TRE
 	{
 		WindowConfig WindowConfigurations;
 		bool EnableEditor = false;
+		bool EnableGame = false;
 		bool MaximizeWindow = false;
 	};
 
@@ -39,6 +40,8 @@ namespace TRE
 			const std::shared_ptr<SceneRenderer>& GetMainSceneRenderer();
 			const std::shared_ptr<SceneRenderer>& GetEditorSceneRenderer();
 
+			void TellToShutdown();	// This while make it try to shutdown in the next loop
+
 		protected:
 			Engine(const EngineInfo& EngineInfo = EngineInfo());
 
@@ -49,6 +52,7 @@ namespace TRE
 			std::shared_ptr<SceneRenderer> m_EditorSceneRenderer;
 			EngineInfo m_EngineInfo;
 			bool m_Running = true;
+			bool m_Shutdown = false;
 
 			static Engine* s_Instance;
 	};

@@ -42,10 +42,17 @@ namespace TRE
 
 	void SelectionManager::SelectEntity(Entity& EntityObject)
 	{
+		if (EntityObject == nullptr) return;
+
 		m_SelectedEntity = EntityObject;
 
+		UpdateSelectedEntity();
+	}
+
+	void SelectionManager::UpdateSelectedEntity()
+	{
 		// If the EntityObject is valid, update all inspectable components
-		if (m_SelectedEntity)
+		if (ECSManager::Instance().IsValidEntity(m_SelectedEntity))
 		{
 			m_SelectedEntityPropTable.clear();
 			m_SelectedEntityInspectableComp.clear();
@@ -60,10 +67,19 @@ namespace TRE
 					{
 						// If we are dealing with a scope that is not an array someone may have change the SerializeEnum to a DisplayEnum they only show up there.
 						assert(Flags.m_isScope == false || PropertyName.back() == ']');
+						(void)Flags;
 						List.push_back(property::entry { PropertyName, Data });
 					});
 				m_SelectedEntityPropTable.push_back({ m_SelectedEntityInspectableComp[i].first, List });
 			}
+		}
+		else
+		{
+			std::string funcName{ __FUNCTION__ };
+			std::string selectedAddress{ std::to_string((unsigned long long)(void**) & m_SelectedEntity) };
+			TRE_ERROR("[" + funcName + "] m_SelectedEntity (" + selectedAddress + ") is not valid! Clearing...");
+			//assert(ECSManager::Instance().IsValidEntity(m_SelectedEntity));
+			ClearSelectedEntity();
 		}
 	}
 }

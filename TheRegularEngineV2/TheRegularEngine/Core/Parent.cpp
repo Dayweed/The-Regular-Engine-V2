@@ -1,43 +1,62 @@
 #include "pch.h"
 
 #include "Parent.h"
-#include "Transform.h"
+#include "ECS/Components/ParentingComponent.h"
+#include "ECS/Components/Transform.h"
 #include "Logger.h"
+
+#include <glm/gtc/matrix_inverse.hpp>
 
 namespace TRE
 {
 	void ParentingSystem::Update()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>())
-		{
-			//For startup
-			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
-			{
-				if(parent.m_Parent != "")
-					SetParent(object, ECSManager::Instance().FindEntity(parent.m_Parent));
-				for (auto& child : parent.m_Children)
-				{
-					AddChild(object, ECSManager::Instance().FindEntity(child));
-				}		
-
-				parent.m_IsDirty = false;
-			}
-
-			//Update world data
-			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
-			{
-				//Update own local data if i have a parent
-				UpdateLocalData(object);
-
-				//Update children local data
-				UpdateChildTransform(object);
-			}
-		}
+		
 	}
 
 	void ParentingSystem::GameUpdate()
 	{
 		
+	}
+
+	void ParentingSystem::LateUpdate()
+	{
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
+		{
+			//For startup
+			if (Parenting& parent{ object->GetComponent<Parenting>() }; parent.m_IsDirty)
+			{
+				/*Transform& trans = object->GetComponent<Transform>();
+				std::cout << "Parent: " << ((GetParent(object)) ? GetParent(object)->GetName() : "NONE") << ", " << "; Child: " << object->GetName() << "\n";
+				std::cout << "Chi Pos: " << trans.m_Position.x << ", " << trans.m_Position.y << ", " << trans.m_Position.z << "\n";
+				std::cout << "Chi Loc: " << trans.m_LocalPosition.x << ", " << trans.m_LocalPosition.y << ", " << trans.m_LocalPosition.z << "\n";*/
+
+				UpdateLocalData(object);
+
+				/*std::cout << "Chi Pos: " << trans.m_Position.x << ", " << trans.m_Position.y << ", " << trans.m_Position.z << "\n";
+				std::cout << "Chi Loc: " << trans.m_LocalPosition.x << ", " << trans.m_LocalPosition.y << ", " << trans.m_LocalPosition.z << "\n";*/
+
+				parent.m_IsDirty = false;
+			}
+		}
+
+		for (Entity& object : ECSManager::Instance().GetEntities<Parenting>(true))
+		{
+			//Update world data
+			if (Transform& transform{ object->GetComponent<Transform>() }; transform.m_IsDirty && object->GetComponent<Parenting>().m_IsDirty == false)
+			{
+				//transform.CalculateWorldMatrix();
+
+				//Update own local data if i have a parent and the parent did not update it's own position
+				if (Entity parent = GetParent(object); !parent || !parent->GetComponent<Transform>().m_IsDirty)
+				{
+					UpdateLocalData(object);
+				}
+
+				//Update children local data
+				UpdateChildTransform(object);
+			}
+		}
 	}
 
 	void ParentingSystem::AfterReset()
@@ -47,7 +66,7 @@ namespace TRE
 
 	void ParentingSystem::OnDestroyEntities()
 	{
-		for (Entity& object : ECSManager::Instance().GetEntities<Removal>())
+		for (Entity& object : ECSManager::Instance().GetEntities<Removal>(true))
 		{
 			RemoveParent(object);
 			AbandonChildren(object);
@@ -78,6 +97,9 @@ namespace TRE
 			parent->GetComponent<Parenting>().m_Children.emplace_back(ECSManager::Instance().FindEntityID(child));
 			UpdateChildLocalData(parent, child);
 		}
+
+		// Resort the entities again
+		ECSManager::Instance().SortEntityOrder();
 	}
 
 	Entity ParentingSystem::GetParent(Entity child)
@@ -98,6 +120,11 @@ namespace TRE
 			}
 		}
 		child->GetComponent<Parenting>().m_Parent = "";
+
+		child->GetComponent<Transform>().m_LocalPosition = {};
+		child->GetComponent<Transform>().m_LocalRotation = {};
+		child->GetComponent<Transform>().m_LocalScale = {1, 1, 1};
+		child->GetComponent<Transform>().m_IsDirty = true;
 	}
 
 	void ParentingSystem::AddChild(Entity parent, Entity child)
@@ -175,19 +202,33 @@ namespace TRE
 		}
 	}
 
-	void ParentingSystem::UpdateChildTransform(Entity parent)
+	void ParentingSystem::UpdateChildTransform(Entity parent, bool updateLocal)
 	{
 		Transform& parentTransform = parent->GetComponent<Transform>();
+		parentTransform.CalculateWorldMatrix();
 		for (Entity& child : GetChildren(parent))
 		{
 			Transform& childTransform = child->GetComponent<Transform>();
+			/*std::cout << "Parent: " << parent->GetName() << ", " << "; Child: " << child->GetName() << "\n";
+			std::cout << "Par Pos: " << parentTransform.m_Position.x << ", " << parentTransform.m_Position.y << ", " << parentTransform.m_Position.z << "\n";
+			std::cout << "Par Loc: " << parentTransform.m_LocalPosition.x << ", " << parentTransform.m_LocalPosition.y << ", " << parentTransform.m_LocalPosition.z << "\n";
+			std::cout << "Chi Pos: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
+			std::cout << "Chi Loc: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";
+			*/
 			const glm::mat4 newChildXform = parentTransform.m_WorldXform * childTransform.CalculateLocalMatrix();
 			childTransform.DecomposeWorldMatrix(newChildXform);
-			//childTransform.m_IsDirty = true;
+			if (updateLocal)
+			{
+				UpdateChildLocalData(parent, child);
+			}
+			childTransform.m_IsDirty = true;
+			childTransform.m_DirtyFlags |= parentTransform.m_DirtyFlags;
+			//std::cout << "Chi Pos: " << childTransform.m_Position.x << ", " << childTransform.m_Position.y << ", " << childTransform.m_Position.z << "\n";
+			//std::cout << "Chi Loc: " << childTransform.m_LocalPosition.x << ", " << childTransform.m_LocalPosition.y << ", " << childTransform.m_LocalPosition.z << "\n";
 
 			if (child->GetComponent<Parenting>().m_Children.size() > 0)
 			{
-				UpdateChildTransform(child);
+				UpdateChildTransform(child, updateLocal);
 			}
 		}
 	}
@@ -199,6 +240,7 @@ namespace TRE
 
 		childTransform.UpdateLocalData(parentTransform);
 		childTransform.m_IsDirty = true;
+		childTransform.m_DirtyFlags |= parentTransform.m_DirtyFlags;
 	}
 
 	void ParentingSystem::UpdateLocalData(Entity current)
@@ -212,5 +254,15 @@ namespace TRE
 		}
 
 		currentTransform.m_IsDirty = true;
+	}
+
+	void ParentingSystem::UpdateChildActive(Entity parent)
+	{
+		bool parentActive = parent->GetComponent<Properties>().m_Active;
+		for (Entity& child : GetChildren(parent))
+		{
+			child->GetComponent<Properties>().m_Active = parentActive;
+			UpdateChildActive(child);
+		}
 	}
 }

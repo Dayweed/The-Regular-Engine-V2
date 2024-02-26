@@ -27,6 +27,8 @@ namespace TRE
 		template <typename T>
 		std::shared_ptr<T> GetResource(ResourceHandle Handle);
 		template <typename T>
+		std::shared_ptr<T> GetResource(const std::string& assetName);
+		template <typename T>
 		std::vector<std::shared_ptr<T>> GetResourcesOfType();
 
 		template <typename N>
@@ -36,6 +38,8 @@ namespace TRE
 		const std::size_t GetAllResourceCount();
 		const bool IsResourceLoaded(ResourceHandle handle);
 		const bool IsResourceLoaded(const std::string& hexHandle);
+
+		void RenameResource(ResourceHandle oldHandle, ResourceHandle newHandle);
 
 		template<typename T>
 		void SerializeResource(ResourceHandle handle);
@@ -69,9 +73,8 @@ namespace TRE
 		}
 		else if (type == ResourceType::Material)
 		{
-			/*std::unique_ptr<Material> material = std::make_unique<Material>(GetResource<Shader>(3));
-			material->SetHandle(Resource::GetGUIDFromHex(hexHandle));
-			m_Resources[material->GetHandle()] = std::move(material);*/
+			std::shared_ptr<Material> material = Material::Deserialize(hexHandle);
+			(void)material;
 		}
 		else
 		{
@@ -89,11 +92,18 @@ namespace TRE
 
 			if (m_Resources.find(Handle) == m_Resources.end())
 			{
-				//TRE_CORE_INFO("Resource not found {0}", Resource::GetGUIDHex(Handle));
 				return nullptr;
 			}
 		}
 		return std::dynamic_pointer_cast<T>(m_Resources[Handle]);
+	}
+
+	template <typename T>
+	std::shared_ptr<T> ResourceManager::GetResource(const std::string& assetName)
+	{
+		const auto handle = Resource::GenerateGUID(assetName);
+
+		return GetResource<T>(handle);
 	}
 
 	template <typename T>

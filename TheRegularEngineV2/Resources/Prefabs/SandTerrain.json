@@ -1,0 +1,419 @@
+[
+   [
+      6,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+   ],
+   [
+      6,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7020514881095836200",
+         "m_Overrides": {
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "7020514881095836200",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7020514881095836200",
+         "m_Overrides": {
+            "Mesh Renderer": [
+               "TRE::MeshRenderer/IsVisible"
+            ],
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "4943746805617443020",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7020514881095836200",
+         "m_Overrides": {
+            "Mesh Renderer": [
+               "TRE::MeshRenderer/IsVisible"
+            ],
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "2733088221128012360",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7020514881095836200",
+         "m_Overrides": {
+            "Mesh Renderer": [
+               "TRE::MeshRenderer/IsVisible"
+            ],
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "7632043598763771422",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7020514881095836200",
+         "m_Overrides": {
+            "Mesh Renderer": [
+               "TRE::MeshRenderer/IsVisible"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "8610309200788138999",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7020514881095836200",
+         "m_Overrides": {
+            "Mesh Renderer": [
+               "TRE::MeshRenderer/IsVisible"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "13983240765954556134",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "m_Children": [
+            "4950694979097632586",
+            "11436980258918956879",
+            "5930942904900938000",
+            "17810436437798730285",
+            "114634271899344841"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "9294175490953721625"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "9294175490953721625"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "9294175490953721625"
+      },
+      4,
+      {
+         "m_Children": [],
+         "m_Parent": "9294175490953721625"
+      },
+      5,
+      {
+         "m_Children": [],
+         "m_Parent": "9294175490953721625"
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "9294175490953721625",
+         "m_Index": 2,
+         "m_Name": "SandTerrain",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "4950694979097632586",
+         "m_Index": 3,
+         "m_Name": "cactus_02",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "11436980258918956879",
+         "m_Index": 4,
+         "m_Name": "cactus_01",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "5930942904900938000",
+         "m_Index": 5,
+         "m_Name": "cactus_02",
+         "m_Tag": ""
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "17810436437798730285",
+         "m_Index": 6,
+         "m_Name": "cactus_01",
+         "m_Tag": ""
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "114634271899344841",
+         "m_Index": 7,
+         "m_Name": "cactus_01",
+         "m_Tag": ""
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "m_Position": [
+            66.71560668945313,
+            -80.0,
+            -159.9984588623047
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            5.119999885559082,
+            5.119999885559082,
+            5.119999885559082
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            -49.999977111816406,
+            -60.00029754638672,
+            -320.0
+         ],
+         "m_Rotation": [
+            0.0,
+            5.469894286673314e-39,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999997019767761,
+            1.0,
+            0.9999997019767761
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            140.0,
+            -53.00032043457031,
+            -350.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -1.0773109726209049e-38,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999995827674866,
+            1.0,
+            0.9999995827674866
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            -70.0,
+            -37.00033187866211,
+            -70.00080108642578
+         ],
+         "m_Rotation": [
+            0.0,
+            2.8004624708287746e-38,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999997019767761,
+            1.0,
+            0.9999997019767761
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            160.0,
+            -53.00031280517578,
+            -100.000732421875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999998211860657,
+            1.0,
+            0.9999998211860657
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            -30.0,
+            -20.00033950805664,
+            14.999923706054688
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999998211860657,
+            1.0,
+            0.9999998211860657
+         ]
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "1095c0fd2686f4bc",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "cd5aec3a7dc7605f",
+         "m_IsVisible": true
+      },
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "c0498798b1bb08d4",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e8549b79a20373f2",
+         "m_IsVisible": true
+      },
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "c0498798b1bb08d4",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e8549b79a20373f2",
+         "m_IsVisible": true
+      },
+      3,
+      {
+         "ASSET_GEOM_m_RenderObject": "c0498798b1bb08d4",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e8549b79a20373f2",
+         "m_IsVisible": true
+      },
+      4,
+      {
+         "ASSET_GEOM_m_RenderObject": "c0498798b1bb08d4",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e8549b79a20373f2",
+         "m_IsVisible": true
+      },
+      5,
+      {
+         "ASSET_GEOM_m_RenderObject": "c0498798b1bb08d4",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e8549b79a20373f2",
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

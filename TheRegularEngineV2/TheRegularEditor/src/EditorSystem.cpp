@@ -16,6 +16,9 @@
 #include "GamePanel.h"
 #include "TexturePanel.h"
 #include "Graphics/EditorCamera.h"
+#include "ModelPanel.h"
+#include "AssetPanel.h"
+#include "CollisionMatrixPanel.h"
 
 namespace TRE
 {
@@ -23,7 +26,7 @@ namespace TRE
 	{
 		TRE_INFO("Editor Init");
 		
-		AssetManager::Instance().Initialize();
+		AssetManager::Instance().Poll();
 		EditorCamera::Instance().Init();
 
 		m_PanelManager = std::make_unique<PanelManager>();
@@ -31,17 +34,22 @@ namespace TRE
 		m_AssetSelector = std::make_shared<AssetSelector>();
 
 		m_PanelManager->InsertPanel<SceneHierarchyPanel>("Scene Hierarchy", m_SelectionManager);
+		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser", m_SelectionManager, m_AssetSelector);
 		m_PanelManager->InsertPanel<ViewportPanel>("Viewport", m_SelectionManager);
 		m_PanelManager->InsertPanel<MenuBarPanel>("Menu Bar");
 		m_PanelManager->InsertPanel<InspectorPanel>("Inspector", m_SelectionManager);
-		m_PanelManager->InsertPanel<ContentBrowserPanel>("Content Browser", m_SelectionManager, m_AssetSelector);
 		m_PanelManager->InsertPanel<ConsolePanel>("Console");
 		m_PanelManager->InsertPanel<ProfilerPanel>("Profiler");
 		m_PanelManager->InsertPanel<ToolBarPanel>("Tool Bar");
 		m_PanelManager->InsertPanel<MaterialPanel>("Material", m_SelectionManager, m_AssetSelector);
 		m_PanelManager->InsertPanel<GamePanel>("Game Panel");
 		m_PanelManager->InsertPanel<TexturePanel>("Texture Panel", m_AssetSelector);
+		m_PanelManager->InsertPanel<ModelPanel>("Model Panel", m_AssetSelector);
+		m_PanelManager->InsertPanel<AssetPanel>("Asset Panel", m_AssetSelector);
+		m_PanelManager->InsertPanel<CollisionMatrixPanel>("Collision Matrix Panel");
 		m_PanelManager->Init();
+
+		Deserialize();
 	}
 
 	void EditorSystem::Init()
@@ -61,6 +69,8 @@ namespace TRE
 
 	void EditorSystem::Update()
 	{
+		//ImGui::GetIO().DeltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
+
 		static bool OpenDockSpace = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
@@ -105,15 +115,15 @@ namespace TRE
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		EditorCamera::Instance().Update();
-
 		m_PanelManager->Update();
+		EditorCamera::Instance().Update();
 
 		ImGui::End(); //Dockspace
 	}
 
 	void EditorSystem::Shutdown()
 	{
+		Serialize();
 		m_PanelManager->Shutdown();
 		TRE_INFO("Editor Shutdown");
 	}
@@ -121,5 +131,46 @@ namespace TRE
 	std::shared_ptr<SelectionManager>& EditorSystem::GetSelectionManager()
 	{
 		return m_SelectionManager;
+	}
+
+	void EditorSystem::Serialize()
+	{
+		std::string finalPath = "../EditorData/";
+
+		std::filesystem::directory_entry entry(finalPath);
+		if (!entry.exists())
+		{
+			std::filesystem::create_directory(finalPath);
+		}
+
+		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
+		std::ofstream file(finalPath);
+
+		if (!file.is_open())
+		{
+			std::cout << "Failed to open file" << finalPath << std::endl;
+			return;
+		}
+
+		EditorCamera::Instance().Serialize(file);
+		m_PanelManager->GetPanel<MenuBarPanel>("Menu Bar")->Serialize(file);
+
+		file.close();
+	}
+
+	void EditorSystem::Deserialize()
+	{
+		std::string finalPath = "../EditorData/";
+		finalPath += SceneManager::Instance().GetCurrentSceneName() + ".Editor";
+		std::ifstream file(finalPath);
+		if (!file.is_open())
+		{
+			return;
+		}
+
+		EditorCamera::Instance().Deserialize(file);
+		m_PanelManager->GetPanel<MenuBarPanel>("Menu Bar")->Deserialize(file);
+
+		file.close();
 	}
 }
