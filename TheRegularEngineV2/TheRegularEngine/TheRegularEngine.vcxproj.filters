@@ -147,6 +147,12 @@
     <ClInclude Include="ECS\Components\Particle.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\Components\Particle2DComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Components\Particle3DComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="ECS\Components\Rigidbody.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
