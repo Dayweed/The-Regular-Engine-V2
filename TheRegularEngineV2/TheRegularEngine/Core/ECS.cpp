@@ -248,7 +248,7 @@ namespace TRE
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
 			.component<AnimationComponent>(arc)
-			.component<ParticleComponent>(arc)
+			.component<Particle2DComponent>(arc)
 			.component<DirectPathfinding>(arc)
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
@@ -287,7 +287,7 @@ namespace TRE
 			.component<ScriptComponent>(arc)
 			.component<UIComponent>(arc)
 			.component<AnimationComponent>(arc)
-			.component<ParticleComponent>(arc)
+			.component<Particle2DComponent>(arc)
 			.component<DirectPathfinding>(arc)
 			.component<TextComponent>(arc)
 			.component<CylinderCollider>(arc)
@@ -366,7 +366,7 @@ namespace TRE
 			ScriptComponent,
 			UIComponent,
 			AnimationComponent,
-			ParticleComponent,
+			Particle2DComponent,
 			DirectPathfinding,
 			TextComponent,
 			SlideshowComponent,

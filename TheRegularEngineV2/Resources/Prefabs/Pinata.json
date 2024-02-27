@@ -1,11 +1,12 @@
 [
    [
-      2,
+      3,
       0,
-      1
+      1,
+      2
    ],
    [
-      2,
+      3,
       0,
       {
          "m_IsMainPrefab": true,
@@ -21,44 +22,66 @@
          "m_Overrides": {},
          "m_PrefabGUID": "4988636861241454242",
          "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "16600941906949858638",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4988636861241454242",
+         "m_RemovedComps": []
       }
    ],
    [
-      2,
+      3,
       0,
       {
          "m_Children": [
-            "1778974190903405465"
+            "1883430383215900007",
+            "14963780493081734641"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "489885819194562330"
+         "m_Parent": "15501777912644733979"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "15501777912644733979"
       }
    ],
    [
-      2,
+      3,
       0,
       {
          "m_Active": true,
-         "m_GUID": "489885819194562330",
-         "m_Index": 248,
+         "m_GUID": "15501777912644733979",
+         "m_Index": 1,
          "m_Name": "Pinata",
          "m_Tag": ""
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "1778974190903405465",
-         "m_Index": 249,
-         "m_Name": "Detector",
+         "m_GUID": "1883430383215900007",
+         "m_Index": 2,
+         "m_Name": "DetectorRange",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "14963780493081734641",
+         "m_Index": 3,
+         "m_Name": "AttackRange",
          "m_Tag": ""
       }
    ],
    [
-      2,
+      3,
       0,
       {
          "m_Position": [
@@ -94,6 +117,24 @@
             1.0,
             1.0
          ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
       }
    ],
    [
@@ -103,6 +144,7 @@
          "ASSET_GEOM_m_RenderObject": "789db1a40e2484e0",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "0",
+         "m_DrawShadow": true,
          "m_IsVisible": true
       }
    ],
@@ -127,8 +169,21 @@
       }
    ],
    [
+      2,
       1,
-      1,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0,
+         "m_Radius": 50.0
+      },
+      2,
       {
          "m_CollisionLayer.m_LayerID": 0,
          "m_IsActive": true,
@@ -180,6 +235,9 @@
          ],
          "m_StoredClass": "TRE.SimpleAI"
       }
+   ],
+   [
+      0
    ],
    [
       0

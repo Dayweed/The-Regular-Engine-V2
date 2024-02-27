@@ -11,7 +11,7 @@
 #include "Graphics/Camera.h"
 #include "ECS/Components/MeshRenderer.h"
 #include "Graphics/Renderer.h"
-#include "ECS/Components/Particle.h"
+#include "ECS/Components/Particle2DComponent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
 #include "InputHandler/Controller.h"
@@ -419,7 +419,7 @@ namespace TRE
 			TRE_INFO("TextComponent added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::Particle:
-			Temp->AddComponent<ParticleComponent>();
+			Temp->AddComponent<Particle2DComponent>();
 			TRE_INFO("Particle Component added to {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		default:
@@ -497,7 +497,7 @@ namespace TRE
 			TRE_INFO("TextComponent Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		case ComponentsID::Particle:
-			Temp->RemoveComponent<ParticleComponent>();
+			Temp->RemoveComponent<Particle2DComponent>();
 			TRE_INFO("ParticleComponent Removed From {0}({1})", Temp->GetName(), Temp->GetGUID());
 			break;
 		default:
@@ -553,7 +553,7 @@ namespace TRE
 		case ComponentsID::Text:
 			return entity->HasComponent<TextComponent>();
 		case ComponentsID::Particle:
-			return entity->HasComponent<ParticleComponent>();
+			return entity->HasComponent<Particle2DComponent>();
 		default:
 			TRE_ERROR("Component does not exist!");
 			return false;
@@ -2402,25 +2402,25 @@ namespace TRE
 	{
 		Entity entity = VALIDATEENTITY(id);
 		if (!entity) return;
-		if (!entity->HasComponent<ParticleComponent>())
+		if (!entity->HasComponent<Particle2DComponent>())
 		{
 			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
 			return;
 		}
-		entity->GetComponent<ParticleComponent>().ResetParticles(entity->GetComponent<Transform>().m_Position);
-		entity->GetComponent<ParticleComponent>().m_Running = active;
+		entity->GetComponent<Particle2DComponent>().ResetParticles(entity->GetComponent<Transform>().m_Position);
+		entity->GetComponent<Particle2DComponent>().m_Running = active;
 	}
 
 	static bool Engine_GetParticleEmitterActive(CSEntityID id)
 	{
 		Entity entity = VALIDATEENTITY(id);
 		if (!entity) return false;
-		if (!entity->HasComponent<ParticleComponent>())
+		if (!entity->HasComponent<Particle2DComponent>())
 		{
 			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
 			return false;
 		}
-		return entity->GetComponent<ParticleComponent>().m_Running;
+		return entity->GetComponent<Particle2DComponent>().m_Running;
 	}
 
 	void ScriptBind::RegisterFunctions()

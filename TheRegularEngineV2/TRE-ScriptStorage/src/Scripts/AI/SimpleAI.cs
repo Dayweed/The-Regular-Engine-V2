@@ -12,7 +12,8 @@ namespace TRE
 	public class SimpleAI : Entity
 	{
 		// Colliders to keep eye on
-		public Entity mDetector;
+		public Entity mDetectorRange;
+		public Entity mAttackRange;
 		public Entity mGround;
 
 		// Target Variables
@@ -31,6 +32,10 @@ namespace TRE
 		private float maxVelocity = 50.0f;
 		private bool isGrounded = false;
 
+		private bool commitSepuku = false;
+		private float armingTimer = 0f;
+		private float armingDuration = 1.25f;
+
 		public void Start()
 		{
 			originalSpawnPoint = transform.Position;
@@ -38,12 +43,32 @@ namespace TRE
 			mMoley = new Entity(ECSManager.FindIDFromName("Moley"));
 			mTarget = new Entity(); // Invalid ID
 			mGround = new Entity(); // Invalid ID
-			mDetector = parenting.GetChildFromName("Detector");
+			mDetectorRange = parenting.GetChildFromName("DetectorRange");
+			mAttackRange = parenting.GetChildFromName("AttackRange");
 		}
 
 		public void Update()
 		{
 			transform.Rotation = new vec3(0, transform.Rotation.y, 0);
+
+			// Jump and commit sepuku
+			if (armingTimer > 0f)
+			{
+				armingTimer -= Time.deltaTime;
+
+				// If it is grounded, jump up
+				if (isGrounded)
+				{
+					PhysicsSystem.AddForce(ID, new vec3(0, 20f, 0), ForceMode.VelocityChange);
+				}
+			}
+
+			if (commitSepuku && armingTimer <= 0f)
+			{
+				Explode();
+			}
+
+			if (commitSepuku || armingTimer > 0) return;
 
 			// Check if foundTarget
 			if (!mFoundTarget || !mCanChaseTarget)
@@ -51,12 +76,12 @@ namespace TRE
 				float distanceFromHoley = (transform.Position - mHoley.transform.Position).Length;
 				float distanceFromMoley = (transform.Position - mMoley.transform.Position).Length;
 				// Check if collide with moley or holey
-				if (PhysicsSystem.IsTriggerStay(mDetector.ID, mHoley.ID))
+				if (PhysicsSystem.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
 				{
 					mTarget = mHoley;
 					mFoundTarget = true;
 				}
-				if (PhysicsSystem.IsTriggerStay(mDetector.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
+				if (PhysicsSystem.IsTriggerStay(mDetectorRange.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
 				{
 					mTarget = mMoley;
 					mFoundTarget = true;
@@ -67,10 +92,22 @@ namespace TRE
 			{
 				// Check if collide with moley or holey / out of range
 				float distanceFromSpawn = (transform.Position - mTarget.transform.Position).Length;
-				if (PhysicsSystem.IsTriggerExit(mDetector.ID, mTarget.ID) || distanceFromSpawn > maxDistFromSpawn)
+				if (PhysicsSystem.IsTriggerExit(mDetectorRange.ID, mTarget.ID) || distanceFromSpawn > maxDistFromSpawn)
 				{
 					PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
 					mFoundTarget = false;
+				}
+
+				// Check if go explode
+				if (mFoundTarget)
+				{
+					// Check if moley or holey is in attack range
+					if (PhysicsSystem.IsTriggerStay(mAttackRange.ID, mHoley.ID) || PhysicsSystem.IsTriggerStay(mAttackRange.ID, mMoley.ID))
+					{
+						commitSepuku = true;
+						armingTimer = armingDuration;
+						PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+					}
 				}
 			}
 
@@ -126,13 +163,13 @@ namespace TRE
 		{
 			// Assign ground if valid
 			Entity other = new Entity(otherID);
-			if (mGround.ID == 0 && other.CompareTag("Ground") && other.HasComponent<BoxCollider>())
+			if (mGround.ID == 0 && (other.CompareTag("Ground") || other.CompareTag("Platform")) && other.HasComponent<BoxCollider>())
 			{
 				mGround = other;
 				mCanChaseTarget = true;
 				isGrounded = true;
 			}
-			else if (mGround.ID == otherID && other.CompareTag("Ground") && other.HasComponent<BoxCollider>())
+			else if (mGround.ID == otherID && (other.CompareTag("Ground") || other.CompareTag("Platform")) && other.HasComponent<BoxCollider>())
 			{
 				isGrounded = true;
 			}
@@ -140,23 +177,14 @@ namespace TRE
 
 		private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
 		{
-			// Assign ground if valid
-			Entity other = new Entity(otherID);
-			if (other.CompareTag("Red") || other.CompareTag("RedCollider"))
-			{
-				mMoley.GetComponent<MoleyController>().TakeDamage();
-			}
-			else if (other.CompareTag("Blue") || other.CompareTag("BlueCollider"))
-			{
-				mHoley.GetComponent<HoleyController>().TakeDamage();
-			}
+			
 		}
 
 		private void OnCollisionExit(/*Collider*/System.UInt64 otherID)
 		{
 			// Assign ground if valid
 			Entity other = new Entity(otherID);
-			if (mGround.ID == otherID && other.CompareTag("Ground") && other.HasComponent<BoxCollider>())
+			if (mGround.ID == otherID && (other.CompareTag("Ground") || other.CompareTag("Platform")) && other.HasComponent<BoxCollider>())
 			{
 				isGrounded = false;
 			}
@@ -168,6 +196,22 @@ namespace TRE
 			bool withinY = aabbMin.y < pt.y && pt.y < aabbMax.y;
 			bool withinZ = aabbMin.z < pt.z && pt.z < aabbMax.z;
 			return withinX && withinY && withinZ;
+		}
+
+		private void Explode()
+		{
+			// Take Damage for Holey or Moley within attack range
+			if (PhysicsSystem.IsTriggerStay(mAttackRange.ID, mMoley.ID))
+			{
+				mMoley.GetComponent<MoleyController>().TakeDamage();
+			}
+			if (PhysicsSystem.IsTriggerStay(mAttackRange.ID, mHoley.ID))
+			{
+				mHoley.GetComponent<HoleyController>().TakeDamage();
+			}
+
+			// Destroy self
+			DestroySelf();
 		}
 	}
 }
