@@ -1216,6 +1216,21 @@ namespace TRE
 
 	public class InputSystem
 	{
+
+        public enum Button 
+        {
+            A,
+            B,
+            X,
+            Y,
+            LB,
+            RB,
+            Start,
+            Back,
+            LeftThumb,
+            RightThumb
+        };
+
 		public static bool GetKeyHold(InputKeys keycode)
 		{
 			return Engine_GetKeyHold(keycode);
@@ -1231,6 +1246,22 @@ namespace TRE
 			return Engine_GetKeyRelease(keycode);
 		}
 
+        public static bool GetControllerButtonPress(int controller, Button button)
+        {
+            return Engine_GetControllerButtonPress(controller, button);
+        }
+
+        public static bool GetControllerButtonHold(int controller, Button button, int frames)
+        {
+            return Engine_GetControllerButtonHold(controller, button, frames);
+        }
+
+        public static bool GetControllerButtonReleased(int controller, Button button)
+        {
+            return Engine_GetControllerButtonReleased(controller, button);
+        }
+
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyHold(InputKeys keycode);
 
@@ -1239,7 +1270,16 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyRelease(InputKeys keycode);
-	}
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Engine_GetControllerButtonPress(int controller, Button button);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetControllerButtonHold(int controller, Button button, int frames);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetControllerButtonReleased(int controller, Button button);
+    }
 
 	public class MathF
 	{

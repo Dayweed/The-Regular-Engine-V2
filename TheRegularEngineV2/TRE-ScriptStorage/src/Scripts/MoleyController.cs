@@ -230,6 +230,11 @@ namespace TRE
 
 			HandleAbilities();
 
+            if (IS.GetControllerButtonPress(0, InputSystem.Button.A))
+            {
+				Debug.Log("A button pressed");
+            }
+
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
 			dirVec = dirVec.NormalizedSafe;

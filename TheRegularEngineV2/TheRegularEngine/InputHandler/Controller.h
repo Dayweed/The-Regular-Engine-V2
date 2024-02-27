@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <Xinput.h>
 #include <array>
+#include <unordered_map>
 
 // Link against the XInput library
 #pragma comment(lib, "Xinput9_1_0.lib")
@@ -9,7 +10,7 @@ class XInputController {
 public:
     static const int MAX_CONTROLLERS = 4;
 
-    enum class Button
+    enum class Button 
     {
 	    A,
         B,
@@ -40,15 +41,47 @@ public:
                 controllers[i].isConnected = false;
             }
         }
+
+        // handle held buttons
+        for (DWORD i = 0; i < MAX_CONTROLLERS; ++i) {
+            for (auto& buttonState : m_ButtonStates[i]) {
+                bool isPressed = (controllers[i].state.Gamepad.wButtons & static_cast<WORD>(buttonState.first)) != 0;
+                buttonState.second.update(isPressed);
+            }
+        }
     }
 
     bool isButtonPressed(int controllerNum, Button button) const {
 		return isButtonPressed(controllerNum, getButtonMask(button));
 	}
 
+    bool isButtonHeld(int controllerNum, Button button, int framesThreshold) const {
+	    if (isControllerConnected(controllerNum)) {
+	        WORD buttonMask = getButtonMask(button);
+	        auto it = m_ButtonStates[controllerNum].find(buttonMask);
+
+	        if (it != m_ButtonStates[controllerNum].end()) {
+	            return it->second.holdTime >= framesThreshold;
+	        }
+	    }
+	    return false;
+	}
+
     bool isButtonPressed(int controllerNum, WORD button) const {
         if (isControllerConnected(controllerNum)) {
             return (controllers[controllerNum].state.Gamepad.wButtons & button) != 0;
+        }
+        return false;
+    }
+
+    bool isButtonReleased(int controllerNum, Button button) const {
+        if (isControllerConnected(controllerNum)) {
+            WORD buttonMask = getButtonMask(button);
+            auto it = m_ButtonStates[controllerNum].find(buttonMask);
+
+            if (it != m_ButtonStates[controllerNum].end()) {
+                return it->second.isReleased;
+            }
         }
         return false;
     }
@@ -105,6 +138,38 @@ private:
     XInputController() {
         controllers.fill({ 0, {}, {}, false });
     }
+
+    struct ButtonState
+    {
+        bool isReleased;
+	    bool isPressed;
+        int holdTime;
+
+        void update(bool pressed)
+        {
+        	if (pressed)
+        	{
+        		isPressed = true;
+        		holdTime++;
+			}
+        	else
+			{
+                if(isPressed)
+                {
+                	isReleased = true;
+				}
+                else
+                {
+                	isReleased = false;
+                }
+                isPressed = false;
+				holdTime = 0;
+			}
+
+		}
+    };
+
+    std::unordered_map<WORD, ButtonState> m_ButtonStates[MAX_CONTROLLERS];
 
      WORD getButtonMask(Button button) const {
         switch (button) {

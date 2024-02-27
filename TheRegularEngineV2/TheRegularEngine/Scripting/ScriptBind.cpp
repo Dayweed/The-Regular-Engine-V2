@@ -1267,6 +1267,16 @@ namespace TRE
 		return XInputController::Instance().getTriggerValue(controller, righttrigger);
 	}
 
+	static bool GetButtonHold(int controller ,int button , int frames)
+	{
+		return XInputController::Instance().isButtonHeld(controller, static_cast<XInputController::Button>(button), frames);
+	}
+
+	static bool GetButtonReleased(int controller, int button)
+	{
+		return XInputController::Instance().isButtonReleased(controller, static_cast<XInputController::Button>(button));
+	}
+
 #pragma endregion
 
 #pragma region Logging
@@ -2423,6 +2433,8 @@ namespace TRE
 		return entity->GetComponent<Particle2DComponent>().m_Running;
 	}
 
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2605,6 +2617,10 @@ namespace TRE
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyHold", GetKeyHold);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyPress", GetKeyPress);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyRelease", GetKeyRelease);
+			// XINPUT
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonPress", GetControllerButtonPress);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonHold", GetButtonHold);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonReleased", GetButtonReleased);
 		}
 
 		// Logging
