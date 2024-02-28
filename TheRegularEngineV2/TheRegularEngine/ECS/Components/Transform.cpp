@@ -49,7 +49,8 @@ namespace TRE
 	{
 		m_Position = glm::vec3(newWorld[3]);
 		m_Scale = glm::vec3(glm::length(newWorld[0]), glm::length(newWorld[1]), glm::length(newWorld[2]));
-		m_Rotation = glm::degrees(glm::eulerAngles(glm::quat(glm::mat3(newWorld))));
+		glm::mat4 scaMat = glm::scale(glm::identity<glm::mat4>(), m_Scale);
+		m_Rotation = glm::degrees(glm::eulerAngles(glm::quat(glm::mat3(newWorld * glm::inverse(scaMat)))));
 
 		m_WorldXform = newWorld;
 	}
