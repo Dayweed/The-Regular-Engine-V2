@@ -254,6 +254,7 @@ namespace TRE
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
 			.component<Sprite3DComponent>(arc)
+			.component<Particle3DComponent>(arc)
 			;
 
 		arc.Close();
@@ -293,6 +294,7 @@ namespace TRE
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
 			.component<Sprite3DComponent>(arc)
+			.component<Particle3DComponent>(arc)
 			;
 
 		MemoryManager::Instance().UpdateECSManager(copy);
@@ -370,7 +372,8 @@ namespace TRE
 			DirectPathfinding,
 			TextComponent,
 			SlideshowComponent,
-			Sprite3DComponent
+			Sprite3DComponent,
+			Particle3DComponent
 		>();
 
 		m_Registry.each([&](entt::entity srcEntity)

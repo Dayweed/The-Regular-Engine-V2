@@ -5,6 +5,7 @@
 #include "Core/Engine.h"
 #include "Camera.h"
 #include "ECS/Components/CameraComponent.h"
+#include "ParticleSystem.h"
 
 namespace TRE
 {

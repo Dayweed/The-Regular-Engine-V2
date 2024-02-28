@@ -6,13 +6,6 @@
 
 namespace TRE
 {
-	struct Particle
-	{
-		glm::mat4 L2W;
-		glm::vec3 Position;
-		glm::vec3 Scale;
-	};
-
 	class Particle3DComponent : property::base
 	{
 	public:
@@ -21,6 +14,7 @@ namespace TRE
 			m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
 			m_Material->Invalidate();
 		}
+		
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<VulkanTexture> m_Texture;
 		glm::vec4 m_Color{ glm::vec4(1.f, 1.f, 1.f, 1.f) };
@@ -168,11 +162,6 @@ namespace TRE
 		}
 	private:
 		void ResetParticlesData(const glm::vec3 emitterPos);
-	};
-
-	class ParticleSystem : public ECSSystem
-	{
-		void LateUpdate() override;
 	};
 }
 

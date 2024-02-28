@@ -390,7 +390,8 @@ namespace TRE
 			TextComponent,
 			CylinderCollider,
 			SlideshowComponent,
-			Sprite3DComponent
+			Sprite3DComponent,
+			Particle3DComponent
 		>();
 	}
 
@@ -426,6 +427,7 @@ namespace TRE
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
 			.component<Sprite3DComponent>(arc)
+			.component<Particle3DComponent>(arc)
 			;
 
 		arc.Close();
@@ -468,6 +470,7 @@ namespace TRE
 			.component<CylinderCollider>(arc)
 			.component<SlideshowComponent>(arc)
 			.component<Sprite3DComponent>(arc)
+			.component<Particle3DComponent>(arc)
 			;
 
 		// Clone each component of the object into the prefab

@@ -112,30 +112,31 @@ namespace TRE
 		//FileSystem::Instance().GenerateFolderFileNamesFile("FolderFileNames");
 
 		// Register Components
-		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);		// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);			// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);		// ignore, ignore
-		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);		// serialized, reflected
-		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", false, false);		// serialized, reflected
-		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);		// serialized, reflected
-		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// 
+		ECSManager::Instance().RegisterComponent<Undeployed>("Undeployed", true, false);					// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Removal>("Removal", true, false);							// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Prefabing>("Prefabing", true, false);						// ignore, ignore
+		ECSManager::Instance().RegisterComponent<Properties>("Properties", true, false);					// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Parenting>("Parenting", false, false);						// serialized, reflected
+		ECSManager::Instance().RegisterComponent<Transform>("Transform", false, false);						// serialized, reflected
+		ECSManager::Instance().RegisterComponent<MeshRenderer>("Mesh Renderer");							// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Camera>("Camera");											// serialized, reflected
 		ECSManager::Instance().RegisterComponent<Rigidbody>("Rigidbody");									// serialized, reflected
 		ECSManager::Instance().RegisterComponent<SphereCollider>("SphereCollider");							// serialized, reflected
 		ECSManager::Instance().RegisterComponent<BoxCollider>("BoxCollider");								// serialized, reflected
 		ECSManager::Instance().RegisterComponent<CapsuleCollider>("CapsuleCollider");						// serialized, reflected
 		ECSManager::Instance().RegisterComponent<CylinderCollider>("CylinderCollider");						// serialized, reflected
-		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// 
-		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// 
+		ECSManager::Instance().RegisterComponent<Audio>("Audio");											// serialized, reflected
+		ECSManager::Instance().RegisterComponent<AudioListener>("AudioListener");							// serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectionalLight>("Directional Light");					// serialized, reflected
-		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// 
+		ECSManager::Instance().RegisterComponent<ScriptComponent>("Scripting");								// serialized, reflected
 		ECSManager::Instance().RegisterComponent<UIComponent>("UI Component");								// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<AnimationComponent>("Animation Component");				// Serialized, reflected
-		ECSManager::Instance().RegisterComponent<Particle2DComponent>("Particle Component");					// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<Particle2DComponent>("Particle Component");				// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<DirectPathfinding>("Direct Pathfinding");					// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<TextComponent>("Text Component");							// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<SlideshowComponent>("Slideshow Component");				// Serialized, reflected
 		ECSManager::Instance().RegisterComponent<Sprite3DComponent>("Sprite3D Component");					// Serialized, reflected
+		ECSManager::Instance().RegisterComponent<Particle3DComponent>("Particle3D Component");				// Serialized, reflected
 
 		// Register Systems
 		ECSSystemManager::Instance().RegisterSystem<ScenePostEffectsSystem>();

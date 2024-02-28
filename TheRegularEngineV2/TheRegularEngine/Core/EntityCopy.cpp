@@ -27,7 +27,8 @@ namespace TRE
 			DirectPathfinding,
 			TextComponent,
 			SlideshowComponent,
-			Sprite3DComponent
+			Sprite3DComponent,
+			Particle3DComponent
 		>();
 	};
 
