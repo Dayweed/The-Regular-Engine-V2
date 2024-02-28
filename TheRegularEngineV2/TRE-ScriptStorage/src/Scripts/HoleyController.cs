@@ -346,6 +346,14 @@ namespace TRE
 		{
 			if (playerPosition.y < OutofMapPos.y)
 			{
+				PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
+				if (currVelocity.x > 0 || currVelocity.z > 0)
+				{
+					currVelocity.x = 0;
+					currVelocity.z = 0;
+					PS.SetLinearVelocity(this.ID, currVelocity);
+				}
+
 				isDead = true;
 				DroppingOutOfMap = true;
 
