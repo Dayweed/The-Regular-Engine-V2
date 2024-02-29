@@ -20,17 +20,25 @@ namespace TRE
 
 	class ParticleRenderer
 	{
-	public:
-		ParticleRenderer(const std::shared_ptr<Device>& device);
+		public:
+			ParticleRenderer(const std::shared_ptr<Device>& device);
 
-		void Render(std::shared_ptr<UniformBuffer> ubo2D, std::shared_ptr<UniformBuffer> ubo3D, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
-	private:
-		std::shared_ptr<Pipeline> m_Pipeline;
-		std::shared_ptr<RenderPass> m_Renderpass;
-		std::shared_ptr<VertexBuffer> m_VertexBuffer;
-		std::shared_ptr<IndexBuffer> m_IndexBuffer;
+			void Render(std::shared_ptr<UniformBuffer> ubo2D, std::shared_ptr<UniformBuffer> ubo3D, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
+		
+		private:
+			void Init2D();
+			void Init3D();
 
-		std::shared_ptr<Material> m_DefaultMaterial;
-		ResourceHandle m_PreviousMaterialHandle{0};
+		private:
+			std::shared_ptr<Pipeline> m_3DPipeline;
+
+		private:
+			std::shared_ptr<Pipeline> m_Pipeline;
+			std::shared_ptr<RenderPass> m_Renderpass;
+			std::shared_ptr<VertexBuffer> m_VertexBuffer;
+			std::shared_ptr<IndexBuffer> m_IndexBuffer;
+
+			std::shared_ptr<Material> m_DefaultMaterial;
+			ResourceHandle m_PreviousMaterialHandle{0};
 	};
 }

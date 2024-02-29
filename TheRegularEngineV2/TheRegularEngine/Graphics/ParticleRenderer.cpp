@@ -21,32 +21,37 @@ namespace TRE
 		RPConfig.ClearColor = false;
 		m_Renderpass = std::make_shared<RenderPass>(device, RPConfig);
 
+		Init2D();
+		Init3D();
+	}
+
+	void ParticleRenderer::Init3D()
+	{
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(12);
+		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(13);
 		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
-		PipelineConfig.EnableBlending = true;
-		PipelineConfig.EnableDepthTest = false;
-		m_Pipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);
+		PipelineConfig.EnableBlending = false;
+		PipelineConfig.EnableDepthTest = true;
+		m_3DPipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);
+	}
 
+	void ParticleRenderer::Init2D()
+	{
 		float x = -0.5f; float y = -0.5f;
 		float width = 1, height = 1;
 		std::vector<QuadVertex> data(4);
 
 		data[0].Position = glm::vec3(x, y, 0.0f);
-		//data[0].TexCoord = glm::vec2(0, 0);
 		data[0].TexCoord = glm::vec2(0, 1);
 
 		data[1].Position = glm::vec3(x + width, y, 0.0f);
-		//data[1].TexCoord = glm::vec2(1, 0);
 		data[1].TexCoord = glm::vec2(1, 1);
 
 		data[2].Position = glm::vec3(x + width, y + height, 0.0f);
-		//data[2].TexCoord = glm::vec2(1, 1);
 		data[2].TexCoord = glm::vec2(1, 0);
 
 		data[3].Position = glm::vec3(x, y + height, 0.0f);
-		//data[3].TexCoord = glm::vec2(0, 1);
 		data[3].TexCoord = glm::vec2(0, 0);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
@@ -57,7 +62,15 @@ namespace TRE
 
 		m_VertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
 			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
-	
+
+		PipelineConfigurations PipelineConfig{};
+		PipelineConfig.Primitive = PrimitiveType::Triangles;
+		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(12);
+		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
+		PipelineConfig.EnableBlending = true;
+		PipelineConfig.EnableDepthTest = false;
+		m_Pipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);
+
 		m_DefaultMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
 		m_DefaultMaterial->Invalidate();
 		m_DefaultMaterial->SetTexture("DiffuseMap", VulkanTexture::GetDefaultTexture());
