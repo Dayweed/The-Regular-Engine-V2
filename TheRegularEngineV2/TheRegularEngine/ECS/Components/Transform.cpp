@@ -76,7 +76,8 @@ namespace TRE
 
 		m_LocalPosition = glm::vec3(localXform[3]);
 		m_LocalScale = glm::vec3(glm::length(localXform[0]), glm::length(localXform[1]), glm::length(localXform[2]));
-		m_LocalRotation = glm::degrees(glm::eulerAngles(glm::quat(glm::mat3(localXform))));
+		glm::mat4 scaMat = glm::scale(glm::identity<glm::mat4>(), m_LocalScale);
+		m_LocalRotation = glm::degrees(glm::eulerAngles(glm::quat(glm::mat3(localXform * glm::inverse(scaMat)))));
 	}
 
 	void TransformSystem::LateUpdate()
