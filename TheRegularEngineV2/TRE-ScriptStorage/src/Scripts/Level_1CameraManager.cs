@@ -15,7 +15,6 @@ namespace TRE
 		private Entity Moley;
 
 		private Entity Trigger_A;
-		private Entity Trigger_BeforeB;
 		private Entity Trigger_B;
 		private Entity Trigger_C;
 		private Entity Trigger_D;
@@ -23,13 +22,13 @@ namespace TRE
 		private Entity Trigger_F;
 		private Entity Trigger_G;
 		private Entity Trigger_H;
-		private Entity Trigger_AfterH;
-		private Entity Trigger_BeforeI;
 		private Entity Trigger_I;
 		private Entity Trigger_J;
+		private Entity Trigger_K;
+		private Entity Trigger_L;
+		private Entity Trigger_M;
 
 		private bool regionA;
-		private bool regionBeforeB;
 		private bool regionB;
 		private bool regionC;
 		private bool regionD;
@@ -37,10 +36,11 @@ namespace TRE
 		private bool regionF;
 		private bool regionG;
 		private bool regionH;
-		private bool regionAfterH;
-		private bool regionBeforeI;
 		private bool regionI;
 		private bool regionJ;
+		private bool regionK;
+		private bool regionL;
+		private bool regionM;
 
 		CameraController cameraController;
 
@@ -57,7 +57,6 @@ namespace TRE
 			Moley = ECSManager.FindEntityByName("Moley");
 
 			Trigger_A = ECSManager.FindEntityByName("Trigger_A");
-			Trigger_BeforeB = ECSManager.FindEntityByName("Trigger_BeforeB");
 			Trigger_B = ECSManager.FindEntityByName("Trigger_B");
 			Trigger_C = ECSManager.FindEntityByName("Trigger_C");
 			Trigger_D = ECSManager.FindEntityByName("Trigger_D");
@@ -65,10 +64,11 @@ namespace TRE
 			Trigger_F = ECSManager.FindEntityByName("Trigger_F");
 			Trigger_G = ECSManager.FindEntityByName("Trigger_G");
 			Trigger_H = ECSManager.FindEntityByName("Trigger_H");
-			Trigger_AfterH = ECSManager.FindEntityByName("Trigger_AfterH");
-			Trigger_BeforeI = ECSManager.FindEntityByName("Trigger_BeforeI");
 			Trigger_I = ECSManager.FindEntityByName("Trigger_I");
 			Trigger_J = ECSManager.FindEntityByName("Trigger_J");
+			Trigger_K = ECSManager.FindEntityByName("Trigger_K");
+			Trigger_L = ECSManager.FindEntityByName("Trigger_L");
+			Trigger_M = ECSManager.FindEntityByName("Trigger_M");
 
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
@@ -83,18 +83,18 @@ namespace TRE
 		public void Update()
 		{
 			regionA = IsInsideTrigger(Trigger_A);
-			regionBeforeB = IsInsideTrigger(Trigger_BeforeB);
-			regionB = IsHoleyMoleyInsideTrigger(Trigger_B);
+			regionB = IsInsideTrigger(Trigger_B);
 			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);
-			regionD = IsInsideTrigger(Trigger_D);
+			regionD = IsHoleyMoleyInsideTrigger(Trigger_D);
 			regionE = IsInsideTrigger(Trigger_E);
 			regionF = IsInsideTrigger(Trigger_F);
 			regionG = IsInsideTrigger(Trigger_G);
-			regionH = IsHoleyMoleyInsideTrigger(Trigger_H);
-			regionAfterH = IsInsideTrigger(Trigger_AfterH);
-			regionBeforeI = IsHoleyMoleyInsideTrigger(Trigger_BeforeI);
-			regionI = IsInsideTrigger(Trigger_I);
+			regionH = IsInsideTrigger(Trigger_H);
+			regionI = IsHoleyMoleyInsideTrigger(Trigger_I);
 			regionJ = IsInsideTrigger(Trigger_J);
+			regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
+			regionL = IsInsideTrigger(Trigger_L);
+			regionM = IsInsideTrigger(Trigger_M);
 
 			if (regionA)
 			{
@@ -106,7 +106,7 @@ namespace TRE
 				cameraController.expectedYPos = -2f;
 			}
 
-			if (regionBeforeB)
+			if (regionB)
 			{
 				//right under the 2nd floor
 				expectedPosition = new vec3(-50, 10, 20);
@@ -116,7 +116,7 @@ namespace TRE
 				cameraController.expectedYPos = 10f;
 			}
 
-			if (regionB)
+			if (regionC)
 			{
 				//region with jumppad - first floor
 				expectedPosition = new vec3(-50, 10, 20);
@@ -126,7 +126,7 @@ namespace TRE
 				cameraController.expectedYPos = 10f;
 			}
 
-			if (regionC)
+			if (regionD)
 			{
 				//region with jumppad - 2nd floor & moving platform 1
 				expectedPosition = new vec3(0, 10, 20);
@@ -136,7 +136,7 @@ namespace TRE
 				cameraController.expectedYPos = 30f;
 			}
 
-			if (regionD)
+			if (regionE)
 			{
 				//first hitw
 				expectedPosition = new vec3(0, 10, 20);
@@ -146,7 +146,7 @@ namespace TRE
 				cameraController.expectedYPos = 30f;
 			}
 
-			if (regionE)
+			if (regionF)
 			{
 				//moving platform section
 				cameraController.staticPosition = new vec3(130, 50, -204);
@@ -157,7 +157,7 @@ namespace TRE
 				cameraController.expectedYPos = 30f;
 			}
 
-			if (regionF)
+			if (regionG)
 			{
 				//rolling objects section
 				expectedPosition = new vec3(121, 82, -207);
@@ -167,7 +167,7 @@ namespace TRE
 				cameraController.expectedYPos = 30f;
 			}
 
-			if (regionG)
+			if (regionH)
 			{
 				//jumppad section after rolling objs - 1st floor
 				cameraController.staticPosition = new vec3(320, 45, -330);
@@ -178,7 +178,7 @@ namespace TRE
 				cameraController.expectedYPos = 60f;
 			}
 
-			if (regionH) 
+			if (regionI) 
 			{
 				//2nd floor before moving hitw
 				expectedPosition = new vec3(0, 10, 20);
@@ -188,7 +188,7 @@ namespace TRE
 				cameraController.expectedYPos = 60f;
 			}
 
-			if (regionAfterH)
+			if (regionJ)
 			{
 				//on moving hitw and ground before vertical moving platform
 				expectedPosition = new vec3(0, 10, 20);
@@ -198,7 +198,7 @@ namespace TRE
 				cameraController.expectedYPos = 90f;
 			}
 
-			if (regionBeforeI)
+			if (regionK)
 			{
 				//on the vertical platform
 				expectedPosition = new vec3(0, 10, 20);
@@ -208,22 +208,25 @@ namespace TRE
 				cameraController.expectedYPos = 90f;
 			}
 
-			if (regionI)
+			if (regionL)
 			{
 				//last platforming section
+				//for some reason it's offset to the left idk why
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 80;
+				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 100f;
 			}
 
-			if (regionJ)
+			if (regionM)
 			{
 				//last hitw
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 105f;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
