@@ -91,6 +91,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				
 			}
 
 			if (regionB)
