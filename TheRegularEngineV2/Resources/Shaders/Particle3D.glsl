@@ -77,6 +77,7 @@ layout(set = 0, binding = 2) uniform sampler2D NormalMap;
 layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
 layout(set = 0, binding = 4) uniform sampler2D AOMap;
 layout(set = 0, binding = 5) uniform sampler2D Metalness;
+layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 layout(location = 0) in struct
 {

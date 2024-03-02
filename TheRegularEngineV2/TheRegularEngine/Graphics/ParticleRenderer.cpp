@@ -199,12 +199,12 @@ namespace TRE
 					{
 						if (isEditor)
 						{
-							particleComp.m_Material->UpdateForEditorSceneRendering(UBO, index);
+							particleComp.m_Material->UpdateForEditorSceneRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetEditorDescriptor(index), 0, NULL);
 						}
 						else
 						{
-							particleComp.m_Material->UpdateForRendering(UBO, index);
+							particleComp.m_Material->UpdateForRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
 						}
 					}
@@ -212,12 +212,12 @@ namespace TRE
 					{
 						if (isEditor)
 						{
-							m_3DDefaultMaterial->UpdateForEditorSceneRendering(UBO, index);
+							m_3DDefaultMaterial->UpdateForEditorSceneRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetEditorDescriptor(index), 0, NULL);
 						}
 						else
 						{
-							m_3DDefaultMaterial->UpdateForRendering(UBO, index);
+							m_3DDefaultMaterial->UpdateForRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetDescriptor(index), 0, NULL);
 						}
 					}

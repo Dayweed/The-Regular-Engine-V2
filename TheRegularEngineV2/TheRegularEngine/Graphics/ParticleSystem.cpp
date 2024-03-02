@@ -126,6 +126,10 @@ namespace TRE
 		for (auto& emitters : ECSManager::Instance().GetEntities<Particle3DComponent>())
 		{
 			auto& particleComponent = emitters->GetComponent<Particle3DComponent>();
+			
+			if (particleComponent.m_Mesh == nullptr)
+				continue;
+
 			const auto& transform = emitters->GetComponent<Transform>();
 
 			if (particleComponent.m_Particles.size() != particleComponent.m_ParticleCount)
