@@ -3,6 +3,7 @@
 #include "Core/Engine.h"
 #include "Core/ECS.h"
 #include "ECS/Components/Particle2DComponent.h"
+#include "ECS/Components/Particle3DComponent.h"
 #include "Camera.h"
 #include "EditorCamera.h"
 #include "Core/ECS.h"
@@ -34,6 +35,9 @@ namespace TRE
 		PipelineConfig.EnableBlending = false;
 		PipelineConfig.EnableDepthTest = true;
 		m_3DPipeline = std::make_shared<Pipeline>(PipelineConfig, m_Renderpass);
+
+		m_3DDefaultMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(13));
+		m_3DDefaultMaterial->Invalidate();
 	}
 
 	void ParticleRenderer::Init2D()
@@ -42,16 +46,16 @@ namespace TRE
 		float width = 1, height = 1;
 		std::vector<QuadVertex> data(4);
 
-		data[0].Position = glm::vec3(x, y, 0.0f);
+		data[0].Position = glm::vec3(x, y, 1.0f);
 		data[0].TexCoord = glm::vec2(0, 1);
 
-		data[1].Position = glm::vec3(x + width, y, 0.0f);
+		data[1].Position = glm::vec3(x + width, y, 1.0f);
 		data[1].TexCoord = glm::vec2(1, 1);
 
-		data[2].Position = glm::vec3(x + width, y + height, 0.0f);
+		data[2].Position = glm::vec3(x + width, y + height, 1.0f);
 		data[2].TexCoord = glm::vec2(1, 0);
 
-		data[3].Position = glm::vec3(x, y + height, 0.0f);
+		data[3].Position = glm::vec3(x, y + height, 1.0f);
 		data[3].TexCoord = glm::vec2(0, 0);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
@@ -142,6 +146,85 @@ namespace TRE
 
 					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(),
 						VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
+
+					VkDeviceSize offsets[] = { 0 };
+					VkBuffer VB = m_VertexBuffer->GetBuffer();
+
+					vkCmdBindVertexBuffers(commandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+					vkCmdBindIndexBuffer(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+					vkCmdDrawIndexed(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+				}
+
+				m_PreviousMaterialHandle = currentHandle;
+			}
+		}
+		m_PreviousMaterialHandle = 0;
+	}
+
+	void ParticleRenderer::Render3D(std::shared_ptr<UniformBuffer> UBO, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
+	{
+		std::multimap<ResourceHandle, Entity> sortedParticles;
+		for (const auto& emitter : ECSManager::Instance().GetEntities<Particle3DComponent>())
+		{
+			const Particle3DComponent& particleComp = emitter->GetComponent<Particle3DComponent>();
+			if (particleComp.m_Material)
+			{
+				particleComp.m_Material->SetUBOData(particleComp.m_Color);
+				particleComp.m_Material->SetMaterialUBO();
+
+				sortedParticles.insert(std::make_pair(particleComp.m_Material->GetHandle(), emitter));
+			}
+			else
+				sortedParticles.insert(std::make_pair(m_DefaultMaterial->GetHandle(), emitter));
+
+		}
+
+		auto index = Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentBufferIndex();
+		Renderer::BindPipeline(commandBuffer, m_3DPipeline);
+		for (const auto& ent : sortedParticles)
+		{
+			const ResourceHandle currentHandle = ent.first;
+			const Particle3DComponent& particleComp = ent.second->GetComponent<Particle3DComponent>();
+			
+			if (particleComp.m_Running)
+			{
+				if (currentHandle != m_PreviousMaterialHandle)
+				{
+					if (particleComp.m_Material)
+					{
+						if (isEditor)
+						{
+							particleComp.m_Material->UpdateForEditorSceneRendering(UBO, index);
+							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetEditorDescriptor(index), 0, NULL);
+						}
+						else
+						{
+							particleComp.m_Material->UpdateForRendering(UBO, index);
+							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
+						}
+					}
+					else
+					{
+						if (isEditor)
+						{
+							m_3DDefaultMaterial->UpdateForEditorSceneRendering(UBO, index);
+							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetEditorDescriptor(index), 0, NULL);
+						}
+						else
+						{
+							m_3DDefaultMaterial->UpdateForRendering(UBO, index);
+							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetDescriptor(index), 0, NULL);
+						}
+					}
+				}
+
+				for (auto& particle : particleComp.m_Particles)
+				{
+					Particle_PushConstant pc{};
+					pc.L2W = particle.L2W;
+
+					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_3DPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
 
 					VkDeviceSize offsets[] = { 0 };
 					VkBuffer VB = m_VertexBuffer->GetBuffer();

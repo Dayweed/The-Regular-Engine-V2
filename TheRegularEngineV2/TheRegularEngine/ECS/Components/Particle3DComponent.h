@@ -37,6 +37,9 @@ namespace TRE
 		void UpdateParticles(const bool is3D);
 		void ResetParticles(const glm::vec3& emitterPos);
 
+	private:
+		void ResetParticlesData(const glm::vec3 emitterPos);
+
 		property_vtable()
 
 			friend void to_json(nlohmann::json& j, const Particle3DComponent& t)
@@ -180,8 +183,7 @@ namespace TRE
 			if (j.contains("3DWorld"))
 				t.m_3DWorld = j.at("3DWorld").get<bool>();
 		}
-	private:
-		void ResetParticlesData(const glm::vec3 emitterPos);
+
 	};
 }
 
