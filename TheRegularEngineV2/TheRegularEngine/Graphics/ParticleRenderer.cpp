@@ -168,6 +168,10 @@ namespace TRE
 		for (const auto& emitter : ECSManager::Instance().GetEntities<Particle3DComponent>())
 		{
 			const Particle3DComponent& particleComp = emitter->GetComponent<Particle3DComponent>();
+			
+			if (particleComp.m_Mesh == nullptr)
+				continue;
+
 			if (particleComp.m_Material)
 			{
 				particleComp.m_Material->SetUBOData(particleComp.m_Color);
@@ -226,13 +230,8 @@ namespace TRE
 
 					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_3DPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
 
-					VkDeviceSize offsets[] = { 0 };
-					VkBuffer VB = m_VertexBuffer->GetBuffer();
-
-					vkCmdBindVertexBuffers(commandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
-					vkCmdBindIndexBuffer(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-					vkCmdDrawIndexed(commandBuffer->GetInUseCommandBuffer(), m_IndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+					particleComp.m_Mesh->Bind(commandBuffer->GetInUseCommandBuffer());
+					particleComp.m_Mesh->Draw(commandBuffer->GetInUseCommandBuffer());
 				}
 
 				m_PreviousMaterialHandle = currentHandle;
