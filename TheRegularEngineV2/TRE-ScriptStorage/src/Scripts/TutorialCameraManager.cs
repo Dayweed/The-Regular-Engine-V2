@@ -91,7 +91,6 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
-				
 			}
 
 			if (regionB)
@@ -168,6 +167,9 @@ namespace TRE
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
+			cameraController.toTransition = PS.IsTriggerEnter(MidPos.ID, Trigger_A.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_B.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_C.ID)
+											|| PS.IsTriggerEnter(MidPos.ID, Trigger_D.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_E.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_F.ID)
+											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID);
 		}
 
 		private bool IsInsideTrigger(Entity entity)
