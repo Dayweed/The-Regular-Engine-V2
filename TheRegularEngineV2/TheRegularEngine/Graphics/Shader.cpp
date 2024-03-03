@@ -185,6 +185,7 @@ namespace TRE
 		auto ShadowMapAnimationHandle = 10;
 		auto FontHandle = 11;
 		auto ParticleHandle = 12;
+		auto Particle3DHandle = 13;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
@@ -226,10 +227,15 @@ namespace TRE
 		FontShader->SetHandle(FontHandle);
 		ResourceManager::Instance().AddResource(std::move(FontShader));
 
-		//Particle Shader
+		//Particle 2D Shader
 		std::unique_ptr<Shader> ParticleShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle.TREshader");
 		ParticleShader->SetHandle(ParticleHandle);
 		ResourceManager::Instance().AddResource(std::move(ParticleShader));
+
+		//Particle 3D Shader
+		std::unique_ptr<Shader> Particle3DShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle3D.TREshader");
+		Particle3DShader->SetHandle(Particle3DHandle);
+		ResourceManager::Instance().AddResource(std::move(Particle3DShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

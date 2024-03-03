@@ -510,6 +510,7 @@ namespace TRE
 		Sprite3DPass(Index);
 		DebugDrawPass(Index);
 		m_ParticleRenderer->Render(m_ParticleUBO2D, m_ParticleUBO3D, m_CommandBuffer, m_IsEditorScene);
+		m_ParticleRenderer->Render3D(m_UBOBuffer, m_CommandBuffer, m_IsEditorScene);
 
 		Renderer::EndRenderPass(m_CommandBuffer);
 
