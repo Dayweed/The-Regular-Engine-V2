@@ -1021,7 +1021,7 @@ namespace TRE
 		else
 		{
 			std::string error{ "[PhysicsSystem::UpdateActorPose]: m_Actors does not contain entity " + entity->GetName() };
-			TRE_ASSERT(error.c_str());
+			TRE_ASSERT(true, error.c_str());
 			std::cout << error << "\n";
 		}
 	}

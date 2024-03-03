@@ -231,34 +231,34 @@ namespace TRE
 			HandleAbilities();
 
 			// Button Press
-            if (IS.GetControllerButtonPress(0, InputSystem.Button.A))
-            {
-                Debug.Log("A button press");
-            }
+			if (IS.GetControllerButtonPress(0, InputSystem.Button.A))
+			{
+				Debug.Log("A button press");
+			}
 
 			// hold Controller Button (time in seconds)
-            if (IS.GetControllerButtonHold(0, InputSystem.Button.A , 3))
-            {
+			if (IS.GetControllerButtonHold(0, InputSystem.Button.A, 3))
+			{
 				Debug.Log("A button hold");
-            }
+			}
 
 			// Release Controller Button
-            if (IS.GetControllerButtonReleased(0, InputSystem.Button.A))
-            {
-                Debug.Log("A button release");
-            }
+			if (IS.GetControllerButtonReleased(0, InputSystem.Button.A))
+			{
+				Debug.Log("A button release");
+			}
 
 			// controller Stick x
-            if (IS.GetControllerStickX(0, false) != 0f)
-            {
-                Debug.Log("Stick left X : " + IS.GetControllerStickX(0, false));
-            }
+			if (IS.GetControllerStickX(0, false) != 0f)
+			{
+				Debug.Log("Stick left X : " + IS.GetControllerStickX(0, false));
+			}
 
-            if (IS.GetControllerStickX(0, false) != 0f)
-            {
-                Debug.Log("Stick left Y : " + IS.GetControllerStickX(0, false));
-            }
-			
+			if (IS.GetControllerStickX(0, false) != 0f)
+			{
+				Debug.Log("Stick left Y : " + IS.GetControllerStickX(0, false));
+			}
+
 
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
@@ -570,7 +570,7 @@ namespace TRE
 						}
 					}
 					//jump buffer time and coyote time is still active
-					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
+					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable && !IsInsideCircleNoJump(holey_ref.GetComponent<Transform>().Position))
 					{
 						isWalking = false;
 						//if something break comment this line below out
@@ -857,6 +857,33 @@ namespace TRE
 		public bool GetIsDead()
 		{
 			return isDead;
+		}
+
+		// There is a circular/small cylindrical volume that
+		// when both players are in, neither can jump.
+		private bool IsInsideCircleNoJump(vec3 otherPlayerPos)
+		{
+			// Debug.Log("Holey Pos: " + otherPlayerPos.ToString());
+			const float yDiffThreshold = 2.0f;
+			const float circleRadius = 5.0f;
+
+			float yDiff = Math.Abs(transform.Position.y - otherPlayerPos.y);
+			if (yDiff >= yDiffThreshold)
+			{
+				// Debug.Log("different y heights, ok");
+				return false;
+			}
+
+			vec2 playerCirclePos = new vec2(transform.Position.x, transform.Position.z);
+			vec2 otherCirclePos = new vec2(otherPlayerPos.x, otherPlayerPos.z);
+
+			float planeDist = (playerCirclePos - otherCirclePos).Length;
+			if (planeDist >= circleRadius)
+			{
+				// Debug.Log("same y, far enough away, ok");
+				return false;
+			}
+			return true;
 		}
 	}
 }

@@ -189,7 +189,7 @@ namespace TRE
 			m_ExitPrompt = false;
 		}
 
-		ImGui::SetNextWindowSize(ImVec2(400, 100));
+		ImGui::SetNextWindowSize(ImVec2(410, 120));
 		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 		if (ImGui::BeginPopupModal("Exit", nullptr, m_PopUps))
 		{

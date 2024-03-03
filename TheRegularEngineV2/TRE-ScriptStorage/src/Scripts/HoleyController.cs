@@ -481,7 +481,7 @@ namespace TRE
 						}
 					}
 
-					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
+					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable && !IsInsideCircleNoJump(moley_ref.GetComponent<Transform>().Position))
 					{
 						isWalking = false;
 
@@ -740,6 +740,33 @@ namespace TRE
 		public bool GetIsDead()
 		{
 			return isDead;
+		}
+
+		// There is a circular/small cylindrical volume that
+		// when both players are in, neither can jump.
+		private bool IsInsideCircleNoJump(vec3 otherPlayerPos)
+		{
+			// Debug.Log("Moley Pos: " + otherPlayerPos.ToString());
+			const float yDiffThreshold = 2.0f;
+			const float circleRadius = 5.0f;
+
+			float yDiff = Math.Abs(transform.Position.y - otherPlayerPos.y);
+			if (yDiff >= yDiffThreshold)
+			{
+				// Debug.Log("different y heights, ok");
+				return false;
+			}
+
+			vec2 playerPlanePos = new vec2(transform.Position.x, transform.Position.z);
+			vec2 otherPlanePos = new vec2(otherPlayerPos.x, otherPlayerPos.z);
+
+			float planeDist = (playerPlanePos - otherPlanePos).Length;
+			if (planeDist >= circleRadius)
+			{
+				// Debug.Log("same y, far enough away, ok");
+				return false;
+			}
+			return true;
 		}
 	}
 }
