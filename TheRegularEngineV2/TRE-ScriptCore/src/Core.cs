@@ -1219,16 +1219,20 @@ namespace TRE
 
         public enum Button 
         {
-            A,
-            B,
-            X,
-            Y,
-            LB,
-            RB,
-            Start,
-            Back,
-            LeftThumb,
-            RightThumb
+            A = 0,
+            B = 1,
+            X = 2,
+            Y = 3,
+            DPadUp = 4,
+            DPadDown = 5,
+            DPadLeft = 6,
+            DPadRight = 7,
+            LeftShoulder = 8,
+            RightShoulder = 9,
+            Start = 10,
+            Back = 11,
+            LeftThumb = 12,
+            RightThumb = 13
         };
 
 		public static bool GetKeyHold(InputKeys keycode)
@@ -1251,14 +1255,24 @@ namespace TRE
             return Engine_GetControllerButtonPress(controller, button);
         }
 
-        public static bool GetControllerButtonHold(int controller, Button button, int frames)
+        public static bool GetControllerButtonHold(int controller, Button button, float time)
         {
-            return Engine_GetControllerButtonHold(controller, button, frames);
+            return Engine_GetControllerButtonHold(controller, button, time);
         }
 
         public static bool GetControllerButtonReleased(int controller, Button button)
         {
             return Engine_GetControllerButtonReleased(controller, button);
+        }
+
+        public static float GetControllerStickX(int controller, bool rightStick)
+        {
+            return Engine_GetControllerStickX(controller, rightStick);
+        }
+
+        public static float GetControllerStickY(int controller, bool rightStick)
+        {
+            return Engine_GetControllerStickY(controller, rightStick);
         }
 
 
@@ -1275,10 +1289,16 @@ namespace TRE
         internal extern static bool Engine_GetControllerButtonPress(int controller, Button button);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool Engine_GetControllerButtonHold(int controller, Button button, int frames);
+		internal extern static bool Engine_GetControllerButtonHold(int controller, Button button, float time);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetControllerButtonReleased(int controller, Button button);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetControllerStickX(int controller, bool rightStick);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static float Engine_GetControllerStickY(int controller, bool rightStick);
     }
 
 	public class MathF

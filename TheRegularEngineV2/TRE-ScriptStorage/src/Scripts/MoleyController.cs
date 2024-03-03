@@ -230,10 +230,35 @@ namespace TRE
 
 			HandleAbilities();
 
+			// Button Press
             if (IS.GetControllerButtonPress(0, InputSystem.Button.A))
             {
-				Debug.Log("A button pressed");
+                Debug.Log("A button press");
             }
+
+			// hold Controller Button (time in seconds)
+            if (IS.GetControllerButtonHold(0, InputSystem.Button.A , 3))
+            {
+				Debug.Log("A button hold");
+            }
+
+			// Release Controller Button
+            if (IS.GetControllerButtonReleased(0, InputSystem.Button.A))
+            {
+                Debug.Log("A button release");
+            }
+
+			// controller Stick x
+            if (IS.GetControllerStickX(0, false) != 0f)
+            {
+                Debug.Log("Stick left X : " + IS.GetControllerStickX(0, false));
+            }
+
+            if (IS.GetControllerStickX(0, false) != 0f)
+            {
+                Debug.Log("Stick left Y : " + IS.GetControllerStickX(0, false));
+            }
+			
 
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;

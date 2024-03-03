@@ -1254,27 +1254,27 @@ namespace TRE
 
 	static bool GetControllerButtonPress(int controller , int button)
 	{
-		return XInputController::Instance().isButtonPressed(controller ,static_cast<XInputController::Button>(button));
+		return XInputController::Instance().isButtonPressed(controller ,button);
 	}
 
-	static std::pair <float, float> GetControllerStick(int controller, bool rightstick)
+	static float GetControllerStickX(int controller, bool rightstick)
 	{
-		return XInputController::Instance().getThumbstickValue(controller, rightstick);
+		return XInputController::Instance().getThumbstickX(controller, rightstick);
 	}
 
-	static float GetControllerTrigger(int controller, bool righttrigger)
+	static float GetControllerStickY(int controller, bool rightstick)
 	{
-		return XInputController::Instance().getTriggerValue(controller, righttrigger);
+		return XInputController::Instance().getThumbstickY(controller, rightstick);
 	}
 
-	static bool GetButtonHold(int controller ,int button , int frames)
+	static bool GetButtonHold(int controller ,int button, float time)
 	{
-		return XInputController::Instance().isButtonHeld(controller, static_cast<XInputController::Button>(button), frames);
+		return XInputController::Instance().isButtonHeld(controller, button, time);
 	}
 
 	static bool GetButtonReleased(int controller, int button)
 	{
-		return XInputController::Instance().isButtonReleased(controller, static_cast<XInputController::Button>(button));
+		return XInputController::Instance().isButtonReleased(controller, button);
 	}
 
 #pragma endregion
@@ -2621,6 +2621,8 @@ namespace TRE
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonPress", GetControllerButtonPress);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonHold", GetButtonHold);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonReleased", GetButtonReleased);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickX",GetControllerStickX);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickY", GetControllerStickY);
 		}
 
 		// Logging
