@@ -132,7 +132,7 @@ namespace TRE
 
 			const auto& transform = emitters->GetComponent<Transform>();
 
-			if (particleComponent.m_Particles.size() != particleComponent.m_ParticleCount)
+			if (particleComponent.m_Position.size() != particleComponent.m_ParticleCount)
 			{
 				particleComponent.GenerateParticles(transform.m_Position);
 			}
@@ -140,7 +140,7 @@ namespace TRE
 			if (particleComponent.m_Running == false)
 				continue;
 
-			particleComponent.UpdateParticles(particleComponent.m_3DWorld);
+			particleComponent.UpdateParticles();
 
 			if (particleComponent.m_ElapsedTime >= particleComponent.m_LifeTime)
 			{
@@ -155,12 +155,16 @@ namespace TRE
 	//3D
 	void Particle3DComponent::GenerateParticles(const glm::vec3& emitterPos)
 	{
-		m_Particles.clear();
-		m_Particles.resize(m_ParticleCount);
+		m_Position.clear();
+		m_Scale.clear();
+
+		m_Position.resize(m_ParticleCount);
+		m_Scale.resize(m_ParticleCount);
+
 		ResetParticles(emitterPos);
 	}
 
-	void Particle3DComponent::UpdateParticles(const bool is3D)
+	void Particle3DComponent::UpdateParticles()
 	{
 		const float deltaTime = Engine::GetInstance().GetWindow()->GetDeltaTime();
 
@@ -188,29 +192,22 @@ namespace TRE
 		const Transform& mainCameraTransform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		const BaseCamera& camera = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_BaseCamera;
 		const auto mainCamPos = camera.m_FocalPoint - camera.GetViewDirection() * camera.m_FocalLength;
-		for (auto& particle : m_Particles)
+
+		for (int x = 0; x < m_ParticleCount; x++)
 		{
 			const glm::vec3 randomSpeed = glm::vec3(disSpeed(gen), disSpeed(gen), disSpeed(gen));
-			particle.Position += randomSpeed * m_Velocity * deltaTime;
+			m_Position[x] += randomSpeed * m_Velocity * deltaTime;
 
-			if (is3D)
-			{
-				//Billboard
-				glm::vec3 forward = glm::normalize(mainCamPos - particle.Position);
-				glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
-				glm::vec3 up = glm::cross(forward, right);
+			//Billboard
+			glm::vec3 forward = glm::normalize(mainCamPos - m_Position[x]);
+			glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
+			glm::vec3 up = glm::cross(forward, right);
 
-				glm::mat4 billboardMatrix(1.0f);
-				billboardMatrix[0] = glm::vec4(right, 0.0f);
-				billboardMatrix[1] = glm::vec4(up, 0.0f);
-				billboardMatrix[2] = glm::vec4(-forward, 0.0f);
-				particle.L2W = glm::translate(glm::mat4(1.f), particle.Position) * billboardMatrix * glm::scale(glm::mat4(1.0f), particle.Scale);
-			}
-			else
-			{
-				const glm::vec3 postiion3D = glm::vec3(particle.Position.x, particle.Position.y, particle.Position.z);
-				particle.L2W = glm::translate(glm::mat4(1.f), postiion3D) * glm::scale(glm::mat4(1.0f), particle.Scale);
-			}
+			glm::mat4 billboardMatrix(1.0f);
+			billboardMatrix[0] = glm::vec4(right, 0.0f);
+			billboardMatrix[1] = glm::vec4(up, 0.0f);
+			billboardMatrix[2] = glm::vec4(-forward, 0.0f);
+			m_ParticleData.L2W[x] = glm::translate(glm::mat4(1.f), m_Position[x]) * billboardMatrix * glm::scale(glm::mat4(1.0f), m_Scale[x]);
 		}
 
 		m_ElapsedTime += deltaTime;
@@ -218,7 +215,7 @@ namespace TRE
 
 	void Particle3DComponent::ResetParticles(const glm::vec3& emitterPos)
 	{
-		if (m_Particles.size() != m_ParticleCount)
+		if (m_Position.size() != m_ParticleCount || m_Scale.size() != m_ParticleCount)
 			GenerateParticles(emitterPos);
 		m_ElapsedTime = 0.f;
 		ResetParticlesData(emitterPos);
@@ -234,9 +231,9 @@ namespace TRE
 		std::uniform_real_distribution<> disSize(m_VariationSize.x * m_Size, m_VariationSize.y * m_Size);
 		for (int i = 0; i < m_ParticleCount; ++i)
 		{
-			m_Particles[i].Position = emitterPos + glm::vec3(disPos(gen), disPos(gen), disPos(gen));
+			m_Position[i]  = emitterPos + glm::vec3(disPos(gen), disPos(gen), disPos(gen));
 			const float scale = static_cast<float>(disSize(gen));
-			m_Particles[i].Scale = glm::vec3(scale, scale, scale);
+			m_Scale[i] = glm::vec3(scale, scale, scale);
 		}
 	}
 }

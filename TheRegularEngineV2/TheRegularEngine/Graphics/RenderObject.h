@@ -58,6 +58,7 @@ namespace TRE
 
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
+		void DrawInstanced(VkCommandBuffer commandBuffer, uint32_t InstanceCount);
 
 		static ResourceType GetType() { return ResourceType::Mesh; }
 		bool IsRigged() { return m_IsRigged; }

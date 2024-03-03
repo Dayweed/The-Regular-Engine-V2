@@ -115,6 +115,11 @@ namespace TRE
 		}
 	}
 
+	void RenderObject::DrawInstanced(VkCommandBuffer commandBuffer, uint32_t InstanceCount)
+	{
+		vkCmdDrawIndexed(commandBuffer, m_IndexBuffer->GetIndexCount(), InstanceCount, 0, 0, 0);
+	}
+
 	void RenderObject::CreateBoundingSphere(const std::vector<Vertex>& vertices)
 	{
 		std::vector<glm::vec3> positions(vertices.size());

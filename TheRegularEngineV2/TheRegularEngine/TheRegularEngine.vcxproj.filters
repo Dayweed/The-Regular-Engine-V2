@@ -298,6 +298,9 @@
     <ClInclude Include="Graphics\VulkanUtilities.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="InputHandler\Controller.h">
+      <Filter>InputHandler</Filter>
+    </ClInclude>
     <ClInclude Include="InputHandler\InputHandler.h">
       <Filter>InputHandler</Filter>
     </ClInclude>

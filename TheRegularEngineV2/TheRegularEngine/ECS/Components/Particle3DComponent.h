@@ -2,15 +2,28 @@
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
 #include "Graphics/Material.h"
+#include "Graphics/UniformBuffer.h"
+#include "Graphics/VulkanUtilities.h"
 #include "glm/gtc/type_ptr.hpp"
 
 namespace TRE
 {
+	struct Particle3DUBO
+	{
+		glm::mat4 L2W [500];
+	};
+
 	class Particle3DComponent : property::base
 	{
 	public:	
-		std::shared_ptr<Material> m_Material;
+		Particle3DComponent()
+		{
+			m_Data = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(Particle3DUBO)), 8);
+		}
+
 		std::shared_ptr<RenderObject> m_Mesh;
+		std::shared_ptr<Material> m_Material;
+		std::shared_ptr<UniformBuffer> m_Data;
 
 		glm::vec4 m_Color{ glm::vec4(1.f, 1.f, 1.f, 1.f) };
 		glm::vec3 m_Velocity = glm::vec3(0.f, 1.f, 0.f);
@@ -29,12 +42,15 @@ namespace TRE
 		bool m_PlayOnStart = true;
 		bool m_Fade = true;
 		bool m_Show = true;
-		bool m_3DWorld = true;
 
-		std::vector<Particle> m_Particles;
+		std::vector<glm::vec3> m_Position;
+		std::vector<glm::vec3> m_Scale;
+
+		Particle3DUBO m_ParticleData;
+
 	public:
 		void GenerateParticles(const glm::vec3& emitterPos);
-		void UpdateParticles(const bool is3D);
+		void UpdateParticles();
 		void ResetParticles(const glm::vec3& emitterPos);
 
 	private:
@@ -71,8 +87,7 @@ namespace TRE
 				{ "ParticleCount", t.m_ParticleCount },
 				{ "Loop", t.m_Loop },
 				{ "PlayOnStart", t.m_PlayOnStart },
-				{ "Fade", t.m_Fade },
-				{ "3DWorld", t.m_3DWorld }
+				{ "Fade", t.m_Fade }
 			};
 		}
 
@@ -180,8 +195,6 @@ namespace TRE
 				if (t.m_Fade)
 					t.m_Color.a = 0.0f;
 			}
-			if (j.contains("3DWorld"))
-				t.m_3DWorld = j.at("3DWorld").get<bool>();
 		}
 
 	};
@@ -253,7 +266,5 @@ property_begin(TRE::Particle3DComponent)
 		property_var(m_VariationSize).Name("VariationSize"),
 		property_var(m_Fade).Name("Fade"),
 		property_var(m_FadeDuration).Name("FadeDuration"),
-		property_var(m_Show).Name("Show Spawn Point"),
-		property_var(m_3DWorld).Name("3DWorld")
-
+		property_var(m_Show).Name("Show Spawn Point")
 } property_vend_h(TRE::Particle3DComponent)

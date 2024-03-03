@@ -250,6 +250,21 @@ namespace TRE
 						m_AssetSelector->SelectAsset(AssetManager::Instance().GetName(descriptorFileMaterial.GetResourceHandle()), AssetSelectorEvent::AssetType::Material);
 					}
 
+					if (ImGui::MenuItem("Particle3D"))
+					{
+						MaterialDescriptorFile descriptorFileMaterial;
+						descriptorFileMaterial.Generate();
+
+						std::unique_ptr<Material> newMaterial = std::make_unique<Material>(13);
+						newMaterial->SetHandle(descriptorFileMaterial.GetResourceHandle());
+						newMaterial->Invalidate();
+						newMaterial->Serialize();
+
+						AssetManager::Instance().AddAsset(descriptorFileMaterial.GetAssetPath(), std::move(newMaterial));
+
+						m_AssetSelector->SelectAsset(AssetManager::Instance().GetName(descriptorFileMaterial.GetResourceHandle()), AssetSelectorEvent::AssetType::Material);
+					}
+
 					if (ImGui::MenuItem("Others"))
 					{
 

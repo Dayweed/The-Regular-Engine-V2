@@ -21,15 +21,15 @@ layout(set = 0, binding = 0) uniform UBO
 	float m_ShadowIntensity;
 } ubo;
 
+layout(set = 0, binding = 8) uniform ParticleUBO
+{
+	mat4 ParticleL2W [500];
+} ubo_particle;
+
 layout(set = 0, binding = 6) uniform MaterialUBO
 {
 	vec4 m_Color;
 } material;
-
-layout (push_constant) uniform PushConstants
-{
-    mat4 L2W;
-} PC;
 
 layout(location = 0) out struct
 {
@@ -49,15 +49,15 @@ const float gamma = 2.2;
 
 void main() 
 {
-    gl_Position = ubo.m_ProjView * PC.L2W * vec4(inPosition, 1.0);
+    gl_Position = ubo.m_ProjView * ubo_particle.ParticleL2W[gl_InstanceIndex] * vec4(inPosition, 1.0);
 
-    mat3 rot = mat3(PC.L2W);
+    mat3 rot = mat3(ubo_particle.ParticleL2W[gl_InstanceIndex]);
 	vec3 normal = normalize(rot * inNormal);
 	vec3 tangent = normalize(rot * inTangent);	
 	vec3 bitangent = normalize(rot * inBitangent);
 
 	Out.TBN = mat3( tangent, bitangent, normal);
-    Out.PosWorld = PC.L2W * vec4(inPosition, 1.0);
+    Out.PosWorld = ubo_particle.ParticleL2W[gl_InstanceIndex] * vec4(inPosition, 1.0);
     Out.PosWorld.w = gamma;
     Out.VertColor = pow(inColor, gamma.rrr);
 	Out.TexCoord = inTexCoord;

@@ -144,8 +144,7 @@ namespace TRE
 					Particle_PushConstant pc{};
 					pc.L2W = particle.L2W;
 
-					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(),
-						VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
+					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
 
 					VkDeviceSize offsets[] = { 0 };
 					VkBuffer VB = m_VertexBuffer->GetBuffer();
@@ -177,6 +176,9 @@ namespace TRE
 				particleComp.m_Material->SetUBOData(particleComp.m_Color);
 				particleComp.m_Material->SetMaterialUBO();
 
+				particleComp.m_Data->SetData(&particleComp.m_ParticleData, sizeof(Particle3DUBO));
+				
+
 				sortedParticles.insert(std::make_pair(particleComp.m_Material->GetHandle(), emitter));
 			}
 			else
@@ -199,12 +201,12 @@ namespace TRE
 					{
 						if (isEditor)
 						{
-							particleComp.m_Material->UpdateForEditorSceneRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
+							particleComp.m_Material->UpdateForEditorAnimationRendering(UBO, index, particleComp.m_Data, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetEditorDescriptor(index), 0, NULL);
 						}
 						else
 						{
-							particleComp.m_Material->UpdateForRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
+							particleComp.m_Material->UpdateForAnimationRendering(UBO, index, particleComp.m_Data, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
 						}
 					}
@@ -212,27 +214,19 @@ namespace TRE
 					{
 						if (isEditor)
 						{
-							m_3DDefaultMaterial->UpdateForEditorSceneRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
+							m_3DDefaultMaterial->UpdateForEditorAnimationRendering(UBO, index, particleComp.m_Data, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetEditorDescriptor(index), 0, NULL);
 						}
 						else
 						{
-							m_3DDefaultMaterial->UpdateForRendering(UBO, index, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
+							m_3DDefaultMaterial->UpdateForAnimationRendering(UBO, index, particleComp.m_Data, ResourceManager::Instance().GetResource<VulkanTexture>(VulkanTexture::GetDefaultTextureID())->GetDescriptorImageInfo());
 							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetDescriptor(index), 0, NULL);
 						}
 					}
 				}
 
-				for (auto& particle : particleComp.m_Particles)
-				{
-					Particle_PushConstant pc{};
-					pc.L2W = particle.L2W;
-
-					vkCmdPushConstants(commandBuffer->GetInUseCommandBuffer(), m_3DPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Particle_PushConstant), &pc);
-
-					particleComp.m_Mesh->Bind(commandBuffer->GetInUseCommandBuffer());
-					particleComp.m_Mesh->Draw(commandBuffer->GetInUseCommandBuffer());
-				}
+				particleComp.m_Mesh->Bind(commandBuffer->GetInUseCommandBuffer());
+				particleComp.m_Mesh->DrawInstanced(commandBuffer->GetInUseCommandBuffer(), particleComp.m_ParticleCount);
 
 				m_PreviousMaterialHandle = currentHandle;
 			}
