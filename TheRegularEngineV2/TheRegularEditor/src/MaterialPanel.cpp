@@ -122,6 +122,7 @@ namespace TRE
 				m_Name += ".material";
 				AssetManager::Instance().RenameAsset(material->GetHandle(), m_Name);
 				m_AssetSelector->SelectAsset(m_Name, AssetSelectorEvent::AssetType::Material);
+				TRE_INFO("Renamed material {0}", m_Name);
 			}
 		}
 		else
@@ -139,6 +140,8 @@ namespace TRE
 	void MaterialPanel::InternalContent(std::shared_ptr<Material> material)
 	{
 		Rename(material);
+
+		m_Name = AssetManager::Instance().GetName(material->GetHandle());
 
 		for (auto& texture : material->GetTexturesRef())
 		{
