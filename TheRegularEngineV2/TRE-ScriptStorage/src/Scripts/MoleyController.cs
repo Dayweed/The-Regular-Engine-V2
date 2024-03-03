@@ -230,6 +230,36 @@ namespace TRE
 
 			HandleAbilities();
 
+			// Button Press
+            if (IS.GetControllerButtonPress(0, InputSystem.Button.A))
+            {
+                Debug.Log("A button press");
+            }
+
+			// hold Controller Button (time in seconds)
+            if (IS.GetControllerButtonHold(0, InputSystem.Button.A , 3))
+            {
+				Debug.Log("A button hold");
+            }
+
+			// Release Controller Button
+            if (IS.GetControllerButtonReleased(0, InputSystem.Button.A))
+            {
+                Debug.Log("A button release");
+            }
+
+			// controller Stick x
+            if (IS.GetControllerStickX(0, false) != 0f)
+            {
+                Debug.Log("Stick left X : " + IS.GetControllerStickX(0, false));
+            }
+
+            if (IS.GetControllerStickX(0, false) != 0f)
+            {
+                Debug.Log("Stick left Y : " + IS.GetControllerStickX(0, false));
+            }
+			
+
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
 			dirVec = dirVec.NormalizedSafe;
@@ -398,6 +428,14 @@ namespace TRE
 		{
 			if (playerPosition.y < OutofMapPos.y)
 			{
+				PS.GetLinearVelocity(this.ID, out vec3 currVelocity);
+				if (currVelocity.x > 0 || currVelocity.z > 0)
+				{
+					currVelocity.x = 0;
+					currVelocity.z = 0;
+					PS.SetLinearVelocity(this.ID, currVelocity);
+				}
+
 				isDead = true;
 				DroppingOutOfMap = true;
 			}
@@ -542,7 +580,7 @@ namespace TRE
 						// Boosted Jump
 						if (isBoostedJump)
 						{
-							maxHeight = new vec3(0, 150, 0);
+							maxHeight = new vec3(0, 120, 0);
 						}
 
 						Jump(maxHeight);
