@@ -1,7 +1,7 @@
 [
    [
       204,
-      4293918864,
+      4293918859,
       9437190,
       8388703,
       10485777,
@@ -63,7 +63,7 @@
       3145785,
       3145866,
       3145826,
-      3145919,
+      3145916,
       3145786,
       3145869,
       3145742,
@@ -142,11 +142,11 @@
       3145838,
       3145760,
       9437324,
-      8388753,
+      6291598,
       3145788,
-      5243019,
-      5243035,
-      8388751,
+      8388753,
+      9437327,
+      13631632,
       4194454,
       3145803,
       4194303,
@@ -156,33 +156,33 @@
       3145833,
       11534466,
       3145782,
-      1048730,
-      5243022,
-      1048732,
-      1048733,
+      3145882,
+      7340187,
+      3145884,
+      3145885,
       3145749,
-      1048735,
-      1048736,
-      1048737,
-      1048738,
-      1048739,
-      1048740,
+      3145887,
+      3145888,
+      3145889,
+      3145890,
+      3145891,
+      3145892,
       3145864,
-      1048742,
-      7340199,
+      3145894,
+      9437351,
       6291624,
       3145808,
-      3145898,
-      3145899,
-      4194476,
-      7340205,
-      2097326,
+      8388778,
+      7340203,
+      8388780,
+      12583085,
+      4194478,
       3145766,
-      2097328,
-      2097329,
-      2097330,
+      4194480,
+      4194481,
+      4194482,
       3145841,
-      2097332,
+      4194484,
       3145743,
       2097335,
       2097271,
@@ -190,14 +190,14 @@
       2097339,
       2097193,
       2097353,
-      8388801,
-      7340220,
+      11534528,
+      5243073,
       2097215,
-      7340224,
-      11534483,
-      9437378,
-      14680125,
-      3145917,
+      7340221,
+      13631635,
+      11534530,
+      17825853,
+      3145919,
       2097333,
       3145923,
       3145925,
@@ -210,101 +210,51 @@
       0
    ],
    [
-      21,
-      4194476,
+      24,
+      3145885,
       {
          "m_Children": [],
-         "m_Parent": "11400480438197261567"
+         "m_Parent": "1241172473065689123"
       },
-      7340205,
+      12583085,
       {
-         "m_Children": [],
-         "m_Parent": "3433984361522152253"
+         "m_Children": [
+            "5612489981622473043",
+            "3652449761497657269"
+         ],
+         "m_Parent": ""
       },
-      3145899,
+      7340203,
       {
          "m_Children": [],
-         "m_Parent": "7139267631116052954"
+         "m_Parent": ""
       },
-      3145898,
+      9437351,
       {
          "m_Children": [],
-         "m_Parent": "17241056601820338248"
-      },
-      7340199,
-      {
-         "m_Children": [],
-         "m_Parent": "17241056601820338248"
+         "m_Parent": ""
       },
       6291624,
       {
          "m_Children": [],
          "m_Parent": "7139267631116052954"
       },
-      2097326,
-      {
-         "m_Children": [
-            "10509983312603211974",
-            "11183254074830409399"
-         ],
-         "m_Parent": ""
-      },
-      2097328,
+      3145882,
       {
          "m_Children": [],
-         "m_Parent": ""
+         "m_Parent": "9262580962873091563"
       },
-      2097329,
+      8388778,
       {
-         "m_Children": [
-            "1906000498434737128",
-            "12357215472430049702"
-         ],
-         "m_Parent": ""
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
       },
-      2097330,
+      4194478,
       {
          "m_Children": [],
          "m_Parent": "10214686609734549272"
       },
-      2097332,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      1048742,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      1048740,
-      {
-         "m_Children": [
-            "1016836630051144605",
-            "3563870734590726976"
-         ],
-         "m_Parent": ""
-      },
-      1048739,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      1048738,
-      {
-         "m_Children": [
-            "15713678243113056892"
-         ],
-         "m_Parent": ""
-      },
-      1048737,
-      {
-         "m_Children": [
-            "12240050361697776836"
-         ],
-         "m_Parent": ""
-      },
-      1048736,
+      4194480,
       {
          "m_Children": [
             "6901260880769456738",
@@ -312,67 +262,127 @@
          ],
          "m_Parent": ""
       },
-      1048735,
+      4194481,
+      {
+         "m_Children": [
+            "12240050361697776836"
+         ],
+         "m_Parent": ""
+      },
+      4194482,
+      {
+         "m_Children": [
+            "15713678243113056892"
+         ],
+         "m_Parent": ""
+      },
+      4194484,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      3145894,
+      {
+         "m_Children": [],
+         "m_Parent": "11400480438197261567"
+      },
+      3145892,
       {
          "m_Children": [],
          "m_Parent": "10214686609734549272"
       },
-      1048733,
+      3145891,
+      {
+         "m_Children": [
+            "1906000498434737128",
+            "12357215472430049702"
+         ],
+         "m_Parent": ""
+      },
+      3145890,
+      {
+         "m_Children": [],
+         "m_Parent": "7139267631116052954"
+      },
+      3145889,
+      {
+         "m_Children": [],
+         "m_Parent": "17241056601820338248"
+      },
+      3145888,
+      {
+         "m_Children": [],
+         "m_Parent": "17241056601820338248"
+      },
+      3145887,
       {
          "m_Children": [],
          "m_Parent": "3433984361522152253"
       },
-      1048732,
+      3145884,
       {
-         "m_Children": [],
-         "m_Parent": "9262580962873091563"
+         "m_Children": [
+            "10509983312603211974",
+            "11183254074830409399"
+         ],
+         "m_Parent": ""
       },
-      1048730,
+      8388780,
       {
          "m_Children": [],
          "m_Parent": ""
+      },
+      13631632,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      9437327,
+      {
+         "m_Children": [
+            "1016836630051144605",
+            "3563870734590726976"
+         ],
+         "m_Parent": ""
+      },
+      7340187,
+      {
+         "m_Children": [],
+         "m_Parent": "1241172473065689123"
       }
    ],
    [
-      21,
-      4194476,
+      24,
+      3145885,
       {
          "m_Active": true,
-         "m_GUID": "12240050361697776836",
-         "m_Index": 9,
-         "m_Name": "Letter",
+         "m_GUID": "5612489981622473043",
+         "m_Index": 22,
+         "m_Name": "BGM",
          "m_Tag": ""
       },
-      7340205,
+      12583085,
       {
          "m_Active": true,
-         "m_GUID": "1016836630051144605",
-         "m_Index": 11,
-         "m_Name": "LetterOpen",
+         "m_GUID": "1241172473065689123",
+         "m_Index": 21,
+         "m_Name": "Audio",
          "m_Tag": ""
       },
-      3145899,
+      7340203,
       {
-         "m_Active": false,
-         "m_GUID": "13532880202510778061",
-         "m_Index": 18,
-         "m_Name": "MolesBack",
+         "m_Active": true,
+         "m_GUID": "14726247034547018244",
+         "m_Index": 19,
+         "m_Name": "SpaceToContinueBlack",
          "m_Tag": ""
       },
-      3145898,
+      9437351,
       {
-         "m_Active": false,
-         "m_GUID": "11183254074830409399",
-         "m_Index": 15,
-         "m_Name": "PartyStuff",
-         "m_Tag": ""
-      },
-      7340199,
-      {
-         "m_Active": false,
-         "m_GUID": "10509983312603211974",
-         "m_Index": 14,
-         "m_Name": "MolesThinking",
+         "m_Active": true,
+         "m_GUID": "12103431087554446731",
+         "m_Index": 2,
+         "m_Name": "Background",
          "m_Tag": ""
       },
       6291624,
@@ -383,111 +393,7 @@
          "m_Name": "Landscape",
          "m_Tag": ""
       },
-      2097326,
-      {
-         "m_Active": false,
-         "m_GUID": "17241056601820338248",
-         "m_Index": 13,
-         "m_Name": "Frame5",
-         "m_Tag": ""
-      },
-      2097328,
-      {
-         "m_Active": true,
-         "m_GUID": "10686246506118743920",
-         "m_Index": 0,
-         "m_Name": "Main Camera",
-         "m_Tag": ""
-      },
-      2097329,
-      {
-         "m_Active": true,
-         "m_GUID": "10214686609734549272",
-         "m_Index": 5,
-         "m_Name": "Frame2",
-         "m_Tag": ""
-      },
-      2097330,
-      {
-         "m_Active": true,
-         "m_GUID": "1906000498434737128",
-         "m_Index": 6,
-         "m_Name": "Door",
-         "m_Tag": ""
-      },
-      2097332,
-      {
-         "m_Active": true,
-         "m_GUID": "14726247034547018244",
-         "m_Index": 19,
-         "m_Name": "SpaceToContinueBlack",
-         "m_Tag": ""
-      },
-      1048742,
-      {
-         "m_Active": true,
-         "m_GUID": "5085728504128975660",
-         "m_Index": 20,
-         "m_Name": "SpaceToContinue",
-         "m_Tag": ""
-      },
-      1048740,
-      {
-         "m_Active": true,
-         "m_GUID": "3433984361522152253",
-         "m_Index": 10,
-         "m_Name": "Frame4",
-         "m_Tag": ""
-      },
-      1048739,
-      {
-         "m_Active": true,
-         "m_GUID": "15445797279152701459",
-         "m_Index": 1,
-         "m_Name": "Directional Light",
-         "m_Tag": ""
-      },
-      1048738,
-      {
-         "m_Active": true,
-         "m_GUID": "9262580962873091563",
-         "m_Index": 3,
-         "m_Name": "Frame1",
-         "m_Tag": ""
-      },
-      1048737,
-      {
-         "m_Active": true,
-         "m_GUID": "11400480438197261567",
-         "m_Index": 8,
-         "m_Name": "Frame3",
-         "m_Tag": ""
-      },
-      1048736,
-      {
-         "m_Active": false,
-         "m_GUID": "7139267631116052954",
-         "m_Index": 16,
-         "m_Name": "Frame6",
-         "m_Tag": ""
-      },
-      1048735,
-      {
-         "m_Active": true,
-         "m_GUID": "12357215472430049702",
-         "m_Index": 7,
-         "m_Name": "MolesFront",
-         "m_Tag": ""
-      },
-      1048733,
-      {
-         "m_Active": true,
-         "m_GUID": "3563870734590726976",
-         "m_Index": 12,
-         "m_Name": "InvitationDialogue",
-         "m_Tag": ""
-      },
-      1048732,
+      3145882,
       {
          "m_Active": true,
          "m_GUID": "15713678243113056892",
@@ -495,18 +401,154 @@
          "m_Name": "Bird",
          "m_Tag": ""
       },
-      1048730,
+      8388778,
       {
          "m_Active": true,
-         "m_GUID": "12103431087554446731",
-         "m_Index": 2,
-         "m_Name": "Background",
+         "m_GUID": "3563870734590726976",
+         "m_Index": 12,
+         "m_Name": "InvitationDialogue",
+         "m_Tag": ""
+      },
+      4194478,
+      {
+         "m_Active": true,
+         "m_GUID": "12357215472430049702",
+         "m_Index": 7,
+         "m_Name": "MolesFront",
+         "m_Tag": ""
+      },
+      4194480,
+      {
+         "m_Active": false,
+         "m_GUID": "7139267631116052954",
+         "m_Index": 16,
+         "m_Name": "Frame6",
+         "m_Tag": ""
+      },
+      4194481,
+      {
+         "m_Active": true,
+         "m_GUID": "11400480438197261567",
+         "m_Index": 8,
+         "m_Name": "Frame3",
+         "m_Tag": ""
+      },
+      4194482,
+      {
+         "m_Active": true,
+         "m_GUID": "9262580962873091563",
+         "m_Index": 3,
+         "m_Name": "Frame1",
+         "m_Tag": ""
+      },
+      4194484,
+      {
+         "m_Active": true,
+         "m_GUID": "15445797279152701459",
+         "m_Index": 1,
+         "m_Name": "Directional Light",
+         "m_Tag": ""
+      },
+      3145894,
+      {
+         "m_Active": true,
+         "m_GUID": "12240050361697776836",
+         "m_Index": 9,
+         "m_Name": "Letter",
+         "m_Tag": ""
+      },
+      3145892,
+      {
+         "m_Active": true,
+         "m_GUID": "1906000498434737128",
+         "m_Index": 6,
+         "m_Name": "Door",
+         "m_Tag": ""
+      },
+      3145891,
+      {
+         "m_Active": true,
+         "m_GUID": "10214686609734549272",
+         "m_Index": 5,
+         "m_Name": "Frame2",
+         "m_Tag": ""
+      },
+      3145890,
+      {
+         "m_Active": false,
+         "m_GUID": "13532880202510778061",
+         "m_Index": 18,
+         "m_Name": "MolesBack",
+         "m_Tag": ""
+      },
+      3145889,
+      {
+         "m_Active": false,
+         "m_GUID": "10509983312603211974",
+         "m_Index": 14,
+         "m_Name": "MolesThinking",
+         "m_Tag": ""
+      },
+      3145888,
+      {
+         "m_Active": false,
+         "m_GUID": "11183254074830409399",
+         "m_Index": 15,
+         "m_Name": "PartyStuff",
+         "m_Tag": ""
+      },
+      3145887,
+      {
+         "m_Active": true,
+         "m_GUID": "1016836630051144605",
+         "m_Index": 11,
+         "m_Name": "LetterOpen",
+         "m_Tag": ""
+      },
+      3145884,
+      {
+         "m_Active": false,
+         "m_GUID": "17241056601820338248",
+         "m_Index": 13,
+         "m_Name": "Frame5",
+         "m_Tag": ""
+      },
+      8388780,
+      {
+         "m_Active": true,
+         "m_GUID": "10686246506118743920",
+         "m_Index": 0,
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      13631632,
+      {
+         "m_Active": true,
+         "m_GUID": "5085728504128975660",
+         "m_Index": 20,
+         "m_Name": "SpaceToContinue",
+         "m_Tag": ""
+      },
+      9437327,
+      {
+         "m_Active": true,
+         "m_GUID": "3433984361522152253",
+         "m_Index": 10,
+         "m_Name": "Frame4",
+         "m_Tag": ""
+      },
+      7340187,
+      {
+         "m_Active": true,
+         "m_GUID": "3652449761497657269",
+         "m_Index": 23,
+         "m_Name": "SFX_Bird",
          "m_Tag": ""
       }
    ],
    [
-      21,
-      4194476,
+      24,
+      3145885,
       {
          "m_Position": [
             0.0,
@@ -515,7 +557,7 @@
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
@@ -524,7 +566,7 @@
             1.0
          ]
       },
-      7340205,
+      12583085,
       {
          "m_Position": [
             0.0,
@@ -533,7 +575,7 @@
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
@@ -542,10 +584,64 @@
             1.0
          ]
       },
-      3145899,
+      7340203,
+      {
+         "m_Position": [
+            520.0,
+            455.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9437351,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6291624,
       {
          "m_Position": [
             400.0,
+            -100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145882,
+      {
+         "m_Position": [
+            -400.0,
             -103.52366638183594,
             0.0
          ],
@@ -560,277 +656,7 @@
             1.0
          ]
       },
-      3145898,
-      {
-         "m_Position": [
-            -400.0,
-            96.47633361816406,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      7340199,
-      {
-         "m_Position": [
-            -400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      6291624,
-      {
-         "m_Position": [
-            400.0,
-            -100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097326,
-      {
-         "m_Position": [
-            -400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097328,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097329,
-      {
-         "m_Position": [
-            400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097330,
-      {
-         "m_Position": [
-            400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097332,
-      {
-         "m_Position": [
-            520.0,
-            455.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048742,
-      {
-         "m_Position": [
-            520.0,
-            455.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048740,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048739,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            45.0,
-            45.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048738,
-      {
-         "m_Position": [
-            -400.0,
-            -100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048737,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048736,
-      {
-         "m_Position": [
-            400.0,
-            -100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048735,
-      {
-         "m_Position": [
-            400.0,
-            96.47633361816406,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048733,
+      8388778,
       {
          "m_Position": [
             -872.0,
@@ -848,10 +674,154 @@
             1.0
          ]
       },
-      1048732,
+      4194478,
+      {
+         "m_Position": [
+            400.0,
+            96.47633361816406,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194480,
+      {
+         "m_Position": [
+            400.0,
+            -100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194481,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194482,
       {
          "m_Position": [
             -400.0,
+            -100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4194484,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145894,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145892,
+      {
+         "m_Position": [
+            400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145891,
+      {
+         "m_Position": [
+            400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145890,
+      {
+         "m_Position": [
+            400.0,
             -103.52366638183594,
             0.0
          ],
@@ -866,7 +836,133 @@
             1.0
          ]
       },
-      1048730,
+      3145889,
+      {
+         "m_Position": [
+            -400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145888,
+      {
+         "m_Position": [
+            -400.0,
+            96.47633361816406,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145887,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145884,
+      {
+         "m_Position": [
+            -400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8388780,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      13631632,
+      {
+         "m_Position": [
+            520.0,
+            455.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9437327,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      7340187,
       {
          "m_Position": [
             0.0,
@@ -890,7 +986,7 @@
    ],
    [
       1,
-      2097328,
+      8388780,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -928,7 +1024,7 @@
    ],
    [
       1,
-      1048739,
+      4194484,
       {
          "m_AmbientColor": [
             1.0,
@@ -954,125 +1050,151 @@
       0
    ],
    [
-      0
+      2,
+      3145885,
+      {
+         "m_FileName": "BGM_Cutscene.wav",
+         "m_Loop": true,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": true,
+         "m_PlayOnStart": true,
+         "m_Priority": 0,
+         "m_Spatialize": false,
+         "m_Volume": 0.699999988079071,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      7340187,
+      {
+         "m_FileName": "",
+         "m_Loop": true,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": true,
+         "m_PlayOnStart": true,
+         "m_Priority": 0,
+         "m_Spatialize": false,
+         "m_Volume": 1.0,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
    ],
    [
       13,
-      3145899,
+      7340203,
       {
          "m_RegisteredScripts": [
             "TRE.TextBounce"
          ],
          "m_StoredClass": "TRE.TextBounce"
       },
-      3145898,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      2097326,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      2097329,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      2097332,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      1048742,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      1048740,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      1048738,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      1048737,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      1048736,
-      {
-         "m_RegisteredScripts": [
-            "TRE.VFX_FadeIn",
-            "TRE.VFX_FadeOut"
-         ],
-         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
-      },
-      1048735,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      1048732,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      1048730,
+      9437351,
       {
          "m_RegisteredScripts": [
             "TRE.CutsceneStartLogic"
          ],
          "m_StoredClass": "TRE.CutsceneStartLogic"
+      },
+      3145882,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      4194478,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      4194480,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      4194481,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      4194482,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      3145891,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      3145890,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      3145888,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      3145884,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      13631632,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      9437327,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       }
    ],
    [
       18,
-      4194476,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 5,
-         "Texture": "4fb260cc2440d17f",
-         "Width": 450,
-         "m_IsVisible": true
-      },
-      7340205,
+      7340203,
       {
          "Color": [
             1.0,
@@ -1080,52 +1202,24 @@
             1.0,
             1.0
          ],
-         "Height": 540,
-         "RenderLayer": 7,
-         "Texture": "79e251a7c59be7c4",
-         "Width": 960,
-         "m_IsVisible": true
-      },
-      3145899,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
+         "Height": 42,
          "RenderLayer": 10,
-         "Texture": "7151c2b18273b0a9",
-         "Width": 325,
-         "m_IsVisible": false
-      },
-      3145898,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 10,
-         "Texture": "b341fc9e978ac750",
-         "Width": 325,
+         "Texture": "42953920b1324ab8",
+         "Width": 340,
          "m_IsVisible": true
       },
-      7340199,
+      9437351,
       {
          "Color": [
-            1.0,
-            1.0,
-            1.0,
+            0.0,
+            0.0,
+            0.0,
             1.0
          ],
-         "Height": 340,
-         "RenderLayer": 9,
-         "Texture": "d2b7b9330e97ab54",
-         "Width": 325,
+         "Height": 1080,
+         "RenderLayer": 0,
+         "Texture": "42417b1f6a921655",
+         "Width": 1920,
          "m_IsVisible": true
       },
       6291624,
@@ -1142,147 +1236,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      2097326,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 8,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": false
-      },
-      2097329,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 0,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      2097330,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 2,
-         "Texture": "fa5fd90239c7140e",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      2097332,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 42,
-         "RenderLayer": 10,
-         "Texture": "42953920b1324ab8",
-         "Width": 340,
-         "m_IsVisible": true
-      },
-      1048742,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 42,
-         "RenderLayer": 10,
-         "Texture": "1ce7be912b11ab28",
-         "Width": 340,
-         "m_IsVisible": true
-      },
-      1048740,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 540,
-         "RenderLayer": 6,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 960,
-         "m_IsVisible": true
-      },
-      1048738,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 1,
-         "Texture": "665c9506bd94691d",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      1048737,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 4,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 450,
-         "m_IsVisible": true
-      },
-      1048736,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-         ],
-         "Height": 340,
-         "RenderLayer": 8,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": false
-      },
-      1048735,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 3,
-         "Texture": "8fe33bdf2b002fea",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      1048732,
+      3145882,
       {
          "Color": [
             1.0,
@@ -1296,7 +1250,21 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      1048730,
+      4194478,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 3,
+         "Texture": "8fe33bdf2b002fea",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      4194480,
       {
          "Color": [
             0.0,
@@ -1304,10 +1272,178 @@
             0.0,
             1.0
          ],
-         "Height": 1080,
+         "Height": 340,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      4194481,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 4,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 450,
+         "m_IsVisible": true
+      },
+      4194482,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 1,
+         "Texture": "665c9506bd94691d",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      3145894,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 5,
+         "Texture": "4fb260cc2440d17f",
+         "Width": 450,
+         "m_IsVisible": true
+      },
+      3145892,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 2,
+         "Texture": "fa5fd90239c7140e",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      3145891,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+         ],
+         "Height": 340,
          "RenderLayer": 0,
-         "Texture": "42417b1f6a921655",
-         "Width": 1920,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      3145890,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 10,
+         "Texture": "7151c2b18273b0a9",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      3145889,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 9,
+         "Texture": "d2b7b9330e97ab54",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      3145888,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 10,
+         "Texture": "b341fc9e978ac750",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      3145887,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 7,
+         "Texture": "79e251a7c59be7c4",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      3145884,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 340,
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": false
+      },
+      13631632,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "RenderLayer": 10,
+         "Texture": "1ce7be912b11ab28",
+         "Width": 340,
+         "m_IsVisible": true
+      },
+      9437327,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 960,
          "m_IsVisible": true
       }
    ],
@@ -1322,7 +1458,7 @@
    ],
    [
       1,
-      1048733,
+      8388778,
       {
          "m_Color": [
             0.15830117464065552,
@@ -1338,6 +1474,9 @@
          "m_Speed": 0.0,
          "m_TextContent": "Dear Holey & Moley,\n\nGood tidings, mole brethren! I'm holding the grandest of parties at the town\nsquare, but this party is no ordinary one! 'Tis is a party only for the most\ndeserving, the most dapper, the most party-centric of mole society!\n\nShould you accept the invitation, there are standards to be met.\n\n1) There are holes in walls scattered around the land, only by fitting through\nthem precisely, will you get closer to the party itself.\n\n2) I expect fashion of the highest calibre. We have a fiesta theme going so\nstick to it!\n\n3) Entertainment! The grandest party is incomplete without music, bring something\nentertaining for everyone!\n\nReady to have the grandest time of your lives? Then see you there!\n\nYours Sincerely,\nNolan the Golden"
       }
+   ],
+   [
+      0
    ],
    [
       0

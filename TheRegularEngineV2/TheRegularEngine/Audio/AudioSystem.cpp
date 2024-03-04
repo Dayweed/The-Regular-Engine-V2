@@ -262,6 +262,8 @@ namespace TRE
 	{
 		Audio& audio = go->GetComponent<Audio>();
 		audio.m_Channel->stop();
+		audio.m_isPlaying = false;
+		audio.m_Play = false;
 	}
 
 	int AudioSystem::ErrorCheck(FMOD_RESULT result, std::string function)
