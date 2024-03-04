@@ -34,6 +34,7 @@ namespace TRE
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_DepthPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(DepthUBO)), 0);
 		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
@@ -70,7 +71,7 @@ namespace TRE
 		}
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
-
+#pragma region ShadowPass
 		ShadowPassInit();
 
 		PipelineConfigurations Config{};
@@ -95,6 +96,33 @@ namespace TRE
 
 		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
 		m_ShadowMaterial->Invalidate();
+#pragma endregion ShadowPass
+
+#pragma region DepthPrepass
+		DepthPrepassInit();
+
+		PipelineConfigurations DepthPrepassPipelineConfig{};
+		DepthPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
+		DepthPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
+		DepthPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+		DepthPrepassPipelineConfig.EnableBlending = true;
+		m_DepthPrepassPipeline = std::make_shared<Pipeline>(DepthPrepassPipelineConfig, m_DepthPrepassRenderPass);
+
+		PipelineConfigurations DepthPrepassAnimationPipelineConfig{};
+		DepthPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+		DepthPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
+		DepthPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+		DepthPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+		DepthPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
+		{
+			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+		};
+		m_DepthPrepassAnimationPipeline = std::make_shared<Pipeline>(DepthPrepassAnimationPipelineConfig, m_DepthPrepassRenderPass);
+
+		m_DepthPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(14));
+		m_DepthPrepassMaterial->Invalidate();
+#pragma endregion DepthPrepass
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
 		m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
@@ -220,8 +248,10 @@ namespace TRE
 		m_DepthImages.clear();
 
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
-
 		ShadowPassInit();
+
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
+		DepthPrepassInit();
 
 		Create();
 		CreateFrameBuffer(m_RenderPass);
@@ -249,6 +279,7 @@ namespace TRE
 		m_DepthImages.clear();
 
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -268,7 +299,7 @@ namespace TRE
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
 
-		glm::mat4 depthViewMatrix(1.f);
+		glm::mat4 shadowDepthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
 		{
@@ -282,14 +313,14 @@ namespace TRE
 			if (recalculateShadowFrustum)
 			{
 				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, m_EditorShadowRatio));
-				depthViewMatrix = glm::translate(glm::mat4(1.f), m_EditorShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_EditorShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 			}
 		}
 
 		if (recalculateShadowFrustum)
 		{
 			ShadowUBO UBO_Shadow;
-			glm::mat4 depthProjectionMatrix;
+			glm::mat4 shadowDepthProjectionMatrix;
 			const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
 			const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
 			const float deltaZ = m_EditorShadowAABBMax.z - m_EditorShadowAABBMin.z;
@@ -298,17 +329,17 @@ namespace TRE
 			const float orthoNear = 0.1f;
 			const float orthoFar = orthoNear + deltaZ;
 
-			depthProjectionMatrix = glm::mat4(1.f);
-			depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-			depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-			depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-			depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-			depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-			depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+			shadowDepthProjectionMatrix = glm::mat4(1.f);
+			shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+			shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+			shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+			shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+			shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+			shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
-			depthViewMatrix = glm::inverse(depthViewMatrix);
-			m_EditorShadowView = depthViewMatrix;
-			m_EditorShadowProj = depthProjectionMatrix;
+			shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
+			m_EditorShadowView = shadowDepthViewMatrix;
+			m_EditorShadowProj = shadowDepthProjectionMatrix;
 
 			UBO_Shadow.view = m_EditorShadowView;
 			UBO_Shadow.proj = m_EditorShadowProj;
@@ -356,7 +387,7 @@ namespace TRE
 		UBO_SkyBox.Proj = baseCamera.m_ProjectionMatrix;
 		UBO_SkyBox.View = baseCamera.m_ViewMatrix;
 
-		glm::mat4 depthViewMatrix(1.f);
+		glm::mat4 shadowDepthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		recalculateShadowFrustum = true;
 		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
@@ -375,14 +406,14 @@ namespace TRE
 				//m_ShadowRenderPoint.y = lightTransform.m_Position.y;
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
-				depthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
+				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
 			}
 		}
 
 		if (recalculateShadowFrustum)
 		{
 			ShadowUBO UBO_Shadow{};
-			glm::mat4 depthProjectionMatrix;
+			glm::mat4 shadowDepthProjectionMatrix;
 			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
 			const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
 			const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
@@ -391,17 +422,17 @@ namespace TRE
 			const float orthoNear = 0.1f;
 			const float orthoFar = orthoNear + deltaZ;
 
-			depthProjectionMatrix = glm::mat4(1.f);
-			depthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-			depthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-			depthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-			depthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-			depthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-			depthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+			shadowDepthProjectionMatrix = glm::mat4(1.f);
+			shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+			shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+			shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+			shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+			shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+			shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
-			depthViewMatrix = glm::inverse(depthViewMatrix);
-			m_ShadowView = depthViewMatrix;
-			m_ShadowProj = depthProjectionMatrix;
+			shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
+			m_ShadowView = shadowDepthViewMatrix;
+			m_ShadowProj = shadowDepthProjectionMatrix;
 
 			UBO_Shadow.view = m_ShadowView;
 			UBO_Shadow.proj = m_ShadowProj;
@@ -411,6 +442,14 @@ namespace TRE
 
 		ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
 		
+		{
+			DepthUBO depthUBO{};
+			depthUBO.view = baseCamera.m_ViewMatrix;
+			depthUBO.proj = baseCamera.m_CleanProj;// baseCamera.m_ProjectionMatrix;
+
+			m_DepthPrepassUBO->SetData(&depthUBO, sizeof(DepthUBO));
+		}
+
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 
@@ -487,6 +526,11 @@ namespace TRE
 		m_CommandBuffer->Begin();
 
 		ShadowPass(Index, materialSort);
+
+		if (m_IsEditorScene == false)
+		{
+			DepthPrepass(Index, materialSort);
+		}
 
 		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
 
@@ -810,6 +854,80 @@ namespace TRE
 		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
+	void SceneRenderer::DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		m_DepthPrepassMapWidth = 8192;
+		m_DepthPrepassMapHeight = 8192;
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_DepthPrepassRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_DepthPrepassFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_DepthPrepassMapWidth, m_DepthPrepassMapHeight };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport2{};
+		viewport2.x = 0.0f;
+		viewport2.y = 0.0f;
+		viewport2.width = (float)m_DepthPrepassMapWidth;
+		viewport2.height = (float)m_DepthPrepassMapHeight;
+		viewport2.minDepth = 0.0f;
+		viewport2.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+		VkRect2D scissor2{};
+		scissor2.extent = { m_DepthPrepassMapWidth, m_DepthPrepassMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
+
+		Renderer::BindPipeline(m_CommandBuffer, m_DepthPrepassPipeline);
+
+		m_DepthPrepassMaterial->UpdateForRendering(m_DepthPrepassUBO, Index, m_DepthPrepassImages->GetDescriptorImageInfo());
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DepthPrepassPipeline->GetPipelineLayout(), 0, 1, &m_DepthPrepassMaterial->GetDescriptor(Index), 0, NULL);
+
+
+		for (const auto& go_mr : MaterialSort)
+		{
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+			ResourceHandle currentMaterialHandle = go_mr.first;
+
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DepthPrepassPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+			m_PreviousMaterialHandle = currentMaterialHandle;
+		}
+		m_PreviousMaterialHandle = 0;
+
+		Renderer::BindPipeline(m_CommandBuffer, m_DepthPrepassAnimationPipeline);
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
+		{
+			const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
+			const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
+
+			PushConstant pc{};
+			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DepthPrepassAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_DepthPrepassUBO, Index, AnimComp.m_UBO, m_DepthPrepassImages->GetDescriptorImageInfo());
+			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DepthPrepassAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
+
+			MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+		}
+
+		Renderer::EndRenderPass(m_CommandBuffer);
+	}
+
 	void SceneRenderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
 		if (m_IsEditorScene)
@@ -1021,6 +1139,40 @@ namespace TRE
 		m_ShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
 		m_EditorShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);
 		m_EditorShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
+	}
+
+	void SceneRenderer::DepthPrepassInit()
+	{
+		m_DepthPrepassMapWidth = 8192;
+		m_DepthPrepassMapHeight = 8192;
+
+		ImageConfig ImgConfig{};
+		ImgConfig.DebugName = "Depth Pass";
+		ImgConfig.Format = ImageFormat::DEPTH16UN;
+		ImgConfig.Width = m_DepthPrepassMapWidth;
+		ImgConfig.Height = m_DepthPrepassMapHeight;
+		ImgConfig.Usage = ImageUsage::Attachment;
+		ImgConfig.CreateSampler = true;
+		ImgConfig.Transfer = false;
+		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+
+		m_DepthPrepassImages = std::make_shared<Image2D>(ImgConfig);
+		m_DepthPrepassRenderPass = std::make_shared<RenderPass>(m_Device, true);
+
+		auto attachments = m_DepthPrepassImages->GetImageData().ImageView;
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.renderPass = m_DepthPrepassRenderPass->GetHandle();
+		framebufferCreateInfo.attachmentCount = 1;
+		framebufferCreateInfo.pAttachments = &attachments;
+		framebufferCreateInfo.width = m_DepthPrepassMapWidth;
+		framebufferCreateInfo.height = m_DepthPrepassMapHeight;
+		framebufferCreateInfo.layers = 1;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_DepthPrepassFramebuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for depth pass");
+		}
 	}
 
 	bool SceneRenderer::ShadowFrustumCheck(const BaseCamera& baseCamera)

@@ -8,6 +8,8 @@ using System.Linq;
 
 namespace TRE
 {
+	using AS = AudioSystem;
+
 	public class CutsceneStartLogic : Entity
 	{
 		Entity Frame_1;
@@ -26,6 +28,9 @@ namespace TRE
 		int currentFrame = 0;
 
 		bool endCutscene = false;
+
+		private ulong birdSFX;
+		private ulong dialogueSFX;
 
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
@@ -56,6 +61,9 @@ namespace TRE
 			nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5" };
 			forcedScenes = new List<string>() { "Frame4" };
 
+			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
+			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
+
 			currentFrame = 0;
 			frames[currentFrame].SetActive(true);
 			frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
@@ -71,6 +79,18 @@ namespace TRE
 			{
 				Scene.TransitionScene("Tutorial", delayScene);
 				endCutscene = true;
+			}
+
+			if (currentFrame == 2)
+			{
+				if (ECSManager.IsValidEntity(birdSFX))
+					AS.Stop(birdSFX);
+			}
+
+			if (currentFrame == 3)
+			{
+				if (ECSManager.IsValidEntity(dialogueSFX))
+					AS.Play(dialogueSFX);
 			}
 
 			// Close Game
@@ -95,6 +115,9 @@ namespace TRE
 				{
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
 					++currentFrame;
+
+					if (ECSManager.IsValidEntity(dialogueSFX))
+						AS.Stop(dialogueSFX);
 
 					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{

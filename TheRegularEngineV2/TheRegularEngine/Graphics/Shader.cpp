@@ -186,6 +186,8 @@ namespace TRE
 		auto FontHandle = 11;
 		auto ParticleHandle = 12;
 		auto Particle3DHandle = 13;
+		auto DepthMapping = 14;
+		auto DepthMappingAnimation = 15;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
@@ -236,6 +238,16 @@ namespace TRE
 		std::unique_ptr<Shader> Particle3DShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle3D.TREshader");
 		Particle3DShader->SetHandle(Particle3DHandle);
 		ResourceManager::Instance().AddResource(std::move(Particle3DShader));
+
+		//Depth Mapping Shader
+		std::unique_ptr<Shader> DepthMappingShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMapping.TREshader");
+		DepthMappingShader->SetHandle(DepthMapping);
+		ResourceManager::Instance().AddResource(std::move(DepthMappingShader));
+
+		//Depth Mapping Animation Shader
+		std::unique_ptr<Shader> DepthMappingAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMappingAnimation.TREshader");
+		DepthMappingAnimationShader->SetHandle(DepthMappingAnimation);
+		ResourceManager::Instance().AddResource(std::move(DepthMappingAnimationShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

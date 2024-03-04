@@ -224,6 +224,9 @@ namespace TRE
 				PS.SetLinearVelocity(this.ID, finalVelocity);
 			}
 
+			// here?
+			IsInsideCirclePush(moley_ref.GetComponent<Transform>().Position);
+
 			holeyTransform.Rotation = new vec3(0, playerDirection, 0);
 
 			//isGrounded = false;
@@ -481,7 +484,7 @@ namespace TRE
 						}
 					}
 
-					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable && !IsInsideCircleNoJump(moley_ref.GetComponent<Transform>().Position))
+					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
 					{
 						isWalking = false;
 
@@ -743,30 +746,37 @@ namespace TRE
 		}
 
 		// There is a circular/small cylindrical volume that
-		// when both players are in, neither can jump.
-		private bool IsInsideCircleNoJump(vec3 otherPlayerPos)
+		// make both players repel each other.
+		private void IsInsideCirclePush(vec3 otherPlayerPos)
 		{
-			// Debug.Log("Moley Pos: " + otherPlayerPos.ToString());
 			const float yDiffThreshold = 2.0f;
 			const float circleRadius = 5.0f;
 
 			float yDiff = Math.Abs(transform.Position.y - otherPlayerPos.y);
 			if (yDiff >= yDiffThreshold)
 			{
-				// Debug.Log("different y heights, ok");
-				return false;
+				return;
 			}
 
 			vec2 playerPlanePos = new vec2(transform.Position.x, transform.Position.z);
 			vec2 otherPlanePos = new vec2(otherPlayerPos.x, otherPlayerPos.z);
+			vec2 playerToOther = playerPlanePos - otherPlanePos;
 
-			float planeDist = (playerPlanePos - otherPlanePos).Length;
-			if (planeDist >= circleRadius)
+			if (playerToOther.Length >= circleRadius)
 			{
-				// Debug.Log("same y, far enough away, ok");
-				return false;
+				return;
 			}
-			return true;
+
+			// normalize the vector
+			playerToOther = playerToOther.Normalized;
+			
+			// flip it
+			playerToOther *= -1;
+			
+			// give it a lil' scale
+			playerToOther *= 20;
+
+			PS.SetLinearVelocity(moley_ref.ID, new vec3(playerToOther.x, 0, playerToOther.y));
 		}
 	}
 }

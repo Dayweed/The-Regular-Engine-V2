@@ -1667,6 +1667,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_ResetPathfinding(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static vec3 Engine_GetOldPositionPathfinding(EntityID ID);
 	}
 
 	public class ScenePostEffectsSystem

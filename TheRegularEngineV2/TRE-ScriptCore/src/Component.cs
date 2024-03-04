@@ -608,6 +608,14 @@ namespace TRE
 			}
 		}
 
+		public vec3 oldPosition
+		{
+			get
+			{
+				return DirectPathfindingSystem.Engine_GetOldPositionPathfinding(entity.ID);
+			}
+		}
+
 		public void Start()
 		{
 			DirectPathfindingSystem.Engine_StartPathfinding(entity.ID);

@@ -16,6 +16,7 @@ namespace TRE
 	public:
 		glm::mat4 m_ViewMatrix{ 1.f };
 		glm::mat4 m_ProjectionMatrix{ 1.f };
+		glm::mat4 m_CleanProj{ 1.f };
 		glm::vec2 m_ViewportSize{ 1600.f, 900.f }; // SSSS
 		float m_Pitch{ 0.f }; // SSSS
 		float m_Yaw{ 0.f }; // SSSS
