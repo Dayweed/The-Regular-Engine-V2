@@ -103,14 +103,14 @@ namespace TRE
 
 		PipelineConfigurations DepthPrepassPipelineConfig{};
 		DepthPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
-		DepthPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(5);
+		DepthPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
 		DepthPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
 		DepthPrepassPipelineConfig.EnableBlending = true;
 		m_DepthPrepassPipeline = std::make_shared<Pipeline>(DepthPrepassPipelineConfig, m_DepthPrepassRenderPass);
 
 		PipelineConfigurations DepthPrepassAnimationPipelineConfig{};
 		DepthPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
-		DepthPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
+		DepthPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
 		DepthPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
 		DepthPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
 		DepthPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
@@ -120,7 +120,7 @@ namespace TRE
 		};
 		m_DepthPrepassAnimationPipeline = std::make_shared<Pipeline>(DepthPrepassAnimationPipelineConfig, m_DepthPrepassRenderPass);
 
-		m_DepthPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+		m_DepthPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(14));
 		m_DepthPrepassMaterial->Invalidate();
 #pragma endregion DepthPrepass
 
@@ -445,10 +445,7 @@ namespace TRE
 		{
 			DepthUBO depthUBO{};
 			depthUBO.view = baseCamera.m_ViewMatrix;
-			glm::mat4 tempProj = baseCamera.m_ProjectionMatrix;
-			tempProj[1][1] *= -1;
-		depthUBO.proj = tempProj;
-			//depthUBO.proj = baseCamera.m_ProjectionMatrix;
+			depthUBO.proj = baseCamera.m_CleanProj;// baseCamera.m_ProjectionMatrix;
 
 			m_DepthPrepassUBO->SetData(&depthUBO, sizeof(DepthUBO));
 		}

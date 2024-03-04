@@ -28,6 +28,8 @@ namespace TRE
 		private Entity Trigger_L;
 		private Entity Trigger_M;
 
+		private Entity Previous_Trigger = null;
+
 		private bool regionA;
 		private bool regionB;
 		private bool regionC;
@@ -104,6 +106,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				CheckTransition(Trigger_A);
 			}
 
 			if (regionB)
@@ -114,6 +117,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
+				CheckTransition(Trigger_B);
 			}
 
 			if (regionC)
@@ -124,6 +128,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
+				CheckTransition(Trigger_C);
 			}
 
 			if (regionD)
@@ -134,6 +139,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
+				CheckTransition(Trigger_D);
 			}
 
 			if (regionE)
@@ -144,6 +150,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
+				CheckTransition(Trigger_E);
 			}
 
 			if (regionF)
@@ -155,6 +162,7 @@ namespace TRE
 				expectedRotation = new vec3(50, 90, 0);
 				expectedDistance = 60;
 				cameraController.expectedYPos = 30f;
+				CheckTransition(Trigger_F);
 			}
 
 			if (regionG)
@@ -165,10 +173,12 @@ namespace TRE
 				expectedDistance = 70;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
+				CheckTransition(Trigger_G);
 			}
 
 			if (regionH)
 			{
+				Debug.Log("Region H");
 				//jumppad section after rolling objs - 1st floor
 				cameraController.staticPosition = new vec3(320, 45, -330);
 				cameraController.lookOnlyBool = true;
@@ -176,26 +186,31 @@ namespace TRE
 				expectedRotation = new vec3(45, 90, 0);
 				expectedDistance = 80;
 				cameraController.expectedYPos = 60f;
+				CheckTransition(Trigger_H);
 			}
 
 			if (regionI) 
 			{
+				Debug.Log("Region I");
 				//2nd floor before moving hitw
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 0, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 60f;
+				CheckTransition(Trigger_I);
 			}
 
 			if (regionJ)
 			{
+				Debug.Log("Region J");
 				//on moving hitw and ground before vertical moving platform
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, -180, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 90f;
+				CheckTransition(Trigger_J);
 			}
 
 			if (regionK)
@@ -206,6 +221,7 @@ namespace TRE
 				expectedDistance = 80;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 90f;
+				CheckTransition(Trigger_K);
 			}
 
 			if (regionL)
@@ -217,6 +233,7 @@ namespace TRE
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 100f;
+				CheckTransition(Trigger_L);
 			}
 
 			if (regionM)
@@ -227,16 +244,12 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 105f;
+				CheckTransition(Trigger_M);
 			}
 
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
-			cameraController.toTransition = PS.IsTriggerEnter(MidPos.ID, Trigger_A.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_B.ID) || IsHoleyMoleyEnterTrigger(Trigger_C)
-											|| IsHoleyMoleyEnterTrigger(Trigger_D) || PS.IsTriggerEnter(MidPos.ID, Trigger_E.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_F.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_I.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_J.ID) || IsHoleyMoleyEnterTrigger(Trigger_K) || PS.IsTriggerEnter(MidPos.ID, Trigger_L.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_M.ID);
 		}
 
 		private bool IsInsideTrigger(Entity entity)
@@ -256,6 +269,15 @@ namespace TRE
 			return ECSManager.IsValidEntity(entity.ID) &&
 				(PS.IsTriggerEnter(Holey.ID, entity.ID)) &&
 				(PS.IsTriggerEnter(Moley.ID, entity.ID));
+		}
+
+		private void CheckTransition(Entity entity)
+		{
+			if (Previous_Trigger != entity)
+			{
+				cameraController.toTransition = true;
+				Previous_Trigger = entity;
+			}
 		}
 	}
 }

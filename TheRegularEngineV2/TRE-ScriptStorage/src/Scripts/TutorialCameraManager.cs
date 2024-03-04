@@ -22,6 +22,8 @@ namespace TRE
 		private Entity Trigger_G;
 		private Entity Trigger_H;
 
+		private Entity Previous_Trigger;
+
 		private bool regionA;
 		private bool regionB;
 		private bool regionC;
@@ -91,6 +93,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				CheckTransition(Trigger_A);
 			}
 
 			if (regionB)
@@ -101,6 +104,7 @@ namespace TRE
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				CheckTransition(Trigger_B);
 			}
 
 			if (regionC)
@@ -111,6 +115,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				CheckTransition(Trigger_C);
 			}
 
 			if (regionD)
@@ -121,6 +126,7 @@ namespace TRE
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 0f;
+				CheckTransition(Trigger_D);
 			}
 
 			if (regionE)
@@ -131,6 +137,7 @@ namespace TRE
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 0f;
+				CheckTransition(Trigger_E);
 			}
 
 			if (regionF)
@@ -141,6 +148,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 0f;
+				CheckTransition(Trigger_F);
 			}
 
 			if (regionG)
@@ -152,6 +160,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = true;
 				cameraController.expectedYPos = 28f;
+				CheckTransition(Trigger_G);
 			}
 
 			if (regionH)
@@ -162,19 +171,26 @@ namespace TRE
 				expectedDistance = 40;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 28f;
+				CheckTransition(Trigger_H);
 			}
 
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
-			cameraController.toTransition = PS.IsTriggerEnter(MidPos.ID, Trigger_A.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_B.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_C.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_D.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_E.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_F.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID);
 		}
 
 		private bool IsInsideTrigger(Entity entity)
 		{
 			return PS.IsTriggerEnter(MidPos.ID, entity.ID) || PS.IsTriggerStay(MidPos.ID, entity.ID);
+		}
+
+		private void CheckTransition(Entity entity)
+		{
+			if (Previous_Trigger != entity)
+			{
+				cameraController.toTransition = true;
+				Previous_Trigger = entity;
+			}
 		}
 	}
 }

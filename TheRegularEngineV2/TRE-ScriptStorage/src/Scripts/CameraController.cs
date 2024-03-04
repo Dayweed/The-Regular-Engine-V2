@@ -176,7 +176,7 @@ namespace TRE
 			if (toTransition)
 			{
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
-				//toTransition = false;
+				toTransition = false;
 			}
 
 			Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;
