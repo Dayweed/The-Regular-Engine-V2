@@ -63,6 +63,12 @@ namespace TRE
 		glm::mat4 proj;
 	};
 
+	struct DepthUBO
+	{
+		glm::mat4 view;
+		glm::mat4 proj;
+	};
+
 	class SceneRenderer
 	{
 		public:
@@ -71,6 +77,7 @@ namespace TRE
 
 			void Initialize();
 			void ShadowPassInit();
+			void DepthPrepassInit();
 			void Shutdown();
 			void Create();
 			void Resize();
@@ -82,6 +89,7 @@ namespace TRE
 			void CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass);
 
 			void ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
+			void DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DebugDrawPass(uint32_t Index);
@@ -122,7 +130,7 @@ namespace TRE
 			//Skybox
 
 			//Shadow
-			float depthBiasConstant = 1.25f;
+			float depthBiasConstant = 0.01f;
 			float depthBiasSlope = 1.75f;
 			std::shared_ptr<Image2D> m_ShadowImages;
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
@@ -134,8 +142,20 @@ namespace TRE
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer;
-
 			float m_ShadowAABBPadding = 10.f;
+
+			//Depth Prepass
+			std::shared_ptr<Image2D> m_DepthPrepassImages;
+			std::shared_ptr<RenderPass> m_DepthPrepassRenderPass;
+			VkDescriptorImageInfo m_DepthPrepassDescriptInfo;
+			std::shared_ptr<Pipeline> m_DepthPrepassPipeline;
+			std::shared_ptr<Pipeline> m_DepthPrepassAnimationPipeline;
+			std::shared_ptr<Material> m_DepthPrepassMaterial;
+			std::shared_ptr<UniformBuffer> m_DepthPrepassUBO;
+			uint32_t m_DepthPrepassMapWidth = 1600;
+			uint32_t m_DepthPrepassMapHeight = 900;
+			VkFramebuffer m_DepthPrepassFramebuffer;
+
 			//Game
 			glm::vec3 m_ShadowAABBMin;
 			glm::vec3 m_ShadowAABBMax;
