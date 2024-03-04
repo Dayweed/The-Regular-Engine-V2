@@ -163,6 +163,9 @@ namespace TRE
 	{
 		while (!m_Window->ShouldWindowClose() && m_Running)
 		{
+			// This calls the inputHandler to clear the keys
+			InputHandler::ClearKeys();
+
 			m_Window->UpdateDeltaTime();
 
 			m_Window->BeginFrame();
@@ -170,6 +173,7 @@ namespace TRE
 			Renderer::BeginFrame();
 
 			// Update
+			m_Window->PollEvents();
 			Profiler::Instance().StartTimer("UpdateSystem");
 			ECSSystemManager::Instance().UpdateSystem();
 			Profiler::Instance().EndTimer("UpdateSystem");
@@ -232,11 +236,10 @@ namespace TRE
 			//Draw
 			Profiler::Instance().StartTimer("Draw");
 			m_Window->SwapBuffers();
-			m_Window->PollEvents();
+
 			Profiler::Instance().EndTimer("Draw");
 
-			// This calls the inputHandler to clear the keys
-			//InputHandler::ClearKeys();
+
 			
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();

@@ -461,6 +461,10 @@ namespace TRE
 
 		private void HandleMovement(ref vec3 currVelocity)
 		{
+			if(IS.GetKeyPress(playerJumpKey))
+			{
+				Debug.Log("Jump Pressed");
+			}
 			// Ignores if dead
 			if (isDead) return;
 

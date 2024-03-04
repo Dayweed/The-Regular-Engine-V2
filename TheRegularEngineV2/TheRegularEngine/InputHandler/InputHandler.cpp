@@ -12,8 +12,8 @@ namespace TRE
 	//std::unordered_map<int, int> InputHandler::m_keyTriggerMap;
 	std::unordered_map<int, bool> InputHandler::m_keyPreviousPress;
 	std::unordered_map<int, bool> InputHandler::m_keyPreviousRelease;
-	//std::unordered_map<int, bool> InputHandler::m_keyPress;
-	//std::unordered_map<int, bool> InputHandler::m_keyRelease;
+	std::unordered_map<int, bool> InputHandler::m_keyPress;
+	std::unordered_map<int, bool> InputHandler::m_keyRelease;
 
 
 	void InputHandler::KeyCb(GLFWwindow* win_ptr, int key, int scancode, int action, int mod)
@@ -28,11 +28,19 @@ namespace TRE
 			//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
 			event.Publish(TypingEvent {key, mod});
+ 			m_keyPress[key] = true;
 		}
 		else if (glfwGetKey(win_ptr, key) == GLFW_RELEASE)
 		{
 			event.Publish(InputEvent {key, action});
+			m_keyPress[key] = false;
 		}
+
+		//else
+		//{
+		//	m_keyPress[key] = false;
+		//	m_keyRelease[key] = false;
+		//}
 		m_keyMap[key] = action;
 		//std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
 	}
@@ -87,36 +95,27 @@ namespace TRE
 
 	bool InputHandler::GetKeyHold(int key)
 	{
-		return m_keyMap[key];
+		return m_keyMap[key] && m_keyPreviousPress[key];
 	}
 
 	bool InputHandler::GetKeyPress(int key)
 	{
-		int keyState = glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key);
-		if (keyState == GLFW_RELEASE)
-		{
-			m_keyPreviousPress[key] = false;
-		}
-		else if (keyState == GLFW_PRESS && m_keyPreviousPress[key] == false)
-		{
-			m_keyPreviousPress[key] = true;
-			return true;
-		}
-		return false;
+		return m_keyPress[key] && !m_keyPreviousPress[key];
 	}
 
 	bool InputHandler::GetKeyRelease(int key)
 	{
-		int keyState = glfwGetKey(Engine::GetInstance().GetWindow()->GetWindowHandle(), (int)key);
-		if (keyState == GLFW_RELEASE && m_keyPreviousRelease[key] == true)
+		return !m_keyPress[key] && m_keyPreviousPress[key];
+	}
+
+	void InputHandler::ClearKeys()
+	{
+		for (std::pair<const int, bool>& key : m_keyPress)
 		{
-			m_keyPreviousRelease[key] = false;
-			return true;
+			m_keyPreviousPress[key.first] = key.second;
+			//key.second = false;
 		}
-		else if (keyState == GLFW_PRESS)
-		{
-			m_keyPreviousRelease[key] = true;
-		}
-		return false;
+		//m_keyPress.clear();
+		//m_keyRelease.clear();
 	}
 }
