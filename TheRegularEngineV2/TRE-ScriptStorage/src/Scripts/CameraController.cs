@@ -135,7 +135,7 @@ namespace TRE
 		public void Update()
 		{
 			//finalPos = MidPosTransform.Position;
-			//PlayerMidPosition.expectedYPos = expectedYPos;
+			PlayerMidPosition.expectedYPos = expectedYPos;
 
 			//make it fixed y so if both players jump, the camera doesnt keep bobbing up and down
 			//finalPos.y = useThisYPos;
