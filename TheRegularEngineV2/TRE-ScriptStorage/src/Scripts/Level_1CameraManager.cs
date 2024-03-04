@@ -90,7 +90,7 @@ namespace TRE
 			regionF = IsInsideTrigger(Trigger_F);
 			regionG = IsInsideTrigger(Trigger_G);
 			regionH = IsInsideTrigger(Trigger_H);
-			regionI = IsInsideTrigger(Trigger_I);//IsHoleyMoleyInsideTrigger(Trigger_I);
+			regionI = IsHoleyMoleyInsideTrigger(Trigger_I);
 			regionJ = IsInsideTrigger(Trigger_J);
 			regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
 			regionL = IsInsideTrigger(Trigger_L);
@@ -232,10 +232,10 @@ namespace TRE
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
-			cameraController.toTransition = PS.IsTriggerEnter(MidPos.ID, Trigger_A.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_B.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_C.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_D.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_E.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_F.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_I.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_J.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_K.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_L.ID)
+			cameraController.toTransition = PS.IsTriggerEnter(MidPos.ID, Trigger_A.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_B.ID) || IsHoleyMoleyEnterTrigger(Trigger_C)
+											|| IsHoleyMoleyEnterTrigger(Trigger_D) || PS.IsTriggerEnter(MidPos.ID, Trigger_E.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_F.ID)
+											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID) || IsHoleyMoleyEnterTrigger(Trigger_I)
+											|| PS.IsTriggerEnter(MidPos.ID, Trigger_J.ID) || IsHoleyMoleyEnterTrigger(Trigger_K) || PS.IsTriggerEnter(MidPos.ID, Trigger_L.ID)
 											|| PS.IsTriggerEnter(MidPos.ID, Trigger_M.ID);
 		}
 
@@ -249,6 +249,13 @@ namespace TRE
 			return ECSManager.IsValidEntity(entity.ID) && 
 				(PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID)) && 
 				(PS.IsTriggerEnter(Moley.ID, entity.ID) || PS.IsTriggerStay(Moley.ID, entity.ID));
+		}
+
+		private bool IsHoleyMoleyEnterTrigger(Entity entity)
+		{
+			return ECSManager.IsValidEntity(entity.ID) &&
+				(PS.IsTriggerEnter(Holey.ID, entity.ID)) &&
+				(PS.IsTriggerEnter(Moley.ID, entity.ID));
 		}
 	}
 }
