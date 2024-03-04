@@ -192,7 +192,7 @@ namespace TRE
 			{
 				//on moving hitw and ground before vertical moving platform
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 90, 0);
+				expectedRotation = new vec3(30, -180, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 90f;
@@ -234,7 +234,7 @@ namespace TRE
 			cameraController.expectedDistance = expectedDistance;
 			cameraController.toTransition = PS.IsTriggerEnter(MidPos.ID, Trigger_A.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_B.ID) || IsHoleyMoleyEnterTrigger(Trigger_C)
 											|| IsHoleyMoleyEnterTrigger(Trigger_D) || PS.IsTriggerEnter(MidPos.ID, Trigger_E.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_F.ID)
-											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID) || IsHoleyMoleyEnterTrigger(Trigger_I)
+											|| PS.IsTriggerEnter(MidPos.ID, Trigger_G.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_H.ID) || PS.IsTriggerEnter(MidPos.ID, Trigger_I.ID)
 											|| PS.IsTriggerEnter(MidPos.ID, Trigger_J.ID) || IsHoleyMoleyEnterTrigger(Trigger_K) || PS.IsTriggerEnter(MidPos.ID, Trigger_L.ID)
 											|| PS.IsTriggerEnter(MidPos.ID, Trigger_M.ID);
 		}

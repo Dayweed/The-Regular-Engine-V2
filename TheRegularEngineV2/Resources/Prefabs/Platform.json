@@ -28,14 +28,14 @@
       0,
       {
          "m_Children": [
-            "9378152343996638027"
+            "17045180935416486136"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "4347797345087412625"
+         "m_Parent": "1518882380143528115"
       }
    ],
    [
@@ -43,7 +43,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "4347797345087412625",
+         "m_GUID": "1518882380143528115",
          "m_Index": 1,
          "m_Name": "Platform",
          "m_Tag": "Platform"
@@ -51,7 +51,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "9378152343996638027",
+         "m_GUID": "17045180935416486136",
          "m_Index": 2,
          "m_Name": "TriggerPlatform",
          "m_Tag": ""
@@ -62,9 +62,9 @@
       0,
       {
          "m_Position": [
-            0.0,
-            0.0,
-            0.0
+            17.0166072845459,
+            16.76647186279297,
+            -176.3541717529297
          ],
          "m_Rotation": [
             0.0,
@@ -80,9 +80,9 @@
       1,
       {
          "m_Position": [
-            -1.0,
-            8.77051830291748,
-            2.25
+            16.01660919189453,
+            25.536991119384766,
+            -174.1041717529297
          ],
          "m_Rotation": [
             0.0,
@@ -102,7 +102,7 @@
       {
          "ASSET_GEOM_m_RenderObject": "696785f3780c105e",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "5ae0c33f36ecaa31",
          "m_DrawShadow": true,
          "m_IsVisible": true
       }
@@ -194,20 +194,7 @@
          "m_Reverse": true,
          "m_Speed": 10.0,
          "m_StartOnPlay": true,
-         "m_WayPoints": [
-            0.0,
-            0.0,
-            0.0,
-            26.0,
-            0.0,
-            0.0,
-            26.0,
-            22.0,
-            0.0,
-            0.0,
-            22.0,
-            0.0
-         ]
+         "m_WayPoints": []
       }
    ],
    [

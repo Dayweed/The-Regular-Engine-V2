@@ -133,7 +133,7 @@ namespace TRE
 				}
 			}
 
-			if (currentIndex >= positions.Length) return;
+            if (currentIndex >= positions.Length) return;
 
 			float dirX = (positions[currentIndex].x - transform.Position.x);
 			float dirY = (positions[currentIndex].y - transform.Position.y);
