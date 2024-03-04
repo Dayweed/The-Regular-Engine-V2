@@ -88,6 +88,7 @@ project "TheRegularEngine"
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING" -- to remove C4996 warning about some function being removed in future C++
 	}
 
 	links
@@ -175,6 +176,7 @@ project "TheRegularEditor"
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING" -- to remove C4996 warning about some function being removed in future C++
 	}
 
 	files 
@@ -303,6 +305,7 @@ project "TRE-Runtime"
 		"GLM_FORCE_RADIANS",
 		"_CRT_SECURE_NO_WARNINGS",
 		"_SILENCE_CXX20_CISO646_REMOVED_WARNING", -- to remove C4996 warning about some STL header being deprecated
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING" -- to remove C4996 warning about some function being removed in future C++
 	}
 
 	files 

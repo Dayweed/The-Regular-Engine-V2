@@ -2,32 +2,35 @@
 #include "Core/ECS.h"
 #include "Resource/ResourceManager.h"
 #include "Graphics/Material.h"
+#include "Graphics/UniformBuffer.h"
+#include "Graphics/VulkanUtilities.h"
 #include "glm/gtc/type_ptr.hpp"
 
 namespace TRE
 {
-	struct Particle
+	struct Particle3DUBO
 	{
-		glm::mat4 L2W;
-		glm::vec3 Position;
-		glm::vec3 Scale;
+		glm::mat4 L2W [500];
 	};
 
 	class Particle3DComponent : property::base
 	{
-	public:
+	public:	
 		Particle3DComponent()
 		{
-			m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
-			m_Material->Invalidate();
+			m_Data = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(Particle3DUBO)), 8);
 		}
+
+		std::shared_ptr<RenderObject> m_Mesh;
 		std::shared_ptr<Material> m_Material;
-		std::shared_ptr<VulkanTexture> m_Texture;
+		std::shared_ptr<UniformBuffer> m_Data;
+
 		glm::vec4 m_Color{ glm::vec4(1.f, 1.f, 1.f, 1.f) };
 		glm::vec3 m_Velocity = glm::vec3(0.f, 1.f, 0.f);
 		glm::vec2 m_VariationSpeed = glm::vec2(0.15f, 1.f);	//Variation in the speed of the particles
 		glm::vec2 m_VariationSize = glm::vec2(0.8f, 1.f);	//Variation in the size of the particles
 		glm::vec2 m_FadeDuration = glm::vec2(0.25f, 0.75f);	//Percentage for fade in and fade out
+		
 		float m_SpawnRadius = 1.f;
 		float m_Speed = 5.f;
 		float m_LifeTime = 10.f;
@@ -39,13 +42,19 @@ namespace TRE
 		bool m_PlayOnStart = true;
 		bool m_Fade = true;
 		bool m_Show = true;
-		bool m_3DWorld = true;
 
-		std::vector<Particle> m_Particles;
+		std::vector<glm::vec3> m_Position;
+		std::vector<glm::vec3> m_Scale;
+
+		Particle3DUBO m_ParticleData;
+
 	public:
 		void GenerateParticles(const glm::vec3& emitterPos);
-		void UpdateParticles(const bool is3D);
+		void UpdateParticles();
 		void ResetParticles(const glm::vec3& emitterPos);
+
+	private:
+		void ResetParticlesData(const glm::vec3 emitterPos);
 
 		property_vtable()
 
@@ -64,7 +73,8 @@ namespace TRE
 
 			j = nlohmann::json
 			{
-				{ "Texture", t.m_Texture ? t.m_Texture->GetHandleHex() : "0" },
+				{ "RenderObject", t.m_Mesh ? t.m_Mesh->GetHandleHex() : "0" },
+				{ "MaterialInstance", t.m_Material ? t.m_Material->GetHandleHex() : "0" },
 				{ "Color", storedColor },
 				{ "Velocity", storedVelocity },
 				{ "VariationSpeed", storedVarSpeed },
@@ -77,39 +87,61 @@ namespace TRE
 				{ "ParticleCount", t.m_ParticleCount },
 				{ "Loop", t.m_Loop },
 				{ "PlayOnStart", t.m_PlayOnStart },
-				{ "Fade", t.m_Fade },
-				{ "3DWorld", t.m_3DWorld }
+				{ "Fade", t.m_Fade }
 			};
 		}
 
 		friend void from_json(const nlohmann::json& j, Particle3DComponent& t)
 		{
-			if (j.contains("Texture"))
+			if (j.contains("RenderObject"))
 			{
-				std::string textureHex = j.at("Texture").get<std::string>();
-				ResourceHandle textureHandle = Resource::GetGUIDFromHex(textureHex);
-				if (!t.m_Material)
+				std::string roString = j.at("RenderObject").get<std::string>();
+				ResourceHandle roHandle = Resource::GetGUIDFromHex(roString);
+
+				if (roHandle != 0)
 				{
-					t.m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(12));
-					t.m_Material->Invalidate();
-				}
-				if (textureHandle)
-				{
-					if (auto Texture = ResourceManager::Instance().GetResource<VulkanTexture>(textureHandle); Texture)
+					if (auto renderObject = ResourceManager::Instance().GetResource<RenderObject>(roHandle); renderObject)
 					{
-						t.m_Texture = Texture;
+						t.m_Mesh = renderObject;
 					}
 					else
 					{
-						t.m_Texture = VulkanTexture::Deserialize(textureHex);
+						t.m_Mesh = RenderObject::Deserialize(roString);
 
-						if (t.m_Texture == nullptr)
-							TRE_CORE_CRITICAL(textureHex + "Texture failed to load in particle Component");
+						if (t.m_Mesh == nullptr)
+							TRE_CORE_CRITICAL(roString + ".geom not found!");
 					}
 				}
 				else
 				{
-					t.m_Texture = nullptr;
+					t.m_Mesh = nullptr;
+					TRE_CORE_WARN("Entity does not contain a mesh");
+				}
+			}
+			if (j.contains("MaterialInstance"))
+			{
+				std::string matString = j.at("MaterialInstance").get<std::string>();
+				ResourceHandle matHandle = Resource::GetGUIDFromHex(matString);
+
+				if (matHandle != 0)
+				{
+					if (auto material = ResourceManager::Instance().GetResource<Material>(matHandle); material)
+					{
+						t.m_Material = material;
+					}
+					else
+					{
+						t.m_Material = Material::Deserialize(matString);
+
+						if (t.m_Material == nullptr)
+							TRE_CORE_CRITICAL(matString + ".mat not found!");
+					}
+				}
+				//Else most likely default material
+				else
+				{
+					t.m_Material = nullptr;
+					TRE_CORE_WARN("Entity does not contain material instance, mimght cause error");
 				}
 			}
 			if (j.contains("Color"))
@@ -163,41 +195,54 @@ namespace TRE
 				if (t.m_Fade)
 					t.m_Color.a = 0.0f;
 			}
-			if (j.contains("3DWorld"))
-				t.m_3DWorld = j.at("3DWorld").get<bool>();
 		}
-	private:
-		void ResetParticlesData(const glm::vec3 emitterPos);
-	};
 
-	class ParticleSystem : public ECSSystem
-	{
-		void LateUpdate() override;
 	};
 }
 
 property_begin(TRE::Particle3DComponent)
 {
-	property_var_fnbegin("Texture", resource_list)
+	property_var_fnbegin("Mesh", resource_list)
 	{
-		InOut.m_Type = "TEXTURE";
+		InOut.m_Type = "MESH";
+
 		if (isRead)
 		{
-			if (Self.m_Texture)
-				InOut.m_Value = Self.m_Texture->GetHandle();
+			if (Self.m_Mesh)
+				InOut.m_Value = Self.m_Mesh->GetHandle();
 			else
 				InOut.m_Value = 0;
 		}
 		else
 		{
 			if (InOut.m_Value)
-				Self.m_Texture = TRE::ResourceManager::Instance().GetResource<TRE::VulkanTexture>(InOut.m_Value);
+				Self.m_Mesh = TRE::ResourceManager::Instance().GetResource<TRE::RenderObject>(InOut.m_Value);
 			else
-				Self.m_Texture = nullptr;
+				Self.m_Mesh = nullptr;
 		}
 
 	} property_var_fnend(),
-		property_var_fnbegin("Color", Color)
+	property_var_fnbegin("Material Instance", resource_list)
+	{
+		InOut.m_Type = "MATERIAL";
+
+		if (isRead)
+		{
+			if (Self.m_Material)
+				InOut.m_Value = Self.m_Material->GetHandle();
+			else
+				InOut.m_Value = 0;
+		}
+		else
+		{
+			if (InOut.m_Value)
+				Self.m_Material = TRE::ResourceManager::Instance().GetResource<TRE::Material>(InOut.m_Value);
+			else
+				Self.m_Material = nullptr;
+		}
+
+	} property_var_fnend(),
+	property_var_fnbegin("Color", Color)
 	{
 		if (isRead)
 		{
@@ -221,7 +266,5 @@ property_begin(TRE::Particle3DComponent)
 		property_var(m_VariationSize).Name("VariationSize"),
 		property_var(m_Fade).Name("Fade"),
 		property_var(m_FadeDuration).Name("FadeDuration"),
-		property_var(m_Show).Name("Show Spawn Point"),
-		property_var(m_3DWorld).Name("3DWorld")
-
+		property_var(m_Show).Name("Show Spawn Point")
 } property_vend_h(TRE::Particle3DComponent)

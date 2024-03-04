@@ -158,10 +158,13 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
+					//first one is to rolling obj section, second one is to last platforming section
 					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -330);
+					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -189.596f);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -310);
+					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -174.596f);
 				}
 
 				//if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))

@@ -106,10 +106,11 @@ namespace TRE
 		public vec3 expectedRotation;
 		public float expectedDistance;
 		public float expectedYPos;
+		public bool toTransition;
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
-		private float lerpSpeed = 0.002f;
+		private float lerpSpeed = 0.01f;
 
 		public void Start()
 		{
@@ -147,7 +148,7 @@ namespace TRE
 
 			if (lookOnlyBool)
 			{
-				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
+				//CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
 				finalStaticPosition.x = MathF.Lerp(finalStaticPosition.x, staticPosition.x, lerpSpeed);
 				finalStaticPosition.y = MathF.Lerp(finalStaticPosition.y, staticPosition.y, lerpSpeed);
 				finalStaticPosition.z = MathF.Lerp(finalStaticPosition.z, staticPosition.z, lerpSpeed);
@@ -156,12 +157,18 @@ namespace TRE
 			}
 			else
 			{
-				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
-				finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed * 5f);
-				finalPos.y = MathF.Lerp(finalPos.y, pos.y, lerpSpeed * 5f);
-				finalPos.z = MathF.Lerp(finalPos.z, pos.z, lerpSpeed * 5f);
+				//CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
+				finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed);
+				finalPos.y = MathF.Lerp(finalPos.y, pos.y, lerpSpeed);
+				finalPos.z = MathF.Lerp(finalPos.z, pos.z, lerpSpeed);
 				CameraSystem.SetMainCameraFollow(finalPos, distance);
 				finalStaticPosition = finalPos;
+			}
+
+			if(toTransition)
+			{
+				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
+				toTransition = false;
 			}
 
 			Player1.GetComponent<MoleyController>().turnDirection = (int)expectedRotation.y;

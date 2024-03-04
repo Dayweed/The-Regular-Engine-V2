@@ -45,19 +45,19 @@ namespace TRE
 				if (name == "MovingPlatform_2")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(146.419f, 14.422f, -237), new vec3(146.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(146.419f, 14.422f, -240), new vec3(146.419f, 14.422f, -166) };
 				}
 
 				if (name == "MovingPlatform_3")
 				{
 					currentIndex = 1;
-					positions = new vec3[] { new vec3(174.419f, 14.422f, -237), new vec3(174.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(174.419f, 14.422f, -240), new vec3(174.419f, 14.422f, -166) };
 				}
 
 				if (name == "MovingPlatform_4")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(202.419f, 14.422f, -237), new vec3(202.419f, 14.422f, -169) };
+					positions = new vec3[] { new vec3(202.419f, 14.422f, -240), new vec3(202.419f, 14.422f, -166) };
 				}
 
 				if (name == "MovingPlatform_5")
@@ -70,34 +70,34 @@ namespace TRE
 				{
 					currentIndex = 0;
 					delay = 4;
-					positions = new vec3[] { new vec3(376.419f, 42.422f, -254.370f), new vec3(450.655f, 42.422f, -254.370f) };
+					positions = new vec3[] { new vec3(376.419f, 42.422f, -258.370f), new vec3(450.655f, 42.422f, -258.370f) };
 				}
 
 				if (name == "Level1_HitW_02")
 				{
 					currentIndex = 1;
 					delay = 4;
-					positions = new vec3[] { new vec3(450.655f, 60.340f, -220.529f), new vec3(524.892f, 60.340f, -222.529f) };
+					positions = new vec3[] { new vec3(450.655f, 60.340f, -227.529f), new vec3(524.892f, 60.340f, -227.529f) };
 				}
 
 				if (name == "MovingPlatform_7")
 				{
 					currentIndex = 0;
-					positions = new vec3[] { new vec3(563.380f, 42.422f, -178), new vec3(563.380f, 90.913f, -178) };
+					positions = new vec3[] { new vec3(563.380f, 42.422f, -182.099f), new vec3(563.380f, 90.913f, -182.099f) };
 				}
 
 				if (name == "MovingPlatform_8")
 				{
 					currentIndex = 0;
 					delay = 2;
-					positions = new vec3[] { new vec3(644.877f, 90.422f, -176), new vec3(757.419f, 90.422f, -176) };
+					positions = new vec3[] { new vec3(644.877f, 90.422f, -182.099f), new vec3(833.877f, 90.422f, -182.099f) };
 				}
 
 				if (name == "MovingPlatform_9")
 				{
 					currentIndex = 1;
 					delay = 2;
-					positions = new vec3[] { new vec3(840.563f, 90.422f, -176), new vec3(888.656f, 90.422f, -176) };
+					positions = new vec3[] { new vec3(914.419f, 90.422f, -182.099f), new vec3(943.419f, 90.422f, -182.099f) };
 				}
 			}
 

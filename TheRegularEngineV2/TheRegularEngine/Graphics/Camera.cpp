@@ -179,15 +179,16 @@ namespace TRE
 			if (camera.m_IsTransitioning)
 			{
 				const auto dt = Engine::GetInstance().GetWindow()->GetDeltaTime();
-				transform.m_Position = glm::mix(camera.m_StartPosition, camera.m_TransitionPosition, camera.m_InterpolationSpeed * dt);
-				transform.m_Rotation = glm::mix(camera.m_StartRotation, camera.m_TransitionRotation, camera.m_InterpolationSpeed * dt);
+				transform.m_Position = glm::mix(camera.m_StartPosition, camera.m_TransitionPosition, camera.m_InterpolationValue);
+				transform.m_Rotation = glm::mix(camera.m_StartRotation, camera.m_TransitionRotation, camera.m_InterpolationValue);
 				transform.m_IsDirty = true;
-				//camera.m_InterpolationValue += camera.m_InterpolationSpeed * Engine::GetInstance().GetWindow()->GetDeltaTime();
+				
 				if (camera.m_InterpolationValue >= 1.f)
 				{
 					camera.m_IsTransitioning = false;
 					camera.m_InterpolationValue = 0.f;
 				}
+				camera.m_InterpolationValue += camera.m_InterpolationSpeed * dt;
 			}
 		}
 	}
@@ -506,6 +507,7 @@ namespace TRE
 			cameraComponent.m_StartRotation = cameraTransform.m_Rotation;
 			cameraComponent.m_TransitionRotation = targetRotation;
 			cameraComponent.m_InterpolationSpeed = 1.f / duration;
+			cameraComponent.m_InterpolationValue = 0.f;
 		}
 	}
 

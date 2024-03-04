@@ -144,9 +144,6 @@
     <ClInclude Include="ECS\Components\ParentingComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ECS\Components\Particle.h">
-      <Filter>ECS\Components</Filter>
-    </ClInclude>
     <ClInclude Include="ECS\Components\Particle2DComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
@@ -244,6 +241,9 @@
     <ClInclude Include="Graphics\ParticleRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\ParticleSystem.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\Pipeline.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -297,6 +297,9 @@
     </ClInclude>
     <ClInclude Include="Graphics\VulkanUtilities.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler\Controller.h">
+      <Filter>InputHandler</Filter>
     </ClInclude>
     <ClInclude Include="InputHandler\InputHandler.h">
       <Filter>InputHandler</Filter>
@@ -456,10 +459,10 @@
     <ClCompile Include="Graphics\MeshRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Particle.cpp">
+    <ClCompile Include="Graphics\ParticleRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\ParticleRenderer.cpp">
+    <ClCompile Include="Graphics\ParticleSystem.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Pipeline.cpp">

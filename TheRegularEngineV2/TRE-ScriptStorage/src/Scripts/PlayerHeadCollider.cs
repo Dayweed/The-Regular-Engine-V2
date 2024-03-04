@@ -12,15 +12,15 @@ namespace TRE
 	class PlayerHeadCollider : Entity
 	{
 		private Entity playerObj;
-		private string mole1tag = "RedCollider";
-		private string mole2tag = "BlueCollider";
+		private const string mole1tag = "RedCollider";
+		private const string mole2tag = "BlueCollider";
 		//bool isPlayer1 = false;
 		//bool isPlayer2 = false;
-		private vec3 offset;
+		// private vec3 offset;
 
 		public void SetToPlayer()
 		{
-			PhysicsSystem.GetColliderOffset(playerObj.ID, out offset);
+			// PS.GetColliderOffset(playerObj.ID, out offset);
 
 			if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
 			{
@@ -75,7 +75,6 @@ namespace TRE
 
 				transform.Position = newPos;
 			}
-
 		}
 
 		public void Start()
@@ -89,7 +88,6 @@ namespace TRE
 				playerObj = ECSManager.FindEntityByName("Holey");
 			}
 		}
-
 
 		public void Update()
 		{

@@ -47,6 +47,7 @@
 #include "ECS/Components/MeshRenderer.h"
 #include "ECS/Components/ParentingComponent.h"
 #include "ECS/Components/Particle2DComponent.h"
+#include "ECS/Components/Particle3DComponent.h"
 #include "ECS/Components/Rigidbody.h"
 #include "ECS/Components/ScriptComponent.h"
 #include "ECS/Components/Slideshow.h"

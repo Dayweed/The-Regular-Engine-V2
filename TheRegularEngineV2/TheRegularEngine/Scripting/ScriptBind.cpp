@@ -14,6 +14,7 @@
 #include "ECS/Components/Particle2DComponent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
+#include "InputHandler/Controller.h"
 
 #include "InputHandler/InputHandler.h"
 
@@ -1251,6 +1252,31 @@ namespace TRE
 		return InputHandler::GetKeyRelease(key);
 	}
 
+	static bool GetControllerButtonPress(int controller , int button)
+	{
+		return XInputController::Instance().isButtonPressed(controller ,button);
+	}
+
+	static float GetControllerStickX(int controller, bool rightstick)
+	{
+		return XInputController::Instance().getThumbstickX(controller, rightstick);
+	}
+
+	static float GetControllerStickY(int controller, bool rightstick)
+	{
+		return XInputController::Instance().getThumbstickY(controller, rightstick);
+	}
+
+	static bool GetButtonHold(int controller ,int button, float time)
+	{
+		return XInputController::Instance().isButtonHeld(controller, button, time);
+	}
+
+	static bool GetButtonReleased(int controller, int button)
+	{
+		return XInputController::Instance().isButtonReleased(controller, button);
+	}
+
 #pragma endregion
 
 #pragma region Logging
@@ -2407,6 +2433,8 @@ namespace TRE
 		return entity->GetComponent<Particle2DComponent>().m_Running;
 	}
 
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2589,6 +2617,12 @@ namespace TRE
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyHold", GetKeyHold);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyPress", GetKeyPress);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetKeyRelease", GetKeyRelease);
+			// XINPUT
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonPress", GetControllerButtonPress);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonHold", GetButtonHold);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonReleased", GetButtonReleased);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickX",GetControllerStickX);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickY", GetControllerStickY);
 		}
 
 		// Logging

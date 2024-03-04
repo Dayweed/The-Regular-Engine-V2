@@ -18,7 +18,7 @@ namespace TRE
 
 		public float expectedYPos;
 
-		private float lerpSpeed = 0.001f;
+		private float lerpSpeed = 0.01f;
 
 		public void Start()
 		{

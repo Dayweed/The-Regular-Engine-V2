@@ -66,6 +66,7 @@ namespace TRE
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
+			cameraController.toTransition = PS.IsTriggerEnter(Holey.ID, Trigger_A.ID) || PS.IsTriggerEnter(Holey.ID, Trigger_B.ID);
 		}
 
 		private bool IsInsideTrigger(Entity entity)
