@@ -178,7 +178,6 @@ namespace TRE
 
 			if (regionH)
 			{
-				Debug.Log("Region H");
 				//jumppad section after rolling objs - 1st floor
 				cameraController.staticPosition = new vec3(320, 45, -330);
 				cameraController.lookOnlyBool = true;
@@ -191,7 +190,6 @@ namespace TRE
 
 			if (regionI) 
 			{
-				Debug.Log("Region I");
 				//2nd floor before moving hitw
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 0, 0);
@@ -203,7 +201,6 @@ namespace TRE
 
 			if (regionJ)
 			{
-				Debug.Log("Region J");
 				//on moving hitw and ground before vertical moving platform
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, -180, 0);
