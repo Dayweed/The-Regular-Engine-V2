@@ -130,8 +130,8 @@ namespace TRE
 			//Skybox
 
 			//Shadow
-			float depthBiasConstant = 0.01f;
-			float depthBiasSlope = 1.f;
+			float depthBiasConstant = 1.25f;
+			float depthBiasSlope = 1.75f;
 			std::shared_ptr<Image2D> m_ShadowImages;
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
 			VkDescriptorImageInfo m_ShadowDescriptInfo;

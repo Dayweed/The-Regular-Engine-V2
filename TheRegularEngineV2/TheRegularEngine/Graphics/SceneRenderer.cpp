@@ -445,7 +445,7 @@ namespace TRE
 		{
 			DepthUBO depthUBO{};
 			depthUBO.view = baseCamera.m_ViewMatrix;
-			depthUBO.proj = baseCamera.m_CleanProj;// baseCamera.m_ProjectionMatrix;
+			depthUBO.proj = baseCamera.m_ProjectionMatrix;
 
 			m_DepthPrepassUBO->SetData(&depthUBO, sizeof(DepthUBO));
 		}
