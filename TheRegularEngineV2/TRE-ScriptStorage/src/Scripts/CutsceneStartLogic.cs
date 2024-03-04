@@ -30,6 +30,7 @@ namespace TRE
 		bool endCutscene = false;
 
 		private ulong birdSFX;
+		private ulong dialogueSFX;
 
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
@@ -61,6 +62,7 @@ namespace TRE
 			forcedScenes = new List<string>() { "Frame4" };
 
 			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
+			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
 
 			currentFrame = 0;
 			frames[currentFrame].SetActive(true);
@@ -85,6 +87,12 @@ namespace TRE
 					AS.Stop(birdSFX);
 			}
 
+			if (currentFrame == 3)
+			{
+				if (ECSManager.IsValidEntity(dialogueSFX))
+					AS.Play(dialogueSFX);
+			}
+
 			// Close Game
 			if (InputSystem.GetKeyHold(InputKeys.Escape))
 			{
@@ -107,6 +115,9 @@ namespace TRE
 				{
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
 					++currentFrame;
+
+					if (ECSManager.IsValidEntity(dialogueSFX))
+						AS.Stop(dialogueSFX);
 
 					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{
