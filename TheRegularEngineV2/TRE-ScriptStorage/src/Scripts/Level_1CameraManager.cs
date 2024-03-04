@@ -90,7 +90,7 @@ namespace TRE
 			regionF = IsInsideTrigger(Trigger_F);
 			regionG = IsInsideTrigger(Trigger_G);
 			regionH = IsInsideTrigger(Trigger_H);
-			regionI = IsHoleyMoleyInsideTrigger(Trigger_I);
+			regionI = IsInsideTrigger(Trigger_I);//IsHoleyMoleyInsideTrigger(Trigger_I);
 			regionJ = IsInsideTrigger(Trigger_J);
 			regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
 			regionL = IsInsideTrigger(Trigger_L);
