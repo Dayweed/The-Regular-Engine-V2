@@ -9,9 +9,7 @@
 namespace TRE
 {
 	std::unordered_map<int, int> InputHandler::m_keyMap;
-	//std::unordered_map<int, int> InputHandler::m_keyTriggerMap;
 	std::unordered_map<int, bool> InputHandler::m_keyPreviousPress;
-	std::unordered_map<int, bool> InputHandler::m_keyPreviousRelease;
 	std::unordered_map<int, bool> InputHandler::m_keyPress;
 	std::unordered_map<int, bool> InputHandler::m_keyRelease;
 
@@ -25,7 +23,6 @@ namespace TRE
 
 		if (glfwGetKey(win_ptr, key) == GLFW_PRESS)
 		{
-			//EventHandler::getEventHandlerInstance().Publish(ConsoleDebugEvent{ "Testing Key inputs here" });
 			event.Publish(InputEvent {key, action});
 			event.Publish(TypingEvent {key, mod});
  			m_keyPress[key] = true;
@@ -35,14 +32,7 @@ namespace TRE
 			event.Publish(InputEvent {key, action});
 			m_keyPress[key] = false;
 		}
-
-		//else
-		//{
-		//	m_keyPress[key] = false;
-		//	m_keyRelease[key] = false;
-		//}
 		m_keyMap[key] = action;
-		//std::cout << "Checking for key action" << m_keyMap[key] << std::endl;
 	}
 
 	void InputHandler::MouseButtonCb(GLFWwindow* win_ptr, int button, int action, int mod)
@@ -52,13 +42,10 @@ namespace TRE
 		EventHandler& event = EventHandler::getEventHandlerInstance();
 		if (glfwGetMouseButton(win_ptr, button) == GLFW_PRESS)
 		{
-			//TRE_CORE_INFO("Mouse pressed:x {0}", key);
 			event.Publish(InputEvent {button, action});
 		}
 		else if (glfwGetMouseButton(win_ptr, button) == GLFW_RELEASE)
-		{
-			//TRE_CORE_INFO("Mouse Released:x {0}", key);
-			//event.Publish(InputEvent {button, action});			
+		{		
 		}
 	}
 
@@ -113,9 +100,6 @@ namespace TRE
 		for (std::pair<const int, bool>& key : m_keyPress)
 		{
 			m_keyPreviousPress[key.first] = key.second;
-			//key.second = false;
 		}
-		//m_keyPress.clear();
-		//m_keyRelease.clear();
 	}
 }
