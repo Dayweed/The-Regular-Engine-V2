@@ -49,6 +49,7 @@ namespace TRE
 		private vec3 expectedPosition;
 		private vec3 expectedRotation;
 		private float expectedDistance;
+		private float expectedDuration;
 
 		public void Start()
 		{
@@ -106,6 +107,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_A);
 			}
 
@@ -117,6 +119,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_B);
 			}
 
@@ -128,6 +131,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_C);
 			}
 
@@ -139,6 +143,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_D);
 			}
 
@@ -150,6 +155,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_E);
 			}
 
@@ -162,6 +168,7 @@ namespace TRE
 				expectedRotation = new vec3(50, 90, 0);
 				expectedDistance = 60;
 				cameraController.expectedYPos = 30f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_F);
 			}
 
@@ -173,6 +180,7 @@ namespace TRE
 				expectedDistance = 70;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
+				expectedDuration = 1f;
 				CheckTransition(Trigger_G);
 			}
 
@@ -185,6 +193,7 @@ namespace TRE
 				expectedRotation = new vec3(45, 90, 0);
 				expectedDistance = 80;
 				cameraController.expectedYPos = 60f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_H);
 			}
 
@@ -196,6 +205,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 60f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_I);
 			}
 
@@ -207,6 +217,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 90f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_J);
 			}
 
@@ -218,6 +229,7 @@ namespace TRE
 				expectedDistance = 80;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 90f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_K);
 			}
 
@@ -230,6 +242,7 @@ namespace TRE
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 100f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_L);
 			}
 
@@ -241,12 +254,14 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 105f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_M);
 			}
 
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
+			cameraController.transitionDuration = expectedDuration;
 		}
 
 		private bool IsInsideTrigger(Entity entity)

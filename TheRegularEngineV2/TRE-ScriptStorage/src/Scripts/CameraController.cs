@@ -35,6 +35,7 @@ namespace TRE
 		public float expectedDistance;
 		public float expectedYPos;
 		public bool toTransition;
+		public float transitionDuration = 0.8f;
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
@@ -103,8 +104,8 @@ namespace TRE
 
 			if (toTransition)
 			{
-				Debug.Log("Transitioning");
-				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
+				//Debug.Log("Transitioning");
+				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, transitionDuration);
 				toTransition = false;
 			}
 

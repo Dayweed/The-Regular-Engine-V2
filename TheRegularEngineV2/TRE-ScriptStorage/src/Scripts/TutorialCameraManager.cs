@@ -38,6 +38,7 @@ namespace TRE
 		private vec3 expectedPosition;
 		private vec3 expectedRotation;
 		private float expectedDistance;
+		private float expectedDuration;
 
 		public void Start()
 		{
@@ -93,6 +94,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_A);
 			}
 
@@ -104,6 +106,7 @@ namespace TRE
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_B);
 			}
 
@@ -115,6 +118,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = -2f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_C);
 			}
 
@@ -126,6 +130,7 @@ namespace TRE
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 0f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_D);
 			}
 
@@ -137,6 +142,7 @@ namespace TRE
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 0f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_E);
 			}
 
@@ -148,6 +154,7 @@ namespace TRE
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 0f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_F);
 			}
 
@@ -160,6 +167,7 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = true;
 				cameraController.expectedYPos = 28f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_G);
 			}
 
@@ -171,12 +179,14 @@ namespace TRE
 				expectedDistance = 40;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 28f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_H);
 			}
 
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
+			cameraController.transitionDuration = expectedDuration;
 		}
 
 		private bool IsInsideTrigger(Entity entity)

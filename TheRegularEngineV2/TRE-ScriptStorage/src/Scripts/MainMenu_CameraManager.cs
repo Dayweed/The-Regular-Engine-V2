@@ -23,6 +23,7 @@ namespace TRE
 		private vec3 expectedPosition;
 		private vec3 expectedRotation;
 		private float expectedDistance;
+		private float expectedDuration;
 
 		public void Start()
 		{
@@ -54,6 +55,7 @@ namespace TRE
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 35;
+				expectedDuration = 0.8f;
 			}
 
 			if (regionB)
@@ -61,11 +63,13 @@ namespace TRE
 				expectedPosition = new vec3(0, 10, 0);
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 60;
+				expectedDuration = 0.8f;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
 			cameraController.expectedRotation = expectedRotation;
 			cameraController.expectedDistance = expectedDistance;
+			cameraController.transitionDuration = expectedDuration;
 			cameraController.toTransition = PS.IsTriggerEnter(Holey.ID, Trigger_A.ID) || PS.IsTriggerEnter(Holey.ID, Trigger_B.ID);
 		}
 
