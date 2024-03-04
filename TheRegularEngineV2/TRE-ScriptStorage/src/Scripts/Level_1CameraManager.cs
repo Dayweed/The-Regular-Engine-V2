@@ -203,7 +203,7 @@ namespace TRE
 			{
 				//on moving hitw and ground before vertical moving platform
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, -180, 0);
+				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 90f;
