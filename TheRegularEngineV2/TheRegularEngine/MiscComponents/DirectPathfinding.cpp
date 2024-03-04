@@ -29,6 +29,7 @@ namespace TRE
 			// Move current position to the next index
 			Transform& transform{ go->GetComponent<Transform>() };
 			DirectPathfinding& path{ go->GetComponent<DirectPathfinding>() };
+			path.m_OldPosition = transform.m_Position;
 
 			// Ignores if it is not running
 			if (!path.m_IsRunning) continue;

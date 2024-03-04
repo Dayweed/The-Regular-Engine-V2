@@ -2372,6 +2372,20 @@ namespace TRE
 
 		ECSSystemManager::Instance().GetSystem<DirectPathfindingSystem>()->ResetPathfinding(entity);
 	}
+
+	static glm::vec3 Engine_GetOldPositionPathfinding(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return {};
+
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return {};
+		}
+
+		return entity->GetComponent<DirectPathfinding>().m_OldPosition;
+	}
 #pragma endregion
 
 #pragma region PostProcessing
@@ -2725,6 +2739,7 @@ namespace TRE
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_PausePathfinding", Engine_PausePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResumePathfinding", Engine_ResumePathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_GetOldPositionPathfinding", Engine_GetOldPositionPathfinding);
 		}
 
 		// Post Effects

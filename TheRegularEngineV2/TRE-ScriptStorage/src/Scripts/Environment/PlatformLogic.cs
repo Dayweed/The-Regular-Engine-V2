@@ -19,6 +19,10 @@ namespace TRE
 		private float currentTime = 0.0f;
 		private float delay = 1f;
 
+		private Entity TriggerPlatformCollider;
+		private Entity Holey;
+		private Entity Moley;
+
 		public PlatformLogic()
 		{
 			positions = new vec3[0];
@@ -28,6 +32,10 @@ namespace TRE
 
 		public void Start()
 		{
+			TriggerPlatformCollider = parenting.GetChildFromName("TriggerPlatform");
+			Holey = ECSManager.FindEntityByName("Holey");
+			Moley = ECSManager.FindEntityByName("Moley");
+
 			if (Scene.GetSceneName() == "TODELETE")
 			{
 				currentIndex = 0;
@@ -111,6 +119,22 @@ namespace TRE
 		{
 			oldPosition = transform.Position;
 
+			// Make Moley or Holey follow the platform if within trigger box
+			if (HasComponent<DirectPathfinding>() && ECSManager.IsValidEntity(TriggerPlatformCollider.ID))
+			{
+				// Check if is in trigger
+				if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Holey.ID))
+				{
+					Holey.GetComponent<Transform>().Position += transform.Position - GetComponent<DirectPathfinding>().oldPosition;
+				}
+				if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Moley.ID))
+				{
+					Moley.GetComponent<Transform>().Position += transform.Position - GetComponent<DirectPathfinding>().oldPosition;
+				}
+			}
+
+			if (currentIndex >= positions.Length) return;
+
 			float dirX = (positions[currentIndex].x - transform.Position.x);
 			float dirY = (positions[currentIndex].y - transform.Position.y);
 			float dirZ = (positions[currentIndex].z - transform.Position.z);
@@ -142,15 +166,40 @@ namespace TRE
 					currentTime -= Time.deltaTime;
 				}
 			}
+
+			// Make Moley or Holey follow the platform if within trigger box
+			if (ECSManager.IsValidEntity(TriggerPlatformCollider.ID))
+			{
+				// Check if is in trigger
+				if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Holey.ID))
+				{
+					//Holey.GetComponent<Transform>().Position += transform.Position - oldPosition;
+				}
+				if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Moley.ID))
+				{
+					//Moley.GetComponent<Transform>().Position += transform.Position - oldPosition;
+				}
+			}
 		}
 
 		public void OnCollisionStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			//if on the platform unchild it
-			if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
+			if (HasComponent<DirectPathfinding>())
 			{
-				other.GetComponent<Transform>().Position += transform.Position - oldPosition;
+				if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
+				{
+					other.GetComponent<Transform>().Position += (transform.Position - GetComponent<DirectPathfinding>().oldPosition) * Time.deltaTime;
+					vec3 ahh = transform.Position - GetComponent<DirectPathfinding>().oldPosition;
+				}
+			}
+			else
+			{
+				if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
+				{
+					other.GetComponent<Transform>().Position += transform.Position - oldPosition;
+				}
 			}
 		}
 

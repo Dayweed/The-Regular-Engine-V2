@@ -20,6 +20,8 @@ namespace TRE
 		bool m_Repeat = true;
 		bool m_Reverse = true; // Will loop from start if false [Disabled if m_Repeat is false]
 
+		glm::vec3 m_OldPosition{};	// Old position from previous movement
+
 		// Hidden from inspector
 		bool m_IsRunning = false;	// Check if it is running
 
@@ -133,6 +135,14 @@ property_begin(TRE::DirectPathfinding)
 		, property_var(m_StartOnPlay)
 		, property_var(m_Repeat)
 		, property_var(m_Reverse)
+		, property_var_fnbegin("m_OldPosition", glm::vec3)
+		{
+			if (isRead)
+			{
+				InOut = Self.m_OldPosition;
+			}
+
+		} property_var_fnend()
 		//, property_var(m_WayPoints)
 		, property_var_fnbegin("m_WayPoints", std::vector<waypoint>)
 		{
