@@ -230,10 +230,15 @@ namespace TRE
 
 			HandleAbilities();
 
+            if (IS.GetKeyTriggered(InputKeys.E))
+            {
+                Debug.Log("Input key E is triggered!");
+            }
+
 			// Button Press
-			if (IS.GetControllerButtonPress(0, InputSystem.Button.A))
+			if (IS.GetControllerButtonTriggered(0, InputSystem.Button.A))
 			{
-				Debug.Log("A button press");
+				Debug.Log("A button Triggered");
 			}
 
 			// hold Controller Button (time in seconds)

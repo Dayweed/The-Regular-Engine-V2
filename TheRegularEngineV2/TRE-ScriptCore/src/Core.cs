@@ -1250,6 +1250,18 @@ namespace TRE
 			return Engine_GetKeyRelease(keycode);
 		}
 
+        private static Dictionary<InputKeys, bool> previousKeyStates = new Dictionary<InputKeys, bool>();
+
+        public static bool GetKeyTriggered(InputKeys keycode)
+        {
+            bool wasPressed = previousKeyStates.ContainsKey(keycode) && previousKeyStates[keycode];
+            bool isPressed = GetKeyHold(keycode);
+            previousKeyStates[keycode] = isPressed;
+            return !wasPressed && isPressed;
+        }
+
+		// Controller Input
+
         public static bool GetControllerButtonPress(int controller, Button button)
         {
             return Engine_GetControllerButtonPress(controller, button);
@@ -1274,6 +1286,21 @@ namespace TRE
         {
             return Engine_GetControllerStickY(controller, rightStick);
         }
+
+		private static Dictionary<int, Dictionary<Button, bool>> previousControllerButtonStates = new Dictionary<int, Dictionary<Button, bool>>();
+
+		public static bool GetControllerButtonTriggered(int controller, Button button)
+		{
+			if (!previousControllerButtonStates.ContainsKey(controller))
+			{
+                previousControllerButtonStates[controller] = new Dictionary<Button, bool>();
+			}
+
+			bool wasPressed = previousControllerButtonStates[controller].ContainsKey(button) && previousControllerButtonStates[controller][button];
+			bool isPressed = GetControllerButtonPress(controller, button);
+			previousControllerButtonStates[controller][button] = isPressed;
+			return !wasPressed && isPressed;
+		}
 
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
