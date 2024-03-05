@@ -483,7 +483,7 @@ namespace TRE
 								for (size_t i{}; i < Value.size(); ++i)
 								{
 									float pos[3]{ Value[i].m_Value.x, Value[i].m_Value.y, Value[i].m_Value.z };
-									UpdatedData = UpdatedData ? true : ImGui::DragFloat3(NameField.c_str(), pos);
+									UpdatedData = UpdatedData ? true : ImGui::DragFloat3((NameField + std::string("Pos"+i)).c_str(), pos);
 									Value[i].m_Value = { pos[0], pos[1], pos[2] };
 									ImGui::SameLine();
 									//// Teleport to that position (Removed since it does not work since the position of Transform will get overwritten)
