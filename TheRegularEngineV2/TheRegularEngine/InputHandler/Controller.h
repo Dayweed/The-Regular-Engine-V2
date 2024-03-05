@@ -127,19 +127,23 @@ public:
     }
 
     float getThumbstickX(int controllerNum, bool right) {
-    if (controllerNum < 0 || controllerNum >= MAX_CONTROLLERS)
-        return 0.0f;
+        if (controllerNum < 0 || controllerNum >= MAX_CONTROLLERS)
+            return 0.0f;
 
-    return right ? controllers[controllerNum].state.Gamepad.sThumbRX / 32767.0f
-                 : controllers[controllerNum].state.Gamepad.sThumbLX / 32767.0f;
+        float value = right ? controllers[controllerNum].state.Gamepad.sThumbRX
+                            : controllers[controllerNum].state.Gamepad.sThumbLX;
+
+        return abs(value) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0.0f : value / 32767.0f;
     }
 
     float getThumbstickY(int controllerNum, bool right) {
         if (controllerNum < 0 || controllerNum >= MAX_CONTROLLERS)
             return 0.0f;
 
-        return right ? controllers[controllerNum].state.Gamepad.sThumbRY / 32767.0f
-                    : controllers[controllerNum].state.Gamepad.sThumbLY / 32767.0f;
+        float value = right ? controllers[controllerNum].state.Gamepad.sThumbRY
+                            : controllers[controllerNum].state.Gamepad.sThumbLY;
+
+        return abs(value) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0.0f : value / 32767.0f;
     }
 
     private:
