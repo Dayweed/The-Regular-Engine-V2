@@ -18,7 +18,8 @@ namespace TRE
 		public int mainMenuOption = 0; // for confirmation menu to know which option to execute
 		public int currentOption = 0;
 		public int menuOption = 1;
-		public int menustate = 0; //0 = main menu, 1 = show controls,2 = confirmation menu
+        public int menustate = 0; //0 = main menu, 1 = show controls,2 = confirmation menu
+		public int settingsOption = 0;
 
 
 
@@ -32,16 +33,18 @@ namespace TRE
 		// Pause menu options
 		private List<Entity> options;
 		private List<Entity> DestructiveActionConfirmations;
+		//private List<Entity> settings;
 
 		private Entity pauseMenu;
 		private Entity cfmMenu;
-
+		//private Entity settingsMenu;
 
 
 		public void Start()
 		{
 			options = new List<Entity>();
 			DestructiveActionConfirmations = new List<Entity>();
+			//settings = new List<Entity>();
 
 			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
@@ -58,7 +61,16 @@ namespace TRE
 
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
-		}
+
+			//settings.Add(ECSManager.FindEntityByName("settings_gameplay"));
+			//settings.Add(ECSManager.FindEntityByName("settings_graphics"));
+			//settings.Add(ECSManager.FindEntityByName("settings_audio"));
+			//settings.Add(ECSManager.FindEntityByName("settings_controls"));
+
+			//put buttons + pointer inside
+			//settingsMenu = ECSManager.FindEntityByName("pauseMenu_controls");
+
+        }
 
 		public void OnCreate()
 		{
@@ -67,7 +79,7 @@ namespace TRE
 
 		public void Update()
 		{
-			if (InputSystem.GetKeyPress(InputKeys.Escape))
+			if (InputSystem.GetKeyTriggered(InputKeys.Escape))
 			{
 				isPaused = !isPaused;
 				isChangeMenu = true;
@@ -81,7 +93,7 @@ namespace TRE
 				if (menustate == 0)
 				{
 					//we are assuming that pause menu entering is handled by game logic
-					if (InputSystem.GetKeyPress(InputKeys.W))
+					if (InputSystem.GetKeyTriggered(InputKeys.W))
 					{
 						if (currentOption == 0)
 							currentOption = 2;
@@ -89,7 +101,7 @@ namespace TRE
 							currentOption -= 1;
 					}
 
-					if (InputSystem.GetKeyPress(InputKeys.S))
+					if (InputSystem.GetKeyTriggered(InputKeys.S))
 					{
 						if (currentOption == 2)
 							currentOption = 0;
@@ -97,7 +109,7 @@ namespace TRE
 							currentOption += 1;
 					}
 
-					if (InputSystem.GetKeyPress(InputKeys.Enter))
+					if (InputSystem.GetKeyTriggered(InputKeys.Enter))
 					{
 						if (currentOption == 0) // resume game
 						{
@@ -110,7 +122,7 @@ namespace TRE
 						{
 							menustate = 1;
 						}
-						else if (currentOption == 2) // Quit Gane
+						else if (currentOption == 2) // Quit Game
 						{
 							isConfirming = true;
 							mainMenuOption = 2;
@@ -137,13 +149,21 @@ namespace TRE
 				// control menu logic
 				else if (menustate == 1)
 				{
+                    //settings pop up will appear
+                    //user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
+                    if (InputSystem.GetKeyTriggered(InputKeys.A))
+                    {
+                    }
 
-				}
+                    if (InputSystem.GetKeyTriggered(InputKeys.D))
+                    {
+                    }
+                }
 
 				// confirmation menu logic
 				else
 				{
-					if (InputSystem.GetKeyPress(InputKeys.A))
+					if (InputSystem.GetKeyTriggered(InputKeys.A))
 					{
 						if (menuOption == 0)
 							menuOption = 1;
@@ -151,7 +171,7 @@ namespace TRE
 							menuOption = 0;
 					}
 
-					if (InputSystem.GetKeyPress(InputKeys.D))
+					if (InputSystem.GetKeyTriggered(InputKeys.D))
 					{
 						if (menuOption == 0)
 							menuOption = 1;
@@ -159,7 +179,7 @@ namespace TRE
 							menuOption = 0;
 					}
 
-					if (InputSystem.GetKeyPress(InputKeys.Enter))
+					if (InputSystem.GetKeyTriggered(InputKeys.Enter))
 					{
 						if (menuOption == 0) // yes
 						{
@@ -210,8 +230,17 @@ namespace TRE
 							UISystem.SetVisible(destructivePointer.ID, false);
 							break;
 						case 1:
+                            //set settings popup as visible
 
-							break;
+
+							//set confirmation stuff as invisible
+                            UISystem.SetVisible(cfmMenu.ID, false);
+                            for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
+                            {
+                                UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
+                            }
+                            UISystem.SetVisible(destructivePointer.ID, false);
+                            break;
 						case 2:
 							// only show the confirmation menu since destructive action UI is transparent
 							UISystem.SetVisible(cfmMenu.ID, true);
