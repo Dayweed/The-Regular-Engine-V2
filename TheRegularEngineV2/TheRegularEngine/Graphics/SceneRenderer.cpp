@@ -445,6 +445,9 @@ namespace TRE
 		{
 			DepthUBO depthUBO{};
 			depthUBO.view = baseCamera.m_ViewMatrix;
+			//glm::mat4 proj = baseCamera.m_ProjectionMatrix;
+			//proj[0][0] *= -1;
+			//proj[2][2] *= -1;
 			depthUBO.proj = baseCamera.m_ProjectionMatrix;
 
 			m_DepthPrepassUBO->SetData(&depthUBO, sizeof(DepthUBO));
@@ -890,7 +893,6 @@ namespace TRE
 
 		m_DepthPrepassMaterial->UpdateForRendering(m_DepthPrepassUBO, Index, m_DepthPrepassImages->GetDescriptorImageInfo());
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DepthPrepassPipeline->GetPipelineLayout(), 0, 1, &m_DepthPrepassMaterial->GetDescriptor(Index), 0, NULL);
-
 
 		for (const auto& go_mr : MaterialSort)
 		{
