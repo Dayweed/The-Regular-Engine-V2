@@ -34,16 +34,6 @@ namespace TRE
 			//Fip x and y axis
 			camera.m_ProjectionMatrix[0][0] *= -1.f;
 			camera.m_ProjectionMatrix[1][1] *= -1.f;
-
-			/*camera.m_CleanProj = glm::mat4(1.0f);
-			camera.m_CleanProj[0][0] = 1.0f / (camera.m_AspectRatio * tanHalfFov);
-			camera.m_CleanProj[1][1] = 1.0f / tanHalfFov;
-			camera.m_CleanProj[2][2] = (camera.m_Far + camera.m_Near) / (camera.m_Near - camera.m_Far);
-			camera.m_CleanProj[2][3] = -1.0f;
-			camera.m_CleanProj[3][2] = (2.0f * camera.m_Far * camera.m_Near) / (camera.m_Near - camera.m_Far);
-			camera.m_CleanProj[3][3] = 0.0f;*/
-
-			camera.m_CleanProj = glm::perspective(glm::radians(camera.m_Fov), camera.m_AspectRatio, camera.m_Near, camera.m_Far);
 		}
 		else
 		{

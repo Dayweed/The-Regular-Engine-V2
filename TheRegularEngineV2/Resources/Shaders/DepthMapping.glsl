@@ -22,6 +22,9 @@ layout (binding = 0) uniform UBO
 void main() 
 {
 	gl_Position = ubo.projection * ubo.view * push.m_Model * vec4(inPosition, 1.0);
+	gl_Position.xyz /= gl_Position.w;
+	gl_Position.z = 1.0 - gl_Position.z;
+	gl_Position.w = 1.0;
 }
 
 #version 450
@@ -32,5 +35,4 @@ layout (location = 0) out vec4 outColor;
 void main() 
 {
 	//outColor = vec4(1.0, 1.0, 0.0, 1.0);
-	outColor = vec4(gl_FragDepth, 0.0, 0.0, 1.0);
 }
