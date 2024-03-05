@@ -70,8 +70,6 @@ public:
     static const int MAX_CONTROLLERS = 4;
     ControllerState controllers[MAX_CONTROLLERS];
 
-
-
     WORD intToGamepadButton(int button) {
        auto it = ButtonMap.find(button);
         if (it != ButtonMap.end()){
@@ -145,6 +143,14 @@ public:
 
         return abs(value) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? 0.0f : value / 32767.0f;
     }
+
+    bool isControllerConnected(int controllerNum)
+	{
+		if (controllerNum < 0 || controllerNum >= MAX_CONTROLLERS)
+			return false;
+
+		return XInputGetState(controllerNum, &controllers[controllerNum].state) == ERROR_SUCCESS;
+	}
 
     private:
     XInputController() {}

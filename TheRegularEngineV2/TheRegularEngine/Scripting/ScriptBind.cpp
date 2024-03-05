@@ -1277,6 +1277,11 @@ namespace TRE
 		return XInputController::Instance().isButtonReleased(controller, button);
 	}
 
+	static bool isControllerConnected(int controller)
+	{
+		return XInputController::Instance().isControllerConnected(controller);
+	}
+
 #pragma endregion
 
 #pragma region Logging
@@ -2637,6 +2642,7 @@ namespace TRE
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonReleased", GetButtonReleased);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickX",GetControllerStickX);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickY", GetControllerStickY);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerConnected", isControllerConnected);
 		}
 
 		// Logging

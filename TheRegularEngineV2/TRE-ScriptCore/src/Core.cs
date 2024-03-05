@@ -1287,6 +1287,11 @@ namespace TRE
             return Engine_GetControllerStickY(controller, rightStick);
         }
 
+        public static bool GetControllerConnected(int controller)
+        {
+            return Engine_GetControllerConnected(controller);
+        }
+
 		private static Dictionary<int, Dictionary<Button, bool>> previousControllerButtonStates = new Dictionary<int, Dictionary<Button, bool>>();
 
 		public static bool GetControllerButtonTriggered(int controller, Button button)
@@ -1326,6 +1331,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetControllerStickY(int controller, bool rightStick);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetControllerConnected(int controller);
     }
 
 	public class MathF
