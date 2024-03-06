@@ -149,6 +149,15 @@ namespace TRE
 
 	}
 
+	void AudioSystem::ForcePause()
+	{
+		for (Entity& go : ECSManager::Instance().GetEntities<Audio>())
+		{
+			Audio& audio = go->GetComponent<Audio>();
+			audio.m_Channel->setPaused(true);
+		}
+	}
+
 	void AudioSystem::LoadFile(Entity& go) //(Entity& go, filepath)
 	{
 		Audio& audio = go->GetComponent<Audio>();

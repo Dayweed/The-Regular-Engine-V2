@@ -27,6 +27,8 @@ namespace TRE
 		void OnDestroyEntities() override;
 		void Shutdown() override;
 
+		void ForcePause(); // Force pause all objects with audio
+
 		//void SetAudioData(Audio* file);
 		void LoadFile(Entity& go);
 		void Load3DFile(Entity& go); //-----

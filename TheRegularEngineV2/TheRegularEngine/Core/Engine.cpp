@@ -17,6 +17,8 @@
 #include "Graphics/AnimationSystem.h"
 #include "InputHandler/InputHandler.h"
 
+#include <GLFW/glfw3.h>
+
 namespace TRE
 {
 	Engine* Engine::s_Instance = nullptr;
@@ -166,56 +168,65 @@ namespace TRE
 			// This calls the inputHandler to clear the keys
 			InputHandler::ClearKeys();
 
-			m_Window->UpdateDeltaTime();
-
 			m_Window->BeginFrame();
 			
 			Renderer::BeginFrame();
 
-			// Update
 			m_Window->PollEvents();
-			Profiler::Instance().StartTimer("UpdateSystem");
-			ECSSystemManager::Instance().UpdateSystem();
-			Profiler::Instance().EndTimer("UpdateSystem");
-			XInputController::Instance().update();
-			
 
-			// Game Running Update
-			if (GameLoop::Instance().IsGameRunning())
+			if (!m_Window->IsFocused())
 			{
-				Profiler::Instance().StartTimer("GameUpdateSystem");
-				ECSSystemManager::Instance().GameUpdateSystem();
-				Profiler::Instance().EndTimer("GameUpdateSystem");
+				m_Window->UpdateDeltaTime();
+
+				// Update
+				Profiler::Instance().StartTimer("UpdateSystem");
+				ECSSystemManager::Instance().UpdateSystem();
+				Profiler::Instance().EndTimer("UpdateSystem");
+				XInputController::Instance().update();
+
+
+				// Game Running Update
+				if (GameLoop::Instance().IsGameRunning())
+				{
+					Profiler::Instance().StartTimer("GameUpdateSystem");
+					ECSSystemManager::Instance().GameUpdateSystem();
+					Profiler::Instance().EndTimer("GameUpdateSystem");
+				}
+
+				// Late Update
+				Profiler::Instance().StartTimer("LateUpdateSystem");
+				ECSSystemManager::Instance().LateUpdateSystem();
+				Profiler::Instance().EndTimer("LateUpdateSystem");
+
+				// OnReset Scene
+				if (GameLoop::Instance().GetSceneReset())
+				{
+					Profiler::Instance().StartTimer("BeforeReset");
+					ECSSystemManager::Instance().BeforeReset();
+					Profiler::Instance().EndTimer("BeforeReset");
+
+					GameLoop::Instance().InstantReset();
+
+					Profiler::Instance().StartTimer("AfterReset");
+					ECSSystemManager::Instance().AfterReset();
+					Profiler::Instance().EndTimer("AfterReset");
+
+					GameLoop::Instance().SetSceneReset(false);
+				}
+
+				Profiler::Instance().StartTimer("OnDestroyEntities");
+				ECSSystemManager::Instance().OnDestroyEntities();
+				Profiler::Instance().EndTimer("OnDestroyEntities");
+
+				Profiler::Instance().StartTimer("DeleteRemovalEntities");
+				ECSManager::Instance().DeleteRemovalEntities();
+				Profiler::Instance().EndTimer("DeleteRemovalEntities");
 			}
-
-			// Late Update
-			Profiler::Instance().StartTimer("LateUpdateSystem");
-			ECSSystemManager::Instance().LateUpdateSystem();
-			Profiler::Instance().EndTimer("LateUpdateSystem");
-
-			// OnReset Scene
-			if (GameLoop::Instance().GetSceneReset())
+			else
 			{
-				Profiler::Instance().StartTimer("BeforeReset");
-				ECSSystemManager::Instance().BeforeReset();
-				Profiler::Instance().EndTimer("BeforeReset");
-
-				GameLoop::Instance().InstantReset();
-
-				Profiler::Instance().StartTimer("AfterReset");
-				ECSSystemManager::Instance().AfterReset();
-				Profiler::Instance().EndTimer("AfterReset");
-
-				GameLoop::Instance().SetSceneReset(false);
+				// Force paused if unfocused
+				ECSSystemManager::Instance().GetSystem<AudioSystem>()->ForcePause();
 			}
-
-			Profiler::Instance().StartTimer("OnDestroyEntities");
-			ECSSystemManager::Instance().OnDestroyEntities();
-			Profiler::Instance().EndTimer("OnDestroyEntities");
-
-			Profiler::Instance().StartTimer("DeleteRemovalEntities");
-			ECSManager::Instance().DeleteRemovalEntities();
-			Profiler::Instance().EndTimer("DeleteRemovalEntities");
 
 			Renderer::EndFrame();
 

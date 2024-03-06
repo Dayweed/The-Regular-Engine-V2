@@ -98,6 +98,13 @@ namespace TRE
 	void Window::PollEvents()
 	{
 		glfwPollEvents();
+		bool currentMinimized = m_IsFocused;
+		m_IsFocused = (bool)!glfwGetWindowAttrib(m_WindowHandle, GLFW_FOCUSED);
+		// Update if in focus
+		if (currentMinimized && !m_IsFocused)
+		{
+			m_WasFocused = true;
+		}
 		/*CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_1, GLFW_PRESS);
 		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_2, GLFW_PRESS);
 		CheckMouseEvent(m_WindowHandle, GLFW_MOUSE_BUTTON_3, GLFW_PRESS);
@@ -116,6 +123,13 @@ namespace TRE
 	{
 		static auto lastTime = std::chrono::high_resolution_clock::now();
 		auto currentTime = std::chrono::high_resolution_clock::now();
+		// Force deltaTime to be zero if it is m_WasMinimized
+		if (m_WasFocused)
+		{
+			lastTime = std::chrono::high_resolution_clock::now();
+			currentTime = std::chrono::high_resolution_clock::now();
+			m_WasFocused = false;
+		}
 		m_DeltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
 		lastTime = currentTime;
 	}
@@ -123,6 +137,11 @@ namespace TRE
 	float Window::GetDeltaTime() const
 	{
 		return m_DeltaTime;
+	}
+
+	bool Window::IsFocused() const
+	{
+		return m_IsFocused;
 	}
 
 	void Window::MaximizeWindow()

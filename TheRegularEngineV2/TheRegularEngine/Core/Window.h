@@ -36,6 +36,7 @@ namespace TRE
 			std::shared_ptr<RendererContext>& GetRenderContext();
 			std::shared_ptr<SwapChain>& GetSwapChain();
 			float GetDeltaTime() const;
+			bool IsFocused() const;
 
 		private:
 			GLFWwindow* m_WindowHandle = nullptr;
@@ -44,5 +45,8 @@ namespace TRE
 			std::shared_ptr<RendererContext> m_RenderContext;
 			std::shared_ptr<SwapChain> m_SwapChain;
 			float m_DeltaTime = 0.0f;
+
+			bool m_IsFocused = false;
+			bool m_WasFocused = false; // Flag to track whether it was minimized in the previous loop
 	};
 }
