@@ -1,18 +1,16 @@
 #include "pch.h"
 #include "ViewportPanel.h"
+#include "TREIncludes.h"
+#include "External/ImGuizmo.h"
 #include "Graphics/EditorCamera.h"
 #include "EventSystem/EventHandler/EventHandler.h"
-#include "Editor/ImGuizmo.h"
 #include "Ray3D.h"
 #include "Utilities.h"
 #include "EditorSystem.h"
 #include "EditorAssetManager.h"
-#include "Graphics/VulkanEditor.h"
-#include "Core/Engine.h"
-#include "Graphics/RendererContext.h"
 #include "ConsolePanel.h"
-//To Delete
 #include "Scripting/ScriptEngine.h"
+
 namespace TRE
 {
 	static std::chrono::high_resolution_clock::time_point startTime{};

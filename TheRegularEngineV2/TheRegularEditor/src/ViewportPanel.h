@@ -12,13 +12,10 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 #pragma once
-#include "TREIncludes.h"
 #include "Panel.h"
 #include "EventSystem/Events/InputEvent.h"
 #include "EventSystem/Events/EditorEvent.h"
 #include "SelectionManager.h"
-#include "Editor/ImGuizmo.h"
-#include "Graphics/SceneRenderer.h"
 
 namespace TRE
 {

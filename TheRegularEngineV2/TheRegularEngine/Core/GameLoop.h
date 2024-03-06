@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 
-#include "entt.hpp"
+#include "External/entt.hpp"
 
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"

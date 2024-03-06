@@ -16,7 +16,7 @@
 ----------------------------------------------------------------------------- */
 #include "pch.h"
 #include "Core/Logger.h"
-#include "entt.hpp"
+#include "External/entt.hpp"
 #include "ComponentManager.h"
 #include "System.h"
 

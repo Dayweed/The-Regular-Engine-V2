@@ -30,6 +30,7 @@
 #include "Graphics/RendererContext.h"
 #include "Graphics/SwapChain.h"
 #include "Graphics/Camera.h"
+#include "Graphics/VulkanUtilities.h"
 
 //-------------------Audio-------------------//
 #include "Audio/AudioSystem.h"
