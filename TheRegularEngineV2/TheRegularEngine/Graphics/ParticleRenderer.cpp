@@ -1,12 +1,11 @@
 #include "pch.h"
 #include "ParticleRenderer.h"
 #include "Core/Engine.h"
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "ECS/Components/Particle2DComponent.h"
 #include "ECS/Components/Particle3DComponent.h"
 #include "Camera.h"
 #include "EditorCamera.h"
-#include "Core/ECS.h"
 
 namespace TRE
 {

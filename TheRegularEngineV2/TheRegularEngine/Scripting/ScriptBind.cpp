@@ -2,7 +2,7 @@
 #include "Scripting/ScriptBind.h"
 
 #include"Scripting/ScriptEngine.h"
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "ECS/Components/Transform.h"
 #include "Core/GameLoop.h"
 #include "Resource/Resource.h"

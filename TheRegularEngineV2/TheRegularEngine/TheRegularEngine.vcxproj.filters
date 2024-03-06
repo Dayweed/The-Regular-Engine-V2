@@ -57,16 +57,7 @@
     <ClInclude Include="Core\Asserts.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ComponentManager.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\ECS.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Engine.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\EntityCopy.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\FileSystem.h">
@@ -87,9 +78,6 @@
     <ClInclude Include="Core\PersistentManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Prefab.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -99,14 +87,11 @@
     <ClInclude Include="Core\Serialization.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\System.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\SystemManager.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Window.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentManager.h">
+      <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Components\AnimationComponent.h">
       <Filter>ECS\Components</Filter>
@@ -170,6 +155,21 @@
     </ClInclude>
     <ClInclude Include="ECS\Components\UIComponent.h">
       <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ECS.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\EntityCopy.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Prefab.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\System.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\SystemManager.h">
+      <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="EventSystem\EventHandler\EventHandler.h">
@@ -354,13 +354,7 @@
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Core\ECS.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Engine.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\EntityCopy.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\FileSystem.cpp">
@@ -381,12 +375,6 @@
     <ClCompile Include="Core\PersistentManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Prefab.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Prefab_2.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -401,6 +389,18 @@
     </ClCompile>
     <ClCompile Include="ECS\Components\Transform.cpp">
       <Filter>ECS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\ECS.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\EntityCopy.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Prefab.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Prefab_2.cpp">
+      <Filter>ECS</Filter>
     </ClCompile>
     <ClCompile Include="External\ImGuizmo.cpp">
       <Filter>External</Filter>

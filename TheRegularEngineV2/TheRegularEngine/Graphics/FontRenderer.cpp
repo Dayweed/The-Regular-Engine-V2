@@ -4,7 +4,7 @@
 #include "Device.h"
 #include "Core/Engine.h"
 #include "ECS/Components/TextComponent.h"
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "ECS/Components/Transform.h"
 #include "FontManager.h"
 #include "Font.h"

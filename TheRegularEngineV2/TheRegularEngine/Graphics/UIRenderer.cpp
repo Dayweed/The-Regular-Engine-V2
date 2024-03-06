@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UIRenderer.h"
 #include "Renderer.h"
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "ECS/Components/UIComponent.h"
 #include "Core/Engine.h"
 #include "Resource/ResourceManager.h"

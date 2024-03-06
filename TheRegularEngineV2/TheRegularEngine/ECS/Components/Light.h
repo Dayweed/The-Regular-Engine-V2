@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
-#include "Core/ECS.h"
-#include "Core/System.h"
+#include "ECS/ECS.h"
+#include "ECS/System.h"
 #include <glm/gtc/type_ptr.hpp>
 
 namespace TRE

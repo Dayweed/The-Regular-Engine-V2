@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "ECS.h"
-#include "MemoryManager.h"
-#include "Parent.h"
+#include "Core/MemoryManager.h"
+#include "Core/Parent.h"
 #include "SystemManager.h"
 #include "TREIncludes.h"
 
 #define TO DELETE
-#include "GameLoop.h"
+#include "Core/GameLoop.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
 

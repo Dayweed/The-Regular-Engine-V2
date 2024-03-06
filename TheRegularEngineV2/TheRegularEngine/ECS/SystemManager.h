@@ -1,6 +1,6 @@
 #pragma once
 #include "System.h"
-#include "Profiler.h"
+#include "Core/Profiler.h"
 
 namespace TRE
 {

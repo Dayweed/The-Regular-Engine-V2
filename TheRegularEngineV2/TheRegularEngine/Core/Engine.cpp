@@ -2,7 +2,7 @@
 #include "TREIncludes.h"
 #include "Engine.h"
 #include "GameLoop.h"
-#include "ECS.h"
+#include "ECS/ECS.h"
 #include "SceneManager.h"
 #include "MemoryManager.h"
 #include "Profiler.h"

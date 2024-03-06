@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/System.h"
+#include "ECS/System.h"
 
 namespace TRE
 {

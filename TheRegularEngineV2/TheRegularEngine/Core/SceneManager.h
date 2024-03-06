@@ -11,7 +11,7 @@
 	prior written consent of DigiPen Institute of Technology is prohibited.
 ************************************************************************/
 
-#include "System.h"
+#include "ECS/System.h"
 #include "FileSystem.h"
 
 #define SCENE_DEFAULT_NAME "New Scene"

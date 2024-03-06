@@ -3,8 +3,8 @@
 #include "Resource/Resource.h"
 #include "Core/Logger.h"
 #include "TREIncludes.h"
-#include "Serialization.h"
-#include "GameLoop.h"
+#include "Core/Serialization.h"
+#include "Core/GameLoop.h"
 #include "Scripting/ScriptEngine.h"
 namespace TRE
 {

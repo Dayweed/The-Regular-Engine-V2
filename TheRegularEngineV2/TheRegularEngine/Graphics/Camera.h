@@ -1,8 +1,8 @@
 #pragma once
 #include "pch.h"
 #include "Properties.h"
-#include "Core/System.h"
-#include "Core/ECS.h"
+#include "ECS/System.h"
+#include "ECS/ECS.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/quaternion.hpp"

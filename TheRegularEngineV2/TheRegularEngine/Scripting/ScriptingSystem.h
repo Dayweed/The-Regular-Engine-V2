@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/System.h"
-#include "Core/ECS.h"
+#include "ECS/System.h"
+#include "ECS/ECS.h"
 #include "EventSystem/Events/EditorEvent.h"
 
 namespace TRE

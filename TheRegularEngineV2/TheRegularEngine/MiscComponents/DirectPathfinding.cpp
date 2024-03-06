@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ECS/Components/DirectPathfinding.h"
-#include "Core/SystemManager.h"
+#include "ECS/SystemManager.h"
 #include "TREIncludes.h"
 
 namespace TRE

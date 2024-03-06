@@ -11,10 +11,10 @@
 
 //-----------------CORE-----------------//
 #include "Core/Engine.h"
-#include "Core/System.h"
-#include "Core/ECS.h"
-#include "Core/EntityCopy.h"
-#include "Core/Prefab.h"
+#include "ECS/System.h"
+#include "ECS/ECS.h"
+#include "ECS/EntityCopy.h"
+#include "ECS/Prefab.h"
 #include "Core/Parent.h"
 #include "Core/SceneManager.h"
 #include "Core/PersistentManager.h"

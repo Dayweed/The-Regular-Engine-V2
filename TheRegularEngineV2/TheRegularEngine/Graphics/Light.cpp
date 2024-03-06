@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ECS/Components/Light.h"
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "ECS/Components/Transform.h"
 
 namespace TRE

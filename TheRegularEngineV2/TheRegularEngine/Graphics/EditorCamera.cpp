@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EditorCamera.h"
-#include "Core/SystemManager.h"
+#include "ECS/SystemManager.h"
 #include "ECS/Components/Transform.h"
 #include "Core/SceneManager.h"
 #include "ECS/Components/CameraComponent.h"

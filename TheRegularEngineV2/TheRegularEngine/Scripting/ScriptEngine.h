@@ -7,7 +7,7 @@
 // list of engine functions to bind to the scripting engine
 //-----------------------------------------------------------------------------
 
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 
 namespace TRE
 {

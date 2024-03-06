@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/ECS.h"
-#include "Core/System.h"
+#include "ECS/ECS.h"
+#include "ECS/System.h"
 
 namespace TRE
 {

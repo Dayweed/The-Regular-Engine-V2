@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "SceneManager.h"
-#include "ECS.h"
+#include "ECS/ECS.h"
 #include "GameLoop.h"
 #include "Scripting/ScriptEngine.h"
 

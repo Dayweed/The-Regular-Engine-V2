@@ -18,7 +18,7 @@
 #include "Core/Logger.h"
 #include "External/entt.hpp"
 #include "ComponentManager.h"
-#include "System.h"
+#include "ECS/System.h"
 
 #include <typeindex>
 #include <nlohmann/json.hpp>

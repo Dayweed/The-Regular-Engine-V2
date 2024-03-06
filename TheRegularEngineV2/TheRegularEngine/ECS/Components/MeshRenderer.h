@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/ECS.h"
-#include "Core/System.h"
+#include "ECS/ECS.h"
+#include "ECS/System.h"
 #include "Graphics/RenderObject.h"
 #include "Sphere3D.h"
 #include "Graphics/Material.h"

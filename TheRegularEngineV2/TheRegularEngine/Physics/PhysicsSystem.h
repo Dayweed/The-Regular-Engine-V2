@@ -12,8 +12,8 @@
 ************************************************************************/
 #pragma once
 #include "pch.h"
-#include "Core/System.h"
-#include "Core/ECS.h"
+#include "ECS/System.h"
+#include "ECS/ECS.h"
 #include "PhysicsComponent.h"
 #include "ECS/Components/Rigidbody.h" // For ForceMode::Enum
 #include "ErrorCallback.h"

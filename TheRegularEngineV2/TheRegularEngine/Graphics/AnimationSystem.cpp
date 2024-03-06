@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "AnimationSystem.h"
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 
 #include "ECS/Components/AnimationComponent.h"
 #include "ECS/Components/Transform.h"

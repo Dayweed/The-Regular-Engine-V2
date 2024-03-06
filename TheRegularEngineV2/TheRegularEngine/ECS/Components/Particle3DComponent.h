@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "Resource/ResourceManager.h"
 #include "Graphics/Material.h"
 #include "Graphics/UniformBuffer.h"

@@ -14,7 +14,7 @@
 /*                                                                 includes
 ----------------------------------------------------------------------------- */
 #include "pch.h"
-#include "ECS.h"
+#include "ECS/ECS.h"
 #include <map>
 
 /*                                                                 defines

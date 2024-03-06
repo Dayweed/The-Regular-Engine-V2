@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/ECS.h"
+#include "ECS/ECS.h"
 #include "Graphics/Camera.h"
 
 namespace TRE

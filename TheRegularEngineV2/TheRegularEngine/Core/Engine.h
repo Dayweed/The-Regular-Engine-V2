@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.h"
-#include "SystemManager.h"
+#include "ECS/SystemManager.h"
 #include "Graphics/VulkanEditor.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/SceneRenderer.h"
