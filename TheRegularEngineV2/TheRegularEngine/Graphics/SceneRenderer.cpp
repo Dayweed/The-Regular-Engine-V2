@@ -35,6 +35,7 @@ namespace TRE
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
 		m_DepthPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(DepthUBO)), 0);
+		m_IDPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(IDUBO)), 0);
 		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
@@ -72,56 +73,88 @@ namespace TRE
 
 		m_DebugRenderer = std::make_unique<DebugRenderer>(m_RenderPass);
 #pragma region ShadowPass
-		ShadowPassInit();
-
-		PipelineConfigurations Config{};
-		Config.Primitive = PrimitiveType::Triangles;
-		Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
-		Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
-		Config.EnableBlending = true;
-		m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
-
-		PipelineConfigurations ShadowAnimationPipelineConfig{};
-		ShadowAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
-		ShadowAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
-		ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
-		ShadowAnimationPipelineConfig.UseAutoShaderVertexInput = false;
-		ShadowAnimationPipelineConfig.CustomVertexBufferInputLayout =
 		{
-			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
-			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
-		};
+			ShadowPassInit();
 
-		m_ShadowAnimationPipeline = std::make_shared<Pipeline>(ShadowAnimationPipelineConfig, m_ShadowRenderPass);
+			PipelineConfigurations Config{};
+			Config.Primitive = PrimitiveType::Triangles;
+			Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
+			Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+			Config.EnableBlending = true;
+			m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
-		m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
-		m_ShadowMaterial->Invalidate();
+			PipelineConfigurations ShadowAnimationPipelineConfig{};
+			ShadowAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+			ShadowAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
+			ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+			ShadowAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+			ShadowAnimationPipelineConfig.CustomVertexBufferInputLayout =
+			{
+				{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+				{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+			};
+
+			m_ShadowAnimationPipeline = std::make_shared<Pipeline>(ShadowAnimationPipelineConfig, m_ShadowRenderPass);
+
+			m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+			m_ShadowMaterial->Invalidate();
+		}
 #pragma endregion ShadowPass
 
 #pragma region DepthPrepass
-		DepthPrepassInit();
-
-		PipelineConfigurations DepthPrepassPipelineConfig{};
-		DepthPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
-		DepthPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
-		DepthPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
-		DepthPrepassPipelineConfig.EnableBlending = true;
-		m_DepthPrepassPipeline = std::make_shared<Pipeline>(DepthPrepassPipelineConfig, m_DepthPrepassRenderPass);
-
-		PipelineConfigurations DepthPrepassAnimationPipelineConfig{};
-		DepthPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
-		DepthPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
-		DepthPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
-		DepthPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
-		DepthPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
 		{
-			{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
-			{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
-		};
-		m_DepthPrepassAnimationPipeline = std::make_shared<Pipeline>(DepthPrepassAnimationPipelineConfig, m_DepthPrepassRenderPass);
+			DepthPrepassInit();
 
-		m_DepthPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(14));
-		m_DepthPrepassMaterial->Invalidate();
+			PipelineConfigurations DepthPrepassPipelineConfig{};
+			DepthPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
+			DepthPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
+			DepthPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+			DepthPrepassPipelineConfig.EnableBlending = true;
+			m_DepthPrepassPipeline = std::make_shared<Pipeline>(DepthPrepassPipelineConfig, m_DepthPrepassRenderPass);
+
+			PipelineConfigurations DepthPrepassAnimationPipelineConfig{};
+			DepthPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+			DepthPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
+			DepthPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+			DepthPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+			DepthPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
+			{
+				{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+				{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+			};
+			m_DepthPrepassAnimationPipeline = std::make_shared<Pipeline>(DepthPrepassAnimationPipelineConfig, m_DepthPrepassRenderPass);
+
+			m_DepthPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(14));
+			m_DepthPrepassMaterial->Invalidate();
+		}
+#pragma endregion DepthPrepass
+
+#pragma region IDPrepass
+		{
+			IDPrepassInit();
+
+			PipelineConfigurations IDPrepassPipelineConfig{};
+			IDPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
+			IDPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
+			IDPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+			IDPrepassPipelineConfig.EnableBlending = true;
+			m_IDPrepassPipeline = std::make_shared<Pipeline>(IDPrepassPipelineConfig, m_IDPrepassRenderPass);
+
+			PipelineConfigurations IDPrepassAnimationPipelineConfig{};
+			IDPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
+			IDPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
+			IDPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+			IDPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+			IDPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
+			{
+				{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
+				{ { VertexInputDataType::Vec4, VertexInputDataType::IVec4 }, 1 }
+			};
+			m_IDPrepassAnimationPipeline = std::make_shared<Pipeline>(IDPrepassAnimationPipelineConfig, m_IDPrepassRenderPass);
+
+			m_IDPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(14));
+			m_IDPrepassMaterial->Invalidate();
+		}
 #pragma endregion DepthPrepass
 
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
@@ -253,6 +286,9 @@ namespace TRE
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 		DepthPrepassInit();
 
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
+		IDPrepassInit();
+
 		Create();
 		CreateFrameBuffer(m_RenderPass);
 	}
@@ -280,6 +316,7 @@ namespace TRE
 
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -450,6 +487,14 @@ namespace TRE
 			m_DepthPrepassUBO->SetData(&depthUBO, sizeof(DepthUBO));
 		}
 
+		{
+			IDUBO idUBO{};
+			idUBO.view = baseCamera.m_ViewMatrix;
+			idUBO.proj = baseCamera.m_ProjectionMatrix;
+
+			m_IDPrepassUBO->SetData(&idUBO, sizeof(IDUBO));
+		}
+
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 
@@ -530,6 +575,7 @@ namespace TRE
 		if (m_IsEditorScene == false)
 		{
 			DepthPrepass(Index, materialSort);
+			IDPrepass(Index, materialSort);
 		}
 
 		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
@@ -927,6 +973,83 @@ namespace TRE
 		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
+	void SceneRenderer::IDPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		m_IDPrepassMapWidth = 8192;
+		m_IDPrepassMapHeight = 8192;
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_IDPrepassRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_IDPrepassFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_IDPrepassMapWidth, m_IDPrepassMapHeight };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport2{};
+		viewport2.x = 0.0f;
+		viewport2.y = 0.0f;
+		viewport2.width = (float)m_IDPrepassMapWidth;
+		viewport2.height = (float)m_IDPrepassMapHeight;
+		viewport2.minDepth = 0.0f;
+		viewport2.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+		VkRect2D scissor2{};
+		scissor2.extent = { m_IDPrepassMapWidth, m_IDPrepassMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+		Renderer::BindPipeline(m_CommandBuffer, m_IDPrepassPipeline);
+
+		m_IDPrepassMaterial->UpdateForRendering(m_IDPrepassUBO, Index, m_IDPrepassImages->GetDescriptorImageInfo());
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_IDPrepassPipeline->GetPipelineLayout(), 0, 1, &m_IDPrepassMaterial->GetDescriptor(Index), 0, NULL);
+
+		for (const auto& go_mr : MaterialSort)
+		{
+			if (go_mr.second->GetComponent<Properties>().m_Tag == "Red" || go_mr.second->GetComponent<Properties>().m_Tag == "Blue")
+			{
+				const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+				ResourceHandle currentMaterialHandle = go_mr.first;
+
+				PushConstant pc{};
+				pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_IDPrepassPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+				mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+				m_PreviousMaterialHandle = currentMaterialHandle;
+			}
+		}
+		m_PreviousMaterialHandle = 0;
+
+		Renderer::BindPipeline(m_CommandBuffer, m_IDPrepassAnimationPipeline);
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
+		{
+			if (Entity->GetComponent<Properties>().m_Tag == "Red" || Entity->GetComponent<Properties>().m_Tag == "Blue")
+			{
+				const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
+				const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
+
+				PushConstant pc{};
+				pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_IDPrepassAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_IDPrepassUBO, Index, AnimComp.m_UBO, m_IDPrepassImages->GetDescriptorImageInfo());
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_IDPrepassAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
+
+				MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+			}
+		}
+
+		Renderer::EndRenderPass(m_CommandBuffer);
+	}
+
 	void SceneRenderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
 		if (m_IsEditorScene)
@@ -1171,6 +1294,40 @@ namespace TRE
 		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_DepthPrepassFramebuffer); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for depth pass");
+		}
+	}
+
+	void SceneRenderer::IDPrepassInit()
+	{
+		m_IDPrepassMapWidth = 8192;
+		m_IDPrepassMapHeight = 8192;
+
+		ImageConfig ImgConfig{};
+		ImgConfig.DebugName = "ID Pass";
+		ImgConfig.Format = ImageFormat::DEPTH16UN;
+		ImgConfig.Width = m_IDPrepassMapWidth;
+		ImgConfig.Height = m_IDPrepassMapHeight;
+		ImgConfig.Usage = ImageUsage::Attachment;
+		ImgConfig.CreateSampler = true;
+		ImgConfig.Transfer = false;
+		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+
+		m_IDPrepassImages = std::make_shared<Image2D>(ImgConfig);
+		m_IDPrepassRenderPass = std::make_shared<RenderPass>(m_Device, true);
+
+		auto attachments = m_IDPrepassImages->GetImageData().ImageView;
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.renderPass = m_IDPrepassRenderPass->GetHandle();
+		framebufferCreateInfo.attachmentCount = 1;
+		framebufferCreateInfo.pAttachments = &attachments;
+		framebufferCreateInfo.width = m_IDPrepassMapWidth;
+		framebufferCreateInfo.height = m_IDPrepassMapHeight;
+		framebufferCreateInfo.layers = 1;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_IDPrepassFramebuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for ID pass");
 		}
 	}
 

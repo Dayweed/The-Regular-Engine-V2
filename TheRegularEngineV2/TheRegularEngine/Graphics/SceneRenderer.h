@@ -69,6 +69,12 @@ namespace TRE
 		glm::mat4 proj;
 	};
 
+	struct IDUBO
+	{
+		glm::mat4 view;
+		glm::mat4 proj;
+	};
+
 	class SceneRenderer
 	{
 		public:
@@ -78,6 +84,7 @@ namespace TRE
 			void Initialize();
 			void ShadowPassInit();
 			void DepthPrepassInit();
+			void IDPrepassInit();
 			void Shutdown();
 			void Create();
 			void Resize();
@@ -90,6 +97,7 @@ namespace TRE
 
 			void ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
+			void IDPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DebugDrawPass(uint32_t Index);
@@ -155,6 +163,18 @@ namespace TRE
 			uint32_t m_DepthPrepassMapWidth = 1600;
 			uint32_t m_DepthPrepassMapHeight = 900;
 			VkFramebuffer m_DepthPrepassFramebuffer;
+
+			//ID Prepass
+			std::shared_ptr<Image2D> m_IDPrepassImages;
+			std::shared_ptr<RenderPass> m_IDPrepassRenderPass;
+			VkDescriptorImageInfo m_IDPrepassDescriptInfo;
+			std::shared_ptr<Pipeline> m_IDPrepassPipeline;
+			std::shared_ptr<Pipeline> m_IDPrepassAnimationPipeline;
+			std::shared_ptr<Material> m_IDPrepassMaterial;
+			std::shared_ptr<UniformBuffer> m_IDPrepassUBO;
+			uint32_t m_IDPrepassMapWidth = 1600;
+			uint32_t m_IDPrepassMapHeight = 900;
+			VkFramebuffer m_IDPrepassFramebuffer;
 
 			//Game
 			glm::vec3 m_ShadowAABBMin;
