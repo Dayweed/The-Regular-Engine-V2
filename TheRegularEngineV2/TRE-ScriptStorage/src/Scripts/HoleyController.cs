@@ -710,7 +710,7 @@ namespace TRE
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 				isScaled = false;
 			}
-            if (IS.GetControllerButtonTriggered(1, InputSystem.Button.Y))
+            if (IS.GetControllerButtonTriggered(1, InputSystem.Button.B))
             {
                 MyPowerManager.SwapPowerUps();
                 MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -726,7 +726,7 @@ namespace TRE
 				MyPowerManager.DropMain();
 				isScaled = false;
 			}
-            if (IS.GetControllerButtonTriggered(1, InputSystem.Button.X))
+            if (IS.GetControllerButtonTriggered(1, InputSystem.Button.Y))
             {
                 MyPowerManager.DropMain();
                 isScaled = false;
@@ -786,7 +786,7 @@ namespace TRE
 				}
 			}
 
-            if (IS.GetControllerButtonTriggered(1, InputSystem.Button.B))
+            if (IS.GetControllerButtonTriggered(1, InputSystem.Button.X))
             {
                 if (mainBlueberry || mainStrawberry)
                 {
