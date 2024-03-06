@@ -172,8 +172,7 @@ namespace TRE
 			else // if (amountComplete >= 1)
 			{
 				shouldRotate = false;
-				float angle = NiceRotationAngle(rot.z);
-				platformState = angle == platformActiveAngle;
+				platformState = IsInRange(rot.z, platformActiveAngle);
 			}
 		}
 
@@ -203,6 +202,11 @@ namespace TRE
 			TS.GetPosition(this.ID, out vec3 pos);
 			pos.z = originalPosition.z + amplitude * MathF.Sin(timer * frequency);
 			TS.SetPosition(this.ID, pos);
+		}
+
+		void print(string str)
+		{
+			Console.Write("[{0}]\t{1}", this.name, str + "\n");
 		}
 	}
 }
