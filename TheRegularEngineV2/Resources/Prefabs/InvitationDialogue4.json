@@ -1,0 +1,130 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "5008352725195449354",
+         "m_Overrides": {},
+         "m_PrefabGUID": "5008352725195449354",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "10452187222751307116",
+         "m_Index": 15,
+         "m_Name": "InvitationDialogue4",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            -872.0,
+            274.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            17.0,
+            17.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Color": [
+            0.1568627506494522,
+            0.0470588244497776,
+            0.0470588244497776,
+            1.0
+         ],
+         "m_FadingSpeed": 0.0,
+         "m_FontType": "JuaRegular",
+         "m_IsDialogue": false,
+         "m_IsFading": false,
+         "m_IsVisible": true,
+         "m_Speed": 0.0,
+         "m_TextContent": "3) Entertainment! The grandest party is incomplete without music, bring something\nentertaining for everyone!"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

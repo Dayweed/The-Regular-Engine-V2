@@ -1,0 +1,130 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "4417868754952282974",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4417868754952282974",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "5768968476196434524",
+         "m_Index": 12,
+         "m_Name": "InvitationDialogue1",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            -872.0,
+            147.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            17.0,
+            17.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Color": [
+            0.15830117464065552,
+            0.04828491806983948,
+            0.04828491806983948,
+            1.0
+         ],
+         "m_FadingSpeed": 0.0,
+         "m_FontType": "JuaRegular",
+         "m_IsDialogue": false,
+         "m_IsFading": false,
+         "m_IsVisible": true,
+         "m_Speed": 0.0,
+         "m_TextContent": "Dear Holey & Moley,\n\nGood tidings, mole brethren! I'm holding the grandest of parties at the town\nsquare, but this party is no ordinary one! 'Tis is a party only for the most\ndeserving, the most dapper, the most party-centric of mole society!\n\nShould you accept the invitation, there are standards to be met."
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

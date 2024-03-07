@@ -1,17 +1,18 @@
 {
     "PrefabGUIDAndPrefabFilePath": {
         "m_ExistingPrefabsKey": [
-            "7670209894207584463",
             "11822093139939255162",
-            "8829880216004354162",
+            "7670209894207584463",
             "15526886209253662016",
+            "8829880216004354162",
             "6452796380767818092",
-            "1091796284315141664",
             "13004780274330328106",
+            "1091796284315141664",
             "6338820077763806458",
             "13405510363890397293",
             "3902543711165755485",
             "6140392063845837423",
+            "4417868754952282974",
             "12595427909806929522",
             "6494385196695225489",
             "14145613366203719285",
@@ -29,20 +30,26 @@
             "10538498347507763761",
             "1526571828553654847",
             "10801488010451749844",
-            "16612328796105421952"
+            "15344454485328961290",
+            "5008352725195449354",
+            "16612328796105421952",
+            "16472183782282901065",
+            "1469398891573777636",
+            "3049474127598476984"
         ],
         "m_ExistingPrefabsValue": [
-            "../Resources/Prefabs/Blueberry.json",
             "../Resources/Prefabs/FallingMaracca.json",
-            "../Resources/Prefabs/FallingHat.json",
+            "../Resources/Prefabs/Blueberry.json",
             "../Resources/Prefabs/Holey.json",
+            "../Resources/Prefabs/FallingHat.json",
             "../Resources/Prefabs/JumpPad.json",
-            "../Resources/Prefabs/TriggerDisplay.json",
             "../Resources/Prefabs/Strawberry.json",
+            "../Resources/Prefabs/TriggerDisplay.json",
             "../Resources/Prefabs/Moley.json",
             "../Resources/Prefabs/PowerUpSpawner.json",
             "../Resources/Prefabs/RollingObject.json",
             "../Resources/Prefabs/CactusRight.json",
+            "../Resources/Prefabs/InvitationDialogue1.json",
             "../Resources/Prefabs/Star_VFX.json",
             "../Resources/Prefabs/PauseMenu.json",
             "../Resources/Prefabs/Tutorial_Environment.json",
@@ -60,7 +67,12 @@
             "../Resources/Prefabs/LeftCharacter_HUD.json",
             "../Resources/Prefabs/RightCharacter_HUD.json",
             "../Resources/Prefabs/Platform.json",
-            "../Resources/Prefabs/OnOff_Platform_Pivot.json"
+            "../Resources/Prefabs/InvitationDialogue2.json",
+            "../Resources/Prefabs/InvitationDialogue4.json",
+            "../Resources/Prefabs/OnOff_Platform_Pivot.json",
+            "../Resources/Prefabs/InvitationDialogue3.json",
+            "../Resources/Prefabs/InvitationDialogue5.json",
+            "../Resources/Prefabs/Frame4_1.json"
         ]
     }
 }

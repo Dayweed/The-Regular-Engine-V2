@@ -1,0 +1,130 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "16472183782282901065",
+         "m_Overrides": {},
+         "m_PrefabGUID": "16472183782282901065",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "5642991423720854048",
+         "m_Index": 14,
+         "m_Name": "InvitationDialogue3",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            -872.0,
+            272.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            17.0,
+            17.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Color": [
+            0.1568627506494522,
+            0.0470588244497776,
+            0.0470588244497776,
+            1.0
+         ],
+         "m_FadingSpeed": 0.0,
+         "m_FontType": "JuaRegular",
+         "m_IsDialogue": false,
+         "m_IsFading": false,
+         "m_IsVisible": true,
+         "m_Speed": 0.0,
+         "m_TextContent": "2) I expect fashion of the highest calibre. We have a fiesta theme going so\nstick to it!"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

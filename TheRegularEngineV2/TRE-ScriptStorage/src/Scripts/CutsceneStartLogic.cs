@@ -20,6 +20,11 @@ namespace TRE
 		Entity Frame_6;
 		Entity SpaceToContinue;
 		Entity SpaceToContinueBlack;
+		Entity Dialogue_1;
+		Entity Dialogue_2;
+		Entity Dialogue_3;
+		Entity Dialogue_4;
+		Entity Dialogue_5;
 
 		float currentTime = 0;
 		float delayFrame = 5f;
@@ -47,6 +52,11 @@ namespace TRE
 			Frame_6 = ECSManager.FindEntityByName("Frame6");
 			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
 			SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
+			Dialogue_1 = ECSManager.FindEntityByName("InvitationDialogue1");
+			Dialogue_2 = ECSManager.FindEntityByName("InvitationDialogue2");
+			Dialogue_3 = ECSManager.FindEntityByName("InvitationDialogue3");
+			Dialogue_4 = ECSManager.FindEntityByName("InvitationDialogue4");
+			Dialogue_5 = ECSManager.FindEntityByName("InvitationDialogue5");
 
 			Frame_1.SetActive(false);
 			Frame_2.SetActive(false);
@@ -56,6 +66,7 @@ namespace TRE
 			Frame_6.SetActive(false);
 			SpaceToContinue.SetActive(false);
 			SpaceToContinueBlack.SetActive(false);
+			Dialogue_1.SetActive(false);
 
 			frames = new List<Entity>() { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6 };
 			nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5" };
@@ -119,6 +130,7 @@ namespace TRE
 					if (ECSManager.IsValidEntity(dialogueSFX))
 						AS.Stop(dialogueSFX);
 
+					//if frame 4, set space to continue to black
 					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{
 						if (currentFrame != 3)
