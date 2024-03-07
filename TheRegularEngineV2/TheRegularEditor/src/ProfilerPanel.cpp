@@ -26,7 +26,8 @@ namespace TRE
 	{
 		if (ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse))
 		{
-			addFps(1 / Engine::GetInstance().GetWindow()->GetDeltaTime());
+			if(Engine::GetInstance().GetWindow()->GetDeltaTime() != 0)
+				addFps(1 / Engine::GetInstance().GetWindow()->GetDeltaTime());
 			const std::string avgFpsString = "Average FPS: " + std::to_string(static_cast<int>(m_AvgFps));
 			ImGui::PlotLines("FPS", m_FpsInfo.data(), static_cast<int>(m_FpsInfo.size()), 0, avgFpsString.c_str(), 0.f, 80.f, ImVec2(300.f, 20.f));
 
