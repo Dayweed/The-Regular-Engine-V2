@@ -883,16 +883,16 @@
       8388775,
       {
          "m_RegisteredScripts": [
-            "TRE.OnOffPlatformOpposite"
+            "TRE.OnOffPlatform"
          ],
-         "m_StoredClass": "TRE.OnOffPlatformOpposite"
+         "m_StoredClass": "TRE.OnOffPlatform"
       },
       10485932,
       {
          "m_RegisteredScripts": [
-            "TRE.OnOffPlatformOpposite"
+            "TRE.OnOffPlatform"
          ],
-         "m_StoredClass": "TRE.OnOffPlatformOpposite"
+         "m_StoredClass": "TRE.OnOffPlatform"
       },
       19923117,
       {

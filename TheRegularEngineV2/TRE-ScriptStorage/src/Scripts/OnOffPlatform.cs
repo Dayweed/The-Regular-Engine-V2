@@ -8,6 +8,12 @@ namespace TRE
 	public class OnOffPlatform : Entity
 	{
 		#region Constants (assigned in Start(), no changes please thanks)
+		// determines if it's a left/right platform or forward/backward platform
+		// the forward/backward is the "opposite" type of platform, rotates on x axis
+		// left/right has bigger scale on z axis than x axis
+		// forward/backward has bigger scale on x axis than z axis
+		bool isOppositePlatformType;
+
 		// an array of cardinal directions from 45 to 315
 		int[] directions = new int[7];
 
@@ -19,6 +25,12 @@ namespace TRE
 
 		// the direction (1 or -1) to rotate in when activating the platform
 		int activationRotationDirection;
+
+		// the rotation function to use
+		Action RotateFunction;
+
+		// the tremble function to use
+		Action TrembleFunction;
 		#endregion
 
 		// whether the platform is currently active/inactive
@@ -44,6 +56,10 @@ namespace TRE
 
 		public void Start()
 		{
+			// get the actual platform(the child)'s scale to determine what type of platform it is
+			vec3 platformScale = parenting.GetChild(0).transform.Scale;
+			isOppositePlatformType = platformScale.x > platformScale.z;
+
 			// I can't do just the line below... :(
 			// int[] directions = { 45, 90, 135, 180, 225, 270, 315 };
 			for (int i = 0; i < 7; ++i)
@@ -72,14 +88,31 @@ namespace TRE
 				platformInactiveAngle = 0.0f;
 				platformActiveAngle = 90.0f;
 				activationRotationDirection = 1;
-				// use the z axis to rotate
 			}
 			else if (actualRotY == 180)
 			{
 				platformInactiveAngle = 0.0f;
 				platformActiveAngle = -90.0f;
 				activationRotationDirection = -1;
-				// use the z axis to rotate
+
+				// i have no clue why removing the negatives work but it does
+				if (isOppositePlatformType)
+				{
+					platformActiveAngle *= -1;
+					activationRotationDirection *= -1;
+				}
+			}
+
+			// assign corresponding behaviours/functions
+			if (isOppositePlatformType)
+			{
+				RotateFunction = PerformRotationX;
+				TrembleFunction = TrembleX;
+			}
+			else
+			{
+				RotateFunction = PerformRotationZ;
+				TrembleFunction = TrembleZ;
 			}
 
 			platformState = false;
@@ -97,10 +130,10 @@ namespace TRE
 
 			timer += Time.deltaTime;
 
-			// TrembleZ();
+			// TrembleFunction();
 
 			if (shouldRotate)
-				PerformRotationZ();
+				RotateFunction();
 		}
 
 		private bool IsInRange(float angle, float direction)
@@ -182,6 +215,23 @@ namespace TRE
 			}
 		}
 
+		void PerformRotationX()
+		{
+			TS.GetRotation(this.ID, out vec3 rot);
+			float amountComplete = InverseLerp(rotateStartAngle, rotateEndAngle, rot.x);
+
+			if (amountComplete < 1)
+			{
+				rot.x += rotationSpeed * Time.deltaTime * rotationDirection;
+				TS.SetRotation(this.ID, rot);
+			}
+			else // if (amountComplete >= 1)
+			{
+				shouldRotate = false;
+				platformState = IsInRange(rot.x, platformActiveAngle);
+			}
+		}
+
 		/*
 		void Swap(ref float a, ref float b)
 		{
@@ -207,6 +257,16 @@ namespace TRE
 
 			TS.GetPosition(this.ID, out vec3 pos);
 			pos.z = originalPosition.z + amplitude * MathF.Sin(timer * frequency);
+			TS.SetPosition(this.ID, pos);
+		}
+
+		void TrembleX()
+		{
+			const float amplitude = 0.125f;
+			const float frequency = 60.0f;
+
+			TS.GetPosition(this.ID, out vec3 pos);
+			pos.x = originalPosition.x + amplitude * MathF.Sin(timer * frequency);
 			TS.SetPosition(this.ID, pos);
 		}
 
