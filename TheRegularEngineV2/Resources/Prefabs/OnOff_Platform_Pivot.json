@@ -9,17 +9,17 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "16612328796105421952",
+         "m_MainPrefabGUID": "1711396724928852651",
          "m_Overrides": {},
-         "m_PrefabGUID": "16612328796105421952",
+         "m_PrefabGUID": "1711396724928852651",
          "m_RemovedComps": []
       },
       1,
       {
          "m_IsMainPrefab": false,
-         "m_MainPrefabGUID": "16612328796105421952",
+         "m_MainPrefabGUID": "1711396724928852651",
          "m_Overrides": {},
-         "m_PrefabGUID": "2892783421762778293",
+         "m_PrefabGUID": "3697418067776760740",
          "m_RemovedComps": []
       }
    ],
@@ -28,14 +28,14 @@
       0,
       {
          "m_Children": [
-            "17063562380175499910"
+            "17849484010803762555"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "1807599613133040363"
+         "m_Parent": "13454721555624205183"
       }
    ],
    [
@@ -43,7 +43,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "1807599613133040363",
+         "m_GUID": "13454721555624205183",
          "m_Index": 1,
          "m_Name": "OnOff_Platform_Pivot",
          "m_Tag": ""
@@ -51,7 +51,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "17063562380175499910",
+         "m_GUID": "17849484010803762555",
          "m_Index": 2,
          "m_Name": "OnOff_Platform",
          "m_Tag": "Ground"
@@ -81,7 +81,7 @@
       {
          "m_Position": [
             0.0,
-            -6.0,
+            -8.0,
             0.0
          ],
          "m_Rotation": [
@@ -91,7 +91,7 @@
          ],
          "m_Scale": [
             2.0,
-            12.0,
+            16.0,
             8.0
          ]
       }
@@ -123,7 +123,7 @@
          "m_CollisionLayer.m_LayerID": 0,
          "m_HalfExtents": [
             1.0,
-            6.0,
+            8.0,
             4.0
          ],
          "m_IsActive": true,
