@@ -56,7 +56,7 @@ namespace TRE
 				{
 					Play(go, true);
 				}
-				else if (!source.m_Play)
+				else if (!source.m_Play && !source.m_Loop)
 				{
 					source.m_Channel->stop();
 				}
@@ -228,7 +228,7 @@ namespace TRE
 		else
 		{
 			audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
-			audio.m_Sound->setLoopCount(-1);
+			audio.m_Sound->setLoopCount(1);
 		};
 
 		audio.m_Channel->setPaused(false);

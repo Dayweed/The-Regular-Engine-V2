@@ -36,6 +36,10 @@ namespace TRE
 
 		private ulong birdSFX;
 		private ulong dialogueSFX;
+		private ulong invitationSFX;
+		private ulong endBGM;
+		private ulong BGM;
+		private bool invitationSFXPlayed = false;
 
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
@@ -74,6 +78,9 @@ namespace TRE
 
 			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
 			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
+			invitationSFX = ECSManager.FindIDFromName("SFX_Invitation");
+			endBGM = ECSManager.FindIDFromName("BGM_EndLoop");
+			BGM = ECSManager.FindIDFromName("BGM");
 
 			currentFrame = 0;
 			frames[currentFrame].SetActive(true);
@@ -88,14 +95,27 @@ namespace TRE
 			// Go to next scene
 			if (pressedSpace && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
+				if (ECSManager.IsValidEntity(BGM))
+					AS.Stop(BGM);
+
+				if (ECSManager.IsValidEntity(endBGM))
+					AS.Play(endBGM);
+
 				Scene.TransitionScene("Tutorial", delayScene);
 				endCutscene = true;
 			}
 
-			if (currentFrame == 2)
+			if (currentFrame == 2 )
 			{
 				if (ECSManager.IsValidEntity(birdSFX))
 					AS.Stop(birdSFX);
+			}
+
+			if(currentFrame == 2 && !invitationSFXPlayed)
+			{
+				if (ECSManager.IsValidEntity(invitationSFX))
+					AS.Play(invitationSFX);
+					invitationSFXPlayed = true;
 			}
 
 			if (currentFrame == 3)
