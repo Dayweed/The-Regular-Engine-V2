@@ -408,7 +408,7 @@
          "m_Active": true,
          "m_GUID": "15561105920788728319",
          "m_Index": 2,
-         "m_Name": "(B) OnOff_Platform_Pivot",
+         "m_Name": "(A) OnOff_Platform_Pivot",
          "m_Tag": ""
       },
       3145906,
@@ -424,7 +424,7 @@
          "m_Active": true,
          "m_GUID": "10182985318970261996",
          "m_Index": 3,
-         "m_Name": "(B) OnOff_Platform",
+         "m_Name": "(A) OnOff_Platform",
          "m_Tag": "Ground"
       },
       3145904,
@@ -432,7 +432,7 @@
          "m_Active": true,
          "m_GUID": "15734559902837254945",
          "m_Index": 5,
-         "m_Name": "(A) OnOff_Platform",
+         "m_Name": "(B) OnOff_Platform",
          "m_Tag": "Ground"
       },
       7340202,
@@ -440,7 +440,7 @@
          "m_Active": true,
          "m_GUID": "7892136914792600418",
          "m_Index": 4,
-         "m_Name": "(A) OnOff_Platform_Pivot",
+         "m_Name": "(B) OnOff_Platform_Pivot",
          "m_Tag": ""
       },
       5243048,
@@ -448,7 +448,7 @@
          "m_Active": true,
          "m_GUID": "2351142499091621591",
          "m_Index": 9,
-         "m_Name": "(D) OnOff_Opposite_Platform",
+         "m_Name": "(C) OnOff_Opposite_Platform",
          "m_Tag": "Ground"
       },
       8388775,
@@ -456,7 +456,7 @@
          "m_Active": true,
          "m_GUID": "17491640378272303164",
          "m_Index": 8,
-         "m_Name": "(D) OnOff_Platform_Opposite_Pivot",
+         "m_Name": "(C) OnOff_Platform_Opposite_Pivot",
          "m_Tag": ""
       },
       6291627,
@@ -472,7 +472,7 @@
          "m_Active": true,
          "m_GUID": "14808949962908733889",
          "m_Index": 6,
-         "m_Name": "(C) OnOff_Platform_Opposite_Pivot",
+         "m_Name": "(D) OnOff_Platform_Opposite_Pivot",
          "m_Tag": ""
       },
       19923117,
@@ -488,7 +488,7 @@
          "m_Active": true,
          "m_GUID": "7920427474658165021",
          "m_Index": 7,
-         "m_Name": "(C) OnOff_Opposite_Platform",
+         "m_Name": "(D) OnOff_Opposite_Platform",
          "m_Tag": "Ground"
       }
    ],

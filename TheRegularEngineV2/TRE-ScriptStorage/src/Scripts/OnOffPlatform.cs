@@ -136,32 +136,6 @@ namespace TRE
 				RotateFunction();
 		}
 
-		private bool IsInRange(float angle, float direction)
-		{
-			const float rangeInDegrees = 5.0f;
-			if (direction - rangeInDegrees <= angle && angle <= direction + rangeInDegrees)
-				return true;
-			else
-				return false;
-		}
-
-		// a 'nice' rotation is a rotation in degrees of only the following:
-		// { 0, 45, 90, 135, 180, 225, 270, 315 }
-		private float NiceRotationAngle(float rotYInDegrees)
-		{
-			while (rotYInDegrees < 0)
-				rotYInDegrees += 360;
-			while (rotYInDegrees > 360)
-				rotYInDegrees -= 360;
-
-			for (int i = 0; i < directions.Length; ++i)
-			{
-				if (IsInRange(rotYInDegrees, directions[i]))
-					return directions[i];
-			}
-			return 0;
-		}
-
 		public bool GetPlatformState()
 		{
 			return platformState;
@@ -196,6 +170,32 @@ namespace TRE
 				// the direction should be the OPPOSITE of the direction needed for activation
 				rotationDirection = -activationRotationDirection;
 			}
+		}
+
+		bool IsInRange(float angle, float direction)
+		{
+			const float rangeInDegrees = 5.0f;
+			if (direction - rangeInDegrees <= angle && angle <= direction + rangeInDegrees)
+				return true;
+			else
+				return false;
+		}
+
+		// a 'nice' rotation is a rotation in degrees of only the following:
+		// { 0, 45, 90, 135, 180, 225, 270, 315 }
+		float NiceRotationAngle(float rotYInDegrees)
+		{
+			while (rotYInDegrees < 0)
+				rotYInDegrees += 360;
+			while (rotYInDegrees > 360)
+				rotYInDegrees -= 360;
+
+			for (int i = 0; i < directions.Length; ++i)
+			{
+				if (IsInRange(rotYInDegrees, directions[i]))
+					return directions[i];
+			}
+			return 0;
 		}
 
 		void PerformRotationZ()
