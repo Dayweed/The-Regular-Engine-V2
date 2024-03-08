@@ -50,31 +50,37 @@ namespace TRE
 				directions[i] = 45 * (i + 1);
 
 			TS.GetRotation(this.ID, out vec3 initialRot);
-			float initialRotY = NiceRotationAngle(initialRot.y);
 
-			// set constants based on initialRotY
-			if (initialRotY == 0)
+			// sometimes the rotation that this entity has is really weird
+			// this part is to figure out whether its either a 0 or 180 rotation on the y axis
+			// if so, FIX THAT NONSENSE BEFORE ROTATING!!!
+			float actualRotY = 0;
+			if (HasNoRotation(initialRot))
+			{
+				actualRotY = 0;
+				transform.Rotation = vec3.Zero;
+			}
+			else if (IsCursedRotation(initialRot) || HasFlippedRotation(initialRot))
+			{
+				actualRotY = 180;
+				transform.Rotation = new vec3(0, 180, 0);
+			}
+
+			// set constants based on actualRotY
+			if (actualRotY == 0)
 			{
 				platformInactiveAngle = 0.0f;
 				platformActiveAngle = 90.0f;
 				activationRotationDirection = 1;
 				// use the x axis to rotate
 			}
-			else if (initialRotY == 90)
-			{
-				// FUCKING GIMBAL LOCK?!?
-			}
-			else if (initialRotY == 180)
+			else if (actualRotY == 180)
 			{
 				platformInactiveAngle = 0.0f;
 				// i have no clue why removing the negatives work but it does
 				platformActiveAngle = 90.0f;
 				activationRotationDirection = 1;
 				// use the x axis to rotate
-			}
-			else if (initialRotY == 270)
-			{
-				// FUCKING GIMBAL LOCK?!?
 			}
 
 			platformState = false;
@@ -208,6 +214,38 @@ namespace TRE
 		void print(string str)
 		{
 			Console.Write("[{0}]\t{1}", this.name, str + "\n");
+		}
+
+		// sometimes (0, 0, 0) becomes (0, -0, 0) :_)
+		bool HasNoRotation(vec3 rot)
+		{
+			return IsVec3Equal(rot, vec3.Zero);
+		}
+
+		// preparing for the event that (0, 180, 0) becomes (0, -180, 0)
+		bool HasFlippedRotation(vec3 rot)
+		{
+			return IsVec3Equal(rot, new vec3(0, 180, 0));
+		}
+
+		// sometimes (0, 180, 0) becomes (-180, 0, -180) :_)
+		bool IsCursedRotation(vec3 rot)
+		{
+			return IsVec3Equal(rot, new vec3(-180, 0, -180));
+		}
+
+		bool IsVec3Equal(vec3 a, vec3 b)
+		{
+			const float EPSILON = 0.001f;
+			float diffX = a.x - b.x;
+			float diffY = a.y - b.y;
+			float diffZ = a.z - b.z;
+
+			bool isDiffZeroX = -EPSILON <= diffX && diffX <= EPSILON;
+			bool isDiffZeroY = -EPSILON <= diffY && diffY <= EPSILON;
+			bool isDiffZeroZ = -EPSILON <= diffZ && diffZ <= EPSILON;
+
+			return isDiffZeroX && isDiffZeroY && isDiffZeroZ;
 		}
 	}
 }
