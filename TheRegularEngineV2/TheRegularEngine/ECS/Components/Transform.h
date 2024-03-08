@@ -129,6 +129,7 @@ property_begin(TRE::Transform)
 		property_var(m_Position)
 		, property_var(m_Rotation)
 		, property_var(m_Scale)
+		/*
 		, property_var_fnbegin("Local Position", glm::vec3)
 		{
 			if (isRead)
@@ -150,5 +151,6 @@ property_begin(TRE::Transform)
 				InOut = Self.m_LocalScale;
 			}
 		} property_var_fnend()
+		*/
 
 } property_vend_h(TRE::Transform)
