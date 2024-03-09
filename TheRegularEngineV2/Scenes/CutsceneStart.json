@@ -1,19 +1,19 @@
 [
    [
       214,
-      4293918849,
-      10485946,
-      8388796,
-      11534394,
-      6291494,
+      4293918855,
+      11534342,
+      9437370,
+      11534404,
+      8388683,
+      4194492,
+      4194483,
+      4194327,
+      4194486,
+      4194438,
+      4194362,
+      4194479,
       3145728,
-      3145732,
-      3145751,
-      3145803,
-      3145910,
-      3145796,
-      3145733,
-      3145738,
       3145828,
       3145924,
       3145938,
@@ -25,7 +25,7 @@
       3145819,
       3145746,
       3145858,
-      3145795,
+      3145729,
       3145810,
       3145772,
       3145771,
@@ -41,7 +41,7 @@
       3145843,
       3145781,
       3145846,
-      3145737,
+      3145730,
       3145776,
       3145865,
       3145768,
@@ -51,14 +51,14 @@
       3145879,
       3145845,
       3145767,
-      3145854,
-      3145926,
+      3145867,
+      3145927,
       3145836,
-      4194443,
+      5242932,
       3145782,
       3145801,
       3145928,
-      3145730,
+      3145737,
       3145784,
       3145841,
       3145833,
@@ -69,7 +69,7 @@
       3145866,
       3145802,
       3145793,
-      3145903,
+      3145766,
       3145764,
       3145794,
       3145797,
@@ -78,7 +78,7 @@
       3145897,
       3145917,
       3145800,
-      3145735,
+      3145731,
       3145759,
       3145805,
       3145806,
@@ -88,7 +88,7 @@
       3145827,
       3145808,
       3145840,
-      3145736,
+      3145735,
       3145814,
       3145826,
       3145815,
@@ -100,7 +100,7 @@
       3145742,
       3145834,
       3145824,
-      3145863,
+      3145855,
       3145799,
       3145825,
       3145842,
@@ -120,30 +120,30 @@
       3145774,
       3145829,
       3145812,
-      3145747,
+      3145738,
       3145832,
       3145844,
       3145848,
       3145849,
       3145850,
       3145851,
-      9437349,
-      3145773,
-      8388740,
-      7340157,
-      10485891,
+      3145852,
+      9437310,
+      4194329,
+      8388736,
+      8388737,
       3145741,
-      19923072,
-      4194444,
-      4194303,
-      3145907,
-      7340057,
+      5242879,
+      16777348,
+      15728773,
+      3145795,
+      7340197,
       3145911,
       3145788,
       3145789,
-      12583036,
-      9437325,
-      10485812,
+      13631533,
+      9437324,
+      10485901,
       1048718,
       1048719,
       1048720,
@@ -167,29 +167,29 @@
       1048738,
       1048739,
       1048740,
-      6291583,
+      3145853,
       1048742,
-      7340199,
-      4194472,
+      1048743,
+      1048744,
       3145745,
-      6291626,
-      5243051,
-      9437356,
-      18874541,
-      2097326,
-      3145731,
-      2097328,
-      2097329,
-      2097330,
-      3145734,
-      2097332,
+      1048746,
+      1048747,
+      1048748,
+      13631661,
+      13631662,
+      3145747,
+      6291632,
+      5243057,
+      3145906,
+      3145736,
+      6291636,
       3145748,
       2097237,
       2097337,
       2097187,
       2097339,
-      2097286,
-      2097153,
+      2097157,
+      2097156,
       2097342,
       2097262,
       2097343,
@@ -199,30 +199,34 @@
       2097347,
       2097349,
       2097186,
-      2097363,
-      12583114,
-      5243084,
+      2097357,
+      3145859,
+      3145926,
       2097201,
-      7340231,
-      14680197,
-      15728690,
-      24117451,
+      3145778,
       3145929,
+      3145930,
+      19923153,
+      25166035,
       2097189,
-      3145933,
-      3145935,
-      3145936,
+      13631692,
+      7340235,
+      5243088,
       2097240,
-      3145937,
+      11534543,
       2097242
    ],
    [
       6,
-      18874541,
+      5243057,
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "4417868754952282974",
-         "m_Overrides": {},
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ]
+         },
          "m_PrefabGUID": "4417868754952282974",
          "m_RemovedComps": []
       },
@@ -237,89 +241,60 @@
       1048730,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "1469398891573777636",
-         "m_Overrides": {},
-         "m_PrefabGUID": "1469398891573777636",
+         "m_MainPrefabGUID": "5008352725195449354",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ]
+         },
+         "m_PrefabGUID": "5008352725195449354",
          "m_RemovedComps": []
       },
-      1048720,
+      1048728,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "15344454485328961290",
-         "m_Overrides": {},
-         "m_PrefabGUID": "15344454485328961290",
+         "m_MainPrefabGUID": "1469398891573777636",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ]
+         },
+         "m_PrefabGUID": "1469398891573777636",
          "m_RemovedComps": []
       },
       1048719,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "16472183782282901065",
-         "m_Overrides": {},
-         "m_PrefabGUID": "16472183782282901065",
+         "m_MainPrefabGUID": "15344454485328961290",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ]
+         },
+         "m_PrefabGUID": "15344454485328961290",
          "m_RemovedComps": []
       },
       1048731,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "5008352725195449354",
-         "m_Overrides": {},
-         "m_PrefabGUID": "5008352725195449354",
+         "m_MainPrefabGUID": "16472183782282901065",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ]
+         },
+         "m_PrefabGUID": "16472183782282901065",
          "m_RemovedComps": []
       }
    ],
    [
-      31,
-      18874541,
-      {
-         "m_Children": [],
-         "m_Parent": "3433984361522152253"
-      },
-      9437356,
-      {
-         "m_Children": [],
-         "m_Parent": "1241172473065689123"
-      },
-      5243051,
-      {
-         "m_Children": [
-            "1906000498434737128",
-            "12357215472430049702"
-         ],
-         "m_Parent": ""
-      },
-      7340199,
-      {
-         "m_Children": [
-            "12240050361697776836"
-         ],
-         "m_Parent": ""
-      },
-      4194472,
+      39,
+      13631661,
       {
          "m_Children": [],
          "m_Parent": ""
       },
-      6291626,
-      {
-         "m_Children": [],
-         "m_Parent": "7139267631116052954"
-      },
-      2097326,
-      {
-         "m_Children": [],
-         "m_Parent": "1241172473065689123"
-      },
-      2097328,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      2097329,
-      {
-         "m_Children": [],
-         "m_Parent": ""
-      },
-      2097330,
+      6291632,
       {
          "m_Children": [
             "10509983312603211974",
@@ -327,9 +302,54 @@
          ],
          "m_Parent": ""
       },
-      2097332,
+      13631662,
       {
          "m_Children": [],
+         "m_Parent": ""
+      },
+      6291636,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      3145906,
+      {
+         "m_Children": [],
+         "m_Parent": "1241172473065689123"
+      },
+      5243057,
+      {
+         "m_Children": [],
+         "m_Parent": "3433984361522152253"
+      },
+      1048748,
+      {
+         "m_Children": [],
+         "m_Parent": "1241172473065689123"
+      },
+      1048747,
+      {
+         "m_Children": [
+            "1906000498434737128",
+            "12357215472430049702"
+         ],
+         "m_Parent": ""
+      },
+      1048746,
+      {
+         "m_Children": [],
+         "m_Parent": "7139267631116052954"
+      },
+      1048744,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      },
+      1048743,
+      {
+         "m_Children": [
+            "12240050361697776836"
+         ],
          "m_Parent": ""
       },
       1048742,
@@ -379,11 +399,7 @@
       {
          "m_Children": [
             "1016836630051144605",
-            "3563870734590726976",
-            "15245446060896125709",
-            "18389890346071158786",
-            "8255517325833961727",
-            "7093749294134477742"
+            "3563870734590726976"
          ],
          "m_Parent": ""
       },
@@ -395,14 +411,19 @@
       1048730,
       {
          "m_Children": [],
-         "m_Parent": "3433984361522152253"
+         "m_Parent": "9679580861056630596"
       },
       1048728,
       {
          "m_Children": [],
-         "m_Parent": "1241172473065689123"
+         "m_Parent": "7689453104950470902"
       },
       1048726,
+      {
+         "m_Children": [],
+         "m_Parent": "1241172473065689123"
+      },
+      1048725,
       {
          "m_Children": [
             "6901260880769456738",
@@ -410,66 +431,153 @@
          ],
          "m_Parent": ""
       },
-      1048725,
+      1048724,
       {
          "m_Children": [],
          "m_Parent": "9262580962873091563"
       },
-      1048724,
+      1048723,
       {
          "m_Children": [],
          "m_Parent": "10214686609734549272"
       },
-      1048723,
+      1048721,
       {
          "m_Children": [],
          "m_Parent": "11400480438197261567"
       },
-      1048721,
+      1048720,
       {
          "m_Children": [],
          "m_Parent": "1241172473065689123"
       },
-      1048720,
-      {
-         "m_Children": [],
-         "m_Parent": "3433984361522152253"
-      },
       1048719,
       {
          "m_Children": [],
-         "m_Parent": "3433984361522152253"
+         "m_Parent": "17820503117536594555"
       },
       1048731,
       {
          "m_Children": [],
-         "m_Parent": "3433984361522152253"
+         "m_Parent": "3077566986562130226"
       },
       1048718,
       {
          "m_Children": [],
          "m_Parent": "1241172473065689123"
+      },
+      8388737,
+      {
+         "m_Children": [
+            "15245446060896125709",
+            "5351675726976469961"
+         ],
+         "m_Parent": ""
+      },
+      15728773,
+      {
+         "m_Children": [],
+         "m_Parent": "17820503117536594555"
+      },
+      16777348,
+      {
+         "m_Children": [
+            "18389890346071158786",
+            "9182206435651598876"
+         ],
+         "m_Parent": ""
+      },
+      9437310,
+      {
+         "m_Children": [
+            "8255517325833961727",
+            "9589427361435600308"
+         ],
+         "m_Parent": ""
+      },
+      5242932,
+      {
+         "m_Children": [
+            "7093749294134477742",
+            "3916187235515951336"
+         ],
+         "m_Parent": ""
+      },
+      8388736,
+      {
+         "m_Children": [],
+         "m_Parent": "3077566986562130226"
+      },
+      9437324,
+      {
+         "m_Children": [],
+         "m_Parent": "9679580861056630596"
+      },
+      10485901,
+      {
+         "m_Children": [],
+         "m_Parent": "7689453104950470902"
       }
    ],
    [
-      31,
-      18874541,
+      39,
+      13631661,
+      {
+         "m_Active": true,
+         "m_GUID": "10686246506118743920",
+         "m_Index": 0,
+         "m_Name": "Main Camera",
+         "m_Tag": ""
+      },
+      6291632,
+      {
+         "m_Active": false,
+         "m_GUID": "17241056601820338248",
+         "m_Index": 13,
+         "m_Name": "Frame9",
+         "m_Tag": ""
+      },
+      13631662,
+      {
+         "m_Active": true,
+         "m_GUID": "5085728504128975660",
+         "m_Index": 20,
+         "m_Name": "SpaceToContinue",
+         "m_Tag": ""
+      },
+      6291636,
+      {
+         "m_Active": true,
+         "m_GUID": "14726247034547018244",
+         "m_Index": 19,
+         "m_Name": "SpaceToContinueBlack",
+         "m_Tag": ""
+      },
+      3145906,
+      {
+         "m_Active": true,
+         "m_GUID": "3652449761497657269",
+         "m_Index": 24,
+         "m_Name": "SFX_Bird",
+         "m_Tag": ""
+      },
+      5243057,
       {
          "m_Active": true,
          "m_GUID": "3563870734590726976",
          "m_Index": 12,
-         "m_Name": "InvitationDialogue1",
+         "m_Name": "InvitationDialogue",
          "m_Tag": ""
       },
-      9437356,
+      1048748,
       {
          "m_Active": true,
          "m_GUID": "5612489981622473043",
-         "m_Index": 26,
+         "m_Index": 22,
          "m_Name": "BGM",
          "m_Tag": ""
       },
-      5243051,
+      1048747,
       {
          "m_Active": true,
          "m_GUID": "10214686609734549272",
@@ -477,15 +585,15 @@
          "m_Name": "Frame2",
          "m_Tag": ""
       },
-      7340199,
+      1048746,
       {
-         "m_Active": true,
-         "m_GUID": "11400480438197261567",
-         "m_Index": 8,
-         "m_Name": "Frame3",
+         "m_Active": false,
+         "m_GUID": "6901260880769456738",
+         "m_Index": 17,
+         "m_Name": "Landscape",
          "m_Tag": ""
       },
-      4194472,
+      1048744,
       {
          "m_Active": true,
          "m_GUID": "15445797279152701459",
@@ -493,52 +601,12 @@
          "m_Name": "Directional Light",
          "m_Tag": ""
       },
-      6291626,
-      {
-         "m_Active": false,
-         "m_GUID": "6901260880769456738",
-         "m_Index": 21,
-         "m_Name": "Landscape",
-         "m_Tag": ""
-      },
-      2097326,
+      1048743,
       {
          "m_Active": true,
-         "m_GUID": "3652449761497657269",
-         "m_Index": 28,
-         "m_Name": "SFX_Bird",
-         "m_Tag": ""
-      },
-      2097328,
-      {
-         "m_Active": true,
-         "m_GUID": "14726247034547018244",
-         "m_Index": 23,
-         "m_Name": "SpaceToContinueBlack",
-         "m_Tag": ""
-      },
-      2097329,
-      {
-         "m_Active": true,
-         "m_GUID": "5085728504128975660",
-         "m_Index": 24,
-         "m_Name": "SpaceToContinue",
-         "m_Tag": ""
-      },
-      2097330,
-      {
-         "m_Active": false,
-         "m_GUID": "17241056601820338248",
-         "m_Index": 17,
-         "m_Name": "Frame5",
-         "m_Tag": ""
-      },
-      2097332,
-      {
-         "m_Active": true,
-         "m_GUID": "10686246506118743920",
-         "m_Index": 0,
-         "m_Name": "Main Camera",
+         "m_GUID": "11400480438197261567",
+         "m_Index": 8,
+         "m_Name": "Frame3",
          "m_Tag": ""
       },
       1048742,
@@ -553,7 +621,7 @@
       {
          "m_Active": false,
          "m_GUID": "13532880202510778061",
-         "m_Index": 22,
+         "m_Index": 18,
          "m_Name": "MolesBack",
          "m_Tag": ""
       },
@@ -561,7 +629,7 @@
       {
          "m_Active": true,
          "m_GUID": "1241172473065689123",
-         "m_Index": 25,
+         "m_Index": 21,
          "m_Name": "Audio",
          "m_Tag": ""
       },
@@ -569,7 +637,7 @@
       {
          "m_Active": false,
          "m_GUID": "10509983312603211974",
-         "m_Index": 18,
+         "m_Index": 14,
          "m_Name": "MolesThinking",
          "m_Tag": ""
       },
@@ -585,7 +653,7 @@
       {
          "m_Active": false,
          "m_GUID": "11183254074830409399",
-         "m_Index": 19,
+         "m_Index": 15,
          "m_Name": "PartyStuff",
          "m_Tag": ""
       },
@@ -616,28 +684,36 @@
       1048730,
       {
          "m_Active": true,
-         "m_GUID": "7093749294134477742",
-         "m_Index": 16,
-         "m_Name": "InvitationDialogue5",
+         "m_GUID": "8255517325833961727",
+         "m_Index": 34,
+         "m_Name": "InvitationDialogue",
          "m_Tag": ""
       },
       1048728,
       {
          "m_Active": true,
-         "m_GUID": "9803309939361835920",
-         "m_Index": 30,
-         "m_Name": "SFX_Invitation",
+         "m_GUID": "7093749294134477742",
+         "m_Index": 37,
+         "m_Name": "InvitationDialogue",
          "m_Tag": ""
       },
       1048726,
       {
-         "m_Active": false,
-         "m_GUID": "7139267631116052954",
-         "m_Index": 20,
-         "m_Name": "Frame6",
+         "m_Active": true,
+         "m_GUID": "9803309939361835920",
+         "m_Index": 26,
+         "m_Name": "SFX_Invitation",
          "m_Tag": ""
       },
       1048725,
+      {
+         "m_Active": false,
+         "m_GUID": "7139267631116052954",
+         "m_Index": 16,
+         "m_Name": "Frame10",
+         "m_Tag": ""
+      },
+      1048724,
       {
          "m_Active": true,
          "m_GUID": "15713678243113056892",
@@ -645,7 +721,7 @@
          "m_Name": "Bird",
          "m_Tag": ""
       },
-      1048724,
+      1048723,
       {
          "m_Active": true,
          "m_GUID": "1906000498434737128",
@@ -653,7 +729,7 @@
          "m_Name": "Door",
          "m_Tag": ""
       },
-      1048723,
+      1048721,
       {
          "m_Active": true,
          "m_GUID": "12240050361697776836",
@@ -661,104 +737,106 @@
          "m_Name": "Letter",
          "m_Tag": ""
       },
-      1048721,
-      {
-         "m_Active": true,
-         "m_GUID": "8953483955806197276",
-         "m_Index": 29,
-         "m_Name": "SFX_DIalogue",
-         "m_Tag": ""
-      },
       1048720,
       {
          "m_Active": true,
-         "m_GUID": "15245446060896125709",
-         "m_Index": 13,
-         "m_Name": "InvitationDialogue2",
+         "m_GUID": "8953483955806197276",
+         "m_Index": 25,
+         "m_Name": "SFX_DIalogue",
          "m_Tag": ""
       },
       1048719,
       {
          "m_Active": true,
-         "m_GUID": "18389890346071158786",
-         "m_Index": 14,
-         "m_Name": "InvitationDialogue3",
+         "m_GUID": "15245446060896125709",
+         "m_Index": 28,
+         "m_Name": "InvitationDialogue",
          "m_Tag": ""
       },
       1048731,
       {
          "m_Active": true,
-         "m_GUID": "8255517325833961727",
-         "m_Index": 15,
-         "m_Name": "InvitationDialogue4",
+         "m_GUID": "18389890346071158786",
+         "m_Index": 31,
+         "m_Name": "InvitationDialogue",
          "m_Tag": ""
       },
       1048718,
       {
          "m_Active": true,
          "m_GUID": "5695857158344604358",
-         "m_Index": 27,
+         "m_Index": 23,
          "m_Name": "BGM_EndLoop",
+         "m_Tag": ""
+      },
+      8388737,
+      {
+         "m_Active": true,
+         "m_GUID": "17820503117536594555",
+         "m_Index": 27,
+         "m_Name": "Frame5",
+         "m_Tag": ""
+      },
+      15728773,
+      {
+         "m_Active": true,
+         "m_GUID": "5351675726976469961",
+         "m_Index": 29,
+         "m_Name": "LetterOpen",
+         "m_Tag": ""
+      },
+      16777348,
+      {
+         "m_Active": true,
+         "m_GUID": "3077566986562130226",
+         "m_Index": 30,
+         "m_Name": "Frame6",
+         "m_Tag": ""
+      },
+      9437310,
+      {
+         "m_Active": true,
+         "m_GUID": "9679580861056630596",
+         "m_Index": 33,
+         "m_Name": "Frame7",
+         "m_Tag": ""
+      },
+      5242932,
+      {
+         "m_Active": true,
+         "m_GUID": "7689453104950470902",
+         "m_Index": 36,
+         "m_Name": "Frame8",
+         "m_Tag": ""
+      },
+      8388736,
+      {
+         "m_Active": true,
+         "m_GUID": "9182206435651598876",
+         "m_Index": 32,
+         "m_Name": "LetterOpen",
+         "m_Tag": ""
+      },
+      9437324,
+      {
+         "m_Active": true,
+         "m_GUID": "9589427361435600308",
+         "m_Index": 35,
+         "m_Name": "LetterOpen",
+         "m_Tag": ""
+      },
+      10485901,
+      {
+         "m_Active": true,
+         "m_GUID": "3916187235515951336",
+         "m_Index": 38,
+         "m_Name": "LetterOpen",
          "m_Tag": ""
       }
    ],
    [
-      31,
-      18874541,
-      {
-         "m_Position": [
-            -872.0,
-            147.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            17.0,
-            17.0,
-            1.0
-         ]
-      },
-      9437356,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      5243051,
-      {
-         "m_Position": [
-            400.0,
-            100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      7340199,
+      39,
+      13631661,
       {
          "m_Position": [
             0.0,
@@ -776,97 +854,7 @@
             1.0
          ]
       },
-      4194472,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            45.0,
-            45.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      6291626,
-      {
-         "m_Position": [
-            400.0,
-            -100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097326,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097328,
-      {
-         "m_Position": [
-            520.0,
-            455.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097329,
-      {
-         "m_Position": [
-            520.0,
-            455.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      2097330,
+      6291632,
       {
          "m_Position": [
             -400.0,
@@ -884,7 +872,151 @@
             1.0
          ]
       },
-      2097332,
+      13631662,
+      {
+         "m_Position": [
+            520.0,
+            455.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      6291636,
+      {
+         "m_Position": [
+            520.0,
+            455.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3145906,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      5243057,
+      {
+         "m_Position": [
+            -872.0,
+            147.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            17.0,
+            17.0,
+            1.0
+         ]
+      },
+      1048748,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048747,
+      {
+         "m_Position": [
+            400.0,
+            100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048746,
+      {
+         "m_Position": [
+            400.0,
+            -100.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048744,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            45.0,
+            45.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1048743,
       {
          "m_Position": [
             0.0,
@@ -1068,7 +1200,7 @@
       {
          "m_Position": [
             -872.0,
-            314.0,
+            274.0,
             0.0
          ],
          "m_Rotation": [
@@ -1083,6 +1215,24 @@
          ]
       },
       1048728,
+      {
+         "m_Position": [
+            -872.0,
+            314.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            17.0,
+            17.0,
+            1.0
+         ]
+      },
+      1048726,
       {
          "m_Position": [
             0.0,
@@ -1100,7 +1250,7 @@
             1.0
          ]
       },
-      1048726,
+      1048725,
       {
          "m_Position": [
             400.0,
@@ -1118,7 +1268,7 @@
             1.0
          ]
       },
-      1048725,
+      1048724,
       {
          "m_Position": [
             -400.0,
@@ -1136,29 +1286,11 @@
             1.0
          ]
       },
-      1048724,
+      1048723,
       {
          "m_Position": [
             400.0,
             100.0,
-            0.0
-         ],
-         "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
-         ],
-         "m_Scale": [
-            1.0,
-            1.0,
-            1.0
-         ]
-      },
-      1048723,
-      {
-         "m_Position": [
-            0.0,
-            0.0,
             0.0
          ],
          "m_Rotation": [
@@ -1193,8 +1325,8 @@
       1048720,
       {
          "m_Position": [
-            -872.0,
-            274.0,
+            0.0,
+            0.0,
             0.0
          ],
          "m_Rotation": [
@@ -1203,8 +1335,8 @@
             0.0
          ],
          "m_Scale": [
-            17.0,
-            17.0,
+            1.0,
+            1.0,
             1.0
          ]
       },
@@ -1212,7 +1344,7 @@
       {
          "m_Position": [
             -872.0,
-            272.0,
+            274.0,
             0.0
          ],
          "m_Rotation": [
@@ -1230,7 +1362,7 @@
       {
          "m_Position": [
             -872.0,
-            274.0,
+            272.0,
             0.0
          ],
          "m_Rotation": [
@@ -1261,6 +1393,150 @@
             1.0,
             1.0
          ]
+      },
+      8388737,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      15728773,
+      {
+         "m_Position": [
+            0.0,
+            297.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.4000000059604645,
+            1.0
+         ]
+      },
+      16777348,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9437310,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      5242932,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      8388736,
+      {
+         "m_Position": [
+            0.0,
+            297.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.4000000059604645,
+            1.0
+         ]
+      },
+      9437324,
+      {
+         "m_Position": [
+            0.0,
+            297.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.4000000059604645,
+            1.0
+         ]
+      },
+      10485901,
+      {
+         "m_Position": [
+            0.0,
+            297.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.4000000059604645,
+            1.0
+         ]
       }
    ],
    [
@@ -1268,7 +1544,7 @@
    ],
    [
       1,
-      2097332,
+      13631661,
       {
          "m_AspectRatio": 1.7777777910232544,
          "m_Bottom": -1.0,
@@ -1306,7 +1582,7 @@
    ],
    [
       1,
-      4194472,
+      1048744,
       {
          "m_AmbientColor": [
             1.0,
@@ -1333,27 +1609,7 @@
    ],
    [
       5,
-      9437356,
-      {
-         "m_FileName": "BGM_Cut-Scene_BGM_Loop.wav",
-         "m_Loop": true,
-         "m_MaxDistance": 300.0,
-         "m_MinDistance": 1.0,
-         "m_Mute": false,
-         "m_Pause": false,
-         "m_Pitch": 1.0,
-         "m_Play": true,
-         "m_PlayOnStart": true,
-         "m_Priority": 0,
-         "m_Spatialize": false,
-         "m_Volume": 0.4000000059604645,
-         "m_goPosition": [
-            0.0,
-            0.0,
-            0.0
-         ]
-      },
-      2097326,
+      3145906,
       {
          "m_FileName": "sfx_Bird.wav",
          "m_Loop": false,
@@ -1373,7 +1629,27 @@
             0.0
          ]
       },
-      1048728,
+      1048748,
+      {
+         "m_FileName": "BGM_Cut-Scene_BGM_Loop.wav",
+         "m_Loop": true,
+         "m_MaxDistance": 300.0,
+         "m_MinDistance": 1.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": true,
+         "m_PlayOnStart": true,
+         "m_Priority": 0,
+         "m_Spatialize": false,
+         "m_Volume": 0.4000000059604645,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      },
+      1048726,
       {
          "m_FileName": "sfx_Invitation.wav",
          "m_Loop": false,
@@ -1393,7 +1669,7 @@
             0.0
          ]
       },
-      1048721,
+      1048720,
       {
          "m_FileName": "SFX_HoleyDialogue.wav",
          "m_Loop": false,
@@ -1435,8 +1711,8 @@
       }
    ],
    [
-      13,
-      5243051,
+      17,
+      6291632,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -1444,7 +1720,21 @@
          ],
          "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       },
-      7340199,
+      13631662,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      6291636,
+      {
+         "m_RegisteredScripts": [
+            "TRE.TextBounce"
+         ],
+         "m_StoredClass": "TRE.TextBounce"
+      },
+      1048747,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -1452,21 +1742,7 @@
          ],
          "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       },
-      2097328,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      2097329,
-      {
-         "m_RegisteredScripts": [
-            "TRE.TextBounce"
-         ],
-         "m_StoredClass": "TRE.TextBounce"
-      },
-      2097330,
+      1048743,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -1518,7 +1794,7 @@
          ],
          "m_StoredClass": "TRE.TextBounce"
       },
-      1048726,
+      1048725,
       {
          "m_RegisteredScripts": [
             "TRE.VFX_FadeIn",
@@ -1526,73 +1802,63 @@
          ],
          "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       },
-      1048725,
+      1048724,
       {
          "m_RegisteredScripts": [
             "TRE.TextBounce"
          ],
          "m_StoredClass": "TRE.TextBounce"
+      },
+      8388737,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      16777348,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      9437310,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
+      },
+      5242932,
+      {
+         "m_RegisteredScripts": [
+            "TRE.VFX_FadeIn",
+            "TRE.VFX_FadeOut"
+         ],
+         "m_StoredClass": "TRE.VFX_FadeIn,TRE.VFX_FadeOut"
       }
    ],
    [
-      18,
-      5243051,
+      26,
+      6291632,
       {
          "Color": [
             0.0,
             0.0,
             0.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 0,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 325,
-         "m_IsVisible": true
-      },
-      7340199,
-      {
-         "Color": [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         "Height": 340,
-         "RenderLayer": 4,
-         "Texture": "37faee16ba9f9e67",
-         "Width": 450,
-         "m_IsVisible": true
-      },
-      6291626,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
             1.0
          ],
          "Height": 340,
-         "RenderLayer": 9,
-         "Texture": "549dfcd5b51762b9",
+         "RenderLayer": 8,
+         "Texture": "37faee16ba9f9e67",
          "Width": 325,
-         "m_IsVisible": true
+         "m_IsVisible": false
       },
-      2097328,
-      {
-         "Color": [
-            1.0,
-            1.0,
-            1.0,
-            1.0
-         ],
-         "Height": 42,
-         "RenderLayer": 10,
-         "Texture": "42953920b1324ab8",
-         "Width": 340,
-         "m_IsVisible": true
-      },
-      2097329,
+      13631662,
       {
          "Color": [
             1.0,
@@ -1606,19 +1872,61 @@
          "Width": 340,
          "m_IsVisible": true
       },
-      2097330,
+      6291636,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 42,
+         "RenderLayer": 10,
+         "Texture": "42953920b1324ab8",
+         "Width": 340,
+         "m_IsVisible": true
+      },
+      1048747,
       {
          "Color": [
             0.0,
             0.0,
             0.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 0,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 325,
+         "m_IsVisible": true
+      },
+      1048746,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
             1.0
          ],
          "Height": 340,
-         "RenderLayer": 8,
-         "Texture": "37faee16ba9f9e67",
+         "RenderLayer": 9,
+         "Texture": "549dfcd5b51762b9",
          "Width": 325,
-         "m_IsVisible": false
+         "m_IsVisible": true
+      },
+      1048743,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+         ],
+         "Height": 340,
+         "RenderLayer": 4,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 450,
+         "m_IsVisible": true
       },
       1048742,
       {
@@ -1732,7 +2040,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      1048726,
+      1048725,
       {
          "Color": [
             0.0,
@@ -1746,7 +2054,7 @@
          "Width": 325,
          "m_IsVisible": false
       },
-      1048725,
+      1048724,
       {
          "Color": [
             1.0,
@@ -1760,7 +2068,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      1048724,
+      1048723,
       {
          "Color": [
             1.0,
@@ -1774,7 +2082,7 @@
          "Width": 325,
          "m_IsVisible": true
       },
-      1048723,
+      1048721,
       {
          "Color": [
             1.0,
@@ -1786,6 +2094,118 @@
          "RenderLayer": 5,
          "Texture": "4fb260cc2440d17f",
          "Width": 450,
+         "m_IsVisible": true
+      },
+      8388737,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      16777348,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      9437310,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      5242932,
+      {
+         "Color": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 6,
+         "Texture": "37faee16ba9f9e67",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      15728773,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 7,
+         "Texture": "79e251a7c59be7c4",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      8388736,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 7,
+         "Texture": "79e251a7c59be7c4",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      9437324,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 7,
+         "Texture": "79e251a7c59be7c4",
+         "Width": 960,
+         "m_IsVisible": true
+      },
+      10485901,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 540,
+         "RenderLayer": 7,
+         "Texture": "79e251a7c59be7c4",
+         "Width": 960,
          "m_IsVisible": true
       }
    ],
@@ -1800,7 +2220,7 @@
    ],
    [
       5,
-      18874541,
+      5243057,
       {
          "m_Color": [
             0.15830117464065552,
@@ -1830,9 +2250,9 @@
          "m_IsFading": false,
          "m_IsVisible": true,
          "m_Speed": 0.0,
-         "m_TextContent": "Ready to have the grandest time of your lives? Then see you there!\n\nYours Sincerely,\nNolan the Golden"
+         "m_TextContent": "3) Entertainment! The grandest party is incomplete without music, bring something\nentertaining for everyone!"
       },
-      1048720,
+      1048728,
       {
          "m_Color": [
             0.1568627506494522,
@@ -1846,7 +2266,7 @@
          "m_IsFading": false,
          "m_IsVisible": true,
          "m_Speed": 0.0,
-         "m_TextContent": "1) There are holes in walls scattered around the land, only by fitting through\nthem precisely, will you get closer to the party itself."
+         "m_TextContent": "Ready to have the grandest time of your lives? Then see you there!\n\nYours Sincerely,\nNolan the Golden"
       },
       1048719,
       {
@@ -1862,7 +2282,7 @@
          "m_IsFading": false,
          "m_IsVisible": true,
          "m_Speed": 0.0,
-         "m_TextContent": "2) I expect fashion of the highest calibre. We have a fiesta theme going so\nstick to it!"
+         "m_TextContent": "1) There are holes in walls scattered around the land, only by fitting through\nthem precisely, will you get closer to the party itself."
       },
       1048731,
       {
@@ -1878,7 +2298,7 @@
          "m_IsFading": false,
          "m_IsVisible": true,
          "m_Speed": 0.0,
-         "m_TextContent": "3) Entertainment! The grandest party is incomplete without music, bring something\nentertaining for everyone!"
+         "m_TextContent": "2) I expect fashion of the highest calibre. We have a fiesta theme going so\nstick to it!"
       }
    ],
    [
