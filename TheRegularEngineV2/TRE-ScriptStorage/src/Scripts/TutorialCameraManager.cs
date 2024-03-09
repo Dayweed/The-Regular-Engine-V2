@@ -153,7 +153,7 @@ namespace TRE
 				expectedRotation = new vec3(25, 180, 0);
 				expectedDistance = 35;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 0f;
+				cameraController.expectedYPos = 10f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_F);
 			}
