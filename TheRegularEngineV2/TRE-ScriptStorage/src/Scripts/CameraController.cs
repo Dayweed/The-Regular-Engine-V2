@@ -39,7 +39,7 @@ namespace TRE
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
-		private float lerpSpeed = 1f;
+		private float lerpSpeed = 0.5f;
 
 		public void Start()
 		{
