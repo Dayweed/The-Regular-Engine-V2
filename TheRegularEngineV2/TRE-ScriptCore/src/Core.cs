@@ -115,15 +115,18 @@ namespace TRE
 
 		public bool HasComponent<T>() where T : Component, new()
 		{
+			if (Script.Engine_IsScript(typeof(T).ToString()))
+				return Script.Engine_HaveScript(ID, typeof(T).ToString());
+
 			return ECSManager.Engine_HasComponent(ID, typeof(T));
 		}
 
 		public T GetComponent<T>() where T : Component, new()
 		{
-			if (Script.Engine_IsScript(typeof(T).ToString())) return Script.Engine_GetScript<T>(ID, typeof(T).ToString());
+			if (Script.Engine_IsScript(typeof(T).ToString()))
+				return Script.Engine_GetScript<T>(ID, typeof(T).ToString());
 
 			return GetCoreComponent<T>();   // To change for getting directly
-
 		}
 
 		private T GetCoreComponent<T>() where T : Component, new()
@@ -137,7 +140,6 @@ namespace TRE
 			T component = new T() { entity = this };
 			return component;
 		}
-
 
 		public T AddComponent<T>() where T : Component, new()
 		{
@@ -153,9 +155,7 @@ namespace TRE
 		public void RemoveComponent<T>() where T : Component, new()
 		{
 			if (HasComponent<T>())
-			{
 				ECSManager.Engine_RemoveComponent(ID, typeof(T));
-			}
 		}
 
 		public static void EngineRename(EntityID id, string name)
@@ -187,8 +187,6 @@ namespace TRE
 		{
 			return Engine_CompareTag(id, otherTag);
 		}
-
-
 
 		// DONT USE THIS, INCOMPLETE AND UNTESTED
 		/*
@@ -893,7 +891,7 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_TransitionMainCameraRotation(vec3 targetRotation, float speed);
-		
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetMainCameraPosition();
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1105,13 +1103,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static vec3 Engine_GetBoxColliderHalfExtents(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetBoxTrigger(EntityID entityid, bool isTrigger);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetBoxTrigger(EntityID entityid, bool isTrigger);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetBoxTrigger(EntityID entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetBoxTrigger(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCapsuleCollider(EntityID entityid, float newRadius, float newHelfHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1120,13 +1118,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCapsuleColliderHalfHeight(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetCapsuleTrigger(EntityID entityid, bool isTrigger);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetCapsuleTrigger(EntityID entityid, bool isTrigger);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetCapsuleTrigger(EntityID entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetCapsuleTrigger(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ResizeCylinderCollider(EntityID entityid, float newRadius, float newHeight);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1135,13 +1133,13 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static float Engine_GetCylinderColliderHeight(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void Engine_SetCylinderTrigger(EntityID entityid, bool isTrigger);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_SetCylinderTrigger(EntityID entityid, bool isTrigger);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetCylinderTrigger(EntityID entityid);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetCylinderTrigger(EntityID entityid);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_UpdateColliderOffset(EntityID entityid, vec3 offset);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1217,23 +1215,23 @@ namespace TRE
 	public class InputSystem
 	{
 
-        public enum Button 
-        {
-            A = 0,
-            B = 1,
-            X = 2,
-            Y = 3,
-            DPadUp = 4,
-            DPadDown = 5,
-            DPadLeft = 6,
-            DPadRight = 7,
-            LeftShoulder = 8,
-            RightShoulder = 9,
-            Start = 10,
-            Back = 11,
-            LeftThumb = 12,
-            RightThumb = 13
-        };
+		public enum Button
+		{
+			A = 0,
+			B = 1,
+			X = 2,
+			Y = 3,
+			DPadUp = 4,
+			DPadDown = 5,
+			DPadLeft = 6,
+			DPadRight = 7,
+			LeftShoulder = 8,
+			RightShoulder = 9,
+			Start = 10,
+			Back = 11,
+			LeftThumb = 12,
+			RightThumb = 13
+		};
 
 		public static bool GetKeyHold(InputKeys keycode)
 		{
@@ -1250,47 +1248,47 @@ namespace TRE
 			return Engine_GetKeyRelease(keycode);
 		}
 
-        private static Dictionary<InputKeys, bool> previousKeyStates = new Dictionary<InputKeys, bool>();
+		private static Dictionary<InputKeys, bool> previousKeyStates = new Dictionary<InputKeys, bool>();
 
-        public static bool GetKeyTriggered(InputKeys keycode)
-        {
-            bool wasPressed = previousKeyStates.ContainsKey(keycode) && previousKeyStates[keycode];
-            bool isPressed = GetKeyHold(keycode);
-            previousKeyStates[keycode] = isPressed;
-            return !wasPressed && isPressed;
-        }
+		public static bool GetKeyTriggered(InputKeys keycode)
+		{
+			bool wasPressed = previousKeyStates.ContainsKey(keycode) && previousKeyStates[keycode];
+			bool isPressed = GetKeyHold(keycode);
+			previousKeyStates[keycode] = isPressed;
+			return !wasPressed && isPressed;
+		}
 
 		// Controller Input
 
-        public static bool GetControllerButtonPress(int controller, Button button)
-        {
-            return Engine_GetControllerButtonPress(controller, button);
-        }
+		public static bool GetControllerButtonPress(int controller, Button button)
+		{
+			return Engine_GetControllerButtonPress(controller, button);
+		}
 
-        public static bool GetControllerButtonHold(int controller, Button button, float time)
-        {
-            return Engine_GetControllerButtonHold(controller, button, time);
-        }
+		public static bool GetControllerButtonHold(int controller, Button button, float time)
+		{
+			return Engine_GetControllerButtonHold(controller, button, time);
+		}
 
-        public static bool GetControllerButtonReleased(int controller, Button button)
-        {
-            return Engine_GetControllerButtonReleased(controller, button);
-        }
+		public static bool GetControllerButtonReleased(int controller, Button button)
+		{
+			return Engine_GetControllerButtonReleased(controller, button);
+		}
 
-        public static float GetControllerStickX(int controller, bool rightStick)
-        {
-            return Engine_GetControllerStickX(controller, rightStick);
-        }
+		public static float GetControllerStickX(int controller, bool rightStick)
+		{
+			return Engine_GetControllerStickX(controller, rightStick);
+		}
 
-        public static float GetControllerStickY(int controller, bool rightStick)
-        {
-            return Engine_GetControllerStickY(controller, rightStick);
-        }
+		public static float GetControllerStickY(int controller, bool rightStick)
+		{
+			return Engine_GetControllerStickY(controller, rightStick);
+		}
 
-        public static bool GetControllerConnected(int controller)
-        {
-            return Engine_GetControllerConnected(controller);
-        }
+		public static bool GetControllerConnected(int controller)
+		{
+			return Engine_GetControllerConnected(controller);
+		}
 
 		private static Dictionary<int, Dictionary<Button, bool>> previousControllerButtonStates = new Dictionary<int, Dictionary<Button, bool>>();
 
@@ -1298,7 +1296,7 @@ namespace TRE
 		{
 			if (!previousControllerButtonStates.ContainsKey(controller))
 			{
-                previousControllerButtonStates[controller] = new Dictionary<Button, bool>();
+				previousControllerButtonStates[controller] = new Dictionary<Button, bool>();
 			}
 
 			bool wasPressed = previousControllerButtonStates[controller].ContainsKey(button) && previousControllerButtonStates[controller][button];
@@ -1317,8 +1315,8 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetKeyRelease(InputKeys keycode);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static bool Engine_GetControllerButtonPress(int controller, Button button);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetControllerButtonPress(int controller, Button button);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetControllerButtonHold(int controller, Button button, float time);
@@ -1334,7 +1332,7 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_GetControllerConnected(int controller);
-    }
+	}
 
 	public class MathF
 	{
@@ -1659,14 +1657,14 @@ namespace TRE
 
 		public static void StartDialogue(EntityID ID)
 		{
-            Engine_StartDialogue(ID);
+			Engine_StartDialogue(ID);
 		}
-        public static void ResetDialogue(EntityID ID)
-        {
-            Engine_ResetDialogue(ID);
-        }
+		public static void ResetDialogue(EntityID ID)
+		{
+			Engine_ResetDialogue(ID);
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1679,12 +1677,12 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static string Engine_GetTextMessage(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_StartDialogue(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_ResetDialogue(EntityID ID);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_ResetDialogue(EntityID ID);
+	}
 
 	public class DirectPathfindingSystem
 	{
@@ -1738,9 +1736,9 @@ namespace TRE
 
 	public class RendererSystem
 	{
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetSkyboxEnvironment(string texture0, string texture1, string texture2, string texture3, string texture4, string texture5);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetSkyboxEnvironment(string texture0, string texture1, string texture2, string texture3, string texture4, string texture5);
+	}
 
 	public class ParticleSystem
 	{
