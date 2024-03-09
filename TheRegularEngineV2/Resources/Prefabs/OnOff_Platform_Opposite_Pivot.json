@@ -81,13 +81,13 @@
       {
          "m_Position": [
             0.0,
-            -7.999999523162842,
+            -8.0,
             0.0
          ],
          "m_Rotation": [
             0.0,
             -0.0,
-            1.9454480248981554e-09
+            0.0
          ],
          "m_Scale": [
             8.0,
@@ -153,9 +153,9 @@
       0,
       {
          "m_RegisteredScripts": [
-            "TRE.OnOffPlatformOpposite"
+            "TRE.OnOffPlatform"
          ],
-         "m_StoredClass": "TRE.OnOffPlatformOpposite"
+         "m_StoredClass": "TRE.OnOffPlatform"
       },
       1,
       {
