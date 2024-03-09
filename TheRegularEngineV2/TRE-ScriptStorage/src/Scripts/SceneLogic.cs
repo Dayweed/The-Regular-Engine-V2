@@ -29,13 +29,13 @@ namespace TRE
 		Entity Stars2;
 		Entity Stars3;
 		float goalYPos = 0f;
-		float hiddenYPos = -650f;
+		// float hiddenYPos = -650f;
 		float displayYPos = -400f;
-		float titleMoveSpeed = 2f;
-		float titleOffset = 0.05f;
+		// float titleMoveSpeed = 2f;
+		// float titleOffset = 0.05f;
 		float timerCurrent = 0.0f;
 		float timerDisplay = 3.0f;
-		bool displayStars = false;
+		// bool displayStars = false;
 
 		Entity StarParticle;
 
@@ -278,7 +278,7 @@ namespace TRE
 					// Determine which stars to display
 					DetermineStarsDisplay(currentSceneName);
 					timerCurrent = timerDisplay;
-					displayStars = true;
+					// displayStars = true;
 				}
 				//else if (!displayStars && timerCurrent <= 0.0f)
 				//{

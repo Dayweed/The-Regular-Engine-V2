@@ -12,7 +12,7 @@ namespace TRE
 		Entity Star_2_BG;
 		Entity Star_3_BG;
 
-		bool allStarsShown = false;
+		// bool allStarsShown = false;
 
 		private float currentTimer;
 		private bool startBufferComplete = false;

@@ -16,7 +16,7 @@ namespace TRE
 		private bool isBig = false;
 		private bool isSmall = true;
 		private bool isLeft;
-		private bool isRight;
+		// private bool isRight;
 		private float left = 10f;
 		private float right = -10f;
 
@@ -30,12 +30,12 @@ namespace TRE
 			if (this.ID % 3 == 0)
 			{
 				isLeft = true;
-				isRight = false;
+				// isRight = false;
 			}
 			else
 			{
 				isLeft = false;
-				isRight = true;
+				// isRight = true;
 			}
 		}
 

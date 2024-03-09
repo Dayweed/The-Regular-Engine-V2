@@ -74,7 +74,7 @@ namespace TRE
 		public float currentTimeBetweenSpawns;
 
 		public int searchCount;
-		private bool canSpawnObjs = false;
+		// private bool canSpawnObjs = false;
 
 		private float minRange;
 
@@ -122,7 +122,7 @@ namespace TRE
 			fallingObjRNG = new List<Entity>(fallingObjPrefabs);
 			maxAmountToSpawn = 3;
 			maxObjects = 3;
-			canSpawnObjs = true;
+			// canSpawnObjs = true;
 			dropDuration = 3;
 			minRange = 5.5f;
 			noOfObjects = 0;

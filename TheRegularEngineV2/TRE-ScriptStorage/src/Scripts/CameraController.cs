@@ -9,20 +9,20 @@ namespace TRE
 
 		private Entity MidPos;
 
-		private Transform Player1Transform;
-		private Transform Player2Transform;
+		// private Transform Player1Transform;
+		// private Transform Player2Transform;
 
 		private Transform MidPosTransform;
 
-		private MoleyController MoleyController;
-		private HoleyController HoleyController;
+		// private MoleyController MoleyController;
+		// private HoleyController HoleyController;
 
 		private PlayerMidPosition PlayerMidPosition;
 
 		private float distance = 20;
 
 		public vec3 staticPosition;
-		private vec3 finalStaticPosition;
+		// private vec3 finalStaticPosition;
 
 		private vec3 finalPos;
 
@@ -44,13 +44,13 @@ namespace TRE
 
 			MidPos = ECSManager.FindEntityByName("MidPos");
 
-			Player1Transform = Player1.GetComponent<Transform>();
-			Player2Transform = Player2.GetComponent<Transform>();
+			// Player1Transform = Player1.GetComponent<Transform>();
+			// Player2Transform = Player2.GetComponent<Transform>();
 
 			MidPosTransform = MidPos.GetComponent<Transform>();
 
-			MoleyController = Player1.GetComponent<MoleyController>();
-			HoleyController = Player2.GetComponent<HoleyController>();
+			// MoleyController = Player1.GetComponent<MoleyController>();
+			// HoleyController = Player2.GetComponent<HoleyController>();
 
 			PlayerMidPosition = MidPos.GetComponent<PlayerMidPosition>();
 
