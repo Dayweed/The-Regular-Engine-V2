@@ -255,9 +255,6 @@ namespace TRE
 			// THIS IS COMMENTED OUT UNTIL IMGUI IS UP, iteration 1 would be used for displaying until IMGUI can use iteration 2
 			Profiler::Instance().PrintTimers();
 		}
-		
-		// If either fails here, shut it down
-		Shutdown();
 	}
 
 	void Engine::Shutdown()
