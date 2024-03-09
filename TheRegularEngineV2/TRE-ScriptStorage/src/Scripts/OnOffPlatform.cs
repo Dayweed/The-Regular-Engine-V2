@@ -142,7 +142,7 @@ namespace TRE
 				SetPlatformState(true);
 
 			// print("isCollidingWithPlayer: " + isCollidingWithPlayer);
-			
+
 			globalTimer += Time.deltaTime;
 
 			if (shouldTremble)

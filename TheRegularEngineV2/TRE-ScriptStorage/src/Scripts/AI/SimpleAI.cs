@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
 using GlmSharp;
 
 namespace TRE
@@ -177,7 +172,7 @@ namespace TRE
 
 		private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
 		{
-			
+
 		}
 
 		private void OnCollisionExit(/*Collider*/System.UInt64 otherID)

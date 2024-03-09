@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
 using GlmSharp;
 
 namespace TRE
@@ -44,7 +38,7 @@ namespace TRE
 		float TimerToStop;
 		float TimerToStopDefault = 2f;
 
-		float OffsetScale = 1f;			// This is to ensure it wont be stuck looping forever
+		float OffsetScale = 1f;          // This is to ensure it wont be stuck looping forever
 
 		public bool CompleteVFX = false; // Only becomes true if was called and finish vfx
 

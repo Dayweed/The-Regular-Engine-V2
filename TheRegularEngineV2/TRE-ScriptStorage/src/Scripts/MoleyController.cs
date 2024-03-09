@@ -231,10 +231,10 @@ namespace TRE
 
 			HandleAbilities();
 
-   //         if (IS.GetKeyTriggered(InputKeys.E))
-   //         {
-   //             Debug.Log("Input key E is triggered!");
-   //         }
+			//         if (IS.GetKeyTriggered(InputKeys.E))
+			//         {
+			//             Debug.Log("Input key E is triggered!");
+			//         }
 
 			//// Button Press
 			//if (IS.GetControllerButtonTriggered(0, InputSystem.Button.A))
@@ -472,7 +472,7 @@ namespace TRE
 		{
 			// Ignores if dead
 			if (isDead) return;
-            IsControllerConnected = IS.GetControllerConnected(0);
+			IsControllerConnected = IS.GetControllerConnected(0);
 
 			if (DroppingOutOfMap)
 			{
@@ -488,28 +488,28 @@ namespace TRE
 					{
 						dirVec += CS.GetMainCameraForwardVec();
 						lastPlayerDirection = 0;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (IS.GetKeyHold(playerDownKey))
 					{
 						dirVec -= CS.GetMainCameraForwardVec();
 						lastPlayerDirection = 180;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (IS.GetKeyHold(playerLeftKey))
 					{
 						dirVec += CS.GetMainCameraRightVec();
 						lastPlayerDirection = 90;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (IS.GetKeyHold(playerRightKey))
 					{
 						dirVec -= CS.GetMainCameraRightVec();
 						lastPlayerDirection = 270;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (IS.GetKeyHold(playerUpKey))
@@ -530,11 +530,11 @@ namespace TRE
 							lastPlayerDirection = 135;
 					}
 
-                    if (!IS.GetKeyHold(playerUpKey) && !IS.GetKeyHold(playerDownKey) && !IS.GetKeyHold(playerLeftKey) &&
-                        !IS.GetKeyHold(playerRightKey))
-                    {
-                        isWalking = false;
-                    }
+					if (!IS.GetKeyHold(playerUpKey) && !IS.GetKeyHold(playerDownKey) && !IS.GetKeyHold(playerLeftKey) &&
+						!IS.GetKeyHold(playerRightKey))
+					{
+						isWalking = false;
+					}
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
@@ -623,7 +623,7 @@ namespace TRE
 
 				// controller is connected
 				else if (!MyPauseMenu.isPaused && isControllable && IsControllerConnected)
-                {
+				{
 					float x = IS.GetControllerStickX(0, false); // false for left thumbstick
 					float y = IS.GetControllerStickY(0, false); // false for left thumbstick
 
@@ -631,28 +631,28 @@ namespace TRE
 					{
 						dirVec += CS.GetMainCameraForwardVec();
 						lastPlayerDirection = 0;
-                        isWalking = true;
-                    }
+						isWalking = true;
+					}
 
 					if (y < 0)
 					{
 						dirVec -= CS.GetMainCameraForwardVec();
 						lastPlayerDirection = 180;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (x < 0)
 					{
 						dirVec += CS.GetMainCameraRightVec();
 						lastPlayerDirection = 90;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (x > 0)
 					{
 						dirVec -= CS.GetMainCameraRightVec();
 						lastPlayerDirection = 270;
-                        isWalking = true;
+						isWalking = true;
 					}
 
 					if (y > 0)
@@ -673,10 +673,10 @@ namespace TRE
 							lastPlayerDirection = 135;
 					}
 
-                    if (x == 0 && y == 0)
-                    {
-                        isWalking = false;
-                    }
+					if (x == 0 && y == 0)
+					{
+						isWalking = false;
+					}
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
@@ -694,7 +694,7 @@ namespace TRE
 						coyoteTimeCounter -= Time.deltaTime;
 					}
 					//check if space is pressed within the buffer time
-					if (IS.GetControllerButtonTriggered(0,IS.Button.A))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.A))
 					{
 						jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
@@ -709,7 +709,7 @@ namespace TRE
 					if (isJumping)
 					{
 						//check if space is released then cancel jump
-						if (IS.GetControllerButtonReleased(0,IS.Button.A))
+						if (IS.GetControllerButtonReleased(0, IS.Button.A))
 						{
 							jumpCancelled = true;
 							coyoteTimeCounter = 0f;
@@ -727,7 +727,7 @@ namespace TRE
 					//check if player is on the ground and space is not released
 					else
 					{
-						if (IS.GetControllerButtonReleased(0,IS.Button.A))
+						if (IS.GetControllerButtonReleased(0, IS.Button.A))
 						{
 							isJumping = false;
 						}
@@ -761,7 +761,7 @@ namespace TRE
 						currentJumpTime = 0;
 						jumpBufferCounter = 0;
 					}
-                }
+				}
 			}
 		}
 
@@ -838,12 +838,12 @@ namespace TRE
 				isScaled = false;
 			}
 
-            if (IS.GetControllerButtonTriggered(0, InputSystem.Button.B))
-            {
-                MyPowerManager.SwapPowerUps();
-                MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
-                isScaled = false;
-            }
+			if (IS.GetControllerButtonTriggered(0, InputSystem.Button.B))
+			{
+				MyPowerManager.SwapPowerUps();
+				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+				isScaled = false;
+			}
 		}
 
 		private void HandleDrop()
@@ -855,11 +855,11 @@ namespace TRE
 				isScaled = false;
 			}
 
-            if (IS.GetControllerButtonTriggered(0, InputSystem.Button.Y))
-            {
-                MyPowerManager.DropMain();
-                isScaled = false;
-            }
+			if (IS.GetControllerButtonTriggered(0, InputSystem.Button.Y))
+			{
+				MyPowerManager.DropMain();
+				isScaled = false;
+			}
 		}
 
 		private void HandleAbilities()
@@ -894,24 +894,24 @@ namespace TRE
 				}
 			}
 
-            if (IS.GetControllerButtonTriggered(0, InputSystem.Button.X))
-            {
-                if (mainBlueberry || mainStrawberry)
-                {
-                    isScaled = !isScaled;
+			if (IS.GetControllerButtonTriggered(0, InputSystem.Button.X))
+			{
+				if (mainBlueberry || mainStrawberry)
+				{
+					isScaled = !isScaled;
 
-                    if (isScaled)
-                    {
-                        if (ECSManager.IsValidEntity(changesizeSFX))
-                            AS.Play(changesizeSFX);
-                    }
-                    else
-                    {
-                        if (ECSManager.IsValidEntity(normalsizeSFX))
-                            AS.Play(normalsizeSFX);
-                    }
-                }
-            }
+					if (isScaled)
+					{
+						if (ECSManager.IsValidEntity(changesizeSFX))
+							AS.Play(changesizeSFX);
+					}
+					else
+					{
+						if (ECSManager.IsValidEntity(normalsizeSFX))
+							AS.Play(normalsizeSFX);
+					}
+				}
+			}
 
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{

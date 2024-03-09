@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO.MemoryMappedFiles;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 using GlmSharp; // Add this for GLM lib
-using Coroutine; // Add this for Coroutine lib
-
+// using Coroutine; // Add this for Coroutine lib
 
 /*
  *  This is the core scripting library for TRE.

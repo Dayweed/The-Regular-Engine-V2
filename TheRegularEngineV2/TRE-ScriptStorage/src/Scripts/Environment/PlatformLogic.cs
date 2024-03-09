@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
-
 namespace TRE
 {
 	public class PlatformLogic : Entity
@@ -41,10 +33,10 @@ namespace TRE
 		public void OnCollisionStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
-            if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
-            {
-                other.GetComponent<Transform>().Position += (transform.Position - GetComponent<DirectPathfinding>().oldPosition) * Time.deltaTime;
-            }
-        }
+			if (other.CompareTag("Red") || other.CompareTag("Blue") || other.CompareTag("Strawberry") || other.CompareTag("Blueberry"))
+			{
+				other.GetComponent<Transform>().Position += (transform.Position - GetComponent<DirectPathfinding>().oldPosition) * Time.deltaTime;
+			}
+		}
 	}
 }

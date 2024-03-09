@@ -1,9 +1,5 @@
 ﻿using GlmSharp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TRE
 {
@@ -116,13 +112,13 @@ namespace TRE
 		{
 			vec3 pos = transform.Position;
 			float tempRadius = playerObj.GetComponent<HoleyController>().currentRadius * separationMultiplier;
-			
+
 			float angleInRadians = 0;
 			if (CompareTag(leftCactus))
 				angleInRadians = NiceRotationAngle(niceRotY - 90) / 180.0f * 3.141502f;
 			else if (CompareTag(rightCactus))
 				angleInRadians = NiceRotationAngle(niceRotY + 90) / 180.0f * 3.141502f;
-			
+
 			pos.z += tempRadius * (float)Math.Cos(angleInRadians);
 			pos.x += tempRadius * (float)Math.Sin(angleInRadians);
 			transform.Position = pos;

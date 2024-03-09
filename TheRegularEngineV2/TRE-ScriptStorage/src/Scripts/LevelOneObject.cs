@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
-using System.Management.Instrumentation;
-
-namespace TRE
+﻿namespace TRE
 {
 	public class LevelOneObject : Entity
 	{
@@ -20,15 +11,12 @@ namespace TRE
 		{
 			LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
 			LvlObjUI = ECSManager.FindEntityByName("LevelObject");
-
 		}
 
 		public void Update()
 		{
 			if (pickedUp)
-			{
 				LvlObjUI.GetComponent<SpriteRenderer>().isVisible = true;
-			}
 		}
 
 		private void OnTriggerEnter(System.UInt64 otherID)

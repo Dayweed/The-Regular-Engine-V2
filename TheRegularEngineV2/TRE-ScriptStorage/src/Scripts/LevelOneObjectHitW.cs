@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
-using System.Management.Instrumentation;
-
-namespace TRE
+﻿namespace TRE
 {
 	public class LevelOneObjectHitW : Entity
 	{
 		private Entity LevelObject;
 
 		private LevelOneObject LevelOneObj;
-		
+
 		public void OnCreate()
 		{
 			LevelOneObj = ECSManager.FindEntityByName("LevelObject_PickMe").GetComponent<LevelOneObject>();

@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
 using GlmSharp;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace TRE
 {

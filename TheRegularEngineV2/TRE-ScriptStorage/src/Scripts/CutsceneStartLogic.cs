@@ -1,10 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using System.Linq;
 
 namespace TRE
 {
@@ -105,17 +99,17 @@ namespace TRE
 				endCutscene = true;
 			}
 
-			if (currentFrame == 2 )
+			if (currentFrame == 2)
 			{
 				if (ECSManager.IsValidEntity(birdSFX))
 					AS.Stop(birdSFX);
 			}
 
-			if(currentFrame == 2 && !invitationSFXPlayed)
+			if (currentFrame == 2 && !invitationSFXPlayed)
 			{
 				if (ECSManager.IsValidEntity(invitationSFX))
 					AS.Play(invitationSFX);
-					invitationSFXPlayed = true;
+				invitationSFXPlayed = true;
 			}
 
 			if (currentFrame == 3)

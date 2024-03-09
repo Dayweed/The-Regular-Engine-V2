@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-
 namespace TRE
 {
 	using AS = AudioSystem;
@@ -45,12 +38,12 @@ namespace TRE
 			isActivated = isActive;
 			GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
 
-			if(isActivated && !isPlaying)
+			if (isActivated && !isPlaying)
 			{
 				isPlaying = true;
 				AS.Play(jumppadSFX);
 			}
-			else if(!isActivated && isPlaying)
+			else if (!isActivated && isPlaying)
 			{
 				isPlaying = false;
 			}

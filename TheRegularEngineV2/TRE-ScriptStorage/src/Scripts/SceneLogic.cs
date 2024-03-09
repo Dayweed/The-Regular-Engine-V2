@@ -1,12 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Policy;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
 using GlmSharp;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace TRE
 {
@@ -265,7 +259,7 @@ namespace TRE
 						//StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
 						//	StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
 						//StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
-						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f,0f);
+						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
 						StarParticle.GetComponent<Particle>().IsActive = true;
 					}
 				}
@@ -332,7 +326,7 @@ namespace TRE
 				{
 					courseComplete.isVisible = true;
 					ECSManager.FindEntityByName("CourseComplete").GetComponent<VFX_SlapOn>().SlapOn();
-					
+
 					if (ECSManager.IsValidEntity(endsceneBGM))
 					{
 						AudioSystem.Play(endsceneBGM);

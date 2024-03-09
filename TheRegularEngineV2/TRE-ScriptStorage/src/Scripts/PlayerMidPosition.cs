@@ -1,8 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-using GlmSharp;
+﻿using GlmSharp;
 
 namespace TRE
 {

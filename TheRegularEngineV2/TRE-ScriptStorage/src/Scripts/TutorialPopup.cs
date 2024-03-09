@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
-using System.Management.Instrumentation;
-
-namespace TRE
+﻿namespace TRE
 {
 	public class TutorialPopup : Entity
 	{
 		private Entity UIPopup1;
-		private Entity PopupCollier;
+		private Entity PopupCollider;
 		private bool IsActivated_1 = false;
 		private bool HasBeenTriggeredBefore_1 = false;
 
@@ -30,7 +21,7 @@ namespace TRE
 		public void Start()
 		{
 			UIPopup1 = ECSManager.FindEntityByName("PopupUI1");
-			PopupCollier = ECSManager.FindEntityByName("PopUpCollider");
+			PopupCollider = ECSManager.FindEntityByName("PopUpCollider");
 			HasBeenTriggeredBefore_1 = false;
 			IsActivated_1 = false;
 
@@ -90,7 +81,7 @@ namespace TRE
 			// Check is interacted with moles players
 			if ((EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue"))
 			{
-				if (!HasBeenTriggeredBefore_1 && this.ID.Equals(PopupCollier.ID))
+				if (!HasBeenTriggeredBefore_1 && this.ID.Equals(PopupCollider.ID))
 				{
 					IsActivated_1 = true;
 					HasBeenTriggeredBefore_1 = true;

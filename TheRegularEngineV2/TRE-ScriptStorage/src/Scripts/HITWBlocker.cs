@@ -23,7 +23,7 @@ namespace TRE
 				GetComponent<Transform>().Scale -= new vec3(0f, shrinkSpeed, 0f) * Time.deltaTime;
 				GetComponent<BoxCollider>().IsActive = false;
 
-				if(GetComponent<Transform>().Scale.y <= 0)
+				if (GetComponent<Transform>().Scale.y <= 0)
 				{
 					GetComponent<Transform>().Scale = new vec3(0, 0, 0);
 					doOnce = true;
