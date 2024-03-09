@@ -33,6 +33,7 @@ namespace TRE
 		Action TrembleFunction;
 		#endregion
 
+		#region Variables
 		// whether the platform is currently active/inactive
 		bool platformState;
 
@@ -49,10 +50,15 @@ namespace TRE
 		int rotationDirection;
 
 		// the change in angle per unit(frame?) of time in a rotation
-		const float rotationSpeed = 40.0f;
+		const float rotationSpeed = 40.0f; // 90.0f for FAST
 
-		float timer;
+		float globalTimer;
 		vec3 originalPosition;
+
+		bool shouldTremble;
+		float trembleTimer;
+		const float trembleDuration = 1.0f; // 0.5f for FAST
+		#endregion
 
 		public void Start()
 		{
@@ -116,9 +122,12 @@ namespace TRE
 			}
 
 			platformState = false;
-			timer = 0;
+			shouldRotate = false;
+			globalTimer = 0;
 			TS.GetPosition(this.ID, out vec3 pos);
 			originalPosition = pos;
+			shouldTremble = false;
+			trembleTimer = 0;
 		}
 
 		public void Update()
@@ -128,9 +137,10 @@ namespace TRE
 			if (InputSystem.GetKeyPress(InputKeys.RightBracket))
 				SetPlatformState(true);
 
-			timer += Time.deltaTime;
+			globalTimer += Time.deltaTime;
 
-			// TrembleFunction();
+			if (shouldTremble)
+				TrembleFunction();
 
 			if (shouldRotate)
 				RotateFunction();
@@ -145,13 +155,23 @@ namespace TRE
 		{
 			// do nothing if the platform already matches the given state
 			if (!shouldRotate && platformState == state)
-			{
 				return;
+
+			// ignore requests while trembling
+			if (shouldTremble)
+				return;
+
+			// only do trembling when rotating from standstill
+			if (!shouldRotate)
+			{
+				shouldTremble = true;
+				trembleTimer = 0;
 			}
+			InitializeRotation(state);
+		}
 
-			// send the "signal" that a rotation should take place
-			shouldRotate = true;
-
+		void InitializeRotation(bool state)
+		{
 			// assign variables based on the constants set in Start()
 			if (state)
 			{
@@ -172,30 +192,10 @@ namespace TRE
 			}
 		}
 
-		bool IsInRange(float angle, float direction)
+		void StartRotation()
 		{
-			const float rangeInDegrees = 5.0f;
-			if (direction - rangeInDegrees <= angle && angle <= direction + rangeInDegrees)
-				return true;
-			else
-				return false;
-		}
-
-		// a 'nice' rotation is a rotation in degrees of only the following:
-		// { 0, 45, 90, 135, 180, 225, 270, 315 }
-		float NiceRotationAngle(float rotYInDegrees)
-		{
-			while (rotYInDegrees < 0)
-				rotYInDegrees += 360;
-			while (rotYInDegrees > 360)
-				rotYInDegrees -= 360;
-
-			for (int i = 0; i < directions.Length; ++i)
-			{
-				if (IsInRange(rotYInDegrees, directions[i]))
-					return directions[i];
-			}
-			return 0;
+			// send the "signal" that a rotation should take place
+			shouldRotate = true;
 		}
 
 		void PerformRotationZ()
@@ -232,6 +232,55 @@ namespace TRE
 			}
 		}
 
+		void TrembleZ()
+		{
+			const float amplitude = 0.125f;
+			const float frequency = 60.0f;
+
+			trembleTimer += Time.deltaTime;
+
+			if (trembleTimer < trembleDuration)
+			{
+				TS.GetPosition(this.ID, out vec3 pos);
+				pos.z = originalPosition.z + amplitude * MathF.Sin(globalTimer * frequency);
+				TS.SetPosition(this.ID, pos);
+			}
+			else
+			{
+				// send the 'signal' to actualy begin rotation and stop trembling
+				StartRotation();
+				// transform.Position = originalPosition;
+				trembleTimer = 0;
+				shouldTremble = false;
+				return;
+			}
+		}
+
+		void TrembleX()
+		{
+			const float amplitude = 0.125f;
+			const float frequency = 60.0f;
+
+			trembleTimer += Time.deltaTime;
+
+			if (trembleTimer < trembleDuration)
+			{
+				TS.GetPosition(this.ID, out vec3 pos);
+				pos.x = originalPosition.x + amplitude * MathF.Sin(globalTimer * frequency);
+				TS.SetPosition(this.ID, pos);
+			}
+			else
+			{
+				// send the 'signal' to actualy begin rotation and stop trembling
+				StartRotation();
+				// transform.Position = originalPosition;
+				trembleTimer = 0;
+				shouldTremble = false;
+				return;
+			}
+		}
+
+		#region Helper Functions
 		/*
 		void Swap(ref float a, ref float b)
 		{
@@ -250,24 +299,13 @@ namespace TRE
 			return (output - start) / (end - start);
 		}
 
-		void TrembleZ()
+		bool IsInRange(float angle, float direction)
 		{
-			const float amplitude = 0.125f;
-			const float frequency = 60.0f;
-
-			TS.GetPosition(this.ID, out vec3 pos);
-			pos.z = originalPosition.z + amplitude * MathF.Sin(timer * frequency);
-			TS.SetPosition(this.ID, pos);
-		}
-
-		void TrembleX()
-		{
-			const float amplitude = 0.125f;
-			const float frequency = 60.0f;
-
-			TS.GetPosition(this.ID, out vec3 pos);
-			pos.x = originalPosition.x + amplitude * MathF.Sin(timer * frequency);
-			TS.SetPosition(this.ID, pos);
+			const float rangeInDegrees = 40.0f;
+			if (direction - rangeInDegrees <= angle && angle <= direction + rangeInDegrees)
+				return true;
+			else
+				return false;
 		}
 
 		void print(string str)
@@ -306,5 +344,6 @@ namespace TRE
 
 			return isDiffZeroX && isDiffZeroY && isDiffZeroZ;
 		}
+		#endregion
 	}
 }
