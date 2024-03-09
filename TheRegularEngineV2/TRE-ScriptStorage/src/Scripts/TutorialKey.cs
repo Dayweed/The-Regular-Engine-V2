@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Threading;
-using GlmSharp;
-using System.Management.Instrumentation;
+﻿using GlmSharp;
 
 namespace TRE
 {
@@ -26,8 +19,6 @@ namespace TRE
 
 			if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
 			{
-
-
 				TransformSystem.SetPosition(FinalPlatform.ID, new vec3(98.867f, 11.572f, -480.259f));
 				UpButton.SetActive(false);
 

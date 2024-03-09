@@ -7,8 +7,22 @@ namespace TRE
 	public class OnOffPlatformManager : Entity
 	{
 		List<OnOffPlatform> platformList = new List<OnOffPlatform>();
+		Button button;
 
 		public void Start()
+		{
+			GetSortedChildren();
+
+			// get first button
+			button = ECSManager.FindEntityByName("Button").GetComponent<Button>();
+		}
+
+		public void Update()
+		{
+			platformList[0].SetPlatformState(button.GetIsPressed());
+		}
+
+		void GetSortedChildren()
 		{
 			int childCount = parenting.GetTotalChildren();
 			platformList.Capacity = childCount;
@@ -23,13 +37,8 @@ namespace TRE
 				print(child.name);
 		}
 
-		public void Update()
-		{
-			FlipPlatformsInSeries();
-		}
-
+		// an attempt at the C++-like static variable
 		bool tempBehaviourMode = false;
-
 		void FlipPlatformsInSeries()
 		{
 			// obtain all the states of the on/off platforms
