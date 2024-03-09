@@ -338,14 +338,21 @@ namespace TRE
 
 		glm::mat4 shadowDepthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
-		for (const auto& entity : ECSManager::Instance().GetEntities<DirectionalLight>())
+
+		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		if (DLights.size() > 2)
 		{
+			TRE_CORE_CRITICAL("Engine does not support more than 2 directional light");
+		}
+
+		for (int x = 0; x < DLights.size(); x++)
+		{
+			const auto& entity = DLights[x];
 			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
-			//std::cout << std::fixed  << "Light Direction: " << light.m_Direction.x << ", " << light.m_Direction.y << ", " << light.m_Direction.z << std::endl;
-			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
-			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
-			ubo.m_LightAmbientColor = light.m_AmbientColor;
+			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
+			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
+			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
 			
 			if (recalculateShadowFrustum)
 			{
@@ -427,14 +434,17 @@ namespace TRE
 		glm::mat4 shadowDepthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		recalculateShadowFrustum = true;
-		for (const auto& entityDirectional : ECSManager::Instance().GetEntities<DirectionalLight>())
+
+		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		for (int x = 0; x < DLights.size(); x++)
 		{
+			const auto& entityDirectional = DLights[x];
 			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
 			const auto& light = entityDirectional->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
-			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
-			ubo.m_LightAmbientColor = light.m_AmbientColor;
-			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
+			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
+			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
+			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
+			ubo.m_ShadowIntensity[x] = light.m_ShadowIntensity;
 
 			if (recalculateShadowFrustum)
 			{
@@ -688,6 +698,7 @@ namespace TRE
 			PushConstantGeometry pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
 			pc.m_DrawShadow = mr.m_DrawShadow;
+			pc.m_DLightIndex = mr.m_DLightIndex;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			ResourceHandle currentMaterialHandle = go_mr.first;
@@ -747,6 +758,7 @@ namespace TRE
 			PushConstantGeometry pc{};
 			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
 			pc.m_DrawShadow = MeshRendererComp.m_DrawShadow;
+			pc.m_DLightIndex = MeshRendererComp.m_DLightIndex;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			if (MeshRendererComp.m_AnimationMaterialInstance == nullptr)

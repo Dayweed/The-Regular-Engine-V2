@@ -23,11 +23,14 @@ layout(location = 0) out struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
+
+	bool m_DrawShadow;
 } Out;
 
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
+	int  m_DLightIndex;
 	bool m_DrawShadow;
 } push;
 
@@ -38,10 +41,10 @@ layout(set = 0, binding = 0) uniform UBO
 	vec3 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
-	vec4 m_DirectionalLightDirection;
-	vec4 m_DirectionalLightColor;
-	vec4 m_AmbientLight;
-	float m_ShadowIntensity;
+	vec4 m_DirectionalLightDirection[2];
+	vec4 m_DirectionalLightColor[2];
+	vec4 m_AmbientLight[2];
+	float m_ShadowIntensity[2];
 } ubo;
 
 layout(set = 0, binding = 6) uniform MaterialColor
@@ -63,20 +66,21 @@ void main()
 	vec3 normal = normalize(rot * inNormal);
 	vec3 tangent = normalize(rot * inTangent);	
 	vec3 bitangent = normalize(rot * inBitangent);
-
 	Out.VertNormal = normal;
 
 	Out.TBN = mat3( tangent, bitangent, normal);
 	Out.PosWorld = push.m_Model * vec4(inPosition, 1.0);
 	Out.PosWorld.w = gamma;
 	Out.MaterialColor = MaterialUBO.m_Color;
-	Out.AmbientColor = ubo.m_AmbientLight;
+	Out.AmbientColor = ubo.m_AmbientLight[push.m_DLightIndex];
 	Out.CameraWorldPos = ubo.m_CameraPosition.xyz;
 
 	Out.ShadowCoord = ubo.m_LightSpaceMatrix * push.m_Model * vec4(inPosition, 1.0);
-	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection;
-	Out.DirectionalLightColor = ubo.m_DirectionalLightColor;
-	Out.ShadowIntensity = ubo.m_ShadowIntensity;
+	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection[push.m_DLightIndex];
+	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[push.m_DLightIndex];
+	Out.ShadowIntensity = ubo.m_ShadowIntensity[push.m_DLightIndex];
+
+	Out.m_DrawShadow = push.m_DrawShadow;
 }
 
 #version 450
@@ -97,13 +101,8 @@ layout(location = 0) in struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-} In;
-
-layout(push_constant) uniform Push
-{
-	mat4 m_Model;
 	bool m_DrawShadow;
-} push;
+} In;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
 layout(set = 0, binding = 2) uniform sampler2D NormalMap;
@@ -210,7 +209,7 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	if(push.m_DrawShadow)
+	if(In.m_DrawShadow)
 	{
 		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}

@@ -21,6 +21,7 @@ namespace TRE
 		bool							m_DrawShadow{ true };
 		bool							m_IsCulled{ false };
 		bool							m_IsDirty{ false };
+		int								m_DLightIndex = 0;
 
 		property_vtable()
 
@@ -31,7 +32,8 @@ namespace TRE
 				{ "ASSET_MAT_m_MaterialInstance", t.m_MaterialInstance ? t.m_MaterialInstance->GetHandleHex() : "0" },
 				{ "ASSET_MAT_m_AnimationMaterialInstance", t.m_AnimationMaterialInstance ? t.m_AnimationMaterialInstance->GetHandleHex() : "0" },
 				{ "m_IsVisible", t.m_IsVisible },	
-				{ "m_DrawShadow", t.m_DrawShadow }
+				{ "m_DrawShadow", t.m_DrawShadow },
+				{ "m_DLightIndex", t.m_DLightIndex }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, MeshRenderer& t)
@@ -117,6 +119,9 @@ namespace TRE
 
 			if(j.contains("m_DrawShadow"))
 				t.m_DrawShadow = j.at("m_DrawShadow").get<bool>();
+
+			if (j.contains("m_DLightIndex"))
+				t.m_DLightIndex = j.at("m_DLightIndex").get<int>();
 
 			t.m_IsDirty = true;
 		}
@@ -214,6 +219,6 @@ property_begin(TRE::MeshRenderer)
 
 	} property_var_fnend(),
 	property_var(m_IsVisible),
-	property_var(m_DrawShadow)
-
+	property_var(m_DrawShadow),
+	property_var(m_DLightIndex)
 } property_vend_h(TRE::MeshRenderer)
