@@ -17,6 +17,7 @@ namespace TRE
 	static char inputTextBuffer[128] = "";
 
 	ContentBrowserPanel::ContentBrowserPanel(const std::shared_ptr<SelectionManager>& Selection_Manager, const std::shared_ptr<AssetSelector>& assetSelector)
+		: m_RefreshRate(1000.0f)
 	{
 		m_SelectionManager = Selection_Manager;
 		m_AssetSelector = assetSelector;

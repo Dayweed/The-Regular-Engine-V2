@@ -1,6 +1,6 @@
 namespace TRE
 {
-	class Button : Entity
+	public class Button : Entity
 	{
 		bool isPressed = false;
 
@@ -26,7 +26,7 @@ namespace TRE
 			}
 		}
 
-		public bool GetIsPressed()
+		public bool GetIsButtonPressed()
 		{
 			return isPressed;
 		}

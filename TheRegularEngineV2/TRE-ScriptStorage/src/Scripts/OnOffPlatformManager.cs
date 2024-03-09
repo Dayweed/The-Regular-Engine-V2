@@ -3,26 +3,32 @@ using System.Collections.Generic;
 
 namespace TRE
 {
-
 	public class OnOffPlatformManager : Entity
 	{
 		List<OnOffPlatform> platformList = new List<OnOffPlatform>();
-		Button button;
+		List<Button> buttonList = new List<Button>();
 
 		public void Start()
 		{
-			GetSortedChildren();
+			GetSortedPlatforms();
 
-			// get first button
-			button = ECSManager.FindEntityByName("Button").GetComponent<Button>();
+			// add first (external) button
+			Button firstButton = ECSManager.FindEntityByName("Button").GetComponent<Button>();
+			buttonList.Add(firstButton);
+
+			// add other buttons
+			// Take note! the buttons that have the OnOffPlatform as their
+			// parents need to be un-prefab-ed! For some reason!!
+			GetSortedButtons();
 		}
 
 		public void Update()
 		{
-			platformList[0].SetPlatformState(button.GetIsPressed());
+			for (int i = 0; i < buttonList.Count; ++i)
+				platformList[i].SetPlatformState(buttonList[i].GetIsButtonPressed());
 		}
 
-		void GetSortedChildren()
+		void GetSortedPlatforms()
 		{
 			int childCount = parenting.GetTotalChildren();
 			platformList.Capacity = childCount;
@@ -30,11 +36,26 @@ namespace TRE
 			for (int i = 0; i < childCount; ++i)
 				platformList.Add(parenting.GetChild(i).GetComponent<OnOffPlatform>());
 
-			platformList.Sort(new SortAlphabetically());
+			platformList.Sort(new SortEntitiesAlphabetically());
+		}
 
-			print("Here are the children in alphabetical order:");
-			foreach (var child in platformList)
-				print(child.name);
+		void GetSortedButtons()
+		{
+			foreach (OnOffPlatform platform in platformList)
+			{
+				int childrenSize = platform.parenting.GetTotalChildren();
+
+				for (int i = 0; i < childrenSize; ++i)
+				{
+					Entity child = platform.parenting.GetChild(i);
+
+					if (child.HasComponent<Button>())
+					{
+						buttonList.Add(child.GetComponent<Button>());
+						break;
+					}
+				}
+			}
 		}
 
 		// an attempt at the C++-like static variable
@@ -93,7 +114,7 @@ namespace TRE
 		}
 	}
 
-	public class SortAlphabetically : IComparer<Entity>
+	public class SortEntitiesAlphabetically : IComparer<Entity>
 	{
 		public int Compare(Entity x, Entity y)
 		{
