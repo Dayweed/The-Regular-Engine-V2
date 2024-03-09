@@ -7,7 +7,8 @@ namespace TRE
 
 	public class OnOffPlatform : Entity
 	{
-		#region Constants (assigned in Start(), no changes please thanks)
+		// assigned in Start(), no changes please thanks
+		#region Constants
 		// determines if it's a left/right platform or forward/backward platform
 		// the forward/backward is the "opposite" type of platform, rotates on x axis
 		// left/right has bigger scale on z axis than x axis
@@ -58,6 +59,9 @@ namespace TRE
 		bool shouldTremble;
 		float trembleTimer;
 		const float trembleDuration = 1.0f; // 0.5f for FAST
+
+		// used by the child's `IsColliding` script to tell the parent its result
+		public bool isCollidingWithPlayer = false;
 		#endregion
 
 		public void Start()
@@ -137,6 +141,8 @@ namespace TRE
 			if (InputSystem.GetKeyPress(InputKeys.RightBracket))
 				SetPlatformState(true);
 
+			// print("isCollidingWithPlayer: " + isCollidingWithPlayer);
+			
 			globalTimer += Time.deltaTime;
 
 			if (shouldTremble)

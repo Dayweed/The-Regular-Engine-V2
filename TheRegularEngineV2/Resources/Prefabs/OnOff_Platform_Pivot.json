@@ -28,14 +28,14 @@
       0,
       {
          "m_Children": [
-            "17849484010803762555"
+            "2515349505949067146"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "13454721555624205183"
+         "m_Parent": "4597496834701365129"
       }
    ],
    [
@@ -43,15 +43,15 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "13454721555624205183",
+         "m_GUID": "4597496834701365129",
          "m_Index": 1,
          "m_Name": "OnOff_Platform_Pivot",
-         "m_Tag": ""
+         "m_Tag": "OnOffPlatform"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "17849484010803762555",
+         "m_GUID": "2515349505949067146",
          "m_Index": 2,
          "m_Name": "OnOff_Platform",
          "m_Tag": "Ground"
@@ -149,13 +149,20 @@
       0
    ],
    [
-      1,
+      2,
       0,
       {
          "m_RegisteredScripts": [
             "TRE.OnOffPlatform"
          ],
          "m_StoredClass": "TRE.OnOffPlatform"
+      },
+      1,
+      {
+         "m_RegisteredScripts": [
+            "TRE.IsColliding"
+         ],
+         "m_StoredClass": "TRE.IsColliding"
       }
    ],
    [
