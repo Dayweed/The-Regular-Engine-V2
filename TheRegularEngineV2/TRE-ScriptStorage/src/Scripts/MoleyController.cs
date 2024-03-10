@@ -288,16 +288,20 @@ namespace TRE
 				PS.SetLinearVelocity(this.ID, finalVelocity);
 			}*/
 
-			if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) <= maxVelocity)
+			// Only set velocity if not respawning
+			if (!RespawnPlayer)
 			{
-				finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
-				PS.SetLinearVelocity(this.ID, finalVelocity);
-			}
-			else
-			{
-				vec3 tmp = dirVec * maxVelocity;
-				finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
-				PS.SetLinearVelocity(this.ID, finalVelocity);
+				if (Math.Sqrt(currVelocity.x * currVelocity.x + currVelocity.z * currVelocity.z) <= maxVelocity)
+				{
+					finalVelocity = currVelocity + (dirVec * acceleration * Time.deltaTime);
+					PS.SetLinearVelocity(this.ID, finalVelocity);
+				}
+				else
+				{
+					vec3 tmp = dirVec * maxVelocity;
+					finalVelocity = new vec3(tmp.x, currVelocity.y, tmp.z);
+					PS.SetLinearVelocity(this.ID, finalVelocity);
+				}
 			}
 
 			// here?
