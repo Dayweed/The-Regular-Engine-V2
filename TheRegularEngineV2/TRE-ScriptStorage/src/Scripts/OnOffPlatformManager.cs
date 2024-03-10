@@ -36,36 +36,44 @@ namespace TRE
 
 		public void Update()
 		{
+			if (InputSystem.GetKeyPress(InputKeys.R))
+			{
+				MakeAllPlatformsInactive();
+				return;
+			}
+
 			// the number of platforms and buttons should be the same!!!
 			if (buttonList.Count != platformList.Count)
 				return;
 
+			// switch 0 should lower x and raise 0
+			// switch 1 should lower x and raise 1
+			// switch 2 should lower 0 and raise 2
+			// switch 3 should lower 1 and raise 3
+			// etc...
+
 			for (int i = 0; i < buttonList.Count; ++i)
 			{
-				// Thingy: <where it is spatially>
-				// Platforms:   0 1 2 3 ...
-				// Buttons:   0 1 2 3 ...
+				Button button = buttonList[i];
+				int lowerIndex = i - 2;
+				bool lowerIndexInBounds = 0 <= lowerIndex && lowerIndex <= buttonList.Count;
+				// int raiseIndex = i;
+				// bool raiseIndexInBounds = 0 <= raiseIndex && raiseIndex <= buttonList.Count;
 
-				OnOffPlatform platform = platformList[i];
-				// Button buttonForPlatform = buttonList[i];
-				// Button buttonOnPlatform = buttonList[i + 1];
+				if (button.GetIsButtonPressed())
+				{
+					if (lowerIndexInBounds)
+						platformList[lowerIndex].SetPlatformState(false);
+					platformList[i].SetPlatformState(true);
+				}
+				else { } // what do I put here???
 
-				// Only players can press buttons down.
-				// Hence, Button pressed -> Player on *prior* platform.
-				// Therefore, Button *ahead by one* is pressed -> Player on platform.
-
-				bool isPlayerOnPlatform;
-				if (i == buttonList.Count - 1) // the last platform will never have its own button
-					isPlayerOnPlatform = platform.isCollidingWithPlayer;
-				else
-					isPlayerOnPlatform = buttonList[i + 1].GetIsButtonPressed() || platform.isCollidingWithPlayer;
-
-				// if player is standing on platform and the button FOR that platform is NOT pressed, 
-				// DON'T CHANGE ITS STATE!!
-				if (isPlayerOnPlatform && !buttonList[i].GetIsButtonPressed())
-					continue;
-
-				platform.SetPlatformState(buttonList[i].GetIsButtonPressed());
+				//if (i == 0 || i == 1)
+				//{
+				//	if (lowerIndexInBounds)
+				//		platformList[lowerIndex].SetPlatformState(true);
+				//	platformList[i].SetPlatformState(false);
+				//}
 			}
 		}
 
@@ -96,6 +104,46 @@ namespace TRE
 						break;
 					}
 				}
+			}
+		}
+
+		void MakeAllPlatformsInactive()
+		{
+			foreach (OnOffPlatform platform in platformList)
+			{
+				platform.SetPlatformState(false);
+				// platform.ResetPlatform();
+			}
+		}
+
+		void OldBehaviour()
+		{
+			for (int i = 0; i < buttonList.Count; ++i)
+			{
+				// Thingy: <where it is spatially>
+				// Platforms:   0 1 2 3 ...
+				// Buttons:   0 1 2 3 ...
+
+				OnOffPlatform platform = platformList[i];
+				// Button buttonForPlatform = buttonList[i];
+				// Button buttonOnPlatform = buttonList[i + 1];
+
+				// Only players can press buttons down.
+				// Hence, Button pressed -> Player on *prior* platform.
+				// Therefore, Button *ahead by one* is pressed -> Player on platform.
+
+				bool isPlayerOnPlatform;
+				if (i == buttonList.Count - 1) // the last platform will never have its own button
+					isPlayerOnPlatform = platform.isCollidingWithPlayer;
+				else
+					isPlayerOnPlatform = buttonList[i + 1].GetIsButtonPressed() || platform.isCollidingWithPlayer;
+
+				// if player is standing on platform and the button FOR that platform is NOT pressed, 
+				// DON'T CHANGE ITS STATE!!
+				if (isPlayerOnPlatform && !buttonList[i].GetIsButtonPressed())
+					continue;
+
+				platform.SetPlatformState(buttonList[i].GetIsButtonPressed());
 			}
 		}
 	}
