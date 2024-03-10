@@ -1306,7 +1306,7 @@ namespace TRE
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "Depth Pass";
-		ImgConfig.Format = ImageFormat::DEPTH32F;
+		ImgConfig.Format = ImageFormat::DEPTH16UN;
 		ImgConfig.Width = m_DepthPrepassMapWidth;
 		ImgConfig.Height = m_DepthPrepassMapHeight;
 		ImgConfig.Usage = ImageUsage::Attachment;
@@ -1341,7 +1341,7 @@ namespace TRE
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "ID Pass";
-		ImgConfig.Format = ImageFormat::DEPTH32F;
+		ImgConfig.Format = ImageFormat::DEPTH16UN;
 		ImgConfig.Width = m_IDPrepassMapWidth;
 		ImgConfig.Height = m_IDPrepassMapHeight;
 		ImgConfig.Usage = ImageUsage::Attachment;

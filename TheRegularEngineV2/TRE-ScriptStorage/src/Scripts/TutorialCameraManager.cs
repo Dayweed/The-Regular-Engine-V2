@@ -76,9 +76,9 @@ namespace TRE
 			preTransitions = new CameraTransitions();
 			preTransitions.Init();
 			preTransitions.AddCameraData(new vec3(180, 50, -430), new vec3(30, 230, 0), 5f);
-			preTransitions.AddCameraData(new vec3(180, 50, -50), new vec3(30, 270, 0), 10f);
-			preTransitions.AddCameraData(new vec3(30, 40, -50), new vec3(30, 180, 0), 6f);
-			preTransitions.AddCameraData(new vec3(0, 10, 20), new vec3(30, 180, 0), 5f);
+			preTransitions.AddCameraData(new vec3(180, 50, -20), new vec3(30, 270, 0), 10f);
+			preTransitions.AddCameraData(new vec3(30, 40, -10), new vec3(30, 180, 0), 6f);
+			preTransitions.AddCameraData(new vec3(0, 10, 30), new vec3(30, 180, 0), 5f);
 		}
 		public void Update()
 		{
