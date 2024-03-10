@@ -39,7 +39,8 @@
             "9384626678381253887",
             "1711396724928852651",
             "10401713205861491233",
-            "3290327123554553632"
+            "3290327123554553632",
+            "15423563205830293015"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -80,7 +81,8 @@
             "../Resources/Prefabs/OnOff_Platform_Opposite_Pivot.json",
             "../Resources/Prefabs/OnOff_Platform_Pivot.json",
             "../Resources/Prefabs/Button.json",
-            "../Resources/Prefabs/Platform_Short.json"
+            "../Resources/Prefabs/Platform_Short.json",
+            "../Resources/Prefabs/OnOff_Platform_Manager.json"
         ]
     }
 }

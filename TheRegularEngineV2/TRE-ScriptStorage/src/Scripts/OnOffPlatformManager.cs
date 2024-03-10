@@ -13,18 +13,33 @@ namespace TRE
 			platformList = GetPlatforms();
 			platformList.Sort(new SortEntitiesAlphabetically());
 
-			// add first (external) button
-			Button firstButton = ECSManager.FindEntityByName("Button").GetComponent<Button>();
-			buttonList.Add(firstButton);
+			// find first (external) button
+			Entity firstButtonEntity = ECSManager.FindEntityByName("Button");
+
+			// add that button first, if it exists
+			if (firstButtonEntity.ID != 0)
+				buttonList.Add(firstButtonEntity.GetComponent<Button>());
 
 			// Take note: The buttons that have a OnOffPlatform as their parent
 			// need to be un-prefab-ed! For some reason!!
 			GetRemainingButtons();
+
+			// assert that the number of platforms and buttons should be the same!!!
+			if (buttonList.Count != platformList.Count)
+			{
+				string className = this.ToString();
+				Debug.LogError("[" + className + "] Different number of OnOffPlatforms and Buttons!");
+				Debug.LogError("[" + className + "] Did you forget to place the initial button?");
+				return;
+			}
 		}
 
 		public void Update()
 		{
-			// the number of platforms should be the same!!!
+			// the number of platforms and buttons should be the same!!!
+			if (buttonList.Count != platformList.Count)
+				return;
+
 			for (int i = 0; i < buttonList.Count; ++i)
 			{
 				// Thingy: <where it is spatially>
@@ -44,7 +59,7 @@ namespace TRE
 					isPlayerOnPlatform = platform.isCollidingWithPlayer;
 				else
 					isPlayerOnPlatform = buttonList[i + 1].GetIsButtonPressed() || platform.isCollidingWithPlayer;
-				
+
 				// if player is standing on platform and the button FOR that platform is NOT pressed, 
 				// DON'T CHANGE ITS STATE!!
 				if (isPlayerOnPlatform && !buttonList[i].GetIsButtonPressed())
