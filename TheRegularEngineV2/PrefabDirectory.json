@@ -13,8 +13,8 @@
             "3902543711165755485",
             "4417868754952282974",
             "6140392063845837423",
+            "9822290083591513704",
             "12595427909806929522",
-            "14145613366203719285",
             "6494385196695225489",
             "12108338006663741281",
             "1007489266501454300",
@@ -34,10 +34,12 @@
             "10801488010451749844",
             "16472183782282901065",
             "1469398891573777636",
+            "9175898822711554180",
             "3049474127598476984",
             "9384626678381253887",
             "1711396724928852651",
-            "10401713205861491233"
+            "10401713205861491233",
+            "3290327123554553632"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -52,8 +54,8 @@
             "../Resources/Prefabs/RollingObject.json",
             "../Resources/Prefabs/InvitationDialogue1.json",
             "../Resources/Prefabs/CactusRight.json",
+            "../Resources/Prefabs/Platform_Tall.json",
             "../Resources/Prefabs/Star_VFX.json",
-            "../Resources/Prefabs/Tutorial_Environment.json",
             "../Resources/Prefabs/PauseMenu.json",
             "../Resources/Prefabs/HITW_Blocker.json",
             "../Resources/Prefabs/Moley's Head Collider.json",
@@ -73,10 +75,12 @@
             "../Resources/Prefabs/Platform.json",
             "../Resources/Prefabs/InvitationDialogue3.json",
             "../Resources/Prefabs/InvitationDialogue5.json",
+            "../Resources/Prefabs/Tutorial_Environment.json",
             "../Resources/Prefabs/Frame4_1.json",
             "../Resources/Prefabs/OnOff_Platform_Opposite_Pivot.json",
             "../Resources/Prefabs/OnOff_Platform_Pivot.json",
-            "../Resources/Prefabs/Button.json"
+            "../Resources/Prefabs/Button.json",
+            "../Resources/Prefabs/Platform_Short.json"
         ]
     }
 }

@@ -1,0 +1,199 @@
+[
+   [
+      2,
+      0,
+      1
+   ],
+   [
+      2,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "9822290083591513704",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9822290083591513704",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "9822290083591513704",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12221182573045043924",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Children": [
+            "7129902011049388027"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "14503581971211812076"
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "14503581971211812076",
+         "m_Index": 1,
+         "m_Name": "Platform_Tall",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "7129902011049388027",
+         "m_Index": 2,
+         "m_Name": "Platform_Tall_Ground",
+         "m_Tag": "Ground"
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            -0.8946324586868286,
+            5.140986919403076,
+            -1.3861027956008911
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "28ea7f2246d4fc95",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "ea339bcff1bb836b",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      2,
+      0,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            5.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            -0.8999999761581421,
+            0.0,
+            -1.399999976158142
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      1,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            5.0,
+            0.30000001192092896,
+            5.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
