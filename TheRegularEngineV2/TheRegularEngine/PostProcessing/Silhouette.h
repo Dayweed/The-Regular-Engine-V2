@@ -6,10 +6,8 @@ namespace TRE
 {
 	struct SilhouetteUBO
 	{
-		glm::vec4 Color;
-		glm::vec2 Resolution;
-		float Radius;
-		float Softness;
+		glm::vec4 Color{ 0.2f,0.2f,0.8f,1.f };
+		float Threshold{ 0.0005f };
 	};
 
 	class Silhouette : public PostProcessEffect
@@ -32,5 +30,7 @@ namespace TRE
 		//glm::vec4 m_Color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		//float m_Radius = 1.0f;
 		//float m_Softness = 0.f;
+		glm::vec4 m_Color = glm::vec4(0.2f, 0.2f, 0.8f, 1.f);
+		float m_Threshold = 0.05f;
 	};
 }

@@ -31,12 +31,10 @@ namespace TRE
 
 	void Silhouette::UpdateUBO()
 	{
-		/*SilhouetteUBO UBO{};
+		SilhouetteUBO UBO{};
 		UBO.Color = m_Color;
-		UBO.Resolution = glm::vec2(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth(), Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		UBO.Radius = m_Radius;
-		UBO.Softness = m_Softness;
+		UBO.Threshold = m_Threshold;
 
-		m_UBO->SetData(&UBO, sizeof(VignetteUBO));*/
+		m_UBO->SetData(&UBO, sizeof(SilhouetteUBO));
 	}
 }

@@ -72,6 +72,7 @@ namespace TRE
 		VkCullModeFlagBits CullMode = VK_CULL_MODE_BACK_BIT;
 		bool EnableBlending = false;
 		bool EnableDepthTest = true;
+		VkCompareOp DepthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
 
 		bool UseAutoShaderVertexInput = true; //This should be set to false if you have more than 1 bind points for vertex inputs
 		std::vector<VertexBufferInputLayout> CustomVertexBufferInputLayout;
