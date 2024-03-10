@@ -32,6 +32,7 @@ namespace TRE
 		public float expectedYPos;
 		public bool toTransition;
 		public float transitionDuration = 0.8f;
+		public bool freeCamera = true;
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
@@ -55,52 +56,42 @@ namespace TRE
 			PlayerMidPosition = MidPos.GetComponent<PlayerMidPosition>();
 
 			finalPos = MidPosTransform.Position;
+			freeCamera = true;
 		}
 
 		public void Update()
 		{
-			//finalPos = MidPosTransform.Position;
-			PlayerMidPosition.expectedYPos = expectedYPos;
-
-			//make it fixed y so if both players jump, the camera doesnt keep bobbing up and down
-			//finalPos.y = useThisYPos;
-			//expectedYPos = MathF.Lerp(pos.y, expectedYPos, lerpSpeed);
-			distance = MathF.Lerp(distance, expectedDistance, lerpSpeed * Time.deltaTime);
-
-			//if (lookOnlyBool)
-			//{
-			//	//CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
-			//	finalStaticPosition.x = MathF.Lerp(finalStaticPosition.x, staticPosition.x, lerpSpeed);
-			//	finalStaticPosition.y = MathF.Lerp(finalStaticPosition.y, staticPosition.y, lerpSpeed);
-			//	finalStaticPosition.z = MathF.Lerp(finalStaticPosition.z, staticPosition.z, lerpSpeed);
-			//	CameraSystem.SetMainCameraFollow(finalStaticPosition, distance);
-			//	finalPos = finalStaticPosition;
-			//}
-			//else
-			//{
-			//	//CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, 0.8f);
-
-			//}
-			vec3 pos;
-			if (lookOnlyBool)
+			if (freeCamera)
 			{
-				pos = staticPosition;
+				//finalPos = MidPosTransform.Position;
+				PlayerMidPosition.expectedYPos = expectedYPos;
+
+				//make it fixed y so if both players jump, the camera doesnt keep bobbing up and down
+				//finalPos.y = useThisYPos;
+				//expectedYPos = MathF.Lerp(pos.y, expectedYPos, lerpSpeed);
+				distance = MathF.Lerp(distance, expectedDistance, lerpSpeed * Time.deltaTime);
+
+				vec3 pos;
+				if (lookOnlyBool)
+				{
+					pos = staticPosition;
+				}
+				else
+				{
+					pos = MidPosTransform.Position;
+					pos.y = expectedYPos;
+				}
+
+				finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed * Time.deltaTime);
+				finalPos.y = MathF.Lerp(finalPos.y, pos.y, lerpSpeed * Time.deltaTime);
+				finalPos.z = MathF.Lerp(finalPos.z, pos.z, lerpSpeed * Time.deltaTime);
+				CameraSystem.SetMainCameraFollow(finalPos, distance);
 			}
 			else
-			{
-				pos = MidPosTransform.Position;
-				pos.y = expectedYPos;
-			}
-
-			finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed * Time.deltaTime);
-			finalPos.y = MathF.Lerp(finalPos.y, pos.y, lerpSpeed * Time.deltaTime);
-			finalPos.z = MathF.Lerp(finalPos.z, pos.z, lerpSpeed * Time.deltaTime);
-			CameraSystem.SetMainCameraFollow(finalPos, distance);
-			//finalStaticPosition = finalPos;
+				CameraSystem.UpdateMainCameraTransform();
 
 			if (toTransition)
 			{
-				//Debug.Log("Transitioning");
 				CameraSystem.TransitionMainCamera(expectedPosition, expectedRotation, transitionDuration);
 				toTransition = false;
 			}

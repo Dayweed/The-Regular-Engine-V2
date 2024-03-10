@@ -899,8 +899,15 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetMainCameraPosition(vec3 position);
 
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_MainCameraUpdateTransform();
+
 		#endregion
 
+		public static void UpdateMainCameraTransform()
+		{
+			Engine_MainCameraUpdateTransform();
+		}
 	}
 
 	public class MeshRendererSystem
@@ -1756,4 +1763,66 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetParticleEmitterActive(EntityID ID);
 	}
+
+    public class ParticleSystem3D
+    {
+        public static void SetActive(EntityID ID, bool isActive)
+        {
+            Engine_SetParticleEmitterActive3D(ID, isActive);
+        }
+        public static bool GetActive(EntityID ID)
+        {
+            return Engine_GetParticleEmitterActive3D(ID);
+        }
+
+        public static void SetSpeed(EntityID ID, float speed)
+        {
+            Engine_SetParticleSpeed3D(ID, speed);
+        }
+        public static float GetSpeed(EntityID ID)
+        {
+            return Engine_GetParticleSpeed3D(ID);
+        }
+
+        public static void SetLifetime(EntityID ID, float lifetime)
+        {
+            Engine_SetParticleLifetime3D(ID, lifetime);
+        }
+        public static float GetLifetime(EntityID ID)
+        {
+            return Engine_GetParticleLifetime3D(ID);
+        }
+        public static void SetCount(EntityID ID, int Count)
+        {
+            Engine_SetParticleCount3D(ID, Count);
+        }
+        public static int GetCount(EntityID ID)
+        {
+            return Engine_GetParticleCount3D(ID);
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetParticleEmitterActive3D(EntityID ID, bool isVisible);
+        
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static bool Engine_GetParticleEmitterActive3D(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetParticleSpeed3D(EntityID ID, float speed);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static float Engine_GetParticleSpeed3D(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetParticleLifetime3D(EntityID ID, float speed);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static float Engine_GetParticleLifetime3D(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetParticleCount3D(EntityID ID, int Count);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static int Engine_GetParticleCount3D(EntityID ID);
+    }
 }
