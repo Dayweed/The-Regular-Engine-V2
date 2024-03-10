@@ -9,6 +9,7 @@ namespace TRE
 	using MS = MeshRendererSystem;
 	using PS = PhysicsSystem;
 	using TS = TransformSystem;
+	using PS3D = ParticleSystem3D;
 
 	public class MoleyController : Entity
 	{
@@ -139,6 +140,9 @@ namespace TRE
 		//Holey Reference
 		private Entity holey_ref;
 
+		//Mole Particles
+		private Entity moley_dust;
+
 		//these variables are enclusive to Moley
 		private Entity UIPopup2;
 		private bool IsActivated = false;
@@ -204,6 +208,8 @@ namespace TRE
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
 			oriScale = moleyTransform.Scale;
+
+			moley_dust = ECSManager.FindEntityByName("Moley_Dust");
 		}
 
 		public void Update()
@@ -231,41 +237,6 @@ namespace TRE
 
 			HandleAbilities();
 
-			//         if (IS.GetKeyTriggered(InputKeys.E))
-			//         {
-			//             Debug.Log("Input key E is triggered!");
-			//         }
-
-			//// Button Press
-			//if (IS.GetControllerButtonTriggered(0, InputSystem.Button.A))
-			//{
-			//	Debug.Log("A button Triggered");
-			//}
-
-			//// hold Controller Button (time in seconds)
-			//if (IS.GetControllerButtonHold(0, InputSystem.Button.A, 3))
-			//{
-			//	Debug.Log("A button hold");
-			//}
-
-			//// Release Controller Button
-			//if (IS.GetControllerButtonReleased(0, InputSystem.Button.A))
-			//{
-			//	Debug.Log("A button release");
-			//}
-
-			//// controller Stick x
-			//if (IS.GetControllerStickX(0, false) != 0f)
-			//{
-			//	Debug.Log("Stick left X : " + IS.GetControllerStickX(0, false));
-			//}
-
-			//if (IS.GetControllerStickX(0, false) != 0f)
-			//{
-			//	Debug.Log("Stick left Y : " + IS.GetControllerStickX(0, false));
-			//}
-
-
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
 			dirVec = dirVec.NormalizedSafe;
@@ -280,13 +251,6 @@ namespace TRE
 
 			playerDirection = (int)lastPlayerDirection + turnDirection;
 			playerDirection = playerDirection % 360;
-
-			/*else if (dirVec.x == 0 && dirVec.z == 0)
-			{
-				// If no input, slow down
-				finalVelocity = currVelocity * 0.9f;
-				PS.SetLinearVelocity(this.ID, finalVelocity);
-			}*/
 
 			// Only set velocity if not respawning
 			if (!RespawnPlayer)
@@ -538,6 +502,11 @@ namespace TRE
 						!IS.GetKeyHold(playerRightKey))
 					{
 						isWalking = false;
+						PS3D.Engine_SetParticleLifetime3D(moley_dust.ID, 0);
+					}
+					else
+					{
+						PS3D.Engine_SetParticleLifetime3D(moley_dust.ID, 0.1f);
 					}
 
 					//When the space bar is released, the player will stop mid jump
@@ -560,7 +529,6 @@ namespace TRE
 					{
 						jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
-						//Debug.Log("Jump Pressed");
 					}
 					//count down the buffer time
 					else

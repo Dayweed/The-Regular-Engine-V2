@@ -666,4 +666,9 @@ namespace TRE
 
 	}
 
+	public class Particle3D : Component
+	{
+
+	}
+
 }

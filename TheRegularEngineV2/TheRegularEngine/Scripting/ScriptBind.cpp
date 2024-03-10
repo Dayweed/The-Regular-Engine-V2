@@ -2930,14 +2930,14 @@ namespace TRE
 
 		//Particle3D
 		{
-			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleEmitterActive3D", Engine_SetParticleEmitterActive3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleEmitterActive3D", Engine_GetParticleEmitterActive3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleSpeed3D", Engine_SetParticleSpeed3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleSpeed3D", Engine_GetParticleSpeed3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleLifetime3D", Engine_SetParticleLifetime3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleLifetime3D", Engine_GetParticleLifetime3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleCount3D", Engine_SetParticleCount3D);
-			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleCount3D", Engine_GetParticleCount3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetParticleEmitterActive3D", Engine_SetParticleEmitterActive3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleEmitterActive3D", Engine_GetParticleEmitterActive3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetParticleSpeed3D", Engine_SetParticleSpeed3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleSpeed3D", Engine_GetParticleSpeed3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetParticleLifetime3D", Engine_SetParticleLifetime3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleLifetime3D", Engine_GetParticleLifetime3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetParticleCount3D", Engine_SetParticleCount3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleCount3D", Engine_GetParticleCount3D);
 		}
 	}
 }
