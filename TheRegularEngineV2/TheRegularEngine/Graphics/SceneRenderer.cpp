@@ -35,7 +35,8 @@ namespace TRE
 		m_DescriptorPool = DescriptorPool::Builder().SetPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT).SetMaxSets(5000).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10000).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
-		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_ShadowUBO[0] = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_ShadowUBO[1] = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
 		m_DepthPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(DepthUBO)), 0);
 		m_IDPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(IDUBO)), 0);
 		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
@@ -313,7 +314,8 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
-		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer[0], nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer[1], nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
 
@@ -354,42 +356,42 @@ namespace TRE
 			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
 			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
 			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
-			
+
 			if (recalculateShadowFrustum)
 			{
 				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, m_EditorShadowRatio));
 				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_EditorShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
 			}
-		}
 
-		if (recalculateShadowFrustum)
-		{
-			ShadowUBO UBO_Shadow;
-			glm::mat4 shadowDepthProjectionMatrix;
-			const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
-			const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
-			const float deltaZ = m_EditorShadowAABBMax.z - m_EditorShadowAABBMin.z;
-			const float orthoLength = deltaX;
-			const float orthoHeight = deltaY;
-			const float orthoNear = 0.1f;
-			const float orthoFar = orthoNear + deltaZ;
+			if (recalculateShadowFrustum)
+			{
+				ShadowUBO UBO_Shadow;
+				glm::mat4 shadowDepthProjectionMatrix;
+				const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
+				const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
+				const float deltaZ = m_EditorShadowAABBMax.z - m_EditorShadowAABBMin.z;
+				const float orthoLength = deltaX;
+				const float orthoHeight = deltaY;
+				const float orthoNear = 0.1f;
+				const float orthoFar = orthoNear + deltaZ;
 
-			shadowDepthProjectionMatrix = glm::mat4(1.f);
-			shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-			shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-			shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-			shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-			shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-			shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+				shadowDepthProjectionMatrix = glm::mat4(1.f);
+				shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+				shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+				shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+				shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+				shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
-			shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-			m_EditorShadowView = shadowDepthViewMatrix;
-			m_EditorShadowProj = shadowDepthProjectionMatrix;
+				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
+				m_EditorShadowView = shadowDepthViewMatrix;
+				m_EditorShadowProj = shadowDepthProjectionMatrix;
 
-			UBO_Shadow.view = m_EditorShadowView;
-			UBO_Shadow.proj = m_EditorShadowProj;
+				UBO_Shadow.view = m_EditorShadowView;
+				UBO_Shadow.proj = m_EditorShadowProj;
 
-			m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+				m_ShadowUBO[x]->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+			}
 		}
 		
 		ubo.m_LightSpaceMatrix = m_EditorShadowProj * m_EditorShadowView;
@@ -456,36 +458,36 @@ namespace TRE
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
 			}
-		}
 
-		if (recalculateShadowFrustum)
-		{
-			ShadowUBO UBO_Shadow{};
-			glm::mat4 shadowDepthProjectionMatrix;
-			const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
-			const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
-			const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
-			const float orthoLength = deltaX;
-			const float orthoHeight = deltaY;
-			const float orthoNear = 0.1f;
-			const float orthoFar = orthoNear + deltaZ;
+			if (recalculateShadowFrustum)
+			{
+				ShadowUBO UBO_Shadow{};
+				glm::mat4 shadowDepthProjectionMatrix;
+				const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
+				const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
+				const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
+				const float orthoLength = deltaX;
+				const float orthoHeight = deltaY;
+				const float orthoNear = 0.1f;
+				const float orthoFar = orthoNear + deltaZ;
 
-			shadowDepthProjectionMatrix = glm::mat4(1.f);
-			shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-			shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-			shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-			shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-			shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-			shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+				shadowDepthProjectionMatrix = glm::mat4(1.f);
+				shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+				shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+				shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+				shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+				shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
-			shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-			m_ShadowView = shadowDepthViewMatrix;
-			m_ShadowProj = shadowDepthProjectionMatrix;
+				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
+				m_ShadowView = shadowDepthViewMatrix;
+				m_ShadowProj = shadowDepthProjectionMatrix;
 
-			UBO_Shadow.view = m_ShadowView;
-			UBO_Shadow.proj = m_ShadowProj;
+				UBO_Shadow.view = m_ShadowView;
+				UBO_Shadow.proj = m_ShadowProj;
 
-			m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+				m_ShadowUBO[x]->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+			}
 		}
 
 		ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
@@ -833,7 +835,7 @@ namespace TRE
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
-		renderPassInfo.framebuffer = m_ShadowFramebuffer;
+		renderPassInfo.framebuffer = m_ShadowFramebuffer[0];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
 		renderPassInfo.clearValueCount = 1;
@@ -858,17 +860,6 @@ namespace TRE
 
 		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
 
-		if (m_IsEditorScene)
-		{
-			m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
-		}
-		else
-		{
-			m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index);
-			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
-		}
-
 		for (const auto& go_mr : MaterialSort)
 		{
 			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
@@ -877,6 +868,17 @@ namespace TRE
 			PushConstant pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			if (m_IsEditorScene)
+			{
+				m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO[mr.m_DLightIndex], Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				m_ShadowMaterial->UpdateForRendering(m_ShadowUBO[mr.m_DLightIndex], Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
+			}
 
 			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
 			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
@@ -898,12 +900,12 @@ namespace TRE
 
 			if (m_IsEditorScene)
 			{
-				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
+				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO[MeshComp.m_DLightIndex], Index, AnimComp.m_UBO);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
 			}
 			else
 			{
-				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO[MeshComp.m_DLightIndex], Index, AnimComp.m_UBO);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
 			}
 
@@ -1250,6 +1252,10 @@ namespace TRE
 
 		if (m_SceneImages.contains(SceneImage::ShadowMap) == false)
 			m_SceneImages[SceneImage::ShadowMap] = std::make_shared<Image2D>(ImgConfig);
+
+		if (m_SceneImages.contains(SceneImage::shadowMap2) == false)
+			m_SceneImages[SceneImage::shadowMap2] = std::make_shared<Image2D>(ImgConfig);
+
 		m_ShadowRenderPass = std::make_shared<RenderPass>(m_Device, true);
 
 		auto attachments = m_SceneImages[SceneImage::ShadowMap]->GetImageData().ImageView;
@@ -1262,13 +1268,21 @@ namespace TRE
 		framebufferCreateInfo.height = m_ShadowMapHeight;
 		framebufferCreateInfo.layers = 1;
 
-		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer); Result != VK_SUCCESS)
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer[0]); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
 		}
 
-		const float minFloat = std::numeric_limits<float>::min();
-		const float maxFloat = std::numeric_limits<float>::max();
+		auto attachments2 = m_SceneImages[SceneImage::shadowMap2]->GetImageData().ImageView;
+		framebufferCreateInfo.pAttachments = &attachments2;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer[1]); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
+		}
+
+		constexpr float minFloat = std::numeric_limits<float>::min();
+		constexpr float maxFloat = std::numeric_limits<float>::max();
 		m_ShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);
 		m_ShadowAABBMax = glm::vec3(minFloat, minFloat, minFloat);
 		m_EditorShadowAABBMin = glm::vec3(maxFloat, maxFloat, maxFloat);

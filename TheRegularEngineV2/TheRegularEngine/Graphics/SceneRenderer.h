@@ -112,6 +112,7 @@ namespace TRE
 			static enum class SceneImage
 			{
 				ShadowMap = 0,
+				shadowMap2 = 1,
 				DepthMap,
 				IDMap,
 			};
@@ -155,10 +156,10 @@ namespace TRE
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
 			std::shared_ptr<Material> m_ShadowMaterial;
 			std::shared_ptr<Pipeline> m_ShadowAnimationPipeline;
-			std::shared_ptr<UniformBuffer> m_ShadowUBO;
+			std::shared_ptr<UniformBuffer> m_ShadowUBO [2];
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
-			VkFramebuffer m_ShadowFramebuffer;
+			VkFramebuffer m_ShadowFramebuffer[2];
 			float m_ShadowAABBPadding = 10.f;
 
 			//Depth Prepass
