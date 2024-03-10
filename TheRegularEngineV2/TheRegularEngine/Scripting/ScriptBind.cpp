@@ -2467,6 +2467,145 @@ namespace TRE
 
 #pragma endregion
 
+#pragma region Particle3D
+	static void Engine_SetParticleEmitterActive3D(CSEntityID id, bool active)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
+			return;
+		}
+		entity->GetComponent<Particle3DComponent>().ResetParticles(entity->GetComponent<Transform>().m_Position);
+		entity->GetComponent<Particle3DComponent>().m_Running = active;
+	}
+
+	static bool Engine_GetParticleEmitterActive3D(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
+			return false;
+		}
+		return entity->GetComponent<Particle3DComponent>().m_Running;
+	}
+
+	static float Engine_GetParticleSpeed3D(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return 0.f;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return 0.f;
+		}
+		
+		return entity->GetComponent<Particle3DComponent>().m_Speed;
+	}
+
+	static void Engine_SetParticleSpeed3D(CSEntityID id, float speed)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<Particle3DComponent>().m_Speed = speed;
+	}
+
+	static float Engine_GetParticleLifetime3D(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return 0.f;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return 0.f;
+		}
+
+		return entity->GetComponent<Particle3DComponent>().m_LifeTime;
+	}
+
+	static void Engine_SetParticleLifetime3D(CSEntityID id, float Lifetime)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<Particle3DComponent>().m_LifeTime = Lifetime;
+	}
+
+	static float Engine_GetParticleSize3D(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return 0.f;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return 0.f;
+		}
+
+		return entity->GetComponent<Particle3DComponent>().m_Size;
+	}
+
+	static void Engine_SetParticleSize3D(CSEntityID id, float Size)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<Particle3DComponent>().m_Size = Size;
+	}
+
+	static int Engine_GetParticleCount3D(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return 0.f;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return 0.f;
+		}
+
+		return entity->GetComponent<Particle3DComponent>().m_ParticleCount;
+	}
+
+	static void Engine_SetParticleCount3D(CSEntityID id, int Count)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<Particle3DComponent>().m_ParticleCount = Count;
+	}
+#pragma endregion
+
 	void ScriptBind::RegisterFunctions()
 	{
 		// ECS Bindings
@@ -2778,6 +2917,18 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleEmitterActive", Engine_SetParticleEmitterActive);
 			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleEmitterActive", Engine_GetParticleEmitterActive);
+		}
+
+		//Particle3D
+		{
+			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleEmitterActive3D", Engine_SetParticleEmitterActive3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleEmitterActive3D", Engine_GetParticleEmitterActive3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleSpeed3D", Engine_SetParticleSpeed3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleSpeed3D", Engine_GetParticleSpeed3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleLifetime3D", Engine_SetParticleLifetime3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleLifetime3D", Engine_GetParticleLifetime3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_SetParticleCount3D", Engine_SetParticleCount3D);
+			mono_add_internal_call("TRE.ParticleSystem::Engine_GetParticleCount3D", Engine_GetParticleCount3D);
 		}
 	}
 }
