@@ -8,7 +8,7 @@ namespace TRE
 	{
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
-		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(16); //Vignette shader
+		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(16); //Silhoutte shader
 		PipelineConfig.CullMode = VK_CULL_MODE_NONE;
 		PipelineConfig.EnableBlending = true;
 		PipelineConfig.EnableDepthTest = false;

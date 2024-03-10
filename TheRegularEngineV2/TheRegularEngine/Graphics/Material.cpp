@@ -104,6 +104,20 @@ namespace TRE
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
+				else if (Write.dstBinding == 8)
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::DepthMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::DepthMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
+				else if (Write.dstBinding == 9)
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::IDMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::IDMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
 				else
 				{
 					if(m_Textures[Name] != nullptr)

@@ -24,17 +24,18 @@ namespace TRE
 		float width = 2, height = 2;
 		std::vector<PostVertex> data(4);
 
+		//UVs are flipped because of the vulkan texture coordinate system
 		data[0].Position = glm::vec2(x, y);
-		data[0].UV = glm::vec2(0, 0);
+		data[0].UV = glm::vec2(0, 1);
 
 		data[1].Position = glm::vec2(x + width, y);
-		data[1].UV = glm::vec2(1, 0);
+		data[1].UV = glm::vec2(1, 1);
 
 		data[2].Position = glm::vec2(x + width, y + height);
-		data[2].UV = glm::vec2(1, 1);
+		data[2].UV = glm::vec2(1, 0);
 
 		data[3].Position = glm::vec2(x, y + height);
-		data[3].UV = glm::vec2(0, 1);
+		data[3].UV = glm::vec2(0, 0);
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
@@ -90,7 +91,7 @@ namespace TRE
 	void PostProcessingManager::Init()
 	{
 		m_PostEffects[0] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
-		//m_PostEffects[1] = std::move(std::pair("Silhouette", std::make_shared<Silhouette>()));
+		m_PostEffects[1] = std::move(std::pair("Silhouette", std::make_shared<Silhouette>()));
 	}
 
 	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
