@@ -53,7 +53,9 @@ namespace TRE
 		int rotationDirection;
 
 		/// <summary>The change in angle per unit(frame?) of time in a rotation.</summary>
-		const float rotationSpeed = 40.0f; // 90.0f for FAST
+		const float goUpRotationSpeed = 90.0f; // 80.0f for FAST
+
+		const float goDownRotationSpeed = 40.0f;
 
 		/// <summary>The amount of time in seconds that has passed since this entity was instantiated.</summary>
 		float globalTimer;
@@ -232,7 +234,15 @@ namespace TRE
 
 			if (amountComplete < 1)
 			{
-				rot.z += rotationSpeed * Time.deltaTime * rotationDirection;
+				if (platformState == false)
+				{
+					rot.z += goUpRotationSpeed * Time.deltaTime * rotationDirection;
+				}
+				else
+				{
+					rot.z += goDownRotationSpeed * Time.deltaTime * rotationDirection;
+				}
+				
 				TS.SetRotation(this.ID, rot);
 			}
 			else // if (amountComplete >= 1)
@@ -249,7 +259,14 @@ namespace TRE
 
 			if (amountComplete < 1)
 			{
-				rot.x += rotationSpeed * Time.deltaTime * rotationDirection;
+				if (platformState == false)
+				{
+					rot.x += goUpRotationSpeed * Time.deltaTime * rotationDirection;
+				}
+				else
+				{
+					rot.x += goDownRotationSpeed * Time.deltaTime * rotationDirection;
+				}
 				TS.SetRotation(this.ID, rot);
 			}
 			else // if (amountComplete >= 1)
