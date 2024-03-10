@@ -110,6 +110,39 @@ namespace TRE
 				}
 			}
 
+			if (Scene.GetSceneName() == "Level_Bonus")
+			{
+				if (name == "FallingObj_Spawner_01")
+				{
+					size = new vec3(20, 0, 8);
+					timeBetweenSpawns = 3;
+				}
+
+				if (name == "FallingObj_Spawner_02")
+				{
+					size = new vec3(15, 0, 20);
+					timeBetweenSpawns = 4;
+				}
+
+				if (name == "FallingObj_Spawner_03")
+				{
+					size = new vec3(15, 0, 15);
+					timeBetweenSpawns = 4;
+				}
+
+				if (name == "FallingObj_Spawner_04")
+				{
+					size = new vec3(8, 0, 15);
+					timeBetweenSpawns = 4;
+				}
+
+				if (name == "FallingObj_Spawner_05")
+				{
+					size = new vec3(20, 0, 8);
+					timeBetweenSpawns = 4;
+				}
+			}
+
 
 			itemsToSpawn.Clear();
 			itemsTimer.Clear();

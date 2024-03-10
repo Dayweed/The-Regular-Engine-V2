@@ -36,7 +36,7 @@ namespace TRE
 		Action TrembleFunction;
 
 		/// <summary>The change in angle per unit(frame?) of time in a rotation when going up.</summary>
-		const float goUpRotationSpeed = 90.0f;
+		const float goUpRotationSpeed = 120.0f;
 
 		/// <summary>The change in angle per unit(frame?) of time in a rotation when going down.</summary>
 		const float goDownRotationSpeed = 40.0f;

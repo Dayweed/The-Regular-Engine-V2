@@ -27,8 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "16798030147369323235",
-         "m_Index": 0,
+         "m_GUID": "4601275652432671786",
+         "m_Index": 1,
          "m_Name": "FallingMaracca",
          "m_Tag": "FallingObstacle"
       }
@@ -61,6 +61,8 @@
          "ASSET_GEOM_m_RenderObject": "c6b26074c78ece12",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "9dff1c440466e472",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
          "m_IsVisible": true
       }
    ],
@@ -91,7 +93,7 @@
       1,
       0,
       {
-         "m_CollisionLayer.m_LayerID": 0,
+         "m_CollisionLayer.m_LayerID": 7,
          "m_HalfExtents": [
             2.0,
             5.0,
@@ -128,6 +130,12 @@
          ],
          "m_StoredClass": "TRE.FallingObj"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

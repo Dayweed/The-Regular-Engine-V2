@@ -1,13 +1,13 @@
 {
     "Collision Matrix Values": {
         "Default": 4095,
-        "Holey": 25,
+        "Holey": 153,
         "HoleyHeadCol": 25,
-        "Moley": 7,
+        "Moley": 135,
         "MoleyHeadCol": 7,
         "SlipperyBody": 33,
         "MidPos": 1,
-        "Layer07": 1,
+        "Layer07": 11,
         "Layer08": 1,
         "Layer09": 1,
         "Layer10": 1,
