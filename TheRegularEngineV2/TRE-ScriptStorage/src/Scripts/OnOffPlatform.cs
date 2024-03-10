@@ -34,6 +34,15 @@ namespace TRE
 
 		/// <summary>The tremble function to use. (e.g. Tremble*())</summary>
 		Action TrembleFunction;
+
+		/// <summary>The change in angle per unit(frame?) of time in a rotation when going up.</summary>
+		const float goUpRotationSpeed = 90.0f;
+
+		/// <summary>The change in angle per unit(frame?) of time in a rotation when going down.</summary>
+		const float goDownRotationSpeed = 40.0f;
+
+		/// <summary>The total amount of time in seconds for the platform to tremble before rotating.</summary>
+		const float trembleDuration = 1.0f; // 0.5f for FAST
 		#endregion
 
 		#region Variables
@@ -52,11 +61,6 @@ namespace TRE
 		/// <summary>Determines which way to rotate, value is either 1 or -1.</summary>
 		int rotationDirection;
 
-		/// <summary>The change in angle per unit(frame?) of time in a rotation.</summary>
-		const float goUpRotationSpeed = 90.0f; // 80.0f for FAST
-
-		const float goDownRotationSpeed = 40.0f;
-
 		/// <summary>The amount of time in seconds that has passed since this entity was instantiated.</summary>
 		float globalTimer;
 
@@ -68,9 +72,6 @@ namespace TRE
 
 		/// <summary>The number of seconds this platform has been trembling for.</summary>
 		float trembleTimer;
-
-		/// <summary>The total amount of time in seconds for the platform to tremble before rotating.</summary>
-		const float trembleDuration = 1.0f; // 0.5f for FAST
 
 		/// <summary>Used by the child's `IsColliding` script to tell the parent its result.</summary>
 		public bool isCollidingWithPlayer = false;
