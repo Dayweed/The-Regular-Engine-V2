@@ -1,4 +1,5 @@
 ﻿using GlmSharp;
+using System.Collections.Generic;
 
 namespace TRE
 {
@@ -35,6 +36,8 @@ namespace TRE
 		private float expectedDistance;
 		private float expectedDuration;
 
+		private CameraTransitions preTransitions;
+
 		public void Start()
 		{
 			MidPos = ECSManager.FindEntityByName("MidPos");
@@ -66,122 +69,140 @@ namespace TRE
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 
-			expectedDistance = 35;
-			expectedPosition = new vec3(0, 10, 20);
-			expectedRotation = new vec3(30, 180, 0);
+			//expectedDistance = 35;
+			//expectedPosition = new vec3(0, 10, 20);
+			//expectedRotation = new vec3(30, 180, 0);
+
+			preTransitions = new CameraTransitions();
+			preTransitions.Init();
+			preTransitions.AddCameraData(new vec3(180, 50, -430), new vec3(30, 230, 0), 5f);
+			preTransitions.AddCameraData(new vec3(180, 50, -50), new vec3(30, 270, 0), 10f);
+			preTransitions.AddCameraData(new vec3(30, 40, -50), new vec3(30, 180, 0), 6f);
+			preTransitions.AddCameraData(new vec3(0, 10, 20), new vec3(30, 180, 0), 5f);
 		}
 		public void Update()
 		{
-			regionA = IsInsideTrigger(Trigger_A);
-			regionB = IsInsideTrigger(Trigger_B);
-			regionC = IsInsideTrigger(Trigger_C);
-			regionD = IsInsideTrigger(Trigger_D);
-			regionE = IsInsideTrigger(Trigger_E);
-			regionF = IsInsideTrigger(Trigger_F);
-			regionG = IsInsideTrigger(Trigger_G);
-			regionH = IsInsideTrigger(Trigger_H);
-
-			if (regionA)
+			if (preTransitions.preTransitioned == false)
 			{
-				//starting region
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 35;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = -2f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_A);
+				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);
+				preTransitions.PreTransition(Time.deltaTime, out cameraController.toTransition);
+				cameraController.freeCamera = false;
 			}
-
-			if (regionB)
+			else
 			{
-				//first platforming section w/ blueberries
-				expectedPosition = new vec3(0, 30, 60);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 55;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = -2f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_B);
-			}
+				cameraController.freeCamera = true;
 
-			if (regionC)
-			{
-				//first hitw
-				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(25, 180, 0);
-				expectedDistance = 35;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = -2f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_C);
-			}
+				regionA = IsInsideTrigger(Trigger_A);
+				regionB = IsInsideTrigger(Trigger_B);
+				regionC = IsInsideTrigger(Trigger_C);
+				regionD = IsInsideTrigger(Trigger_D);
+				regionE = IsInsideTrigger(Trigger_E);
+				regionF = IsInsideTrigger(Trigger_F);
+				regionG = IsInsideTrigger(Trigger_G);
+				regionH = IsInsideTrigger(Trigger_H);
 
-			if (regionD)
-			{
-				//falling objs section
-				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 55;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_D);
-			}
+				if (regionA)
+				{
+					//starting region
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(30, 180, 0);
+					expectedDistance = 35;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = -2f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_A);
+				}
 
-			if (regionE)
-			{
-				//platforming section
-				expectedPosition = new vec3(0, 60, 50);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 60;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_E);
-			}
+				if (regionB)
+				{
+					//first platforming section w/ blueberries
+					expectedPosition = new vec3(0, 30, 60);
+					expectedRotation = new vec3(45, 180, 0);
+					expectedDistance = 55;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = -2f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_B);
+				}
 
-			if (regionF)
-			{
-				//second hitw
-				expectedPosition = new vec3(0, 40, 50);
-				expectedRotation = new vec3(25, 180, 0);
-				expectedDistance = 35;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 10f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_F);
-			}
+				if (regionC)
+				{
+					//first hitw
+					expectedPosition = new vec3(0, 40, 50);
+					expectedRotation = new vec3(25, 180, 0);
+					expectedDistance = 35;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = -2f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_C);
+				}
 
-			if (regionG)
-			{
-				//final section
-				cameraController.staticPosition = new vec3(110, 20, -450);
-				expectedPosition = new vec3(50, 40, 50);
-				expectedRotation = new vec3(35, 220, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = true;
-				cameraController.expectedYPos = 28f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_G);
-			}
+				if (regionD)
+				{
+					//falling objs section
+					expectedPosition = new vec3(0, 40, 50);
+					expectedRotation = new vec3(45, 180, 0);
+					expectedDistance = 55;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_D);
+				}
 
-			if (regionH)
-			{
-				//last hitw
-				expectedPosition = new vec3(50, 40, 50);
-				expectedRotation = new vec3(25, 180, 0);
-				expectedDistance = 40;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 28f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_H);
-			}
+				if (regionE)
+				{
+					//platforming section
+					expectedPosition = new vec3(0, 60, 50);
+					expectedRotation = new vec3(45, 180, 0);
+					expectedDistance = 60;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_E);
+				}
 
-			cameraController.expectedPosition = expectedPosition;
-			cameraController.expectedRotation = expectedRotation;
-			cameraController.expectedDistance = expectedDistance;
-			cameraController.transitionDuration = expectedDuration;
+				if (regionF)
+				{
+					//second hitw
+					expectedPosition = new vec3(0, 40, 50);
+					expectedRotation = new vec3(25, 180, 0);
+					expectedDistance = 35;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 10f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_F);
+				}
+
+				if (regionG)
+				{
+					//final section
+					cameraController.staticPosition = new vec3(110, 20, -450);
+					expectedPosition = new vec3(50, 40, 50);
+					expectedRotation = new vec3(35, 220, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = true;
+					cameraController.expectedYPos = 28f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_G);
+				}
+
+				if (regionH)
+				{
+					//last hitw
+					expectedPosition = new vec3(50, 40, 50);
+					expectedRotation = new vec3(25, 180, 0);
+					expectedDistance = 40;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 28f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_H);
+				}
+				
+				cameraController.expectedPosition = expectedPosition;
+				cameraController.expectedRotation = expectedRotation;
+				cameraController.expectedDistance = expectedDistance;
+				cameraController.transitionDuration = expectedDuration;
+			}
 		}
 
 		private bool IsInsideTrigger(Entity entity)

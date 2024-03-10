@@ -899,8 +899,15 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_SetMainCameraPosition(vec3 position);
 
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static void Engine_MainCameraUpdateTransform();
+
 		#endregion
 
+		public static void UpdateMainCameraTransform()
+		{
+			Engine_MainCameraUpdateTransform();
+		}
 	}
 
 	public class MeshRendererSystem

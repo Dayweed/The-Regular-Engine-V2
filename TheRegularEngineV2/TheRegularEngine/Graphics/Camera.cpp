@@ -500,7 +500,7 @@ namespace TRE
 		if (mainCamera)
 		{
 			auto& cameraComponent = mainCamera->GetComponent<Camera>();
-			const auto& cameraTransform = mainCamera->GetComponent<Transform>();
+			auto& cameraTransform = mainCamera->GetComponent<Transform>();
 			cameraComponent.m_IsTransitioning = true;
 			cameraComponent.m_StartPosition = cameraTransform.m_Position;
 			cameraComponent.m_TransitionPosition = targetPosition;
@@ -508,6 +508,9 @@ namespace TRE
 			cameraComponent.m_TransitionRotation = targetRotation;
 			cameraComponent.m_InterpolationSpeed = 1.f / duration;
 			cameraComponent.m_InterpolationValue = 0.f;
+			cameraComponent.m_IsDirty = true;
+			cameraTransform.m_IsDirty = true;
+			cameraTransform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ALL;
 		}
 	}
 

@@ -1221,6 +1221,13 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_Position = *position;
 	}
 
+	static void BindMainCameraUpdateTransform()
+	{
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Camera>().m_IsDirty = true;
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_IsDirty = true;
+		ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>().m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_ALL;
+	}
+
 #pragma endregion
 
 #pragma region InputBindings
@@ -2726,6 +2733,8 @@ namespace TRE
 			mono_add_internal_call("TRE.CameraSystem::Engine_GetMainCameraRotation", BindCameraRotation);
 
 			mono_add_internal_call("TRE.CameraSystem::Engine_SetMainCameraPosition", BindSetMainCameraPosition);
+
+			mono_add_internal_call("TRE.CameraSystem::Engine_MainCameraUpdateTransform", BindMainCameraUpdateTransform);
 		}
 
 		// Physics Bindings
