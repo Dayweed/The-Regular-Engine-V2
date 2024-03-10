@@ -110,14 +110,17 @@ namespace TRE
 			PipelineConfigurations DepthPrepassPipelineConfig{};
 			DepthPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
 			DepthPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
-			DepthPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+			DepthPrepassPipelineConfig.CullMode = VK_CULL_MODE_BACK_BIT;
 			DepthPrepassPipelineConfig.EnableBlending = true;
+			DepthPrepassPipelineConfig.DepthCompareOp = VK_COMPARE_OP_LESS;
 			m_DepthPrepassPipeline = std::make_shared<Pipeline>(DepthPrepassPipelineConfig, m_DepthPrepassRenderPass);
 
 			PipelineConfigurations DepthPrepassAnimationPipelineConfig{};
 			DepthPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
 			DepthPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
-			DepthPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+			DepthPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_BACK_BIT;
+			DepthPrepassAnimationPipelineConfig.EnableBlending = true;
+			DepthPrepassAnimationPipelineConfig.DepthCompareOp = VK_COMPARE_OP_LESS;
 			DepthPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
 			DepthPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
 			{
@@ -138,15 +141,18 @@ namespace TRE
 			PipelineConfigurations IDPrepassPipelineConfig{};
 			IDPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
 			IDPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(14);
-			IDPrepassPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+			IDPrepassPipelineConfig.CullMode = VK_CULL_MODE_BACK_BIT;
 			IDPrepassPipelineConfig.EnableBlending = true;
+			IDPrepassPipelineConfig.DepthCompareOp = VK_COMPARE_OP_LESS;
 			m_IDPrepassPipeline = std::make_shared<Pipeline>(IDPrepassPipelineConfig, m_IDPrepassRenderPass);
 
 			PipelineConfigurations IDPrepassAnimationPipelineConfig{};
 			IDPrepassAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
 			IDPrepassAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(15);
-			IDPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+			IDPrepassAnimationPipelineConfig.CullMode = VK_CULL_MODE_BACK_BIT;
+			IDPrepassAnimationPipelineConfig.EnableBlending = true;
 			IDPrepassAnimationPipelineConfig.UseAutoShaderVertexInput = false;
+			IDPrepassAnimationPipelineConfig.DepthCompareOp = VK_COMPARE_OP_LESS;
 			IDPrepassAnimationPipelineConfig.CustomVertexBufferInputLayout =
 			{
 				{ { VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec3, VertexInputDataType::Vec2 }, 0},
@@ -937,8 +943,6 @@ namespace TRE
 		scissor2.extent = { m_DepthPrepassMapWidth, m_DepthPrepassMapHeight };
 		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
 
-		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
-
 		Renderer::BindPipeline(m_CommandBuffer, m_DepthPrepassPipeline);
 
 		m_DepthPrepassMaterial->UpdateForRendering(m_DepthPrepassUBO, Index);
@@ -1278,7 +1282,7 @@ namespace TRE
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "Depth Pass";
-		ImgConfig.Format = ImageFormat::DEPTH16UN;
+		ImgConfig.Format = ImageFormat::DEPTH32F;
 		ImgConfig.Width = m_DepthPrepassMapWidth;
 		ImgConfig.Height = m_DepthPrepassMapHeight;
 		ImgConfig.Usage = ImageUsage::Attachment;
@@ -1313,7 +1317,7 @@ namespace TRE
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "ID Pass";
-		ImgConfig.Format = ImageFormat::DEPTH16UN;
+		ImgConfig.Format = ImageFormat::DEPTH32F;
 		ImgConfig.Width = m_IDPrepassMapWidth;
 		ImgConfig.Height = m_IDPrepassMapHeight;
 		ImgConfig.Usage = ImageUsage::Attachment;
