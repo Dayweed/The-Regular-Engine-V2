@@ -32,6 +32,8 @@ layout (location = 0) out vec4 outColor;
 layout(set = 0, binding = 8) uniform sampler2D depthMap;
 layout(set = 0, binding = 9) uniform sampler2D IDMap;
 
+const float Threshold = 0.0001;
+
 layout(location = 0) in struct
 {
 	//vec4 Color;
@@ -47,10 +49,10 @@ void main()
 	if(ID.r < 1.0)
 	{
 		//if depth lesser means occluded
-		if(depth < ID)
-		//if(In.Threshold < (ID - depth))
+		//if(depth < ID)
+		if(Threshold < (ID - depth))
 		{
-			outColor = vec4(0.65, 0.65, 0.65, 1.0);
+			outColor = vec4(0.25, 0.25, 0.25, 1.0);
 			//outColor = In.Color;
 		}
 		else
