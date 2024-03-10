@@ -38,8 +38,8 @@ namespace TRE
 			void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, uint32_t ShaodowMapIndex = -1);
 
 
-			void UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation);
-			void UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation);
+			void UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, uint32_t ShadowMapIndex = -1);
+			void UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, uint32_t ShadowMapIndex = -1);
 
 			void UpdateCompsitePass(const VkDescriptorImageInfo& ImageInfo); //To be removed
 

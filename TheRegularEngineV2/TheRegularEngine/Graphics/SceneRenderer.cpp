@@ -780,12 +780,12 @@ namespace TRE
 
 				if (m_IsEditorScene)
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
+					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
+					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetDescriptor(Index), 0, NULL);
 				}
 			}
@@ -793,12 +793,12 @@ namespace TRE
 			{
 				if (m_IsEditorScene)
 				{
-					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}

@@ -182,7 +182,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation)
+	void Material::UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, uint32_t ShadowMapIndex)
 	{
 		if (m_IsValid == false)
 			Invalidate();
@@ -204,8 +204,14 @@ namespace TRE
 			{
 				if (Write.dstBinding == 7)
 				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					if (ShadowMapIndex == 0 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					}
+					else if (ShadowMapIndex == 1 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
+					{
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
+					}
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
@@ -224,7 +230,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation)
+	void Material::UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, uint32_t ShadowMapIndex)
 	{
 		m_WriteDescriptors.clear();
 
@@ -243,8 +249,14 @@ namespace TRE
 			{
 				if (Write.dstBinding == 7)
 				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					if (ShadowMapIndex == 0 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					}
+					else if (ShadowMapIndex == 1 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
+					{
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
+					}
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
