@@ -2299,6 +2299,19 @@ namespace TRE
 		entity->GetComponent<TextComponent>().m_IsDialogue = false;
 	}
 
+	static bool Engine_GetDialogueRunning(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<TextComponent>())
+		{
+			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
+		}
+
+		return entity->GetComponent<TextComponent>().m_IsDialogue;
+	}
+
 #pragma endregion
 
 #pragma region DirectPathfindingBinding
@@ -2736,6 +2749,7 @@ namespace TRE
 			mono_add_internal_call("TRE.TextSystem::Engine_GetTextMessage", Engine_GetTextMessage); 
 			mono_add_internal_call("TRE.TextSystem::Engine_StartDialogue", Engine_StartDialogue);
 			mono_add_internal_call("TRE.TextSystem::Engine_ResetDialogue", Engine_ResetDialogue);
+			mono_add_internal_call("TRE.TextSystem::Engine_GetDialogueRunning", Engine_GetDialogueRunning);
 		}
 
 		// Direct Pathfinding

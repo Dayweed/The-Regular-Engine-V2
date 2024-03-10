@@ -19,6 +19,11 @@
 			{
 				TextSystem.ResetDialogue(fonttest.ID);
 			}
+
+			if (TextSystem.GetDialogueRunning(fonttest.ID))
+			{
+				Debug.Log("ARWERWAFAWF");
+			}
 		}
 	}
 }
