@@ -28,7 +28,10 @@ namespace TRE
 			// Add triggers that are it's child as triggers
 			NoOfTriggers = parenting.GetTotalChildren();
 
-			for (int i = 0; i < NoOfTriggers; i++)
+			// Remove the last trigger since it is mesh
+			--NoOfTriggers;
+
+            for (int i = 0; i < NoOfTriggers; i++)
 			{
 				Entity trigger = parenting.GetChild(i);
 
