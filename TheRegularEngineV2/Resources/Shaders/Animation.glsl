@@ -26,7 +26,7 @@ layout(location = 0) out struct
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
 
-	bool m_DrawShadow;
+	float m_DrawShadow;
 } Out;
 
 layout(set = 0, binding = 0) uniform UBO
@@ -69,7 +69,6 @@ void main()
 	gl_Position = ubo.m_ProjView * L2W * vec4(inPosition.xyz, 1.0);
 
 	mat3 rot = mat3(push.m_Model);
-	push.m_DLightIndex = 0;
 
     Out.VertColor = pow(inColor, gamma.rrr);
 	Out.TexCoord = inTexCoord;
@@ -92,7 +91,14 @@ void main()
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[push.m_DLightIndex];
 	Out.ShadowIntensity = ubo.m_ShadowIntensity[push.m_DLightIndex];
 
-	Out.m_DrawShadow = push.m_DrawShadow;
+	if (push.m_DrawShadow)
+	{
+		Out.m_DrawShadow = 1.f;
+	}
+	else
+	{
+		Out.m_DrawShadow = 0.f;
+	}
 }
 
 
@@ -114,7 +120,7 @@ layout(location = 0) in struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-	bool m_DrawShadow;
+	float m_DrawShadow;
 } In;
 
 layout(location = 0) out vec4 outColor;
@@ -207,7 +213,7 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	if(In.m_DrawShadow)
+	if(In.m_DrawShadow > 0.5f)
 		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	else
 		outColor.rgb = ambient * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);

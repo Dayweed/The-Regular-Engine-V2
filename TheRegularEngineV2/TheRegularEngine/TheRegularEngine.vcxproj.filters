@@ -322,6 +322,9 @@
     <ClInclude Include="PostProcessing\PostProcessing.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessing\Silhouette.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
     <ClInclude Include="PostProcessing\Vignette.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
@@ -349,9 +352,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PostProcessing\Silhouette.h">
-      <Filter>PostProcessing</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -555,6 +555,9 @@
     <ClCompile Include="PostProcessing\PostProcessing.cpp">
       <Filter>PostProcessing</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessing\Silhouette.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
     <ClCompile Include="PostProcessing\Vignette.cpp">
       <Filter>PostProcessing</Filter>
     </ClCompile>
@@ -583,8 +586,5 @@
       <Filter>ShaderTypes</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="PostProcessing\Silhouette.cpp">
-      <Filter>PostProcessing</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
