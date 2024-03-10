@@ -10,36 +10,62 @@ namespace TRE
 
 		public void Start()
 		{
-			GetSortedPlatforms();
+			platformList = GetPlatforms();
+			platformList.Sort(new SortEntitiesAlphabetically());
 
 			// add first (external) button
 			Button firstButton = ECSManager.FindEntityByName("Button").GetComponent<Button>();
 			buttonList.Add(firstButton);
 
-			// add other buttons
-			// Take note! the buttons that have the OnOffPlatform as their
-			// parents need to be un-prefab-ed! For some reason!!
-			GetSortedButtons();
+			// Take note: The buttons that have a OnOffPlatform as their parent
+			// need to be un-prefab-ed! For some reason!!
+			GetRemainingButtons();
 		}
 
 		public void Update()
 		{
+			// the number of platforms should be the same!!!
 			for (int i = 0; i < buttonList.Count; ++i)
-				platformList[i].SetPlatformState(buttonList[i].GetIsButtonPressed());
+			{
+				// Thingy: <where it is spatially>
+				// Platforms:   0 1 2 3 ...
+				// Buttons:   0 1 2 3 ...
+
+				OnOffPlatform platform = platformList[i];
+				// Button buttonForPlatform = buttonList[i];
+				// Button buttonOnPlatform = buttonList[i + 1];
+
+				// Only players can press buttons down.
+				// Hence, Button pressed -> Player on *prior* platform.
+				// Therefore, Button *ahead by one* is pressed -> Player on platform.
+
+				bool isPlayerOnPlatform;
+				if (i == buttonList.Count - 1) // the last platform will never have its own button
+					isPlayerOnPlatform = platform.isCollidingWithPlayer;
+				else
+					isPlayerOnPlatform = buttonList[i + 1].GetIsButtonPressed() || platform.isCollidingWithPlayer;
+				
+				// if player is standing on platform and the button FOR that platform is NOT pressed, 
+				// DON'T CHANGE ITS STATE!!
+				if (isPlayerOnPlatform && !buttonList[i].GetIsButtonPressed())
+					continue;
+
+				platform.SetPlatformState(buttonList[i].GetIsButtonPressed());
+			}
 		}
 
-		void GetSortedPlatforms()
+		List<OnOffPlatform> GetPlatforms()
 		{
 			int childCount = parenting.GetTotalChildren();
-			platformList.Capacity = childCount;
+			List<OnOffPlatform> list = new List<OnOffPlatform>(childCount);
 
 			for (int i = 0; i < childCount; ++i)
-				platformList.Add(parenting.GetChild(i).GetComponent<OnOffPlatform>());
+				list.Add(parenting.GetChild(i).GetComponent<OnOffPlatform>());
 
-			platformList.Sort(new SortEntitiesAlphabetically());
+			return list;
 		}
 
-		void GetSortedButtons()
+		void GetRemainingButtons()
 		{
 			foreach (OnOffPlatform platform in platformList)
 			{
@@ -56,61 +82,6 @@ namespace TRE
 					}
 				}
 			}
-		}
-
-		// an attempt at the C++-like static variable
-		bool tempBehaviourMode = false;
-		void FlipPlatformsInSeries()
-		{
-			// obtain all the states of the on/off platforms
-			bool[] platformStates = new bool[platformList.Count];
-			bool isAllActive = true;
-			bool isAllInactive = false;
-
-			for (int i = 0; i < platformStates.Length; ++i)
-			{
-				bool state = platformList[i].GetComponent<OnOffPlatform>().GetPlatformState();
-				platformStates[i] = state;
-				isAllActive &= state; // if there's a single false, the result will be false
-				isAllInactive |= state; // if there's a single true, the result will be true
-			}
-
-			isAllInactive = !isAllInactive; // flip the result to match the variable name's meaning
-
-			if (isAllInactive)
-				tempBehaviourMode = false;
-			if (isAllActive)
-				tempBehaviourMode = true;
-
-			if (!tempBehaviourMode)
-			{
-				for (int i = 0; i < platformStates.Length; ++i)
-				{
-					// raise platforms one by one
-					if (platformStates[i] == false)
-					{
-						platformList[i].SetPlatformState(true);
-						break;
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < platformStates.Length; ++i)
-				{
-					// lower platforms one by one
-					if (platformStates[i] == true)
-					{
-						platformList[i].SetPlatformState(false);
-						break;
-					}
-				}
-			}
-		}
-
-		void print(string str)
-		{
-			Console.Write("[{0}]\t{1}", this.name, str + "\n");
 		}
 	}
 

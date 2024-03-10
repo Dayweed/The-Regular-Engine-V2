@@ -9,58 +9,68 @@ namespace TRE
 	{
 		// assigned in Start(), no changes please thanks
 		#region Constants
-		// determines if it's a left/right platform or forward/backward platform
-		// the forward/backward is the "opposite" type of platform, rotates on x axis
-		// left/right has bigger scale on z axis than x axis
-		// forward/backward has bigger scale on x axis than z axis
+		/// <summary>
+		/// <para>Determines if it's a left/right platform or forward/backward platform.</para>
+		/// The forward/backward is the "opposite" type of platform, rotates on the x axis.<br/>
+		/// Left/right has a bigger scale on z axis than x axis.<br/>
+		/// Forward/backward has a bigger scale on x axis than z axis.
+		/// </summary>
 		bool isOppositePlatformType;
 
-		// an array of cardinal directions from 45 to 315
+		/// <summary>An array of cardinal directions from 45 to 315</summary>
 		int[] directions = new int[7];
 
-		// the angle the platform must have to be in the ACTIVE position
+		/// <summary>The angle the platform must have to be in the ACTIVE position.</summary>
 		float platformActiveAngle;
 
-		// the angle the platform must have to be in the INACTIVE position
+		/// <summary>The angle the platform must have to be in the INACTIVE position.</summary>
 		float platformInactiveAngle;
 
-		// the direction (1 or -1) to rotate in when activating the platform
+		/// <summary>The direction (1 or -1) to rotate in when activating the platform.</summary>
 		int activationRotationDirection;
 
-		// the rotation function to use
+		/// <summary>The rotation function to use. (e.g. Rotate*())</summary>
 		Action RotateFunction;
 
-		// the tremble function to use
+		/// <summary>The tremble function to use. (e.g. Tremble*())</summary>
 		Action TrembleFunction;
 		#endregion
 
 		#region Variables
-		// whether the platform is currently active/inactive
+		/// <summary>Whether the platform was active or inactive at standstill.</summary>
 		bool platformState;
 
-		// setting this to true will begin the rotation
+		/// <summary>Setting this to true will begin the rotation.</summary>
 		bool shouldRotate;
 
-		// the angle at the beginning of the rotation
+		/// <summary>The angle at the beginning of the rotation.</summary>
 		float rotateStartAngle;
 
-		// the angle to have at the end of the rotation
+		/// <summary>The angle to have at the end of the rotation.</summary>
 		float rotateEndAngle;
 
-		// determines which way to rotate, value is either 1 or -1
+		/// <summary>Determines which way to rotate, value is either 1 or -1.</summary>
 		int rotationDirection;
 
-		// the change in angle per unit(frame?) of time in a rotation
+		/// <summary>The change in angle per unit(frame?) of time in a rotation.</summary>
 		const float rotationSpeed = 40.0f; // 90.0f for FAST
 
+		/// <summary>The amount of time in seconds that has passed since this entity was instantiated.</summary>
 		float globalTimer;
+
+		/// <summary>The position of the platform at Start() time.</summary>
 		vec3 originalPosition;
 
+		/// <summary>Setting this to true will begin the trembling.</summary>
 		bool shouldTremble;
+
+		/// <summary>The number of seconds this platform has been trembling for.</summary>
 		float trembleTimer;
+
+		/// <summary>The total amount of time in seconds for the platform to tremble before rotating.</summary>
 		const float trembleDuration = 1.0f; // 0.5f for FAST
 
-		// used by the child's `IsColliding` script to tell the parent its result
+		/// <summary>Used by the child's `IsColliding` script to tell the parent its result.</summary>
 		public bool isCollidingWithPlayer = false;
 		#endregion
 
@@ -141,8 +151,6 @@ namespace TRE
 			if (InputSystem.GetKeyPress(InputKeys.RightBracket))
 				SetPlatformState(true);
 
-			// print("isCollidingWithPlayer: " + isCollidingWithPlayer);
-
 			globalTimer += Time.deltaTime;
 
 			if (shouldTremble)
@@ -176,9 +184,9 @@ namespace TRE
 			InitializeRotation(state);
 		}
 
+		/// <summary>Assign variables based on the constants set in Start() and the given <c>state</c>.</summary>
 		void InitializeRotation(bool state)
 		{
-			// assign variables based on the constants set in Start()
 			if (state)
 			{
 				// go from inactive to active
@@ -198,9 +206,9 @@ namespace TRE
 			}
 		}
 
+		/// <summary>Send the "signal" that a rotation should take place.</summary>
 		void StartRotation()
 		{
-			// send the "signal" that a rotation should take place
 			shouldRotate = true;
 		}
 
@@ -293,7 +301,7 @@ namespace TRE
 			// float temp = a;
 			// a = b;
 			// b = temp;
-			(b, a) = (a, b);
+			(b, a) = (a, b); // <- ooh, that's new! :O
 		}
 		*/
 
@@ -314,24 +322,19 @@ namespace TRE
 				return false;
 		}
 
-		void print(string str)
-		{
-			Console.Write("[{0}]\t{1}", this.name, str + "\n");
-		}
-
-		// sometimes (0, 0, 0) becomes (0, -0, 0) :_)
+		/// <summary>sometimes (0, 0, 0) becomes (0, -0, 0) :_)</summary>
 		bool HasNoRotation(vec3 rot)
 		{
 			return IsVec3Equal(rot, vec3.Zero);
 		}
 
-		// preparing for the event that (0, 180, 0) becomes (0, -180, 0)
+		/// <summary>preparing for the event that (0, 180, 0) becomes (0, -180, 0)</summary>
 		bool HasFlippedRotation(vec3 rot)
 		{
 			return IsVec3Equal(rot, new vec3(0, 180, 0));
 		}
 
-		// sometimes (0, 180, 0) becomes (-180, 0, -180) :_)
+		/// <summary>sometimes (0, 180, 0) becomes (-180, 0, -180) :_)</summary>
 		bool IsCursedRotation(vec3 rot)
 		{
 			return IsVec3Equal(rot, new vec3(-180, 0, -180));
