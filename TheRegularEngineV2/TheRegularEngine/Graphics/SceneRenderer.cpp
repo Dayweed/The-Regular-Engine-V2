@@ -282,17 +282,6 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
-		m_SceneImages.clear();
-
-		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
-		ShadowPassInit();
-
-		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
-		DepthPrepassInit();
-
-		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
-		IDPrepassInit();
-
 		Create();
 		CreateFrameBuffer(m_RenderPass);
 	}
