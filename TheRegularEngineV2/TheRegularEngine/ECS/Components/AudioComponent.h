@@ -24,6 +24,8 @@ namespace TRE
 		bool m_Spatialize{ false };
 		float m_MinDistance{ 1.f };
 		float m_MaxDistance{ 300.f };
+		int m_FramesSinceLastFootstep = 0;
+		std::vector<audio_file_dropdown> footstepsSounds;
 
 		bool m_HasCompiled{ false };
 		FMOD_VECTOR m_goPosition{ 0.0f, 0.0f, 0.0f };
@@ -35,6 +37,13 @@ namespace TRE
 		friend void to_json(nlohmann::json& j, const Audio& t) //serialize
 		{
 			std::vector<float> v_pos{ t.m_goPosition.x, t.m_goPosition.y, t.m_goPosition.z };
+
+			std::vector<std::string> footsteps;
+			for (audio_file_dropdown dropdown : t.footstepsSounds)
+			{
+				footsteps.push_back(dropdown.m_File);
+			}
+
 
 			j = nlohmann::json{
 				{"m_FileName", t.m_FileName},
@@ -49,7 +58,8 @@ namespace TRE
 				{ "m_Spatialize", t.m_Spatialize},
 				{ "m_MinDistance", t.m_MinDistance},
 				{ "m_MaxDistance", t.m_MaxDistance},
-				{ "m_goPosition", v_pos }
+				{ "m_goPosition", v_pos },
+				{ "footstepsSounds", footsteps }
 			};
 		}
 
@@ -74,6 +84,18 @@ namespace TRE
 			t.m_goPosition.y = a_pos[1];
 			t.m_goPosition.z = a_pos[2];
 
+			if (j.contains("footstepsSounds"))
+			{
+				std::vector<std::string> footsteps = j.at("footstepsSounds").get<std::vector<std::string>>();
+				t.footstepsSounds.clear();
+				for (const auto& filename : footsteps)
+				{
+					audio_file_dropdown dropdown;
+					dropdown.m_File = filename;
+					t.footstepsSounds.push_back(dropdown);
+				}
+			}
+
 		}
 	};
 }
@@ -92,5 +114,17 @@ property_begin(TRE::Audio)
 		property_var(m_Spatialize),
 		property_var(m_MinDistance),
 		property_var(m_MaxDistance),
-		property_var(m_goPosition)
+		property_var(m_goPosition),
+		property_var_fnbegin("footstepsSounds", std::vector<audio_file_dropdown>)
+	{
+		if (isRead)
+		{
+			InOut = Self.footstepsSounds;
+		}
+		else
+		{
+			Self.footstepsSounds = InOut;
+		}
+
+	} property_var_fnend()
 } property_vend_h(TRE::Audio)

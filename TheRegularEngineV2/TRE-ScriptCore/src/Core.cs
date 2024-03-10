@@ -1472,6 +1472,11 @@ namespace TRE
 			return Engine_GetIsPlaying(entityid);
 		}
 
+		public static void PlayFootsteps(EntityID entityid, int i)
+		{
+			Engine_PlayFootsteps(entityid, i);
+		}
+
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_Play(EntityID entityid);
@@ -1493,6 +1498,10 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetIsPlaying(EntityID entityid);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_PlayFootsteps(EntityID entityid, int i);
+
 	}
 
 	public class Scene

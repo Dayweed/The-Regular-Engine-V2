@@ -42,6 +42,11 @@ namespace TRE
 			if (!source.m_HasCompiled)
 			{
 				CompileAudio(go);
+				CompileFootstepsSounds(go);
+				for (auto name : source.footstepsSounds)
+				{
+					std::cout << name.m_File << std::endl;
+				}
 				source.m_HasCompiled = true;
 			}
 		}
@@ -328,6 +333,80 @@ namespace TRE
 		}
 	}
 
+	void AudioSystem::CompileFootstepsSounds(Entity& go)
+	{
+		if (!go->HasComponent<Audio>()) return;
+
+		Audio& audio{ go->GetComponent<Audio>() };
+
+		audio_file_dropdown dropdown;
+
+		for(auto fs : audio.footstepsSounds)
+		{
+			if (fs.m_File == audio.m_FileName)
+			{
+				TRE_CORE_WARN("Footsteps sound already exists in the list");
+				return;
+			}
+			else
+			{
+				dropdown.m_File = audio.m_FileName;
+				audio.footstepsSounds.push_back(dropdown);
+
+			}
+		}
+
+		
+
+		
+	}
+
+	//void AudioSystem::PlayFootsteps(Entity& go)
+	//{
+	//	if (!go->HasComponent<Audio>()) return;
+
+	//	Audio& audio{ go->GetComponent<Audio>() };
+
+	//	if (audio.footstepsSounds.empty()) return;
+
+	//	int i = rand() % audio.footstepsSounds.size();
+
+	//	std::cout << i << std::endl;
+
+	//	std::cout << "Playing: " << audio.footstepsSounds[i].m_File << std::endl;
+
+	//	const std::string& soundFilepath = "../Resources/Audio/" + audio.footstepsSounds[i].m_File;
+
+	//	FMOD::Sound* sound;
+	//	ErrorCheck(m_System->createSound(soundFilepath.c_str(), FMOD_DEFAULT, nullptr, &sound), "FMOD: createSound()");
+
+	//	FMOD::Channel* channel;
+
+	//	ErrorCheck(m_System->playSound(sound, m_SFXChannelGroup, false, &channel), "FMOD: playSound()");
+	//}
+
+	void AudioSystem::PlayFootsteps(Entity& go, int i)
+	{
+		if (!go->HasComponent<Audio>()) return;
+
+		Audio& audio{ go->GetComponent<Audio>() };
+
+		if (audio.footstepsSounds.empty()) return;
+
+		std::cout << "Playing: " << audio.footstepsSounds[i].m_File << std::endl;
+
+		audio.m_FileName = audio.footstepsSounds[i].m_File;
+		const std::string& soundFilepath = "../Resources/Audio/" + audio.m_FileName;
+
+		FMOD::Sound* sound;
+		ErrorCheck(m_System->createSound(soundFilepath.c_str(), FMOD_DEFAULT, nullptr, &sound), "FMOD: createSound()");
+
+		FMOD::Channel* channel;
+
+		ErrorCheck(m_System->playSound(sound, m_SFXChannelGroup, false, &channel), "FMOD: playSound()");
+
+	}
+
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
 	{
 		Audio& audio = go->GetComponent<Audio>();
@@ -422,7 +501,7 @@ namespace TRE
 		audio.m_audioFiles.push_back(filename);
 		return audio.m_FileName = filename;
 #endif
-	}
+		}
 
 	FMOD_VECTOR AudioSystem::GetListenerPosition(Entity& go) const
 	{
@@ -447,6 +526,8 @@ namespace TRE
 	{
 		Audio& source = go->GetComponent<Audio>();
 		return source.m_Channel->isPlaying(&source.m_isPlaying);
+
+		std::cout << "IsPlaying: " << source.m_isPlaying << source.m_FileName << std::endl;
 	}
 
 }

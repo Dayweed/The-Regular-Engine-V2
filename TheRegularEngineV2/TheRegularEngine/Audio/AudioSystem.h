@@ -39,6 +39,9 @@ namespace TRE
 		void Stop(Entity& go);
 		void CompileAudio(Entity& go);
 		void MuteAll();
+		void CompileFootstepsSounds(Entity& go);
+		void PlayFootsteps(Entity& go);
+		void PlayFootsteps(Entity& go, int i);
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
 
@@ -51,6 +54,7 @@ namespace TRE
 
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;
+
 		const std::pair<float, float> GetSourceRadius(Entity& go) const;
 
 

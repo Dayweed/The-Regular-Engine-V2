@@ -1966,6 +1966,30 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetIsPlaying(entity);
 	}
 
+	/*static void BindPlayFootsteps(CSEntityID ID)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+		}
+
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->PlayFootsteps(entity);
+	}*/
+
+	static void BindPlayFootsteps(CSEntityID ID, int i)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+		}
+
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->PlayFootsteps(entity, i);
+	}
+
 #pragma endregion
 
 #pragma region SceneBindings
@@ -2842,6 +2866,7 @@ namespace TRE
 			mono_add_internal_call("TRE.AudioSystem::Engine_SetFileName", BindSetFileName);
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetFileName", BindGetFileName);
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetIsPlaying", BindIsPlaying);
+			mono_add_internal_call("TRE.AudioSystem::Engine_PlayFootsteps", BindPlayFootsteps);
 		}
 
 		// Scene

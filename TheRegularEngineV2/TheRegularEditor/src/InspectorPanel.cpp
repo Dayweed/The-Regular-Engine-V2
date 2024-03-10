@@ -457,9 +457,39 @@ namespace TRE
 									ImGui::EndCombo();
 								}
 							}
-							else if constexpr (std::is_same_v<T, audio_file_dropdown>)
+							else if constexpr (std::is_same_v<T, std::vector<audio_file_dropdown>>)
 							{
-								; // UpdatedData and stuff for audio_file_dropdown here
+								ImGui::SameLine();
+								std::string addButtonLabel = "Add New Audio File##" + entity->GetGUID();
+								if (ImGui::Button(addButtonLabel.c_str()))
+								{
+									audio_file_dropdown newDropdown;
+									newDropdown.m_File = ""; // Initialize with empty string
+									Value.push_back(newDropdown);
+									UpdatedData = true;
+								}
+
+								std::vector<int> deleteIndices;
+								for (size_t i = 0; i < Value.size(); ++i)
+								{
+									std::string filenameLabel = "Filename##" + entity->GetGUID() + std::to_string(i);
+									ImGui::InputText(filenameLabel.c_str(), &Value[i].m_File);
+
+									ImGui::SameLine();
+
+									std::string deleteButtonLabel = "Delete##" + entity->GetGUID() + std::to_string(i);
+									if (ImGui::Button(deleteButtonLabel.c_str()))
+									{
+										deleteIndices.push_back(static_cast<int>(i));
+										UpdatedData = true;
+									}
+								}
+
+								// Delete marked indices in reverse order
+								for (int i = static_cast<int>(deleteIndices.size()) - 1; i >= 0; --i)
+								{
+									Value.erase(Value.begin() + deleteIndices[i]);
+								}
 							}
 							else if constexpr (std::is_same_v<T, waypoint>)
 							{

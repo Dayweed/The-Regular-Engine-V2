@@ -180,7 +180,7 @@ namespace property
             , Color3
             , resource_ref
             , resource_list
-            , audio_file_dropdown
+            , std::vector<audio_file_dropdown>
             , FMOD_VECTOR
             , std::vector<waypoint>
             , CollisionLayer
