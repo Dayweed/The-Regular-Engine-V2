@@ -3,6 +3,7 @@
 #include "Graphics/Renderer.h"
 #include "Core/Engine.h"
 #include "Vignette.h"
+#include "Silhouette.h"
 
 namespace TRE
 {
@@ -47,27 +48,29 @@ namespace TRE
 
 	void PostProcessEffect::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
 	{
+		const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
+
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = m_Renderpass->GetHandle();
 		renderPassInfo.framebuffer = targetFramebuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		renderPassInfo.renderArea.extent = SC->GetSwapChainExtent();
 
 		vkCmdBeginRenderPass(commandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		VkViewport viewport{};
 		viewport.x = 0.f;
-		viewport.y = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
-		viewport.width = static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetWidth());
-		viewport.height = -static_cast<float>(Engine::GetInstance().GetWindow()->GetSwapChain()->GetHeight());
+		viewport.y = static_cast<float>(SC->GetHeight());
+		viewport.width = static_cast<float>(SC->GetWidth());
+		viewport.height = -static_cast<float>(SC->GetHeight());
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(commandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = Engine::GetInstance().GetWindow()->GetSwapChain()->GetSwapChainExtent();
+		scissor.extent = SC->GetSwapChainExtent();
 		vkCmdSetScissor(commandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
 
 		Renderer::BindPipeline(commandBuffer, m_Pipeline);
@@ -87,6 +90,7 @@ namespace TRE
 	void PostProcessingManager::Init()
 	{
 		m_PostEffects[0] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
+		//m_PostEffects[1] = std::move(std::pair("Silhouette", std::make_shared<Silhouette>()));
 	}
 
 	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)

@@ -103,11 +103,11 @@ namespace TRE
 	{
 		if (iseditor)
 		{
-			m_SkyboxMaterial->UpdateForEditorSceneRendering(UBO, Index, image);
+			m_SkyboxMaterial->UpdateForEditorSceneRendering(UBO, Index);
 		}
 		else
 		{
-			m_SkyboxMaterial->UpdateForRendering(UBO, Index, image);
+			m_SkyboxMaterial->UpdateForRendering(UBO, Index);
 		}
 	}
 }

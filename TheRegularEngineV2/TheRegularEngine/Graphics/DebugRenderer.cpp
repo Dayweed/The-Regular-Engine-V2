@@ -192,7 +192,7 @@ namespace TRE
 
 	void DebugRenderer::UpdateMaterial(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
-		m_DebugMaterialInstance->UpdateForRendering(UBO, Index, VkDescriptorImageInfo());
+		m_DebugMaterialInstance->UpdateForRendering(UBO, Index);
 	}
 
 	void DebugRenderer::BindPipeline(VkCommandBuffer CommandBuffer)

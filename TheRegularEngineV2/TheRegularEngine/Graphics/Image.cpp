@@ -16,7 +16,7 @@ namespace TRE
 		return m_ImageData;
 	}
 
-	VkDescriptorImageInfo Image2D::GetDescriptorImageInfo()
+	VkDescriptorImageInfo& Image2D::GetDescriptorImageInfo()
 	{
 		return m_DescriptorImageInfo;
 	}

@@ -109,6 +109,13 @@ namespace TRE
 		public:
 			std::vector<std::shared_ptr<Image2D>> GetColorImages();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
+			static enum class SceneImage
+			{
+				ShadowMap = 0,
+				DepthMap,
+				IDMap,
+			};
+			static std::unordered_map<SceneImage, std::shared_ptr<Image2D>> m_SceneImages;
 
 		private:
 			bool ShadowFrustumCheck(const BaseCamera& baseCamera);
@@ -142,7 +149,7 @@ namespace TRE
 			//Shadow
 			float depthBiasConstant = 1.25f;
 			float depthBiasSlope = 1.75f;
-			std::shared_ptr<Image2D> m_ShadowImages;
+			//std::shared_ptr<Image2D> m_ShadowImages;
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
 			VkDescriptorImageInfo m_ShadowDescriptInfo;
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
@@ -155,7 +162,7 @@ namespace TRE
 			float m_ShadowAABBPadding = 10.f;
 
 			//Depth Prepass
-			std::shared_ptr<Image2D> m_DepthPrepassImages;
+			//std::shared_ptr<Image2D> m_DepthPrepassImages;
 			std::shared_ptr<RenderPass> m_DepthPrepassRenderPass;
 			VkDescriptorImageInfo m_DepthPrepassDescriptInfo;
 			std::shared_ptr<Pipeline> m_DepthPrepassPipeline;
@@ -167,7 +174,7 @@ namespace TRE
 			VkFramebuffer m_DepthPrepassFramebuffer;
 
 			//ID Prepass
-			std::shared_ptr<Image2D> m_IDPrepassImages;
+			//std::shared_ptr<Image2D> m_IDPrepassImages;
 			std::shared_ptr<RenderPass> m_IDPrepassRenderPass;
 			VkDescriptorImageInfo m_IDPrepassDescriptInfo;
 			std::shared_ptr<Pipeline> m_IDPrepassPipeline;

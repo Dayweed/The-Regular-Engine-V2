@@ -188,6 +188,7 @@ namespace TRE
 		auto Particle3DHandle = 13;
 		auto DepthMapping = 14;
 		auto DepthMappingAnimation = 15;
+		auto SilhouetteHandle = 16;
 
 		//FinalPassShader
 		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
@@ -248,6 +249,11 @@ namespace TRE
 		std::unique_ptr<Shader> DepthMappingAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMappingAnimation.TREshader");
 		DepthMappingAnimationShader->SetHandle(DepthMappingAnimation);
 		ResourceManager::Instance().AddResource(std::move(DepthMappingAnimationShader));
+
+		//SilhouetteShader
+		std::unique_ptr<Shader> SilhouetteShader = ShaderCompiler::DeserializeReflectShader("../Resources/Silhouette.TREshader");
+		SilhouetteShader->SetHandle(SilhouetteHandle);
+		ResourceManager::Instance().AddResource(std::move(SilhouetteShader));
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

@@ -13,6 +13,8 @@
 
 namespace TRE
 {
+	std::unordered_map<SceneRenderer::SceneImage, std::shared_ptr<Image2D>> SceneRenderer::m_SceneImages;
+
 	std::shared_ptr<DescriptorPool>& SceneRenderer::GetDescriptorPool()
 	{
 		return m_DescriptorPool;
@@ -280,6 +282,8 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
+		m_SceneImages.clear();
+
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 		ShadowPassInit();
 
@@ -317,6 +321,8 @@ namespace TRE
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
+
+		m_SceneImages.clear();
 	}
 
 	void SceneRenderer::BeginEditorFrame()
@@ -710,12 +716,12 @@ namespace TRE
 				{
 					if (m_IsEditorScene)
 					{
-						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -723,12 +729,12 @@ namespace TRE
 				{
 					if (m_IsEditorScene)
 					{
-						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, m_ShadowImages->GetDescriptorImageInfo());
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -772,12 +778,12 @@ namespace TRE
 
 				if (m_IsEditorScene)
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetDescriptor(Index), 0, NULL);
 				}
 			}
@@ -785,12 +791,12 @@ namespace TRE
 			{
 				if (m_IsEditorScene)
 				{
-					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}
@@ -859,12 +865,12 @@ namespace TRE
 
 		if (m_IsEditorScene)
 		{
-			m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+			m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index);
 			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
 		}
 		else
 		{
-			m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index, m_ShadowImages->GetDescriptorImageInfo());
+			m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index);
 			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
 		}
 
@@ -897,12 +903,12 @@ namespace TRE
 
 			if (m_IsEditorScene)
 			{
-				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
 			}
 			else
 			{
-				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO, m_ShadowImages->GetDescriptorImageInfo());
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
 			}
 
@@ -946,7 +952,7 @@ namespace TRE
 
 		Renderer::BindPipeline(m_CommandBuffer, m_DepthPrepassPipeline);
 
-		m_DepthPrepassMaterial->UpdateForRendering(m_DepthPrepassUBO, Index, m_DepthPrepassImages->GetDescriptorImageInfo());
+		m_DepthPrepassMaterial->UpdateForRendering(m_DepthPrepassUBO, Index);
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DepthPrepassPipeline->GetPipelineLayout(), 0, 1, &m_DepthPrepassMaterial->GetDescriptor(Index), 0, NULL);
 
 		for (const auto& go_mr : MaterialSort)
@@ -976,7 +982,7 @@ namespace TRE
 			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_DepthPrepassAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-			AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_DepthPrepassUBO, Index, AnimComp.m_UBO, m_DepthPrepassImages->GetDescriptorImageInfo());
+			AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_DepthPrepassUBO, Index, AnimComp.m_UBO);
 			vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_DepthPrepassAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
 
 			MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
@@ -1017,7 +1023,7 @@ namespace TRE
 
 		Renderer::BindPipeline(m_CommandBuffer, m_IDPrepassPipeline);
 
-		m_IDPrepassMaterial->UpdateForRendering(m_IDPrepassUBO, Index, m_IDPrepassImages->GetDescriptorImageInfo());
+		m_IDPrepassMaterial->UpdateForRendering(m_IDPrepassUBO, Index);
 		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_IDPrepassPipeline->GetPipelineLayout(), 0, 1, &m_IDPrepassMaterial->GetDescriptor(Index), 0, NULL);
 
 		for (const auto& go_mr : MaterialSort)
@@ -1052,7 +1058,7 @@ namespace TRE
 				pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
 				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_IDPrepassAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_IDPrepassUBO, Index, AnimComp.m_UBO, m_IDPrepassImages->GetDescriptorImageInfo());
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_IDPrepassUBO, Index, AnimComp.m_UBO);
 				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_IDPrepassAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
 
 				MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
@@ -1249,10 +1255,11 @@ namespace TRE
 		ImgConfig.Transfer = false;
 		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 
-		m_ShadowImages = std::make_shared<Image2D>(ImgConfig);
+		if (m_SceneImages.contains(SceneImage::ShadowMap) == false)
+			m_SceneImages[SceneImage::ShadowMap] = std::make_shared<Image2D>(ImgConfig);
 		m_ShadowRenderPass = std::make_shared<RenderPass>(m_Device, true);
 
-		auto attachments = m_ShadowImages->GetImageData().ImageView;
+		auto attachments = m_SceneImages[SceneImage::ShadowMap]->GetImageData().ImageView;
 		VkFramebufferCreateInfo framebufferCreateInfo{};
 		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferCreateInfo.renderPass = m_ShadowRenderPass->GetHandle();
@@ -1290,10 +1297,11 @@ namespace TRE
 		ImgConfig.Transfer = false;
 		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 
-		m_DepthPrepassImages = std::make_shared<Image2D>(ImgConfig);
+		if (m_SceneImages.contains(SceneImage::DepthMap) == false)
+			m_SceneImages[SceneImage::DepthMap] = std::make_shared<Image2D>(ImgConfig);
 		m_DepthPrepassRenderPass = std::make_shared<RenderPass>(m_Device, true);
 
-		auto attachments = m_DepthPrepassImages->GetImageData().ImageView;
+		auto attachments = m_SceneImages[SceneImage::DepthMap]->GetImageData().ImageView;
 		VkFramebufferCreateInfo framebufferCreateInfo{};
 		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferCreateInfo.renderPass = m_DepthPrepassRenderPass->GetHandle();
@@ -1324,10 +1332,11 @@ namespace TRE
 		ImgConfig.Transfer = false;
 		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 
-		m_IDPrepassImages = std::make_shared<Image2D>(ImgConfig);
+		if (m_SceneImages.contains(SceneImage::IDMap) == false)
+			m_SceneImages[SceneImage::IDMap] = std::make_shared<Image2D>(ImgConfig);
 		m_IDPrepassRenderPass = std::make_shared<RenderPass>(m_Device, true);
 
-		auto attachments = m_IDPrepassImages->GetImageData().ImageView;
+		auto attachments = m_SceneImages[SceneImage::IDMap]->GetImageData().ImageView;
 		VkFramebufferCreateInfo framebufferCreateInfo{};
 		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferCreateInfo.renderPass = m_IDPrepassRenderPass->GetHandle();

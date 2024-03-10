@@ -79,7 +79,7 @@ namespace TRE
 		m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO));
 	}
 
-	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
 		if(m_IsValid == false)
 			Invalidate();
@@ -98,7 +98,12 @@ namespace TRE
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
 				if (Write.dstBinding == 7)
-					Write.pImageInfo = &ShadowMap;
+				{
+					if(SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
 				else
 				{
 					if(m_Textures[Name] != nullptr)
@@ -114,7 +119,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap)
+	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
 	{
 		m_WriteDescriptors.clear();
 
@@ -130,7 +135,12 @@ namespace TRE
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
 				if (Write.dstBinding == 7)
-					Write.pImageInfo = &ShadowMap;
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
 				else
 				{
 					if (m_Textures[Name] != nullptr)
@@ -146,7 +156,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, const VkDescriptorImageInfo& ShadowMap)
+	void Material::UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation)
 	{
 		if (m_IsValid == false)
 			Invalidate();
@@ -167,7 +177,12 @@ namespace TRE
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
 				if (Write.dstBinding == 7)
-					Write.pImageInfo = &ShadowMap;
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
 				else
 				{
 					if (m_Textures[Name] != nullptr)
@@ -183,7 +198,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation, const VkDescriptorImageInfo& ShadowMap)
+	void Material::UpdateForEditorAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation)
 	{
 		m_WriteDescriptors.clear();
 
@@ -201,7 +216,12 @@ namespace TRE
 			else if (Write.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{
 				if (Write.dstBinding == 7)
-					Write.pImageInfo = &ShadowMap;
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
 				else
 				{
 					if (m_Textures[Name] != nullptr)

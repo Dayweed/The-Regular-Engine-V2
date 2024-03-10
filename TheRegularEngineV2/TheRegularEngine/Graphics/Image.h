@@ -67,7 +67,7 @@ namespace TRE
 			void Invalidate();
 			void UpdateDescriptorInfo();
 
-			VkDescriptorImageInfo GetDescriptorImageInfo();
+			VkDescriptorImageInfo& GetDescriptorImageInfo();
 			const ImageConfig& GetImageConfig() const;
 			ImageData GetImageData();
 
