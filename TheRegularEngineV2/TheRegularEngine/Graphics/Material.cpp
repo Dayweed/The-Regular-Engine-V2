@@ -79,7 +79,7 @@ namespace TRE
 		m_MaterialUBO->SetData(&m_UBO, sizeof(MaterialUBO));
 	}
 
-	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, uint32_t ShaodowMapIndex)
 	{
 		if(m_IsValid == false)
 			Invalidate();
@@ -99,8 +99,14 @@ namespace TRE
 			{
 				if (Write.dstBinding == 7)
 				{
-					if(SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					if (ShaodowMapIndex == 0 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					}
+					else if (ShaodowMapIndex == 1 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
+					{
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
+					}
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
@@ -133,7 +139,7 @@ namespace TRE
 		vkUpdateDescriptorSets(RendererContext::GetDevice()->GetLogicalDevice(), static_cast<uint32_t>(m_WriteDescriptors.size()), m_WriteDescriptors.data(), 0, nullptr);
 	}
 
-	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index)
+	void Material::UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, uint32_t ShaodowMapIndex)
 	{
 		m_WriteDescriptors.clear();
 
@@ -150,8 +156,14 @@ namespace TRE
 			{
 				if (Write.dstBinding == 7)
 				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					if (ShaodowMapIndex == 0 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
+					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
+					}
+					else if (ShaodowMapIndex == 1 && SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
+					{
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
+					}
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}

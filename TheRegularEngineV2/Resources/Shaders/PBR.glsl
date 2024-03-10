@@ -37,7 +37,7 @@ layout(push_constant) uniform Push
 layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
-	mat4 m_LightSpaceMatrix;
+	mat4 m_LightSpaceMatrix[2];
 	vec3 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
@@ -75,7 +75,7 @@ void main()
 	Out.AmbientColor = ubo.m_AmbientLight[push.m_DLightIndex];
 	Out.CameraWorldPos = ubo.m_CameraPosition.xyz;
 
-	Out.ShadowCoord = ubo.m_LightSpaceMatrix * push.m_Model * vec4(inPosition, 1.0);
+	Out.ShadowCoord = ubo.m_LightSpaceMatrix[push.m_DLightIndex] * push.m_Model * vec4(inPosition, 1.0);
 	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection[push.m_DLightIndex];
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[push.m_DLightIndex];
 	Out.ShadowIntensity = ubo.m_ShadowIntensity[push.m_DLightIndex];

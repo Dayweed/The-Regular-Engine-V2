@@ -41,7 +41,7 @@ namespace TRE
 	struct UBO
 	{
 		glm::mat4 m_ProjView{ 1.f };																	//World to view to projection
-		glm::mat4 m_LightSpaceMatrix {1.f};																//Matrix to transform to light space coordinates
+		glm::mat4 m_LightSpaceMatrix[2] = { glm::mat4(1.f) };																//Matrix to transform to light space coordinates
 
 		glm::vec3 m_LightPosition{ 0.f, 0.f, 0.f};														//Light position for now will be the camera in world space
 		#pragma warning (suppress: 4324)																// warning C4324: 'TRE::UBO': structure was padded due to alignment specifier	
@@ -154,7 +154,7 @@ namespace TRE
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
 			VkDescriptorImageInfo m_ShadowDescriptInfo;
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
-			std::shared_ptr<Material> m_ShadowMaterial;
+			std::shared_ptr<Material> m_ShadowMaterial[2];
 			std::shared_ptr<Pipeline> m_ShadowAnimationPipeline;
 			std::shared_ptr<UniformBuffer> m_ShadowUBO [2];
 			uint32_t m_ShadowMapWidth = 1600;
@@ -190,15 +190,15 @@ namespace TRE
 			glm::vec3 m_ShadowAABBMin;
 			glm::vec3 m_ShadowAABBMax;
 			glm::vec3 m_ShadowRenderPoint;
-			glm::mat4 m_ShadowView;
-			glm::mat4 m_ShadowProj;
+			glm::mat4 m_ShadowView [2];
+			glm::mat4 m_ShadowProj [2];
 
 			//Editor viewport
 			glm::vec3 m_EditorShadowAABBMin;
 			glm::vec3 m_EditorShadowAABBMax;
 			glm::vec3 m_EditorShadowRenderPoint;
-			glm::mat4 m_EditorShadowView;
-			glm::mat4 m_EditorShadowProj;
+			glm::mat4 m_EditorShadowView [2];
+			glm::mat4 m_EditorShadowProj [2];
 			float m_EditorShadowRatio = 0.05f;
 
 			//AnimationPass

@@ -34,8 +34,8 @@ namespace TRE
 			void Invalidate();
 			//void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap = VkDescriptorImageInfo());
 			//void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const VkDescriptorImageInfo& ShadowMap = VkDescriptorImageInfo());
-			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
-			void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index);
+			void UpdateForRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, uint32_t ShaodowMapIndex = -1);
+			void UpdateForEditorSceneRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, uint32_t ShaodowMapIndex = -1);
 
 
 			void UpdateForAnimationRendering(const std::shared_ptr<UniformBuffer>& UBO, uint32_t Index, const std::shared_ptr<UniformBuffer>& uboanimation);

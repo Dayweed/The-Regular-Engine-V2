@@ -99,8 +99,11 @@ namespace TRE
 
 			m_ShadowAnimationPipeline = std::make_shared<Pipeline>(ShadowAnimationPipelineConfig, m_ShadowRenderPass);
 
-			m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
-			m_ShadowMaterial->Invalidate();
+			m_ShadowMaterial[0] = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+			m_ShadowMaterial[0]->Invalidate();
+
+			m_ShadowMaterial[1] = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+			m_ShadowMaterial[1]->Invalidate();
 		}
 #pragma endregion ShadowPass
 
@@ -384,17 +387,18 @@ namespace TRE
 				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
 				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-				m_EditorShadowView = shadowDepthViewMatrix;
-				m_EditorShadowProj = shadowDepthProjectionMatrix;
+				m_EditorShadowView[x] = shadowDepthViewMatrix;
+				m_EditorShadowProj[x] = shadowDepthProjectionMatrix;
 
-				UBO_Shadow.view = m_EditorShadowView;
-				UBO_Shadow.proj = m_EditorShadowProj;
+				UBO_Shadow.view = m_EditorShadowView[x];
+				UBO_Shadow.proj = m_EditorShadowProj[x];
 
 				m_ShadowUBO[x]->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 			}
+			
+			ubo.m_LightSpaceMatrix[x] = m_EditorShadowProj[x] * m_EditorShadowView[x];
 		}
 		
-		ubo.m_LightSpaceMatrix = m_EditorShadowProj * m_EditorShadowView;
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
@@ -480,17 +484,18 @@ namespace TRE
 				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
 				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-				m_ShadowView = shadowDepthViewMatrix;
-				m_ShadowProj = shadowDepthProjectionMatrix;
+				m_ShadowView[x] = shadowDepthViewMatrix;
+				m_ShadowProj[x] = shadowDepthProjectionMatrix;
 
-				UBO_Shadow.view = m_ShadowView;
-				UBO_Shadow.proj = m_ShadowProj;
+				UBO_Shadow.view = m_ShadowView [x];
+				UBO_Shadow.proj = m_ShadowProj [x];
 
 				m_ShadowUBO[x]->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 			}
+			
+			ubo.m_LightSpaceMatrix[x] = m_ShadowProj[x] * m_ShadowView[x];
 		}
 
-		ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
 		
 		{
 			DepthUBO depthUBO{};
@@ -713,12 +718,12 @@ namespace TRE
 				{
 					if (m_IsEditorScene)
 					{
-						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -726,12 +731,12 @@ namespace TRE
 				{
 					if (m_IsEditorScene)
 					{
-						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -830,89 +835,94 @@ namespace TRE
 	{
 		m_ShadowMapWidth = 8192;
 		m_ShadowMapHeight = 8192;
-		VkClearValue clearValues[2];
-		clearValues[0].depthStencil = { 1.0f, 0 };
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
-		renderPassInfo.framebuffer = m_ShadowFramebuffer[0];
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = clearValues;
 
-		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		VkViewport viewport2{};
-		viewport2.x = 0.0f;
-		viewport2.y = 0.0f;
-		viewport2.width = (float)m_ShadowMapWidth;
-		viewport2.height = (float)m_ShadowMapHeight;
-		viewport2.minDepth = 0.0f;
-		viewport2.maxDepth = 1.0f;
-		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
-
-		VkRect2D scissor2{};
-		scissor2.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
-		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
-
-		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
-
-		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
-
-		for (const auto& go_mr : MaterialSort)
+		for (int x = 0; x < 2; x++) //Render 2 shadow maps
 		{
-			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
-			ResourceHandle currentMaterialHandle = go_mr.first;
+			VkClearValue clearValues[2];
+			clearValues[0].depthStencil = { 1.0f, 0 };
+			VkRenderPassBeginInfo renderPassInfo{};
+			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+			renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
+			renderPassInfo.framebuffer = m_ShadowFramebuffer[x];
+			renderPassInfo.renderArea.offset = { 0, 0 };
+			renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+			renderPassInfo.clearValueCount = 1;
+			renderPassInfo.pClearValues = clearValues;
 
-			PushConstant pc{};
-			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			if (m_IsEditorScene)
+			VkViewport viewport2{};
+			viewport2.x = 0.0f;
+			viewport2.y = 0.0f;
+			viewport2.width = (float)m_ShadowMapWidth;
+			viewport2.height = (float)m_ShadowMapHeight;
+			viewport2.minDepth = 0.0f;
+			viewport2.maxDepth = 1.0f;
+			vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+			VkRect2D scissor2{};
+			scissor2.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+			vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+			vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
+
+			Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
+
+			for (const auto& go_mr : MaterialSort)
 			{
-				m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO[mr.m_DLightIndex], Index);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
+				const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+				ResourceHandle currentMaterialHandle = go_mr.first;
+
+				PushConstant pc{};
+				pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				if (m_IsEditorScene)
+				{
+					m_ShadowMaterial[x]->UpdateForEditorSceneRendering(m_ShadowUBO[x], Index);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial[x]->GetEditorDescriptor(Index), 0, NULL);
+				}
+				else
+				{
+					m_ShadowMaterial[x]->UpdateForRendering(m_ShadowUBO[x], Index);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial[x]->GetDescriptor(Index), 0, NULL);
+				}
+
+				mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+				mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+				m_PreviousMaterialHandle = currentMaterialHandle;
 			}
-			else
+			m_PreviousMaterialHandle = 0;
+
+			Renderer::BindPipeline(m_CommandBuffer, m_ShadowAnimationPipeline);
+
+			for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
 			{
-				m_ShadowMaterial->UpdateForRendering(m_ShadowUBO[mr.m_DLightIndex], Index);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
+				const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
+				const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
+
+				PushConstant pc{};
+				pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+				if (m_IsEditorScene)
+				{
+					AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO[x], Index, AnimComp.m_UBO);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
+				}
+				else
+				{
+					AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO[x], Index, AnimComp.m_UBO);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
+				}
+
+				MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
 			}
 
-			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
-			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+			Renderer::EndRenderPass(m_CommandBuffer);
 
-			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
-		m_PreviousMaterialHandle = 0; 
-
-		Renderer::BindPipeline(m_CommandBuffer, m_ShadowAnimationPipeline);
-
-		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
-		{
-			const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
-			const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
-
-			PushConstant pc{};
-			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
-			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-			if (m_IsEditorScene)
-			{
-				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO[MeshComp.m_DLightIndex], Index, AnimComp.m_UBO);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
-			}
-			else
-			{
-				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO[MeshComp.m_DLightIndex], Index, AnimComp.m_UBO);
-				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
-			}
-
-			MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
-		}
-
-		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
 	void SceneRenderer::DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
