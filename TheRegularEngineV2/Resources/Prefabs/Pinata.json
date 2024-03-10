@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "12939864573001999934",
-            "17359916036825743371"
+            "12330697029536203288",
+            "7651284233791094877"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "14421717428096744380"
+         "m_Parent": "6095648315407914727"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "14421717428096744380"
+         "m_Parent": "6095648315407914727"
       }
    ],
    [
@@ -58,7 +58,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "14421717428096744380",
+         "m_GUID": "6095648315407914727",
          "m_Index": 1,
          "m_Name": "Pinata",
          "m_Tag": ""
@@ -66,7 +66,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "12939864573001999934",
+         "m_GUID": "12330697029536203288",
          "m_Index": 2,
          "m_Name": "DetectorRange",
          "m_Tag": ""
@@ -74,7 +74,7 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "17359916036825743371",
+         "m_GUID": "7651284233791094877",
          "m_Index": 3,
          "m_Name": "AttackRange",
          "m_Tag": ""
@@ -144,6 +144,7 @@
          "ASSET_GEOM_m_RenderObject": "7b41732c06fff27e",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "926e47ce4f699fef",
+         "m_DLightIndex": 0,
          "m_DrawShadow": true,
          "m_IsVisible": true
       }
@@ -181,7 +182,7 @@
             0.0
          ],
          "m_PhysicsMaterial.m_MaterialID": 0,
-         "m_Radius": 50.0
+         "m_Radius": 40.0
       },
       2,
       {
@@ -235,6 +236,9 @@
          ],
          "m_StoredClass": "TRE.SimpleAI"
       }
+   ],
+   [
+      0
    ],
    [
       0

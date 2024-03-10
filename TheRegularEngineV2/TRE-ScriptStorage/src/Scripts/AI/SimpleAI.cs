@@ -54,7 +54,7 @@ namespace TRE
 				// If it is grounded, jump up
 				if (isGrounded)
 				{
-					PhysicsSystem.AddForce(ID, new vec3(0, 20f, 0), ForceMode.VelocityChange);
+					PhysicsSystem.AddForce(ID, new vec3(0, 10f, 0), ForceMode.VelocityChange);
 				}
 			}
 
@@ -141,7 +141,7 @@ namespace TRE
 					// If it is grounded, jump up
 					if (isGrounded)
 					{
-						PhysicsSystem.AddForce(ID, new vec3(0, 10f, 0), ForceMode.VelocityChange);
+						PhysicsSystem.AddForce(ID, new vec3(0, 7.5f, 0), ForceMode.VelocityChange);
 					}
 
 					mCanChaseTarget = true;

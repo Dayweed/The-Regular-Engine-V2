@@ -83,7 +83,7 @@ namespace TRE
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsHoleyMoleyInsideTrigger(Trigger_B);
 			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);
-			regionD = IsHoleyMoleyInsideTrigger(Trigger_D);
+			regionD = IsInsideTrigger(Trigger_D);
 			regionE = IsInsideTrigger(Trigger_E);
 			regionF = IsInsideTrigger(Trigger_F);
 			regionG = IsInsideTrigger(Trigger_G);
@@ -134,7 +134,7 @@ namespace TRE
 			{
 				//region with jumppad - 2nd floor & moving platform 1
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(50, 90, 0);
+				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
