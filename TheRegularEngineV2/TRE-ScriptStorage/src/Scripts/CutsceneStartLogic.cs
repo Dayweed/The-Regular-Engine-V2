@@ -18,14 +18,20 @@ namespace TRE
 		Entity Frame_10;
 		Entity SpaceToContinue;
 		Entity SpaceToContinueBlack;
+		Entity InvitationDialogue1;
+		Entity InvitationDialogue2;
+		Entity InvitationDialogue3;
+		Entity InvitationDialogue4;
+		Entity InvitationDialogue5;
 
-		float currentTime = 0;
+        float currentTime = 0;
 		float delayFrame = 5f;
 		float delayScene = 7f;
 
 		int currentFrame = 0;
 
 		bool endCutscene = false;
+		bool startDialogue = false;
 
 		private ulong birdSFX;
 		private ulong dialogueSFX;
@@ -53,8 +59,13 @@ namespace TRE
 			Frame_10 = ECSManager.FindEntityByName("Frame10");
 			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
 			SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
+			InvitationDialogue1 = ECSManager.FindEntityByName("InvitationDialogue1");
+			InvitationDialogue2 = ECSManager.FindEntityByName("InvitationDialogue2");
+			InvitationDialogue3 = ECSManager.FindEntityByName("InvitationDialogue3");
+			InvitationDialogue4 = ECSManager.FindEntityByName("InvitationDialogue4");
+			InvitationDialogue5 = ECSManager.FindEntityByName("InvitationDialogue5");
 
-			Frame_1.SetActive(false);
+            Frame_1.SetActive(false);
 			Frame_2.SetActive(false);
 			Frame_3.SetActive(false);
 			Frame_4.SetActive(false);
@@ -120,8 +131,38 @@ namespace TRE
 					AS.Play(dialogueSFX);
 			}
 
-			// Close Game
-			if (InputSystem.GetKeyHold(InputKeys.Escape))
+			if (currentFrame == 3 && startDialogue)
+			{
+				TextSystem.StartDialogue(InvitationDialogue1.ID);
+				startDialogue = false;
+			}
+
+            if (currentFrame == 4 && startDialogue)
+            {
+                TextSystem.StartDialogue(InvitationDialogue2.ID);
+                startDialogue = false;
+            }
+
+            if (currentFrame == 5 && startDialogue)
+            {
+                TextSystem.StartDialogue(InvitationDialogue3.ID);
+                startDialogue = false;
+            }
+
+            if (currentFrame == 6 && startDialogue)
+            {
+                TextSystem.StartDialogue(InvitationDialogue4.ID);
+                startDialogue = false;
+            }
+
+            if (currentFrame == 7 && startDialogue)
+            {
+                TextSystem.StartDialogue(InvitationDialogue5.ID);
+                startDialogue = false;
+            }
+
+            // Close Game
+            if (InputSystem.GetKeyHold(InputKeys.Escape))
 			{
 				Game.CloseGame();
 			}
@@ -154,7 +195,10 @@ namespace TRE
 					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{
 						if (currentFrame >= 3 && currentFrame <= 7)
+						{
 							SpaceToContinueBlack.SetActive(true);
+							startDialogue = true;
+						}
 						else
 							SpaceToContinue.SetActive(true);
 					}
