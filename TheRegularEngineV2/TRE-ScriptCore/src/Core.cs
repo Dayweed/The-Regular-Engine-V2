@@ -19,7 +19,8 @@ namespace TRE
 
 	public class Entity : Component
 	{
-		public EntityID ID;             // Can hold id of entity or id of prefab resource
+		/// <summary>Can hold id of entity or id of prefab resource</summary>
+		public EntityID ID;
 		public string name;
 		public Parenting parenting;
 		public Transform transform;

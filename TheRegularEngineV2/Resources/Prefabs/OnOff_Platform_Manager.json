@@ -1,0 +1,1234 @@
+[
+   [
+      18,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+   ],
+   [
+      18,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "15423563205830293015",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "9302168485515908813",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6994320660726572052",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "6693923742422246538",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name"
+            ],
+            "Transform": [
+               "TRE::Transform/Position"
+            ]
+         },
+         "m_PrefabGUID": "15928610177363409800",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11994422210022603295",
+         "m_RemovedComps": []
+      },
+      6,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "16066609899495647502",
+         "m_RemovedComps": []
+      },
+      7,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "7448052327583033298",
+         "m_RemovedComps": []
+      },
+      8,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name",
+               "TRE::Properties/Index"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "5404064277036042883",
+         "m_RemovedComps": []
+      },
+      9,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "BoxCollider": [
+               "TRE::BoxCollider/HalfExtents"
+            ],
+            "Properties": [
+               "TRE::Properties/Name",
+               "TRE::Properties/Index"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "16928880841071235864",
+         "m_RemovedComps": []
+      },
+      10,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9443163422333294669",
+         "m_RemovedComps": []
+      },
+      11,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3519999405557493968",
+         "m_RemovedComps": []
+      },
+      12,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "5742642624371481346",
+         "m_RemovedComps": []
+      },
+      13,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "Properties": [
+               "TRE::Properties/Name",
+               "TRE::Properties/Index"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Rotation"
+            ]
+         },
+         "m_PrefabGUID": "7455657397719019701",
+         "m_RemovedComps": []
+      },
+      14,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {
+            "BoxCollider": [
+               "TRE::BoxCollider/HalfExtents"
+            ],
+            "Properties": [
+               "TRE::Properties/Name",
+               "TRE::Properties/Index"
+            ],
+            "Transform": [
+               "TRE::Transform/Position",
+               "TRE::Transform/Scale"
+            ]
+         },
+         "m_PrefabGUID": "11323915813511627675",
+         "m_RemovedComps": []
+      },
+      15,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14608380230179807396",
+         "m_RemovedComps": []
+      },
+      16,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12420986886493146615",
+         "m_RemovedComps": []
+      },
+      17,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "15423563205830293015",
+         "m_Overrides": {},
+         "m_PrefabGUID": "7224147961344914810",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      18,
+      0,
+      {
+         "m_Children": [
+            "16285328969411418509",
+            "13027305427343592614",
+            "13196780527013359998",
+            "4856937215810787434"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [
+            "5923738924762602282"
+         ],
+         "m_Parent": "15485074752811095799"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "16285328969411418509"
+      },
+      3,
+      {
+         "m_Children": [
+            "5264613915924758958",
+            "7002668671827395980"
+         ],
+         "m_Parent": "15485074752811095799"
+      },
+      4,
+      {
+         "m_Children": [],
+         "m_Parent": "13027305427343592614"
+      },
+      5,
+      {
+         "m_Children": [
+            "4846732405307819784",
+            "2340763919855463885"
+         ],
+         "m_Parent": "13027305427343592614"
+      },
+      6,
+      {
+         "m_Children": [],
+         "m_Parent": "7002668671827395980"
+      },
+      7,
+      {
+         "m_Children": [],
+         "m_Parent": "7002668671827395980"
+      },
+      8,
+      {
+         "m_Children": [
+            "15092990101921592448",
+            "2645763936670911114"
+         ],
+         "m_Parent": "15485074752811095799"
+      },
+      9,
+      {
+         "m_Children": [],
+         "m_Parent": "13196780527013359998"
+      },
+      10,
+      {
+         "m_Children": [
+            "5264989854643645201",
+            "16709205166024638078"
+         ],
+         "m_Parent": "13196780527013359998"
+      },
+      11,
+      {
+         "m_Children": [],
+         "m_Parent": "2645763936670911114"
+      },
+      12,
+      {
+         "m_Children": [],
+         "m_Parent": "2645763936670911114"
+      },
+      13,
+      {
+         "m_Children": [
+            "14241839161697963998",
+            "6864160532565060816"
+         ],
+         "m_Parent": "15485074752811095799"
+      },
+      14,
+      {
+         "m_Children": [],
+         "m_Parent": "4856937215810787434"
+      },
+      15,
+      {
+         "m_Children": [
+            "5525996860116138191",
+            "10779640558552607437"
+         ],
+         "m_Parent": "4856937215810787434"
+      },
+      16,
+      {
+         "m_Children": [],
+         "m_Parent": "6864160532565060816"
+      },
+      17,
+      {
+         "m_Children": [],
+         "m_Parent": "6864160532565060816"
+      }
+   ],
+   [
+      18,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "15485074752811095799",
+         "m_Index": 1,
+         "m_Name": "OnOff_Platform_Manager",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "16285328969411418509",
+         "m_Index": 2,
+         "m_Name": "(D) OnOff_Platform_Opposite_Pivot",
+         "m_Tag": "OnOffPlatform"
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "5923738924762602282",
+         "m_Index": 3,
+         "m_Name": "(D) OnOff_Opposite_Platform",
+         "m_Tag": "Ground"
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "13027305427343592614",
+         "m_Index": 4,
+         "m_Name": "(C) OnOff_Platform_Opposite_Pivot",
+         "m_Tag": "OnOffPlatform"
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "5264613915924758958",
+         "m_Index": 5,
+         "m_Name": "(C) OnOff_Opposite_Platform",
+         "m_Tag": "Ground"
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "7002668671827395980",
+         "m_Index": 6,
+         "m_Name": "(C) Button",
+         "m_Tag": "Button"
+      },
+      6,
+      {
+         "m_Active": true,
+         "m_GUID": "4846732405307819784",
+         "m_Index": 7,
+         "m_Name": "UpButton",
+         "m_Tag": ""
+      },
+      7,
+      {
+         "m_Active": true,
+         "m_GUID": "2340763919855463885",
+         "m_Index": 8,
+         "m_Name": "DownButton",
+         "m_Tag": "Ground"
+      },
+      8,
+      {
+         "m_Active": true,
+         "m_GUID": "13196780527013359998",
+         "m_Index": 9,
+         "m_Name": "(B) OnOff_Platform_Pivot",
+         "m_Tag": ""
+      },
+      9,
+      {
+         "m_Active": true,
+         "m_GUID": "15092990101921592448",
+         "m_Index": 10,
+         "m_Name": "(B) OnOff_Platform",
+         "m_Tag": "Ground"
+      },
+      10,
+      {
+         "m_Active": true,
+         "m_GUID": "2645763936670911114",
+         "m_Index": 11,
+         "m_Name": "(B) Button",
+         "m_Tag": "Button"
+      },
+      11,
+      {
+         "m_Active": true,
+         "m_GUID": "5264989854643645201",
+         "m_Index": 12,
+         "m_Name": "UpButton",
+         "m_Tag": ""
+      },
+      12,
+      {
+         "m_Active": true,
+         "m_GUID": "16709205166024638078",
+         "m_Index": 13,
+         "m_Name": "DownButton",
+         "m_Tag": "Ground"
+      },
+      13,
+      {
+         "m_Active": true,
+         "m_GUID": "4856937215810787434",
+         "m_Index": 14,
+         "m_Name": "(A) OnOff_Platform_Pivot",
+         "m_Tag": ""
+      },
+      14,
+      {
+         "m_Active": true,
+         "m_GUID": "14241839161697963998",
+         "m_Index": 15,
+         "m_Name": "(A) OnOff_Platform",
+         "m_Tag": "Ground"
+      },
+      15,
+      {
+         "m_Active": true,
+         "m_GUID": "6864160532565060816",
+         "m_Index": 16,
+         "m_Name": "(A) Button",
+         "m_Tag": "Button"
+      },
+      16,
+      {
+         "m_Active": true,
+         "m_GUID": "5525996860116138191",
+         "m_Index": 17,
+         "m_Name": "UpButton",
+         "m_Tag": ""
+      },
+      17,
+      {
+         "m_Active": true,
+         "m_GUID": "10779640558552607437",
+         "m_Index": 18,
+         "m_Name": "DownButton",
+         "m_Tag": "Ground"
+      }
+   ],
+   [
+      18,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            15.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -5.008956122765085e-06,
+            -180.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            -6.993823262746446e-07,
+            -8.0,
+            14.999999046325684
+         ],
+         "m_Rotation": [
+            1.001791224553017e-05,
+            8.757937951242578e-13,
+            -1.0017913155024871e-05
+         ],
+         "m_Scale": [
+            8.0,
+            16.0,
+            2.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            -15.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            0.0,
+            -8.0,
+            -15.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            8.0,
+            16.0,
+            2.0
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            0.0,
+            -12.0,
+            -17.783496856689453
+         ],
+         "m_Rotation": [
+            -90.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.9999995231628418,
+            0.9999995231628418
+         ]
+      },
+      6,
+      {
+         "m_Position": [
+            0.0,
+            -11.99999713897705,
+            -16.783493041992188
+         ],
+         "m_Rotation": [
+            -90.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.9999989867210388,
+            0.9999989867210388
+         ]
+      },
+      7,
+      {
+         "m_Position": [
+            0.0,
+            -11.99999713897705,
+            -16.583492279052734
+         ],
+         "m_Rotation": [
+            -90.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            0.9999989867210388,
+            0.9999989867210388
+         ]
+      },
+      8,
+      {
+         "m_Position": [
+            15.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      9,
+      {
+         "m_Position": [
+            15.0,
+            -8.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            2.0,
+            16.0,
+            8.0
+         ]
+      },
+      10,
+      {
+         "m_Position": [
+            18.001651763916016,
+            -12.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            -90.0
+         ],
+         "m_Scale": [
+            0.9999988079071045,
+            0.9999988079071045,
+            1.0
+         ]
+      },
+      11,
+      {
+         "m_Position": [
+            17.00164222717285,
+            -11.999996185302734,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            -90.0
+         ],
+         "m_Scale": [
+            0.9999975562095642,
+            0.9999975562095642,
+            1.0
+         ]
+      },
+      12,
+      {
+         "m_Position": [
+            16.80164337158203,
+            -11.999996185302734,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            -90.0
+         ],
+         "m_Scale": [
+            0.9999975562095642,
+            0.9999975562095642,
+            1.0
+         ]
+      },
+      13,
+      {
+         "m_Position": [
+            -15.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            -180.0,
+            -5.008956122765085e-06,
+            -180.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      14,
+      {
+         "m_Position": [
+            -15.000000953674316,
+            -7.999999523162842,
+            -5.245365741757269e-07
+         ],
+         "m_Rotation": [
+            8.142220079589146e-13,
+            -8.142220079589146e-13,
+            -8.142220079589146e-13
+         ],
+         "m_Scale": [
+            2.0,
+            16.0,
+            8.0
+         ]
+      },
+      15,
+      {
+         "m_Position": [
+            -17.648239135742188,
+            -12.000005722045898,
+            -1.1368683772161603e-12
+         ],
+         "m_Rotation": [
+            1.0017914064519573e-05,
+            -7.327998451100992e-12,
+            90.0
+         ],
+         "m_Scale": [
+            0.9999986886978149,
+            0.9999986886978149,
+            0.9999986886978149
+         ]
+      },
+      16,
+      {
+         "m_Position": [
+            -16.64822769165039,
+            -12.00000286102295,
+            -1.711235313450743e-07
+         ],
+         "m_Rotation": [
+            1.0017911336035468e-05,
+            -6.106665086796914e-12,
+            90.0
+         ],
+         "m_Scale": [
+            0.9999973177909851,
+            0.9999973177909851,
+            0.9999986886978149
+         ]
+      },
+      17,
+      {
+         "m_Position": [
+            -16.448226928710938,
+            -12.00000286102295,
+            -2.0609273576610576e-07
+         ],
+         "m_Rotation": [
+            1.0017911336035468e-05,
+            -6.106665086796914e-12,
+            90.0
+         ],
+         "m_Scale": [
+            0.9999973177909851,
+            0.9999973177909851,
+            0.9999986886978149
+         ]
+      }
+   ],
+   [
+      10,
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      4,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      6,
+      {
+         "ASSET_GEOM_m_RenderObject": "e89d9a3603a0e7a2",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "979f297952363a73",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      7,
+      {
+         "ASSET_GEOM_m_RenderObject": "cf99b66bb44f9833",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "5f92eda189945ee8",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      9,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "b08363e4f6cc86cc",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      11,
+      {
+         "ASSET_GEOM_m_RenderObject": "e89d9a3603a0e7a2",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "979f297952363a73",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      12,
+      {
+         "ASSET_GEOM_m_RenderObject": "cf99b66bb44f9833",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "5f92eda189945ee8",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      14,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "e99fe191f41202dd",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      16,
+      {
+         "ASSET_GEOM_m_RenderObject": "e89d9a3603a0e7a2",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "979f297952363a73",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      17,
+      {
+         "ASSET_GEOM_m_RenderObject": "cf99b66bb44f9833",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "5f92eda189945ee8",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      10,
+      2,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            8.0,
+            1.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      4,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            8.0,
+            1.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      5,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            2.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            2.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      7,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            1.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            -0.20000000298023224,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      9,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            1.0,
+            8.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      10,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            2.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            2.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      12,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            1.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            -0.20000000298023224,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      14,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            1.0,
+            8.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      15,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            2.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": true,
+         "m_Offset": [
+            0.0,
+            2.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      17,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            4.0,
+            1.0,
+            4.0
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            -0.20000000298023224,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      12,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.OnOffPlatformManager"
+         ],
+         "m_StoredClass": "TRE.OnOffPlatformManager"
+      },
+      1,
+      {
+         "m_RegisteredScripts": [
+            "TRE.OnOffPlatform"
+         ],
+         "m_StoredClass": "TRE.OnOffPlatform"
+      },
+      2,
+      {
+         "m_RegisteredScripts": [
+            "TRE.IsColliding"
+         ],
+         "m_StoredClass": "TRE.IsColliding"
+      },
+      3,
+      {
+         "m_RegisteredScripts": [
+            "TRE.OnOffPlatform"
+         ],
+         "m_StoredClass": "TRE.OnOffPlatform"
+      },
+      4,
+      {
+         "m_RegisteredScripts": [
+            "TRE.IsColliding"
+         ],
+         "m_StoredClass": "TRE.IsColliding"
+      },
+      5,
+      {
+         "m_RegisteredScripts": [
+            "TRE.Button"
+         ],
+         "m_StoredClass": "TRE.Button"
+      },
+      8,
+      {
+         "m_RegisteredScripts": [
+            "TRE.OnOffPlatform"
+         ],
+         "m_StoredClass": "TRE.OnOffPlatform"
+      },
+      9,
+      {
+         "m_RegisteredScripts": [
+            "TRE.IsColliding"
+         ],
+         "m_StoredClass": "TRE.IsColliding"
+      },
+      10,
+      {
+         "m_RegisteredScripts": [
+            "TRE.Button"
+         ],
+         "m_StoredClass": "TRE.Button"
+      },
+      13,
+      {
+         "m_RegisteredScripts": [
+            "TRE.OnOffPlatform"
+         ],
+         "m_StoredClass": "TRE.OnOffPlatform"
+      },
+      14,
+      {
+         "m_RegisteredScripts": [
+            "TRE.IsColliding"
+         ],
+         "m_StoredClass": "TRE.IsColliding"
+      },
+      15,
+      {
+         "m_RegisteredScripts": [
+            "TRE.Button"
+         ],
+         "m_StoredClass": "TRE.Button"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]

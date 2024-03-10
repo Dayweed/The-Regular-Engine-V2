@@ -146,11 +146,6 @@ namespace TRE
 
 		public void Update()
 		{
-			if (InputSystem.GetKeyPress(InputKeys.LeftBracket))
-				SetPlatformState(false);
-			if (InputSystem.GetKeyPress(InputKeys.RightBracket))
-				SetPlatformState(true);
-
 			globalTimer += Time.deltaTime;
 
 			if (shouldTremble)
