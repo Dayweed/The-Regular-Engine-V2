@@ -12,11 +12,11 @@ namespace TRE
 		Entity Frame_4;
 		Entity Frame_5;
 		Entity Frame_6;
-        Entity Frame_7;
-        Entity Frame_8;
-        Entity Frame_9;
-        Entity Frame_10;
-        Entity SpaceToContinue;
+		Entity Frame_7;
+		Entity Frame_8;
+		Entity Frame_9;
+		Entity Frame_10;
+		Entity SpaceToContinue;
 		Entity SpaceToContinueBlack;
 
 		float currentTime = 0;
@@ -47,11 +47,11 @@ namespace TRE
 			Frame_4 = ECSManager.FindEntityByName("Frame4");
 			Frame_5 = ECSManager.FindEntityByName("Frame5");
 			Frame_6 = ECSManager.FindEntityByName("Frame6");
-            Frame_7 = ECSManager.FindEntityByName("Frame7");
-            Frame_8 = ECSManager.FindEntityByName("Frame8");
-            Frame_9 = ECSManager.FindEntityByName("Frame9");
-            Frame_10 = ECSManager.FindEntityByName("Frame10");
-            SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
+			Frame_7 = ECSManager.FindEntityByName("Frame7");
+			Frame_8 = ECSManager.FindEntityByName("Frame8");
+			Frame_9 = ECSManager.FindEntityByName("Frame9");
+			Frame_10 = ECSManager.FindEntityByName("Frame10");
+			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
 			SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
 
 			Frame_1.SetActive(false);
@@ -60,18 +60,18 @@ namespace TRE
 			Frame_4.SetActive(false);
 			Frame_5.SetActive(false);
 			Frame_6.SetActive(false);
-            Frame_7.SetActive(false);
-            Frame_8.SetActive(false);
-            Frame_9.SetActive(false);
-            Frame_10.SetActive(false);
-            SpaceToContinue.SetActive(false);
+			Frame_7.SetActive(false);
+			Frame_8.SetActive(false);
+			Frame_9.SetActive(false);
+			Frame_10.SetActive(false);
+			SpaceToContinue.SetActive(false);
 			SpaceToContinueBlack.SetActive(false);
 
-            frames = new List<Entity>() { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6, Frame_7, Frame_8, Frame_9, Frame_10 };
-            nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5", "Frame6", "Frame7", "Frame8", "Frame9" };
-            forcedScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7", "Frame8" };
+			frames = new List<Entity>() { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6, Frame_7, Frame_8, Frame_9, Frame_10 };
+			nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5", "Frame6", "Frame7", "Frame8", "Frame9" };
+			forcedScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7", "Frame8" };
 
-            birdSFX = ECSManager.FindIDFromName("SFX_Bird");
+			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
 			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
 			invitationSFX = ECSManager.FindIDFromName("SFX_Invitation");
 			endBGM = ECSManager.FindIDFromName("BGM_EndLoop");
@@ -90,7 +90,7 @@ namespace TRE
 			// Go to next scene
 			if (pressedSpace && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
-                if (ECSManager.IsValidEntity(BGM))
+				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
 
 				if (ECSManager.IsValidEntity(endBGM))
@@ -113,9 +113,9 @@ namespace TRE
 				invitationSFXPlayed = true;
 			}
 
-            //letter frames: 3, 4, 5, 6, 7
-            if (currentFrame >= 3 && currentFrame <= 7)
-            {
+			//letter frames: 3, 4, 5, 6, 7
+			if (currentFrame >= 3 && currentFrame <= 7)
+			{
 				if (ECSManager.IsValidEntity(dialogueSFX))
 					AS.Play(dialogueSFX);
 			}
@@ -137,29 +137,29 @@ namespace TRE
 
 			if (!endCutscene)
 			{
-                //Every frame will go through this if statement (when its going to the next frame)
-                if (pressedSpace || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
+				//Every frame will go through this if statement (when its going to the next frame)
+				if (pressedSpace || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
 					frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					//Debug.Log("current frame: " + currentFrame);
-                    frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
+					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
 					//Debug.Log("next frame"); 
-                    ++currentFrame;
+					++currentFrame;
 
 					if (ECSManager.IsValidEntity(dialogueSFX))
 						AS.Stop(dialogueSFX);
 
-                    //currentframe == 3/4/5/6/7, SpaceToContinueBlack
-                    //letter frames + last frame + out of bounds frame will go through this if statement
-                    if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
+					//currentframe == 3/4/5/6/7, SpaceToContinueBlack
+					//letter frames + last frame + out of bounds frame will go through this if statement
+					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{
-                        if (currentFrame >= 3 && currentFrame <= 7)
-                            SpaceToContinueBlack.SetActive(true);
+						if (currentFrame >= 3 && currentFrame <= 7)
+							SpaceToContinueBlack.SetActive(true);
 						else
-                            SpaceToContinue.SetActive(true);
-                    }
-                    //disable SpaceToContinue
-                    else if (SpaceToContinue.GetActive() || SpaceToContinueBlack.GetActive())
+							SpaceToContinue.SetActive(true);
+					}
+					//disable SpaceToContinue
+					else if (SpaceToContinue.GetActive() || SpaceToContinueBlack.GetActive())
 					{
 						SpaceToContinue.SetActive(false);
 						SpaceToContinueBlack.SetActive(false);
@@ -167,9 +167,9 @@ namespace TRE
 
 					if (currentFrame >= frames.Count) return;
 
-                    // Check if deactivate all frames if counted as next scene
-                    //Every new frame that appears
-                    if (nextScenes.Contains(frames[currentFrame].name))
+					// Check if deactivate all frames if counted as next scene
+					//Every new frame that appears
+					if (nextScenes.Contains(frames[currentFrame].name))
 					{
 						FadeAllActive();
 						currentTime = delayScene;
@@ -190,8 +190,8 @@ namespace TRE
 		{
 			for (int i = 0; i < frames.Count; ++i)
 			{
-                //fade out all the previous frames
-                if (frames[i].GetComponent<VFX_FadeIn>().DoneFading())
+				//fade out all the previous frames
+				if (frames[i].GetComponent<VFX_FadeIn>().DoneFading())
 				{
 					frames[i].GetComponent<VFX_FadeOut>().FadeOut();
 				}
