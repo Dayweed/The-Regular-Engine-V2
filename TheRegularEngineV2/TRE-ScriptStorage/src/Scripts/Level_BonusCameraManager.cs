@@ -86,7 +86,7 @@ namespace TRE
 		public void Update()
 		{
 			regionA = IsInsideTrigger(Trigger_A);
-			regionB = IsHoleyMoleyInsideTrigger(Trigger_B);
+			regionB = IsInsideTrigger(Trigger_B);
 			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);
 			regionD = IsHoleyMoleyInsideTrigger(Trigger_D);
 			regionE = IsInsideTrigger(Trigger_E);
@@ -106,7 +106,7 @@ namespace TRE
 				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = -2f;
+				cameraController.expectedYPos = -15f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_A);
 			}
@@ -116,7 +116,7 @@ namespace TRE
 				//right under the 2nd floor
 				expectedPosition = new vec3(-50, 10, 20);
 				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 50;
+				expectedDistance = 55;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
 				expectedDuration = 0.8f;
@@ -134,7 +134,7 @@ namespace TRE
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_C);
 			}
-
+			
 			if (regionD)
 			{
 				//region with jumppad - 2nd floor & moving platform 1

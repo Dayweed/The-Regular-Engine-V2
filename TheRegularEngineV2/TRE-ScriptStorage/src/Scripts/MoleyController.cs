@@ -92,7 +92,7 @@ namespace TRE
 		public float currentJumpTime;
 		public bool jumpCancelled = false;
 		//how long after the player walks off the ground can he still jump
-		private float coyoteTime = 9990.2f;
+		private float coyoteTime = 0.2f;
 		public float coyoteTimeCounter;
 		//if player press space within this buffer time, they will still be able to jump even if they havent landed
 		private float jumpBufferTime = 0.25f;

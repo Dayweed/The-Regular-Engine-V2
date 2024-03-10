@@ -146,9 +146,7 @@ namespace TRE
 
 		public vec3 SpawnObjPos()
 		{
-			vec3 spawningPos = this.transform.Position + new vec3(Random.Range(-size.x / 2, size.x / 2),
-																			Random.Range(-size.y / 2, size.y / 2),
-																				Random.Range(-size.z / 2, size.z / 2));
+			vec3 spawningPos = this.transform.Position + new vec3(Random.Range(-size.x / 2, size.x / 2), 0, Random.Range(-size.z / 2, size.z / 2));
 			return spawningPos;
 		}
 

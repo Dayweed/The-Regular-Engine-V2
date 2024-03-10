@@ -20,7 +20,7 @@
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "6338820077763806458",
          "m_Overrides": {},
-         "m_PrefabGUID": "11817737584361501891",
+         "m_PrefabGUID": "3705157458340123026",
          "m_RemovedComps": []
       },
       2,
@@ -28,7 +28,7 @@
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "6338820077763806458",
          "m_Overrides": {},
-         "m_PrefabGUID": "17794021974462321650",
+         "m_PrefabGUID": "11817737584361501891",
          "m_RemovedComps": []
       }
    ],
@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "3887190081926596950",
-            "15229430419230735048"
+            "17450219566625718823",
+            "2015098057894362467"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "7020063604557606"
+         "m_Parent": "180571487696005112"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "7020063604557606"
+         "m_Parent": "180571487696005112"
       }
    ],
    [
@@ -58,25 +58,25 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "7020063604557606",
-         "m_Index": 149,
+         "m_GUID": "180571487696005112",
+         "m_Index": 4,
          "m_Name": "Moley",
          "m_Tag": "Red"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "3887190081926596950",
-         "m_Index": 150,
-         "m_Name": "Power Manager",
+         "m_GUID": "17450219566625718823",
+         "m_Index": 5,
+         "m_Name": "Moley_Dust",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "15229430419230735048",
-         "m_Index": 248,
-         "m_Name": "Slippery Outershell",
+         "m_GUID": "2015098057894362467",
+         "m_Index": 6,
+         "m_Name": "Power Manager",
          "m_Tag": ""
       }
    ],
@@ -85,9 +85,9 @@
       0,
       {
          "m_Position": [
-            -5.887977600097656,
-            -8.065628051757813,
-            -9.053680419921875
+            -4.0,
+            -9.0,
+            11.0
          ],
          "m_Rotation": [
             0.0,
@@ -103,27 +103,9 @@
       1,
       {
          "m_Position": [
-            13.595775604248047,
-            -1.2131762504577637,
-            -40.84858322143555
-         ],
-         "m_Rotation": [
-            0.0,
-            2.8995694192034127e-13,
-            0.0
-         ],
-         "m_Scale": [
-            0.75,
-            0.75,
-            0.699999988079071
-         ]
-      },
-      2,
-      {
-         "m_Position": [
-            -5.888000011444092,
-            -8.066001892089844,
-            -9.053999900817871
+            -4.0,
+            -11.874488830566406,
+            11.0
          ],
          "m_Rotation": [
             0.0,
@@ -131,9 +113,27 @@
             0.0
          ],
          "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            15.483753204345703,
+            -2.147548198699951,
+            -20.794902801513672
+         ],
+         "m_Rotation": [
+            0.0,
+            3.22099682614821e-22,
+            0.0
+         ],
+         "m_Scale": [
             0.75,
             0.75,
-            0.75
+            0.699999988079071
          ]
       }
    ],
@@ -144,6 +144,8 @@
          "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
          "ASSET_MAT_m_AnimationMaterialInstance": "b95e6d6bda90700d",
          "ASSET_MAT_m_MaterialInstance": "b08363e4f6cc86cc",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
          "m_IsVisible": true
       }
    ],
@@ -174,7 +176,7 @@
       0
    ],
    [
-      2,
+      1,
       0,
       {
          "m_CollisionLayer.m_LayerID": 3,
@@ -188,20 +190,6 @@
          ],
          "m_PhysicsMaterial.m_MaterialID": 0,
          "m_Radius": 2.0
-      },
-      2,
-      {
-         "m_CollisionLayer.m_LayerID": 5,
-         "m_HalfHeight": 0.800000011920929,
-         "m_IsActive": true,
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_PhysicsMaterial.m_MaterialID": 1,
-         "m_Radius": 2.200000047683716
       }
    ],
    [
@@ -222,7 +210,7 @@
          ],
          "m_StoredClass": "TRE.MoleyController"
       },
-      1,
+      2,
       {
          "m_RegisteredScripts": [
             "TRE.PowerUpManager"
@@ -250,5 +238,47 @@
    ],
    [
       0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      1,
+      {
+         "Color": [
+            0.1428571343421936,
+            0.1428571343421936,
+            0.1428571343421936,
+            1.0
+         ],
+         "Fade": false,
+         "FadeDuration": [
+            0.25,
+            0.75
+         ],
+         "LifeTime": 0.10000000149011612,
+         "Loop": true,
+         "MaterialInstance": "79b97f19e736757d",
+         "ParticleCount": 50,
+         "PlayOnStart": true,
+         "RenderObject": "4d974e3a749e338a",
+         "Size": 0.5,
+         "SpawnRadius": 0.5,
+         "Speed": 30.0,
+         "VariationSize": [
+            0.10000000149011612,
+            1.0
+         ],
+         "VariationSpeed": [
+            0.10000000149011612,
+            5.0
+         ],
+         "Velocity": [
+            0.0,
+            0.10000000149011612,
+            -0.20000000298023224
+         ]
+      }
    ]
 ]
