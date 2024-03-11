@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TRE
 {
@@ -114,7 +115,16 @@ namespace TRE
 				currentOption = 0;
 			}
 
-			SilhouetteEffect.Engine_SetSilhouetteActive(!isPaused);
+			//HARD CODE FOR NOW
+			String levelName = Scene.GetSceneName();
+			if (levelName == "MainMenu" || levelName == "ResultScreen")
+			{
+				SilhouetteEffect.Engine_SetSilhouetteActive(false);
+			}
+			else if (levelName == "Tutorial" || levelName == "Level1" || levelName == "Level2")
+			{
+				SilhouetteEffect.Engine_SetSilhouetteActive(!isPaused);
+			}
 
 			if (isPaused)
 			{

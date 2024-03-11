@@ -58,29 +58,6 @@ namespace TRE
 
 			finalPos = MidPosTransform.Position;
 			freeCamera = true;
-
-			//HARD CODE FOR NOW
-			String levelName = Scene.GetSceneName();
-			if (levelName == "MainMenu")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(false);
-			}
-			else if(levelName == "Tutorial")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(true);
-			}
-			else if(levelName == "Level1")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(true);
-			}
-			else if(levelName == "Level2")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(true);
-			}
-			else if(levelName == "ResultScreen")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(false);
-			}
 		}
 
 		public void Update()
