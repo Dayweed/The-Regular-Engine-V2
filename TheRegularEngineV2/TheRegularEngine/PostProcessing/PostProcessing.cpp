@@ -98,6 +98,9 @@ namespace TRE
 	{
 		for (const auto& effects : m_PostEffects)
 		{
+			if (effects.second.second->GetActive() == false)
+				continue;
+
 			effects.second.second->UpdateUBO();
 			effects.second.second->Render(targetFramebuffer, commandBuffer, index);
 		}
