@@ -205,9 +205,9 @@ namespace TRE
 			{
 				if (ToOptionSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedOption)
 				{
-					selectedOption = true;
-					JumpIntoHole();
-					ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
+					//selectedOption = true;
+					//JumpIntoHole();
+					//ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
 				else if (ToLevelSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel)
 				{
@@ -313,7 +313,7 @@ namespace TRE
 				{
 					selectedLevel2 = false;
 
-					Scene.TransitionScene("Level_1", 5f);
+					Scene.TransitionScene("Level_2", 5f);
 				}
 			}
 
@@ -385,11 +385,11 @@ namespace TRE
 
 			if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 40, 0));
+				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 50, 0));
 			}
 			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
 			{
-				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 40, 0));
+				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 50, 0));
 			}
 
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = true;
