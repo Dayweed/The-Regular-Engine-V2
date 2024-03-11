@@ -1,0 +1,299 @@
+[
+   [
+      4,
+      0,
+      1,
+      2,
+      3
+   ],
+   [
+      4,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "11608646675014539726",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11608646675014539726",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "11608646675014539726",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1139422589028208024",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "11608646675014539726",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12426428805197304106",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "11608646675014539726",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3849118078984711271",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Children": [
+            "14608553137234555487",
+            "17657661407981546126",
+            "1255172724157861048"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "15895439825975399890"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "15895439825975399890"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "15895439825975399890"
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "15895439825975399890",
+         "m_Index": 217,
+         "m_Name": "TitleStarsCollected",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "14608553137234555487",
+         "m_Index": 218,
+         "m_Name": "Star3",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "17657661407981546126",
+         "m_Index": 219,
+         "m_Name": "Star2",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "1255172724157861048",
+         "m_Index": 220,
+         "m_Name": "Star1",
+         "m_Tag": ""
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Position": [
+            -755.0,
+            -420.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            -655.0,
+            -440.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            -760.0,
+            -440.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            -865.0,
+            -440.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [],
+         "m_StoredClass": ""
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            0.3921568691730499
+         ],
+         "Height": 150,
+         "RenderLayer": 0,
+         "Texture": "4b7a083154f9c8f5",
+         "Width": 225,
+         "m_IsVisible": true
+      },
+      1,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 55,
+         "RenderLayer": 1,
+         "Texture": "92618220a6c79a0e",
+         "Width": 55,
+         "m_IsVisible": true
+      },
+      2,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 55,
+         "RenderLayer": 1,
+         "Texture": "92618220a6c79a0e",
+         "Width": 55,
+         "m_IsVisible": true
+      },
+      3,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+         ],
+         "Height": 55,
+         "RenderLayer": 1,
+         "Texture": "92618220a6c79a0e",
+         "Width": 55,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
