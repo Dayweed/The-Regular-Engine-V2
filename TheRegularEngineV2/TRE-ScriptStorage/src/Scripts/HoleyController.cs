@@ -33,8 +33,6 @@ namespace TRE
 
 		//Check if player is walking
 		public bool isWalking = false;
-		private bool walkingSFXPlayed = false;
-		private bool fallingSFXPlayed = false;
 
 		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling
@@ -110,6 +108,11 @@ namespace TRE
 		private ulong fallSFX;
 		private ulong cheeringSFX;
 		private ulong hurtSFX;
+		private ulong landingSFX;
+
+		private bool walkingSFXPlayed = false;
+		private bool fallingSFXPlayed = false;
+		private bool landingSFXPlayed = false;
 		#endregion
 
 		#region Respawn Variables
@@ -175,6 +178,7 @@ namespace TRE
 			fallSFX = ECSManager.FindIDFromName("SFX_HoleyFall");
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Holey_BoostedJump");
 			hurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt1");
+			landingSFX = ECSManager.FindIDFromName("SFX_HoleyLand");
 			#endregion
 
 			moley_ref = ECSManager.FindEntityByName("Moley");
@@ -702,6 +706,18 @@ namespace TRE
 					AS.Play(fallSFX);
 				}
 			}
+
+			if (isGrounded && landingSFXPlayed == false)
+			{
+				AS.Play(landingSFX);
+				landingSFXPlayed = true;
+			}
+			else if (!isGrounded)
+			{
+				AS.Stop(landingSFX);
+				landingSFXPlayed = false;
+			}
+
 		}
 
 		private void HandleSwap()

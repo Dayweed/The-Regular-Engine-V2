@@ -34,8 +34,6 @@ namespace TRE
 
 		//Check if player is walking
 		public bool isWalking = false;
-		private bool walkingSFXPlayed = false;
-		private bool fallingSFXPlayed = false;
 
 		//check if player used super power
 		public bool mainBlueberry = false;  // Scaling
@@ -117,6 +115,11 @@ namespace TRE
 		private ulong fallSFX;
 		private ulong cheeringSFX;
 		private ulong hurtSFX;
+		private ulong landingSFX;
+
+		private bool walkingSFXPlayed = false;
+		private bool fallingSFXPlayed = false;
+		private bool landingSFXPlayed = false;
 		#endregion
 
 		#region Respawn Variables
@@ -204,6 +207,7 @@ namespace TRE
 			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
 			hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
+			landingSFX = ECSManager.FindIDFromName("SFX_MoleyLand");
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
@@ -751,41 +755,12 @@ namespace TRE
 				{
 					AS.Play(walkingSFX);
 
-					//int rand = Random.Range(0, 6);
-					//switch (rand)
-					//{
-					//	case 0:
-					//		AudioSystem.Play(walkingSFX1);
-					//		break;
-					//	case 1:
-					//		AudioSystem.Play(walkingSFX2);
-					//		break;
-					//	case 2:
-					//		AudioSystem.Play(walkingSFX3);
-					//		break;
-					//	case 3:
-					//		AudioSystem.Play(walkingSFX4);
-					//		break;
-					//	case 4:
-					//		AudioSystem.Play(walkingSFX5);
-					//		break;
-					//	case 5:
-					//		AudioSystem.Play(walkingSFX6);
-					//		break;
-					//}
-
 					walkingSFXPlayed = true;
 				}
 
 				if (!isWalking || !isGrounded)
 				{
 					AS.Stop(walkingSFX);
-					//AudioSystem.Stop(walkingSFX1);
-					//AudioSystem.Stop(walkingSFX2);
-					//AudioSystem.Stop(walkingSFX3);
-					//AudioSystem.Stop(walkingSFX4);
-					//AudioSystem.Stop(walkingSFX5);
-					//AudioSystem.Stop(walkingSFX6);
 					walkingSFXPlayed = false;
 				}
 			}
@@ -797,6 +772,17 @@ namespace TRE
 					fallingSFXPlayed = true;
 					AS.Play(fallSFX);
 				}
+			}
+
+			if (isGrounded && landingSFXPlayed == false)
+			{
+				AS.Play(landingSFX);
+				landingSFXPlayed = true;
+			}
+			else if(!isGrounded)
+			{
+				AS.Stop(landingSFX);
+				landingSFXPlayed = false;
 			}
 		}
 
