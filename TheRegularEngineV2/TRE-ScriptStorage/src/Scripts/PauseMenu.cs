@@ -114,6 +114,8 @@ namespace TRE
 				currentOption = 0;
 			}
 
+			SilhouetteEffect.Engine_SetSilhouetteActive(!isPaused);
+
 			if (isPaused)
 			{
 				// Pause menu logic
