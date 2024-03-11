@@ -123,6 +123,13 @@ layout(location = 0) in struct
 	float m_DrawShadow;
 } In;
 
+layout(push_constant) uniform Push
+{
+	mat4 m_Model;
+	int m_DLightIndex;
+	bool m_DrawShadow;
+} push;
+
 layout(location = 0) out vec4 outColor;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
@@ -133,7 +140,7 @@ layout(set = 0, binding = 5) uniform sampler2D Metalness;
 layout(set = 0, binding = 7) uniform sampler2D shadowMap;
 
 const vec3 Glossiness = vec3(0.02, 0.02, 0.02);
-const int CelShadingLevels = 2;
+const int CelShadingLevels = 3;
 const float CelScaleFactor = 1.0 / float(CelShadingLevels);
 
 float Shadow(in vec3 lightCoords, in vec3 normal)
@@ -213,7 +220,7 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	if(In.m_DrawShadow > 0.5f)
+	if(push.m_DrawShadow)
 		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	else
 		outColor.rgb = ambient * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);

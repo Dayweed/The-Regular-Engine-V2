@@ -17,7 +17,7 @@ namespace TRE
 		private float currentTimer;
 		private bool startBufferComplete = false;
 		private float delayBufferStart = 2f;
-		private float delayBufferStars = 2f;
+		private float delayBufferStars = 0.5f;
 
 		int numStars = 0;
 		int maxStars = 0;

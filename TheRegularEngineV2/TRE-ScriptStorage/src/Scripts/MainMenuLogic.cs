@@ -307,7 +307,7 @@ namespace TRE
 				{
 					selectedLevel1 = false;
 
-					Scene.TransitionScene("Level_1", 5f);
+					Scene.TransitionScene("Level_Bonus", 5f);
 				}
 				else if (selectedLevel2)
 				{

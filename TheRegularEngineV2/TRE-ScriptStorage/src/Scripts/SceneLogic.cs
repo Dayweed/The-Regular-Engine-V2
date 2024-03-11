@@ -134,7 +134,7 @@ namespace TRE
 				/*triggerStars.Add(holeCheckDisplay2);
 				triggerStars.Add(holeCheckDisplay3);*/
 
-				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
 
 				nextSceneName = "ResultScreen";
 			}
