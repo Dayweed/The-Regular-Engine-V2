@@ -821,6 +821,36 @@ namespace TRE
 											else if (inst.m_Type == ScriptFieldTypes::Vector3)
 											{
 												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector3");
+
+												MonoObject* obj = mono_field_get_value_object(ScriptEngine::s_ScriptEngineData->AppDomain, inst.m_MonoField , instance->GetScriptObject());
+												MonoClass* klass = mono_object_get_class(obj);
+
+												MonoClassField* xField = mono_class_get_field_from_name(klass, "x");
+												MonoClassField* yField = mono_class_get_field_from_name(klass, "y");
+												MonoClassField* zField = mono_class_get_field_from_name(klass, "z");
+
+												float x, y, z;
+												mono_field_get_value(obj, xField, &x);
+												mono_field_get_value(obj, yField, &y);
+												mono_field_get_value(obj, zField, &z);
+
+												
+												if(ImGui::DragFloat("X", &x))
+												{
+													mono_field_set_value(obj, xField, &x);
+												}
+												//put in same line
+												
+												if(ImGui::DragFloat("Y", &y))
+												{
+													mono_field_set_value(obj, yField, &y);
+												}
+												
+												if(ImGui::DragFloat("Z", &z))
+												{
+													mono_field_set_value(obj, zField, &z);
+												}
+
 											}
 											else if (inst.m_Type == ScriptFieldTypes::Vector4)
 											{
@@ -829,6 +859,20 @@ namespace TRE
 											else if (inst.m_Type == ScriptFieldTypes::Entity)
 											{
 												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Entity");
+
+												/*MonoObject* obj = mono_field_get_value_object(ScriptEngine::s_ScriptEngineData->AppDomain, inst.m_MonoField , instance->GetScriptObject());
+												MonoClass* klass = mono_object_get_class(obj);
+
+												MonoClassField* guidField = mono_class_get_field_from_name(klass, "ID");
+
+												int ID;
+												mono_field_get_value(obj, guidField, &ID);
+
+												if(ImGui::InputInt("ID",&ID))
+												{
+													mono_field_set_value(obj, guidField, &ID);
+												}*/
+												
 											}
 											else if (inst.m_Type == ScriptFieldTypes::String)
 											{

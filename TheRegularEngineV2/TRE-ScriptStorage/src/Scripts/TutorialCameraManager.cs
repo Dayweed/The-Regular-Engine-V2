@@ -36,7 +36,7 @@ namespace TRE
 		private float expectedDistance;
 		private float expectedDuration;
 
-		private CameraTransitions preTransitions;
+		public CameraTransitions preTransitions;
 
 		public void Start()
 		{
@@ -77,8 +77,8 @@ namespace TRE
 			preTransitions.Init();
 			preTransitions.AddCameraData(new vec3(180, 50, -430), new vec3(30, 230, 0), 5f);
 			preTransitions.AddCameraData(new vec3(180, 50, -20), new vec3(30, 270, 0), 10f);
-			preTransitions.AddCameraData(new vec3(30, 40, -10), new vec3(30, 180, 0), 5.5f);
-			preTransitions.AddCameraData(new vec3(0, 10, 30), new vec3(30, 180, 0), 4f);
+			preTransitions.AddCameraData(new vec3(30, 40, -10), new vec3(30, 180, 0), 4.5f);
+			preTransitions.AddCameraData(new vec3(0, 10, 30), new vec3(30, 180, 0), 3f);
 		}
 		public void Update()
 		{

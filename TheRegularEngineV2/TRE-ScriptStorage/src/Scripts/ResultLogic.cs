@@ -67,7 +67,7 @@ namespace TRE
 		public void Update()
 		{
 			// Go to next scene
-			if (InputSystem.GetKeyPress(InputKeys.Enter) || InputSystem.GetKeyPress(InputKeys.Space))
+			if (InputSystem.GetKeyPress(InputKeys.Enter) || InputSystem.GetKeyPress(InputKeys.Space) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A))
 			{
 				// Determine which scene to go next
 				if (PersistentSystem.GetValue("PrevScene") == "Tutorial")

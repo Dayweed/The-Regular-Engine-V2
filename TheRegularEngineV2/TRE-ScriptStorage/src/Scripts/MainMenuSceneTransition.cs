@@ -6,6 +6,7 @@
 		//private string ControlsDisplaySceneName;
 		public bool spacePressed;
 		public bool enterPressed;
+        public bool ContollerAPressed;
 
 		public void Start()
 		{
@@ -41,7 +42,12 @@
 				}
 			}
 
-			if (spacePressed && enterPressed)
+            if (InputSystem.GetControllerButtonPress(0, InputSystem.Button.A))
+            {
+                ContollerAPressed = true;
+            }
+
+			if ((spacePressed && enterPressed) || ContollerAPressed)
 			{
 				if (ECSManager.IsValidEntity(6154957411926925810))
 				{

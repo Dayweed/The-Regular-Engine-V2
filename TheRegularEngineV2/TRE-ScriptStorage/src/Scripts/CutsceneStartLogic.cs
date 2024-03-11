@@ -97,9 +97,10 @@ namespace TRE
 		public void Update()
 		{
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
+			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
 
 			// Go to next scene
-			if (pressedSpace && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+			if ((pressedSpace || pressA) && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
@@ -179,8 +180,8 @@ namespace TRE
 			if (!endCutscene)
 			{
 				//Every frame will go through this if statement (when its going to the next frame)
-				if (pressedSpace || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
-					frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
+				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && 
+                                                 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					//Debug.Log("current frame: " + currentFrame);
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
