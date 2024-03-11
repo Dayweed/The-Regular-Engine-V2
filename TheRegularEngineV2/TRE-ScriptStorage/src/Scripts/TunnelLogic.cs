@@ -47,11 +47,11 @@ namespace TRE
 
 		public void Update()
 		{
-			if (MoleyInside && InputSystem.GetKeyHold(InputKeys.Space) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
+			if (MoleyInside && (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0,InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
 			{
 				MoleyApprove = true;
 			}
-			if (HoleyInside && InputSystem.GetKeyHold(InputKeys.Enter) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
+			if (HoleyInside && (InputSystem.GetKeyHold(InputKeys.Enter) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
 			{
 				HoleyApprove = true;
 			}

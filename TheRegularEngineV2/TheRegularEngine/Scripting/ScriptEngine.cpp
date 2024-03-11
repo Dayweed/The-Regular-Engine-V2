@@ -39,9 +39,9 @@ namespace TRE
 		{ "System.UInt64", ScriptFieldTypes::UnsignedLong },
 		{ "System.String", ScriptFieldTypes::String },
 
-		{ "TRE.Vector2", ScriptFieldTypes::Vector2 },
-		{ "TRE.Vector3", ScriptFieldTypes::Vector3 },
-		{ "TRE.Vector4", ScriptFieldTypes::Vector4 },
+		{ "GlmSharp.vec2", ScriptFieldTypes::Vector2 },
+		{ "GlmSharp.vec3", ScriptFieldTypes::Vector3 },
+		{ "GlmSharp.vec4", ScriptFieldTypes::Vector4 },
 
 		{ "TRE.Entity", ScriptFieldTypes::Entity },
 	};
@@ -116,7 +116,7 @@ namespace TRE
 				const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
 				const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
-				printf("%s.%s\n", nameSpace, name);
+				//printf("%s.%s\n", nameSpace, name);
 			}
 		}
 
