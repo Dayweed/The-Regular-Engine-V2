@@ -162,7 +162,7 @@ namespace TRE
 			#region Respawn Variables
 			InitialPosition = holeyTransform.Position;
 			OutofMapPos = holeyTransform.Position;
-			OutofMapPos.y = holeyTransform.Position.y - 200.0f;
+			OutofMapPos.y = holeyTransform.Position.y - 300.0f;
 
 			RespawnPoint = holeyTransform.Position;
 			RespawnPoint.y += 10.0f;
