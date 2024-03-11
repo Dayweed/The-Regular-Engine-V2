@@ -11,6 +11,7 @@
 #include "Graphics/Camera.h"
 #include "ECS/Components/MeshRenderer.h"
 #include "Graphics/Renderer.h"
+#include "PostProcessing/Silhouette.h"
 #include "ECS/Components/Particle2DComponent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
@@ -2438,6 +2439,7 @@ namespace TRE
 #pragma endregion
 
 #pragma region PostProcessing
+#pragma region Vignette
 	static void Engine_ShrinkVignette(float duration)
 	{
 		ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->VignetteShrink(duration);
@@ -2454,7 +2456,21 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->GetTransitionState(ScenePostEffectsSystem::TransitionTypeIndex::TYPE_VIGNETTE)
 			== ScenePostEffectsSystem::STATE_OUT;
 	}
-#pragma endregion
+#pragma endregion Vignette
+
+#pragma region Silhouette
+	static void Engine_SetSilhouetteActive(bool active)
+	{
+		PostProcessingManager::Instance().GetPostEffect<Silhouette>("Silhouette")->SetActive(active);
+	}
+
+	static bool Engine_GetSilhouetteActive()
+	{
+		return PostProcessingManager::Instance().GetPostEffect<Silhouette>("Silhouette")->GetActive();
+	}
+#pragma endregion Silhouette
+
+#pragma endregion PostProcessing
 
 #pragma region Renderer
 	static void Engine_SetSkyboxEnvironment(MonoString* Texture0, MonoString* Texture1, MonoString* Texture2, MonoString* Texture3, MonoString* Texture4, MonoString* Texture5)
@@ -2937,9 +2953,13 @@ namespace TRE
 
 		// Post Effects
 		{
+			//VignetteEffect
 			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_ShrinkVignette", Engine_ShrinkVignette);
 			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateIn", Engine_GetVignetteStateIn);
 			mono_add_internal_call("TRE.ScenePostEffectsSystem::Engine_GetVignetteStateOut", Engine_GetVignetteStateOut);
+			//SilhouetteEffect
+			mono_add_internal_call("TRE.SilhouetteEffect::Engine_SetSilhouetteActive", Engine_SetSilhouetteActive);
+			mono_add_internal_call("TRE.SilhouetteEffect::Engine_GetSilhouetteActive", Engine_GetSilhouetteActive);
 		}
 
 		// Renderer

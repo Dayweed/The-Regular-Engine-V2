@@ -26,6 +26,8 @@ namespace TRE
 		virtual void SetupShader(std::shared_ptr<Shader> shader) = 0;
 		virtual void UpdateUBO() {};
 		virtual void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
+		void SetActive(bool active) { m_Active = active; }
+		bool GetActive() { return m_Active; }
 	protected:
 		std::shared_ptr<Pipeline> m_Pipeline;
 		std::shared_ptr<RenderPass> m_Renderpass;
@@ -34,6 +36,8 @@ namespace TRE
 
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<UniformBuffer> m_UBO;
+
+		bool m_Active = true;
 	};
 
 	class PostProcessingManager

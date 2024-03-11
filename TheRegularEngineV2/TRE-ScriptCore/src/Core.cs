@@ -1751,6 +1751,15 @@ namespace TRE
 		private extern static bool Engine_GetVignetteStateOut();
 	}
 
+	public class SilhouetteEffect
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetSilhouetteActive(bool active);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetSilhouetteActive();
+	}
+
 	public class RendererSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

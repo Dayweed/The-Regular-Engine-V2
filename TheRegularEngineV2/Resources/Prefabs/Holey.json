@@ -28,7 +28,7 @@
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "15526886209253662016",
          "m_Overrides": {},
-         "m_PrefabGUID": "1985835002174913377",
+         "m_PrefabGUID": "7007513246930888794",
          "m_RemovedComps": []
       }
    ],
@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "17517191209797491087",
-            "1392412717281695431"
+            "9700283173151593122",
+            "1693862027457842174"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "8656424112323697566"
+         "m_Parent": "848833600639318671"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "8656424112323697566"
+         "m_Parent": "848833600639318671"
       }
    ],
    [
@@ -58,25 +58,25 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "8656424112323697566",
-         "m_Index": 163,
+         "m_GUID": "848833600639318671",
+         "m_Index": 85,
          "m_Name": "Holey",
          "m_Tag": "Blue"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "17517191209797491087",
-         "m_Index": 164,
+         "m_GUID": "9700283173151593122",
+         "m_Index": 86,
          "m_Name": "Power Manager",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "1392412717281695431",
-         "m_Index": 5,
-         "m_Name": "Slippery Body",
+         "m_GUID": "1693862027457842174",
+         "m_Index": 87,
+         "m_Name": "Holey_Dust",
          "m_Tag": ""
       }
    ],
@@ -85,13 +85,13 @@
       0,
       {
          "m_Position": [
-            3.375533103942871,
-            -8.471269607543945,
-            -9.581930160522461
+            -9.0,
+            -4.0,
+            -95.0
          ],
          "m_Rotation": [
             0.0,
-            0.0,
+            180.0,
             0.0
          ],
          "m_Scale": [
@@ -103,14 +103,14 @@
       1,
       {
          "m_Position": [
-            0.0003600120544433594,
-            -0.7949433326721191,
-            -36.432701110839844
+            3.2891435623168945,
+            1.6288328170776367,
+            4.070198059082031
          ],
          "m_Rotation": [
-            0.0,
-            -0.0,
-            0.0
+            -5.008956122765085e-06,
+            4.046205503982492e-07,
+            5.008956122765085e-06
          ],
          "m_Scale": [
             0.75,
@@ -121,19 +121,19 @@
       2,
       {
          "m_Position": [
-            3.375999927520752,
-            -8.470999717712402,
-            -9.581999778747559
+            0.0,
+            0.0,
+            0.0
          ],
          "m_Rotation": [
             0.0,
-            -0.0,
+            0.0,
             0.0
          ],
          "m_Scale": [
-            0.75,
-            0.75,
-            0.75
+            1.0,
+            1.0,
+            1.0
          ]
       }
    ],
@@ -144,6 +144,8 @@
          "ASSET_GEOM_m_RenderObject": "789db1a40e2484e0",
          "ASSET_MAT_m_AnimationMaterialInstance": "87451924db9b9984",
          "ASSET_MAT_m_MaterialInstance": "74617a06db4fb375",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
          "m_IsVisible": true
       }
    ],
@@ -174,7 +176,7 @@
       0
    ],
    [
-      2,
+      1,
       0,
       {
          "m_CollisionLayer.m_LayerID": 1,
@@ -188,20 +190,6 @@
          ],
          "m_PhysicsMaterial.m_MaterialID": 0,
          "m_Radius": 2.0
-      },
-      2,
-      {
-         "m_CollisionLayer.m_LayerID": 5,
-         "m_HalfHeight": 0.800000011920929,
-         "m_IsActive": true,
-         "m_IsTrigger": false,
-         "m_Offset": [
-            0.0,
-            0.0,
-            0.0
-         ],
-         "m_PhysicsMaterial.m_MaterialID": 1,
-         "m_Radius": 2.200000047683716
       }
    ],
    [
@@ -250,5 +238,47 @@
    ],
    [
       0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      2,
+      {
+         "Color": [
+            0.1411764770746231,
+            0.1411764770746231,
+            0.1411764770746231,
+            1.0
+         ],
+         "Fade": false,
+         "FadeDuration": [
+            0.25,
+            0.75
+         ],
+         "LifeTime": 0.10000000149011612,
+         "Loop": true,
+         "MaterialInstance": "79b97f19e736757d",
+         "ParticleCount": 50,
+         "PlayOnStart": true,
+         "RenderObject": "4d974e3a749e338a",
+         "Size": 0.5,
+         "SpawnRadius": 0.5,
+         "Speed": 30.0,
+         "VariationSize": [
+            0.10000000149011612,
+            1.0
+         ],
+         "VariationSpeed": [
+            0.10000000149011612,
+            5.0
+         ],
+         "Velocity": [
+            0.0,
+            0.10000000149011612,
+            -0.20000000298023224
+         ]
+      }
    ]
 ]
