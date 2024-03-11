@@ -19,8 +19,8 @@ namespace TRE
 		private float moveSpeed = 18.0f;
 		private float rotateSpeed = 200.0f;
 
-		private float cooldown = 0f;
 		private float cooldownDefault = 2f;
+		private float cooldown = 0f;
 
 		public RollingObj()
 		{
@@ -54,17 +54,20 @@ namespace TRE
 
 		public void Update()
 		{
-			if (cooldown > 0) cooldown -= Time.deltaTime;
-
 			// Check if the ledges is no longer being triggered
 			if (lLedge == null || rLedge == null) return;
 
-			if (cooldown > 0) return;
+			if (cooldown <= 0)
+			{
+				// Set max delta time to prevent it rolling too far
+				float maxDeltaTime = Time.deltaTime > 0.05f ? 0.05f : Time.deltaTime;
+				transform.Position += moveVector * moveDir * moveSpeed * maxDeltaTime;
+				transform.Rotation += rotateVector * moveDir * rotateSpeed * maxDeltaTime;
+				transform.Rotation = transform.Rotation.z > 360 ? transform.Rotation - threesixty : transform.Rotation;
+				transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
+			}
 
-			transform.Position += moveVector * moveDir * moveSpeed * Time.deltaTime;
-			transform.Rotation += rotateVector * moveDir * rotateSpeed * Time.deltaTime;
-			transform.Rotation = transform.Rotation.z > 360 ? transform.Rotation - threesixty : transform.Rotation;
-			transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
+			if (cooldown > 0) cooldown -= Time.deltaTime;
 		}
 
 		public void Bounceback(vec3 WallPosition)

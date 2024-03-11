@@ -124,6 +124,14 @@ namespace TRE
 		{
 			if (emerging) return;
 
+			StartScale = new vec3(0, 0, 1);
+
+			RotateVec = new vec3(0, 0, 15f);
+
+			//PositionVec = new vec3(-16, -9, 0);
+			PositionVec = new vec3(-10, -6, 0);
+			EndPosition = new vec3(-880, -575, 0);
+
 			// Force stop it using timer
 			TimerToStop = TimerToStopDefault;
 

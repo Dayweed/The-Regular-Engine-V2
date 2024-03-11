@@ -254,13 +254,13 @@ namespace TRE
 					triggerStars.RemoveAt(i);
 					if (StarEmerge != null)
 					{
+						StarParticle.GetComponent<Particle>().IsActive = true;
+						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
 						StarEmerge.Emerge();
 
 						//StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
 						//	StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
 						//StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
-						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
-						StarParticle.GetComponent<Particle>().IsActive = true;
 					}
 				}
 			}
