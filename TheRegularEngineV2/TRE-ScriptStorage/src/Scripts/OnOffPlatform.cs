@@ -97,34 +97,36 @@ namespace TRE
 			if (HasNoRotation(initialRot))
 			{
 				actualRotY = 0;
-				transform.Rotation = vec3.Zero;
+				//transform.Rotation = vec3.Zero;
 			}
 			else if (IsCursedRotation(initialRot) || HasFlippedRotation(initialRot))
 			{
 				actualRotY = 180;
-				transform.Rotation = new vec3(0, 180, 0);
+				//transform.Rotation = new vec3(0, 180, 0);
+				//Debug.Log(name + ": Cursed " + transform.Rotation.x + ", " + transform.Rotation.y + ", " + transform.Rotation.z);
 			}
 
 			// set constants based on actualRotY
 			if (actualRotY == 0)
 			{
-				platformInactiveAngle = 0.0f;
-				platformActiveAngle = 90.0f;
+				platformInactiveAngle = isOppositePlatformType ? transform.Rotation.x : transform.Rotation.z;
+				platformActiveAngle = platformInactiveAngle + 90f;
 				activationRotationDirection = 1;
 			}
 			else if (actualRotY == 180)
 			{
-				platformInactiveAngle = 0.0f;
-				platformActiveAngle = -90.0f;
+				platformInactiveAngle = isOppositePlatformType ? transform.Rotation.x : transform.Rotation.z;
+				platformActiveAngle = platformInactiveAngle + (isOppositePlatformType ? 1 : -1) * 90f;
 				activationRotationDirection = -1;
 
 				// i have no clue why removing the negatives work but it does
 				if (isOppositePlatformType)
 				{
-					platformActiveAngle *= -1;
+					//platformActiveAngle *= -1;
 					activationRotationDirection *= -1;
 				}
 			}
+			Debug.Log(name + ": " + platformInactiveAngle + " ))) " + platformActiveAngle);
 
 			// assign corresponding behaviours/functions
 			if (isOppositePlatformType)
@@ -257,6 +259,9 @@ namespace TRE
 		{
 			TS.GetRotation(this.ID, out vec3 rot);
 			float amountComplete = InverseLerp(rotateStartAngle, rotateEndAngle, rot.x);
+
+
+			Debug.Log(name + ": " + platformActiveAngle + " ))) " + rot.x + "> " + rotateStartAngle + " : " + rotateEndAngle);
 
 			if (amountComplete < 1)
 			{
