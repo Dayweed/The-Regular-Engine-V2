@@ -42,6 +42,10 @@ namespace TRE
 		private ulong endsceneBGM;
 		private ulong mainBGM;
 
+		//Audio
+		private ulong starSFX;
+		private bool starSFXPlayed = false;
+
 		//Entity blueberryPrefab = new Entity(7670209894207584463);
 		//Entity strawberryPrefab = new Entity(13004780274330328106);
 
@@ -79,6 +83,8 @@ namespace TRE
 				triggerStars.Add(holeCheckDisplay1);
 				triggerStars.Add(holeCheckDisplay2);
 				triggerStars.Add(holeCheckDisplay3);
+
+				starSFX = ECSManager.FindIDFromName("SFX_StarsCollected");
 
 				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
 
@@ -258,6 +264,14 @@ namespace TRE
 						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
 						StarEmerge.Emerge();
 
+						if(!starSFXPlayed)
+						{
+							if (ECSManager.IsValidEntity(starSFX))
+								AudioSystem.Play(starSFX);
+							starSFXPlayed = true;
+						}
+						
+
 						//StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
 						//	StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
 						//StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
@@ -278,6 +292,11 @@ namespace TRE
 					// Determine which stars to display
 					DetermineStarsDisplay(currentSceneName);
 					timerCurrent = timerDisplay;
+
+
+					if (ECSManager.IsValidEntity(starSFX))
+						AudioSystem.Stop(starSFX);
+					starSFXPlayed = false;
 					// displayStars = true;
 				}
 				//else if (!displayStars && timerCurrent <= 0.0f)
