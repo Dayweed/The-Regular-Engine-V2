@@ -5,7 +5,7 @@ Texture File Path:
 ../Resources/cb0880e81f6045ca.DDS
 
 Compress:
-1
+0
 
 GL_Linear:
 1
@@ -14,7 +14,7 @@ BCn:
 5
 
 sRGB:
-0
+1
 
 Transparent:
 0
