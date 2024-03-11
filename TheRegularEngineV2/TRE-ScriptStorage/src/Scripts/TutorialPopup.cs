@@ -13,10 +13,12 @@
 		private bool HasBeenTriggeredBefore_BeforeHITW = false;
 
 		private Entity UIPopupTutorialStart;
-		private bool UIPopupTutorialStartExist = true;
+		private bool UIPopupTutorialStartExist = false;
 
 		private Entity RightHUDRef;
 		private Entity LeftHUDRef;
+
+		private TutorialCameraManager mainCam;
 
 		public void Start()
 		{
@@ -29,19 +31,28 @@
 			LeftHUDRef = ECSManager.FindEntityByName("LeftCharacter_HUD");
 
 			UIPopupTutorialStart = ECSManager.FindEntityByName("ControlsPopup");
-			UIPopupTutorialStartExist = true;
+			UIPopupTutorialStartExist = false;
 
 			UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
 			PopupCollier_BeforeHITW = ECSManager.FindEntityByName("PopupCollider2");
 			IsActivated_BeforeHITW = false;
 			HasBeenTriggeredBefore_BeforeHITW = false;
+
+			mainCam = ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>();
 		}
 
 		public void Update()
 		{
+			if (UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible == false 
+				&& UIPopupTutorialStartExist == false && mainCam.preTransitions.preTransitioned)
+			{
+				UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = true;
+				UIPopupTutorialStartExist = true;
+			}
+
 			if (UIPopupTutorialStartExist && InputSystem.GetKeyHold(InputKeys.Space))
 			{
-				UIPopupTutorialStartExist = false;
+				//UIPopupTutorialStartExist = false;
 				UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = false;
 
 				//Render all the HUD after the popup of control page finishes
