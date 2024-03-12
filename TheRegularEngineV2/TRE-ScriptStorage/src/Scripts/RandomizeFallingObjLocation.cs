@@ -7,20 +7,18 @@ namespace TRE
 	{
 		public Entity fallingMaraccasPrefab;
 
-		public vec3 size;
+		public vec3 size; // Size (in 2D) of the maximum area falling objects can spawn
 
-		public int maxAmountToSpawn;
-		public int timeBetweenSpawns;
-		public int noOfObjects;
-		public int maxObjects;
-		public float dropDuration;
+		// Object spawning
+		public int noOfObjects = 0;
+		public int maxObjects = 8;
+		public int maxSearchCount = 4;
+		public float minRange = 5.5f;
 
-		public float currentTimeBetweenSpawns;
-
-		public int searchCount;
-		// private bool canSpawnObjs = false;
-
-		private float minRange;
+		// Spawn timing
+		public float activeDuration;
+		public float minDurationModifier = 0.5f;
+		public float maxDurationModifier = 1.5f;
 
 		private List<Entity> itemsToSpawn = new List<Entity>();
 		private List<float> itemsTimer = new List<float>();
@@ -43,14 +41,14 @@ namespace TRE
 			{
 				if (name == "FallingObj_Spawner_01")
 				{
-					size = new vec3(24, 0, 11);
-					timeBetweenSpawns = 5;
+					size = new vec3(30, 0, 20);
+					activeDuration = 5;
 				}
 
 				if (name == "FallingObj_Spawner_02")
 				{
-					size = new vec3(24, 0, 11);
-					timeBetweenSpawns = 4;
+					size = new vec3(30, 0, 11);
+					activeDuration = 4;
 				}
 			}
 
@@ -59,31 +57,31 @@ namespace TRE
 				if (name == "FallingObj_Spawner_01")
 				{
 					size = new vec3(20, 0, 8);
-					timeBetweenSpawns = 3;
+					activeDuration = 3;
 				}
 
 				if (name == "FallingObj_Spawner_02")
 				{
 					size = new vec3(15, 0, 20);
-					timeBetweenSpawns = 4;
+					activeDuration = 4;
 				}
 
 				if (name == "FallingObj_Spawner_03")
 				{
 					size = new vec3(15, 0, 15);
-					timeBetweenSpawns = 4;
+					activeDuration = 4;
 				}
 
 				if (name == "FallingObj_Spawner_04")
 				{
 					size = new vec3(8, 0, 15);
-					timeBetweenSpawns = 4;
+					activeDuration = 4;
 				}
 
 				if (name == "FallingObj_Spawner_05")
 				{
 					size = new vec3(20, 0, 8);
-					timeBetweenSpawns = 4;
+					activeDuration = 4;
 				}
 			}
 
@@ -92,32 +90,17 @@ namespace TRE
 			itemsTimer.Clear();
 			itemsPos.Clear();
 			itemsDefRot.Clear();
-			//canSpawnObjs = true;
 
 			// ID for prefabs are based on resource prefab GUID
 			fallingMaraccasPrefab = new Entity(11822093139939255162);
-			maxAmountToSpawn = 3;
-			maxObjects = 3;
-			// canSpawnObjs = true;
-			dropDuration = 3;
-			minRange = 5.5f;
-			noOfObjects = 0;
 
-			currentTimeBetweenSpawns = timeBetweenSpawns;
+			CreateItems(maxObjects);
 		}
 
 		// Update is called once per frame
 		public void Update()
 		{
-			if (ID == 0) return;
-
-			if (InputSystem.GetKeyHold(InputKeys.T))
-			{
-				//canSpawnObjs = !canSpawnObjs;
-			}
-
-			StartTimer();
-			UpdateItems();
+			UpdateFallingObjs();
 		}
 
 		public vec3 SpawnObjPos()
@@ -126,33 +109,47 @@ namespace TRE
 			return spawningPos;
 		}
 
+		public bool AssignNewLocation(out vec3 newpos)
+		{
+			int searchCount = maxSearchCount;
+
+			//search till limit for place to spawn
+			while (searchCount-- > 0)
+			{
+				//choose random position
+				newpos = SpawnObjPos();
+
+				//is this pos empty
+				if (IsPosEmpty(newpos))
+				{
+					return true;
+				}
+			}
+
+			// Unable to find new pos to spawn
+			newpos = vec3.Zero;
+			return false;
+		}
+
 		private void CreateItems(int itemQuantity)
 		{
 			for (int i = 0; i < itemQuantity; ++i)
 			{
 				if (noOfObjects < maxObjects)
 				{
-					int searchCount = maxAmountToSpawn * 2;
+					int searchCount = maxObjects * 2;
 
-					//search till limit for place to spawn
-					while (searchCount-- > 0)
-					{
-						//choose random position
-						vec3 itemToSpawnPos = SpawnObjPos();
+					bool foundSpot = AssignNewLocation(out vec3 pos);
+					Entity item = ECSManager.Instantiate(fallingMaraccasPrefab);
+					item.transform.Position = pos;
 
-						//is this pos empty
-						if (IsPosEmpty(itemToSpawnPos))
-						{
-							//yes, so add to list
-							Entity item = ECSManager.Instantiate(fallingMaraccasPrefab);
-							item.transform.Position = itemToSpawnPos;
-							itemsToSpawn.Add(item);
-							itemsTimer.Add(dropDuration);
-							itemsPos.Add(itemToSpawnPos);
-							itemsDefRot.Add(item.transform.Rotation);
-							break;
-						}
-					}
+					itemsToSpawn.Add(item);
+					itemsTimer.Add(activeDuration * Random.Range(minDurationModifier, maxDurationModifier));
+					itemsPos.Add(pos);
+					itemsDefRot.Add(item.transform.Rotation);
+
+					if (!foundSpot) item.SetActive(false);
+
 					++noOfObjects;
 				}
 			}
@@ -160,18 +157,11 @@ namespace TRE
 
 		private bool IsPosEmpty(vec3 position)
 		{
-			//foreach (Entity item in itemsToSpawn)
-			//{
-			//    Debug.Log("E " + Vector3.Distance(position, item.transform.Position));
-			//    if (Vector3.Distance(position, item.transform.Position) < minRange)
-			//    {
-			//        return false;
-			//    }
-			//}
-			foreach (vec3 pos in itemsPos)
+			for (int i = 0; i < itemsPos.Count; ++i)
 			{
-				vec3 checkPos = new vec3(pos.x, position.y, pos.z);
-				if (vec3.Distance(position, checkPos) < minRange)
+				vec3 pos = itemsPos[i];
+                vec3 checkPos = new vec3(pos.x, position.y, pos.z);
+				if (vec3.Distance(position, checkPos) < minRange && itemsToSpawn[i].GetActive())
 				{
 					return false;
 				}
@@ -179,73 +169,34 @@ namespace TRE
 			return true;
 		}
 
-		private void OnDrawGizmos()
-		{
-			// TO DO DRAW OUTLINE OF WHATEVER DATA (transform.position)
-			//Gizmos.color = Color.cyan;
-			//Gizmos.DrawWireCube(this.transform.position, size);
-		}
-
-		public void StartTimer()
-		{
-			//if (!canSpawnObjs) return;
-
-			if (currentTimeBetweenSpawns > 0)
-			{
-				//itemsToSpawn.Clear();
-				//Debug.Log("Time Between Spawn = " + currentTimeBetweenSpawns);
-				currentTimeBetweenSpawns -= Time.deltaTime;
-			}
-			else
-			{
-				//Debug.Log("Create New Random Spawns");
-				for (int i = 0; i < maxAmountToSpawn; i++)
-				{
-					CreateItems(maxAmountToSpawn);
-				}
-
-				currentTimeBetweenSpawns = timeBetweenSpawns;
-			}
-		}
-
-		public void UpdateItems()
+		private void UpdateFallingObjs()
 		{
 			for (int i = 0; i < itemsTimer.Count; ++i)
 			{
 				itemsTimer[i] -= Time.deltaTime;
-				if (itemsTimer[i] < 0)
-				{
-					TransformSystem.SetPosition(itemsToSpawn[i].ID, new vec3(0f, 10000f, 0f)); //Hardcoding a value so people can't see it... It will auto generate the position correctly below
-					if (currentTimeBetweenSpawns <= 0)
-					{
-						//is this pos empty
-						int searchCount = maxAmountToSpawn * 5;
 
-						while (searchCount-- > 0)
-						{
-							//choose random position
-							vec3 itemToSpawnPos = SpawnObjPos();
+				if (itemsTimer[i] > 0) continue;
 
-							if (IsPosEmpty(itemToSpawnPos))
-							{
-								//choose random position
-								vec3 itemPos = SpawnObjPos();
+				// Deactivate the object and teleport it somewhere else
+				itemsToSpawn[i].SetActive(false);
+				itemsToSpawn[i].transform.Position = new vec3(0f, 1000f, 0f);
+				itemsToSpawn[i].transform.Rotation = itemsDefRot[i];
+				itemsToSpawn[i].GetComponent<Rigidbody>().useGravity = false;
+				PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
 
-								//is this pos empty
-								if (IsPosEmpty(itemPos))
-								{
-									PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
-									TransformSystem.SetPosition(itemsToSpawn[i].ID, itemPos);
-									TransformSystem.SetRotation(itemsToSpawn[i].ID, itemsDefRot[i]);
-									itemsPos[i] = itemPos;
+				// Get New Position for object
+				bool foundSpot = AssignNewLocation(out vec3 newpos);
 
-									itemsTimer[i] = dropDuration;
+				// Ignore if no new spot
+				if (!foundSpot) continue;
 
-								}
-							}
-						}
-					}
-				}
+				// Reset falling object
+				itemsPos[i] = newpos;
+				itemsToSpawn[i].transform.Position = newpos;
+				itemsToSpawn[i].SetActive(true);
+				itemsToSpawn[i].GetComponent<Rigidbody>().useGravity = true;
+
+				itemsTimer[i] = activeDuration * Random.Range(minDurationModifier, maxDurationModifier);
 			}
 		}
 	}

@@ -4,27 +4,42 @@ namespace TRE
 {
 	public class FallingObj : Entity
 	{
-		public float Duration;
-		public float CurrentTime;
+		public Entity spawner;
 
-		public vec3 currentPos;
+        public float activeDuration;
+		public float activeTimer;
+
+		public vec3 oriRot;
 
 		public void Start()
 		{
-			Duration = 5.0f;
-			CurrentTime = Duration;
-			currentPos = transform.Position;
-		}
+            //oriRot = transform.Rotation;
+            //Debug.Log("SPAWN");
+        }
 
 		public void Update()
 		{
-			//CurrentTime -= Time.deltaTime;
+   //         activeTimer -= Time.deltaTime;
 
-			//if (CurrentTime <= 0)
-			//{
-			//    TransformSystem.SetPosition(ID, currentPos);
-			//    CurrentTime = Duration;
-			//}
-		}
+			//if (activeTimer > 0) return;
+   //         if (spawner == null) return;
+
+   //         activeTimer = activeDuration;
+
+   //         // Deactivate the object
+   //         SetActive(false);
+
+   //         // Get New Position for object
+   //         bool foundSpot = spawner.GetComponent<RandomizeFallingObjLocation>().AssignNewLocation(out vec3 newpos);
+
+   //         // Ignore if no new spot
+   //         if (!foundSpot) return;
+
+			//// Reset falling object
+			//transform.Position = newpos;
+   //         transform.Rotation = oriRot;
+   //         SetActive(true);
+   //         PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+        }
 	}
 }

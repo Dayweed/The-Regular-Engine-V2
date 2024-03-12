@@ -336,11 +336,11 @@ namespace TRE
 					if (ECSManager.IsValidEntity(fallingMaracaSFX))
 						AS.Play(fallingMaracaSFX);
 				}
-				else if (other.ID == ECSManager.FindIDFromName("FallingHat"))
-				{
-					if (ECSManager.IsValidEntity(fallingHatSFX))
-						AS.Play(fallingHatSFX);
-				}
+				//else if (other.ID == ECSManager.FindIDFromName("FallingHat"))
+				//{
+				//	if (ECSManager.IsValidEntity(fallingHatSFX))
+				//		AS.Play(fallingHatSFX);
+				//}
 				else
 				{
 					//rollingobstaclesfx
