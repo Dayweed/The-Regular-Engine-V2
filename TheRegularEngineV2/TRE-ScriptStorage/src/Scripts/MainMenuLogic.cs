@@ -31,10 +31,12 @@ namespace TRE
 		Entity ToTutorialSelect;
 		Entity ToLevel1Select;
 		Entity ToLevel2Select;
+		Entity ToLevelBonusSelect;
 
 		bool selectedTutorial = false;
 		bool selectedLevel1 = false;
 		bool selectedLevel2 = false;
+		bool selectedLevelBonus = false;
 
 		// Timer for animation
 		float currentTimer = 0;
@@ -67,6 +69,7 @@ namespace TRE
 			ToTutorialSelect = ECSManager.FindEntityByName("ToTutorialSelect");
 			ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select");
 			ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select");
+			ToLevelBonusSelect = ECSManager.FindEntityByName("ToLevelBonusSelect");
 
 			QuitConfirmation = ECSManager.FindEntityByName("QuitConfirmationPopup");
 			QuitConfirmationYes = ECSManager.FindEntityByName("YesQuit");
@@ -109,6 +112,15 @@ namespace TRE
 			{
 				// Teleport Moley and Holey to another location
 				vec3 teleportPos = ToLevel2Select.GetComponent<Transform>().Position;
+				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+				JumpOutHole();
+			}
+			else if (prevScene == "Level_Bonus")
+			{
+				// Teleport Moley and Holey to another location
+				vec3 teleportPos = ToLevelBonusSelect.GetComponent<Transform>().Position;
 				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
 				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
 
@@ -179,7 +191,7 @@ namespace TRE
 			#region Stars
 			// Do for stars collected
 			vec3 titleStarsCollectedPos = TitleStarsCollected.GetComponent<Transform>().Position;
-			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
+			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside() || ToLevelBonusSelect.GetComponent<TunnelLogic>().MolesInside())
 			{
 				titleStarsCollectedPos.y = displayYPos;
 				// Determine which stars to display
@@ -201,7 +213,7 @@ namespace TRE
 			#endregion
 
 			// Determine what tunnels were approved by both moles
-			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2) && currentTimer <= 0)
+			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2 || selectedLevelBonus) && currentTimer <= 0)
 			{
 				if (ToOptionSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedOption)
 				{
@@ -245,12 +257,18 @@ namespace TRE
 					JumpIntoHole();
 					ToLevel2Select.GetComponent<TunnelLogic>().ResetMoles();
 				}
+				else if (ToLevelBonusSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevelBonus)
+				{
+                    selectedLevelBonus = true;
+					JumpIntoHole();
+					ToLevelBonusSelect.GetComponent<TunnelLogic>().ResetMoles();
+				}
 			}
 
 			if (currentTimer > 0) currentTimer -= Time.deltaTime;
 
 			// Determine action of selection
-			if (currentTimer <= 0 && (selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2))
+			if (currentTimer <= 0 && (selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2 || selectedLevelBonus))
 			{
 				currentTimer = 0;
 
@@ -307,13 +325,19 @@ namespace TRE
 				{
 					selectedLevel1 = false;
 
-					Scene.TransitionScene("Level_Bonus", 5f);
+					Scene.TransitionScene("Level_1", 5f);
 				}
 				else if (selectedLevel2)
 				{
 					selectedLevel2 = false;
 
 					Scene.TransitionScene("Level_2", 5f);
+				}
+				else if (selectedLevelBonus)
+				{
+                    selectedLevelBonus = false;
+
+					Scene.TransitionScene("Level_Bonus", 5f);
 				}
 			}
 
@@ -354,7 +378,7 @@ namespace TRE
 			}
 
 			// Return controls to moles if they land on the ground
-			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2))
+			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2 || selectedLevelBonus))
 			{
 				if (!Moley.GetComponent<MoleyController>().isControllable && Moley.GetComponent<MoleyController>().isGrounded && !Moley.GetComponent<CapsuleCollider>().IsTrigger)
 				{
@@ -438,6 +462,10 @@ namespace TRE
 			else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
 			{
 				holeSceneName = "Level_2";
+			}
+			else if (ToLevelBonusSelect.GetComponent<TunnelLogic>().MolesInside())
+			{
+				holeSceneName = "Level_Bonus";
 			}
 
 			Stars1.SetActive(false);

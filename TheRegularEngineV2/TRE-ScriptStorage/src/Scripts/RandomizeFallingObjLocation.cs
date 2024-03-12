@@ -3,65 +3,9 @@ using GlmSharp;
 
 namespace TRE
 {
-	public class HumanCentipede : Entity
-	{
-		// How to call base class constructor to access Entity-like Properties
-		public HumanCentipede()
-		{
-
-		}
-
-		public void OnEnable()
-		{
-			Debug.Log("OnEnable");
-		}
-
-		public void OnDisable()
-		{
-			Debug.Log("OnDisable");
-		}
-
-		public void OnDestroy()
-		{
-			Debug.Log("OnDestroy");
-		}
-
-		public void Start()
-		{
-			Debug.Log("Testing on Finding Scripts");
-			Debug.Log("Found HumanCentipede in GameObject (3): " + Script.HaveScript(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation"));
-			Debug.Log("Testing Getting Scripts");
-			RandomizeFallingObjLocation test = Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation");
-			Debug.Log("Successfully get w/o errors, maxAmountToSpawn is " + test.maxAmountToSpawn + ", changing to 10");
-			test.maxAmountToSpawn = 10;
-			Debug.Log("Changed value, maxAmountToSpawn is " + test.maxAmountToSpawn);
-			Debug.Log("Checking new value by getting again to see if it is still " + Script.GetScript<RandomizeFallingObjLocation>(ECSManager.FindIDFromName("GameObject (3)"), "TRE.RandomizeFallingObjLocation").maxAmountToSpawn + ".");
-
-			Debug.Log("Testing GetComponent... ");
-			Entity ent = ECSManager.FindEntityByName("GameObject (3)");
-			RandomizeFallingObjLocation entget = ent.GetComponent<RandomizeFallingObjLocation>();
-			Debug.Log("entget maxAmountToSpawn is " + entget.maxAmountToSpawn);
-
-			Debug.Log("Testing Invalid GetComponent... ");
-			HumanCentipede failedget = ent.GetComponent<HumanCentipede>();
-			Debug.Log("Invalid GetComponent HumanCentipede: " + (failedget == null));
-		}
-
-		public void Update()
-		{
-			// Console.WriteLine("this " + this.transform.position.x + ", " + this.transform.position.y + ", " + this.transform.position.z);
-		}
-
-		public void LateUpdate()
-		{
-			// Console.WriteLine("this " + this.transform.position.x + ", " + this.transform.position.y + ", " + this.transform.position.z);
-		}
-	}
-
 	public class RandomizeFallingObjLocation : Entity
 	{
-		public List<Entity> fallingObjPrefabs;
-		public List<Entity> fallingObjRNG;
+		public Entity fallingMaraccasPrefab;
 
 		public vec3 size;
 
@@ -151,8 +95,7 @@ namespace TRE
 			//canSpawnObjs = true;
 
 			// ID for prefabs are based on resource prefab GUID
-			fallingObjPrefabs = new List<Entity> { new Entity(11822093139939255162), new Entity(8829880216004354162) };
-			fallingObjRNG = new List<Entity>(fallingObjPrefabs);
+			fallingMaraccasPrefab = new Entity(11822093139939255162);
 			maxAmountToSpawn = 3;
 			maxObjects = 3;
 			// canSpawnObjs = true;
@@ -183,17 +126,6 @@ namespace TRE
 			return spawningPos;
 		}
 
-		public int RandomSpawnObj()
-		{
-			if (fallingObjRNG.Count == 0)
-			{
-				fallingObjRNG = new List<Entity>(fallingObjPrefabs);
-			}
-			int spawnObj = Random.Range(0, fallingObjRNG.Count);
-			fallingObjRNG.RemoveAt(spawnObj);
-			return spawnObj;
-		}
-
 		private void CreateItems(int itemQuantity)
 		{
 			for (int i = 0; i < itemQuantity; ++i)
@@ -212,7 +144,7 @@ namespace TRE
 						if (IsPosEmpty(itemToSpawnPos))
 						{
 							//yes, so add to list
-							Entity item = ECSManager.Instantiate(fallingObjPrefabs[RandomSpawnObj()]);
+							Entity item = ECSManager.Instantiate(fallingMaraccasPrefab);
 							item.transform.Position = itemToSpawnPos;
 							itemsToSpawn.Add(item);
 							itemsTimer.Add(dropDuration);
