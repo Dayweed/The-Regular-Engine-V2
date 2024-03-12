@@ -55,6 +55,8 @@ namespace TRE
 		const InputKeys playerAbilityKey = InputKeys.Backspace;
 		#endregion
 
+		private int ControllerNumber = 1;
+
 		#region Collider Variables
 		public float defaultRadius = 2f;
 		public float blueberrysuperRadius = 2.4f;
@@ -394,7 +396,7 @@ namespace TRE
 		{
 			// Ignores if dead
 			if (isDead) return;
-			isControllerConnected = IS.GetControllerConnected(1);
+			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
 
 			if (DroppingOutOfMap)
 			{
@@ -534,8 +536,8 @@ namespace TRE
 				// Controller
 				else if (!MyPauseMenu.isPaused && isControllable && isControllerConnected)
 				{
-					float x = IS.GetControllerStickX(1, false); // false for left thumbstick
-					float y = IS.GetControllerStickY(1, false); // false for left thumbstick
+					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
+					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
 					if (y > 0)
 					{
@@ -604,7 +606,7 @@ namespace TRE
 						coyoteTimeCounter -= Time.deltaTime;
 					}
 					//check if space is pressed within the buffer time
-					if (IS.GetControllerButtonTriggered(1, IS.Button.A))
+					if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.A))
 					{
 						jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
@@ -619,7 +621,7 @@ namespace TRE
 					if (isJumping)
 					{
 						//check if space is released then cancel jump
-						if (IS.GetControllerButtonReleased(1, IS.Button.A))
+						if (IS.GetControllerButtonReleased(ControllerNumber, IS.Button.A))
 						{
 							jumpCancelled = true;
 							coyoteTimeCounter = 0f;
@@ -637,7 +639,7 @@ namespace TRE
 					//check if player is on the ground and space is not released
 					else
 					{
-						if (IS.GetControllerButtonReleased(1, IS.Button.A))
+						if (IS.GetControllerButtonReleased(ControllerNumber, IS.Button.A))
 						{
 							isJumping = false;
 						}
@@ -729,7 +731,7 @@ namespace TRE
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 				isScaled = false;
 			}
-			if (IS.GetControllerButtonTriggered(1, InputSystem.Button.B))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.B))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -745,7 +747,7 @@ namespace TRE
 				MyPowerManager.DropMain();
 				isScaled = false;
 			}
-			if (IS.GetControllerButtonTriggered(1, InputSystem.Button.Y))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.Y))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
@@ -805,7 +807,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(1, InputSystem.Button.X))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.X))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
