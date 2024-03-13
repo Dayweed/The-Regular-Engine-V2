@@ -8,9 +8,9 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "5575559471271865232",
+         "m_MainPrefabGUID": "8053394209025390399",
          "m_Overrides": {},
-         "m_PrefabGUID": "5575559471271865232",
+         "m_PrefabGUID": "8053394209025390399",
          "m_RemovedComps": []
       }
    ],
@@ -27,8 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "15844783175102802930",
-         "m_Index": 212,
+         "m_GUID": "13711037835996319615",
+         "m_Index": 253,
          "m_Name": "CourseComplete",
          "m_Tag": ""
       }
@@ -107,6 +107,9 @@
          "Width": 780,
          "m_IsVisible": false
       }
+   ],
+   [
+      0
    ],
    [
       0
