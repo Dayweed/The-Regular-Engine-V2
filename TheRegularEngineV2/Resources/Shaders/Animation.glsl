@@ -33,13 +33,15 @@ layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
 	mat4 m_LightSpaceMatrix [2];
-	vec3 m_LightPosition;
+	vec4 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
-	vec4 m_DirectionalLightDirection[2];
-	vec4 m_DirectionalLightColor[2];
-	vec4 m_AmbientLight[2];
-	float m_ShadowIntensity[2];
+	vec4 m_DirectionalLightDirection [2];
+	vec4 m_DirectionalLightColor [2];
+	vec4 m_AmbientLight [2];
+	float m_ShadowIntensity;
+	float GammaValue;
+
 } ubo;
 
 layout (set = 0, binding = 8) uniform UBOAnimation
@@ -58,7 +60,6 @@ layout(push_constant) uniform Push
 	int m_DLightIndex;
 	bool m_DrawShadow;
 } push;
-
 const float gamma = 2.2;
 
 void main() 
@@ -70,7 +71,7 @@ void main()
 
 	mat3 rot = mat3(push.m_Model);
 
-    Out.VertColor = pow(inColor, gamma.rrr);
+    Out.VertColor = pow(inColor, vec3(ubo.GammaValue));
 	Out.TexCoord = inTexCoord;
 
 	vec3 normal = normalize(rot * inNormal);
@@ -81,7 +82,7 @@ void main()
 
 	Out.TBN = mat3( tangent, bitangent, normal);
 	Out.PosWorld = push.m_Model * vec4(inPosition, 1.0);
-	Out.PosWorld.w = gamma;
+	Out.PosWorld.w = ubo.GammaValue;
 	Out.MaterialColor = MaterialUBO.m_Color;
 	Out.AmbientColor = ubo.m_AmbientLight[push.m_DLightIndex];
 	Out.CameraWorldPos = ubo.m_CameraPosition.xyz;
@@ -89,7 +90,7 @@ void main()
 	Out.ShadowCoord = ubo.m_LightSpaceMatrix[push.m_DLightIndex] * push.m_Model * vec4(inPosition, 1.0);
 	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection[push.m_DLightIndex];
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[push.m_DLightIndex];
-	Out.ShadowIntensity = ubo.m_ShadowIntensity[push.m_DLightIndex];
+	Out.ShadowIntensity = ubo.m_ShadowIntensity;
 
 	if (push.m_DrawShadow)
 	{

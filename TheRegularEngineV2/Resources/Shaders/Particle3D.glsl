@@ -18,7 +18,8 @@ layout(set = 0, binding = 0) uniform UBO
 	vec4 m_DirectionalLightDirection [2];
 	vec4 m_DirectionalLightColor [2];
 	vec4 m_AmbientLight [2];
-	float m_ShadowIntensity [2];
+	float m_ShadowIntensity;
+	float m_GammaValue;
 } ubo;
 
 layout(set = 0, binding = 8) uniform ParticleUBO
@@ -45,8 +46,6 @@ layout(location = 0) out struct
 	vec3 CameraWorldPos;
 } Out;
 
-const float gamma = 2.2;
-
 void main() 
 {
     gl_Position = ubo.m_ProjView * ubo_particle.ParticleL2W[gl_InstanceIndex] * vec4(inPosition, 1.0);
@@ -58,8 +57,8 @@ void main()
 
 	Out.TBN = mat3( tangent, bitangent, normal);
     Out.PosWorld = ubo_particle.ParticleL2W[gl_InstanceIndex] * vec4(inPosition, 1.0);
-    Out.PosWorld.w = gamma;
-    Out.VertColor = pow(inColor, gamma.rrr);
+    Out.PosWorld.w = ubo.m_GammaValue;
+    Out.VertColor = pow(inColor, vec3(ubo.m_GammaValue));
 	Out.TexCoord = inTexCoord;
 	Out.MaterialColor = material.m_Color;
     Out.AmbientColor = ubo.m_AmbientLight[0];

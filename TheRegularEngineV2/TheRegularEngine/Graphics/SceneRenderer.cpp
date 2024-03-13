@@ -332,8 +332,9 @@ namespace TRE
 		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		
 		UBO ubo{};
+		ubo.m_Gamma = 2.2f;
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
-		ubo.m_LightPosition = transform.m_Position;
+		ubo.m_LightPosition = glm::vec4(transform.m_Position, 0.f);
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
 
 		m_ProjView3D = ubo.m_ProjView;
@@ -428,8 +429,9 @@ namespace TRE
 		const Transform& cameraTransform = mainCamera->GetComponent<Transform>();
 
 		UBO ubo{};
+		ubo.m_Gamma = 2.2f;
 		ubo.m_ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
-		ubo.m_LightPosition = cameraTransform.m_Position;
+		ubo.m_LightPosition = glm::vec4(cameraTransform.m_Position, 0.f);
 		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
 		m_ProjView3D = ubo.m_ProjView;
@@ -451,7 +453,7 @@ namespace TRE
 			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
 			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
 			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
-			ubo.m_ShadowIntensity[x] = light.m_ShadowIntensity;
+			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
 
 			if (recalculateShadowFrustum)
 			{
