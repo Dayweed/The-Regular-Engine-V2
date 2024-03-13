@@ -4,6 +4,7 @@
 #include "Core/Engine.h"
 #include "Vignette.h"
 #include "Silhouette.h"
+#include "DepthBlur.h"
 
 namespace TRE
 {
@@ -45,6 +46,12 @@ namespace TRE
 
 		m_VertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
 			UINT32_T_CAST(data.size() * sizeof(PostVertex)));
+	}
+
+	void PostProcessEffect::SetupShader(std::shared_ptr<Shader> shader)
+	{
+		m_Material = std::make_shared<Material>(shader);
+		m_Material->Invalidate();
 	}
 
 	void PostProcessEffect::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
@@ -91,7 +98,8 @@ namespace TRE
 	void PostProcessingManager::Init()
 	{
 		m_PostEffects[0] = std::move(std::pair("Silhouette", std::make_shared<Silhouette>()));
-		m_PostEffects[1] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
+		m_PostEffects[1] = std::move(std::pair("DepthBlur", std::make_shared<DepthBlur>()));
+		m_PostEffects[2] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
 	}
 
 	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)

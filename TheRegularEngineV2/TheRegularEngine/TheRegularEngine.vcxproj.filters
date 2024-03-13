@@ -352,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PostProcessing\DepthBlur.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -586,5 +589,8 @@
       <Filter>ShaderTypes</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="PostProcessing\DepthBlur.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

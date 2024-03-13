@@ -18,7 +18,6 @@ namespace TRE
 		Vignette();
 
 		void SetupUBO() override;
-		void SetupShader(std::shared_ptr<Shader> shader) override;
 		void UpdateUBO() override;
 	
 		void SetColor(const glm::vec4& color) { m_Color = color; }

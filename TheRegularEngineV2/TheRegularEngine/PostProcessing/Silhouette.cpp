@@ -23,12 +23,6 @@ namespace TRE
 		m_UBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SilhouetteUBO)), 0);
 	}
 
-	void Silhouette::SetupShader(std::shared_ptr<Shader> shader)
-	{
-		m_Material = std::make_shared<Material>(shader);
-		m_Material->Invalidate();
-	}
-
 	void Silhouette::UpdateUBO()
 	{
 		SilhouetteUBO UBO{};
