@@ -24,7 +24,7 @@ namespace TRE
 		Entity InvitationDialogue4;
 		Entity InvitationDialogue5;
 
-        float currentTime = 0;
+		float currentTime = 0;
 		float delayFrame = 5f;
 		float delayScene = 7f;
 
@@ -66,7 +66,7 @@ namespace TRE
 			InvitationDialogue4 = ECSManager.FindEntityByName("InvitationDialogue4");
 			InvitationDialogue5 = ECSManager.FindEntityByName("InvitationDialogue5");
 
-            Frame_1.SetActive(false);
+			Frame_1.SetActive(false);
 			Frame_2.SetActive(false);
 			Frame_3.SetActive(false);
 			Frame_4.SetActive(false);
@@ -99,9 +99,10 @@ namespace TRE
 		{
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
+			bool paragraphIsHalfWay = false;
 
-            // Go to next scene
-            if ((pressedSpace || pressA) && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+			// Go to next scene
+			if ((pressedSpace || pressA) && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
@@ -138,63 +139,78 @@ namespace TRE
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue1.ID);
-                }
+				}
 				else
 				{
 					TextSystem.StartDialogue(InvitationDialogue1.ID);
 				}
+
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
+				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 			}
 
-            if (currentFrame == 4)
-            {
+			if (currentFrame == 4)
+			{
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue2.ID);
 				}
 				else
 				{
-                    TextSystem.StartDialogue(InvitationDialogue2.ID);
+					TextSystem.StartDialogue(InvitationDialogue2.ID);
 				}
-            }
 
-            if (currentFrame == 5)
-            {
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
+				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
+			}
+
+			if (currentFrame == 5)
+			{
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue3.ID);
 				}
 				else
 				{
-                    TextSystem.StartDialogue(InvitationDialogue3.ID);
+					TextSystem.StartDialogue(InvitationDialogue3.ID);
 				}
-            }
 
-            if (currentFrame == 6)
-            {
-                if (pressSpaceCounter == 1)
-                {
-                    TextSystem.ResetDialogue(InvitationDialogue4.ID);
-                }
-                else
-                {
-                    TextSystem.StartDialogue(InvitationDialogue4.ID);
-                }
-            }
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue3.ID);
+				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
+			}
 
-            if (currentFrame == 7)
-            {
-                if (pressSpaceCounter == 1)
-                {
-                    TextSystem.ResetDialogue(InvitationDialogue5.ID);
-                }
-                else
-                {
-                    TextSystem.StartDialogue(InvitationDialogue5.ID);
-                }
-            }
+			if (currentFrame == 6)
+			{
+				if (pressSpaceCounter == 1)
+				{
+					TextSystem.ResetDialogue(InvitationDialogue4.ID);
+				}
+				else
+				{
+					TextSystem.StartDialogue(InvitationDialogue4.ID);
+				}
 
-            // Close Game
-            if (InputSystem.GetKeyHold(InputKeys.Escape))
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
+				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
+			}
+
+			if (currentFrame == 7)
+			{
+				if (pressSpaceCounter == 1)
+				{
+					TextSystem.ResetDialogue(InvitationDialogue5.ID);
+				}
+				else
+				{
+					TextSystem.StartDialogue(InvitationDialogue5.ID);
+				}
+
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
+				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
+			}
+
+			// Close Game
+			if (InputSystem.GetKeyHold(InputKeys.Escape))
 			{
 				Game.CloseGame();
 			}
@@ -208,38 +224,39 @@ namespace TRE
 				currentTime -= Time.deltaTime;
 			}
 
-            if (pressSpaceCounter == 1)
-            {
-                pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
-                if (pressedSpaceTwice)
-                {
-                    Debug.Log("pressed space twice");
-                }
-            }
+			if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
+			{
+				pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
+				if (pressedSpaceTwice)
+				{
+					//Debug.Log("pressed space twice");
+				}
+			}
 
-            if (!endCutscene)
+			if (!endCutscene)
 			{
 				//Every frame will go through this if statement (when its going to the next frame)
 				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && 
-                                                 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
+												 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					//Debug.Log("current frame: " + currentFrame);
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
 					//Debug.Log("next frame");
 
-					++pressSpaceCounter;
-                    if (!(currentFrame >= 3 && currentFrame <= 7))
-                    {
-                        pressedSpaceTwice = true;
-                        Debug.Log("pressed space");
-                    }
+					if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
+					{
+						//Debug.Log("paragraph is halfway");
+						++pressSpaceCounter;
+					}
 
-                    if (pressedSpace && pressedSpaceTwice) 
+					if (currentFrame >= 3 && currentFrame <= 7 && pressedSpace && pressedSpaceTwice) 
 					{ 
 						++currentFrame;
 						pressedSpaceTwice = false;
 						pressSpaceCounter = 0;
 					}
+
+					else if (!(currentFrame >= 3 && currentFrame <= 7)) ++currentFrame;
 
 					if (ECSManager.IsValidEntity(dialogueSFX))
 						AS.Stop(dialogueSFX);
