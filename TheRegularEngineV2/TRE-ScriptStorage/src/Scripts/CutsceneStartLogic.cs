@@ -29,9 +29,10 @@ namespace TRE
 		float delayScene = 7f;
 
 		int currentFrame = 0;
+		int pressSpaceCounter = 0;
 
 		bool endCutscene = false;
-		bool startDialogue = false;
+		bool pressedSpaceTwice = false;
 
 		private ulong birdSFX;
 		private ulong dialogueSFX;
@@ -99,8 +100,8 @@ namespace TRE
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
 
-			// Go to next scene
-			if ((pressedSpace || pressA) && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+            // Go to next scene
+            if ((pressedSpace || pressA) && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
@@ -132,34 +133,64 @@ namespace TRE
 					AS.Play(dialogueSFX);
 			}
 
-			if (currentFrame == 3 && startDialogue)
+			if (currentFrame == 3)
 			{
-				TextSystem.StartDialogue(InvitationDialogue1.ID);
-				startDialogue = false;
+				if (pressSpaceCounter == 1)
+				{
+					TextSystem.ResetDialogue(InvitationDialogue1.ID);
+                }
+				else
+				{
+					TextSystem.StartDialogue(InvitationDialogue1.ID);
+				}
 			}
 
-            if (currentFrame == 4 && startDialogue)
+            if (currentFrame == 4)
             {
-                TextSystem.StartDialogue(InvitationDialogue2.ID);
-                startDialogue = false;
+				if (pressSpaceCounter == 1)
+				{
+					TextSystem.ResetDialogue(InvitationDialogue2.ID);
+				}
+				else
+				{
+                    TextSystem.StartDialogue(InvitationDialogue2.ID);
+				}
             }
 
-            if (currentFrame == 5 && startDialogue)
+            if (currentFrame == 5)
             {
-                TextSystem.StartDialogue(InvitationDialogue3.ID);
-                startDialogue = false;
+				if (pressSpaceCounter == 1)
+				{
+					TextSystem.ResetDialogue(InvitationDialogue3.ID);
+				}
+				else
+				{
+                    TextSystem.StartDialogue(InvitationDialogue3.ID);
+				}
             }
 
-            if (currentFrame == 6 && startDialogue)
+            if (currentFrame == 6)
             {
-                TextSystem.StartDialogue(InvitationDialogue4.ID);
-                startDialogue = false;
+                if (pressSpaceCounter == 1)
+                {
+                    TextSystem.ResetDialogue(InvitationDialogue4.ID);
+                }
+                else
+                {
+                    TextSystem.StartDialogue(InvitationDialogue4.ID);
+                }
             }
 
-            if (currentFrame == 7 && startDialogue)
+            if (currentFrame == 7)
             {
-                TextSystem.StartDialogue(InvitationDialogue5.ID);
-                startDialogue = false;
+                if (pressSpaceCounter == 1)
+                {
+                    TextSystem.ResetDialogue(InvitationDialogue5.ID);
+                }
+                else
+                {
+                    TextSystem.StartDialogue(InvitationDialogue5.ID);
+                }
             }
 
             // Close Game
@@ -177,7 +208,16 @@ namespace TRE
 				currentTime -= Time.deltaTime;
 			}
 
-			if (!endCutscene)
+            if (pressSpaceCounter == 1)
+            {
+                pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
+                if (pressedSpaceTwice)
+                {
+                    Debug.Log("pressed space twice");
+                }
+            }
+
+            if (!endCutscene)
 			{
 				//Every frame will go through this if statement (when its going to the next frame)
 				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && 
@@ -185,8 +225,21 @@ namespace TRE
 				{
 					//Debug.Log("current frame: " + currentFrame);
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
-					//Debug.Log("next frame"); 
-					++currentFrame;
+					//Debug.Log("next frame");
+
+					++pressSpaceCounter;
+                    if (!(currentFrame >= 3 && currentFrame <= 7))
+                    {
+                        pressedSpaceTwice = true;
+                        Debug.Log("pressed space");
+                    }
+
+                    if (pressedSpace && pressedSpaceTwice) 
+					{ 
+						++currentFrame;
+						pressedSpaceTwice = false;
+						pressSpaceCounter = 0;
+					}
 
 					if (ECSManager.IsValidEntity(dialogueSFX))
 						AS.Stop(dialogueSFX);
@@ -198,7 +251,6 @@ namespace TRE
 						if (currentFrame >= 3 && currentFrame <= 7)
 						{
 							SpaceToContinueBlack.SetActive(true);
-							startDialogue = true;
 						}
 						else
 							SpaceToContinue.SetActive(true);
