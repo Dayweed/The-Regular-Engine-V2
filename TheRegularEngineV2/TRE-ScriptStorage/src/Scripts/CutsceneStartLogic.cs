@@ -137,13 +137,12 @@ namespace TRE
 			if (currentFrame == 3)
 			{
                 paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
-                //Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 
                 if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue1.ID);
 				}
-				else
+				else if (pressSpaceCounter == 0)
 				{
 					TextSystem.StartDialogue(InvitationDialogue1.ID);
 				}
@@ -151,6 +150,8 @@ namespace TRE
 
 			if (currentFrame == 4)
 			{
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
+				
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue2.ID);
@@ -159,13 +160,12 @@ namespace TRE
 				{
 					TextSystem.StartDialogue(InvitationDialogue2.ID);
 				}
-
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
-				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 			}
 
 			if (currentFrame == 5)
 			{
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue3.ID);
+
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue3.ID);
@@ -174,13 +174,12 @@ namespace TRE
 				{
 					TextSystem.StartDialogue(InvitationDialogue3.ID);
 				}
-
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue3.ID);
-				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 			}
 
 			if (currentFrame == 6)
 			{
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
+				
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue4.ID);
@@ -189,13 +188,12 @@ namespace TRE
 				{
 					TextSystem.StartDialogue(InvitationDialogue4.ID);
 				}
-
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
-				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 			}
 
 			if (currentFrame == 7)
 			{
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
+				
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue5.ID);
@@ -204,9 +202,6 @@ namespace TRE
 				{
 					TextSystem.StartDialogue(InvitationDialogue5.ID);
 				}
-
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
-				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 			}
 
 			// Close Game
@@ -224,13 +219,10 @@ namespace TRE
 				currentTime -= Time.deltaTime;
 			}
 
-			if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
+            //check if space is already pressed, then set pressedSpaceTwice as true/false
+            if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
 			{
 				pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
-				if (pressedSpaceTwice)
-				{
-					//Debug.Log("pressed space twice");
-				}
 			}
 
 			if (!endCutscene)
@@ -239,24 +231,21 @@ namespace TRE
 				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && 
 												 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
-					//Debug.Log("current frame: " + currentFrame);
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
-					//Debug.Log("next frame");
 
 					if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
-					{
-						//Debug.Log("paragraph is halfway");
 						++pressSpaceCounter;
-					}
 
-					if (currentFrame >= 3 && currentFrame <= 7 && pressedSpace && pressedSpaceTwice) 
+					//player can press double space to go next frame OR once the paragraph is done press space once to go next frame
+					if (currentFrame >= 3 && currentFrame <= 7 && (pressedSpace && pressedSpaceTwice || !paragraphIsHalfWay)) 
 					{ 
 						++currentFrame;
 						pressedSpaceTwice = false;
 						pressSpaceCounter = 0;
 					}
 
-					else if (!(currentFrame >= 3 && currentFrame <= 7)) ++currentFrame;
+					else if (!(currentFrame >= 3 && currentFrame <= 7)) 
+						++currentFrame;
 
 					if (ECSManager.IsValidEntity(dialogueSFX))
 						AS.Stop(dialogueSFX);
