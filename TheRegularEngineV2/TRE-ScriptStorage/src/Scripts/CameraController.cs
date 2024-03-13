@@ -31,6 +31,8 @@ namespace TRE
 		public vec3 expectedRotation;
 		public float expectedDistance;
 		public float expectedYPos;
+		public float offsetX;
+		public float offsetZ;
 		public bool toTransition;
 		public float transitionDuration = 0.8f;
 		public bool freeCamera = true;
@@ -79,8 +81,7 @@ namespace TRE
 				}
 				else
 				{
-					pos = MidPosTransform.Position;
-					pos.y = expectedYPos;
+					pos = new vec3(MidPosTransform.Position.x + offsetX, expectedYPos, MidPosTransform.Position.z + offsetZ);
 				}
 
 				finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed * Time.deltaTime);
