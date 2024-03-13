@@ -136,7 +136,10 @@ namespace TRE
 
 			if (currentFrame == 3)
 			{
-				if (pressSpaceCounter == 1)
+                paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
+                //Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
+
+                if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue1.ID);
 				}
@@ -144,9 +147,6 @@ namespace TRE
 				{
 					TextSystem.StartDialogue(InvitationDialogue1.ID);
 				}
-
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
-				//Debug.Log("paragraphishalfway: " + paragraphIsHalfWay);
 			}
 
 			if (currentFrame == 4)

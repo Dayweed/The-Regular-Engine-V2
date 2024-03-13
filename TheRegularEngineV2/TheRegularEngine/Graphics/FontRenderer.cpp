@@ -96,7 +96,7 @@ namespace TRE
 			{
 				TextComp.m_Timer += Engine::GetInstance().GetWindow()->GetDeltaTime();
 				int RenderSize = TextComp.m_Timer * TextComp.m_Speed;
-				if (RenderSize <= TextComp.m_TextContent.Text.size())
+				if (RenderSize < TextComp.m_TextContent.Text.size())
 					TextToRender = TextComp.m_TextContent.Text.substr(0, RenderSize);
 				else
 				{
