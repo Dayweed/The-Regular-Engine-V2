@@ -142,7 +142,20 @@ namespace TRE
 		public bool keepInventory = false;
 		public bool creativeMode = false;
 
-		public void Start()
+        //Materials and Meshes
+        //Default
+        private const string defaultWalkingMesh = "mole_walk.fbx";
+        private const string defaultJumpingMesh = "mole_jump.fbx";
+        private const string defaultIdleMesh = "mole_idle.fbx";
+        private const string defaultAnimationMaterial = "BlueCharacter_Animation.material";
+
+        //Blueberry
+        private const string blueberryMaterial = "BlueCharacter_Animation.material";
+        private const string blueberryMesh = "Holey_Blueberry.fbx";
+        //Strawberry
+        private const string strawberryMaterial = "Holey_Strawberry.material";
+        private const string strawberryMesh = "Holey_Strawberry.fbx";
+        public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -857,23 +870,23 @@ namespace TRE
 					dirVec = dirVec.Normalized;
 
 					//Walking state
-					GetComponent<MeshRenderer>().Mesh = "mole_walk.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "BlueCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = defaultWalkingMesh;
+					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else if (!isGrounded)
 				{
 					dirVec = dirVec.NormalizedSafe;
-					GetComponent<MeshRenderer>().Mesh = "mole_jump.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "BlueCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = defaultJumpingMesh;
+					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else
 				{
-					GetComponent<MeshRenderer>().Mesh = "mole_idle.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "BlueCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = defaultIdleMesh;
+					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.25f;
 				}
@@ -889,10 +902,10 @@ namespace TRE
 			else if (mainBlueberry)
 			{
 				//Tall model
-				if (MS.IsCurrentMesh(this.ID, "Holey_Blueberry.fbx") == false)
+				if (MS.IsCurrentMesh(this.ID, blueberryMesh) == false)
 				{
-					GetComponent<MeshRenderer>().Mesh = "Holey_Blueberry.fbx";
-					GetComponent<MeshRenderer>().Material = "BlueCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = blueberryMesh;
+					GetComponent<MeshRenderer>().Material = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}
@@ -908,10 +921,10 @@ namespace TRE
 			else if (mainStrawberry)
 			{
 				//Cactus Model
-				if (MS.IsCurrentMesh(this.ID, "Holey_Strawberry.fbx") == false)
+				if (MS.IsCurrentMesh(this.ID, strawberryMesh) == false)
 				{
-					GetComponent<MeshRenderer>().Mesh = "Holey_Strawberry.fbx";
-					GetComponent<MeshRenderer>().Material = "Holey_Strawberry.material";
+					GetComponent<MeshRenderer>().Mesh = strawberryMesh;
+					GetComponent<MeshRenderer>().Material = strawberryMaterial;
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}

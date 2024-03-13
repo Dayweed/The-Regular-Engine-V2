@@ -189,71 +189,105 @@ namespace TRE
 		auto DepthMapping = 14;
 		auto DepthMappingAnimation = 15;
 		auto SilhouetteHandle = 16;
+		auto DepthBlurHandle = 17;
 
 		//FinalPassShader
-		std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
-		FinalPassShader->SetHandle(FinalPassShaderHandle);
-		ResourceManager::Instance().AddResource(std::move(FinalPassShader));
+		{
+			std::unique_ptr<Shader> FinalPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/CompositePass.TREshader");
+			FinalPassShader->SetHandle(FinalPassShaderHandle);
+			ResourceManager::Instance().AddResource(std::move(FinalPassShader));
+		}
 
 		//SkyboxShader
-		std::unique_ptr<Shader> SkyboxPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/Skybox.TREshader");
-		SkyboxPassShader->SetHandle(SkyboxPassShaderHandle);
-		ResourceManager::Instance().AddResource(std::move(SkyboxPassShader));
+		{
+			std::unique_ptr<Shader> SkyboxPassShader = ShaderCompiler::DeserializeReflectShader("../Resources/Skybox.TREshader");
+			SkyboxPassShader->SetHandle(SkyboxPassShaderHandle);
+			ResourceManager::Instance().AddResource(std::move(SkyboxPassShader));
+		}
 
 		//ShadowMappingShader
-		std::unique_ptr<Shader> ShadowMapShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMapping.TREshader");
-		ShadowMapShader->SetHandle(ShadowMapHandle);
-		ResourceManager::Instance().AddResource(std::move(ShadowMapShader));
+		{
+			std::unique_ptr<Shader> ShadowMapShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMapping.TREshader");
+			ShadowMapShader->SetHandle(ShadowMapHandle);
+			ResourceManager::Instance().AddResource(std::move(ShadowMapShader));
+		}
 
 		//UIShader
-		std::unique_ptr<Shader> UIShader = ShaderCompiler::DeserializeReflectShader("../Resources/UI.TREshader");
-		UIShader->SetHandle(UIHandle);
-		ResourceManager::Instance().AddResource(std::move(UIShader));
+		{
+			std::unique_ptr<Shader> UIShader = ShaderCompiler::DeserializeReflectShader("../Resources/UI.TREshader");
+			UIShader->SetHandle(UIHandle);
+			ResourceManager::Instance().AddResource(std::move(UIShader));
+		}
 
 		//VignetteShader
-		std::unique_ptr<Shader> VignetteShader = ShaderCompiler::DeserializeReflectShader("../Resources/Vignette.TREshader");
-		VignetteShader->SetHandle(VignetteHandle);
-		ResourceManager::Instance().AddResource(std::move(VignetteShader));
+		{
+			std::unique_ptr<Shader> VignetteShader = ShaderCompiler::DeserializeReflectShader("../Resources/Vignette.TREshader");
+			VignetteShader->SetHandle(VignetteHandle);
+			ResourceManager::Instance().AddResource(std::move(VignetteShader));
+		}
 
 		//AnimationShader
-		std::unique_ptr<Shader> AnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
-		AnimationShader->SetHandle(AnimationHandle);
-		ResourceManager::Instance().AddResource(std::move(AnimationShader));
+		{
+			std::unique_ptr<Shader> AnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/Animation.TREshader");
+			AnimationShader->SetHandle(AnimationHandle);
+			ResourceManager::Instance().AddResource(std::move(AnimationShader));
+		}
 
 		//ShadowMappingForAnimationShader
-		std::unique_ptr<Shader> ShadowMapAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMappingAnimation.TREshader");
-		ShadowMapAnimationShader->SetHandle(ShadowMapAnimationHandle);
-		ResourceManager::Instance().AddResource(std::move(ShadowMapAnimationShader));
+		{
+			std::unique_ptr<Shader> ShadowMapAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/ShadowMappingAnimation.TREshader");
+			ShadowMapAnimationShader->SetHandle(ShadowMapAnimationHandle);
+			ResourceManager::Instance().AddResource(std::move(ShadowMapAnimationShader));
+		}
 
 		//Font Shader
-		std::unique_ptr<Shader> FontShader = ShaderCompiler::DeserializeReflectShader("../Resources/Font.TREshader");
-		FontShader->SetHandle(FontHandle);
-		ResourceManager::Instance().AddResource(std::move(FontShader));
+		{
+			std::unique_ptr<Shader> FontShader = ShaderCompiler::DeserializeReflectShader("../Resources/Font.TREshader");
+			FontShader->SetHandle(FontHandle);
+			ResourceManager::Instance().AddResource(std::move(FontShader));
+		}
 
 		//Particle 2D Shader
-		std::unique_ptr<Shader> ParticleShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle.TREshader");
-		ParticleShader->SetHandle(ParticleHandle);
-		ResourceManager::Instance().AddResource(std::move(ParticleShader));
+		{
+			std::unique_ptr<Shader> ParticleShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle.TREshader");
+			ParticleShader->SetHandle(ParticleHandle);
+			ResourceManager::Instance().AddResource(std::move(ParticleShader));
+		}
 
 		//Particle 3D Shader
-		std::unique_ptr<Shader> Particle3DShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle3D.TREshader");
-		Particle3DShader->SetHandle(Particle3DHandle);
-		ResourceManager::Instance().AddResource(std::move(Particle3DShader));
+		{
+			std::unique_ptr<Shader> Particle3DShader = ShaderCompiler::DeserializeReflectShader("../Resources/Particle3D.TREshader");
+			Particle3DShader->SetHandle(Particle3DHandle);
+			ResourceManager::Instance().AddResource(std::move(Particle3DShader));
+		}
 
 		//Depth Mapping Shader
-		std::unique_ptr<Shader> DepthMappingShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMapping.TREshader");
-		DepthMappingShader->SetHandle(DepthMapping);
-		ResourceManager::Instance().AddResource(std::move(DepthMappingShader));
+		{
+			std::unique_ptr<Shader> DepthMappingShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMapping.TREshader");
+			DepthMappingShader->SetHandle(DepthMapping);
+			ResourceManager::Instance().AddResource(std::move(DepthMappingShader));
+		}
 
 		//Depth Mapping Animation Shader
-		std::unique_ptr<Shader> DepthMappingAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMappingAnimation.TREshader");
-		DepthMappingAnimationShader->SetHandle(DepthMappingAnimation);
-		ResourceManager::Instance().AddResource(std::move(DepthMappingAnimationShader));
+		{
+			std::unique_ptr<Shader> DepthMappingAnimationShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthMappingAnimation.TREshader");
+			DepthMappingAnimationShader->SetHandle(DepthMappingAnimation);
+			ResourceManager::Instance().AddResource(std::move(DepthMappingAnimationShader));
+		}
 
 		//SilhouetteShader
-		std::unique_ptr<Shader> SilhouetteShader = ShaderCompiler::DeserializeReflectShader("../Resources/Silhouette.TREshader");
-		SilhouetteShader->SetHandle(SilhouetteHandle);
-		ResourceManager::Instance().AddResource(std::move(SilhouetteShader));
+		{
+			std::unique_ptr<Shader> SilhouetteShader = ShaderCompiler::DeserializeReflectShader("../Resources/Silhouette.TREshader");
+			SilhouetteShader->SetHandle(SilhouetteHandle);
+			ResourceManager::Instance().AddResource(std::move(SilhouetteShader));
+		}
+
+		//DepthBlurShader
+		{
+			std::unique_ptr<Shader> DepthBlurShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthBlur.TREshader");
+			DepthBlurShader->SetHandle(DepthBlurHandle);
+			ResourceManager::Instance().AddResource(std::move(DepthBlurShader));
+		}
 	}
 
 	void ShaderDescriptorFile::Load(const std::string& shaderName, const std::string& hexHandle)

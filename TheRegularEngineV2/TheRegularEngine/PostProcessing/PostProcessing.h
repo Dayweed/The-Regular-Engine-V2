@@ -23,7 +23,7 @@ namespace TRE
 		virtual ~PostProcessEffect() {};
 
 		virtual void SetupUBO() = 0;
-		virtual void SetupShader(std::shared_ptr<Shader> shader) = 0;
+		virtual void SetupShader(std::shared_ptr<Shader> shader);
 		virtual void UpdateUBO() {};
 		virtual void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
 		void SetActive(bool active) { m_Active = active; }
