@@ -161,7 +161,22 @@ namespace TRE
 		public bool keepInventory = false;
 		public bool creativeMode = false;
 
-		public void Start()
+		//Materials and Meshes
+		//Default
+		private const string defaultMaterial = "Red_Moley.material";
+        private const string defaultWalkingMesh = "mole_walk.fbx";
+        private const string defaultJumpingMesh = "mole_jump.fbx";
+        private const string defaultIdleMesh = "mole_idle.fbx";
+        private const string defaultAnimationMaterial = "RedCharacter_Animation.material";
+
+		//Blueberry
+        private const string blueberryMaterial = "Moley_Blueberry.material";
+		private const string blueberryMesh = "Moley_Blueberry.fbx";
+
+        //Strawberry
+        private const string strawberryMaterial = "Moley_Strawberry.material";
+		private const string strawberryMesh = "Moley_Strawberry.fbx";
+        public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -216,6 +231,15 @@ namespace TRE
 			oriScale = moleyTransform.Scale;
 
 			moley_dust = ECSManager.FindEntityByName("Moley_Dust");
+
+			//Init all the meshes and materials
+			GetComponent<MeshRenderer>().Mesh = blueberryMesh;
+			GetComponent<MeshRenderer>().Material = blueberryMaterial;
+			//GetComponent<MeshRenderer>().Mesh = strawberryMesh;
+			//GetComponent<MeshRenderer>().Material = strawberryMaterial;
+			GetComponent<MeshRenderer>().Mesh = defaultWalkingMesh;
+			GetComponent<MeshRenderer>().Material = defaultMaterial;
+			GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 		}
 
 		public void Update()
@@ -876,28 +900,28 @@ namespace TRE
 			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
 				//Default model
-				GetComponent<MeshRenderer>().Material = "Red_Moley.material";
+				GetComponent<MeshRenderer>().Material = defaultMaterial;
 				dirVec.y = 0;
 				if (dirVec != vec3.Zero && isGrounded)
 				{
 					//Walking state
-					GetComponent<MeshRenderer>().Mesh = "mole_walk.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = defaultWalkingMesh;
+					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else if (!isGrounded)
 				{
-					GetComponent<MeshRenderer>().Mesh = "mole_jump.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = defaultJumpingMesh;
+					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.5f;
 				}
 				else
 				{
 					//Red Animation Material
-					GetComponent<MeshRenderer>().Mesh = "mole_idle.fbx";
-					GetComponent<MeshRenderer>().AnimMaterial = "RedCharacter_Animation.material";
+					GetComponent<MeshRenderer>().Mesh = defaultIdleMesh;
+					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.25f;
 
@@ -915,10 +939,10 @@ namespace TRE
 			else if (mainBlueberry)
 			{
 				//Fat model
-				if (MS.IsCurrentMesh(this.ID, "Moley_Blueberry.fbx") == false)
+				if (MS.IsCurrentMesh(this.ID, blueberryMesh) == false)
 				{
-					GetComponent<MeshRenderer>().Mesh = "Moley_Blueberry.fbx";
-					GetComponent<MeshRenderer>().Material = "Moley_Blueberry.material";
+					GetComponent<MeshRenderer>().Mesh = blueberryMesh;
+					GetComponent<MeshRenderer>().Material = blueberryMaterial;
 				}
 				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
@@ -932,10 +956,10 @@ namespace TRE
 			else if (mainStrawberry)
 			{
 				//flat model
-				if (MS.IsCurrentMesh(this.ID, "Moley_Strawberry.fbx") == false)
+				if (MS.IsCurrentMesh(this.ID, strawberryMesh) == false)
 				{
-					GetComponent<MeshRenderer>().Mesh = "Moley_Strawberry.fbx";
-					GetComponent<MeshRenderer>().Material = "Moley_Strawberry.material";
+					GetComponent<MeshRenderer>().Mesh = strawberryMesh;
+					GetComponent<MeshRenderer>().Material = strawberryMaterial;
 				}
 				currentHeight = MathF.Lerp(currentHeight, strawberrysuperHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, strawberrysuperRadius, lerpSpeed * Time.deltaTime);
