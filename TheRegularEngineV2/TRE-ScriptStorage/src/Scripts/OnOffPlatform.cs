@@ -103,7 +103,6 @@ namespace TRE
 			{
 				actualRotY = 180;
 				//transform.Rotation = new vec3(0, 180, 0);
-				//Debug.Log(name + ": Cursed " + transform.Rotation.x + ", " + transform.Rotation.y + ", " + transform.Rotation.z);
 			}
 
 			// set constants based on actualRotY
@@ -126,7 +125,6 @@ namespace TRE
 					activationRotationDirection *= -1;
 				}
 			}
-			Debug.Log(name + ": " + platformInactiveAngle + " ))) " + platformActiveAngle);
 
 			// assign corresponding behaviours/functions
 			if (isOppositePlatformType)
@@ -238,14 +236,10 @@ namespace TRE
 			if (amountComplete < 1)
 			{
 				if (platformState == false)
-				{
 					rot.z += goUpRotationSpeed * Time.deltaTime * rotationDirection;
-				}
 				else
-				{
 					rot.z += goDownRotationSpeed * Time.deltaTime * rotationDirection;
-				}
-				
+
 				TS.SetRotation(this.ID, rot);
 			}
 			else // if (amountComplete >= 1)
@@ -260,19 +254,13 @@ namespace TRE
 			TS.GetRotation(this.ID, out vec3 rot);
 			float amountComplete = InverseLerp(rotateStartAngle, rotateEndAngle, rot.x);
 
-
-			Debug.Log(name + ": " + platformActiveAngle + " ))) " + rot.x + "> " + rotateStartAngle + " : " + rotateEndAngle);
-
 			if (amountComplete < 1)
 			{
 				if (platformState == false)
-				{
 					rot.x += goUpRotationSpeed * Time.deltaTime * rotationDirection;
-				}
 				else
-				{
 					rot.x += goDownRotationSpeed * Time.deltaTime * rotationDirection;
-				}
+
 				TS.SetRotation(this.ID, rot);
 			}
 			else // if (amountComplete >= 1)
