@@ -13,12 +13,13 @@ layout(location = 7) in ivec4 inBones;
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
+    int  m_DLightIndex;
 } push;
 
 layout (binding = 0) uniform UBO 
 {
-	mat4 view;
-    mat4 projection;
+	mat4 view[2];
+    mat4 projection[2];
 } ubo;
 
 layout (set = 0, binding = 8) uniform UBOAnimation
@@ -31,7 +32,7 @@ void main()
 	mat4 L2W = AnimationUBO.L2W[inBones.x] * inWeights.x + AnimationUBO.L2W[inBones.y] * inWeights.y 
              + AnimationUBO.L2W[inBones.z] * inWeights.z + AnimationUBO.L2W[inBones.w] * inWeights.w;
 
-    gl_Position = ubo.projection * ubo.view * L2W * vec4(inPosition, 1.0);
+    gl_Position = ubo.projection[push.m_DLightIndex] * ubo.view[push.m_DLightIndex] * L2W * vec4(inPosition, 1.0);
 }
 
 #version 450

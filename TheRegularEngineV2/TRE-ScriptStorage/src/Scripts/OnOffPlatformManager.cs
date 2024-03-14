@@ -13,12 +13,24 @@ namespace TRE
 			platformList = GetPlatforms();
 			platformList.Sort(new SortEntitiesAlphabetically());
 
-			// find first (external) button
-			Entity firstButtonEntity = ECSManager.FindEntityByName("Button_1");
+			// if the name has a digit at the end, let it be the number of the initial button
+			string nameLastChar = name.Substring(name.Length - 1);
+			if (int.TryParse(nameLastChar, out int result))
+			{
+				// find first (external) button
+				Entity firstButtonEntity = ECSManager.FindEntityByName("Button_" + result);
 
-			// add that button first, if it exists
-			if (firstButtonEntity.ID != 0)
-				buttonList.Add(firstButtonEntity.GetComponent<Button>());
+				// add that button first, if it exists
+				if (firstButtonEntity.ID != 0)
+					buttonList.Add(firstButtonEntity.GetComponent<Button>());
+			}
+			else
+			{
+				string message = "[" + this.ToString() + "] Entity \"" + name +
+					"\" did not have a digit at the back of its name, " +
+					"no initial buttons will be searched for.";
+				PrintError(message);
+			}
 
 			// Take note: The buttons that have a OnOffPlatform as their parent
 			// need to be un-prefab-ed! For some reason!!
@@ -27,9 +39,11 @@ namespace TRE
 			// assert that the number of platforms and buttons should be the same!!!
 			if (buttonList.Count != platformList.Count)
 			{
-				string className = this.ToString();
-				Debug.LogError("[" + className + "] Different number of OnOffPlatforms and Buttons!");
-				Debug.LogError("[" + className + "] Did you forget to place the initial button?");
+				string formatString = "[{0}] Different number of OnOffPlatforms({1}) and Buttons({2})!\n" +
+					"[{0}] Did you forget to place the initial button?";
+				string message = string.Format(formatString, this.ToString(), platformList.Count, buttonList.Count);
+				PrintError(message);
+
 				return;
 			}
 		}
@@ -66,14 +80,6 @@ namespace TRE
 						platformList[lowerIndex].SetPlatformState(false);
 					platformList[i].SetPlatformState(true);
 				}
-				else { } // what do I put here???
-
-				//if (i == 0 || i == 1)
-				//{
-				//	if (lowerIndexInBounds)
-				//		platformList[lowerIndex].SetPlatformState(true);
-				//	platformList[i].SetPlatformState(false);
-				//}
 			}
 		}
 
@@ -145,6 +151,12 @@ namespace TRE
 
 				platform.SetPlatformState(buttonList[i].GetIsButtonPressed());
 			}
+		}
+
+		void PrintError(string msg)
+		{
+			Console.WriteLine(msg);
+			Debug.LogError(msg);
 		}
 	}
 

@@ -35,6 +35,7 @@ namespace TRE
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
+		int m_DLightIndex;
 	};
 
 	//Hardcoded to support 2 directional light
@@ -63,8 +64,8 @@ namespace TRE
 
 	struct ShadowUBO
 	{
-		glm::mat4 view;
-		glm::mat4 proj;
+		glm::mat4 view[2];
+		glm::mat4 proj[2];
 	};
 
 	struct DepthUBO
@@ -156,9 +157,9 @@ namespace TRE
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
 			VkDescriptorImageInfo m_ShadowDescriptInfo;
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
-			std::shared_ptr<Material> m_ShadowMaterial[2];
+			std::shared_ptr<Material> m_ShadowMaterial;
 			std::shared_ptr<Pipeline> m_ShadowAnimationPipeline;
-			std::shared_ptr<UniformBuffer> m_ShadowUBO [2];
+			std::shared_ptr<UniformBuffer> m_ShadowUBO;
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
 			VkFramebuffer m_ShadowFramebuffer[2];

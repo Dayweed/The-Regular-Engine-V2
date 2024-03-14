@@ -35,8 +35,7 @@ namespace TRE
 		m_DescriptorPool = DescriptorPool::Builder().SetPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT).SetMaxSets(5000).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10000).AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10000).Build();
 		m_UBOBuffer = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UBO)), 0);
 		m_UBOSkybox = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(SkyBoxUBO)), 0);
-		m_ShadowUBO[0] = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
-		m_ShadowUBO[1] = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
+		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
 		m_DepthPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(DepthUBO)), 0);
 		m_IDPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(IDUBO)), 0);
 		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
@@ -99,11 +98,8 @@ namespace TRE
 
 			m_ShadowAnimationPipeline = std::make_shared<Pipeline>(ShadowAnimationPipelineConfig, m_ShadowRenderPass);
 
-			m_ShadowMaterial[0] = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
-			m_ShadowMaterial[0]->Invalidate();
-
-			m_ShadowMaterial[1] = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
-			m_ShadowMaterial[1]->Invalidate();
+			m_ShadowMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(5));
+			m_ShadowMaterial->Invalidate();
 		}
 #pragma endregion ShadowPass
 
@@ -352,6 +348,8 @@ namespace TRE
 			TRE_CORE_CRITICAL("Engine does not support more than 2 directional light");
 		}
 
+		ShadowUBO UBO_Shadow{};
+
 		for (int x = 0; x < DLights.size(); x++)
 		{
 			const auto& entity = DLights[x];
@@ -369,7 +367,6 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				ShadowUBO UBO_Shadow;
 				glm::mat4 shadowDepthProjectionMatrix;
 				const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
 				const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
@@ -391,15 +388,14 @@ namespace TRE
 				m_EditorShadowView[x] = shadowDepthViewMatrix;
 				m_EditorShadowProj[x] = shadowDepthProjectionMatrix;
 
-				UBO_Shadow.view = m_EditorShadowView[x];
-				UBO_Shadow.proj = m_EditorShadowProj[x];
-
-				m_ShadowUBO[x]->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+				UBO_Shadow.view[x] = m_EditorShadowView[x];
+				UBO_Shadow.proj[x] = m_EditorShadowProj[x];
 			}
 			
 			ubo.m_LightSpaceMatrix[x] = m_EditorShadowProj[x] * m_EditorShadowView[x];
 		}
-		
+
+		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
@@ -444,6 +440,8 @@ namespace TRE
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		recalculateShadowFrustum = true;
 
+		ShadowUBO UBO_Shadow{};
+
 		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
 		for (int x = 0; x < DLights.size(); x++)
 		{
@@ -467,7 +465,6 @@ namespace TRE
 
 			if (recalculateShadowFrustum)
 			{
-				ShadowUBO UBO_Shadow{};
 				glm::mat4 shadowDepthProjectionMatrix;
 				const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
 				const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
@@ -489,14 +486,14 @@ namespace TRE
 				m_ShadowView[x] = shadowDepthViewMatrix;
 				m_ShadowProj[x] = shadowDepthProjectionMatrix;
 
-				UBO_Shadow.view = m_ShadowView [x];
-				UBO_Shadow.proj = m_ShadowProj [x];
-
-				m_ShadowUBO[x]->SetData(&UBO_Shadow, sizeof(ShadowUBO));
+				UBO_Shadow.view[x] = m_ShadowView[x];
+				UBO_Shadow.proj[x] = m_ShadowProj[x];
 			}
 			
 			ubo.m_LightSpaceMatrix[x] = m_ShadowProj[x] * m_ShadowView[x];
 		}
+
+		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 
 		
 		{
@@ -875,19 +872,24 @@ namespace TRE
 				const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 				ResourceHandle currentMaterialHandle = go_mr.first;
 
+				if (mr.m_DLightIndex != x)
+					continue;
+
 				PushConstant pc{};
 				pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+				pc.m_DLightIndex = mr.m_DLightIndex;
+				
 				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 				if (m_IsEditorScene)
 				{
-					m_ShadowMaterial[x]->UpdateForEditorSceneRendering(m_ShadowUBO[x], Index);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial[x]->GetEditorDescriptor(Index), 0, NULL);
+					m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					m_ShadowMaterial[x]->UpdateForRendering(m_ShadowUBO[x], Index);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial[x]->GetDescriptor(Index), 0, NULL);
+					m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index);
+					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
 				}
 
 				mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
@@ -904,18 +906,22 @@ namespace TRE
 				const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
 				const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
 
+				if (MeshComp.m_DLightIndex != x)
+					continue;
+
 				PushConstant pc{};
 				pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+				pc.m_DLightIndex = MeshComp.m_DLightIndex;
 				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
 				if (m_IsEditorScene)
 				{
-					AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO[x], Index, AnimComp.m_UBO);
+					AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO[x], Index, AnimComp.m_UBO);
+					AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
 				}
 
