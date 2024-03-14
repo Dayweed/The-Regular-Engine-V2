@@ -9,6 +9,7 @@ namespace TRE
 	using MS = MeshRendererSystem;
 	using PS = PhysicsSystem;
 	using TS = TransformSystem;
+	using PS3D = ParticleSystem3D;
 
 	public class HoleyController : Entity
 	{
@@ -138,6 +139,8 @@ namespace TRE
 		//Moley Reference
 		private Entity moley_ref;
 
+		//Holey particles
+		private Entity holey_dust;
 		// Cheats
 		public bool keepInventory = false;
 		public bool creativeMode = false;
@@ -197,8 +200,9 @@ namespace TRE
 			#endregion
 
 			moley_ref = ECSManager.FindEntityByName("Moley");
-
 			oriScale = holeyTransform.Scale;
+
+			holey_dust = ECSManager.FindEntityByName("Holey_Dust");
 		}
 
 		public void Update()
@@ -225,6 +229,8 @@ namespace TRE
 			HandleDrop();
 
 			HandleAbilities();
+
+			HandleParticles(ref currVelocity);
 
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
@@ -911,7 +917,29 @@ namespace TRE
 			}
 		}
 
-		public void UpdateDisplay()
+        private void HandleParticles(ref vec3 currVelocity)
+        {
+            Debug.Log("particle is active: " + PS3D.GetActive(holey_dust.ID));
+            vec3 particleVel = vec3.Zero;
+            if (currVelocity != vec3.Zero)
+            {
+                particleVel = currVelocity.NormalizedSafe;
+                particleVel *= -1;
+            }
+
+            PS3D.SetVelocity(holey_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
+            //turn off the particles if the player is dead/ not moving/ not grounded
+            if (isDead || !isGrounded || !isWalking)
+            {
+                PS3D.SetActive(holey_dust.ID, true);
+            }
+            else
+            {
+                PS3D.SetActive(holey_dust.ID, true);
+            }
+        }
+
+        public void UpdateDisplay()
 		{
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 		}

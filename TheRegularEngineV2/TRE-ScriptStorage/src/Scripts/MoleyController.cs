@@ -145,7 +145,7 @@ namespace TRE
 		//Holey Reference
 		private Entity holey_ref;
 
-		//Mole Particles
+		//Moley Particles
 		private Entity moley_dust;
 
 		//these variables are enclusive to Moley
@@ -268,6 +268,8 @@ namespace TRE
 			HandleDrop();
 
 			HandleAbilities();
+
+			HandleParticles(ref currVelocity);
 
 			//Do NOT REMOVE THIS for some reason it stops the mole when its tall from flying idk dont ask me
 			dirVec.y = 0;
@@ -534,11 +536,6 @@ namespace TRE
 						!IS.GetKeyHold(playerRightKey))
 					{
 						isWalking = false;
-						PS3D.Engine_SetParticleLifetime3D(moley_dust.ID, 0);
-					}
-					else
-					{
-						PS3D.Engine_SetParticleLifetime3D(moley_dust.ID, 0.1f);
 					}
 
 					//When the space bar is released, the player will stop mid jump
@@ -671,7 +668,6 @@ namespace TRE
 					{
 						jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
-						//Debug.Log("Jump Pressed");
 					}
 					//count down the buffer time
 					else
@@ -686,7 +682,6 @@ namespace TRE
 						{
 							jumpCancelled = true;
 							coyoteTimeCounter = 0f;
-							//Debug.Log("Jump Cancelled");
 						}
 						//check if space is held down and jump time is not over
 						if (currentJumpTime > maxJumpButtomTime)
@@ -945,7 +940,30 @@ namespace TRE
 			}
 		}
 
-		public void UpdateDisplay()
+		private void HandleParticles(ref vec3 currVelocity)
+		{
+			Debug.Log("particle is active: " + PS3D.GetActive(moley_dust.ID));
+			vec3 particleVel = vec3.Zero;
+            if (currVelocity != vec3.Zero)
+			{
+				particleVel = currVelocity.NormalizedSafe;
+				particleVel *= -1;
+            }
+			
+			PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
+			//turn off the particles if the player is dead/ not moving/ not grounded
+			if (isDead || !isGrounded || !isWalking)
+			{
+                PS3D.SetActive(moley_dust.ID, true);
+            }
+			else
+			{
+				PS3D.SetActive(moley_dust.ID, true);
+			}
+		}
+
+
+        public void UpdateDisplay()
 		{
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 		}
