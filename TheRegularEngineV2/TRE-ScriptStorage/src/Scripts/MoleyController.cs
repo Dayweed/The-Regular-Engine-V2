@@ -626,8 +626,8 @@ namespace TRE
 				// controller is connected
 				else if (!MyPauseMenu.isPaused && isControllable && IsControllerConnected)
 				{
-					float x = IS.GetControllerStickX(1, false); // false for left thumbstick
-					float y = IS.GetControllerStickY(1, false); // false for left thumbstick
+					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
+					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
 					if (y > 0)
 					{
