@@ -210,12 +210,12 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
-					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(64, 30, -174);
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -138);
+					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(64, 30, -174);
+					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -138);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(77, 30, -174);
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -120);
+					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(77, 30, -174);
+					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -120);
 				}
 			}
 
