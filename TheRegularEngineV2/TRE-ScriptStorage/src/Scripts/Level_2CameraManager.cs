@@ -143,7 +143,7 @@ namespace TRE
 				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
+				cameraController.expectedYPos = 20f;
 				cameraController.offsetX = 0f;
 				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
@@ -155,7 +155,7 @@ namespace TRE
 				//section two - before drop
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 80;
+				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 30f;
 				cameraController.offsetX = 0f;
@@ -168,8 +168,8 @@ namespace TRE
 			{
 				//section two - after drop
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 80;
+				expectedRotation = new vec3(30, 180, 0);
+				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
 				expectedDuration = 0.8f;
@@ -178,12 +178,12 @@ namespace TRE
 
 			if (regionG)
 			{
-				//rolling objects section
+				//section two - at the bridge
 				expectedPosition = new vec3(121, 82, -207);
-				expectedRotation = new vec3(50, 90, 0);
+				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 70;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
+				cameraController.expectedYPos = 20f;
 				expectedDuration = 1f;
 				CheckTransition(Trigger_G);
 			}

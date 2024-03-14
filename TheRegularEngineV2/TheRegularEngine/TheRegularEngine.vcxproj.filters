@@ -319,6 +319,9 @@
     <ClInclude Include="Physics\SimulationEventCallback.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessing\DepthBlur.h">
+      <Filter>PostProcessing</Filter>
+    </ClInclude>
     <ClInclude Include="PostProcessing\PostProcessing.h">
       <Filter>PostProcessing</Filter>
     </ClInclude>
@@ -352,9 +355,6 @@
     </ClInclude>
     <ClInclude Include="TREIncludes.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PostProcessing\DepthBlur.h">
-      <Filter>PostProcessing</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioSystem.cpp">
@@ -555,6 +555,9 @@
     <ClCompile Include="Physics\SphereCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessing\DepthBlur.cpp">
+      <Filter>PostProcessing</Filter>
+    </ClCompile>
     <ClCompile Include="PostProcessing\PostProcessing.cpp">
       <Filter>PostProcessing</Filter>
     </ClCompile>
@@ -589,8 +592,5 @@
       <Filter>ShaderTypes</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="PostProcessing\DepthBlur.cpp">
-      <Filter>PostProcessing</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

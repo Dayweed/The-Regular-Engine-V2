@@ -8,11 +8,11 @@ FBXHeaderExtension:  {
 		Version: 1000
 		Year: 2024
 		Month: 3
-		Day: 13
-		Hour: 23
-		Minute: 32
-		Second: 44
-		Millisecond: 740
+		Day: 14
+		Hour: 11
+		Minute: 21
+		Second: 2
+		Millisecond: 302
 	}
 	Creator: "FBX SDK/FBX Plugins version 2020.3.2"
 	OtherFlags:  {
@@ -31,8 +31,8 @@ FBXHeaderExtension:  {
 			Comment: ""
 		}
 		Properties70:  {
-			P: "DocumentUrl", "KString", "Url", "", "Q:\Repos (GitHub)\GAM300-Prototype\Assets\f3aut4op_Lvl2Whitebox.fbx"
-			P: "SrcDocumentUrl", "KString", "Url", "", "Q:\Repos (GitHub)\GAM300-Prototype\Assets\f3aut4op_Lvl2Whitebox.fbx"
+			P: "DocumentUrl", "KString", "Url", "", "Q:\Repos (GitHub)\GAM300-Prototype\Assets\ds60x2nh_Lvl2Whitebox.fbx"
+			P: "SrcDocumentUrl", "KString", "Url", "", "Q:\Repos (GitHub)\GAM300-Prototype\Assets\ds60x2nh_Lvl2Whitebox.fbx"
 			P: "Original", "Compound", "", ""
 			P: "Original|ApplicationVendor", "KString", "", "", ""
 			P: "Original|ApplicationName", "KString", "", "", "Unity FBX Exporter"
@@ -78,7 +78,7 @@ GlobalSettings:  {
 
 Documents:  {
 	Count: 1
-	Document: 2770001375792, "Scene", "Scene" {
+	Document: 2576556606368, "Scene", "Scene" {
 		Properties70:  {
 			P: "SourceObject", "object", "", ""
 			P: "ActiveAnimStackName", "KString", "", "", ""
@@ -98,12 +98,12 @@ References:  {
 
 Definitions:  {
 	Version: 100
-	Count: 107
+	Count: 105
 	ObjectType: "GlobalSettings" {
 		Count: 1
 	}
 	ObjectType: "Model" {
-		Count: 52
+		Count: 51
 		PropertyTemplate: "FbxNode" {
 			Properties70:  {
 				P: "QuaternionInterpolate", "enum", "", "",0
@@ -181,7 +181,7 @@ Definitions:  {
 		}
 	}
 	ObjectType: "Geometry" {
-		Count: 51
+		Count: 50
 		PropertyTemplate: "FbxMesh" {
 			Properties70:  {
 				P: "Color", "ColorRGB", "Color", "",0.8,0.8,0.8
@@ -273,7 +273,7 @@ Definitions:  {
 ;------------------------------------------------------------------
 
 Objects:  {
-	Geometry: 2770089299280, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198993856, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 1800,0,4650,-500,0,4650,1800,1000,4650,-500,1000,4650,-500,0,0,-500,1000,0,1800,0,0,1800,1000,0
 		} 
@@ -379,7 +379,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770089296592, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198994304, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,799.997711181641,-449.999952316284,-500,799.997711181641,450,500,799.997711181641,-449.999952316284,500,799.997711181641,-449.999952316284,-500,-799.997711181641,-449.999952316284,500,-799.997711181641,450,-500,-799.997711181641,450,500,-799.997711181641
 		} 
@@ -485,7 +485,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770089297936, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198995200, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-300,0,300,-0,1000,300,-300,1000,300,-300,0,0,-300,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -591,7 +591,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770089297040, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198992064, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,100,300,-950,100,300,-0,1000,300,-950,1000,300,-950,100,-750,-950,1000,-750,-0,100,-750,-0,1000,-750
 		} 
@@ -697,7 +697,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770089298384, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198992512, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,0,300,100,0,300,200,200,300,100,200,300,100,0,100,100,200,100,200,0,100,200,200,100
 		} 
@@ -748,7 +748,7 @@ Objects:  {
 			MappingInformationType: "ByPolygonVertex"
 			ReferenceInformationType: "IndexToDirect"
 			Colors: *96 {
-				a: 1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1,1,0.278431385755539,0.278431385755539,1
+				a: 0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1
 			} 
 			ColorIndex: *24 {
 				a: 0,2,3,1,4,6,7,5,8,10,11,9,12,14,15,13,16,18,19,17,20,22,23,21
@@ -803,7 +803,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770089298832, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198992960, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 705.123901367188,-100,300,-194.876098632812,-100,300,705.123901367188,0,300,-194.876098632812,0,300,-194.876098632812,-100,0,-194.876098632812,0,0,705.123901367188,-100,0,705.123901367188,0,0
 		} 
@@ -909,7 +909,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083865232, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542605024, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,0,500,-0,0,500,200,100,500,-0,100,500,-0,0,0,-0,100,0,200,0,0,200,100,0
 		} 
@@ -1015,7 +1015,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083867472, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542606368, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -1121,7 +1121,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083865680, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542605920, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,0,-900,0,0,-0,1000,0,-900,1000,0,-900,0,-1400,-900,1000,-1400,-0,0,-1400,-0,1000,-1400
 		} 
@@ -1227,7 +1227,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083864784, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542605472, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 1600,0,4650,-200,0,4650,1600,1000,4650,-200,1000,4650,-200,0,1800,-200,1000,1800,1600,0,1800,1600,1000,1800
 		} 
@@ -1333,7 +1333,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083867920, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542607264, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -1439,7 +1439,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083866128, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542606816, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,-100,300,-0,-100,300,200,100,300,-0,100,300,-0,-100,0,-0,100,0,200,-100,0,200,100,0
 		} 
@@ -1545,7 +1545,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083866576, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542607712, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,-100,300,-0,-100,300,200,100,300,-0,100,300,-0,-100,0,-0,100,0,200,-100,0,200,100,0
 		} 
@@ -1651,7 +1651,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770083867024, "Geometry::Scene", "Mesh" {
+	Geometry: 2576542608160, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -1757,7 +1757,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081726240, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196271984, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,700,-450,-500,700,450,500,700,-450,500,700,-450,-500,-700,-450,500,-700,450,-500,-700,450,500,-700
 		} 
@@ -1863,7 +1863,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081725792, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196273776, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 719.475269317627,0,400.000381469727,90.7734870910645,0,400.000381469727,719.475269317627,100,400.000381469727,90.7734870910645,100,400.000381469727,90.7734870910645,0,200.000357627869,90.7734870910645,100,200.000357627869,719.475269317627,0,200.000357627869,719.475269317627,100,200.000357627869
 		} 
@@ -1969,7 +1969,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081726688, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196271088, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-550,0,300,-0,1000,300,-550,1000,300,-550,0,-750,-550,1000,-750,-0,0,-750,-0,1000,-750
 		} 
@@ -2075,7 +2075,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081724000, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196272432, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -2181,7 +2181,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081723552, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196273328, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,-100.000047683716,1.19209289550781e-05,-300,-100.000047683716,1.19209289550781e-05,-0,-99.9998092651367,300,-300,-99.9998092651367,300,-300,899.999809265137,0,-300,900,300,-0,899.999809265137,0,-0,900,300
 		} 
@@ -2287,7 +2287,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081724448, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196271536, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 1750,0,4650,400,0,4650,1750,1000,4650,400,1000,4650,400,0,1800,400,1000,1800,1750,0,1800,1750,1000,1800
 		} 
@@ -2393,7 +2393,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081724896, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196272880, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -2499,7 +2499,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770081725344, "Geometry::Scene", "Mesh" {
+	Geometry: 2581196270640, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,-100,1200,-900,-100,1200,-0,1150,1200,-900,1150,1200,-900,-100,0,-900,1150,0,-0,-100,0,-0,1150,0
 		} 
@@ -2605,7 +2605,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2762423263552, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199041696, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,900,-900,0,900,-0,1000,900,-900,1000,900,-900,0,0,-900,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -2711,7 +2711,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2762423264000, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199041248, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -2817,7 +2817,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2762423262656, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199042144, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 0.00019073486328125,100,1425.00019073486,-899.999809265137,100,1425.00019073486,0.00019073486328125,600,1425.00019073486,-899.999809265137,600,1425.00019073486,-899.999809265137,100,25.0001907348633,-899.999809265137,600,25.0001907348633,0.00019073486328125,100,25.0001907348633,0.00019073486328125,600,25.0001907348633
 		} 
@@ -2923,7 +2923,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2762423263104, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199043040, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,0,500,-0,0,500,200,100,500,-0,100,500,-0,0,0,-0,100,0,200,0,0,200,100,0
 		} 
@@ -3029,7 +3029,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2765003146400, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199043936, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 1800,0,4650,400,0,4650,1800,1000,4650,400,1000,4650,400,0,1800,400,1000,1800,1800,0,1800,1800,1000,1800
 		} 
@@ -3135,7 +3135,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2765003146848, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199044384, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-450,0,300,-0,1000,300,-450,1000,300,-450,0,0,-450,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -3241,113 +3241,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2765003147296, "Geometry::Scene", "Mesh" {
-		Vertices: *24 {
-			a: 450,-500,799.997711181641,-449.999952316284,-500,799.997711181641,450,500,799.997711181641,-449.999952316284,500,799.997711181641,-449.999952316284,-500,-799.997711181641,-449.999952316284,500,-799.997711181641,450,-500,-799.997711181641,450,500,-799.997711181641
-		} 
-		PolygonVertexIndex: *24 {
-			a: 0,2,3,-2,1,3,5,-5,4,5,7,-7,6,7,2,-1,2,7,5,-4,6,0,1,-5
-		} 
-		GeometryVersion: 124
-		LayerElementNormal: 0 {
-			Version: 102
-			Name: "Normals"
-			MappingInformationType: "ByPolygonVertex"
-			ReferenceInformationType: "Direct"
-			Normals: *72 {
-				a: -0,0,1,-0,0,1,-0,0,1,-0,0,1,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-0,0,-1,-0,0,-1,-0,0,-1,-0,0,-1,1,0,0,1,0,0,1,0,0,1,0,0,-0,1,0,-0,1,0,-0,1,0,-0,1,0,-0,-1,0,-0,-1,0,-0,-1,0,-0,-1,0
-			} 
-			NormalsW: *24 {
-				a: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-			} 
-		}
-		LayerElementBinormal: 0 {
-			Version: 102
-			Name: "Binormals"
-			MappingInformationType: "ByPolygonVertex"
-			ReferenceInformationType: "Direct"
-			Binormals: *72 {
-				a: 0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-0,-0,1,0,-0,1,0,-0,1,0,-0,1,0,0,-0,1,0,-0,1,0,-0,1,0,-0,1,-0,0,1,-0,0,1,-0,0,1,-0,0,1
-			} 
-			BinormalsW: *24 {
-				a: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-			} 
-
-		}
-		LayerElementTangent: 0 {
-			Version: 102
-			Name: "Tangents"
-			MappingInformationType: "ByPolygonVertex"
-			ReferenceInformationType: "Direct"
-			Tangents: *72 {
-				a: 1,0,0,1,0,0,1,0,0,1,0,0,-0,0,1,-0,0,1,-0,0,1,-0,0,1,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-0,0,-1,-0,0,-1,-0,0,-1,-0,0,-1,-1,0,0,-1,0,0,-1,0,0,-1,0,0,1,0,0,1,0,0,1,0,0,1,0,0
-			} 
-			TangentsW: *24 {
-				a: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-			} 
-		}
-		LayerElementColor: 0 {
-			Version: 101
-			Name: "VertexColors"
-			MappingInformationType: "ByPolygonVertex"
-			ReferenceInformationType: "IndexToDirect"
-			Colors: *96 {
-				a: 0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1,0.239215686917305,0.600000023841858,0.439215689897537,1
-			} 
-			ColorIndex: *24 {
-				a: 0,2,3,1,4,6,7,5,8,10,11,9,12,14,15,13,16,18,19,17,20,22,23,21
-			} 
-		}
-		LayerElementUV: 0 {
-			Version: 101
-			Name: "UVSet0"
-			MappingInformationType: "ByPolygonVertex"
-			ReferenceInformationType: "IndexToDirect"
-			UV: *48 {
-				a: 4.5,-5,-4.49999952316284,-5,4.5,5,-4.49999952316284,5,7.99997711181641,-5,-7.99997711181641,-5,7.99997711181641,5,-7.99997711181641,5,4.49999952316284,-5,-4.5,-5,4.49999952316284,5,-4.5,5,7.99997711181641,-5,-7.99997711181641,-5,7.99997711181641,5,-7.99997711181641,5,-4.5,7.99997711181641,4.49999952316284,7.99997711181641,-4.5,-7.99997711181641,4.49999952316284,-7.99997711181641,4.5,-7.99997711181641,-4.49999952316284,-7.99997711181641,4.5,7.99997711181641,-4.49999952316284,7.99997711181641
-			} 
-			UVIndex: *24 {
-				a: 0,2,3,1,4,6,7,5,8,10,11,9,12,14,15,13,16,18,19,17,20,22,23,21
-			} 
-		}
-		LayerElementMaterial: 0 {
-			Version: 101
-			Name: "Material"
-			MappingInformationType: "AllSame"
-			ReferenceInformationType: "IndexToDirect"
-			Materials: *1 {
-				a: 0
-			} 
-		}
-		Layer: 0 {
-			Version: 100
-			LayerElement:  {
-				Type: "LayerElementNormal"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementBinormal"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementTangent"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementMaterial"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementColor"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementUV"
-				TypedIndex: 0
-			}
-		}
-	}
-	Geometry: 2765003145952, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199042592, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,700,-450,-500,700,450,500,700,-450,500,700,-450,-500,-700,-450,500,-700,450,-500,-700,450,500,-700
 		} 
@@ -3453,7 +3347,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2769273699280, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199043488, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 0.00019073486328125,100,1425.00019073486,-899.999809265137,100,1425.00019073486,0.00019073486328125,600,1425.00019073486,-899.999809265137,600,1425.00019073486,-899.999809265137,100,25.0001907348633,-899.999809265137,600,25.0001907348633,0.00019073486328125,100,25.0001907348633,0.00019073486328125,600,25.0001907348633
 		} 
@@ -3559,7 +3453,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2769273700176, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198784256, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 1350,0,4650,450,0,4650,1350,1000,4650,450,1000,4650,450,0,700,450,1000,700,1350,0,700,1350,1000,700
 		} 
@@ -3665,7 +3559,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2769273699728, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198782912, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,900,-1000,0,900,-0,1000,900,-1000,1000,900,-1000,0,0,-1000,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -3771,7 +3665,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2769273698832, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198784704, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,0,300,100,0,300,200,200,300,100,200,300,100,0,100,100,200,100,200,0,100,200,200,100
 		} 
@@ -3877,7 +3771,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092061872, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198783360, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,0,-900,0,0,-0,1000,0,-900,1000,0,-900,0,-1400,-900,1000,-1400,-0,0,-1400,-0,1000,-1400
 		} 
@@ -3983,7 +3877,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092062768, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198785600, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-300,0,300,-0,1000,300,-300,1000,300,-300,0,0,-300,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -4089,7 +3983,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092060976, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198786048, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-450,0,300,-0,1000,300,-450,1000,300,-450,0,0,-450,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -4195,7 +4089,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092063664, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198783808, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,-100.000047683716,1.19209289550781e-05,-300,-100.000047683716,1.19209289550781e-05,-0,-99.9997615814209,300,-300,-99.9997615814209,300,-300,999.999809265137,0,-300,1000,300,-0,999.999809265137,0,-0,1000,300
 		} 
@@ -4301,7 +4195,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092062320, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198785152, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 1900,0,2150,-700,0,2150,1900,1000,2150,-700,1000,2150,-700,0,0,-700,1000,0,1900,0,0,1900,1000,0
 		} 
@@ -4407,7 +4301,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092061424, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198747824, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-450,0,300,-0,1000,300,-450,1000,300,-450,0,0,-450,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -4513,7 +4407,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092063216, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198746032, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -4619,7 +4513,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770092064112, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198748272, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,700,-450,-500,700,450,500,700,-450,500,700,-450,-500,-700,-450,500,-700,450,-500,-700,450,500,-700
 		} 
@@ -4725,7 +4619,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584389664, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198746480, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-450,0,300,-0,1000,300,-450,1000,300,-450,0,0,-450,1000,0,-0,0,0,-0,1000,0
 		} 
@@ -4831,7 +4725,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584389216, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198746928, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,-100,300,-0,-100,300,200,100,300,-0,100,300,-0,-100,0,-0,100,0,200,-100,0,200,100,0
 		} 
@@ -4937,7 +4831,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584390560, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198748720, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 200,-100,300,-0,-100,300,200,100,300,-0,100,300,-0,-100,0,-0,100,0,200,-100,0,200,100,0
 		} 
@@ -5043,7 +4937,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584388768, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198749168, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -0,0,300,-1350,0,300,-0,1000,300,-1350,1000,300,-1350,0,-850,-1350,1000,-850,-0,0,-850,-0,1000,-850
 		} 
@@ -5149,7 +5043,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584387424, "Geometry::Scene", "Mesh" {
+	Geometry: 2581198747376, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -5255,7 +5149,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584387872, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199106816, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 0.00019073486328125,100,1425.00019073486,-899.999809265137,100,1425.00019073486,0.00019073486328125,600,1425.00019073486,-899.999809265137,600,1425.00019073486,-899.999809265137,100,25.0001907348633,-899.999809265137,600,25.0001907348633,0.00019073486328125,100,25.0001907348633,0.00019073486328125,600,25.0001907348633
 		} 
@@ -5361,7 +5255,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584388320, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199108160, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,799.997711181641,-449.999952316284,-500,799.997711181641,450,500,799.997711181641,-449.999952316284,500,799.997711181641,-449.999952316284,-500,-799.997711181641,-449.999952316284,500,-799.997711181641,450,-500,-799.997711181641,450,500,-799.997711181641
 		} 
@@ -5467,7 +5361,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2757584390112, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199109952, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 0.00019073486328125,100,1425.00019073486,-899.999809265137,100,1425.00019073486,0.00019073486328125,600,1425.00019073486,-899.999809265137,600,1425.00019073486,-899.999809265137,100,25.0001907348633,-899.999809265137,600,25.0001907348633,0.00019073486328125,100,25.0001907348633,0.00019073486328125,600,25.0001907348633
 		} 
@@ -5573,7 +5467,7 @@ Objects:  {
 			}
 		}
 	}
-	Geometry: 2770089285552, "Geometry::Scene", "Mesh" {
+	Geometry: 2581199109504, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: 450,-500,600,-450,-500,600,450,500,600,-450,500,600,-450,-500,-600,-450,500,-600,450,-500,-600,450,500,-600
 		} 
@@ -5679,7 +5573,7 @@ Objects:  {
 			}
 		}
 	}
-	Model: 2770091077840, "Model::Scale_this_to_0_04_later", "Null" {
+	Model: 2580396386544, "Model::Scale_this_to_0_04_later", "Null" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5691,7 +5585,7 @@ Objects:  {
 		Shading: Y
 		Culling: "CullingOff"
 	}
-	Model: 2770091083840, "Model::Road_12", "Mesh" {
+	Model: 2580396392544, "Model::Road_12", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5704,7 +5598,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091073840, "Model::Left_Wall_34", "Mesh" {
+	Model: 2580396394544, "Model::Left_Wall_31", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5718,7 +5612,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091065840, "Model::Road_22", "Mesh" {
+	Model: 2580396234544, "Model::Road_22", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5731,7 +5625,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091081840, "Model::Mid_Wall_14", "Mesh" {
+	Model: 2580396238544, "Model::Mid_Wall_14", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5744,7 +5638,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091085840, "Model::Platform_19", "Mesh" {
+	Model: 2576362828224, "Model::Platform_19", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5752,12 +5646,12 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-7850,500,-2725
+			P: "Lcl Translation", "Lcl Translation", "", "A",-7850,500,-2925
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091089840, "Model::Platform_17", "Mesh" {
+	Model: 2576362812224, "Model::Platform_17", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5765,12 +5659,12 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-7556.25,800,-3025
+			P: "Lcl Translation", "Lcl Translation", "", "A",-7556.25,800,-2625
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091091840, "Model::Platform_14", "Mesh" {
+	Model: 2576362832224, "Model::Platform_14", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5783,7 +5677,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091061840, "Model::Left_Wall_24", "Mesh" {
+	Model: 2576362802224, "Model::Left_Wall_22", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5797,7 +5691,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091109840, "Model::Road_19", "Mesh" {
+	Model: 2576362820224, "Model::Road_19", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5810,7 +5704,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091103840, "Model::Road_14", "Mesh" {
+	Model: 2576362834224, "Model::Road_14", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5823,7 +5717,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091117840, "Model::Left_Wall_20", "Mesh" {
+	Model: 2576362816224, "Model::Left_Wall_12", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5836,7 +5730,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091119840, "Model::Platform_10", "Mesh" {
+	Model: 2576362836224, "Model::Platform_10", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5849,7 +5743,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091121840, "Model::Platform_12", "Mesh" {
+	Model: 2576362838224, "Model::Platform_12", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5857,13 +5751,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-7450,400,-2425
+			P: "Lcl Translation", "Lcl Translation", "", "A",-7450,400,-2825
 			P: "Lcl Rotation", "Lcl Rotation", "", "A",-0,-90,0
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091101840, "Model::Right_Wall_5", "Mesh" {
+	Model: 2576362842224, "Model::Right_Wall_5", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5877,7 +5771,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091105840, "Model::Left_Wall_26", "Mesh" {
+	Model: 2575448075520, "Model::Left_Wall_24", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5891,7 +5785,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091111840, "Model::Platform_16", "Mesh" {
+	Model: 2575448083520, "Model::Platform_16", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5905,7 +5799,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091093840, "Model::Mid_Wall_12", "Mesh" {
+	Model: 2575448063520, "Model::Mid_Wall_12", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5918,7 +5812,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091107840, "Model::Left_Wall_25", "Mesh" {
+	Model: 2575448081520, "Model::Left_Wall_23", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5932,7 +5826,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091123840, "Model::Mid_Wall_9", "Mesh" {
+	Model: 2575448057520, "Model::Mid_Wall_9", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5940,12 +5834,12 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-6550,-100,-3025
+			P: "Lcl Translation", "Lcl Translation", "", "A",-6550,-100,-2625
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091125840, "Model::Road_15", "Mesh" {
+	Model: 2575448065520, "Model::Road_15", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5958,7 +5852,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091095840, "Model::Right_Wall_3", "Mesh" {
+	Model: 2575448069520, "Model::Right_Wall_3", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5971,7 +5865,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091097840, "Model::Left_Wall_19", "Mesh" {
+	Model: 2580364909840, "Model::Left_Wall_6", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5984,7 +5878,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091113840, "Model::Right_Wall_4", "Mesh" {
+	Model: 2580364979840, "Model::Right_Wall_4", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -5997,7 +5891,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091115840, "Model::Left_Wall_37", "Mesh" {
+	Model: 2580364971840, "Model::Left_Wall_33", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6010,7 +5904,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091127840, "Model::Left_Wall_31", "Mesh" {
+	Model: 2580364973840, "Model::Left_Wall_29", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6023,7 +5917,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091129840, "Model::Platform_15", "Mesh" {
+	Model: 2580364975840, "Model::Platform_15", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6037,7 +5931,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091099840, "Model::Road_16", "Mesh" {
+	Model: 2573627029792, "Model::Road_16", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6050,7 +5944,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091165840, "Model::Road_24", "Mesh" {
+	Model: 2573627011792, "Model::Road_24", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6058,26 +5952,12 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-7750,-1200,-3425
+			P: "Lcl Translation", "Lcl Translation", "", "A",-7750,-1200,-2625
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091147840, "Model::Left_Wall_33", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-1000,-200,2375
-			P: "Lcl Rotation", "Lcl Rotation", "", "A",-0,-89.9998321533203,0
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 2770091159840, "Model::Left_Wall_27", "Mesh" {
+	Model: 2573627023792, "Model::Left_Wall_25", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6091,7 +5971,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091153840, "Model::Left_Wall_32", "Mesh" {
+	Model: 2579759070176, "Model::Left_Wall_30", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6104,7 +5984,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091143840, "Model::Road_17", "Mesh" {
+	Model: 2568250014752, "Model::Road_17", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6117,7 +5997,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091167840, "Model::Road_21", "Mesh" {
+	Model: 2581199350016, "Model::Road_21", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6130,7 +6010,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091151840, "Model::Platform_18", "Mesh" {
+	Model: 2581199344016, "Model::Platform_18", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6143,7 +6023,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091155840, "Model::Road_18", "Mesh" {
+	Model: 2581199362016, "Model::Road_18", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6156,7 +6036,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091157840, "Model::Road_20", "Mesh" {
+	Model: 2581199372016, "Model::Road_20", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6164,12 +6044,12 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-6550,-1200,-3025
+			P: "Lcl Translation", "Lcl Translation", "", "A",-6550,-1200,-2625
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091169840, "Model::Road_23", "Mesh" {
+	Model: 2581199352016, "Model::Road_23", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6182,7 +6062,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091161840, "Model::Mid_Wall_8", "Mesh" {
+	Model: 2581199356016, "Model::Mid_Wall_8", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6195,7 +6075,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091171840, "Model::Road_13", "Mesh" {
+	Model: 2581199368016, "Model::Road_13", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6208,7 +6088,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091141840, "Model::Mid_Wall_10", "Mesh" {
+	Model: 2581199374016, "Model::Mid_Wall_10", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6221,7 +6101,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091191840, "Model::Left_Wall_23", "Mesh" {
+	Model: 2581199370016, "Model::Left_Wall_21", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6235,7 +6115,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091197840, "Model::Left_Wall_28", "Mesh" {
+	Model: 2581199354016, "Model::Left_Wall_26", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6249,7 +6129,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091187840, "Model::Mid_Wall_11", "Mesh" {
+	Model: 2581199376016, "Model::Mid_Wall_11", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6257,12 +6137,12 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-7750,-200,-3025
+			P: "Lcl Translation", "Lcl Translation", "", "A",-7750,-200,-2625
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091181840, "Model::Platform_11", "Mesh" {
+	Model: 2581199366016, "Model::Platform_11", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6275,7 +6155,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091193840, "Model::Platform_13", "Mesh" {
+	Model: 2581199364016, "Model::Platform_13", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6283,13 +6163,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-7450,400,-2625
+			P: "Lcl Translation", "Lcl Translation", "", "A",-7450,400,-3025
 			P: "Lcl Rotation", "Lcl Rotation", "", "A",-0,-90,0
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091179840, "Model::Mid_Wall_13", "Mesh" {
+	Model: 2581199346016, "Model::Mid_Wall_13", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6302,7 +6182,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091195840, "Model::Left_Wall_21", "Mesh" {
+	Model: 2581199358016, "Model::Left_Wall_19", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6315,7 +6195,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091203840, "Model::Left_Wall_30", "Mesh" {
+	Model: 2581199360016, "Model::Left_Wall_28", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6328,7 +6208,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091189840, "Model::Left_Wall_36", "Mesh" {
+	Model: 2581199378016, "Model::Left_Wall_32", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6342,7 +6222,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091199840, "Model::Left_Wall_29", "Mesh" {
+	Model: 2581199348016, "Model::Left_Wall_27", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6356,7 +6236,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 2770091201840, "Model::Left_Wall_22", "Mesh" {
+	Model: 2581199390016, "Model::Left_Wall_20", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -6369,7 +6249,7 @@ Objects:  {
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Material: 2770092007680, "Material::ProBuilder_Default_URP", "" {
+	Material: 2577385269248, "Material::ProBuilder_Default_URP", "" {
 		Version: 102
 		ShadingModel: "lambert"
 		MultiLayer: 0
@@ -6383,7 +6263,7 @@ Objects:  {
 			P: "Opacity", "double", "Number", "",1
 		}
 	}
-	Video: 2769985025680, "Video::DiffuseColor_Texture", "Clip" {
+	Video: 2576542604272, "Video::DiffuseColor_Texture", "Clip" {
 		Type: "Clip"
 		Properties70:  {
 			P: "Path", "KString", "XRefUrl", "", "Q:\Repos (GitHub)\GAM300-Prototype\Library\PackageCache\com.unity.probuilder@5.1.1\Content\Resources\Textures\GridBox_Default.png"
@@ -6393,7 +6273,7 @@ Objects:  {
 		Filename: "Q:\Repos (GitHub)\GAM300-Prototype\Library\PackageCache\com.unity.probuilder@5.1.1\Content\Resources\Textures\GridBox_Default.png"
 		RelativeFilename: "..\Library\PackageCache\com.unity.probuilder@5.1.1\Content\Resources\Textures\GridBox_Default.png"
 	}
-	Texture: 2769985024240, "Texture::DiffuseColor_Texture", "" {
+	Texture: 2576542601872, "Texture::DiffuseColor_Texture", "" {
 		Type: "TextureVideoClip"
 		Version: 202
 		TextureName: "Texture::DiffuseColor_Texture"
@@ -6413,475 +6293,466 @@ Objects:  {
 Connections:  {
 	
 	;Model::Scale_this_to_0_04_later, Model::RootNode
-	C: "OO",2770091077840,0
+	C: "OO",2580396386544,0
 	
 	;Model::Road_12, Model::Scale_this_to_0_04_later
-	C: "OO",2770091083840,2770091077840
-	
-	;Model::Left_Wall_34, Model::Scale_this_to_0_04_later
-	C: "OO",2770091073840,2770091077840
-	
-	;Model::Road_22, Model::Scale_this_to_0_04_later
-	C: "OO",2770091065840,2770091077840
-	
-	;Model::Mid_Wall_14, Model::Scale_this_to_0_04_later
-	C: "OO",2770091081840,2770091077840
-	
-	;Model::Platform_19, Model::Scale_this_to_0_04_later
-	C: "OO",2770091085840,2770091077840
-	
-	;Model::Platform_17, Model::Scale_this_to_0_04_later
-	C: "OO",2770091089840,2770091077840
-	
-	;Model::Platform_14, Model::Scale_this_to_0_04_later
-	C: "OO",2770091091840,2770091077840
-	
-	;Model::Left_Wall_24, Model::Scale_this_to_0_04_later
-	C: "OO",2770091061840,2770091077840
-	
-	;Model::Road_19, Model::Scale_this_to_0_04_later
-	C: "OO",2770091109840,2770091077840
-	
-	;Model::Road_14, Model::Scale_this_to_0_04_later
-	C: "OO",2770091103840,2770091077840
-	
-	;Model::Left_Wall_20, Model::Scale_this_to_0_04_later
-	C: "OO",2770091117840,2770091077840
-	
-	;Model::Platform_10, Model::Scale_this_to_0_04_later
-	C: "OO",2770091119840,2770091077840
-	
-	;Model::Platform_12, Model::Scale_this_to_0_04_later
-	C: "OO",2770091121840,2770091077840
-	
-	;Model::Right_Wall_5, Model::Scale_this_to_0_04_later
-	C: "OO",2770091101840,2770091077840
-	
-	;Model::Left_Wall_26, Model::Scale_this_to_0_04_later
-	C: "OO",2770091105840,2770091077840
-	
-	;Model::Platform_16, Model::Scale_this_to_0_04_later
-	C: "OO",2770091111840,2770091077840
-	
-	;Model::Mid_Wall_12, Model::Scale_this_to_0_04_later
-	C: "OO",2770091093840,2770091077840
-	
-	;Model::Left_Wall_25, Model::Scale_this_to_0_04_later
-	C: "OO",2770091107840,2770091077840
-	
-	;Model::Mid_Wall_9, Model::Scale_this_to_0_04_later
-	C: "OO",2770091123840,2770091077840
-	
-	;Model::Road_15, Model::Scale_this_to_0_04_later
-	C: "OO",2770091125840,2770091077840
-	
-	;Model::Right_Wall_3, Model::Scale_this_to_0_04_later
-	C: "OO",2770091095840,2770091077840
-	
-	;Model::Left_Wall_19, Model::Scale_this_to_0_04_later
-	C: "OO",2770091097840,2770091077840
-	
-	;Model::Right_Wall_4, Model::Scale_this_to_0_04_later
-	C: "OO",2770091113840,2770091077840
-	
-	;Model::Left_Wall_37, Model::Scale_this_to_0_04_later
-	C: "OO",2770091115840,2770091077840
+	C: "OO",2580396392544,2580396386544
 	
 	;Model::Left_Wall_31, Model::Scale_this_to_0_04_later
-	C: "OO",2770091127840,2770091077840
+	C: "OO",2580396394544,2580396386544
 	
-	;Model::Platform_15, Model::Scale_this_to_0_04_later
-	C: "OO",2770091129840,2770091077840
+	;Model::Road_22, Model::Scale_this_to_0_04_later
+	C: "OO",2580396234544,2580396386544
 	
-	;Model::Road_16, Model::Scale_this_to_0_04_later
-	C: "OO",2770091099840,2770091077840
+	;Model::Mid_Wall_14, Model::Scale_this_to_0_04_later
+	C: "OO",2580396238544,2580396386544
 	
-	;Model::Road_24, Model::Scale_this_to_0_04_later
-	C: "OO",2770091165840,2770091077840
+	;Model::Platform_19, Model::Scale_this_to_0_04_later
+	C: "OO",2576362828224,2580396386544
 	
-	;Model::Left_Wall_33, Model::Scale_this_to_0_04_later
-	C: "OO",2770091147840,2770091077840
+	;Model::Platform_17, Model::Scale_this_to_0_04_later
+	C: "OO",2576362812224,2580396386544
 	
-	;Model::Left_Wall_27, Model::Scale_this_to_0_04_later
-	C: "OO",2770091159840,2770091077840
-	
-	;Model::Left_Wall_32, Model::Scale_this_to_0_04_later
-	C: "OO",2770091153840,2770091077840
-	
-	;Model::Road_17, Model::Scale_this_to_0_04_later
-	C: "OO",2770091143840,2770091077840
-	
-	;Model::Road_21, Model::Scale_this_to_0_04_later
-	C: "OO",2770091167840,2770091077840
-	
-	;Model::Platform_18, Model::Scale_this_to_0_04_later
-	C: "OO",2770091151840,2770091077840
-	
-	;Model::Road_18, Model::Scale_this_to_0_04_later
-	C: "OO",2770091155840,2770091077840
-	
-	;Model::Road_20, Model::Scale_this_to_0_04_later
-	C: "OO",2770091157840,2770091077840
-	
-	;Model::Road_23, Model::Scale_this_to_0_04_later
-	C: "OO",2770091169840,2770091077840
-	
-	;Model::Mid_Wall_8, Model::Scale_this_to_0_04_later
-	C: "OO",2770091161840,2770091077840
-	
-	;Model::Road_13, Model::Scale_this_to_0_04_later
-	C: "OO",2770091171840,2770091077840
-	
-	;Model::Mid_Wall_10, Model::Scale_this_to_0_04_later
-	C: "OO",2770091141840,2770091077840
-	
-	;Model::Left_Wall_23, Model::Scale_this_to_0_04_later
-	C: "OO",2770091191840,2770091077840
-	
-	;Model::Left_Wall_28, Model::Scale_this_to_0_04_later
-	C: "OO",2770091197840,2770091077840
-	
-	;Model::Mid_Wall_11, Model::Scale_this_to_0_04_later
-	C: "OO",2770091187840,2770091077840
-	
-	;Model::Platform_11, Model::Scale_this_to_0_04_later
-	C: "OO",2770091181840,2770091077840
-	
-	;Model::Platform_13, Model::Scale_this_to_0_04_later
-	C: "OO",2770091193840,2770091077840
-	
-	;Model::Mid_Wall_13, Model::Scale_this_to_0_04_later
-	C: "OO",2770091179840,2770091077840
-	
-	;Model::Left_Wall_21, Model::Scale_this_to_0_04_later
-	C: "OO",2770091195840,2770091077840
-	
-	;Model::Left_Wall_30, Model::Scale_this_to_0_04_later
-	C: "OO",2770091203840,2770091077840
-	
-	;Model::Left_Wall_36, Model::Scale_this_to_0_04_later
-	C: "OO",2770091189840,2770091077840
-	
-	;Model::Left_Wall_29, Model::Scale_this_to_0_04_later
-	C: "OO",2770091199840,2770091077840
+	;Model::Platform_14, Model::Scale_this_to_0_04_later
+	C: "OO",2576362832224,2580396386544
 	
 	;Model::Left_Wall_22, Model::Scale_this_to_0_04_later
-	C: "OO",2770091201840,2770091077840
+	C: "OO",2576362802224,2580396386544
+	
+	;Model::Road_19, Model::Scale_this_to_0_04_later
+	C: "OO",2576362820224,2580396386544
+	
+	;Model::Road_14, Model::Scale_this_to_0_04_later
+	C: "OO",2576362834224,2580396386544
+	
+	;Model::Left_Wall_12, Model::Scale_this_to_0_04_later
+	C: "OO",2576362816224,2580396386544
+	
+	;Model::Platform_10, Model::Scale_this_to_0_04_later
+	C: "OO",2576362836224,2580396386544
+	
+	;Model::Platform_12, Model::Scale_this_to_0_04_later
+	C: "OO",2576362838224,2580396386544
+	
+	;Model::Right_Wall_5, Model::Scale_this_to_0_04_later
+	C: "OO",2576362842224,2580396386544
+	
+	;Model::Left_Wall_24, Model::Scale_this_to_0_04_later
+	C: "OO",2575448075520,2580396386544
+	
+	;Model::Platform_16, Model::Scale_this_to_0_04_later
+	C: "OO",2575448083520,2580396386544
+	
+	;Model::Mid_Wall_12, Model::Scale_this_to_0_04_later
+	C: "OO",2575448063520,2580396386544
+	
+	;Model::Left_Wall_23, Model::Scale_this_to_0_04_later
+	C: "OO",2575448081520,2580396386544
+	
+	;Model::Mid_Wall_9, Model::Scale_this_to_0_04_later
+	C: "OO",2575448057520,2580396386544
+	
+	;Model::Road_15, Model::Scale_this_to_0_04_later
+	C: "OO",2575448065520,2580396386544
+	
+	;Model::Right_Wall_3, Model::Scale_this_to_0_04_later
+	C: "OO",2575448069520,2580396386544
+	
+	;Model::Left_Wall_6, Model::Scale_this_to_0_04_later
+	C: "OO",2580364909840,2580396386544
+	
+	;Model::Right_Wall_4, Model::Scale_this_to_0_04_later
+	C: "OO",2580364979840,2580396386544
+	
+	;Model::Left_Wall_33, Model::Scale_this_to_0_04_later
+	C: "OO",2580364971840,2580396386544
+	
+	;Model::Left_Wall_29, Model::Scale_this_to_0_04_later
+	C: "OO",2580364973840,2580396386544
+	
+	;Model::Platform_15, Model::Scale_this_to_0_04_later
+	C: "OO",2580364975840,2580396386544
+	
+	;Model::Road_16, Model::Scale_this_to_0_04_later
+	C: "OO",2573627029792,2580396386544
+	
+	;Model::Road_24, Model::Scale_this_to_0_04_later
+	C: "OO",2573627011792,2580396386544
+	
+	;Model::Left_Wall_25, Model::Scale_this_to_0_04_later
+	C: "OO",2573627023792,2580396386544
+	
+	;Model::Left_Wall_30, Model::Scale_this_to_0_04_later
+	C: "OO",2579759070176,2580396386544
+	
+	;Model::Road_17, Model::Scale_this_to_0_04_later
+	C: "OO",2568250014752,2580396386544
+	
+	;Model::Road_21, Model::Scale_this_to_0_04_later
+	C: "OO",2581199350016,2580396386544
+	
+	;Model::Platform_18, Model::Scale_this_to_0_04_later
+	C: "OO",2581199344016,2580396386544
+	
+	;Model::Road_18, Model::Scale_this_to_0_04_later
+	C: "OO",2581199362016,2580396386544
+	
+	;Model::Road_20, Model::Scale_this_to_0_04_later
+	C: "OO",2581199372016,2580396386544
+	
+	;Model::Road_23, Model::Scale_this_to_0_04_later
+	C: "OO",2581199352016,2580396386544
+	
+	;Model::Mid_Wall_8, Model::Scale_this_to_0_04_later
+	C: "OO",2581199356016,2580396386544
+	
+	;Model::Road_13, Model::Scale_this_to_0_04_later
+	C: "OO",2581199368016,2580396386544
+	
+	;Model::Mid_Wall_10, Model::Scale_this_to_0_04_later
+	C: "OO",2581199374016,2580396386544
+	
+	;Model::Left_Wall_21, Model::Scale_this_to_0_04_later
+	C: "OO",2581199370016,2580396386544
+	
+	;Model::Left_Wall_26, Model::Scale_this_to_0_04_later
+	C: "OO",2581199354016,2580396386544
+	
+	;Model::Mid_Wall_11, Model::Scale_this_to_0_04_later
+	C: "OO",2581199376016,2580396386544
+	
+	;Model::Platform_11, Model::Scale_this_to_0_04_later
+	C: "OO",2581199366016,2580396386544
+	
+	;Model::Platform_13, Model::Scale_this_to_0_04_later
+	C: "OO",2581199364016,2580396386544
+	
+	;Model::Mid_Wall_13, Model::Scale_this_to_0_04_later
+	C: "OO",2581199346016,2580396386544
+	
+	;Model::Left_Wall_19, Model::Scale_this_to_0_04_later
+	C: "OO",2581199358016,2580396386544
+	
+	;Model::Left_Wall_28, Model::Scale_this_to_0_04_later
+	C: "OO",2581199360016,2580396386544
+	
+	;Model::Left_Wall_32, Model::Scale_this_to_0_04_later
+	C: "OO",2581199378016,2580396386544
+	
+	;Model::Left_Wall_27, Model::Scale_this_to_0_04_later
+	C: "OO",2581199348016,2580396386544
+	
+	;Model::Left_Wall_20, Model::Scale_this_to_0_04_later
+	C: "OO",2581199390016,2580396386544
 	
 	;Material::ProBuilder_Default_URP, Model::Road_12
-	C: "OO",2770092007680,2770091083840
+	C: "OO",2577385269248,2580396392544
 	
 	;Geometry::Scene, Model::Road_12
-	C: "OO",2770089299280,2770091083840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_34
-	C: "OO",2770092007680,2770091073840
-	
-	;Geometry::Scene, Model::Left_Wall_34
-	C: "OO",2770089296592,2770091073840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_22
-	C: "OO",2770092007680,2770091065840
-	
-	;Geometry::Scene, Model::Road_22
-	C: "OO",2770089297936,2770091065840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_14
-	C: "OO",2770092007680,2770091081840
-	
-	;Geometry::Scene, Model::Mid_Wall_14
-	C: "OO",2770089297040,2770091081840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_19
-	C: "OO",2770092007680,2770091085840
-	
-	;Geometry::Scene, Model::Platform_19
-	C: "OO",2770089298384,2770091085840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_17
-	C: "OO",2770092007680,2770091089840
-	
-	;Geometry::Scene, Model::Platform_17
-	C: "OO",2770089298832,2770091089840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_14
-	C: "OO",2770092007680,2770091091840
-	
-	;Geometry::Scene, Model::Platform_14
-	C: "OO",2770083865232,2770091091840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_24
-	C: "OO",2770092007680,2770091061840
-	
-	;Geometry::Scene, Model::Left_Wall_24
-	C: "OO",2770083867472,2770091061840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_19
-	C: "OO",2770092007680,2770091109840
-	
-	;Geometry::Scene, Model::Road_19
-	C: "OO",2770083865680,2770091109840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_14
-	C: "OO",2770092007680,2770091103840
-	
-	;Geometry::Scene, Model::Road_14
-	C: "OO",2770083864784,2770091103840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_20
-	C: "OO",2770092007680,2770091117840
-	
-	;Geometry::Scene, Model::Left_Wall_20
-	C: "OO",2770083867920,2770091117840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_10
-	C: "OO",2770092007680,2770091119840
-	
-	;Geometry::Scene, Model::Platform_10
-	C: "OO",2770083866128,2770091119840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_12
-	C: "OO",2770092007680,2770091121840
-	
-	;Geometry::Scene, Model::Platform_12
-	C: "OO",2770083866576,2770091121840
-	
-	;Material::ProBuilder_Default_URP, Model::Right_Wall_5
-	C: "OO",2770092007680,2770091101840
-	
-	;Geometry::Scene, Model::Right_Wall_5
-	C: "OO",2770083867024,2770091101840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_26
-	C: "OO",2770092007680,2770091105840
-	
-	;Geometry::Scene, Model::Left_Wall_26
-	C: "OO",2770081726240,2770091105840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_16
-	C: "OO",2770092007680,2770091111840
-	
-	;Geometry::Scene, Model::Platform_16
-	C: "OO",2770081725792,2770091111840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_12
-	C: "OO",2770092007680,2770091093840
-	
-	;Geometry::Scene, Model::Mid_Wall_12
-	C: "OO",2770081726688,2770091093840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_25
-	C: "OO",2770092007680,2770091107840
-	
-	;Geometry::Scene, Model::Left_Wall_25
-	C: "OO",2770081724000,2770091107840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_9
-	C: "OO",2770092007680,2770091123840
-	
-	;Geometry::Scene, Model::Mid_Wall_9
-	C: "OO",2770081723552,2770091123840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_15
-	C: "OO",2770092007680,2770091125840
-	
-	;Geometry::Scene, Model::Road_15
-	C: "OO",2770081724448,2770091125840
-	
-	;Material::ProBuilder_Default_URP, Model::Right_Wall_3
-	C: "OO",2770092007680,2770091095840
-	
-	;Geometry::Scene, Model::Right_Wall_3
-	C: "OO",2770081724896,2770091095840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_19
-	C: "OO",2770092007680,2770091097840
-	
-	;Geometry::Scene, Model::Left_Wall_19
-	C: "OO",2770081725344,2770091097840
-	
-	;Material::ProBuilder_Default_URP, Model::Right_Wall_4
-	C: "OO",2770092007680,2770091113840
-	
-	;Geometry::Scene, Model::Right_Wall_4
-	C: "OO",2762423263552,2770091113840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_37
-	C: "OO",2770092007680,2770091115840
-	
-	;Geometry::Scene, Model::Left_Wall_37
-	C: "OO",2762423264000,2770091115840
+	C: "OO",2581198993856,2580396392544
 	
 	;Material::ProBuilder_Default_URP, Model::Left_Wall_31
-	C: "OO",2770092007680,2770091127840
+	C: "OO",2577385269248,2580396394544
 	
 	;Geometry::Scene, Model::Left_Wall_31
-	C: "OO",2762423262656,2770091127840
+	C: "OO",2581198994304,2580396394544
 	
-	;Material::ProBuilder_Default_URP, Model::Platform_15
-	C: "OO",2770092007680,2770091129840
+	;Material::ProBuilder_Default_URP, Model::Road_22
+	C: "OO",2577385269248,2580396234544
 	
-	;Geometry::Scene, Model::Platform_15
-	C: "OO",2762423263104,2770091129840
+	;Geometry::Scene, Model::Road_22
+	C: "OO",2581198995200,2580396234544
 	
-	;Material::ProBuilder_Default_URP, Model::Road_16
-	C: "OO",2770092007680,2770091099840
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_14
+	C: "OO",2577385269248,2580396238544
 	
-	;Geometry::Scene, Model::Road_16
-	C: "OO",2765003146400,2770091099840
+	;Geometry::Scene, Model::Mid_Wall_14
+	C: "OO",2581198992064,2580396238544
 	
-	;Material::ProBuilder_Default_URP, Model::Road_24
-	C: "OO",2770092007680,2770091165840
+	;Material::ProBuilder_Default_URP, Model::Platform_19
+	C: "OO",2577385269248,2576362828224
 	
-	;Geometry::Scene, Model::Road_24
-	C: "OO",2765003146848,2770091165840
+	;Geometry::Scene, Model::Platform_19
+	C: "OO",2581198992512,2576362828224
 	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_33
-	C: "OO",2770092007680,2770091147840
+	;Material::ProBuilder_Default_URP, Model::Platform_17
+	C: "OO",2577385269248,2576362812224
 	
-	;Geometry::Scene, Model::Left_Wall_33
-	C: "OO",2765003147296,2770091147840
+	;Geometry::Scene, Model::Platform_17
+	C: "OO",2581198992960,2576362812224
 	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_27
-	C: "OO",2770092007680,2770091159840
+	;Material::ProBuilder_Default_URP, Model::Platform_14
+	C: "OO",2577385269248,2576362832224
 	
-	;Geometry::Scene, Model::Left_Wall_27
-	C: "OO",2765003145952,2770091159840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_32
-	C: "OO",2770092007680,2770091153840
-	
-	;Geometry::Scene, Model::Left_Wall_32
-	C: "OO",2769273699280,2770091153840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_17
-	C: "OO",2770092007680,2770091143840
-	
-	;Geometry::Scene, Model::Road_17
-	C: "OO",2769273700176,2770091143840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_21
-	C: "OO",2770092007680,2770091167840
-	
-	;Geometry::Scene, Model::Road_21
-	C: "OO",2769273699728,2770091167840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_18
-	C: "OO",2770092007680,2770091151840
-	
-	;Geometry::Scene, Model::Platform_18
-	C: "OO",2769273698832,2770091151840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_18
-	C: "OO",2770092007680,2770091155840
-	
-	;Geometry::Scene, Model::Road_18
-	C: "OO",2770092061872,2770091155840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_20
-	C: "OO",2770092007680,2770091157840
-	
-	;Geometry::Scene, Model::Road_20
-	C: "OO",2770092062768,2770091157840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_23
-	C: "OO",2770092007680,2770091169840
-	
-	;Geometry::Scene, Model::Road_23
-	C: "OO",2770092060976,2770091169840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_8
-	C: "OO",2770092007680,2770091161840
-	
-	;Geometry::Scene, Model::Mid_Wall_8
-	C: "OO",2770092063664,2770091161840
-	
-	;Material::ProBuilder_Default_URP, Model::Road_13
-	C: "OO",2770092007680,2770091171840
-	
-	;Geometry::Scene, Model::Road_13
-	C: "OO",2770092062320,2770091171840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_10
-	C: "OO",2770092007680,2770091141840
-	
-	;Geometry::Scene, Model::Mid_Wall_10
-	C: "OO",2770092061424,2770091141840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_23
-	C: "OO",2770092007680,2770091191840
-	
-	;Geometry::Scene, Model::Left_Wall_23
-	C: "OO",2770092063216,2770091191840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_28
-	C: "OO",2770092007680,2770091197840
-	
-	;Geometry::Scene, Model::Left_Wall_28
-	C: "OO",2770092064112,2770091197840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_11
-	C: "OO",2770092007680,2770091187840
-	
-	;Geometry::Scene, Model::Mid_Wall_11
-	C: "OO",2757584389664,2770091187840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_11
-	C: "OO",2770092007680,2770091181840
-	
-	;Geometry::Scene, Model::Platform_11
-	C: "OO",2757584389216,2770091181840
-	
-	;Material::ProBuilder_Default_URP, Model::Platform_13
-	C: "OO",2770092007680,2770091193840
-	
-	;Geometry::Scene, Model::Platform_13
-	C: "OO",2757584390560,2770091193840
-	
-	;Material::ProBuilder_Default_URP, Model::Mid_Wall_13
-	C: "OO",2770092007680,2770091179840
-	
-	;Geometry::Scene, Model::Mid_Wall_13
-	C: "OO",2757584388768,2770091179840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_21
-	C: "OO",2770092007680,2770091195840
-	
-	;Geometry::Scene, Model::Left_Wall_21
-	C: "OO",2757584387424,2770091195840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_30
-	C: "OO",2770092007680,2770091203840
-	
-	;Geometry::Scene, Model::Left_Wall_30
-	C: "OO",2757584387872,2770091203840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_36
-	C: "OO",2770092007680,2770091189840
-	
-	;Geometry::Scene, Model::Left_Wall_36
-	C: "OO",2757584388320,2770091189840
-	
-	;Material::ProBuilder_Default_URP, Model::Left_Wall_29
-	C: "OO",2770092007680,2770091199840
-	
-	;Geometry::Scene, Model::Left_Wall_29
-	C: "OO",2757584390112,2770091199840
+	;Geometry::Scene, Model::Platform_14
+	C: "OO",2576542605024,2576362832224
 	
 	;Material::ProBuilder_Default_URP, Model::Left_Wall_22
-	C: "OO",2770092007680,2770091201840
+	C: "OO",2577385269248,2576362802224
 	
 	;Geometry::Scene, Model::Left_Wall_22
-	C: "OO",2770089285552,2770091201840
+	C: "OO",2576542606368,2576362802224
+	
+	;Material::ProBuilder_Default_URP, Model::Road_19
+	C: "OO",2577385269248,2576362820224
+	
+	;Geometry::Scene, Model::Road_19
+	C: "OO",2576542605920,2576362820224
+	
+	;Material::ProBuilder_Default_URP, Model::Road_14
+	C: "OO",2577385269248,2576362834224
+	
+	;Geometry::Scene, Model::Road_14
+	C: "OO",2576542605472,2576362834224
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_12
+	C: "OO",2577385269248,2576362816224
+	
+	;Geometry::Scene, Model::Left_Wall_12
+	C: "OO",2576542607264,2576362816224
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_10
+	C: "OO",2577385269248,2576362836224
+	
+	;Geometry::Scene, Model::Platform_10
+	C: "OO",2576542606816,2576362836224
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_12
+	C: "OO",2577385269248,2576362838224
+	
+	;Geometry::Scene, Model::Platform_12
+	C: "OO",2576542607712,2576362838224
+	
+	;Material::ProBuilder_Default_URP, Model::Right_Wall_5
+	C: "OO",2577385269248,2576362842224
+	
+	;Geometry::Scene, Model::Right_Wall_5
+	C: "OO",2576542608160,2576362842224
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_24
+	C: "OO",2577385269248,2575448075520
+	
+	;Geometry::Scene, Model::Left_Wall_24
+	C: "OO",2581196271984,2575448075520
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_16
+	C: "OO",2577385269248,2575448083520
+	
+	;Geometry::Scene, Model::Platform_16
+	C: "OO",2581196273776,2575448083520
+	
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_12
+	C: "OO",2577385269248,2575448063520
+	
+	;Geometry::Scene, Model::Mid_Wall_12
+	C: "OO",2581196271088,2575448063520
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_23
+	C: "OO",2577385269248,2575448081520
+	
+	;Geometry::Scene, Model::Left_Wall_23
+	C: "OO",2581196272432,2575448081520
+	
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_9
+	C: "OO",2577385269248,2575448057520
+	
+	;Geometry::Scene, Model::Mid_Wall_9
+	C: "OO",2581196273328,2575448057520
+	
+	;Material::ProBuilder_Default_URP, Model::Road_15
+	C: "OO",2577385269248,2575448065520
+	
+	;Geometry::Scene, Model::Road_15
+	C: "OO",2581196271536,2575448065520
+	
+	;Material::ProBuilder_Default_URP, Model::Right_Wall_3
+	C: "OO",2577385269248,2575448069520
+	
+	;Geometry::Scene, Model::Right_Wall_3
+	C: "OO",2581196272880,2575448069520
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_6
+	C: "OO",2577385269248,2580364909840
+	
+	;Geometry::Scene, Model::Left_Wall_6
+	C: "OO",2581196270640,2580364909840
+	
+	;Material::ProBuilder_Default_URP, Model::Right_Wall_4
+	C: "OO",2577385269248,2580364979840
+	
+	;Geometry::Scene, Model::Right_Wall_4
+	C: "OO",2581199041696,2580364979840
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_33
+	C: "OO",2577385269248,2580364971840
+	
+	;Geometry::Scene, Model::Left_Wall_33
+	C: "OO",2581199041248,2580364971840
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_29
+	C: "OO",2577385269248,2580364973840
+	
+	;Geometry::Scene, Model::Left_Wall_29
+	C: "OO",2581199042144,2580364973840
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_15
+	C: "OO",2577385269248,2580364975840
+	
+	;Geometry::Scene, Model::Platform_15
+	C: "OO",2581199043040,2580364975840
+	
+	;Material::ProBuilder_Default_URP, Model::Road_16
+	C: "OO",2577385269248,2573627029792
+	
+	;Geometry::Scene, Model::Road_16
+	C: "OO",2581199043936,2573627029792
+	
+	;Material::ProBuilder_Default_URP, Model::Road_24
+	C: "OO",2577385269248,2573627011792
+	
+	;Geometry::Scene, Model::Road_24
+	C: "OO",2581199044384,2573627011792
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_25
+	C: "OO",2577385269248,2573627023792
+	
+	;Geometry::Scene, Model::Left_Wall_25
+	C: "OO",2581199042592,2573627023792
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_30
+	C: "OO",2577385269248,2579759070176
+	
+	;Geometry::Scene, Model::Left_Wall_30
+	C: "OO",2581199043488,2579759070176
+	
+	;Material::ProBuilder_Default_URP, Model::Road_17
+	C: "OO",2577385269248,2568250014752
+	
+	;Geometry::Scene, Model::Road_17
+	C: "OO",2581198784256,2568250014752
+	
+	;Material::ProBuilder_Default_URP, Model::Road_21
+	C: "OO",2577385269248,2581199350016
+	
+	;Geometry::Scene, Model::Road_21
+	C: "OO",2581198782912,2581199350016
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_18
+	C: "OO",2577385269248,2581199344016
+	
+	;Geometry::Scene, Model::Platform_18
+	C: "OO",2581198784704,2581199344016
+	
+	;Material::ProBuilder_Default_URP, Model::Road_18
+	C: "OO",2577385269248,2581199362016
+	
+	;Geometry::Scene, Model::Road_18
+	C: "OO",2581198783360,2581199362016
+	
+	;Material::ProBuilder_Default_URP, Model::Road_20
+	C: "OO",2577385269248,2581199372016
+	
+	;Geometry::Scene, Model::Road_20
+	C: "OO",2581198785600,2581199372016
+	
+	;Material::ProBuilder_Default_URP, Model::Road_23
+	C: "OO",2577385269248,2581199352016
+	
+	;Geometry::Scene, Model::Road_23
+	C: "OO",2581198786048,2581199352016
+	
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_8
+	C: "OO",2577385269248,2581199356016
+	
+	;Geometry::Scene, Model::Mid_Wall_8
+	C: "OO",2581198783808,2581199356016
+	
+	;Material::ProBuilder_Default_URP, Model::Road_13
+	C: "OO",2577385269248,2581199368016
+	
+	;Geometry::Scene, Model::Road_13
+	C: "OO",2581198785152,2581199368016
+	
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_10
+	C: "OO",2577385269248,2581199374016
+	
+	;Geometry::Scene, Model::Mid_Wall_10
+	C: "OO",2581198747824,2581199374016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_21
+	C: "OO",2577385269248,2581199370016
+	
+	;Geometry::Scene, Model::Left_Wall_21
+	C: "OO",2581198746032,2581199370016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_26
+	C: "OO",2577385269248,2581199354016
+	
+	;Geometry::Scene, Model::Left_Wall_26
+	C: "OO",2581198748272,2581199354016
+	
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_11
+	C: "OO",2577385269248,2581199376016
+	
+	;Geometry::Scene, Model::Mid_Wall_11
+	C: "OO",2581198746480,2581199376016
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_11
+	C: "OO",2577385269248,2581199366016
+	
+	;Geometry::Scene, Model::Platform_11
+	C: "OO",2581198746928,2581199366016
+	
+	;Material::ProBuilder_Default_URP, Model::Platform_13
+	C: "OO",2577385269248,2581199364016
+	
+	;Geometry::Scene, Model::Platform_13
+	C: "OO",2581198748720,2581199364016
+	
+	;Material::ProBuilder_Default_URP, Model::Mid_Wall_13
+	C: "OO",2577385269248,2581199346016
+	
+	;Geometry::Scene, Model::Mid_Wall_13
+	C: "OO",2581198749168,2581199346016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_19
+	C: "OO",2577385269248,2581199358016
+	
+	;Geometry::Scene, Model::Left_Wall_19
+	C: "OO",2581198747376,2581199358016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_28
+	C: "OO",2577385269248,2581199360016
+	
+	;Geometry::Scene, Model::Left_Wall_28
+	C: "OO",2581199106816,2581199360016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_32
+	C: "OO",2577385269248,2581199378016
+	
+	;Geometry::Scene, Model::Left_Wall_32
+	C: "OO",2581199108160,2581199378016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_27
+	C: "OO",2577385269248,2581199348016
+	
+	;Geometry::Scene, Model::Left_Wall_27
+	C: "OO",2581199109952,2581199348016
+	
+	;Material::ProBuilder_Default_URP, Model::Left_Wall_20
+	C: "OO",2577385269248,2581199390016
+	
+	;Geometry::Scene, Model::Left_Wall_20
+	C: "OO",2581199109504,2581199390016
 	
 	;Texture::DiffuseColor_Texture, Material::ProBuilder_Default_URP
-	C: "OO",2769985024240,2770092007680
+	C: "OO",2576542601872,2577385269248
 	
 	;Texture::DiffuseColor_Texture, Material::ProBuilder_Default_URP
-	C: "OP",2769985024240,2770092007680, "DiffuseColor"
+	C: "OP",2576542601872,2577385269248, "DiffuseColor"
 	
 	;Video::DiffuseColor_Texture, Texture::DiffuseColor_Texture
-	C: "OO",2769985025680,2769985024240
+	C: "OO",2576542604272,2576542601872
 }
 ;Takes section
 ;----------------------------------------------------
