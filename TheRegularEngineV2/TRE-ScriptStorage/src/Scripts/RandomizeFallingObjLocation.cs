@@ -6,6 +6,7 @@ namespace TRE
 	public class RandomizeFallingObjLocation : Entity
 	{
 		public Entity fallingMaraccasPrefab;
+		public Entity CloudEffectPrefab;
 
 		public vec3 size; // Size (in 2D) of the maximum area falling objects can spawn
 
@@ -93,6 +94,7 @@ namespace TRE
 
 			// ID for prefabs are based on resource prefab GUID
 			fallingMaraccasPrefab = new Entity(11822093139939255162);
+			CloudEffectPrefab = new Entity(2611909673942127335);
 
 			CreateItems();
 		}
@@ -150,6 +152,9 @@ namespace TRE
 					itemsDefRot.Add(child.transform.Rotation);
 
 					if (!foundSpot) child.SetActive(false);
+
+					//Entity cloud = ECSManager.Instantiate(CloudEffectPrefab);
+					//cloud.transform.Position = pos;
 				}
 			}
 

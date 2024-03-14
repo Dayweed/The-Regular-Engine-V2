@@ -1,0 +1,150 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "2611909673942127335",
+         "m_Overrides": {},
+         "m_PrefabGUID": "2611909673942127335",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "7431943734401813296",
+         "m_Index": 1,
+         "m_Name": "CloudEffect",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0203852653503418
+         ],
+         "Fade": false,
+         "FadeDuration": [
+            0.25,
+            0.75
+         ],
+         "LifeTime": 2.0,
+         "Loop": true,
+         "MaterialInstance": "79b97f19e736757d",
+         "ParticleCount": 8,
+         "PlayOnStart": true,
+         "RenderObject": "4d974e3a749e338a",
+         "Size": 1.0,
+         "SpawnRadius": 0.800000011920929,
+         "Speed": 0.5,
+         "VariationSize": [
+            0.800000011920929,
+            1.2000000476837158
+         ],
+         "VariationSpeed": [
+            0.5,
+            1.0
+         ],
+         "Velocity": [
+            0.0,
+            1.0,
+            0.0
+         ]
+      }
+   ]
+]
