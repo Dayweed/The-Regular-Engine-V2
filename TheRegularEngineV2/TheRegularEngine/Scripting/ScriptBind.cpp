@@ -2658,6 +2658,34 @@ namespace TRE
 
 		entity->GetComponent<Particle3DComponent>().m_ParticleCount = Count;
 	}
+
+	static void Engine_GetVelocity3D(CSEntityID ID, glm::vec3* output)
+	{
+		const Entity& entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+
+		if (!entity->HasComponent<Rigidbody>())
+		{
+			PUBLISHERROR("There is no Rigidbody in " + entity->GetName() + "!");
+			return;
+		}
+
+		*output = entity->GetComponent<Particle3DComponent>().m_Velocity;
+	}
+
+	static void Engine_SetVelocity3D(CSEntityID id, glm::vec3 velocity)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+			return;
+		}
+
+		entity->GetComponent<Particle3DComponent>().m_Velocity = velocity;
+	}
 #pragma endregion
 
 	void ScriptBind::RegisterFunctions()
@@ -2991,6 +3019,8 @@ namespace TRE
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleLifetime3D", Engine_GetParticleLifetime3D);
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetParticleCount3D", Engine_SetParticleCount3D);
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleCount3D", Engine_GetParticleCount3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetVelocity3D", Engine_SetVelocity3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetVelocity3D", Engine_GetVelocity3D);
 		}
 	}
 }
