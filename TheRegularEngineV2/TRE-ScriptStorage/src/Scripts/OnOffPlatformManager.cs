@@ -14,7 +14,7 @@ namespace TRE
 			platformList.Sort(new SortEntitiesAlphabetically());
 
 			// find first (external) button
-			Entity firstButtonEntity = ECSManager.FindEntityByName("Button");
+			Entity firstButtonEntity = ECSManager.FindEntityByName("Button_1");
 
 			// add that button first, if it exists
 			if (firstButtonEntity.ID != 0)
