@@ -86,7 +86,7 @@ namespace TRE
 			if (preTransitions.preTransitioned == false)
 			{
 				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);
-				preTransitions.PreTransition(Time.deltaTime, out cameraController.toTransition);
+				preTransitions.PreTransition(Time.deltaTime > 0.5f ? 0.5f : Time.deltaTime, out cameraController.toTransition);
 				cameraController.freeCamera = false;
 			}
 			else
