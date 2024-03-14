@@ -55,10 +55,10 @@ namespace TRE
 				Star_3_BG.SetActive(false);
 			}
 
-			// Default false
-			Star_1.SetActive(false);
-			Star_2.SetActive(false);
-			Star_3.SetActive(false);
+			// Default false [DONE IN VFX_SlapOn!]
+			//Star_1.SetActive(false);
+			//Star_2.SetActive(false);
+			//Star_3.SetActive(false);
 
 			currentTimer = delayBufferStart;
 

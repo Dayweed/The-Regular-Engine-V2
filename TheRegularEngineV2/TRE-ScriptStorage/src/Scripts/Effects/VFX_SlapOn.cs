@@ -20,7 +20,6 @@ namespace TRE
 		bool doneRotate;
 		bool doneScale;
 		bool doneColor;
-		SpriteRenderer MyRenderer;
 
 		float rotationSpeed = 8.5f;
 		float scaleSpeed = 10.0f;
@@ -44,8 +43,6 @@ namespace TRE
 
 		public void Start()
 		{
-			MyRenderer = GetComponent<SpriteRenderer>();
-
 			if (Scene.GetSceneName() == "ResultScreen")
 			{
 				StartRotate = new vec3(0, 0, 0f);
@@ -58,13 +55,15 @@ namespace TRE
 				StartScale = new vec3(20, 20, 1);
 				StartColor = new vec4(1, 1, 1, 0);
 			}
+
+			SetActive(false);
 		}
 
 		public void Update()
 		{
 			if (slapping)
 			{
-				TimerToStop -= Time.deltaTime;
+                TimerToStop -= Time.deltaTime;
 				if (TimerToStop <= 0)
 				{
 					doneRotate = true;
@@ -73,7 +72,7 @@ namespace TRE
 					slapping = false;
 					transform.Rotation = EndRotation;
 					transform.Scale = EndScale;
-					MyRenderer.Color = EndColor;
+                    GetComponent<SpriteRenderer>().Color = EndColor;
 				}
 
 				if (transform.Rotation.x >= MinRotateOffset.x && transform.Rotation.x <= MaxRotateOffset.x
@@ -106,21 +105,21 @@ namespace TRE
 					transform.Scale = new vec3(x, y, z);
 				}
 
-				if (MyRenderer.Color.x >= MinColorOffset.x && MyRenderer.Color.x <= MaxColorOffset.x
-					&& MyRenderer.Color.y >= MinColorOffset.y && MyRenderer.Color.y <= MaxColorOffset.y
-					&& MyRenderer.Color.z >= MinColorOffset.z && MyRenderer.Color.z <= MaxColorOffset.z
-					&& MyRenderer.Color.w >= MinColorOffset.w && MyRenderer.Color.w <= MaxColorOffset.w)
+				if (GetComponent<SpriteRenderer>().Color.x >= MinColorOffset.x && GetComponent<SpriteRenderer>().Color.x <= MaxColorOffset.x
+					&& GetComponent<SpriteRenderer>().Color.y >= MinColorOffset.y && GetComponent<SpriteRenderer>().Color.y <= MaxColorOffset.y
+					&& GetComponent<SpriteRenderer>().Color.z >= MinColorOffset.z && GetComponent<SpriteRenderer>().Color.z <= MaxColorOffset.z
+					&& GetComponent<SpriteRenderer>().Color.w >= MinColorOffset.w && GetComponent<SpriteRenderer>().Color.w <= MaxColorOffset.w)
 				{
 					doneColor = true;
 				}
 				else if (!doneColor)
 				{
-					//MyRenderer.Color += ColorVec * colorSpeed * Time.deltaTime;
-					float x = MathF.Lerp(MyRenderer.Color.x, EndColor.x, colorSpeed * Time.deltaTime);
-					float y = MathF.Lerp(MyRenderer.Color.y, EndColor.y, colorSpeed * Time.deltaTime);
-					float z = MathF.Lerp(MyRenderer.Color.z, EndColor.z, colorSpeed * Time.deltaTime);
-					float w = MathF.Lerp(MyRenderer.Color.w, EndColor.w, colorSpeed * Time.deltaTime);
-					MyRenderer.Color = new vec4(x, y, z, w);
+                    //GetComponent<SpriteRenderer>().Color += ColorVec * colorSpeed * Time.deltaTime;
+                    float x = MathF.Lerp(GetComponent<SpriteRenderer>().Color.x, EndColor.x, colorSpeed * Time.deltaTime);
+					float y = MathF.Lerp(GetComponent<SpriteRenderer>().Color.y, EndColor.y, colorSpeed * Time.deltaTime);
+					float z = MathF.Lerp(GetComponent<SpriteRenderer>().Color.z, EndColor.z, colorSpeed * Time.deltaTime);
+					float w = MathF.Lerp(GetComponent<SpriteRenderer>().Color.w, EndColor.w, colorSpeed * Time.deltaTime);
+                    GetComponent<SpriteRenderer>().Color = new vec4(x, y, z, w);
 				}
 
 				if (doneRotate && doneScale && doneColor)
@@ -129,7 +128,7 @@ namespace TRE
 					slapping = false;
 					transform.Rotation = EndRotation;
 					transform.Scale = EndScale;
-					MyRenderer.Color = EndColor;
+                    GetComponent<SpriteRenderer>().Color = EndColor;
 				}
 			}
 		}
@@ -150,7 +149,7 @@ namespace TRE
 
 			EndRotation = transform.Rotation;
 			EndScale = transform.Scale;
-			EndColor = MyRenderer.Color;
+			EndColor = GetComponent<SpriteRenderer>().Color;
 
 			slapping = true;
 			doneRotate = false;
@@ -168,7 +167,7 @@ namespace TRE
 
 			transform.Rotation = StartRotate;
 			transform.Scale = StartScale;
-			MyRenderer.Color = StartColor;
+            GetComponent<SpriteRenderer>().Color = StartColor;
 
 
 			vec3 rotOff = RotateVec * offsetMult * Time.deltaTime;

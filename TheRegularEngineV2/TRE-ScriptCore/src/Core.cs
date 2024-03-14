@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using GlmSharp; // Add this for GLM lib
-// using Coroutine; // Add this for Coroutine lib
+				// using Coroutine; // Add this for Coroutine lib
 
 /*
  *  This is the core scripting library for TRE.

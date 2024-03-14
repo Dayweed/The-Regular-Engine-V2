@@ -45,7 +45,7 @@ namespace TRE
 			for (auto e : m_ScriptEntities)
 			{
 				// Skip inactive entities
-				if (!e->GetComponent<Properties>().m_Active) continue;
+				//if (!e->GetComponent<Properties>().m_Active) continue;
 
 				ScriptEngine::OnCreateEntity(e);
 			}
@@ -83,7 +83,7 @@ namespace TRE
 
 
 			// Skip inactive entities
-			if (!e->GetComponent<Properties>().m_Active) continue;
+			//if (!e->GetComponent<Properties>().m_Active) continue;
 
 			ScriptEngine::OnStartEntity(e);
 			script.m_RanStart = true;

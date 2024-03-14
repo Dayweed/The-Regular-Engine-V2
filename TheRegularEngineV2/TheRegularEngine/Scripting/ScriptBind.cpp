@@ -28,6 +28,8 @@
 #define PUBLISHWARN(msg) PublishWarning(msg, __FUNCTION__)
 #define PUBLISHLOG(msg) PublishLog(msg, __FUNCTION__)
 
+#define MAX_DT 0.5f
+
 namespace TRE
 {
 	enum class ComponentsID
@@ -1838,7 +1840,7 @@ namespace TRE
 #pragma region TimeBindings
 	static float BindGetDeltaTime()
 	{
-		return Engine::GetInstance().GetWindow()->GetDeltaTime();
+		return Engine::GetInstance().GetWindow()->GetDeltaTime() > MAX_DT ? MAX_DT : Engine::GetInstance().GetWindow()->GetDeltaTime();
 	}
 #pragma endregion
 
