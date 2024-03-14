@@ -1827,6 +1827,11 @@ namespace TRE
             return Engine_GetParticleCount3D(ID);
         }
 
+        public static void SetVelocity(EntityID entityid, vec3 velocity)
+        {
+            Engine_SetVelocity3D(entityid, velocity);
+        }
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static void Engine_SetParticleEmitterActive3D(EntityID ID, bool isVisible);
         
@@ -1850,5 +1855,8 @@ namespace TRE
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static int Engine_GetParticleCount3D(EntityID ID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetVelocity3D(EntityID ID, vec3 velocity);
     }
 }
