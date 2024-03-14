@@ -10,8 +10,8 @@ namespace TRE
 		public vec3 size; // Size (in 2D) of the maximum area falling objects can spawn
 
 		// Object spawning
-		public int noOfObjects = 0;
-		public int maxObjects = 8;
+		//public int noOfObjects = 0;
+		//public int maxObjects = 8;
 		public int maxSearchCount = 4;
 		public float minRange = 5.5f;
 
@@ -94,7 +94,7 @@ namespace TRE
 			// ID for prefabs are based on resource prefab GUID
 			fallingMaraccasPrefab = new Entity(11822093139939255162);
 
-			CreateItems(maxObjects);
+			CreateItems();
 		}
 
 		// Update is called once per frame
@@ -131,28 +131,48 @@ namespace TRE
 			return false;
 		}
 
-		private void CreateItems(int itemQuantity)
+		private void CreateItems()
 		{
-			for (int i = 0; i < itemQuantity; ++i)
+			for (int i = parenting.GetTotalChildren() - 1; i >= 0; --i)
 			{
-				if (noOfObjects < maxObjects)
+				Entity child = parenting.GetChild(i);
+				Debug.Log(i + " Tag " + child.GetTag() + ": " + (child.GetTag() == "FallingObstacle"));
+				child.parenting.RemoveParent();
+				// Only add falling objects with tag
+				if (child.GetTag() == "FallingObstacle")
 				{
-					int searchCount = maxObjects * 2;
-
 					bool foundSpot = AssignNewLocation(out vec3 pos);
-					Entity item = ECSManager.Instantiate(fallingMaraccasPrefab);
-					item.transform.Position = pos;
+					child.transform.Position = pos;
 
-					itemsToSpawn.Add(item);
+					itemsToSpawn.Add(child);
 					itemsTimer.Add(activeDuration * Random.Range(minDurationModifier, maxDurationModifier));
 					itemsPos.Add(pos);
-					itemsDefRot.Add(item.transform.Rotation);
+					itemsDefRot.Add(child.transform.Rotation);
 
-					if (!foundSpot) item.SetActive(false);
-
-					++noOfObjects;
+					if (!foundSpot) child.SetActive(false);
 				}
 			}
+
+			//for (int i = 0; i < itemQuantity; ++i)
+			//{
+			//	if (noOfObjects < maxObjects)
+			//	{
+			//		int searchCount = maxObjects * 2;
+
+			//		bool foundSpot = AssignNewLocation(out vec3 pos);
+			//		Entity item = ECSManager.Instantiate(fallingMaraccasPrefab);
+			//		item.transform.Position = pos;
+
+			//		itemsToSpawn.Add(item);
+			//		itemsTimer.Add(activeDuration * Random.Range(minDurationModifier, maxDurationModifier));
+			//		itemsPos.Add(pos);
+			//		itemsDefRot.Add(item.transform.Rotation);
+
+			//		if (!foundSpot) item.SetActive(false);
+
+			//		++noOfObjects;
+			//	}
+			//}
 		}
 
 		private bool IsPosEmpty(vec3 position)
