@@ -1,0 +1,172 @@
+[
+   [
+      2,
+      0,
+      1
+   ],
+   [
+      2,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "9604781884339444122",
+         "m_Overrides": {},
+         "m_PrefabGUID": "9604781884339444122",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "9604781884339444122",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4061786956003430187",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Children": [
+            "15573957660812208040"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "4939992553697755412"
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "4939992553697755412",
+         "m_Index": 20,
+         "m_Name": "Decor_Flag_Pivot",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "15573957660812208040",
+         "m_Index": 21,
+         "m_Name": "Decor_Flag",
+         "m_Tag": ""
+      }
+   ],
+   [
+      2,
+      0,
+      {
+         "m_Position": [
+            30.29599952697754,
+            13.878999710083008,
+            42.43899917602539
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            30.295989990234375,
+            10.309040069580078,
+            42.438507080078125
+         ],
+         "m_Rotation": [
+            -8.537737812730484e-06,
+            -4.268867144219257e-07,
+            5.336086701390741e-07
+         ],
+         "m_Scale": [
+            1.0,
+            0.9999997019767761,
+            0.9999998807907104
+         ]
+      }
+   ],
+   [
+      1,
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "f7f5f572f61823d3",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.DecorFlagSwing"
+         ],
+         "m_StoredClass": "TRE.DecorFlagSwing"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
