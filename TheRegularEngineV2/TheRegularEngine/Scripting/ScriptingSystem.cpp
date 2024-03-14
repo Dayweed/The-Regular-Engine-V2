@@ -44,6 +44,9 @@ namespace TRE
 			//inital Create entity instances (only works if they are created before scene starts)
 			for (auto e : m_ScriptEntities)
 			{
+				// Skip inactive entities
+				if (!e->GetComponent<Properties>().m_Active) continue;
+
 				ScriptEngine::OnCreateEntity(e);
 			}
 			m_IsRunning = false;
@@ -78,6 +81,10 @@ namespace TRE
 			ScriptComponent& script{ e->GetComponent<ScriptComponent>() };
 			if (script.m_RanStart) continue;
 
+
+			// Skip inactive entities
+			if (!e->GetComponent<Properties>().m_Active) continue;
+
 			ScriptEngine::OnStartEntity(e);
 			script.m_RanStart = true;
 		}
@@ -90,6 +97,10 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetTriggerHistory(triggerEnterEntries, triggerStayEntries, triggerExitEntries);
 		for (auto e : triggerEnterEntries)
 		{
+			// Skip inactive entities
+			if (!e.first->GetComponent<Properties>().m_Active) continue;
+			if (!e.second->GetComponent<Properties>().m_Active) continue;
+
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnTriggerEnter(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
@@ -98,6 +109,10 @@ namespace TRE
 		//Stay
 		for (auto e : triggerStayEntries)
 		{
+			// Skip inactive entities
+			if (!e.first->GetComponent<Properties>().m_Active) continue;
+			if (!e.second->GetComponent<Properties>().m_Active) continue;
+
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnTriggerStay(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
@@ -106,6 +121,10 @@ namespace TRE
 		// Exit
 		for (auto e : triggerExitEntries)
 		{
+			// Skip inactive entities
+			if (!e.first->GetComponent<Properties>().m_Active) continue;
+			if (!e.second->GetComponent<Properties>().m_Active) continue;
+
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnTriggerExit(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
@@ -120,6 +139,10 @@ namespace TRE
 		ECSSystemManager::Instance().GetSystem<PhysicsSystem>()->GetCollisionHistory(collisionEnterEntries, collisionStayEntries, collisionExitEntries);
 		for (auto e : collisionEnterEntries)
 		{
+			// Skip inactive entities
+			if (!e.first->GetComponent<Properties>().m_Active) continue;
+			if (!e.second->GetComponent<Properties>().m_Active) continue;
+
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnCollisionEnter(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
@@ -128,6 +151,10 @@ namespace TRE
 		// Stay
 		for (auto e : collisionStayEntries)
 		{
+			// Skip inactive entities
+			if (!e.first->GetComponent<Properties>().m_Active) continue;
+			if (!e.second->GetComponent<Properties>().m_Active) continue;
+
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnCollisionStay(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
@@ -136,6 +163,10 @@ namespace TRE
 		// Exit
 		for (auto e : collisionExitEntries)
 		{
+			// Skip inactive entities
+			if (!e.first->GetComponent<Properties>().m_Active) continue;
+			if (!e.second->GetComponent<Properties>().m_Active) continue;
+
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.first) != m_ScriptEntities.end())
 				ScriptEngine::OnCollisionExit(e.first, e.second);
 			if (std::find(m_ScriptEntities.begin(), m_ScriptEntities.end(), e.second) != m_ScriptEntities.end())
@@ -145,12 +176,16 @@ namespace TRE
 		// Update
 		for (size_t i{}; i < m_ScriptEntities.size(); ++i)
 		{
+			// Skip inactive entities
+			if (!m_ScriptEntities[i]->GetComponent<Properties>().m_Active) continue;
 			ScriptEngine::OnUpdateEntity(m_ScriptEntities[i]);
 		}
 
 		// Late Update
 		for (size_t i{}; i < m_ScriptEntities.size(); ++i)
 		{
+			// Skip inactive entities
+			if (!m_ScriptEntities[i]->GetComponent<Properties>().m_Active) continue;
 			ScriptEngine::OnLateUpdateEntity(m_ScriptEntities[i]);
 		}
 
