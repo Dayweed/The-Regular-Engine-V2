@@ -55,8 +55,6 @@ namespace TRE
 				StartScale = new vec3(20, 20, 1);
 				StartColor = new vec4(1, 1, 1, 0);
 			}
-
-			SetActive(false);
 		}
 
 		public void Update()
