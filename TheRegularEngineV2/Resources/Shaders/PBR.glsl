@@ -18,7 +18,8 @@ layout(location = 0) out struct
 	vec4 MaterialColor; //Material color
 	vec4 AmbientColor;
 	vec4 ShadowCoord;
-	vec4 DirectionalLightDirection;
+	vec4 ShadowCoord2;
+	vec4 DirectionalLightDirection [2];
 	vec4 DirectionalLightColor;
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
@@ -71,12 +72,14 @@ void main()
 	Out.PosWorld = push.m_Model * vec4(inPosition, 1.0);
 	Out.PosWorld.w = ubo.GammaValue;
 	Out.MaterialColor = MaterialUBO.m_Color;
-	Out.AmbientColor = ubo.m_AmbientLight[push.m_DLightIndex];
+	Out.AmbientColor = ubo.m_AmbientLight[0];
 	Out.CameraWorldPos = ubo.m_CameraPosition.xyz;
 
-	Out.ShadowCoord = ubo.m_LightSpaceMatrix[push.m_DLightIndex] * push.m_Model * vec4(inPosition, 1.0);
-	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection[push.m_DLightIndex];
-	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[push.m_DLightIndex];
+	Out.ShadowCoord = ubo.m_LightSpaceMatrix[0] * push.m_Model * vec4(inPosition, 1.0);
+	Out.ShadowCoord2 = ubo.m_LightSpaceMatrix[1] * push.m_Model * vec4(inPosition, 1.0);
+	Out.DirectionalLightDirection[0] = ubo.m_DirectionalLightDirection[0];
+	Out.DirectionalLightDirection[1] = ubo.m_DirectionalLightDirection[1];
+	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[0];
 	Out.ShadowIntensity = ubo.m_ShadowIntensity;
 
 	if (push.m_DrawShadow)
@@ -102,7 +105,8 @@ layout(location = 0) in struct
 	vec4 MaterialColor; //Material color
 	vec4 AmbientColor;
 	vec4 ShadowCoord;
-	vec4 DirectionalLightDirection;
+	vec4 ShadowCoord2;
+	vec4 DirectionalLightDirection [2];
 	vec4 DirectionalLightColor;
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
@@ -123,6 +127,7 @@ layout(set = 0, binding = 3) uniform sampler2D RoughnessMap;
 layout(set = 0, binding = 4) uniform sampler2D AOMap;
 layout(set = 0, binding = 5) uniform sampler2D Metalness;
 layout(set = 0, binding = 7) uniform sampler2D shadowMap;
+layout(set = 0, binding = 10) uniform sampler2D shadowMap2;
 
 layout(location = 0) out vec4 outColor;
 
@@ -138,7 +143,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		lightCoords.xy = lightCoords.xy * 0.5 + 0.5;
 
 		float currentDepth = lightCoords.z;
-		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
+		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection[0].xyz, normal)), 0.015);
 		
 		int sampleRadius = 4;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -172,6 +177,48 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 	return shadow;
 }
 
+float Shadow2(in vec3 lightCoords, in vec3 normal)
+{
+	float shadow = 0.0;
+	if(lightCoords.z >= 0.0 && lightCoords.z <= 1.0)
+	{
+		lightCoords.xy = lightCoords.xy * 0.5 + 0.5;
+
+		float currentDepth = lightCoords.z;
+		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection[1].xyz, normal)), 0.015);
+		
+		int sampleRadius = 4;
+		vec2 texelSize = 1.0 / textureSize(shadowMap2, 0);
+
+		for(int y = -sampleRadius; y <= sampleRadius; y++)
+		{
+			for(int x = -sampleRadius; x <= sampleRadius; x++)
+			{
+				float closestDepth = texture(shadowMap2, lightCoords.xy + vec2(x, y) * texelSize).r;
+
+				if(currentDepth - bias > closestDepth)
+				{
+					shadow += 1.0;
+				}
+			}
+		}
+
+		shadow /= pow(float((sampleRadius * 2 + 1)), 2.0);
+	}
+
+	if(shadow < 0.05)
+	{
+		shadow = 0.0;
+	}
+	else
+	{
+		shadow = In.ShadowIntensity;
+	}
+	shadow = clamp(shadow, 0.0, 1.0);
+
+	return shadow;
+}
+
 void main() 
 {
 	//Calculate normal from normal map
@@ -181,6 +228,7 @@ void main()
 	normal = normalize(In.TBN * normal); //Transform normal to world space
 
 	float shadow = Shadow(In.ShadowCoord.xyz / In.ShadowCoord.w, normal);
+	float shadow2 = Shadow2(In.ShadowCoord2.xyz / In.ShadowCoord2.w, normal);
 	
 	//Light calculations
 	//vec3 lightDirection = In.LightPosWorld - In.PosWorld.xyz;
@@ -193,7 +241,7 @@ void main()
 	//const vec3 attenuationColor = lightAttenuation * In.LightColor.rgb;
 
 	//Diffuse intensity
-	float diffuseIntensity = max(dot(normal, -normalize(In.DirectionalLightDirection.xyz)), 0.005);
+	float diffuseIntensity = max(dot(normal, -normalize(In.DirectionalLightDirection[0].xyz)), 0.005);
 
 	vec3 pixelToCamera = normalize(In.CameraWorldPos - In.PosWorld.xyz);
 	float rimFactor = dot(normal, pixelToCamera);
@@ -209,12 +257,13 @@ void main()
 	//const float specularIntensity = pow(max(dot(reflect(-In.DirectionalLightDirection, normal), eyeDirection), 0.0), shininess);
 	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
 	
-	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0025);
+	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection[0].xyz)), 0.0025);
 
 	//Diffuse color
 	if(dp <= 0.05)
 	{
 		shadow = 0.0;
+		shadow2 = 0.0;
 	}
 	diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
 	dp = smoothstep(0.1, 1.0, dp) * float(CelShadingLevels);
@@ -224,7 +273,7 @@ void main()
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
 	if(push.m_DrawShadow)
 	{
-		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+		outColor.rgb = ambient * (1.0 - shadow2) * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}
 	else
 	{

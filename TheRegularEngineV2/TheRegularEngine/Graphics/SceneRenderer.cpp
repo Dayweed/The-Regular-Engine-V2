@@ -443,6 +443,7 @@ namespace TRE
 		ShadowUBO UBO_Shadow{};
 
 		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+
 		for (int x = 0; x < DLights.size(); x++)
 		{
 			const auto& entityDirectional = DLights[x];
@@ -1291,10 +1292,18 @@ namespace TRE
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
 		}
 
-		auto attachments2 = m_SceneImages[SceneImage::shadowMap2]->GetImageData().ImageView;
-		framebufferCreateInfo.pAttachments = &attachments2;
 
-		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer[1]); Result != VK_SUCCESS)
+		auto attachments2 = m_SceneImages[SceneImage::shadowMap2]->GetImageData().ImageView;
+		VkFramebufferCreateInfo framebufferCreateInfo2{};
+		framebufferCreateInfo2.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo2.renderPass = m_ShadowRenderPass->GetHandle();
+		framebufferCreateInfo2.attachmentCount = 1;
+		framebufferCreateInfo2.width = m_ShadowMapWidth;
+		framebufferCreateInfo2.height = m_ShadowMapHeight;
+		framebufferCreateInfo2.layers = 1;
+		framebufferCreateInfo2.pAttachments = &attachments2;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo2, nullptr, &m_ShadowFramebuffer[1]); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
 		}
