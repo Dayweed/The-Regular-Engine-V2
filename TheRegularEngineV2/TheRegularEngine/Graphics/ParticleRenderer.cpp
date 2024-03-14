@@ -160,7 +160,7 @@ namespace TRE
 		m_PreviousMaterialHandle = 0;
 	}
 
-	void ParticleRenderer::Render3D(std::shared_ptr<UniformBuffer> UBO, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
+	void ParticleRenderer::Render3D(const std::shared_ptr<UniformBuffer>& UBO, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor)
 	{
 		std::multimap<ResourceHandle, Entity> sortedParticles;
 		for (const auto& emitter : ECSManager::Instance().GetEntities<Particle3DComponent>())
@@ -174,7 +174,7 @@ namespace TRE
 			{
 				particleComp.m_Material->SetUBOData(particleComp.m_Color);
 				particleComp.m_Material->SetMaterialUBO();
-
+				
 				particleComp.m_Data->SetData(&particleComp.m_ParticleData, sizeof(Particle3DUBO));
 				
 
@@ -194,42 +194,36 @@ namespace TRE
 			
 			if (particleComp.m_Running)
 			{
-				if (currentHandle != m_PreviousMaterialHandle)
+				if (particleComp.m_Material)
 				{
-					if (particleComp.m_Material)
+					if (isEditor)
 					{
-						if (isEditor)
-						{
-							particleComp.m_Material->UpdateForEditorAnimationRendering(UBO, index, particleComp.m_Data, 0);
-							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetEditorDescriptor(index), 0, NULL);
-						}
-						else
-						{
-							particleComp.m_Material->UpdateForAnimationRendering(UBO, index, particleComp.m_Data, 0);
-							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
-						}
+						particleComp.m_Material->UpdateForEditorAnimationRendering(UBO, index, particleComp.m_Data, 0);
+						vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetEditorDescriptor(index), 0, NULL);
 					}
 					else
 					{
-						if (isEditor)
-						{
-							m_3DDefaultMaterial->UpdateForEditorAnimationRendering(UBO, index, particleComp.m_Data, 0);
-							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetEditorDescriptor(index), 0, NULL);
-						}
-						else
-						{
-							m_3DDefaultMaterial->UpdateForAnimationRendering(UBO, index, particleComp.m_Data, 0);
-							vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetDescriptor(index), 0, NULL);
-						}
+						particleComp.m_Material->UpdateForAnimationRendering(UBO, index, particleComp.m_Data, 0);
+						vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &particleComp.m_Material->GetDescriptor(index), 0, NULL);
+					}
+				}
+				else
+				{
+					if (isEditor)
+					{
+						m_3DDefaultMaterial->UpdateForEditorAnimationRendering(UBO, index, particleComp.m_Data, 0);
+						vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetEditorDescriptor(index), 0, NULL);
+					}
+					else
+					{
+						m_3DDefaultMaterial->UpdateForAnimationRendering(UBO, index, particleComp.m_Data, 0);
+						vkCmdBindDescriptorSets(commandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_3DPipeline->GetPipelineLayout(), 0, 1, &m_3DDefaultMaterial->GetDescriptor(index), 0, NULL);
 					}
 				}
 
 				particleComp.m_Mesh->Bind(commandBuffer->GetInUseCommandBuffer());
 				particleComp.m_Mesh->DrawInstanced(commandBuffer->GetInUseCommandBuffer(), particleComp.m_ParticleCount);
-
-				m_PreviousMaterialHandle = currentHandle;
 			}
 		}
-		m_PreviousMaterialHandle = 0;
 	}
 }

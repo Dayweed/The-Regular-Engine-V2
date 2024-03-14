@@ -12,7 +12,7 @@ layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
 	mat4 m_LightSpaceMatrix [2];
-	vec3 m_LightPosition;
+	vec4 m_LightPosition;
 	vec4 m_LightColor;
 	vec4 m_CameraPosition;
 	vec4 m_DirectionalLightDirection [2];

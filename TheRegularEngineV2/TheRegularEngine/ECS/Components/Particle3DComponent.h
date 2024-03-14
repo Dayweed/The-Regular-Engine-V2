@@ -19,6 +19,8 @@ namespace TRE
 		Particle3DComponent()
 		{
 			m_Data = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(Particle3DUBO)), 8);
+			m_Material = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(13));
+			m_Material->Invalidate();
 		}
 
 		std::shared_ptr<RenderObject> m_Mesh;

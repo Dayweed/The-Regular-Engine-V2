@@ -25,7 +25,7 @@ namespace TRE
 
 			void Render(std::shared_ptr<UniformBuffer> ubo2D, std::shared_ptr<UniformBuffer> ubo3D, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
 
-			void Render3D(std::shared_ptr<UniformBuffer> UBO, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
+			void Render3D(const std::shared_ptr<UniformBuffer>& UBO, const std::shared_ptr<CommandBuffer>& commandBuffer, bool isEditor);
 		
 		private:
 			void Init2D();
