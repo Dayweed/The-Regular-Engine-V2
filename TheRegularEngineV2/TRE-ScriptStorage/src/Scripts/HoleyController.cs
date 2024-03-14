@@ -203,7 +203,9 @@ namespace TRE
 
 		public void Update()
 		{
-			HandleInvulnerability();
+			CheckControllability();
+
+            HandleInvulnerability();
 
 			vec3 pos = holeyTransform.Position;
 
@@ -986,6 +988,27 @@ namespace TRE
 			playerToOther *= 20;
 
 			PS.SetLinearVelocity(moley_ref.ID, new vec3(playerToOther.x, 0, playerToOther.y));
-		}
-	}
+        }
+
+        private void CheckControllability()
+        {
+            // Camera panning at the start
+            bool cameraTransiting = false;
+            if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
+            {
+                cameraTransiting = true;
+            }
+
+
+            // Logic to handle isControllable
+            if (Scene.IsTransiting() || cameraTransiting)
+            {
+                isControllable = false;
+            }
+            else
+            {
+                isControllable = true;
+            }
+        }
+    }
 }

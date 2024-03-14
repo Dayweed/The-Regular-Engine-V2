@@ -126,6 +126,8 @@ namespace TRE
 		void TransitionToScene(const std::string& sceneName, const float totalDuration);
 		void VignetteShrink(const float totalDuration);
 
+		bool AnyTransiting();
+
 	private:
 		// Vignette Effect
 		void VignetteCalc();	// Returns if it is closing or opening

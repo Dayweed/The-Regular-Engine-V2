@@ -138,7 +138,6 @@ namespace TRE
 			for (int i = parenting.GetTotalChildren() - 1; i >= 0; --i)
 			{
 				Entity child = parenting.GetChild(i);
-				Debug.Log(i + " Tag " + child.GetTag() + ": " + (child.GetTag() == "FallingObstacle"));
 				child.parenting.RemoveParent();
 				// Only add falling objects with tag
 				if (child.GetTag() == "FallingObstacle")

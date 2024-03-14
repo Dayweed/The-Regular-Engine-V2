@@ -222,4 +222,18 @@ namespace TRE
 		vignetteTransition.m_HalfDuration = vignetteTransition.m_Duration / 2.0f;
 		vignetteTransition.m_IsTransitioning = true;
 	}
+
+	bool ScenePostEffectsSystem::AnyTransiting()
+	{
+		for (size_t i{}; i < TYPE_SIZE; ++i)
+		{
+			Transition& transition = m_Transitions[i];
+			if (transition.m_IsTransitioning)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

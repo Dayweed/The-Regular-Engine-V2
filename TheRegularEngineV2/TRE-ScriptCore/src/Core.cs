@@ -1521,6 +1521,11 @@ namespace TRE
 			return Engine_GetSceneName();
 		}
 
+		public static bool IsTransiting()
+		{
+			return Engine_GetAnyTransiting();
+		}
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static void Engine_ChangeScene(string sceneName);
 
@@ -1529,6 +1534,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static string Engine_GetSceneName();
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static bool Engine_GetAnyTransiting();
 	}
 
 	public class Script

@@ -38,6 +38,8 @@ namespace TRE
 		bool selectedLevel2 = false;
 		bool selectedLevelBonus = false;
 
+		float sceneTransitionDelay = 2.5f;
+
 		// Timer for animation
 		float currentTimer = 0;
 		float delayJumpingHole = 0.68f;
@@ -319,25 +321,25 @@ namespace TRE
 				{
 					selectedTutorial = false;
 
-					Scene.TransitionScene("CutsceneStart", 5f);
+					Scene.TransitionScene("CutsceneStart", sceneTransitionDelay);
 				}
 				else if (selectedLevel1)
 				{
 					selectedLevel1 = false;
 
-					Scene.TransitionScene("Level_1", 5f);
+					Scene.TransitionScene("Level_1", sceneTransitionDelay);
 				}
 				else if (selectedLevel2)
 				{
 					selectedLevel2 = false;
 
-					Scene.TransitionScene("Level_2", 5f);
+					Scene.TransitionScene("Level_2", sceneTransitionDelay);
 				}
 				else if (selectedLevelBonus)
 				{
                     selectedLevelBonus = false;
 
-					Scene.TransitionScene("Level_Bonus", 5f);
+					Scene.TransitionScene("Level_Bonus", sceneTransitionDelay);
 				}
 			}
 

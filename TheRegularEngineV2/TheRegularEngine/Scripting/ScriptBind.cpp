@@ -2015,6 +2015,11 @@ namespace TRE
 		std::string sceneName = SceneManager::Instance().GetCurrentSceneName();
 		return mono_string_new(mono_domain_get(), sceneName.c_str());
 	}
+
+	static bool BindAnyTransiting()
+	{
+		return ECSSystemManager::Instance().GetSystem<ScenePostEffectsSystem>()->AnyTransiting();
+	}
 #pragma endregion
 
 #pragma region ScriptBindings
@@ -2892,6 +2897,7 @@ namespace TRE
 			mono_add_internal_call("TRE.Scene::Engine_ChangeScene", BindLoadScene);
 			mono_add_internal_call("TRE.Scene::Engine_TransitionScene", BindTransitionScene);
 			mono_add_internal_call("TRE.Scene::Engine_GetSceneName", BindGetSceneName);
+			mono_add_internal_call("TRE.Scene::Engine_GetAnyTransiting", BindAnyTransiting);
 		}
 
 		// Scripting
