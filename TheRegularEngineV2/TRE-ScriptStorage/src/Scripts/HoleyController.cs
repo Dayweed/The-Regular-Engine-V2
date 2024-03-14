@@ -552,56 +552,25 @@ namespace TRE
 					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
 					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
-					if (y > 0)
-					{
-						dirVec += CS.GetMainCameraForwardVec();
-						lastPlayerDirection = 0;
-						isWalking = true;
-					}
+                    // calculate the direction vector
+                    isWalking = x != 0 || y != 0;
 
-					if (y < 0)
-					{
-						dirVec -= CS.GetMainCameraForwardVec();
-						lastPlayerDirection = 180;
-						isWalking = true;
-					}
+                    // calculate the angle of the direction vector
+                    if (isWalking)
+                    {
+                        lastPlayerDirection = (int)(Math.Atan2(y, x) * 180/Math.PI - 90 + 360) % 360;
+						
 
-					if (x < 0)
-					{
-						dirVec += CS.GetMainCameraRightVec();
-						lastPlayerDirection = 90;
-						isWalking = true;
-					}
-
-					if (x > 0)
-					{
-						dirVec -= CS.GetMainCameraRightVec();
-						lastPlayerDirection = 270;
-						isWalking = true;
-					}
-
-					if (y > 0)
-					{
-						if (x > 0)
-							lastPlayerDirection = 315;
-
-						if (x < 0)
-							lastPlayerDirection = 45;
-					}
-
-					if (y < 0)
-					{
-						if (x > 0)
-							lastPlayerDirection = 225;
-
-						if (x < 0)
-							lastPlayerDirection = 135;
-					}
-
-					if (x == 0 && y == 0)
-					{
-						isWalking = false;
-					}
+                        // handle the dirVec
+                        if(y > 0)
+                            dirVec += CS.GetMainCameraForwardVec();
+                        if(y < 0)
+                            dirVec -= CS.GetMainCameraForwardVec();
+                        if(x > 0)
+                            dirVec -= CS.GetMainCameraRightVec();
+                        if(x < 0)
+                            dirVec += CS.GetMainCameraRightVec();
+                    }
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
