@@ -40,8 +40,20 @@ namespace TRE
 			{
 				// make the other flag a little bit further along in its swing
 				if (name == "Decor_Flag_Pivot_2")
+				{
 					timer = 1.0f;
+					return;
+				}
 			}
+
+			// having a "!" in the name will make it swing on the z axis instead
+			if (name.Contains("!"))
+				swingFunction = SwingOnZ;
+
+			// if the name has a digit at the end, let it be the change in the initial rotation
+			string nameLastChar = name.Substring(name.Length - 1);
+			if (int.TryParse(nameLastChar, out int result))
+				timer = result;
 		}
 
 		public void Update()
