@@ -383,7 +383,10 @@ namespace TRE
 						if (menuOption == 0) // yes
 						{
 							// Quit game
-							Game.CloseGame();
+                            //Game.CloseGame();
+
+							// go back to the main menu
+                            Scene.TransitionScene("MainMenu", 4.5f);
 						}
 						else if (menuOption == 1) // no
 						{
