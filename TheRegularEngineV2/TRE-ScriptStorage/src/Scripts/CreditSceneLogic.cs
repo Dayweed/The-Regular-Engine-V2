@@ -6,10 +6,13 @@ namespace TRE
     {
         Entity mCreditText;
         float m_ScrollSpeed = 100f;
+        bool m_EndOfCredits = false;
+        float m_Endposition = -2850f;
 
         public void Start()
         {
             mCreditText = ECSManager.FindEntityByName("Credits");
+            m_EndOfCredits = false;
         }
 
         public void Update()
@@ -20,8 +23,16 @@ namespace TRE
         public void ScrollingCredits()
         {
             vec3 currentpos = mCreditText.GetComponent<Transform>().Position;
-            currentpos.y -= Time.GetDeltaTime() * m_ScrollSpeed;
-            TransformSystem.SetPosition(mCreditText.ID, currentpos);
+            if (currentpos.y > m_Endposition)
+            {
+                currentpos.y -= Time.GetDeltaTime() * m_ScrollSpeed;
+                TransformSystem.SetPosition(mCreditText.ID, currentpos);
+            }
+            else
+            {
+                m_EndOfCredits = true;
+                //Debug.Log("Ended");
+            }
         }
     }
 }
