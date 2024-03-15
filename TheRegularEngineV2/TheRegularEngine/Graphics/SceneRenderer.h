@@ -28,7 +28,6 @@ namespace TRE
 	struct PushConstantGeometry
 	{
 		glm::mat4 m_Model;
-		int m_DLightIndex;
 		bool m_DrawShadow{ true };
 	};
 

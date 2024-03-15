@@ -341,8 +341,14 @@ namespace TRE
 
 		glm::mat4 shadowDepthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
+		recalculateShadowFrustum = true;
 
-		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		auto DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		std::sort(DLights.begin(), DLights.end(), [](const auto& first, const auto& sec)
+		{
+			return first->GetComponent<Properties>().m_Index < sec->GetComponent<Properties>().m_Index;
+		});
+
 		if (DLights.size() > 2)
 		{
 			TRE_CORE_CRITICAL("Engine does not support more than 2 directional light");
@@ -358,6 +364,7 @@ namespace TRE
 			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
 			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
 			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
+			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
 
 			if (recalculateShadowFrustum)
 			{
@@ -710,7 +717,6 @@ namespace TRE
 			PushConstantGeometry pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
 			pc.m_DrawShadow = mr.m_DrawShadow;
-			pc.m_DLightIndex = mr.m_DLightIndex;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_Pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			ResourceHandle currentMaterialHandle = go_mr.first;
@@ -770,7 +776,6 @@ namespace TRE
 			PushConstantGeometry pc{};
 			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
 			pc.m_DrawShadow = MeshRendererComp.m_DrawShadow;
-			pc.m_DLightIndex = MeshRendererComp.m_DLightIndex;
 			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_AnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantGeometry), &pc);
 
 			if (MeshRendererComp.m_AnimationMaterialInstance == nullptr)
