@@ -26,7 +26,6 @@ layout(location = 0) out struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-
 	float m_DrawShadow;
 } Out;
 
@@ -58,7 +57,6 @@ layout(set = 0, binding = 6) uniform MaterialColor
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
-	int m_DLightIndex;
 	bool m_DrawShadow;
 } push;
 const float gamma = 2.2;
@@ -133,7 +131,6 @@ layout(location = 0) in struct
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
-	int m_DLightIndex;
 	bool m_DrawShadow;
 } push;
 

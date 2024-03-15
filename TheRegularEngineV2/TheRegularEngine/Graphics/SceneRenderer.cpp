@@ -707,12 +707,12 @@ namespace TRE
 		Renderer::BindPipeline(m_CommandBuffer, m_Pipeline);
 		for (const auto& go_mr : MaterialSort)
 		{
-			if (go_mr.second->HasComponent<AnimationComponent>()) //This only render static meshes
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+
+			if (go_mr.second->HasComponent<AnimationComponent>() && mr.m_RenderObject->IsAnimated()) //This only render static meshes
 			{
 				continue;
 			}
-
-			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
 
 			PushConstantGeometry pc{};
 			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;

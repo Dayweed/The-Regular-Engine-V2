@@ -62,6 +62,7 @@ namespace TRE
 
 		static ResourceType GetType() { return ResourceType::Mesh; }
 		bool IsRigged() { return m_IsRigged; }
+		bool IsAnimated() { return m_Animations.size() > 0; }
 		Animation GetAnimation() { return m_Animations[0]; }
 
 		void Serialize() override;

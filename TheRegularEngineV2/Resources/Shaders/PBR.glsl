@@ -116,7 +116,6 @@ layout(location = 0) in struct
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
-	int  m_DLightIndex;
 	bool m_DrawShadow;
 } push;
 

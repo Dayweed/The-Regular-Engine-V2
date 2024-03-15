@@ -8,6 +8,7 @@ layout(location = 0) out vec4 outColor;
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
+	int  m_DLightIndex;
 } push;
 
 layout(set = 0, binding = 0) uniform UBO
