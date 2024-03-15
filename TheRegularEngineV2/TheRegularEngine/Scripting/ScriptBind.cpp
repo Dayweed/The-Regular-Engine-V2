@@ -709,7 +709,9 @@ namespace TRE
 		mr.m_IsDirty = true;
 
 		if (mr.m_MaterialInstance == nullptr)
+		{
 			PUBLISHERROR("Unable to find material " + str);
+		}
 	}
 
 	/*static MonoString* BindGetMaterialInstance(CSEntityID ID)

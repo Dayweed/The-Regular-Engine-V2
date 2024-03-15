@@ -151,6 +151,7 @@ namespace TRE
         private const string defaultJumpingMesh = "mole_jump.fbx";
         private const string defaultIdleMesh = "mole_idle.fbx";
         private const string defaultAnimationMaterial = "BlueCharacter_Animation.material";
+        private const string testmat = "Blue_Holey.material";
 
         //Blueberry
         private const string blueberryMaterial = "BlueCharacter_Animation.material";
@@ -882,7 +883,7 @@ namespace TRE
 				if (MS.IsCurrentMesh(this.ID, blueberryMesh) == false)
 				{
 					GetComponent<MeshRenderer>().Mesh = blueberryMesh;
-					GetComponent<MeshRenderer>().Material = defaultAnimationMaterial;
+					GetComponent<MeshRenderer>().Material = testmat;
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}
