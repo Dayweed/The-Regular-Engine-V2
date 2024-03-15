@@ -113,13 +113,10 @@ namespace TRE
 			}
 		}
 
-		void MakeAllPlatformsInactive()
+		public void MakeAllPlatformsInactive()
 		{
 			foreach (OnOffPlatform platform in platformList)
-			{
 				platform.SetPlatformState(false);
-				// platform.ResetPlatform();
-			}
 		}
 
 		void OldBehaviour()

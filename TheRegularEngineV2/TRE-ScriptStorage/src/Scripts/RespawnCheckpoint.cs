@@ -20,19 +20,14 @@ namespace TRE
 		{
 			Entity other = new Entity(otherID);
 
+			TransformSystem.GetPosition(this.ID, out vec3 respawnPoint);
+			respawnPoint.y += RespawnHeight;
+
 			if (other.CompareTag("Red")) // Moley
-			{
-				TransformSystem.GetPosition(this.ID, out vec3 respawnPoint);
-				respawnPoint.y += RespawnHeight;
 				other.GetComponent<MoleyController>().SetRespawnPoint(respawnPoint);
-			}
 
 			if (other.CompareTag("Blue")) // Holey
-			{
-				TransformSystem.GetPosition(this.ID, out vec3 respawnPoint);
-				respawnPoint.y += RespawnHeight;
 				other.GetComponent<HoleyController>().SetRespawnPoint(respawnPoint);
-			}
 		}
 	}
 }
