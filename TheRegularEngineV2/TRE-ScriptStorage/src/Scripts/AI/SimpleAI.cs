@@ -31,11 +31,14 @@ namespace TRE
 		private float armingTimer = 0f;
 		private float armingDuration = 1.25f;
 
+		private Entity pinataEffect;
+
 		public void Start()
 		{
 			originalSpawnPoint = transform.Position;
 			mHoley = new Entity(ECSManager.FindIDFromName("Holey"));
 			mMoley = new Entity(ECSManager.FindIDFromName("Moley"));
+			pinataEffect = parenting.GetChildFromName("PinataEffect");
 			mTarget = new Entity(); // Invalid ID
 			mGround = new Entity(); // Invalid ID
 			mDetectorRange = parenting.GetChildFromName("DetectorRange");
@@ -207,6 +210,11 @@ namespace TRE
 
 			// Destroy self
 			DestroySelf();
+		}
+
+		public void OnDestroy()
+		{
+			ParticleSystem3D.SetActive(pinataEffect.ID, true);
 		}
 	}
 }

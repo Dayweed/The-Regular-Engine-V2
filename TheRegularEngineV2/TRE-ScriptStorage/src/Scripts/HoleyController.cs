@@ -931,7 +931,7 @@ namespace TRE
             //turn off the particles if the player is dead/ not moving/ not grounded
             if (isDead || !isGrounded || !isWalking)
             {
-                PS3D.SetActive(holey_dust.ID, true);
+                PS3D.SetActive(holey_dust.ID, false);
             }
             else
             {

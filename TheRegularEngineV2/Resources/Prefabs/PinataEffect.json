@@ -1,0 +1,150 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "1922004014201774520",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1922004014201774520",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "6267215067885543026",
+         "m_Index": 210,
+         "m_Name": "PinataEffect",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0009651184082031
+         ],
+         "Fade": false,
+         "FadeDuration": [
+            0.25,
+            0.75
+         ],
+         "LifeTime": 1.0,
+         "Loop": false,
+         "MaterialInstance": "79b97f19e736757d",
+         "ParticleCount": 10,
+         "PlayOnStart": true,
+         "RenderObject": "4d974e3a749e338a",
+         "Size": 1.0,
+         "SpawnRadius": 3.0,
+         "Speed": 100.0,
+         "VariationSize": [
+            0.800000011920929,
+            1.0
+         ],
+         "VariationSpeed": [
+            0.15000000596046448,
+            1.0
+         ],
+         "Velocity": [
+            0.0,
+            0.10000000149011612,
+            0.0
+         ]
+      }
+   ]
+]
