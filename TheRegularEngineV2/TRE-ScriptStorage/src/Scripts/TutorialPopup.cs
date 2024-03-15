@@ -12,8 +12,8 @@
 		private bool IsActivated_BeforeHITW = false;
 		private bool HasBeenTriggeredBefore_BeforeHITW = false;
 
-		private Entity UIPopupTutorialStart;
-		private bool UIPopupTutorialStartExist = false;
+		//private Entity UIPopupTutorialStart;
+		//private bool UIPopupTutorialStartExist = false;
 
 		private Entity RightHUDRef;
 		private Entity LeftHUDRef;
@@ -30,8 +30,8 @@
 			RightHUDRef = ECSManager.FindEntityByName("RightCharacter_HUD");
 			LeftHUDRef = ECSManager.FindEntityByName("LeftCharacter_HUD");
 
-			UIPopupTutorialStart = ECSManager.FindEntityByName("ControlsPopup");
-			UIPopupTutorialStartExist = false;
+			//UIPopupTutorialStart = ECSManager.FindEntityByName("ControlsPopup");
+			//UIPopupTutorialStartExist = false;
 
 			UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
 			PopupCollier_BeforeHITW = ECSManager.FindEntityByName("PopupCollider2");
@@ -43,22 +43,22 @@
 
 		public void Update()
 		{
-			if (UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible == false 
-				&& UIPopupTutorialStartExist == false && mainCam.preTransitions.preTransitioned)
-			{
-				UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = true;
-				UIPopupTutorialStartExist = true;
-			}
+			//if (UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible == false 
+			//	&& UIPopupTutorialStartExist == false && mainCam.preTransitions.preTransitioned)
+			//{
+			//	UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = true;
+			//	UIPopupTutorialStartExist = true;
+			//}
 
-			if (UIPopupTutorialStartExist && InputSystem.GetKeyHold(InputKeys.Space))
-			{
-				//UIPopupTutorialStartExist = false;
-				UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = false;
+			//if (UIPopupTutorialStartExist && InputSystem.GetKeyHold(InputKeys.Space))
+			//{
+			//	//UIPopupTutorialStartExist = false;
+			//	UIPopupTutorialStart.GetComponent<SpriteRenderer>().isVisible = false;
 
-				//Render all the HUD after the popup of control page finishes
-				RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
-				LeftHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
-			}
+			//	//Render all the HUD after the popup of control page finishes
+			//	RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
+			//	LeftHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
+			//}
 
 			if (IsActivated_1 && !IsActivated_BeforeHITW)
 			{
