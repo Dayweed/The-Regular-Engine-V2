@@ -722,12 +722,12 @@ namespace TRE
 				{
 					if (m_IsEditorScene)
 					{
-						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
+						m_DefaultPBRMaterial->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
+						m_DefaultPBRMaterial->UpdateForRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &m_DefaultPBRMaterial->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -735,12 +735,12 @@ namespace TRE
 				{
 					if (m_IsEditorScene)
 					{
-						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
+						mr.m_MaterialInstance->UpdateForEditorSceneRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 					}
 					else
 					{
-						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index, mr.m_DLightIndex);
+						mr.m_MaterialInstance->UpdateForRendering(m_UBOBuffer, Index);
 						vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &mr.m_MaterialInstance->GetDescriptor(Index), 0, NULL);
 					}
 				}
@@ -784,12 +784,12 @@ namespace TRE
 
 				if (m_IsEditorScene)
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
+					m_DefaultAnimationPBRMaterial->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
+					m_DefaultAnimationPBRMaterial->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &m_DefaultAnimationPBRMaterial->GetDescriptor(Index), 0, NULL);
 				}
 			}
@@ -797,12 +797,12 @@ namespace TRE
 			{
 				if (m_IsEditorScene)
 				{
-					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForEditorAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetEditorDescriptor(Index), 0, NULL);
 				}
 				else
 				{
-					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO, MeshRendererComp.m_DLightIndex);
+					MeshRendererComp.m_AnimationMaterialInstance->UpdateForAnimationRendering(m_UBOBuffer, Index, AnimationComp.m_UBO);
 					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_AnimationPipeline->GetPipelineLayout(), 0, 1, &MeshRendererComp.m_AnimationMaterialInstance->GetDescriptor(Index), 0, NULL);
 				}
 			}
