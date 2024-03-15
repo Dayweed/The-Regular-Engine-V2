@@ -1,6 +1,7 @@
 Shader:
 51e8150cd09be553
 Textures:
+shadowMap2 | 0
 AOMap | 0
 RoughnessMap | 774b8eb6945630f9
 DiffuseMap | a75b34808179e8a5
