@@ -182,24 +182,6 @@ namespace TRE
 			InitializeRotation(state);
 		}
 
-		/// <summary>I DON'T KNOW IF THIS WORKS YETTTT!!</summary>
-		public void ResetPlatform()
-		{
-			InitializeRotation(false);
-			if (isOppositePlatformType)
-			{
-				TS.GetRotation(this.ID, out vec3 rot);
-				rot.x = 0;
-				TS.SetRotation(this.ID, rot);
-			}
-			else
-			{
-				TS.GetRotation(this.ID, out vec3 rot);
-				rot.z = 0;
-				TS.SetRotation(this.ID, rot);
-			}
-		}
-
 		/// <summary>Assign variables based on the constants set in Start() and the given <c>state</c>.</summary>
 		void InitializeRotation(bool state)
 		{
