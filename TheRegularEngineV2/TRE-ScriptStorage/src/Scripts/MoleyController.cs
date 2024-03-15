@@ -788,7 +788,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.B))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.Y))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -805,7 +805,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.Y))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.B))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
