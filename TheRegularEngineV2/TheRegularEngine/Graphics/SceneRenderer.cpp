@@ -442,7 +442,11 @@ namespace TRE
 
 		ShadowUBO UBO_Shadow{};
 
-		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		auto DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		std::sort(DLights.begin(), DLights.end(), [](const auto& first, const auto& sec)
+		{
+			return first->GetComponent<Properties>().m_Index < sec->GetComponent<Properties>().m_Index;
+		});
 
 		for (int x = 0; x < DLights.size(); x++)
 		{

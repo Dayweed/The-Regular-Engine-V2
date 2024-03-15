@@ -919,7 +919,7 @@ namespace TRE
 
         private void HandleParticles(ref vec3 currVelocity)
         {
-            Debug.Log("particle is active: " + PS3D.GetActive(holey_dust.ID));
+            //Debug.Log("particle is active: " + PS3D.GetActive(holey_dust.ID));
             vec3 particleVel = vec3.Zero;
             if (currVelocity != vec3.Zero)
             {

@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "17450219566625718823",
-            "2015098057894362467"
+            "13809780300428897362",
+            "5840219294368190178"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "180571487696005112"
+         "m_Parent": "2640492882278239667"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "180571487696005112"
+         "m_Parent": "2640492882278239667"
       }
    ],
    [
@@ -58,24 +58,24 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "180571487696005112",
-         "m_Index": 4,
+         "m_GUID": "2640492882278239667",
+         "m_Index": 1,
          "m_Name": "Moley",
          "m_Tag": "Red"
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "17450219566625718823",
-         "m_Index": 5,
+         "m_GUID": "13809780300428897362",
+         "m_Index": 2,
          "m_Name": "Moley_Dust",
          "m_Tag": ""
       },
       2,
       {
          "m_Active": true,
-         "m_GUID": "2015098057894362467",
-         "m_Index": 6,
+         "m_GUID": "5840219294368190178",
+         "m_Index": 3,
          "m_Name": "Power Manager",
          "m_Tag": ""
       }
@@ -144,7 +144,7 @@
          "ASSET_GEOM_m_RenderObject": "73d37b988d6588bf",
          "ASSET_MAT_m_AnimationMaterialInstance": "b95e6d6bda90700d",
          "ASSET_MAT_m_MaterialInstance": "b08363e4f6cc86cc",
-         "m_DLightIndex": 0,
+         "m_DLightIndex": 1,
          "m_DrawShadow": true,
          "m_IsVisible": true
       }
