@@ -59,7 +59,7 @@ namespace TRE
 			PlayerMidPosition = MidPos.GetComponent<PlayerMidPosition>();
 
 			finalPos = MidPosTransform.Position;
-			freeCamera = true;
+			freeCamera = false;
 		}
 
 		public void Update()
@@ -90,7 +90,9 @@ namespace TRE
 				CameraSystem.SetMainCameraFollow(finalPos, distance);
 			}
 			else
+			{
 				CameraSystem.UpdateMainCameraTransform();
+			}
 
 			if (toTransition)
 			{

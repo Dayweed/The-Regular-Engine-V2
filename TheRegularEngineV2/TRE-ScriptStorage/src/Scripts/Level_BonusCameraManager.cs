@@ -85,6 +85,7 @@ namespace TRE
 
 		public void Update()
 		{
+			cameraController.freeCamera = true;
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsInsideTrigger(Trigger_B);
 			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);

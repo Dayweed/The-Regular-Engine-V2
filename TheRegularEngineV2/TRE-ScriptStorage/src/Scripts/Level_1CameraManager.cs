@@ -74,10 +74,6 @@ namespace TRE
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 			Debug.Log("CameraController ID is " + cameraController.ID);
 
-			expectedDistance = 35;
-			expectedPosition = new vec3(0, 10, 20);
-			expectedRotation = new vec3(30, 180, 0);
-
 			preTransitions = new CameraTransitions();
 			preTransitions.Init();
 			preTransitions.AddCameraData(new vec3(1120, 200, -50), new vec3(30, 240, 0), 2f);

@@ -39,11 +39,11 @@ namespace TRE
 			expectedRotation = new vec3(30, 180, 0);
 
 			cameraController.freeCamera = true;
-
 		}
 
 		public void Update()
 		{
+			cameraController.freeCamera = true;
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsInsideTrigger(Trigger_B);
 
