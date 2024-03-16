@@ -45,7 +45,7 @@ namespace TRE
 		private bool isControllerConnected = false;
 		private bool lastControllerConnected = false;
 		private bool changeUI = false;
-		private Entity CharacterUI;
+        private Entity CharacterUI;
 
 		// the controls/keys that THIS player (Holey) will use
 		#region Player Controls
@@ -148,21 +148,21 @@ namespace TRE
 		public bool keepInventory = false;
 		public bool creativeMode = false;
 
-		//Materials and Meshes
-		//Default
-		private const string defaultWalkingMesh = "mole_walk.fbx";
-		private const string defaultJumpingMesh = "mole_jump.fbx";
-		private const string defaultIdleMesh = "mole_idle.fbx";
-		private const string defaultAnimationMaterial = "BlueCharacter_Animation.material";
-		private const string testmat = "Blue_Holey.material";
+        //Materials and Meshes
+        //Default
+        private const string defaultWalkingMesh = "mole_walk.fbx";
+        private const string defaultJumpingMesh = "mole_jump.fbx";
+        private const string defaultIdleMesh = "mole_idle.fbx";
+        private const string defaultAnimationMaterial = "BlueCharacter_Animation.material";
+        private const string testmat = "Blue_Holey.material";
 
-		//Blueberry
-		private const string blueberryMaterial = "BlueCharacter_Animation.material";
-		private const string blueberryMesh = "Holey_Blueberry.fbx";
-		//Strawberry
-		private const string strawberryMaterial = "Holey_Strawberry.material";
-		private const string strawberryMesh = "Holey_Strawberry.fbx";
-		public void Start()
+        //Blueberry
+        private const string blueberryMaterial = "BlueCharacter_Animation.material";
+        private const string blueberryMesh = "Holey_Blueberry.fbx";
+        //Strawberry
+        private const string strawberryMaterial = "Holey_Strawberry.material";
+        private const string strawberryMesh = "Holey_Strawberry.fbx";
+        public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -170,7 +170,7 @@ namespace TRE
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
-			CharacterUI = ECSManager.FindEntityByName("RightCharacter_HUD");
+            CharacterUI = ECSManager.FindEntityByName("RightCharacter_HUD");
 			#endregion
 
 			#region Player Transform and Physics Variables
@@ -214,27 +214,27 @@ namespace TRE
 		{
 			// check if controller connected
 			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
-			if (lastControllerConnected != isControllerConnected)
-			{
-				lastControllerConnected = isControllerConnected;
-				changeUI = true;
-			}
+            if (lastControllerConnected != isControllerConnected)
+            {
+                lastControllerConnected = isControllerConnected;
+                changeUI = true;
+            }
 
-			if (changeUI && isControllerConnected && CharacterUI != null)
-			{
-				changeUI = false;
-				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller.png";
-			}
+            if (changeUI && isControllerConnected && CharacterUI != null)
+            {
+                changeUI = false;
+                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller.png";
+            }
 
-			if (changeUI && !isControllerConnected && CharacterUI != null)
-			{
-				changeUI = false;
-				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
-			}
-			
+            if (changeUI && !isControllerConnected && CharacterUI != null)
+            {
+                changeUI = false;
+                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
+            }
+            
 			CheckControllability();
 
-			HandleInvulnerability();
+            HandleInvulnerability();
 
 			vec3 pos = holeyTransform.Position;
 
@@ -584,25 +584,25 @@ namespace TRE
 					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
 					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
-					// calculate the direction vector
-					isWalking = x != 0 || y != 0;
+                    // calculate the direction vector
+                    isWalking = x != 0 || y != 0;
 
-					// calculate the angle of the direction vector
-					if (isWalking)
-					{
-						lastPlayerDirection = (int)(Math.Atan2(y, x) * 180/Math.PI - 90 + 360) % 360;
+                    // calculate the angle of the direction vector
+                    if (isWalking)
+                    {
+                        lastPlayerDirection = (int)(Math.Atan2(y, x) * 180/Math.PI - 90 + 360) % 360;
 						
 
-						// handle the dirVec
-						if(y > 0)
-							dirVec += CS.GetMainCameraForwardVec();
-						if(y < 0)
-							dirVec -= CS.GetMainCameraForwardVec();
-						if(x > 0)
-							dirVec -= CS.GetMainCameraRightVec();
-						if(x < 0)
-							dirVec += CS.GetMainCameraRightVec();
-					}
+                        // handle the dirVec
+                        if(y > 0)
+                            dirVec += CS.GetMainCameraForwardVec();
+                        if(y < 0)
+                            dirVec -= CS.GetMainCameraForwardVec();
+                        if(x > 0)
+                            dirVec -= CS.GetMainCameraRightVec();
+                        if(x < 0)
+                            dirVec += CS.GetMainCameraRightVec();
+                    }
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
@@ -941,36 +941,29 @@ namespace TRE
 			}
 		}
 
-		private void HandleParticles(ref vec3 currVelocity)
-		{
-			//Debug.Log("particle is active: " + PS3D.GetActive(holey_dust.ID));
-			//vec3 pos = this.GetComponent<Transform>().Position;
-			//holey_dust.GetComponent<Transform>().Position = pos;
+        private void HandleParticles(ref vec3 currVelocity)
+        {
+            //Debug.Log("particle is active: " + PS3D.GetActive(holey_dust.ID));
+            vec3 particleVel = vec3.Zero;
+            if (currVelocity != vec3.Zero)
+            {
+                particleVel = currVelocity.NormalizedSafe;
+                particleVel *= -1;
+            }
 
-			vec3 particleVel;
-			if (currVelocity != vec3.Zero)
-			{
-				particleVel = currVelocity.NormalizedSafe;
-				particleVel *= -1;
-			}
-			else
-			{
-				particleVel = vec3.Zero;
-			}
+            PS3D.SetVelocity(holey_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
+            //turn off the particles if the player is dead/ not moving/ not grounded
+            if (isDead || !isGrounded || !isWalking)
+            {
+                PS3D.SetActive(holey_dust.ID, false);
+            }
+            else
+            {
+                PS3D.SetActive(holey_dust.ID, true);
+            }
+        }
 
-			PS3D.SetVelocity(holey_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
-			//turn off the particles if the player is dead/ not moving/ not grounded
-			if (isDead || !isGrounded || !isWalking)
-			{
-				PS3D.SetActive(holey_dust.ID, true);
-			}
-			else
-			{
-				PS3D.SetActive(holey_dust.ID, true);
-			}
-		}
-
-		public void UpdateDisplay()
+        public void UpdateDisplay()
 		{
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 		}
@@ -1047,27 +1040,27 @@ namespace TRE
 			playerToOther *= 20;
 
 			PS.SetLinearVelocity(moley_ref.ID, new vec3(playerToOther.x, 0, playerToOther.y));
-		}
+        }
 
-		private void CheckControllability()
-		{
-			// Camera panning at the start
-			bool cameraTransiting = false;
-			if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
-			{
-				cameraTransiting = true;
-			}
+        private void CheckControllability()
+        {
+            // Camera panning at the start
+            bool cameraTransiting = false;
+            if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
+            {
+                cameraTransiting = true;
+            }
 
 
-			// Logic to handle isControllable
-			if (Scene.IsTransiting() || cameraTransiting)
-			{
-				isControllable = false;
-			}
-			else
-			{
-				isControllable = true;
-			}
-		}
-	}
+            // Logic to handle isControllable
+            if (Scene.IsTransiting() || cameraTransiting)
+            {
+                isControllable = false;
+            }
+            else
+            {
+                isControllable = true;
+            }
+        }
+    }
 }
