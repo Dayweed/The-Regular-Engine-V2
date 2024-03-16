@@ -79,7 +79,8 @@ namespace TRE
 		private Entity mGammaPanel;
         private Entity mGammaCheckbox;
         private Entity mGammaTick;
-		bool mIsGammaOn = true;
+        private Entity mGraphicsPointer;
+        bool mIsGammaOn = true;
         //private Transform settingsPointerTransform;
 
         public void Start()
@@ -133,6 +134,7 @@ namespace TRE
             mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
 			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
 			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
+			mGraphicsPointer = ECSManager.FindEntityByName("graphics_pointer");
     }
 
 		public void OnCreate()
@@ -373,11 +375,18 @@ namespace TRE
 				}
 				else if (menustate == 1 && mIsEditingSettings)
 				{
-					if (showGraphicsPanel)
+					if (showAudioPanel)
 					{
+
+					}
+					else if (showGraphicsPanel)
+					{
+						mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 						if (mCurrentEditMember == 0)
 						{
-							if (InputSystem.GetKeyTriggered(InputKeys.Enter))
+                            mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
+
+                            if (InputSystem.GetKeyTriggered(InputKeys.Enter))
 							{
 								mIsGammaOn = !mIsGammaOn;
 								if (mIsGammaOn)
@@ -396,6 +405,14 @@ namespace TRE
 						{
 
 						}
+					}
+					else if (showControlsPanel)
+					{
+
+					}
+					else if (showGameplayPanel)
+					{
+
 					}
 				}
                 else // confirmation menu logic which is menustate == 2
