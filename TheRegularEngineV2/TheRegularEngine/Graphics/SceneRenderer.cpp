@@ -225,6 +225,24 @@ namespace TRE
 		};
 		m_AnimationPipeline = std::make_shared<Pipeline>(AnimationPipelineConfig, m_RenderPass);
 
+		float x3D = -1.f; float y3D = -1.f;
+		float width3D = 2, height3D = 2;
+		std::vector<QuadVertex> Sprite3DVertices(4);
+
+		Sprite3DVertices[0].Position = glm::vec3(x3D, y3D, 0.f);
+		Sprite3DVertices[0].TexCoord = glm::vec2(0, 0);
+
+		Sprite3DVertices[1].Position = glm::vec3(x3D + width3D, y3D, 0.f);
+		Sprite3DVertices[1].TexCoord = glm::vec2(1, 0);
+
+		Sprite3DVertices[2].Position = glm::vec3(x3D + width3D, y3D + height3D, 0.f);
+		Sprite3DVertices[2].TexCoord = glm::vec2(1, 1);
+
+		Sprite3DVertices[3].Position = glm::vec3(x3D, y3D + height3D, 0.f);
+		Sprite3DVertices[3].TexCoord = glm::vec2(0, 1);
+
+		std::vector<int> Sprite3DIndices = { 0,1,2,2,3,0 };
+
 		PipelineConfigurations Sprite3DPipelineConfig{};
 		Sprite3DPipelineConfig.Primitive = PrimitiveType::Triangles;
 		Sprite3DPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(6);
@@ -235,12 +253,12 @@ namespace TRE
 
 		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
 
-		m_Sprite3DIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
-			UINT32_T_CAST(sizeof(int) * indices.size()),
-			UINT32_T_CAST(indices.size()));
+		m_Sprite3DIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(Sprite3DIndices.data()),
+			UINT32_T_CAST(sizeof(int) * Sprite3DIndices.size()),
+			UINT32_T_CAST(Sprite3DIndices.size()));
 
-		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
-			UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
+		m_Sprite3DVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(Sprite3DVertices.data()),
+			UINT32_T_CAST(Sprite3DVertices.size() * sizeof(QuadVertex)));
 	}
 
 	void SceneRenderer::CreateFrameBuffer(std::shared_ptr<RenderPass>& renderpass)
