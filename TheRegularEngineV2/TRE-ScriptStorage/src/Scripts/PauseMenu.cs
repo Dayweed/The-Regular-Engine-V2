@@ -18,6 +18,7 @@ namespace TRE
 		public bool isPaused = false;
 		public bool isConfirming = false;
 		public bool isChangeMenu = false;
+		public bool showAudioPanel = false;
 
 		public int mainMenuOption = 0; // for confirmation menu to know which option to execute
 		public int currentOption = 0;
@@ -58,6 +59,7 @@ namespace TRE
 		private List<Entity> DestructiveActionConfirmations;
 		private List<Entity> settingsPanel;
 		private List<Entity> settingsSelected;
+		private List<Entity> audioPanel;
 
 		private Entity pauseMenu;
 		private Entity cfmMenu;
@@ -102,11 +104,13 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
 
-			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+            audioPanel = new List<Entity>();
+            int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
 			for (int i = 0; i < total_children; i++)
 			{
-
-			}
+				String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
+				audioPanel.Add(ECSManager.FindEntityByName(childName));
+            }
         }
 
 		public void OnCreate()
@@ -216,31 +220,26 @@ namespace TRE
 							settingsOption = 0;
 						else
 							++settingsOption;
-
-						//print check; remove later
-						//if (settingsOption == 3)
-						//{
-						//	ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
-      //                      Debug.Log(ECSManager.FindEntityByName("audio_selected").parenting.GetChild(0).name);
-      //                      Debug.Log(ECSManager.FindEntityByName("audio_selected").parenting.GetChild(1).name);
-      //                      Debug.Log(ECSManager.FindEntityByName("audio_selected").parenting.GetChild(2).name);
-      //                  }
 					}
 
 					switch (settingsOption)
 					{
 						case 0:
 							settings_name = "Gameplay";
-							break;
+                            showAudioPanel = false;
+                            break;
 						case 1:
 							settings_name = "Graphics";
-							break;
+                            showAudioPanel = false;
+                            break;
 						case 2:
 							settings_name = "Audio";
-							break;
+							showAudioPanel = true;
+                            break;
 						case 3:
 							settings_name = "Controls";
-							break;
+                            showAudioPanel = false;
+                            break;
 					}
 
 					//show which panel is selected
@@ -270,20 +269,10 @@ namespace TRE
 						}
 					}
 
-                    //show what can be adjusted for each panel
-                    switch (settings_name)
-					{
-						case "Gameplay":
-							break;
-
-						case "Graphics":
-							break;
-
-						case "Audio":
-							break;
-
-						case "Controls":
-							break;
+					//show audio panel
+                    for (int i = 0; i < audioPanel.Count; ++i)
+                    {
+                        UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
                     }
 
 					//               //user can press W or S to move up or down in its own settings
