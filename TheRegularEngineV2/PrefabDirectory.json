@@ -45,7 +45,8 @@
             "8053394209025390399",
             "2264404905524665798",
             "1922004014201774520",
-            "12047088969239804211"
+            "12047088969239804211",
+            "16334699758206833652"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -92,7 +93,8 @@
             "../Resources/Prefabs/CourseComplete.json",
             "../Resources/Prefabs/Tutorial_Environment.json",
             "../Resources/Prefabs/PinataEffect.json",
-            "../Resources/Prefabs/TutorialDiorama.json"
+            "../Resources/Prefabs/TutorialDiorama.json",
+            "../Resources/Prefabs/EffectsManager.json"
         ]
     }
 }
