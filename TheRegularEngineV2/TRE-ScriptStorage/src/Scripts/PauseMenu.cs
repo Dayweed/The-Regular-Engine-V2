@@ -18,7 +18,10 @@ namespace TRE
 		public bool isPaused = false;
 		public bool isConfirming = false;
 		public bool isChangeMenu = false;
+		public bool showGameplayPanel = false;
+		public bool showGraphicsPanel = false;
 		public bool showAudioPanel = false;
+		public bool showControlsPanel = false;
 
 		public int mainMenuOption = 0; // for confirmation menu to know which option to execute
 		public int currentOption = 0;
@@ -111,7 +114,8 @@ namespace TRE
 			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
 			destructivePointerTransform = destructivePointer.GetComponent<Transform>();
 
-			//audioPointer = ECSManager
+			audioPointer = ECSManager.FindEntityByName("audio_pointer");
+			audioPointerTransform = audioPointer.GetComponent<Transform>();
 
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
@@ -214,7 +218,9 @@ namespace TRE
 					if (InputSystem.GetKeyTriggered(InputKeys.A))
 					{
 						Debug.Log("press left");
-						if (settingsOption == 0)
+						if (settingsOption < 0)
+							settingsOption = 0;
+						else if (settingsOption > 3)
 							settingsOption = 3;
 						else
 							--settingsOption;
@@ -223,9 +229,11 @@ namespace TRE
 					if (InputSystem.GetKeyTriggered(InputKeys.D))
 					{
 						Debug.Log("press right");
-						if (settingsOption == 3)
-							settingsOption = 0;
-						else
+                        if (settingsOption < 0)
+                            settingsOption = 0;
+                        else if (settingsOption > 3)
+                            settingsOption = 3;
+                        else
 							++settingsOption;
 					}
 
@@ -252,65 +260,89 @@ namespace TRE
                     }
 
                     switch (settingsOption)
-					{
-						case 0:
-							settings_name = "Gameplay";
+                    {
+                        case 0:
+                            settings_name = "Gameplay";
+                            showGameplayPanel = true;
+                            showGraphicsPanel = false;
                             showAudioPanel = false;
+                            showControlsPanel = false;
                             break;
-						case 1:
-							settings_name = "Graphics";
+                        case 1:
+                            settings_name = "Graphics";
+                            showGameplayPanel = false;
+                            showGraphicsPanel = true;
                             showAudioPanel = false;
+                            showControlsPanel = false;
                             break;
-						case 2:
-							settings_name = "Audio";
-							showAudioPanel = true;
+                        case 2:
+                            settings_name = "Audio";
+                            showGameplayPanel = false;
+                            showGraphicsPanel = false;
+                            showAudioPanel = true;
+                            showControlsPanel = false;
                             break;
-						case 3:
-							settings_name = "Controls";
+                        case 3:
+                            settings_name = "Controls";
+                            showGameplayPanel = false;
+                            showGraphicsPanel = false;
                             showAudioPanel = false;
+                            showControlsPanel = true;
                             break;
-					}
+                        default:
+                            showGameplayPanel = false;
+                            showGraphicsPanel = false;
+                            showAudioPanel = false;
+                            showControlsPanel = false;
+                            break;
+                    }
 
-					switch (audioOption)
+                    switch (audioOption)
 					{
 						case 0:
-							break;
+							audioPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
+                            break;
 						case 1:
-							break; 
+                            audioPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
+                            break; 
 						case 2:
-							break;
+                            audioPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
+                            break;
 					}	
 
 					//show which panel is selected
-					for (int i = 0; i < settingsSelected.Count; ++i)
+					if (settingsOption >= 0 && settingsOption <= 3)
 					{
-						//other 3 selected == false
-						if (i != settingsOption)
+						for (int i = 0; i < settingsSelected.Count; ++i)
 						{
-							UISystem.SetVisible(settingsSelected[i].ID, false);
+							//other 3 selected == false
+							if (i != settingsOption)
+							{
+								UISystem.SetVisible(settingsSelected[i].ID, false);
+							}
+							else
+							{
+								UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
+							}
 						}
-						else
-						{
-							UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
-						}
-					}
 
-					for (int i = 0; i < settingsPanel.Count; ++i)
-					{
-						//other 3 panel == true
-						if (i != settingsOption)
+						for (int i = 0; i < settingsPanel.Count; ++i)
 						{
-							UISystem.SetVisible(settingsPanel[i].ID, true);
-						}
-						else 
-						{
-							UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
+							//other 3 panel == true
+							if (i != settingsOption)
+							{
+								UISystem.SetVisible(settingsPanel[i].ID, true);
+							}
+							else 
+							{
+								UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
+							}
 						}
 					}
 
 					//show audio panel
-                    for (int i = 0; i < audioPanel.Count; ++i)
-                    {
+					for (int i = 0; i < audioPanel.Count; ++i)
+					{
 						//show text
 						if (audioPanel[i].HasComponent<Text>())
 						{
@@ -320,144 +352,9 @@ namespace TRE
 						//show UI
 						else
 						{
-                            UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
-                        }	
-                    }
-
-					//               //user can press W or S to move up or down in its own settings
-					//               if (InputSystem.GetKeyTriggered(InputKeys.W))
-					//               {
-					//                   switch (settings_name)
-					//                   {
-					//                       //? types of settings
-					//                       case "Gameplay":
-					//                           //if (gameplayOption == 0)
-					//                           //    gameplayOption = 3;
-					//                           //else
-					//                           //    --gameplayOption;
-					//                           break;
-
-					//		//4 types of settings
-					//                       case "Graphics":
-					//                           if (graphicsOption == 0)
-					//                               graphicsOption = 3;
-					//                           else
-					//                               --graphicsOption;
-					//                           break;
-
-					//                       //3 types of settings
-					//                       case "Audio":
-					//                           if (audioOption == 0)
-					//                               audioOption = 2;
-					//                           else
-					//                               --audioOption;
-					//                           break;
-
-					//                       //? types of settings
-					//                       case "Controls":
-					//                           //if (controlsOption == 0)
-					//                           //    controlsOption = 3;
-					//                           //else
-					//                           //    --controlsOption;
-					//                           break;
-					//                   }
-					//               }
-
-					//               if (InputSystem.GetKeyTriggered(InputKeys.S))
-					//               {
-					//                   switch (settings_name)
-					//                   {
-					//                       //? types of settings
-					//                       case "Gameplay":
-					//                           //if (gameplayOption == 3)
-					//                           //    gameplayOption = 0;
-					//                           //else
-					//                           //    ++gameplayOption;
-					//                           break;
-
-					//		//4 types of settings
-					//                       case "Graphics":
-					//                           if (graphicsOption == 3)
-					//                               graphicsOption = 0;
-					//                           else
-					//                               ++graphicsOption;
-					//                           break;
-
-					//		//3 types of settings
-					//                       case "Audio":
-					//                           if (audioOption == 2)
-					//                               audioOption = 0;
-					//                           else
-					//                               ++audioOption;
-					//                           break;
-
-					//                       //? types of settings
-					//                       case "Controls":
-					//                           //if (controlsOption == 3)
-					//                           //    controlsOption = 0;
-					//                           //else
-					//                           //	++controlsOption;
-					//                           break;
-					//                   }
-					//               }
-
-					//               if (settings_name == "Gameplay")
-					//               {
-					//                   switch (gameplayOption)
-					//                   {
-					//                       case 0: //?
-					//                           break;
-					//                       case 1: //?
-					//                           break;
-					//                       case 2: //?
-					//                           break;
-					//                       case 3: //?
-					//                           break;
-					//                   }
-					//               }
-
-					//               else if (settings_name == "Graphics")
-					//{
-					//	switch (graphicsOption)
-					//	{
-					//		case 0: //Display Mode
-					//			break;
-					//		case 1: //Frame Rate
-					//			break; 
-					//		case 2: //VSync
-					//			break;
-					//		case 3: //Resolution
-					//			break;
-					//	}
-					//}
-
-					//               else if (settings_name == "Audio")
-					//               {
-					//                   switch (audioOption)
-					//                   {
-					//                       case 0: //Master Volume
-					//                           break;
-					//                       case 1: //Music Volume
-					//                           break;
-					//                       case 2: //SFX Volume
-					//                           break;
-					//                   }
-					//               }
-
-					//               else if (settings_name == "Controls")
-					//               {
-					//                   switch (controlsOption)
-					//                   {
-					//                       case 0: //?
-					//                           break;
-					//                       case 1: //?
-					//                           break;
-					//                       case 2: //?
-					//                           break;
-					//                       case 3: //?
-					//                           break;
-					//                   }
-					//               }
+							UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
+						}	
+					}
 				}
 
 				// confirmation menu logic
