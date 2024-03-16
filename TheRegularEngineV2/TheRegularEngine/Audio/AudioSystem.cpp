@@ -232,16 +232,18 @@ namespace TRE
 		if (audio.m_Loop == false)
 		{
 			audio.m_Sound->setMode(FMOD_LOOP_OFF);
+			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()" + audio.m_FileName);
+			audio.m_Play = false;
 		}
 		else
 		{
 			audio.m_Sound->setMode(FMOD_LOOP_NORMAL);
-			audio.m_Sound->setLoopCount(1);
+			audio.m_Sound->setLoopCount(-1);
+			ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()" + audio.m_FileName);
 		};
 
 		audio.m_Channel->setPaused(false);
 		audio.m_isPlaying = true;
-		ErrorCheck(m_System->playSound(audio.m_Sound, audio.m_ChannelGroup, audio.m_Pause, &audio.m_Channel), "FMOD: playSound()" + audio.m_FileName);
 	}
 
 	void AudioSystem::TogglePause(Entity& go)
