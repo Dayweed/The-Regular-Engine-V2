@@ -1607,9 +1607,25 @@ namespace TRE
 			Engine_CloseGame();
 		}
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static void TurnGammaOn()
+        {
+            BindTurnGammaOn();
+        }
+
+        public static void TurnGammaOff()
+        {
+            BindTurnGammaOff();
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_CloseGame();
-	}
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void BindTurnGammaOn();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void BindTurnGammaOff();
+    }
 
 	public class PersistentSystem
 	{
