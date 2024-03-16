@@ -25,6 +25,7 @@ namespace TRE
 		public int menuOption = 1;
 		public int menustate = 0; //0 = main menu, 1 = show controls,2 = confirmation menu
 		public int settingsOption = 0;
+		public int audioOption = 0;
 		public String settings_name = "";
 
 		////Settings -> Gameplay
@@ -54,6 +55,9 @@ namespace TRE
 		private Entity destructivePointer;
 		private Transform destructivePointerTransform;
 
+		private Entity audioPointer;
+		private Transform audioPointerTransform;
+
 		// Pause menu options
 		private List<Entity> options;
 		private List<Entity> DestructiveActionConfirmations;
@@ -70,25 +74,13 @@ namespace TRE
 		public void Start()
 		{
 			options = new List<Entity>();
-			DestructiveActionConfirmations = new List<Entity>();
-			//settings = new List<Entity>();
-
-			pointer = ECSManager.FindEntityByName("main_pointer");
-			pointerTransform = pointer.GetComponent<Transform>();
-
 			options.Add(ECSManager.FindEntityByName("main_continue"));
 			options.Add(ECSManager.FindEntityByName("main_controls"));
 			options.Add(ECSManager.FindEntityByName("main_quit"));
 
-			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
-			destructivePointerTransform = destructivePointer.GetComponent<Transform>();
-
+			DestructiveActionConfirmations = new List<Entity>();
 			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("destructive_yes"));
 			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("destructive_no"));
-
-			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
-			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
-			settingsMenu = ECSManager.FindEntityByName("settings_panel");
 
 			//non selected
 			settingsPanel = new List<Entity>();
@@ -104,14 +96,27 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
 
+			//audio panel
             audioPanel = new List<Entity>();
-            //int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
-			//for (int i = 0; i < total_children; i++)
-			//{
-			//	String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
-			//	audioPanel.Add(ECSManager.FindEntityByName(childName));
-   //         }
-        }
+			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+			for (int i = 0; i < total_children; i++)
+			{
+				String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
+				audioPanel.Add(ECSManager.FindEntityByName(childName));
+			}
+
+			pointer = ECSManager.FindEntityByName("main_pointer");
+			pointerTransform = pointer.GetComponent<Transform>();
+
+			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
+			destructivePointerTransform = destructivePointer.GetComponent<Transform>();
+
+			//audioPointer = ECSManager
+
+			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
+			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
+			settingsMenu = ECSManager.FindEntityByName("settings_panel");
+		}
 
 		public void OnCreate()
 		{
@@ -222,7 +227,29 @@ namespace TRE
 							++settingsOption;
 					}
 
-					switch (settingsOption)
+					if (InputSystem.GetKeyTriggered(InputKeys.W)) 
+					{
+						if (showAudioPanel)
+						{
+                            if (audioOption == 0)
+                                audioOption = 2;
+                            else
+                                --audioOption;
+                        }
+					}
+
+                    if (InputSystem.GetKeyTriggered(InputKeys.S))
+                    {
+                        if (showAudioPanel)
+                        {
+                            if (audioOption == 2)
+                                audioOption = 0;
+                            else
+                                ++audioOption;
+                        }
+                    }
+
+                    switch (settingsOption)
 					{
 						case 0:
 							settings_name = "Gameplay";
@@ -241,6 +268,16 @@ namespace TRE
                             showAudioPanel = false;
                             break;
 					}
+
+					switch (audioOption)
+					{
+						case 0:
+							break;
+						case 1:
+							break; 
+						case 2:
+							break;
+					}	
 
 					//show which panel is selected
 					for (int i = 0; i < settingsSelected.Count; ++i)
@@ -272,7 +309,17 @@ namespace TRE
 					//show audio panel
                     for (int i = 0; i < audioPanel.Count; ++i)
                     {
-                        UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
+						//show text
+						if (audioPanel[i].HasComponent<Text>())
+						{
+							TextSystem.SetVisible(audioPanel[i].ID, showAudioPanel);
+						}
+
+						//show UI
+						else
+						{
+                            UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
+                        }	
                     }
 
 					//               //user can press W or S to move up or down in its own settings
