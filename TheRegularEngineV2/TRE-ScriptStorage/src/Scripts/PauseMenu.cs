@@ -146,10 +146,13 @@ namespace TRE
 		{
 			if (InputSystem.GetKeyTriggered(InputKeys.Escape) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
 			{
-				isPaused = !isPaused;
-				isChangeMenu = true;
-				menustate = 0;
-				currentOption = 0;
+				if (menustate == 0)
+				{
+					isPaused = !isPaused;
+					isChangeMenu = true;
+					menustate = 0;
+					currentOption = 0;
+				}
 			}
 
 			if (isPaused)
@@ -213,6 +216,11 @@ namespace TRE
 				}
 				else if (menustate == 1 && !mIsEditingSettings) // control menu logic
                 {
+					if (InputSystem.GetKeyTriggered(InputKeys.Escape) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
+					{
+						menustate = 0;
+					}
+
 					//settings pop up will appear
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
 					if (InputSystem.GetKeyTriggered(InputKeys.A))
@@ -229,86 +237,86 @@ namespace TRE
 					if (InputSystem.GetKeyTriggered(InputKeys.D))
 					{
 						Debug.Log("press right");
-                        if (settingsOption < 0)
-                            settingsOption = 0;
-                        else if (settingsOption > 3)
-                            settingsOption = 3;
-                        else
+						if (settingsOption < 0)
+							settingsOption = 0;
+						else if (settingsOption > 3)
+							settingsOption = 3;
+						else
 							++settingsOption;
 					}
 
-					if (InputSystem.GetKeyTriggered(InputKeys.W)) 
+					if (InputSystem.GetKeyTriggered(InputKeys.W))
 					{
 						if (showAudioPanel)
 						{
-                            if (audioOption == 0)
-                                audioOption = 2;
-                            else
-                                --audioOption;
-                        }
+							if (audioOption == 0)
+								audioOption = 2;
+							else
+								--audioOption;
+						}
 					}
 
-                    if (InputSystem.GetKeyTriggered(InputKeys.S))
-                    {
-                        if (showAudioPanel)
-                        {
-                            if (audioOption == 2)
-                                audioOption = 0;
-                            else
-                                ++audioOption;
-                        }
-                    }
+					if (InputSystem.GetKeyTriggered(InputKeys.S))
+					{
+						if (showAudioPanel)
+						{
+							if (audioOption == 2)
+								audioOption = 0;
+							else
+								++audioOption;
+						}
+					}
 
-                    switch (settingsOption)
-                    {
-                        case 0:
-                            settings_name = "Gameplay";
-                            showGameplayPanel = true;
-                            showGraphicsPanel = false;
-                            showAudioPanel = false;
-                            showControlsPanel = false;
-                            break;
-                        case 1:
-                            settings_name = "Graphics";
-                            showGameplayPanel = false;
-                            showGraphicsPanel = true;
-                            showAudioPanel = false;
-                            showControlsPanel = false;
-                            break;
-                        case 2:
-                            settings_name = "Audio";
-                            showGameplayPanel = false;
-                            showGraphicsPanel = false;
-                            showAudioPanel = true;
-                            showControlsPanel = false;
-                            break;
-                        case 3:
-                            settings_name = "Controls";
-                            showGameplayPanel = false;
-                            showGraphicsPanel = false;
-                            showAudioPanel = false;
-                            showControlsPanel = true;
-                            break;
-                        default:
-                            showGameplayPanel = false;
-                            showGraphicsPanel = false;
-                            showAudioPanel = false;
-                            showControlsPanel = false;
-                            break;
-                    }
+					switch (settingsOption)
+					{
+						case 0:
+							settings_name = "Gameplay";
+							showGameplayPanel = true;
+							showGraphicsPanel = false;
+							showAudioPanel = false;
+							showControlsPanel = false;
+							break;
+						case 1:
+							settings_name = "Graphics";
+							showGameplayPanel = false;
+							showGraphicsPanel = true;
+							showAudioPanel = false;
+							showControlsPanel = false;
+							break;
+						case 2:
+							settings_name = "Audio";
+							showGameplayPanel = false;
+							showGraphicsPanel = false;
+							showAudioPanel = true;
+							showControlsPanel = false;
+							break;
+						case 3:
+							settings_name = "Controls";
+							showGameplayPanel = false;
+							showGraphicsPanel = false;
+							showAudioPanel = false;
+							showControlsPanel = true;
+							break;
+						default:
+							showGameplayPanel = false;
+							showGraphicsPanel = false;
+							showAudioPanel = false;
+							showControlsPanel = false;
+							break;
+					}
 
-                    switch (audioOption)
+					switch (audioOption)
 					{
 						case 0:
 							audioPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
-                            break;
+							break;
 						case 1:
-                            audioPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
-                            break; 
+							audioPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
+							break;
 						case 2:
-                            audioPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
-                            break;
-					}	
+							audioPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
+							break;
+					}
 
 					//show which panel is selected
 					if (settingsOption >= 0 && settingsOption <= 3)
@@ -333,7 +341,7 @@ namespace TRE
 							{
 								UISystem.SetVisible(settingsPanel[i].ID, true);
 							}
-							else 
+							else
 							{
 								UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
 							}
@@ -353,28 +361,38 @@ namespace TRE
 						else
 						{
 							UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
-						}	
+						}
 					}
 
-                    if (!mIsEditingSettings && InputSystem.GetKeyTriggered(InputKeys.Enter))
-                    {
-                        mIsEditingSettings = true;
-						mCurrentEditMember = 0; //Set it to be 0th member always at the start
-                    }
-
-                    //Show graphics panel
-                    if (showGraphicsPanel)
+					if (!mIsEditingSettings && InputSystem.GetKeyTriggered(InputKeys.Enter))
 					{
-                        mGammaPanel.GetComponent<SpriteRenderer>().isVisible = true;
-                        mGammaCheckbox.GetComponent<SpriteRenderer>().isVisible = true;
-                        if (mIsGammaOn)
+						mIsEditingSettings = true;
+						mCurrentEditMember = 0; //Set it to be 0th member always at the start
+					}
+
+					//Show graphics panel
+					if (showGraphicsPanel)
+					{
+						mGammaPanel.GetComponent<SpriteRenderer>().isVisible = true;
+						mGammaCheckbox.GetComponent<SpriteRenderer>().isVisible = true;
+						if (mIsGammaOn)
 						{
-                            mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
-                        }
-                    }
+							mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
+						}
+					}
 				}
 				else if (menustate == 1 && mIsEditingSettings)
 				{
+					if (InputSystem.GetKeyPress(InputKeys.Escape) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
+					{
+						mIsEditingSettings = false; //Set to not editing any option
+
+						//Set every pointer back to false
+						mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						Debug.Log("Stop editing");
+						return;
+					}
+                    
 					if (showAudioPanel)
 					{
 
@@ -512,7 +530,6 @@ namespace TRE
 					isChangeMenu = false;
 				}
 			}
-
 			else if (isChangeMenu && !isPaused) //This is when you are getting out of the pause menu
 			{
 				// hide the whole pause menu
