@@ -102,11 +102,11 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
 
-			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
-			for (int i = 0; i < total_children; i++)
-			{
+			//int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+			//for (int i = 0; i < total_children; i++)
+			//{
 
-			}
+			//}
         }
 
 		public void OnCreate()
