@@ -25,6 +25,12 @@ namespace TRE
 		float SignpostMoveSpeed = 5f;
 		float SignpostOffset = 0.05f;
 
+		//Audio
+		private ulong holeyCheer;
+		private ulong moleyCheer;
+		private ulong signpostSFX;
+
+
 		public void Start()
 		{
 			Moley = ECSManager.FindEntityByName("Moley");
@@ -43,6 +49,12 @@ namespace TRE
 				SignpostGoalMoleyPosY = SignpostHiddenPosY;
 				SignpostGoalHoleyPosY = SignpostHiddenPosY;
 			}
+
+			//Audio
+			holeyCheer = ECSManager.FindIDFromName("SFX_HoleyCheer");
+			moleyCheer = ECSManager.FindIDFromName("SFX_MoleyCheer");
+			signpostSFX = ECSManager.FindIDFromName("SFX_Signpost");
+
 		}
 
 		public void Update()
@@ -50,10 +62,21 @@ namespace TRE
 			if (MoleyInside && (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0,InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
 			{
 				MoleyApprove = true;
+
+				if (ECSManager.IsValidEntity(moleyCheer))
+				{
+					AudioSystem.Play(moleyCheer);
+				}
+
 			}
 			if (HoleyInside && (InputSystem.GetKeyHold(InputKeys.Enter) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
 			{
 				HoleyApprove = true;
+
+				if (ECSManager.IsValidEntity(holeyCheer))
+				{
+					AudioSystem.Play(holeyCheer);
+				}
 			}
 
 			// Determine signposts bounce
@@ -119,10 +142,20 @@ namespace TRE
 			if (otherID == Moley.ID)
 			{
 				MoleyInside = true;
+
+				if (ECSManager.IsValidEntity(signpostSFX))
+				{
+					AudioSystem.Play(signpostSFX);
+				}
 			}
 			if (otherID == Holey.ID)
 			{
 				HoleyInside = true;
+
+				if (ECSManager.IsValidEntity(signpostSFX))
+				{
+					AudioSystem.Play(signpostSFX);
+				}
 			}
 		}
 
