@@ -64,7 +64,6 @@ namespace TRE
 
 		std::vector<int> indices = { 0,1,2,2,3,0 };
 
-
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -670,13 +669,13 @@ namespace TRE
 
 		if (m_IsEditorScene == false)
 		{
+			//BoxBlurPostpass(Index);
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 
 			Profiler::Instance().StartTimer("FontPass");
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			Profiler::Instance().EndTimer("FontPass");
 
-			BoxBlurPostpass(Index);
 
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
