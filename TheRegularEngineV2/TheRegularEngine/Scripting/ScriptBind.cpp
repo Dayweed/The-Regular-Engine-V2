@@ -2210,6 +2210,16 @@ namespace TRE
 			Engine::GetInstance().TellToShutdown();
 		}
 	}
+
+	static void BindTurnGammaOn()
+	{
+		Renderer::SetGamma(true);
+	}
+
+	static void BindTurnGammaOff()
+	{
+		Renderer::SetGamma(false);
+	}
 #pragma endregion
 
 #pragma region PersistenBindings
@@ -2954,6 +2964,8 @@ namespace TRE
 		// Game
 		{
 			mono_add_internal_call("TRE.Game::Engine_CloseGame", BindCloseGame);
+			mono_add_internal_call("TRE.Game::Engine_TurnGammaOn", BindTurnGammaOn);
+			mono_add_internal_call("TRE.Game::Engine_TurnGammaOff", BindTurnGammaOff);
 		}
 
 		// PersistentValues
