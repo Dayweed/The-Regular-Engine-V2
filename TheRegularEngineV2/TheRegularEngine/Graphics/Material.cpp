@@ -100,9 +100,7 @@ namespace TRE
 				if (Write.dstBinding == 7)
 				{
 					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
-					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
-					}
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
@@ -123,9 +121,22 @@ namespace TRE
 				else if (Write.dstBinding == 10)
 				{
 					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
-					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
-					}
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
+				else if (Write.dstBinding == 11)
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::BoxBlurMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::BoxBlurMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
+				else if (Write.dstBinding == 12)
+				{
+					const auto colorImages = Engine::GetInstance().GetMainSceneRenderer()->GetColorImages();
+					if (colorImages.size() > 0)
+						Write.pImageInfo = &(colorImages[Engine::GetInstance().GetWindow()->GetSwapChain()->GetCurrentImageIndex()]->GetDescriptorImageInfo());
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}

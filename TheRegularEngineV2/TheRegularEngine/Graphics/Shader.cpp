@@ -190,6 +190,7 @@ namespace TRE
 		auto DepthMappingAnimation = 15;
 		auto SilhouetteHandle = 16;
 		auto DepthBlurHandle = 17;
+		auto BoxBlurHandle = 18;
 
 		//FinalPassShader
 		{
@@ -287,6 +288,13 @@ namespace TRE
 			std::unique_ptr<Shader> DepthBlurShader = ShaderCompiler::DeserializeReflectShader("../Resources/DepthBlur.TREshader");
 			DepthBlurShader->SetHandle(DepthBlurHandle);
 			ResourceManager::Instance().AddResource(std::move(DepthBlurShader));
+		}
+
+		//BoxBlurShader
+		{
+			std::unique_ptr<Shader> BoxBlurShader = ShaderCompiler::DeserializeReflectShader("../Resources/BoxBlur.TREshader");
+			BoxBlurShader->SetHandle(BoxBlurHandle);
+			ResourceManager::Instance().AddResource(std::move(BoxBlurShader));
 		}
 	}
 

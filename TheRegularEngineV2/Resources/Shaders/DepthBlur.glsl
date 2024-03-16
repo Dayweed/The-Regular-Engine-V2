@@ -26,6 +26,7 @@ void main()
 
 layout (location = 0) out vec4 outColor;
 layout(set = 0, binding = 8) uniform sampler2D depthMap;
+layout(set = 0, binding = 11) uniform sampler2D blurredColorMap;
 
 const float threshold = 0.0001;
 const float depthCutOff = 0.9997;
@@ -43,7 +44,7 @@ void main()
 	float blur = 1.0 - smoothstep(0.0, threshold, depthDifference);
 	if(depth > depthCutOff)
 	{
-		outColor = vec4(blur, blur, blur, 0.05);
+		outColor = texture(blurredColorMap, In.UV);
 	}
 	else
 		discard;

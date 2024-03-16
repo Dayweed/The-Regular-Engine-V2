@@ -38,12 +38,33 @@ namespace TRE
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
 		m_DepthPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(DepthUBO)), 0);
 		m_IDPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(IDUBO)), 0);
+		m_BoxBlurPostpassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(BoxBlurUBO)), 0);
 		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 	}
 
 	void SceneRenderer::Initialize() 
 	{
+		float x = -1.f; float y = -1.f;
+		float width = 2, height = 2;
+		std::vector<PostVertex> data(4);
+
+		//UVs are flipped because of the vulkan texture coordinate system
+		data[0].Position = glm::vec2(x, y);
+		data[0].UV = glm::vec2(0, 0);
+
+		data[1].Position = glm::vec2(x + width, y);
+		data[1].UV = glm::vec2(1, 0);
+
+		data[2].Position = glm::vec2(x + width, y + height);
+		data[2].UV = glm::vec2(1, 1);
+
+		data[3].Position = glm::vec2(x, y + height);
+		data[3].UV = glm::vec2(0, 1);
+
+		std::vector<int> indices = { 0,1,2,2,3,0 };
+
+
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RenderPassCreateInfo{};
 		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -165,6 +186,29 @@ namespace TRE
 		}
 #pragma endregion DepthPrepass
 
+#pragma region BlurPostpass
+		{
+			BoxBlurPostpassInit();
+			PipelineConfigurations blurPostpassPipelineConfig{};
+			blurPostpassPipelineConfig.Primitive = PrimitiveType::Triangles;
+			blurPostpassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(18);
+			blurPostpassPipelineConfig.CullMode = VK_CULL_MODE_NONE;
+			blurPostpassPipelineConfig.EnableDepthTest = false;
+			blurPostpassPipelineConfig.EnableBlending = true;
+			m_BoxBlurPostpassPipeline = std::make_shared<Pipeline>(blurPostpassPipelineConfig, m_BoxBlurPostpassRenderPass);
+
+			m_BoxBlurPostpassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(18));
+			m_BoxBlurPostpassMaterial->Invalidate();
+
+			m_BoxBlurIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
+				UINT32_T_CAST(sizeof(int) * indices.size()),
+				UINT32_T_CAST(indices.size()));
+
+			m_BoxBlurVertexBuffer = std::make_shared<VertexBuffer>(static_cast<void*>(data.data()),
+				UINT32_T_CAST(data.size() * sizeof(QuadVertex)));
+		}
+#pragma endregion BlurPrepass
+
 		m_UIRenderer = std::make_shared<UIRenderer>(m_Device);
 		m_FontRenderer = std::make_shared<FontRenderer>(m_Device);
 		m_ParticleRenderer = std::make_shared<ParticleRenderer>(m_Device);
@@ -191,24 +235,6 @@ namespace TRE
 		m_Sprite3DPipeline = std::make_shared<Pipeline>(Sprite3DPipelineConfig, m_RenderPass);
 
 		m_Sprite3DUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(UIUBO)), 0);
-
-		float x = -1.f; float y = -1.f;
-		float width = 2, height = 2;
-		std::vector<QuadVertex> data(4);
-
-		data[0].Position = glm::vec3(x, y, 0.f);
-		data[0].TexCoord = glm::vec2(0, 0);
-
-		data[1].Position = glm::vec3(x + width, y, 0.f);
-		data[1].TexCoord = glm::vec2(1, 0);
-
-		data[2].Position = glm::vec3(x + width, y + height, 0.f);
-		data[2].TexCoord = glm::vec2(1, 1);
-
-		data[3].Position = glm::vec3(x, y + height, 0.f);
-		data[3].TexCoord = glm::vec2(0, 1);
-
-		std::vector<int> indices = { 0,1,2,2,3,0 };
 
 		m_Sprite3DIndexBuffer = std::make_shared<IndexBuffer>(static_cast<void*>(indices.data()),
 			UINT32_T_CAST(sizeof(int) * indices.size()),
@@ -317,6 +343,7 @@ namespace TRE
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer[1], nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_BoxBlurPostpassFramebuffer, nullptr);
 
 		m_SceneImages.clear();
 	}
@@ -430,6 +457,7 @@ namespace TRE
 		const Camera& cameraComponent = mainCamera->GetComponent<Camera>();
 		const BaseCamera& baseCamera = cameraComponent.m_BaseCamera;
 		const Transform& cameraTransform = mainCamera->GetComponent<Transform>();
+		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		UBO ubo{};
 		ubo.m_Gamma = 2.2f;
@@ -522,6 +550,13 @@ namespace TRE
 			idUBO.proj = baseCamera.m_ProjectionMatrix;
 
 			m_IDPrepassUBO->SetData(&idUBO, sizeof(IDUBO));
+		}
+
+		{
+			BoxBlurUBO boxBlurUBO{};
+			boxBlurUBO.m_InvScreenSize = glm::vec2(1.f / SwapChain->GetWidth(), 1.f / SwapChain->GetHeight());
+
+			m_BoxBlurPostpassUBO->SetData(&boxBlurUBO, sizeof(BoxBlurUBO));
 		}
 
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
@@ -640,6 +675,8 @@ namespace TRE
 			Profiler::Instance().StartTimer("FontPass");
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			Profiler::Instance().EndTimer("FontPass");
+
+			BoxBlurPostpass(Index);
 
 			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
@@ -1091,6 +1128,52 @@ namespace TRE
 		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
+	void SceneRenderer::BoxBlurPostpass(uint32_t Index)
+	{
+		m_BoxBlurPostpassMapWidth = 8192;
+		m_BoxBlurPostpassMapHeight = 8192;
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		clearValues[1].color = { 0.0f, 0.0f, 0.0f, 0.0f };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_BoxBlurPostpassRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_BoxBlurPostpassFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_BoxBlurPostpassMapWidth, m_BoxBlurPostpassMapHeight };
+		renderPassInfo.clearValueCount = 2;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport2{};
+		viewport2.x = 0.0f;
+		viewport2.y = 0.0f;
+		viewport2.width = (float)m_BoxBlurPostpassMapWidth;
+		viewport2.height = (float)m_BoxBlurPostpassMapHeight;
+		viewport2.minDepth = 0.0f;
+		viewport2.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+		VkRect2D scissor2{};
+		scissor2.extent = { m_BoxBlurPostpassMapWidth, m_BoxBlurPostpassMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+		Renderer::BindPipeline(m_CommandBuffer, m_BoxBlurPostpassPipeline);
+
+		m_BoxBlurPostpassMaterial->UpdateForRendering(m_BoxBlurPostpassUBO, Index);
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_BoxBlurPostpassPipeline->GetPipelineLayout(), 0, 1, &m_BoxBlurPostpassMaterial->GetDescriptor(Index), 0, NULL);
+
+		VkDeviceSize offsets[] = { 0 };
+		auto VB = m_BoxBlurVertexBuffer->GetBuffer();
+		vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
+		vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_BoxBlurIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+		vkCmdDrawIndexed(m_CommandBuffer->GetInUseCommandBuffer(), m_BoxBlurIndexBuffer->GetIndexCount(), 1, 0, 0, 0);
+
+		Renderer::EndRenderPass(m_CommandBuffer);
+	}
+
 	void SceneRenderer::DebugDrawPass(uint32_t Index) //Debug Pass
 	{
 		if (m_IsEditorScene)
@@ -1392,6 +1475,48 @@ namespace TRE
 		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_IDPrepassFramebuffer); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for ID pass");
+		}
+	}
+
+	void SceneRenderer::BoxBlurPostpassInit()
+	{
+		m_BoxBlurPostpassMapWidth = 8192;
+		m_BoxBlurPostpassMapHeight = 8192;
+
+		//Color
+		ImageConfig ImgConfig{};
+		ImgConfig.DebugName = "Box Blur Pass";
+		ImgConfig.Format = ImageFormat::RGBA;
+		ImgConfig.Width = m_BoxBlurPostpassMapWidth;
+		ImgConfig.Height = m_BoxBlurPostpassMapHeight;
+		ImgConfig.Usage = ImageUsage::Attachment;
+		ImgConfig.CreateSampler = true;
+		ImgConfig.Transfer = false;
+		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+
+		if (m_SceneImages.contains(SceneImage::BoxBlurMap) == false)
+			m_SceneImages[SceneImage::BoxBlurMap] = std::make_shared<Image2D>(ImgConfig);
+
+		RenderPassInfo RenderPassCreateInfo{};
+		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RenderPassCreateInfo.ImageFormat = Engine::GetInstance().GetWindow()->GetSwapChain()->GetColorFormat();
+		RenderPassCreateInfo.DepthEnabled = false;
+		m_BoxBlurPostpassRenderPass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+
+		//std::array<VkImageView,2> attachments = { m_SceneImages[SceneImage::BoxBlurMap]->GetImageData().ImageView, m_SceneImages[SceneImage::BoxBlurDepthMap]->GetImageData().ImageView };
+		auto attachments = m_SceneImages[SceneImage::BoxBlurMap]->GetImageData().ImageView;
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.renderPass = m_BoxBlurPostpassRenderPass->GetHandle();
+		framebufferCreateInfo.attachmentCount = 1;//static_cast<uint32_t>(attachments.size());
+		framebufferCreateInfo.pAttachments = &attachments;//attachments.data();
+		framebufferCreateInfo.width = m_BoxBlurPostpassMapWidth;
+		framebufferCreateInfo.height = m_BoxBlurPostpassMapHeight;
+		framebufferCreateInfo.layers = 1;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_BoxBlurPostpassFramebuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for Box blur pass");
 		}
 	}
 

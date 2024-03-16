@@ -77,6 +77,11 @@ namespace TRE
 	{
 		glm::mat4 view;
 		glm::mat4 proj;
+	}; 
+
+	struct BoxBlurUBO
+	{
+		glm::vec2 m_InvScreenSize;
 	};
 
 	class SceneRenderer
@@ -89,6 +94,7 @@ namespace TRE
 			void ShadowPassInit();
 			void DepthPrepassInit();
 			void IDPrepassInit();
+			void BoxBlurPostpassInit();
 			void Shutdown();
 			void Create();
 			void Resize();
@@ -102,6 +108,7 @@ namespace TRE
 			void ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void IDPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
+			void BoxBlurPostpass(uint32_t Index);
 			void GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DebugDrawPass(uint32_t Index);
@@ -111,12 +118,13 @@ namespace TRE
 		public:
 			std::vector<std::shared_ptr<Image2D>> GetColorImages();
 			std::shared_ptr<DescriptorPool>& GetDescriptorPool();
-			static enum class SceneImage
+			enum class SceneImage
 			{
 				ShadowMap = 0,
 				shadowMap2 = 1,
 				DepthMap,
 				IDMap,
+				BoxBlurMap
 			};
 			static std::unordered_map<SceneImage, std::shared_ptr<Image2D>> m_SceneImages;
 
@@ -152,7 +160,6 @@ namespace TRE
 			//Shadow
 			float depthBiasConstant = 1.f;
 			float depthBiasSlope = 1.f;
-			//std::shared_ptr<Image2D> m_ShadowImages;
 			std::shared_ptr<RenderPass> m_ShadowRenderPass;
 			VkDescriptorImageInfo m_ShadowDescriptInfo;
 			std::shared_ptr<Pipeline> m_ShadowPipeline;
@@ -165,7 +172,6 @@ namespace TRE
 			float m_ShadowAABBPadding = 10.f;
 
 			//Depth Prepass
-			//std::shared_ptr<Image2D> m_DepthPrepassImages;
 			std::shared_ptr<RenderPass> m_DepthPrepassRenderPass;
 			VkDescriptorImageInfo m_DepthPrepassDescriptInfo;
 			std::shared_ptr<Pipeline> m_DepthPrepassPipeline;
@@ -177,7 +183,6 @@ namespace TRE
 			VkFramebuffer m_DepthPrepassFramebuffer;
 
 			//ID Prepass
-			//std::shared_ptr<Image2D> m_IDPrepassImages;
 			std::shared_ptr<RenderPass> m_IDPrepassRenderPass;
 			VkDescriptorImageInfo m_IDPrepassDescriptInfo;
 			std::shared_ptr<Pipeline> m_IDPrepassPipeline;
@@ -187,6 +192,18 @@ namespace TRE
 			uint32_t m_IDPrepassMapWidth = 1600;
 			uint32_t m_IDPrepassMapHeight = 900;
 			VkFramebuffer m_IDPrepassFramebuffer;
+
+			//BoxBlur Postpass
+			std::shared_ptr<RenderPass> m_BoxBlurPostpassRenderPass;
+			VkDescriptorImageInfo m_BoxBlurPostpassDescriptInfo;
+			std::shared_ptr<Pipeline> m_BoxBlurPostpassPipeline;
+			std::shared_ptr<Material> m_BoxBlurPostpassMaterial;
+			std::shared_ptr<UniformBuffer> m_BoxBlurPostpassUBO;
+			uint32_t m_BoxBlurPostpassMapWidth = 1600;
+			uint32_t m_BoxBlurPostpassMapHeight = 900;
+			VkFramebuffer m_BoxBlurPostpassFramebuffer;
+			std::shared_ptr<VertexBuffer> m_BoxBlurVertexBuffer;
+			std::shared_ptr<IndexBuffer> m_BoxBlurIndexBuffer;
 
 			//Game
 			glm::vec3 m_ShadowAABBMin;
