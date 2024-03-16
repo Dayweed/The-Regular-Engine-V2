@@ -181,7 +181,6 @@ namespace TRE
 							pointerTransform.Position = options[0].GetComponent<Transform>().Position;
 							break;
 						case 1: // 
-							Debug.Log("entering settings");
 							pointerTransform.Position = options[1].GetComponent<Transform>().Position;
 							break;
 						case 2:
@@ -197,8 +196,8 @@ namespace TRE
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
 					if (InputSystem.GetKeyTriggered(InputKeys.A))
 					{
-						Debug.Log("press left");
-						if (settingsOption == 0)
+                        Debug.Log("press left");
+                        if (settingsOption == 0)
 							settingsOption = 3;
 						else
 							--settingsOption;
@@ -206,7 +205,7 @@ namespace TRE
 
 					if (InputSystem.GetKeyTriggered(InputKeys.D))
 					{
-                        Debug.Log("press right");
+						Debug.Log("press right");
                         if (settingsOption == 3)
 							settingsOption = 0;
 						else
@@ -239,191 +238,143 @@ namespace TRE
 						}
                     }
 
-                    //               //set settings_name accordingly
-                    //               switch (settingsOption)
-                    //{
-                    //	case 0: //Gameplay
-                    //		Debug.Log("In Gameplay");
+	
 
-                    //		UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
-                    //                       UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
-                    //                       for (int i = 0; i < settingsPanel.Count; ++i)
-                    //                       {
-                    //                           if (i != settingsOption)
-                    //                               UISystem.SetVisible(settingsPanel[i].ID, true);
-                    //                       }
+					//               //user can press W or S to move up or down in its own settings
+					//               if (InputSystem.GetKeyTriggered(InputKeys.W))
+					//               {
+					//                   switch (settings_name)
+					//                   {
+					//                       //? types of settings
+					//                       case "Gameplay":
+					//                           //if (gameplayOption == 0)
+					//                           //    gameplayOption = 3;
+					//                           //else
+					//                           //    --gameplayOption;
+					//                           break;
 
-                    //                       break;
-                    //	case 1: //Graphics
-                    //		Debug.Log("In Graphics");
+					//		//4 types of settings
+					//                       case "Graphics":
+					//                           if (graphicsOption == 0)
+					//                               graphicsOption = 3;
+					//                           else
+					//                               --graphicsOption;
+					//                           break;
 
-                    //                       UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
-                    //                       UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
-                    //                       for (int i = 0; i < settingsPanel.Count; ++i)
-                    //                       {
-                    //                           if (i != settingsOption)
-                    //                               UISystem.SetVisible(settingsPanel[i].ID, true);
-                    //                       }
-                    //                       break;
-                    //	case 2: //Audio
-                    //		Debug.Log("In Audio");
+					//                       //3 types of settings
+					//                       case "Audio":
+					//                           if (audioOption == 0)
+					//                               audioOption = 2;
+					//                           else
+					//                               --audioOption;
+					//                           break;
 
-                    //                       UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
-                    //                       UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
-                    //                       for (int i = 0; i < settingsPanel.Count; ++i)
-                    //                       {
-                    //                           if (i != settingsOption)
-                    //                               UISystem.SetVisible(settingsPanel[i].ID, true);
-                    //                       }
-                    //                       break;
-                    //	case 3: //Controls
-                    //		Debug.Log("In Controls");
+					//                       //? types of settings
+					//                       case "Controls":
+					//                           //if (controlsOption == 0)
+					//                           //    controlsOption = 3;
+					//                           //else
+					//                           //    --controlsOption;
+					//                           break;
+					//                   }
+					//               }
 
-                    //                       UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
-                    //                       UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
-                    //                       for (int i = 0; i < settingsPanel.Count; ++i)
-                    //                       {
-                    //                           if (i != settingsOption)
-                    //                               UISystem.SetVisible(settingsPanel[i].ID, true);
-                    //                       }
-                    //                       break;
-                    //}
+					//               if (InputSystem.GetKeyTriggered(InputKeys.S))
+					//               {
+					//                   switch (settings_name)
+					//                   {
+					//                       //? types of settings
+					//                       case "Gameplay":
+					//                           //if (gameplayOption == 3)
+					//                           //    gameplayOption = 0;
+					//                           //else
+					//                           //    ++gameplayOption;
+					//                           break;
 
-                    //               //user can press W or S to move up or down in its own settings
-                    //               if (InputSystem.GetKeyTriggered(InputKeys.W))
-                    //               {
-                    //                   switch (settings_name)
-                    //                   {
-                    //                       //? types of settings
-                    //                       case "Gameplay":
-                    //                           //if (gameplayOption == 0)
-                    //                           //    gameplayOption = 3;
-                    //                           //else
-                    //                           //    --gameplayOption;
-                    //                           break;
+					//		//4 types of settings
+					//                       case "Graphics":
+					//                           if (graphicsOption == 3)
+					//                               graphicsOption = 0;
+					//                           else
+					//                               ++graphicsOption;
+					//                           break;
 
-                    //		//4 types of settings
-                    //                       case "Graphics":
-                    //                           if (graphicsOption == 0)
-                    //                               graphicsOption = 3;
-                    //                           else
-                    //                               --graphicsOption;
-                    //                           break;
+					//		//3 types of settings
+					//                       case "Audio":
+					//                           if (audioOption == 2)
+					//                               audioOption = 0;
+					//                           else
+					//                               ++audioOption;
+					//                           break;
 
-                    //                       //3 types of settings
-                    //                       case "Audio":
-                    //                           if (audioOption == 0)
-                    //                               audioOption = 2;
-                    //                           else
-                    //                               --audioOption;
-                    //                           break;
+					//                       //? types of settings
+					//                       case "Controls":
+					//                           //if (controlsOption == 3)
+					//                           //    controlsOption = 0;
+					//                           //else
+					//                           //	++controlsOption;
+					//                           break;
+					//                   }
+					//               }
 
-                    //                       //? types of settings
-                    //                       case "Controls":
-                    //                           //if (controlsOption == 0)
-                    //                           //    controlsOption = 3;
-                    //                           //else
-                    //                           //    --controlsOption;
-                    //                           break;
-                    //                   }
-                    //               }
+					//               if (settings_name == "Gameplay")
+					//               {
+					//                   switch (gameplayOption)
+					//                   {
+					//                       case 0: //?
+					//                           break;
+					//                       case 1: //?
+					//                           break;
+					//                       case 2: //?
+					//                           break;
+					//                       case 3: //?
+					//                           break;
+					//                   }
+					//               }
 
-                    //               if (InputSystem.GetKeyTriggered(InputKeys.S))
-                    //               {
-                    //                   switch (settings_name)
-                    //                   {
-                    //                       //? types of settings
-                    //                       case "Gameplay":
-                    //                           //if (gameplayOption == 3)
-                    //                           //    gameplayOption = 0;
-                    //                           //else
-                    //                           //    ++gameplayOption;
-                    //                           break;
+					//               else if (settings_name == "Graphics")
+					//{
+					//	switch (graphicsOption)
+					//	{
+					//		case 0: //Display Mode
+					//			break;
+					//		case 1: //Frame Rate
+					//			break; 
+					//		case 2: //VSync
+					//			break;
+					//		case 3: //Resolution
+					//			break;
+					//	}
+					//}
 
-                    //		//4 types of settings
-                    //                       case "Graphics":
-                    //                           if (graphicsOption == 3)
-                    //                               graphicsOption = 0;
-                    //                           else
-                    //                               ++graphicsOption;
-                    //                           break;
+					//               else if (settings_name == "Audio")
+					//               {
+					//                   switch (audioOption)
+					//                   {
+					//                       case 0: //Master Volume
+					//                           break;
+					//                       case 1: //Music Volume
+					//                           break;
+					//                       case 2: //SFX Volume
+					//                           break;
+					//                   }
+					//               }
 
-                    //		//3 types of settings
-                    //                       case "Audio":
-                    //                           if (audioOption == 2)
-                    //                               audioOption = 0;
-                    //                           else
-                    //                               ++audioOption;
-                    //                           break;
-
-                    //                       //? types of settings
-                    //                       case "Controls":
-                    //                           //if (controlsOption == 3)
-                    //                           //    controlsOption = 0;
-                    //                           //else
-                    //                           //	++controlsOption;
-                    //                           break;
-                    //                   }
-                    //               }
-
-                    //               if (settings_name == "Gameplay")
-                    //               {
-                    //                   switch (gameplayOption)
-                    //                   {
-                    //                       case 0: //?
-                    //                           break;
-                    //                       case 1: //?
-                    //                           break;
-                    //                       case 2: //?
-                    //                           break;
-                    //                       case 3: //?
-                    //                           break;
-                    //                   }
-                    //               }
-
-                    //               else if (settings_name == "Graphics")
-                    //{
-                    //	switch (graphicsOption)
-                    //	{
-                    //		case 0: //Display Mode
-                    //			break;
-                    //		case 1: //Frame Rate
-                    //			break; 
-                    //		case 2: //VSync
-                    //			break;
-                    //		case 3: //Resolution
-                    //			break;
-                    //	}
-                    //}
-
-                    //               else if (settings_name == "Audio")
-                    //               {
-                    //                   switch (audioOption)
-                    //                   {
-                    //                       case 0: //Master Volume
-                    //                           break;
-                    //                       case 1: //Music Volume
-                    //                           break;
-                    //                       case 2: //SFX Volume
-                    //                           break;
-                    //                   }
-                    //               }
-
-                    //               else if (settings_name == "Controls")
-                    //               {
-                    //                   switch (controlsOption)
-                    //                   {
-                    //                       case 0: //?
-                    //                           break;
-                    //                       case 1: //?
-                    //                           break;
-                    //                       case 2: //?
-                    //                           break;
-                    //                       case 3: //?
-                    //                           break;
-                    //                   }
-                    //               }
-                }
+					//               else if (settings_name == "Controls")
+					//               {
+					//                   switch (controlsOption)
+					//                   {
+					//                       case 0: //?
+					//                           break;
+					//                       case 1: //?
+					//                           break;
+					//                       case 2: //?
+					//                           break;
+					//                       case 3: //?
+					//                           break;
+					//                   }
+					//               }
+				}
 
 				// confirmation menu logic
 				else
@@ -485,7 +436,7 @@ namespace TRE
 							// Show main pause menu
 							UISystem.SetVisible(pauseMenu.ID, true);
 							UISystem.SetVisible(cfmMenu.ID, false);
-							for (int i = 0; i < options.Count; i++)
+                            for (int i = 0; i < options.Count; i++)
 							{
 								UISystem.SetVisible(options[i].ID, true);
 							}
@@ -512,7 +463,7 @@ namespace TRE
 						case 2:
 							// only show the confirmation menu since destructive action UI is transparent
 							UISystem.SetVisible(cfmMenu.ID, true);
-							for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
+                            for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
 							{
 								UISystem.SetVisible(DestructiveActionConfirmations[i].ID, true);
 							}
@@ -542,6 +493,13 @@ namespace TRE
 				for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
 				{
 					UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
+				}
+
+				UISystem.SetVisible(settingsMenu.ID, false);
+				for (int i = 0; i < settingsPanel.Count; i++)
+				{
+					UISystem.SetVisible(settingsPanel[i].ID, false);
+					UISystem.SetVisible(settingsSelected[i].ID, false);
 				}
 
 				isChangeMenu = false;
