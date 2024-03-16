@@ -49,6 +49,7 @@ namespace TRE
 		void SetChannelGroup(Entity& go, const std::string channel);
 		void SetListenerPosition(Entity& go);
 		void SetSourcePosition(Entity& go);
+		float Calculate3DVolume(float distance, float minDistance, float maxDistance, float maxVolume);
 		void SetSourceRadius(Entity& go, const float min, const float max);
 		bool GetIsPlaying(Entity& go) const;
 

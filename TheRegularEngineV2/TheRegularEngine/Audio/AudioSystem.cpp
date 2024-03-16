@@ -39,6 +39,8 @@ namespace TRE
 		{
 			Audio& source = go->GetComponent<Audio>();
 
+			SetSourcePosition(go);
+
 			if (!source.m_HasCompiled)
 			{
 				CompileAudio(go);
@@ -72,6 +74,7 @@ namespace TRE
 				source.m_Channel->setVolume(source.m_Volume);
 				source.m_Channel->setPitch(source.m_Pitch);
 				source.m_Channel->setPriority(source.m_Priority);
+
 			}
 			else
 			{
@@ -308,7 +311,7 @@ namespace TRE
 		{
 			LoadFile(go);
 		}
-
+		audio.m_Channel->setVolume(audio.m_Volume);
 		audioMap.insert(go);
 		soundToRemove.insert({ go, audio.m_Sound });
 	}
@@ -447,12 +450,46 @@ namespace TRE
 		Transform& sourceposition = go->GetComponent<Transform>();
 		Audio& audiosource = go->GetComponent<Audio>();
 		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
+		
+		for (Entity& go : ECSManager::Instance().GetEntities<AudioListener>())
+		{
+			AudioListener& listener = go->GetComponent<AudioListener>();
 
-		audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
-		audiosource.m_Channel->setMode(FMOD_3D);
-		audiosource.m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
+			FMOD_VECTOR listenerPos = listener.m_Position;
+			FMOD_VECTOR sourcePos = glmVec3ToFmodVector(sourceposition.m_Position);
+
+			float distance;
+			m_System->get3DListenerAttributes(0, &listenerPos, nullptr, nullptr, nullptr);
+			distance = sqrt(pow(listenerPos.x - sourcePos.x, 2) + pow(listenerPos.y - sourcePos.y, 2) + pow(listenerPos.z - sourcePos.z, 2));
+
+			// Calculate the volume based on the distance
+			float volume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
+
+			// Set the volume of the audio source
+			audiosource.m_Channel->setVolume(volume);
+
+			// Set other 3D attributes (e.g., position)
+			audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
+			audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
+			audiosource.m_Channel->setMode(FMOD_3D);
+			audiosource.m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr);
+		}
+
+		//audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
+		//audiosource.m_Channel->setMode(FMOD_3D);
+		//audiosource.m_Channel->set3DAttributes(&audiosource.m_goPosition, nullptr); //2nd param -> for doppler pitch shift
 
 		//std::cout << "Source Position: " << audiosource.m_goPosition.x << ", " << audiosource.m_goPosition.y << ", " << audiosource.m_goPosition.z << std::endl;
+	}
+
+	float AudioSystem::Calculate3DVolume(float distance, float minDistance, float maxDistance, float maxVolume)
+	{
+		distance = std::clamp(distance, minDistance, maxDistance);
+
+		float volume = maxVolume * (1.0f - (distance - minDistance) / (maxDistance - minDistance));
+
+		// Ensure volume is within the range [0, maxVolume]
+		return std::max(0.0f, std::min(maxVolume, volume));
 	}
 
 	void AudioSystem::SetSourceRadius(Entity& go, const float min, const float max)
