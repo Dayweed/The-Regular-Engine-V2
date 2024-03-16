@@ -151,11 +151,9 @@ namespace TRE
                     lastController1 = true;
 					changeUI = true;
                 }
-				Debug.Log("Controller 1: " + controller1);
             }
             else
             {
-				Debug.Log("Controller 1: " + controller1);
                 if (lastController1 == false) { }
                 else
                 {

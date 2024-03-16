@@ -43,6 +43,9 @@ namespace TRE
 		// Controllable
 		public bool isControllable = true;
 		private bool isControllerConnected = false;
+		private bool lastControllerConnected = false;
+		private bool changeUI = false;
+        private Entity CharacterUI;
 
 		// the controls/keys that THIS player (Holey) will use
 		#region Player Controls
@@ -167,6 +170,7 @@ namespace TRE
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+            CharacterUI = ECSManager.FindEntityByName("RightCharacter_HUD");
 			#endregion
 
 			#region Player Transform and Physics Variables
@@ -208,6 +212,26 @@ namespace TRE
 
 		public void Update()
 		{
+			// check if controller connected
+			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
+            if (lastControllerConnected != isControllerConnected)
+            {
+                lastControllerConnected = isControllerConnected;
+                changeUI = true;
+            }
+
+            if (changeUI && isControllerConnected && CharacterUI != null)
+            {
+                changeUI = false;
+                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller.png";
+            }
+
+            if (changeUI && !isControllerConnected && CharacterUI != null)
+            {
+                changeUI = false;
+                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
+            }
+            
 			CheckControllability();
 
             HandleInvulnerability();
@@ -418,7 +442,6 @@ namespace TRE
 		{
 			// Ignores if dead
 			if (isDead) return;
-			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
 
 			if (DroppingOutOfMap)
 			{

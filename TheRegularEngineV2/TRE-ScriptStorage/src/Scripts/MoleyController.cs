@@ -43,6 +43,9 @@ namespace TRE
 		// Controllable
 		public bool isControllable = true;
 		private bool IsControllerConnected = false;
+		private bool changeUI = false;
+		private bool lastControllerConnected = false;
+        private Entity CharacterUI;
 
 		// the controls/keys that THIS player (Moley) will use
 		#region Player Controls
@@ -184,6 +187,7 @@ namespace TRE
 			MyPowerManager = parenting.GetChildFromName("Power Manager").GetComponent<PowerUpManager>();
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
+			CharacterUI = ECSManager.FindEntityByName("LeftCharacter_HUD");
 			#endregion
 
 			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
@@ -244,6 +248,27 @@ namespace TRE
 
 		public void Update()
 		{
+            // check if controller connected
+            IsControllerConnected = IS.GetControllerConnected(ControllerNumber);
+            if (lastControllerConnected != IsControllerConnected)
+            {
+                lastControllerConnected = IsControllerConnected;
+                changeUI = true;
+            }
+
+            if (changeUI && IsControllerConnected && CharacterUI != null)
+            {
+                changeUI = false;
+                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_Controller.png";
+            }
+
+            if (changeUI && !IsControllerConnected && CharacterUI != null)
+            {
+                changeUI = false;
+                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right.png";
+            }
+
+
             CheckControllability();
 
 			HandleInvulnerability();
@@ -474,7 +499,6 @@ namespace TRE
 		{
 			// Ignores if dead
 			if (isDead) return;
-			IsControllerConnected = IS.GetControllerConnected(ControllerNumber);
 
 			if (DroppingOutOfMap)
 			{
