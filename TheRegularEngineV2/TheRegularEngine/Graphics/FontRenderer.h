@@ -17,6 +17,7 @@ namespace TRE
 	{
 		glm::mat4 Proj;
 		glm::vec4 Color;
+		float Gamma;
 	};
 
 	class FontRenderer

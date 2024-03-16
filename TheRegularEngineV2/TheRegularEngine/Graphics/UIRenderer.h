@@ -17,6 +17,7 @@ namespace TRE
 	struct UIUBO
 	{
 		glm::mat4 m_ProjView2DSpace;
+		float m_Gamma{ 2.2f };
 	};
 
 	struct UI_PushConstant

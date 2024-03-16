@@ -7,14 +7,17 @@ layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_Proj;
 	mat4 m_View;
+    float mGammaValue;
 }ubo;
 
 layout(location = 0) out vec3 outPosition;
+layout(location = 1) out float outGamma;
 
 void main() 
 {
 	mat4 UpdatedView = mat4(mat3(ubo.m_View));
     outPosition = in_Position;
+    outGamma = ubo.mGammaValue;
     gl_Position = vec4(ubo.m_Proj * UpdatedView * vec4(in_Position, 1.0)).xyww;
 }
 
@@ -22,6 +25,7 @@ void main()
 #pragma stage : frag
 
 layout (location = 0) in vec3 inUVW;
+layout (location = 1) in float InGamma;
 layout (location = 0) out vec4 outColor;
 
 layout (set = 0, binding = 1) uniform samplerCube SamplerCubeMap;
@@ -29,5 +33,5 @@ layout (set = 0, binding = 1) uniform samplerCube SamplerCubeMap;
 void main() 
 {
     outColor = texture(SamplerCubeMap, inUVW);
-    outColor.rgb = pow(outColor.rgb, vec3(1.0 / 2.2));
+    outColor.rgb = pow(outColor.rgb, vec3(1.0 / InGamma));
 }

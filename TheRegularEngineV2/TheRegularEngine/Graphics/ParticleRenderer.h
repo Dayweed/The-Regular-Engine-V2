@@ -16,6 +16,7 @@ namespace TRE
 	struct ParticleUBO
 	{
 		glm::mat4 ProjView{ glm::mat4(1.f) };
+		float Gamma{ 2.2f };
 	};
 
 	class ParticleRenderer

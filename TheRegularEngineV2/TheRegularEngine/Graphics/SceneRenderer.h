@@ -59,6 +59,7 @@ namespace TRE
 	{
 		glm::mat4 Proj{ 1.f };
 		glm::mat4 View{ 1.f };
+		float Gamma{ 2.2f };
 	};
 
 	struct ShadowUBO

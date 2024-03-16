@@ -146,6 +146,7 @@ namespace TRE
 					* glm::translate(glm::mat4(1.f), glm::vec3(offset, (FontRes->m_Characters[Letter].Size.y / s_DefaultFontSize - 2 * (FontRes->m_Characters[Letter].Bearing.y / s_DefaultFontSize)) + y_offset, 0.f))
 					* glm::scale(glm::mat4(1.f), glm::vec3(fontscale.x, fontscale.y, 1.f));
 				pc.Color = TextComp.m_Color;
+				pc.Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 
 				vkCmdPushConstants(CommandBuffer->GetInUseCommandBuffer(), m_FontPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Font_PushConstant), &pc);
 				vkCmdBindDescriptorSets(CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_FontPipeline->GetPipelineLayout(), 0, 1, &FontRes->m_Material->GetDescriptor(Index), 0, NULL);
