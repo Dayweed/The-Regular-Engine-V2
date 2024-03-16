@@ -584,7 +584,22 @@ namespace TRE
 					UISystem.SetVisible(settingsSelected[i].ID, false);
 				}
 
-				isChangeMenu = false;
+                for (int i = 0; i < audioPanel.Count; ++i)
+                {
+                    //show text
+                    if (audioPanel[i].HasComponent<Text>())
+                    {
+                        TextSystem.SetVisible(audioPanel[i].ID, false);
+                    }
+
+                    //show UI
+                    else
+                    {
+                        UISystem.SetVisible(audioPanel[i].ID, false);
+                    }
+                }
+
+                isChangeMenu = false;
 
 			}
 		}
