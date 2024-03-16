@@ -5,7 +5,7 @@ namespace TRE
     public class CreditSceneLogic : Entity
     {
         Entity mCreditText;
-        float m_ScrollSpeed = 100f;
+        float m_ScrollSpeed = 500f;
         bool m_EndOfCredits = false;
         float m_Endposition = -2850f;
 
@@ -32,6 +32,11 @@ namespace TRE
             {
                 m_EndOfCredits = true;
                 //Debug.Log("Ended");
+            }
+
+            if (m_EndOfCredits)
+            {
+                Scene.TransitionScene("MainMenu", 5f);
             }
         }
     }
