@@ -1,4 +1,5 @@
 using System;
+using System.Security.Policy;
 using GlmSharp;
 
 namespace TRE
@@ -37,6 +38,13 @@ namespace TRE
 		bool selectedLevel1 = false;
 		bool selectedLevel2 = false;
 		bool selectedLevelBonus = false;
+
+		// Controller UI
+		bool controller1 = false;
+		bool lastController1 = false;
+		bool controller2 = false;
+		bool lastController2 = false;
+		bool changeUI = false;
 
 		float sceneTransitionDelay = 2.5f;
 
@@ -131,7 +139,69 @@ namespace TRE
 		}
 
 		public void Update()
-		{
+        {
+            controller1 = InputSystem.GetControllerConnected(0);
+			controller2 = InputSystem.GetControllerConnected(1);
+
+			// Controller check
+            if (controller1)
+            {
+                if (lastController1 == false)
+                {
+                    lastController1 = true;
+					changeUI = true;
+                }
+				Debug.Log("Controller 1: " + controller1);
+            }
+            else
+            {
+				Debug.Log("Controller 1: " + controller1);
+                if (lastController1 == false) { }
+                else
+                {
+                    lastController1 = false;
+					changeUI = true;
+                }
+
+            }
+
+            if (controller2)
+            {
+                if (lastController2 == false)
+                {
+                    lastController2 = true;
+					changeUI = true;
+                }
+            }
+            else
+            {
+                if (lastController2 == false) { }
+                else
+                {
+                    lastController2 = false;
+					changeUI = true;
+                }
+
+            }
+
+            //Controller UI 
+            if (controller1 && !controller2 && changeUI)
+            {
+                UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
+				controller1 = false;
+            }
+			else if (controller1 && controller2 && changeUI)
+            {
+                UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+				controller1 = false;
+            }
+            else if(!controller1 && !controller2 && changeUI)
+            {
+                UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
+				changeUI = false;
+            }
+
+
 			// UIControls: Determines if fade in or out
 			if (UIControls != null && Moley != null && Holey != null)
 			{

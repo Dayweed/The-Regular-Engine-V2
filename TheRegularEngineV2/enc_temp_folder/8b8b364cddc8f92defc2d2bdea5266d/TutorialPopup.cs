@@ -5,13 +5,11 @@ namespace TRE
 	public class TutorialPopup : Entity
 	{
 		private Entity UIPopup1;
-        private Entity UIPopUp1_controls;
 		private Entity PopupCollider;
 		private bool IsActivated_1 = false;
 		private bool HasBeenTriggeredBefore_1 = false;
 
 		private Entity UIPopupBeforeHITW;
-		private Entity UIPopupBeforeHITW_Controls;
 		private Entity PopupCollier_BeforeHITW;
 		private bool IsActivated_BeforeHITW = false;
 		private bool HasBeenTriggeredBefore_BeforeHITW = false;
@@ -22,7 +20,8 @@ namespace TRE
 
         private bool controller1 = false;
         private bool lastController1 = false;
-		private bool changeUI = false;
+		private bool controller2 = false; 
+		private bool lastController2 = false;
 
 
 		private TutorialCameraManager mainCam;
@@ -30,7 +29,6 @@ namespace TRE
 		public void Start()
 		{
 			UIPopup1 = ECSManager.FindEntityByName("PopupUI1");
-			UIPopUp1_controls = ECSManager.FindEntityByName("PopupUI1_controls");
 			PopupCollider = ECSManager.FindEntityByName("PopUpCollider");
 			HasBeenTriggeredBefore_1 = false;
 			IsActivated_1 = false;
@@ -40,7 +38,6 @@ namespace TRE
 			TitleStarsHUD = ECSManager.FindEntityByName("TitleStarsCollected");
 
             UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
-			UIPopupBeforeHITW_Controls = ECSManager.FindEntityByName("PopupUIBeforeHITW_controls");
 			PopupCollier_BeforeHITW = ECSManager.FindEntityByName("PopupCollider2");
 			IsActivated_BeforeHITW = false;
 			HasBeenTriggeredBefore_BeforeHITW = false;
@@ -50,39 +47,45 @@ namespace TRE
 
 		public void Update()
 		{
-			//Controller Check for UI
-            controller1 = InputSystem.GetControllerConnected(0);
-
-            // Controller check
-            if (controller1)
+			// Controller check
+            if (InputSystem.GetControllerConnected(0))
             {
                 if (lastController1 == false)
                 {
-                    lastController1 = true;
-                    changeUI = true;
+					controller1 = InputSystem.GetControllerConnected(0);
+					lastController1 = InputSystem.GetControllerConnected(0);
                 }
             }
             else
             {
-                if (lastController1 == false) { }
+				if(lastController1 == false) {}
                 else
                 {
+                    controller1 = false;
                     lastController1 = false;
-                    changeUI = true;
                 }
-
+                
             }
 
-            if (changeUI && controller1)
+            if (InputSystem.GetControllerConnected(1))
             {
-                UIPopUp1_controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
-				UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
+                if (lastController2 == false)
+                {
+					controller2 = InputSystem.GetControllerConnected(1);
+					lastController2 = InputSystem.GetControllerConnected(1);
+                }
             }
-			else if (changeUI && !controller1)
+            else
             {
-				UIPopUp1_controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
-				UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
+                if (lastController2 == false) {}
+                else
+                {
+                    controller2 = false;
+                    lastController2 = false;
+                }
+                
             }
+
 
 			if (mainCam.preTransitions.preTransitioned)
 			{
@@ -94,27 +97,23 @@ namespace TRE
             if (IsActivated_1 && !IsActivated_BeforeHITW)
 			{
 				UIPopup1.GetComponent<SpriteRenderer>().isVisible = true;
-				UIPopUp1_controls.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 
 			if (IsActivated_BeforeHITW)
 			{
 				UIPopupBeforeHITW.GetComponent<SpriteRenderer>().isVisible = true;
-				UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 
-			if (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A) || InputSystem.GetControllerButtonPress(1, InputSystem.Button.A))
+			if (InputSystem.GetKeyHold(InputKeys.Space)|| InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.A))
 			{
 				if (IsActivated_1)
 				{
 					UIPopup1.GetComponent<SpriteRenderer>().isVisible = false;
-					UIPopUp1_controls.GetComponent<SpriteRenderer>().isVisible = false;
 					IsActivated_1 = !IsActivated_1;
 				}
 				if (IsActivated_BeforeHITW)
 				{
 					UIPopupBeforeHITW.GetComponent<SpriteRenderer>().isVisible = false;
-					UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().isVisible = false;
 					IsActivated_BeforeHITW = !IsActivated_BeforeHITW;
 				}
 			}
