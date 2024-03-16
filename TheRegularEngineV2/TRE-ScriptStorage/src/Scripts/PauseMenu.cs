@@ -72,9 +72,14 @@ namespace TRE
 		private Entity cfmMenu;
 		private Entity settingsMenu;
 
-		//private Transform settingsPointerTransform;
+		//Graphics panel entities
+		private Entity mGammaPanel;
+        private Entity mGammaCheckbox;
+        private Entity mGammaTick;
+		bool mIsGammaOn = true;
+        //private Transform settingsPointerTransform;
 
-		public void Start()
+        public void Start()
 		{
 			options = new List<Entity>();
 			options.Add(ECSManager.FindEntityByName("main_continue"));
@@ -120,7 +125,12 @@ namespace TRE
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 			settingsMenu = ECSManager.FindEntityByName("settings_panel");
-		}
+
+
+            mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
+			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
+			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
+    }
 
 		public void OnCreate()
 		{
@@ -342,6 +352,15 @@ namespace TRE
 							UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
 						}	
 					}
+
+					//Show graphics panel
+					if (showGraphicsPanel)
+					{
+						mGammaPanel.GetComponent<SpriteRenderer>().isVisible = true;
+                        mGammaCheckbox.GetComponent<SpriteRenderer>().isVisible = true;
+						if (mIsGammaOn)
+							mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
+                    }
 				}
 
 				// confirmation menu logic
