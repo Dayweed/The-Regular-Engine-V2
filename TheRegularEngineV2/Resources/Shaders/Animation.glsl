@@ -26,7 +26,7 @@ layout(location = 0) out struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-	float m_DrawShadow;
+	//float m_DrawShadow;
 } Out;
 
 layout(set = 0, binding = 0) uniform UBO
@@ -95,14 +95,14 @@ void main()
 	Out.DirectionalLightColor = ubo.m_DirectionalLightColor[0];
 	Out.ShadowIntensity = ubo.m_ShadowIntensity;
 
-	if (push.m_DrawShadow)
-	{
-		Out.m_DrawShadow = 1.f;
-	}
-	else
-	{
-		Out.m_DrawShadow = 0.f;
-	}
+	// if (push.m_DrawShadow)
+	// {
+	// 	Out.m_DrawShadow = 1.f;
+	// }
+	// else
+	// {
+	// 	Out.m_DrawShadow = 0.f;
+	// }
 }
 
 
@@ -125,7 +125,7 @@ layout(location = 0) in struct
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-	float m_DrawShadow;
+	//float m_DrawShadow;
 } In;
 
 layout(push_constant) uniform Push
