@@ -967,16 +967,23 @@ namespace TRE
 		private void HandleParticles(ref vec3 currVelocity)
 		{
 			//Debug.Log("particle is active: " + PS3D.GetActive(moley_dust.ID));
-			vec3 pos = this.GetComponent<Transform>().Position;
-			moley_dust.GetComponent<Transform>().Position = pos;
-			vec3 particleVel = vec3.Zero;
+            vec3 pos = this.GetComponent<Transform>().Position;
+			vec3 particleVel;
             if (currVelocity != vec3.Zero)
 			{
 				particleVel = currVelocity.NormalizedSafe;
 				particleVel *= -1;
             }
-			
-			PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
+			else
+			{
+				particleVel = vec3.Zero;
+            }
+            //pos.y += 1f;
+            pos.x += particleVel.x * 2;
+            pos.z += particleVel.z * 2;
+            moley_dust.GetComponent<Transform>().Position = pos;
+
+            PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
 			//turn off the particles if the player is dead/ not moving/ not grounded
 			if (isDead || !isGrounded || !isWalking)
 			{
