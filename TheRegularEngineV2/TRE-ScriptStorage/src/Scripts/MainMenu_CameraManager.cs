@@ -38,6 +38,8 @@ namespace TRE
 			expectedPosition = new vec3(0, 10, 20);
 			expectedRotation = new vec3(30, 180, 0);
 
+			cameraController.freeCamera = true;
+
 		}
 
 		public void Update()

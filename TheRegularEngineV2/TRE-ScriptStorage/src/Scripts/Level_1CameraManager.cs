@@ -46,6 +46,8 @@ namespace TRE
 		private float expectedDistance;
 		private float expectedDuration;
 
+		public CameraTransitions preTransitions;
+
 		public void Start()
 		{
 			MidPos = ECSManager.FindEntityByName("MidPos");
@@ -76,213 +78,234 @@ namespace TRE
 			expectedPosition = new vec3(0, 10, 20);
 			expectedRotation = new vec3(30, 180, 0);
 
+			preTransitions = new CameraTransitions();
+			preTransitions.Init();
+			preTransitions.AddCameraData(new vec3(1120, 200, -50), new vec3(30, 240, 0), 2f);
+			preTransitions.AddCameraData(new vec3(525, 135, -70), new vec3(30, 240, 0), 7f);
+			preTransitions.AddCameraData(new vec3(525, 60, -280), new vec3(30, 200, 0), 3.5f);
+			preTransitions.AddCameraData(new vec3(430, 100, -380), new vec3(30, 290, 0), 2f);
+			preTransitions.AddCameraData(new vec3(230, 65, -380), new vec3(30, 330, 0), 4f);
+			preTransitions.AddCameraData(new vec3(140, 65, -200), new vec3(30, 265, 0), 3f);
+			preTransitions.AddCameraData(new vec3(50, 65, -200), new vec3(40, 265, 0), 2.5f);
+			preTransitions.AddCameraData(new vec3(-20, 50, -20), new vec3(40, 180, 0), 2f);
 		}
 
 		public void Update()
 		{
-			regionA = IsInsideTrigger(Trigger_A);
-			regionB = IsInsideTrigger(Trigger_B);
-			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);
-			regionD = IsHoleyMoleyInsideTrigger(Trigger_D);
-			regionE = IsInsideTrigger(Trigger_E);
-			regionF = IsInsideTrigger(Trigger_F);
-			regionG = IsInsideTrigger(Trigger_G);
-			regionH = IsInsideTrigger(Trigger_H);
-			regionI = IsHoleyMoleyInsideTrigger(Trigger_I);
-			regionJ = IsInsideTrigger(Trigger_J);
-			regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
-			regionL = IsInsideTrigger(Trigger_L);
-			regionM = IsInsideTrigger(Trigger_M);
-
-			if (regionA)
+			if (preTransitions.preTransitioned == false)
 			{
-				//starting region up until below the 2nd floor
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 35;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = -2f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_A);
+				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);
+				preTransitions.PreTransition(Time.deltaTime > 0.5f ? 0.5f : Time.deltaTime, out cameraController.toTransition);
+				cameraController.freeCamera = false;
+				//SilhouetteEffect.Engine_SetSilhouetteActive(false);
 			}
-
-			if (regionB)
+			else
 			{
-				//right under the 2nd floor
-				expectedPosition = new vec3(-50, 10, 20);
-				expectedRotation = new vec3(45, 90, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 10f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_B);
-			}
+				cameraController.freeCamera = true;
+				regionA = IsInsideTrigger(Trigger_A);
+				regionB = IsInsideTrigger(Trigger_B);
+				regionC = IsHoleyMoleyInsideTrigger(Trigger_C);
+				regionD = IsHoleyMoleyInsideTrigger(Trigger_D);
+				regionE = IsInsideTrigger(Trigger_E);
+				regionF = IsInsideTrigger(Trigger_F);
+				regionG = IsInsideTrigger(Trigger_G);
+				regionH = IsInsideTrigger(Trigger_H);
+				regionI = IsHoleyMoleyInsideTrigger(Trigger_I);
+				regionJ = IsInsideTrigger(Trigger_J);
+				regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
+				regionL = IsInsideTrigger(Trigger_L);
+				regionM = IsInsideTrigger(Trigger_M);
 
-			if (regionC)
-			{
-				//region with jumppad - first floor
-				expectedPosition = new vec3(-50, 10, 20);
-				expectedRotation = new vec3(45, 90, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 10f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_C);
-			}
+				if (regionA)
+				{
+					//starting region up until below the 2nd floor
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(30, 180, 0);
+					expectedDistance = 35;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = -2f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_A);
+				}
 
-			if (regionD)
-			{
-				//region with jumppad - 2nd floor & moving platform 1
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(50, 90, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_D);
-			}
+				if (regionB)
+				{
+					//right under the 2nd floor
+					expectedPosition = new vec3(-50, 10, 20);
+					expectedRotation = new vec3(45, 90, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 10f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_B);
+				}
 
-			if (regionE)
-			{
-				//first hitw
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(20, 90, 0);
-				expectedDistance = 35;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_E);
-			}
+				if (regionC)
+				{
+					//region with jumppad - first floor
+					expectedPosition = new vec3(-50, 10, 20);
+					expectedRotation = new vec3(45, 90, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 10f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_C);
+				}
 
-			if (regionF)
-			{
-				//moving platform section
-				cameraController.staticPosition = new vec3(130, 50, -204);
-				cameraController.lookOnlyBool = true;
-				expectedPosition = new vec3(112, 82, -207);
-				expectedRotation = new vec3(50, 90, 0);
-				expectedDistance = 60;
-				cameraController.expectedYPos = 30f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_F);
-			}
+				if (regionD)
+				{
+					//region with jumppad - 2nd floor & moving platform 1
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(50, 90, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 30f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_D);
+				}
 
-			if (regionG)
-			{
-				//rolling objects section
-				expectedPosition = new vec3(121, 82, -207);
-				expectedRotation = new vec3(50, 90, 0);
-				expectedDistance = 70;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 1f;
-				CheckTransition(Trigger_G);
-			}
+				if (regionE)
+				{
+					//first hitw
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(20, 90, 0);
+					expectedDistance = 35;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 30f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_E);
+				}
 
-			if (regionH)
-			{
-				//jumppad section after rolling objs - 1st floor
-				cameraController.staticPosition = new vec3(320, 45, -330);
-				cameraController.lookOnlyBool = true;
-				expectedPosition = new vec3(260, 99, -335);
-				expectedRotation = new vec3(45, 90, 0);
-				expectedDistance = 80;
-				cameraController.expectedYPos = 60f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_H);
-			}
+				if (regionF)
+				{
+					//moving platform section
+					cameraController.staticPosition = new vec3(130, 50, -204);
+					cameraController.lookOnlyBool = true;
+					expectedPosition = new vec3(112, 82, -207);
+					expectedRotation = new vec3(50, 90, 0);
+					expectedDistance = 60;
+					cameraController.expectedYPos = 30f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_F);
+				}
 
-			if (regionI)
-			{
-				//2nd floor before moving hitw
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 0, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 60f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_I);
-			}
+				if (regionG)
+				{
+					//rolling objects section
+					expectedPosition = new vec3(121, 82, -207);
+					expectedRotation = new vec3(50, 90, 0);
+					expectedDistance = 70;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 30f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 1f;
+					CheckTransition(Trigger_G);
+				}
 
-			if (regionJ)
-			{
-				//on moving hitw and ground before vertical moving platform
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 90, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 90f;
-				cameraController.offsetX = -20f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_J);
-			}
+				if (regionH)
+				{
+					//jumppad section after rolling objs - 1st floor
+					cameraController.staticPosition = new vec3(320, 45, -330);
+					cameraController.lookOnlyBool = true;
+					expectedPosition = new vec3(260, 99, -335);
+					expectedRotation = new vec3(45, 90, 0);
+					expectedDistance = 80;
+					cameraController.expectedYPos = 60f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_H);
+				}
 
-			if (regionK)
-			{
-				//on the vertical platform
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 80;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 90f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_K);
-			}
+				if (regionI)
+				{
+					//2nd floor before moving hitw
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(30, 0, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 60f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_I);
+				}
 
-			if (regionL)
-			{
-				//last platforming section
-				//for some reason it's offset to the left idk why
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(20, 180, 0);
-				expectedDistance = 60;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 100f;
-				cameraController.offsetX = 10f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_L);
-			}
+				if (regionJ)
+				{
+					//on moving hitw and ground before vertical moving platform
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(30, 90, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 90f;
+					cameraController.offsetX = -20f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_J);
+				}
 
-			if (regionM)
-			{
-				//last hitw
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 90, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 105f;
-				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
-				CheckTransition(Trigger_M);
-			}
+				if (regionK)
+				{
+					//on the vertical platform
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(30, 180, 0);
+					expectedDistance = 80;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 90f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_K);
+				}
 
-			cameraController.expectedPosition = expectedPosition;
-			cameraController.expectedRotation = expectedRotation;
-			cameraController.expectedDistance = expectedDistance;
-			cameraController.transitionDuration = expectedDuration;
+				if (regionL)
+				{
+					//last platforming section
+					//for some reason it's offset to the left idk why
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(20, 180, 0);
+					expectedDistance = 60;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 100f;
+					cameraController.offsetX = 10f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_L);
+				}
+
+				if (regionM)
+				{
+					//last hitw
+					expectedPosition = new vec3(0, 10, 20);
+					expectedRotation = new vec3(30, 90, 0);
+					expectedDistance = 50;
+					cameraController.lookOnlyBool = false;
+					cameraController.expectedYPos = 105f;
+					cameraController.offsetX = 0f;
+					cameraController.offsetZ = 0f;
+					expectedDuration = 0.8f;
+					CheckTransition(Trigger_M);
+				}
+
+				cameraController.expectedPosition = expectedPosition;
+				cameraController.expectedRotation = expectedRotation;
+				cameraController.expectedDistance = expectedDistance;
+				cameraController.transitionDuration = expectedDuration;
+			}
 		}
 
 		private bool IsInsideTrigger(Entity entity)

@@ -1784,6 +1784,15 @@ namespace TRE
 		public extern static bool Engine_GetSilhouetteActive();
 	}
 
+	public class DepthBlurEffect
+	{
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetDepthBlurActive(bool active);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetDepthBlurActive();
+	}
+
 	public class RendererSystem
 	{
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

@@ -12,6 +12,7 @@
 #include "ECS/Components/MeshRenderer.h"
 #include "Graphics/Renderer.h"
 #include "PostProcessing/Silhouette.h"
+#include "PostProcessing/DepthBlur.h"
 #include "ECS/Components/Particle2DComponent.h"
 #include "EventSystem/EventHandler/EventHandler.h"
 #include "EventSystem/Events/EditorEvent.h"
@@ -2489,6 +2490,18 @@ namespace TRE
 	}
 #pragma endregion Silhouette
 
+#pragma region DepthBlur
+	static void Engine_SetDepthBlurActive(bool active)
+	{
+		PostProcessingManager::Instance().GetPostEffect<DepthBlur>("DepthBlur")->SetActive(active);
+	}
+
+	static bool Engine_GetDepthBlurActive()
+	{
+		return PostProcessingManager::Instance().GetPostEffect<DepthBlur>("DepthBlur")->GetActive();
+	}
+#pragma endregion DepthBlur
+
 #pragma endregion PostProcessing
 
 #pragma region Renderer
@@ -3010,6 +3023,9 @@ namespace TRE
 			//SilhouetteEffect
 			mono_add_internal_call("TRE.SilhouetteEffect::Engine_SetSilhouetteActive", Engine_SetSilhouetteActive);
 			mono_add_internal_call("TRE.SilhouetteEffect::Engine_GetSilhouetteActive", Engine_GetSilhouetteActive);
+			//Depth Blur
+			mono_add_internal_call("TRE.DepthBlurEffect::Engine_SetDepthBlurActive", Engine_SetDepthBlurActive);
+			mono_add_internal_call("TRE.DepthBlurEffect::Engine_GetDepthBlurActive", Engine_GetDepthBlurActive);
 		}
 
 		// Renderer

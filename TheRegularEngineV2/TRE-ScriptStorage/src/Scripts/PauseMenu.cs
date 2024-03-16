@@ -144,6 +144,8 @@ namespace TRE
 				SilhouetteEffect.Engine_SetSilhouetteActive(!isPaused);
 			}
 
+			DepthBlurEffect.Engine_SetDepthBlurActive(!isPaused);
+
 			if (isPaused)
 			{
 				// Pause menu logic
