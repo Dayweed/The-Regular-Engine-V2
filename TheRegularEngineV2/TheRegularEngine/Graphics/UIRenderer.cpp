@@ -75,6 +75,7 @@ namespace TRE
 	void UIRenderer::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer, bool IsEditor)
 	{
 		UIUBO UBO{};
+		UBO.m_Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 		//const auto& SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		const auto width = 1920.f;//(float)SC->GetWidth();
 		const auto height = 1080.f;// (float)SC->GetHeight();

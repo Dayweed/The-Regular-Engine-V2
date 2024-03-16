@@ -372,7 +372,7 @@ namespace TRE
 		const Transform& transform = ECSSystemManager::Instance().GetSystem<CameraSystem>()->GetMainCamera()->GetComponent<Transform>();
 		
 		UBO ubo{};
-		ubo.m_Gamma = 2.2f;
+		ubo.m_Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
 		ubo.m_LightPosition = glm::vec4(transform.m_Position, 0.f);
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
@@ -382,6 +382,7 @@ namespace TRE
 		SkyBoxUBO UBO_SkyBox;
 		UBO_SkyBox.Proj = editorCamera.GetProjectionMatrix();
 		UBO_SkyBox.View = editorCamera.GetViewMatrix();
+		UBO_SkyBox.Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 
 		glm::mat4 shadowDepthViewMatrix(1.f);
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
@@ -454,10 +455,12 @@ namespace TRE
 		{
 			ParticleUBO particleUBO{};
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+			particleUBO.Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 
 			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
 
 			ParticleUBO particleUBO2D{};
+			particleUBO2D.Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 			//Why so hardcoded (:
 			const auto width = 1920.f;
 			const auto height = 1080.f;
@@ -477,7 +480,7 @@ namespace TRE
 		auto SwapChain = Engine::GetInstance().GetWindow()->GetSwapChain();
 
 		UBO ubo{};
-		ubo.m_Gamma = 2.2f;
+		ubo.m_Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 		ubo.m_ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
 		ubo.m_LightPosition = glm::vec4(cameraTransform.m_Position, 0.f);
 		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
@@ -582,10 +585,12 @@ namespace TRE
 		{
 			ParticleUBO particleUBO{};
 			particleUBO.ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
+			particleUBO.Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 
 			m_ParticleUBO3D->SetData(&particleUBO, sizeof(ParticleUBO));
 
 			ParticleUBO particleUBO2D{};
+			particleUBO2D.Gamma = Renderer::IsGammaOn() ? 2.2f : 1.0f;
 			const auto width = 1920.f;
 			const auto height = 1080.f;
 			glm::mat4 TranslateToMid = glm::translate(glm::identity<glm::mat4>(), glm::vec3(width / 2.f, height / 2.f, 0.f));
