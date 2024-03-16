@@ -1,0 +1,373 @@
+[
+   [
+      6,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+   ],
+   [
+      6,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "12047088969239804211",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12047088969239804211",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12047088969239804211",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11957964153558096784",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12047088969239804211",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3774650033393178482",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12047088969239804211",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11394677963010251788",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12047088969239804211",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1310597490809016666",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "12047088969239804211",
+         "m_Overrides": {},
+         "m_PrefabGUID": "11175652428508091559",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "m_Children": [
+            "11168414300967360781",
+            "1764597705486708175",
+            "4636977098831155562",
+            "16247763072631835954"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "4122031196460015062"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "4122031196460015062"
+      },
+      3,
+      {
+         "m_Children": [
+            "423579301731274754"
+         ],
+         "m_Parent": "4122031196460015062"
+      },
+      4,
+      {
+         "m_Children": [],
+         "m_Parent": "4636977098831155562"
+      },
+      5,
+      {
+         "m_Children": [],
+         "m_Parent": "4122031196460015062"
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "4122031196460015062",
+         "m_Index": 1,
+         "m_Name": "TutorialDiorama",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "11168414300967360781",
+         "m_Index": 2,
+         "m_Name": "PlatformShort",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "1764597705486708175",
+         "m_Index": 3,
+         "m_Name": "Maracca",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "4636977098831155562",
+         "m_Index": 4,
+         "m_Name": "PowerUpSpawner",
+         "m_Tag": ""
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "423579301731274754",
+         "m_Index": 5,
+         "m_Name": "Blueberry",
+         "m_Tag": ""
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "16247763072631835954",
+         "m_Index": 6,
+         "m_Name": "TutorialFloor",
+         "m_Tag": "Ground"
+      }
+   ],
+   [
+      6,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.817547082901001,
+            4.012683868408203,
+            2.7885584831237793
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            3.0034701824188232,
+            1.5297818183898926,
+            -2.492807388305664
+         ],
+         "m_Rotation": [
+            -121.00001525878906,
+            -6.830189249740215e-06,
+            92.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            -2.650913715362549,
+            0.6010258197784424,
+            -4.004940509796143
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            -2.6954851150512695,
+            1.7989065647125244,
+            -3.988983154296875
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.125,
+            0.125,
+            0.125
+         ]
+      }
+   ],
+   [
+      5,
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "2e4f9a34160d7338",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "5d15c789e27c4ca4",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "cb47d70f41fd3257",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      3,
+      {
+         "ASSET_GEOM_m_RenderObject": "789ef5cf219e011e",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "f28caaeaf199130f",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      4,
+      {
+         "ASSET_GEOM_m_RenderObject": "5e5479e60fbcccaf",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      5,
+      {
+         "ASSET_GEOM_m_RenderObject": "38f15a6260750456",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "9a592ebff5012d57",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.DioramaSpin"
+         ],
+         "m_StoredClass": "TRE.DioramaSpin"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
