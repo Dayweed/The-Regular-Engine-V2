@@ -23,10 +23,12 @@ namespace TRE
 		public bool showAudioPanel = false;
 		public bool showControlsPanel = false;
 
+		private bool mIsEditingSettings = false;
+
 		public int mainMenuOption = 0; // for confirmation menu to know which option to execute
 		public int currentOption = 0;
 		public int menuOption = 1;
-		public int menustate = 0; //0 = main menu, 1 = show controls,2 = confirmation menu
+		public int menustate = 0; //0 = main menu, 1 = show controls, 2 = confirmation menu
 		public int settingsOption = 0;
 		public int audioOption = 0;
 		public String settings_name = "";
@@ -73,6 +75,7 @@ namespace TRE
 		private Entity settingsMenu;
 
 		//Graphics panel entities
+		private int mCurrentEditMember = 0;
 		private Entity mGammaPanel;
         private Entity mGammaCheckbox;
         private Entity mGammaTick;
@@ -206,10 +209,8 @@ namespace TRE
 							break;
 					}
 				}
-
-				// control menu logic
-				else if (menustate == 1)
-				{
+				else if (menustate == 1 && !mIsEditingSettings) // control menu logic
+                {
 					//settings pop up will appear
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
 					if (InputSystem.GetKeyTriggered(InputKeys.A))
@@ -353,19 +354,52 @@ namespace TRE
 						}	
 					}
 
-					//Show graphics panel
-					if (showGraphicsPanel)
+                    if (!mIsEditingSettings && InputSystem.GetKeyTriggered(InputKeys.Enter))
+                    {
+                        mIsEditingSettings = true;
+						mCurrentEditMember = 0; //Set it to be 0th member always at the start
+                    }
+
+                    //Show graphics panel
+                    if (showGraphicsPanel)
 					{
-						mGammaPanel.GetComponent<SpriteRenderer>().isVisible = true;
+                        mGammaPanel.GetComponent<SpriteRenderer>().isVisible = true;
                         mGammaCheckbox.GetComponent<SpriteRenderer>().isVisible = true;
-						if (mIsGammaOn)
-							mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
+                        if (mIsGammaOn)
+						{
+                            mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
+                        }
                     }
 				}
-
-				// confirmation menu logic
-				else
+				else if (menustate == 1 && mIsEditingSettings)
 				{
+					if (showGraphicsPanel)
+					{
+						if (mCurrentEditMember == 0)
+						{
+							if (InputSystem.GetKeyTriggered(InputKeys.Enter))
+							{
+								mIsGammaOn = !mIsGammaOn;
+								if (mIsGammaOn)
+								{
+                                    Game.TurnGammaOn();
+                                    mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
+                                }
+								else
+								{
+									Game.TurnGammaOff();
+                                    mGammaTick.GetComponent<SpriteRenderer>().isVisible = false;
+                                }
+							}
+						}
+						else if (mCurrentEditMember == 1) //Can be smth else in future
+						{
+
+						}
+					}
+				}
+                else // confirmation menu logic which is menustate == 2
+                {
 					if (InputSystem.GetKeyTriggered(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 					{
 						if (menuOption == 0)
@@ -462,7 +496,7 @@ namespace TRE
 				}
 			}
 
-			else if (isChangeMenu && !isPaused)
+			else if (isChangeMenu && !isPaused) //This is when you are getting out of the pause menu
 			{
 				// hide the whole pause menu
 				UISystem.SetVisible(pauseMenu.ID, false);
@@ -503,6 +537,10 @@ namespace TRE
                         UISystem.SetVisible(audioPanel[i].ID, false);
                     }
                 }
+
+				UISystem.SetVisible(mGammaTick.ID, false);
+                UISystem.SetVisible(mGammaPanel.ID, false);
+                UISystem.SetVisible(mGammaCheckbox.ID, false);
 
                 isChangeMenu = false;
 
