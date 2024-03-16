@@ -6,6 +6,8 @@ namespace TRE
 {
 	Silhouette::Silhouette() : PostProcessEffect()
 	{
+		m_BeforeUI = true;
+
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(16); //Silhoutte shader

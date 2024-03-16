@@ -6,6 +6,8 @@ namespace TRE
 {
 	Vignette::Vignette() : PostProcessEffect()
 	{
+		m_BeforeUI = false;
+
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(8); //Vignette shader

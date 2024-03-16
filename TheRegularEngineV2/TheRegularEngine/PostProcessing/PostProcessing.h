@@ -28,6 +28,8 @@ namespace TRE
 		virtual void Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
 		void SetActive(bool active) { m_Active = active; }
 		bool GetActive() { return m_Active; }
+		void SetBeforeUI(bool beforeUI) { m_BeforeUI = beforeUI; }
+		bool GetBeforeUI() { return m_BeforeUI; }
 	protected:
 		std::shared_ptr<Pipeline> m_Pipeline;
 		std::shared_ptr<RenderPass> m_Renderpass;
@@ -38,6 +40,7 @@ namespace TRE
 		std::shared_ptr<UniformBuffer> m_UBO;
 
 		bool m_Active = true;
+		bool m_BeforeUI = false;
 	};
 
 	class PostProcessingManager
@@ -49,7 +52,8 @@ namespace TRE
 			return instance;
 		}
 		void Init();
-		void Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
+		void PreRender(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
+		void PostRender(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index);
 		void Shutdown();
 
 		void AddPostEffect(std::shared_ptr<PostProcessEffect> effect, const int index, const std::string name);

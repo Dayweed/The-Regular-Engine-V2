@@ -102,10 +102,28 @@ namespace TRE
 		m_PostEffects[2] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
 	}
 
-	void PostProcessingManager::Render(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
+	void PostProcessingManager::PreRender(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
 	{
 		for (const auto& effects : m_PostEffects)
 		{
+			if(effects.second.second->GetBeforeUI() == false)
+				continue;
+
+			if (effects.second.second->GetActive() == false)
+				continue;
+
+			effects.second.second->UpdateUBO();
+			effects.second.second->Render(targetFramebuffer, commandBuffer, index);
+		}
+	}
+
+	void PostProcessingManager::PostRender(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)
+	{
+		for (const auto& effects : m_PostEffects)
+		{
+			if(effects.second.second->GetBeforeUI() == true)
+				continue;
+
 			if (effects.second.second->GetActive() == false)
 				continue;
 

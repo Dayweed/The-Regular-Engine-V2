@@ -6,6 +6,8 @@ namespace TRE
 {
 	DepthBlur::DepthBlur() : PostProcessEffect()
 	{
+		m_BeforeUI = true;
+
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
 		PipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(17); //Silhoutte shader

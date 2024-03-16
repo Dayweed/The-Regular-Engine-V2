@@ -692,15 +692,16 @@ namespace TRE
 
 		if (m_IsEditorScene == false)
 		{
-			//BoxBlurPostpass(Index);
+			BoxBlurPostpass(Index);
+			PostProcessingManager::Instance().PreRender(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
+
 			m_UIRenderer->Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, m_IsEditorScene);
 
 			Profiler::Instance().StartTimer("FontPass");
 			m_FontRenderer->RenderFont(m_FrameBuffer[ImageIndex], m_CommandBuffer);
 			Profiler::Instance().EndTimer("FontPass");
 
-
-			PostProcessingManager::Instance().Render(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
+			PostProcessingManager::Instance().PostRender(m_FrameBuffer[ImageIndex], m_CommandBuffer, Index);
 		}
 
 		m_CommandBuffer->End();
@@ -901,9 +902,6 @@ namespace TRE
 
 	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
-		m_ShadowMapWidth = 8192;
-		m_ShadowMapHeight = 8192;
-
 		for (int x = 0; x < 2; x++) //Render 2 shadow maps
 		{
 			VkClearValue clearValues[2];
@@ -1004,8 +1002,6 @@ namespace TRE
 
 	void SceneRenderer::DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
-		m_DepthPrepassMapWidth = 8192;
-		m_DepthPrepassMapHeight = 8192;
 		VkClearValue clearValues[2];
 		clearValues[0].depthStencil = { 1.0f, 0 };
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -1075,8 +1071,6 @@ namespace TRE
 
 	void SceneRenderer::IDPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
-		m_IDPrepassMapWidth = 8192;
-		m_IDPrepassMapHeight = 8192;
 		VkClearValue clearValues[2];
 		clearValues[0].depthStencil = { 1.0f, 0 };
 		VkRenderPassBeginInfo renderPassInfo{};
@@ -1152,8 +1146,6 @@ namespace TRE
 
 	void SceneRenderer::BoxBlurPostpass(uint32_t Index)
 	{
-		m_BoxBlurPostpassMapWidth = 8192;
-		m_BoxBlurPostpassMapHeight = 8192;
 		VkClearValue clearValues[2];
 		clearValues[0].depthStencil = { 1.0f, 0 };
 		clearValues[1].color = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -1432,8 +1424,8 @@ namespace TRE
 
 	void SceneRenderer::DepthPrepassInit()
 	{
-		m_DepthPrepassMapWidth = 8192;
-		m_DepthPrepassMapHeight = 8192;
+		m_DepthPrepassMapWidth = 4096;
+		m_DepthPrepassMapHeight = 4096;
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "Depth Pass";
@@ -1467,8 +1459,8 @@ namespace TRE
 
 	void SceneRenderer::IDPrepassInit()
 	{
-		m_IDPrepassMapWidth = 8192;
-		m_IDPrepassMapHeight = 8192;
+		m_IDPrepassMapWidth = 4096;
+		m_IDPrepassMapHeight = 4096;
 
 		ImageConfig ImgConfig{};
 		ImgConfig.DebugName = "ID Pass";
@@ -1502,8 +1494,8 @@ namespace TRE
 
 	void SceneRenderer::BoxBlurPostpassInit()
 	{
-		m_BoxBlurPostpassMapWidth = 8192;
-		m_BoxBlurPostpassMapHeight = 8192;
+		m_BoxBlurPostpassMapWidth = 512;
+		m_BoxBlurPostpassMapHeight = 512;
 
 		//Color
 		ImageConfig ImgConfig{};
