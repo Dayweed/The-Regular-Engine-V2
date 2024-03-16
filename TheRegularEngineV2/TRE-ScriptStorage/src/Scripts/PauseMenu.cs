@@ -105,12 +105,12 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
 
             audioPanel = new List<Entity>();
-            int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
-			for (int i = 0; i < total_children; i++)
-			{
-				String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
-				audioPanel.Add(ECSManager.FindEntityByName(childName));
-            }
+            //int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+			//for (int i = 0; i < total_children; i++)
+			//{
+			//	String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
+			//	audioPanel.Add(ECSManager.FindEntityByName(childName));
+   //         }
         }
 
 		public void OnCreate()
