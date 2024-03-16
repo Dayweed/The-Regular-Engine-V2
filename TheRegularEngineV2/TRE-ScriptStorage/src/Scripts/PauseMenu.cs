@@ -101,7 +101,13 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("graphics_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
-		}
+
+			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+			for (int i = 0; i < total_children; i++)
+			{
+
+			}
+        }
 
 		public void OnCreate()
 		{
@@ -196,8 +202,8 @@ namespace TRE
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
 					if (InputSystem.GetKeyTriggered(InputKeys.A))
 					{
-                        Debug.Log("press left");
-                        if (settingsOption == 0)
+						Debug.Log("press left");
+						if (settingsOption == 0)
 							settingsOption = 3;
 						else
 							--settingsOption;
@@ -206,39 +212,79 @@ namespace TRE
 					if (InputSystem.GetKeyTriggered(InputKeys.D))
 					{
 						Debug.Log("press right");
-                        if (settingsOption == 3)
+						if (settingsOption == 3)
 							settingsOption = 0;
 						else
 							++settingsOption;
+
+						//print check; remove later
+						//if (settingsOption == 3)
+						//{
+						//	ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+      //                      Debug.Log(ECSManager.FindEntityByName("audio_selected").parenting.GetChild(0).name);
+      //                      Debug.Log(ECSManager.FindEntityByName("audio_selected").parenting.GetChild(1).name);
+      //                      Debug.Log(ECSManager.FindEntityByName("audio_selected").parenting.GetChild(2).name);
+      //                  }
 					}
 
-                    for (int i = 0; i < settingsSelected.Count; ++i)
-                    {
+					switch (settingsOption)
+					{
+						case 0:
+							settings_name = "Gameplay";
+							break;
+						case 1:
+							settings_name = "Graphics";
+							break;
+						case 2:
+							settings_name = "Audio";
+							break;
+						case 3:
+							settings_name = "Controls";
+							break;
+					}
+
+					//show which panel is selected
+					for (int i = 0; i < settingsSelected.Count; ++i)
+					{
 						//other 3 selected == false
-                        if (i != settingsOption)
+						if (i != settingsOption)
 						{
-                            UISystem.SetVisible(settingsSelected[i].ID, false);
+							UISystem.SetVisible(settingsSelected[i].ID, false);
 						}
 						else
 						{
 							UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
 						}
-                    }
+					}
 
-                    for (int i = 0; i < settingsPanel.Count; ++i)
-                    {
-                        //other 3 panel == true
-                        if (i != settingsOption)
+					for (int i = 0; i < settingsPanel.Count; ++i)
+					{
+						//other 3 panel == true
+						if (i != settingsOption)
 						{
-                            UISystem.SetVisible(settingsPanel[i].ID, true);
+							UISystem.SetVisible(settingsPanel[i].ID, true);
 						}
 						else 
 						{
 							UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
 						}
-                    }
+					}
 
-	
+                    //show what can be adjusted for each panel
+                    switch (settings_name)
+					{
+						case "Gameplay":
+							break;
+
+						case "Graphics":
+							break;
+
+						case "Audio":
+							break;
+
+						case "Controls":
+							break;
+                    }
 
 					//               //user can press W or S to move up or down in its own settings
 					//               if (InputSystem.GetKeyTriggered(InputKeys.W))
@@ -436,7 +482,7 @@ namespace TRE
 							// Show main pause menu
 							UISystem.SetVisible(pauseMenu.ID, true);
 							UISystem.SetVisible(cfmMenu.ID, false);
-                            for (int i = 0; i < options.Count; i++)
+							for (int i = 0; i < options.Count; i++)
 							{
 								UISystem.SetVisible(options[i].ID, true);
 							}
@@ -463,7 +509,7 @@ namespace TRE
 						case 2:
 							// only show the confirmation menu since destructive action UI is transparent
 							UISystem.SetVisible(cfmMenu.ID, true);
-                            for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
+							for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
 							{
 								UISystem.SetVisible(DestructiveActionConfirmations[i].ID, true);
 							}
