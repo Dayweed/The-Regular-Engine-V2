@@ -137,19 +137,6 @@ namespace TRE
 				currentOption = 0;
 			}
 
-			//HARD CODE FOR NOW
-			String levelName = Scene.GetSceneName();
-			if (levelName == "MainMenu" || levelName == "ResultScreen")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(false);
-			}
-			else if (levelName == "Tutorial" || levelName == "Level1" || levelName == "Level2")
-			{
-				SilhouetteEffect.Engine_SetSilhouetteActive(!isPaused);
-			}
-
-			DepthBlurEffect.Engine_SetDepthBlurActive(!isPaused);
-
 			if (isPaused)
 			{
 				// Pause menu logic
