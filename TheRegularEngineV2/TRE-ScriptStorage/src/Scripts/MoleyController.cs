@@ -45,7 +45,7 @@ namespace TRE
 		private bool IsControllerConnected = false;
 		private bool changeUI = false;
 		private bool lastControllerConnected = false;
-        private Entity CharacterUI;
+		private Entity CharacterUI;
 
 		// the controls/keys that THIS player (Moley) will use
 		#region Player Controls
@@ -59,7 +59,7 @@ namespace TRE
 		const InputKeys playerAbilityKey = InputKeys.E;
 		#endregion
 
-        private int ControllerNumber = 0;
+		private int ControllerNumber = 0;
 
 		#region Collider Variables
 		private float defaultRadius = 2f;
@@ -167,19 +167,19 @@ namespace TRE
 		//Materials and Meshes
 		//Default
 		private const string defaultMaterial = "Red_Moley.material";
-        private const string defaultWalkingMesh = "mole_walk.fbx";
-        private const string defaultJumpingMesh = "mole_jump.fbx";
-        private const string defaultIdleMesh = "mole_idle.fbx";
-        private const string defaultAnimationMaterial = "RedCharacter_Animation.material";
+		private const string defaultWalkingMesh = "mole_walk.fbx";
+		private const string defaultJumpingMesh = "mole_jump.fbx";
+		private const string defaultIdleMesh = "mole_idle.fbx";
+		private const string defaultAnimationMaterial = "RedCharacter_Animation.material";
 
 		//Blueberry
-        private const string blueberryMaterial = "Moley_Blueberry.material";
+		private const string blueberryMaterial = "Moley_Blueberry.material";
 		private const string blueberryMesh = "Moley_Blueberry.fbx";
 
-        //Strawberry
-        private const string strawberryMaterial = "Moley_Strawberry.material";
+		//Strawberry
+		private const string strawberryMaterial = "Moley_Strawberry.material";
 		private const string strawberryMesh = "Moley_Strawberry.fbx";
-        public void Start()
+		public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -248,28 +248,28 @@ namespace TRE
 
 		public void Update()
 		{
-            // check if controller connected
-            IsControllerConnected = IS.GetControllerConnected(ControllerNumber);
-            if (lastControllerConnected != IsControllerConnected)
-            {
-                lastControllerConnected = IsControllerConnected;
-                changeUI = true;
-            }
+			// check if controller connected
+			IsControllerConnected = IS.GetControllerConnected(ControllerNumber);
+			if (lastControllerConnected != IsControllerConnected)
+			{
+				lastControllerConnected = IsControllerConnected;
+				changeUI = true;
+			}
 
-            if (changeUI && IsControllerConnected && CharacterUI != null)
-            {
-                changeUI = false;
-                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_Controller.png";
-            }
+			if (changeUI && IsControllerConnected && CharacterUI != null)
+			{
+				changeUI = false;
+				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_Controller.png";
+			}
 
-            if (changeUI && !IsControllerConnected && CharacterUI != null)
-            {
-                changeUI = false;
-                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right.png";
-            }
+			if (changeUI && !IsControllerConnected && CharacterUI != null)
+			{
+				changeUI = false;
+				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right.png";
+			}
 
 
-            CheckControllability();
+			CheckControllability();
 
 			HandleInvulnerability();
 
@@ -665,7 +665,7 @@ namespace TRE
 						if(y > 0)
 							dirVec += CS.GetMainCameraForwardVec();
 						if(y < 0)
-                            dirVec -= CS.GetMainCameraForwardVec();
+							dirVec -= CS.GetMainCameraForwardVec();
 						if(x > 0)
 							dirVec -= CS.GetMainCameraRightVec();
 						if(x < 0)
@@ -966,20 +966,26 @@ namespace TRE
 
 		private void HandleParticles(ref vec3 currVelocity)
 		{
-			//Debug.Log("particle is active: " + PS3D.GetActive(moley_dust.ID));
-			vec3 particleVel = vec3.Zero;
-            if (currVelocity != vec3.Zero)
+            //Debug.Log("particle is active: " + PS3D.GetActive(moley_dust.ID));
+            //vec3 pos = this.GetComponent<Transform>().Position;
+            //moley_dust.GetComponent<Transform>().Position = pos;
+            vec3 particleVel;
+			if (currVelocity != vec3.Zero)
 			{
 				particleVel = currVelocity.NormalizedSafe;
 				particleVel *= -1;
-            }
+			}
+			else
+			{
+				particleVel = vec3.Zero;
+			}
 			
 			PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
 			//turn off the particles if the player is dead/ not moving/ not grounded
 			if (isDead || !isGrounded || !isWalking)
 			{
-                PS3D.SetActive(moley_dust.ID, false);
-            }
+				PS3D.SetActive(moley_dust.ID, true);
+			}
 			else
 			{
 				PS3D.SetActive(moley_dust.ID, true);
@@ -987,7 +993,7 @@ namespace TRE
 		}
 
 
-        public void UpdateDisplay()
+		public void UpdateDisplay()
 		{
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 		}
@@ -1092,18 +1098,18 @@ namespace TRE
 			if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
 			{
 				cameraTransiting = true;
-            }
+			}
 
 
-            // Logic to handle isControllable
-            if (Scene.IsTransiting() || cameraTransiting)
+			// Logic to handle isControllable
+			if (Scene.IsTransiting() || cameraTransiting)
 			{
 				isControllable = false;
 			}
 			else
 			{
 				isControllable = true;
-            }
+			}
 		}
-    }
+	}
 }
