@@ -38,6 +38,8 @@ namespace TRE
 
 		public CameraTransitions preTransitions;
 
+		private ulong fallingmaracasSFX;
+
 		public void Start()
 		{
 			MidPos = ECSManager.FindEntityByName("MidPos");
@@ -69,6 +71,9 @@ namespace TRE
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 
+			//Audio
+			fallingmaracasSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
+
 			//expectedDistance = 35;
 			//expectedPosition = new vec3(0, 10, 20);
 			//expectedRotation = new vec3(30, 180, 0);
@@ -83,6 +88,7 @@ namespace TRE
 		}
 		public void Update()
 		{
+
 			if (preTransitions.preTransitioned == false)
 			{
 				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);
@@ -93,6 +99,11 @@ namespace TRE
 			else
 			{
 				cameraController.freeCamera = true;
+
+				if (ECSManager.IsValidEntity(fallingmaracasSFX))
+				{
+					AudioSystem.Play(fallingmaracasSFX);
+				}
 
 				regionA = IsInsideTrigger(Trigger_A);
 				regionB = IsInsideTrigger(Trigger_B);
