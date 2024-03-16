@@ -136,9 +136,9 @@ namespace TRE
 
 			if (currentFrame == 3)
 			{
-                paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
+				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
 
-                if (pressSpaceCounter == 1)
+				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue1.ID);
 				}
@@ -219,8 +219,8 @@ namespace TRE
 				currentTime -= Time.deltaTime;
 			}
 
-            //check if space is already pressed, then set pressedSpaceTwice as true/false
-            if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
+			//check if space is already pressed, then set pressedSpaceTwice as true/false
+			if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
 			{
 				pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
 			}
