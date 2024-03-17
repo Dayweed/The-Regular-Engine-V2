@@ -5,7 +5,7 @@ namespace TRE
 {
 	public class RandomizeFallingObjLocation : Entity
 	{
-		public Entity fallingMaraccasPrefab;
+		public Entity fallingRockPrefab;
 		public Entity CloudEffectPrefab;
 
 		public vec3 size; // Size (in 2D) of the maximum area falling objects can spawn
@@ -93,7 +93,7 @@ namespace TRE
 			itemsDefRot.Clear();
 
 			// ID for prefabs are based on resource prefab GUID
-			fallingMaraccasPrefab = new Entity(11822093139939255162);
+			fallingRockPrefab = new Entity(17896144981290866787);
 			CloudEffectPrefab = new Entity(2611909673942127335);
 
 			CreateItems();
@@ -164,7 +164,7 @@ namespace TRE
 			//		int searchCount = maxObjects * 2;
 
 			//		bool foundSpot = AssignNewLocation(out vec3 pos);
-			//		Entity item = ECSManager.Instantiate(fallingMaraccasPrefab);
+			//		Entity item = ECSManager.Instantiate(fallingRockPrefab);
 			//		item.transform.Position = pos;
 
 			//		itemsToSpawn.Add(item);
