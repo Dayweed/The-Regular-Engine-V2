@@ -125,6 +125,8 @@ namespace TRE
 		private bool walkingSFXPlayed = false;
 		private bool fallingSFXPlayed = false;
 		private bool landingSFXPlayed = false;
+
+		private float walkingSFXVolume;
 		#endregion
 
 		#region Respawn Variables
@@ -229,6 +231,7 @@ namespace TRE
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
 			hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
 			landingSFX = ECSManager.FindIDFromName("SFX_MoleyLand");
+			walkingSFXVolume = AS.GetVolume(walkingSFX);
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
@@ -769,8 +772,8 @@ namespace TRE
 			{
 				if (isWalking && walkingSFXPlayed == false)
 				{
+					AS.SetVolume(walkingSFX, VolumeVariation(walkingSFXVolume, 0.2f));
 					AS.Play(walkingSFX);
-
 					walkingSFXPlayed = true;
 				}
 
@@ -1114,5 +1117,18 @@ namespace TRE
 				isControllable = true;
             }
 		}
-    }
+		private float VolumeVariation(float volume, float variation)
+		{
+			float newVolume = volume + Random.Range(-variation, variation);
+			if (newVolume < 0)
+			{
+				newVolume = 0;
+			}
+			else if (newVolume > 1)
+			{
+				newVolume = 1;
+			}
+			return newVolume;
+		}
+	}
 }

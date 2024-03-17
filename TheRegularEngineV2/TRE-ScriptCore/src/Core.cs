@@ -1485,6 +1485,16 @@ namespace TRE
 			Engine_PlayFootsteps(entityid, i);
 		}
 
+		public static void SetVolume(EntityID entityid, float volume)
+		{
+			Engine_SetVolume(entityid, volume);
+		}
+
+		public static float GetVolume(EntityID entityid)
+		{
+			return Engine_GetVolume(entityid);
+		}
+
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_Play(EntityID entityid);
@@ -1509,6 +1519,10 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_PlayFootsteps(EntityID entityid, int i);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetVolume(EntityID entityid, float volume);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetVolume(EntityID entityid);
 
 	}
 

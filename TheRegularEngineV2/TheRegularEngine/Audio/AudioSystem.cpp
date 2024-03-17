@@ -506,6 +506,13 @@ namespace TRE
 		//std::cout << "Source Radius: " << audiosource.m_MinDistance << ", " << audiosource.m_MaxDistance << std::endl;
 	}
 
+	void AudioSystem::SetVolume(Entity& go, const float volume)
+	{
+		Audio& audio = go->GetComponent<Audio>();
+		audio.m_Volume = volume;
+		audio.m_Channel->setVolume(volume);
+	}
+
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
 	{
 		return go->GetComponent<Audio>().m_ChannelGroup;
@@ -569,6 +576,11 @@ namespace TRE
 		return source.m_Channel->isPlaying(&source.m_isPlaying);
 
 		//std::cout << "IsPlaying: " << source.m_isPlaying << source.m_FileName << std::endl;
+	}
+
+	float AudioSystem::GetVolume(Entity& go) const
+	{
+		return go->GetComponent<Audio>().m_Volume;
 	}
 
 }

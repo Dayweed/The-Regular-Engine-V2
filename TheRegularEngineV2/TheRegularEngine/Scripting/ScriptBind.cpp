@@ -2010,6 +2010,30 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->PlayFootsteps(entity, i);
 	}
 
+	static void BindSetVolume(CSEntityID ID, float volume)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return;
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return;
+		}
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetVolume(entity, volume);
+	}
+
+	static float BindGetVolume(CSEntityID ID)
+	{
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return 0.0f;
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return 0.0f;
+		}
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetVolume(entity);
+	}
+
 #pragma endregion
 
 #pragma region SceneBindings
@@ -2955,6 +2979,8 @@ namespace TRE
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetFileName", BindGetFileName);
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetIsPlaying", BindIsPlaying);
 			mono_add_internal_call("TRE.AudioSystem::Engine_PlayFootsteps", BindPlayFootsteps);
+			mono_add_internal_call("TRE.AudioSystem::Engine_SetVolume", BindSetVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetVolume", BindGetVolume);
 		}
 
 		// Scene
