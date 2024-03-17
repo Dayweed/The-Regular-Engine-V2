@@ -99,10 +99,12 @@ namespace TRE
 		{
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
+			bool hasPlayerPressed = pressedSpace || pressA;
+
 			bool paragraphIsHalfWay = false;
 
 			// Go to next scene
-			if ((pressedSpace || pressA) && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+			if (hasPlayerPressed && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
@@ -228,7 +230,7 @@ namespace TRE
 			if (!endCutscene)
 			{
 				//Every frame will go through this if statement (when its going to the next frame)
-				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
+				if (hasPlayerPressed || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
 												 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
@@ -237,7 +239,7 @@ namespace TRE
 						++pressSpaceCounter;
 
 					//player can press double space to go next frame OR once the paragraph is done press space once to go next frame
-					if (currentFrame >= 3 && currentFrame <= 7 && (pressedSpace && pressedSpaceTwice || !paragraphIsHalfWay))
+					if (currentFrame >= 3 && currentFrame <= 7 && (hasPlayerPressed && pressedSpaceTwice || !paragraphIsHalfWay))
 					{
 						++currentFrame;
 						pressedSpaceTwice = false;
