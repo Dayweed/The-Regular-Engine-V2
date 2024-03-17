@@ -467,7 +467,7 @@ namespace TRE
 				const FMOD_VECTOR sourcePos = glmVec3ToFmodVector(sourceposition.m_Position);
 
 				m_System->get3DListenerAttributes(0, &listenerPos, nullptr, nullptr, nullptr);
-				const float distance = sqrtf(powf(listenerPos.x - sourcePos.x, 2) + pow(listenerPos.y - sourcePos.y, 2) + powf(listenerPos.z - sourcePos.z, 2));
+				const float distance = sqrtf(powf(listenerPos.x - sourcePos.x, 2) + powf(listenerPos.y - sourcePos.y, 2) + powf(listenerPos.z - sourcePos.z, 2));
 
 				const float volume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
 
