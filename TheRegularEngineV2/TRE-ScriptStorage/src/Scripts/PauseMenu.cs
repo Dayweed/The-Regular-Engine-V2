@@ -70,6 +70,8 @@ namespace TRE
 		private List<Entity> settingsSelected;
 		private List<Entity> audioPanel;
 
+		private Entity mSettingPanel;
+
 		private Entity pauseMenu;
 		private Entity cfmMenu;
 		private Entity settingsMenu;
@@ -103,8 +105,10 @@ namespace TRE
 			settingsPanel.Add(ECSManager.FindEntityByName("audio_panel"));
 			settingsPanel.Add(ECSManager.FindEntityByName("controls_panel"));
 
-			//selected
-			settingsSelected = new List<Entity>();
+			mSettingPanel = ECSManager.FindEntityByName("settings_panel");
+
+            //selected
+            settingsSelected = new List<Entity>();
 			settingsSelected.Add(ECSManager.FindEntityByName("gameplay_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("graphics_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
@@ -150,11 +154,6 @@ namespace TRE
 			}
 		}
 
-		public void OnCreate()
-		{
-
-		}
-
 		public void Update()
 		{
 			if ((InputSystem.GetKeyTriggered(InputKeys.Escape) && mainCamera.freeCamera)
@@ -163,18 +162,36 @@ namespace TRE
 			{
 				if (menustate == -1)
 				{
-	                isPaused = !isPaused;
+                    isChangeMenu = true;
+                    isPaused = !isPaused;
                     menustate = 0;
                     currentOption = 0;
+                    Debug.Log("Trigger: Go into pause state");
                 }
-				else if (!mIsEditingSettings)
+				else if (mIsEditingSettings && menustate == 1)
+				{
+                    isChangeMenu = true;
+                    menustate = 1;
+					mIsEditingSettings = false;
+					ResetPointers();
+                    Debug.Log("Trigger: Get out of editing state");
+                }
+                else if (!mIsEditingSettings && menustate == 1)
+                {
+                    isChangeMenu = true;
+                    menustate = 0;
+					BacktoMainPausePage();
+                    Debug.Log("Trigger: Get out of controls panel");
+                }
+                else if (!mIsEditingSettings && menustate == 0)
 				{
 					isChangeMenu = true;
                     isPaused = !isPaused;
                     menustate = 0;
                     currentOption = 0;
+                    Debug.Log("Trigger: Unpause the game");
                 }
-
+				
 			}
 
 			if (isPaused)
@@ -430,15 +447,15 @@ namespace TRE
 
 					}
 
-                    if (InputSystem.GetKeyTriggered(InputKeys.Backspace) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
+                    if (InputSystem.GetKeyTriggered(InputKeys.Escape) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
                     {
+                        Debug.Log("Triggered ESC to not editing settings");
                         mIsEditingSettings = false; //Set to not editing any option
                         menustate = 1;
 
                         //Set every pointer back to false
                         mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
-                        //Debug.Log("Stop editing");
                     }
                 }
                 else // confirmation menu logic which is menustate == 2
@@ -642,5 +659,80 @@ namespace TRE
 		{
 			return isPaused;
 		}
+
+		private void BacktoMainPausePage()
+		{
+			for (int x = 0; x < settingsSelected.Count; x++)
+			{
+				UISystem.SetVisible(settingsSelected[x].ID, false);
+			}
+
+            for (int x = 0; x < settingsPanel.Count; x++)
+            {
+                UISystem.SetVisible(settingsPanel[x].ID, false);
+            }
+
+            UISystem.SetVisible(mSettingPanel.ID, false);
+
+			if (showGraphicsPanel)
+			{
+                UISystem.SetVisible(mGammaPanel.ID, false);
+                UISystem.SetVisible(mGammaCheckbox.ID, false);
+                UISystem.SetVisible(mGammaTick.ID, false);
+                UISystem.SetVisible(mGraphicsPointer.ID, false);
+				showGraphicsPanel = false;
+            }
+
+			if (showAudioPanel)
+			{
+				for (int x = 0; x < audioPanel.Count; x++)
+				{
+                    if (audioPanel[x].HasComponent<Text>())
+                    {
+                        TextSystem.SetVisible(audioPanel[x].ID, false);
+                    }
+                    UISystem.SetVisible(audioPanel[x].ID, false);
+				}
+
+                showAudioPanel = false;
+			}
+
+            if (showControlsPanel)
+            {
+
+                showControlsPanel = false;
+            }
+
+            if (showGameplayPanel)
+            {
+
+                showGameplayPanel = false;
+            }
+        }
+
+		private void ResetPointers()
+		{
+            if (showGraphicsPanel)
+            {
+                UISystem.SetVisible(mGraphicsPointer.ID, false);
+            }
+
+            if (showAudioPanel)
+            {
+                UISystem.SetVisible(audioPointer.ID, false);
+            }
+
+            if (showControlsPanel)
+            {
+				//Change below to the correct pointer and delete this comment
+                //UISystem.SetVisible(audioPointer.ID, false);
+            }
+
+            if (showGameplayPanel)
+            {
+                //Change below to the correct pointer and delete this comment
+                //UISystem.SetVisible(audioPointer.ID, false);
+            }
+        }
 	}
 }
