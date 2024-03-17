@@ -516,7 +516,7 @@ namespace TRE
 			if (recalculateShadowFrustum)
 			{
 				//RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.15f));
+				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.17f));
 				//m_ShadowRenderPoint.y = lightTransform.m_Position.y;
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));

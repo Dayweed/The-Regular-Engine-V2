@@ -30,7 +30,7 @@ layout(location = 0) out struct
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
-	bool m_DrawShadow;
+	int m_DrawShadow;
 } push;
 
 layout(set = 0, binding = 0) uniform UBO
@@ -116,7 +116,7 @@ layout(location = 0) in struct
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
-	bool m_DrawShadow;
+	int m_DrawShadow;
 } push;
 
 layout(set = 0, binding = 1) uniform sampler2D DiffuseMap;
@@ -269,7 +269,7 @@ void main()
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	if(push.m_DrawShadow)
+	if(push.m_DrawShadow != 0)
 	{
 		outColor.rgb = ambient * (1.0 - shadow2) * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
 	}
