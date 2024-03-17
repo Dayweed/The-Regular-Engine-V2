@@ -151,7 +151,7 @@ namespace TRE
 			if (currentFrame == 4)
 			{
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
-				
+
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue2.ID);
@@ -179,7 +179,7 @@ namespace TRE
 			if (currentFrame == 6)
 			{
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
-				
+
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue4.ID);
@@ -193,7 +193,7 @@ namespace TRE
 			if (currentFrame == 7)
 			{
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
-				
+
 				if (pressSpaceCounter == 1)
 				{
 					TextSystem.ResetDialogue(InvitationDialogue5.ID);
@@ -228,7 +228,7 @@ namespace TRE
 			if (!endCutscene)
 			{
 				//Every frame will go through this if statement (when its going to the next frame)
-				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) && 
+				if ((pressedSpace || pressA) || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
 												 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
@@ -237,14 +237,14 @@ namespace TRE
 						++pressSpaceCounter;
 
 					//player can press double space to go next frame OR once the paragraph is done press space once to go next frame
-					if (currentFrame >= 3 && currentFrame <= 7 && (pressedSpace && pressedSpaceTwice || !paragraphIsHalfWay)) 
-					{ 
+					if (currentFrame >= 3 && currentFrame <= 7 && (pressedSpace && pressedSpaceTwice || !paragraphIsHalfWay))
+					{
 						++currentFrame;
 						pressedSpaceTwice = false;
 						pressSpaceCounter = 0;
 					}
 
-					else if (!(currentFrame >= 3 && currentFrame <= 7)) 
+					else if (!(currentFrame >= 3 && currentFrame <= 7))
 						++currentFrame;
 
 					if (ECSManager.IsValidEntity(dialogueSFX))
