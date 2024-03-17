@@ -457,20 +457,19 @@ namespace TRE
 		Audio& audiosource = go->GetComponent<Audio>();
 		audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
 		
-		if ((audiosource.m_Spatialize))
+		if (audiosource.m_Spatialize)
 		{
-			for (Entity& go : ECSManager::Instance().GetEntities<AudioListener>())
+			for (Entity& other_go : ECSManager::Instance().GetEntities<AudioListener>())
 			{
-				AudioListener& listener = go->GetComponent<AudioListener>();
+				const AudioListener& listener = other_go->GetComponent<AudioListener>();
 
 				FMOD_VECTOR listenerPos = listener.m_Position;
-				FMOD_VECTOR sourcePos = glmVec3ToFmodVector(sourceposition.m_Position);
+				const FMOD_VECTOR sourcePos = glmVec3ToFmodVector(sourceposition.m_Position);
 
-				float distance;
 				m_System->get3DListenerAttributes(0, &listenerPos, nullptr, nullptr, nullptr);
-				distance = sqrt(pow(listenerPos.x - sourcePos.x, 2) + pow(listenerPos.y - sourcePos.y, 2) + pow(listenerPos.z - sourcePos.z, 2));
+				const float distance = sqrtf(powf(listenerPos.x - sourcePos.x, 2) + pow(listenerPos.y - sourcePos.y, 2) + powf(listenerPos.z - sourcePos.z, 2));
 
-				float volume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
+				const float volume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
 
 				audiosource.m_Channel->setVolume(volume);
 

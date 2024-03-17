@@ -305,7 +305,7 @@ namespace TRE
 		// Retrieve the entity from the ID
 		Entity Temp = VALIDATEENTITY(ID);
 
-		return Temp->GetComponent<Parenting>().m_Children.size();
+		return static_cast<int>(Temp->GetComponent<Parenting>().m_Children.size());
 	}
 
 	static bool BindEntityCompareTag(CSEntityID ID, MonoString* tag)
@@ -2107,6 +2107,7 @@ namespace TRE
 
 		// Script is not found
 		TRE_CORE_WARN("Script with name {0} does not exist in entity {1}", classNameStr, IDStr);
+		return nullptr;
 	}
 #pragma endregion
 
@@ -2642,43 +2643,39 @@ namespace TRE
 		entity->GetComponent<Particle3DComponent>().m_LifeTime = Lifetime;
 	}
 
-	static float Engine_GetParticleSize3D(CSEntityID id)
-	{
-		Entity entity = VALIDATEENTITY(id);
-		if (!entity) return 0.f;
+	//static float Engine_GetParticleSize3D(CSEntityID id)
+	//{
+	//	Entity entity = VALIDATEENTITY(id);
+	//	if (!entity) return 0.f;
+	//	if (!entity->HasComponent<Particle3DComponent>())
+	//	{
+	//		PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+	//		return 0.f;
+	//	}
+	//	return entity->GetComponent<Particle3DComponent>().m_Size;
+	//}
 
-		if (!entity->HasComponent<Particle3DComponent>())
-		{
-			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
-			return 0.f;
-		}
-
-		return entity->GetComponent<Particle3DComponent>().m_Size;
-	}
-
-	static void Engine_SetParticleSize3D(CSEntityID id, float Size)
-	{
-		Entity entity = VALIDATEENTITY(id);
-		if (!entity) return;
-
-		if (!entity->HasComponent<Particle3DComponent>())
-		{
-			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
-			return;
-		}
-
-		entity->GetComponent<Particle3DComponent>().m_Size = Size;
-	}
+	//static void Engine_SetParticleSize3D(CSEntityID id, float Size)
+	//{
+	//	Entity entity = VALIDATEENTITY(id);
+	//	if (!entity) return;
+	//	if (!entity->HasComponent<Particle3DComponent>())
+	//	{
+	//		PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
+	//		return;
+	//	}
+	//	entity->GetComponent<Particle3DComponent>().m_Size = Size;
+	//}
 
 	static int Engine_GetParticleCount3D(CSEntityID id)
 	{
 		Entity entity = VALIDATEENTITY(id);
-		if (!entity) return 0.f;
+		if (!entity) return 0;
 
 		if (!entity->HasComponent<Particle3DComponent>())
 		{
 			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
-			return 0.f;
+			return 0;
 		}
 
 		return entity->GetComponent<Particle3DComponent>().m_ParticleCount;

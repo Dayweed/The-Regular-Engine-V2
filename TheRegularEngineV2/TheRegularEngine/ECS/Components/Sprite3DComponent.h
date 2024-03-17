@@ -19,9 +19,9 @@ namespace TRE
 		glm::vec4 m_Color{ 1.f, 1.f, 1.f, 1.f };
 		std::shared_ptr<Material> m_Material;
 
-		property_vtable()
+		property_vtable();
 
-			friend void to_json(nlohmann::json& j, const Sprite3DComponent& t)
+		friend void to_json(nlohmann::json& j, const Sprite3DComponent& t)
 		{
 			const float* Color = glm::value_ptr(t.m_Color);
 			std::vector<float> StoredColor{ Color[0], Color[1], Color[2], Color[3] };

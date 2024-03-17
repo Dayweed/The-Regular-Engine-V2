@@ -189,7 +189,7 @@ namespace TRE
 		Renderer::BindPipeline(commandBuffer, m_3DPipeline);
 		for (const auto& ent : sortedParticles)
 		{
-			const ResourceHandle currentHandle = ent.first;
+			// const ResourceHandle currentHandle = ent.first;
 			const Particle3DComponent& particleComp = ent.second->GetComponent<Particle3DComponent>();
 			
 			if (particleComp.m_Running)

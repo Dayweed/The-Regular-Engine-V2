@@ -724,7 +724,7 @@ namespace TRE
 		});
 
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
-		uint32_t ImageIndex = SC->GetCurrentImageIndex();
+		// uint32_t ImageIndex = SC->GetCurrentImageIndex();
 		Renderer::BindPipeline(m_CommandBuffer, m_Sprite3DPipeline);
 		for (auto Entity : AllSprites)
 		{
@@ -1289,7 +1289,7 @@ namespace TRE
 
 			for (const auto& cylinder : ECSManager::Instance().GetEntities<CylinderCollider>())
 			{
-				const Transform& tr = cylinder->GetComponent<Transform>();
+				// const Transform& tr = cylinder->GetComponent<Transform>();
 				const CylinderCollider& cyc = cylinder->GetComponent<CylinderCollider>();
 				if (cyc.m_IsVisible == false)
 					continue;

@@ -101,6 +101,7 @@ namespace TRE
 
 	void Skybox::UpdateMaterial(std::shared_ptr<UniformBuffer> UBO, uint32_t Index, VkDescriptorImageInfo image, bool iseditor)
 	{
+		static_cast<void>(image); // unused parameter
 		if (iseditor)
 		{
 			m_SkyboxMaterial->UpdateForEditorSceneRendering(UBO, Index);

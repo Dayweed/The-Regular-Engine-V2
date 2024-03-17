@@ -113,8 +113,8 @@ namespace TRE
 				uint32_t cols[MONO_TYPEDEF_SIZE];
 				mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-				const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-				const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+				// const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+				// const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
 				//printf("%s.%s\n", nameSpace, name);
 			}

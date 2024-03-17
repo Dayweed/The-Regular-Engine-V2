@@ -6,6 +6,8 @@ namespace TRE
 {
 	Renderer2D::Renderer2D(const std::shared_ptr<Device>& Device)
 	{
+		static_cast<void>(Device); // unused parameter
+
 		auto SC = Engine::GetInstance().GetWindow()->GetSwapChain();
 		RenderPassInfo RPConfig{};
 		RPConfig.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -23,7 +25,6 @@ namespace TRE
 		PipelineConfig.EnableBlending = true;
 		PipelineConfig.EnableDepthTest = false;
 		m_Render2DPipeline = std::make_shared<Pipeline>(PipelineConfig, m_Render2DPass);
-		
 	}
 
 	Renderer2D::~Renderer2D()
@@ -33,6 +34,7 @@ namespace TRE
 
 	void Renderer2D::Render(VkFramebuffer TargetFramebuffer, const std::shared_ptr<CommandBuffer>& CommandBuffer)
 	{
-
+		static_cast<void>(TargetFramebuffer); // unused parameter
+		static_cast<void>(CommandBuffer); // unused parameter
 	}
 }
