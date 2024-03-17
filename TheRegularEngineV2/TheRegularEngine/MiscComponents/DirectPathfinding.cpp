@@ -7,6 +7,9 @@ namespace TRE
 {
 	void DirectPathfindingSystem::GameUpdate()
 	{
+		// Get AudioSystem
+		AudioSystem* audioSystem = ECSSystemManager::Instance().GetSystem<AudioSystem>();
+
 		// Auto start any pathfinding that is set to run on start
 		if (m_SceneStart)
 		{
@@ -50,7 +53,7 @@ namespace TRE
 			// Lerps through each positions
 			if (path.m_CurrentTime <= 0.0f)
 			{
-				glm::vec3 ww{ normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime() };
+				//glm::vec3 ww{ normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime() };
 				transform.m_Position += normDir * path.m_Speed * Engine::GetInstance().GetWindow()->GetDeltaTime();
 				transform.m_DirtyFlags |= TransformDirtyFlags::TRE_DIRTY_POSITION;
 				transform.m_IsDirty = true;
@@ -58,6 +61,13 @@ namespace TRE
 				// Move to next index, if it is very close to the ideal position
 				if (IsNearPosition(go, path.m_WayPoints[path.m_CurrentIndex].m_Value))
 				{
+					// Check if need to play audio on direction change
+					if (path.m_PlayAudioDirectionChange && go->HasComponent<Audio>())
+					{
+						audioSystem->Play(go, true);
+						go->GetComponent<Audio>().m_Play = true;
+					}
+
 					if (path.m_Direction) ++path.m_CurrentIndex; else --path.m_CurrentIndex;
 					if ((path.m_CurrentIndex >= path.m_WayPoints.size() || path.m_CurrentIndex < 0) && path.m_Repeat)
 					{

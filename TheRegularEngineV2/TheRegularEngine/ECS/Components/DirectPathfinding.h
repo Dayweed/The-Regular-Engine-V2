@@ -19,6 +19,7 @@ namespace TRE
 		bool m_StartOnPlay = true;
 		bool m_Repeat = true;
 		bool m_Reverse = true; // Will loop from start if false [Disabled if m_Repeat is false]
+		bool m_PlayAudioDirectionChange = false; // Will play an audio if direction change if have audio component
 
 		glm::vec3 m_OldPosition{};	// Old position from previous movement
 
@@ -53,7 +54,8 @@ namespace TRE
 				{ "m_CurrentIndex", t.m_CurrentIndex },
 				{ "m_Repeat", t.m_Repeat },
 				{ "m_Reverse", t.m_Reverse },
-				{ "m_StartOnPlay", t.m_StartOnPlay }
+				{ "m_StartOnPlay", t.m_StartOnPlay },
+				{ "m_PlayAudioDirectionChange", t.m_PlayAudioDirectionChange }
 			};
 		}
 		friend void from_json(const nlohmann::json& j, DirectPathfinding& t) // Deserialize
@@ -95,6 +97,10 @@ namespace TRE
 			{
 				t.m_StartOnPlay = j.at("m_StartOnPlay").get<bool>();
 			}
+			if (j.contains("m_PlayAudioDirectionChange"))
+			{
+				t.m_PlayAudioDirectionChange = j.at("m_PlayAudioDirectionChange").get<bool>();
+			}
 		}
 	};
 
@@ -135,6 +141,7 @@ property_begin(TRE::DirectPathfinding)
 		, property_var(m_StartOnPlay)
 		, property_var(m_Repeat)
 		, property_var(m_Reverse)
+		, property_var(m_PlayAudioDirectionChange)
 		, property_var_fnbegin("m_OldPosition", glm::vec3)
 		{
 			if (isRead)
