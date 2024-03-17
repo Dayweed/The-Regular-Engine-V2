@@ -1050,7 +1050,7 @@
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
          "m_DLightIndex": 0,
-         "m_DrawShadow": true,
+         "m_DrawShadow": false,
          "m_IsVisible": true
       },
       13631586,
@@ -1059,7 +1059,7 @@
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
          "m_DLightIndex": 0,
-         "m_DrawShadow": true,
+         "m_DrawShadow": false,
          "m_IsVisible": true
       },
       24117271,
