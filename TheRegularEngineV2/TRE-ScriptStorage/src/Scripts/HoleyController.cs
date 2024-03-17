@@ -1057,6 +1057,13 @@ namespace TRE
 
         private void CheckControllability()
         {
+            // Confirmation pop up
+            bool confirmationPopUp = false;
+            if (Scene.GetSceneName() == "MainMenu" && ECSManager.FindEntityByName("QuitConfirmationPopup") != null && ECSManager.FindEntityByName("QuitConfirmationPopup").GetComponent<SpriteRenderer>().isVisible)
+            {
+                confirmationPopUp = true;
+            }
+
             // Camera panning at the start
             bool cameraTransiting = false;
             if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
@@ -1066,7 +1073,7 @@ namespace TRE
 
 
             // Logic to handle isControllable
-            if (Scene.IsTransiting() || cameraTransiting)
+            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
             {
                 isControllable = false;
             }
@@ -1076,7 +1083,7 @@ namespace TRE
             }
         }
 
-		private float VolumeVariation(float volume, float variation)
+        private float VolumeVariation(float volume, float variation)
 		{
 			float newVolume = volume + Random.Range(-variation, variation);
 			if (newVolume < 0)
