@@ -19,6 +19,7 @@ namespace TRE
 
 		public void Update()
 		{
+			transform.Rotation = vec3.Zero;
    //         activeTimer -= Time.deltaTime;
 
 			//if (activeTimer > 0) return;
