@@ -85,10 +85,10 @@ namespace TRE
 			regionB = IsHoleyMoleyInsideTrigger(Trigger_B);
 			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);
 			regionD = IsInsideTrigger(Trigger_D);
-			regionE = IsInsideTrigger(Trigger_E);
-			regionF = IsInsideTrigger(Trigger_F);
-			regionG = IsInsideTrigger(Trigger_G);
-			regionH = IsInsideTrigger(Trigger_H);
+			regionE = IsHoleyMoleyInsideTrigger(Trigger_E);
+			regionF = IsHoleyMoleyInsideTrigger(Trigger_F);
+			regionG = IsHoleyMoleyInsideTrigger(Trigger_G);
+			regionH = IsHoleyMoleyInsideTrigger(Trigger_H);
 			regionI = IsHoleyMoleyInsideTrigger(Trigger_I);
 			regionJ = IsInsideTrigger(Trigger_J);
 			regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
@@ -144,7 +144,7 @@ namespace TRE
 				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 20f;
+				cameraController.expectedYPos = 30f;
 				cameraController.offsetX = 0f;
 				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
@@ -153,63 +153,70 @@ namespace TRE
 
 			if (regionE)
 			{
-				//section two - before drop
+				//section two rooftop - before collectible section
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(45, 180, 0);
+				expectedRotation = new vec3(55, 180, 0);
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
+				cameraController.expectedYPos = 40f;
 				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 20f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_E);
 			}
 
 			if (regionF)
 			{
-				//section two - after drop
+				//section two floor - before collectible section
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
+				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_F);
 			}
 
 			if (regionG)
 			{
-				//section two - at the bridge
-				expectedPosition = new vec3(121, 82, -207);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 70;
+				//section two rooftop - collictible platform section
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(55, 180, 0);
+				expectedDistance = 80;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 20f;
-				expectedDuration = 1f;
+				cameraController.expectedYPos = 40f;
+				cameraController.offsetX = -20f;
+				cameraController.offsetZ = 0f;
+				expectedDuration = 0.8f;
 				CheckTransition(Trigger_G);
 			}
 
 			if (regionH)
 			{
-				//jumppad section after rolling objs - 1st floor
-				cameraController.staticPosition = new vec3(320, 45, -330);
-				cameraController.lookOnlyBool = true;
-				expectedPosition = new vec3(260, 99, -335);
-				expectedRotation = new vec3(45, 90, 0);
-				expectedDistance = 80;
-				cameraController.expectedYPos = 60f;
+				//section two rooftop - collictible platform section
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(45, 180, 0);
+				expectedDistance = 40;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 10f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 20f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_H);
 			}
 
 			if (regionI)
 			{
-				//2nd floor before moving hitw
+				//last pivot platform section
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 0, 0);
-				expectedDistance = 50;
+				expectedRotation = new vec3(60, 90, 0);
+				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 60f;
+				cameraController.expectedYPos = 50f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_I);
 			}

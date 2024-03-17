@@ -54,6 +54,14 @@ namespace TRE
 					moveSpeed = 32.0f;
 				}
 			}
+			if (Scene.GetSceneName() == "Level_2")
+			{
+				if (parent.name == "RollingObject_1" || parent.name == "RollingObject_2")
+				{
+					moveSpeed = 50.0f;
+				}
+			}
+
 			cooldown = cooldownDefault;
 
 			tumbleweed1SFX = ECSManager.FindIDFromName("SFX_Tumbleweed1");

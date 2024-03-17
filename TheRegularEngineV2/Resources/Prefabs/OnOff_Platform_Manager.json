@@ -34,15 +34,7 @@
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "9302168485515908813",
          "m_RemovedComps": []
       },
@@ -50,14 +42,7 @@
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "6994320660726572052",
          "m_RemovedComps": []
       },
@@ -65,14 +50,7 @@
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "6693923742422246538",
          "m_RemovedComps": []
       },
@@ -80,14 +58,7 @@
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name"
-            ],
-            "Transform": [
-               "TRE::Transform/Position"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "15928610177363409800",
          "m_RemovedComps": []
       },
@@ -119,16 +90,7 @@
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name",
-               "TRE::Properties/Index"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "5404064277036042883",
          "m_RemovedComps": []
       },
@@ -136,19 +98,7 @@
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "BoxCollider": [
-               "TRE::BoxCollider/HalfExtents"
-            ],
-            "Properties": [
-               "TRE::Properties/Name",
-               "TRE::Properties/Index"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Scale"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "16928880841071235864",
          "m_RemovedComps": []
       },
@@ -180,16 +130,7 @@
       {
          "m_IsMainPrefab": true,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "Properties": [
-               "TRE::Properties/Name",
-               "TRE::Properties/Index"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Rotation"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "7455657397719019701",
          "m_RemovedComps": []
       },
@@ -197,19 +138,7 @@
       {
          "m_IsMainPrefab": false,
          "m_MainPrefabGUID": "15423563205830293015",
-         "m_Overrides": {
-            "BoxCollider": [
-               "TRE::BoxCollider/HalfExtents"
-            ],
-            "Properties": [
-               "TRE::Properties/Name",
-               "TRE::Properties/Index"
-            ],
-            "Transform": [
-               "TRE::Transform/Position",
-               "TRE::Transform/Scale"
-            ]
-         },
+         "m_Overrides": {},
          "m_PrefabGUID": "11323915813511627675",
          "m_RemovedComps": []
       },
@@ -243,117 +172,117 @@
       0,
       {
          "m_Children": [
-            "16285328969411418509",
-            "13027305427343592614",
-            "13196780527013359998",
-            "4856937215810787434"
+            "11901974542563945585",
+            "11130198914214544392",
+            "6447784952230655990",
+            "3238574647773756230"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [
-            "5923738924762602282"
+            "15051214775574819834"
          ],
-         "m_Parent": "15485074752811095799"
+         "m_Parent": "8135175482847960943"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "16285328969411418509"
+         "m_Parent": "11901974542563945585"
       },
       3,
       {
          "m_Children": [
-            "5264613915924758958",
-            "7002668671827395980"
+            "14236869747223946081",
+            "9285957983354870885"
          ],
-         "m_Parent": "15485074752811095799"
+         "m_Parent": "8135175482847960943"
       },
       4,
       {
          "m_Children": [],
-         "m_Parent": "13027305427343592614"
+         "m_Parent": "11130198914214544392"
       },
       5,
       {
          "m_Children": [
-            "4846732405307819784",
-            "2340763919855463885"
+            "834613044202553532",
+            "15520726631327207891"
          ],
-         "m_Parent": "13027305427343592614"
+         "m_Parent": "11130198914214544392"
       },
       6,
       {
          "m_Children": [],
-         "m_Parent": "7002668671827395980"
+         "m_Parent": "9285957983354870885"
       },
       7,
       {
          "m_Children": [],
-         "m_Parent": "7002668671827395980"
+         "m_Parent": "9285957983354870885"
       },
       8,
       {
          "m_Children": [
-            "15092990101921592448",
-            "2645763936670911114"
+            "16226168004349079671",
+            "1628607337329690935"
          ],
-         "m_Parent": "15485074752811095799"
+         "m_Parent": "8135175482847960943"
       },
       9,
       {
          "m_Children": [],
-         "m_Parent": "13196780527013359998"
+         "m_Parent": "6447784952230655990"
       },
       10,
       {
          "m_Children": [
-            "5264989854643645201",
-            "16709205166024638078"
+            "15347479506293671659",
+            "4830698098702220660"
          ],
-         "m_Parent": "13196780527013359998"
+         "m_Parent": "6447784952230655990"
       },
       11,
       {
          "m_Children": [],
-         "m_Parent": "2645763936670911114"
+         "m_Parent": "1628607337329690935"
       },
       12,
       {
          "m_Children": [],
-         "m_Parent": "2645763936670911114"
+         "m_Parent": "1628607337329690935"
       },
       13,
       {
          "m_Children": [
-            "14241839161697963998",
-            "6864160532565060816"
+            "873829328739089599",
+            "10198665433948928782"
          ],
-         "m_Parent": "15485074752811095799"
+         "m_Parent": "8135175482847960943"
       },
       14,
       {
          "m_Children": [],
-         "m_Parent": "4856937215810787434"
+         "m_Parent": "3238574647773756230"
       },
       15,
       {
          "m_Children": [
-            "5525996860116138191",
-            "10779640558552607437"
+            "3288703195645181394",
+            "14870469148800055585"
          ],
-         "m_Parent": "4856937215810787434"
+         "m_Parent": "3238574647773756230"
       },
       16,
       {
          "m_Children": [],
-         "m_Parent": "6864160532565060816"
+         "m_Parent": "10198665433948928782"
       },
       17,
       {
          "m_Children": [],
-         "m_Parent": "6864160532565060816"
+         "m_Parent": "10198665433948928782"
       }
    ],
    [
@@ -361,7 +290,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "15485074752811095799",
+         "m_GUID": "8135175482847960943",
          "m_Index": 1,
          "m_Name": "OnOff_Platform_Manager",
          "m_Tag": ""
@@ -369,7 +298,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "16285328969411418509",
+         "m_GUID": "11901974542563945585",
          "m_Index": 2,
          "m_Name": "(D) OnOff_Platform_Opposite_Pivot",
          "m_Tag": "OnOffPlatform"
@@ -377,7 +306,7 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "5923738924762602282",
+         "m_GUID": "15051214775574819834",
          "m_Index": 3,
          "m_Name": "(D) OnOff_Opposite_Platform",
          "m_Tag": "Ground"
@@ -385,7 +314,7 @@
       3,
       {
          "m_Active": true,
-         "m_GUID": "13027305427343592614",
+         "m_GUID": "11130198914214544392",
          "m_Index": 4,
          "m_Name": "(C) OnOff_Platform_Opposite_Pivot",
          "m_Tag": "OnOffPlatform"
@@ -393,7 +322,7 @@
       4,
       {
          "m_Active": true,
-         "m_GUID": "5264613915924758958",
+         "m_GUID": "14236869747223946081",
          "m_Index": 5,
          "m_Name": "(C) OnOff_Opposite_Platform",
          "m_Tag": "Ground"
@@ -401,7 +330,7 @@
       5,
       {
          "m_Active": true,
-         "m_GUID": "7002668671827395980",
+         "m_GUID": "9285957983354870885",
          "m_Index": 6,
          "m_Name": "(C) Button",
          "m_Tag": "Button"
@@ -409,7 +338,7 @@
       6,
       {
          "m_Active": true,
-         "m_GUID": "4846732405307819784",
+         "m_GUID": "834613044202553532",
          "m_Index": 7,
          "m_Name": "UpButton",
          "m_Tag": ""
@@ -417,7 +346,7 @@
       7,
       {
          "m_Active": true,
-         "m_GUID": "2340763919855463885",
+         "m_GUID": "15520726631327207891",
          "m_Index": 8,
          "m_Name": "DownButton",
          "m_Tag": "Ground"
@@ -425,7 +354,7 @@
       8,
       {
          "m_Active": true,
-         "m_GUID": "13196780527013359998",
+         "m_GUID": "6447784952230655990",
          "m_Index": 9,
          "m_Name": "(B) OnOff_Platform_Pivot",
          "m_Tag": ""
@@ -433,7 +362,7 @@
       9,
       {
          "m_Active": true,
-         "m_GUID": "15092990101921592448",
+         "m_GUID": "16226168004349079671",
          "m_Index": 10,
          "m_Name": "(B) OnOff_Platform",
          "m_Tag": "Ground"
@@ -441,7 +370,7 @@
       10,
       {
          "m_Active": true,
-         "m_GUID": "2645763936670911114",
+         "m_GUID": "1628607337329690935",
          "m_Index": 11,
          "m_Name": "(B) Button",
          "m_Tag": "Button"
@@ -449,7 +378,7 @@
       11,
       {
          "m_Active": true,
-         "m_GUID": "5264989854643645201",
+         "m_GUID": "15347479506293671659",
          "m_Index": 12,
          "m_Name": "UpButton",
          "m_Tag": ""
@@ -457,7 +386,7 @@
       12,
       {
          "m_Active": true,
-         "m_GUID": "16709205166024638078",
+         "m_GUID": "4830698098702220660",
          "m_Index": 13,
          "m_Name": "DownButton",
          "m_Tag": "Ground"
@@ -465,7 +394,7 @@
       13,
       {
          "m_Active": true,
-         "m_GUID": "4856937215810787434",
+         "m_GUID": "3238574647773756230",
          "m_Index": 14,
          "m_Name": "(A) OnOff_Platform_Pivot",
          "m_Tag": ""
@@ -473,7 +402,7 @@
       14,
       {
          "m_Active": true,
-         "m_GUID": "14241839161697963998",
+         "m_GUID": "873829328739089599",
          "m_Index": 15,
          "m_Name": "(A) OnOff_Platform",
          "m_Tag": "Ground"
@@ -481,7 +410,7 @@
       15,
       {
          "m_Active": true,
-         "m_GUID": "6864160532565060816",
+         "m_GUID": "10198665433948928782",
          "m_Index": 16,
          "m_Name": "(A) Button",
          "m_Tag": "Button"
@@ -489,7 +418,7 @@
       16,
       {
          "m_Active": true,
-         "m_GUID": "5525996860116138191",
+         "m_GUID": "3288703195645181394",
          "m_Index": 17,
          "m_Name": "UpButton",
          "m_Tag": ""
@@ -497,7 +426,7 @@
       17,
       {
          "m_Active": true,
-         "m_GUID": "10779640558552607437",
+         "m_GUID": "14870469148800055585",
          "m_Index": 18,
          "m_Name": "DownButton",
          "m_Tag": "Ground"
@@ -549,9 +478,9 @@
             14.999999046325684
          ],
          "m_Rotation": [
-            1.001791224553017e-05,
-            8.757937951242578e-13,
-            -1.0017913155024871e-05
+            8.142220079589146e-13,
+            5.785395330512093e-27,
+            -8.142220079589146e-13
          ],
          "m_Scale": [
             8.0,
@@ -609,8 +538,8 @@
          ],
          "m_Scale": [
             1.0,
-            0.9999995231628418,
-            0.9999995231628418
+            0.9999994039535522,
+            0.9999994039535522
          ]
       },
       6,
@@ -618,7 +547,7 @@
          "m_Position": [
             0.0,
             -11.99999713897705,
-            -16.783493041992188
+            -16.783491134643555
          ],
          "m_Rotation": [
             -90.0,
@@ -627,8 +556,8 @@
          ],
          "m_Scale": [
             1.0,
-            0.9999989867210388,
-            0.9999989867210388
+            0.9999987483024597,
+            0.9999987483024597
          ]
       },
       7,
@@ -636,7 +565,7 @@
          "m_Position": [
             0.0,
             -11.99999713897705,
-            -16.583492279052734
+            -16.5834903717041
          ],
          "m_Rotation": [
             -90.0,
@@ -645,8 +574,8 @@
          ],
          "m_Scale": [
             1.0,
-            0.9999989867210388,
-            0.9999989867210388
+            0.9999987483024597,
+            0.9999987483024597
          ]
       },
       8,
@@ -698,8 +627,8 @@
             -90.0
          ],
          "m_Scale": [
-            0.9999988079071045,
-            0.9999988079071045,
+            0.9999986886978149,
+            0.9999986886978149,
             1.0
          ]
       },
@@ -716,8 +645,8 @@
             -90.0
          ],
          "m_Scale": [
-            0.9999975562095642,
-            0.9999975562095642,
+            0.9999973177909851,
+            0.9999973177909851,
             1.0
          ]
       },
@@ -734,8 +663,8 @@
             -90.0
          ],
          "m_Scale": [
-            0.9999975562095642,
-            0.9999975562095642,
+            0.9999973177909851,
+            0.9999973177909851,
             1.0
          ]
       },
@@ -765,9 +694,9 @@
             -5.245365741757269e-07
          ],
          "m_Rotation": [
-            8.142220079589146e-13,
-            -8.142220079589146e-13,
-            -8.142220079589146e-13
+            1.001791224553017e-05,
+            6.157180749413391e-14,
+            -1.0017913155024871e-05
          ],
          "m_Scale": [
             2.0,
@@ -779,54 +708,54 @@
       {
          "m_Position": [
             -17.648239135742188,
-            -12.000005722045898,
-            -1.1368683772161603e-12
+            -12.000006675720215,
+            -1.3073986337985843e-12
          ],
          "m_Rotation": [
-            1.0017914064519573e-05,
-            -7.327998451100992e-12,
+            -8.142230921610871e-13,
+            -6.920896581524838e-12,
             90.0
          ],
          "m_Scale": [
-            0.9999986886978149,
-            0.9999986886978149,
-            0.9999986886978149
+            0.9999985694885254,
+            0.9999985694885254,
+            0.9999985694885254
          ]
       },
       16,
       {
          "m_Position": [
-            -16.64822769165039,
-            -12.00000286102295,
-            -1.711235313450743e-07
+            -16.648225784301758,
+            -12.000003814697266,
+            3.7239917816123125e-09
          ],
          "m_Rotation": [
-            1.0017911336035468e-05,
-            -6.106665086796914e-12,
+            -3.664001393954841e-12,
+            -5.699562783539891e-12,
             90.0
          ],
          "m_Scale": [
-            0.9999973177909851,
-            0.9999973177909851,
-            0.9999986886978149
+            0.999997079372406,
+            0.999997079372406,
+            0.9999985694885254
          ]
       },
       17,
       {
          "m_Position": [
-            -16.448226928710938,
-            -12.00000286102295,
-            -2.0609273576610576e-07
+            -16.448225021362305,
+            -12.000003814697266,
+            3.7237672945167333e-09
          ],
          "m_Rotation": [
-            1.0017911336035468e-05,
-            -6.106665086796914e-12,
+            -3.664001393954841e-12,
+            -5.699562783539891e-12,
             90.0
          ],
          "m_Scale": [
-            0.9999973177909851,
-            0.9999973177909851,
-            0.9999986886978149
+            0.999997079372406,
+            0.999997079372406,
+            0.9999985694885254
          ]
       }
    ],
@@ -872,7 +801,7 @@
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "b08363e4f6cc86cc",
+         "ASSET_MAT_m_MaterialInstance": "0",
          "m_DLightIndex": 0,
          "m_DrawShadow": true,
          "m_IsVisible": true
@@ -899,7 +828,7 @@
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "e99fe191f41202dd",
+         "ASSET_MAT_m_MaterialInstance": "0",
          "m_DLightIndex": 0,
          "m_DrawShadow": true,
          "m_IsVisible": true
