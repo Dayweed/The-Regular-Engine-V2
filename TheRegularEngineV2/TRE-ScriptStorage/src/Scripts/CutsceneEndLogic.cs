@@ -45,7 +45,9 @@ namespace TRE
 			frames = new List<Entity>() { Frame_1, Frame_2, Frame_3 };
 			nextScenes = new List<string>() { "Frame_3" };
 
-			currentFrame = 0;
+            BGM = ECSManager.FindIDFromName("BGM");
+
+            currentFrame = 0;
 			frames[currentFrame].SetActive(true);
 			frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
 			currentTime = delayFrame;
@@ -61,7 +63,9 @@ namespace TRE
 			//Go to Credits Scene
 			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame == frames.Count - 1)
 			{
-				Debug.Log("End of Cutscene");
+                if (ECSManager.IsValidEntity(BGM))
+                    AS.Stop(BGM);
+
 				Scene.TransitionScene("Credits_Scene", 5f);
 				endCutscene = true;
 			}
