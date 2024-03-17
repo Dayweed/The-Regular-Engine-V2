@@ -28,14 +28,14 @@
       0,
       {
          "m_Children": [
-            "15573957660812208040"
+            "2648385690002312586"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "4939992553697755412"
+         "m_Parent": "12723308501263948996"
       }
    ],
    [
@@ -43,16 +43,16 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "4939992553697755412",
-         "m_Index": 20,
+         "m_GUID": "12723308501263948996",
+         "m_Index": 1,
          "m_Name": "Decor_Flag_Pivot",
          "m_Tag": ""
       },
       1,
       {
          "m_Active": true,
-         "m_GUID": "15573957660812208040",
-         "m_Index": 21,
+         "m_GUID": "2648385690002312586",
+         "m_Index": 2,
          "m_Name": "Decor_Flag",
          "m_Tag": ""
       }
@@ -104,7 +104,7 @@
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "14e2f7c68c86692b",
          "m_DLightIndex": 0,
-         "m_DrawShadow": true,
+         "m_DrawShadow": false,
          "m_IsVisible": true
       }
    ],
