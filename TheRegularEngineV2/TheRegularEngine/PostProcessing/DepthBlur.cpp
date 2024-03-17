@@ -7,6 +7,7 @@ namespace TRE
 	DepthBlur::DepthBlur() : PostProcessEffect()
 	{
 		m_BeforeUI = true;
+		m_Active = false;
 
 		PipelineConfigurations PipelineConfig{};
 		PipelineConfig.Primitive = PrimitiveType::Triangles;
