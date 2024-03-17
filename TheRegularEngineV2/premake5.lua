@@ -443,7 +443,7 @@ project "TRE-ScriptStorage"
 
 	files 
 	{
-		"%{prj.name}/src/**.cs",
+		"%{prj.name}/Scripts/**.cs",
 		"%{TheRegularEngineV2}/Scripts/**.cs"
 	}
 
