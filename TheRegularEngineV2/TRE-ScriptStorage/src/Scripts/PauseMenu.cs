@@ -35,26 +35,6 @@ namespace TRE
 
 		private ulong sfx;
 
-		////Settings -> Gameplay
-		//public int gameplayOption = 0;
-
-		////Settings -> Graphics
-		//public int graphicsOption = 0;
-		//public int displayOption = 0;
-		//public int framerateOption = 0;
-		//public int vsyncOption = 0;
-		//public int resolutionOption = 0;
-
-		////Settings -> Audio
-		//public int audioOption = 0;
-		//      public int masterVol = 0;
-		//      public int bgmVol = 0;
-		//      public int sfxVol = 0;
-
-		//      //Settings -> Controls
-		//      public int controlsOption = 0;
-
-
 		// Pause menu pointer
 		private Entity pointer;
 		private Transform pointerTransform;
@@ -277,7 +257,8 @@ namespace TRE
 							break;
 					}
 				}
-				else if (menustate == 1 && !mIsEditingSettings) // control menu logic
+                //Not editing settings + show panels individually
+                else if (menustate == 1 && !mIsEditingSettings) // control menu logic
                 {
 					//settings pop up will appear
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
@@ -397,11 +378,13 @@ namespace TRE
 					}
 					audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
 
-					if (!mIsEditingSettings && InputSystem.GetKeyTriggered(InputKeys.Enter))
+					//Not editing settings -> editing settings
+					//lock this action for gameplay and controls (havent implemented)
+					if (!mIsEditingSettings && InputSystem.GetKeyTriggered(InputKeys.S) && (showGraphicsPanel || showAudioPanel))
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
-					}
+                    }
 
 					//Show graphics panel
 					mGammaPanel.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
@@ -418,18 +401,24 @@ namespace TRE
                         audioPointer.GetComponent<SpriteRenderer>().isVisible = true;
                         if (InputSystem.GetKeyTriggered(InputKeys.W))
                         {
-                            if (mCurrentEditMember == 0)
-                                mCurrentEditMember = 2;
-                            else
-                                --mCurrentEditMember;
+                            Debug.Log("press up");
+                            if (mCurrentEditMember <= 0)
+								mIsEditingSettings = false;
+							else if (mCurrentEditMember > 2)
+								mCurrentEditMember = 2;
+							else
+								--mCurrentEditMember;
                         }
 
                         if (InputSystem.GetKeyTriggered(InputKeys.S))
                         {
-                            if (mCurrentEditMember == 2)
-                                mCurrentEditMember = 0;
-                            else
-                                ++mCurrentEditMember;
+                            Debug.Log("press down");
+                            if (mCurrentEditMember < 0)
+								mIsEditingSettings = false;
+							else if (mCurrentEditMember >= 2)
+								mCurrentEditMember = 2;
+							else
+								++mCurrentEditMember;
                         }
 
                         switch (mCurrentEditMember)
@@ -481,7 +470,7 @@ namespace TRE
 
 					}
 
-                    if (InputSystem.GetKeyTriggered(InputKeys.Escape) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
+                    if (InputSystem.GetKeyTriggered(InputKeys.W) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
                     {
                         Debug.Log("Triggered ESC to not editing settings");
                         mIsEditingSettings = false; //Set to not editing any option
