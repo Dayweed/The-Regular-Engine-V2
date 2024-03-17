@@ -76,7 +76,7 @@ namespace TRE
 
 				if (!source.m_Spatialize)
 				{
-					source.m_Channel->setVolume(source.m_Volume);
+					source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
 				}
 
 			}
@@ -471,7 +471,7 @@ namespace TRE
 
 				const float volume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
 
-				audiosource.m_Channel->setVolume(volume);
+				audiosource.m_Channel->setVolume(volume * m_MasterVolume);
 
 				audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
 				audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);
@@ -509,8 +509,14 @@ namespace TRE
 	void AudioSystem::SetVolume(Entity& go, const float volume)
 	{
 		Audio& audio = go->GetComponent<Audio>();
-		audio.m_Volume = volume;
-		audio.m_Channel->setVolume(volume);
+		audio.m_Volume = std::clamp(volume, 0.0f, 1.0f);
+		audio.m_Channel->setVolume(audio.m_Volume);
+	}
+
+	void AudioSystem::SetMasterVolume(const float volume)
+	{
+		m_MasterVolume = volume;
+		m_MasterVolume = std::clamp(m_MasterVolume, 0.0f, 1.0f);
 	}
 
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
@@ -581,6 +587,11 @@ namespace TRE
 	float AudioSystem::GetVolume(Entity& go) const
 	{
 		return go->GetComponent<Audio>().m_Volume;
+	}
+
+	float AudioSystem::GetMasterVolume() const
+	{
+		return m_MasterVolume;
 	}
 
 }
