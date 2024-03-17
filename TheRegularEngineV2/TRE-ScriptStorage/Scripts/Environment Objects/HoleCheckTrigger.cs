@@ -7,16 +7,6 @@ namespace TRE
 
 		// Tag should be either [TriggerMoleyStrawberry], [TriggerMoleyBlueberry], [TriggerHoleyStrawberry], [TriggerHoleyBlueberry]
 
-		public HoleCheckTrigger()
-		{
-
-		}
-
-		public void OnCreate()
-		{
-			//SetTag("Trigger");
-		}
-
 		public void OnTriggerStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);

@@ -16,14 +16,10 @@
 			//TextSystem.SetTextMessage(fonttest.ID, "It works");
 
 			if (InputSystem.GetKeyPress(InputKeys.Space))
-			{
 				TextSystem.ResetDialogue(fonttest.ID);
-			}
 
 			if (TextSystem.GetDialogueRunning(fonttest.ID))
-			{
 				Debug.Log("ARWERWAFAWF");
-			}
 		}
 	}
 }

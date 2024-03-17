@@ -21,8 +21,8 @@ namespace TRE
 		bool pause;
 		public float amplitude;
 		public float period;
-		// Must only have the value of 1 or -1.
-		// Used to make things move/rotate in the opposite way.
+		/// <summary>Must only have the value of 1 or -1.
+		/// Used to make things move/rotate in the opposite way.</summary>
 		public int dir;
 
 		public void Start()

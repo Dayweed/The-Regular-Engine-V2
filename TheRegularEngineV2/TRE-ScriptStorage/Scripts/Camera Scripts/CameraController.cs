@@ -1,5 +1,4 @@
 ﻿using GlmSharp;
-using System;
 
 namespace TRE
 {
@@ -39,7 +38,7 @@ namespace TRE
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
-		private float lerpSpeed = 2f; //faster is higher
+		private const float lerpSpeed = 2f; //faster is higher
 
 		public void Start()
 		{

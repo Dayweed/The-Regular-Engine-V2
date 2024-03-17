@@ -8,8 +8,8 @@ namespace TRE
 
 		float initialYPos;
 		float timer = 0;
-		float height = 1f;
-		float period = 5f;
+		const float height = 1f;
+		const float period = 5f;
 
 		int dir = 1;
 
@@ -59,9 +59,7 @@ namespace TRE
 			if (Scene.GetSceneName() == "ResultScreen")
 			{
 				if (name == "BackgroundTitle")
-				{
 					dir = -1;
-				}
 			}
 		}
 

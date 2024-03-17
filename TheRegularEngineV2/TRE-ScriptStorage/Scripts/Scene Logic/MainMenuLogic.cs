@@ -3,6 +3,9 @@ using GlmSharp;
 
 namespace TRE
 {
+	using IS = InputSystem;
+	using PS = PhysicsSystem;
+
 	public class MainMenuLogic : Entity
 	{
 		Entity UIControls;
@@ -44,11 +47,11 @@ namespace TRE
 		bool lastController2 = false;
 		bool changeUI = false;
 
-		float sceneTransitionDelay = 2.5f;
+		const float sceneTransitionDelay = 2.5f;
 
 		// Timer for animation
 		float currentTimer = 0;
-		float delayJumpingHole = 0.68f;
+		const float delayJumpingHole = 0.68f;
 
 		// Title to display
 		Entity TitleLevelSelect;
@@ -58,10 +61,10 @@ namespace TRE
 		Entity Stars2;
 		Entity Stars3;
 
-		float hiddenYPos = -800f;
-		float displayYPos = -400f;
-		float titleMoveSpeed = 10f;
-		float titleOffset = 0.05f;
+		const float hiddenYPos = -800f;
+		const float displayYPos = -400f;
+		const float titleMoveSpeed = 10f;
+		const float titleOffset = 0.05f;
 
 		public void Start()
 		{
@@ -95,7 +98,7 @@ namespace TRE
 			TitleStarsCollected.GetComponent<TextBounce>().Pause();
 
 			// Determine where to spawn the moles based on previous scene
-			String prevScene = PersistentSystem.GetValue("PrevScene");
+			string prevScene = PersistentSystem.GetValue("PrevScene");
 			//Debug.Log("START " + prevScene);
 			if (prevScene == "Tutorial")
 			{
@@ -138,8 +141,8 @@ namespace TRE
 		public void Update()
 		{
 			#region Controller UI
-			controller1 = InputSystem.GetControllerConnected(0);
-			controller2 = InputSystem.GetControllerConnected(1);
+			controller1 = IS.GetControllerConnected(0);
+			controller2 = IS.GetControllerConnected(1);
 
 			// Controller check
 			if (controller1)
@@ -333,8 +336,8 @@ namespace TRE
 			{
 				currentTimer = 0;
 
-				PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
-				PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+				PS.SetLinearVelocity(Moley.ID, vec3.Zero);
+				PS.SetLinearVelocity(Holey.ID, vec3.Zero);
 
 				// Force Holey and Moley to stop dropping to do stuff
 				Moley.GetComponent<Rigidbody>().useGravity = false;
@@ -363,7 +366,6 @@ namespace TRE
 					QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = true;
 					QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = true;
 					QuitYesNoPointer.GetComponent<SpriteRenderer>().isVisible = true;
-
 				}
 				else if (selectedReturn)
 				{
@@ -404,7 +406,7 @@ namespace TRE
 
 			if (PopupQuitConfirmation)
 			{
-				if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
+				if (IS.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && IS.GetKeyPress(InputKeys.Enter)))
 				{
 					CurrentButtonSelected = false;
 					QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = false;
@@ -417,22 +419,21 @@ namespace TRE
 					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
 					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
 					JumpOutHole();
-
 				}
 
-				if (InputSystem.GetKeyPress(InputKeys.A))
+				if (IS.GetKeyPress(InputKeys.A))
 				{
 					CurrentButtonSelected = true;
 					QuitYesNoPointer.GetComponent<Transform>().Position = QuitConfirmationYes.GetComponent<Transform>().Position;
 				}
 
-				if (InputSystem.GetKeyPress(InputKeys.D))
+				if (IS.GetKeyPress(InputKeys.D))
 				{
 					CurrentButtonSelected = false;
 					QuitYesNoPointer.GetComponent<Transform>().Position = QuitConfirmationNo.GetComponent<Transform>().Position;
 				}
 
-				if (CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter))
+				if (CurrentButtonSelected && IS.GetKeyPress(InputKeys.Enter))
 				{
 					Game.CloseGame();
 				}
@@ -459,23 +460,20 @@ namespace TRE
 			Moley.GetComponent<MoleyController>().isControllable = false;
 			Holey.GetComponent<HoleyController>().isControllable = false;
 
-			PhysicsSystem.GetLinearVelocity(Moley.ID, out vec3 MoleyVel);
-			PhysicsSystem.GetLinearVelocity(Holey.ID, out vec3 HoleyVel);
+			PS.GetLinearVelocity(Moley.ID, out vec3 MoleyVel);
+			PS.GetLinearVelocity(Holey.ID, out vec3 HoleyVel);
 
 			Moley.GetComponent<MoleyController>().jumpCancelled = true;
 			Holey.GetComponent<HoleyController>().jumpCancelled = true;
 
-			PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
-			PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+			PS.SetLinearVelocity(Moley.ID, vec3.Zero);
+			PS.SetLinearVelocity(Holey.ID, vec3.Zero);
 
 			if (MoleyVel.y < 0 || !Moley.GetComponent<MoleyController>().isJumping)
-			{
-				PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 50, 0));
-			}
+				PS.SetLinearVelocity(Moley.ID, new vec3(0, 50, 0));
+
 			if (HoleyVel.y < 0 || !Holey.GetComponent<HoleyController>().isJumping)
-			{
-				PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 50, 0));
-			}
+				PS.SetLinearVelocity(Holey.ID, new vec3(0, 50, 0));
 
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = true;
 			Holey.GetComponent<CapsuleCollider>().IsTrigger = true;
@@ -502,35 +500,29 @@ namespace TRE
 			Moley.GetComponent<CapsuleCollider>().IsTrigger = false;
 			Holey.GetComponent<CapsuleCollider>().IsTrigger = false;
 
-			PhysicsSystem.SetLinearVelocity(Moley.ID, vec3.Zero);
-			PhysicsSystem.SetLinearVelocity(Holey.ID, vec3.Zero);
+			PS.SetLinearVelocity(Moley.ID, vec3.Zero);
+			PS.SetLinearVelocity(Holey.ID, vec3.Zero);
 
-			PhysicsSystem.SetLinearVelocity(Moley.ID, new vec3(0, 70, 0));
-			PhysicsSystem.SetLinearVelocity(Holey.ID, new vec3(0, 70, 0));
+			PS.SetLinearVelocity(Moley.ID, new vec3(0, 70, 0));
+			PS.SetLinearVelocity(Holey.ID, new vec3(0, 70, 0));
 		}
 
 		private void DetermineStarsDisplay()
 		{
-			String holeSceneName = "";
+			string holeSceneName = "";
 			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside())
-			{
 				holeSceneName = "Tutorial";
-			}
 			else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesInside())
-			{
 				holeSceneName = "Level_1";
-			}
 			else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
-			{
 				holeSceneName = "Level_2";
-			}
 
 			Stars1.SetActive(false);
 			Stars2.SetActive(false);
 			Stars3.SetActive(false);
 
 			int mapStars = 0;
-			if (Int32.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out mapStars))
+			if (int.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out mapStars))
 			{
 				//Debug.Log(holeSceneName + "StarsObtained: " + mapStars);
 			}

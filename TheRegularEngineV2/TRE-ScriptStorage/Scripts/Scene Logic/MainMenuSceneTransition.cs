@@ -1,12 +1,15 @@
 ﻿namespace TRE
 {
+	using AS = AudioSystem;
+	using IS = InputSystem;
+
 	public class MainMenuSceneTransition : Entity
 	{
 		private string nextSceneName;
 		//private string ControlsDisplaySceneName;
 		public bool spacePressed;
 		public bool enterPressed;
-        public bool ContollerAPressed;
+		public bool ContollerAPressed;
 
 		public void Start()
 		{
@@ -19,40 +22,34 @@
 		public void Update()
 		{
 			// Close Game
-			if (InputSystem.GetKeyHold(InputKeys.Escape))
+			if (IS.GetKeyHold(InputKeys.Escape))
 			{
 				Game.CloseGame();
 			}
 
-			if (InputSystem.GetKeyPress(InputKeys.Space))
+			if (IS.GetKeyPress(InputKeys.Space))
 			{
 				spacePressed = true;
 				if (ECSManager.IsValidEntity(13376208322872696703))
-				{
-					AudioSystem.Play(13376208322872696703);
-				}
+					AS.Play(13376208322872696703);
 			}
 
-			if (InputSystem.GetKeyPress(InputKeys.Enter))
+			if (IS.GetKeyPress(InputKeys.Enter))
 			{
 				enterPressed = true;
 				if (ECSManager.IsValidEntity(13376208322872696703))
-				{
-					AudioSystem.Play(13376208322872696703);
-				}
+					AS.Play(13376208322872696703);
 			}
 
-            if (InputSystem.GetControllerButtonPress(0, InputSystem.Button.A))
-            {
-                ContollerAPressed = true;
-            }
+			if (IS.GetControllerButtonPress(0, IS.Button.A))
+			{
+				ContollerAPressed = true;
+			}
 
 			if ((spacePressed && enterPressed) || ContollerAPressed)
 			{
 				if (ECSManager.IsValidEntity(6154957411926925810))
-				{
-					AudioSystem.Play(6154957411926925810);
-				}
+					AS.Play(6154957411926925810);
 
 				Scene.TransitionScene(nextSceneName, 5.0f);
 

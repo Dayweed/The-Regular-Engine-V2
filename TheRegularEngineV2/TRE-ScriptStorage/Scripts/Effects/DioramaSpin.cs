@@ -7,7 +7,7 @@ namespace TRE
 	{
 		const float rotSpeed = 50.0f;
 
-		void Update()
+		public void Update()
 		{
 			TS.GetRotation(this.ID, out vec3 rot);
 			rot.y += rotSpeed * Time.deltaTime;

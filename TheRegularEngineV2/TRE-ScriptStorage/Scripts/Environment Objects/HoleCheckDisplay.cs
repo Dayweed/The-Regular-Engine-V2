@@ -9,8 +9,8 @@ namespace TRE
 
 		public List<HoleCheckTrigger> triggersComp;
 
-		private string deactivatedMaterial = "HITW_Display.material";
-		private string activatedMaterial = "HITW_Display_Correct.material";
+		private const string deactivatedMaterial = "HITW_Display.material";
+		private const string activatedMaterial = "HITW_Display_Correct.material";
 
 		private ulong HoleCheckSFX;
 
@@ -31,7 +31,7 @@ namespace TRE
 			// Remove the last trigger since it is mesh
 			--NoOfTriggers;
 
-            for (int i = 0; i < NoOfTriggers; i++)
+			for (int i = 0; i < NoOfTriggers; i++)
 			{
 				Entity trigger = parenting.GetChild(i);
 
@@ -57,11 +57,6 @@ namespace TRE
 
 		}
 
-		public void Update()
-		{
-
-		}
-
 		public void CheckTrigger()
 		{
 			// Returns if it is already completed
@@ -78,9 +73,7 @@ namespace TRE
 			isCompleted = true;
 
 			if (ECSManager.IsValidEntity(HoleCheckSFX))
-			{
 				AudioSystem.Play(HoleCheckSFX);
-			}
 
 			parenting.GetChild(2).GetComponent<MeshRenderer>().Material = activatedMaterial;
 

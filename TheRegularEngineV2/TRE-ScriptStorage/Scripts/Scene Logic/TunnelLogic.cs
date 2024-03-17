@@ -20,16 +20,15 @@ namespace TRE
 
 		float SignpostGoalMoleyPosY = 0;
 		float SignpostGoalHoleyPosY = 0;
-		float SignpostHiddenPosY = -28;
-		float SignpostDisplayPosY = -14;
-		float SignpostMoveSpeed = 5f;
-		float SignpostOffset = 0.05f;
+		const float SignpostHiddenPosY = -28;
+		const float SignpostDisplayPosY = -14;
+		const float SignpostMoveSpeed = 5f;
+		const float SignpostOffset = 0.05f;
 
 		//Audio
 		private ulong holeyCheer;
 		private ulong moleyCheer;
 		private ulong signpostSFX;
-
 
 		public void Start()
 		{
@@ -54,29 +53,21 @@ namespace TRE
 			holeyCheer = ECSManager.FindIDFromName("SFX_HoleyCheer");
 			moleyCheer = ECSManager.FindIDFromName("SFX_MoleyCheer");
 			signpostSFX = ECSManager.FindIDFromName("SFX_Signpost");
-
 		}
 
 		public void Update()
 		{
-			if (MoleyInside && (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0,InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
+			if (MoleyInside && (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
 			{
 				MoleyApprove = true;
-
 				if (ECSManager.IsValidEntity(moleyCheer))
-				{
 					AudioSystem.Play(moleyCheer);
-				}
-
 			}
 			if (HoleyInside && (InputSystem.GetKeyHold(InputKeys.Enter) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
 			{
 				HoleyApprove = true;
-
 				if (ECSManager.IsValidEntity(holeyCheer))
-				{
 					AudioSystem.Play(holeyCheer);
-				}
 			}
 
 			// Determine signposts bounce
@@ -95,9 +86,8 @@ namespace TRE
 					SignpostGoalHoleyPosY = SignpostHiddenPosY;
 				}
 
-				// Move signpost to position
+				#region Moley Approval
 				vec3 SignpostMoleyPos = SignpostMoley.GetComponent<Transform>().Position;
-				vec3 SignpostHoleyPos = SignpostHoley.GetComponent<Transform>().Position;
 				if (Math.Abs(SignpostMoleyPos.y - SignpostGoalMoleyPosY) > SignpostOffset && SignpostMoley.GetComponent<VFX_SignPostBounce>().IsPaused())
 				{
 					float SignpostMoleyPosY = MathF.Lerp(SignpostMoleyPos.y, SignpostGoalMoleyPosY, SignpostMoveSpeed * Time.deltaTime);
@@ -106,15 +96,6 @@ namespace TRE
 				else if (SignpostMoley.GetComponent<VFX_SignPostBounce>().IsPaused())
 				{
 					SignpostMoley.GetComponent<Transform>().Position = new vec3(SignpostMoleyPos.x, SignpostGoalMoleyPosY, SignpostMoleyPos.z);
-				}
-				if (Math.Abs(SignpostHoleyPos.y - SignpostGoalHoleyPosY) > SignpostOffset && SignpostHoley.GetComponent<VFX_SignPostBounce>().IsPaused())
-				{
-					float SignpostHoleyPosY = MathF.Lerp(SignpostHoleyPos.y, SignpostGoalHoleyPosY, SignpostMoveSpeed * Time.deltaTime);
-					SignpostHoley.GetComponent<Transform>().Position = new vec3(SignpostHoleyPos.x, SignpostHoleyPosY, SignpostHoleyPos.z);
-				}
-				else if (SignpostHoley.GetComponent<VFX_SignPostBounce>().IsPaused())
-				{
-					SignpostHoley.GetComponent<Transform>().Position = new vec3(SignpostHoleyPos.x, SignpostGoalHoleyPosY, SignpostHoleyPos.z);
 				}
 
 				if (MoleyApprove && Math.Abs(SignpostMoleyPos.y - SignpostDisplayPosY) <= SignpostOffset)
@@ -125,6 +106,20 @@ namespace TRE
 				{
 					SignpostMoley.GetComponent<VFX_SignPostBounce>().Pause();
 				}
+				#endregion
+
+				#region Holey Approval
+				vec3 SignpostHoleyPos = SignpostHoley.GetComponent<Transform>().Position;
+				if (Math.Abs(SignpostHoleyPos.y - SignpostGoalHoleyPosY) > SignpostOffset && SignpostHoley.GetComponent<VFX_SignPostBounce>().IsPaused())
+				{
+					float SignpostHoleyPosY = MathF.Lerp(SignpostHoleyPos.y, SignpostGoalHoleyPosY, SignpostMoveSpeed * Time.deltaTime);
+					SignpostHoley.GetComponent<Transform>().Position = new vec3(SignpostHoleyPos.x, SignpostHoleyPosY, SignpostHoleyPos.z);
+				}
+				else if (SignpostHoley.GetComponent<VFX_SignPostBounce>().IsPaused())
+				{
+					SignpostHoley.GetComponent<Transform>().Position = new vec3(SignpostHoleyPos.x, SignpostGoalHoleyPosY, SignpostHoleyPos.z);
+				}
+
 				if (HoleyApprove && Math.Abs(SignpostHoleyPos.y - SignpostDisplayPosY) <= SignpostOffset)
 				{
 					SignpostHoley.GetComponent<VFX_SignPostBounce>().Resume();
@@ -133,33 +128,28 @@ namespace TRE
 				{
 					SignpostHoley.GetComponent<VFX_SignPostBounce>().Pause();
 				}
+				#endregion
 			}
 		}
 
-		private void OnTriggerEnter(System.UInt64 otherID)
+		public void OnTriggerEnter(System.UInt64 otherID)
 		{
 			// Check if Moley or Holey is inside
 			if (otherID == Moley.ID)
 			{
 				MoleyInside = true;
-
 				if (ECSManager.IsValidEntity(signpostSFX))
-				{
 					AudioSystem.Play(signpostSFX);
-				}
 			}
 			if (otherID == Holey.ID)
 			{
 				HoleyInside = true;
-
 				if (ECSManager.IsValidEntity(signpostSFX))
-				{
 					AudioSystem.Play(signpostSFX);
-				}
 			}
 		}
 
-		private void OnTriggerExit(System.UInt64 otherID)
+		public void OnTriggerExit(System.UInt64 otherID)
 		{
 			// Check if Moley or Holey left
 			if (otherID == Moley.ID)

@@ -2,14 +2,14 @@
 {
 	public class LevelOneObject : Entity
 	{
-		private Entity LevelObject;
+		// private Entity LevelObject;
 		private Entity LvlObjUI;
 
 		public bool pickedUp = false;
 
 		public void OnCreate()
 		{
-			LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
+			// LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
 			LvlObjUI = ECSManager.FindEntityByName("LevelObject");
 		}
 
@@ -19,7 +19,7 @@
 				LvlObjUI.GetComponent<SpriteRenderer>().isVisible = true;
 		}
 
-		private void OnTriggerEnter(System.UInt64 otherID)
+		public void OnTriggerEnter(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 

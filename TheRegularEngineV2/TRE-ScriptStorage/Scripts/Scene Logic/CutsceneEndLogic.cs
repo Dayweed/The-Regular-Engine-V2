@@ -11,8 +11,8 @@ namespace TRE
 		Entity SpaceToContinue;
 
 		float currentTime = 0;
-		float delayFrame = 5f;
-		float delayScene = 7f;
+		const float delayFrame = 5f;
+		const float delayScene = 7f;
 
 		int currentFrame = 0;
 		int pressSpaceCounter = 0;
@@ -45,9 +45,9 @@ namespace TRE
 			frames = new List<Entity>() { Frame_1, Frame_2, Frame_3 };
 			nextScenes = new List<string>() { "Frame_3" };
 
-            BGM = ECSManager.FindIDFromName("BGM");
+			BGM = ECSManager.FindIDFromName("BGM");
 
-            currentFrame = 0;
+			currentFrame = 0;
 			frames[currentFrame].SetActive(true);
 			frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
 			currentTime = delayFrame;
@@ -63,8 +63,8 @@ namespace TRE
 			//Go to Credits Scene
 			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame == frames.Count - 1)
 			{
-                if (ECSManager.IsValidEntity(BGM))
-                    AS.Stop(BGM);
+				if (ECSManager.IsValidEntity(BGM))
+					AS.Stop(BGM);
 
 				Scene.TransitionScene("Credits_Scene", 5f);
 				endCutscene = true;
@@ -133,7 +133,6 @@ namespace TRE
 					frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
 				}
 			}
-
 		}
 
 		private void FadeAllActive()

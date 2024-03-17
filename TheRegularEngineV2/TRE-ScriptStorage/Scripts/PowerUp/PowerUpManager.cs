@@ -16,12 +16,7 @@ namespace TRE
 
 		//private bool usePower = false;
 
-		public PowerUpManager()
-		{
-
-		}
-
-		private void OnCreate()
+		public void OnCreate()
 		{
 			//baseForm = this.parenting.GetChild(0);
 			//blueberryForm = this.parenting.GetChild(1);
@@ -57,10 +52,7 @@ namespace TRE
 			MyPowerUpUI.UpdateUI(powerUps);
 
 			if (ECSManager.IsValidEntity(droppowerupSFX))
-			{
 				AudioSystem.Play(droppowerupSFX);
-			}
-
 		}
 
 		public void LoseMain()
@@ -70,10 +62,7 @@ namespace TRE
 			ECSManager.DestroyEntity(powerUps[0].ID);
 			powerUps.RemoveAt(0);
 
-			if (MyPowerUpUI != null)
-			{
-				MyPowerUpUI.UpdateUI(powerUps);
-			}
+			MyPowerUpUI?.UpdateUI(powerUps);
 		}
 	}
 }

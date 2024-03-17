@@ -5,13 +5,13 @@ namespace TRE
 		OnOffPlatformManager section2Manager;
 		OnOffPlatformManager section4Manager;
 
-		void Start()
+		public void Start()
 		{
 			section2Manager = ECSManager.FindEntityByName("OnOff_Platform_Manager_2").GetComponent<OnOffPlatformManager>();
 			section4Manager = ECSManager.FindEntityByName("OnOff_Platform_Manager_4").GetComponent<OnOffPlatformManager>();
 		}
 
-		void OnTriggerStay(System.UInt64 otherID)
+		public void OnTriggerStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			if (other.CompareTag("Red") || other.CompareTag("Blue"))

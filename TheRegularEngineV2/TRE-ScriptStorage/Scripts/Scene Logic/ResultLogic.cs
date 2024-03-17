@@ -16,8 +16,8 @@ namespace TRE
 
 		private float currentTimer;
 		private bool startBufferComplete = false;
-		private float delayBufferStart = 2f;
-		private float delayBufferStars = 0.5f;
+		private const float delayBufferStart = 2f;
+		private const float delayBufferStars = 0.5f;
 
 		int numStars = 0;
 		int maxStars = 0;
@@ -32,21 +32,15 @@ namespace TRE
 			Star_2_BG = ECSManager.FindEntityByName("Star_2_BG");
 			Star_3_BG = ECSManager.FindEntityByName("Star_3_BG");
 
-			String prevSceneName = PersistentSystem.GetValue("PrevScene");
-			if (Int32.TryParse(PersistentSystem.GetValue(prevSceneName + "StarsObtained"), out numStars) && Int32.TryParse(PersistentSystem.GetValue(prevSceneName + "MaxStarsObtained"), out maxStars))
+			string prevSceneName = PersistentSystem.GetValue("PrevScene");
+			if (int.TryParse(PersistentSystem.GetValue(prevSceneName + "StarsObtained"), out numStars) && int.TryParse(PersistentSystem.GetValue(prevSceneName + "MaxStarsObtained"), out maxStars))
 			{
 				if (maxStars <= 2)
-				{
 					Star_3_BG.SetActive(false);
-				}
 				if (maxStars <= 1)
-				{
 					Star_2_BG.SetActive(false);
-				}
 				if (maxStars <= 0)
-				{
 					Star_1_BG.SetActive(false);
-				}
 			}
 			else
 			{
@@ -61,7 +55,6 @@ namespace TRE
 			Star_3.SetActive(false);
 
 			currentTimer = delayBufferStart;
-
 		}
 
 		public void Update()

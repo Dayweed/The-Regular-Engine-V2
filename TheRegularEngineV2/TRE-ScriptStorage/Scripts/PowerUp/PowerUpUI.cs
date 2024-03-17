@@ -7,8 +7,8 @@ namespace TRE
 		SpriteRenderer activePowerUp;
 		SpriteRenderer notactivePowerUp;
 
-		string strawberryTexture = "Strawberry_HUD.png";
-		string blueberryTexture = "Blueberry_HUD.png";
+		const string strawberryTexture = "Strawberry_HUD.png";
+		const string blueberryTexture = "Blueberry_HUD.png";
 
 		public void Start()
 		{

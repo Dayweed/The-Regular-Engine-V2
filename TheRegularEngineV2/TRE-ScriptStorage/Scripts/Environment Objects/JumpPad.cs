@@ -11,11 +11,6 @@ namespace TRE
 		private ulong jumppadSFX;
 		private bool isPlaying = false;
 
-		public JumpPad()
-		{
-
-		}
-
 		public void Start()
 		{
 			if (name == "JumpPad_2")
@@ -25,11 +20,6 @@ namespace TRE
 			GetComponent<MeshRenderer>().Material = isActivated ? activatedMat : deactivatedMat;
 
 			jumppadSFX = ECSManager.FindIDFromName("SFX_JumpPad");
-		}
-
-		public void Update()
-		{
-
 		}
 
 		public void ActivatePad(bool isActive)

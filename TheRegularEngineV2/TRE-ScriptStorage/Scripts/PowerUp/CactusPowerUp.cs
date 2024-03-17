@@ -6,20 +6,20 @@ namespace TRE
 	class CactusPowerUp : Entity
 	{
 		private Entity playerObj;
-		private string leftCactus = "LeftCactus";
-		private string rightCactus = "RightCactus";
+		private const string leftCactus = "LeftCactus";
+		private const string rightCactus = "RightCactus";
 
 		//Scaling variables
-		private float lerpSpeed = 5f;
+		private const float lerpSpeed = 5f;
 		private vec3 defaultScale = new vec3(0.00000000001f, 0.00000000001f, 0.00000000001f);
 		private vec3 currScale = new vec3(0f, 0f, 0f);
-		private float separationMultiplier = 2.4f;
-		private float verticalMultiplier = 2.4f;
+		private const float separationMultiplier = 2.4f;
+		private const float verticalMultiplier = 2.4f;
 
 		private vec3 leftScale = new vec3(2.4f, 7f, 2.4f); // the taller side
 		private vec3 rightScale = new vec3(2.4f, 4.5f, 2.4f); // the shorter side
 
-		private int[] directions = new int[7];
+		private readonly int[] directions = new int[7];
 
 		private void SetToPlayer()
 		{
@@ -115,9 +115,9 @@ namespace TRE
 
 			float angleInRadians = 0;
 			if (CompareTag(leftCactus))
-				angleInRadians = NiceRotationAngle(niceRotY - 90) / 180.0f * 3.141502f;
+				angleInRadians = NiceRotationAngle(niceRotY - 90) / 180.0f * 3.141592f;
 			else if (CompareTag(rightCactus))
-				angleInRadians = NiceRotationAngle(niceRotY + 90) / 180.0f * 3.141502f;
+				angleInRadians = NiceRotationAngle(niceRotY + 90) / 180.0f * 3.141592f;
 
 			pos.z += tempRadius * (float)Math.Cos(angleInRadians);
 			pos.x += tempRadius * (float)Math.Sin(angleInRadians);
@@ -138,7 +138,7 @@ namespace TRE
 		{
 			// set to Holey's position
 			SetToPlayer();
-			//Check if Holey has strawberry then allow scaling
+			// Check if Holey has strawberry then allow scaling
 			ScaleChange();
 		}
 	}

@@ -8,11 +8,6 @@ namespace TRE
 		public Entity UpButton;
 		public Entity UpButton_1;
 
-		public JumpPadSwitch()
-		{
-
-		}
-
 		public void OnCreate()
 		{
 			UpButton = ECSManager.FindEntityByName("UpButton");
@@ -30,11 +25,6 @@ namespace TRE
 				Debug.LogError("JumpPadSwitch JumpPad Component is null!");
 				return;
 			}
-		}
-
-		public void Update()
-		{
-
 		}
 
 		public void OnTriggerStay(System.UInt64 otherID)

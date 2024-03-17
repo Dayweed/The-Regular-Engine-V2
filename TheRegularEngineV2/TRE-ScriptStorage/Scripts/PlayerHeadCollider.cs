@@ -9,18 +9,12 @@ namespace TRE
 		private Entity playerObj;
 		private const string mole1tag = "RedCollider";
 		private const string mole2tag = "BlueCollider";
-		//bool isPlayer1 = false;
-		//bool isPlayer2 = false;
-		// private vec3 offset;
 
 		public void SetToPlayer()
 		{
-			// PS.GetColliderOffset(playerObj.ID, out offset);
-
 			if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
-			{
 				return;
-			}
+			
 			if (this.CompareTag(mole1tag))
 			{
 				vec3 newPos = playerObj.transform.Position;
@@ -75,13 +69,9 @@ namespace TRE
 		public void Start()
 		{
 			if (this.CompareTag(mole1tag))
-			{
 				playerObj = ECSManager.FindEntityByName("Moley");
-			}
 			else if (this.CompareTag(mole2tag))
-			{
 				playerObj = ECSManager.FindEntityByName("Holey");
-			}
 		}
 
 		public void Update()

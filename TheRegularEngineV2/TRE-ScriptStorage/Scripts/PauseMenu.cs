@@ -1,8 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TRE
 {
+	using AS = AudioSystem;
+	using IS = InputSystem;
+	using TS = TextSystem;
+	using UIS = UISystem;
+
 	public enum MenuNavigation
 	{
 		UP,
@@ -31,7 +35,7 @@ namespace TRE
 		public int menustate = -1; //0 = main menu, 1 = show controls, 2 = confirmation menu
 		public int settingsOption = 0;
 		public int audioOption = 0;
-		public String settings_name = "";
+		public string settings_name = "";
 
 		private ulong sfx;
 
@@ -67,56 +71,64 @@ namespace TRE
 		//Graphics panel entities
 		private int mCurrentEditMember = -1;
 		private Entity mGammaPanel;
-        private Entity mGammaCheckbox;
-        private Entity mGammaTick;
-        private Entity mGraphicsPointer;
-        bool mIsGammaOn = true;
+		private Entity mGammaCheckbox;
+		private Entity mGammaTick;
+		private Entity mGraphicsPointer;
+		bool mIsGammaOn = true;
 		//private Transform settingsPointerTransform;
 
 		private CameraController mainCamera;
 
-        public void Start()
+		public void Start()
 		{
-			options = new List<Entity>();
-			options.Add(ECSManager.FindEntityByName("main_continue"));
-			options.Add(ECSManager.FindEntityByName("main_controls"));
-			options.Add(ECSManager.FindEntityByName("main_quit"));
+			options = new List<Entity>
+			{
+				ECSManager.FindEntityByName("main_continue"),
+				ECSManager.FindEntityByName("main_controls"),
+				ECSManager.FindEntityByName("main_quit")
+			};
 
-			DestructiveActionConfirmations = new List<Entity>();
-			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("destructive_yes"));
-			DestructiveActionConfirmations.Add(ECSManager.FindEntityByName("destructive_no"));
+			DestructiveActionConfirmations = new List<Entity>
+			{
+				ECSManager.FindEntityByName("destructive_yes"),
+				ECSManager.FindEntityByName("destructive_no")
+			};
 
 			//non selected
-			settingsPanel = new List<Entity>();
-			settingsPanel.Add(ECSManager.FindEntityByName("gameplay_panel"));
-			settingsPanel.Add(ECSManager.FindEntityByName("graphics_panel"));
-			settingsPanel.Add(ECSManager.FindEntityByName("audio_panel"));
-			settingsPanel.Add(ECSManager.FindEntityByName("controls_panel"));
+			settingsPanel = new List<Entity>
+			{
+				ECSManager.FindEntityByName("gameplay_panel"),
+				ECSManager.FindEntityByName("graphics_panel"),
+				ECSManager.FindEntityByName("audio_panel"),
+				ECSManager.FindEntityByName("controls_panel")
+			};
 
-            //selected
-            settingsSelected = new List<Entity>();
-			settingsSelected.Add(ECSManager.FindEntityByName("gameplay_selected"));
-			settingsSelected.Add(ECSManager.FindEntityByName("graphics_selected"));
-			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
-			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
+			//selected
+			settingsSelected = new List<Entity>
+			{
+				ECSManager.FindEntityByName("gameplay_selected"),
+				ECSManager.FindEntityByName("graphics_selected"),
+				ECSManager.FindEntityByName("audio_selected"),
+				ECSManager.FindEntityByName("controls_selected")
+			};
 
 			sfx = ECSManager.FindIDFromName("PauseMenu");
 
 			//audio panel
-            audioPanel = new List<Entity>();
+			audioPanel = new List<Entity>();
 			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
 			for (int i = 0; i < total_children; i++)
 			{
-				String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
+				string childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
 				audioPanel.Add(ECSManager.FindEntityByName(childName));
 			}
 			masterVolumeEnt = ECSManager.FindEntityByName("master_volume");
 			musicVolumeEnt = ECSManager.FindEntityByName("music_volume");
 			sfxVolumeEnt = ECSManager.FindEntityByName("sfx_volume");
-			TextSystem.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
-			TextSystem.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
-			TextSystem.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
-			AudioSystem.SetMasterVolume(masterVolume / 100f);
+			TS.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
+			TS.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
+			TS.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
+			AS.SetMasterVolume(masterVolume / 100f);
 
 			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
@@ -131,66 +143,62 @@ namespace TRE
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 			settingsMenu = ECSManager.FindEntityByName("settings_panel");
 
-            mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
+			mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
 			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
 			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
 			mGraphicsPointer = ECSManager.FindEntityByName("graphics_pointer");
 
 			Entity mainCam = ECSManager.FindEntityByName("Main Camera");
-			if(mainCam != null)
+			if (mainCam != null)
 			{
 				mainCamera = mainCam.GetComponent<CameraController>();
 			}
 			else
 			{
-				mainCamera = new CameraController();
-				mainCamera.freeCamera = true;
+				mainCamera = new CameraController { freeCamera = true };
 			}
 		}
 
 		public void Update()
 		{
-			if ((InputSystem.GetKeyTriggered(InputKeys.Escape) && mainCamera.freeCamera)
-				|| InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) 
-				|| InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
+			if ((IS.GetKeyTriggered(InputKeys.Escape) && mainCamera.freeCamera)
+				|| IS.GetControllerButtonTriggered(0, IS.Button.Start)
+				|| IS.GetControllerButtonTriggered(1, IS.Button.Start))
 			{
 				if (menustate == -1)
 				{
-                    isChangeMenu = true;
-                    isPaused = !isPaused;
-                    menustate = 0;
-                    currentOption = 0;
-                    Debug.Log("Trigger: Go into pause state");
-                }
+					isChangeMenu = true;
+					isPaused = !isPaused;
+					menustate = 0;
+					currentOption = 0;
+					Debug.Log("Trigger: Go into pause state");
+				}
 				else if (mIsEditingSettings && menustate == 1)
 				{
-                    isChangeMenu = true;
-                    menustate = 1;
+					isChangeMenu = true;
+					menustate = 1;
 					mIsEditingSettings = false;
 					ResetPointers();
-                    Debug.Log("Trigger: Get out of editing state");
-                }
-                else if (!mIsEditingSettings && menustate == 1)
-                {
-                    isChangeMenu = true;
-                    menustate = 0;
-					BacktoMainPausePage();
-                    Debug.Log("Trigger: Get out of controls panel");
-                }
-                else if (!mIsEditingSettings && menustate == 0)
+					Debug.Log("Trigger: Get out of editing state");
+				}
+				else if (!mIsEditingSettings && menustate == 1)
 				{
 					isChangeMenu = true;
-                    isPaused = !isPaused;
-                    menustate = 0;
-                    currentOption = 0;
-                    Debug.Log("Trigger: Unpause the game");
-                }
-
-				if (ECSManager.IsValidEntity(sfx))
+					menustate = 0;
+					BacktoMainPausePage();
+					Debug.Log("Trigger: Get out of controls panel");
+				}
+				else if (!mIsEditingSettings && menustate == 0)
 				{
-					AudioSystem.Play(sfx);
+					isChangeMenu = true;
+					isPaused = !isPaused;
+					menustate = 0;
+					currentOption = 0;
+					Debug.Log("Trigger: Unpause the game");
 				}
 
+				if (ECSManager.IsValidEntity(sfx))
+					AS.Play(sfx);
 			}
 
 			if (isPaused)
@@ -199,7 +207,7 @@ namespace TRE
 				if (menustate == 0)
 				{
 					//we are assuming that pause menu entering is handled by game logic
-					if (InputSystem.GetKeyTriggered(InputKeys.W) || ControllerInput(MenuNavigation.UP))
+					if (IS.GetKeyTriggered(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 					{
 						if (currentOption == 0)
 							currentOption = 2;
@@ -207,12 +215,10 @@ namespace TRE
 							currentOption -= 1;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
-					if (InputSystem.GetKeyTriggered(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
+					if (IS.GetKeyTriggered(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
 					{
 						if (currentOption == 2)
 							currentOption = 0;
@@ -220,12 +226,10 @@ namespace TRE
 							currentOption += 1;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
-					if (InputSystem.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
+					if (IS.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
 					{
 						if (currentOption == 0) // resume game
 						{
@@ -249,9 +253,7 @@ namespace TRE
 						}
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
 					switch (currentOption)
@@ -267,16 +269,16 @@ namespace TRE
 							break;
 					}
 				}
-                //Not editing settings + show panels individually
-                else if (menustate == 1 && !mIsEditingSettings) // control menu logic
-                {
+				//Not editing settings + show panels individually
+				else if (menustate == 1 && !mIsEditingSettings) // control menu logic
+				{
 					//settings pop up will appear
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
-					if (InputSystem.GetKeyTriggered(InputKeys.A))
+					if (IS.GetKeyTriggered(InputKeys.A))
 					{
 						Debug.Log("press left");
-                        Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-                        if (settingsOption < 0)
+						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+						if (settingsOption < 0)
 							settingsOption = 0;
 						else if (settingsOption > 3)
 							settingsOption = 3;
@@ -284,16 +286,14 @@ namespace TRE
 							--settingsOption;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
-					if (InputSystem.GetKeyTriggered(InputKeys.D))
+					if (IS.GetKeyTriggered(InputKeys.D))
 					{
 						Debug.Log("press right");
-                        Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-                        if (settingsOption < 0)
+						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+						if (settingsOption < 0)
 							settingsOption = 0;
 						else if (settingsOption > 3)
 							settingsOption = 3;
@@ -301,9 +301,7 @@ namespace TRE
 							++settingsOption;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
 					switch (settingsOption)
@@ -314,28 +312,28 @@ namespace TRE
 							showGraphicsPanel = false;
 							showAudioPanel = false;
 							showControlsPanel = false;
-                            break;
+							break;
 						case 1:
 							settings_name = "Graphics";
 							showGameplayPanel = false;
 							showGraphicsPanel = true;
 							showAudioPanel = false;
 							showControlsPanel = false;
-                            break;
+							break;
 						case 2:
 							settings_name = "Audio";
 							showGameplayPanel = false;
 							showGraphicsPanel = false;
 							showAudioPanel = true;
 							showControlsPanel = false;
-                            break;
+							break;
 						case 3:
 							settings_name = "Controls";
 							showGameplayPanel = false;
 							showGraphicsPanel = false;
 							showAudioPanel = false;
 							showControlsPanel = true;
-                            break;
+							break;
 						default:
 							showGameplayPanel = false;
 							showGraphicsPanel = false;
@@ -351,26 +349,18 @@ namespace TRE
 						{
 							//other 3 selected == false
 							if (i != settingsOption)
-							{
-								UISystem.SetVisible(settingsSelected[i].ID, false);
-							}
+								UIS.SetVisible(settingsSelected[i].ID, false);
 							else
-							{
-								UISystem.SetVisible(settingsSelected[settingsOption].ID, true);
-							}
+								UIS.SetVisible(settingsSelected[settingsOption].ID, true);
 						}
 
 						for (int i = 0; i < settingsPanel.Count; ++i)
 						{
 							//other 3 panel == true
 							if (i != settingsOption)
-							{
-								UISystem.SetVisible(settingsPanel[i].ID, true);
-							}
+								UIS.SetVisible(settingsPanel[i].ID, true);
 							else
-							{
-								UISystem.SetVisible(settingsPanel[settingsOption].ID, false);
-							}
+								UIS.SetVisible(settingsPanel[settingsOption].ID, false);
 						}
 					}
 
@@ -379,26 +369,22 @@ namespace TRE
 					{
 						//show text
 						if (audioPanel[i].HasComponent<Text>())
-						{
-							TextSystem.SetVisible(audioPanel[i].ID, showAudioPanel);
-						}
+							TS.SetVisible(audioPanel[i].ID, showAudioPanel);
 						//show UI
 						else
-						{
-                            UISystem.SetVisible(audioPanel[i].ID, showAudioPanel);
-						}
+							UIS.SetVisible(audioPanel[i].ID, showAudioPanel);
 					}
 					audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
 
 					//Not editing settings -> editing settings
 					//lock this action for gameplay and controls (havent implemented)
-					if (!mIsEditingSettings && InputSystem.GetKeyTriggered(InputKeys.S) && (showGraphicsPanel || showAudioPanel))
+					if (!mIsEditingSettings && IS.GetKeyTriggered(InputKeys.S) && (showGraphicsPanel || showAudioPanel))
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
 
-                        Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
-                    }
+						Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
+					}
 
 					//Show graphics panel
 					mGammaPanel.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
@@ -413,11 +399,11 @@ namespace TRE
 				{
 					if (showAudioPanel)
 					{
-                        audioPointer.GetComponent<SpriteRenderer>().isVisible = true;
-                        if (InputSystem.GetKeyTriggered(InputKeys.W))
-                        {
-                            Debug.Log("press up");
-                            if (mCurrentEditMember <= 0)
+						audioPointer.GetComponent<SpriteRenderer>().isVisible = true;
+						if (IS.GetKeyTriggered(InputKeys.W))
+						{
+							Debug.Log("press up");
+							if (mCurrentEditMember <= 0)
 							{
 								mCurrentEditMember = -1;
 								mIsEditingSettings = false;
@@ -427,118 +413,115 @@ namespace TRE
 							else
 								--mCurrentEditMember;
 
-                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-                        }
+							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+						}
 
-                        if (InputSystem.GetKeyTriggered(InputKeys.S))
-                        {
-                            Debug.Log("press down");
-                            if (mCurrentEditMember < 0)
+						if (IS.GetKeyTriggered(InputKeys.S))
+						{
+							Debug.Log("press down");
+							if (mCurrentEditMember < 0)
 								mIsEditingSettings = false;
 							else if (mCurrentEditMember >= 2)
 								mCurrentEditMember = 2;
 							else
 								++mCurrentEditMember;
 
-                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-                        }
+							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+						}
 
 						//adjust each setting
 						switch (mCurrentEditMember)
 						{
 							case 0:
-								if (InputSystem.GetKeyPress(InputKeys.A) || InputSystem.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
 								{
 									masterVolume -= 10;
 
 									if (masterVolume < 0)
 										masterVolume = 0;
-
 								}
-								else if (InputSystem.GetKeyPress(InputKeys.D) || InputSystem.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
 								{
 									masterVolume += 10;
 
 									if (masterVolume > 100)
 										masterVolume = 100;
 								}
-								AudioSystem.SetMasterVolume(masterVolume / 100f);
-								TextSystem.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
+								AS.SetMasterVolume(masterVolume / 100f);
+								TS.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
 								break;
 							case 1:
-								if (InputSystem.GetKeyPress(InputKeys.A) || InputSystem.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
 								{
 									musicVolume -= 10;
 
 									if (musicVolume < 0)
 										musicVolume = 0;
-
 								}
-								else if (InputSystem.GetKeyPress(InputKeys.D) || InputSystem.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
 								{
 									musicVolume += 10;
 
 									if (musicVolume > 100)
 										musicVolume = 100;
 								}
-								AudioSystem.SetBGMVolume(musicVolume / 100f);
-								TextSystem.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
+								AS.SetBGMVolume(musicVolume / 100f);
+								TS.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
 								break;
 							case 2:
-								if (InputSystem.GetKeyPress(InputKeys.A) || InputSystem.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
 								{
 									sfxVolume -= 10;
 
 									if (sfxVolume < 0)
 										sfxVolume = 0;
-
 								}
-								else if (InputSystem.GetKeyPress(InputKeys.D) || InputSystem.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
 								{
 									sfxVolume += 10;
 
 									if (sfxVolume > 100)
 										sfxVolume = 100;
 								}
-								AudioSystem.SetSFXVolume(sfxVolume / 100f);
-								TextSystem.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
+								AS.SetSFXVolume(sfxVolume / 100f);
+								TS.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
 								break;
 						}
 
 						//move pointer
 						switch (mCurrentEditMember)
-                        {
-                            case 0:
-                                audioPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
-                                break;
-                            case 1:
-                                audioPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
-                                break;
-                            case 2:
-                                audioPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
-                                break;
-                        }
-                    }
+						{
+							case 0:
+								audioPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
+								break;
+							case 1:
+								audioPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
+								break;
+							case 2:
+								audioPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
+								break;
+						}
+					}
 					else if (showGraphicsPanel)
 					{
 						mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 						if (mCurrentEditMember == 0)
 						{
-                            mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
+							mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
 
-                            if (InputSystem.GetKeyTriggered(InputKeys.Enter))
+							if (IS.GetKeyTriggered(InputKeys.Enter))
 							{
 								mIsGammaOn = !mIsGammaOn;
 								if (mIsGammaOn)
 								{
-                                    Game.TurnGammaOn();
-                                    mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
-                                }
+									Game.TurnGammaOn();
+									mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
+								}
 								else
 								{
 									Game.TurnGammaOff();
-                                    mGammaTick.GetComponent<SpriteRenderer>().isVisible = false;
-                                }
+									mGammaTick.GetComponent<SpriteRenderer>().isVisible = false;
+								}
 							}
 						}
 						else if (mCurrentEditMember == 1) //Can be smth else in future
@@ -555,25 +538,23 @@ namespace TRE
 
 					}
 
-                    if (InputSystem.GetKeyTriggered(InputKeys.W) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
-                    {
-                        Debug.Log("Triggered ESC to not editing settings");
-                        mIsEditingSettings = false; //Set to not editing any option
-                        menustate = 1;
+					if (IS.GetKeyTriggered(InputKeys.W) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
+					{
+						Debug.Log("Triggered ESC to not editing settings");
+						mIsEditingSettings = false; //Set to not editing any option
+						menustate = 1;
 
-                        //Set every pointer back to false
-                        mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						//Set every pointer back to false
+						mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
-                }
-                else // confirmation menu logic which is menustate == 2
-                {
-					if (InputSystem.GetKeyTriggered(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
+				}
+				else // confirmation menu logic which is menustate == 2
+				{
+					if (IS.GetKeyTriggered(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 					{
 						if (menuOption == 0)
 							menuOption = 1;
@@ -581,12 +562,10 @@ namespace TRE
 							menuOption = 0;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
-					if (InputSystem.GetKeyTriggered(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
+					if (IS.GetKeyTriggered(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
 					{
 						if (menuOption == 0)
 							menuOption = 1;
@@ -594,12 +573,10 @@ namespace TRE
 							menuOption = 0;
 
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
-					if (InputSystem.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
+					if (IS.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
 					{
 						if (menuOption == 0) // yes
 						{
@@ -617,9 +594,7 @@ namespace TRE
 							menuOption = 1;
 						}
 						if (ECSManager.IsValidEntity(sfx))
-						{
-							AudioSystem.Play(sfx);
-						}
+							AS.Play(sfx);
 					}
 
 					switch (menuOption)
@@ -631,9 +606,7 @@ namespace TRE
 							destructivePointerTransform.Position = DestructiveActionConfirmations[1].GetComponent<Transform>().Position;
 							break;
 					}
-
 				}
-
 
 				if (isChangeMenu && isPaused)
 				{
@@ -642,23 +615,19 @@ namespace TRE
 					{
 						case 0:
 							// Show main pause menu
-							UISystem.SetVisible(pauseMenu.ID, true);
-							UISystem.SetVisible(cfmMenu.ID, false);
+							UIS.SetVisible(pauseMenu.ID, true);
+							UIS.SetVisible(cfmMenu.ID, false);
 							for (int i = 0; i < options.Count; i++)
-							{
-								UISystem.SetVisible(options[i].ID, true);
-							}
+								UIS.SetVisible(options[i].ID, true);
 							for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
-							{
-								UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
-							}
+								UIS.SetVisible(DestructiveActionConfirmations[i].ID, false);
 							// show the pointer
-							UISystem.SetVisible(pointer.ID, true);
-							UISystem.SetVisible(destructivePointer.ID, false);
+							UIS.SetVisible(pointer.ID, true);
+							UIS.SetVisible(destructivePointer.ID, false);
 							break;
 						case 1:
 							//show settings menu
-							UISystem.SetVisible(settingsMenu.ID, true);
+							UIS.SetVisible(settingsMenu.ID, true);
 
 							//                     //set confirmation stuff as invisible
 							//                     UISystem.SetVisible(cfmMenu.ID, false);
@@ -670,13 +639,13 @@ namespace TRE
 							break;
 						case 2:
 							// only show the confirmation menu since destructive action UI is transparent
-							UISystem.SetVisible(cfmMenu.ID, true);
+							UIS.SetVisible(cfmMenu.ID, true);
 							for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
 							{
-								UISystem.SetVisible(DestructiveActionConfirmations[i].ID, true);
+								UIS.SetVisible(DestructiveActionConfirmations[i].ID, true);
 							}
 							// show the pointer
-							UISystem.SetVisible(destructivePointer.ID, true);
+							UIS.SetVisible(destructivePointer.ID, true);
 							break;
 					}
 					isChangeMenu = false;
@@ -685,97 +654,87 @@ namespace TRE
 			else if (isChangeMenu && !isPaused) //This is when you are getting out of the pause menu
 			{
 				// hide the whole pause menu
-				UISystem.SetVisible(pauseMenu.ID, false);
-				UISystem.SetVisible(cfmMenu.ID, false);
+				UIS.SetVisible(pauseMenu.ID, false);
+				UIS.SetVisible(cfmMenu.ID, false);
 
 				// hide the pointer
-				UISystem.SetVisible(pointer.ID, false);
-				UISystem.SetVisible(destructivePointer.ID, false);
+				UIS.SetVisible(pointer.ID, false);
+				UIS.SetVisible(destructivePointer.ID, false);
 
 				for (int i = 0; i < options.Count; i++)
-				{
-					UISystem.SetVisible(options[i].ID, false);
-				}
+					UIS.SetVisible(options[i].ID, false);
 
 				for (int i = 0; i < DestructiveActionConfirmations.Count; i++)
-				{
-					UISystem.SetVisible(DestructiveActionConfirmations[i].ID, false);
-				}
+					UIS.SetVisible(DestructiveActionConfirmations[i].ID, false);
 
-				UISystem.SetVisible(settingsMenu.ID, false);
+				UIS.SetVisible(settingsMenu.ID, false);
 				for (int i = 0; i < settingsPanel.Count; i++)
 				{
-					UISystem.SetVisible(settingsPanel[i].ID, false);
-					UISystem.SetVisible(settingsSelected[i].ID, false);
+					UIS.SetVisible(settingsPanel[i].ID, false);
+					UIS.SetVisible(settingsSelected[i].ID, false);
 				}
 
-                for (int i = 0; i < audioPanel.Count; ++i)
-                {
-                    //show text
-                    if (audioPanel[i].HasComponent<Text>())
-                    {
-                        TextSystem.SetVisible(audioPanel[i].ID, false);
-                    }
+				for (int i = 0; i < audioPanel.Count; ++i)
+				{
+					//show text
+					if (audioPanel[i].HasComponent<Text>())
+						TS.SetVisible(audioPanel[i].ID, false);
 
-                    //show UI
-                    else
-                    {
-                        UISystem.SetVisible(audioPanel[i].ID, false);
-                    }
-                }
+					//show UI
+					else
+						UIS.SetVisible(audioPanel[i].ID, false);
+				}
 
-				UISystem.SetVisible(mGammaTick.ID, false);
-                UISystem.SetVisible(mGammaPanel.ID, false);
-                UISystem.SetVisible(mGammaCheckbox.ID, false);
+				UIS.SetVisible(mGammaTick.ID, false);
+				UIS.SetVisible(mGammaPanel.ID, false);
+				UIS.SetVisible(mGammaCheckbox.ID, false);
 
-                isChangeMenu = false;
-
+				isChangeMenu = false;
 			}
 		}
 
 		private bool ControllerInput(MenuNavigation button)
 		{
-
-			float leftStickY_0 = InputSystem.GetControllerStickY(0, false);
-			float leftStickY_1 = InputSystem.GetControllerStickY(1, false);
+			float leftStickY_0 = IS.GetControllerStickY(0, false);
+			float leftStickY_1 = IS.GetControllerStickY(1, false);
 
 			// Check if the controller input is valid
 			switch (button)
 			{
 				case MenuNavigation.UP:
-					if (InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.DPadUp) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.DPadUp))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadUp) || IS.GetControllerButtonTriggered(1, IS.Button.DPadUp))
 						return true;
 					// handle analog stick
 					if (leftStickY_0 > 0.5f || leftStickY_1 > 0.5f)
 						return true;
 					break;
 				case MenuNavigation.DOWN:
-					if (InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.DPadDown) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.DPadDown))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadDown) || IS.GetControllerButtonTriggered(1, IS.Button.DPadDown))
 						return true;
 					// handle analog stick
 					if (leftStickY_0 < -0.5f || leftStickY_1 < -0.5f)
 						return true;
 					break;
 				case MenuNavigation.LEFT:
-					if (InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.DPadLeft) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.DPadLeft))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadLeft) || IS.GetControllerButtonTriggered(1, IS.Button.DPadLeft))
 						return true;
 					// handle analog stick
-					if (InputSystem.GetControllerStickX(0, false) < -0.5f || InputSystem.GetControllerStickX(1, false) < -0.5f)
+					if (IS.GetControllerStickX(0, false) < -0.5f || IS.GetControllerStickX(1, false) < -0.5f)
 						return true;
 					break;
 				case MenuNavigation.RIGHT:
-					if (InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.DPadRight) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.DPadRight))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadRight) || IS.GetControllerButtonTriggered(1, IS.Button.DPadRight))
 						return true;
 					// handle analog stick
-					if (InputSystem.GetControllerStickX(0, false) > 0.5f || InputSystem.GetControllerStickX(1, false) > 0.5f)
+					if (IS.GetControllerStickX(0, false) > 0.5f || IS.GetControllerStickX(1, false) > 0.5f)
 						return true;
 					break;
 				case MenuNavigation.CONFIRM:
-					if (InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.A))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.A) || IS.GetControllerButtonTriggered(1, IS.Button.A))
 						return true;
 					break;
 				case MenuNavigation.BACK:
-					if (InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.B) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.B))
+					if (IS.GetControllerButtonTriggered(0, IS.Button.B) || IS.GetControllerButtonTriggered(1, IS.Button.B))
 						return true;
 					break;
 			}
@@ -790,76 +749,64 @@ namespace TRE
 		private void BacktoMainPausePage()
 		{
 			for (int x = 0; x < settingsSelected.Count; x++)
-			{
-				UISystem.SetVisible(settingsSelected[x].ID, false);
-			}
+				UIS.SetVisible(settingsSelected[x].ID, false);
 
-            for (int x = 0; x < settingsPanel.Count; x++)
-            {
-                UISystem.SetVisible(settingsPanel[x].ID, false);
-            }
+			for (int x = 0; x < settingsPanel.Count; x++)
+				UIS.SetVisible(settingsPanel[x].ID, false);
 
-            UISystem.SetVisible(settingsMenu.ID, false);
+			UIS.SetVisible(settingsMenu.ID, false);
 
 			if (showGraphicsPanel)
 			{
-                UISystem.SetVisible(mGammaPanel.ID, false);
-                UISystem.SetVisible(mGammaCheckbox.ID, false);
-                UISystem.SetVisible(mGammaTick.ID, false);
-                UISystem.SetVisible(mGraphicsPointer.ID, false);
+				UIS.SetVisible(mGammaPanel.ID, false);
+				UIS.SetVisible(mGammaCheckbox.ID, false);
+				UIS.SetVisible(mGammaTick.ID, false);
+				UIS.SetVisible(mGraphicsPointer.ID, false);
 				showGraphicsPanel = false;
-            }
+			}
 
 			if (showAudioPanel)
 			{
 				for (int x = 0; x < audioPanel.Count; x++)
 				{
-                    if (audioPanel[x].HasComponent<Text>())
-                    {
-                        TextSystem.SetVisible(audioPanel[x].ID, false);
-                    }
-                    UISystem.SetVisible(audioPanel[x].ID, false);
+					if (audioPanel[x].HasComponent<Text>())
+						TS.SetVisible(audioPanel[x].ID, false);
+					UIS.SetVisible(audioPanel[x].ID, false);
 				}
 
-                showAudioPanel = false;
+				showAudioPanel = false;
 			}
 
-            if (showControlsPanel)
-            {
+			if (showControlsPanel)
+			{
+				showControlsPanel = false;
+			}
 
-                showControlsPanel = false;
-            }
-
-            if (showGameplayPanel)
-            {
-
-                showGameplayPanel = false;
-            }
-        }
+			if (showGameplayPanel)
+			{
+				showGameplayPanel = false;
+			}
+		}
 
 		private void ResetPointers()
 		{
-            if (showGraphicsPanel)
-            {
-                UISystem.SetVisible(mGraphicsPointer.ID, false);
-            }
+			if (showGraphicsPanel)
+				UIS.SetVisible(mGraphicsPointer.ID, false);
 
-            if (showAudioPanel)
-            {
-                UISystem.SetVisible(audioPointer.ID, false);
-            }
+			if (showAudioPanel)
+				UIS.SetVisible(audioPointer.ID, false);
 
-            if (showControlsPanel)
-            {
+			if (showControlsPanel)
+			{
 				//Change below to the correct pointer and delete this comment
-                //UISystem.SetVisible(audioPointer.ID, false);
-            }
+				//UISystem.SetVisible(audioPointer.ID, false);
+			}
 
-            if (showGameplayPanel)
-            {
-                //Change below to the correct pointer and delete this comment
-                //UISystem.SetVisible(audioPointer.ID, false);
-            }
-        }
+			if (showGameplayPanel)
+			{
+				//Change below to the correct pointer and delete this comment
+				//UISystem.SetVisible(audioPointer.ID, false);
+			}
+		}
 	}
 }

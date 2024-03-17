@@ -4,7 +4,7 @@
 	{
 		private SpriteRenderer oops;
 		private static float currentTime;
-		private float waitingTime = 0.90f;
+		private const float waitingTime = 0.90f;
 
 		private Entity holey_ref;
 		private Entity moley_ref;

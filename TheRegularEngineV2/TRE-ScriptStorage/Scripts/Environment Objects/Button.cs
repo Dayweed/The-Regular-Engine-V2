@@ -4,10 +4,8 @@ namespace TRE
 	{
 		bool isPressed = false;
 
-		void OnTriggerEnter(System.UInt64 otherID)
+		public void OnTriggerEnter(System.UInt64 otherID)
 		{
-			Entity other = new Entity(otherID);
-
 			if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
 			{
 				parenting.GetChildFromName("UpButton").GetComponent<MeshRenderer>().Visible = false;
@@ -15,10 +13,8 @@ namespace TRE
 			}
 		}
 
-		void OnTriggerExit(System.UInt64 otherID)
+		public void OnTriggerExit(System.UInt64 otherID)
 		{
-			Entity other = new Entity(otherID);
-
 			if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
 			{
 				parenting.GetChildFromName("UpButton").GetComponent<MeshRenderer>().Visible = true;

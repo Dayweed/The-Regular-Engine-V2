@@ -1,9 +1,5 @@
 ﻿using GlmSharp;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TRE
 {
@@ -32,10 +28,12 @@ namespace TRE
 
 		public void AddCameraData(vec3 position, vec3 rotation, float duration)
 		{
-			CameraData data = new CameraData();
-			data.Position = position;
-			data.Rotation = rotation;
-			data.Duration = duration;
+			CameraData data = new CameraData
+			{
+				Position = position,
+				Rotation = rotation,
+				Duration = duration
+			};
 			cameraDataList.Add(data);
 		}
 
@@ -60,7 +58,7 @@ namespace TRE
 				return;
 			}
 
-			if(preTransitioned) 
+			if (preTransitioned)
 			{
 				toTransition = false;
 				return;
@@ -75,20 +73,20 @@ namespace TRE
 			}
 
 			//First instance
-			if(elapsed == 0f)
+			if (elapsed == 0f)
 			{
 				toTransition = true;
 				elapsed += dt;
 				return;
 			}
 
-			if(elapsed >= cameraDataList[trackIndex].Duration)
+			if (elapsed >= cameraDataList[trackIndex].Duration)
 			{
 				elapsed = 0f;
 				++trackIndex;
 				toTransition = true;
 
-				if(trackIndex >= cameraDataList.Count)
+				if (trackIndex >= cameraDataList.Count)
 				{
 					preTransitioned = true;
 				}

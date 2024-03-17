@@ -28,13 +28,13 @@ namespace TRE
 		Entity Stars1;
 		Entity Stars2;
 		Entity Stars3;
-		float goalYPos = 0f;
+		// float goalYPos = 0f;
 		// float hiddenYPos = -650f;
-		float displayYPos = -400f;
+		// float displayYPos = -400f;
 		// float titleMoveSpeed = 2f;
 		// float titleOffset = 0.05f;
-		float timerCurrent = 0.0f;
-		float timerDisplay = 3.0f;
+		// float timerCurrent = 0.0f;
+		// float timerDisplay = 3.0f;
 		// bool displayStars = false;
 
 		Entity StarParticle;
@@ -121,11 +121,13 @@ namespace TRE
 				// triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 
 				// Add for optional stars triggers
-				List<HoleCheckDisplay> holeCheckDisplay1 = new List<HoleCheckDisplay>();
+				List<HoleCheckDisplay> holeCheckDisplay1 = new List<HoleCheckDisplay>
+				{
+					ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>(),
+					ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>()
+				};
 				/*List<HoleCheckDisplay> holeCheckDisplay2 = new List<HoleCheckDisplay>();
 				List<HoleCheckDisplay> holeCheckDisplay3 = new List<HoleCheckDisplay>();*/
-				holeCheckDisplay1.Add(ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>());
-				holeCheckDisplay1.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
 				/*holeCheckDisplay2.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplay2.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplay3.Add(ECSManager.FindEntityByName("TriggerDisplay_5").GetComponent<HoleCheckDisplay>());
@@ -146,8 +148,8 @@ namespace TRE
 			Stars1 = ECSManager.FindEntityByName("Star1");
 			Stars2 = ECSManager.FindEntityByName("Star2");
 			Stars3 = ECSManager.FindEntityByName("Star3");
-			goalYPos = displayYPos;
-			timerCurrent = timerDisplay;
+			// goalYPos = displayYPos;
+			// timerCurrent = timerDisplay;
 
 			//Star VFX
 			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
@@ -277,7 +279,6 @@ namespace TRE
 			}
 			#endregion
 
-
 			// Late Start to ensure transform for stars arent screwed by parenting
 			if (lateStart < 2) ++lateStart;
 			if (lateStart == 2 && ECSManager.IsValidEntity(StarsCollected.ID) && ECSManager.IsValidEntity(Stars1.ID) && ECSManager.IsValidEntity(Stars2.ID) && ECSManager.IsValidEntity(Stars3.ID))
@@ -308,13 +309,13 @@ namespace TRE
 						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
 						StarEmerge.Emerge();
 
-						if(!starSFXPlayed)
+						if (!starSFXPlayed)
 						{
 							if (ECSManager.IsValidEntity(starSFX))
 								AudioSystem.Play(starSFX);
 							starSFXPlayed = true;
 						}
-						
+
 
 						//StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
 						//	StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
@@ -323,20 +324,18 @@ namespace TRE
 				}
 			}
 
-
 			#region Stars
 			if (ECSManager.IsValidEntity(StarsCollected.ID))
 			{
 				//if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
 				// Do for stars collected
-				vec3 titleStarsCollectedPos = StarsCollected.GetComponent<Transform>().Position;
+				// vec3 titleStarsCollectedPos = StarsCollected.GetComponent<Transform>().Position;
 				if (StarEmerge != null && StarEmerge.ReachEndPosition())
 				{
-					goalYPos = displayYPos;
+					// goalYPos = displayYPos;
 					// Determine which stars to display
 					DetermineStarsDisplay(currentSceneName);
-					timerCurrent = timerDisplay;
-
+					// timerCurrent = timerDisplay;
 
 					if (ECSManager.IsValidEntity(starSFX))
 						AudioSystem.Stop(starSFX);
@@ -358,11 +357,8 @@ namespace TRE
 			}
 			#endregion
 
-
-
 			// Go to next scene if list of triggers are completed
-			bool goToNextScene = triggerComplete.Count == 0 ? false : true;
-
+			bool goToNextScene = triggerComplete.Count != 0;
 
 			foreach (HoleCheckDisplay trigger in triggerComplete)
 			{
@@ -370,17 +366,12 @@ namespace TRE
 				{
 					goToNextScene = false;
 					if (!forceGoToNextScene)
-					{
 						return;
-					}
 				}
 			}
 
 			if (PhysicsSystem.IsTriggerStay(Holey.ID, EndingFlagTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, EndingFlagTrigger.ID))
-			{
-				//Debug.Log("NEXT SCENE");
 				goToNextScene = true;
-			}
 
 			//go to next scene after a while
 			if (goToNextScene || forceGoToNextScene)
@@ -413,19 +404,16 @@ namespace TRE
 			}
 		}
 
-		public void IncrementStars(String mapName)
+		public void IncrementStars(string mapName)
 		{
-			int numStars = 0;
-
-			if (Int32.TryParse(PersistentSystem.GetValue("TotalStarsObtained"), out numStars))
+			if (int.TryParse(PersistentSystem.GetValue("TotalStarsObtained"), out int numStars))
 			{
 				++numStars;
 				PersistentSystem.SetValue("TotalStarsObtained", numStars.ToString());
 				Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
 			}
 
-			int mapStars = 0;
-			if (Int32.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out mapStars))
+			if (int.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out int mapStars))
 			{
 				++mapStars;
 				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
@@ -433,30 +421,19 @@ namespace TRE
 			}
 		}
 
-
-
-		private void DetermineStarsDisplay(String mapName)
+		private void DetermineStarsDisplay(string mapName)
 		{
 			Stars1.SetActive(false);
 			Stars2.SetActive(false);
 			Stars3.SetActive(false);
-			int mapStars = 0;
-			if (Int32.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out mapStars))
-			{
-				//Debug.Log(mapName + "StarsObtained: " + mapStars);
-			}
+
+			int.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out int mapStars);
 			if (mapStars >= 3)
-			{
 				Stars3.SetActive(true);
-			}
 			if (mapStars >= 2)
-			{
 				Stars2.SetActive(true);
-			}
 			if (mapStars >= 1)
-			{
 				Stars1.SetActive(true);
-			}
 		}
 	}
 }

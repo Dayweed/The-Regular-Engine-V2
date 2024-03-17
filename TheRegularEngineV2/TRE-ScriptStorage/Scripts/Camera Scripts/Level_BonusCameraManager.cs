@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GlmSharp;
+﻿using GlmSharp;
 
 namespace TRE
 {
@@ -80,7 +75,6 @@ namespace TRE
 			expectedDistance = 35;
 			expectedPosition = new vec3(0, 10, 20);
 			expectedRotation = new vec3(30, 180, 0);
-
 		}
 
 		public void Update()
@@ -135,7 +129,7 @@ namespace TRE
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_C);
 			}
-			
+
 			if (regionD)
 			{
 				//region with jumppad - 2nd floor & moving platform 1
@@ -198,7 +192,7 @@ namespace TRE
 				CheckTransition(Trigger_H);
 			}
 
-			if (regionI) 
+			if (regionI)
 			{
 				//2nd floor before moving hitw
 				expectedPosition = new vec3(0, 10, 20);
@@ -272,8 +266,8 @@ namespace TRE
 
 		private bool IsHoleyMoleyInsideTrigger(Entity entity)
 		{
-			return ECSManager.IsValidEntity(entity.ID) && 
-				(PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID)) && 
+			return ECSManager.IsValidEntity(entity.ID) &&
+				(PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID)) &&
 				(PS.IsTriggerEnter(Moley.ID, entity.ID) || PS.IsTriggerStay(Moley.ID, entity.ID));
 		}
 

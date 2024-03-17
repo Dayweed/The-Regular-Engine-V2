@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TRE
+﻿namespace TRE
 {
 	public class EffectsManager : Entity
 	{
 		PauseMenu pauseMenu = null;
 		CameraController cameraController = null;
-		String levelName;
+		string levelName;
 
 		public void Start()
 		{
@@ -18,7 +12,7 @@ namespace TRE
 			// Debug.Log("Level Name is " + levelName);
 
 			Entity tempPause = ECSManager.FindEntityByName("PauseMenu");
-			if (tempPause != null ) 
+			if (tempPause != null)
 			{
 				pauseMenu = tempPause.GetComponent<PauseMenu>();
 			}
@@ -42,7 +36,7 @@ namespace TRE
 			}
 		}
 
-		public void Update() 
+		public void Update()
 		{
 			if (levelName == "MainMenu" || levelName == "ResultScreen")
 			{

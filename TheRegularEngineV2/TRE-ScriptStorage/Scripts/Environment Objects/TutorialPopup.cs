@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-
-namespace TRE
+﻿namespace TRE
 {
 	public class TutorialPopup : Entity
 	{
 		private Entity UIPopup1;
-        private Entity UIPopUp1_controls;
+		private Entity UIPopUp1_controls;
 		private Entity PopupCollider;
 		private bool IsActivated_1 = false;
 		private bool HasBeenTriggeredBefore_1 = false;
@@ -20,16 +18,14 @@ namespace TRE
 		private Entity LeftHUDRef;
 		private Entity TitleStarsHUD;
 
-        private bool controller1 = false;
-        private bool lastController1 = false;
+		private bool controller1 = false;
+		private bool lastController1 = false;
 		private bool changeUI = false;
-		
 
 		//Audio
 		private ulong uiSFX;
 		private bool uiSFXPlayed = false;
 		private bool playSFX = false;
-
 
 		private TutorialCameraManager mainCam;
 
@@ -45,7 +41,7 @@ namespace TRE
 			LeftHUDRef = ECSManager.FindEntityByName("LeftCharacter_HUD");
 			TitleStarsHUD = ECSManager.FindEntityByName("TitleStarsCollected");
 
-            UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
+			UIPopupBeforeHITW = ECSManager.FindEntityByName("PopupUIBeforeHITW");
 			UIPopupBeforeHITW_Controls = ECSManager.FindEntityByName("PopupUIBeforeHITW_controls");
 			PopupCollier_BeforeHITW = ECSManager.FindEntityByName("PopupCollider2");
 			IsActivated_BeforeHITW = false;
@@ -59,50 +55,47 @@ namespace TRE
 		public void Update()
 		{
 			//Controller Check for UI
-            controller1 = InputSystem.GetControllerConnected(0);
+			controller1 = InputSystem.GetControllerConnected(0);
 
 			playSFX = false;
 
 			// Controller check
 			if (controller1)
-            {
-                if (lastController1 == false)
-                {
-                    lastController1 = true;
-                    changeUI = true;
-                }
-            }
-            else
-            {
-                if (lastController1 == false) { }
-                else
-                {
-                    lastController1 = false;
-                    changeUI = true;
-                }
+			{
+				if (lastController1 == false)
+				{
+					lastController1 = true;
+					changeUI = true;
+				}
+			}
+			else
+			{
+				if (lastController1 == true)
+				{
+					lastController1 = false;
+					changeUI = true;
+				}
+			}
 
-            }
-
-            if (changeUI && controller1)
-            {
-                UIPopUp1_controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
+			if (changeUI && controller1)
+			{
+				UIPopUp1_controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
 				UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
-            }
+			}
 			else if (changeUI && !controller1)
-            {
+			{
 				UIPopUp1_controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
 				UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
-            }
+			}
 
 			if (mainCam.preTransitions.preTransitioned)
 			{
-                RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
-                LeftHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
-                TitleStarsHUD.GetComponent<SpriteRenderer>().isVisible = true;
-
+				RightHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
+				LeftHUDRef.GetComponent<SpriteRenderer>().isVisible = true;
+				TitleStarsHUD.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 
-            if (IsActivated_1 && !IsActivated_BeforeHITW)
+			if (IsActivated_1 && !IsActivated_BeforeHITW)
 			{
 				UIPopup1.GetComponent<SpriteRenderer>().isVisible = true;
 				UIPopUp1_controls.GetComponent<SpriteRenderer>().isVisible = true;
@@ -116,7 +109,6 @@ namespace TRE
 				UIPopupBeforeHITW_Controls.GetComponent<SpriteRenderer>().isVisible = true;
 
 				playSFX = true;
-
 			}
 
 			if (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A) || InputSystem.GetControllerButtonPress(1, InputSystem.Button.A))
@@ -135,18 +127,15 @@ namespace TRE
 				}
 
 				playSFX = false;
-
 			}
 
-			HandleSFX();	
+			HandleSFX();
 		}
 
 		public void OnTriggerStay(System.UInt64 otherID)
 		{
-			Entity other = new Entity(otherID);
-
 			// Check is interacted with moles players
-			if ((EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue"))
+			if (EngineGetTag(otherID) == "Red" || EngineGetTag(otherID) == "Blue")
 			{
 				if (!HasBeenTriggeredBefore_1 && this.ID.Equals(PopupCollider.ID))
 				{

@@ -14,7 +14,7 @@ namespace TRE
 
 		public float expectedYPos;
 
-		private float lerpSpeed = 0.01f;
+		private const float lerpSpeed = 0.01f;
 
 		public void Start()
 		{
@@ -27,8 +27,6 @@ namespace TRE
 
 		public void Update()
 		{
-			/*thisPos = Player1Transform.Position + Player2Transform.Position;
-			thisPos /= 2;*/
 			thisPos.y = MathF.Lerp(thisPos.y, expectedYPos, lerpSpeed);
 
 			thisPos = new vec3((Player1Transform.Position.x + Player2Transform.Position.x) / 2,

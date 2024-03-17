@@ -26,16 +26,6 @@ namespace TRE
 		private List<vec3> itemsPos = new List<vec3>();
 		private List<vec3> itemsDefRot = new List<vec3>();
 
-		public RandomizeFallingObjLocation()
-		{
-
-		}
-
-		public void OnCreate()
-		{
-
-		}
-
 		public void Start()
 		{
 			if (Scene.GetSceneName() == "Tutorial")
@@ -85,7 +75,6 @@ namespace TRE
 					activeDuration = 4;
 				}
 			}
-
 
 			itemsToSpawn.Clear();
 			itemsTimer.Clear();
@@ -185,7 +174,7 @@ namespace TRE
 			for (int i = 0; i < itemsPos.Count; ++i)
 			{
 				vec3 pos = itemsPos[i];
-                vec3 checkPos = new vec3(pos.x, position.y, pos.z);
+				vec3 checkPos = new vec3(pos.x, position.y, pos.z);
 				if (vec3.Distance(position, checkPos) < minRange && itemsToSpawn[i].GetActive())
 				{
 					return false;

@@ -13,20 +13,17 @@ namespace TRE
 
 		public bool spawned;
 		public float cooldownCurrent;
-		public float cooldownDuration = 5.0f;
+		public const float cooldownDuration = 5.0f;
 
 		private int numSpawn = 0;
 
 		public void OnCreate()
 		{
 			if (CompareTag("SpawnStrawberry"))
-			{
 				powerUpPrefab = new Entity(13004780274330328106);
-			}
 			else if (CompareTag("SpawnBlueberry"))
-			{
 				powerUpPrefab = new Entity(7670209894207584463);
-			}
+			
 
 			positionOffset = new vec3(0, 2, 0);
 

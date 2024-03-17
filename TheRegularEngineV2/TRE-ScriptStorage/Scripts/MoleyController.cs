@@ -17,20 +17,23 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
-		//Check if player is boosted jump
+		/// <summary>Check if player has boosted jump</summary>
 		public bool isBoostedJump = false;
-		//Check if player is on the ground
+
+		/// <summary>Check if player is on ground</summary>
 		public bool isGrounded = true;
-		//direction vector
+
+		/// <summary>Direction vector</summary>
 		private vec3 dirVec;
-		//Max Velocity vector
-		private float maxVelocity = 30f;
-		//Acceleration
-		private float acceleration = 700f;
-		//final velocity
+
+		/// <summary>Max Velocity vector</summary>
+		private const float maxVelocity = 30f;
+
+		/// <summary>Acceleration</summary>
+		private const float acceleration = 700f;
+
+		/// <summary>Final Velocity</summary>
 		private vec3 finalVelocity = vec3.Zero;
-		//Original Scale
-		private vec3 oriScale;
 
 		//Check if player is walking
 		public bool isWalking = false;
@@ -42,10 +45,10 @@ namespace TRE
 
 		// Controllable
 		public bool isControllable = true;
-		private bool IsControllerConnected = false;
-		private bool changeUI = false;
+		private bool isControllerConnected = false;
 		private bool lastControllerConnected = false;
-        private Entity CharacterUI;
+		private bool changeUI = false;
+		private Entity CharacterUI;
 
 		// the controls/keys that THIS player (Moley) will use
 		#region Player Controls
@@ -59,23 +62,23 @@ namespace TRE
 		const InputKeys playerAbilityKey = InputKeys.E;
 		#endregion
 
-        private int ControllerNumber = 0;
+		private const int ControllerNumber = 0;
 
 		#region Collider Variables
-		private float defaultRadius = 2f;
-		private float blueberrysuperRadius = 2f;
-		private float strawberrysuperRadius = 2f;
+		public const float defaultRadius = 2f;
+		public const float blueberrysuperRadius = 2f;
+		public const float strawberrysuperRadius = 2f;
 		public float currentRadius = 2f;
-		private float defaultHeight = 1f;
-		private float blueberrysuperHeight = 1f;
-		private float strawberrysuperHeight = 2f;
+		public const float defaultHeight = 1f;
+		public const float blueberrysuperHeight = 1f;
+		public const float strawberrysuperHeight = 2f;
 		public float currentHeight = 1f;
 		public float currOffset = 3f;
 		#endregion
 
 		#region Player Transform Variables
 		private Transform moleyTransform;
-		private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
+		// private vec3 defaultXform = new vec3(0.75f, 0.75f, 0.75f);
 		private vec3 blueberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
 		private vec3 strawberryscaledXform = new vec3(0.4f, 0.4f, 0.4f);
 		private vec3 currentXform = new vec3(0.75f, 0.75f, 0.75f);
@@ -85,41 +88,35 @@ namespace TRE
 		private int playerDirection = 0;
 		private int lastPlayerDirection = 0;
 
-		private float lerpSpeed = 5f;
+		private const float lerpSpeed = 5f;
 
 		#region Jump Variables
-		private float maxJumpHeight = 70f;
+		private const float maxJumpHeight = 70f;
 		//Check if player is jumping at all
 		public bool isJumping = false;
 		//how long you hold the jump button to reach max jump height
-		public float maxJumpButtomTime = 0.5f;
+		public const float maxJumpButtomTime = 0.5f;
 		public float currentJumpTime;
 		public bool jumpCancelled = false;
 		//how long after the player walks off the ground can he still jump
-		private float coyoteTime = 0.2f;
+		private const float coyoteTime = 0.2f;
 		public float coyoteTimeCounter;
 		//if player press space within this buffer time, they will still be able to jump even if they havent landed
-		private float jumpBufferTime = 0.25f;
+		private const float jumpBufferTime = 0.25f;
 		public float jumpBufferCounter;
-		private float jumpHeight = 25f;
+		// private float jumpHeight = 25f;
 		#endregion
 
 		#region Audio Variables
 		private ulong walkingSFX;
-		//private ulong walkingSFX1;
-		//private ulong walkingSFX2;
-		//private ulong walkingSFX3;
-		//private ulong walkingSFX4;
-		//private ulong walkingSFX5;
-		//private ulong walkingSFX6;
 		private ulong jumpSFX;
 		private ulong changesizeSFX;
 		private ulong normalsizeSFX;
 		private ulong fallingMaracaSFX;
-		private ulong fallingHatSFX;
+		// private ulong fallingHatSFX;
 		private ulong fallSFX;
 		private ulong cheeringSFX;
-		private ulong hurtSFX;
+		// private ulong hurtSFX;
 		private ulong landingSFX;
 
 		private bool walkingSFXPlayed = false;
@@ -142,9 +139,9 @@ namespace TRE
 		#region Invulnerability Variables
 		private bool Invulnerability = false;
 		private float InvulCurrent = 1.0f;
-		private float InvulPeriod = 1.0f;
+		private const float InvulPeriod = 1.0f;
 		private float InvulBlinkCurrent = 0.1f;
-		private float InvulBlinkPeriod = 0.1f;
+		private const float InvulBlinkPeriod = 0.1f;
 		#endregion
 
 		//Holey Reference
@@ -169,19 +166,20 @@ namespace TRE
 		//Materials and Meshes
 		//Default
 		private const string defaultMaterial = "Red_Moley.material";
-        private const string defaultWalkingMesh = "mole_walk.fbx";
-        private const string defaultJumpingMesh = "mole_jump.fbx";
-        private const string defaultIdleMesh = "mole_idle.fbx";
-        private const string defaultAnimationMaterial = "RedCharacter_Animation.material";
+		private const string defaultWalkingMesh = "mole_walk.fbx";
+		private const string defaultJumpingMesh = "mole_jump.fbx";
+		private const string defaultIdleMesh = "mole_idle.fbx";
+		private const string defaultAnimationMaterial = "RedCharacter_Animation.material";
 
 		//Blueberry
-        private const string blueberryMaterial = "Moley_Blueberry.material";
+		private const string blueberryMaterial = "Moley_Blueberry.material";
 		private const string blueberryMesh = "Moley_Blueberry.fbx";
 
-        //Strawberry
-        private const string strawberryMaterial = "Moley_Strawberry.material";
+		//Strawberry
+		private const string strawberryMaterial = "Moley_Strawberry.material";
 		private const string strawberryMesh = "Moley_Strawberry.fbx";
-        public void Start()
+
+		public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -226,16 +224,16 @@ namespace TRE
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
 			fallingMaracaSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
-			fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
+			// fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
-			hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
+			// hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
 			landingSFX = ECSManager.FindIDFromName("SFX_MoleyLand");
 			walkingSFXVolume = AS.GetVolume(walkingSFX);
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
-			oriScale = moleyTransform.Scale;
+			// oriScale = moleyTransform.Scale;
 
 			moley_dust = ECSManager.FindEntityByName("Moley_Dust");
 
@@ -251,28 +249,28 @@ namespace TRE
 
 		public void Update()
 		{
-            // check if controller connected
-            IsControllerConnected = IS.GetControllerConnected(ControllerNumber);
-            if (lastControllerConnected != IsControllerConnected)
-            {
-                lastControllerConnected = IsControllerConnected;
-                changeUI = true;
-            }
+			// check if controller connected
+			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
+			if (lastControllerConnected != isControllerConnected)
+			{
+				lastControllerConnected = isControllerConnected;
+				changeUI = true;
+			}
 
-            if (changeUI && IsControllerConnected && CharacterUI != null)
-            {
-                changeUI = false;
-                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_Controller.png";
-            }
+			if (changeUI && isControllerConnected && CharacterUI != null)
+			{
+				changeUI = false;
+				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_Controller.png";
+			}
 
-            if (changeUI && !IsControllerConnected && CharacterUI != null)
-            {
-                changeUI = false;
-                CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right.png";
-            }
+			if (changeUI && !isControllerConnected && CharacterUI != null)
+			{
+				changeUI = false;
+				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right.png";
+			}
 
 
-            CheckControllability();
+			CheckControllability();
 
 			HandleInvulnerability();
 
@@ -303,16 +301,8 @@ namespace TRE
 			dirVec.y = 0;
 			dirVec = dirVec.NormalizedSafe;
 
-			#region CHEATS
-			// Close Game
-			//if (InputSystem.GetKeyHold(InputKeys.Escape))
-			//{
-			//	Game.CloseGame();
-			//}
-			#endregion
-
-			playerDirection = (int)lastPlayerDirection + turnDirection;
-			playerDirection = playerDirection % 360;
+			playerDirection = lastPlayerDirection + turnDirection;
+			playerDirection %= 360;
 
 			// Only set velocity if not respawning
 			if (!RespawnPlayer)
@@ -373,11 +363,10 @@ namespace TRE
 
 		private void Jump(vec3 JumpHeight)
 		{
-			//PhysicsSystem.SetLinearVelocity(this.ID, JumpHeight);
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
-		private void OnCollisionStay(System.UInt64 otherID)
+		public void OnCollisionStay(System.UInt64 otherID)
 		{
 			//isGrounded = false;
 
@@ -399,8 +388,13 @@ namespace TRE
 				//}
 				else
 				{
-					//rollingobstaclesfx
+
 				}
+				//else if (other.ID == ECSManager.FindIDFromName("RollingObjectRender"))
+				//{
+				//	if (ECSManager.IsValidEntity(hurtSFX))
+				//		AudioSystem.Play(hurtSFX);
+				//}
 			}
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))
@@ -411,7 +405,7 @@ namespace TRE
 					isBoostedJump = true;
 				}
 			}
-			//For jumping
+
 			if (other.CompareTag("Ground") || other.CompareTag("Platform")
 				|| other.CompareTag("Blue") || other.CompareTag("BlueCollider")
 				|| other.CompareTag("LeftCactus") || other.CompareTag("RightCactus"))
@@ -420,7 +414,7 @@ namespace TRE
 			}
 		}
 
-		private void OnCollisionExit(System.UInt64 otherID)
+		public void OnCollisionExit(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			if (EngineGetTag(otherID) == "Blue")
@@ -430,6 +424,7 @@ namespace TRE
 					output.y = maxJumpHeight;
 				PS.SetLinearVelocity(this.ID, output);
 			}
+
 			// No longer boosted if leave jumppad
 			if (other.CompareTag("JumpPad"))
 			{
@@ -494,7 +489,6 @@ namespace TRE
 						isScaled = false;
 					}
 				}
-				// else do not respawn player since both are dead
 			}
 		}
 
@@ -510,8 +504,7 @@ namespace TRE
 			}
 			else if (DroppingOutOfMap == false)
 			{
-				// KB Connected
-				if (!MyPauseMenu.isPaused && isControllable && !IsControllerConnected)
+				if (!MyPauseMenu.isPaused && isControllable && !isControllerConnected)
 				{
 					if (IS.GetKeyHold(playerUpKey))
 					{
@@ -583,7 +576,6 @@ namespace TRE
 					//check if space is pressed within the buffer time
 					if (IS.GetKeyPress(playerJumpKey))
 					{
-						jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
 					}
 					//count down the buffer time
@@ -591,6 +583,7 @@ namespace TRE
 					{
 						jumpBufferCounter -= Time.deltaTime;
 					}
+
 					//check if player is jumping
 					if (isJumping)
 					{
@@ -599,17 +592,16 @@ namespace TRE
 						{
 							jumpCancelled = true;
 							coyoteTimeCounter = 0f;
-							//Debug.Log("Jump Cancelled");
 						}
+
 						//check if space is held down and jump time is not over
 						if (currentJumpTime > maxJumpButtomTime)
 						{
 							isJumping = false;
-
-							//Debug.Log("Jump ran out");
 						}
 						currentJumpTime += Time.deltaTime;
 					}
+
 					//check if player is on the ground and space is not released
 					else
 					{
@@ -618,6 +610,7 @@ namespace TRE
 							isJumping = false;
 						}
 					}
+
 					//jump buffer time and coyote time is still active
 					if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f && isControllable)
 					{
@@ -650,7 +643,7 @@ namespace TRE
 				}
 
 				// controller is connected
-				else if (!MyPauseMenu.isPaused && isControllable && IsControllerConnected)
+				else if (!MyPauseMenu.isPaused && isControllable && isControllerConnected)
 				{
 					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
 					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
@@ -661,17 +654,16 @@ namespace TRE
 					// calculate the angle of the direction vector
 					if (isWalking)
 					{
-						lastPlayerDirection = (int)(Math.Atan2(y, x) * 180/Math.PI - 90 + 360) % 360;
-						
+						lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
 
 						// handle the dirVec
-						if(y > 0)
+						if (y > 0)
 							dirVec += CS.GetMainCameraForwardVec();
-						if(y < 0)
-                            dirVec -= CS.GetMainCameraForwardVec();
-						if(x > 0)
+						if (y < 0)
+							dirVec -= CS.GetMainCameraForwardVec();
+						if (x > 0)
 							dirVec -= CS.GetMainCameraRightVec();
-						if(x < 0)
+						if (x < 0)
 							dirVec += CS.GetMainCameraRightVec();
 					}
 
@@ -693,7 +685,7 @@ namespace TRE
 					//check if space is pressed within the buffer time
 					if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.A))
 					{
-						jumpHeight += Time.deltaTime;
+						// jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
 					}
 					//count down the buffer time
@@ -798,7 +790,7 @@ namespace TRE
 				AS.Play(landingSFX);
 				landingSFXPlayed = true;
 			}
-			else if(!isGrounded)
+			else if (!isGrounded)
 			{
 				AS.Stop(landingSFX);
 				landingSFXPlayed = false;
@@ -917,8 +909,6 @@ namespace TRE
 					GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 					if (HasComponent<Animation>())
 						GetComponent<Animation>().AnimationSpeed = 0.25f;
-
-					//TransformSystem.SetScaling(this.ID, new vec3(0.03f, 0.03f, 0.03f));
 				}
 				currentHeight = MathF.Lerp(currentHeight, defaultHeight, lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, defaultRadius, lerpSpeed * Time.deltaTime);
@@ -942,8 +932,8 @@ namespace TRE
 				currOffset = MathF.Lerp(currOffset, -1.2f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
 
-				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
 				PS.ResizeCapsuleCollider(this.ID, currentRadius, currentHeight);
+				PS.UpdateColliderOffset(this.ID, new vec3(0, currOffset, 0));
 				TS.SetScaling(this.ID, currentXform);
 			}
 			else if (mainStrawberry)
@@ -970,36 +960,35 @@ namespace TRE
 		private void HandleParticles(ref vec3 currVelocity)
 		{
 			//Debug.Log("particle is active: " + PS3D.GetActive(moley_dust.ID));
-            vec3 pos = this.GetComponent<Transform>().Position;
+			vec3 pos = this.GetComponent<Transform>().Position;
 			vec3 particleVel;
-            if (currVelocity != vec3.Zero)
+			if (currVelocity != vec3.Zero)
 			{
 				particleVel = currVelocity.NormalizedSafe;
 				particleVel *= -1;
-            }
+			}
 			else
 			{
 				particleVel = vec3.Zero;
-            }
-            //pos.y += 1f;
-            pos.x += particleVel.x * 2;
-            pos.z += particleVel.z * 2;
-            moley_dust.GetComponent<Transform>().Position = pos;
+			}
+			//pos.y += 1f;
+			pos.x += particleVel.x * 2;
+			pos.z += particleVel.z * 2;
+			moley_dust.GetComponent<Transform>().Position = pos;
 
-            PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
+			PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
 			//turn off the particles if the player is dead/ not moving/ not grounded
 			if (isDead || !isGrounded || !isWalking)
 			{
-                PS3D.SetActive(moley_dust.ID, false);
-            }
+				PS3D.SetActive(moley_dust.ID, false);
+			}
 			else
 			{
 				PS3D.SetActive(moley_dust.ID, true);
 			}
 		}
 
-
-        public void UpdateDisplay()
+		public void UpdateDisplay()
 		{
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 		}
@@ -1099,30 +1088,30 @@ namespace TRE
 
 		private void CheckControllability()
 		{
-            // Confirmation pop up
-            bool confirmationPopUp = false;
-            if (Scene.GetSceneName() == "MainMenu" && ECSManager.FindEntityByName("QuitConfirmationPopup") != null && ECSManager.FindEntityByName("QuitConfirmationPopup").GetComponent<SpriteRenderer>().isVisible)
+			// Confirmation pop up
+			bool confirmationPopUp = false;
+			if (Scene.GetSceneName() == "MainMenu" && ECSManager.FindEntityByName("QuitConfirmationPopup") != null && ECSManager.FindEntityByName("QuitConfirmationPopup").GetComponent<SpriteRenderer>().isVisible)
 			{
 				confirmationPopUp = true;
-            }
+			}
 
 			// Camera panning at the start
 			bool cameraTransiting = false;
 			if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
 			{
 				cameraTransiting = true;
-            }
+			}
 
 
-            // Logic to handle isControllable
-            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
+			// Logic to handle isControllable
+			if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
 			{
 				isControllable = false;
 			}
 			else
 			{
 				isControllable = true;
-            }
+			}
 		}
 
 		private float VolumeVariation(float volume, float variation)

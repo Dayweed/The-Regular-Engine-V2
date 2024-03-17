@@ -10,15 +10,15 @@ namespace TRE
 		private vec3 initialScale;
 		private vec3 currentScale;
 		private vec3 currentRotation;
-		private float bigScale = 1.25f;
-		private float smallScale = 1;
-		private float lerpSpeed = 5f;
+		private const float bigScale = 1.25f;
+		private const float smallScale = 1;
+		private const float lerpSpeed = 5f;
 		private bool isBig = false;
 		private bool isSmall = true;
 		private bool isLeft;
 		// private bool isRight;
-		private float left = 10f;
-		private float right = -10f;
+		private const float left = 10f;
+		private const float right = -10f;
 
 		public void Start()
 		{
@@ -41,7 +41,6 @@ namespace TRE
 
 		public void Update()
 		{
-
 			if (isSmall)
 			{
 				currentScale.y = MathF.Lerp(currentScale.y, bigScale, lerpSpeed * Time.deltaTime);
@@ -54,7 +53,6 @@ namespace TRE
 					isBig = true;
 					isLeft = !isLeft;
 				}
-
 			}
 			else if (isBig)
 			{

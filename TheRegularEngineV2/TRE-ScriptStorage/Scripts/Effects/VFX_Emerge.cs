@@ -17,28 +17,28 @@ namespace TRE
 		vec3 EndScale;
 		vec3 EndPosition;
 
-		float PositionOffset = 0.5f;
+		const float PositionOffset = 0.5f;
 
 		vec3 RotateVec;
 
-		vec3 PositionVec;
+		// vec3 PositionVec;
 
 		bool emerging;
 		bool shrinking;
 		bool idle = true;
 
-		float scaleSpeed = 80.0f;
-		float rotateSpeed = 15.0f;
-		float moveSpeed = 3f;
+		const float scaleSpeed = 80.0f;
+		const float rotateSpeed = 15.0f;
+		const float moveSpeed = 3f;
 
 		vec3 MinScaleOffset;
 		vec3 MaxScaleOffset;
 
 		float coolDown = 0;
-		float coolDownDefault = 0.45f;
+		const float coolDownDefault = 0.45f;
 
 		float TimerToStop;
-		float TimerToStopDefault = 2.4f;
+		const float TimerToStopDefault = 2.4f;
 
 		SpriteRenderer MyRenderer;
 
@@ -54,8 +54,8 @@ namespace TRE
 
 			RotateVec = new vec3(0, 0, 15f);
 
-			//PositionVec = new vec3(-16, -9, 0);
-			PositionVec = new vec3(-10, -6, 0);
+			// PositionVec = new vec3(-16, -9, 0);
+			// PositionVec = new vec3(-10, -6, 0);
 			EndPosition = new vec3(-880, -575, 0);
 		}
 
@@ -128,8 +128,8 @@ namespace TRE
 
 			RotateVec = new vec3(0, 0, 15f);
 
-			//PositionVec = new vec3(-16, -9, 0);
-			PositionVec = new vec3(-10, -6, 0);
+			// PositionVec = new vec3(-16, -9, 0);
+			// PositionVec = new vec3(-10, -6, 0);
 			EndPosition = new vec3(-880, -575, 0);
 
 			// Force stop it using timer

@@ -8,17 +8,17 @@ namespace TRE
 		public PowerUpsType powerUpType;
 		private Entity PowerUpManagerObj;
 
-		private string mole1tag = "Red";
-		private string mole2tag = "Blue";
+		private const string mole1tag = "Red";
+		private const string mole2tag = "Blue";
 
 		public bool collected = false;
 
 		// VFX variables
 		private bool vfxCollectComplete = false;
-		private float vfxLerpSpeed = 1.5f;
+		private const float vfxLerpSpeed = 1.5f;
 		private vec3 originalScale;
 
-		public float cooldownDuration = 1.5f;
+		public const float cooldownDuration = 1.5f;
 		public float cooldownCurrent = 0f;
 
 		//private Renderer headPiece;                   // THIS CANT BE DONE YET!
@@ -27,15 +27,10 @@ namespace TRE
 
 		private PowerUpManager playerPowerUpManager;
 
-		private float groundOffset = 2;
-		private float rotationSpeed = 20;
+		private const float groundOffset = 2;
+		private const float rotationSpeed = 20;
 
 		private ulong collectedSFX;
-
-		public GetPowerUp()
-		{
-
-		}
 
 		public void Start()
 		{
@@ -44,7 +39,7 @@ namespace TRE
 			//Debug.Log("MY NAME IS " + name);
 		}
 
-		private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
+		public void OnTriggerStay(/*Collider*/System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			//Debug.Log("Triggered with " + ECSManager.FindNameFromID(other.ID));
@@ -116,17 +111,6 @@ namespace TRE
 			}
 		}
 
-		private void OnCollisionStay(System.UInt64 otherID)
-		{
-			Entity other = new Entity(otherID);
-			//Debug.Log("Collided with " + ECSManager.FindNameFromID(other.ID));
-		}
-
-		public String ReturnName()
-		{
-			return name;
-		}
-
 		public void Update()
 		{
 			//Debug.Log("GetPowerUp Entity Name: " + name + " " + PhysicsSystem.IsTriggerStay(ID, ECSManager.FindIDFromName("Moley")));
@@ -149,12 +133,10 @@ namespace TRE
 		private void RunCollectingVFX()
 		{
 			Transform myTransform = GetComponent<Transform>();
-			float x = MathF.Lerp(myTransform.Scale.x, 0, vfxLerpSpeed * Time.deltaTime);
-			float y = MathF.Lerp(myTransform.Scale.y, 0, vfxLerpSpeed * Time.deltaTime);
-			float z = MathF.Lerp(myTransform.Scale.z, 0, vfxLerpSpeed * Time.deltaTime);
-			myTransform.Scale = new vec3(x, y, z);
+			myTransform.Scale = vec3.Lerp(myTransform.Scale, 0, vfxLerpSpeed * Time.deltaTime);
+
 			// Deactivate Mesh if < 0
-			if (x <= 0 || y <= 0 || z <= 0)
+			if (myTransform.Scale.x <= 0 || myTransform.Scale.y <= 0 || myTransform.Scale.z <= 0)
 			{
 				GetComponent<MeshRenderer>().Visible = false;
 
@@ -177,7 +159,7 @@ namespace TRE
 			//GetComponent<MeshRenderer>().Visible = false;
 
 			vec3 newPos = playerObj.transform.Position;
-			int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
+			// int collectedIndex = playerPowerUpManager.powerUps.IndexOf(this) + 1;
 			//newPos.y += playerObj.transform.Scale.y * 4 + (transform.Scale.y * 4 * collectedIndex - 1);
 			if (playerObj.CompareTag(mole1tag))
 			{
@@ -232,8 +214,6 @@ namespace TRE
 			//this.gameObject.GetComponent<RotateObj>().enabled = true;         // THIS CANT BE DONE YET!
 		}
 	}
-
-
 
 	public enum PowerUpsType { Blueberry, Strawberry }
 }

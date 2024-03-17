@@ -10,8 +10,8 @@ namespace TRE
 
 		float initialYPos;
 		float timer = 0;
-		float height = 10f;
-		float period = 5f;
+		const float height = 10f;
+		const float period = 5f;
 
 		int dir = 1;
 

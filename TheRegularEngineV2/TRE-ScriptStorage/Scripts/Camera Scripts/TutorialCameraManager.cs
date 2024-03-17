@@ -1,5 +1,4 @@
 ﻿using GlmSharp;
-using System.Collections.Generic;
 
 namespace TRE
 {
@@ -86,6 +85,7 @@ namespace TRE
 			preTransitions.AddCameraData(new vec3(30, 40, -10), new vec3(30, 180, 0), 4f);
 			preTransitions.AddCameraData(new vec3(0, 10, 30), new vec3(30, 180, 0), 2f);
 		}
+
 		public void Update()
 		{
 
@@ -225,7 +225,7 @@ namespace TRE
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_H);
 				}
-				
+
 				cameraController.expectedPosition = expectedPosition;
 				cameraController.expectedRotation = expectedRotation;
 				cameraController.expectedDistance = expectedDistance;

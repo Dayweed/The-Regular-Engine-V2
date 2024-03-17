@@ -8,7 +8,7 @@ namespace TRE
 		private HoleCheckDisplay second;
 
 		private bool doOnce = false;
-		private float shrinkSpeed = 25f;
+		private const float shrinkSpeed = 25f;
 
 		public void Start()
 		{

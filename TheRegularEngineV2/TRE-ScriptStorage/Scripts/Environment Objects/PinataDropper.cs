@@ -11,14 +11,14 @@ namespace TRE
 		private Entity Pinata1;
 		//private Entity Pinata2;
 
-		private Transform Player1Transform;
-		private Transform Player2Transform;
+		// private Transform Player1Transform;
+		// private Transform Player2Transform;
 
 		private vec3 thisPos;
 
 		public float expectedYPos;
 
-		private float lerpSpeed = 0.01f;
+		private const float lerpSpeed = 0.01f;
 
 		private Entity SpawnRegion;
 		private bool spawnRegion;
@@ -39,9 +39,7 @@ namespace TRE
 			spawnRegion = IsInsideTrigger(SpawnRegion);
 
 			if (spawnRegion)
-			{
 				Pinata1.SetActive(true);
-			}
 		}
 
 		private bool IsInsideTrigger(Entity entity)

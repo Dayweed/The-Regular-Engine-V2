@@ -13,17 +13,15 @@
 			LevelObject.GetComponent<MeshRenderer>().Visible = false;
 		}
 
-		private void OnTriggerEnter(System.UInt64 otherID)
+		public void OnTriggerEnter(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 
 			if (other.CompareTag("Red") || other.CompareTag("Blue"))
 			{
 				if (LevelOneObj.pickedUp)
-				{
 					LevelObject.GetComponent<MeshRenderer>().Visible = true;
-				}
-				this.SetActive(false);
+				SetActive(false);
 			}
 		}
 	}

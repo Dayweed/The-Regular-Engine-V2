@@ -5,9 +5,9 @@ namespace TRE
 	public class CreditSceneLogic : Entity
 	{
 		Entity mCreditText;
-		float m_ScrollSpeed = 500f;
+		const float m_ScrollSpeed = 500f;
 		bool m_EndOfCredits = false;
-		float m_Endposition = -2850f;
+		const float m_Endposition = -2850f;
 
 		public void Start()
 		{

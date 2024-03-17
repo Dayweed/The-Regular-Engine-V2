@@ -17,20 +17,15 @@ namespace TRE
 		Entity rLedge;
 
 		private float moveSpeed = 18.0f;
-		private float rotateSpeed = 200.0f;
+		private const float rotateSpeed = 200.0f;
 
-		private float cooldownDefault = 2f;
+		private const float cooldownDefault = 2f;
 		private float cooldown = 0f;
 
 		private ulong tumbleweed1SFX;
 		private ulong tumbleweed2SFX;
 		private ulong tumbleweed3SFX;
 		private ulong tumbleweed4SFX;
-
-		public RollingObj()
-		{
-
-		}
 
 		public void Start()
 		{
@@ -45,21 +40,15 @@ namespace TRE
 			if (Scene.GetSceneName() == "Level_1")
 			{
 				if (parent.name == "RollingObject_4" || parent.name == "RollingObject_5" || parent.name == "RollingObject_6")
-				{
 					moveSpeed = 25.0f;
-				}
 
 				if (parent.name == "RollingObject_7" || parent.name == "RollingObject_8" || parent.name == "RollingObject_9" || parent.name == "RollingObject_10")
-				{
 					moveSpeed = 32.0f;
-				}
 			}
 			if (Scene.GetSceneName() == "Level_2")
 			{
 				if (parent.name == "RollingObject_1" || parent.name == "RollingObject_2")
-				{
 					moveSpeed = 50.0f;
-				}
 			}
 
 			cooldown = cooldownDefault;
@@ -68,7 +57,6 @@ namespace TRE
 			tumbleweed2SFX = ECSManager.FindIDFromName("SFX_Tumbleweed2");
 			tumbleweed3SFX = ECSManager.FindIDFromName("SFX_Tumbleweed3");
 			tumbleweed4SFX = ECSManager.FindIDFromName("SFX_Tumbleweed4");
-
 		}
 
 		public void Update()
@@ -86,21 +74,16 @@ namespace TRE
 				transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
 
 				if (ECSManager.IsValidEntity(tumbleweed1SFX))
-				{
 					AudioSystem.Play(tumbleweed1SFX);
-				}
+
 				if (ECSManager.IsValidEntity(tumbleweed2SFX))
-				{
 					AudioSystem.Play(tumbleweed2SFX);
-				}
+
 				if (ECSManager.IsValidEntity(tumbleweed3SFX))
-				{
 					AudioSystem.Play(tumbleweed3SFX);
-				}
+
 				if (ECSManager.IsValidEntity(tumbleweed4SFX))
-				{
 					AudioSystem.Play(tumbleweed4SFX);
-				}
 			}
 
 			if (cooldown > 0) cooldown -= Time.deltaTime;
@@ -115,16 +98,14 @@ namespace TRE
 			moveDir = moveDir == 1 ? -1 : 1;
 		}
 
-		private void OnTriggerStay(System.UInt64 otherID)
+		public void OnTriggerStay(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			if (other.ID == lLedge.ID || other.ID == rLedge.ID)
-			{
 				Bounceback(other.transform.Position);
-			}
 		}
 
-		private void OnCollisionEnter(System.UInt64 otherID)
+		public void OnCollisionEnter(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 			if (other.CompareTag("Red"))
@@ -132,19 +113,14 @@ namespace TRE
 				// Bounce back if the Moley is using their strawberry powerUp
 				MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
-				{
-					Bounceback(other.transform.Position);
-				}
+					Bounceback(other.transform.Position);	
 				else
-				{
 					ctrl.TakeDamage();
-				}
 			}
 			else if (other.CompareTag("Blue"))
 			{
 				other.GetComponent<HoleyController>().TakeDamage();
 			}
-
 		}
 
 		private void OnCollisionStay(System.UInt64 otherID)
@@ -158,9 +134,7 @@ namespace TRE
 				{
 					// Not colliding with other ledges
 					if (NotAtLedge())
-					{
 						Bounceback(other.transform.Position);
-					}
 				}
 				else
 				{

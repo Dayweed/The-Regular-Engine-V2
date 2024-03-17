@@ -25,8 +25,8 @@ namespace TRE
 		Entity InvitationDialogue5;
 
 		float currentTime = 0;
-		float delayFrame = 5f;
-		float delayScene = 7f;
+		const float delayFrame = 5f;
+		const float delayScene = 7f;
 
 		int currentFrame = 0;
 		int pressSpaceCounter = 0;
@@ -44,7 +44,6 @@ namespace TRE
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
 		List<string> forcedScenes = new List<string>(); // This requires the user to press space manually to go to the next scene
-
 
 		public void Start()
 		{
@@ -147,13 +146,9 @@ namespace TRE
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
 
 				if (pressSpaceCounter == 1)
-				{
 					TextSystem.ResetDialogue(InvitationDialogue1.ID);
-				}
 				else if (pressSpaceCounter == 0)
-				{
 					TextSystem.StartDialogue(InvitationDialogue1.ID);
-				}
 			}
 
 			if (currentFrame == 4)
@@ -161,13 +156,9 @@ namespace TRE
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
 
 				if (pressSpaceCounter == 1)
-				{
 					TextSystem.ResetDialogue(InvitationDialogue2.ID);
-				}
 				else
-				{
 					TextSystem.StartDialogue(InvitationDialogue2.ID);
-				}
 			}
 
 			if (currentFrame == 5)
@@ -175,13 +166,9 @@ namespace TRE
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue3.ID);
 
 				if (pressSpaceCounter == 1)
-				{
 					TextSystem.ResetDialogue(InvitationDialogue3.ID);
-				}
 				else
-				{
 					TextSystem.StartDialogue(InvitationDialogue3.ID);
-				}
 			}
 
 			if (currentFrame == 6)
@@ -189,13 +176,9 @@ namespace TRE
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
 
 				if (pressSpaceCounter == 1)
-				{
 					TextSystem.ResetDialogue(InvitationDialogue4.ID);
-				}
 				else
-				{
 					TextSystem.StartDialogue(InvitationDialogue4.ID);
-				}
 			}
 
 			if (currentFrame == 7)
@@ -203,29 +186,21 @@ namespace TRE
 				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
 
 				if (pressSpaceCounter == 1)
-				{
 					TextSystem.ResetDialogue(InvitationDialogue5.ID);
-				}
 				else
-				{
 					TextSystem.StartDialogue(InvitationDialogue5.ID);
-				}
 			}
 
 			// Close Game
 			if (InputSystem.GetKeyHold(InputKeys.Escape))
-			{
 				Game.CloseGame();
-			}
 
 			// Ignore if last frame alr
 			if (currentFrame >= frames.Count) return;
 
 			// Timer to go to next frame
 			if (currentTime > 0)
-			{
 				currentTime -= Time.deltaTime;
-			}
 
 			//check if space is already pressed, then set pressedSpaceTwice as true/false
 			if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
@@ -263,9 +238,7 @@ namespace TRE
 					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
 					{
 						if (currentFrame >= 3 && currentFrame <= 7)
-						{
 							SpaceToContinueBlack.SetActive(true);
-						}
 						else
 							SpaceToContinue.SetActive(true);
 					}

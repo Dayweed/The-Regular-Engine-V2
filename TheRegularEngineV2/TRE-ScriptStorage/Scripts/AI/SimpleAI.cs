@@ -3,6 +3,7 @@ using GlmSharp;
 
 namespace TRE
 {
+	using PS = PhysicsSystem;
 	// Controls a pawn, if any target is within range, assign target and tell pawn to chase it if it can
 	public class SimpleAI : Entity
 	{
@@ -17,19 +18,19 @@ namespace TRE
 		public Entity mTarget;
 		public bool mFoundTarget = false;
 		public bool mCanChaseTarget = false;
-		private float maxDistFromSpawn = 50f;
+		private const float maxDistFromSpawn = 50f;
 
 		public vec3 originalSpawnPoint = new vec3();
 		public vec3 defaultVector = new vec3(1, 0, 0);
 		public vec3 moveVector = new vec3(1, 0, 0);
-		private float padPredict = 10.0f;
-		private float moveSpeed = 50.0f;
-		private float maxVelocity = 50.0f;
+		private const float padPredict = 10.0f;
+		private const float moveSpeed = 50.0f;
+		private const float maxVelocity = 50.0f;
 		private bool isGrounded = false;
 
 		private bool commitSepuku = false;
 		private float armingTimer = 0f;
-		private float armingDuration = 1.25f;
+		private const float armingDuration = 1.25f;
 
 		private Entity pinataEffect;
 
@@ -57,7 +58,7 @@ namespace TRE
 				// If it is grounded, jump up
 				if (isGrounded)
 				{
-					PhysicsSystem.AddForce(ID, new vec3(0, 10f, 0), ForceMode.VelocityChange);
+					PS.AddForce(ID, new vec3(0, 10f, 0), ForceMode.VelocityChange);
 				}
 			}
 
@@ -74,12 +75,12 @@ namespace TRE
 				float distanceFromHoley = (transform.Position - mHoley.transform.Position).Length;
 				float distanceFromMoley = (transform.Position - mMoley.transform.Position).Length;
 				// Check if collide with moley or holey
-				if (PhysicsSystem.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
+				if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
 				{
 					mTarget = mHoley;
 					mFoundTarget = true;
 				}
-				if (PhysicsSystem.IsTriggerStay(mDetectorRange.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
+				if (PS.IsTriggerStay(mDetectorRange.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
 				{
 					mTarget = mMoley;
 					mFoundTarget = true;
@@ -90,9 +91,9 @@ namespace TRE
 			{
 				// Check if collide with moley or holey / out of range
 				float distanceFromSpawn = (transform.Position - mTarget.transform.Position).Length;
-				if (PhysicsSystem.IsTriggerExit(mDetectorRange.ID, mTarget.ID) || distanceFromSpawn > maxDistFromSpawn)
+				if (PS.IsTriggerExit(mDetectorRange.ID, mTarget.ID) || distanceFromSpawn > maxDistFromSpawn)
 				{
-					PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+					PS.SetLinearVelocity(ID, vec3.Zero);
 					mFoundTarget = false;
 				}
 
@@ -100,11 +101,11 @@ namespace TRE
 				if (mFoundTarget)
 				{
 					// Check if moley or holey is in attack range
-					if (PhysicsSystem.IsTriggerStay(mAttackRange.ID, mHoley.ID) || PhysicsSystem.IsTriggerStay(mAttackRange.ID, mMoley.ID))
+					if (PS.IsTriggerStay(mAttackRange.ID, mHoley.ID) || PS.IsTriggerStay(mAttackRange.ID, mMoley.ID))
 					{
 						commitSepuku = true;
 						armingTimer = armingDuration;
-						PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+						PS.SetLinearVelocity(ID, vec3.Zero);
 					}
 				}
 			}
@@ -116,7 +117,7 @@ namespace TRE
 				moveVector = mTarget.transform.Position - transform.Position;
 
 				// Ignore y-axis
-				PhysicsSystem.GetLinearVelocity(ID, out vec3 currVelocity);
+				PS.GetLinearVelocity(ID, out vec3 currVelocity);
 				moveVector = new vec3(moveVector.x, 0, moveVector.z);
 				moveVector = moveVector.NormalizedSafe;
 				vec3 moveDir = moveVector * moveSpeed * Time.deltaTime;
@@ -139,19 +140,19 @@ namespace TRE
 					{
 						currVelocity = moveDir * maxVelocity;
 					}
-					PhysicsSystem.SetLinearVelocity(ID, currVelocity + moveDir);
+					PS.SetLinearVelocity(ID, currVelocity + moveDir);
 
 					// If it is grounded, jump up
 					if (isGrounded)
 					{
-						PhysicsSystem.AddForce(ID, new vec3(0, 7.5f, 0), ForceMode.VelocityChange);
+						PS.AddForce(ID, new vec3(0, 7.5f, 0), ForceMode.VelocityChange);
 					}
 
 					mCanChaseTarget = true;
 				}
 				else
 				{
-					PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
+					PS.SetLinearVelocity(ID, vec3.Zero);
 					mCanChaseTarget = false;
 				}
 			}
@@ -171,11 +172,6 @@ namespace TRE
 			{
 				isGrounded = true;
 			}
-		}
-
-		private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
-		{
-
 		}
 
 		private void OnCollisionExit(/*Collider*/System.UInt64 otherID)
@@ -199,11 +195,11 @@ namespace TRE
 		private void Explode()
 		{
 			// Take Damage for Holey or Moley within attack range
-			if (PhysicsSystem.IsTriggerStay(mAttackRange.ID, mMoley.ID))
+			if (PS.IsTriggerStay(mAttackRange.ID, mMoley.ID))
 			{
 				mMoley.GetComponent<MoleyController>().TakeDamage();
 			}
-			if (PhysicsSystem.IsTriggerStay(mAttackRange.ID, mHoley.ID))
+			if (PS.IsTriggerStay(mAttackRange.ID, mHoley.ID))
 			{
 				mHoley.GetComponent<HoleyController>().TakeDamage();
 			}

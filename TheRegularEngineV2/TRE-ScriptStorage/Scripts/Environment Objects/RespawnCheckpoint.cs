@@ -16,7 +16,7 @@ namespace TRE
 	{
 		public float RespawnHeight = 5.0f;
 
-		private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
+		public void OnTriggerStay(/*Collider*/System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 
