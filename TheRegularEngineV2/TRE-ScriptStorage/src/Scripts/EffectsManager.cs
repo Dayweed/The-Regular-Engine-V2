@@ -15,7 +15,7 @@ namespace TRE
 		public void Start()
 		{
 			levelName = Scene.GetSceneName();
-			Debug.Log("Level Name is " + levelName);
+			// Debug.Log("Level Name is " + levelName);
 
 			Entity tempPause = ECSManager.FindEntityByName("PauseMenu");
 			if (tempPause != null ) 

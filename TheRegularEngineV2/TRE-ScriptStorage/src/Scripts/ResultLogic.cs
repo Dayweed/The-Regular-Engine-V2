@@ -70,14 +70,11 @@ namespace TRE
 			if (InputSystem.GetKeyPress(InputKeys.Enter) || InputSystem.GetKeyPress(InputKeys.Space) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A))
 			{
 				// Determine which scene to go next
-				if (PersistentSystem.GetValue("PrevScene") == "Tutorial")
-				{
+				// All levels go to the main menu, except the last level (goes to end cutscene instead).
+				if (PersistentSystem.GetValue("PrevScene") == "Level_2")
+					Scene.TransitionScene("CutsceneEnd", 4f);
+				else
 					Scene.TransitionScene("MainMenu", 4f);
-				}
-				else if (PersistentSystem.GetValue("PrevScene") == "Level_1")
-				{
-					Scene.TransitionScene("MainMenu", 4f);
-				}
 			}
 
 			// Close Game

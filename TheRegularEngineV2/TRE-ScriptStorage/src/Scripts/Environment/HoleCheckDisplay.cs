@@ -74,7 +74,7 @@ namespace TRE
 			}
 
 			// TO DO Display as all triggered
-			Debug.Log("I HAVE BEEN TRIGGERED!");
+			// Debug.Log("I HAVE BEEN TRIGGERED!");
 			isCompleted = true;
 
 			if (ECSManager.IsValidEntity(HoleCheckSFX))
