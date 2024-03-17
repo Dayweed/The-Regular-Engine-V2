@@ -55,6 +55,8 @@ namespace TRE
 
 		void SetVolume(Entity& go, const float volume);
 		float GetVolume(Entity& go) const;
+		void SetMasterVolume(const float volume);
+		float GetMasterVolume() const;
 
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;
@@ -84,10 +86,11 @@ namespace TRE
 		FMOD::ChannelGroup* m_MusicChannelGroup = nullptr;
 
 		const int MAX_CHANNELS = 64;
-		;
+		
 		std::unordered_set<Entity> audioMap;
 		std::unordered_map<Entity, FMOD::Sound*> soundToRemove;
 
+		float m_MasterVolume = 1.f;
 	};
 
 }
