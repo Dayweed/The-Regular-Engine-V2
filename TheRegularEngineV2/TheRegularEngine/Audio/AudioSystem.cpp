@@ -77,6 +77,14 @@ namespace TRE
 				if (!source.m_Spatialize)
 				{
 					source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
+					/*if (source.m_ChannelGroup == m_MusicChannelGroup)
+					{
+						source.m_Channel->setVolume(source.m_Volume * m_BGMVolume * m_MasterVolume);
+					}
+					else if (source.m_ChannelGroup == m_SFXChannelGroup)
+					{
+						source.m_Channel->setVolume(source.m_Volume * m_SFXVolume * m_MasterVolume);
+					}*/
 				}
 			}
 			else
