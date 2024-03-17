@@ -1,0 +1,222 @@
+[
+   [
+      3,
+      0,
+      1,
+      2
+   ],
+   [
+      3,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "4137868201156863779",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4137868201156863779",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "4137868201156863779",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4324625877309955207",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "4137868201156863779",
+         "m_Overrides": {},
+         "m_PrefabGUID": "12698485479109501034",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Children": [
+            "2655245480246259965",
+            "3266391097538109908"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "17931095401208264628"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "17931095401208264628"
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "17931095401208264628",
+         "m_Index": 1,
+         "m_Name": "Level1Diorama",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "2655245480246259965",
+         "m_Index": 2,
+         "m_Name": "Level1Ground",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "3266391097538109908",
+         "m_Index": 3,
+         "m_Name": "RULER",
+         "m_Tag": ""
+      }
+   ],
+   [
+      3,
+      0,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.4000000059604645,
+            0.25,
+            0.25
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            15.0,
+            1.0,
+            15.0
+         ]
+      }
+   ],
+   [
+      2,
+      1,
+      {
+         "ASSET_GEOM_m_RenderObject": "42e3bd30c15bece8",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "183c74759ede46ef",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      2,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.DioramaSpin"
+         ],
+         "m_StoredClass": "TRE.DioramaSpin"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
