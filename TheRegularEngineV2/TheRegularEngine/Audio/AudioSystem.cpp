@@ -78,7 +78,6 @@ namespace TRE
 				{
 					source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
 				}
-
 			}
 			else
 			{
@@ -519,6 +518,18 @@ namespace TRE
 		m_MasterVolume = std::clamp(m_MasterVolume, 0.0f, 1.0f);
 	}
 
+	void AudioSystem::SetBGMVolume(const float volume)
+	{
+		m_BGMVolume = volume;
+		m_BGMVolume = std::clamp(m_BGMVolume, 0.0f, 1.0f);
+	}
+
+	void AudioSystem::SetSFXVolume(const float volume)
+	{
+		m_SFXVolume = volume;
+		m_SFXVolume = std::clamp(m_SFXVolume, 0.0f, 1.0f);
+	}
+
 	FMOD::ChannelGroup* AudioSystem::GetChannelGroup(Entity& go)
 	{
 		return go->GetComponent<Audio>().m_ChannelGroup;
@@ -594,4 +605,13 @@ namespace TRE
 		return m_MasterVolume;
 	}
 
+	float AudioSystem::GetBGMVolume() const
+	{
+		return m_BGMVolume;
+	}
+
+	float AudioSystem::GetSFXVolume() const
+	{
+		return m_SFXVolume;
+	}
 }

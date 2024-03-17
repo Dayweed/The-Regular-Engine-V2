@@ -2034,6 +2034,36 @@ namespace TRE
 		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetVolume(entity);
 	}
 
+	static void BindSetMasterVolume(float volume)
+	{
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetMasterVolume(volume);
+	}
+
+	static float BindGetMasterVolume()
+	{
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetMasterVolume();
+	}
+
+	static void BindSetBGMVolume(float volume)
+	{
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetBGMVolume(volume);
+	}
+
+	static float BindGetBGMVolume()
+	{
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetBGMVolume();
+	}
+
+	static void BindSetSFXVolume(float volume)
+	{
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetSFXVolume(volume);
+	}
+
+	static float BindGetSFXVolume()
+	{
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetSFXVolume();
+	}
+
 #pragma endregion
 
 #pragma region SceneBindings
@@ -2981,6 +3011,12 @@ namespace TRE
 			mono_add_internal_call("TRE.AudioSystem::Engine_PlayFootsteps", BindPlayFootsteps);
 			mono_add_internal_call("TRE.AudioSystem::Engine_SetVolume", BindSetVolume);
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetVolume", BindGetVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_SetMasterVolume", BindSetMasterVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetMasterVolume", BindGetMasterVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_SetBGMVolume", BindSetBGMVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetBGMVolume", BindGetBGMVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_SetSFXVolume", BindSetSFXVolume);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetSFXVolume", BindGetSFXVolume);
 		}
 
 		// Scene

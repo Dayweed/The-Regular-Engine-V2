@@ -1495,6 +1495,36 @@ namespace TRE
 			return Engine_GetVolume(entityid);
 		}
 
+		public static void SetMasterVolume(float masterVolume)
+		{
+			Engine_SetMasterVolume(masterVolume);
+		}
+
+		public static float GetMasterVolume()
+		{
+			return Engine_GetMasterVolume();
+		}
+
+		public static void SetBGMVolume(float bgmVolume)
+		{
+			Engine_SetBGMVolume(bgmVolume);
+		}
+
+		public static float GetBGMVolume()
+		{
+			return Engine_GetBGMVolume();
+		}
+
+		public static void SetSFXVolume(float sfxVolume)
+		{
+			Engine_SetSFXVolume(sfxVolume);
+		}
+
+		public static float GetSFXVolume()
+		{
+			return Engine_GetSFXVolume();
+		}
+
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_Play(EntityID entityid);
@@ -1523,7 +1553,18 @@ namespace TRE
 		public extern static void Engine_SetVolume(EntityID entityid, float volume);
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static float Engine_GetVolume(EntityID entityid);
-
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetMasterVolume(float masterVolume);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetMasterVolume();
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetBGMVolume(float bgmVolume);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetBGMVolume();
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetSFXVolume(float sfxVolume);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetSFXVolume();
 	}
 
 	public class Scene
