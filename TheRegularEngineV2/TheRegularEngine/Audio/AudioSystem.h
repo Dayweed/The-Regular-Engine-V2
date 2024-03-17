@@ -57,6 +57,10 @@ namespace TRE
 		float GetVolume(Entity& go) const;
 		void SetMasterVolume(const float volume);
 		float GetMasterVolume() const;
+		void SetBGMVolume(const float volume);
+		float GetBGMVolume() const;
+		void SetSFXVolume(const float volume);
+		float GetSFXVolume() const;
 
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;
@@ -91,6 +95,8 @@ namespace TRE
 		std::unordered_map<Entity, FMOD::Sound*> soundToRemove;
 
 		float m_MasterVolume = 1.f;
+		float m_BGMVolume = 1.f;
+		float m_SFXVolume = 1.f;
 	};
 
 }

@@ -57,9 +57,12 @@ namespace TRE
 		private Entity settingsMenu;
 
 		//Audio panel entities
-		private Entity masterVolume;
-		private Entity musicVolume;
-		private Entity sfxVolume;
+		private Entity masterVolumeEnt;
+		private Entity musicVolumeEnt;
+		private Entity sfxVolumeEnt;
+		private int masterVolume = 100;
+		private int musicVolume = 100;
+		private int sfxVolume = 100;
 
 		//Graphics panel entities
 		private int mCurrentEditMember = -1;
@@ -107,11 +110,15 @@ namespace TRE
 				String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
 				audioPanel.Add(ECSManager.FindEntityByName(childName));
 			}
-			masterVolume = ECSManager.FindEntityByName("master_volume");
-			musicVolume = ECSManager.FindEntityByName("music_volume");
-			sfxVolume = ECSManager.FindEntityByName("sfx_volume");
+			masterVolumeEnt = ECSManager.FindEntityByName("master_volume");
+			musicVolumeEnt = ECSManager.FindEntityByName("music_volume");
+			sfxVolumeEnt = ECSManager.FindEntityByName("sfx_volume");
+			TextSystem.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
+			TextSystem.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
+			TextSystem.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
+			AudioSystem.SetMasterVolume(masterVolume / 100f);
 
-            pointer = ECSManager.FindEntityByName("main_pointer");
+			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
 
 			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
@@ -437,78 +444,69 @@ namespace TRE
                         }
 
 						//adjust each setting
-						if (InputSystem.GetKeyPress(InputKeys.A))
+						switch (mCurrentEditMember)
 						{
-							switch (mCurrentEditMember)
-							{
-								case 0:
-									String textVol = TextSystem.GetTextMessage(masterVolume.ID);
-									int currentVol;
-									if (int.TryParse(textVol, out currentVol))
-									{
-										if (currentVol > 0)
-											--currentVol;
-										TextSystem.SetTextMessage(masterVolume.ID, currentVol.ToString());
-									}
-									break;
-								case 1:
-                                    textVol = TextSystem.GetTextMessage(musicVolume.ID);
-                                    if (int.TryParse(textVol, out currentVol))
-                                    {
-                                        if (currentVol > 0)
-                                            --currentVol;
-                                        TextSystem.SetTextMessage(musicVolume.ID, currentVol.ToString());
-                                    }
-                                    break;
-								case 2:
-                                    textVol = TextSystem.GetTextMessage(sfxVolume.ID);
-                                    if (int.TryParse(textVol, out currentVol))
-                                    {
-                                        if (currentVol > 0)
-                                            --currentVol;
-                                        TextSystem.SetTextMessage(sfxVolume.ID, currentVol.ToString());
-                                    }
-                                    break;
-							}
+							case 0:
+								if (InputSystem.GetKeyPress(InputKeys.A) || InputSystem.GetKeyPress(InputKeys.Left))
+								{
+									masterVolume -= 10;
+
+									if (masterVolume < 0)
+										masterVolume = 0;
+
+								}
+								else if (InputSystem.GetKeyPress(InputKeys.D) || InputSystem.GetKeyPress(InputKeys.Right))
+								{
+									masterVolume += 10;
+
+									if (masterVolume > 100)
+										masterVolume = 100;
+								}
+								AudioSystem.SetMasterVolume(masterVolume / 100f);
+								TextSystem.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
+								break;
+							case 1:
+								if (InputSystem.GetKeyPress(InputKeys.A) || InputSystem.GetKeyPress(InputKeys.Left))
+								{
+									musicVolume -= 10;
+
+									if (musicVolume < 0)
+										musicVolume = 0;
+
+								}
+								else if (InputSystem.GetKeyPress(InputKeys.D) || InputSystem.GetKeyPress(InputKeys.Right))
+								{
+									musicVolume += 10;
+
+									if (musicVolume > 100)
+										musicVolume = 100;
+								}
+								AudioSystem.SetBGMVolume(musicVolume / 100f);
+								TextSystem.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
+								break;
+							case 2:
+								if (InputSystem.GetKeyPress(InputKeys.A) || InputSystem.GetKeyPress(InputKeys.Left))
+								{
+									sfxVolume -= 10;
+
+									if (sfxVolume < 0)
+										sfxVolume = 0;
+
+								}
+								else if (InputSystem.GetKeyPress(InputKeys.D) || InputSystem.GetKeyPress(InputKeys.Right))
+								{
+									sfxVolume += 10;
+
+									if (sfxVolume > 100)
+										sfxVolume = 100;
+								}
+								AudioSystem.SetSFXVolume(sfxVolume / 100f);
+								TextSystem.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
+								break;
 						}
 
-                        if (InputSystem.GetKeyPress(InputKeys.D))
-                        {
-                            switch (mCurrentEditMember)
-                            {
-                                case 0:
-                                    String textVol = TextSystem.GetTextMessage(masterVolume.ID);
-                                    int currentVol;
-                                    if (int.TryParse(textVol, out currentVol))
-                                    {
-										if (currentVol < 100)
-											++currentVol;
-                                        TextSystem.SetTextMessage(masterVolume.ID, currentVol.ToString());
-                                    }
-                                    break;
-                                case 1:
-                                    textVol = TextSystem.GetTextMessage(musicVolume.ID);
-                                    if (int.TryParse(textVol, out currentVol))
-                                    {
-                                        if (currentVol > 0)
-                                            ++currentVol;
-                                        TextSystem.SetTextMessage(musicVolume.ID, currentVol.ToString());
-                                    }
-                                    break;
-                                case 2:
-                                    textVol = TextSystem.GetTextMessage(sfxVolume.ID);
-                                    if (int.TryParse(textVol, out currentVol))
-                                    {
-                                        if (currentVol > 0)
-                                            ++currentVol;
-                                        TextSystem.SetTextMessage(sfxVolume.ID, currentVol.ToString());
-                                    }
-                                    break;
-                            }
-                        }
-
-                        //move pointer
-                        switch (mCurrentEditMember)
+						//move pointer
+						switch (mCurrentEditMember)
                         {
                             case 0:
                                 audioPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
