@@ -53,6 +53,19 @@ namespace TRE
 
 		public void PreTransition(float dt, out bool toTransition)
 		{
+			if (InputSystem.GetKeyPress(InputKeys.Escape))
+			{
+				preTransitioned = true;
+				toTransition = false;
+				return;
+			}
+
+			if(preTransitioned) 
+			{
+				toTransition = false;
+				return;
+			}
+
 			//Empty or done
 			if (cameraDataList.Count == 0 || trackIndex >= cameraDataList.Count)
 			{

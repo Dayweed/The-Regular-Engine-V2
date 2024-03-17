@@ -81,7 +81,9 @@ namespace TRE
         private Entity mGammaTick;
         private Entity mGraphicsPointer;
         bool mIsGammaOn = true;
-        //private Transform settingsPointerTransform;
+		//private Transform settingsPointerTransform;
+
+		private CameraController mainCamera;
 
         public void Start()
 		{
@@ -135,7 +137,18 @@ namespace TRE
 			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
 			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
 			mGraphicsPointer = ECSManager.FindEntityByName("graphics_pointer");
-    }
+
+			Entity mainCam = ECSManager.FindEntityByName("Main Camera");
+			if(mainCam != null)
+			{
+				mainCamera = mainCam.GetComponent<CameraController>();
+			}
+			else
+			{
+				mainCamera = new CameraController();
+				mainCamera.freeCamera = true;
+			}
+		}
 
 		public void OnCreate()
 		{
@@ -144,7 +157,9 @@ namespace TRE
 
 		public void Update()
 		{
-			if (InputSystem.GetKeyTriggered(InputKeys.Escape) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) || InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
+			if ((InputSystem.GetKeyTriggered(InputKeys.Escape) && mainCamera.freeCamera)
+				|| InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.Start) 
+				|| InputSystem.GetControllerButtonTriggered(1, InputSystem.Button.Start))
 			{
 				if (menustate == -1)
 				{
