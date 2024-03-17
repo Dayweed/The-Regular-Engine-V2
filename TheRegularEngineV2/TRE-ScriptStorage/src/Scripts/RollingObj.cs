@@ -22,6 +22,11 @@ namespace TRE
 		private float cooldownDefault = 2f;
 		private float cooldown = 0f;
 
+		private ulong tumbleweed1SFX;
+		private ulong tumbleweed2SFX;
+		private ulong tumbleweed3SFX;
+		private ulong tumbleweed4SFX;
+
 		public RollingObj()
 		{
 
@@ -50,6 +55,12 @@ namespace TRE
 				}
 			}
 			cooldown = cooldownDefault;
+
+			tumbleweed1SFX = ECSManager.FindIDFromName("SFX_Tumbleweed1");
+			tumbleweed2SFX = ECSManager.FindIDFromName("SFX_Tumbleweed2");
+			tumbleweed3SFX = ECSManager.FindIDFromName("SFX_Tumbleweed3");
+			tumbleweed4SFX = ECSManager.FindIDFromName("SFX_Tumbleweed4");
+
 		}
 
 		public void Update()
@@ -65,6 +76,23 @@ namespace TRE
 				transform.Rotation += rotateVector * moveDir * rotateSpeed * maxDeltaTime;
 				transform.Rotation = transform.Rotation.z > 360 ? transform.Rotation - threesixty : transform.Rotation;
 				transform.Rotation = transform.Rotation.z < 0 ? transform.Rotation + threesixty : transform.Rotation;
+
+				if (ECSManager.IsValidEntity(tumbleweed1SFX))
+				{
+					AudioSystem.Play(tumbleweed1SFX);
+				}
+				if (ECSManager.IsValidEntity(tumbleweed2SFX))
+				{
+					AudioSystem.Play(tumbleweed2SFX);
+				}
+				if (ECSManager.IsValidEntity(tumbleweed3SFX))
+				{
+					AudioSystem.Play(tumbleweed3SFX);
+				}
+				if (ECSManager.IsValidEntity(tumbleweed4SFX))
+				{
+					AudioSystem.Play(tumbleweed4SFX);
+				}
 			}
 
 			if (cooldown > 0) cooldown -= Time.deltaTime;
