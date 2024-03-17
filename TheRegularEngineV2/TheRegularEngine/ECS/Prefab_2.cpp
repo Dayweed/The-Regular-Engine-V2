@@ -295,7 +295,7 @@ namespace TRE
 	{
 		// Try opening filePath
 		std::ifstream file(filePathName);
-		
+
 		if (file.is_open() == false)
 		{
 			std::string funcName{ __FUNCTION__ };
@@ -317,6 +317,39 @@ namespace TRE
 		}
 
 		return GUID;
+	}
+
+	std::string PrefabSystem::GetPrefabGUIDByName(std::string prefabName)
+	{
+		constexpr const char* prefabDirectoryFileName = "PrefabDirectory.json";
+		constexpr const char* prefabDirectoryObjectName = "PrefabGUIDAndPrefabFilePath";
+		constexpr const char* prefabDirectoryGUIDKey = "m_ExistingPrefabsKey";
+		constexpr const char* prefabDirectoryNameKey = "m_ExistingPrefabsValue";
+		const std::string prefabFilepath = FILESYS_PREFABRSCFOLDER + prefabName + ".json";
+
+		rapidjson::Document doc;
+		doc.SetObject();
+		ReadExternalFile(doc, prefabDirectoryFileName);
+		const ObjectDeserializer deserializer(prefabDirectoryFileName);
+
+		std::vector<std::string> prefabGUIDs;
+		deserializer.get_value(prefabDirectoryObjectName, prefabDirectoryGUIDKey, prefabGUIDs);
+
+		std::vector<std::string> prefabNames;
+		deserializer.get_value(prefabDirectoryObjectName, prefabDirectoryNameKey, prefabNames);
+
+		size_t index = 0;
+		for (; index < prefabNames.size(); ++index)
+		{
+			// if the names match, use that index to get the GUID
+			if (prefabNames[index] == prefabFilepath)
+				break;
+		}
+
+		if (index <= prefabGUIDs.size())
+			return prefabGUIDs[index];
+		else
+			return "0";
 	}
 
 	bool PrefabSystem::DeserializePrefabDirectory()

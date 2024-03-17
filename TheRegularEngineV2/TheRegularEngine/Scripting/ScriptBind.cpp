@@ -213,6 +213,20 @@ namespace TRE
 
 		return EntityID_EngineToCS(prefabInstance->GetGUID());
 	}
+
+	static CSEntityID BindGetPrefabGUIDFromName(MonoString* name)
+	{
+		if (name == nullptr)
+		{
+			// Did not find the name
+			PUBLISHERROR("Name is empty!");
+			return CSEntityID();
+		}
+
+		PrefabSystem* prefabSystem = ECSSystemManager::Instance().GetSystem<PrefabSystem>();
+		const std::string prefabGUID = prefabSystem->GetPrefabGUIDByName(MonoStringToString(name));
+		return EntityID_EngineToCS(prefabGUID);
+	}
 #pragma endregion
 
 #pragma region ParentBindings
@@ -1265,9 +1279,9 @@ namespace TRE
 		return InputHandler::GetKeyRelease(key);
 	}
 
-	static bool GetControllerButtonPress(int controller , int button)
+	static bool GetControllerButtonPress(int controller, int button)
 	{
-		return XInputController::Instance().isButtonPressed(controller ,button);
+		return XInputController::Instance().isButtonPressed(controller, button);
 	}
 
 	static float GetControllerStickX(int controller, bool rightstick)
@@ -1280,7 +1294,7 @@ namespace TRE
 		return XInputController::Instance().getThumbstickY(controller, rightstick);
 	}
 
-	static bool GetButtonHold(int controller ,int button, float time)
+	static bool GetButtonHold(int controller, int button, float time)
 	{
 		return XInputController::Instance().isButtonHeld(controller, button, time);
 	}
@@ -2334,7 +2348,7 @@ namespace TRE
 		{
 			PUBLISHERROR("There is no TextComponent in " + entity->GetName() + "!");
 		}
-		
+
 		entity->GetComponent<TextComponent>().m_IsDialogue = true;
 	}
 
@@ -2582,7 +2596,7 @@ namespace TRE
 			PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
 			return 0.f;
 		}
-		
+
 		return entity->GetComponent<Particle3DComponent>().m_Speed;
 	}
 
@@ -2743,6 +2757,7 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.Prefab::Engine_IsPrefabResource", BindCheckIsPrefabResource);
 			mono_add_internal_call("TRE.Prefab::Engine_CreatePrefabEntity", BindCreatePrefabEntity);
+			mono_add_internal_call("TRE.Prefab::Engine_GetPrefabGUIDFromName", BindGetPrefabGUIDFromName);
 		}
 
 		// Parent Bindings
@@ -2901,7 +2916,7 @@ namespace TRE
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonPress", GetControllerButtonPress);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonHold", GetButtonHold);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerButtonReleased", GetButtonReleased);
-			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickX",GetControllerStickX);
+			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickX", GetControllerStickX);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerStickY", GetControllerStickY);
 			mono_add_internal_call("TRE.InputSystem::Engine_GetControllerConnected", isControllerConnected);
 		}
@@ -2998,7 +3013,7 @@ namespace TRE
 			mono_add_internal_call("TRE.TextSystem::Engine_SetTextVisible", Engine_SetTextVisible);
 			mono_add_internal_call("TRE.TextSystem::Engine_GetTextVisible", Engine_GetTextVisible);
 			mono_add_internal_call("TRE.TextSystem::Engine_SetTextMessage", Engine_SetTextMessage);
-			mono_add_internal_call("TRE.TextSystem::Engine_GetTextMessage", Engine_GetTextMessage); 
+			mono_add_internal_call("TRE.TextSystem::Engine_GetTextMessage", Engine_GetTextMessage);
 			mono_add_internal_call("TRE.TextSystem::Engine_StartDialogue", Engine_StartDialogue);
 			mono_add_internal_call("TRE.TextSystem::Engine_ResetDialogue", Engine_ResetDialogue);
 			mono_add_internal_call("TRE.TextSystem::Engine_GetDialogueRunning", Engine_GetDialogueRunning);

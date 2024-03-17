@@ -94,6 +94,7 @@ namespace TRE
 
 			// ID for prefabs are based on resource prefab GUID
 			fallingRockPrefab = new Entity(17896144981290866787);
+			// fallingRockPrefab = new Entity(Prefab.GetPrefabIDFromName("FallingRock"));
 			CloudEffectPrefab = new Entity(2611909673942127335);
 
 			CreateItems();

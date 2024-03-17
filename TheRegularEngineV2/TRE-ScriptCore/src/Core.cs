@@ -234,11 +234,19 @@ namespace TRE
 			return Engine_CreatePrefabEntity(prefabid);
 		}
 
+		public static EntityID GetPrefabIDFromName(string name)
+		{
+			return Engine_GetPrefabGUIDFromName(name);
+		}
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool Engine_IsPrefabResource(EntityID id);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static EntityID Engine_CreatePrefabEntity(EntityID prefabid/*, Vector3 postion = new Vector3(), Vector3 rotation = new Vector3(), Vector3 scaling = new Vector3()*/);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal extern static EntityID Engine_GetPrefabGUIDFromName(string name);
 	}
 
 	public class ParentingSystem
@@ -1607,25 +1615,25 @@ namespace TRE
 			Engine_CloseGame();
 		}
 
-        public static void TurnGammaOn()
-        {
-            Engine_TurnGammaOn();
-        }
+		public static void TurnGammaOn()
+		{
+			Engine_TurnGammaOn();
+		}
 
-        public static void TurnGammaOff()
-        {
-            Engine_TurnGammaOff();
-        }
+		public static void TurnGammaOff()
+		{
+			Engine_TurnGammaOff();
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_CloseGame();
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_TurnGammaOn();
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_TurnGammaOn();
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_TurnGammaOff();
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_TurnGammaOff();
+	}
 
 	public class PersistentSystem
 	{
@@ -1697,12 +1705,12 @@ namespace TRE
 			Engine_ResetDialogue(ID);
 		}
 
-        public static bool GetDialogueRunning(EntityID ID)
-        {
-            return Engine_GetDialogueRunning(ID);
-        }
+		public static bool GetDialogueRunning(EntityID ID)
+		{
+			return Engine_GetDialogueRunning(ID);
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetTextVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1721,9 +1729,9 @@ namespace TRE
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_ResetDialogue(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetDialogueRunning(EntityID ID);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetDialogueRunning(EntityID ID);
+	}
 
 	public class DirectPathfindingSystem
 	{
@@ -1815,81 +1823,81 @@ namespace TRE
 		public extern static bool Engine_GetParticleEmitterActive(EntityID ID);
 	}
 
-    public class ParticleSystem3D
-    {
-        public static void SetActive(EntityID ID, bool isActive)
-        {
-            Engine_SetParticleEmitterActive3D(ID, isActive);
-        }
-        public static bool GetActive(EntityID ID)
-        {
-            return Engine_GetParticleEmitterActive3D(ID);
-        }
+	public class ParticleSystem3D
+	{
+		public static void SetActive(EntityID ID, bool isActive)
+		{
+			Engine_SetParticleEmitterActive3D(ID, isActive);
+		}
+		public static bool GetActive(EntityID ID)
+		{
+			return Engine_GetParticleEmitterActive3D(ID);
+		}
 
-        public static void SetSpeed(EntityID ID, float speed)
-        {
-            Engine_SetParticleSpeed3D(ID, speed);
-        }
-        public static float GetSpeed(EntityID ID)
-        {
-            return Engine_GetParticleSpeed3D(ID);
-        }
+		public static void SetSpeed(EntityID ID, float speed)
+		{
+			Engine_SetParticleSpeed3D(ID, speed);
+		}
+		public static float GetSpeed(EntityID ID)
+		{
+			return Engine_GetParticleSpeed3D(ID);
+		}
 
-        public static void SetLifetime(EntityID ID, float lifetime)
-        {
-            Engine_SetParticleLifetime3D(ID, lifetime);
-        }
-        public static float GetLifetime(EntityID ID)
-        {
-            return Engine_GetParticleLifetime3D(ID);
-        }
-        public static void SetCount(EntityID ID, int Count)
-        {
-            Engine_SetParticleCount3D(ID, Count);
-        }
-        public static int GetCount(EntityID ID)
-        {
-            return Engine_GetParticleCount3D(ID);
-        }
+		public static void SetLifetime(EntityID ID, float lifetime)
+		{
+			Engine_SetParticleLifetime3D(ID, lifetime);
+		}
+		public static float GetLifetime(EntityID ID)
+		{
+			return Engine_GetParticleLifetime3D(ID);
+		}
+		public static void SetCount(EntityID ID, int Count)
+		{
+			Engine_SetParticleCount3D(ID, Count);
+		}
+		public static int GetCount(EntityID ID)
+		{
+			return Engine_GetParticleCount3D(ID);
+		}
 
-        public static void SetVelocity(EntityID entityid, vec3 velocity)
-        {
-            Engine_SetVelocity3D(entityid, velocity);
-        }
+		public static void SetVelocity(EntityID entityid, vec3 velocity)
+		{
+			Engine_SetVelocity3D(entityid, velocity);
+		}
 
-        public static void GetVelocity(EntityID entityid, out vec3 output)
-        {
-            Engine_GetVelocity3D(entityid, out output);
-        }
+		public static void GetVelocity(EntityID entityid, out vec3 output)
+		{
+			Engine_GetVelocity3D(entityid, out output);
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetParticleEmitterActive3D(EntityID ID, bool isVisible);
-        
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Engine_GetParticleEmitterActive3D(EntityID ID);
+		public extern static void Engine_SetParticleEmitterActive3D(EntityID ID, bool isVisible);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetParticleSpeed3D(EntityID ID, float speed);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetParticleEmitterActive3D(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static float Engine_GetParticleSpeed3D(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetParticleSpeed3D(EntityID ID, float speed);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetParticleLifetime3D(EntityID ID, float speed);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetParticleSpeed3D(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static float Engine_GetParticleLifetime3D(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetParticleLifetime3D(EntityID ID, float speed);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetParticleCount3D(EntityID ID, int Count);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetParticleLifetime3D(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int Engine_GetParticleCount3D(EntityID ID);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetParticleCount3D(EntityID ID, int Count);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetVelocity3D(EntityID ID, vec3 velocity);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static int Engine_GetParticleCount3D(EntityID ID);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_GetVelocity3D(EntityID ID, out vec3 velocity);
-    }
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetVelocity3D(EntityID ID, vec3 velocity);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_GetVelocity3D(EntityID ID, out vec3 velocity);
+	}
 }

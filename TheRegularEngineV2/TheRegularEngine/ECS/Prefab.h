@@ -25,19 +25,19 @@ namespace TRE
 
 		std::string m_PrefabGUID{};															// Prefabing GUID to be referred to when finding the correct doc / serializing
 																							// This GUID exist as a reference to the object
-																							// (NOT Properties::m_GUID which is used intenrally in the Engine)
+																							// (NOT Properties::m_GUID which is used internally in the Engine)
 																							// Blank if it is only an instance
 		
 		std::unordered_set<std::string> m_AddeddComps{};									// List of components removed
 
 		std::unordered_set<std::string> m_RemovedComps{};									// List of components removed
 
-		std::map<std::string, std::unordered_set<std::string>> m_Overrides{};				// List of components/properties added/overriten for a given component
+		std::map<std::string, std::unordered_set<std::string>> m_Overrides{};				// List of components/properties added/overwritten for a given component
 																							// <Component Name, std::vector<Data Variable Name>>
 																							// This will be updated for Components visible in INSPECTOR!
 																							// This container will override any data in the instance after the prefab update the instance
 																							// Any Component Name/Data Variable Name will be bold in Inspector
-																							// Editting and changing back the values WILL still say it is overwritten
+																							// Editing and changing back the values WILL still say it is overwritten
 																							// Only way to remove is to revert everything based on prefab
 
 		// MUST Use BOTH of this if have variables that are struct/class to serialize
@@ -122,6 +122,8 @@ namespace TRE
 
 		std::string ReadPrefabAssetFile(std::string filePathName);								// Returns GUID if file exist and GUID exist in prefab directory, else return empty string
 
+		std::string GetPrefabGUIDByName(std::string prefabName);								// Returns the GUID of the given prefab name in PrefabDirectory.json, else returns "0".
+
 	private:
 		// Prefab Asset File
 		// - Only contains string of PrefabGUID, will be used to direct type of prefab to spawn
@@ -136,7 +138,7 @@ namespace TRE
 
 		void SavePrefabChild(Entity& child, bool newPrefab, std::string mainPrefabGUID);
 
-		Entity CreatePrefabChild(std::string childGUID, Entity& parent);							// Creates an Instance from the prefab (specifically for the kids! :D)
+		Entity CreatePrefabChild(std::string childGUID, Entity& parent);						// Creates an Instance from the prefab (specifically for the kids! :D)
 
 		void UpdateEntityInRegistry(Entity object, entt::registry& dstReg, std::string parentGUID = "", entt::entity parentEnt = {});	// Similar to SaveEntityInRegistry but for m_TempPrefabs
 
