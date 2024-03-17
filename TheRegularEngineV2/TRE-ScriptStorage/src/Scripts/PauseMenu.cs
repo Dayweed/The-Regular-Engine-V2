@@ -116,7 +116,7 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
 
-			sfx = ECSManager.FindIDFromName("SFX_Pausebutton");
+			sfx = ECSManager.FindIDFromName("PauseMenu");
 
 			//audio panel
             audioPanel = new List<Entity>();
