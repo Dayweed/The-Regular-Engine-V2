@@ -166,7 +166,7 @@ namespace TRE
                     isPaused = !isPaused;
                     menustate = 0;
                     currentOption = 0;
-                    Debug.Log("Triggered ESC -1");
+                    Debug.Log("Trigger: Go into pause state");
                 }
 				else if (mIsEditingSettings && menustate == 1)
 				{
@@ -174,14 +174,14 @@ namespace TRE
                     menustate = 1;
 					mIsEditingSettings = false;
 					ResetPointers();
-                    Debug.Log("Triggered ESC 1 true");
+                    Debug.Log("Trigger: Get out of editing state");
                 }
                 else if (!mIsEditingSettings && menustate == 1)
                 {
                     isChangeMenu = true;
                     menustate = 0;
 					BacktoMainPausePage();
-                    Debug.Log("Back to pause main");
+                    Debug.Log("Trigger: Get out of controls panel");
                 }
                 else if (!mIsEditingSettings && menustate == 0)
 				{
@@ -189,7 +189,7 @@ namespace TRE
                     isPaused = !isPaused;
                     menustate = 0;
                     currentOption = 0;
-                    Debug.Log("Triggered ESC 0 false");
+                    Debug.Log("Trigger: Unpause the game");
                 }
 				
 			}
@@ -685,6 +685,14 @@ namespace TRE
 
 			if (showAudioPanel)
 			{
+				for (int x = 0; x < audioPanel.Count; x++)
+				{
+                    if (audioPanel[x].HasComponent<Text>())
+                    {
+                        TextSystem.SetVisible(audioPanel[x].ID, false);
+                    }
+                    UISystem.SetVisible(audioPanel[x].ID, false);
+				}
 
                 showAudioPanel = false;
 			}
@@ -716,14 +724,14 @@ namespace TRE
 
             if (showControlsPanel)
             {
-
-                showControlsPanel = false;
+				//Change below to the correct pointer and delete this comment
+                //UISystem.SetVisible(audioPointer.ID, false);
             }
 
             if (showGameplayPanel)
             {
-
-                showGameplayPanel = false;
+                //Change below to the correct pointer and delete this comment
+                //UISystem.SetVisible(audioPointer.ID, false);
             }
         }
 	}
