@@ -14,7 +14,7 @@ namespace TRE
 		//public int noOfObjects = 0;
 		//public int maxObjects = 8;
 		public int maxSearchCount = 4;
-		public float minRange = 5.5f;
+		public float minRange = 10f;
 
 		// Spawn timing
 		public float activeDuration;
