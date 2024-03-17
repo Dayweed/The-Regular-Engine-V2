@@ -396,7 +396,7 @@ namespace TRE
 
 			if (PopupQuitConfirmation)
 			{
-				if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
+                if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
 				{
 					CurrentButtonSelected = false;
 					QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = false;
